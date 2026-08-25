@@ -199,9 +199,9 @@ export const localBusinessJsonLd = {
     name: 'Modern Mustard Seed services',
     itemListElement: [
       ['AI voice agents', 'A 24/7 voice agent that answers every call as your business, books jobs, and texts back missed callers.', '/voice-agents'],
-      ['Small business websites', 'Custom websites built from scratch with lead capture, funnels, SEO and GEO, and the command center free. The voice agent is a separate product that can be added to any site.', '/websites'],
+      ['Small business websites', 'Custom websites built from scratch with lead capture, funnels, SEO and GEO. The voice agent is a separate product that can be added to any site.', '/websites'],
       ['Business Command Center', 'One dashboard for calls, leads, customers, reviews, traffic, and money, with an AI that reads it back to you.', '/command-center'],
-      ['Free AI demos', 'Three working demos built for your business at no cost: voice agent, website, and command center.', '/demos'],
+      ['Free AI demos', 'Two working demos built for your business at no cost: a voice agent and a website.', '/demos'],
       ['Website audits', 'A real score and a real to-do list for an existing site, covering SEO and AI answer-engine visibility.', '/website-audit'],
     ].map(([name, description, path]) => ({
       '@type': 'Offer',

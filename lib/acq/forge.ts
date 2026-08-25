@@ -17,7 +17,7 @@
 
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { after } from 'next/server';
-import { forgeLeadVoiceDemo, buildOsConfig, ensureDemoHub } from '@/lib/outbound-demo';
+import { forgeLeadVoiceDemo, ensureDemoHub } from '@/lib/outbound-demo';
 import type { OutboundLead } from '@/lib/outbound';
 import { SITE } from '@/lib/seo';
 import { recordEvent } from '@/lib/acq/events';
@@ -128,28 +128,12 @@ export async function forgeProspectAgent(
 
   const finish = async () => {
     try {
-      // The command center rides free with the voice agent, so it is minted too.
-      if (!row.os_demo_id) {
-        const { data: osRow } = await db
-          .from('outbound_demo_os')
-          .insert({ lead_id: row.id, business_name: row.business_name, config: buildOsConfig(row) })
-          .select('id')
-          .single();
-        if (osRow) {
-          const { data: updated } = await db
-            .from('outbound_leads')
-            .update({
-              os_demo_id: osRow.id,
-              os_demo_url: `${SITE.url}/demo/os/${osRow.id}`,
-              os_demo_status: 'ready',
-            })
-            .eq('id', row.id)
-            .select('*')
-            .single();
-          if (updated) row = updated as OutboundLead;
-        }
-      }
-
+      // THE COMMAND CENTER IS NOT FORGED HERE ANY MORE (Sarah, 2026-08-22).
+      // It used to be minted with every voice agent because it rode free with
+      // the pair. It is now sold on its own, built by hand, and scoped with the
+      // client first, so a forge that quietly produced one was promising a
+      // thing we are not ready to ship at this quality. Sarah still makes them
+      // from the cockpit; nothing automatic does.
       row = await ensureDemoHub(db, row);
 
       // The audit is the fifth door and the only one that is about THEM. It
@@ -169,7 +153,7 @@ export async function forgeProspectAgent(
         leadId: row.id,
         type: 'forge_completed',
         label: 'Their personalized agent is live',
-        detail: { demoUrl: row.demo_url, hubUrl: row.hub_demo_url, osUrl: row.os_demo_url },
+        detail: { demoUrl: row.demo_url, hubUrl: row.hub_demo_url },
       });
 
       // Mail it. Queued rather than sent inline so a retry cannot double-send.

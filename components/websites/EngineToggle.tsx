@@ -22,7 +22,7 @@ const BROCHURE_NOTES = [
 const ENGINE_NOTES = [
   'Every visitor is captured, not just counted.',
   'Follow-up fires in seconds, day or night.',
-  'Leads land in your command center while you sleep.',
+  'Leads land in your inbox while you sleep.',
 ];
 
 export default function EngineToggle() {
@@ -83,7 +83,7 @@ export default function EngineToggle() {
             {engine ? (
               <div className="absolute top-3 right-3 max-w-[62%] rounded-xl border-2 border-[#161616] bg-[#161616] px-3.5 py-2.5 shadow-[3px_3px_0_0_#F5B700] animate-[etIn_.45s_ease-out_both]">
                 <p className="font-mono text-[8.5px] uppercase tracking-[0.18em] text-[#F5B700] font-bold">New lead captured</p>
-                <p className="font-sans text-[12px] font-bold text-[#FBF6EA] mt-0.5 leading-snug">Filed to your command center</p>
+                <p className="font-sans text-[12px] font-bold text-[#FBF6EA] mt-0.5 leading-snug">Filed, and in your inbox</p>
               </div>
             ) : (
               <div className="absolute inset-0 flex items-center justify-center bg-[#161616]/10">

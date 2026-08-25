@@ -198,7 +198,7 @@ export default function ForgeMintForm({ endpoint, variant }: { endpoint: string;
               </p>
             ) : (
               <p className="font-body text-sm text-[#161616]/80 mt-2">
-                In the forge now. The voice agent and command center are live in about a minute; the website lands at the same hub in roughly twenty. Your hand-off email is on its way.
+                In the forge now. The voice agent is live in about a minute; the website lands at the same hub in roughly twenty. Your hand-off email is on its way.
               </p>
             )}
             <div className="flex items-center justify-between mt-4">
@@ -291,7 +291,7 @@ export default function ForgeMintForm({ endpoint, variant }: { endpoint: string;
             {minting ? 'Forging…' : outOfSlots ? 'Out of forge slots' : 'Forge their suite'}
           </button>
           <p className="font-body text-xs text-[#161616]/50 mt-3">
-            Free for them, no strings. The suite is real: a voice agent that answers as their business, a designed-from-scratch website, and a command center demo.
+            Free for them, no strings. The suite is real: a voice agent that answers as their business and a designed-from-scratch website.
           </p>
         </form>
       )}

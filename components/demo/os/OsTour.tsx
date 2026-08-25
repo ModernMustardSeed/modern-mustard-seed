@@ -20,7 +20,7 @@ export default function OsTour({ onGoTo, onClose }: { onGoTo: (tab: string) => v
   const first = config.ownerFirst ? `, ${config.ownerFirst}` : '';
 
   const STEPS: TourStep[] = [
-    { tab: 'today', eyebrow: 'Welcome', title: `This is ${possessive(config.business)} command center`, body: `Everything it takes to run the business, in one place. It comes free when you take your website and your voice agent together. Take 30 seconds${first} and I will show you what lives where.` },
+    { tab: 'today', eyebrow: 'Welcome', title: `This is ${possessive(config.business)} command center`, body: `Everything it takes to run the business, in one place. Take 30 seconds${first} and I will show you what lives where.` },
     { tab: 'today', eyebrow: '1 · Today', title: 'Your day, already sorted', body: `While you slept, your voice agent answered the calls and filed them. This is what is waiting, in order.` },
     { tab: 'calls', eyebrow: '2 · Calls', title: 'Every call, written down', body: `Your voice agent types up every call, after hours included. Open any one for the full transcript, and the lead is already filed.` },
     { tab: 'calendar', eyebrow: '3 · Calendar', title: 'One calendar, filled for you', body: `Your voice agent, your website, and you all book into the same place. No double-bookings, and you barely touch it.` },

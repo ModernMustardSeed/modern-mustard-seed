@@ -29,7 +29,7 @@ export const MMS_TOUR: MmsTourBeat[] = [
     id: 'welcome',
     anchor: 'top',
     text:
-      'Welcome to Modern Mustard Seed. We build websites, voice agents, and the command centers that run them, and they go live in about a week. ' +
+      'Welcome to Modern Mustard Seed. We build websites and voice agents, and they go live in about a week. ' +
       'Let me show you around. This takes about a minute.',
   },
   {

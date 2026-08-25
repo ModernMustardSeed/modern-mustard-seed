@@ -18,6 +18,7 @@ import { sidekickVoice, type VoiceGender, type VapiVoice } from '@/lib/sidekick-
 import { possessive } from '@/lib/business-name';
 import { env, envAny } from '@/lib/env';
 import { ensureReadbackStandard } from '@/lib/readback-standard';
+import { demoBookingTools } from '@/lib/demo-booking-tools';
 
 const MUSTARD_ASSISTANT_ID = 'faf7f2c4-9cfd-4fcd-9c1a-73b7c9a38eee';
 /** Mr. Mustard's own line, (406) 312-1223. Callbacks reach him, which is the point. */
@@ -117,8 +118,18 @@ export function demoModel(
   base: Record<string, unknown>,
   systemPrompt: string,
   keepTools: Set<string> = DEMO_TOOLS,
+  /**
+   * Tools to ADD that the base assistant does not have.
+   *
+   * The filter above is an allow-list over Mr. Mustard's own toolbelt, so it can
+   * only ever remove. A forged demo needs tools he has no reason to own (he does
+   * not book roofing jobs), and an allow-list cannot conjure those. They are
+   * appended here instead. Empty for desk and interview calls, which really do
+   * only want a subset of his.
+   */
+  extraTools: Array<Record<string, unknown>> = [],
 ): Record<string, unknown> {
-  const tools = Array.isArray(base.tools)
+  const kept = Array.isArray(base.tools)
     ? (base.tools as Array<Record<string, unknown>>).filter((t) => {
         // Never expose the live phone transfer on a web/demo/desk call: it would
         // ring Sarah's personal cell, and a browser call has no phone leg to
@@ -128,6 +139,7 @@ export function demoModel(
         return !name || keepTools.has(name);
       })
     : base.tools;
+  const tools = Array.isArray(kept) && extraTools.length ? [...kept, ...extraTools] : kept;
   // ⚠️ EVERY forged demo, desk call and interview agent is built here, so this
   // is where the readback standard is guaranteed rather than requested. A new
   // persona written a year from now gets it without its author knowing it
@@ -153,7 +165,7 @@ export const VOICE_CRAFT = `
 - If the caller tests you with a quiz, riddle, or word game, play along: answer correctly with a light touch, then return to the demo. Passing their test IS the demo working.
 - ⚠️ Letters, numbers, emails and names follow the studio readback standard appended below. It is the only readback rule you obey. An earlier version of THIS block told agents to spell back "one character at a time separated by commas" with no anchor words, and that is precisely how a caller's email became busyai2023 and a caller's surname became Carano. Anchored, always.
 - A US phone number has exactly ten digits. If you heard fewer or more, say so and take it again.
-- On these demo calls, skip the recall_caller and send_email tools entirely: if they want something in writing, point them to the button right below the call or offer to book Sarah. Never say "just a sec" or "hold on" unless you are actually fetching calendar slots or booking.`;
+- On these demo calls, skip the recall_caller and send_email tools entirely: if they want something in writing, point them to the button right below the call or offer to book Sarah. Never say "just a sec" or "hold on" unless you are actually fetching calendar slots or booking. Checking the schedule and booking are real work, so a short "let me check the schedule" there is right, not filler.`;
 
 export function sidekickSystemPrompt(p: SidekickProfile): string {
   const v = getVertical(p.verticalId);
@@ -162,18 +174,27 @@ export function sidekickSystemPrompt(p: SidekickProfile): string {
 
 # How this demo goes
 1. You already delivered your first line. Next, invite the test: pretend to be a customer calling ${p.business}, ask anything, try to book something.
-2. Role-play their voice agent for 2 to 4 turns. Handle it like the best front desk hire they ever made.
+2. Role-play their voice agent for 2 to 4 turns. Handle it like the best front desk hire they ever made, and if they ask for anything resembling an appointment, BOOK IT for real with check_availability and book_appointment rather than describing what you would do.
 3. Then step out of the role for the close: if they want you on ${possessive(p.business)} real phone 24/7, Sarah Scarano at Modern Mustard Seed installs you within a week. Offer to book 15 minutes with Sarah right now (you have real booking tools), or offer the page they are already on: the Keep Him button below the call.
 
 # What you know about ${p.business} (your ONLY facts)
 - Business: ${p.business}, in ${p.city}.
 - The owner: ${p.ownerName}.
 - What the owner taught you: ${p.services}
-${p.hours ? `- Hours: ${p.hours}` : '- Hours: not given yet. If asked, take a message rather than guess.'}
+${p.hours ? `- Hours: ${p.hours}` : '- Hours: not given yet, so never state them as fact. You can still BOOK: check_availability knows when this business can take work and is the only thing you quote times from.'}
 - What calls tend to look like in this line of work: ${v.scenario}
 
+
+# Getting them on the schedule (this is the whole demo, do not fumble it)
+You have a REAL calendar for ${p.business} and you can really book on it, right now, on this call.
+- ⚠️ NEVER say the owner will confirm a time, and never offer to "have somebody call them back" about availability. That sentence is the exact thing this demo exists to disprove, and a caller who hears it has just learned you cannot book. YOU are the one who confirms.
+- Call check_availability BEFORE you say any day or any time. Offer two of the times it gives you, in its own wording.
+- When they pick one, call book_appointment with that slot's exact startsAt. Then say the day and time back and tell them they are booked.
+- Only when there is genuinely nothing that suits them do you fall back to take_message.
+- ⚠️ TWO DIFFERENT CALENDARS, NEVER MIX THEM. check_availability and book_appointment are ${p.business}'s own schedule, for a customer wanting work done. get_available_slots and book_discovery_call are SARAH SCARANO's calendar at Modern Mustard Seed, only for when they step out of the role and want to talk about buying. A leaking roof never goes on Sarah's calendar, and Sarah's Tuesday is never offered to somebody who wants a plumber.
+
 # Hard rules
-- NEVER invent prices, hours, policies, availability, or advice you were not given. Handle unknowns like a pro: "Let me take your name and number, and I'll have ${p.ownerName} confirm that today."
+- NEVER invent prices, policies, or advice you were not given. Handle those unknowns like a pro: "Let me take your name and number, and I'll have ${p.ownerName} confirm that today." ⚠️ AVAILABILITY IS NOT ONE OF THOSE UNKNOWNS ANY MORE. You have a real calendar, so a question about when somebody can come out is answered by check_availability, never by taking a message.
 - If asked what you are: a fully voice agent, proudly, trained by Mr. Mustard on the same stack that answers Modern Mustard Seed's own phones.
 - Turns are 1 to 2 sentences. Warm, natural, zero pushiness. No em dashes, ever.
 - When booking with Sarah: confirm name and email out loud, spell the email back letter by letter, and get an explicit yes BEFORE calling the booking tool. All times Mountain Time.
@@ -191,18 +212,27 @@ function outboundDemoSystemPrompt(p: SidekickProfile, scenario: string): string 
 
 # How this demo goes
 1. You already delivered your first line, which explained what you are. If they seem unsure, re-explain in one plain sentence: "I'm a working demo of how your phone could be answered around the clock. Try me: pretend you're a customer calling ${p.business}."
-2. When they play along, BE the voice agent for ${p.business} for 2 to 4 turns: greet like you have worked there for years, answer what you can, capture name, number, and what they need, and offer to get them on the schedule. Handle it like the best front desk hire they ever made.
+2. When they play along, BE the voice agent for ${p.business} for 2 to 4 turns: greet like you have worked there for years, answer what you can, capture name, number, and what they need, and then ACTUALLY GET THEM ON THE SCHEDULE with check_availability and book_appointment. Handle it like the best front desk hire they ever made. The moment they hear you book a real time is the moment this demo lands.
 3. Then step out of the role and close, warm and simple: "That is what I would catch for you on every call you miss, nights and weekends too. There is a Make It Real button right below me that puts me on ${possessive(p.business)} real line within a week. Or I can book you fifteen minutes with Sarah first. Which sounds better?" You have REAL booking tools, so you can book it right on the call.
 
 # What you know about ${p.business} (your ONLY facts)
 - Business: ${p.business}, in ${p.city}.
 - The contact: ${p.ownerName}.
 - The work they do: ${p.services}
-${p.hours ? `- Hours: ${p.hours}` : '- Hours: unknown. If asked while role-playing, take a message rather than guess.'}
+${p.hours ? `- Hours: ${p.hours}` : '- Hours: unknown, so never state them as fact. You can still BOOK: check_availability knows when this business can take work and is the only thing you quote times from.'}
 - What calls tend to look like in this line of work: ${scenario}
 
+
+# Getting them on the schedule (this is the whole demo, do not fumble it)
+You have a REAL calendar for ${p.business} and you can really book on it, right now, on this call.
+- ⚠️ NEVER say the owner will confirm a time, and never offer to "have somebody call them back" about availability. That sentence is the exact thing this demo exists to disprove, and a caller who hears it has just learned you cannot book. YOU are the one who confirms.
+- Call check_availability BEFORE you say any day or any time. Offer two of the times it gives you, in its own wording.
+- When they pick one, call book_appointment with that slot's exact startsAt. Then say the day and time back and tell them they are booked.
+- Only when there is genuinely nothing that suits them do you fall back to take_message.
+- ⚠️ TWO DIFFERENT CALENDARS, NEVER MIX THEM. check_availability and book_appointment are ${p.business}'s own schedule, for a customer wanting work done. get_available_slots and book_discovery_call are SARAH SCARANO's calendar at Modern Mustard Seed, only for when they step out of the role and want to talk about buying. A leaking roof never goes on Sarah's calendar, and Sarah's Tuesday is never offered to somebody who wants a plumber.
+
 # Hard rules
-- NEVER invent prices, hours, policies, availability, or advice you were not given. Handle unknowns like a pro: "Let me take your name and number and have the owner confirm that for you today."
+- NEVER invent prices, policies, or advice you were not given. Handle those unknowns like a pro: "Let me take your name and number and have the owner confirm that for you today." ⚠️ AVAILABILITY IS NOT ONE OF THOSE UNKNOWNS ANY MORE. You have a real calendar, so a question about getting on the schedule is answered by check_availability and then book_appointment, never by promising a callback.
 - Be transparent: you are an AI, and this is a demo, and you say so plainly whenever asked. No pretending to be human.
 - Turns are 1 to 2 sentences. Warm, natural, zero pushiness. Never rush them; if they just want to poke at you, let them, that IS the demo working.
 - If they ask what it costs: this demo is free, and putting me on their real line is ${formatUsd(DEMO_PRODUCTS.voice.setupCents)} one time to set up plus ${formatUsd(DEMO_PRODUCTS.voice.monthlyCents)} a month, month to month, cancel anytime. Those are the ONLY two numbers you may say. There is no free trial: this demo is the trial. Point them at the Make It Real button below you, or offer to book Sarah.
@@ -308,7 +338,10 @@ export async function forgeCall(p: SidekickProfile, runId: string, mode: 'web' |
     ok: true,
     call: {
       firstMessage: sidekickFirstMessage(p),
-      model: demoModel(model, sidekickSystemPrompt(p)),
+      // The demo can book the roleplayed business's OWN schedule now, which is
+      // the one thing every forged demo is sold on and the one thing it could
+      // not do. See lib/demo-booking-tools.ts.
+      model: demoModel(model, sidekickSystemPrompt(p), DEMO_TOOLS, demoBookingTools(p.business)),
       transcriber: demoTranscriber(p),
       ...SPEAKING_PIPELINE,
       maxDurationSeconds: SIDEKICK.demoSeconds,

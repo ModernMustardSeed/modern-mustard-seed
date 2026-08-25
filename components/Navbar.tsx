@@ -338,7 +338,7 @@ export default function Navbar() {
                 Free Demos <span className="inline-block group-hover:translate-x-1 transition-transform">→</span>
               </span>
               <span className="block font-body text-[13px] text-[#161616]/75 mt-1 leading-relaxed">
-                A voice agent, a command center, and a new website. All three built for your business.
+                A voice agent and a new website. Both built for your business.
               </span>
             </Link>
 

@@ -48,7 +48,7 @@ type PlanStep = { t: string; d: string };
 function planSteps(voiceFirst: boolean): PlanStep[] {
   const voice: PlanStep = { t: 'An agent that answers every call', d: 'Your own AI front desk picks up when you cannot: after hours, weekends, lunch, mid-job. It answers real questions, books real appointments, and texts you the details. Scan the code below and talk to it yourself.' };
   const site: PlanStep = { t: 'A website that books while you sleep', d: 'Not a brochure. A site built to turn a search into a booked job: clear services, real reviews, tap-to-call, and online booking that works at 11pm.' };
-  const os: PlanStep = { t: 'One command center for all of it', d: 'Every call, booking, and lead in one dashboard you own. No logins to seven tools. You see exactly what the phone and the website brought in.' };
+  const os: PlanStep = { t: 'One place every lead lands', d: 'Every call, booking, and lead in one inbox you own. No logins to seven tools. You see exactly what the phone and the website brought in.' };
   return voiceFirst ? [voice, site, os] : [site, voice, os];
 }
 

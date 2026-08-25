@@ -40,7 +40,7 @@ export type Industry = {
    *
    * Route by what the industry actually loses. Missed-call businesses go to
    * /voice-agents (the live demo line and their trade's missed-call math).
-   * Build-shaped businesses go to /demos (voice agent + command center + a
+   * Build-shaped businesses go to /demos (voice agent + a
    * custom site). Never send a DTC brand to a voice agent pitch.
    *
    * The Voice Agent Forge was parked 2026-08-12 (Sarah); the missed-call route
@@ -61,7 +61,7 @@ export const FORGE_CTA = {
     href: '/demos' as const,
     label: 'Forge My Free Demo',
     blurb:
-      'Free, no account, no card. Enter your business once and get a voice agent you can talk to, an operations command center, and a custom website built from scratch.',
+      'Free, no account, no card. Enter your business once and get a voice agent you can talk to and a custom website built from scratch.',
   },
 };
 

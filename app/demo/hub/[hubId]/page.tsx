@@ -1,6 +1,7 @@
 import { getSupabase } from '@/lib/supabase';
 import { buildMetadata } from '@/lib/seo';
 import DemoHub from '@/components/demo/DemoHub';
+import { demoAppointmentsFor } from '@/lib/demo-booking';
 import { leadTrade } from '@/lib/outbound-demo';
 import { recordDemoEvent } from '@/lib/demo-events';
 import type { Niche } from '@/lib/outbound';
@@ -163,6 +164,14 @@ export default async function DemoHubPage({ params }: { params: Promise<{ hubId:
   // the voice agent and command center were forged for.
   const trade = leadTrade(lead);
 
+  /* What their agent booked while they were on the phone. Only ever non-empty
+   * for somebody who actually called their demo and played a customer, which is
+   * the single strongest signal in the whole funnel, so it is worth one query
+   * on every hub render. Fail-soft: no run id, or a table that does not answer,
+   * is simply no card. */
+  const bookedOnCall = lead.demo_run_id ? await demoAppointmentsFor(sb, lead.demo_run_id, 6) : [];
+
+
   return (
     <DemoHub
       hubId={hubId}
@@ -184,13 +193,13 @@ export default async function DemoHubPage({ params }: { params: Promise<{ hubId:
       voiceUrl={lead.demo_url}
       siteUrl={lead.site_demo_status === 'ready' ? lead.site_demo_url : null}
       sitePending={lead.site_demo_status === 'queued' || lead.site_demo_status === 'building' ? lead.site_demo_url : null}
-      osUrl={lead.os_demo_status === 'ready' ? lead.os_demo_url : null}
       integrationPlanUrl={lead.integration_plan_status === 'ready' ? lead.integration_plan_url : null}
       planQuote={planQuote}
       auditUrl={lead.presence_audit_url}
       auditScore={lead.presence_audit_score}
       auditHeadline={auditHeadline}
       demoRunId={lead.demo_run_id}
+      bookedOnCall={bookedOnCall}
       noticedLine={noticedLine}
       missedPreset={missedPreset}
       hasEmail={Boolean(lead.email)}

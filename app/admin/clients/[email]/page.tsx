@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation';
 import { templateName } from '@/components/admin/TemplatePicker';
 import Link from 'next/link';
 import AdminHeader from '@/components/admin/AdminHeader';
+import EmailThread from '@/components/admin/EmailThread';
 
 /**
  * The single per-client command view. One screen for one customer: who they are,
@@ -326,6 +327,9 @@ export default function ClientCommandView() {
                 </div>
               </Card>
             )}
+
+            {/* Every email this client has been sent, with the bytes */}
+            <EmailThread email={data.email} title="Their mail" />
 
             {/* Thread */}
             <Card>

@@ -81,16 +81,14 @@ export type SuiteState = {
   siteStatus: string | null;
   osUrl: string | null;
   /**
-   * Whether the PROSPECT can see the command center, which is a different
-   * question from whether one was built.
+   * ⚠️ ALWAYS FALSE. Kept so the board can still say "built, not shown."
    *
-   * The command center is free with the website and the voice agent together
-   * and is not free with either alone, so the demo suite page and the suite
-   * email only show it when both are present (Sarah, 2026-08-22). The forge
-   * mints one alongside every voice agent regardless, because it is instant and
-   * costs nothing and it appears on its own the moment the website lands. This
-   * flag is the difference, and the board draws it so a built-but-hidden
-   * command center never reads as a missing one.
+   * The command center came off the suite and out of the offer entirely
+   * (Sarah, 2026-08-22, again on 2026-08-25: "I am not pushing command center
+   * anywhere"). The hub draws no door for it, the suite email never names it,
+   * and the forge no longer mints one. Rows forged before that date still carry
+   * an os_demo_url and that page still resolves, so a link already emailed
+   * keeps working; the prospect is simply never pointed at it.
    */
   osShown: boolean;
   hubUrl: string | null;
@@ -105,13 +103,12 @@ export function suiteState(lead: AcqSuiteLead): SuiteState {
   const siteReady = lead.site_demo_status === 'ready' && !!lead.site_demo_url;
   const siteBusy = lead.site_demo_status === 'queued' || lead.site_demo_status === 'building';
   const siteFailed = lead.site_demo_status === 'failed';
-  // A website still on the anvil counts toward the pair: it is part of this
-  // suite and it lands on the page within the hour.
-  const osShown = !!lead.os_demo_url && !!lead.demo_url && (siteReady || siteBusy);
+  // The command center is never a piece of a prospect's suite any more, so it
+  // is never shown and never counted. See SuiteState.osShown.
+  const osShown = false;
   const pieces =
     (lead.demo_url ? 1 : 0) +
     (siteReady ? 1 : 0) +
-    (osShown ? 1 : 0) +
     (lead.suite_film_status === 'ready' ? 1 : 0);
 
   let stage: SuiteStage;

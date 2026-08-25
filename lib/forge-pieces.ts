@@ -23,28 +23,36 @@
  * and provisions itself with no translation layer.
  */
 
+/**
+ * ⚠️ THE COMMAND CENTER IS NOT A FORGEABLE PIECE (Sarah, 2026-08-22). It came
+ * off the demo suite and out of the offer: it is sold on its own and built by
+ * hand. Adding `command_center: 'os'` back here would put it on Mr. Mustard's
+ * build floor again, which is the one thing she pulled.
+ *
+ * A caller who asks for one still gets a good answer, and it does NOT come from
+ * this map: `piecesFrom` drops the word, the request lands as an empty build,
+ * and the empty-build branch makes him ask what they want instead of guessing.
+ */
 export const FORGE_PIECES = {
   voice_agent: 'voice',
   website: 'site',
-  command_center: 'os',
 } as const;
 
 export type ForgePiece = (typeof FORGE_PIECES)[keyof typeof FORGE_PIECES];
 
 /** Canonical order, so two callers who asked for the same things get the same
  *  answer regardless of what order they said them in. */
-export const PIECE_ORDER: ForgePiece[] = ['voice', 'site', 'os'];
+export const PIECE_ORDER: ForgePiece[] = ['voice', 'site'];
 
 /** What each piece is called out loud, for his instruction field and the email. */
 export const PIECE_LABEL: Record<ForgePiece, string> = {
   voice: 'voice agent',
   site: 'website',
-  os: 'command center',
 };
 
 /** Instant vs queued. Only the website goes to the worker floor, and only the
  *  website earns the "within the hour" promise or a walkthrough film. */
-export const INSTANT: Record<ForgePiece, boolean> = { voice: true, site: false, os: true };
+export const INSTANT: Record<ForgePiece, boolean> = { voice: true, site: false };
 
 /**
  * THIS IS THE ONLY ENFORCEMENT POINT FOR `build`, AND IT IS PERMISSIVE ON PURPOSE.
@@ -106,8 +114,8 @@ export function piecesFrom(build: unknown): ForgePiece[] {
      * load bearing. "the whole talking website" contains "website", so checking
      * the individual patterns first would resolve the flagship to a bare site
      * and quietly drop the two pieces the caller actually asked for. None of
-     * these words appear in `voice_agent`, `website` or `command_center`, so
-     * putting this first cannot swallow a single-piece request. */
+     * these words appear in `voice_agent` or `website`, so putting this first
+     * cannot swallow a single-piece request. */
     if (/(^|_)(all|everything|whole|suite|bundle|talking_website|the_lot)($|_)/.test(k)) {
       PIECE_ORDER.forEach((p) => out.add(p));
       continue;
@@ -117,7 +125,14 @@ export function piecesFrom(build: unknown): ForgePiece[] {
     // rather than bouncing a real request back at a live caller.
     if (/(voice|agent|phone|receptionist|answering)/.test(k)) out.add('voice');
     else if (/(site|web)/.test(k)) out.add('site');
-    else if (/(^os$|command|back_?office|dashboard|crm)/.test(k)) out.add('os');
+    /* A COMMAND CENTER REQUEST IS DROPPED HERE ON PURPOSE (Sarah, 2026-08-22).
+     * There used to be a third branch matching os / command / back_office /
+     * dashboard / crm. Putting it back would forge the one product she pulled.
+     *
+     * Dropping it is not the same as ignoring the caller: an unrecognised build
+     * leaves `out` empty, and the empty-build branch is already the one that
+     * makes him stop and ask what they want, which is a better answer on a live
+     * call than silently building the wrong thing. */
   }
 
   return PIECE_ORDER.filter((p) => out.has(p));

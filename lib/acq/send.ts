@@ -164,7 +164,7 @@ async function gateOrRefuse(
 ): Promise<{ ok: true } | { ok: false; result: SendResult }> {
   const decision = await authorize({ db, lead, kind, campaign });
   if (decision.allowed) return { ok: true };
-  await recordRefusal(db, lead, campaign.id, decision.reason ?? 'refused');
+  await recordRefusal(db, lead, campaign.id, decision.reason ?? 'refused', kind);
   // A refusal about THIS person is permanent for this job; a refusal about
   // volume or the window is not, and the queue should come back later.
   const aboutTheRecipient = /opt-out|suppress|bounce|do not contact|confidence|test prospect|no email/i.test(decision.reason ?? '');

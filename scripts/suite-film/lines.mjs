@@ -89,7 +89,11 @@ export function spokenName(business) {
  *
  * `have` says which demos actually exist. A missing demo drops its beat rather
  * than narrating something the viewer cannot see, because a film that promises
- * a command center and then cuts to black is worse than a shorter film.
+ * something and then cuts to black is worse than a shorter film.
+ *
+ * have.os is pinned false by the builder: the command center is off the suite
+ * and out of the offer, so no film narrates one. The beats below are dead code
+ * kept for the day it comes back.
  */
 export function filmScript({ lead, config, have }) {
   const biz = spokenName(lead.business_name);
@@ -117,7 +121,7 @@ export function filmScript({ lead, config, have }) {
     // need it." Build time, price, and the word free all price-anchor the thing
     // at zero before the prospect has decided they want it. Every line below
     // sells what it DOES for them. See the law at the bottom of this file.
-    vo: `This is ${biz}, with a front desk that never closes. A website built to win the job, an agent that answers every call, and one board that runs all of it.`,
+    vo: `This is ${biz}, with a front desk that never closes. A website built to win the job, and an agent that answers every call.`,
   });
 
   if (have.site) {

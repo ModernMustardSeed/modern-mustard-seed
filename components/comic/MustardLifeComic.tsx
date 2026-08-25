@@ -40,7 +40,6 @@ const P = {
   sidekick: sidekickTiers.find((t) => t.slug === 'sidekick')!,
   sidekickPro: sidekickTiers.find((t) => t.slug === 'sidekick-pro')!,
   site: DEMO_PRODUCTS.site,
-  os: DEMO_PRODUCTS.os,
   bundle: DEMO_BUNDLE,
   spot: picturesTiers.find((t) => t.name === 'THE SPOT')!,
   premiere: picturesTiers.find((t) => t.name === 'THE PREMIERE')!,
@@ -333,7 +332,7 @@ export default function MustardLifeComic() {
                 <ul className="divide-y divide-dashed divide-[#161616]/20 px-6 py-2">
                   {[
                     { p: '04', label: 'The Voice Agent Forge', note: `voice agent, from ${usd(P.sidekick.setupCents)} + ${usd(P.sidekick.monthlyCents)}/mo`, href: '#sidekick' },
-                    { p: '06', label: 'Websites and Command Centers', note: `from ${usd(P.site.setupCents)} + ${usd(P.site.monthlyCents)}/mo`, href: '#websites' },
+                    { p: '06', label: 'Websites and The Talking Website', note: `from ${usd(P.site.setupCents)} + ${usd(P.site.monthlyCents)}/mo`, href: '#websites' },
                     { p: '10', label: 'Pictures and Broadcast', note: `commercials from $${P.justCommercial.priceUsd}, managed ads from ${usd(P.onAir.setupCents)}`, href: '#pictures' },
                     { p: '12', label: 'Launch and the GEO Desk', note: `from $${P.launchKit.priceUsd}`, href: '#launch' },
                     { p: '14', label: 'The Switchboard', note: `franchises, from $${P.switchBest.perLocationUsd}/location`, href: '#switchboard' },
@@ -477,15 +476,16 @@ export default function MustardLifeComic() {
             </div>
             <div className="space-y-4">
               <p className="font-mono text-[10px] font-bold uppercase tracking-[0.35em] text-[#E0301E]">p. 08 · The Bridge</p>
+              {/*
+                NO COMMAND CENTER PRICE TAG. It had one here, and a paragraph
+                pitching it, until Sarah said on 2026-08-25: "I am not pushing
+                command center anywhere." It is still sold at /command-center
+                and /pay/command-center; the catalog simply stops selling it.
+              */}
               <p className="mlc-pop font-body text-[15px] leading-relaxed text-[#3a3733]">
-                The Business Command Center wires your calls, website traffic, customers, and reviews into one glowing
-                dashboard, and it rides free when you take the website and the voice agent together. One system, one login.
+                The Talking Website is the site and the phone built as one thing, off one brain, so the answer a
+                visitor reads is the answer a caller hears at midnight. One system, one login, one story.
               </p>
-              <PriceTag
-                name={P.os.name}
-                price={`${usd(P.os.setupCents)} + ${usd(P.os.monthlyCents)}/mo`}
-                note={`${P.os.blurb} Free when you take the website and the voice agent together.`}
-              />
               <PriceTag
                 name={P.bundle.name}
                 price={`${usd(P.bundle.setupCents)} + ${usd(P.bundle.monthlyCents)}/mo`}

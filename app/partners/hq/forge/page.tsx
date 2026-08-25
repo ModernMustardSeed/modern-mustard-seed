@@ -33,7 +33,7 @@ export default async function PartnerForgePage() {
             Know a business that needs this? Forge theirs.
           </h1>
           <p className="font-body text-[#3A3733] mt-4 max-w-xl">
-            Two minutes of your knowledge becomes their full demo suite: a voice agent answering as their business, a website designed from scratch, and a command center demo. It arrives presented by you, and if they buy, the commission lands on your ledger automatically.
+            Two minutes of your knowledge becomes their full demo suite: a voice agent answering as their business, and a website designed from scratch. It arrives presented by you, and if they buy, the commission lands on your ledger automatically.
           </p>
         </div>
       </header>
