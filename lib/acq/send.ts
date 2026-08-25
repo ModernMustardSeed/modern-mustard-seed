@@ -377,7 +377,7 @@ export async function sendDemoEmail(
   // The cold drip stops at demo_sent, so the follow-through has to start here
   // rather than in whichever caller happened to send this one. See
   // lib/acq/post-demo.ts for why this lives in the sender and not the worker.
-  const chase = await startPostDemoSequence(db, { leadId: lead.id, campaignId: campaign.id });
+  const chase = await startPostDemoSequence(db, { leadId: lead.id, campaignId: campaign.id, messageId: sent.id, subject: built.subject });
 
   await recordEvent(db, {
     leadId: lead.id,
@@ -389,6 +389,7 @@ export async function sendDemoEmail(
       messageId: sent.id,
       demoNumber: chase.demoNumber,
       followupsQueued: chase.queued,
+      drip: chase.drip.enrolled ? `enrolled, next ${chase.drip.nextAt}` : `not enrolled: ${chase.drip.reason ?? 'unknown'}`,
       ...(chase.cancelled ? { supersededFollowups: chase.cancelled } : {}),
       ...(override ? { override: override.reason } : {}),
     },
@@ -490,7 +491,7 @@ export async function sendSuiteEmail(
     .from('outbound_leads')
     .update({ demo_emailed_at: new Date().toISOString(), acq_stage: 'demo_sent', reservoir_state: 'hot' })
     .eq('id', lead.id);
-  const chase = await startPostDemoSequence(db, { leadId: lead.id, campaignId: campaign.id });
+  const chase = await startPostDemoSequence(db, { leadId: lead.id, campaignId: campaign.id, messageId: sent.id, subject: built.subject });
 
   await recordEvent(db, {
     leadId: lead.id,
@@ -507,6 +508,7 @@ export async function sendSuiteEmail(
       messageId: sent.id,
       demoNumber: chase.demoNumber,
       followupsQueued: chase.queued,
+      drip: chase.drip.enrolled ? `enrolled, next ${chase.drip.nextAt}` : `not enrolled: ${chase.drip.reason ?? 'unknown'}`,
       ...(chase.cancelled ? { supersededFollowups: chase.cancelled } : {}),
     },
   });

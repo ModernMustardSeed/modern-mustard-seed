@@ -27,6 +27,8 @@
 
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { enqueue } from '@/lib/acq/queue';
+import { enrollDripAfterDemo } from '@/lib/outbound-drip';
+import type { OutboundLead } from '@/lib/outbound';
 import type { FollowupKind } from '@/lib/acq/campaign';
 
 /**
@@ -66,6 +68,8 @@ export type PostDemoStart = {
   queued: number;
   /** Unsent follow-ups from an earlier demo that were stood down. */
   cancelled: number;
+  /** The five-email drip they were enrolled in, or why they were not. */
+  drip: { enrolled: boolean; nextAt: string | null; reason: string | null };
 };
 
 /**
@@ -79,9 +83,9 @@ export type PostDemoStart = {
  */
 export async function startPostDemoSequence(
   db: SupabaseClient,
-  args: { leadId: string; campaignId: string | null; from?: Date },
+  args: { leadId: string; campaignId: string | null; from?: Date; messageId?: string | null; subject?: string | null },
 ): Promise<PostDemoStart> {
-  const out: PostDemoStart = { demoNumber: 1, queued: 0, cancelled: 0 };
+  const out: PostDemoStart = { demoNumber: 1, queued: 0, cancelled: 0, drip: { enrolled: false, nextAt: null, reason: null } };
   try {
     // How many demos this prospect has now had. acq_sends is the record of what
     // actually left, so this counts sends rather than intentions, and a refused
@@ -113,6 +117,31 @@ export async function startPostDemoSequence(
       out.cancelled = (data ?? []).length;
     }
 
+    // THE DRIP IS THE FIRST CHOICE. Its five emails run demo, missed-call math,
+    // the first week live, the price in writing, the close, which is the whole
+    // argument for buying rather than three variations on "did you open it".
+    // Sarah, 2026-08-25: "they should automatically enter a drip campaign after
+    // that to try to land the client."
+    const { data: leadRow } = await db.from('outbound_leads').select('*').eq('id', args.leadId).maybeSingle();
+    if (leadRow) {
+      const res = await enrollDripAfterDemo(db, leadRow as OutboundLead, {
+        startedBy: 'demo-sent',
+        messageId: args.messageId ?? null,
+        subject: args.subject ?? null,
+      });
+      if (res.ok) {
+        out.drip = { enrolled: true, nextAt: res.nextAt, reason: null };
+        // Enrolled. The three queue follow-ups would land on top of the drip's
+        // own emails, so they are not scheduled at all. Two sequences chasing
+        // one prospect is eight emails in three weeks.
+        return out;
+      }
+      out.drip = { enrolled: false, nextAt: null, reason: res.error };
+    }
+
+    // THE FALLBACK. A lead the drip refuses (replied, bounced, DNC, won, lost)
+    // is usually one that should not be chased either, but a lead the drip
+    // cannot render for still deserves the three nudges rather than silence.
     const from = args.from ?? new Date();
     for (const [i, entry] of POST_DEMO_SEQUENCE.entries()) {
       const res = await enqueue(db, {
