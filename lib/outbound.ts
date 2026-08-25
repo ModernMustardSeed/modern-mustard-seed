@@ -294,8 +294,21 @@ export type ForgeCounts = Record<ForgeStage, number> & { all: number };
  * and mid-build, and the board renders it.
  */
 export type ForgeWorkerHealth = {
-  state: 'polling' | 'building' | 'blocked';
+  /**
+   * 'down' is written by the SUPERVISOR, not the worker: a worker that cannot
+   * link its own imports never reaches its first line, so it can never report
+   * its own death. Before 2026-08-24 that death showed up here as nothing at
+   * all, and the board had to infer it from a timestamp going stale three
+   * minutes later. It now arrives within a poll, carrying the crash text.
+   */
+  state: 'polling' | 'building' | 'blocked' | 'down';
   reason: string | null;
+  /** The tail of the child's stderr when state is 'down'. Null otherwise. */
+  crash?: string | null;
+  /** Supervisor restart count, exit code and when it first fell over. 'down' only. */
+  restarts?: number | null;
+  lastExit?: number | null;
+  downSince?: string | null;
   freeMb: number | null;
   minFreeMb: number | null;
   queued: number | null;
