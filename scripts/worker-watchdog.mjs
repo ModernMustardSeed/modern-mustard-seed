@@ -69,7 +69,12 @@ const HEARTBEAT_ID = `worker-${NAME}`;
  * The app_state row the cockpit's build board reads. Only the build has a board;
  * another worker passing --name simply does not publish one, and says so once.
  */
-const HEALTH_KEY = NAME === 'forge' ? 'forge_worker_health' : null;
+// The launcher says --name build since the rename; the row it writes is still
+// forge_worker_health, because that is a stored key and renaming it would just
+// stop matching the row both build boards read. Matching only 'forge' here meant
+// the supervisor silently stopped reporting crashes the moment the launcher was
+// renamed, which is exactly the blindness this key was added on 2026-08-24 to end.
+const HEALTH_KEY = NAME === 'build' || NAME === 'forge' ? 'forge_worker_health' : null;
 const BEAT_MS = 30_000;
 const FAST_RETRY_MS = 5000;
 const SLOW_RETRY_MS = 60_000;
