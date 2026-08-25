@@ -139,6 +139,25 @@ export type AuthorizeInput = {
   /** Set when the caller has already counted this batch's own sends. */
   sentThisRun?: number;
   now?: Date;
+  /**
+   * A human, at a keyboard, right now, deliberately overriding the pacing.
+   *
+   * This lifts the gates that exist to stop a MACHINE from sending too much
+   * too fast: the send window, the hourly rate, the adaptive allowance, the
+   * bounce and complaint brakes, and the minimum gap between two emails to
+   * the same person. Those protect the domain from volume, and volume is not
+   * what is happening when Sarah sends sixteen demos she just built.
+   *
+   * It lifts NOTHING that protects a person. An unsubscribe, a suppression, a
+   * previous hard bounce, a do-not-contact flag and a missing address still
+   * refuse, and there is no flag anywhere in this codebase that gets past
+   * them. That is not caution, it is the law, and it is also the only reason
+   * a list stays worth having.
+   *
+   * The hard rolling ceiling still stands. It is the one volume number that
+   * exists to keep this domain out of a blocklist, and no button gets past it.
+   */
+  override?: { reason: string } | null;
 };
 
 /**
@@ -156,6 +175,9 @@ export async function authorize(input: AuthorizeInput): Promise<GovernorDecision
 
   const settings = input.settings ?? (await getAcqSettings());
   const campaign = input.campaign !== undefined ? input.campaign : await getCampaign();
+  const override = input.override ?? null;
+  /** Note a gate that only passed because a human said so, rather than hide it. */
+  const lifted = (label: string) => `${label} Lifted by hand: ${override!.reason}`;
 
   const ceiling = settings.global_rolling_24h_ceiling ?? 4500;
   const allowance = Math.min(settings.adaptive_daily_allowance ?? 100, ceiling);
@@ -207,12 +229,14 @@ export async function authorize(input: AuthorizeInput): Promise<GovernorDecision
     add(
       'window',
       'Send window',
-      dayOk && hourOk,
+      (dayOk && hourOk) || Boolean(override),
       dayOk && hourOk
         ? `Inside ${campaign.send_start_hour}:00 to ${campaign.send_end_hour}:00 Mountain.`
-        : `Outside the send window (${campaign.send_start_hour}:00 to ${campaign.send_end_hour}:00 Mountain${campaign.send_weekdays_only ? ', weekdays' : ''}).`,
+        : (override ? lifted : (t: string) => t)(
+            `Outside the send window (${campaign.send_start_hour}:00 to ${campaign.send_end_hour}:00 Mountain${campaign.send_weekdays_only ? ', weekdays' : ''}).`,
+          ),
     );
-    if (!dayOk || !hourOk) return deny(nextWindowOpen(campaign, now));
+    if ((!dayOk || !hourOk) && !override) return deny(nextWindowOpen(campaign, now));
   }
 
   /* ── volume, against the allowance and then the ceiling ── */
@@ -235,17 +259,19 @@ export async function authorize(input: AuthorizeInput): Promise<GovernorDecision
   add('ceiling', 'Rolling 24 hour ceiling', sent24h < ceiling, `${sent24h} of ${ceiling} in the last 24 hours. This is a ceiling, not a target.`);
   if (sent24h >= ceiling) return deny(new Date(now.getTime() + 60 * 60 * 1000));
 
+  const allowanceDetail = `${sent24h} of ${allowance} allowed at the ${SENDER_STATE_LABELS[senderState].toLowerCase()} sender state.`;
   add(
     'allowance',
     'Adaptive allowance',
-    sent24h < allowance,
-    `${sent24h} of ${allowance} allowed at the ${SENDER_STATE_LABELS[senderState].toLowerCase()} sender state.`,
+    sent24h < allowance || Boolean(override),
+    sent24h < allowance || !override ? allowanceDetail : lifted(allowanceDetail),
   );
-  if (sent24h >= allowance) return deny(new Date(now.getTime() + 60 * 60 * 1000));
+  if (sent24h >= allowance && !override) return deny(new Date(now.getTime() + 60 * 60 * 1000));
 
   const hourCap = campaign?.hourly_send_cap ?? 25;
-  add('hourly', 'Hourly rate', sent1h < hourCap, `${sent1h} of ${hourCap} in the last hour.`);
-  if (sent1h >= hourCap) return deny(new Date(now.getTime() + 15 * 60 * 1000));
+  const hourDetail = `${sent1h} of ${hourCap} in the last hour.`;
+  add('hourly', 'Hourly rate', sent1h < hourCap || Boolean(override), sent1h < hourCap || !override ? hourDetail : lifted(hourDetail));
+  if (sent1h >= hourCap && !override) return deny(new Date(now.getTime() + 15 * 60 * 1000));
 
   /* ── measured health ── */
 
@@ -255,25 +281,27 @@ export async function authorize(input: AuthorizeInput): Promise<GovernorDecision
   const maxBounce = Number(settings.max_bounce_rate_pct ?? 4);
   const maxComplaint = Number(settings.max_complaint_rate_pct ?? 0.1);
 
+  const bounceDetail = measurable
+    ? `${bounceRate.toFixed(2)}% over the last 24 hours, ceiling ${maxBounce}%. ${rolling.bounced24h} permanent of ${sent24h} sent${rolling.softBounced24h ? `, plus ${rolling.softBounced24h} soft that do not count` : ''}.`
+    : `${sent24h} sent in the last 24 hours; the rate is not measured under ${RATE_MEASUREMENT_FLOOR}.`;
   add(
     'bounce-rate',
     'Bounce rate',
-    bounceRate <= maxBounce,
-    measurable
-      ? `${bounceRate.toFixed(2)}% over the last 24 hours, ceiling ${maxBounce}%. ${rolling.bounced24h} permanent of ${sent24h} sent${rolling.softBounced24h ? `, plus ${rolling.softBounced24h} soft that do not count` : ''}.`
-      : `${sent24h} sent in the last 24 hours; the rate is not measured under ${RATE_MEASUREMENT_FLOOR}.`,
+    bounceRate <= maxBounce || Boolean(override),
+    bounceRate <= maxBounce || !override ? bounceDetail : lifted(bounceDetail),
   );
-  if (bounceRate > maxBounce) return deny();
+  if (bounceRate > maxBounce && !override) return deny();
 
+  const complaintDetail = measurable
+    ? `${complaintRate.toFixed(3)}% over the last 24 hours, ceiling ${maxComplaint}%.`
+    : `${sent24h} sent in the last 24 hours; the rate is not measured under ${RATE_MEASUREMENT_FLOOR}.`;
   add(
     'complaint-rate',
     'Complaint rate',
-    complaintRate <= maxComplaint,
-    measurable
-      ? `${complaintRate.toFixed(3)}% over the last 24 hours, ceiling ${maxComplaint}%.`
-      : `${sent24h} sent in the last 24 hours; the rate is not measured under ${RATE_MEASUREMENT_FLOOR}.`,
+    complaintRate <= maxComplaint || Boolean(override),
+    complaintRate <= maxComplaint || !override ? complaintDetail : lifted(complaintDetail),
   );
-  if (complaintRate > maxComplaint) return deny();
+  if (complaintRate > maxComplaint && !override) return deny();
 
   /* ── this recipient ── */
 
@@ -318,8 +346,13 @@ export async function authorize(input: AuthorizeInput): Promise<GovernorDecision
   const last = lead.last_campaign_email_at ? new Date(lead.last_campaign_email_at) : null;
   const daysSince = last ? (now.getTime() - last.getTime()) / 86400000 : Infinity;
   const frequencyOk = daysSince >= minDays;
-  add('frequency', 'Contact frequency', frequencyOk, frequencyOk ? (last ? `Last emailed ${Math.floor(daysSince)} days ago.` : 'Never emailed.') : `Emailed ${daysSince.toFixed(1)} days ago, minimum gap is ${minDays} days.`);
-  if (!frequencyOk) return deny(new Date(last!.getTime() + minDays * 86400000));
+  const freqDetail = frequencyOk
+    ? last
+      ? `Last emailed ${Math.floor(daysSince)} days ago.`
+      : 'Never emailed.'
+    : `Emailed ${daysSince.toFixed(1)} days ago, minimum gap is ${minDays} days.`;
+  add('frequency', 'Contact frequency', frequencyOk || Boolean(override), frequencyOk || !override ? freqDetail : lifted(freqDetail));
+  if (!frequencyOk && !override) return deny(new Date(last!.getTime() + minDays * 86400000));
 
   return {
     allowed: true,

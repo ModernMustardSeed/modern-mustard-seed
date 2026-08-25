@@ -99,7 +99,7 @@ export default function SenderHealth() {
         {notice && <p className="mb-3 text-sm font-semibold text-[#3f5d34]">{notice}</p>}
 
         <div className="mb-6">
-          <TheHold hold={hold} />
+          <TheHold hold={hold} onDone={() => void load()} />
         </div>
 
         <section className={`${card} p-6 mb-6`}>

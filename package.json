@@ -56,7 +56,8 @@
     "acq:fo-demo": "tsx scripts/acq-fo-demo.mts",
     "voice:standard": "node scripts/voice-standard-check.mjs",
     "voice:audit": "node scripts/vapi-readback-audit.mjs",
-    "voice:tools": "node scripts/vapi-tool-health.mjs"
+    "voice:tools": "node scripts/vapi-tool-health.mjs",
+    "acq:demos": "tsx scripts/acq-demos-now.mts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.100.0",

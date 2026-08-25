@@ -161,8 +161,9 @@ async function gateOrRefuse(
   campaign: AcqCampaign,
   lead: AcqProspect,
   kind: 'campaign' | 'followup' | 'demo' | 'checkout',
+  override?: { reason: string } | null,
 ): Promise<{ ok: true } | { ok: false; result: SendResult }> {
-  const decision = await authorize({ db, lead, kind, campaign });
+  const decision = await authorize({ db, lead, kind, campaign, override });
   if (decision.allowed) return { ok: true };
   await recordRefusal(db, lead, campaign.id, decision.reason ?? 'refused', kind);
   // A refusal about THIS person is permanent for this job; a refusal about
@@ -298,11 +299,16 @@ export async function sendDemoEmail(
   db: SupabaseClient,
   campaign: AcqCampaign,
   lead: AcqProspect,
+  /**
+   * Sarah, deliberately, now. Lifts the pacing gates and nothing else: see
+   * `override` in lib/acq/governor.ts for exactly which ones and why.
+   */
+  override?: { reason: string } | null,
 ): Promise<SendResult> {
   const demoUrl = lead.hub_demo_url || lead.demo_url;
   if (!demoUrl) return { ok: false, error: 'Nothing forged yet.', permanent: false };
 
-  const gate = await gateOrRefuse(db, campaign, lead, 'demo');
+  const gate = await gateOrRefuse(db, campaign, lead, 'demo', override);
   if (!gate.ok) return gate.result;
 
   // Their Presence Audit rides along when one exists. Read fresh rather than
@@ -371,8 +377,8 @@ export async function sendDemoEmail(
     leadId: lead.id,
     campaignId: campaign.id,
     type: 'demo_emailed',
-    label: `Personalized demo emailed to ${built.to}`,
-    detail: { demoUrl, messageId: sent.id },
+    label: `Personalized demo emailed to ${built.to}${override ? ' (sent by hand)' : ''}`,
+    detail: { demoUrl, messageId: sent.id, ...(override ? { override: override.reason } : {}) },
   });
 
   return { ok: true, messageId: sent.id, subject: built.subject };
