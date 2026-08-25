@@ -216,14 +216,26 @@ function valueCallout(label: string, html: string): string {
   </td></tr>`;
 }
 
+/**
+ * The button, and the quieter link under it.
+ *
+ * The two used to sit in one row, sharing the width. That is fine for a short
+ * label and it broke the moment the campaign button became "BUILD MY FREE VOICE
+ * AGENT": the secondary link took its half and the button wrapped onto two
+ * lines, which is the one element in the email that must never look unfinished.
+ *
+ * So the secondary goes on its own row underneath. The button keeps the full
+ * width of the column and can hold a real sentence, the second path is still
+ * visibly second, and no label length can break the layout again.
+ */
 function ctaBlock(primary: { label: string; url: string }, secondary?: { label: string; url: string }): string {
   return `<tr><td style="padding:32px 44px 0" align="left">
     <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
       <td bgcolor="${C.goldBrand}" style="background:${C.goldBrand};border:2px solid ${C.ink};border-radius:999px">
-        <a href="${primary.url}" style="display:inline-block;color:${C.ink};text-decoration:none;font-weight:700;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;padding:15px 34px;font-family:${SANS}">${escape(primary.label)}</a>
+        <a href="${primary.url}" style="display:inline-block;color:${C.ink};text-decoration:none;font-weight:700;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;padding:15px 34px;font-family:${SANS};white-space:nowrap">${escape(primary.label)}</a>
       </td>
-      ${secondary ? `<td style="padding-left:18px"><a href="${secondary.url}" style="display:inline-block;color:${C.gold};text-decoration:none;font-weight:700;font-size:13px;letter-spacing:1px;text-transform:uppercase;padding:16px 4px;font-family:${SANS}">${escape(secondary.label)} &rarr;</a></td>` : ''}
     </tr></table>
+    ${secondary ? `<a href="${secondary.url}" style="display:inline-block;margin-top:14px;color:${C.gold};text-decoration:none;font-weight:700;font-size:13px;letter-spacing:1px;text-transform:uppercase;font-family:${SANS}">${escape(secondary.label)} &rarr;</a>` : ''}
   </td></tr>`;
 }
 
@@ -235,7 +247,8 @@ function ctaBlock(primary: { label: string; url: string }, secondary?: { label: 
 // The three assets are 2x PNGs in public/brand, sized down in the markup so
 // they stay sharp on retina. The script name carries alt="Sarah Scarano", so a
 // client with images off still shows the name and not a gap.
-function signature(_name?: string): string {
+function signature(_name?: string, opts?: { ranchLine?: boolean }): string {
+  const withRanch = opts?.ranchLine !== false;
   return `<tr><td style="padding:36px 44px 0">
     <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
       <td width="114" style="width:114px;vertical-align:middle">
@@ -248,7 +261,14 @@ function signature(_name?: string): string {
       </td>
     </tr></table>
   </td></tr>
-  <tr><td style="padding:26px 44px 42px">
+  ${
+    // The ranch card. Suppressed by the cold campaign, which now prints the same
+    // number at 34px in the body with the instruction that turns the call into a
+    // demo. Two cream cards carrying one phone number, four inches apart, reads
+    // as a template repeating itself rather than as an invitation.
+    !withRanch
+      ? ''
+      : `<tr><td style="padding:26px 44px 42px">
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="${C.panelWarm}" style="background:${C.panelWarm};border:2px solid ${C.ink};border-radius:14px">
       <tr>
         <td width="112" style="width:112px;vertical-align:bottom;padding:10px 0 0 12px">
@@ -261,7 +281,8 @@ function signature(_name?: string): string {
         </td>
       </tr>
     </table>
-  </td></tr>`;
+  </td></tr>`
+  }`;
 }
 
 function nextUp(text: string): string {
@@ -887,6 +908,8 @@ type ClientEmailArgs = {
   cta?: { label: string; url: string };
   secondary?: { label: string; url: string };
   signature?: string;
+  /** Off for the cold campaign, which prints the number at full size itself. */
+  ranchLine?: boolean;
   trackId?: string;
 };
 
@@ -899,13 +922,14 @@ export function clientEmail({
   cta,
   secondary,
   signature: sig = 'Sarah',
+  ranchLine = true,
   trackId,
 }: ClientEmailArgs): string {
   const inner = `
     ${greeting ? headline(greeting) : ''}
     <tr><td class="mms-body" style="padding:24px 44px 0;font-family:${SANS};font-size:16px;color:${C.body};line-height:1.72">${body}</td></tr>
     ${cta ? ctaBlock(cta, secondary) : ''}
-    ${signature(sig)}
+    ${signature(sig, { ranchLine })}
     ${trackPixel(trackId)}
   `;
   return shell({ preheader, subtitle: eb, inner });
