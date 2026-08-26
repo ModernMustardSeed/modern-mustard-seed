@@ -1,9 +1,9 @@
 # The site templates
 
-Thirteen visual systems, every one of them named, and the Build picks exactly one
-per site. Six were lifted off real builds Sarah approved, two are packages Sarah handed over (Daisy's
+Twelve visual systems, every one of them named, and the Build picks exactly one
+per site. Five were lifted off real builds Sarah approved, two are packages Sarah handed over (Daisy's
 Lakehouse Editorial and Easton Kinetic), and five were
-designed in the studio to cover the trades the first seven did not fit.
+designed in the studio to cover the trades the first six did not fit.
 
 **The registry is code: `lib/site-templates.mjs`.** This file is the reading
 copy. If they ever disagree, the registry wins, because the registry is what
@@ -88,15 +88,9 @@ display, **IBM Plex Mono** data, **Source Serif 4** body. line > surveys >
 finder > reviews > faq > book. For anyone whose work produces figures. The mono
 face is used for anything numeric and nowhere else.
 
-### 6. Wild Reverent `wild-reverent`
-*From: the Wild Hope Church concept.* Ground `#0B1016`, accent `#E08A3C`.
-**Fraunces** display, **Inter** body. hero > the turn > story > the week > life
-> honest > visit. For churches, retreats, galleries, guides, anything sold on
-feeling. The scroll-driven turn is the centrepiece; see `MOTION.md`.
-
 ## The packages
 
-### 7. Lakehouse Editorial `lakehouse-editorial`
+### 6. Lakehouse Editorial `lakehouse-editorial`
 *From: Daisy's Lakehouse, Sarah's package (2026-08-24).* Cream `#F2EDDF`, paper
 `#F8F3E6`, ink `#11110F`, accent `#E7BF38`. **Fraunces** display, **Instrument
 Serif** italics and ticker, **Inter** labels. Twelve-section editorial
@@ -107,7 +101,7 @@ accent reservation CTA > footer. For hospitality that should feel editorial,
 tactile and art-directed. The full package is filed at
 `docs/flagship/templates/lakehouse-editorial.md`.
 
-### 8. Easton Kinetic Event Studio `easton-kinetic`
+### 7. Easton Kinetic Event Studio `easton-kinetic`
 *From: Easton Events, Sarah's package v2 (2026-08-25).* Black `#08090D`, paper
 `#F1EEE9`, four signal colours led by lime `#D9FF43` with cyan, violet and
 coral. **Big Shoulders Display** condensed display, **Inter** body, **JetBrains
@@ -124,33 +118,33 @@ studios, anything sold on energy. Filed at
 
 ## The studio designs (2026-08-24)
 
-### 9. Midnight Atelier `midnight-atelier`
+### 8. Midnight Atelier `midnight-atelier`
 Ground `#0E0D0B`, accent `#C9A24A`. **Cormorant Garamond** display, **Manrope**
 body, **DM Mono** prices and index. Quiet luxury: hairline gold rules as the
 only ornament, numbered chapters, inset images, slow crossfades, dot-leader
 prices. For jewelers, fine dining, custom builders, aesthetics, bridal.
 
-### 10. Swiss Grid `swiss-grid`
+### 9. Swiss Grid `swiss-grid`
 Ground `#F1F0EB`, accent `#E0201B`. **Inter Tight** display, **Inter** body,
 **JetBrains Mono** figures. A visible twelve-column grid, 1px rules and no boxes,
 one red word per screen, flush-left everything, tables in mono. For engineers,
 architects, accountants, IT, logistics, anyone who sells precision.
 
-### 11. Poster Press `poster-press`
+### 10. Poster Press `poster-press`
 Paper `#F4EFE2`, ink `#1B2A4A`, accent `#F26A3D`. **Bricolage Grotesque**
 display, **Public Sans** body, **Courier Prime** stamps. Two-ink risograph
 discipline, CSS halftone on photographs, 2px misregistration on the hero
 headline, rubber stamps, a perforated ticket strip. For breweries, roasters,
 food trucks, venues, makers.
 
-### 12. Greenhouse `greenhouse`
+### 11. Greenhouse `greenhouse`
 Linen `#ECEBE1`, ink `#1E3A2B` (green is the ink; no black), accent `#D7A21A`.
 **Newsreader** display, **Karla** body, **Kalam** plant-tag labels. Arched image
 masks, plant-tag service cards, a month-by-month season strip, line-art leaf
 marks, a before/after slider. For landscapers, nurseries, florists, tree
 services, farms.
 
-### 13. Clinic Calm `clinic-calm`
+### 12. Clinic Calm `clinic-calm`
 Ground `#F7F8F6`, ink `#16302B`, accent `#2F7F6F`, highlight `#F2B850`. **DM
 Serif Display**, **DM Sans** body, **DM Mono** hours and codes. Pill-shaped
 photographs, big friendly numerals, a live appointment strip, marigold on
@@ -172,3 +166,25 @@ Add an entry to `SITE_TEMPLATES` in `lib/site-templates.mjs` with a key, name,
 origin, palette, three Google families, skeleton, devices, copy register,
 imagery and the law block. Merge to master. It appears in the gallery, in every
 picker, and in the worker's roster on the next build. Nothing else to wire.
+
+## Retiring a template
+
+Take the entry OUT of `SITE_TEMPLATES` and add its key, name, date and the
+reason to `RETIRED_TEMPLATES` in the same file. That is the whole job: the
+gallery, the pickers, Random and the worker roster all read the array, so it
+disappears from every one of them at once, and rows that already wear the key
+fall through to a fresh weighted pick for their trade instead of throwing.
+Then write it up under Retired below.
+
+## Retired
+
+### Wild Reverent `wild-reverent`, out 2026-08-26
+*Was: the Wild Hope Church concept.* Ground `#0B1016`, ember `#E08A3C`, Fraunces
+at optical size 144, THE TURN scroll moment. Sarah called it on the Whitefish
+Massage Therapy build: it reads as a concept film about a feeling, not as a
+business a person is trying to book. It came from a church concept and it never
+stopped being one.
+
+It is out of the registry, out of every picker, and out of Random. The key lives
+in `RETIRED_TEMPLATES` so a stale row can still be named, and
+`scripts/check-retired-templates.mjs` fails the build if it ever comes back.
