@@ -70,7 +70,6 @@ export async function notifyDemoBooking(db: SupabaseClient, booked: BookedDemo):
         .update({
           notes: [lead.notes, note].filter(Boolean).join('\n'),
           next_action: `They BOOKED on their own demo. Call today, this is the hottest signal we get.`,
-          ...(lead.status === 'new' ? { status: 'contacted' } : {}),
         })
         .eq('id', lead.id);
     } catch (err) {

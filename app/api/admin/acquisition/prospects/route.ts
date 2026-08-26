@@ -191,9 +191,11 @@ export async function POST(req: Request) {
     case 'dm-sent': {
       // The stamp. One per lead per click, in the ledger and on the row, so the
       // DM list can hide what is done and the timeline shows when it happened.
-      const { data } = await db.from('outbound_leads').select('id,business_name,dm_count,facebook_url').in('id', ids);
-      for (const l of ((data ?? []) as { id: string; business_name: string; dm_count: number | null; facebook_url: string | null }[])) {
-        await db.from('outbound_leads').update({ last_dm_at: stamp, dm_count: (l.dm_count ?? 0) + 1 }).eq('id', l.id);
+      const { data } = await db.from('outbound_leads').select('id,business_name,dm_count,facebook_url,status').in('id', ids);
+      for (const l of ((data ?? []) as { id: string; business_name: string; dm_count: number | null; facebook_url: string | null; status: string }[])) {
+        // A DM is a person reaching out, so a fresh lead becomes contacted here
+        // and nowhere automated.
+        await db.from('outbound_leads').update({ last_dm_at: stamp, dm_count: (l.dm_count ?? 0) + 1, ...(l.status === 'new' ? { status: 'contacted' } : {}) }).eq('id', l.id);
         await recordEvent(db, { leadId: l.id, type: 'dm_sent', label: `Facebook DM sent by hand${l.facebook_url ? ` to ${l.facebook_url}` : ''}`, detail: { facebook_url: l.facebook_url } });
         affected++;
       }

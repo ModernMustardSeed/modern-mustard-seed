@@ -232,7 +232,9 @@ export async function sendCampaignEmail(
       last_campaign_email_at: new Date().toISOString(),
       acq_stage: lead.acq_stage === 'prospect' ? 'emailed' : lead.acq_stage,
       acq_variant: lead.acq_variant ?? variant.key,
-      status: lead.status === 'new' ? 'contacted' : lead.status,
+      // `status` stays where it is. Contacted means a person touched the lead:
+      // a call, a DM, a hand-sent email. A drip email is the machine, and it
+      // was marking 800 leads contacted that nobody had spoken to (2026-08-26).
       last_email_at: new Date().toISOString(),
     })
     .eq('id', lead.id);

@@ -769,9 +769,8 @@ async function handleEndOfCallReport(message: Record<string, unknown>) {
         if (prospectId) {
           await sb.from('rep_prospects').update({ status: 'contacted', updated_at: new Date().toISOString() }).eq('id', prospectId).eq('status', 'to-contact');
         }
-        if (outboundLeadId) {
-          await sb.from('outbound_leads').update({ status: 'contacted' }).eq('id', outboundLeadId).eq('status', 'new');
-        }
+        // The outbound lead's status is not touched here: they called us, and
+        // contacted means Sarah reached them. The transcript in the thread is the record.
       }
     } catch (err) {
       console.error('voice transcript log failed', err);
