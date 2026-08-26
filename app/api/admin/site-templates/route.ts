@@ -43,10 +43,6 @@ const REFERENCES: Record<string, { fixed?: Reference; business?: string; demoId?
   'barber-red': { business: 'Columbia Falls Barbershop', notes: 'Single-file demo. Sticky nav with the phone, the price menu as the centrepiece, chair slider, proof, accordion FAQ, booking.' },
   'highway-amber': { business: 'Hungry Horse Motel', notes: 'Single-file demo with eight distinct photographs. Amber treated as sign light, parallax, the road story, rooms, proof, FAQ, booking.' },
   'field-note': { business: 'Sands Surveying', notes: 'Single-file demo. Mono readout in the hero, tick-mark rules, the finder interactive, sticky diagram stage, slider, proof, FAQ, booking.' },
-  'wild-reverent': {
-    fixed: { label: 'Wild Hope (reference build, photography stripped)', url: '/reference/wild-reverent.html', source: 'repo', notes: '' },
-    notes: 'THE TURN scroll moment, the drag reel, the horizontal rail, the oversized Fraunces wordmark. Photography is stripped so the structure reads.',
-  },
   'lakehouse-editorial': {
     fixed: { label: "Daisy's Cafe (the package build, whole site)", url: '/demo/reference/daisys-cafe', source: 'repo', notes: '' },
     notes: 'The complete package site: over-image nav, hero with the rotating sunrise badge, ticker, outline-type intro, paper-note image break, tabbed menu on ink, the sailboat ritual with the outline numeral, contact-sheet gallery with a lightbox, Supper Club, two service cards, the reservation close, footer. Every interaction is live here.',

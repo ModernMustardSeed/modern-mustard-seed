@@ -5,7 +5,7 @@
   "packageManager": "pnpm@11.21.0",
   "scripts": {
     "dev": "next dev -p 3001",
-    "build": "node scripts/check-worker-imports.mjs && node scripts/check-no-brown.mjs && node scripts/voice-standard-check.mjs && node scripts/cron-collision-check.mjs && next build",
+    "build": "node scripts/check-worker-imports.mjs && node scripts/check-no-brown.mjs && node scripts/voice-standard-check.mjs && node scripts/cron-collision-check.mjs && node scripts/check-retired-templates.mjs && next build",
     "crons:check": "node scripts/cron-collision-check.mjs",
     "start": "next start",
     "fieldguide:sheet": "tsx scripts/build-fieldguide-onepager.ts",
@@ -60,7 +60,8 @@
     "voice:audit": "node scripts/vapi-readback-audit.mjs",
     "voice:tools": "node scripts/vapi-tool-health.mjs",
     "demo:booking": "tsx scripts/demo-booking-smoke.mts",
-    "acq:demos": "tsx scripts/acq-demos-now.mts"
+    "acq:demos": "tsx scripts/acq-demos-now.mts",
+    "check:templates": "node scripts/check-retired-templates.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.100.0",
