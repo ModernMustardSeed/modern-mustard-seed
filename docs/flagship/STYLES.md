@@ -15,9 +15,17 @@ its real palette and shows how many live sites wear it.
 
 - The cockpit deck and the Build board carry a **picker**: Random, or one named
   template. Random is the default.
-- Random is resolved at **queue time** (`lib/site-template-choice.ts`), weighted
-  by how well each template fits the lead's trade, never the template the lead
-  already had, never a template a ready site in the same trade and town wears.
+- Random is resolved at **queue time** (`lib/site-template-choice.ts`) and draws
+  ONLY from the templates whose `fits` array names the lead's trade. Inside that
+  set it avoids the template the lead already had and any a ready site in the
+  same trade and town wears. When those exclusions empty the set it repeats one
+  of them rather than reaching outside: fit beats variety.
+- Every trade has at least **three** templates designed for it, and
+  `scripts/check-template-fit.mjs` fails the build if one ever drops below that,
+  if a trade appears in both `fits` and `avoidFor`, or if the picker returns a
+  template that was not built for the trade. Before 2026-08-26 an unlisted
+  template scored a neutral 1 and could win, which is how a massage studio drew
+  a church.
 - The pick is written to `outbound_demo_sites.site_template`,
   `outbound_leads.site_template` and rides the brief as `SITE TEMPLATE: <key>`,
   so the admin shows what the site will wear before the build starts.
@@ -166,6 +174,11 @@ Add an entry to `SITE_TEMPLATES` in `lib/site-templates.mjs` with a key, name,
 origin, palette, three Google families, skeleton, devices, copy register,
 imagery and the law block. Merge to master. It appears in the gallery, in every
 picker, and in the worker's roster on the next build. Nothing else to wire.
+
+The `fits` array is the only thing that puts a template in front of a trade, so
+name every trade it was genuinely built for, and keep it to the ones its
+*alsoFits* line already covers. `avoidFor` now only keeps a template off a trade
+a HUMAN might pick it for; Random already stays inside `fits`.
 
 ## Retiring a template
 
