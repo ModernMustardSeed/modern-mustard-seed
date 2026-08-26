@@ -316,7 +316,8 @@ export async function sendOutboundEmail(
   });
 
   const update: Record<string, unknown> = { last_email_at: new Date().toISOString() };
-  if (lead.status === 'new') update.status = 'contacted';
+  // Sarah pressing send on the card is contact. The cadence cron is not.
+  if (lead.status === 'new' && opts.source !== 'cadence') update.status = 'contacted';
   const { data: updated } = await supabase.from('outbound_leads').update(update).eq('id', lead.id).select().single();
 
   return { ok: true, lead: (updated ?? lead) as OutboundLead, to, subject, messageId: sent.id };

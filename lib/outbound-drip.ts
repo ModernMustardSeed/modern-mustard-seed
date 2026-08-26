@@ -336,8 +336,8 @@ export async function sendDripStep(sb: SupabaseClient, leadInput: OutboundLead, 
     await recordSend(sb, { leadId: lead.id, campaignId: null, kind: 'followup', step, to, from: OUTBOUND_REPLY_TO, subject: email.subject, providerMessageId: sent.id });
   } catch { /* counted nowhere; the send still happened */ }
 
+  // last_email_at only. Status is a human's mark; the drip never sets it.
   const leadUpdate: Record<string, unknown> = { last_email_at: nowIso };
-  if (lead.status === 'new') leadUpdate.status = 'contacted';
   const { data: updatedLead } = await sb.from('outbound_leads').update(leadUpdate).eq('id', lead.id).select().single();
 
   const gaps = drip.gaps?.length ? drip.gaps : DRIP_GAPS;
