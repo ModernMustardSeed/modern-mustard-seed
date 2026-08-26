@@ -5,6 +5,7 @@ import Papa from 'papaparse';
 import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
 import AdminHeader from '@/components/admin/AdminHeader';
 import LeadListSheet from '@/components/admin/outbound/LeadListSheet';
+import FacebookButton from '@/components/admin/acquisition/FacebookButton';
 import Modal from '@/components/ui/Modal';
 import { NICHES, NICHE_LABELS, LEAD_STATUSES, STATUS_LABELS, formatPhone, fmtMoney, phoneKey, isEmail } from '@/lib/outbound';
 import type { Niche, OutboundLead, Rep } from '@/lib/outbound';
@@ -169,6 +170,9 @@ export default function OutboundLeads() {
   // "Never worked" is the best list on the floor, and a sixth mutually exclusive
   // chip would have made that combination unreachable.
   const [untouchedOnly, setUntouchedOnly] = useState(false);
+  // The DM filter. Stacks like "Never worked": '' shows everyone, 'todo' hides
+  // leads already messaged on Facebook, 'sent' shows only those.
+  const [dmFilter, setDmFilter] = useState<'' | 'todo' | 'sent'>('');
   const [view, setView] = useState<ViewKey>('all');
   const [sort, setSort] = useState<SortKey>('created_at');
   const [dir, setDir] = useState<'asc' | 'desc'>('desc');
@@ -319,7 +323,19 @@ export default function OutboundLeads() {
 
   // The untouched filter stacks between the two: site-chip counts reflect it when
   // it is on, and its own count reflects the site chip you already picked.
-  const scoped = useMemo(() => (untouchedOnly ? base.filter(neverWorked) : base), [base, untouchedOnly]);
+  const scoped = useMemo(() => {
+    let rows = untouchedOnly ? base.filter(neverWorked) : base;
+    if (dmFilter === 'todo') rows = rows.filter((l) => !l.last_dm_at);
+    if (dmFilter === 'sent') rows = rows.filter((l) => !!l.last_dm_at);
+    return rows;
+  }, [base, untouchedOnly, dmFilter]);
+  const dmCounts = useMemo(() => {
+    const pool = untouchedOnly ? base.filter(neverWorked) : base;
+    let sent = 0;
+    for (const l of pool) if (matchesView(l, view) && l.last_dm_at) sent++;
+    const all = pool.reduce((n, l) => (matchesView(l, view) ? n + 1 : n), 0);
+    return { todo: all - sent, sent };
+  }, [base, untouchedOnly, view]);
   const untouchedCount = useMemo(
     () => base.reduce((n, l) => (matchesView(l, view) && neverWorked(l) ? n + 1 : n), 0),
     [base, view],
@@ -467,6 +483,24 @@ export default function OutboundLeads() {
     } catch (e) {
       setLeads(before);
       push(e instanceof Error ? e.message : 'Update failed.', 'error');
+    }
+  };
+
+  /**
+   * The Facebook DM stamp. Same endpoint the Acquisition screen uses, same
+   * table, so a lead stamped here is stamped there. The row updates in place;
+   * reloading the whole floor for one click is what makes the page heavy.
+   */
+  const stampDm = async (l: OutboundLead, undo = false) => {
+    const before = leads;
+    const n = undo ? Math.max(0, (l.dm_count ?? 0) - 1) : (l.dm_count ?? 0) + 1;
+    setLeads((ls) => ls.map((x) => (x.id === l.id ? { ...x, dm_count: n, last_dm_at: undo ? (n === 0 ? null : x.last_dm_at) : new Date().toISOString() } : x)));
+    try {
+      await api('/api/admin/acquisition/prospects', { method: 'POST', body: JSON.stringify({ action: undo ? 'undo-dm' : 'dm-sent', ids: [l.id] }) });
+      push(undo ? 'DM stamp undone.' : `DM sent stamped on ${l.business_name}.`);
+    } catch (e) {
+      setLeads(before);
+      push(e instanceof Error ? e.message : 'Could not stamp the DM.', 'error');
     }
   };
 
@@ -647,6 +681,36 @@ export default function OutboundLeads() {
             >
               ◦ Never worked
               <span className={`ml-1.5 tabular-nums ${untouchedOnly ? 'text-[#b58a2a]' : 'text-[#1a1815]/40'}`}>{untouchedCount}</span>
+            </button>
+
+            {/* The DM filter. "No website + Not DM'd" is the Facebook worklist;
+                "DM'd" is the follow-up list. Facebook blue so it reads as its own thing. */}
+            <span className="w-px self-stretch bg-[#1a1815]/15 mx-1" aria-hidden />
+            <button
+              onClick={() => setDmFilter((v) => (v === 'todo' ? '' : 'todo'))}
+              aria-pressed={dmFilter === 'todo'}
+              title="Hide leads you have already messaged on Facebook. Stacks on top of the view you picked."
+              className={`px-3 py-1.5 rounded-lg border-2 font-oswald uppercase tracking-[0.08em] text-[11px] transition-colors ${
+                dmFilter === 'todo'
+                  ? 'bg-[#1877F2] text-white border-[#1a1815] shadow-[2px_2px_0_0_#1a1815]'
+                  : 'bg-white text-[#1a1815]/70 border-[#1a1815]/20 hover:border-[#1877F2] hover:text-[#1a1815]'
+              }`}
+            >
+              ◦ Not DM&apos;d
+              <span className={`ml-1.5 tabular-nums ${dmFilter === 'todo' ? 'text-white/70' : 'text-[#1a1815]/40'}`}>{dmCounts.todo}</span>
+            </button>
+            <button
+              onClick={() => setDmFilter((v) => (v === 'sent' ? '' : 'sent'))}
+              aria-pressed={dmFilter === 'sent'}
+              title="Only leads you have messaged on Facebook."
+              className={`px-3 py-1.5 rounded-lg border-2 font-oswald uppercase tracking-[0.08em] text-[11px] transition-colors ${
+                dmFilter === 'sent'
+                  ? 'bg-[#1877F2] text-white border-[#1a1815] shadow-[2px_2px_0_0_#1a1815]'
+                  : 'bg-white text-[#1a1815]/70 border-[#1a1815]/20 hover:border-[#1877F2] hover:text-[#1a1815]'
+              }`}
+            >
+              ✓ DM&apos;d
+              <span className={`ml-1.5 tabular-nums ${dmFilter === 'sent' ? 'text-white/70' : 'text-[#1a1815]/40'}`}>{dmCounts.sent}</span>
             </button>
           </div>
           <div className="flex flex-wrap items-center gap-2.5">
@@ -869,6 +933,25 @@ export default function OutboundLeads() {
                     </td>
                     <td className="px-3 py-2.5">
                       <div className="flex items-center justify-end gap-1.5">
+                        <FacebookButton lead={l} />
+                        {l.last_dm_at ? (
+                          <button
+                            className="rounded-lg border-2 border-[#3f5d34] bg-[#3f5d34]/10 px-2 py-1 text-[11px] font-oswald font-semibold uppercase tracking-[0.08em] text-[#3f5d34] whitespace-nowrap"
+                            title={`DM sent ${new Date(l.last_dm_at).toLocaleDateString()}${(l.dm_count ?? 0) > 1 ? `, ${l.dm_count} total` : ''}. Click to stamp another, right-click to undo.`}
+                            onClick={() => void stampDm(l)}
+                            onContextMenu={(e) => { e.preventDefault(); void stampDm(l, true); }}
+                          >
+                            ✓ DM{(l.dm_count ?? 0) > 1 ? ` ×${l.dm_count}` : ''}
+                          </button>
+                        ) : (
+                          <button
+                            className="rounded-lg border-2 border-dashed border-[#1a1815]/40 bg-white px-2 py-1 text-[11px] font-oswald font-semibold uppercase tracking-[0.08em] text-[#1a1815]/70 whitespace-nowrap hover:border-[#1a1815] hover:bg-[#f7b32b]/30"
+                            title="Stamp this lead as messaged on Facebook. It drops off the Not DM'd list."
+                            onClick={() => void stampDm(l)}
+                          >
+                            DM sent
+                          </button>
+                        )}
                         <Link href={`/admin/outbound/call/${l.id}`} className={`${btnPrimary} !px-3 !py-1.5 !text-xs`}>Call</Link>
                         <button onClick={() => void removeLead(l)} className="text-[#1a1815]/30 hover:text-[#a03123] transition-colors px-1" aria-label={`Delete ${l.business_name}`}>
                           ✕

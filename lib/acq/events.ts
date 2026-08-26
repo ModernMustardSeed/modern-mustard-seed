@@ -48,6 +48,7 @@ export type EventType =
   | 'needs_human'
   | 'reply'
   | 'note'
+  | 'dm_sent'
   | 'stage_changed';
 
 export async function recordEvent(
