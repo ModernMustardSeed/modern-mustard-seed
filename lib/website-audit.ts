@@ -368,7 +368,10 @@ function extractSignals(url: URL, html: string, status: number): Signals {
  * spawned CLI's failures actually happen.
  */
 
-export async function runWebsiteAudit(rawUrl: string, opts: { facts?: SiteFacts | null } = {}): Promise<AuditResult> {
+export async function runWebsiteAudit(
+  rawUrl: string,
+  opts: { facts?: SiteFacts | null; source?: { table: string; id: string } | null } = {},
+): Promise<AuditResult> {
   let raw = (rawUrl ?? '').trim();
   if (!raw) return { ok: false, status: 400, error: 'Drop your website URL.' };
   if (!/^https?:\/\//i.test(raw)) raw = `https://${raw}`;
@@ -497,6 +500,9 @@ Return the JSON report.`;
       // up, and a walk to the kettle, and narrow enough that a deliberate
       // re-grade later still reads the site for real.
       collectWithinMs: 15 * 60_000,
+      // So a late answer can be filed onto the lead it was run for, without
+      // anyone clicking again. See supabase/migrations/113_llm_jobs_source.sql.
+      source: opts.source ?? null,
     });
 
     return {
