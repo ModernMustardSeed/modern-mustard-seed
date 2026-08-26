@@ -26,6 +26,7 @@
  * Related: `supabase/migrations/092_llm_jobs.sql`, `lib/llm.ts`.
  */
 import { createClient } from '@supabase/supabase-js';
+import { deliverFinishedAudits } from '../lib/audit-delivery.mjs';
 import { readFileSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -142,6 +143,10 @@ async function runOne() {
       await finish(job.id, { status: 'done', result_text: text, error: null });
     }
     log(`done ${job.label} in ${Math.round((Date.now() - t0) / 1000)}s`);
+    // An answer that nobody comes back for is an answer nobody gets. This is
+    // the step that puts a finished website audit onto its lead whether or not
+    // the request that asked for it is still waiting. See lib/audit-delivery.mjs.
+    if (String(job.label).startsWith('audit ')) await deliverFinishedAudits(sb, log);
   } catch (err) {
     const msg = String(err?.message ?? err).slice(0, 2000);
 
@@ -165,6 +170,8 @@ async function main() {
     const deadline = Date.now() + DRAIN_BUDGET_MS;
     let n = 0;
     await beat();
+    // Anything answered while every drainer was down is still undelivered.
+    await deliverFinishedAudits(sb, log);
     while (Date.now() < deadline) {
       if (!(await runOne())) break;
       n += 1;
@@ -174,6 +181,7 @@ async function main() {
   }
 
   log(`resident worker ${WORKER} up, polling every ${POLL_MS}ms`);
+  await deliverFinishedAudits(sb, log);
   let stopping = false;
   const stop = () => { stopping = true; log('shutting down after the current job'); };
   process.once('SIGINT', stop);
