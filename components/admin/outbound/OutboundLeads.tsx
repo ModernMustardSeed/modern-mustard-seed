@@ -4,10 +4,11 @@ import Link from 'next/link';
 import Papa from 'papaparse';
 import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
 import AdminHeader from '@/components/admin/AdminHeader';
+import LeadListSheet from '@/components/admin/outbound/LeadListSheet';
 import Modal from '@/components/ui/Modal';
 import { NICHES, NICHE_LABELS, LEAD_STATUSES, STATUS_LABELS, formatPhone, fmtMoney, phoneKey, isEmail } from '@/lib/outbound';
 import type { Niche, OutboundLead, Rep } from '@/lib/outbound';
-import { OutboundNav, BackButton, StatusChip, NicheChip, ToastHost, useToasts, api, card, btnPrimary, btnGhost, inputCls, labelCls, eyebrow } from '@/components/admin/outbound/ui';
+import { OutboundNav, BackButton, StatusChip, NicheChip, ToastHost, useToasts, api, card, btnPrimary, btnGhost, btnSeed, inputCls, labelCls, eyebrow } from '@/components/admin/outbound/ui';
 
 type SortKey = 'business_name' | 'contact_name' | 'phone' | 'niche' | 'city' | 'status' | 'owner' | 'avg_job_value' | 'audit_score' | 'created_at';
 
@@ -192,6 +193,12 @@ export default function OutboundLeads() {
   const [scrubOpen, setScrubOpen] = useState(false);
   const [scrubbing, setScrubbing] = useState(false);
 
+  // Print / email a list. Selection is a set of ids, not a page of checkboxes, so
+  // it survives paging, sorting and a filter change: Sarah can cherry-pick across
+  // three pages and the stack is still whole when she hits the button.
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [listOpen, setListOpen] = useState(false);
+
   // Import modal
   const [importOpen, setImportOpen] = useState(false);
   const [preview, setPreview] = useState<ImportPreview | null>(null);
@@ -356,6 +363,52 @@ export default function OutboundLeads() {
     () => visible.slice(safePage * pageSize, safePage * pageSize + pageSize),
     [visible, safePage, pageSize],
   );
+
+  /** What Print or Email acts on: the ticked rows if any are ticked, in the order
+   *  they sit on screen, otherwise the whole filtered view. Ticks made under an
+   *  older filter drop out here rather than smuggling a stranger onto the page. */
+  const listLeads = useMemo(
+    () => (selected.size ? visible.filter((l) => selected.has(l.id)) : visible),
+    [visible, selected],
+  );
+
+  /** Plain English for the slice being printed, so the page says what it is. */
+  const scopeLabel = useMemo(() => {
+    const parts: string[] = [];
+    if (view !== 'all') parts.push(VIEWS.find((v) => v.key === view)?.label ?? view);
+    if (untouchedOnly) parts.push('never worked');
+    if (status) parts.push(STATUS_LABELS[status as keyof typeof STATUS_LABELS] ?? status);
+    if (niche) parts.push(NICHE_LABELS[niche as keyof typeof NICHE_LABELS] ?? niche);
+    if (owner) parts.push(repName(owner) || 'one rep');
+    if (cityF) parts.push(cityF);
+    if (stateF) parts.push(stateF);
+    if (sourceF) parts.push(SOURCE_LABELS[sourceF] ?? sourceF);
+    if (unscrubbedOnly) parts.push('DNC unscrubbed');
+    if (deferredQ.trim()) parts.push(`"${deferredQ.trim()}"`);
+    return parts.length ? parts.join(' · ') : 'the whole floor';
+  }, [view, untouchedOnly, status, niche, owner, cityF, stateF, sourceF, unscrubbedOnly, deferredQ, repName]);
+
+  // Tick boxes. The header box works the page you are looking at; "Select all"
+  // in the bar takes the entire filtered view, however many pages that is.
+  const pageIds = useMemo(() => shown.map((l) => l.id), [shown]);
+  const allPageSelected = pageIds.length > 0 && pageIds.every((id) => selected.has(id));
+  const selectedInView = useMemo(() => visible.reduce((n, l) => n + (selected.has(l.id) ? 1 : 0), 0), [visible, selected]);
+
+  const toggleOne = (id: string) => setSelected((prev) => {
+    const next = new Set(prev);
+    if (next.has(id)) next.delete(id);
+    else next.add(id);
+    return next;
+  });
+
+  const togglePage = () => setSelected((prev) => {
+    const next = new Set(prev);
+    for (const id of pageIds) {
+      if (allPageSelected) next.delete(id);
+      else next.add(id);
+    }
+    return next;
+  });
 
   /** Page moves land the rep on row one, not at the bottom of the page they just left. */
   const goToPage = useCallback((p: number) => {
@@ -533,6 +586,15 @@ export default function OutboundLeads() {
           back={<BackButton label="Back" fallback="/admin/outbound" />}
           right={
             <div className="flex items-center gap-2">
+              <button
+                onClick={() => setListOpen(true)}
+                disabled={listLeads.length === 0}
+                className={btnGhost}
+                title={selected.size ? `Print or email the ${selected.size} ticked leads.` : 'Print or email every lead in this view. Tick rows first to send only those.'}
+              >
+                Print / email list
+                <span className="ml-1.5 tabular-nums text-[#1a1815]/45">{listLeads.length.toLocaleString()}</span>
+              </button>
               <button onClick={() => setImportOpen(true)} className={btnGhost}>Import CSV</button>
               <button onClick={() => setAddOpen(true)} className={btnPrimary}>Add lead</button>
             </div>
@@ -634,12 +696,46 @@ export default function OutboundLeads() {
           </div>
         </div>
 
+        {/* Ticked rows. Only here when there is a selection to talk about, so the
+            floor stays quiet until somebody starts building a list. */}
+        {selected.size > 0 && (
+          <div className={`${card} p-3 mb-5 flex flex-wrap items-center gap-2.5 border-[#3f5d34] shadow-[5px_5px_0_0_#3f5d34]`}>
+            <span className="font-oswald uppercase tracking-[0.12em] text-sm text-[#1a1815] tabular-nums">
+              {selectedInView.toLocaleString()} ticked
+              {selectedInView !== selected.size && (
+                <span className="text-[#1a1815]/45 normal-case tracking-normal font-sans text-xs ml-1.5">
+                  ({(selected.size - selectedInView).toLocaleString()} more ticked outside this view)
+                </span>
+              )}
+            </span>
+            {selectedInView < visible.length && (
+              <button onClick={() => setSelected(new Set(visible.map((l) => l.id)))} className={`${btnGhost} !px-3 !py-1.5 !text-xs`}>
+                Tick all {visible.length.toLocaleString()}
+              </button>
+            )}
+            <button onClick={() => setSelected(new Set())} className={`${btnGhost} !px-3 !py-1.5 !text-xs`}>Clear</button>
+            <button onClick={() => setListOpen(true)} className={`${btnSeed} !px-3.5 !py-1.5 !text-xs ml-auto`}>
+              Print / email {listLeads.length.toLocaleString()}
+            </button>
+          </div>
+        )}
+
         {/* Table */}
         <div ref={tableTop} className={`${card} overflow-hidden scroll-mt-24`}>
           <div className="overflow-x-auto">
-            <table className="w-full text-sm font-sans min-w-[1060px]">
+            <table className="w-full text-sm font-sans min-w-[1100px]">
               <thead className="border-b-2 border-[#1a1815]/10 bg-[#f7f3e9]/60">
                 <tr>
+                  <th className="px-3 py-2.5 w-[36px]">
+                    <input
+                      type="checkbox"
+                      checked={allPageSelected}
+                      onChange={togglePage}
+                      className="accent-[#3f5d34] w-4 h-4 cursor-pointer align-middle"
+                      title={allPageSelected ? 'Untick this page' : 'Tick every lead on this page for a printed or emailed list'}
+                      aria-label={allPageSelected ? 'Untick this page' : 'Tick every lead on this page'}
+                    />
+                  </th>
                   {th('business_name', 'Business')}
                   {th('contact_name', 'Contact')}
                   {th('phone', 'Phone')}
@@ -655,11 +751,11 @@ export default function OutboundLeads() {
               </thead>
               <tbody>
                 {loading && (
-                  <tr><td colSpan={11} className="px-4 py-10 text-center text-[#1a1815]/40">Loading the list...</td></tr>
+                  <tr><td colSpan={12} className="px-4 py-10 text-center text-[#1a1815]/40">Loading the list...</td></tr>
                 )}
                 {!loading && visible.length === 0 && (
                   <tr>
-                    <td colSpan={11} className="px-4 py-12 text-center">
+                    <td colSpan={12} className="px-4 py-12 text-center">
                       <p className="font-oswald uppercase text-lg text-[#1a1815]/50">
                         {untouchedOnly ? 'Every lead here has been worked' : 'No leads match'}
                       </p>
@@ -672,7 +768,16 @@ export default function OutboundLeads() {
                   </tr>
                 )}
                 {shown.map((l) => (
-                  <tr key={l.id} className="border-t border-[#1a1815]/[0.07] hover:bg-[#b58a2a]/[0.05] transition-colors">
+                  <tr key={l.id} className={`border-t border-[#1a1815]/[0.07] transition-colors ${selected.has(l.id) ? 'bg-[#3f5d34]/[0.07]' : 'hover:bg-[#b58a2a]/[0.05]'}`}>
+                    <td className="px-3 py-2.5">
+                      <input
+                        type="checkbox"
+                        checked={selected.has(l.id)}
+                        onChange={() => toggleOne(l.id)}
+                        className="accent-[#3f5d34] w-4 h-4 cursor-pointer"
+                        aria-label={`Put ${l.business_name} on the printed list`}
+                      />
+                    </td>
                     <td className="px-3 py-2.5">
                       <Link href={`/admin/outbound/call/${l.id}`} className="font-semibold text-[#1a1815] hover:text-[#b58a2a] transition-colors">
                         {l.business_name}
@@ -938,6 +1043,16 @@ export default function OutboundLeads() {
           </div>
         )}
       </Modal>
+
+      {/* Onto paper, or into somebody's inbox */}
+      <LeadListSheet
+        open={listOpen}
+        onClose={() => setListOpen(false)}
+        leads={listLeads}
+        scopeLabel={selected.size ? 'the leads you ticked' : scopeLabel}
+        selectionCount={selectedInView}
+        push={push}
+      />
 
       {/* Bulk DNC scrub attestation */}
       <Modal open={scrubOpen} onClose={() => setScrubOpen(false)} eyebrow="House rule" title={`Mark ${visibleUnscrubbed.length} leads as DNC-scrubbed`} subtitle="This unlocks Mr. Mustard for the whole batch." size="sm" headerTone="dark">
