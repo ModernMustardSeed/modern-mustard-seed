@@ -276,6 +276,9 @@ export type AcqProspect = {
   phone: string;
   email: string | null;
   website: string | null;
+  /** Their Facebook page, canonical. Null is unknown, not absent. */
+  facebook_url: string | null;
+  facebook_source: 'website' | 'search' | 'hand' | null;
   niche: string;
   trade: Trade | null;
   city: string | null;

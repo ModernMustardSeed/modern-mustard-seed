@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { normalizeFacebookUrl } from '@/lib/acq/facebook';
 import { requireAcqAdmin, suppressedAddresses } from '@/lib/acq/server';
 import { timelineFor, recordEvent } from '@/lib/acq/events';
 import { getCampaign, getAcqSettings, getVariants, pickVariant } from '@/lib/acq/settings';
@@ -96,6 +97,20 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
       const patch: Record<string, unknown> = {};
       for (const k of ['business_name', 'contact_name', 'contact_title', 'email', 'phone', 'website', 'city', 'state', 'trade', 'service_area', 'assigned_to', 'rep_notes', 'needs_human']) {
         if (body[k] !== undefined) patch[k] = body[k] === '' ? null : String(body[k]).slice(0, 2000);
+      }
+      if (body.facebook_url !== undefined) {
+        // A hand paste is the strongest source there is. Anything that is not a
+        // page (a search, a post, a group) is refused rather than stored wrong.
+        const raw = String(body.facebook_url ?? '').trim();
+        if (!raw) {
+          patch.facebook_url = null;
+          patch.facebook_source = null;
+        } else {
+          const page = normalizeFacebookUrl(raw);
+          if (!page) return NextResponse.json({ error: 'That is not a Facebook page link. Paste the page URL, like https://www.facebook.com/theirpage' }, { status: 400 });
+          patch.facebook_url = page;
+          patch.facebook_source = 'hand';
+        }
       }
       if (body.lead_score !== undefined) patch.lead_score = Math.max(0, Math.min(100, Number(body.lead_score)));
       if (body.is_test !== undefined) patch.is_test = Boolean(body.is_test);

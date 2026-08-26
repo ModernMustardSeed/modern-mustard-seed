@@ -12,7 +12,7 @@ export const runtime = 'nodejs';
 export const maxDuration = 60;
 
 const LIST_COLS =
-  'id,business_name,contact_name,contact_title,phone,email,website,trade,city,state,rating,review_count,' +
+  'id,business_name,contact_name,contact_title,phone,email,website,facebook_url,facebook_source,trade,city,state,rating,review_count,' +
   'email_status,email_confidence,email_source_url,lead_score,priority,call_volume_score,missed_call_score,' +
   'acq_stage,acq_eligible,acq_ineligible_reason,email_stage,last_campaign_email_at,consent_status,consent_at,' +
   'call_stage,call_attempts,last_call_at,demo_status,demo_emailed_at,checkout_sent_at,meeting_status,' +
@@ -35,11 +35,16 @@ export async function GET(req: Request) {
   const eligible = url.searchParams.get('eligible') ?? '';
   const state = url.searchParams.get('state') ?? '';
   const source = url.searchParams.get('source') ?? '';
+  // Who can be reached how. no-email and no-site are the DM list: a lead with
+  // nothing to mail and nothing to audit still has a Facebook page.
+  const reach = url.searchParams.get('reach') ?? '';
   const sort = url.searchParams.get('sort') ?? 'lead_score';
   const dir = url.searchParams.get('dir') === 'asc';
   const page = Math.max(0, Number(url.searchParams.get('page') ?? 0));
   const size = Math.min(200, Math.max(10, Number(url.searchParams.get('size') ?? 50)));
-  const campaignOnly = url.searchParams.get('all') !== '1';
+  // The campaign only holds leads with an email (eligibility says so), so a
+  // reach filter that asks for leads WITHOUT one has to look outside it.
+  const campaignOnly = url.searchParams.get('all') !== '1' && !reach;
   const csv = url.searchParams.get('format') === 'csv';
 
   let query = db.from('outbound_leads').select(LIST_COLS, { count: 'exact' });
@@ -51,6 +56,12 @@ export async function GET(req: Request) {
   if (source) query = query.eq('source', source);
   if (eligible === '1') query = query.eq('acq_eligible', true);
   if (eligible === '0') query = query.eq('acq_eligible', false);
+  // A Facebook page used as the website is not a website.
+  const NO_SITE = 'website.is.null,website.ilike.%facebook.com%';
+  if (reach === 'no-email') query = query.is('email', null);
+  else if (reach === 'no-site') query = query.or(NO_SITE);
+  else if (reach === 'dm') query = query.or(`email.is.null,${NO_SITE}`);
+  else if (reach === 'fb-known') query = query.not('facebook_url', 'is', null);
   if (q) {
     const safe = q.replace(/[%,()]/g, ' ');
     query = query.or(`business_name.ilike.%${safe}%,email.ilike.%${safe}%,city.ilike.%${safe}%,website.ilike.%${safe}%,phone.ilike.%${safe}%`);
@@ -200,7 +211,7 @@ export async function POST(req: Request) {
 
 function toCsv(rows: AcqProspect[]): string {
   const cols = [
-    'business_name', 'trade', 'city', 'state', 'website', 'email', 'email_status', 'email_confidence',
+    'business_name', 'trade', 'city', 'state', 'website', 'facebook_url', 'email', 'email_status', 'email_confidence',
     'email_source_url', 'phone', 'contact_name', 'contact_title', 'rating', 'review_count', 'lead_score',
     'priority', 'acq_stage', 'acq_eligible', 'acq_ineligible_reason', 'email_stage', 'consent_status',
     'call_stage', 'demo_status', 'checkout_sent_at', 'client_status', 'source', 'created_at',
