@@ -5,6 +5,8 @@ import { useCallback, useEffect, useState } from 'react';
 import AdminHeader from '@/components/admin/AdminHeader';
 import { AcqNav, Chip, api, card, btnPrimary, btnGhost, btnDanger, inputCls, labelCls, timeAgo } from '@/components/admin/acquisition/ui';
 import RowBuild from '@/components/admin/acquisition/RowBuild';
+import FacebookButton from '@/components/admin/acquisition/FacebookButton';
+import { hasRealWebsite } from '@/lib/acq/facebook';
 import type { RowSuite } from '@/components/admin/acquisition/RowBuild';
 
 type Row = {
@@ -14,6 +16,7 @@ type Row = {
   phone: string;
   email: string | null;
   website: string | null;
+  facebook_url: string | null;
   trade: string | null;
   city: string | null;
   state: string | null;
@@ -45,6 +48,16 @@ type Row = {
 const TRADES = ['', 'hvac', 'plumbing', 'roofing', 'other'];
 const STAGES = ['', 'prospect', 'emailed', 'consented', 'called', 'demoed', 'forged', 'demo_sent', 'meeting', 'client', 'lost'];
 const EMAIL_STATUSES = ['', 'verified', 'likely', 'public', 'risky', 'invalid', 'unknown'];
+// How a lead can be reached. The DM options look outside the campaign on their
+// own, because the campaign only ever holds leads that have an email.
+const REACH = ['', 'dm', 'no-email', 'no-site', 'fb-known'];
+const REACH_LABELS: Record<string, string> = {
+  '': 'Everyone',
+  dm: 'DM list: no email or no website',
+  'no-email': 'No email',
+  'no-site': 'No website',
+  'fb-known': 'Facebook page on file',
+};
 
 export default function Prospects() {
   const [rows, setRows] = useState<Row[]>([]);
@@ -61,6 +74,7 @@ export default function Prospects() {
   const [stage, setStage] = useState('');
   const [emailStatus, setEmailStatus] = useState('');
   const [eligible, setEligible] = useState('');
+  const [reach, setReach] = useState('');
   const [all, setAll] = useState(false);
   const [sort, setSort] = useState('lead_score');
 
@@ -71,9 +85,10 @@ export default function Prospects() {
     if (stage) p.set('stage', stage);
     if (emailStatus) p.set('email_status', emailStatus);
     if (eligible) p.set('eligible', eligible);
+    if (reach) p.set('reach', reach);
     if (all) p.set('all', '1');
     return p;
-  }, [page, size, sort, q, trade, stage, emailStatus, eligible, all]);
+  }, [page, size, sort, q, trade, stage, emailStatus, eligible, reach, all]);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -130,7 +145,7 @@ export default function Prospects() {
         <AcqNav active="prospects" />
 
         <div className={`${card} p-4 mb-4`}>
-          <div className="grid gap-3 md:grid-cols-6">
+          <div className="grid gap-3 md:grid-cols-7">
             <div className="md:col-span-2">
               <label className={labelCls}>Search</label>
               <input
@@ -153,11 +168,12 @@ export default function Prospects() {
               labels={{ '': 'Any', '1': 'Campaign ready', '0': 'Held back' }}
               onChange={(v) => { setPage(0); setEligible(v); }}
             />
+            <Select label="Reach" value={reach} options={REACH} labels={REACH_LABELS} onChange={(v) => { setPage(0); setReach(v); }} />
           </div>
           <div className="mt-3 flex flex-wrap items-center gap-2">
             <label className="flex items-center gap-1.5 text-xs text-[#161616]/65">
               <input type="checkbox" checked={all} onChange={(e) => { setPage(0); setAll(e.target.checked); }} className="accent-[#F5B700]" />
-              Include prospects outside the campaign
+              Include prospects outside the campaign{reach ? ' (always on for a reach filter)' : ''}
             </label>
             <span className="w-px h-4 bg-[#161616]/15" />
             <Select label="" inline value={sort} options={['lead_score', 'created_at', 'updated_at', 'business_name', 'review_count', 'email_confidence']} onChange={setSort} />
@@ -206,6 +222,7 @@ export default function Prospects() {
                 <Th>Trade</Th>
                 <Th>Where</Th>
                 <Th>Email</Th>
+                <Th>Facebook</Th>
                 <Th className="text-right">Reviews</Th>
                 <Th className="text-right">Score</Th>
                 <Th>Stage</Th>
@@ -217,12 +234,12 @@ export default function Prospects() {
             <tbody>
               {loading && (
                 <tr>
-                  <td colSpan={11} className="px-4 py-8 text-center text-[#161616]/60">Loading...</td>
+                  <td colSpan={12} className="px-4 py-8 text-center text-[#161616]/60">Loading...</td>
                 </tr>
               )}
               {!loading && rows.length === 0 && (
                 <tr>
-                  <td colSpan={11} className="px-4 py-8 text-center text-[#161616]/60">
+                  <td colSpan={12} className="px-4 py-8 text-center text-[#161616]/60">
                     Nothing matches. Try clearing the filters, or run the Lead Finder.
                   </td>
                 </tr>
@@ -239,6 +256,8 @@ export default function Prospects() {
                     <div className="text-[11px] text-[#161616]/65 truncate max-w-[22rem]">
                       {r.contact_name ? `${r.contact_name} · ` : ''}
                       {r.email ?? 'no email'}
+                      {' · '}
+                      {hasRealWebsite(r) ? 'has a site' : 'no website'}
                     </div>
                   </Td>
                   <Td>{r.trade ? <Chip label={r.trade} /> : <span className="text-[#161616]/65">—</span>}</Td>
@@ -248,6 +267,9 @@ export default function Prospects() {
                   </Td>
                   <Td>
                     <EmailChip status={r.email_status} confidence={r.email_confidence} />
+                  </Td>
+                  <Td>
+                    <FacebookButton lead={r} />
                   </Td>
                   <Td className="text-right font-mono text-[12px] tabular-nums text-[#161616]/70">
                     {r.review_count?.toLocaleString() ?? '—'}

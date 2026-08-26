@@ -6,6 +6,7 @@ import AdminHeader from '@/components/admin/AdminHeader';
 import EmailThread from '@/components/admin/EmailThread';
 import DripButton from '@/components/admin/DripButton';
 import { AcqNav, Chip, Section, Stat, ToastHost, api, card, cardFlat, btnPrimary, btnGhost, btnDanger, inputCls, labelCls, eyebrow, timeAgo, useToasts } from '@/components/admin/acquisition/ui';
+import FacebookButton from '@/components/admin/acquisition/FacebookButton';
 import PersonalVideoCard from '@/components/admin/acquisition/PersonalVideoCard';
 
 type Lead = Record<string, unknown> & {
@@ -16,6 +17,8 @@ type Lead = Record<string, unknown> & {
   email: string | null;
   phone: string;
   website: string | null;
+  facebook_url: string | null;
+  facebook_source: string | null;
   trade: string | null;
   city: string | null;
   state: string | null;
@@ -232,6 +235,7 @@ export default function ProspectDetail({ id }: { id: string }) {
                 <Fact label="Phone" value={l.phone} />
                 <Fact label="Email" value={l.email ?? '—'} sub={l.email_status ? `${l.email_status}${l.email_confidence ? ` · confidence ${l.email_confidence}` : ''}` : undefined} href={l.email_source_url ?? undefined} hrefLabel="source" />
                 <Fact label="Website" value={l.website ?? '—'} href={l.website ?? undefined} />
+                <FacebookFact key={l.facebook_url ?? ''} lead={l} busy={busy === 'patch'} onSave={(facebook_url) => void act('patch', { facebook_url })} />
                 <Fact label="Reviews" value={l.review_count ? `${l.review_count.toLocaleString()}${l.rating ? ` at ${l.rating} stars` : ''}` : '—'} />
                 <Fact label="Service area" value={l.service_area ?? '—'} />
                 <Fact label="After hours" value={l.open_24_7 ? 'Advertises 24/7' : l.emergency_service ? 'Advertises emergency service' : '—'} />
@@ -538,6 +542,55 @@ export default function ProspectDetail({ id }: { id: string }) {
         </div>
       </main>
       <ToastHost toasts={toasts} />
+    </div>
+  );
+}
+
+/**
+ * Their Facebook page: the button that opens it, and a paste box so the exact
+ * page lands on the record the first time it is found by hand. The search
+ * finder never overwrites a hand paste.
+ */
+function FacebookFact({
+  lead,
+  busy,
+  onSave,
+}: {
+  lead: { business_name: string; city: string | null; state: string | null; website: string | null; facebook_url: string | null; facebook_source: string | null };
+  busy: boolean;
+  onSave: (url: string) => void;
+}) {
+  const [draft, setDraft] = useState(lead.facebook_url ?? '');
+
+  const dirty = draft.trim() !== (lead.facebook_url ?? '');
+  return (
+    <div className="flex gap-2 sm:col-span-2">
+      <dt className="w-28 shrink-0 text-[#161616]/60">Facebook</dt>
+      <dd className="min-w-0 flex-1">
+        <div className="flex flex-wrap items-center gap-2">
+          <FacebookButton lead={lead} size="md" />
+          {lead.facebook_url ? (
+            <span className="text-[11px] text-[#161616]/60 break-all">
+              {lead.facebook_url}
+              {lead.facebook_source ? ` · ${lead.facebook_source === 'hand' ? 'pasted by hand' : lead.facebook_source === 'search' ? 'found by search' : 'was their website'}` : ''}
+            </span>
+          ) : (
+            <span className="text-[11px] text-[#161616]/60">Not on file. The button opens Facebook search for them; paste the page here once you find it.</span>
+          )}
+        </div>
+        <div className="mt-2 flex gap-2">
+          <input
+            className={`${inputCls} !py-1.5 text-xs`}
+            value={draft}
+            placeholder="https://www.facebook.com/theirpage"
+            onChange={(e) => setDraft(e.target.value)}
+            onKeyDown={(e) => { if (e.key === 'Enter' && dirty && !busy) onSave(draft.trim()); }}
+          />
+          <button className={`${btnGhost} !py-1.5 !text-xs`} disabled={!dirty || busy} onClick={() => onSave(draft.trim())}>
+            {busy ? 'Saving…' : lead.facebook_url && !draft.trim() ? 'Clear' : 'Save'}
+          </button>
+        </div>
+      </dd>
     </div>
   );
 }
