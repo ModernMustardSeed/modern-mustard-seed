@@ -12,7 +12,7 @@ export const runtime = 'nodejs';
 export const maxDuration = 60;
 
 const LIST_COLS =
-  'id,business_name,contact_name,contact_title,phone,email,website,facebook_url,facebook_source,trade,city,state,rating,review_count,' +
+  'id,business_name,contact_name,contact_title,phone,email,website,facebook_url,facebook_source,last_dm_at,dm_count,trade,city,state,rating,review_count,' +
   'email_status,email_confidence,email_source_url,lead_score,priority,call_volume_score,missed_call_score,' +
   'acq_stage,acq_eligible,acq_ineligible_reason,email_stage,last_campaign_email_at,consent_status,consent_at,' +
   'call_stage,call_attempts,last_call_at,demo_status,demo_emailed_at,checkout_sent_at,meeting_status,' +
@@ -62,6 +62,10 @@ export async function GET(req: Request) {
   else if (reach === 'no-site') query = query.or(NO_SITE);
   else if (reach === 'dm') query = query.or(`email.is.null,${NO_SITE}`);
   else if (reach === 'fb-known') query = query.not('facebook_url', 'is', null);
+  // The worked list: the DM targets minus the ones already messaged, and the
+  // ones already messaged so a second touch is a filter away.
+  else if (reach === 'dm-todo') query = query.or(`email.is.null,${NO_SITE}`).is('last_dm_at', null);
+  else if (reach === 'dm-sent') query = query.not('last_dm_at', 'is', null);
   if (q) {
     const safe = q.replace(/[%,()]/g, ' ');
     query = query.or(`business_name.ilike.%${safe}%,email.ilike.%${safe}%,city.ilike.%${safe}%,website.ilike.%${safe}%,phone.ilike.%${safe}%`);
@@ -184,6 +188,28 @@ export async function POST(req: Request) {
         .in('id', ids);
       break;
     }
+    case 'dm-sent': {
+      // The stamp. One per lead per click, in the ledger and on the row, so the
+      // DM list can hide what is done and the timeline shows when it happened.
+      const { data } = await db.from('outbound_leads').select('id,business_name,dm_count,facebook_url').in('id', ids);
+      for (const l of ((data ?? []) as { id: string; business_name: string; dm_count: number | null; facebook_url: string | null }[])) {
+        await db.from('outbound_leads').update({ last_dm_at: stamp, dm_count: (l.dm_count ?? 0) + 1 }).eq('id', l.id);
+        await recordEvent(db, { leadId: l.id, type: 'dm_sent', label: `Facebook DM sent by hand${l.facebook_url ? ` to ${l.facebook_url}` : ''}`, detail: { facebook_url: l.facebook_url } });
+        affected++;
+      }
+      break;
+    }
+    case 'undo-dm': {
+      // A misclick. Takes one off the count and clears the stamp when it hits zero.
+      const { data } = await db.from('outbound_leads').select('id,dm_count').in('id', ids);
+      for (const l of ((data ?? []) as { id: string; dm_count: number | null }[])) {
+        const n = Math.max(0, (l.dm_count ?? 0) - 1);
+        await db.from('outbound_leads').update({ dm_count: n, ...(n === 0 ? { last_dm_at: null } : {}) }).eq('id', l.id);
+        await recordEvent(db, { leadId: l.id, type: 'note', label: 'DM stamp undone (misclick).' });
+        affected++;
+      }
+      break;
+    }
     case 'mark-test': {
       await db.from('outbound_leads').update({ is_test: body.value !== false, acq_eligible: false, acq_ineligible_reason: 'Marked as a test prospect.' }).in('id', ids);
       affected = ids.length;
@@ -211,7 +237,7 @@ export async function POST(req: Request) {
 
 function toCsv(rows: AcqProspect[]): string {
   const cols = [
-    'business_name', 'trade', 'city', 'state', 'website', 'facebook_url', 'email', 'email_status', 'email_confidence',
+    'business_name', 'trade', 'city', 'state', 'website', 'facebook_url', 'last_dm_at', 'dm_count', 'email', 'email_status', 'email_confidence',
     'email_source_url', 'phone', 'contact_name', 'contact_title', 'rating', 'review_count', 'lead_score',
     'priority', 'acq_stage', 'acq_eligible', 'acq_ineligible_reason', 'email_stage', 'consent_status',
     'call_stage', 'demo_status', 'checkout_sent_at', 'client_status', 'source', 'created_at',

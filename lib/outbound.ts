@@ -91,6 +91,10 @@ export type OutboundLead = {
   phone: string;
   email: string | null;
   website: string | null;
+  /** Their Facebook page when known. The DM stamp: when Sarah last messaged them by hand, and how many times. */
+  facebook_url: string | null;
+  last_dm_at: string | null;
+  dm_count: number;
   niche: Niche;
   city: string | null;
   state: string | null;

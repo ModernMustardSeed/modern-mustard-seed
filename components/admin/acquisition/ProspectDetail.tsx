@@ -19,6 +19,8 @@ type Lead = Record<string, unknown> & {
   website: string | null;
   facebook_url: string | null;
   facebook_source: string | null;
+  last_dm_at: string | null;
+  dm_count: number;
   trade: string | null;
   city: string | null;
   state: string | null;
@@ -235,7 +237,7 @@ export default function ProspectDetail({ id }: { id: string }) {
                 <Fact label="Phone" value={l.phone} />
                 <Fact label="Email" value={l.email ?? '—'} sub={l.email_status ? `${l.email_status}${l.email_confidence ? ` · confidence ${l.email_confidence}` : ''}` : undefined} href={l.email_source_url ?? undefined} hrefLabel="source" />
                 <Fact label="Website" value={l.website ?? '—'} href={l.website ?? undefined} />
-                <FacebookFact key={l.facebook_url ?? ''} lead={l} busy={busy === 'patch'} onSave={(facebook_url) => void act('patch', { facebook_url })} />
+                <FacebookFact key={l.facebook_url ?? ''} lead={l} busy={busy === 'patch'} onSave={(facebook_url) => void act('patch', { facebook_url })} onDm={(undo) => void act(undo ? 'undo-dm' : 'dm-sent')} dmBusy={busy === 'dm-sent' || busy === 'undo-dm'} />
                 <Fact label="Reviews" value={l.review_count ? `${l.review_count.toLocaleString()}${l.rating ? ` at ${l.rating} stars` : ''}` : '—'} />
                 <Fact label="Service area" value={l.service_area ?? '—'} />
                 <Fact label="After hours" value={l.open_24_7 ? 'Advertises 24/7' : l.emergency_service ? 'Advertises emergency service' : '—'} />
@@ -555,10 +557,14 @@ function FacebookFact({
   lead,
   busy,
   onSave,
+  onDm,
+  dmBusy,
 }: {
-  lead: { business_name: string; city: string | null; state: string | null; website: string | null; facebook_url: string | null; facebook_source: string | null };
+  lead: { business_name: string; city: string | null; state: string | null; website: string | null; facebook_url: string | null; facebook_source: string | null; last_dm_at: string | null; dm_count: number };
   busy: boolean;
   onSave: (url: string) => void;
+  onDm: (undo: boolean) => void;
+  dmBusy: boolean;
 }) {
   const [draft, setDraft] = useState(lead.facebook_url ?? '');
 
@@ -569,6 +575,16 @@ function FacebookFact({
       <dd className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-2">
           <FacebookButton lead={lead} size="md" />
+          <button className={`${btnPrimary} !py-2 !text-xs`} disabled={dmBusy} onClick={() => onDm(false)}>
+            {dmBusy ? 'Saving…' : lead.last_dm_at ? 'DM sent again' : 'DM sent'}
+          </button>
+          {lead.last_dm_at && (
+            <span className="text-[11px] text-[#3f5d34] font-semibold">
+              ✓ DM sent {timeAgo(lead.last_dm_at)}{lead.dm_count > 1 ? `, ${lead.dm_count} total` : ''}
+              {' · '}
+              <button className="underline font-normal text-[#161616]/60" disabled={dmBusy} onClick={() => onDm(true)}>undo</button>
+            </span>
+          )}
           {lead.facebook_url ? (
             <span className="text-[11px] text-[#161616]/60 break-all">
               {lead.facebook_url}

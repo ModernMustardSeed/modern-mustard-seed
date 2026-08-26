@@ -278,7 +278,10 @@ export type AcqProspect = {
   website: string | null;
   /** Their Facebook page, canonical. Null is unknown, not absent. */
   facebook_url: string | null;
-  facebook_source: 'website' | 'search' | 'hand' | null;
+  facebook_source: 'website' | 'search' | 'hand' | 'none' | null;
+  /** The Facebook DM stamp. Null means never messaged by hand. */
+  last_dm_at: string | null;
+  dm_count: number;
   niche: string;
   trade: Trade | null;
   city: string | null;

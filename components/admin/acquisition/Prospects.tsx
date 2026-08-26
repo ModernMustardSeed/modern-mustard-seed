@@ -17,6 +17,8 @@ type Row = {
   email: string | null;
   website: string | null;
   facebook_url: string | null;
+  last_dm_at: string | null;
+  dm_count: number;
   trade: string | null;
   city: string | null;
   state: string | null;
@@ -50,9 +52,11 @@ const STAGES = ['', 'prospect', 'emailed', 'consented', 'called', 'demoed', 'for
 const EMAIL_STATUSES = ['', 'verified', 'likely', 'public', 'risky', 'invalid', 'unknown'];
 // How a lead can be reached. The DM options look outside the campaign on their
 // own, because the campaign only ever holds leads that have an email.
-const REACH = ['', 'dm', 'no-email', 'no-site', 'fb-known'];
+const REACH = ['', 'dm-todo', 'dm-sent', 'dm', 'no-email', 'no-site', 'fb-known'];
 const REACH_LABELS: Record<string, string> = {
   '': 'Everyone',
+  'dm-todo': 'DM list, not yet messaged',
+  'dm-sent': 'DM sent',
   dm: 'DM list: no email or no website',
   'no-email': 'No email',
   'no-site': 'No website',
@@ -117,6 +121,17 @@ export default function Prospects() {
   const toggleAll = () => {
     if (selected.size === rows.length) setSelected(new Set());
     else setSelected(new Set(rows.map((r) => r.id)));
+  };
+
+  /** One row's stamp, no selection needed. */
+  const stampDm = async (id: string, undo = false) => {
+    setNotice('');
+    try {
+      await api('/api/admin/acquisition/prospects', { method: 'POST', body: JSON.stringify({ action: undo ? 'undo-dm' : 'dm-sent', ids: [id] }) });
+      await load();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'That did not work.');
+    }
   };
 
   const bulk = async (action: string, extra: Record<string, unknown> = {}) => {
@@ -189,6 +204,7 @@ export default function Prospects() {
             <span className="font-oswald text-sm font-bold uppercase tracking-[0.1em]">{selected.size} selected</span>
             <button className={btnGhost} onClick={() => void bulk('assign-campaign')}>Add to campaign</button>
             <button className={btnGhost} onClick={() => void bulk('queue-email')}>Queue next email</button>
+            <button className={btnGhost} onClick={() => void bulk('dm-sent')}>Mark DM sent</button>
             <button className={btnGhost} onClick={() => void bulk('pause')}>Pause</button>
             <button className={btnGhost} onClick={() => void bulk('resume')}>Resume</button>
             <button className={btnGhost} onClick={() => void bulk('mark-test', { value: true })}>Mark as test</button>
@@ -269,7 +285,27 @@ export default function Prospects() {
                     <EmailChip status={r.email_status} confidence={r.email_confidence} />
                   </Td>
                   <Td>
-                    <FacebookButton lead={r} />
+                    <div className="flex items-center gap-1.5">
+                      <FacebookButton lead={r} />
+                      {r.last_dm_at ? (
+                        <button
+                          className="rounded-lg border-2 border-[#3f5d34] bg-[#3f5d34]/10 px-2 py-1 text-[11px] font-oswald font-semibold uppercase tracking-[0.08em] text-[#3f5d34] whitespace-nowrap"
+                          title={`DM sent ${timeAgo(r.last_dm_at)}${r.dm_count > 1 ? `, ${r.dm_count} total` : ''}. Click to send another, right-click to undo.`}
+                          onClick={() => void stampDm(r.id)}
+                          onContextMenu={(e) => { e.preventDefault(); void stampDm(r.id, true); }}
+                        >
+                          ✓ DM {r.dm_count > 1 ? `×${r.dm_count} ` : ''}{timeAgo(r.last_dm_at)}
+                        </button>
+                      ) : (
+                        <button
+                          className="rounded-lg border-2 border-dashed border-[#161616]/40 bg-white px-2 py-1 text-[11px] font-oswald font-semibold uppercase tracking-[0.08em] text-[#161616]/70 whitespace-nowrap hover:border-[#161616] hover:bg-[#F5B700]/30"
+                          title="Stamp this lead as messaged. It drops off the not-yet-messaged list."
+                          onClick={() => void stampDm(r.id)}
+                        >
+                          DM sent
+                        </button>
+                      )}
+                    </div>
                   </Td>
                   <Td className="text-right font-mono text-[12px] tabular-nums text-[#161616]/70">
                     {r.review_count?.toLocaleString() ?? '—'}
