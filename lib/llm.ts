@@ -103,6 +103,20 @@ export type LlmRequest = {
    * `alreadyAnswered` for why the prompt cannot be the key.
    */
   collectWithinMs?: number;
+  /**
+   * WHO THIS ANSWER IS FOR.
+   *
+   * A drainer does not need it. Delivery does. Without it a job that finishes
+   * after its request gave up is an answer belonging to nobody, which is how
+   * four graded websites sat in this table while all four leads read
+   * `audit_at = NULL`. `lib/audit-delivery.mjs` had to infer the owner from the
+   * hostname in the label; this is the fact that inference stood in for.
+   *
+   * Optional because plenty of work genuinely has no owner: the public audit
+   * page, the chat composer, anything a visitor triggers. Null means nobody is
+   * waiting, and that is a real answer rather than missing data.
+   */
+  source?: { table: string; id: string } | null;
 };
 
 /** How often to check the queue while waiting. */
@@ -129,6 +143,8 @@ async function enqueue(req: LlmRequest, schema: unknown | null): Promise<string>
       user_prompt: req.user,
       schema: schema ?? null,
       model: req.model ?? 'sonnet',
+      source_table: req.source?.table ?? null,
+      source_id: req.source?.id ?? null,
     })
     .select('id')
     .single();

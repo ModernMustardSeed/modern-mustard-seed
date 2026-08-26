@@ -146,7 +146,13 @@ export async function auditPreferringWorker(
   opts: { url: string; sourceTable?: string; sourceId?: string; waitMs?: number; facts?: SiteFacts | null },
 ): Promise<AuditOutcome> {
   const viaApi = async (): Promise<AuditOutcome> => {
-    const result = await runWebsiteAudit(opts.url, { facts: opts.facts });
+    // The owner has been passed into this function since the day it was written
+    // and, until migration 113, went no further than here: `audit_jobs` had
+    // columns for it and `llm_jobs`, which is the queue the work actually runs
+    // on now, did not. That gap is why four finished audits were never filed.
+    const source =
+      opts.sourceTable && opts.sourceId ? { table: opts.sourceTable, id: opts.sourceId } : null;
+    const result = await runWebsiteAudit(opts.url, { facts: opts.facts, source });
     return result.ok
       ? { kind: 'report', url: result.url, report: result.report, via: 'api' }
       : { kind: 'error', status: result.status, error: result.error };
