@@ -23,6 +23,7 @@ export default function Footer() {
       links: [
         { label: 'HUNDREDFOLD', href: '/hundredfold' },
         { label: 'The Talking Website', href: '/talking-website' },
+        { label: 'Brand / Rebrand', href: '/brand' },
         { label: 'The Chief', href: '/chief' },
         { label: 'Command Center', href: '/command-center' },
         { label: 'Websites', href: '/websites' },

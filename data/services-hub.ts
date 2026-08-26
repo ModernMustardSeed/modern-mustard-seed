@@ -30,6 +30,7 @@ export const DEPARTMENTS: Dept[] = [
   // Build parked 2026-08-12 (Sarah); this row points at /voice-agents now. See Navbar.tsx.
   { key: 'demo-agent', name: 'Voice Agents', tag: 'Free voice agent demo', blurb: 'Answers your calls 24/7 in a natural voice, books the job, texts you the details.', href: '/voice-agents', icon: '🎙', flagship: true },
   { key: 'command-center', name: 'Command Center', tag: 'The AI back office', blurb: 'One board: calls transcribed, website traffic, customers, reviews, and money, wired together.', href: '/command-center', icon: '⚙', flagship: true },
+  { key: 'brand', name: 'Brand / Rebrand', tag: 'Set-price brand package', blurb: 'Logo, look, mascot, site, voice agent, and the plan behind it. Designed once, live on every surface in three weeks.', href: '/brand', icon: '🎨' },
   { key: 'chief', name: 'The Chief', tag: 'Your AI chief of staff', blurb: 'Mr. Mustard runs your day: calendar, email, calls, research, and sales coaching, in voice, text, and chat.', href: '/chief', icon: '🧑‍✈️' },
   { key: 'ads', name: 'Mustard Broadcast', tag: 'We run your ads', blurb: 'We make the cinematic commercial and run the Meta and Google ads in your own account.', href: '/ads', icon: '📺' },
   { key: 'pictures', name: 'Mustard Pictures', tag: 'Free screen test', blurb: 'Your business as a real cinematic commercial, directed by our AI. Preview yours free.', href: '/pictures', icon: '🎬' },
@@ -50,9 +51,9 @@ export const GOALS: Goal[] = [
   { label: 'Stop missing calls', emoji: '📞', deptKeys: ['demo-agent', 'switchboard'], note: 'A voice agent answering day or night, on the number you already have. Multi-location? The Switchboard.' },
   { label: 'Run the whole business', emoji: '🧭', deptKeys: ['command-center', 'demo-agent', 'websites'], note: 'One command center wired to your calls, your site, and your customers.' },
   { label: 'Get my hours back', emoji: '⏳', deptKeys: ['chief', 'command-center'], note: 'An AI chief of staff who runs your calendar, email, and follow-up, with the back office behind it.' },
-  { label: 'Look professional online', emoji: '✨', deptKeys: ['websites', 'pictures'], note: 'A real website and a cinematic commercial that match.' },
+  { label: 'Look professional online', emoji: '✨', deptKeys: ['brand', 'websites', 'pictures'], note: 'A brand designed once, then a website and a commercial that wear it.' },
   { label: 'Get found by AI & Google', emoji: '🔎', deptKeys: ['geo', 'websites'], note: 'Grade your findability free, then install the signals that get you cited.' },
-  { label: 'Launch something new', emoji: '🚀', deptKeys: ['launch', 'websites', 'demo-agent'], note: 'A free launch plan, then the site and the phone line to open the doors.' },
+  { label: 'Launch something new', emoji: '🚀', deptKeys: ['launch', 'brand', 'websites', 'demo-agent'], note: 'A free launch plan, then the site and the phone line to open the doors.' },
   { label: 'Sell products online', emoji: '🛍', deptKeys: ['websites'], note: 'A custom storefront on the Full-Service Business Build. Start with a free demo.' },
   { label: 'Learn to build it myself', emoji: '🎓', deptKeys: ['mode', 'launch'], note: 'A coach that teaches you to run Claude and build the thing yourself.' },
   // 'Keep my people happy' goal re-parked with Celebrate 2026-08-20 (Sarah):
