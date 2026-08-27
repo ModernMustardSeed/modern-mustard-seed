@@ -146,7 +146,7 @@ export function draftIntro(opp: Pick<Opp, 'company' | 'title' | 'why_fit' | 'gro
         ? `I saw the ${opp.title} program at ${opp.company} and I would like to be part of it.`
         : `I saw the ${opp.title} seat at ${opp.company} and I want it.`,
     '',
-    'The short version: fifteen years selling high-ticket in person, then nine months of building for real. 65 repositories, 2,120 commits, and 20 products in production, including voice agents that take orders, send decks and start software builds while the caller is still on the line.',
+    'The short version: fifteen years of high-ticket sales and design, three years building in AI, automation and code, and the last nine months in the open: 65 repositories, 2,120 commits, and 20 products in production, including voice agents that take orders, send decks and start software builds while the caller is still on the line.',
     '',
     why ? `Why this one: ${why}` : '',
     why ? '' : '',
