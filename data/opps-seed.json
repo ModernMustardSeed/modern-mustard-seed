@@ -588,18 +588,6 @@
   "verified": true
  },
  {
-  "company": "Laminar Labs",
-  "title": "Co-founder, AI venture studio",
-  "url": "https://www.linkedin.com/jobs/view/4448028801",
-  "group": "eir",
-  "type": "EIR",
-  "pay": "Not listed. Equity, capital or service-for-equity, part time",
-  "why_fit": "Wants a domain expert with existing customer relationships worth automating; her SMB and home-services client base is the pilot customer list on day one.",
-  "source": "LinkedIn",
-  "deadline": null,
-  "verified": true
- },
- {
   "company": "ZAYNA Ventures",
   "title": "Founder in Residence, venture builder",
   "url": "https://www.linkedin.com/jobs/view/4453944914",
@@ -728,30 +716,6 @@
   "pay": "Hourly rate, amount not listed. 10 hours, one week",
   "why_fit": "A senior review of a multi-tenant TypeScript and Postgres SaaS for local service businesses, which is the Client Factory architecture.",
   "source": "arc.dev",
-  "deadline": null,
-  "verified": true
- },
- {
-  "company": "Doubling",
-  "title": "Senior engineer, own the mobile and backend stack, 1099",
-  "url": "https://news.ycombinator.com/item?id=49191343",
-  "group": "build",
-  "type": "contract",
-  "pay": "Not listed. 1099, 40 hours a week, remote US",
-  "why_fit": "A zero-to-one engineer who owns architecture and data models from scratch with direct CEO access. Apply via careers@doubling.io.",
-  "source": "Hacker News Who is Hiring, August 2026",
-  "deadline": null,
-  "verified": true
- },
- {
-  "company": "Klara Systems",
-  "title": "Technical Marketing Engineer, contract, first hire in role",
-  "url": "https://klarasystems.com/careers/technical-marketing-engineer/",
-  "group": "creative",
-  "type": "contract",
-  "pay": "Not listed",
-  "why_fit": "LLM extraction pipelines that turn engineering work into buyer-facing content, pairing agent building with fifteen years of selling to technical buyers.",
-  "source": "Hacker News Who is Hiring, August 2026",
   "deadline": null,
   "verified": true
  },
@@ -1008,42 +972,6 @@
   "verified": true
  },
  {
-  "company": "Pareto AI",
-  "title": "Expert application, software and ML data work",
-  "url": "https://pareto.ai/experts",
-  "group": "expert",
-  "type": "contract",
-  "pay": "Not listed",
-  "why_fit": "Rolling recruitment of software and ML experts rewarded on output quality, with 2,120 commits of agentic code to draw on.",
-  "source": "pareto.ai",
-  "deadline": null,
-  "verified": true
- },
- {
-  "company": "DataAnnotation",
-  "title": "AI training, coding and expert contractor roles",
-  "url": "https://www.dataannotation.tech/",
-  "group": "expert",
-  "type": "contract",
-  "pay": "$75 to $150+ per hour listed for coding roles, task based, no minimum hours",
-  "why_fit": "The coding tier pays at her floor for evaluating the TypeScript and Next.js work she ships daily.",
-  "source": "dataannotation.tech",
-  "deadline": null,
-  "verified": true
- },
- {
-  "company": "Outlier (Scale AI)",
-  "title": "Expert AI trainer, coding and STEM projects",
-  "url": "https://outlier.ai/",
-  "group": "expert",
-  "type": "contract",
-  "pay": "Not listed. Quality-based, paid weekly, no minimum hours",
-  "why_fit": "The largest-volume expert-tier coding work available; she qualifies on full-stack TypeScript with production repos as evidence.",
-  "source": "outlier.ai",
-  "deadline": null,
-  "verified": true
- },
- {
   "company": "Bland AI",
   "title": "Partner program: implementation and reseller partners",
   "url": "https://www.bland.ai/partners",
@@ -1090,18 +1018,6 @@
   "source": "deepgram.com",
   "deadline": null,
   "verified": true
- },
- {
-  "company": "Cohere",
-  "title": "Consulting and implementation partner",
-  "url": "https://cohere.com/partners/application",
-  "group": "partner",
-  "type": "partner-program",
-  "pay": "Not listed",
-  "why_fit": "Shops that customise and deploy an enterprise LLM platform for clients; her studio delivers custom LLM systems end to end.",
-  "source": "cohere.com",
-  "deadline": null,
-  "verified": false
  },
  {
   "company": "Shopify",
@@ -1188,18 +1104,6 @@
   "verified": true
  },
  {
-  "company": "OpenAI",
-  "title": "Partner network, solution provider track",
-  "url": "https://openai.com/business/partners/",
-  "group": "partner",
-  "type": "partner-program",
-  "pay": "Not listed. Co-sell and enablement",
-  "why_fit": "The solution-provider track is aimed at implementation firms with active client deployments, which matches a package-priced studio shipping agentic systems.",
-  "source": "openai.com",
-  "deadline": null,
-  "verified": true
- },
- {
   "company": "Mercor",
   "title": "Frontend engineer talent network, AI training contracts",
   "url": "https://work.mercor.com/jobs/list_AAABnHwqmLo6wvviVuRHh7T3/frontend-engineer-talent-network",
@@ -1233,6 +1137,102 @@
   "why_fit": "Concept-and-script lead for a Nordic DTC group scaling UGC-style creative; she has run her own storefront and its content end to end.",
   "source": "We Work Remotely",
   "deadline": "Closes Sep 23",
+  "verified": true
+ },
+ {
+  "company": "Celestial BI (flo)",
+  "title": "Fractional Head of Brand and Go-to-Market, AI field-service platform",
+  "url": "https://www.linkedin.com/jobs/view/fractional-head-of-brand-go-to-market-at-celestial-bi-4459839796",
+  "group": "lead",
+  "type": "fractional",
+  "pay": "Not listed. Director level, fractional contract, US",
+  "why_fit": "They want someone who has built an early-stage brand and run GTM across content, partnerships and PR for a home-services AI platform; a former Creative Director who founded an AI studio for home-services operators and built an apparel brand from zero.",
+  "source": "LinkedIn, posted Aug 27",
+  "deadline": null,
+  "verified": true
+ },
+ {
+  "company": "LinenTech (via FractionalFinders)",
+  "title": "Fractional VP Sales",
+  "url": "https://www.linkedin.com/jobs/view/fractional-vp-sales-at-fractionalfinders-4458301633",
+  "group": "lead",
+  "type": "fractional",
+  "pay": "Not listed. Part-time fractional executive, remote team leadership",
+  "why_fit": "A proven sales record, pipeline forecasting and remote team coaching for an operations SaaS: VP Sales at a title company, $3M a year personally, a team of six.",
+  "source": "LinkedIn, posted Aug 26",
+  "deadline": null,
+  "verified": true
+ },
+ {
+  "company": "Torpian",
+  "title": "Founding Revenue Growth Partner, US",
+  "url": "https://www.linkedin.com/jobs/view/founding-revenue-growth-partner-us-at-torpian-4453206600",
+  "group": "lead",
+  "type": "fractional",
+  "pay": "Monthly retainer plus revenue share plus founder equity; amounts not listed",
+  "why_fit": "Ten-plus years of consultative, build-revenue-from-zero selling with an owner mentality: fifteen years of high-ticket sales, a national trade-show circuit, and her own studio she sells for.",
+  "source": "LinkedIn",
+  "deadline": null,
+  "verified": true
+ },
+ {
+  "company": "SysCloud",
+  "title": "Fractional Event Marketing Lead, consultant",
+  "url": "https://www.linkedin.com/jobs/view/fractional-event-marketing-lead-consultant-at-syscloud-4457697848",
+  "group": "lead",
+  "type": "fractional",
+  "pay": "Not listed. Part-time, remote, initial 3 to 6 months",
+  "why_fit": "Build an event-marketing playbook and run pre, during and post-event pipeline for a B2B SaaS; she ran the national trade-show circuit for fifteen years and built the drip and outbound systems her studio uses.",
+  "source": "LinkedIn, posted Aug 26",
+  "deadline": null,
+  "verified": true
+ },
+ {
+  "company": "Mechanism Ventures",
+  "title": "Lifecycle Growth Consultant, DTC on Shopify",
+  "url": "https://www.linkedin.com/jobs/view/lifecycle-growth-consultant-at-mechanism-ventures-4442759898",
+  "group": "lead",
+  "type": "contract",
+  "pay": "$130 to $150 per hour listed, 15 to 20 hours a week, remote US",
+  "why_fit": "Explicitly wants an AI-native operator who works in Claude and owns DTC lifecycle revenue on Shopify; she runs a headless Shopify brand and ships automated email and SMS drips built in Claude Code.",
+  "source": "LinkedIn",
+  "deadline": null,
+  "verified": true
+ },
+ {
+  "company": "KENTECH Consulting (eKnowID)",
+  "title": "Fractional Growth Hacker",
+  "url": "https://www.linkedin.com/jobs/view/fractional-growth-hacker-at-kentech-4428242317",
+  "group": "lead",
+  "type": "fractional",
+  "pay": "$4,000 to $8,000 a month retainer plus 2 to 5% of attributed revenue, 6 months with renewal",
+  "why_fit": "An SMB-focused operator who builds an outbound email and reactivation engine and tracks demo bookings; she built an end-to-end cold-email acquisition machine with a governor, bounce brake and delivery telemetry.",
+  "source": "LinkedIn",
+  "deadline": null,
+  "verified": true
+ },
+ {
+  "company": "Adverse",
+  "title": "Fractional Business Development and Growth Lead",
+  "url": "https://www.linkedin.com/jobs/view/fractional-ad-tech-business-development-growth-lead-at-adverse-4458525977",
+  "group": "lead",
+  "type": "fractional",
+  "pay": "Not listed. Part time, comp grows with results, path to full time",
+  "why_fit": "A bootstrapped founder needs someone to take an MVP to its first paying customers by pitching and closing; fifteen years of closing $5,000 to $50,000 tickets and two companies taken from idea to paying customers.",
+  "source": "LinkedIn, posted Aug 25",
+  "deadline": null,
+  "verified": true
+ },
+ {
+  "company": "Engii AI",
+  "title": "Member of the Board of Advisors",
+  "url": "https://www.linkedin.com/jobs/view/member-of-the-board-of-advisors-at-engii-ai-4436073589",
+  "group": "expert",
+  "type": "advisory",
+  "pay": "Sweat equity with optional angel participation, 1 to 2 hours a month",
+  "why_fit": "Advisors with a network in construction, real estate and building trades plus startup experience; $3M a year of outdoor kitchens sold to homeowners and contractors, a 26-home portfolio, and AI products for home-services operators.",
+  "source": "LinkedIn",
+  "deadline": null,
   "verified": true
  }
 ]
