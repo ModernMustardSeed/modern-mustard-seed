@@ -9,6 +9,7 @@ import TapText from '@/components/admin/TapText';
 import { usePoll } from '@/lib/use-poll';
 import { TemplatePicker, templateName } from '@/components/admin/TemplatePicker';
 import DripPanel, { dripChipLabel } from '@/components/admin/outbound/DripPanel';
+import LeadEmailComposer from '@/components/admin/LeadEmailComposer';
 import { RANDOM_TEMPLATE } from '@/lib/site-templates.mjs';
 
 /**
@@ -1684,11 +1685,21 @@ export function ThreadPanel({
     bottomRef.current?.scrollIntoView({ block: 'end' });
   }, [messages]);
 
+  /**
+   * This used to call /draft-reply, which reads the last INBOUND email and
+   * refuses with "No inbound message to reply to yet" when there is not one.
+   * That is the common case: they talked to Mr. Mustard, they never wrote. The
+   * composer endpoint reads the last interaction of any kind, transcript
+   * included, so the button now works on the leads it was most needed for.
+   */
   const draft = async () => {
     setDrafting(true);
     try {
-      const res = await api<{ draft: string }>(`/api/admin/outbound/leads/${lead.id}/draft-reply`, { method: 'POST' });
-      setReply(res.draft);
+      const res = await api<{ body: string }>('/api/admin/lead-email', {
+        method: 'POST',
+        body: JSON.stringify({ source: 'lead', id: lead.id, action: 'suggest' }),
+      });
+      setReply(res.body);
     } catch (e) {
       push(e instanceof Error ? e.message : 'Draft failed.', 'error');
     } finally {
@@ -1781,10 +1792,20 @@ export function ThreadPanel({
           className={`${inputCls} min-h-[90px]`}
           value={reply}
           onChange={(e) => setReply(e.target.value)}
-          placeholder={lead.email ? 'Type the reply, or let the AI draft it from their last message.' : 'No email on file for this lead yet.'}
+          placeholder={lead.email ? 'Type the reply, or let the AI draft it from the last thing that happened.' : 'No email on file for this lead yet.'}
           disabled={!lead.email}
         />
-        <div className="flex items-center justify-end gap-2 mt-2.5">
+        <div className="flex flex-wrap items-center justify-end gap-2 mt-2.5">
+          {/* The quick reply keeps the "Re:" subject the thread already has.
+              When the email needs its own subject line, or an offer that is
+              not in any sequence, it needs the composer. */}
+          <LeadEmailComposer
+            source="lead"
+            id={lead.id}
+            triggerLabel="Compose with a subject"
+            triggerClassName={btnGhost}
+            onSent={() => void load()}
+          />
           <button onClick={() => void draft()} disabled={drafting || !lead.email} className={btnGhost}>
             {drafting ? 'Drafting…' : '✨ AI draft'}
           </button>

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import DripPanel from '@/components/admin/outbound/DripPanel';
+import LeadEmailComposer, { type ComposerSource } from '@/components/admin/LeadEmailComposer';
 
 /**
  * WHAT WE SENT THEM, AND WHAT GOES NEXT.
@@ -369,10 +370,13 @@ export default function EmailThread({
   leadId,
   email,
   title = 'Every email they have been sent',
+  source = 'lead',
 }: {
   leadId?: string | null;
   email?: string | null;
   title?: string;
+  /** Which lead table `leadId` belongs to. All three hosts of this panel use outbound_leads. */
+  source?: ComposerSource;
 }) {
   const [thread, setThread] = useState<Thread | null>(null);
   const [error, setError] = useState('');
@@ -479,11 +483,26 @@ export default function EmailThread({
             mounted on all three, and the panel is the right neighbour for it
             anyway: everything else here is what was sent and what goes next.
           */}
+          {/*
+            And the thing that had to be possible before a drip was ever the
+            answer: write this person one email, right now, about the last thing
+            that actually happened. Sarah: "theres no way to email him unless i
+            start a drip sequence." It sits first because it is the smaller,
+            more common move of the two.
+          */}
+          {thread?.leadId && (
+            <LeadEmailComposer
+              source={source}
+              id={thread.leadId}
+              onSent={() => void load()}
+              triggerClassName="rounded-xl border-2 border-[#161616] bg-[#F5B700] px-3 py-1.5 font-oswald text-xs font-semibold uppercase tracking-[0.08em] text-[#161616] shadow-[3px_3px_0_0_#161616] transition-all hover:-translate-y-0.5"
+            />
+          )}
           {thread?.leadId && (
             <button
               type="button"
               onClick={() => setDripOpen(true)}
-              className="rounded-xl border-2 border-[#161616] bg-[#F5B700] px-3 py-1.5 font-oswald text-xs font-semibold uppercase tracking-[0.08em] text-[#161616] shadow-[3px_3px_0_0_#161616] transition-all hover:-translate-y-0.5"
+              className="rounded-xl border-2 border-[#161616] bg-[#FFFDF8] px-3 py-1.5 font-oswald text-xs font-semibold uppercase tracking-[0.08em] text-[#161616] shadow-[3px_3px_0_0_#161616] transition-all hover:-translate-y-0.5"
             >
               Drip campaign
             </button>

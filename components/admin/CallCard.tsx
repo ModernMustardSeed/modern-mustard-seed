@@ -5,6 +5,7 @@ import type { Prospect, ProspectStatus } from '@/lib/prospects';
 import { buildLeadScript, type LeadScript } from '@/lib/lead-script';
 import AuditReport, { siteHref } from './AuditReport';
 import TapText from './TapText';
+import LeadEmailComposer from './LeadEmailComposer';
 
 /**
  * The closed-loop call card: everything a rep needs on one prospect, in one
@@ -361,14 +362,17 @@ export default function CallCard({
     } finally { setDraftBusy(false); }
   };
 
-  const loadConv = async () => {
-    setConvOpen((v) => !v);
-    if (msgs !== null) return;
+  const fetchConv = async () => {
     try {
       const r = await fetch(`/api/admin/prospects/${id}/messages`);
       const j = await r.json();
       setMsgs(j.messages ?? []);
     } catch { setMsgs([]); }
+  };
+  const loadConv = async () => {
+    setConvOpen((v) => !v);
+    if (msgs !== null) return;
+    await fetchConv();
   };
   const sendReply = async () => {
     if (!reply.trim()) return;
@@ -612,6 +616,18 @@ export default function CallCard({
             </>
           )}
           <button onClick={sendFollowUp} disabled={busy === 'fu'} className={`${pill} bg-[#1E50C8] text-white border-[#1E50C8] hover:opacity-90`}>{busy === 'fu' ? 'Sending...' : audit ? 'Email the audit' : 'Send follow-up'}</button>
+          {/* The follow-up button sends a fixed email. This one writes the email
+              the call actually earned, about whatever they just said. */}
+          <LeadEmailComposer
+            source="prospect"
+            id={prospect.id}
+            triggerLabel="Write them an email"
+            triggerClassName={`${pill} bg-white text-[#161616] border-[#161616] hover:bg-[#FFF8E6]`}
+            onSent={() => {
+              onPatch(id, { last_email_at: new Date().toISOString() });
+              void fetchConv();
+            }}
+          />
           {!prospect.lead_id ? (
             <button onClick={sendToPipeline} disabled={busy === 'pl'} className={`${pill} bg-[#F5B700] text-[#161616] border-[#161616] hover:bg-[#FFD23F]`}>{busy === 'pl' ? 'Sending...' : 'Send to pipeline'}</button>
           ) : (

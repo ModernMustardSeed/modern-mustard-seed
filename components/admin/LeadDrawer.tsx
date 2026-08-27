@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import type { LeadRow, LeadStatus } from '@/lib/supabase';
 import { launchCountdown } from '@/lib/launch';
+import LeadEmailComposer from './LeadEmailComposer';
 
 const STATUS_OPTIONS: LeadStatus[] = ['new', 'replied', 'booked', 'won', 'lost', 'archived'];
 
@@ -330,10 +331,20 @@ export default function LeadDrawer({ lead, onClose, onUpdate, onDelete }: Props)
           <div className="flex flex-wrap gap-3 pt-4 border-t border-[#161616]/10">
             {lead.email && (
               <>
+                {/* "Reply manually" used to mean leaving the admin for a mail
+                    client, which is why so many of these were never answered
+                    from here. This writes the reply in place, from what they
+                    actually asked for, and sends it on the record. */}
+                <LeadEmailComposer
+                  source="inbound"
+                  id={lead.id}
+                  triggerLabel="Write them an email"
+                  triggerClassName="text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-lg px-5 py-2.5 shadow-[3px_3px_0_0_#161616] hover:shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
+                />
                 <button
                   onClick={sendIntro}
                   disabled={intro === 'sending' || intro === 'sent'}
-                  className="text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-lg px-5 py-2.5 shadow-[3px_3px_0_0_#161616] hover:shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all disabled:opacity-60 disabled:hover:translate-y-0 disabled:shadow-[3px_3px_0_0_#161616]"
+                  className="text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-[#161616] bg-white border-2 border-[#161616] rounded-lg px-5 py-2.5 hover:bg-[#FFF8E6] transition-all disabled:opacity-60"
                 >
                   {intro === 'sending' ? 'Sending...' : intro === 'sent' ? 'Intro sent ✓' : 'Send intro email'}
                 </button>
