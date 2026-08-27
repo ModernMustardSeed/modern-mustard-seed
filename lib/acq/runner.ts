@@ -20,7 +20,7 @@ import { checkPace, sendCampaignEmail, sendDemoEmail, sendFollowup, sendSuiteEma
 import type { FollowupKind } from '@/lib/acq/campaign';
 import { evaluate, dueForStep, sequenceGaps } from '@/lib/acq/eligibility';
 import { activeSuppressions } from '@/lib/email-log';
-import { buildProspectAgent } from '@/lib/acq/build';
+import { buildProspectAgent, rescueStalledBuilds } from '@/lib/acq/build';
 import { buildProspectSuite } from '@/lib/acq/suite';
 import { placeDemoCall } from '@/lib/acq/call';
 import { recordEvent } from '@/lib/acq/events';
@@ -33,13 +33,15 @@ export type DrainReport = {
   skipped: number;
   failed: number;
   reclaimed: number;
+  /** Builds that finished but never announced it, put back on the rails. */
+  rescuedBuilds: number;
   held: string | null;
   detail: { id: string; kind: string; outcome: string; note?: string }[];
 };
 
 export async function drainQueue(opts: { limit?: number; worker?: string } = {}): Promise<DrainReport> {
   const db = getSupabase();
-  const report: DrainReport = { claimed: 0, done: 0, skipped: 0, failed: 0, reclaimed: 0, held: null, detail: [] };
+  const report: DrainReport = { claimed: 0, done: 0, skipped: 0, failed: 0, reclaimed: 0, rescuedBuilds: 0, held: null, detail: [] };
   if (!db) {
     report.held = 'Database is not configured.';
     return report;
@@ -61,6 +63,12 @@ export async function drainQueue(opts: { limit?: number; worker?: string } = {})
   }
 
   report.reclaimed = await reclaimStale(db);
+
+  // A stalled job and a stalled BUILD are the same class of problem, so they get
+  // swept in the same breath. This one matters more: a stranded job retries, a
+  // stranded build is a finished demo with somebody's name on it that nobody
+  // will ever be sent. See rescueStalledBuilds for what went wrong to earn it.
+  report.rescuedBuilds = await rescueStalledBuilds(db);
 
   // Pace decides how many EMAILS may go. Calls, builds and demo sends are not
   // rate limited by the mail window: somebody who just asked to be called is

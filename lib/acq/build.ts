@@ -136,14 +136,26 @@ export async function buildProspectAgent(
       // from the cockpit; nothing automatic does.
       row = await ensureDemoHub(db, row);
 
-      // The audit is the fifth door and the only one that is about THEM. It
-      // runs before the suite email is queued so the mail can carry the score,
-      // and it is fail-soft by construction: a suite with four doors is a good
-      // day, a build that died grading somebody's website is a lost customer.
-      await ensurePresenceAudit(db, row as unknown as Record<string, unknown>);
-      const { data: withAudit } = await db.from('outbound_leads').select('*').eq('id', row.id).single();
-      if (withAudit) row = withAudit as OutboundLead;
-
+      /*
+       * THE BUILD IS FINISHED HERE, BEFORE ANYTHING SLOW RUNS (2026-08-27).
+       *
+       * These three writes used to sit BELOW the presence audit, which waits up
+       * to 85 seconds on the LLM. This runs inside a route capped at 60
+       * (app/api/admin/acquisition/prospects/[id]/route.ts), so a slow audit got
+       * the whole function killed mid-wait and none of this ever ran: the lead
+       * stayed at demo_status 'forging' forever, no forge_completed landed, and
+       * the demo email was never queued. The catch below could not save it
+       * either, because the process was gone rather than throwing.
+       *
+       * It cost us Lyons Roofing: a 100/100 lead who clicked "the free build",
+       * got a working voice agent built for him on 2026-08-26, and was never
+       * sent it. His audit came back at 97 seconds. Nothing anywhere said so.
+       *
+       * So the state and the mail go first and the audit goes last. The mail job
+       * re-reads the lead when it sends (lib/acq/runner.ts runDemoEmailJob), so
+       * an audit that lands before the queue ticks still rides along in the
+       * email. One that is slow, or dies, now costs a score rather than a sale.
+       */
       await db
         .from('outbound_leads')
         .update({ demo_status: 'ready', acq_stage: 'forged' })
@@ -164,6 +176,13 @@ export async function buildProspectAgent(
         step: 0,
         payload: { demoUrl: row.hub_demo_url || row.demo_url },
       });
+
+      // The audit is the fifth door and the only one that is about THEM. It is
+      // fail-soft by construction: a suite with four doors is a good day, and a
+      // build that died grading somebody's website is a lost customer.
+      await ensurePresenceAudit(db, row as unknown as Record<string, unknown>);
+      const { data: withAudit } = await db.from('outbound_leads').select('*').eq('id', row.id).single();
+      if (withAudit) row = withAudit as OutboundLead;
     } catch (err) {
       console.error('acq build finish failed', err);
       await recordEvent(db, {
@@ -184,4 +203,57 @@ export async function buildProspectAgent(
     demoUrl: voice.demoUrl || row.demo_url || '',
     hubUrl: row.hub_demo_url,
   };
+}
+
+/**
+ * THE BACKSTOP: A BUILD THAT FINISHED BUT NEVER SAID SO.
+ *
+ * The reorder above stops the known cause. This catches every other one. If a
+ * lead holds a live voice agent and has been sitting at demo_status 'forging'
+ * for a quarter of an hour, the build is not in flight, it is stranded: the
+ * process that would have flipped it died, was redeployed under, or timed out
+ * somewhere new. That is a finished demo nobody will ever be sent.
+ *
+ * Runs on every queue drain, next to reclaimStale, because a stalled build is
+ * exactly the same class of problem as a stalled job. Only ever moves a lead
+ * FORWARD, never re-mails one that already went (`demo_emailed_at`), and the
+ * enqueue is idempotent, so a repeat pass costs one insert that fails on its
+ * unique key.
+ */
+export async function rescueStalledBuilds(db: SupabaseClient, olderThanMs = 15 * 60_000): Promise<number> {
+  const cutoff = new Date(Date.now() - olderThanMs).toISOString();
+  const { data } = await db
+    .from('outbound_leads')
+    .select('id,business_name,demo_url,hub_demo_url,acq_campaign_id,updated_at')
+    .eq('demo_status', 'forging')
+    .is('demo_emailed_at', null)
+    .lt('updated_at', cutoff)
+    .limit(50);
+
+  let rescued = 0;
+  for (const row of (data ?? []) as Record<string, unknown>[]) {
+    const id = String(row.id);
+    const hubUrl = (row.hub_demo_url as string | null) ?? null;
+    const demoUrl = (row.demo_url as string | null) ?? null;
+    // No agent means the build really did die before it made anything. That is
+    // a failure to retry, not a completion to announce, so leave it alone.
+    if (!hubUrl && !demoUrl) continue;
+
+    await db.from('outbound_leads').update({ demo_status: 'ready', acq_stage: 'forged' }).eq('id', id);
+    await recordEvent(db, {
+      leadId: id,
+      type: 'forge_completed',
+      label: 'Their personalized agent is live (recovered: the build stalled before it could say so)',
+      detail: { demoUrl, hubUrl, recovered: true, stalledSince: row.updated_at },
+    });
+    await enqueue(db, {
+      kind: 'demo_email',
+      leadId: id,
+      campaignId: (row.acq_campaign_id as string | null) ?? null,
+      step: 0,
+      payload: { demoUrl: hubUrl || demoUrl },
+    });
+    rescued += 1;
+  }
+  return rescued;
 }
