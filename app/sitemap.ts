@@ -50,6 +50,7 @@ const STATIC_PATHS = [
   '/launch-checklist',
   '/prompt-playbook',
   '/fieldguide',
+  '/sarahscarano',
   '/ai-proof',
   '/for',
   '/for/restaurants',
