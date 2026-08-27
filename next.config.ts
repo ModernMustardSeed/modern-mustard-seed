@@ -70,6 +70,14 @@ const config: NextConfig = {
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     minimumCacheTTL: 60 * 60 * 24 * 30,
   },
+  async rewrites() {
+    return [
+      // Sarah's own page: a self-contained, illustrated flip-book resume that
+      // lives as one static HTML file in public/sarahscarano/. The rewrite lets
+      // the clean URL serve it; the file is CDN-served, never traced.
+      { source: '/sarahscarano', destination: '/sarahscarano/index.html' },
+    ];
+  },
   async redirects() {
     return [
       // /Mustard is handled in middleware.ts, NOT here. Config redirects match
