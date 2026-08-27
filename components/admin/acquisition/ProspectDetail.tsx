@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from 'react';
 import AdminHeader from '@/components/admin/AdminHeader';
 import EmailThread from '@/components/admin/EmailThread';
 import DripButton from '@/components/admin/DripButton';
+import LeadEmailComposer from '@/components/admin/LeadEmailComposer';
 import { AcqNav, Chip, Section, Stat, ToastHost, api, card, cardFlat, btnPrimary, btnGhost, btnDanger, inputCls, labelCls, eyebrow, timeAgo, useToasts } from '@/components/admin/acquisition/ui';
 import FacebookButton from '@/components/admin/acquisition/FacebookButton';
 import PersonalVideoCard from '@/components/admin/acquisition/PersonalVideoCard';
@@ -414,6 +415,18 @@ export default function ProspectDetail({ id }: { id: string }) {
 
             <Section title="Do something">
               <div className="flex flex-col gap-2">
+                {/* First, because it is the move you reach for most: answer the
+                    last thing that happened. Every other button here starts a
+                    machine. This one writes one email to one person. */}
+                <LeadEmailComposer
+                  source="lead"
+                  id={l.id}
+                  triggerClassName={btnPrimary}
+                  onSent={(info) => {
+                    setNotice(`Sent to ${info.to}.`);
+                    void load();
+                  }}
+                />
                 {/* Starting a sequence is an action, so it sits with the actions.
                     It was only in the mail panel's header, a third of the way
                     down the page, which is not a place anybody goes looking for
