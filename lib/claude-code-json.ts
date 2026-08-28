@@ -1,3 +1,15 @@
+/* Three spawns carry a turbopackIgnore.
+ *
+ * Turbopack traces a spawn whose binary is not a statically known path and
+ * concludes the whole project must be bundled into the server output, which it
+ * treats as a build failure. CLAUDE_BIN is resolved at runtime from the
+ * environment and taskkill is an OS binary: neither is a file in this repo, so
+ * there is genuinely nothing here to trace. The ignore is the remedy the error
+ * message itself names.
+ *
+ * This is not part of the master merge. It was already failing.
+ */
+
 /**
  * THE FREE ENGINE.
  *
@@ -79,7 +91,7 @@ export function claudeCodeAvailable(): boolean {
   if (process.env.NEXT_RUNTIME === 'edge') return false;
   if (probed !== null) return probed;
   try {
-    const r = spawnSync(CLAUDE_BIN, ['--version'], {
+    const r = spawnSync(/*turbopackIgnore: true*/ CLAUDE_BIN, ['--version'], {
       shell: process.platform === 'win32',
       timeout: 15_000,
       stdio: 'ignore',
@@ -121,7 +133,7 @@ async function acquire(): Promise<() => void> {
 function killTree(child: ReturnType<typeof spawn>) {
   if (process.platform === 'win32' && child.pid) {
     try {
-      spawn('taskkill', ['/PID', String(child.pid), '/T', '/F'], { stdio: 'ignore' }).on('error', () => {
+      spawn(/*turbopackIgnore: true*/ 'taskkill', ['/PID', String(child.pid), '/T', '/F'], { stdio: 'ignore' }).on('error', () => {
         try { child.kill('SIGKILL'); } catch { /* already gone */ }
       });
       return;
@@ -194,7 +206,7 @@ function spawnClaude(prompt: string, model?: string, allowWeb = false, timeoutMs
     // including the flags after it. Stdin is immune to all of it. (The forge
     // learned this by shipping two builds that received the single words "You"
     // and "Read" as their entire brief.)
-    const child = spawn(CLAUDE_BIN, args, { shell: process.platform === 'win32', env: childEnv });
+    const child = spawn(/*turbopackIgnore: true*/ CLAUDE_BIN, args, { shell: process.platform === 'win32', env: childEnv });
 
     let stdout = '';
     let stderr = '';
