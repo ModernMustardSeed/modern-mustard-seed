@@ -25,10 +25,20 @@ export default function ContractorIntakeForm({
   intakeKey,
   company,
   contact,
+  services = [],
 }: {
   intakeKey: string;
   company: string;
   contact: string;
+  /**
+   * What his site already says he does.
+   *
+   * Sarah, 2026-08-28: "ask real specialties, and let him know what I have
+   * already." Asking a builder to list his services in an empty box gets four
+   * of them and a shrug. Showing him the fourteen already written and asking
+   * what is wrong with the list gets corrections, which is the useful answer.
+   */
+  services?: string[];
 }) {
   const [status, setStatus] = useState<'idle' | 'sending' | 'done' | 'error'>('idle');
   const [files, setFiles] = useState<Uploaded[]>([]);
@@ -200,6 +210,38 @@ export default function ContractorIntakeForm({
             <input name="crewSize" className={FIELD} />
           </div>
         </div>
+        {services.length > 0 ? (
+          <div className="mt-6 border-2 border-[#161616] bg-[#faf7f2] p-5">
+            <p className="font-mono text-[11px] tracking-[0.14em] uppercase text-[#6e7c87] mb-2">
+              What your site already says you do
+            </p>
+            <p className="font-body text-[15px] leading-relaxed text-[#3a3733]">
+              {services.join(', ')}.
+            </p>
+            <p className="font-body text-[14px] leading-relaxed text-[#6e7c87] mt-3">
+              Each of those has its own page. Tell us below what is wrong with the list
+              and we fix it: nothing here is set, and changes are always free.
+            </p>
+          </div>
+        ) : null}
+        <label className={`${LABEL} mt-5`}>What are you best at?</label>
+        <input
+          name="bestAt"
+          className={FIELD}
+          placeholder="The two or three you would want a stranger to judge you on"
+        />
+        <label className={`${LABEL} mt-5`}>Anything you do that is not on that list</label>
+        <input
+          name="alsoDo"
+          className={FIELD}
+          placeholder="Excavation for other builders, demolition, snow, septic, coring, winter work"
+        />
+        <label className={`${LABEL} mt-5`}>Anything on the list you do NOT do</label>
+        <input
+          name="doNotDo"
+          className={FIELD}
+          placeholder="Say so and it comes off before anybody reads it"
+        />
         <label className={`${LABEL} mt-5`}>Towns you want work in</label>
         <input name="towns" className={FIELD} placeholder="Kalispell, Whitefish, Bigfork…" />
         <label className={`${LABEL} mt-5`}>Work you want more of</label>

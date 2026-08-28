@@ -6,6 +6,7 @@ import { templateName } from '@/components/admin/TemplatePicker';
 import Link from 'next/link';
 import AdminHeader from '@/components/admin/AdminHeader';
 import EmailThread from '@/components/admin/EmailThread';
+import DeliveryEmailPanel from '@/components/admin/DeliveryEmailPanel';
 
 /**
  * The single per-client command view. One screen for one customer: who they are,
@@ -276,6 +277,40 @@ export default function ClientCommandView() {
                     </div>
                   ))}
                 </div>
+              </Card>
+            )}
+
+            {/* Type his address, read what will go, press send.
+              *
+              * Sarah, 2026-08-28: "i dont see the call sheet or email draft and
+              * send or any of that in my client card for him." The call sheet
+              * was on the card, as one grey pill among a dozen in "Everything
+              * we made", which is the same as not being there. Anything she
+              * uses BEFORE a client pays now sits above the fold with the two
+              * buttons that use it. */}
+            <DeliveryEmailPanel clientEmail={emailParam} onSent={() => void load()} />
+
+            {(data.files ?? []).some((f) => /call sheet|runbook|go-?live/i.test(f.label)) && (
+              <Card>
+                <Eyebrow>Before you ring him</Eyebrow>
+                <div className="flex flex-wrap gap-3">
+                  {(data.files ?? [])
+                    .filter((f) => /call sheet|runbook|go-?live/i.test(f.label))
+                    .map((f) => (
+                      <a
+                        key={f.id}
+                        href={f.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 rounded-lg border-2 border-[#161616] bg-[#F5B700] px-4 py-3 font-sans text-[14px] font-bold text-[#161616] shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-transform no-underline"
+                      >
+                        {f.label} <span aria-hidden="true">&rarr;</span>
+                      </a>
+                    ))}
+                </div>
+                <p className="mt-3 mb-0 font-body text-[13px] leading-relaxed text-[#6e7c87]">
+                  Open it and print it. Every question on it has a blank to write in.
+                </p>
               </Card>
             )}
 
