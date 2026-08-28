@@ -330,16 +330,6 @@ export async function buildSuiteFromCall(input: BuildSuiteInput, callerNumber: s
 
       lead = await ensureDemoHub(supabase, lead);
 
-      // The fifth door. Grading a website can take a minute and a half, and
-      // this block already runs behind the call rather than during it, so the
-      // caller never waits on it. Fail-soft: no audit is a smaller suite, not
-      // a failed build.
-      await ensurePresenceAudit(supabase, lead as unknown as Record<string, unknown>);
-      {
-        const { data: withAudit } = await supabase.from('outbound_leads').select('*').eq('id', lead.id).single();
-        if (withAudit) lead = withAudit as OutboundLead;
-      }
-
       try {
         const synced = await syncLeadToPipeline(supabase, lead, { source: 'mr-mustard' });
         if (!synced.ok) console.error('mr-mustard build pipeline sync failed:', synced.error);
@@ -423,6 +413,28 @@ export async function buildSuiteFromCall(input: BuildSuiteInput, callerNumber: s
           console.error('mr-mustard build notify failed', err);
         }
       }
+
+      /*
+       * THE AUDIT GOES LAST, AND IT GOES LAST ON PURPOSE (2026-08-27).
+       *
+       * It used to run right after the hub, above the pipeline sync and above
+       * the email that tells this person their demo exists. Grading a website
+       * waits up to 85 seconds on a worker; this route is capped at 60. When the
+       * grade ran long the platform killed the function mid-wait, and everything
+       * below it, the customer's email included, silently never happened. No
+       * catch fires for a killed process, so nothing reported it either.
+       *
+       * That exact shape stranded Lyons Roofing on the acquisition side of the
+       * house (see lib/acq/build.ts). Here it would be worse: a stranger who
+       * just gave Mr. Mustard their email on a live call, watched him build
+       * their agent, and then heard nothing.
+       *
+       * So the build, the sync and both emails are finished and durable before
+       * the slow thing starts. Losing the audit now costs a score on their hub.
+       * Losing it before cost the whole delivery. Enforced by
+       * scripts/check-slow-before-writes.mjs.
+       */
+      await ensurePresenceAudit(supabase, lead as unknown as Record<string, unknown>);
     } catch (err) {
       console.error('mr-mustard build after() failed', err);
     }
