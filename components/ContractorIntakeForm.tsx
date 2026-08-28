@@ -190,6 +190,78 @@ export default function ContractorIntakeForm({
         </div>
       </section>
 
+      {/* The domain.
+        *
+        * Sarah, 2026-08-28. The single question that blocks going live, and the
+        * one a builder is least likely to volunteer, because half of them are
+        * not sure whether they own one. So it is asked with the answer already
+        * worked out: here is the name we would buy, here is what it costs, and
+        * here is the one that is not worth what they want for it.
+        *
+        * The prices are stated because a builder who is told "we will sort the
+        * domain" and later sees a $4,500 line has been ambushed. Fifteen
+        * dollars is included in what he already paid; four and a half thousand
+        * is somebody else's asking price and we have no say in it. */}
+      <section>
+        <h2 className="font-display text-2xl font-black text-[#161616] mb-2">Your address on the internet</h2>
+        <p className="font-body text-[15px] text-[#3a3733] mb-4 leading-relaxed">
+          This is the one thing that has to be settled before the site can go live.
+          If you are not sure, say so and we will work it out on the phone.
+        </p>
+
+        <div className="border-2 border-[#161616] bg-[#faf7f2] p-5 mb-5">
+          <label className="flex gap-3 items-start cursor-pointer mb-4">
+            <input type="radio" name="domain" value="have-one" className="mt-1.5 w-5 h-5 accent-[#C4380C]" />
+            <span>
+              <span className="block font-body font-bold text-[16px] text-[#161616]">I already own one</span>
+              <span className="block font-body text-[14px] text-[#3a3733] mt-0.5">
+                Tell us the exact name and roughly where you bought it. We do the rest.
+              </span>
+            </span>
+          </label>
+          <input
+            name="domainOwned"
+            className={`${FIELD} mb-5`}
+            placeholder="The name you own, and where from (GoDaddy, Namecheap, whoever)"
+          />
+
+          <label className="flex gap-3 items-start cursor-pointer mb-4">
+            <input type="radio" name="domain" value="buy-mt" defaultChecked className="mt-1.5 w-5 h-5 accent-[#C4380C]" />
+            <span>
+              <span className="block font-body font-bold text-[16px] text-[#161616]">
+                Buy me wildhorseconstructionmt.com
+              </span>
+              <span className="block font-body text-[14px] text-[#3a3733] mt-0.5">
+                About $15 a year, and it is included in what you have already paid. This is
+                the one we would pick. The MT reads as Montana and it helps you locally
+                rather than hurting you.
+              </span>
+            </span>
+          </label>
+
+          <label className="flex gap-3 items-start cursor-pointer">
+            <input type="radio" name="domain" value="buy-premium" className="mt-1.5 w-5 h-5 accent-[#C4380C]" />
+            <span>
+              <span className="block font-body font-bold text-[16px] text-[#161616]">
+                I want wildhorseconstruction.com, at $4,500
+              </span>
+              <span className="block font-body text-[14px] text-[#3a3733] mt-0.5">
+                It is available, but somebody is holding it and that is their asking price.
+                We have zero control over it and we make nothing on it. It is not fifteen
+                dollars better than the one above, and we would not spend it.
+              </span>
+            </span>
+          </label>
+        </div>
+
+        <label className={LABEL}>Anything else about the domain</label>
+        <input
+          name="domainNotes"
+          className={FIELD}
+          placeholder="A name you would rather have, an old website that is still up somewhere, anything"
+        />
+      </section>
+
       <section>
         <h2 className="font-display text-2xl font-black text-[#161616] mb-2">The business</h2>
         <div className="grid gap-5 sm:grid-cols-2">

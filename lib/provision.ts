@@ -181,6 +181,41 @@ export function productSpecFor(kind: string, session: Stripe.Checkout.Session): 
         homeUrl: '/portal',
         detail: 'Your playbooks are ready to download in your portal.',
       };
+    /* What a contractor buys.
+     *
+     * Added 2026-08-28 after tracing what would happen when Heath paid, which
+     * was nothing at all. His two pay links carried metadata.client and
+     * metadata.what and no metadata.kind, so kind fell back to 'store', the
+     * store branch found no slug, productSpecFor returned null, and
+     * provisionPurchase returned before writing a thing. The money would have
+     * landed in Stripe and left no trace in the admin: no client row, no
+     * product card, no welcome email, no intake form.
+     *
+     * These two are deliberately NOT 'store', because that branch skips the
+     * client row and the intake welcome on purpose: a thirty dollar PDF should
+     * not read as a new engagement. A five hundred dollar website is exactly
+     * that, and the moment he pays is the only moment he is holding his phone
+     * and willing to answer questions. */
+    case 'website':
+      return {
+        kind: 'website',
+        label: 'Your website',
+        tier: tier ?? 'One time build',
+        status: 'building',
+        homeUrl: '/portal',
+        detail:
+          'We are building the real one around your answers. Your photos, your logo, your license number, on your own domain. Changes are always included, before it goes live and after.',
+      };
+    case 'cornerstone':
+      return {
+        kind: 'cornerstone',
+        label: 'Cornerstone',
+        tier: tier ?? 'Setup plus monthly',
+        status: 'provisioning',
+        homeUrl: '/portal',
+        detail:
+          'Your console is already built and already has your jobs in it. We load your subs and your paperwork, and the first 5am report lands within two mornings.',
+      };
     // Add-ons and internal money moves: no new ownership card.
     case 'balance':
     case 'subscription':
