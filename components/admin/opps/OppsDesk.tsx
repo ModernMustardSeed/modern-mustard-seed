@@ -36,6 +36,7 @@ export default function OppsDesk() {
   const [status, setStatus] = useState<'' | OppStatus>('');
   const [group, setGroup] = useState<'' | OppGroup>('');
   const [q, setQ] = useState('');
+  const [onlyStarred, setOnlyStarred] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [openId, setOpenId] = useState<string | null>(null);
@@ -51,6 +52,7 @@ export default function OppsDesk() {
       if (status) params.set('status', status);
       if (group) params.set('group', group);
       if (q.trim()) params.set('q', q.trim());
+      if (onlyStarred) params.set('starred', '1');
       const data = await api<ListResponse>(`/api/admin/opps?${params}`);
       setOpps(data.opps);
       setCounts(data.counts);
@@ -59,7 +61,7 @@ export default function OppsDesk() {
     } finally {
       setLoading(false);
     }
-  }, [status, group, q]);
+  }, [status, group, q, onlyStarred]);
 
   useEffect(() => {
     const t = setTimeout(load, q ? 250 : 0);
@@ -71,6 +73,17 @@ export default function OppsDesk() {
   const dueSoon = useMemo(() => opps.filter((o) => o.next_step_at && new Date(o.next_step_at).getTime() < Date.now() + 3 * 864e5 && !['won', 'passed'].includes(o.status)).length, [opps]);
 
   const patchLocal = (opp: Opp) => setOpps((prev) => prev.map((o) => (o.id === opp.id ? opp : o)));
+  const toggleStar = async (o: Opp) => {
+    patchLocal({ ...o, starred: !o.starred });
+    try {
+      const data = await api<{ opp: Opp }>(`/api/admin/opps/${o.id}`, { method: 'PATCH', body: JSON.stringify({ starred: !o.starred }) });
+      patchLocal(data.opp);
+      setCounts((c) => ({ ...c, starred: (c.starred ?? 0) + (data.opp.starred ? 1 : -1) }));
+    } catch (e) {
+      patchLocal(o);
+      push(e instanceof Error ? e.message : 'Could not save the star.', 'error');
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
@@ -90,7 +103,8 @@ export default function OppsDesk() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
+          <Stat label="Starred, do first" value={counts.starred ?? 0} tone={counts.starred ? 'good' : 'neutral'} />
           <Stat label="On the desk" value={total} />
           <Stat label="In motion" value={working} note="applied, replied, talking, offer" />
           <Stat label="Due in 3 days" value={dueSoon} tone={dueSoon ? 'hot' : 'neutral'} />
@@ -99,6 +113,7 @@ export default function OppsDesk() {
 
         <div className={`${card} p-4 mb-5`}>
           <div className="flex flex-wrap gap-2 items-center">
+            <button onClick={() => setOnlyStarred((v) => !v)} className={pill(onlyStarred)} title="Only the starred ones">&#9733; Starred {counts.starred ?? 0}</button>
             <button onClick={() => setStatus('')} className={pill(status === '')}>All {total}</button>
             {OPP_STATUSES.map((s) => (
               <button key={s} onClick={() => setStatus(s === status ? '' : s)} className={pill(status === s)}>
@@ -128,6 +143,7 @@ export default function OppsDesk() {
             <table className="w-full text-sm font-sans min-w-[980px]">
               <thead className="border-b-2 border-[#161616]/10 bg-[#FBF6EA]/60">
                 <tr className="text-left text-[10px] uppercase tracking-[0.18em] font-oswald text-[#161616]/60">
+                  <th className="px-4 py-3" aria-label="Starred">&#9733;</th>
                   <th className="px-4 py-3">Priority</th>
                   <th className="px-4 py-3">Opportunity</th>
                   <th className="px-4 py-3">Group</th>
@@ -139,13 +155,16 @@ export default function OppsDesk() {
               </thead>
               <tbody>
                 {loading && opps.length === 0 && (
-                  <tr><td colSpan={7} className="px-4 py-10 text-center text-[#161616]/60">Loading the desk.</td></tr>
+                  <tr><td colSpan={8} className="px-4 py-10 text-center text-[#161616]/60">Loading the desk.</td></tr>
                 )}
                 {!loading && opps.length === 0 && (
-                  <tr><td colSpan={7} className="px-4 py-10 text-center text-[#161616]/60">Nothing here yet. Import the list or add one by hand.</td></tr>
+                  <tr><td colSpan={8} className="px-4 py-10 text-center text-[#161616]/60">Nothing here yet. Import the list or add one by hand.</td></tr>
                 )}
                 {opps.map((o) => (
-                  <tr key={o.id} onClick={() => setOpenId(o.id)} className="border-t border-[#161616]/[0.07] hover:bg-[#F5B700]/10 cursor-pointer align-top">
+                  <tr key={o.id} onClick={() => setOpenId(o.id)} className={`border-t border-[#161616]/[0.07] hover:bg-[#F5B700]/10 cursor-pointer align-top ${o.starred ? 'bg-[#FFF3C4]/60' : ''}`}>
+                    <td className="px-3 py-3">
+                      <button aria-label={o.starred ? 'Unstar' : 'Star'} aria-pressed={o.starred} onClick={(e) => { e.stopPropagation(); toggleStar(o); }} className={`text-xl leading-none ${o.starred ? 'text-[#E0301E]' : 'text-[#161616]/25 hover:text-[#161616]'}`}>{o.starred ? '★' : '☆'}</button>
+                    </td>
                     <td className="px-4 py-3">
                       <span className={`inline-block border-2 border-[#161616] rounded-md px-2 py-0.5 text-[10px] font-oswald uppercase tracking-[0.12em] ${o.priority === 1 ? 'bg-[#E0301E] text-white border-[#E0301E]' : o.priority === 2 ? 'bg-white' : 'bg-white text-[#161616]/50 border-[#161616]/30'}`}>
                         {PRIORITY_LABEL[o.priority]}

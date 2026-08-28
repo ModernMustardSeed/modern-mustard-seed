@@ -47,6 +47,7 @@ export type Opp = {
   verified: boolean;
   status: OppStatus;
   priority: 1 | 2 | 3;
+  starred: boolean;
   contact_name: string | null;
   contact_email: string | null;
   notes: string | null;
@@ -93,6 +94,7 @@ export type OppCreate = z.infer<typeof oppCreateSchema>;
 
 export const oppPatchSchema = oppCreateSchema.partial().extend({
   status: z.enum(OPP_STATUSES).optional(),
+  starred: z.boolean().optional(),
   next_step: z.preprocess(emptyToNull, z.string().max(500).nullable()).optional(),
   next_step_at: z.preprocess(emptyToNull, z.string().datetime({ offset: true }).nullable()).optional(),
 });
