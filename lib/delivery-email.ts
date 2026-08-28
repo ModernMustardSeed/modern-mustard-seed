@@ -41,7 +41,7 @@ const PAY = /^pay:\s*/i;
  */
 const VIDEO = /\b(video|walkthrough|film|watch)\b/i;
 /** Links that are internal plumbing and have no business in a client's inbox. */
-const PRIVATE = /^(go-live|golive|runbook|call sheet|notes|internal|admin)/i;
+const PRIVATE = /^(go-live|golive|runbook|call sheet|notes|internal|admin|sent:)/i;
 
 const esc = (s: string) =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");

@@ -19,6 +19,23 @@ import { useCallback, useEffect, useState } from 'react';
  * is how a client eventually gets the script's copy.
  */
 
+/**
+ * Where "send it to me first" goes by default.
+ *
+ * Sarah, 2026-08-28: "I didnt get an email at all, did you send same place as
+ * before makeourcitypretty@gmail.com?"
+ *
+ * It was hard coded to sarah@modernmustardseed.com, a Zoho mailbox she does
+ * not read on her phone. A preview she never receives is worse than no preview
+ * at all: she waits for it, it does not come, and then she sends the real one
+ * to a client without having read it.
+ *
+ * Editable and remembered in the browser, because the right address changes
+ * and hard coding one is exactly what went wrong.
+ */
+const PREVIEW_DEFAULT = 'makeourcitypretty@gmail.com';
+const PREVIEW_KEY = 'mms_preview_to';
+
 type Built = {
   subject: string;
   html: string;
@@ -37,6 +54,7 @@ export default function DeliveryEmailPanel({
   const [built, setBuilt] = useState<Built | null>(null);
   const [to, setTo] = useState('');
   const [busy, setBusy] = useState<'send' | 'preview' | null>(null);
+  const [previewTo, setPreviewTo] = useState(PREVIEW_DEFAULT);
   const [note, setNote] = useState<{ text: string; bad?: boolean } | null>(null);
   const [showing, setShowing] = useState(false);
 
@@ -58,8 +76,17 @@ export default function DeliveryEmailPanel({
     void load();
   }, [load]);
 
+  useEffect(() => {
+    try {
+      const saved = window.localStorage.getItem(PREVIEW_KEY);
+      if (saved) setPreviewTo(saved);
+    } catch {
+      /* private browsing; the default is the right answer anyway */
+    }
+  }, []);
+
   async function send(preview: boolean) {
-    const addr = preview ? 'sarah@modernmustardseed.com' : to.trim();
+    const addr = preview ? previewTo.trim() : to.trim();
     if (!addr) {
       setNote({ text: 'Put an address in first.', bad: true });
       return;
@@ -78,7 +105,7 @@ export default function DeliveryEmailPanel({
       } else {
         setNote({
           text: preview
-            ? 'Sent to you. Read it, then send it to him.'
+            ? `Sent to ${addr}. Read it, then send it to him.`
             : d.movedTo
               ? `Sent to ${addr}. His card is now filed under that address instead of the placeholder.`
               : `Sent to ${addr}.`,
@@ -94,7 +121,7 @@ export default function DeliveryEmailPanel({
 
   const payLinks = (built?.links ?? []).filter((l) => /^pay:/i.test(l.label));
   const lookLinks = (built?.links ?? []).filter(
-    (l) => !/^pay:/i.test(l.label) && !/^(go-live|golive|runbook|call sheet|notes|internal|admin)/i.test(l.label),
+    (l) => !/^pay:/i.test(l.label) && !/^(go-live|golive|runbook|call sheet|notes|internal|admin|sent:)/i.test(l.label),
   );
 
   return (
@@ -142,6 +169,23 @@ export default function DeliveryEmailPanel({
         type="email"
         placeholder="his@email.com"
         className="w-full border-2 border-[#161616] bg-white px-4 py-3 text-[16px] outline-none focus:border-[#C4380C]"
+      />
+
+      <label className="mt-5 block font-mono text-[11px] tracking-[0.14em] uppercase text-[#6e7c87] mb-2">
+        Read it yourself first, at
+      </label>
+      <input
+        value={previewTo}
+        onChange={(e) => {
+          setPreviewTo(e.target.value);
+          try {
+            window.localStorage.setItem(PREVIEW_KEY, e.target.value);
+          } catch {
+            /* private browsing */
+          }
+        }}
+        type="email"
+        className="w-full border-2 border-[#161616]/25 bg-white px-4 py-2.5 text-[15px] outline-none focus:border-[#C4380C]"
       />
 
       <div className="mt-4 flex flex-wrap items-center gap-3">

@@ -104,7 +104,7 @@ export async function POST(req: Request) {
   const card = await loadCard(clientEmail);
   if (!card) return NextResponse.json({ error: 'No such client.' }, { status: 404 });
 
-  const usable = card.links.filter((l) => !/^(go-live|golive|runbook|call sheet|notes|internal|admin)/i.test(l.label));
+  const usable = card.links.filter((l) => !/^(go-live|golive|runbook|call sheet|notes|internal|admin|sent:)/i.test(l.label));
   if (!usable.length) {
     return NextResponse.json(
       { error: 'Nothing to send. Add at least one link to his card first.' },
