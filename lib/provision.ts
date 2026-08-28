@@ -18,6 +18,7 @@
  */
 import type Stripe from 'stripe';
 import { getSupabase } from '@/lib/supabase';
+import { sendIntakeWelcome } from '@/lib/intake-welcome';
 
 export type ProductStatus = 'provisioning' | 'building' | 'in_production' | 'active' | 'delivered';
 
@@ -223,6 +224,21 @@ export async function provisionPurchase(session: Stripe.Checkout.Session): Promi
         await supabase.from('clients').upsert(clientRow, { onConflict: 'email' });
       } catch (err) {
         console.error('provisionPurchase: client upsert failed', err);
+      }
+
+      /* Ask him for what we need, now, while he is still holding his phone.
+       *
+       * Between paying and being asked for anything there used to be a silence,
+       * and that silence is where a build stalls: he has paid, nobody has asked
+       * for a logo, and three weeks later somebody notices the site still says
+       * Lorem. Idempotent, so a replayed webhook sends nothing twice. */
+      try {
+        const welcome = await sendIntakeWelcome(supabase, email, { name, company });
+        if (!welcome.sent && welcome.reason && welcome.reason !== 'already welcomed') {
+          console.error('provisionPurchase: intake welcome not sent:', welcome.reason);
+        }
+      } catch (err) {
+        console.error('provisionPurchase: intake welcome threw', err);
       }
     }
 

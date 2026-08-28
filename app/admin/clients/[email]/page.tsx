@@ -184,11 +184,15 @@ export default function ClientCommandView() {
                         {fmtDate(data.intake.submitted_at)}
                       </span>
                     )}
+                    {/* The delivery board already has the button that does
+                      * this: "Rebuild from their intake". Sending her there
+                      * beats a second route that would queue the same job by a
+                      * different name and drift from it. */}
                     <a
-                      href={`/admin/clients/${encodeURIComponent(data.email)}/customize`}
+                      href="/admin/delivery"
                       className="ml-auto text-[10px] uppercase tracking-[0.2em] font-mono font-bold text-[#1E50C8] hover:text-[#161616]"
                     >
-                      Build his site from this &rarr;
+                      Build the site from this &rarr;
                     </a>
                   </div>
                   <dl className="grid sm:grid-cols-2 gap-x-6">
