@@ -110,6 +110,10 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--orange);outline-off
 .cover .sticker span{display:block;font-family:var(--disp);font-weight:400;text-transform:none;letter-spacing:0;font-size:1.6em;margin-bottom:.15em}
 .cover .bottom{position:absolute;right:6%;bottom:7%;text-align:right;font-size:.62em;letter-spacing:.2em;text-transform:uppercase;font-weight:800;color:var(--paper);text-shadow:0 .1em .5em rgba(21,76,72,1)}
 .cover .bottom span{display:block;font-family:var(--disp);font-size:1.7em;letter-spacing:0;text-transform:none;font-weight:400;line-height:1.1}
+.cover .vbtn{position:absolute;left:6%;bottom:5%;z-index:3;appearance:none;border:0;background:var(--orange);color:var(--paper);font-family:var(--sans);font-weight:800;font-size:.8em;letter-spacing:.12em;text-transform:uppercase;padding:.7em 1.1em;border-radius:2em;cursor:pointer;box-shadow:.25em .25em 0 var(--blue)}
+.cover .vbtn:hover{background:var(--blue)}
+.cover video.on{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:4;background:#000}
+.cover .vclose{position:absolute;top:3%;right:4%;z-index:5;appearance:none;border:2px solid var(--paper);background:rgba(21,76,72,.6);color:var(--paper);width:2.2em;height:2.2em;border-radius:50%;cursor:pointer;font-size:1em}
 
 /* letter */
 .letter .lead{font-size:1.04em}
@@ -276,7 +280,8 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--orange);outline-off
   <span class="hint">Click a page, use the arrows, or press the arrow keys to flip</span>
   <nav class="links">
     <a href="#" id="play" title="Auto-play the issue">Play</a>
-    <a href="#" id="print" title="Save as PDF">PDF</a>
+    <a href="https://modernmustardseed.com/sarahscarano/Sarah-Scarano.pdf" target="_blank" rel="noopener noreferrer" title="One page, plain, for forms and recruiters">Plain resume</a>
+    <a href="#" id="print" title="Print this issue as a PDF">Print</a>
     <a href="mailto:sarah@modernmustardseed.com">Email</a>
     <a href="tel:+14062506076">Cell</a>
     <a href="https://www.linkedin.com/in/sarahmscarano/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
@@ -300,6 +305,8 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--orange);outline-off
             <div class="line"><b>The proof</b>65 repositories, 2,120 commits, 20 products live. Nine months, in the open.</div>
           </div>
           <div class="bottom">Late summer<span>Bigfork, Montana</span></div>
+          <button class="vbtn" id="vbtn" hidden aria-label="Play the sixty-second cover">&#9654; 60 seconds</button>
+          <video id="cvid" preload="metadata" playsinline hidden src="https://modernmustardseed.com/sarahscarano/cover.mp4"></video>
         </section>
       </div>
       <div class="face back">
@@ -310,7 +317,7 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--orange);outline-off
           <p class="lead">For fifteen years I sold and designed. Outdoor kitchens on show floors, historic houses for travelers, closings for buyers. I was very good at it. It was never the whole of me.</p>
           <p>The part I loved was the sketch on the back of the brochure: the thing that did not exist yet. Three years ago I started building it myself, in AI, automation and code. The last nine months happened in the open: 65 repositories, 2,120 commits, 20 products in production. That is not a hobby. That is what I am.</p>
           <p>Today I run <a href="https://modernmustardseed.com" target="_blank" rel="noopener noreferrer">Modern Mustard Seed</a>, an AI product studio, and <a href="https://crossandcovenant.co" target="_blank" rel="noopener noreferrer">Cross + Covenant</a>, a brand with its own software. Sales taught me what people will pay for. Building is what I do with that.</p>
-          <div class="why"><b>Why a seat on your team, with two companies already</b><p>Both are bootstrapped and both run on agents, so they need less of me every month. What they need now is runway and reach. A fractional seat gives me both, and gives you someone who has already made every zero-to-one mistake on her own dime.</p></div>
+          <div class="why"><b>Why a seat on your team, with two companies already</b><p>Both are bootstrapped and both run on agents, so they need less of me every month. What they need now is runway and reach. A fractional seat gives me both, and gives you someone who has already made every zero-to-one mistake on my own dime.</p></div>
           <div class="sig">Sarah</div>
           <div class="folio"><span>Scarano &middot; Zero to One</span><span>2</span></div>
         </section>
@@ -348,14 +355,14 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--orange);outline-off
           <h2 style="font-size:2em">Ten things I made. <em>Most are running now.</em></h2>
           <div class="builds">
             <div class="build"><b><a href="tel:+14063121223">Mr. Mustard</a></b><span>Voice agent on Vapi and ElevenLabs. Takes orders, starts builds, sends decks, books, speaks Spanish.</span></div>
-            <div class="build"><b><a href="https://seedside.modernmustardseed.com" target="_blank" rel="noopener noreferrer">The Cove</a></b><span>A 17-agent back office: research, writing, ops, a cabinet that reads what you drop in.</span></div>
+            <div class="build"><b><a href="https://seedside.modernmustardseed.com" target="_blank" rel="noopener noreferrer">The Cove</a></b><span>My 17-agent back office: research, writing, ops, a cabinet that reads what I drop in.</span></div>
             <div class="build"><b><a href="https://modernmustardseed.com/demos" target="_blank" rel="noopener noreferrer">The Build</a></b><span>A lead goes in, a finished demo website comes out. Twelve templates, two at a time.</span></div>
             <div class="build"><b><a href="https://modernmustardseed.com/the-system" target="_blank" rel="noopener noreferrer">Acquisition Engine</a></b><span>Lead finder, five-email drip, voice follow-up, a governor gate, a bounce brake.</span></div>
             <div class="build"><b>Command Center</b><span>Pipeline, builds, proposals, client book, SMS and every email thread in one place.</span></div>
             <div class="build"><b><a href="https://cornerstone-psi.vercel.app" target="_blank" rel="noopener noreferrer">Cornerstone</a></b><span>An agentic product for construction companies, with its own console.</span></div>
             <div class="build"><b>Client Factory</b><span>Multi-tenant platform with a blueprint pipeline, so one build becomes many.</span></div>
             <div class="build"><b><a href="https://modernmustardseed.com/audit" target="_blank" rel="noopener noreferrer">Presence Audit</a></b><span>A three-pillar score of any business online, generated by Claude. Live at /audit.</span></div>
-            <div class="build"><b><a href="https://alpenglow-opal.vercel.app/" target="_blank" rel="noopener noreferrer">Alpenglow</a>, <a href="https://irl-delta.vercel.app" target="_blank" rel="noopener noreferrer">IRL</a></b><span>A live sunset product with a print side. A plan generator that reads the sky before it picks.</span></div>
+            <div class="build"><b><a href="https://alpenglow-opal.vercel.app/" target="_blank" rel="noopener noreferrer">Alpenglow</a></b><span>A live sunset product with a camera registry and a print side. The light after the sun is already gone.</span></div>
             <div class="build"><b><a href="https://wild-horse-construction.vercel.app" target="_blank" rel="noopener noreferrer">Wild Horse</a>, <a href="https://kylers-lawn-snow.vercel.app" target="_blank" rel="noopener noreferrer">Kyler&rsquo;s</a>, <a href="https://ddlandscaping.pro" target="_blank" rel="noopener noreferrer">D&amp;D</a></b><span>A front desk agent, a 16-page and a 22-page site, each with a back office.</span></div>
           </div>
           <div class="folio"><span>The Builds</span><span>4</span></div>
@@ -365,24 +372,31 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--orange);outline-off
 
     <div class="sheet">
       <div class="face front">
-        <section class="page" aria-label="Field Notes">
-          <div class="eyebrow">Field notes</div>
-          <h2>Three fixes</h2>
-          <p class="small" style="margin-bottom:.8em">Found by reading the numbers, not by waiting for a complaint.</p>
-          <div class="note"><div class="big">11<small>days</small></div><p><b>The build that could not fire.</b>A voice tool stopped sending its payload on every call. The heartbeat said healthy. The cause was one enum inside an array schema that emptied the whole object. Found it, fixed it, wrote the rule so it cannot come back.</p></div>
-          <div class="note"><div class="big">5.2<small>percent</small></div><p><b>The bounce rate nobody could see.</b>An email webhook was never registered, so delivery looked perfect. She built a reconciler that recovered the real number, then a brake that halts a day of outbound after two bounces in twenty-five sends.</p></div>
-          <div class="note"><div class="big">22<small>agents</small></div><p><b>One voice standard, everywhere.</b>Callers were getting names spelled with letter sounds. She wrote the standard, built the installer, and applied it across the whole org in one command.</p></div>
-          <div class="pull">A green light is not proof. The logs are.</div>
-          <div class="folio"><span>Field Notes</span><span>5</span></div>
+        <section class="page" aria-label="The Machine">
+          <div class="eyebrow">Case study: my own studio</div>
+          <h2>The machine, <em>by the numbers.</em></h2>
+          <p class="small" style="margin-bottom:.6em">I built Modern Mustard Seed&rsquo;s acquisition machine for one client first: me. Bootstrapped, no team, agents doing the work. These are live counts from its database, read on August 28, 2026.</p>
+          <div class="nums" style="margin-bottom:.8em">
+            <div class="num"><b>9,730</b><span>leads found by the finder, from Google Maps, not a purchased list</span></div>
+            <div class="num"><b>2,503</b><span>emails sent, every one through the governor gate</span></div>
+            <div class="num"><b>150</b><span>demo websites built by the pipeline, each with its own voice agent</span></div>
+            <div class="num"><b>693</b><span>demo events: opens, calls, clicks, bookings, recorded and reconciled</span></div>
+            <div class="num"><b>9</b><span>paying clients, from a standing start, at set package prices</span></div>
+            <div class="num"><b>0</b><span>ad dollars. Every one of them came from the machine.</span></div>
+          </div>
+          <div class="note"><div class="big">11<small>days</small></div><p><b>The build that could not fire.</b>One enum inside an array schema emptied every tool payload while the heartbeat read healthy. I found it by reading numbers, fixed it, and wrote the rule so it cannot come back.</p></div>
+          <div class="note"><div class="big">5.2<small>percent</small></div><p><b>The bounce rate nobody could see.</b>A webhook was never registered, so delivery looked perfect. I built the reconciler that recovered the real number, then the brake that halts a day of outbound after two bounces in twenty-five sends.</p></div>
+          <div class="pull" style="font-size:1.25em;margin:.3em 0 .5em">A green light is not proof. The logs are.</div>
+          <div class="folio"><span>The Machine</span><span>5</span></div>
         </section>
       </div>
       <div class="face back">
         <section class="page" aria-label="The Maker Side">
           <div class="eyebrow">The maker side</div>
           <h2>Cross + Covenant</h2>
-          <p class="lead">A faith apparel brand she designs and runs at <a href="https://crossandcovenant.co" target="_blank" rel="noopener noreferrer">crossandcovenant.co</a>. The off-the-shelf storefront was not good enough, so she built the stack around it.</p>
+          <p class="lead">A faith apparel brand I design and run at <a href="https://crossandcovenant.co" target="_blank" rel="noopener noreferrer">crossandcovenant.co</a>. The off-the-shelf storefront was not good enough, so I built the stack around it.</p>
           <ul class="list">
-            <li><b>Headless storefront</b><span>A custom Next.js front on Vercel with Shopify checkout and Printify fulfilment behind it. Every pixel hers; the cart and the taxes theirs.</span></li>
+            <li><b>Headless storefront</b><span>A custom Next.js front on Vercel with Shopify checkout and Printify fulfilment behind it. Every pixel mine; the cart and the taxes theirs.</span></li>
             <li><b><a href="https://crossandcovenant.co/devotional" target="_blank" rel="noopener noreferrer">Daily devotional</a></b><span>A devotional every day and <a href="https://crossandcovenant.co/bible" target="_blank" rel="noopener noreferrer">Bible reading plans</a>, free, delivered to the site and the inbox by the same system that runs the store.</span></li>
             <li><b>Prayer wall</b><span>A public wall with a moderation workflow, so a request never sits unread.</span></li>
             <li><b>Art pipeline</b><span>Image generation, an alpha knockout cutter, a 4500 by 5400 print-file step. An idea becomes a live collection in a morning.</span></li>
@@ -402,10 +416,10 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--orange);outline-off
             <div>
               <h2 style="font-size:2.1em">Before the agents, <em>houses and kitchens.</em></h2>
               <ul class="tl">
-                <li><div class="when">2025 to now</div><div><i>Founder</i><b>Modern Mustard Seed</b><span>AI product studio. Voice agents, agentic systems, custom software, websites.</span></div></li>
+                <li><div class="when">2025 to now</div><div><i>Founder</i><b>Modern Mustard Seed</b><span>My AI product studio. Voice agents, agentic systems, custom software, websites.</span></div></li>
                 <li><div class="when">Oct 2024 to Jun 2026</div><div><i>VP of Sales</i><b>Presidential Title Group</b><span>Modernized closings with technology; saved buyers real money at the table.</span></div></li>
-                <li class="big"><div class="when">2019 to 2023</div><div><i>Founder and host</i><b>Hello Sunshine Properties</b><span>Turned 26 of Jacksonville&rsquo;s most historic homes into short-term rentals. Acquisition, design, hosting, and on the hard days, crisis counselor and cleaner. Led a team of five.</span><div class="stats"><div>26<small>homes</small></div><div>96%<small>occupancy</small></div><div>4.9<small>rating</small></div></div></div></li>
-                <li><div class="when">2008 to 2017</div><div><i>Designer and sales manager</i><b>Paradise Grilling Systems</b><span>National home show circuit. Sold $5,000 to $50,000 outdoor kitchens, more than $3 million a year personally. Managed six.</span></div></li>
+                <li class="big"><div class="when">2019 to 2023</div><div><i>Founder and host</i><b>Hello Sunshine Properties</b><span>I turned 26 of Jacksonville&rsquo;s most historic homes into short-term rentals. Acquisition, design, hosting, and on the hard days, crisis counselor and cleaner. Led a team of five.</span><div class="stats"><div>26<small>homes</small></div><div>96%<small>occupancy</small></div><div>4.9<small>rating</small></div></div></div></li>
+                <li><div class="when">2008 to 2017</div><div><i>Designer and sales manager</i><b>Paradise Grilling Systems</b><span>I ran the national home show circuit. Sold $5,000 to $50,000 outdoor kitchens, more than $3 million a year personally. Managed six.</span></div></li>
               </ul>
               <p class="small" style="margin-top:.4em">Florida State University, International Affairs.</p>
             </div>
@@ -414,20 +428,20 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--orange);outline-off
         </section>
       </div>
       <div class="face back">
-        <section class="page" aria-label="How She Thinks">
+        <section class="page" aria-label="How I Think">
           <div class="eyebrow">Method</div>
           <h2>Every problem gets walked around <em>before it gets built.</em></h2>
           <div class="lens">
             <div><b>The buyer</b>What would make them say yes today, not next quarter?</div>
             <div><b>The 9pm caller</b>Nobody is at the desk. What happens to them?</div>
             <div><b>The operator</b>Can the person who inherits this run it on a Tuesday?</div>
-            <div><b>The maintainer</b>Will the next developer understand it without her?</div>
+            <div><b>The maintainer</b>Will the next developer understand it without me?</div>
             <div><b>The competitor</b>What is the move they would hate to see?</div>
             <div><b>The skeptic</b>Find five weak spots. Fix all five. Then ship.</div>
           </div>
           <div class="eyebrow">The soft side</div>
           <div class="soft"><span>Sells face to face</span><span>Hosts at a 4.9</span><span>Negotiates calmly</span><span>Calm in a crisis</span><span>Leads small teams</span><span>Explains hard things plainly</span><span>Reads a room fast</span><span>Taste</span><span>Brainstorms out loud</span><span>Says the number</span><span>Finishes</span></div>
-          <div class="folio"><span>How She Thinks</span><span>8</span></div>
+          <div class="folio"><span>How I Think</span><span>8</span></div>
         </section>
       </div>
     </div>
@@ -439,7 +453,7 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--orange);outline-off
           <div class="txt">
             <div class="eyebrow">Off the clock</div>
             <h2 style="font-size:2em">Mornings in the lake. <em>Sundays behind a camera.</em></h2>
-            <p class="small" style="font-size:.86em">She lives in Bigfork, Montana, on Flathead Lake. Most mornings start in the water with her husband and their two dogs, before the fog lifts off the bay. It is where the ideas arrive. On Sundays she is on the production team at Fresh Life Church, behind a camera and on the Resi stream: live, no second take. Good training for shipping.</p>
+            <p class="small" style="font-size:.86em">I live in Bigfork, Montana, on Flathead Lake. Most mornings start in the water with my husband and our two dogs, before the fog lifts off the bay. It is where the ideas arrive. On Sundays I am on the production team at Fresh Life Church, behind a camera and on the Resi stream: live, no second take. Good training for shipping.</p>
             <div class="pull" style="font-size:1.15em;margin:.15em 0 .3em">Cold water first. Then the build.</div>
             <div class="folio"><span>Off the Clock</span><span>9</span></div>
           </div>
@@ -447,7 +461,7 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--orange);outline-off
       </div>
       <div class="face back">
         <section class="page" aria-label="The Build Record">
-          <div class="eyebrow">Tools she ships with</div>
+          <div class="eyebrow">Tools I ship with</div>
           <div class="chips"><span class="chip hot">Claude Code</span><span class="chip hot">Anthropic API</span><span class="chip hot">Vapi</span><span class="chip hot">ElevenLabs</span><span class="chip">Next.js</span><span class="chip">TypeScript</span><span class="chip">Tailwind</span><span class="chip">Supabase</span><span class="chip">Vercel</span><span class="chip">Stripe</span><span class="chip">Twilio</span><span class="chip">Resend</span><span class="chip">Shopify, headless</span><span class="chip">Printify</span><span class="chip">Playwright</span><span class="chip">GitHub Actions</span><span class="chip">Figma</span><span class="chip">Resi</span></div>
           <div class="eyebrow">The build record</div>
           <h2 style="font-size:2em">Three years building. <em>Nine months in the open.</em></h2>
@@ -455,11 +469,11 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--orange);outline-off
             <div class="num"><b>65</b><span>repositories on GitHub, counted this morning</span></div>
             <div class="num"><b>2,120</b><span>commits across them since November 29, 2025</span></div>
             <div class="num"><b>20</b><span>projects in production on Vercel, 20 deploys in August alone</span></div>
-            <div class="num"><b>17</b><span>AI agents in the back office that runs her studio</span></div>
+            <div class="num"><b>17</b><span>AI agents in the back office that runs my studio</span></div>
             <div class="num"><b>22</b><span>voice assistants kept on one standard</span></div>
             <div class="num"><b>15</b><span>years of high-ticket sales and design, $3M a year of it personally</span></div>
           </div>
-          <p class="small" style="margin-top:.9em"><b style="color:var(--orange)">Proof, live:</b> <a href="https://modernmustardseed.com" target="_blank" rel="noopener noreferrer">modernmustardseed.com</a> &middot; <a href="https://modernmustardseed.com/the-system" target="_blank" rel="noopener noreferrer">the-system</a> &middot; <a href="https://modernmustardseed.com/demos" target="_blank" rel="noopener noreferrer">demos</a> &middot; <a href="https://modernmustardseed.com/audit" target="_blank" rel="noopener noreferrer">audit</a> &middot; <a href="https://seedside.modernmustardseed.com" target="_blank" rel="noopener noreferrer">seedside</a> &middot; <a href="https://alpenglow-opal.vercel.app/" target="_blank" rel="noopener noreferrer">alpenglow</a> &middot; <a href="https://irl-delta.vercel.app" target="_blank" rel="noopener noreferrer">irl</a> &middot; <a href="https://crossandcovenant.co" target="_blank" rel="noopener noreferrer">crossandcovenant.co</a> &middot; <a href="https://ddlandscaping.pro" target="_blank" rel="noopener noreferrer">ddlandscaping.pro</a> &middot; <a href="https://fiatluxdesign.co" target="_blank" rel="noopener noreferrer">fiatluxdesign.co</a> &middot; <a href="https://huckwild.vercel.app" target="_blank" rel="noopener noreferrer">huckwild</a> &middot; <a href="https://wildmere.vercel.app" target="_blank" rel="noopener noreferrer">wildmere</a> &middot; <a href="https://westridge-timber.vercel.app" target="_blank" rel="noopener noreferrer">westridge-timber</a> &middot; <a href="https://hallelujah-house.vercel.app" target="_blank" rel="noopener noreferrer">hallelujah-house</a> &middot; <a href="https://prayerhouse-coffee.vercel.app" target="_blank" rel="noopener noreferrer">prayerhouse-coffee</a></p>
+          <p class="small" style="margin-top:.9em"><b style="color:var(--orange)">Proof, live:</b> <a href="https://modernmustardseed.com" target="_blank" rel="noopener noreferrer">modernmustardseed.com</a> &middot; <a href="https://modernmustardseed.com/the-system" target="_blank" rel="noopener noreferrer">the-system</a> &middot; <a href="https://modernmustardseed.com/demos" target="_blank" rel="noopener noreferrer">demos</a> &middot; <a href="https://modernmustardseed.com/audit" target="_blank" rel="noopener noreferrer">audit</a> &middot; <a href="https://seedside.modernmustardseed.com" target="_blank" rel="noopener noreferrer">seedside</a> &middot; <a href="https://alpenglow-opal.vercel.app/" target="_blank" rel="noopener noreferrer">alpenglow</a> &middot; <a href="https://crossandcovenant.co" target="_blank" rel="noopener noreferrer">crossandcovenant.co</a> &middot; <a href="https://ddlandscaping.pro" target="_blank" rel="noopener noreferrer">ddlandscaping.pro</a> &middot; <a href="https://fiatluxdesign.co" target="_blank" rel="noopener noreferrer">fiatluxdesign.co</a> &middot; <a href="https://huckwild.vercel.app" target="_blank" rel="noopener noreferrer">huckwild</a> &middot; <a href="https://wildmere.vercel.app" target="_blank" rel="noopener noreferrer">wildmere</a> &middot; <a href="https://westridge-timber.vercel.app" target="_blank" rel="noopener noreferrer">westridge-timber</a> &middot; <a href="https://hallelujah-house.vercel.app" target="_blank" rel="noopener noreferrer">hallelujah-house</a> &middot; <a href="https://prayerhouse-coffee.vercel.app" target="_blank" rel="noopener noreferrer">prayerhouse-coffee</a></p>
           <div class="folio"><span>The Build Record</span><span>10</span></div>
         </section>
       </div>
@@ -472,13 +486,13 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--orange);outline-off
           <h2>Wanted</h2>
           <div class="ads">
             <div class="ad hot"><b>Fractional head of product, AI</b>Zero to one. Owns the idea, the spec, the build and the ship. A few days a week, a monthly retainer, a product that ships.</div>
-            <div class="ad"><b>Founder in residence</b>A venture studio that needs a builder who sells, designs and operates. Bring the problem; she brings the product.</div>
+            <div class="ad"><b>Founder in residence</b>A venture studio that needs a builder who sells, designs and operates. Bring the problem; I bring the product.</div>
             <div class="ad"><b>Voice and agent architect</b>Vapi, ElevenLabs, Claude. Agents that answer, book, order, follow up and stay on standard.</div>
             <div class="ad"><b>Contract build</b>A scoped build with a date. Priced as a package, or by the hour when the project calls for it.</div>
-            <div class="ad"><b>Advisor to operators</b>Founders who want AI in the business without a team. She has the playbook.</div>
+            <div class="ad"><b>Advisor to operators</b>Founders who want AI in the business without a team. I have the playbook.</div>
             <div class="ad no"><b>Not wanted</b>Fintech. Decks about building instead of building. Meetings that could have been a prototype.</div>
           </div>
-          <div class="reach"><b>Reach her</b><a href="mailto:sarah@modernmustardseed.com">sarah@modernmustardseed.com</a><br>Cell <a href="tel:+14062506076">(406) 250-6076</a> &middot; Mr. Mustard, her agent <a href="tel:+14063121223">(406) 312-1223</a><br><a href="https://www.linkedin.com/in/sarahmscarano/" target="_blank" rel="noopener noreferrer">linkedin.com/in/sarahmscarano</a> &middot; <a href="data:text/vcard;charset=utf-8,BEGIN%3AVCARD%0AVERSION%3A3.0%0AN%3AScarano%3BSarah%3B%3B%3B%0AFN%3ASarah%20Scarano%0AORG%3AModern%20Mustard%20Seed%0ATITLE%3AFounder%0AEMAIL%3BTYPE%3DINTERNET%3Asarah%40modernmustardseed.com%0ATEL%3BTYPE%3DCELL%3A%2B14062506076%0AURL%3Ahttps%3A%2F%2Fmodernmustardseed.com%2Fsarahscarano%0AADR%3B%3B%3BBigfork%3BMT%3B%3BUSA%0ANOTE%3AFractional%2C%20contract%20or%20advisory.%20Remote.%0AEND%3AVCARD" download="Sarah-Scarano.vcf">Save my contact</a></div>
+          <div class="reach"><b>Reach me</b><a href="mailto:sarah@modernmustardseed.com">sarah@modernmustardseed.com</a><br>Cell <a href="tel:+14062506076">(406) 250-6076</a> &middot; Mr. Mustard, my agent <a href="tel:+14063121223">(406) 312-1223</a><br><a href="https://www.linkedin.com/in/sarahmscarano/" target="_blank" rel="noopener noreferrer">linkedin.com/in/sarahmscarano</a> &middot; <a href="data:text/vcard;charset=utf-8,BEGIN%3AVCARD%0AVERSION%3A3.0%0AN%3AScarano%3BSarah%3B%3B%3B%0AFN%3ASarah%20Scarano%0AORG%3AModern%20Mustard%20Seed%0ATITLE%3AFounder%0AEMAIL%3BTYPE%3DINTERNET%3Asarah%40modernmustardseed.com%0ATEL%3BTYPE%3DCELL%3A%2B14062506076%0AURL%3Ahttps%3A%2F%2Fmodernmustardseed.com%2Fsarahscarano%0AADR%3B%3B%3BBigfork%3BMT%3B%3BUSA%0ANOTE%3AFractional%2C%20contract%20or%20advisory.%20Remote.%0AEND%3AVCARD" download="Sarah-Scarano.vcf">Save my contact</a></div>
           <div class="folio"><span>Classifieds</span><span>11</span></div>
         </section>
       </div>
@@ -530,6 +544,11 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--orange);outline-off
   function stopPlay(reset){if(playing){clearInterval(playing);playing=null;playBtn.classList.remove('on');playBtn.textContent='Play'}if(reset)go(0)}
   function startPlay(){if(cur===N)go(0);playBtn.classList.add('on');playBtn.textContent='Pause';playing=setInterval(function(){var c=cur;cur=Math.min(N,cur+1);render(c);if(cur===N)stopPlay(false)},7000)}
   playBtn.addEventListener('click',function(e){e.preventDefault();if(playing)stopPlay(false);else startPlay()});
+  /* cover video: only when the file exists on the site */
+  var cv=document.getElementById('cvid'),vb=document.getElementById('vbtn');
+  if(cv&&vb){cv.addEventListener('loadedmetadata',function(){vb.hidden=false});
+    vb.addEventListener('click',function(e){e.stopPropagation();cv.hidden=false;cv.classList.add('on');cv.controls=true;cv.play();var x=document.createElement('button');x.className='vclose';x.textContent='\u00d7';x.setAttribute('aria-label','Close video');x.addEventListener('click',function(ev){ev.stopPropagation();cv.pause();cv.classList.remove('on');cv.hidden=true;x.remove()});cv.parentNode.appendChild(x)});
+    cv.addEventListener('click',function(e){e.stopPropagation()});}
   /* 1. print */
   document.getElementById('print').addEventListener('click',function(e){e.preventDefault();window.print()});
   /* 5. trackpad and mouse wheel: a sideways swipe turns the page */
