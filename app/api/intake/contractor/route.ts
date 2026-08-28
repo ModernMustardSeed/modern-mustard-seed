@@ -83,15 +83,29 @@ export async function POST(req: Request) {
 
   /* Files go on the card as links, which is what client_files is. Uploaded
    * separately by /api/intake/upload, so by here they are already URLs. */
+  let filesFiled = 0;
   if (files.length) {
-    await supabase.from('client_files').insert(
+    const { error: fileErr, count } = await supabase.from('client_files').insert(
       files.map((f) => ({
         client_email: email,
         label: clean(f.label, 200) ?? 'Uploaded',
         url: f.url,
         kind: clean(f.kind, 40) ?? 'doc',
       })),
+      { count: 'exact' },
     );
+    /* Say so when this fails.
+     *
+     * This insert used to ignore its error, and client_files.kind carries a
+     * check constraint that did not allow 'photo'. So an intake full of
+     * photographs returned ok:true with every one of them dropped, and the only
+     * way to find out was to go looking in the database. A file that does not
+     * land is the whole point of the form not landing. */
+    if (fileErr) {
+      console.error('contractor intake: files not filed', fileErr.message);
+    } else {
+      filesFiled = count ?? files.length;
+    }
   }
 
   // He has done his part, so the project is ours again.
@@ -132,5 +146,7 @@ export async function POST(req: Request) {
     }
   }
 
-  return NextResponse.json({ ok: true });
+  // filesFiled is reported so the caller can tell the difference between
+  // "nothing was sent" and "they were sent and did not land".
+  return NextResponse.json({ ok: true, filesFiled, filesSent: files.length });
 }
