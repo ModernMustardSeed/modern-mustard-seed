@@ -30,6 +30,16 @@ export type DeliveryInput = {
 };
 
 const PAY = /^pay:\s*/i;
+/**
+ * A video is not a link.
+ *
+ * Sarah, 2026-08-28: "I also dont see video in email." It was in there, as one
+ * more white button among four, indistinguishable from the website link. Two
+ * minutes of the product actually working is the most persuasive thing we can
+ * put in an inbox, and it does not survive being the fourth white rectangle in
+ * a list.
+ */
+const VIDEO = /\b(video|walkthrough|film|watch)\b/i;
 /** Links that are internal plumbing and have no business in a client's inbox. */
 const PRIVATE = /^(go-live|golive|runbook|call sheet|notes|internal|admin)/i;
 
@@ -65,6 +75,35 @@ function subtitle(label: string): string {
   return "";
 }
 
+/**
+ * The video, rendered like one: dark, wide, a play mark and a running time,
+ * above everything else in the message.
+ *
+ * Email clients will not play a file inline, so this is an honest poster that
+ * opens the video rather than a fake player that does nothing when tapped.
+ */
+function videoBlock(href: string, label: string) {
+  return `
+  <a href="${esc(href)}" style="display:block;text-decoration:none;margin:0 0 16px;">
+    <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:separate;">
+      <tr><td style="background:#14181c;border:2px solid #14181c;box-shadow:4px 4px 0 #C4380C;padding:22px;">
+        <table role="presentation" cellpadding="0" cellspacing="0">
+          <tr>
+            <td width="62" valign="middle" style="padding-right:16px;">
+              <div style="width:46px;height:46px;background:#F5B700;border-radius:999px;text-align:center;font:700 17px/46px -apple-system,Segoe UI,sans-serif;color:#14181c;">&#9654;</div>
+            </td>
+            <td valign="middle">
+              <div style="font:700 11px/1 -apple-system,Segoe UI,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#F5B700;">Two minutes</div>
+              <div style="font:700 19px/1.25 -apple-system,Segoe UI,sans-serif;color:#ffffff;margin-top:6px;">${esc(label)}</div>
+              <div style="font:400 13px/1.45 -apple-system,Segoe UI,sans-serif;color:#A9B4BC;margin-top:5px;">Watch this before you open anything else. It shows the whole thing working.</div>
+            </td>
+          </tr>
+        </table>
+      </td></tr>
+    </table>
+  </a>`;
+}
+
 /** The step-by-step Google Business Profile block. Plain, numbered, no jargon. */
 const GBP_STEPS = [
   ["Search your own name on Google", "Type your business name and your town. Your listing comes up, with your reviews already on it."],
@@ -83,7 +122,8 @@ export function buildDeliveryEmail(input: DeliveryInput): {
   const { firstName, company, links } = input;
   const usable = links.filter((l) => !PRIVATE.test(l.label));
   const pays = usable.filter((l) => PAY.test(l.label));
-  const looks = usable.filter((l) => !PAY.test(l.label));
+  const videos = usable.filter((l) => !PAY.test(l.label) && VIDEO.test(l.label));
+  const looks = usable.filter((l) => !PAY.test(l.label) && !VIDEO.test(l.label));
 
   const greeting = firstName ? `${firstName}, here is everything` : "Here is everything";
 
@@ -101,6 +141,10 @@ export function buildDeliveryEmail(input: DeliveryInput): {
   <p style="margin:0 0 14px;">Everything below is already built and already sitting there. Have a look at it before you decide anything.</p>
   <p style="margin:0 0 14px;">Nothing charges you a penny until you tap one of the orange buttons.</p>
 </td></tr>
+
+${videos.length ? `<tr><td style="padding:20px 26px 0;">
+  ${videos.map((l) => videoBlock(l.url, 'See Cornerstone working')).join("")}
+</td></tr>` : ""}
 
 ${looks.length ? `<tr><td style="padding:22px 26px 0;">
   <div style="font:700 11px/1 -apple-system,Segoe UI,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#6e7c87;margin-bottom:12px;">Look at these first</div>
@@ -163,6 +207,9 @@ ${pays.length ? `<tr><td style="padding:22px 26px 0;">
     "",
     "Everything below is already built and sitting there. Nothing charges you until you tap a pay link.",
     "",
+    ...(videos.length
+      ? ["WATCH THIS FIRST, TWO MINUTES", ...videos.map((l) => `${l.label}\n  ${l.url}`), ""]
+      : []),
     ...(looks.length
       ? ["LOOK AT THESE FIRST", ...looks.map((l) => `${l.label}\n  ${l.url}`), ""]
       : []),
