@@ -81,6 +81,42 @@ export type LlmRequest = {
    * of an honest "still working".
    */
   timeoutMs?: number;
+  /**
+   * COLLECT AN ANSWER THIS REQUEST ALREADY PAID FOR.
+   *
+   * When set, the newest job with this same label that finished inside the
+   * window is returned instead of queueing a new one.
+   *
+   * This exists because of a real, silent, repeating loss. A route enqueues,
+   * waits its timeout, gives up, and tells the operator "it is queued, try
+   * again in a minute". The drainer then finishes the job seconds later and
+   * writes the answer into `llm_jobs.result_json`, where NOTHING EVER READS IT.
+   * Trying again started a completely fresh job, waited again, and threw that
+   * answer away too. On 2026-08-25 four finished website audits sat in this
+   * table with real scores (41, 46, 41, 38) while all three leads still read
+   * `audit_at = NEVER`. The button could only ever work by winning a race.
+   *
+   * Opt-in per call site, and deliberately short, so it collects the answer the
+   * operator is standing there waiting for and never serves a stale one to a
+   * caller that wanted fresh work. A deliberate re-grade later still runs for
+   * real. Only switch it on where the LABEL identifies the question: see
+   * `alreadyAnswered` for why the prompt cannot be the key.
+   */
+  collectWithinMs?: number;
+  /**
+   * WHO THIS ANSWER IS FOR.
+   *
+   * A drainer does not need it. Delivery does. Without it a job that finishes
+   * after its request gave up is an answer belonging to nobody, which is how
+   * four graded websites sat in this table while all four leads read
+   * `audit_at = NULL`. `lib/audit-delivery.mjs` had to infer the owner from the
+   * hostname in the label; this is the fact that inference stood in for.
+   *
+   * Optional because plenty of work genuinely has no owner: the public audit
+   * page, the chat composer, anything a visitor triggers. Null means nobody is
+   * waiting, and that is a real answer rather than missing data.
+   */
+  source?: { table: string; id: string } | null;
 };
 
 /** How often to check the queue while waiting. */
@@ -107,6 +143,8 @@ async function enqueue(req: LlmRequest, schema: unknown | null): Promise<string>
       user_prompt: req.user,
       schema: schema ?? null,
       model: req.model ?? 'sonnet',
+      source_table: req.source?.table ?? null,
+      source_id: req.source?.id ?? null,
     })
     .select('id')
     .single();
@@ -126,9 +164,14 @@ type JobRow = {
  * Wait for a drainer to answer, then hand back the row.
  *
  * The job is NEVER cancelled on timeout. A drainer will still pick it up, still
- * run it, and still write the answer; the work is not wasted, it just lands
- * after the response. That is the whole reason this returns null rather than
- * deleting the row.
+ * run it, and still write the answer, which is why this returns null rather
+ * than deleting the row.
+ *
+ * That answer used to go nowhere. This comment said the work "just lands after
+ * the response", which was true of the row and false of everything the operator
+ * can see: the report reached `result_json` and no caller ever came back for
+ * it. `collectWithinMs` is what makes the sentence true. Without it on a call
+ * site, a timeout here still means the work was done and discarded.
  */
 async function waitFor(jobId: string, timeoutMs: number): Promise<JobRow | null> {
   const sb = getSupabase();
@@ -150,7 +193,57 @@ async function waitFor(jobId: string, timeoutMs: number): Promise<JobRow | null>
   return null;
 }
 
+/**
+ * The newest finished answer to this same question, if one landed inside the
+ * window.
+ *
+ * MATCHED ON THE LABEL, AND THAT IS A CONTRACT, NOT A SHORTCUT. Matching on the
+ * user prompt is the obvious idea and it does not work: these prompts embed
+ * live-read facts and today's DATE. Two audits of one site ninety seconds apart
+ * differed by "read live, 2026-08-25" versus "2026-08-26" and by one line of
+ * opening hours, so an exact-prompt key would have missed every retry it exists
+ * to catch, and would go stale at midnight on principle.
+ *
+ * So the label has to identify the question. `audit example.com` does. That is
+ * why `collectWithinMs` is opt-in per call site rather than on by default: a
+ * caller whose label is coarse (`draft`, `summary`) must not switch it on, or
+ * it will collect the answer to somebody else's question.
+ *
+ * Failed jobs are never collected: a failure is worth re-running, an answer is
+ * not. Neither is a 'done' row with nothing in it, which is a drainer bug
+ * wearing an answer's clothes.
+ */
+async function alreadyAnswered(req: LlmRequest, wantsJson: boolean): Promise<JobRow | null> {
+  const withinMs = req.collectWithinMs ?? 0;
+  if (withinMs <= 0) return null;
+
+  const sb = getSupabase();
+  if (!sb) return null;
+
+  try {
+    const { data } = await sb
+      .from('llm_jobs')
+      .select('status, result_text, result_json, error')
+      .eq('label', req.label)
+      .eq('status', 'done')
+      .gte('finished_at', new Date(Date.now() - withinMs).toISOString())
+      .order('finished_at', { ascending: false })
+      .limit(5);
+
+    for (const row of (data ?? []) as JobRow[]) {
+      const answered = wantsJson ? row.result_json != null : !!(row.result_text ?? '').trim();
+      if (answered) return row;
+    }
+  } catch {
+    /* Collecting is an optimisation. A failure here must only cost a re-run. */
+  }
+  return null;
+}
+
 async function viaQueue(req: LlmRequest, schema: unknown | null): Promise<JobRow> {
+  const collected = await alreadyAnswered(req, schema != null);
+  if (collected) return collected;
+
   const jobId = await enqueue(req, schema);
   const job = await waitFor(jobId, req.timeoutMs ?? DEFAULT_TIMEOUT_MS);
 

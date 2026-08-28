@@ -4,7 +4,12 @@ import { auditWorkerAlive } from '@/lib/audit-queue';
 import { runWebsiteAudit } from '@/lib/website-audit';
 
 export const runtime = 'nodejs';
-export const maxDuration = 60;
+// 120, not 60. `runWebsiteAudit` waits up to 95 seconds on the audit worker, so
+// at 60 a slow site got this function killed mid-grade: the result was thrown
+// away, `audit_at` was never stamped, and the next run picked the same lead and
+// died on it again. One slow domain could quietly hold up the whole queue while
+// the cron reported nothing at all. The budget now covers the wait it performs.
+export const maxDuration = 120;
 export const dynamic = 'force-dynamic';
 
 /**

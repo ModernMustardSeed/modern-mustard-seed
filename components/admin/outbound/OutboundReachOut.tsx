@@ -9,6 +9,7 @@ import TapText from '@/components/admin/TapText';
 import { usePoll } from '@/lib/use-poll';
 import { TemplatePicker, templateName } from '@/components/admin/TemplatePicker';
 import DripPanel, { dripChipLabel } from '@/components/admin/outbound/DripPanel';
+import LeadEmailComposer from '@/components/admin/LeadEmailComposer';
 import { RANDOM_TEMPLATE } from '@/lib/site-templates.mjs';
 
 /**
@@ -72,18 +73,18 @@ export function ReachOutDeck({
   const [composer, setComposer] = useState<'outreach' | 'demos' | null>(null);
   const [enriching, setEnriching] = useState(false);
   const [promoting, setPromoting] = useState(false);
-  const [forging, setForging] = useState(false);
-  const [forgingSite, setForgingSite] = useState(false);
+  const [building, setBuilding] = useState(false);
+  const [buildingSite, setBuildingSite] = useState(false);
   const [rebuilding, setRebuilding] = useState(false);
-  // Sarah's design-tier picker, same convention as the Forge board. Tier 2 (the
+  // Sarah's design-tier picker, same convention as the Build board. Tier 2 (the
   // Wildmere award-site world) is the house style and the default; tier 3 is the
-  // Journey site, built on request. Governs the first forge and any rebuild.
+  // Journey site, built on request. Governs the first build and any rebuild.
   const [designTier, setDesignTier] = useState<1 | 2 | 3>(2);
   // Sarah's template picker (2026-08-24): Random lets the studio rotate by trade;
-  // a named template is worn exactly. Rides the first forge and any rebuild.
+  // a named template is worn exactly. Rides the first build and any rebuild.
   const [siteTemplateKey, setSiteTemplateKey] = useState<string>(RANDOM_TEMPLATE);
-  const [forgingOs, setForgingOs] = useState(false);
-  const [reforgeOpen, setReforgeOpen] = useState(false);
+  const [buildingOs, setBuildingOs] = useState(false);
+  const [rebuildOpen, setRebuildOpen] = useState(false);
   // The drip campaign (2026-08-25): one button shows the whole sequence and
   // starts it by sending email 1. The chip label reads the drip's state.
   const [dripOpen, setDripOpen] = useState(false);
@@ -102,7 +103,7 @@ export function ReachOutDeck({
   const [textBody, setTextBody] = useState('');
   const [textLoading, setTextLoading] = useState(false);
 
-  const siteForging = lead.site_demo_status === 'queued' || lead.site_demo_status === 'building';
+  const siteBuilding = lead.site_demo_status === 'queued' || lead.site_demo_status === 'building';
   const siteReady = lead.site_demo_status === 'ready' && Boolean(lead.site_demo_url);
   // IS THIS ONE WORTH REBUILDING?
   //
@@ -126,47 +127,47 @@ export function ReachOutDeck({
   const osReady = lead.os_demo_status === 'ready' && Boolean(lead.os_demo_url);
   const demoCount = [Boolean(lead.demo_url), siteReady, osReady].filter(Boolean).length;
 
-  const forgeOs = async () => {
-    setForgingOs(true);
+  const buildOs = async () => {
+    setBuildingOs(true);
     try {
-      const res = await api<{ lead?: OutboundLead }>(`/api/admin/outbound/leads/${lead.id}/forge-os`, { method: 'POST' });
+      const res = await api<{ lead?: OutboundLead }>(`/api/admin/outbound/leads/${lead.id}/build-os`, { method: 'POST' });
       if (res.lead) onLead(res.lead);
-      push('Business OS forged. Their whole back office, one link.');
+      push('Business OS built. Their whole back office, one link.');
     } catch (e) {
-      push(e instanceof Error ? e.message : 'OS forge failed.', 'error');
+      push(e instanceof Error ? e.message : 'OS build failed.', 'error');
     } finally {
-      setForgingOs(false);
+      setBuildingOs(false);
     }
   };
 
-  const forgeDemo = async () => {
-    setForging(true);
-    push('Forging their voice agent...');
+  const buildDemo = async () => {
+    setBuilding(true);
+    push('Building their voice agent...');
     try {
-      const res = await api<{ demo_url: string; lead?: OutboundLead }>(`/api/admin/outbound/leads/${lead.id}/forge-demo`, { method: 'POST' });
+      const res = await api<{ demo_url: string; lead?: OutboundLead }>(`/api/admin/outbound/leads/${lead.id}/build-demo`, { method: 'POST' });
       if (res.lead) onLead(res.lead);
-      push('Demo forged. It answers as their business now.');
+      push('Demo built. It answers as their business now.');
     } catch (e) {
-      push(e instanceof Error ? e.message : 'Forge failed.', 'error');
+      push(e instanceof Error ? e.message : 'Build failed.', 'error');
     } finally {
-      setForging(false);
+      setBuilding(false);
     }
   };
 
-  const forgeSite = async () => {
-    setForgingSite(true);
-    push(`Queuing their demo website at the forge${designTier ? ` (Tier ${designTier} design)` : ''}...`);
+  const buildSite = async () => {
+    setBuildingSite(true);
+    push(`Queuing their demo website at the build${designTier ? ` (Tier ${designTier} design)` : ''}...`);
     try {
-      const res = await api<{ lead?: OutboundLead }>(`/api/admin/outbound/leads/${lead.id}/forge-site`, {
+      const res = await api<{ lead?: OutboundLead }>(`/api/admin/outbound/leads/${lead.id}/build-site`, {
         method: 'POST',
         body: JSON.stringify({ ...(designTier ? { designTier } : {}), siteTemplate: siteTemplateKey }),
       });
       if (res.lead) onLead(res.lead);
-      push('Website queued. The forge builds it in the background; the chip flips to live when it is done.');
+      push('Website queued. The build makes it in the background; the chip flips to live when it is done.');
     } catch (e) {
-      push(e instanceof Error ? e.message : 'Website forge failed.', 'error');
+      push(e instanceof Error ? e.message : 'Website build failed.', 'error');
     } finally {
-      setForgingSite(false);
+      setBuildingSite(false);
     }
   };
 
@@ -195,7 +196,7 @@ export function ReachOutDeck({
     }
   };
 
-  // While the forge works, watch for the flip to ready (the build runs on the
+  // While the build works, watch for the flip to ready (the build runs on the
   // worker machine, minutes not seconds).
   const siteStatusRef = useRef(lead.site_demo_status);
   siteStatusRef.current = lead.site_demo_status;
@@ -206,14 +207,14 @@ export function ReachOutDeck({
         if (res.lead.site_demo_status !== siteStatusRef.current) {
           onLead(res.lead);
           if (res.lead.site_demo_status === 'ready') push('Their new website is live. Send it while the call is still warm.');
-          if (res.lead.site_demo_status === 'failed') push('The website forge hit a snag. Retry from the deck.', 'error');
+          if (res.lead.site_demo_status === 'failed') push('The website build hit a snag. Retry from the deck.', 'error');
         }
       } catch {
         /* transient; next tick retries */
       }
     },
     20000,
-    { enabled: siteForging },
+    { enabled: siteBuilding },
   );
 
   const enrich = async () => {
@@ -282,7 +283,7 @@ export function ReachOutDeck({
     }
   };
 
-  /** Open the composer, fetching a draft that leads with their forged demo link. */
+  /** Open the composer, fetching a draft that leads with their built demo link. */
   const openText = async () => {
     if (textOpen) { setTextOpen(false); return; }
     setTextOpen(true);
@@ -380,22 +381,22 @@ export function ReachOutDeck({
         )}
 
         {lead.demo_url ? (
-          <a href={lead.demo_url} target="_blank" rel="noopener noreferrer" className={`${chip} bg-[#3f5d34] text-[#f7f3e9] border-[#1a1815] hover:-translate-y-0.5 shadow-[3px_3px_0_0_#1a1815]`} title="Their forged voice agent, live">
+          <a href={lead.demo_url} target="_blank" rel="noopener noreferrer" className={`${chip} bg-[#3f5d34] text-[#f7f3e9] border-[#1a1815] hover:-translate-y-0.5 shadow-[3px_3px_0_0_#1a1815]`} title="Their built voice agent, live">
             ▶ Demo live ↗
           </a>
         ) : (
-          <button onClick={() => void forgeDemo()} disabled={forging} className={`${chip} bg-white text-[#1a1815]/75 border-[#1a1815]/30 hover:border-[#1a1815]`} title="Build their branded voice agent demo in seconds">
-            {forging ? 'Forging…' : '⚒ Forge demo'}
+          <button onClick={() => void buildDemo()} disabled={building} className={`${chip} bg-white text-[#1a1815]/75 border-[#1a1815]/30 hover:border-[#1a1815]`} title="Build their branded voice agent demo in seconds">
+            {building ? 'Building…' : '⚒ Build demo'}
           </button>
         )}
 
-        {!siteForging && (
+        {!siteBuilding && (
           <select
             value={designTier}
             onChange={(e) => setDesignTier(Number(e.target.value) as 1 | 2 | 3)}
             className="bg-white border-2 border-[#1a1815]/20 rounded-lg px-2 py-1.5 font-oswald uppercase tracking-[0.06em] text-[11px] text-[#1a1815]/75 outline-none focus:border-[#b58a2a] hover:border-[#1a1815]"
-            title="Which design tier the next website forge or rebuild uses. Tier 2 is the house style. Applies to the button below, not to a site already built."
-            aria-label="Design tier for the website forge"
+            title="Which design tier the next website build or rebuild uses. Tier 2 is the house style. Applies to the button below, not to a site already built."
+            aria-label="Design tier for the website build"
           >
             <option value={1}>Design: Tier 1 · Award</option>
             <option value={2}>Design: Tier 2 · World</option>
@@ -403,7 +404,7 @@ export function ReachOutDeck({
           </select>
         )}
 
-        {!siteForging && (
+        {!siteBuilding && (
           <TemplatePicker
             value={siteTemplateKey}
             onChange={setSiteTemplateKey}
@@ -426,7 +427,7 @@ export function ReachOutDeck({
 
         {siteReady ? (
           <>
-            <a href={lead.site_demo_url!} target="_blank" rel="noopener noreferrer" className={`${chip} bg-[#b58a2a] text-[#1a1815] border-[#1a1815] hover:-translate-y-0.5 shadow-[3px_3px_0_0_#1a1815]`} title="Their forged demo website. The voice agent rides along on it for the demo, but it is a separate product. Do not tell them the site includes it.">
+            <a href={lead.site_demo_url!} target="_blank" rel="noopener noreferrer" className={`${chip} bg-[#b58a2a] text-[#1a1815] border-[#1a1815] hover:-translate-y-0.5 shadow-[3px_3px_0_0_#1a1815]`} title="Their built demo website. The voice agent rides along on it for the demo, but it is a separate product. Do not tell them the site includes it.">
               🌐 Website live ↗
             </a>
             {demoQ && (
@@ -463,28 +464,28 @@ export function ReachOutDeck({
               {rebuilding ? 'Queuing…' : demoQ && demoQ.verdict === 'slop' ? '↻ Rebuild properly' : '↻ Rebuild'}
             </button>
           </>
-        ) : siteForging ? (
-          <span className={`${chip} bg-[#b58a2a]/15 text-[#7a5c1a] border-[#b58a2a]/60 cursor-default animate-pulse`} title="The forge is building it in the background. This flips to live on its own.">
-            🌐 Website forging…
+        ) : siteBuilding ? (
+          <span className={`${chip} bg-[#b58a2a]/15 text-[#7a5c1a] border-[#b58a2a]/60 cursor-default animate-pulse`} title="The build is building it in the background. This flips to live on its own.">
+            🌐 Website building…
           </span>
         ) : (
           <button
-            onClick={() => void forgeSite()}
-            disabled={forgingSite}
+            onClick={() => void buildSite()}
+            disabled={buildingSite}
             className={`${chip} bg-white text-[#1a1815]/75 border-[#1a1815]/30 hover:border-[#1a1815]`}
-            title={lead.site_demo_status === 'failed' ? 'Last build failed. Forge it again.' : 'Build them a full demo website, with their voice agent riding along on it so they can hear it (runs in the background). The voice agent is still sold separately.'}
+            title={lead.site_demo_status === 'failed' ? 'Last build failed. Build it again.' : 'Build them a full demo website, with their voice agent riding along on it so they can hear it (runs in the background). The voice agent is still sold separately.'}
           >
-            {forgingSite ? 'Queuing…' : lead.site_demo_status === 'failed' ? '🌐 Retry website' : '🌐 Forge website'}
+            {buildingSite ? 'Queuing…' : lead.site_demo_status === 'failed' ? '🌐 Retry website' : '🌐 Build website'}
           </button>
         )}
 
         {osReady ? (
-          <a href={lead.os_demo_url!} target="_blank" rel="noopener noreferrer" className={`${chip} bg-[#1a1815] text-[#f7f3e9] border-[#1a1815] hover:-translate-y-0.5 shadow-[3px_3px_0_0_#b58a2a]`} title="Their forged business command center: CRM, reviews, ads, automations, AI assistant">
+          <a href={lead.os_demo_url!} target="_blank" rel="noopener noreferrer" className={`${chip} bg-[#1a1815] text-[#f7f3e9] border-[#1a1815] hover:-translate-y-0.5 shadow-[3px_3px_0_0_#b58a2a]`} title="Their built business command center: CRM, reviews, ads, automations, AI assistant">
             ⚙ OS live ↗
           </a>
         ) : (
-          <button onClick={() => void forgeOs()} disabled={forgingOs} className={`${chip} bg-white text-[#1a1815]/75 border-[#1a1815]/30 hover:border-[#1a1815]`} title={`For the "I can't manage the volume" lead: forge their business command center instantly (CRM, reviews, ads, automations, AI assistant)`}>
-            {forgingOs ? 'Forging…' : '⚙ Forge business OS'}
+          <button onClick={() => void buildOs()} disabled={buildingOs} className={`${chip} bg-white text-[#1a1815]/75 border-[#1a1815]/30 hover:border-[#1a1815]`} title={`For the "I can't manage the volume" lead: build their business command center instantly (CRM, reviews, ads, automations, AI assistant)`}>
+            {buildingOs ? 'Building…' : '⚙ Build business OS'}
           </button>
         )}
 
@@ -498,11 +499,11 @@ export function ReachOutDeck({
 
         {demoCount > 0 && (
           <button
-            onClick={() => setReforgeOpen(true)}
+            onClick={() => setRebuildOpen(true)}
             className={`${chip} bg-[#1a1815]/[0.04] text-[#1a1815]/75 border-[#1a1815]/30 hover:border-[#1a1815] hover:-translate-y-0.5`}
             title="Change any demo from a prompt: edit the website, remap the command center, or rewrite the voice agent"
           >
-            ✎ Reforge from a prompt
+            ✎ Rebuild from a prompt
           </button>
         )}
 
@@ -552,7 +553,7 @@ export function ReachOutDeck({
           note={
             lead.hub_demo_url || lead.site_demo_url || lead.os_demo_url || lead.demo_url
               ? undefined
-              : 'Nothing is forged for them yet. Build a demo first and this draft will lead with the link.'
+              : 'Nothing is built for them yet. Build a demo first and this draft will lead with the link.'
           }
         />
       )}
@@ -588,7 +589,7 @@ export function ReachOutDeck({
         onSent={onOpenThread}
       />
 
-      <ReforgeModal lead={lead} open={reforgeOpen} onClose={() => setReforgeOpen(false)} onLead={onLead} push={push} />
+      <RebuildModal lead={lead} open={rebuildOpen} onClose={() => setRebuildOpen(false)} onLead={onLead} push={push} />
       <DripPanel lead={lead} open={dripOpen} onClose={() => setDripOpen(false)} onLead={onLead} onDrip={setDrip} push={push} />
     </>
   );
@@ -605,10 +606,10 @@ export function ReachOutDeck({
  * where you edit.
  */
 /**
- * Everything already made for this lead, right in the lead file: the forged
+ * Everything already made for this lead, right in the lead file: the built
  * demos, their Integration Plan (with a one-click queue when it is missing),
  * and the printable Game Plan sheet. This is the walk-in kit; before this
- * strip existed it lived only on the Forge board and in local PDF folders,
+ * strip existed it lived only on the Build board and in local PDF folders,
  * which is why it was invisible while working a lead.
  */
 function MadeForThem({ lead, onLead, push }: { lead: OutboundLead; onLead: (l: OutboundLead) => void; push: Push }) {
@@ -680,7 +681,7 @@ function MadeForThem({ lead, onLead, push }: { lead: OutboundLead; onLead: (l: O
           </button>
         )}
         {!lead.demo_url && !siteReady && !siteBuilding && !lead.os_demo_url && !lead.hub_demo_url && (
-          <span className="font-sans text-[13px] text-[#1a1815]/45">Nothing forged yet. The sheet still prints with what we know; forge their demos from the deck above.</span>
+          <span className="font-sans text-[13px] text-[#1a1815]/45">Nothing built yet. The sheet still prints with what we know; build their demos from the deck above.</span>
         )}
       </div>
     </div>
@@ -817,7 +818,7 @@ export function LeadFile({ lead, onLead, push }: { lead: OutboundLead; onLead: (
         )}
       </div>
 
-      {/* Everything forged for them + the printable sheet. */}
+      {/* Everything built for them + the printable sheet. */}
       <MadeForThem lead={lead} onLead={onLead} push={push} />
 
       {/* Notes. */}
@@ -891,30 +892,30 @@ function LeadNotes({ lead, onLead, push }: { lead: OutboundLead; onLead: (l: Out
   );
 }
 
-/* ------------------------------- reforge ---------------------------------- */
+/* ------------------------------- rebuild ---------------------------------- */
 
-type ReforgeTarget = 'site' | 'os' | 'voice';
+type RebuildTarget = 'site' | 'os' | 'voice';
 
 /**
- * REFORGE FROM A PROMPT. One box, one sentence, any of the lead's three demos
+ * REBUILD FROM A PROMPT. One box, one sentence, any of the lead's three demos
  * rebuilt with that change: edit the website (preserves everything, changes only
  * what you asked), remap the command center's config, or rewrite the voice agent's
- * script. The website edit runs on the forge in the background; the chip flips back
+ * script. The website edit runs on the build in the background; the chip flips back
  * to live on its own, same as a fresh build.
  */
-const REFORGE_TARGETS: { key: ReforgeTarget; label: string; hint: string }[] = [
+const REBUILD_TARGETS: { key: RebuildTarget; label: string; hint: string }[] = [
   { key: 'site', label: 'Website', hint: 'Edit their demo website. Preserves the design, changes only what you ask.' },
   { key: 'os', label: 'Command center', hint: 'Remap the business OS demo: trade, owner, city, phone, the pain quote.' },
   { key: 'voice', label: 'Voice Agent', hint: 'Rewrite the voice agent with your instruction folded into its script.' },
 ];
 
-const PLACEHOLDERS: Record<ReforgeTarget, string> = {
+const PLACEHOLDERS: Record<RebuildTarget, string> = {
   site: 'e.g. Make the hero photo a night shot, add a booking button under it, and use their green throughout.',
   os: 'e.g. The owner is Jake, they are a plumber in Nashville, and the phone is (615) 555-0199.',
   voice: 'e.g. Open by mentioning they are family-owned since 1998, and always offer a free estimate.',
 };
 
-function ReforgeModal({
+function RebuildModal({
   lead, open, onClose, onLead, push,
 }: { lead: OutboundLead; open: boolean; onClose: () => void; onLead: (l: OutboundLead) => void; push: Push }) {
   const siteReady = lead.site_demo_status === 'ready' && Boolean(lead.site_demo_url);
@@ -922,10 +923,10 @@ function ReforgeModal({
   const osReady = lead.os_demo_status === 'ready' && Boolean(lead.os_demo_url);
   const voiceReady = Boolean(lead.demo_url);
 
-  const available: Record<ReforgeTarget, boolean> = { site: siteReady, os: osReady, voice: voiceReady };
-  const firstAvailable = (['site', 'voice', 'os'] as ReforgeTarget[]).find((t) => available[t]) ?? 'voice';
+  const available: Record<RebuildTarget, boolean> = { site: siteReady, os: osReady, voice: voiceReady };
+  const firstAvailable = (['site', 'voice', 'os'] as RebuildTarget[]).find((t) => available[t]) ?? 'voice';
 
-  const [target, setTarget] = useState<ReforgeTarget>(firstAvailable);
+  const [target, setTarget] = useState<RebuildTarget>(firstAvailable);
   const [text, setText] = useState('');
   const [busy, setBusy] = useState(false);
 
@@ -943,34 +944,34 @@ function ReforgeModal({
     if (!instruction || busy) return;
     setBusy(true);
     try {
-      const res = await api<{ lead?: OutboundLead; already?: boolean }>(`/api/admin/outbound/leads/${lead.id}/reforge`, {
+      const res = await api<{ lead?: OutboundLead; already?: boolean }>(`/api/admin/outbound/leads/${lead.id}/rebuild`, {
         method: 'POST',
         body: JSON.stringify({ target, instruction }),
       });
       if (res.lead) onLead(res.lead);
       push(
         target === 'site'
-          ? 'Website reforge queued. The forge applies your change in the background; the chip flips to live when it lands.'
+          ? 'Website rebuild queued. The build applies your change in the background; the chip flips to live when it lands.'
           : target === 'voice'
-            ? 'Voice Agent reforged. It answers with your change now.'
+            ? 'Voice Agent rebuilt. It answers with your change now.'
             : 'Command center remapped from your prompt.',
       );
       onClose();
     } catch (e) {
-      push(e instanceof Error ? e.message : 'Reforge failed.', 'error');
+      push(e instanceof Error ? e.message : 'Rebuild failed.', 'error');
     } finally {
       setBusy(false);
     }
   };
 
-  const meta = REFORGE_TARGETS.find((t) => t.key === target)!;
+  const meta = REBUILD_TARGETS.find((t) => t.key === target)!;
   const disabledTarget = !available[target];
 
   return (
     <Modal
       open={open}
       onClose={onClose}
-      eyebrow="Reforge from a prompt"
+      eyebrow="Rebuild from a prompt"
       title="Change a demo in one sentence"
       subtitle={lead.business_name}
       size="lg"
@@ -978,13 +979,13 @@ function ReforgeModal({
         <div className="flex items-center justify-end gap-2">
           <button onClick={onClose} className={btnGhost}>Cancel</button>
           <button onClick={() => void submit()} disabled={busy || !text.trim() || disabledTarget} className={btnSeed}>
-            {busy ? 'Reforging…' : 'Reforge it'}
+            {busy ? 'Rebuilding…' : 'Rebuild it'}
           </button>
         </div>
       }
     >
       <div className="flex flex-wrap gap-2">
-        {REFORGE_TARGETS.map((t) => {
+        {REBUILD_TARGETS.map((t) => {
           const on = target === t.key;
           const canUse = available[t.key];
           return (
@@ -994,7 +995,7 @@ function ReforgeModal({
               className={`px-3.5 py-2 rounded-xl border-2 font-oswald font-semibold uppercase tracking-[0.08em] text-xs transition-all ${
                 on ? 'bg-[#1a1815] text-[#f7f3e9] border-[#1a1815]' : 'bg-white text-[#1a1815]/70 border-[#1a1815]/30 hover:border-[#1a1815]'
               }`}
-              title={canUse ? t.hint : 'This demo has not been forged yet.'}
+              title={canUse ? t.hint : 'This demo has not been built yet.'}
             >
               {t.label}{!canUse && ' ·'}
             </button>
@@ -1005,11 +1006,11 @@ function ReforgeModal({
       <p className="font-sans text-[13px] text-[#1a1815]/60 mt-3">{meta.hint}</p>
 
       {target === 'site' && siteBusy && (
-        <p className="font-sans text-sm text-[#7a5c1a] font-medium mt-2">Their website is building right now. Wait for it to go live, then reforge.</p>
+        <p className="font-sans text-sm text-[#7a5c1a] font-medium mt-2">Their website is building right now. Wait for it to go live, then rebuild.</p>
       )}
       {disabledTarget && !siteBusy && (
         <p className="font-sans text-sm text-[#a03123] font-medium mt-2">
-          {target === 'os' ? 'No command center demo yet. Forge one first.' : target === 'site' ? 'No website demo yet. Forge one first.' : 'No voice agent demo yet. Forge one first.'}
+          {target === 'os' ? 'No command center demo yet. Build one first.' : target === 'site' ? 'No website demo yet. Build one first.' : 'No voice agent demo yet. Build one first.'}
         </p>
       )}
 
@@ -1025,7 +1026,7 @@ function ReforgeModal({
       </div>
       <p className="font-sans text-[12px] text-[#1a1815]/45 mt-2">
         {target === 'site'
-          ? 'The forge edits their existing site. Everything you do not mention stays exactly as it is.'
+          ? 'The build edits their existing site. Everything you do not mention stays exactly as it is.'
           : target === 'voice'
             ? 'This rebuilds the voice agent. The demo link stays the same.'
             : 'Instant. The command center re-renders with the new details.'}
@@ -1069,7 +1070,7 @@ function EmailComposer({
   const opts =
     mode === 'demos'
       // includeOs is deliberately false: the command center is never named in
-      // an email to a prospect. Sarah still forges and opens one from the chips
+      // an email to a prospect. Sarah still builds and opens one from the chips
       // above; it is hers to show, not the email's to offer.
       ? { includeDemo: Boolean(lead.demo_url), includeSite: siteReady, includeOs: false }
       : {};
@@ -1684,11 +1685,21 @@ export function ThreadPanel({
     bottomRef.current?.scrollIntoView({ block: 'end' });
   }, [messages]);
 
+  /**
+   * This used to call /draft-reply, which reads the last INBOUND email and
+   * refuses with "No inbound message to reply to yet" when there is not one.
+   * That is the common case: they talked to Mr. Mustard, they never wrote. The
+   * composer endpoint reads the last interaction of any kind, transcript
+   * included, so the button now works on the leads it was most needed for.
+   */
   const draft = async () => {
     setDrafting(true);
     try {
-      const res = await api<{ draft: string }>(`/api/admin/outbound/leads/${lead.id}/draft-reply`, { method: 'POST' });
-      setReply(res.draft);
+      const res = await api<{ body: string }>('/api/admin/lead-email', {
+        method: 'POST',
+        body: JSON.stringify({ source: 'lead', id: lead.id, action: 'suggest' }),
+      });
+      setReply(res.body);
     } catch (e) {
       push(e instanceof Error ? e.message : 'Draft failed.', 'error');
     } finally {
@@ -1781,10 +1792,20 @@ export function ThreadPanel({
           className={`${inputCls} min-h-[90px]`}
           value={reply}
           onChange={(e) => setReply(e.target.value)}
-          placeholder={lead.email ? 'Type the reply, or let the AI draft it from their last message.' : 'No email on file for this lead yet.'}
+          placeholder={lead.email ? 'Type the reply, or let the AI draft it from the last thing that happened.' : 'No email on file for this lead yet.'}
           disabled={!lead.email}
         />
-        <div className="flex items-center justify-end gap-2 mt-2.5">
+        <div className="flex flex-wrap items-center justify-end gap-2 mt-2.5">
+          {/* The quick reply keeps the "Re:" subject the thread already has.
+              When the email needs its own subject line, or an offer that is
+              not in any sequence, it needs the composer. */}
+          <LeadEmailComposer
+            source="lead"
+            id={lead.id}
+            triggerLabel="Compose with a subject"
+            triggerClassName={btnGhost}
+            onSent={() => void load()}
+          />
           <button onClick={() => void draft()} disabled={drafting || !lead.email} className={btnGhost}>
             {drafting ? 'Drafting…' : '✨ AI draft'}
           </button>

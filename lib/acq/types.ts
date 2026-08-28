@@ -1,7 +1,7 @@
 /**
  * THE MR. MUSTARD ACQUISITION ENGINE — shared vocabulary.
  *
- * One journey, five words: Prospect → Permission → Mr. Mustard → Forge → Sale.
+ * One journey, five words: Prospect → Permission → Mr. Mustard → Build → Sale.
  * Every stage name, score band and status string in the engine comes from here,
  * so the admin, the queue, the emails and the voice tools can never disagree
  * about what a lead's state actually is.
@@ -96,7 +96,7 @@ export const STAGE_LABELS: Record<AcqStage, string> = {
   consented: 'Consented',
   called: 'Mr. Mustard called',
   demoed: 'Demo completed',
-  forged: 'Agent forged',
+  forged: 'Agent built',
   demo_sent: 'Demo sent',
   meeting: 'Meeting / checkout',
   client: 'Client',
@@ -276,6 +276,12 @@ export type AcqProspect = {
   phone: string;
   email: string | null;
   website: string | null;
+  /** Their Facebook page, canonical. Null is unknown, not absent. */
+  facebook_url: string | null;
+  facebook_source: 'website' | 'search' | 'hand' | 'none' | null;
+  /** The Facebook DM stamp. Null means never messaged by hand. */
+  last_dm_at: string | null;
+  dm_count: number;
   niche: string;
   trade: Trade | null;
   city: string | null;
@@ -379,7 +385,7 @@ export const RESERVOIR_LABELS: Record<ReservoirState, string> = {
   discovered: 'Discovered', researching: 'Researching', qualified: 'Qualified',
   email_found: 'Email found', verified: 'Verified', ready: 'Ready', hold: 'Hold',
   queued: 'Queued', contacted: 'Contacted', engaged: 'Engaged', consented: 'Consented',
-  called: 'Mr. Mustard called', forged: 'Forged', hot: 'Hot', meeting: 'Meeting',
+  called: 'Mr. Mustard called', forged: 'Built', hot: 'Hot', meeting: 'Meeting',
   checkout: 'Checkout', won: 'Won', nurture: 'Nurture', lost: 'Lost',
   suppressed: 'Suppressed', disqualified: 'Disqualified',
 };

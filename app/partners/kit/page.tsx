@@ -5,14 +5,14 @@ import { buildMetadata } from '@/lib/seo';
 /**
  * UNLINKED partner recruitment kit. Not in any nav, footer, or sitemap. It is a
  * private page a prospective partner is sent directly: it explains the Partner
- * Forge, hands over the two recruitment PDFs and the one-page agreement, shows a
+ * Build, hands over the two recruitment PDFs and the one-page agreement, shows a
  * live example suite, and routes them into the existing /partners apply flow.
  * noindex so it never competes with the public /partners page in search.
  */
 export const metadata = buildMetadata({
   title: 'Partner Recruitment Kit',
   description:
-    'The Partner Forge, in one place: mint a finished AI demo suite for a business you know, presented under your flag, and earn when they buy.',
+    'The Partner Build, in one place: mint a finished AI demo suite for a business you know, presented under your flag, and earn when they buy.',
   path: '/partners/kit',
   noindex: true,
 });
@@ -24,7 +24,7 @@ const STEPS = [
     n: '1',
     accent: '#1E50C8',
     t: 'Type in a business you know',
-    d: 'Their name, a phone number, and their website or Facebook page. The forge builds only from their real, public information, so you never invent a thing.',
+    d: 'Their name, a phone number, and their website or Facebook page. The build works only from their real, public information, so you never invent a thing.',
   },
   {
     n: '2',
@@ -56,7 +56,7 @@ export default function PartnerKitPage() {
             The Partner Recruitment Kit
           </span>
           <h1 className="font-display text-5xl md:text-7xl font-bold tracking-tight leading-[1.02] text-[#161616]">
-            Forge under<br className="hidden sm:block" /> your flag.
+            Build under<br className="hidden sm:block" /> your flag.
           </h1>
           <p className="mt-7 text-[#3A3733] text-lg font-body font-light max-w-2xl mx-auto leading-relaxed">
             Put a finished AI demo suite, with your name on it, in the hands of a business you already know. Type in one business, a full suite appears under your flag, you forward three lines. When they buy, the commission is yours and it tracks itself.
@@ -140,9 +140,9 @@ export default function PartnerKitPage() {
             className="group bg-white border-2 border-[#161616] rounded-2xl shadow-[5px_5px_0_0_#161616] hover:shadow-[7px_7px_0_0_#161616] hover:-translate-y-0.5 transition-all p-7 flex flex-col"
           >
             <span className="text-[9px] uppercase tracking-[0.25em] font-mono font-bold text-[#161616]/40 mb-3">PDF · The pitch</span>
-            <h3 className="font-display text-2xl font-semibold text-[#161616] mb-2">Forge Under Your Flag</h3>
+            <h3 className="font-display text-2xl font-semibold text-[#161616] mb-2">Build Under Your Flag</h3>
             <p className="text-[#3A3733] font-body text-sm leading-relaxed flex-1">
-              The four-page partner pitch. What the Partner Forge is, how a mint works, what you earn, the honest guardrails, and how to start.
+              The four-page partner pitch. What the Partner Build is, how a mint works, what you earn, the honest guardrails, and how to start.
             </p>
             <span className="mt-5 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616]">
               <span className="px-4 py-2 bg-[#F5B700] border-2 border-[#161616] rounded-full shadow-[3px_3px_0_0_#161616] group-hover:-translate-y-0.5 transition-transform">Download pitch</span>
@@ -175,13 +175,13 @@ export default function PartnerKitPage() {
             className="bg-[#F5B700] border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-transform p-6"
           >
             <span className="text-[9px] uppercase tracking-[0.25em] font-mono font-bold text-[#161616]/60 block mb-2">See one that is live</span>
-            <h3 className="font-sans font-bold text-[#161616] text-lg mb-1">A real forged suite</h3>
+            <h3 className="font-sans font-bold text-[#161616] text-lg mb-1">A real built suite</h3>
             <p className="text-[#161616]/75 font-body text-sm leading-relaxed">
-              A full suite the forge minted start to finish. Voice Agent and website, both in one hub.
+              A full suite the build minted start to finish. Voice Agent and website, both in one hub.
             </p>
           </a>
           <a
-            href="/downloads/mms-partner-forge-agreement.pdf"
+            href="/downloads/mms-partner-build-agreement.pdf"
             target="_blank"
             rel="noopener noreferrer"
             className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-transform p-6"
@@ -189,7 +189,7 @@ export default function PartnerKitPage() {
             <span className="text-[9px] uppercase tracking-[0.25em] font-mono font-bold text-[#161616]/40 block mb-2">The fine print</span>
             <h3 className="font-sans font-bold text-[#161616] text-lg mb-1">Partner Demo Agreement</h3>
             <p className="text-[#3A3733] font-body text-sm leading-relaxed">
-              The whole deal on one page: what the forge does, the honesty rules, what you earn, and the guardrails.
+              The whole deal on one page: what the build does, the honesty rules, what you earn, and the guardrails.
             </p>
           </a>
         </div>
@@ -207,7 +207,7 @@ export default function PartnerKitPage() {
                 <span className="text-[10px] uppercase tracking-[0.4em] text-[#E0301E] font-mono font-bold block mb-3">Ready when you are</span>
                 <h2 className="font-display text-3xl md:text-4xl font-semibold text-[#161616] mb-3">Recommend tools you believe in. Get paid for years.</h2>
                 <p className="text-[#3A3733] font-body leading-relaxed mb-6">
-                  Sarah reviews every application personally. Approved partners get their link, free access to everything, and their forge lit the same day.
+                  Sarah reviews every application personally. Approved partners get their link, free access to everything, and their build lit the same day.
                 </p>
                 <Link
                   href="/partners#apply"

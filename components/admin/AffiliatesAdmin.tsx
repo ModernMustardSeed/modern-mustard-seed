@@ -45,7 +45,7 @@ type FlywheelPartner = {
   name: string | null;
   email: string;
   code: string | null;
-  canForge: boolean;
+  canBuild: boolean;
   mints: number;
   hubOpens: number;
   checkouts: number;
@@ -102,9 +102,9 @@ export default function AffiliatesAdmin() {
       setFly(flr.ok && flj.totals ? (flj as Flywheel) : null);
     } catch { /* ignore */ }
 
-    // Forge QA strip (best effort; the table must load regardless).
+    // Build QA strip (best effort; the table must load regardless).
     try {
-      const qr = await fetch('/api/admin/outbound/forge-qa');
+      const qr = await fetch('/api/admin/outbound/build-qa');
       const qj = await qr.json();
       setQa(qr.ok ? qj.pending ?? [] : []);
     } catch { /* ignore */ }
@@ -203,31 +203,31 @@ export default function AffiliatesAdmin() {
     }
   };
 
-  const forgeAccess = async (id: string, action: 'grant' | 'revoke') => {
+  const buildAccess = async (id: string, action: 'grant' | 'revoke') => {
     setBusy(id);
     setMsg('');
     try {
-      const res = await fetch(`/api/admin/affiliates/${id}/forge-access`, {
+      const res = await fetch(`/api/admin/affiliates/${id}/build-access`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action }),
       });
       const json = await res.json().catch(() => ({}));
-      setMsg(res.ok ? (action === 'grant' ? 'Forge lit for this partner.' : 'Forge access revoked.') : `Could not update: ${json.error ?? res.status}`);
+      setMsg(res.ok ? (action === 'grant' ? 'Build lit for this partner.' : 'Build access revoked.') : `Could not update: ${json.error ?? res.status}`);
       await load();
     } catch { setMsg('Could not update (network error).'); }
     finally { setBusy(null); }
   };
 
-  const editForgeCaps = async (r: Row) => {
-    const daily = window.prompt('Forges per day for this partner (0-10)', String(r.forge_daily_cap ?? 3));
+  const editBuildCaps = async (r: Row) => {
+    const daily = window.prompt('Builds per day for this partner (0-10)', String(r.forge_daily_cap ?? 3));
     if (daily == null) return;
-    const weekly = window.prompt('Forges per week (0-30)', String(r.forge_weekly_cap ?? 10));
+    const weekly = window.prompt('Builds per week (0-30)', String(r.forge_weekly_cap ?? 10));
     if (weekly == null) return;
     setBusy(r.id);
     setMsg('');
     try {
-      const res = await fetch(`/api/admin/affiliates/${r.id}/forge-access`, {
+      const res = await fetch(`/api/admin/affiliates/${r.id}/build-access`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'set-caps', dailyCap: Number(daily), weeklyCap: Number(weekly) }),
@@ -243,7 +243,7 @@ export default function AffiliatesAdmin() {
     setBusy(leadId);
     setMsg('');
     try {
-      const res = await fetch('/api/admin/outbound/forge-qa', {
+      const res = await fetch('/api/admin/outbound/build-qa', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ leadId, action: 'approve' }),
@@ -348,7 +348,7 @@ export default function AffiliatesAdmin() {
               </div>
 
               {fly.partners.length === 0 ? (
-                <p className="text-[#161616]/60 font-body text-sm italic">No partners have the forge lit yet. Light a partner&apos;s forge below and their funnel lands here.</p>
+                <p className="text-[#161616]/60 font-body text-sm italic">No partners have the build lit yet. Light a partner&apos;s build below and their funnel lands here.</p>
               ) : (
                 <div className="overflow-x-auto -mx-1 px-1">
                   <table className="w-full text-sm">
@@ -365,7 +365,7 @@ export default function AffiliatesAdmin() {
                           <td className="px-3 py-3">
                             <p className="text-[#161616] font-body flex items-center gap-2">
                               {p.name ?? p.email}
-                              {p.canForge && <span className="inline-block bg-[#F5B700] border border-[#161616] text-[#161616] text-[9px] uppercase tracking-[0.15em] font-bold px-1.5 py-0.5 rounded">Lit</span>}
+                              {p.canBuild && <span className="inline-block bg-[#F5B700] border border-[#161616] text-[#161616] text-[9px] uppercase tracking-[0.15em] font-bold px-1.5 py-0.5 rounded">Lit</span>}
                               {p.activated && <span className="inline-block bg-emerald-100 border border-emerald-700/40 text-emerald-800 text-[9px] uppercase tracking-[0.15em] font-bold px-1.5 py-0.5 rounded">Active</span>}
                             </p>
                             <p className="text-[#161616]/60 text-xs">{p.email}</p>
@@ -386,10 +386,10 @@ export default function AffiliatesAdmin() {
           );
         })()}
 
-        {/* Forge QA strip: a partner's first three mints wait for a human eye. */}
+        {/* Build QA strip: a partner's first three mints wait for a human eye. */}
         {qa.length > 0 && (
           <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5 mb-8">
-            <h2 className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold mb-2">Forge QA: polish pass</h2>
+            <h2 className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold mb-2">Build QA: polish pass</h2>
             <p className="text-[#3A3733] font-body text-sm mb-4">
               Partner-minted suites waiting for review. Open the hub, check the demos read right, then release: releasing sends the partner their hand-off email. Three releases and that partner&apos;s future mints flow free.
             </p>
@@ -543,7 +543,7 @@ export default function AffiliatesAdmin() {
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-[#161616]/15">
-                      {['Partner', 'Code', 'Clicks', 'Sales', 'Pending', 'Payable', 'Paid', 'Forge', ''].map((h, i) => (
+                      {['Partner', 'Code', 'Clicks', 'Sales', 'Pending', 'Payable', 'Paid', 'Build', ''].map((h, i) => (
                         <th key={i} className="text-left text-[9px] uppercase tracking-[0.2em] text-[#E0301E] font-mono font-medium px-4 py-3">{h}</th>
                       ))}
                     </tr>
@@ -572,16 +572,16 @@ export default function AffiliatesAdmin() {
                             {r.can_forge ? (
                               <>
                                 <span className="inline-block w-fit bg-[#F5B700] border border-[#161616] text-[#161616] text-[9px] uppercase tracking-[0.15em] font-bold px-1.5 py-0.5 rounded">⚒ Lit</span>
-                                <button onClick={() => editForgeCaps(r)} disabled={busy === r.id} className="text-left text-[10px] font-mono text-[#1E50C8] hover:text-[#161616] disabled:opacity-50 whitespace-nowrap">
+                                <button onClick={() => editBuildCaps(r)} disabled={busy === r.id} className="text-left text-[10px] font-mono text-[#1E50C8] hover:text-[#161616] disabled:opacity-50 whitespace-nowrap">
                                   {r.forge_daily_cap ?? 3}/d · {r.forge_weekly_cap ?? 10}/w
                                 </button>
-                                <button onClick={() => forgeAccess(r.id, 'revoke')} disabled={busy === r.id} className="text-left text-[10px] uppercase tracking-[0.12em] font-sans font-semibold text-[#161616]/40 hover:text-[#E0301E] disabled:opacity-50 whitespace-nowrap">
+                                <button onClick={() => buildAccess(r.id, 'revoke')} disabled={busy === r.id} className="text-left text-[10px] uppercase tracking-[0.12em] font-sans font-semibold text-[#161616]/40 hover:text-[#E0301E] disabled:opacity-50 whitespace-nowrap">
                                   Revoke
                                 </button>
                               </>
                             ) : (
-                              <button onClick={() => forgeAccess(r.id, 'grant')} disabled={busy === r.id} className="text-left text-[10px] uppercase tracking-[0.15em] font-sans font-bold text-[#1E50C8] hover:text-[#161616] disabled:opacity-50 whitespace-nowrap">
-                                Light forge
+                              <button onClick={() => buildAccess(r.id, 'grant')} disabled={busy === r.id} className="text-left text-[10px] uppercase tracking-[0.15em] font-sans font-bold text-[#1E50C8] hover:text-[#161616] disabled:opacity-50 whitespace-nowrap">
+                                Light build
                               </button>
                             )}
                           </div>

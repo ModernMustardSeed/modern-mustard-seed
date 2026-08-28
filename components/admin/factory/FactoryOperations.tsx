@@ -153,9 +153,9 @@ export default function FactoryOperations() {
           <Card>
             <Empty
               title="No Client Factories yet"
-              action={<LinkButton href="/admin/factories/new" tone="primary">Forge the first one</LinkButton>}
+              action={<LinkButton href="/admin/factories/new" tone="primary">Build the first one</LinkButton>}
             >
-              A Factory starts from a customer&apos;s website. The Forge reads it, picks a template, and writes the blueprint you review.
+              A Factory starts from a customer&apos;s website. The Build reads it, picks a template, and writes the blueprint you review.
             </Empty>
           </Card>
         )}

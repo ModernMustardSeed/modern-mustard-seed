@@ -43,10 +43,6 @@ const REFERENCES: Record<string, { fixed?: Reference; business?: string; demoId?
   'barber-red': { business: 'Columbia Falls Barbershop', notes: 'Single-file demo. Sticky nav with the phone, the price menu as the centrepiece, chair slider, proof, accordion FAQ, booking.' },
   'highway-amber': { business: 'Hungry Horse Motel', notes: 'Single-file demo with eight distinct photographs. Amber treated as sign light, parallax, the road story, rooms, proof, FAQ, booking.' },
   'field-note': { business: 'Sands Surveying', notes: 'Single-file demo. Mono readout in the hero, tick-mark rules, the finder interactive, sticky diagram stage, slider, proof, FAQ, booking.' },
-  'wild-reverent': {
-    fixed: { label: 'Wild Hope (reference build, photography stripped)', url: '/reference/wild-reverent.html', source: 'repo', notes: '' },
-    notes: 'THE TURN scroll moment, the drag reel, the horizontal rail, the oversized Fraunces wordmark. Photography is stripped so the structure reads.',
-  },
   'lakehouse-editorial': {
     fixed: { label: "Daisy's Cafe (the package build, whole site)", url: '/demo/reference/daisys-cafe', source: 'repo', notes: '' },
     notes: 'The complete package site: over-image nav, hero with the rotating sunrise badge, ticker, outline-type intro, paper-note image break, tabbed menu on ink, the sailboat ritual with the outline numeral, contact-sheet gallery with a lightbox, Supper Club, two service cards, the reservation close, footer. Every interaction is live here.',
@@ -55,15 +51,15 @@ const REFERENCES: Record<string, { fixed?: Reference; business?: string; demoId?
     fixed: { label: 'Easton Events (the package build, whole site)', url: '/demo/reference/easton-kinetic', source: 'repo', notes: '' },
     notes: 'The complete package site: scroll progress bar, hero with orbit rings, coordinates and the rotated sticker, capability ticker, cream manifesto with the rotating glyph, the sticky four-card stack (lime, violet, coral, cyan), metrics band, sticky method with scroll-revealed steps, editorial gallery with a lightbox, studio section, coral CTA, footer. Every motion and interaction is live here.',
   },
-  'midnight-atelier': { notes: 'No reference build yet. Forge one: pick Midnight Atelier on a jeweler, med-spa or custom-builder lead and it becomes the reference here.' },
-  'swiss-grid': { notes: 'No reference build yet. Forge one: pick Swiss Grid on an engineer, accountant or law-office lead.' },
-  'poster-press': { notes: 'No reference build yet. Forge one: pick Poster Press on a brewery, roaster, food-truck or venue lead.' },
-  greenhouse: { notes: 'No reference build yet. Forge one: pick Greenhouse on a landscaper, nursery or tree-service lead.' },
-  'clinic-calm': { notes: 'No reference build yet. Forge one: pick Clinic Calm on a dental, vet, chiropractic or PT lead.' },
+  'midnight-atelier': { notes: 'No reference build yet. Build one: pick Midnight Atelier on a jeweler, med-spa or custom-builder lead and it becomes the reference here.' },
+  'swiss-grid': { notes: 'No reference build yet. Build one: pick Swiss Grid on an engineer, accountant or law-office lead.' },
+  'poster-press': { notes: 'No reference build yet. Build one: pick Poster Press on a brewery, roaster, food-truck or venue lead.' },
+  greenhouse: { notes: 'No reference build yet. Build one: pick Greenhouse on a landscaper, nursery or tree-service lead.' },
+  'clinic-calm': { notes: 'No reference build yet. Build one: pick Clinic Calm on a dental, vet, chiropractic or PT lead.' },
 };
 
 /**
- * THE STRUCTURES: the bones a template is built on. The picker on every forge
+ * THE STRUCTURES: the bones a template is built on. The picker on every build
  * offers all three since 2026-08-24, when the Award tier was rewired onto the
  * claude engine.
  */

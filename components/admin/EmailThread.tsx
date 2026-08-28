@@ -1,6 +1,8 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import DripPanel from '@/components/admin/outbound/DripPanel';
+import LeadEmailComposer, { type ComposerSource } from '@/components/admin/LeadEmailComposer';
 
 /**
  * WHAT WE SENT THEM, AND WHAT GOES NEXT.
@@ -18,7 +20,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
  *
  * The preview is deliberately inert. Its open pixel is stripped and its buttons
  * have no href, because a rendered tracking pixel would report that the
- * prospect read the email and a stray click would forge engagement on the
+ * prospect read the email and a stray click would build engagement on the
  * funnel. The real destinations are listed underneath instead.
  */
 
@@ -84,7 +86,7 @@ const KIND_LABEL: Record<string, string> = {
   reply: 'Their reply',
   email: 'Drip',
   call: 'Call',
-  forge: 'Forge',
+  build: 'Build',
   demo_email: 'Demo',
   research: 'Research',
 };
@@ -368,10 +370,13 @@ export default function EmailThread({
   leadId,
   email,
   title = 'Every email they have been sent',
+  source = 'lead',
 }: {
   leadId?: string | null;
   email?: string | null;
   title?: string;
+  /** Which lead table `leadId` belongs to. All three hosts of this panel use outbound_leads. */
+  source?: ComposerSource;
 }) {
   const [thread, setThread] = useState<Thread | null>(null);
   const [error, setError] = useState('');
@@ -380,6 +385,7 @@ export default function EmailThread({
   const [openNext, setOpenNext] = useState<string | null>(null);
   const [sending, setSending] = useState(false);
   const [notice, setNotice] = useState('');
+  const [dripOpen, setDripOpen] = useState(false);
 
   const load = useCallback(async () => {
     if (!leadId && !email) {
@@ -467,13 +473,48 @@ export default function EmailThread({
             {thread?.email ? ` Mail to and from ${thread.email}.` : ''}
           </p>
         </div>
-        <button
-          type="button"
-          onClick={() => void load()}
-          className="rounded-xl border-2 border-[#161616] bg-[#FFFDF8] px-3 py-1.5 font-oswald text-xs font-medium uppercase tracking-[0.08em] text-[#161616] shadow-[3px_3px_0_0_#161616] transition-all hover:-translate-y-0.5"
-        >
-          Refresh
-        </button>
+        <div className="flex shrink-0 items-center gap-2">
+          {/*
+            The drip lived on one screen. It was built into the outbound call
+            cockpit's reach-out deck, which means it existed for a lead you were
+            about to phone and nowhere else: not on the Acquisition prospect,
+            not in the Client Book. Sarah: "i dont see the create drip campaign
+            on the contact cards." It hangs off this panel now, which is already
+            mounted on all three, and the panel is the right neighbour for it
+            anyway: everything else here is what was sent and what goes next.
+          */}
+          {/*
+            And the thing that had to be possible before a drip was ever the
+            answer: write this person one email, right now, about the last thing
+            that actually happened. Sarah: "theres no way to email him unless i
+            start a drip sequence." It sits first because it is the smaller,
+            more common move of the two.
+          */}
+          {thread?.leadId && (
+            <LeadEmailComposer
+              source={source}
+              id={thread.leadId}
+              onSent={() => void load()}
+              triggerClassName="rounded-xl border-2 border-[#161616] bg-[#F5B700] px-3 py-1.5 font-oswald text-xs font-semibold uppercase tracking-[0.08em] text-[#161616] shadow-[3px_3px_0_0_#161616] transition-all hover:-translate-y-0.5"
+            />
+          )}
+          {thread?.leadId && (
+            <button
+              type="button"
+              onClick={() => setDripOpen(true)}
+              className="rounded-xl border-2 border-[#161616] bg-[#FFFDF8] px-3 py-1.5 font-oswald text-xs font-semibold uppercase tracking-[0.08em] text-[#161616] shadow-[3px_3px_0_0_#161616] transition-all hover:-translate-y-0.5"
+            >
+              Drip campaign
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={() => void load()}
+            className="rounded-xl border-2 border-[#161616] bg-[#FFFDF8] px-3 py-1.5 font-oswald text-xs font-medium uppercase tracking-[0.08em] text-[#161616] shadow-[3px_3px_0_0_#161616] transition-all hover:-translate-y-0.5"
+          >
+            Refresh
+          </button>
+        </div>
       </div>
 
       {error && <p className="mb-3 text-sm font-semibold text-[#E0301E]">{error}</p>}
@@ -509,12 +550,27 @@ export default function EmailThread({
             </p>
           ) : null}
 
+          <p className="mb-2 text-[10px] font-mono font-semibold uppercase tracking-[0.22em] text-[#161616]/55">
+            Sent so far, in order ({thread.messages.length})
+          </p>
+          {thread.messages.length === 0 ? (
+            <p className="text-sm text-[#161616]/60">
+              Nothing has been emailed to this contact yet.
+            </p>
+          ) : (
+            <ul className="mb-5 space-y-2">
+              {[...thread.messages].reverse().map((m) => (
+                <SentRow key={m.id} m={m} openId={openSent} setOpenId={setOpenSent} />
+              ))}
+            </ul>
+          )}
+
           {thread.scheduled.length > 0 && (
             <>
               <p className="mb-2 text-[10px] font-mono font-semibold uppercase tracking-[0.22em] text-[#161616]/55">
                 Still to go ({thread.scheduled.length})
               </p>
-              <ul className="mb-5 space-y-2">
+              <ul className="space-y-2">
                 {thread.scheduled.map((s) => (
                   <ScheduledRow
                     key={s.id}
@@ -527,21 +583,6 @@ export default function EmailThread({
                 ))}
               </ul>
             </>
-          )}
-
-          <p className="mb-2 text-[10px] font-mono font-semibold uppercase tracking-[0.22em] text-[#161616]/55">
-            Already sent ({thread.messages.length})
-          </p>
-          {thread.messages.length === 0 ? (
-            <p className="text-sm text-[#161616]/60">
-              Nothing has been emailed to this contact yet.
-            </p>
-          ) : (
-            <ul className="space-y-2">
-              {thread.messages.map((m) => (
-                <SentRow key={m.id} m={m} openId={openSent} setOpenId={setOpenSent} />
-              ))}
-            </ul>
           )}
 
           {thread.refusals.length > 0 && (
@@ -561,6 +602,18 @@ export default function EmailThread({
                 These never reached anybody. They are here so a quiet day has a reason attached to it.
               </p>
             </details>
+          )}
+
+          {thread.leadId && (
+            <DripPanel
+              lead={{ id: thread.leadId, business_name: thread.businessName ?? thread.email ?? 'this contact' }}
+              open={dripOpen}
+              onClose={() => {
+                setDripOpen(false);
+                void load();
+              }}
+              push={(text, tone) => (tone === 'error' ? setError(text) : setNotice(text))}
+            />
           )}
 
           {thread.missingBodies > 0 && (

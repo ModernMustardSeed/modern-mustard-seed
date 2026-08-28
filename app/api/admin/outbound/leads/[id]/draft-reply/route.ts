@@ -11,6 +11,12 @@ type Params = Promise<{ id: string }>;
  * Draft a reply to the lead's last inbound message. Interactive and low-volume,
  * so it uses the metered API directly (same call pattern as the Tracker's
  * draft-reply). Returns text only; the rep reviews and sends.
+ *
+ * NO SCREEN CALLS THIS ANY MORE (2026-08-27). It refuses outright when the lead
+ * has never written back, which is most of them, so the cockpit's AI draft moved
+ * to POST /api/admin/lead-email { action: 'suggest' }: same job, but it reads
+ * the last interaction of any kind, call transcripts included. Left in place
+ * because it is a working endpoint and harms nothing; prefer the composer.
  */
 export async function POST(_req: Request, { params }: { params: Params }) {
   const guard = await requireOutboundAdmin();

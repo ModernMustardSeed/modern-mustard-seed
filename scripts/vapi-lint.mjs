@@ -118,7 +118,7 @@ for (const [slug, decl] of Object.entries(fleet.assistants)) {
 }
 
 /*
- * NO ENUM INSIDE AN ARRAY'S `items`. THIS ONE COST ELEVEN DAYS AND EVERY FORGE.
+ * NO ENUM INSIDE AN ARRAY'S `items`. THIS ONE COST ELEVEN DAYS AND EVERY BUILD.
  *
  * `forge_demo_suite.build` shipped 2026-08-13 declared as
  * `{ type: 'array', items: { type: 'string', enum: [...] } }`. That nested enum
@@ -126,7 +126,7 @@ for (const [slug, decl] of Object.entries(fleet.assistants)) {
  * model a tool it could select and could not fill, so every `forge_demo_suite`
  * call arrived at the webhook as the literal `{}`. Not the one field, all ten.
  * 16 empty calls out of 16 between 2026-08-13 and 2026-08-24, zero demos ever
- * forged on a phone call, and the caller heard an apology every time.
+ * built on a phone call, and the caller heard an apology every time.
  *
  * ⚠️ IT IS SPECIFICALLY THE NESTED ONE. A plain top-level string enum is FINE
  * and is not flagged here. The call history is unambiguous on both halves:

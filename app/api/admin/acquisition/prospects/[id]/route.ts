@@ -1,12 +1,13 @@
 import { NextResponse } from 'next/server';
+import { normalizeFacebookUrl } from '@/lib/acq/facebook';
 import { requireAcqAdmin, suppressedAddresses } from '@/lib/acq/server';
 import { timelineFor, recordEvent } from '@/lib/acq/events';
 import { getCampaign, getAcqSettings, getVariants, pickVariant } from '@/lib/acq/settings';
 import { buildCampaignEmail } from '@/lib/acq/campaign';
 import { enqueue, cancelPendingFor } from '@/lib/acq/queue';
 import { evaluate, sequenceLength } from '@/lib/acq/eligibility';
-import { forgeProspectAgent } from '@/lib/acq/forge';
-import { forgeProspectSuite, queueProspectSite, suiteState } from '@/lib/acq/suite';
+import { buildProspectAgent } from '@/lib/acq/build';
+import { buildProspectSuite, queueProspectSite, suiteState } from '@/lib/acq/suite';
 import { sendDemoEmail, sendSuiteEmail, sendCheckoutLink, checkoutUrlFor } from '@/lib/acq/send';
 import { buildPrepBrief } from '@/lib/acq/brief';
 import type { AcqProspect } from '@/lib/acq/types';
@@ -97,6 +98,20 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
       for (const k of ['business_name', 'contact_name', 'contact_title', 'email', 'phone', 'website', 'city', 'state', 'trade', 'service_area', 'assigned_to', 'rep_notes', 'needs_human']) {
         if (body[k] !== undefined) patch[k] = body[k] === '' ? null : String(body[k]).slice(0, 2000);
       }
+      if (body.facebook_url !== undefined) {
+        // A hand paste is the strongest source there is. Anything that is not a
+        // page (a search, a post, a group) is refused rather than stored wrong.
+        const raw = String(body.facebook_url ?? '').trim();
+        if (!raw) {
+          patch.facebook_url = null;
+          patch.facebook_source = null;
+        } else {
+          const page = normalizeFacebookUrl(raw);
+          if (!page) return NextResponse.json({ error: 'That is not a Facebook page link. Paste the page URL, like https://www.facebook.com/theirpage' }, { status: 400 });
+          patch.facebook_url = page;
+          patch.facebook_source = 'hand';
+        }
+      }
       if (body.lead_score !== undefined) patch.lead_score = Math.max(0, Math.min(100, Number(body.lead_score)));
       if (body.is_test !== undefined) patch.is_test = Boolean(body.is_test);
       if (!Object.keys(patch).length) return NextResponse.json({ error: 'Nothing to change.' }, { status: 400 });
@@ -144,14 +159,14 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     }
     /* The instant half: voice agent, command center, hub. No website. */
     case 'forge': {
-      const result = await forgeProspectAgent(db, lead, {}, { deferHeavy: false });
+      const result = await buildProspectAgent(db, lead, {}, { deferHeavy: false });
       return result.ok
         ? NextResponse.json({ ok: true, demoUrl: result.demoUrl, hubUrl: result.hubUrl })
         : NextResponse.json({ error: result.error }, { status: 409 });
     }
     /* The whole thing: voice agent, command center, website, hub. */
     case 'forge-suite': {
-      const result = await forgeProspectSuite(db, lead, {
+      const result = await buildProspectSuite(db, lead, {
         site: body.site !== false,
         designTier: body.designTier === 3 ? 3 : 2,
         talkingWebsite: body.talkingWebsite === true,

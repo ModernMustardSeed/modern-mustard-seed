@@ -6,7 +6,7 @@
  * lead's command center. It had been serving the Wills Electric tour film to
  * everyone, which is exactly the kind of thing a prospect notices.
  *
- * The film is now the LAST STEP of the forge. The suite is not announced to
+ * The film is now the LAST STEP of the build. The suite is not announced to
  * anyone until it exists, so nothing goes out half-made.
  *
  * Run:
@@ -114,12 +114,12 @@ async function main() {
     site: lead.site_demo_status === 'ready' && Boolean(lead.site_demo_url),
     // ALWAYS FALSE. The command center is off the demo suite and out of the
     // offer (Sarah, 2026-08-22, again 2026-08-25), so no film narrates one,
-    // even for a lead forged back when the suite still had one.
+    // even for a lead built back when the suite still had one.
     os: false,
     call: Boolean(lead.demo_run_id),
   };
   if (!have.site) {
-    console.error('Nothing forged yet worth filming (no ready website).');
+    console.error('Nothing built yet worth filming (no ready website).');
     process.exit(2);
   }
   // The call rides on the website shell, so with no site there is nothing to
@@ -132,7 +132,7 @@ async function main() {
   // 2026-08-03 Polly Thompson's site banked with five of its nine photographs
   // replaced by blank swatches, and this script filmed them, marked the film
   // ready, and the suite-ready email went out ninety seconds later with that
-  // walkthrough at the top of it. The film is the LAST step of the forge and
+  // walkthrough at the top of it. The film is the LAST step of the build and
   // the announcement is gated on it, so refusing here is the cheapest place in
   // the whole pipeline to stop a hollow suite: no film means no email, which is
   // exactly the behaviour the worker already documents.
@@ -174,7 +174,7 @@ async function main() {
 
     /* ------------------------------ the voices ----------------------------- */
     // In parallel: eleven sequential TTS round trips took two and a half
-    // minutes of the forge queue for no reason, and the lines do not depend on
+    // minutes of the build queue for no reason, and the lines do not depend on
     // each other. A single failure still rejects the whole film, which is the
     // behavior we want (no film beats a film missing a line).
     log('narration...');

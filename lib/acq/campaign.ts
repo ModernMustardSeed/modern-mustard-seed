@@ -27,7 +27,7 @@
  *   the button    /demos. A working voice agent built for their business, free,
  *                 plus a website if they want one. No card, no call to sit
  *                 through, nothing to wait for.
- *   the number    the ranch line, printed at 34px as a tel: link, because most
+ *   the number    the ranch line, printed at 30px as a tel: link, because most
  *                 of these are read on a phone and the fastest conversion we
  *                 have ever measured is a man reading an email at 6am and just
  *                 calling.
@@ -238,7 +238,7 @@ export function buildCampaignEmail(args: {
       cta,
       secondary,
       signature: 'Sarah',
-      // The body already carries the ranch line at 34px with the line that
+      // The body already carries the ranch line at 30px with the line that
       // makes the call a demo. The signature's own card would be the same
       // number a second time, four inches lower.
       ranchLine: false,
@@ -315,10 +315,10 @@ function ranchLineBlock(business: string): string {
   const SANS = "-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Helvetica,Arial,sans-serif";
   return `
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:6px 0 20px">
-    <tr><td bgcolor="#FFF3CC" align="center" style="background:#FFF3CC;border:2px solid #161616;border-radius:14px;padding:20px 18px">
+    <tr><td bgcolor="#FFF3CC" align="center" style="background:#FFF3CC;border:2px solid #161616;border-radius:14px;padding:20px 14px">
       <p style="margin:0;font-family:${SANS};font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:#C2261A">Call him now, he is awake</p>
       <p style="margin:10px 0 0;line-height:1">
-        <a href="tel:${RANCH_LINE.tel}" style="font-family:${SANS};font-size:34px;font-weight:800;letter-spacing:-0.5px;color:#161616;text-decoration:none;white-space:nowrap">${RANCH_LINE.display}</a>
+        <a href="tel:${RANCH_LINE.tel}" style="font-family:${SANS};font-size:30px;font-weight:800;letter-spacing:-0.5px;color:#161616;text-decoration:none;white-space:nowrap">${RANCH_LINE.display}</a>
       </p>
       <p style="margin:10px 0 0;font-family:${SANS};font-size:14.5px;line-height:1.55;color:#161616">
         He answers in two rings at any hour. Tell him to pretend he works for ${escape(business)} and give him your worst customer.
@@ -449,7 +449,7 @@ function email1(business: string, lead: AcqProspect): string {
  * website and have phone line". Then it hands them the free suite, which is the
  * lowest-friction yes in the whole business: no card, no call, built for them.
  *
- * The forge close stays available to people who would rather talk than click,
+ * The build close stays available to people who would rather talk than click,
  * because Mr. Mustard builds it live on the phone.
  */
 function emailTalkingWebsite(business: string): string {
@@ -680,7 +680,7 @@ function auditBlock(args: { auditUrl?: string | null; auditScore?: number | null
 }
 
 /**
- * The "I built their receptionist" email. Sent the moment the Forge lands,
+ * The "I built their receptionist" email. Sent the moment the Build lands,
  * either by Mr. Mustard on the call or by the queue when the build finishes.
  * The subject runs the business name through possessive() so a company called
  * Ross Plumbing never becomes "Ross Plumbing's" when it should be "Ross
@@ -742,7 +742,7 @@ export function buildDemoEmail(args: {
     subject: `I built ${possessive(business)} receptionist`,
     html,
     unsubscribeUrl: unsubscribeUrlFor(lead.email),
-    summary: 'Sent the personalized demo Mr. Mustard forged on the call.',
+    summary: 'Sent the personalized demo Mr. Mustard built on the call.',
     step: 0,
     variantKey: 'demo',
   };
@@ -905,7 +905,7 @@ export function buildSuiteEmail(args: {
         : `I built ${business} a website and a receptionist`,
     html,
     unsubscribeUrl: unsubscribeUrlFor(lead.email),
-    summary: `Sent the full forged suite: ${pieces.map((x) => x.label.toLowerCase()).join(', ')}.`,
+    summary: `Sent the full built suite: ${pieces.map((x) => x.label.toLowerCase()).join(', ')}.`,
     step: 0,
     variantKey: 'suite',
   };

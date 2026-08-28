@@ -3,7 +3,7 @@
  *
  * The free Hundredfold Roadmap at /scaling-roadmap tells an owner what is
  * capping them. HUNDREDFOLD is the program that goes and fixes it: Mr. Mustard
- * interviews them like a scale-or-fail coach, we forge the offer, we build the
+ * interviews them like a scale-or-fail coach, we build the offer, we build the
  * agents and automations that execute the plan, and we coach them through four
  * gates over twelve months.
  *
@@ -20,7 +20,7 @@ export const HUNDREDFOLD = {
   path: '/hundredfold',
   tagline: 'The scaling program that builds the machine with you.',
 
-  /** $5,000 to start. Covers the interview, the offer forge, and the first builds. */
+  /** $5,000 to start. Covers the interview, the offer build, and the first builds. */
   setupCents: 500_000,
   /** $2,500 a month. Coaching, the build queue, and the agents running. */
   monthlyCents: 250_000,
@@ -83,7 +83,7 @@ export const PILLARS: Pillar[] = [
   {
     key: 'offer',
     n: '02',
-    name: 'The Offer Forge',
+    name: 'The Offer Build',
     line: 'We build the thing you sell before we build anything else.',
     body: 'Most businesses do not have a traffic problem. They have an offer nobody can repeat and a price nobody can justify. We rebuild yours: the promise, the value stack itemized in dollars, a guarantee you can actually honor, a name a buyer repeats to their spouse, the price ladder, and the honest reason to move now. Then we write the assets that sell it.',
     gets: [
@@ -158,7 +158,7 @@ export const STACK: { item: string; valueCents: number; why: string }[] = [
     why: 'A strategy engagement that produces the actual plan, not notes.',
   },
   {
-    item: 'The Offer Forge: your offer, stacked, priced, guaranteed, and written',
+    item: 'The Offer Build: your offer, stacked, priced, guaranteed, and written',
     valueCents: 750_000,
     why: 'The single highest-leverage document your business will own this year.',
   },

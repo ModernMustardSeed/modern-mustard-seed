@@ -133,9 +133,11 @@ export function dripEmail(lead: OutboundLead, step: number): DripEmail {
         body:
           p(proof) +
           p(`Here is the math I run with every owner${city ? ` in ${city}` : ''}: take your average job, count the calls that went to voicemail this week, and assume half of them called the next name on the list. That number, every week, is what the demo I sent you is built to stop.`) +
-          p(hub ? `The suite page has a calculator that does this with your own numbers. Thirty seconds.` : `Reply with your average job and I will run it for you in one line.`),
-        cta: hub ? { label: 'Run your own numbers', url: hub } : { label: 'Book 10 minutes', url: BOOK },
-        secondary: hub ? { label: 'Book 10 minutes with Sarah', url: BOOK } : undefined,
+          p(`${hub ? 'The suite page' : 'The demo page'} has a calculator that does this with your own numbers. Nothing on it is guessed. Thirty seconds.`),
+        // Their suite hub when one exists, else the calculator on the demo page.
+        // Never a page that asks for their phone number.
+        cta: { label: 'Run your own numbers', url: hub ?? `https://modernmustardseed.com/demos?source=outbound-drip&p=${encodeURIComponent(lead.id)}#calculator` },
+        secondary: { label: 'Book 10 minutes with Sarah', url: BOOK },
         trackId: lead.id,
       }),
       summary: `Drip 2 of ${DRIP_LENGTH}: the missed-call math.`,
@@ -334,8 +336,8 @@ export async function sendDripStep(sb: SupabaseClient, leadInput: OutboundLead, 
     await recordSend(sb, { leadId: lead.id, campaignId: null, kind: 'followup', step, to, from: OUTBOUND_REPLY_TO, subject: email.subject, providerMessageId: sent.id });
   } catch { /* counted nowhere; the send still happened */ }
 
+  // last_email_at only. Status is a human's mark; the drip never sets it.
   const leadUpdate: Record<string, unknown> = { last_email_at: nowIso };
-  if (lead.status === 'new') leadUpdate.status = 'contacted';
   const { data: updatedLead } = await sb.from('outbound_leads').update(leadUpdate).eq('id', lead.id).select().single();
 
   const gaps = drip.gaps?.length ? drip.gaps : DRIP_GAPS;
@@ -380,6 +382,66 @@ export async function startDrip(sb: SupabaseClient, lead: OutboundLead, startedB
     : await sb.from('outbound_drips').insert(row).select('*').single();
   if (error || !data) return { ok: false, error: error?.message ?? 'Could not create the drip.' };
   return sendDripStep(sb, lead, data as OutboundDrip, 1);
+}
+
+/**
+ * ENROL THEM THE MOMENT THEIR DEMO GOES OUT, WITHOUT SENDING ANYTHING.
+ *
+ * Sarah, 2026-08-25: "when a demo is sent, then they should automatically enter
+ * a drip campaign after that to try to land the client."
+ *
+ * Step 1 of this sequence IS the demo email ("I built you a website you can
+ * click through"), so a demo that has just left is a drip already one step in.
+ * `startDrip` would send that email a second time, minutes after the real one.
+ * This records the demo as step 1, schedules step 2 on the normal gap, and lets
+ * the cadence cron carry the rest: the missed-call math, the first week, the
+ * price in writing, the close.
+ *
+ * A NEW DEMO RESTARTS IT. Sending somebody a second demo is a new attempt at
+ * the same sale, and it would be strange to have them receive "closing your
+ * file" three days later because the first attempt was four steps along. The
+ * row is reset rather than added to, so there is only ever one live sequence
+ * per lead and the two can never interleave in an inbox.
+ *
+ * Never throws. A delivered demo must not be reported as a failure because its
+ * follow-up could not be scheduled.
+ */
+export async function enrollDripAfterDemo(
+  sb: SupabaseClient,
+  lead: OutboundLead,
+  args: { startedBy: string; messageId?: string | null; subject?: string | null },
+): Promise<{ ok: true; nextAt: string | null; restarted: boolean } | { ok: false; error: string }> {
+  try {
+    const stop = dripStopReason(lead, false);
+    if (stop) return { ok: false, error: stop };
+
+    const existing = await getDrip(sb, lead.id);
+    const nowIso = new Date().toISOString();
+    const nextAt = atCadenceHour(addBusinessDays(new Date(), DRIP_GAPS[0])).toISOString();
+    const row = {
+      lead_id: lead.id,
+      status: 'active' as const,
+      step: 1,
+      gaps: DRIP_GAPS,
+      next_at: nextAt,
+      started_at: nowIso,
+      started_by: args.startedBy,
+      last_sent_at: nowIso,
+      stopped_reason: null,
+      // The demo IS step 1, so it goes in the log as step 1. The panel then
+      // shows a sequence that matches what the prospect actually received.
+      sent: [{ step: 1, at: nowIso, messageId: args.messageId ?? null, subject: args.subject ?? 'Their demo' }],
+      last_error: null,
+      updated_at: nowIso,
+    };
+    const { error } = existing
+      ? await sb.from('outbound_drips').update(row).eq('id', existing.id)
+      : await sb.from('outbound_drips').insert(row);
+    if (error) return { ok: false, error: error.message };
+    return { ok: true, nextAt, restarted: Boolean(existing) };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : 'Could not enrol the drip.' };
+  }
 }
 
 export async function setDripStatus(sb: SupabaseClient, leadId: string, status: 'paused' | 'active' | 'stopped', reason?: string): Promise<OutboundDrip | null> {

@@ -368,7 +368,10 @@ function extractSignals(url: URL, html: string, status: number): Signals {
  * spawned CLI's failures actually happen.
  */
 
-export async function runWebsiteAudit(rawUrl: string, opts: { facts?: SiteFacts | null } = {}): Promise<AuditResult> {
+export async function runWebsiteAudit(
+  rawUrl: string,
+  opts: { facts?: SiteFacts | null; source?: { table: string; id: string } | null } = {},
+): Promise<AuditResult> {
   let raw = (rawUrl ?? '').trim();
   if (!raw) return { ok: false, status: 400, error: 'Drop your website URL.' };
   if (!/^https?:\/\//i.test(raw)) raw = `https://${raw}`;
@@ -489,6 +492,17 @@ Return the JSON report.`;
       // The public route allows 120s. Leave a clear margin so a slow audit
       // returns "still working" rather than being killed with nothing to show.
       timeoutMs: 95_000,
+      // "Try again in a minute" is a promise this engine makes out loud, in the
+      // catch below and in the admin's own copy. Until now it was false: a
+      // retry queued a brand new audit and threw the finished one away, so the
+      // button only ever worked by beating its own clock. Fifteen minutes is
+      // wide enough to cover a drainer that landed just after the request gave
+      // up, and a walk to the kettle, and narrow enough that a deliberate
+      // re-grade later still reads the site for real.
+      collectWithinMs: 15 * 60_000,
+      // So a late answer can be filed onto the lead it was run for, without
+      // anyone clicking again. See supabase/migrations/113_llm_jobs_source.sql.
+      source: opts.source ?? null,
     });
 
     return {

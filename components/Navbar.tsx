@@ -23,6 +23,7 @@ const MENU_GROUPS = [
   {
     heading: 'Work With Us',
     links: [
+      { label: 'The System', href: '/the-system' },
       { label: 'How It Works', href: '/work-with-us' },
       { label: 'Services', href: '/services' },
       { label: 'The Work', href: '/work' },
@@ -81,18 +82,19 @@ const MENU_GROUPS = [
 // (nav, footer, sitemap, llms.txt, services hub, comic) and noindexed. The
 // route and the waitlist drip keep working; it is only undiscoverable.
 //
-// PARKED 2026-08-12 (Sarah): The Voice Agent Forge is pulled from every nav,
+// PARKED 2026-08-12 (Sarah): The Voice Agent Build is pulled from every nav,
 // index, cross-sell CTA, sitemap, and llms.txt entry, and noindexed. Three voice
 // agent pages competed with each other; /voice-agents and /demos are the two
 // that stay. The route still answers so the Meta campaign, Stripe checkout
-// returns, and the demo agent drip keep working, and the forged demos at
-// /voice-agents/forge/demo/<runId> are untouched. To bring it back: restore this
+// returns, and the demo agent drip keep working, and the built demos at
+// /voice-agents/build/demo/<runId> are untouched. To bring it back: restore this
 // row plus the Footer, sitemap, services-hub, llms.txt, front-desk, portfolio,
 // industries, partner-swipe, jsonld, and comic entries, drop the noindex flag on
-// app/voice-agents/forge/page.tsx, and repoint the cross-sell CTAs.
+// app/voice-agents/build/page.tsx, and repoint the cross-sell CTAs.
 const DEPARTMENTS = [
   { name: 'HUNDREDFOLD', tag: 'THE FLAGSHIP SCALING PROGRAM', href: '/hundredfold' },
   { name: 'The Talking Website', tag: 'A SITE THAT ANSWERS ITS OWN PHONE', href: '/talking-website' },
+  { name: 'Brand / Rebrand', tag: 'A NEW BRAND ON EVERY SURFACE', href: '/brand' },
   { name: 'The Chief', tag: 'YOUR AI CHIEF OF STAFF', href: '/chief' },
   { name: 'Command Center', tag: 'THE AI BACK OFFICE', href: '/command-center' },
   { name: 'Websites', tag: 'FREE WEBSITE DEMO', href: '/websites' },
@@ -154,9 +156,9 @@ export default function Navbar() {
   }, [menuOpen]);
 
   // App shells (admin, client portal, program HQs) have their own headers, and
-  // forged demos are single-offer sales pages. Hide the marketing nav on both
+  // built demos are single-offer sales pages. Hide the marketing nav on both
   // so it never overlaps them or sells a competing offer. The voice demo still
-  // lives at the legacy /voice-agents/forge/demo/ path.
+  // lives at the legacy /voice-agents/build/demo/ path.
   const isAppShell =
     pathname.startsWith('/admin') ||
     pathname.startsWith('/portal') ||
@@ -170,7 +172,7 @@ export default function Navbar() {
     // booth is not a brand collision.)
     pathname.startsWith('/sarahcxc') ||
     pathname.startsWith('/sarahbook') ||
-    pathname.startsWith('/voice-agents/forge/demo/');
+    pathname.startsWith('/voice-agents/build/demo/');
   if (isAppShell) return null;
 
   return (

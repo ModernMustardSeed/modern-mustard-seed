@@ -1,5 +1,5 @@
 /**
- * THE VOICE AGENT FORGE. The mascot-first flagship demo-to-subscription machine.
+ * THE VOICE AGENT BUILD. The mascot-first flagship demo-to-subscription machine.
  *
  * A visitor tells Mr. Mustard about their business, watches him train a
  * personalized AI front desk while they watch, then talks to it live
@@ -14,12 +14,12 @@
  */
 
 export const DEMO_AGENT = {
-  name: 'The Voice Agent Forge',
-  wordmark: '[ VOICE AGENT: FORGED ]',
-  tagline: 'Your front desk, forged while you watch.',
+  name: 'The Voice Agent Build',
+  wordmark: '[ VOICE AGENT: BUILT ]',
+  tagline: 'Your front desk, built while you watch.',
   promise:
     'Tell Mr. Mustard about your business. He trains a personalized voice agent on the spot, and then you talk to it. Live. If you love it, it answers your real phone 24/7 starting this week.',
-  // Intent-first title (2026-07-25). "The Voice Agent Forge" has no search demand;
+  // Intent-first title (2026-07-25). "The Voice Agent Build" has no search demand;
   // "voice agent for small business" does. The brand name still owns the H1.
   metaTitle: 'Voice Agent for Small Business. Hear Yours Answer Live',
   metaDescription:
@@ -37,7 +37,7 @@ export const DEMO_AGENT = {
 export type DemoAgentVertical = {
   id: string;
   label: string;
-  /** One flavor line the forge montage brags about during training. */
+  /** One flavor line the build montage brags about during training. */
   drill: string;
   /** A scenario hint injected into the persona so role-play lands for this vertical. */
   scenario: string;
@@ -242,12 +242,12 @@ export const demoAgentFaq = [
 ] as const;
 
 /**
- * The forge montage script. {business}, {services}, {drill}, {city} get
+ * The build montage script. {business}, {services}, {drill}, {city} get
  * substituted client-side. Timed to feel like real work is happening
- * (it is: the persona is being forged and the line warmed up).
+ * (it is: the persona is being built and the line warmed up).
  */
-export const forgeScript = [
-  '[ LOADING {business} INTO THE FORGE ]',
+export const buildScript = [
+  '[ LOADING {business} INTO THE BUILD ]',
   '> reading everything you just told him...',
   '> memorizing your services: {services}',
   '> drilling the greeting. warmer. prouder. perfect.',

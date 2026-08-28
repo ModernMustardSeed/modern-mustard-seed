@@ -4,7 +4,10 @@ import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 import AdminHeader from '@/components/admin/AdminHeader';
 import EmailThread from '@/components/admin/EmailThread';
+import DripButton from '@/components/admin/DripButton';
+import LeadEmailComposer from '@/components/admin/LeadEmailComposer';
 import { AcqNav, Chip, Section, Stat, ToastHost, api, card, cardFlat, btnPrimary, btnGhost, btnDanger, inputCls, labelCls, eyebrow, timeAgo, useToasts } from '@/components/admin/acquisition/ui';
+import FacebookButton from '@/components/admin/acquisition/FacebookButton';
 import PersonalVideoCard from '@/components/admin/acquisition/PersonalVideoCard';
 
 type Lead = Record<string, unknown> & {
@@ -15,6 +18,10 @@ type Lead = Record<string, unknown> & {
   email: string | null;
   phone: string;
   website: string | null;
+  facebook_url: string | null;
+  facebook_source: string | null;
+  last_dm_at: string | null;
+  dm_count: number;
   trade: string | null;
   city: string | null;
   state: string | null;
@@ -231,6 +238,7 @@ export default function ProspectDetail({ id }: { id: string }) {
                 <Fact label="Phone" value={l.phone} />
                 <Fact label="Email" value={l.email ?? '—'} sub={l.email_status ? `${l.email_status}${l.email_confidence ? ` · confidence ${l.email_confidence}` : ''}` : undefined} href={l.email_source_url ?? undefined} hrefLabel="source" />
                 <Fact label="Website" value={l.website ?? '—'} href={l.website ?? undefined} />
+                <FacebookFact key={l.facebook_url ?? ''} lead={l} busy={busy === 'patch'} onSave={(facebook_url) => void act('patch', { facebook_url })} onDm={(undo) => void act(undo ? 'undo-dm' : 'dm-sent')} dmBusy={busy === 'dm-sent' || busy === 'undo-dm'} />
                 <Fact label="Reviews" value={l.review_count ? `${l.review_count.toLocaleString()}${l.rating ? ` at ${l.rating} stars` : ''}` : '—'} />
                 <Fact label="Service area" value={l.service_area ?? '—'} />
                 <Fact label="After hours" value={l.open_24_7 ? 'Advertises 24/7' : l.emergency_service ? 'Advertises emergency service' : '—'} />
@@ -407,6 +415,28 @@ export default function ProspectDetail({ id }: { id: string }) {
 
             <Section title="Do something">
               <div className="flex flex-col gap-2">
+                {/* First, because it is the move you reach for most: answer the
+                    last thing that happened. Every other button here starts a
+                    machine. This one writes one email to one person. */}
+                <LeadEmailComposer
+                  source="lead"
+                  id={l.id}
+                  triggerClassName={btnPrimary}
+                  onSent={(info) => {
+                    setNotice(`Sent to ${info.to}.`);
+                    void load();
+                  }}
+                />
+                {/* Starting a sequence is an action, so it sits with the actions.
+                    It was only in the mail panel's header, a third of the way
+                    down the page, which is not a place anybody goes looking for
+                    a button. */}
+                <DripButton
+                  leadId={l.id}
+                  businessName={l.business_name}
+                  className={btnPrimary}
+                  onNotice={(text, tone) => (tone === 'error' ? setError(text) : setNotice(text))}
+                />
                 <button className={btnPrimary} disabled={busy !== '' || !l.acq_eligible} onClick={() => void act('queue-email')}>
                   Queue email {Math.min(3, (l.email_stage ?? 0) + 1)}
                 </button>
@@ -419,7 +449,7 @@ export default function ProspectDetail({ id }: { id: string }) {
                   onClick={() => void act('forge')}
                   title="Voice agent only, no website. The suite card above builds both pieces."
                 >
-                  {busy === 'forge' ? 'Forging...' : 'Forge the instant pieces'}
+                  {busy === 'forge' ? 'Building...' : 'Build the instant pieces'}
                 </button>
                 <button className={btnGhost} disabled={busy !== ''} onClick={() => void act('send-checkout')}>
                   Send the checkout link
@@ -490,7 +520,7 @@ export default function ProspectDetail({ id }: { id: string }) {
                 <ul className="space-y-1.5 text-[13px]">
                   {data.queue.map((j) => (
                     <li key={j.id} className="flex items-center gap-2">
-                      <Chip label={j.kind} tone={j.status === 'failed' ? 'bad' : j.status === 'done' ? 'good' : 'neutral'} />
+                      <Chip label={j.kind === 'forge' ? 'build' : j.kind} tone={j.status === 'failed' ? 'bad' : j.status === 'done' ? 'good' : 'neutral'} />
                       <span className="text-[#161616]/65">
                         {j.status}
                         {j.step ? ` · step ${j.step}` : ''}
@@ -531,6 +561,69 @@ export default function ProspectDetail({ id }: { id: string }) {
   );
 }
 
+/**
+ * Their Facebook page: the button that opens it, and a paste box so the exact
+ * page lands on the record the first time it is found by hand. The search
+ * finder never overwrites a hand paste.
+ */
+function FacebookFact({
+  lead,
+  busy,
+  onSave,
+  onDm,
+  dmBusy,
+}: {
+  lead: { business_name: string; city: string | null; state: string | null; website: string | null; facebook_url: string | null; facebook_source: string | null; last_dm_at: string | null; dm_count: number };
+  busy: boolean;
+  onSave: (url: string) => void;
+  onDm: (undo: boolean) => void;
+  dmBusy: boolean;
+}) {
+  const [draft, setDraft] = useState(lead.facebook_url ?? '');
+
+  const dirty = draft.trim() !== (lead.facebook_url ?? '');
+  return (
+    <div className="flex gap-2 sm:col-span-2">
+      <dt className="w-28 shrink-0 text-[#161616]/60">Facebook</dt>
+      <dd className="min-w-0 flex-1">
+        <div className="flex flex-wrap items-center gap-2">
+          <FacebookButton lead={lead} size="md" />
+          <button className={`${btnPrimary} !py-2 !text-xs`} disabled={dmBusy} onClick={() => onDm(false)}>
+            {dmBusy ? 'Saving…' : lead.last_dm_at ? 'DM sent again' : 'DM sent'}
+          </button>
+          {lead.last_dm_at && (
+            <span className="text-[11px] text-[#3f5d34] font-semibold">
+              ✓ DM sent {timeAgo(lead.last_dm_at)}{lead.dm_count > 1 ? `, ${lead.dm_count} total` : ''}
+              {' · '}
+              <button className="underline font-normal text-[#161616]/60" disabled={dmBusy} onClick={() => onDm(true)}>undo</button>
+            </span>
+          )}
+          {lead.facebook_url ? (
+            <span className="text-[11px] text-[#161616]/60 break-all">
+              {lead.facebook_url}
+              {lead.facebook_source ? ` · ${lead.facebook_source === 'hand' ? 'pasted by hand' : lead.facebook_source === 'search' ? 'found by search' : 'was their website'}` : ''}
+            </span>
+          ) : (
+            <span className="text-[11px] text-[#161616]/60">Not on file. The button opens Facebook search for them; paste the page here once you find it.</span>
+          )}
+        </div>
+        <div className="mt-2 flex gap-2">
+          <input
+            className={`${inputCls} !py-1.5 text-xs`}
+            value={draft}
+            placeholder="https://www.facebook.com/theirpage"
+            onChange={(e) => setDraft(e.target.value)}
+            onKeyDown={(e) => { if (e.key === 'Enter' && dirty && !busy) onSave(draft.trim()); }}
+          />
+          <button className={`${btnGhost} !py-1.5 !text-xs`} disabled={!dirty || busy} onClick={() => onSave(draft.trim())}>
+            {busy ? 'Saving…' : lead.facebook_url && !draft.trim() ? 'Clear' : 'Save'}
+          </button>
+        </div>
+      </dd>
+    </div>
+  );
+}
+
 function Fact({ label, value, sub, href, hrefLabel }: { label: string; value: string; sub?: string; href?: string; hrefLabel?: string }) {
   return (
     <div className="flex gap-2">
@@ -566,7 +659,7 @@ function IntelGrid({ intel }: { intel: Record<string, unknown> }) {
 function dotFor(type: string): string {
   if (/purchase|client|won/.test(type)) return 'bg-[#3f5d34]';
   if (/fail|bounce|unsub|suppress|needs_human/.test(type)) return 'bg-[#E0301E]';
-  if (/call|consent|forge|demo|checkout|meeting/.test(type)) return 'bg-[#F5B700]';
+  if (/call|consent|build|demo|checkout|meeting/.test(type)) return 'bg-[#F5B700]';
   return 'bg-white';
 }
 
@@ -576,7 +669,7 @@ function dotFor(type: string): string {
  * The pieces land at different speeds, so
  * this shows the truth about each one rather than a single "forged" badge: the
  * voice agent is instant, the website takes the local
- * forge twenty to forty minutes, and the walkthrough film is cut after it.
+ * build twenty to forty minutes, and the walkthrough film is cut after it.
  *
  * Every piece that is finished is a link you can open right now. Every piece
  * that is not says exactly what it is waiting on.
@@ -635,7 +728,7 @@ function SuitePanel({
       note={
         nothing
           ? 'Nothing is built for them yet. One press builds all of it.'
-          : 'Everything forged for this business. The hub is the one link you send.'
+          : 'Everything built for this business. The hub is the one link you send.'
       }
       right={
         s?.hubUrl ? (
@@ -646,16 +739,16 @@ function SuitePanel({
       }
     >
       <div className="grid gap-2 sm:grid-cols-2">
-        {piece('Voice agent', s?.voiceUrl ?? null, null, 'Not forged yet. Instant when you build.')}
+        {piece('Voice agent', s?.voiceUrl ?? null, null, 'Not built yet. Instant when you build.')}
         {piece(
           'Website',
           s?.siteUrl ?? null,
           building
-            ? 'On the anvil. The forge on your machine is building it now.'
+            ? 'On the anvil. The build on your machine is building it now.'
             : failed
               ? 'The last build failed. Retry puts it back on the anvil.'
               : null,
-          'Not queued yet. The forge takes twenty to forty minutes.',
+          'Not queued yet. The build takes twenty to forty minutes.',
         )}
         {/*
           YOURS, NOT THEIRS. The command center is off the suite and out of the
@@ -669,7 +762,7 @@ function SuitePanel({
           s?.osUrl
             ? 'Built by hand and yours only. It is not part of the suite or the offer, so their page has no door for it and their email never names it.'
             : null,
-          'Not part of the suite. Sold on its own, built by hand from the Forge OS button.',
+          'Not part of the suite. Sold on its own, built by hand from the Build OS button.',
         )}
         {piece(
           'Walkthrough film',
@@ -719,17 +812,17 @@ function SuitePanel({
           disabled={busy !== ''}
           onClick={() => void act('forge-suite', { site: true, designTier, talkingWebsite })}
         >
-          {busy === 'forge-suite' ? 'Forging…' : nothing ? '⚒ Forge the whole suite' : '⚒ Forge whatever is missing'}
+          {busy === 'forge-suite' ? 'Building…' : nothing ? '⚒ Build the whole suite' : '⚒ Build whatever is missing'}
         </button>
 
         {/*
           THE WEBSITE, ON ITS OWN BUTTON.
 
-          "Forge whatever is missing" is accurate and it is also invisible: when
+          "Build whatever is missing" is accurate and it is also invisible: when
           the thing missing is the website, the word website appears nowhere on
           the control that builds it. This is the button Sarah went looking for
           and could not find. It says what it does, and it says the other half
-          out loud too, because forging the website is what turns their command
+          out loud too, because building the website is what turns their command
           center on.
         */}
         {!building && !s?.siteUrl && (
@@ -737,9 +830,9 @@ function SuitePanel({
             className={btnPrimary}
             disabled={busy !== ''}
             onClick={() => void act('forge-suite', { site: true, designTier, talkingWebsite })}
-            title="Queue their demo website at the forge. Twenty to forty minutes on your machine."
+            title="Queue their demo website at the build. Twenty to forty minutes on your machine."
           >
-            {busy === 'forge-suite' ? 'Queuing…' : '🌐 Forge their website'}
+            {busy === 'forge-suite' ? 'Queuing…' : '🌐 Build their website'}
           </button>
         )}
         {(failed || (s?.siteUrl && !building)) && (
@@ -765,8 +858,8 @@ function SuitePanel({
       {building && (
         <p className="mt-3 font-sans text-[12px] text-[#161616]/55">
           The website builds on your machine. If nothing moves, open{' '}
-          <Link href="/admin/acquisition/forge" className="underline decoration-[#F5B700] decoration-2 underline-offset-4">
-            the Forge board
+          <Link href="/admin/acquisition/build" className="underline decoration-[#F5B700] decoration-2 underline-offset-4">
+            the Build board
           </Link>
           , which says out loud whether the worker is running.
         </p>

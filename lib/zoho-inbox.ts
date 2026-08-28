@@ -132,10 +132,8 @@ export async function syncMailbox(box: Mailbox, opts: { sinceDays?: number } = {
             if (outboundMatch) {
               // reply_at was read by every drip and written by nothing (found
               // 2026-08-25). A real inbound email is the reply; stamp it once.
-              const patch: Record<string, unknown> = { reply_at: new Date().toISOString() };
-              if (outboundMatch.status === 'new') patch.status = 'contacted';
-              await sb.from('outbound_leads').update(patch).eq('id', outboundMatch.id).is('reply_at', null);
-              if (outboundMatch.status === 'new') await sb.from('outbound_leads').update({ status: 'contacted' }).eq('id', outboundMatch.id);
+              // Status stays: contacted is Sarah's mark, not the lead's reply.
+              await sb.from('outbound_leads').update({ reply_at: new Date().toISOString() }).eq('id', outboundMatch.id).is('reply_at', null);
             }
           }
         }

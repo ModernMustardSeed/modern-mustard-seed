@@ -36,12 +36,12 @@ export const eyebrow = 'text-[10px] uppercase tracking-[0.3em] font-oswald font-
 
 /* ---------------------------------- nav ---------------------------------- */
 
-export type OutboundTab = 'dashboard' | 'leads' | 'forge' | 'pilots' | 'call';
+export type OutboundTab = 'dashboard' | 'leads' | 'build' | 'pilots' | 'call';
 
 const SUB_TABS: { key: OutboundTab; href: string; label: string }[] = [
   { key: 'dashboard', href: '/admin/outbound', label: 'Dashboard' },
   { key: 'leads', href: '/admin/outbound/leads', label: 'Leads' },
-  { key: 'forge', href: '/admin/outbound/forge', label: 'Forge' },
+  { key: 'build', href: '/admin/outbound/build', label: 'Build' },
   { key: 'pilots', href: '/admin/outbound/pilots', label: 'Pilots' },
 ];
 
@@ -55,7 +55,7 @@ export function OutboundNav({
   right?: React.ReactNode;
   /** Rendered ahead of the tabs. Every deep screen (a call, a batch) gets a way out. */
   back?: React.ReactNode;
-  /** Small counters hung on a tab, e.g. how many suites are waiting on the Forge board. */
+  /** Small counters hung on a tab, e.g. how many suites are waiting on the Build board. */
   badge?: Partial<Record<OutboundTab, number>>;
 }) {
   return (
@@ -349,9 +349,9 @@ export function HeatChip({ reason, lastOpenAt, auditScore }: { reason: string; l
   if (reason === 'replied') return <span className={`${base} bg-[#3f5d34] text-[#f7f3e9] border-[#1a1815]`}>Replied</span>;
   if (reason === 'watching_now') return <span className={`${base} bg-[#a03123] text-[#f7f3e9] border-[#1a1815] animate-pulse`}>👀 On their demo NOW</span>;
   if (reason === 'reading_now') return <span className={`${base} bg-[#a03123] text-[#f7f3e9] border-[#1a1815] animate-pulse`}>🔥 Reading your audit NOW</span>;
-  if (reason === 'self_serve') return <span className={`${base} bg-[#b58a2a] text-[#1a1815] border-[#1a1815] animate-pulse`}>⚡ Forged their own demos</span>;
+  if (reason === 'self_serve') return <span className={`${base} bg-[#b58a2a] text-[#1a1815] border-[#1a1815] animate-pulse`}>⚡ Built their own demos</span>;
   if (reason === 'partner_forge') return <span className={`${base} bg-[#b58a2a] text-[#1a1815] border-[#1a1815] animate-pulse`}>🤝 Partner-minted intro</span>;
-  if (reason === 'rep_forge') return <span className={`${base} bg-[#b58a2a]/20 text-[#7a5c1a] border-[#b58a2a]/60`}>⚒ Pre-forged suite</span>;
+  if (reason === 'rep_forge') return <span className={`${base} bg-[#b58a2a]/20 text-[#7a5c1a] border-[#b58a2a]/60`}>⚒ Prebuilt suite</span>;
   if (reason === 'opened_recently') {
     const hrs = lastOpenAt ? Math.max(1, Math.round((Date.now() - new Date(lastOpenAt).getTime()) / 3600000)) : null;
     return <span className={`${base} bg-[#b58a2a]/20 text-[#7a5c1a] border-[#b58a2a]/60`}>Opened {hrs ? `${hrs}h ago` : 'recently'}</span>;

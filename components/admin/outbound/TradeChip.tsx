@@ -20,7 +20,7 @@ import type { OsTradeKey } from '@/data/demo-os-trades';
  * wedding venue.
  *
  * Correcting is cheap and safe by construction: no tokens, no rebuild, and the
- * shareable links never change. The website is deliberately NOT re-forged, since
+ * shareable links never change. The website is deliberately NOT rebuilt, since
  * that is a real artifact costing half an hour.
  */
 export default function TradeChip({

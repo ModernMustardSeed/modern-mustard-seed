@@ -22,17 +22,17 @@ export type SourceFunnel = {
   completed: number;
   failed: number;
   refused: number;
-  forged: number;
+  built: number;
   paid: number;
   consentRatePct: number | null;
   completionRatePct: number | null;
-  forgeRatePct: number | null;
+  buildRatePct: number | null;
   paidRatePct: number | null;
 };
 
 export type MustardAnalytics = {
-  today: { requests: number; calls: number; completed: number; forged: number; paid: number };
-  allTime: { requests: number; calls: number; completed: number; forged: number; paid: number };
+  today: { requests: number; calls: number; completed: number; built: number; paid: number };
+  allTime: { requests: number; calls: number; completed: number; built: number; paid: number };
   bySource: SourceFunnel[];
   recent: {
     id: string;
@@ -63,8 +63,8 @@ const CALLED = new Set(['calling', 'connected', 'completed']);
 export async function mustardAnalytics(): Promise<MustardAnalytics> {
   const db = getSupabase();
   const empty: MustardAnalytics = {
-    today: { requests: 0, calls: 0, completed: 0, forged: 0, paid: 0 },
-    allTime: { requests: 0, calls: 0, completed: 0, forged: 0, paid: 0 },
+    today: { requests: 0, calls: 0, completed: 0, built: 0, paid: 0 },
+    allTime: { requests: 0, calls: 0, completed: 0, built: 0, paid: 0 },
     bySource: [],
     recent: [],
     links: { active: 0, used: 0, expired: 0 },
@@ -84,10 +84,10 @@ export async function mustardAnalytics(): Promise<MustardAnalytics> {
     if (batch.length < 1000 || rows.length >= 20000) break;
   }
 
-  // Forge and purchase live on the prospect, so they are joined in one read
+  // Build and purchase live on the prospect, so they are joined in one read
   // rather than one per row.
   const leadIds = [...new Set(rows.map((r) => r.lead_id).filter(Boolean))] as string[];
-  const forged = new Set<string>();
+  const built = new Set<string>();
   const paid = new Set<string>();
   for (let i = 0; i < leadIds.length; i += 500) {
     const { data } = await db
@@ -95,7 +95,7 @@ export async function mustardAnalytics(): Promise<MustardAnalytics> {
       .select('id,demo_status,client_status')
       .in('id', leadIds.slice(i, i + 500));
     for (const l of (data ?? []) as { id: string; demo_status: string | null; client_status: string | null }[]) {
-      if (l.demo_status === 'ready') forged.add(l.id);
+      if (l.demo_status === 'ready') built.add(l.id);
       if (l.client_status === 'client') paid.add(l.id);
     }
   }
@@ -108,7 +108,7 @@ export async function mustardAnalytics(): Promise<MustardAnalytics> {
     requests: list.length,
     calls: list.filter((r) => CALLED.has(r.status)).length,
     completed: list.filter((r) => r.status === 'completed').length,
-    forged: list.filter((r) => r.lead_id && forged.has(r.lead_id)).length,
+    built: list.filter((r) => r.lead_id && built.has(r.lead_id)).length,
     paid: list.filter((r) => r.lead_id && paid.has(r.lead_id)).length,
   });
 
@@ -124,7 +124,7 @@ export async function mustardAnalytics(): Promise<MustardAnalytics> {
       const consented = list.filter((r) => CONSENTED.has(r.status)).length;
       const called = list.filter((r) => CALLED.has(r.status)).length;
       const completed = list.filter((r) => r.status === 'completed').length;
-      const f = list.filter((r) => r.lead_id && forged.has(r.lead_id)).length;
+      const f = list.filter((r) => r.lead_id && built.has(r.lead_id)).length;
       const p = list.filter((r) => r.lead_id && paid.has(r.lead_id)).length;
       const rate = (num: number, den: number) => (den > 0 ? Math.round((num / den) * 1000) / 10 : null);
       return {
@@ -136,11 +136,11 @@ export async function mustardAnalytics(): Promise<MustardAnalytics> {
         completed,
         failed: list.filter((r) => r.status === 'failed').length,
         refused: list.filter((r) => r.status === 'refused').length,
-        forged: f,
+        built: f,
         paid: p,
         consentRatePct: rate(consented, requests),
         completionRatePct: rate(completed, called),
-        forgeRatePct: rate(f, completed),
+        buildRatePct: rate(f, completed),
         paidRatePct: rate(p, completed),
       };
     })

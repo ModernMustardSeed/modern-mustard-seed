@@ -27,7 +27,7 @@ export async function POST(req: Request) {
       `The 6am rehearsal that proves the /demos funnel works came back red. A customer could be finding the break right now.\n\n` +
       (body.runUrl ? `Run: ${body.runUrl}\n` : '') +
       (body.detail ? `Detail: ${String(body.detail).slice(0, 500)}\n` : '') +
-      `\nCheck the Actions log, then the forge worker and the demo station.`,
+      `\nCheck the Actions log, then the build worker and the demo station.`,
   });
   return NextResponse.json({ ok: sent.ok });
 }

@@ -23,10 +23,11 @@ export default function Footer() {
       links: [
         { label: 'HUNDREDFOLD', href: '/hundredfold' },
         { label: 'The Talking Website', href: '/talking-website' },
+        { label: 'Brand / Rebrand', href: '/brand' },
         { label: 'The Chief', href: '/chief' },
         { label: 'Command Center', href: '/command-center' },
         { label: 'Websites', href: '/websites' },
-        // The Voice Agent Forge was parked 2026-08-12 (Sarah) and held this
+        // The Voice Agent Build was parked 2026-08-12 (Sarah) and held this
         // slot alone, so /voice-agents takes it rather than leaving the footer
         // with no voice agent department. See the note in Navbar.tsx.
         { label: 'Voice Agents', href: '/voice-agents' },
@@ -51,6 +52,7 @@ export default function Footer() {
     {
       title: 'Work With Us',
       links: [
+        { label: 'The System', href: '/the-system' },
         { label: 'How It Works', href: '/work-with-us' },
         { label: 'Services', href: '/services' },
         { label: 'Voice Agents', href: '/voice-agents' },

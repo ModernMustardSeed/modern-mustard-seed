@@ -351,7 +351,7 @@ export async function POST(req: Request) {
   // THE REBUILD. Everything above is the truth about their business, and until now
   // nothing consumed it: the demo was still the demo, guessed from a scraped lead,
   // and turning it into their real site was a manual job on a 900KB HTML file. So
-  // the forge runs again, immediately, against their real logo, photos and menu.
+  // the build runs again, immediately, against their real logo, photos and menu.
   //
   // It does NOT reach the client. It lands on the delivery board, a human approves
   // it, and it reveals on the scheduled date. The machine does the work; a person

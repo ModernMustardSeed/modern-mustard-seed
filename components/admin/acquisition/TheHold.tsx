@@ -118,7 +118,7 @@ export default function TheHold({ hold, onDone }: { hold: Hold | null; onDone?: 
           <p className="font-oswald text-[11px] font-bold uppercase tracking-[0.18em] text-[#7a5c00]">Your demos</p>
           <h2 className="mt-1 font-oswald text-2xl font-bold uppercase tracking-tight">
             {demosWaiting > 0
-              ? `${demosWaiting} forged ${demosWaiting === 1 ? 'demo is' : 'demos are'} built and waiting`
+              ? `${demosWaiting} built ${demosWaiting === 1 ? 'demo is' : 'demos are'} built and waiting`
               : 'The waiting demos have gone out'}
           </h2>
           <p className="mt-2 text-[15px] leading-relaxed text-[#161616]/75 max-w-3xl">

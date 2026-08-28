@@ -4,7 +4,7 @@ import type { VoiceGender } from '@/lib/demo-voice';
 
 /**
  * Female / male agent voice picker. A tiny segmented control shared by
- * every voice agent demo surface (the forge, the cockpit demo, the on-site
+ * every voice agent demo surface (the build, the cockpit demo, the on-site
  * widget) so anyone can choose the voice before the call. Purely presentational:
  * the parent holds the chosen gender and injects the matching Vapi voice into
  * the call, so flipping this mid-idle costs nothing.

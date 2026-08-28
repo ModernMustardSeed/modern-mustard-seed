@@ -11,12 +11,12 @@
  *   - partner: partner-desk coach. Knows THIS partner's code, links, clicks,
  *              and earnings, plus the commission rules.
  *
- * Every desk call is forged server-side behind that surface's auth, so the
+ * Every desk call is built server-side behind that surface's auth, so the
  * persona (and any data in it) never reaches a browser that could not already
  * see the same numbers on the page.
  */
 
-import { getAssistantModel, demoModel, DESK_TOOLS, SPEAKING_PIPELINE, VOICE_CRAFT, type ForgedCall } from '@/lib/demo-agent';
+import { getAssistantModel, demoModel, DESK_TOOLS, SPEAKING_PIPELINE, VOICE_CRAFT, type BuiltCall } from '@/lib/demo-agent';
 import { DEMO_AGENT_VOICES } from '@/lib/demo-voice';
 import { env } from '@/lib/env';
 
@@ -43,7 +43,7 @@ export type AdminSnapshot = {
   role: string;
   leadsToday: number | null;
   leadsWeek: number | null;
-  forgeFloor: number | null;
+  buildFloor: number | null;
   demosReadyToday: number | null;
 };
 
@@ -53,13 +53,13 @@ export function adminDeskPrompt(s: AdminSnapshot, knowledge: string): string {
   const snapshot = [
     num(s.leadsToday, 'new leads today'),
     num(s.leadsWeek, 'leads in the last 7 days'),
-    num(s.forgeFloor, 'demo builds on the forge floor right now (queued or building)'),
+    num(s.buildFloor, 'demo builds on the build floor right now (queued or building)'),
     num(s.demosReadyToday, 'demo sites that went ready today'),
   ].filter(Boolean);
   return `You are Mr. Mustard, the AI who runs the front desk at Modern Mustard Seed, and this is an INTERNAL line: you are talking to ${s.name} (${s.role}) inside the MMS admin. You are their ops copilot. Warm, sharp, zero corporate fluff. You call them ${first}.
 
 # What this desk is for
-- Answering "how do we work" questions: what we sell, prices, how to take a sales call, what each admin tab does, the dial floor, how demos get forged and sent, how partners and commissions work.
+- Answering "how do we work" questions: what we sell, prices, how to take a sales call, what each admin tab does, the dial floor, how demos get built and sent, how partners and commissions work.
 - Coaching in the moment: objection handling, what to say next, how to close warm leads.
 - Reading out the pipeline snapshot below when asked how things look today.
 - Booking real time with Sarah when a teammate needs her (you have the real calendar tools).
@@ -161,15 +161,15 @@ const DESK_FIRST_MESSAGE: Record<DeskKind, (name: string) => string> = {
 const DESK_MAX_SECONDS: Record<DeskKind, number> = { admin: 43200, client: 43200, partner: 43200 };
 
 /**
- * Forge the desk call payload for the browser widget. Same merged-model
- * pattern as the demo agent forge (partial model overrides 400 on Vapi; tools
+ * Build the desk call payload for the browser widget. Same merged-model
+ * pattern as the demo agent build (partial model overrides 400 on Vapi; tools
  * must ride along so booking keeps working). Voice is always Sid: this is
  * Mr. Mustard himself, not a demo voice agent.
  */
-export async function forgeDeskCall(
+export async function buildDeskCall(
   desk: DeskKind,
   opts: { greetName: string; email: string; systemPrompt: string; keyterms?: string[] },
-): Promise<{ ok: true; call: ForgedCall } | { ok: false; error: string }> {
+): Promise<{ ok: true; call: BuiltCall } | { ok: false; error: string }> {
   const apiKey = env('VAPI_API_KEY') ?? '';
   if (!apiKey) return { ok: false, error: 'not_configured' };
   const model = await getAssistantModel(apiKey);

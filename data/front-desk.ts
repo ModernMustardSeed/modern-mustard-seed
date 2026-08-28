@@ -23,11 +23,11 @@ export const frontDeskIntents: FrontDeskIntent[] = [
     key: 'voice',
     match: ['voice', 'phone', 'call', 'voice agent', 'answering', 'after hours', 'missed call'],
     reply:
-      "Seed received. A 24/7 voice agent answering the number you already have: books appointments, answers your FAQs in a natural human voice, routes the urgent calls to you. Speaks 100+ languages. Fastest way to believe it: forge a free demo trained on YOUR business at modernmustardseed.com/demos and call it yourself. Want it built, or want to learn to build it yourself?",
+      "Seed received. A 24/7 voice agent answering the number you already have: books appointments, answers your FAQs in a natural human voice, routes the urgent calls to you. Speaks 100+ languages. Fastest way to believe it: build a free demo trained on YOUR business at modernmustardseed.com/demos and call it yourself. Want it built, or want to learn to build it yourself?",
     headline: 'Your {thing}, answering within the week.',
-    // The Voice Agent Forge was parked 2026-08-12 (Sarah); this pointed there.
+    // The Voice Agent Build was parked 2026-08-12 (Sarah); this pointed there.
     // See the note in Navbar.tsx.
-    cta: { label: 'Forge a free voice demo', href: '/demos' },
+    cta: { label: 'Build a free voice demo', href: '/demos' },
   },
   // The 'press' intent (menus, price lists, flyers) is parked with Mustard
   // Press as of 2026-08-07. Those words now fall through to the general

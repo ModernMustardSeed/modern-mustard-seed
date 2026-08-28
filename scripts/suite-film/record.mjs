@@ -1,7 +1,7 @@
 /**
  * THE CAMERA.
  *
- * Drives the lead's REAL forged surfaces in Chromium and records one
+ * Drives the lead's REAL built surfaces in Chromium and records one
  * continuous take: their website, a live call to their own voice agent, and
  * their command center, book-ended by the pop-art cards. Nothing here is
  * mocked or re-created; what lands in the file is the suite behaving exactly
@@ -157,7 +157,7 @@ export const CALL_AUDIO_TAP = `
 
 /**
  * Ease a scroll inside a document. Passed to frame.evaluate as a real function
- * rather than a string: a forged site may carry a CSP, and an eval'd helper
+ * rather than a string: a built site may carry a CSP, and an eval'd helper
  * would die inside exactly the pages this exists to film.
  */
 const smoothScroll = ([by, dur]) =>
@@ -298,7 +298,7 @@ export async function record({ workDir, siteUrl, osUrl, cards, beats, callerWav,
       } else if (beat.kind === 'site' || beat.kind === 'call') {
         if (where !== 'site') {
           await page.goto(siteUrl, { waitUntil: 'domcontentloaded' });
-          // The forged page paints its hero and runs its entrance; walking in
+          // The built page paints its hero and runs its entrance; walking in
           // on a half-drawn site is the one thing that makes a real build look
           // like a broken one.
           await page.waitForTimeout(2600);

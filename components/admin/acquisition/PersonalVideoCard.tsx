@@ -18,7 +18,7 @@ type SavedTake = {
 /**
  * A FACE ON THE DEMO.
  *
- * The forged suite is the proof. This is the part that makes it a person
+ * The built suite is the proof. This is the part that makes it a person
  * sending it: one face-to-camera video, recorded in the booth for THIS
  * business, attached here. It then leads their demo hub and their suite email,
  * and everything else on the page becomes something you built for them rather
@@ -145,7 +145,7 @@ export default function PersonalVideoCard({ leadId, business, push }: { leadId: 
           </p>
           <p className="mt-2 text-[11px] leading-snug text-[#161616]/50">
             The script for this is <strong className="text-[#161616]/70">&ldquo;I Called Your Voice Agent&rdquo;</strong>{' '}
-            in the booth: share the tab with their forged site, call their agent live on camera, and let it be genuinely
+            in the booth: share the tab with their built site, call their agent live on camera, and let it be genuinely
             unrehearsed. A flub is proof it was real.
           </p>
         </>

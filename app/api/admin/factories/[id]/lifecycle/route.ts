@@ -31,7 +31,7 @@ const schema = z.discriminatedUnion('action', [
  * THE FACTORY LIFECYCLE: deploy, activate, simulate, test, clone.
  *
  * One route because these are the steps of a single sequence and an operator
- * moves through them in order. FORGE -> REVIEW -> DEPLOY -> TEST -> SIMULATE ->
+ * moves through them in order. BUILD -> REVIEW -> DEPLOY -> TEST -> SIMULATE ->
  * ACTIVATE is the workflow the whole product is built to make short, and
  * splitting it across five endpoints would make the client stitch it back
  * together.
@@ -50,7 +50,7 @@ export async function POST(req: Request, { params }: { params: Params }) {
   const { factory, tenantId, plan, blueprint, blueprintRow } = bundle;
 
   if (!blueprint || !blueprintRow) {
-    return bad('This Factory has no valid blueprint yet. Run the Forge or fix the configuration first.');
+    return bad('This Factory has no valid blueprint yet. Run the Build or fix the configuration first.');
   }
 
   switch (input.action) {

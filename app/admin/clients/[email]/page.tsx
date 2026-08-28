@@ -7,6 +7,7 @@ import Link from 'next/link';
 import AdminHeader from '@/components/admin/AdminHeader';
 import EmailThread from '@/components/admin/EmailThread';
 import DeliveryEmailPanel from '@/components/admin/DeliveryEmailPanel';
+import DripButton from '@/components/admin/DripButton';
 
 /**
  * The single per-client command view. One screen for one customer: who they are,
@@ -52,7 +53,7 @@ export default function ClientCommandView() {
   const [replyOpen, setReplyOpen] = useState<string | null>(null);
   const [replyText, setReplyText] = useState('');
   const [sending, setSending] = useState(false);
-  // Edit their site from the card (2026-08-24): one sentence, applied by the forge as
+  // Edit their site from the card (2026-08-24): one sentence, applied by the build as
   // a draft for approval on the Delivery board. Copy, colours, a new photograph.
   const [editOpen, setEditOpen] = useState<string | null>(null);
   const [editText, setEditText] = useState('');
@@ -72,12 +73,12 @@ export default function ClientCommandView() {
       });
       const j = (await res.json().catch(() => ({}))) as { error?: string; already?: boolean };
       if (!res.ok) { setEditNote({ id: projectId, text: j.error || 'Could not queue that edit.', error: true }); return; }
-      setEditNote({ id: projectId, text: j.already ? 'An edit was already on the forge; it keeps going.' : 'Edit queued. The forge applies it in the background and it lands as a draft on the Delivery board for approval.' });
+      setEditNote({ id: projectId, text: j.already ? 'An edit was already on the build; it keeps going.' : 'Edit queued. The build applies it in the background and it lands as a draft on the Delivery board for approval.' });
       setEditOpen(null);
       setEditText('');
       await load();
     } catch {
-      setEditNote({ id: projectId, text: 'Could not reach the forge. Try again.', error: true });
+      setEditNote({ id: projectId, text: 'Could not reach the build. Try again.', error: true });
     } finally {
       setEditBusy(false);
     }
@@ -139,6 +140,11 @@ export default function ClientCommandView() {
                 {c?.status && <span className={`text-[9px] uppercase tracking-[0.15em] font-mono font-bold px-2 py-0.5 rounded-full border ${c.status === 'active' ? 'bg-emerald-100 text-emerald-800 border-emerald-800/25' : 'bg-[#161616]/[0.06] text-[#161616]/65 border-[#161616]/15'}`}>{c.status}</span>}
               </div>
               {!c && <p className="mt-2 text-[#8f6600] font-body text-sm">No client record yet. They may be a lead or an unprovisioned buyer.</p>}
+              {/* Renders nothing unless this address has a lead row behind it,
+                  because there is nothing to drip otherwise. */}
+              <div className="mt-4">
+                <DripButton email={data.email} businessName={c?.company ?? displayName} />
+              </div>
             </div>
 
             {/* What they own */}
@@ -255,7 +261,7 @@ export default function ClientCommandView() {
                                 <span className="text-[11px] font-body text-[#161616]/55">Copy, colours, sections, or a new photograph. It lands as a draft for approval; their live site keeps serving.</span>
                                 <div className="flex items-center gap-2 shrink-0">
                                   <button onClick={() => { setEditOpen(null); setEditText(''); }} className="text-[9px] uppercase tracking-[0.15em] font-sans font-bold text-[#161616]/55 hover:text-[#161616] px-2 py-1.5">Cancel</button>
-                                  <button onClick={() => void sendEdit(p.id)} disabled={editBusy || !editText.trim()} className="text-[9px] uppercase tracking-[0.15em] font-sans font-extrabold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-lg shadow-[2px_2px_0_0_#161616] px-3 py-1.5 disabled:opacity-45 hover:-translate-y-0.5 transition-all">{editBusy ? 'Queuing…' : 'Send to the forge'}</button>
+                                  <button onClick={() => void sendEdit(p.id)} disabled={editBusy || !editText.trim()} className="text-[9px] uppercase tracking-[0.15em] font-sans font-extrabold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-lg shadow-[2px_2px_0_0_#161616] px-3 py-1.5 disabled:opacity-45 hover:-translate-y-0.5 transition-all">{editBusy ? 'Queuing…' : 'Send to the build'}</button>
                                 </div>
                               </div>
                             </div>
@@ -264,7 +270,7 @@ export default function ClientCommandView() {
                               onClick={() => { setEditOpen(p.id); setEditText(''); setEditNote(null); }}
                               disabled={p.edit_status === 'queued' || p.edit_status === 'building'}
                               className="text-[9px] uppercase tracking-[0.15em] font-sans font-bold text-[#1E50C8] hover:text-[#161616] disabled:opacity-45"
-                              title={p.edit_status === 'queued' || p.edit_status === 'building' ? 'An edit is on the forge now. Send the next one when it lands.' : 'Change their site from one sentence'}
+                              title={p.edit_status === 'queued' || p.edit_status === 'building' ? 'An edit is on the build now. Send the next one when it lands.' : 'Change their site from one sentence'}
                             >
                               ✎ Edit this site →
                             </button>

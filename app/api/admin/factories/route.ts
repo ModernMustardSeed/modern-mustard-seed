@@ -73,7 +73,7 @@ const createSchema = z.object({
   tenantId: z.string().uuid(),
   name: z.string().trim().min(1).max(120),
   templateKey: z.string().trim().min(1).max(80),
-  /** An overlay from the Forge, if this is being created straight out of the wizard. */
+  /** An overlay from the Build, if this is being created straight out of the wizard. */
   overlay: z.record(z.string(), z.unknown()).optional(),
   businessName: z.string().trim().min(1).max(200).optional(),
 });

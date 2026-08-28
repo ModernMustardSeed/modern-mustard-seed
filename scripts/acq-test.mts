@@ -34,7 +34,7 @@ import { env, envAny, isPlaceholder, placeholderVars } from '../lib/env';
 import { parseTeam } from '../app/api/demo-order/intake/route';
 import { TRADE_LABELS, TRADE_SCENARIOS, TRADE_ROLEPLAY_NOTE } from '../lib/acq/types';
 import { classifyAgent, classifyHit, verdictDetail, HUMAN_DELAY_SECONDS, POLL_WINDOW_MINUTES } from '../lib/acq/bots';
-import { piecesFrom, listPieces, PIECE_ORDER } from '../lib/forge-pieces';
+import { piecesFrom, listPieces, PIECE_ORDER } from '../lib/build-pieces';
 import { demoHoursFrom, DEMO_DEFAULT_HOURS } from '../lib/demo-booking';
 import { slotsFrom, parseDayHours } from '../lib/front-office/calendar';
 
@@ -45,7 +45,7 @@ import { idempotencyKey } from '../lib/acq/queue';
 import { CONSENT_VERSIONS, CURRENT_CONSENT, toE164, consentVersion } from '../lib/acq/consent';
 import { greetingFor, firstNameOr, renderSubject, shortBusiness, buildCampaignEmail, buildDemoEmail, permissionUrl } from '../lib/acq/campaign';
 import { DEMO_ORDER_KEYS, DEMO_PRODUCTS, DEMO_BUNDLE, quoteDemoOrder } from '../lib/demo-order';
-import { FORGE_PIECES } from '../lib/voice-forge-suite';
+import { BUILD_PIECES } from '../lib/voice-build-suite';
 import { pickVariant } from '../lib/acq/settings';
 import { normalizeObjection } from '../lib/acq/stats';
 import { addBusinessDays, shouldStopFollowup } from '../lib/acq/runner';
@@ -915,13 +915,13 @@ test('trades: the keyword collisions that would poison a campaign are all reject
   }
 });
 
-test('trades: a sourced business forges as something better than a handyman', () => {
-  // Sourcing a trade and FORGING for it are two different registries: one finds
+test('trades: a sourced business builds as something better than a handyman', () => {
+  // Sourcing a trade and BUILDING for it are two different registries: one finds
   // the business, the other decides which price book, script and command centre
   // it gets. Adding an industry to the first and forgetting the second is silent,
-  // because the forge just falls through to the generic preset and a fence
+  // because the build just falls through to the generic preset and a fence
   // company ends up with a demo about furnaces.
-  const forgesAs: [string, string][] = [
+  const buildsAs: [string, string][] = [
     ['Summit Concrete and Flatwork', 'construction'],
     ['Glacier Masonry and Stonework', 'construction'],
     ['Big Sky Fence Company', 'construction'],
@@ -933,8 +933,8 @@ test('trades: a sourced business forges as something better than a handyman', ()
     ['Montana Septic Service', 'septic'],
     ['Flathead Well Drilling and Pump', 'plumbing'],
   ];
-  for (const [name, expected] of forgesAs) {
-    assert.equal(detectTrade(name, 'home_service', name), expected, `${name} should forge as ${expected}`);
+  for (const [name, expected] of buildsAs) {
+    assert.equal(detectTrade(name, 'home_service', name), expected, `${name} should build as ${expected}`);
   }
 
   // And the words that carry the family must not drag in the neighbours who
@@ -1023,7 +1023,14 @@ test('emails: email one carries the machine, the ranch line and exactly one butt
   assert.match(html, /Model RR-1/, 'the pop-art calculator ships in the first email');
   assert.match(html, /\(406\) 312-1223/, 'his number is printed, not only linked in the signature');
   assert.match(html, /tel:\+14063121223/, 'and it is dialable from a phone');
-  assert.match(html, /font-size:34px/, 'the number is the biggest thing after the calculator');
+  // The number is the biggest thing in the email after the calculator readout,
+  // and it has to survive a phone: at 34px the nowrap number was a 285px floor
+  // under an otherwise fluid email and pushed the whole card into horizontal
+  // scroll on a 375px screen. Big, but not so big it breaks the message.
+  const ranchSize = Number(html.match(/<a href="tel:[^"]*"[^>]*font-size:(\d+)px/)?.[1] ?? 0);
+  assert.ok(ranchSize >= 28 && ranchSize <= 32, `the ranch number should be 28-32px, got ${ranchSize}`);
+  // And nothing in the signature may impose a fixed width either.
+  assert.match(html, /sig-name\.png[^>]*width:100%/, 'the script name must scale into whatever column it gets');
   // ONE BUTTON, TWO TRACKED LINKS. The button opens the free build; the text
   // link under it opens the Talking Website. Both are measured, and only one of
   // them is a button, because a second button splits the click and measures
@@ -1050,7 +1057,7 @@ test('emails: the website email sells the suite and its button opens the suite',
   // The command center came off the offer on 2026-08-22. It must not be named
   // in the drip at all: not as a piece, not as a freebie, not as an aside.
   assert.ok(!/command center/i.test(html), 'the command center is never suggested alongside anything');
-  assert.match(html, /\(406\) 312-1223/, 'the forge close is on the phone, so the number is in the copy');
+  assert.match(html, /\(406\) 312-1223/, 'the build close is on the phone, so the number is in the copy');
   // The button must go to the free build, and the quieter second link to the
   // Talking Website. A button labelled BUILD MY SUITE that opens the callback
   // page is a bait and switch.
@@ -1605,7 +1612,7 @@ test('factory: a real sample forecasts, labels itself a projection, and widens w
     { key: 'forge-paid', label: '', numerator: 7, denominator: 22, ratePct: 31, thin: false },
   ];
   const f = forecast(rates, 30);
-  assert.ok(f.forgesNeeded! >= 96 && f.forgesNeeded! <= 98, `forges ${f.forgesNeeded}`);
+  assert.ok(f.buildsNeeded! >= 96 && f.buildsNeeded! <= 98, `builds ${f.buildsNeeded}`);
   assert.ok(f.emailsNeeded! > 40000, `emails ${f.emailsNeeded}`);
   assert.match(f.basedOn, /PROJECTION, NOT GUARANTEE/);
   assert.equal(f.confident, false, 'the smallest denominator here is 22, which is not a confident sample');
@@ -1738,7 +1745,7 @@ test('personalization: a thin prospect on the personalized variant gets the plai
 
 /**
  * Sarah pulled the command center out of the suite and the offer on 2026-08-22:
- * still sold, never bundled, never forged, never suggested. These are the
+ * still sold, never bundled, never built, never suggested. These are the
  * guards, because that kind of decision is exactly the kind that leaks back in
  * one helpful-looking cross-sell at a time.
  */
@@ -1781,9 +1788,9 @@ test('command center: the bundle still clears the price ladder without it', () =
   assert.ok(DEMO_BUNDLE.monthlyCents >= priciestMonthly && DEMO_BUNDLE.monthlyCents < pairMonthly, 'monthly sits inside the ladder');
 });
 
-test('command center: Mr. Mustard cannot forge one, and asking for one is not silently dropped into a build', () => {
-  assert.ok(!('command_center' in FORGE_PIECES), 'it is not a forgeable piece');
-  assert.deepEqual(Object.values(FORGE_PIECES).sort(), ['site', 'voice']);
+test('command center: Mr. Mustard cannot build one, and asking for one is not silently dropped into a build', () => {
+  assert.ok(!('command_center' in BUILD_PIECES), 'it is not a buildable piece');
+  assert.deepEqual(Object.values(BUILD_PIECES).sort(), ['site', 'voice']);
 });
 
 /**
@@ -1802,7 +1809,7 @@ test('command center: the board never marks one as shown to a prospect, in any s
     demo_url: 'https://modernmustardseed.com/demo/voice/1',
     site_demo_url: 'https://modernmustardseed.com/demo/site/1',
     site_demo_status: 'ready',
-    // A lead forged before 2026-08-22 still carries one of these. It still
+    // A lead built before 2026-08-22 still carries one of these. It still
     // resolves for anyone holding the link; it is simply never pointed at.
     os_demo_url: 'https://modernmustardseed.com/demo/os/1',
     hub_demo_url: 'https://modernmustardseed.com/demo/hub/1',
@@ -2200,26 +2207,26 @@ test('bots: the verdict blob carries the reason only when there is one', () => {
 
 
 /*
- * THE FORGE'S `build` PARSER.
+ * THE BUILD'S `build` PARSER.
  *
  * This is the function that decides what actually gets built for somebody on
  * the phone, and until 2026-08-24 nothing exercised it at all. It did not need
  * to be wrong to fail: the tool schema carried an enum nested inside `items`,
  * which meant Vapi handed the model a tool it could select and could not fill,
  * so `forge_demo_suite` arrived at the webhook as the literal `{}` on 16 calls
- * out of 16 across eleven days and not one demo was ever forged on a phone
+ * out of 16 across eleven days and not one demo was ever built on a phone
  * call. The schema is now a plain array of strings and this parser is the only
  * enforcement point, so these pin both halves of its job: take anything a
  * language model might plausibly say, and still refuse to invent a piece.
  */
 
-test('forge build: the exact wire vocabulary, which is the happy path', () => {
+test('build build: the exact wire vocabulary, which is the happy path', () => {
   assert.deepEqual(piecesFrom(['voice_agent']), ['voice']);
   assert.deepEqual(piecesFrom(['website']), ['site']);
   assert.deepEqual(piecesFrom(['voice_agent', 'website']), ['voice', 'site']);
 });
 
-test('forge build: the command center is not forgeable, and asking for one builds nothing', () => {
+test('build build: the command center is not buildable, and asking for one builds nothing', () => {
   // Sarah took it off the suite and out of the offer on 2026-08-22. Dropping
   // the word is the point: an empty build is the branch that makes him stop and
   // ask, which beats silently building the product she pulled.
@@ -2232,7 +2239,7 @@ test('forge build: the command center is not forgeable, and asking for one build
   assert.deepEqual(piecesFrom(['voice_agent', 'command_center']), ['voice']);
 });
 
-test('forge build: the separator split still does not tear a long value in half', () => {
+test('build build: the separator split still does not tear a long value in half', () => {
   // The \band\b word boundaries are still load bearing. This used to be proven
   // with "command_center" (a bare "and" tore it into "comm" and "_center"), so
   // it is proven here on a value that is still in the vocabulary rather than
@@ -2242,12 +2249,12 @@ test('forge build: the separator split still does not tear a long value in half'
   assert.deepEqual(piecesFrom(['voice_agent and brand_new_website']), ['voice', 'site']);
 });
 
-test('forge build: the answer is in canonical order however it was said', () => {
+test('build build: the answer is in canonical order however it was said', () => {
   assert.deepEqual(piecesFrom(['website', 'voice_agent']), PIECE_ORDER);
   assert.deepEqual(piecesFrom(['website', 'voice_agent']), ['voice', 'site']);
 });
 
-test('forge build: one string instead of an array still gets built', () => {
+test('build build: one string instead of an array still gets built', () => {
   assert.deepEqual(piecesFrom('voice_agent'), ['voice']);
   assert.deepEqual(piecesFrom('voice_agent, website'), ['voice', 'site']);
   assert.deepEqual(piecesFrom('voice agent and a website'), ['voice', 'site']);
@@ -2255,7 +2262,7 @@ test('forge build: one string instead of an array still gets built', () => {
   assert.deepEqual(piecesFrom('website/voice_agent'), ['voice', 'site']);
 });
 
-test('forge build: the near misses a model actually says', () => {
+test('build build: the near misses a model actually says', () => {
   assert.deepEqual(piecesFrom(['voice']), ['voice']);
   assert.deepEqual(piecesFrom(['phone agent']), ['voice']);
   assert.deepEqual(piecesFrom(['site']), ['site']);
@@ -2263,7 +2270,7 @@ test('forge build: the near misses a model actually says', () => {
   assert.deepEqual(piecesFrom(['receptionist']), ['voice']);
 });
 
-test('forge build: "everything" means every forgeable piece, and it beats the word inside it', () => {
+test('build build: "everything" means every buildable piece, and it beats the word inside it', () => {
   assert.deepEqual(piecesFrom(['all']), PIECE_ORDER);
   assert.deepEqual(piecesFrom(['everything']), PIECE_ORDER);
   assert.deepEqual(piecesFrom(['the_whole_suite']), PIECE_ORDER);
@@ -2272,10 +2279,10 @@ test('forge build: "everything" means every forgeable piece, and it beats the wo
   assert.deepEqual(piecesFrom(['talking_website']), PIECE_ORDER);
 });
 
-test('forge build: nothing recognisable builds nothing, on purpose', () => {
+test('build build: nothing recognisable builds nothing, on purpose', () => {
   // An empty result is what makes the tool bounce and ask. Building an
   // unasked-for piece is the one failure worse than asking again: it burns the
-  // daily forge ceiling and contradicts the price he just quoted.
+  // daily build ceiling and contradicts the price he just quoted.
   assert.deepEqual(piecesFrom([]), []);
   assert.deepEqual(piecesFrom(undefined), []);
   assert.deepEqual(piecesFrom(null), []);
@@ -2285,12 +2292,12 @@ test('forge build: nothing recognisable builds nothing, on purpose', () => {
   assert.deepEqual(piecesFrom(42), []);
 });
 
-test('forge build: no piece is ever duplicated', () => {
+test('build build: no piece is ever duplicated', () => {
   assert.deepEqual(piecesFrom(['voice_agent', 'voice', 'phone agent']), ['voice']);
   assert.deepEqual(piecesFrom([['voice_agent'], ['website']]), ['voice', 'site']);
 });
 
-test('forge build: the spoken list matches what was actually forged', () => {
+test('build build: the spoken list matches what was actually built', () => {
   assert.equal(listPieces(['voice']), 'voice agent');
   assert.equal(listPieces(['voice', 'site']), 'voice agent and website');
   assert.equal(listPieces(PIECE_ORDER), 'voice agent and website');
@@ -2301,13 +2308,13 @@ test('forge build: the spoken list matches what was actually forged', () => {
 /*
  * WHAT THE DEMO AGENT IS ALLOWED TO OFFER.
  *
- * On 2026-08-25 a tester asked three forged demos for an appointment and all
+ * On 2026-08-25 a tester asked three built demos for an appointment and all
  * three said "the owner will confirm". They had no booking tool, and the
  * persona prompt told them to treat availability as an unknown. Both halves are
  * fixed; these pin the half that can silently rot, which is the time maths.
  *
  * The riskiest new code is demoHoursFrom: it reads whatever a stranger typed
- * into a forge form. Getting it wrong in the CLOSED direction is the expensive
+ * into a build form. Getting it wrong in the CLOSED direction is the expensive
  * one, because zero slots puts the agent straight back to deflecting.
  */
 

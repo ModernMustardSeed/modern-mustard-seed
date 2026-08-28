@@ -1,11 +1,11 @@
 /**
- * THE FORGED DEMO AGENT CAN BOOK THE JOB.
+ * THE BUILT DEMO AGENT CAN BOOK THE JOB.
  *
  * Every demo is sold on one sentence: "I answer your phone and I book your
  * jobs." The second half was not true inside the demo itself. The persona
  * prompt already told the agent to "capture the job details and book the
  * appointment" and no booking tool was ever attached, so the model improvised.
- * On 2026-08-25 a tester asked three forged agents for an appointment and got
+ * On 2026-08-25 a tester asked three built agents for an appointment and got
  * "let me get the owner to confirm that slot" from all three, at the exact
  * moment the demo was supposed to prove its whole value.
  *
@@ -37,7 +37,7 @@ const DEMO_MINUTES = 60;
  * What a demo business is open, when nobody told us.
  *
  * ⚠️ A demo has no posted hours. the run's `hours` is free text a visitor
- * typed, and on an outbound forge it is usually empty entirely, because we
+ * typed, and on an outbound build it is usually empty entirely, because we
  * scraped the business rather than asking it. The real product treats an
  * unreadable day as CLOSED, which is right for a paying office (offering a 3am
  * Sunday visit is worse than offering nothing) and exactly wrong here: it would
@@ -74,7 +74,7 @@ const DAY_ALIASES: Record<string, string> = {
 /**
  * Turn whatever they typed into a day map the calendar can read.
  *
- * Handles the shapes people actually write on a forge form:
+ * Handles the shapes people actually write on a build form:
  *   "Mon-Fri 8-5"                    a range plus one window
  *   "Monday through Friday 7am-6pm, Saturday 8-12"
  *   "24/7"                            parseDayHours already understands this

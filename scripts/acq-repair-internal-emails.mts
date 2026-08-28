@@ -15,7 +15,7 @@
  * it. That is a wasted send, a lie in the funnel, and self-traffic to Resend.
  *
  * WHAT IT DOES NOT TOUCH. The demo station and Mr. Mustard write Sarah's
- * address onto every demo she forges for herself, on purpose, so the demo email
+ * address onto every demo she builds for herself, on purpose, so the demo email
  * reaches her. Those rows are correct and are left exactly as they are. Only
  * SCRAPE-sourced rows are repaired.
  *

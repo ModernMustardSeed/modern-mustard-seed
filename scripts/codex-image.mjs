@@ -162,7 +162,7 @@ function releaseLock() {
  * EINVAL on modern Node. Turning the shell on instead would be worse: node
  * joins argv UNQUOTED under shell:true, which is exactly how the demo-site
  * worker's prompts got truncated at the first space for months (memory:
- * mms-demo-website-forge). The shim just calls a plain node script, so calling
+ * mms-demo-website-build). The shim just calls a plain node script, so calling
  * that script directly with process.execPath sidesteps both problems.
  */
 function codexEntry() {
@@ -234,7 +234,7 @@ function runCodex(dir, opts, stagedRefs = []) {
   ].join('\n');
 
   const entry = codexEntry();
-  // The prompt rides on STDIN (`-`), never as an argument. Same rule the forge
+  // The prompt rides on STDIN (`-`), never as an argument. Same rule the build
   // worker learned: a long multi-line instruction passed through argv is one
   // quoting bug away from arriving as its first word.
   // --skip-git-repo-check is NOT optional, and leaving it off is why this tool
@@ -242,7 +242,7 @@ function runCodex(dir, opts, stagedRefs = []) {
   // not a git repo, so codex exec refuses on sight:
   //   "Not inside a trusted directory and --skip-git-repo-check was not specified"
   // It fails in 0s, every attempt, on every machine. The image-gen plugin's own
-  // codex backend has always passed it; this copy never did, so the forge fell
+  // codex backend has always passed it; this copy never did, so the build fell
   // back to the tool WITHOUT --ref and every before/after slider shipped as two
   // unrelated buildings (2026-08-25, Sarah on South Florida Roofing: "the 2
   // houses are very different and need to be exact same always").

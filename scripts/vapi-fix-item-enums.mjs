@@ -28,7 +28,7 @@
  * PATCH, stored it, and read it back unchanged. Every drift check stayed green.
  * And the model could select that tool but could not fill it, so every call
  * arrived at the webhook as the literal `{}` (not the one field, all ten) for
- * eleven days: 16 attempts, 4 real calls, zero demos forged, an apology every
+ * eleven days: 16 attempts, 4 real calls, zero demos built, an apology every
  * time. A plain top-level string enum is fine and is left alone; it is the
  * nested one that empties the arguments object.
  *

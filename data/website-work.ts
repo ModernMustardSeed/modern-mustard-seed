@@ -2,7 +2,7 @@
  * MMS-built websites, screenshotted for the /websites page: the hero, the
  * brochure-vs-engine toggle, and the bottom showcase scroll all read from here.
  * Every URL is live and every one was designed from scratch by the studio, but
- * the list mixes shipped client sites with forged builds, so copy that reads this
+ * the list mixes shipped client sites with built builds, so copy that reads this
  * data must not claim all of them are paying businesses. Shots live in
  * public/work-shots (optimized JPEGs). Refresh the shots when a site changes.
  */

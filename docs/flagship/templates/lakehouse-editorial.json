@@ -1,7 +1,7 @@
 {
   "name": "daisys-lakehouse-editorial",
   "version": "1.0.0",
-  "type": "website-forge-template",
+  "type": "website-build-template",
   "description": "An editorial, cream-and-black hospitality site system inspired by a lakeside destination cafe.",
   "entry": "CLAUDE.md",
   "tokens": [

@@ -70,7 +70,7 @@ const NEEDED_LOCALLY: Record<string, string> = {
   ZOHO_IMAP_USER: 'scripts/zoho-health.mjs',
   ZOHO_IMAP_PASSWORD: 'scripts/zoho-health.mjs',
   MAILBOXES: 'scripts/zoho-health.mjs',
-  FAL_KEY: 'codex-image, fix-svg-heroes, forge-fallback',
+  FAL_KEY: 'codex-image, fix-svg-heroes, build-fallback',
   FOURSQUARE_API_KEY: 'source-leads, enrich-prospects',
   CREDENTIALS_SECRET: 'scripts/factory-smoke.mts',
   VAPI_WEBHOOK_SECRET: 'acq-rehearsal, setup-vapi-mustard',

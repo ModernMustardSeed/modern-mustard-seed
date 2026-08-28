@@ -1,8 +1,8 @@
 /**
  * The business's own name, rendered the way the owner would write it.
  *
- * Every forged surface talks ABOUT the business constantly ("this is X's
- * command center", "X's demos are being forged", "puts me on X's real line"),
+ * Every built surface talks ABOUT the business constantly ("this is X's
+ * command center", "X's demos are being built", "puts me on X's real line"),
  * and every one of them built the possessive by hand as `${business}'s`. That
  * is wrong for the large share of real business names that already end in s:
  * Olivia's Chocolates became "Olivia's Chocolates's command center" on the
@@ -68,7 +68,7 @@ export function properName(name: string | null | undefined): string {
  * trade fills the noun. Four of the trade presets have a jobWord starting with a
  * vowel (order, and appointment three times over), so the command center demo
  * shipped "wants a quote on a order", "Pricing on a order" and "Emergency a
- * appointment" to every bakery, dental, medspa and salon lead we forged.
+ * appointment" to every bakery, dental, medspa and salon lead we built.
  *
  * Heuristic, deliberately: English articles follow SOUND, not spelling, and no
  * trade noun we ship needs more than this. The exceptions below are the ones

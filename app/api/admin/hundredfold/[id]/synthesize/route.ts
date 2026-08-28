@@ -9,7 +9,7 @@ import {
   updateMember,
 } from '@/lib/hundredfold-store';
 import { getRoadmapBySlug } from '@/lib/roadmap-store';
-import { buildDeepRoadmap, extractAnswers, forgeOffer } from '@/lib/hundredfold-synthesis';
+import { buildDeepRoadmap, extractAnswers, buildOffer } from '@/lib/hundredfold-synthesis';
 import { interviewCoverage } from '@/lib/hundredfold-interview';
 
 export const runtime = 'nodejs';
@@ -25,7 +25,7 @@ export const maxDuration = 300;
  *
  *   answers  read the transcript into the thirty answers      (~1 min)
  *   roadmap  build the deep roadmap from those answers        (~3-5 min)
- *   offer    forge the offer, the systems, and the gates      (~3-5 min)
+ *   offer    build the offer, the systems, and the gates      (~3-5 min)
  *
  * Each step is idempotent and safely re-runnable.
  */
@@ -95,7 +95,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
       if (!member.deep_roadmap) {
         return NextResponse.json({ ok: false, error: 'run the roadmap step first' }, { status: 400 });
       }
-      const { offer, systems, gates } = await forgeOffer({
+      const { offer, systems, gates } = await buildOffer({
         businessName: member.business_name,
         answers: interview.answers ?? {},
         roadmap: member.deep_roadmap,

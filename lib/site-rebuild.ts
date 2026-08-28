@@ -3,13 +3,13 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 /**
  * REBUILD THE SITE FROM WHAT THEY ACTUALLY TOLD US.
  *
- * The demo was forged from a scraped lead and the forge's best guesses. Then they paid,
+ * The demo was built from a scraped lead and the build's best guesses. Then they paid,
  * and told us the truth: their real logo, their real photos, their real menu, their real
  * hours, in their own words. Nothing consumed any of it. The plan was for Sarah to hand
  * edit a 900KB HTML file into their brand, one client at a time, which is exactly the
  * kind of work that does not survive contact with a thousand clients.
  *
- * So the same forge runs again, against the real material. The output becomes the REAL
+ * So the same build runs again, against the real material. The output becomes the REAL
  * site (projects.site_html), not a new demo.
  *
  * It rides the EXISTING queue (outbound_demo_sites) on purpose. The workstation worker

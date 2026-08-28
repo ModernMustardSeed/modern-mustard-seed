@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * THE DIRECTION BOARD, CLIENT SIDE. Sarah forges it after intake; the client
+ * THE DIRECTION BOARD, CLIENT SIDE. Sarah builds it after intake; the client
  * approves it here BEFORE the official site goes live. Approving fires
  * confetti and unblocks the scheduled reveal. Asking for changes sends the
  * note straight to Sarah and keeps holding the launch.

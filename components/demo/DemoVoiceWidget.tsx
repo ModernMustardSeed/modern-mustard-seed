@@ -1,24 +1,24 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import type { ForgedCall } from '@/lib/demo-agent';
+import type { BuiltCall } from '@/lib/demo-agent';
 import { demoVoice } from '@/lib/demo-voice';
 import { possessive } from '@/lib/business-name';
 
 const PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY;
 const ASSISTANT_ID = process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID;
 
-/** The house mustard, used until a lead's own brand color has been forged. */
+/** The house mustard, used until a lead's own brand color has been built. */
 const MMS_THEME = { accent: '#F5B700', accentInk: '#161616' };
 
 export type VoiceState = 'idle' | 'connecting' | 'live' | 'ended' | 'error';
 
 /**
- * The one voice call button shared by every forged-demo surface (the demo
+ * The one voice call button shared by every built-demo surface (the demo
  * website overlay and the business OS demo): starts a live web call with the
  * lead's own voice agent. Same Vapi web pattern as DemoCallExperience. Every
- * forged agent answers in the same female voice (Sarah, 2026-08-11); the
- * button wears the lead's own brand color when one has been forged, falling
+ * built agent answers in the same female voice (Sarah, 2026-08-11); the
+ * button wears the lead's own brand color when one has been built, falling
  * back to house mustard.
  */
 export default function DemoVoiceWidget({
@@ -29,10 +29,10 @@ export default function DemoVoiceWidget({
   theme = MMS_THEME,
 }: {
   business: string;
-  call: ForgedCall | null;
+  call: BuiltCall | null;
   label?: string;
   onStateChange?: (s: VoiceState) => void;
-  /** Derived from the lead's own forged website; falls back to house mustard. */
+  /** Derived from the lead's own built website; falls back to house mustard. */
   theme?: { accent: string; accentInk: string };
 }) {
   const [state, setStateRaw] = useState<VoiceState>('idle');

@@ -101,7 +101,7 @@ export default function ProposalBuilder() {
   const [sentUrl, setSentUrl] = useState<string | null>(null);
   const [testMsg, setTestMsg] = useState('');
 
-  // The showcase: demos already forged for this lead, carried on the document.
+  // The showcase: demos already built for this lead, carried on the document.
   const [demoLinks, setDemoLinks] = useState<DemoLink[]>([]);
   const [suggested, setSuggested] = useState<DemoLink[]>([]);
 
@@ -177,7 +177,7 @@ export default function ProposalBuilder() {
     }
   }, []);
 
-  // Ask the outbound floor what was already forged for this lead (by email,
+  // Ask the outbound floor what was already built for this lead (by email,
   // then by business name) so Sarah can attach it in one click instead of
   // hunting through the cockpit. Debounced; purely a suggestion.
   useEffect(() => {
@@ -704,7 +704,7 @@ export default function ProposalBuilder() {
 
       <main className="max-w-7xl mx-auto px-6 py-8">
         <p className="text-[#161616]/60 text-sm font-body mb-6 max-w-2xl print:hidden">
-          Build it, attach the demos you already forged, and preview exactly what the client sees at
+          Build it, attach the demos you already built, and preview exactly what the client sees at
           their link (the preview IS their document, one component, zero drift). Send for signature
           emails them the link, stamps the ledger, and tells you honestly if it did not go out.
         </p>
@@ -819,7 +819,7 @@ export default function ProposalBuilder() {
               />
             </div>
 
-            {/* The showcase: demos already forged for this lead, on the document */}
+            {/* The showcase: demos already built for this lead, on the document */}
             <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5">
               <span className="text-[10px] uppercase tracking-[0.3em] text-[#C4160B] font-mono font-bold block mb-1">
                 Already built for them

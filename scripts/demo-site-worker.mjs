@@ -1,14 +1,14 @@
 /**
  * Modern Mustard Seed demo-site worker.
  *
- * Watches the outbound_demo_sites queue (cockpit "Forge website" button) and
+ * Watches the outbound_demo_sites queue (cockpit "Build website" button) and
  * runs Claude Code HEADLESS on Sarah's Max plan to design and build a complete
  * single-file demo website for each lead. Flat subscription cost by
  * construction: ANTHROPIC_API_KEY is STRIPPED from the child environment, so
  * the CLI can only ever use the logged-in subscription, never metered credits.
  *
  * The finished HTML is stored back on the row and served by the site at
- * /demo/site/<id>, where the lead's forged voice agent (Voice Agent voice
+ * /demo/site/<id>, where the lead's built voice agent (Voice Agent voice
  * demo) is overlaid as a live call widget. One link, both demos.
  *
  * Prereqs on the machine that runs this:
@@ -18,13 +18,15 @@
  * Run:   node scripts/demo-site-worker.mjs          (loops, polls every 15s)
  *        node scripts/demo-site-worker.mjs --once    (process one job then exit)
  *
- * Env knobs: DEMO_SITES_DIR (default ~/mms-demo-sites), DEMO_SITE_MODEL,
+ * Env knobs: DEMO_SITE_LANES (how many builds run at once, default 2; 1 is the
+ * old serial worker), DEMO_SITE_LANE_MB (free memory demanded per lane already
+ * running before another starts), DEMO_SITES_DIR (default ~/mms-demo-sites), DEMO_SITE_MODEL,
  * DEMO_SITE_PERMISSION (default bypassPermissions; the build needs WebFetch
  * for the lead's existing site and Bash for the fal.ai hero image),
  * DEMO_SITE_MAX_MS (default 25 min), DEMO_SITE_POLL_MS (default 15s).
  */
 import { createClient } from '@supabase/supabase-js';
-import { spawn } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import { readFileSync, writeFileSync, mkdirSync, existsSync, rmSync, readdirSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -85,12 +87,14 @@ const STALE_MS = Number(process.env.DEMO_SITE_STALE_MS || 100 * 60 * 1000);
 // The walkthrough film runs inline after a fresh build (see cutSuiteFilm). It
 // is normally 3-6 minutes: narration, a real ~30s call, then the encode. The
 // ceiling exists so a wedged browser or a locked fal wallet cannot hold the
-// whole forge queue hostage; blowing it fails the film, never the build.
+// whole build queue hostage; blowing it fails the film, never the build.
 const SUITE_FILM_MAX_MS = Number(process.env.SUITE_FILM_MAX_MS || 14 * 60 * 1000);
 // The tour is a handful of short TTS clips and an upload, no browser and no
 // call, so it lives in a different order of magnitude from the film.
 const SITE_TOUR_MAX_MS = Number(process.env.SITE_TOUR_MAX_MS || 4 * 60 * 1000);
 const WORKER = os.hostname();
+/** When this process started. The orphan sweep's only safe dividing line. */
+const WORKER_STARTED = Date.now();
 const SITE_URL = 'https://modernmustardseed.com';
 
 // Load .env.local. This repo's file has LOWERCASE supabase keys, so accept both
@@ -102,6 +106,36 @@ try {
     if (m && !env[m[1]]) env[m[1]] = m[2].trim().replace(/^["']|["']$/g, '');
   }
 } catch { /* no .env.local */ }
+
+/**
+ * HOW MANY BUILDS RUN SIDE BY SIDE.
+ *
+ * Measured off this worker's log on 2026-08-25, thirteen consecutive builds: the
+ * claude child runs 24 to 60 minutes (median 29, mean 36) and the film behind it
+ * adds three to fourteen more. One lane therefore clears roughly one lead an
+ * hour, which is exactly what Sarah was watching: five queued leads, the oldest
+ * waiting 194 minutes, and nothing wrong anywhere. Nothing was broken. The queue
+ * was serial.
+ *
+ * Serial was never load-bearing. A build is a headless CLI waiting on the model,
+ * on fal, and on a Playwright pass over a file:// page; it holds one core of
+ * eight and no shared resource at all. Every build already works in its own
+ * directory (SITES_DIR/<job.id>), spawns its own child with its own cwd, and
+ * claims its row with a compare-and-swap, so two of them never touch.
+ *
+ * Two by default, not four. This machine has 16GB with Chrome, Edge and a floor
+ * of claude sessions already on it, and each build brings a browser pass with
+ * it. Two roughly halves the wait; three would trade the queue for an OOM, which
+ * is the outage this file has already had once. DEMO_SITE_LANES raises it on a
+ * quiet machine, and DEMO_SITE_LANES=1 restores the old serial worker exactly.
+ */
+const LANES = Math.max(1, Number(env.DEMO_SITE_LANES || 2));
+/**
+ * Extra free memory demanded per lane ALREADY RUNNING before another starts.
+ * The floor below is what one build needs; a second one starting on the same
+ * headroom is how both of them die together.
+ */
+const LANE_MB = Number(env.DEMO_SITE_LANE_MB || 900);
 
 // DESIGN TIERS (Sarah 2026-07-30: "give me a button to pick tier 1 design or tier 2
 // design... and play roulette a bit"). Tier 1 = the codex/award engine. Tier 2 = the
@@ -136,12 +170,12 @@ const log = (...a) => console.log(new Date().toISOString(), ...a);
  * because the first scroll is the close.
  *
  * The design law itself lives in lib/site-directive.mjs, shared with the
- * serverless failsafe (app/api/cron/forge-fallback) so that a lead who forges
+ * serverless failsafe (app/api/cron/build-fallback) so that a lead who builds
  * at 2am while this machine is asleep gets the same caliber of site.
  */
 const FAL_ENV = path.join(os.homedir(), '.claude', 'fal.env').replace(/\\/g, '/');
 // Derived from the running user's home rather than one machine's name, so the
-// same worker finds its own notes wherever the forge happens to be running.
+// same worker finds its own notes wherever the build happens to be running.
 const MEDIA_NOTES = (
   env.MMS_MEDIA_NOTES ||
   path.join(os.homedir(), '.claude', 'projects', `C--Users-${path.basename(os.homedir())}`, 'memory', 'image-generation-setup.md')
@@ -161,7 +195,7 @@ const MEDIA_NOTES = (
  * ever fails to parse, we fall back to the copy loaded at startup rather than taking
  * the worker down: a stale law still builds a site, a crashed worker builds nothing.
  *
- * A REBUILD is the same forge pointed at the truth (paid client, real assets, no
+ * A REBUILD is the same build pointed at the truth (paid client, real assets, no
  * demo pitch). An EDIT takes a finished site plus one instruction and changes only
  * that. Both laws ride along here for the same reason.
  */
@@ -243,7 +277,7 @@ function templateOf(job) {
  * Bank the template the build actually wore. The directive asks the builder to
  * record it in RESULT.json; a row that already carries a chosen key keeps it, a
  * row that let the builder choose learns what was chosen, so Random on the next
- * forge can avoid repeating it. Best effort: losing this costs variety, never a build.
+ * build can avoid repeating it. Best effort: losing this costs variety, never a build.
  */
 async function recordTemplate(job, dir) {
   try {
@@ -263,7 +297,7 @@ const isProjectEdit = (job) => isEdit(job) && Boolean(job.project_id);
 /**
  * Worker health, written where the cockpit can see it.
  *
- * The forge is a LOCAL poller, so when it declines to claim there is nothing in
+ * The build is a LOCAL poller, so when it declines to claim there is nothing in
  * the database to distinguish "holding off, machine is busy" from "dead". This
  * writes a heartbeat plus the reason into app_state (no migration needed) so the
  * cockpit can say WHY the queue is not moving instead of showing silence.
@@ -271,16 +305,35 @@ const isProjectEdit = (job) => isEdit(job) && Boolean(job.project_id);
  */
 // What is on the bench right now, so the health row can say "building Tiger
 // Concrete, 12m in" instead of going quiet for the length of a build.
-let current = null;
-export function setCurrent(job) {
-  current = job ? { id: job.id, name: job.business_name || null, since: new Date().toISOString() } : null;
+//
+// A Map since 2026-08-25, one entry per lane: with LANES > 1 there is no such
+// thing as "the" current build. `current` survives in the health row as the
+// OLDEST of them, because the progress page and the board both read it by that
+// name and a lead watching a countdown must not care how the floor is arranged.
+const inFlight = new Map();
+function startedBuild(job) {
+  inFlight.set(job.id, { id: job.id, name: job.business_name || null, since: new Date().toISOString() });
+}
+function finishedBuild(job) {
+  inFlight.delete(job.id);
+}
+/** Oldest first, so the first entry means what `current` used to mean. */
+function benched() {
+  return [...inFlight.values()].sort((a, b) => a.since.localeCompare(b.since));
 }
 
 let lastHealthAt = 0;
-async function reportHealth({ state, reason, freeMb }) {
+async function reportHealth({ state, reason, freeMb, force = false }) {
   const now = Date.now();
   // Throttle: the loop polls every 15s and this is only ever advisory.
-  if (state === 'polling' && now - lastHealthAt < 60000) return;
+  //
+  // 'building' joined the throttle when this worker grew lanes. It used to be
+  // written once per build, at the claim, because the loop then sat inside that
+  // build for forty minutes; with a free lane the loop keeps polling, and an
+  // unthrottled state write is four rows a minute all build long against a
+  // database that has fallen over twice this month. The moments that must land
+  // regardless (a fresh claim, the heartbeat) pass force.
+  if (!force && (state === 'polling' || state === 'building') && now - lastHealthAt < 60000) return;
   lastHealthAt = now;
   try {
     let queued = null;
@@ -301,7 +354,13 @@ async function reportHealth({ state, reason, freeMb }) {
           minFreeMb: MIN_FREE_MEM_MB,
           queued,
           worker: WORKER,
-          current,
+          current: benched()[0] ?? null,
+          // The whole floor, not just the head of it. Without these the board
+          // reads a two-lane worker as a one-lane one and Sarah cannot tell a
+          // busy machine from a stuck build.
+          building: benched(),
+          lanes: LANES,
+          busy: inFlight.size,
           stallMs: STALL_MS,
           at: new Date().toISOString(),
         },
@@ -329,6 +388,59 @@ async function reclaimStranded() {
     .or(`claimed_at.is.null,claimed_at.lt.${cutoff}`)
     .select('id');
   if (data?.length) log('reclaimed stranded builds:', data.map((d) => d.id).join(', '));
+}
+
+/**
+ * THE LEAD AND ITS BUILD MUST AGREE ABOUT WHETHER THE BUILD IS OVER.
+ *
+ * A finished build is two writes, not one: the demo row goes 'ready', and then a
+ * SEPARATE, unchecked update puts 'ready' on the lead. Nothing is transactional
+ * about that pair. Lose the second write (a dropped connection, a kill between
+ * the two, an early return) and the lead sits at 'building' with no process
+ * anywhere that will ever revisit it.
+ *
+ * The cost is not cosmetic, because the BOARDS READ THE LEAD, not the build. So
+ * the lead shows on the anvil forever, its finished website is filed under
+ * "still building" instead of "built", and the count of what has been made is
+ * quietly short by one. Abruzzo Italian Kitchen did this for four days: its site
+ * was ready on 8/21 and the board still read "BUILDING · 6150M" on 8/25.
+ *
+ * Narrow on purpose. A lead only ever comes OFF the anvil here, and only when
+ * the build row it points at says the build is over. A build still running is
+ * never touched.
+ */
+const TERMINAL = ['ready', 'failed'];
+
+async function reconcileLeadStatuses() {
+  const { data: stuck, error } = await supabase
+    .from('outbound_leads')
+    .select('id, business_name, site_demo_id, site_demo_status')
+    .in('site_demo_status', ['queued', 'building'])
+    .not('site_demo_id', 'is', null);
+  if (error) { log('lead status reconcile failed (ignored):', error.message); return; }
+  if (!stuck?.length) return;
+
+  const byId = new Map();
+  const ids = stuck.map((l) => l.site_demo_id);
+  for (let i = 0; i < ids.length; i += 100) {
+    const { data } = await supabase.from('outbound_demo_sites').select('id, status').in('id', ids.slice(i, i + 100));
+    for (const row of data || []) byId.set(row.id, row.status);
+  }
+
+  const fixed = [];
+  for (const lead of stuck) {
+    const actual = byId.get(lead.site_demo_id);
+    if (!actual || !TERMINAL.includes(actual) || actual === lead.site_demo_status) continue;
+    const { error: updErr } = await supabase
+      .from('outbound_leads')
+      .update({ site_demo_status: actual })
+      .eq('id', lead.id)
+      // Compare-and-swap on the value we read, so a build that finished during
+      // this pass writes its own answer rather than being overwritten by ours.
+      .eq('site_demo_status', lead.site_demo_status);
+    if (!updErr) fixed.push(`${lead.business_name || lead.id} -> ${actual}`);
+  }
+  if (fixed.length) log(`reconciled ${fixed.length} lead(s) whose build had already finished:`, fixed.join(', '));
 }
 
 /**
@@ -362,28 +474,120 @@ async function reclaimOwnOrphans() {
   }
 }
 
+/**
+ * THE ROW IS NOT THE ONLY THING THE DEAD WORKER LEFT BEHIND.
+ *
+ * killTree() reaps the whole tree when THIS process ends a build. It cannot run
+ * when the process is killed from outside, and the documented restart does exactly
+ * that: Stop-Process on node.exe. node dies, the `cmd /c` wrapper dies, and the
+ * claude.exe GRANDCHILD keeps building into `~/mms-demo-sites/<id>` forever.
+ *
+ * That is not merely wasted compute. The next run of the same job gets the same
+ * directory, so the escapee overwrites the new run's index.html underneath it. On
+ * 2026-08-25 three escapees (36, 22 and 5 minutes old) were writing into two live
+ * builds; both agents noticed, said "a parallel session is building in this same
+ * directory", and neither ever finished. Two lanes, no output, five leads waiting.
+ *
+ * So the tree gets swept here too, by the only signal that is always true: one
+ * build worker runs per machine, and this one is starting RIGHT NOW, so a build
+ * child older than this process cannot possibly be ours. Sarah's interactive
+ * sessions are `claude.exe` with no `-p`, so the print-mode + stream-json +
+ * strict-mcp-config signature belongs to a build and nothing else.
+ */
+function killOrphanBuildAgents() {
+  if (process.platform !== 'win32') return;
+  // Win32_Process.CreationDate comes back as LOCAL time, so the cutoff is written
+  // as local wall-clock too. An ISO string with a Z on it would be reparsed into
+  // local by PowerShell and quietly shift the cutoff by the UTC offset, which on
+  // this machine would spare a six-hour-old escapee.
+  const d = new Date(WORKER_STARTED);
+  const p2 = (n) => String(n).padStart(2, '0');
+  const cutoff = `${d.getFullYear()}-${p2(d.getMonth() + 1)}-${p2(d.getDate())}T${p2(d.getHours())}:${p2(d.getMinutes())}:${p2(d.getSeconds())}`;
+  const ps = [
+    "Get-CimInstance Win32_Process -Filter \"Name='claude.exe'\"",
+    "Where-Object { $_.CommandLine -match '--output-format stream-json' -and $_.CommandLine -match '--strict-mcp-config' -and $_.CommandLine -match ' -p ' }",
+    `Where-Object { $_.CreationDate -lt [datetime]'${cutoff}' }`,
+    'ForEach-Object { taskkill /PID $_.ProcessId /T /F 2>$null; $_.ProcessId }',
+  ].join(' | ');
+  try {
+    const out = spawnSync('powershell', ['-NoProfile', '-NonInteractive', '-Command', ps], {
+      encoding: 'utf8',
+      timeout: 30_000,
+    });
+    const pids = String(out.stdout || '').match(/\d+/g) || [];
+    if (pids.length) log(`killed ${pids.length} escaped build agent(s) left by an earlier worker: ${pids.join(', ')}`);
+  } catch (e) {
+    // Never let a sweep stop a worker starting. A worker that runs with an
+    // escapee still loose is a bad day; a worker that will not start is the
+    // 39-hour outage.
+    log('orphan build-agent sweep failed (ignored):', e?.message || e);
+  }
+}
+
+/**
+ * Take the oldest queued build nobody else has.
+ *
+ * A WINDOW, not one row. Asking for exactly one row was right while this worker
+ * was serial and wrong the moment it was not: the top of the queue is very often a
+ * row another lane claimed a fraction of a second ago, and a lane that loses that
+ * race cannot tell it from an empty queue. It would sleep a full poll cycle with
+ * four leads waiting. Reading a few extra rows costs nothing and means losing a
+ * race just moves you to the next lead.
+ *
+ * A LEAD ALWAYS OUTRANKS A CHORE, whatever the clock says.
+ *
+ * `worker_only` rows are housekeeping: sites that are already live, requeued in a
+ * batch to move them onto a newer design law. Nobody is watching one. But they are
+ * queued in bulk, so they are almost always the OLDEST rows in the table, and a
+ * strict oldest-first claim hands them every lane forever. On 2026-08-25 two of
+ * them queued on 8/20 held both lanes while five real leads sat four hours behind
+ * a countdown, and the GitHub fallback could not help because it refuses demos on
+ * purpose. Oldest-first is still the rule; it just runs inside each tier now, so
+ * the chores get the lanes exactly when no lead wants one.
+ *
+ * The claim itself is unchanged and is the only thing that makes this safe: the
+ * update filters on status='queued', so it is a compare-and-swap. Two lanes can
+ * both read the same row and exactly one of them can write it.
+ */
 async function claimNext() {
-  const { data } = await supabase
-    .from('outbound_demo_sites')
-    .select('*')
-    .eq('status', 'queued')
-    .order('created_at', { ascending: true })
-    .limit(1)
-    .maybeSingle();
-  if (!data) return null;
-  const { data: claimed } = await supabase
-    .from('outbound_demo_sites')
-    // `error: null` matters more than it looks. The previous attempt's failure text
-    // used to survive the re-claim, so a row that was actively BUILDING still read
-    // "[requeued after stall] ..." in forge-health and in the cockpit. On 2026-08-24
-    // that stale line cost real minutes of diagnosis: it made a healthy retry look
-    // like the fault. A row's error describes its CURRENT state or it says nothing.
-    .update({ status: 'building', claimed_at: new Date().toISOString(), worker: WORKER, error: null, updated_at: new Date().toISOString() })
-    .eq('id', data.id)
-    .eq('status', 'queued')
-    .select('*')
-    .maybeSingle();
-  return claimed || null;
+  const queueWindow = () =>
+    supabase
+      .from('outbound_demo_sites')
+      .select('*')
+      .eq('status', 'queued')
+      .order('created_at', { ascending: true })
+      .limit(LANES + 3);
+
+  // Leads first. The `worker_only` filter is applied defensively, the same way
+  // build-fallback.mjs applies it: if the column is not on this database yet, an
+  // unfiltered window is far better than a worker that claims nothing at all.
+  let { data, error } = await queueWindow().eq('worker_only', false);
+  if (error && /worker_only/.test(error.message || '')) ({ data } = await queueWindow());
+  // Nothing real waiting, so the housekeeping batch gets the machine.
+  else if (!data?.length) ({ data } = await queueWindow().eq('worker_only', true));
+
+  for (const row of data || []) {
+    // Belt and braces against a row this very process is already building: the
+    // status filter below would refuse it anyway, but skipping is cheaper and
+    // says the intent out loud.
+    if (inFlight.has(row.id)) continue;
+    const { data: claimed } = await supabase
+      .from('outbound_demo_sites')
+      // `error: null` matters more than it looks. The previous attempt's failure text
+      // used to survive the re-claim, so a row that was actively BUILDING still read
+      // "[requeued after stall] ..." in build-health and in the cockpit. On 2026-08-24
+      // that stale line cost real minutes of diagnosis: it made a healthy retry look
+      // like the fault. A row's error describes its CURRENT state or it says nothing.
+      .update({ status: 'building', claimed_at: new Date().toISOString(), worker: WORKER, error: null, updated_at: new Date().toISOString() })
+      .eq('id', row.id)
+      // THE COMPARE-AND-SWAP. Only a row still 'queued' can be taken, so a lane
+      // that lost the race writes nothing and reads back nothing.
+      .eq('status', 'queued')
+      .select('*')
+      .maybeSingle();
+    if (claimed) return claimed;
+  }
+  return null;
 }
 
 /**
@@ -933,20 +1137,62 @@ async function storeFinished(job, html) {
     to_addr: job.business_name,
     subject: isEdit(job) ? 'Website demo updated' : 'Website demo live',
     snippet: isEdit(job)
-      ? `Their demo website was reforged from your prompt. Live at ${siteUrl}`
+      ? `Their demo website was rebuilt from your prompt. Live at ${siteUrl}`
       : `Their demo website is live at ${siteUrl} (voice agent riding along on it, sell it as a separate add-on).`,
     read: true,
     occurred_at: new Date().toISOString(),
   });
   log(isEdit(job) ? 'EDITED' : 'READY', job.id, siteUrl, `(${Math.round(html.length / 1024)}KB)`);
 
-  // Fresh demo banked = the whole suite exists. Cut their walkthrough film
-  // FIRST (it is the last thing made and the first thing they watch), then
-  // tell the site it may announce the package.
-  if (!isEdit(job)) {
-    await buildSiteTour(job);
-    await cutSuiteFilm(job);
-    await notifySuiteReady(job);
+  // Fresh demo banked = the whole suite exists. The walkthrough film and the
+  // announcement behind it hand off to the finishing lane; this lane is a BUILD
+  // lane and goes back to building.
+  if (!isEdit(job)) queueFinishing(job);
+}
+
+/**
+ * THE FINISHING LANE: the film, and the announcement that waits on it.
+ *
+ * The film used to run inline, on purpose, and the reason was good: one
+ * definition of "this suite is finished" and no second daemon to keep alive at
+ * 2am. That trade was right when this worker had one lane and is wrong now. Three
+ * to fourteen minutes of narration, a real phone call and an encode is work no
+ * BUILDER is needed for, and holding a build lane through it throws away the
+ * throughput the lanes exist to buy, once per suite.
+ *
+ * So it moves one step sideways, not into a second process. Same worker, same
+ * lifetime, same log. STRICTLY ONE AT A TIME: the film drives a browser and
+ * places a live call, and two of those at once is a machine on its knees. In
+ * suite-finished order, because that is the order Sarah watches them land.
+ *
+ * Every guarantee that mattered is kept. The film still GATES the announcement,
+ * because notifySuiteReady still runs behind it in this same chain, and
+ * suite-ready refuses to send without a ready film either way. A failure is
+ * still loud on the row. And a suite whose film never ran (a shutdown mid-queue)
+ * keeps its suite_film_status and is picked up by the daily suite sweep, exactly
+ * as it was before.
+ */
+const finishing = [];
+let finishingPump = null;
+
+function queueFinishing(job) {
+  finishing.push(job);
+  if (finishing.length > 1) log(`finishing lane: ${finishing.length} suites waiting on the film`);
+  if (!finishingPump) finishingPump = pumpFinishing().finally(() => { finishingPump = null; });
+}
+
+async function pumpFinishing() {
+  while (finishing.length) {
+    const job = finishing.shift();
+    try {
+      await buildSiteTour(job);
+      await cutSuiteFilm(job);
+      await notifySuiteReady(job);
+    } catch (e) {
+      // A finishing failure must never take the worker down, and must never
+      // touch the build row: the site is already banked and already READY.
+      log('finishing lane failed for', job.business_name || job.id, '-', e?.message || e);
+    }
   }
 }
 
@@ -1011,7 +1257,7 @@ async function buildSiteTour(job) {
 }
 
 /**
- * THE WALKTHROUGH FILM, the final step of the forge.
+ * THE WALKTHROUGH FILM, the final step of the build.
  *
  * Sarah 2026-08-01: the video at the top of a suite has to be a fresh
  * recording of THAT lead's site, agent and command center. It had been serving
@@ -1100,6 +1346,12 @@ async function rescueFinished() {
     .eq('status', 'building')
     .eq('worker', WORKER);
   for (const job of data || []) {
+    // NOT a row a lane in this very process is still building. Its index.html can
+    // be complete on disk minutes before the run finishes, because weighing,
+    // inlining, the judge and the retry all come after the file is written.
+    // Banking it here would race the lane that owns it and publish a site that
+    // had not been checked. A row we are holding is not stranded, it is working.
+    if (inFlight.has(job.id)) continue;
     const htmlPath = path.join(SITES_DIR, job.id, 'index.html');
     if (!existsSync(htmlPath)) continue;
     let html = '';
@@ -1246,7 +1498,7 @@ async function finishRebuild(job, html) {
 }
 
 /**
- * HEARTBEAT. The serverless failsafe (app/api/cron/forge-fallback) needs to know
+ * HEARTBEAT. The serverless failsafe (app/api/cron/build-fallback) needs to know
  * whether this machine is alive, and it cannot tell "laptop is asleep" from
  * "laptop is mid-build on the job ahead of yours" by looking at timestamps
  * alone. So we say so out loud on every poll. A fresh heartbeat means hands off,
@@ -1262,9 +1514,13 @@ async function beat() {
   } catch { /* a missed beat just makes the failsafe more eager, never less safe */ }
   // Refresh the health row mid-build too. Without this it freezes at the moment
   // the build started, and a 40-minute-old timestamp reads as a dead worker.
-  if (current) {
-    lastHealthAt = 0;
-    await reportHealth({ state: 'building', reason: current.name, freeMb: Math.round(os.freemem() / (1024 * 1024)) });
+  if (inFlight.size) {
+    await reportHealth({
+      state: 'building',
+      reason: benched().map((b) => b.name || b.id).join(' + '),
+      freeMb: Math.round(os.freemem() / (1024 * 1024)),
+      force: true,
+    });
   }
 }
 
@@ -1276,7 +1532,7 @@ let blockedSince = null;
 /**
  * THE STARVATION OVERRIDE.
  *
- * On 2026-07-30 Sarah forged four sites, ran the worker herself, and nothing
+ * On 2026-07-30 Sarah built four sites, ran the worker herself, and nothing
  * moved: 16GB of RAM with ~600MB actually available, so the guard refused every
  * claim forever. The comment above MIN_FREE_MEM_MB already says it. "A guard that
  * never lets anything through is not a safety feature, it is an outage." That was
@@ -1292,38 +1548,73 @@ const STARVE_MS = Number(process.env.DEMO_SITE_STARVE_MS || 15 * 60 * 1000);
 /** Below this a build cannot realistically run, so the override does not apply. */
 const HARD_FLOOR_MB = Number(process.env.DEMO_SITE_HARD_FLOOR_MB || 500);
 
+/**
+ * The builds this process currently has running, so --once and the shutdown path
+ * can wait for them. inFlight is the bench; this is the work.
+ */
+const running = new Set();
+
+/**
+ * Try to put one more build on the floor. Returns true if it started one.
+ *
+ * It no longer AWAITS the build. That single change is the whole speed-up: tick
+ * claims a lead, hands it to a lane, and returns so the caller can fill the next
+ * lane while the first is still running.
+ */
 async function tick() {
   // Bank finished work and free stranded rows first; both are cheap and neither
   // starts a new build, so they are safe under memory pressure.
   await rescueFinished();
   await reclaimStranded();
+  await reconcileLeadStatuses();
 
   const freeMb = Math.round(os.freemem() / (1024 * 1024));
-  const short = freeMb < MIN_FREE_MEM_MB;
-  if (short && blockedSince === null) blockedSince = Date.now();
-  if (!short) blockedSince = null;
+
+  // The caller already refuses to tick a full floor; this is the guard that makes
+  // that a property of the function rather than of one call site.
+  if (inFlight.size >= LANES) return false;
+
+  // Every lane already running raises the bar for the next one. The floor is
+  // what ONE build needs; a second starting on the same headroom is how both of
+  // them get OOM-killed together, which is worse than the wait it saved.
+  const needMb = MIN_FREE_MEM_MB + inFlight.size * LANE_MB;
+  const short = freeMb < needMb;
+  // Starvation is an IDLE condition. A worker with a build running is not starved
+  // no matter how tight memory is: the queue is moving, and declining to open a
+  // second lane is the guard doing its job rather than wedging.
+  const idle = inFlight.size === 0;
+  if (short && idle && blockedSince === null) blockedSince = Date.now();
+  if (!short || !idle) blockedSince = null;
 
   // Starved for long enough, with work waiting and enough room to actually build?
   // Take one. Loudly, so the cockpit and the log both say this was a deliberate
   // override rather than the guard silently drifting.
   const starvedMs = blockedSince ? Date.now() - blockedSince : 0;
-  const override = short && starvedMs >= STARVE_MS && freeMb >= HARD_FLOOR_MB;
+  const override = short && idle && starvedMs >= STARVE_MS && freeMb >= HARD_FLOOR_MB;
 
   if (short && !override) {
+    // A busy worker declining a SECOND lane is not a stalled worker, and must not
+    // be reported as one: 'blocked' turns the board red and tells Sarah to close
+    // something heavy, when the honest answer is that a build is running and the
+    // machine has room for exactly that one.
+    if (!idle) {
+      await reportHealth({ state: 'building', reason: benched().map((b) => b.name || b.id).join(' + '), freeMb });
+      return false;
+    }
     if (!warnedLowMem) {
-      log(`low memory (${freeMb}MB free, need ${MIN_FREE_MEM_MB}MB) - holding off claiming a build until it recovers`);
+      log(`low memory (${freeMb}MB free, need ${needMb}MB) - holding off claiming a build until it recovers`);
       warnedLowMem = true;
     }
     // 2026-07-28: this guard once held the whole floor for six hours with twelve
     // leads queued, and the only trace was one line on a console nobody was
-    // watching. From the cockpit it looked like the forge had simply stopped.
+    // watching. From the cockpit it looked like the build had simply stopped.
     // A stall that nobody can see is indistinguishable from a broken product, so
     // the reason now goes where Sarah actually looks.
     const waited = Math.round(starvedMs / 60000);
     await reportHealth({
       state: 'blocked',
       reason:
-        `low memory: ${freeMb}MB free, needs ${MIN_FREE_MEM_MB}MB` +
+        `low memory: ${freeMb}MB free, needs ${needMb}MB` +
         (waited >= 1 ? `. Waiting ${waited}m; it takes a build anyway at ${Math.round(STARVE_MS / 60000)}m if ${HARD_FLOOR_MB}MB is free.` : ''),
       freeMb,
     });
@@ -1333,19 +1624,30 @@ async function tick() {
     log(`STARVED ${Math.round(starvedMs / 60000)}m at ${freeMb}MB free - taking a build anyway rather than holding the queue`);
   }
   if (warnedLowMem) { log(`memory recovered (${freeMb}MB free) - resuming`); warnedLowMem = false; }
-  await reportHealth({ state: 'polling', reason: null, freeMb });
+  // 'polling' is only true of an EMPTY floor. A worker with one lane busy and one
+  // free is building, and saying otherwise would make the board flip between
+  // "Building Rosa's Pizza" and "up and polling" every minute as this line and
+  // the heartbeat took turns writing the same row.
+  await reportHealth(
+    inFlight.size
+      ? { state: 'building', reason: benched().map((b) => b.name || b.id).join(' + '), freeMb }
+      : { state: 'polling', reason: null, freeMb },
+  );
 
   const job = await claimNext();
   if (!job) return false;
-  setCurrent(job);
-  await reportHealth({ state: 'building', reason: job.business_name || job.id, freeMb });
-  try {
-    await process_(job);
-  } finally {
-    // Always clear, or a crashed build leaves the cockpit claiming work is in
-    // flight forever, which is the exact blindness this row exists to remove.
-    setCurrent(null);
-  }
+  startedBuild(job);
+  log(`lane ${inFlight.size}/${LANES}: taking ${job.business_name || job.id}`);
+  await reportHealth({ state: 'building', reason: benched().map((b) => b.name || b.id).join(' + '), freeMb, force: true });
+
+  // Deliberately NOT awaited. A build that throws is caught here rather than
+  // reaching the loop as an unhandled rejection, and the bench is cleared in
+  // every case, or a crashed build leaves the cockpit claiming work is in flight
+  // forever, which is the exact blindness the health row exists to remove.
+  const run = process_(job)
+    .catch((e) => log('build crashed', job.business_name || job.id, '-', e?.message || e))
+    .finally(() => { finishedBuild(job); running.delete(run); });
+  running.add(run);
   return true;
 }
 
@@ -1368,16 +1670,20 @@ async function tick() {
  */
 let releasing = false;
 async function releaseCurrentClaim(why) {
-  if (releasing || !current) return;
+  if (releasing || inFlight.size === 0) return;
   releasing = true;
-  const id = current.id;
-  log(`shutting down (${why}) with ${current.name || id} in flight - handing it back to the queue`);
+  // EVERY lane, in one statement. Handing back only the head of the bench would
+  // leave the other lanes' leads sitting 'building' with nothing building them
+  // for the full hundred-minute stale window, which is the exact failure this
+  // whole function exists to prevent.
+  const ids = [...inFlight.keys()];
+  log(`shutting down (${why}) with ${ids.length} build(s) in flight - handing ${ids.length === 1 ? 'it' : 'them'} back to the queue: ${benched().map((b) => b.name || b.id).join(', ')}`);
   try {
     await Promise.race([
       supabase
         .from('outbound_demo_sites')
         .update({ status: 'queued', worker: null, claimed_at: null, updated_at: new Date().toISOString() })
-        .eq('id', id)
+        .in('id', ids)
         .eq('status', 'building'),
       new Promise((r) => setTimeout(r, 5000)),
     ]);
@@ -1392,8 +1698,9 @@ for (const sig of ['SIGINT', 'SIGTERM', 'SIGHUP', 'SIGBREAK']) {
   });
 }
 
+killOrphanBuildAgents();
 await reclaimOwnOrphans();
-log('demo-site worker up. sites dir:', SITES_DIR, '| design tiers:', FORCED_TIER ? `forced ${FORCED_TIER}` : 'row choice, else tier 2', '| permission:', PERMISSION, ONCE ? '| --once' : `| poll ${POLL_MS}ms`);
+log(`demo-site worker up. ${LANES} lane(s).`, 'sites dir:', SITES_DIR, '| design tiers:', FORCED_TIER ? `forced ${FORCED_TIER}` : 'row choice, else tier 2', '| permission:', PERMISSION, ONCE ? '| --once' : `| poll ${POLL_MS}ms`);
 
 // Beat on a timer, not inside the work loop: a 30-minute build must not look
 // like a dead machine. unref() so --once can still exit.
@@ -1403,11 +1710,30 @@ setInterval(() => { beat(); }, 60_000).unref();
 if (ONCE) {
   const did = await tick();
   if (!did) log('no queued site builds.');
+  // The build no longer finishes inside tick(), so --once has to wait for it and
+  // for the film behind it. Without this the process exits mid-build and the
+  // lead's claim goes back to the queue, which is a worse --once than none.
+  await Promise.allSettled([...running]);
+  if (finishingPump) await finishingPump;
   process.exit(0);
 } else {
   // eslint-disable-next-line no-constant-condition
   while (true) {
-    try { while (await tick()) { /* drain queue */ } } catch (e) { log('loop error', e?.message); }
+    // Fill every free lane, then sleep. tick() returns as soon as a build is
+    // HANDED OFF rather than finished, so this loop tops the floor up to LANES
+    // and comes back to it every poll as lanes free up.
+    //
+    // A FULL FLOOR TICKS NOT AT ALL. Before lanes, a build meant zero polls for
+    // its whole length because the loop was parked inside it, and the database
+    // saw nothing from this worker but a heartbeat a minute. Ticking a floor that
+    // cannot take work would have quietly turned that into a sweep and a health
+    // write every fifteen seconds for forty minutes, on a database that has
+    // fallen over twice this month. The heartbeat still reports the build.
+    try {
+      if (inFlight.size < LANES) {
+        while (inFlight.size < LANES && await tick()) { /* fill the lanes */ }
+      }
+    } catch (e) { log('loop error', e?.message); }
     await new Promise((r) => setTimeout(r, POLL_MS));
   }
 }

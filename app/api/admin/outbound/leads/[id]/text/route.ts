@@ -18,7 +18,7 @@ type Params = Promise<{ id: string }>;
  * weeks stuck in A2P vetting and retired the Twilio stack on 2026-08-01. See
  * lib/tap-text.ts before reintroducing any provider here.
  *
- * The draft leads with whatever the forge has already built for them, because a
+ * The draft leads with whatever the build has already built for them, because a
  * link to their own demo is the highest-intent thing we ever send. Priority
  * mirrors the outreach email: the Demo Suite hub first (it holds everything),
  * then the demo website, then the business OS, then the bare voice agent.

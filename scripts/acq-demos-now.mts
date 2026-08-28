@@ -71,7 +71,7 @@ for (const job of rows) {
     continue;
   }
   if (!lead.hub_demo_url && !lead.demo_url) {
-    console.log(`  UNFORGED ${who}`);
+    console.log(`  UNBUILT ${who}`);
     continue;
   }
   const d = await authorize({ db, lead: lead as never, kind: 'demo', campaign, override });

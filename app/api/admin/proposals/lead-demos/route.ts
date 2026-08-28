@@ -17,7 +17,7 @@ type LeadRow = {
 };
 
 /**
- * The bridge that never existed: the demos forged for an outbound lead,
+ * The bridge that never existed: the demos built for an outbound lead,
  * surfaced to the proposal builder so the document can carry them. Before this,
  * the cockpit and the proposal builder had zero references to each other; the
  * demo that closes the deal was invisible in the document that asks for the

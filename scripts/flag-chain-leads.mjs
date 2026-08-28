@@ -5,7 +5,7 @@
  * Walmart Auto Care Center, Target, Ace Hardware (twice), a Starbucks, a Costco Tire
  * Center and about thirty more. None of them can buy a website from us. A store
  * manager has no authority to sign and no say over the brand's web presence, so every
- * dial, every forged demo and every enrichment call spent on one produced nothing.
+ * dial, every built demo and every enrichment call spent on one produced nothing.
  * Several were already marked "contacted", which means the time was actually spent.
  *
  * Uses the same lib/chains.mjs the importers now use, so the pipeline and the cleanup

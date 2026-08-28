@@ -912,7 +912,7 @@ const REQ_STATUS: Record<string, { label: string; cls: string }> = {
  * built is not a thing to meter, so this card never shows a budget, never shows a
  * price, and never asks for a card. Type the change, watch it get made, ship it.
  *
- * A fair-use ceiling still lives server-side, because every edit is real forge spend
+ * A fair-use ceiling still lives server-side, because every edit is real build spend
  * and no plan here is uncapped. It is invisible on purpose: past it the change simply
  * routes to Sarah as a note she handles by hand, which is a better answer anyway.
  */
@@ -922,7 +922,7 @@ type EditState = { status: 'queued' | 'building' | 'ready' | 'failed'; instructi
 /**
  * SELF-SERVE EDITS. You talk, your site changes, you watch it happen.
  *
- * Submit an edit and the forge applies it to a copy within minutes. You PREVIEW
+ * Submit an edit and the build applies it to a copy within minutes. You PREVIEW
  * the change here, then ship it yourself, adjust it again, or throw it away. As
  * many times as you want. Sarah keeps oversight on her side, but you never wait on
  * her for the happy path.
@@ -953,7 +953,7 @@ function RevisionsCard({ refreshKey, onSubmitted }: { refreshKey: number; onSubm
 
   useEffect(() => { load(); }, [load, refreshKey]);
 
-  // While the forge is building the change, poll so it flips to the preview on its own.
+  // While the build is building the change, poll so it flips to the preview on its own.
   useEffect(() => {
     if (edit?.status === 'queued' || edit?.status === 'building') {
       const t = setInterval(load, 8000);

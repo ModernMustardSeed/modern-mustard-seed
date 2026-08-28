@@ -2,7 +2,7 @@
  * WHO ACTUALLY MOVED, reduced to one row per prospect.
  *
  * The Who Is Moving board renders the full story: every signal, the consent
- * record, the call, the live feed. The Forge board needs one much smaller
+ * record, the call, the live feed. The Build board needs one much smaller
  * answer about the same events, asked thousands of times: did a PERSON open,
  * click, or reach the permission page, and when was the last one.
  *

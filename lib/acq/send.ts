@@ -232,7 +232,9 @@ export async function sendCampaignEmail(
       last_campaign_email_at: new Date().toISOString(),
       acq_stage: lead.acq_stage === 'prospect' ? 'emailed' : lead.acq_stage,
       acq_variant: lead.acq_variant ?? variant.key,
-      status: lead.status === 'new' ? 'contacted' : lead.status,
+      // `status` stays where it is. Contacted means a person touched the lead:
+      // a call, a DM, a hand-sent email. A drip email is the machine, and it
+      // was marking 800 leads contacted that nobody had spoken to (2026-08-26).
       last_email_at: new Date().toISOString(),
     })
     .eq('id', lead.id);
@@ -265,10 +267,10 @@ export async function sendCampaignEmail(
 /**
  * Where they buy.
  *
- * The real order page is the forged hub's own order screen, because that is
+ * The real order page is the built hub's own order screen, because that is
  * where the Stripe session is minted with the demo order attached, and it is
  * what carries the purchase back onto this lead through the store webhook. A
- * prospect with nothing forged yet has no hub, so they get the public offer page
+ * prospect with nothing built yet has no hub, so they get the public offer page
  * instead of a link that would 404 in front of a buyer.
  */
 /**
@@ -307,14 +309,14 @@ export async function sendDemoEmail(
   override?: { reason: string } | null,
 ): Promise<SendResult> {
   const demoUrl = lead.hub_demo_url || lead.demo_url;
-  if (!demoUrl) return { ok: false, error: 'Nothing forged yet.', permanent: false };
+  if (!demoUrl) return { ok: false, error: 'Nothing built yet.', permanent: false };
 
   const gate = await gateOrRefuse(db, campaign, lead, 'demo', override);
   if (!gate.ok) return gate.result;
 
   // Their Presence Audit rides along when one exists. Read fresh rather than
   // carried on the prospect type, because the audit is written by a different
-  // path (the cockpit, or the forge) and the lead row in hand can be stale.
+  // path (the cockpit, or the build) and the lead row in hand can be stale.
   let auditUrl: string | null = null;
   let auditScore: number | null = null;
   let auditHeadline: string | null = null;
@@ -377,7 +379,7 @@ export async function sendDemoEmail(
   // The cold drip stops at demo_sent, so the follow-through has to start here
   // rather than in whichever caller happened to send this one. See
   // lib/acq/post-demo.ts for why this lives in the sender and not the worker.
-  const chase = await startPostDemoSequence(db, { leadId: lead.id, campaignId: campaign.id });
+  const chase = await startPostDemoSequence(db, { leadId: lead.id, campaignId: campaign.id, messageId: sent.id, subject: built.subject });
 
   await recordEvent(db, {
     leadId: lead.id,
@@ -389,6 +391,7 @@ export async function sendDemoEmail(
       messageId: sent.id,
       demoNumber: chase.demoNumber,
       followupsQueued: chase.queued,
+      drip: chase.drip.enrolled ? `enrolled, next ${chase.drip.nextAt}` : `not enrolled: ${chase.drip.reason ?? 'unknown'}`,
       ...(chase.cancelled ? { supersededFollowups: chase.cancelled } : {}),
       ...(override ? { override: override.reason } : {}),
     },
@@ -407,7 +410,7 @@ export async function sendDemoEmail(
  *
  * Three refusals happen before a byte moves, and each of them exists because
  * the alternative is a broken link in front of a stranger:
- *   1. Nothing forged: there is no suite to send.
+ *   1. Nothing built: there is no suite to send.
  *   2. A website that is still on the anvil is never named. The email is
  *      rebuilt around whatever is genuinely finished.
  *   3. The governor decides, exactly as it does for every other send, so the
@@ -422,7 +425,7 @@ export async function sendSuiteEmail(
   const hubUrl = lead.hub_demo_url;
   const siteReady = lead.site_demo_status === 'ready' && Boolean(lead.site_demo_url);
   if (!hubUrl || (!lead.demo_url && !siteReady && !lead.os_demo_url)) {
-    return { ok: false, error: 'Nothing is forged for them yet. Build the suite first.', permanent: false };
+    return { ok: false, error: 'Nothing is built for them yet. Build the suite first.', permanent: false };
   }
   if (lead.demo_emailed_at && !opts.resend) {
     return { ok: false, error: 'Their suite already went out. Use the follow-ups from here.', permanent: true };
@@ -490,7 +493,7 @@ export async function sendSuiteEmail(
     .from('outbound_leads')
     .update({ demo_emailed_at: new Date().toISOString(), acq_stage: 'demo_sent', reservoir_state: 'hot' })
     .eq('id', lead.id);
-  const chase = await startPostDemoSequence(db, { leadId: lead.id, campaignId: campaign.id });
+  const chase = await startPostDemoSequence(db, { leadId: lead.id, campaignId: campaign.id, messageId: sent.id, subject: built.subject });
 
   await recordEvent(db, {
     leadId: lead.id,
@@ -507,6 +510,7 @@ export async function sendSuiteEmail(
       messageId: sent.id,
       demoNumber: chase.demoNumber,
       followupsQueued: chase.queued,
+      drip: chase.drip.enrolled ? `enrolled, next ${chase.drip.nextAt}` : `not enrolled: ${chase.drip.reason ?? 'unknown'}`,
       ...(chase.cancelled ? { supersededFollowups: chase.cancelled } : {}),
     },
   });

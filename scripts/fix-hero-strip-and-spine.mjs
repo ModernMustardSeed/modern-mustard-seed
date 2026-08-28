@@ -26,7 +26,7 @@ import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
 import path from 'node:path';
 
 const APPLY = process.argv.includes('--apply');
-const MARK = 'forge fix 2026-07-29: hero strip plate and spine removal';
+const MARK = 'build fix 2026-07-29: hero strip plate and spine removal';
 
 if (existsSync('.env.local')) {
   for (const line of readFileSync('.env.local', 'utf8').split(/\r?\n/)) {
@@ -161,4 +161,4 @@ for (const { row, spines, strips } of plan) {
   fixed += 1;
   console.log(`  fixed ${row.business_name}`);
 }
-console.log(`\n${fixed} site(s) patched. Originals in .forge-backups/strip-<id>.html`);
+console.log(`\n${fixed} site(s) patched. Originals in .build-backups/strip-<id>.html`);

@@ -458,7 +458,7 @@ export default function HundredfoldCommandCenter() {
             </div>
           </div>
         ) : (
-          <p className="font-body text-[#161616]/55 py-10">Your offer is being forged. It lands here.</p>
+          <p className="font-body text-[#161616]/55 py-10">Your offer is being built. It lands here.</p>
         ))}
 
       {tab === 'build' && (

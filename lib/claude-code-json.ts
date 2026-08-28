@@ -20,7 +20,7 @@
  * Why this exists: the website audit was pinned to the Anthropic API, and a
  * 3,600-lead batch at opus-5 with 8k output tokens is hundreds of dollars.
  * Worse, when the wallet hits zero every one of the ~31 API call sites in this
- * app degrades at once (see memory `mms-anthropic-api-billing`). The forge
+ * app degrades at once (see memory `mms-anthropic-api-billing`). The build
  * already proved the pattern works for long-running local work
  * (`scripts/demo-site-worker.mjs`); this generalises it to any JSON-returning
  * prompt.
@@ -33,7 +33,7 @@
  * 2. It strips every key-shaped credential from the child env. A present
  *    ANTHROPIC_API_KEY silently flips the CLI back to metered billing, which
  *    would defeat the entire purpose without any visible symptom.
- * 3. It serialises. Each headless child wants a few hundred MB, and the forge
+ * 3. It serialises. Each headless child wants a few hundred MB, and the build
  *    OOM-killed a build at 0.9GB free. Eight concurrent audits (the batch
  *    script's default) would take this machine down.
  */
@@ -49,7 +49,7 @@ const CLAUDE_BIN = process.env.CLAUDE_BIN || 'claude';
 
 /**
  * Two, not eight. The batch script defaults to 8 concurrent audits because the
- * API absorbs that happily. Eight headless Claude processes do not: the forge
+ * API absorbs that happily. Eight headless Claude processes do not: the build
  * incident on 2026-07-23 was a single build OOM-killed at 0.9GB free. This cap
  * applies no matter what concurrency the caller asks for, so a batch run cannot
  * accidentally take the workstation down.
@@ -57,11 +57,11 @@ const CLAUDE_BIN = process.env.CLAUDE_BIN || 'claude';
 const MAX_CONCURRENT = Math.max(1, Number(process.env.CLAUDE_CODE_CONCURRENCY || 2));
 
 /**
- * The same guard the forge worker uses, set LOWER on purpose. The forge holds
+ * The same guard the build worker uses, set LOWER on purpose. The build holds
  * 1200MB because it runs a 45-minute agentic build with tools, subagents and a
  * growing context. This is one turn, no tools, a few thousand tokens in and
- * out, and it exits. Holding it to the forge's ceiling would mean refusing to
- * work on a machine that is perfectly capable of the job, and the forge memory
+ * out, and it exits. Holding it to the build's ceiling would mean refusing to
+ * work on a machine that is perfectly capable of the job, and the build memory
  * file is explicit that a guard which never passes is an outage rather than a
  * safety feature.
  */
@@ -166,7 +166,7 @@ function spawnClaude(prompt: string, model?: string, allowWeb = false, timeoutMs
      * was never actually applied. It failed silently in the direction of doing
      * LESS sandboxing than the code appears to ask for, which is the worst
      * direction for a flag whose whole job is sandboxing. Same family of bug as
-     * the forge's unquoted-prompt truncation.
+     * the build's unquoted-prompt truncation.
      *
      * So: name the tools to block explicitly, all non-empty values.
      *
@@ -176,10 +176,10 @@ function spawnClaude(prompt: string, model?: string, allowWeb = false, timeoutMs
      * or a file writer is exactly what it must not have.
      */
     /**
-     * `allowWeb` exists for exactly one caller: the site forge, which used the
+     * `allowWeb` exists for exactly one caller: the site build, which used the
      * API's server-side web_search and web_fetch to read a prospect's real
      * website before designing theirs. That research is most of what made the
-     * fallback forge's output usable, so dropping it to move onto the
+     * fallback build's output usable, so dropping it to move onto the
      * subscription would have been a quiet downgrade dressed as a migration.
      *
      * What stays blocked in BOTH modes is everything that writes: Bash, Write,
@@ -203,7 +203,7 @@ function spawnClaude(prompt: string, model?: string, allowWeb = false, timeoutMs
     // The prompt goes in via STDIN, never as an argument. With shell:true node
     // joins argv UNQUOTED, so a prompt passed as an arg reaches claude as only
     // its first word, and any newline truncates the rest of the command line
-    // including the flags after it. Stdin is immune to all of it. (The forge
+    // including the flags after it. Stdin is immune to all of it. (The build
     // learned this by shipping two builds that received the single words "You"
     // and "Read" as their entire brief.)
     const child = spawn(/*turbopackIgnore: true*/ CLAUDE_BIN, args, { shell: process.platform === 'win32', env: childEnv });
@@ -590,9 +590,9 @@ export async function runClaudeCodeText({
   allowWeb?: boolean;
   /**
    * Per-call kill time. The module default of five minutes is right for a
-   * one-turn reasoning call and badly wrong for the site forge, which measures
+   * one-turn reasoning call and badly wrong for the site build, which measures
    * four minutes on a good run and has taken eleven. Left at the default, a
-   * forge would be killed mid-document and reported as a failure every time the
+   * build would be killed mid-document and reported as a failure every time the
    * build was merely slow.
    */
   timeoutMs?: number;
@@ -699,11 +699,11 @@ export async function runClaudeCodeJson({
     let last: unknown;
 
     for (let attempt = 0; attempt <= retries; attempt += 1) {
-      // Check headroom the way the forge worker does. PowerShell reports a
+      // Check headroom the way the build worker does. PowerShell reports a
       // different figure; os.freemem() is what actually predicts the OOM.
       //
       // WAIT, do not fail. Memory pressure on this machine is spiky (a browser
-      // with 40 tabs, a next build, the forge worker) and it passes on its own
+      // with 40 tabs, a next build, the build worker) and it passes on its own
       // within a minute or two. Failing on it would be indistinguishable to the
       // caller from "this website is broken", and the batch script stamps
       // failures onto the lead so future runs skip it: a busy laptop would

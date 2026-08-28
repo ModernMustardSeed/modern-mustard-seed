@@ -10,7 +10,7 @@ export const maxDuration = 120;
 /**
  * THE SECOND KNOCK (loop audit, break #6, 2026-08-20).
  *
- * The forge worker knocks the suite-ready announcement exactly once, inline,
+ * The build worker knocks the suite-ready announcement exactly once, inline,
  * right after cutting the film. If that knock lost (Resend suppression, an
  * unset secret at the time, a transient failure), the lead was stranded
  * forever, because every gate in the announcement route is a permanent hold

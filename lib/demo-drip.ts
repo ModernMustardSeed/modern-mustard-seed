@@ -1,18 +1,18 @@
 /**
- * THE DEMO DRIP: forgers who have not bought yet get a three-touch email
+ * THE DEMO DRIP: builders who have not bought yet get a three-touch email
  * sequence (about day 1, 3, and 7 after signup) that stops the moment they buy,
  * reply, or a rep moves the lead. Invoked by the outbound-cadence cron (it rides
  * that cron instead of registering a new one; Hobby cron limits have killed
  * deploys before).
  *
  * ⚠️ 2026-08-13: this used to filter `source = 'demo-station'` ONLY, which
- * meant every lead Mr. Mustard forged on a live phone call (source
+ * meant every lead Mr. Mustard built on a live phone call (source
  * `mr-mustard`) fell out of the funnel the moment the call ended. The warmest
  * leads in the building, the ones who talked to a human-sounding agent and said
  * yes out loud, got a single welcome email and then silence. They are in now.
  *
- * The copy is generated from what was ACTUALLY forged, because he no longer
- * builds all three every time (see lib/voice-forge-suite.ts). Naming a website
+ * The copy is generated from what was ACTUALLY built, because he no longer
+ * builds all three every time (see lib/voice-build-suite.ts). Naming a website
  * to someone who only ever asked for a voice agent reads like a mail merge that
  * does not know them, which is exactly the opposite of the pitch.
  */
@@ -41,8 +41,8 @@ function dripDue(step: number, ageHrs: number, sinceLastHrs: number): boolean {
 }
 
 /** What this lead actually has, read off the row rather than assumed. */
-function forgedPieces(lead: OutboundLead): string[] {
-  // The command center left the suite on 2026-08-22. A lead forged before that
+function builtPieces(lead: OutboundLead): string[] {
+  // The command center left the suite on 2026-08-22. A lead built before that
   // may still carry one, and its page still resolves, but the drip stops naming
   // it: it is sold on its own now and never suggested alongside anything.
   return [
@@ -54,9 +54,9 @@ function forgedPieces(lead: OutboundLead): string[] {
 /**
  * The free documents, which are not demos and must not be counted as pieces.
  *
- * The suite copy is generated from what was FORGED, and a plan or an audit is
+ * The suite copy is generated from what was BUILT, and a plan or an audit is
  * neither built nor bought: they are things we wrote about their business.
- * Folding them into `forgedPieces` would make a voice-only lead read as if they
+ * Folding them into `builtPieces` would make a voice-only lead read as if they
  * took three products, which is the exact mail-merge tell the drip avoids.
  */
 function extras(lead: OutboundLead): string[] {
@@ -106,7 +106,7 @@ function dripEmail(lead: OutboundLead, step: number): { subject: string; html: s
   const hub = lead.hub_demo_url ?? 'https://modernmustardseed.com/demos';
   const trade = TRADE_PRESETS[leadTrade(lead)];
   const tradeWord = trade.label.toLowerCase();
-  const pieces = forgedPieces(lead);
+  const pieces = builtPieces(lead);
   const built = andList(pieces);
   const one = pieces.length === 1;
   const hasVoice = pieces.includes('voice agent');
@@ -126,12 +126,12 @@ function dripEmail(lead: OutboundLead, step: number): { subject: string; html: s
         : `${lead.business_name}, your demos are sitting there warm`,
       snippet: 'Demo drip 1 of 3: come back to the suite.',
       html: clientEmail({
-        preheader: `The ${built} you forged ${one ? 'is' : 'are'} still live at your hub.`,
+        preheader: `The ${built} you built ${one ? 'is' : 'are'} still live at your hub.`,
         greeting: hi,
         body:
           (fromCall
             ? `<p>Yesterday you and Mr. Mustard built ${biz} a working ${built}, live on the phone${lead.site_demo_status === 'ready' ? ', and the website he queued is finished now too' : ''}. ${one ? 'It is' : 'They are'} still live at your private hub, answering to your name.</p>`
-            : `<p>Yesterday you forged ${biz} a working ${built}${lead.site_demo_status === 'ready' ? ', and the website you queued is finished too' : ''}. ${one ? 'It is' : 'They are'} still live at your private hub, answering to your name.</p>`) +
+            : `<p>Yesterday you built ${biz} a working ${built}${lead.site_demo_status === 'ready' ? ', and the website you queued is finished too' : ''}. ${one ? 'It is' : 'They are'} still live at your private hub, answering to your name.</p>`) +
           `<p>Two minutes there is worth more than anything I could write here: ${hasVoice ? 'call the voice agent and try to stump it, then slide' : 'slide'} the calculator to see what your missed calls have been costing. Most ${tradeWord} owners are surprised by that number.</p>` +
           auditLine(lead) +
           `<p>${SHOW_DONT_PITCH}</p>`,
@@ -157,9 +157,9 @@ function dripEmail(lead: OutboundLead, step: number): { subject: string; html: s
         body:
           (hasVoice
             ? `<p>In ${tradeWord}, the caller who gets voicemail does not leave a message. They dial the next name, and that ${escape(trade.jobWord)} is gone before you even knew it rang.</p>` +
-              `<p>The ${built} you forged for ${biz} exists to end exactly that: it answers every call in two rings, books the work, and texts you the details.</p>`
+              `<p>The ${built} you built for ${biz} exists to end exactly that: it answers every call in two rings, books the work, and texts you the details.</p>`
             : `<p>In ${tradeWord}, most people decide about you before they ever speak to you. They look you up, they read for about eight seconds, and if nothing there tells them you are the right call, that ${escape(trade.jobWord)} quietly goes to whoever looked more ready.</p>` +
-              `<p>The ${built} you forged for ${biz} exists to end exactly that.</p>`) +
+              `<p>The ${built} you built for ${biz} exists to end exactly that.</p>`) +
           `<p>It is still live on your hub, next to the calculator and the order card. If you want it real, it is about a week from yes to live.</p>`,
         cta,
         secondary,

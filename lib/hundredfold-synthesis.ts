@@ -4,7 +4,7 @@
  * Three model calls, run in order, after the owner hangs up:
  *   1. read the transcript into the thirty answers
  *   2. build the DEEP roadmap from those answers (same document, better input)
- *   3. forge the offer, and derive the systems we will build and the gates
+ *   3. build the offer, and derive the systems we will build and the gates
  *
  * Sequential on purpose. Step 3 has to see step 2 or the money model and the
  * offer drift apart, and nobody is sitting on a loading screen for this: it runs
@@ -151,10 +151,10 @@ ${answered}`;
 }
 
 /* -------------------------------------------------------------------------- */
-/* 3. The offer forge                                                          */
+/* 3. The offer build                                                          */
 /* -------------------------------------------------------------------------- */
 
-export type ForgedOffer = {
+export type BuiltOffer = {
   name: string;
   one_liner: string;
   promise: string;
@@ -248,12 +248,12 @@ You also plan the BUILD: which agents and automations Modern Mustard Seed will w
 
 Direct, warm, founder to founder. Second person. No em dashes. No corporate filler. Never invent a statistic, a case study, a testimonial, or a result. Every dollar figure is an estimate and reads like one.`;
 
-export async function forgeOffer(input: {
+export async function buildOffer(input: {
   businessName?: string | null;
   answers: Record<string, string>;
   roadmap: RoadmapReport;
 }): Promise<{
-  offer: ForgedOffer;
+  offer: BuiltOffer;
   systems: PlannedSystem[];
   gates: PlannedGate[];
 }> {
@@ -261,7 +261,7 @@ export async function forgeOffer(input: {
     .map((q) => `Q: ${q.ask}\nA: ${input.answers[q.key]}`)
     .join('\n\n');
 
-  const user = `Forge the offer and plan the build for ${input.businessName ?? 'this business'}.
+  const user = `Build the offer and plan the build for ${input.businessName ?? 'this business'}.
 
 THEIR ROADMAP (already written, do not contradict it, build on it):
 Stage: ${input.roadmap.stage}, score ${input.roadmap.scale_score}
@@ -279,10 +279,10 @@ Go deeper than the roadmap did. The roadmap sketched the offer in a paragraph. Y
 
   const parsed = (await ask(OFFER_SYSTEM, user, OFFER_SCHEMA, 'hundredfold-offer', 20000)) as {
     offer: Record<string, string>;
-    stack: ForgedOffer['stack'];
-    ladder: ForgedOffer['ladder'];
+    stack: BuiltOffer['stack'];
+    ladder: BuiltOffer['ladder'];
     proof_to_build: string[];
-    objections: ForgedOffer['objections'];
+    objections: BuiltOffer['objections'];
     systems: PlannedSystem[];
     gates: PlannedGate[];
   };
@@ -294,7 +294,7 @@ Go deeper than the roadmap did. The roadmap sketched the offer in a paragraph. Y
     (x: unknown): boolean =>
       Boolean(x) && typeof x === 'object' && !Array.isArray(x) && keys.every((k) => k in (x as object));
 
-  const offer: ForgedOffer = {
+  const offer: BuiltOffer = {
     name: text(parsed.offer?.name),
     one_liner: text(parsed.offer?.one_liner),
     promise: text(parsed.offer?.promise),
@@ -319,7 +319,7 @@ Go deeper than the roadmap did. The roadmap sketched the offer in a paragraph. Y
   };
 
   if (!offer.name || !offer.stack.length) {
-    throw new Error('offer forge came back without a name or a stack');
+    throw new Error('offer build came back without a name or a stack');
   }
 
   const clampWindow = (n: unknown) => Math.max(1, Math.min(4, Math.round(Number(n) || 1)));
@@ -337,7 +337,7 @@ Go deeper than the roadmap did. The roadmap sketched the offer in a paragraph. Y
     }));
 
   if (!systems.length || !gates.length) {
-    throw new Error('offer forge came back without systems or gates');
+    throw new Error('offer build came back without systems or gates');
   }
 
   return { offer, systems, gates };

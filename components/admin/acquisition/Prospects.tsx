@@ -4,8 +4,10 @@ import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 import AdminHeader from '@/components/admin/AdminHeader';
 import { AcqNav, Chip, api, card, btnPrimary, btnGhost, btnDanger, inputCls, labelCls, timeAgo } from '@/components/admin/acquisition/ui';
-import RowForge from '@/components/admin/acquisition/RowForge';
-import type { RowSuite } from '@/components/admin/acquisition/RowForge';
+import RowBuild from '@/components/admin/acquisition/RowBuild';
+import FacebookButton from '@/components/admin/acquisition/FacebookButton';
+import { hasRealWebsite } from '@/lib/acq/facebook';
+import type { RowSuite } from '@/components/admin/acquisition/RowBuild';
 
 type Row = {
   id: string;
@@ -14,6 +16,9 @@ type Row = {
   phone: string;
   email: string | null;
   website: string | null;
+  facebook_url: string | null;
+  last_dm_at: string | null;
+  dm_count: number;
   trade: string | null;
   city: string | null;
   state: string | null;
@@ -45,6 +50,18 @@ type Row = {
 const TRADES = ['', 'hvac', 'plumbing', 'roofing', 'other'];
 const STAGES = ['', 'prospect', 'emailed', 'consented', 'called', 'demoed', 'forged', 'demo_sent', 'meeting', 'client', 'lost'];
 const EMAIL_STATUSES = ['', 'verified', 'likely', 'public', 'risky', 'invalid', 'unknown'];
+// How a lead can be reached. The DM options look outside the campaign on their
+// own, because the campaign only ever holds leads that have an email.
+const REACH = ['', 'dm-todo', 'dm-sent', 'dm', 'no-email', 'no-site', 'fb-known'];
+const REACH_LABELS: Record<string, string> = {
+  '': 'Everyone',
+  'dm-todo': 'DM list, not yet messaged',
+  'dm-sent': 'DM sent',
+  dm: 'DM list: no email or no website',
+  'no-email': 'No email',
+  'no-site': 'No website',
+  'fb-known': 'Facebook page on file',
+};
 
 export default function Prospects() {
   const [rows, setRows] = useState<Row[]>([]);
@@ -61,6 +78,7 @@ export default function Prospects() {
   const [stage, setStage] = useState('');
   const [emailStatus, setEmailStatus] = useState('');
   const [eligible, setEligible] = useState('');
+  const [reach, setReach] = useState('');
   const [all, setAll] = useState(false);
   const [sort, setSort] = useState('lead_score');
 
@@ -71,9 +89,10 @@ export default function Prospects() {
     if (stage) p.set('stage', stage);
     if (emailStatus) p.set('email_status', emailStatus);
     if (eligible) p.set('eligible', eligible);
+    if (reach) p.set('reach', reach);
     if (all) p.set('all', '1');
     return p;
-  }, [page, size, sort, q, trade, stage, emailStatus, eligible, all]);
+  }, [page, size, sort, q, trade, stage, emailStatus, eligible, reach, all]);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -104,6 +123,17 @@ export default function Prospects() {
     else setSelected(new Set(rows.map((r) => r.id)));
   };
 
+  /** One row's stamp, no selection needed. */
+  const stampDm = async (id: string, undo = false) => {
+    setNotice('');
+    try {
+      await api('/api/admin/acquisition/prospects', { method: 'POST', body: JSON.stringify({ action: undo ? 'undo-dm' : 'dm-sent', ids: [id] }) });
+      await load();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'That did not work.');
+    }
+  };
+
   const bulk = async (action: string, extra: Record<string, unknown> = {}) => {
     if (!selected.size) return;
     if (action === 'suppress' && !window.confirm(`Suppress ${selected.size} prospect${selected.size === 1 ? '' : 's'} permanently? Opt-outs cannot be undone.`)) return;
@@ -130,7 +160,7 @@ export default function Prospects() {
         <AcqNav active="prospects" />
 
         <div className={`${card} p-4 mb-4`}>
-          <div className="grid gap-3 md:grid-cols-6">
+          <div className="grid gap-3 md:grid-cols-7">
             <div className="md:col-span-2">
               <label className={labelCls}>Search</label>
               <input
@@ -144,7 +174,7 @@ export default function Prospects() {
               />
             </div>
             <Select label="Trade" value={trade} options={TRADES} onChange={(v) => { setPage(0); setTrade(v); }} />
-            <Select label="Stage" value={stage} options={STAGES} onChange={(v) => { setPage(0); setStage(v); }} />
+            <Select label="Stage" value={stage} options={STAGES} labels={{ forged: 'built' }} onChange={(v) => { setPage(0); setStage(v); }} />
             <Select label="Email" value={emailStatus} options={EMAIL_STATUSES} onChange={(v) => { setPage(0); setEmailStatus(v); }} />
             <Select
               label="Eligible"
@@ -153,11 +183,12 @@ export default function Prospects() {
               labels={{ '': 'Any', '1': 'Campaign ready', '0': 'Held back' }}
               onChange={(v) => { setPage(0); setEligible(v); }}
             />
+            <Select label="Reach" value={reach} options={REACH} labels={REACH_LABELS} onChange={(v) => { setPage(0); setReach(v); }} />
           </div>
           <div className="mt-3 flex flex-wrap items-center gap-2">
             <label className="flex items-center gap-1.5 text-xs text-[#161616]/65">
               <input type="checkbox" checked={all} onChange={(e) => { setPage(0); setAll(e.target.checked); }} className="accent-[#F5B700]" />
-              Include prospects outside the campaign
+              Include prospects outside the campaign{reach ? ' (always on for a reach filter)' : ''}
             </label>
             <span className="w-px h-4 bg-[#161616]/15" />
             <Select label="" inline value={sort} options={['lead_score', 'created_at', 'updated_at', 'business_name', 'review_count', 'email_confidence']} onChange={setSort} />
@@ -173,6 +204,7 @@ export default function Prospects() {
             <span className="font-oswald text-sm font-bold uppercase tracking-[0.1em]">{selected.size} selected</span>
             <button className={btnGhost} onClick={() => void bulk('assign-campaign')}>Add to campaign</button>
             <button className={btnGhost} onClick={() => void bulk('queue-email')}>Queue next email</button>
+            <button className={btnGhost} onClick={() => void bulk('dm-sent')}>Mark DM sent</button>
             <button className={btnGhost} onClick={() => void bulk('pause')}>Pause</button>
             <button className={btnGhost} onClick={() => void bulk('resume')}>Resume</button>
             <button className={btnGhost} onClick={() => void bulk('mark-test', { value: true })}>Mark as test</button>
@@ -206,6 +238,7 @@ export default function Prospects() {
                 <Th>Trade</Th>
                 <Th>Where</Th>
                 <Th>Email</Th>
+                <Th>Facebook</Th>
                 <Th className="text-right">Reviews</Th>
                 <Th className="text-right">Score</Th>
                 <Th>Stage</Th>
@@ -217,12 +250,12 @@ export default function Prospects() {
             <tbody>
               {loading && (
                 <tr>
-                  <td colSpan={11} className="px-4 py-8 text-center text-[#161616]/60">Loading...</td>
+                  <td colSpan={12} className="px-4 py-8 text-center text-[#161616]/60">Loading...</td>
                 </tr>
               )}
               {!loading && rows.length === 0 && (
                 <tr>
-                  <td colSpan={11} className="px-4 py-8 text-center text-[#161616]/60">
+                  <td colSpan={12} className="px-4 py-8 text-center text-[#161616]/60">
                     Nothing matches. Try clearing the filters, or run the Lead Finder.
                   </td>
                 </tr>
@@ -239,6 +272,8 @@ export default function Prospects() {
                     <div className="text-[11px] text-[#161616]/65 truncate max-w-[22rem]">
                       {r.contact_name ? `${r.contact_name} · ` : ''}
                       {r.email ?? 'no email'}
+                      {' · '}
+                      {hasRealWebsite(r) ? 'has a site' : 'no website'}
                     </div>
                   </Td>
                   <Td>{r.trade ? <Chip label={r.trade} /> : <span className="text-[#161616]/65">—</span>}</Td>
@@ -248,6 +283,29 @@ export default function Prospects() {
                   </Td>
                   <Td>
                     <EmailChip status={r.email_status} confidence={r.email_confidence} />
+                  </Td>
+                  <Td>
+                    <div className="flex items-center gap-1.5">
+                      <FacebookButton lead={r} />
+                      {r.last_dm_at ? (
+                        <button
+                          className="rounded-lg border-2 border-[#3f5d34] bg-[#3f5d34]/10 px-2 py-1 text-[11px] font-oswald font-semibold uppercase tracking-[0.08em] text-[#3f5d34] whitespace-nowrap"
+                          title={`DM sent ${timeAgo(r.last_dm_at)}${r.dm_count > 1 ? `, ${r.dm_count} total` : ''}. Click to send another, right-click to undo.`}
+                          onClick={() => void stampDm(r.id)}
+                          onContextMenu={(e) => { e.preventDefault(); void stampDm(r.id, true); }}
+                        >
+                          ✓ DM {r.dm_count > 1 ? `×${r.dm_count} ` : ''}{timeAgo(r.last_dm_at)}
+                        </button>
+                      ) : (
+                        <button
+                          className="rounded-lg border-2 border-dashed border-[#161616]/40 bg-white px-2 py-1 text-[11px] font-oswald font-semibold uppercase tracking-[0.08em] text-[#161616]/70 whitespace-nowrap hover:border-[#161616] hover:bg-[#F5B700]/30"
+                          title="Stamp this lead as messaged. It drops off the not-yet-messaged list."
+                          onClick={() => void stampDm(r.id)}
+                        >
+                          DM sent
+                        </button>
+                      )}
+                    </div>
                   </Td>
                   <Td className="text-right font-mono text-[12px] tabular-nums text-[#161616]/70">
                     {r.review_count?.toLocaleString() ?? '—'}
@@ -278,7 +336,7 @@ export default function Prospects() {
                     </div>
                   </Td>
                   <Td>
-                    <RowForge
+                    <RowBuild
                       id={r.id}
                       business={r.business_name}
                       email={r.email}

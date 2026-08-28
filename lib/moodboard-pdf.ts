@@ -165,7 +165,7 @@ export async function renderMoodboardPdf(data: BoardData): Promise<Uint8Array> {
 
   const footer = (page: PDFPage, n: number) => {
     page.drawRectangle({ x: M, y: 40, width: CW, height: 1, color: rgb(0.9, 0.87, 0.8) });
-    page.drawText('Forged by Modern Mustard Seed  ·  modernmustardseed.com', { x: M, y: 28, size: 8, font: helv, color: MUTED });
+    page.drawText('Built by Modern Mustard Seed  ·  modernmustardseed.com', { x: M, y: 28, size: 8, font: helv, color: MUTED });
     page.drawText(`${n} / 2`, { x: W - M - 18, y: 28, size: 8, font: mono, color: MUTED });
   };
 

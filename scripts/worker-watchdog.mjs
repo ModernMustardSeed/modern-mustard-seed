@@ -11,7 +11,7 @@
  *   - spawns the worker and restarts it when it exits (5s, backing off to 60s
  *     once it is clearly looping)
  *   - beats cove_heartbeats id "worker-<name>" every 30s WHILE THE CHILD IS UP
- *   - writes the crash straight onto the forge health row the cockpit reads
+ *   - writes the crash straight onto the build health row the cockpit reads
  *   - writes a cove_activity alert when the child crash-loops, and keeps saying
  *     so every ten minutes for as long as it stays down
  *
@@ -21,7 +21,7 @@
  * cove_ tables live in this very Supabase project, so no cross-repo creds.
  *
  * ⚡ 2026-08-24, THE TWO HOLES THIS FILE HAD, both found by the same outage.
- * The forge died at 18:49 on a link-time SyntaxError and rebuilt nothing for
+ * The build died at 18:49 on a link-time SyntaxError and rebuilt nothing for
  * hours while the queue grew, and neither road out of here was open:
  *
  *   1. THE HEARTBEAT LIED. `if (child && !child.killed)` stayed TRUE after the
@@ -39,7 +39,7 @@
  * Both are fixed below, and the crash text itself is now captured and published
  * rather than scrolling past on an inherited stderr nobody is attached to.
  *
- * Run:  node scripts/worker-watchdog.mjs --name forge --script scripts/demo-site-worker.mjs
+ * Run:  node scripts/worker-watchdog.mjs --name build --script scripts/demo-site-worker.mjs
  * Drill: WATCHDOG_DRYRUN=1 node scripts/worker-watchdog.mjs --name drill --script <crashing stub>
  */
 import { createClient } from '@supabase/supabase-js';
@@ -66,10 +66,15 @@ const SCRIPT = arg('--script', 'scripts/demo-site-worker.mjs');
 const DRYRUN = !!process.env.WATCHDOG_DRYRUN;
 const HEARTBEAT_ID = `worker-${NAME}`;
 /**
- * The app_state row the cockpit's forge board reads. Only the forge has a board;
+ * The app_state row the cockpit's build board reads. Only the build has a board;
  * another worker passing --name simply does not publish one, and says so once.
  */
-const HEALTH_KEY = NAME === 'forge' ? 'forge_worker_health' : null;
+// The launcher says --name build since the rename; the row it writes is still
+// forge_worker_health, because that is a stored key and renaming it would just
+// stop matching the row both build boards read. Matching only 'forge' here meant
+// the supervisor silently stopped reporting crashes the moment the launcher was
+// renamed, which is exactly the blindness this key was added on 2026-08-24 to end.
+const HEALTH_KEY = NAME === 'build' || NAME === 'forge' ? 'forge_worker_health' : null;
 const BEAT_MS = 30_000;
 const FAST_RETRY_MS = 5000;
 const SLOW_RETRY_MS = 60_000;
@@ -83,10 +88,10 @@ const CRASH_TAIL_CHARS = 1500;
 /**
  * THE WORKER'S OWN LOG, SEPARATE AND CAPPED.
  *
- * The forge child speaks stream-json: every tool call, every result, every base64
+ * The build child speaks stream-json: every tool call, every result, every base64
  * chunk of every generated photograph. All of it used to be INHERITED straight
  * into the supervisor's log file, which the outer .cmd opens `>>` and never
- * rotates. By 2026-08-24 that file was 488 MEGABYTES, and when the forge went
+ * rotates. By 2026-08-24 that file was 488 MEGABYTES, and when the build went
  * down the one line that explained why was buried in it. Diagnosing a two-day
  * outage started with working out how to read the log at all.
  *
@@ -176,7 +181,7 @@ async function beat(extra = {}) {
 }
 
 /**
- * Publish the crash where Sarah already looks. The forge board renders this row,
+ * Publish the crash where Sarah already looks. The build board renders this row,
  * so a dead worker now names its own cause ("does not provide an export named
  * ...") instead of showing a stalled build and leaving the reason in a 488MB log
  * file in Temp. Best effort in both directions: telemetry never blocks a restart.

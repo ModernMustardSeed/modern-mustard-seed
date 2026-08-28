@@ -78,17 +78,9 @@ if (thread.sequence) {
   if (s.stoppedReason) console.log(`Stopped: ${s.stoppedReason}`);
 }
 
-console.log(`\n${line}\nSTILL TO GO (${thread.scheduled.length})\n${line}`);
-for (const s of thread.scheduled) {
-  const when = s.dueAt ? new Date(s.dueAt).toLocaleString() : 'no date';
-  console.log(`  ${when}  [${s.source}/${s.status}] ${s.kind}${s.step ? ` step ${s.step}` : ''}${s.variant ? ` arm ${s.variant}` : ''}`);
-  if (s.subject) console.log(`      "${s.subject}"`);
-  console.log(`      ${s.note}`);
-}
-
-console.log(`\n${line}\nALREADY SENT (${thread.messages.length})\n${line}`);
+console.log(`\n${line}\nSENT SO FAR, IN ORDER (${thread.messages.length})\n${line}`);
 const files: string[] = [];
-for (const m of thread.messages) {
+for (const m of [...thread.messages].reverse()) {
   const when = new Date(m.occurredAt).toLocaleString();
   const eng = [
     m.opens ? `${m.opens} open` : '',
@@ -106,6 +98,14 @@ for (const m of thread.messages) {
     files.push(p);
   }
 }
+console.log(`\n${line}\nSTILL TO GO (${thread.scheduled.length})\n${line}`);
+for (const s of thread.scheduled) {
+  const when = s.dueAt ? new Date(s.dueAt).toLocaleString() : 'no date';
+  console.log(`  ${when}  [${s.source}/${s.status}] ${s.kind}${s.step ? ` step ${s.step}` : ''}${s.variant ? ` arm ${s.variant}` : ''}`);
+  if (s.subject) console.log(`      "${s.subject}"`);
+  console.log(`      ${s.note}`);
+}
+
 if (thread.refusals.length) {
   console.log(['', line, `HELD BACK, NEVER SENT (${thread.refusals.length})`, line].join('\n'));
   for (const r of thread.refusals) console.log(`  ${new Date(r.at).toLocaleString()}  ${r.reason}`);

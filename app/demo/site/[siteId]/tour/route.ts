@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { getSupabase } from '@/lib/supabase';
 
 /**
- * The hostess tour manifest for one forged site: her script, where each line
+ * The hostess tour manifest for one built site: her script, where each line
  * belongs on the page, and a signed URL per clip.
  *
  * Public on purpose. The demo site it belongs to is already reachable by anyone

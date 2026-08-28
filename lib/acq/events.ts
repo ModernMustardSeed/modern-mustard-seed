@@ -48,6 +48,7 @@ export type EventType =
   | 'needs_human'
   | 'reply'
   | 'note'
+  | 'dm_sent'
   | 'stage_changed';
 
 export async function recordEvent(
@@ -92,7 +93,7 @@ export async function timelineFor(leadId: string, limit = 200): Promise<AcqEvent
 /**
  * The signals that mean a real person did something on their side. Opening,
  * clicking, landing on the permission page, giving consent, picking up the
- * phone. These are what "who is moving" is built from; sends and forges are
+ * phone. These are what "who is moving" is built from; sends and builds are
  * things WE did and are not in this list on purpose.
  */
 export const ENGAGEMENT_TYPES: EventType[] = [

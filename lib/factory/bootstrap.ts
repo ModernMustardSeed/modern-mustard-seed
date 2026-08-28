@@ -19,7 +19,7 @@ import { autoConnectPlatform } from './connectors';
  * Factory needed a special path, the productization would be incomplete and we
  * would find out from a customer instead of from ourselves.
  *
- * WHAT THIS DOES NOT DO. It does not touch outbound_*, the existing Forge, the
+ * WHAT THIS DOES NOT DO. It does not touch outbound_*, the existing Build, the
  * demo-site worker or Mr. Mustard. The internal Factory row is the PRODUCT-side
  * representation of that machine, which is what lets the two converge over time
  * rather than requiring a migration before either works.

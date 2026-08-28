@@ -9,12 +9,13 @@ import { MONTANA_CITIES } from '@/data/montana-cities';
 // PARKED 2026-08-07 (Sarah): /mustard-tree, /press, and /hatchery are out of
 // the sitemap and noindexed. The routes still answer directly; they are simply
 // not advertised to crawlers or AI answer engines. /celebrate was unparked
-// 2026-08-11 with the launch countdown. /voice-agents/forge was parked
+// 2026-08-11 with the launch countdown. /voice-agents/build was parked
 // 2026-08-12 the same way: out of the sitemap and noindexed, still answering for
 // the Meta campaign, Stripe returns, and the drip. See Navbar.tsx.
 const STATIC_PATHS = [
   '',
   '/talking-website',
+  '/brand',
   '/ads',
   '/chief',
   '/command-center',
@@ -36,6 +37,7 @@ const STATIC_PATHS = [
   '/voice-agents',
   '/voice-agents/whitepaper',
   '/mustard',
+  '/the-system',
   '/work-with-us',
   '/blog',
   '/playbooks',
@@ -48,6 +50,7 @@ const STATIC_PATHS = [
   '/launch-checklist',
   '/prompt-playbook',
   '/fieldguide',
+  '/sarahscarano',
   '/ai-proof',
   '/for',
   '/for/restaurants',
@@ -70,7 +73,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority:
       path === '' || path === '/book'
         ? 1.0
-        : path === '/talking-website' || path === '/ads' || path === '/chief' || path === '/command-center' || path === '/websites' || path === '/switchboard' || path === '/world' || path === '/mustard-launch' || path === '/mustard-mode' || path === '/seed-to-system' || path === '/the-terminal' || path === '/idea-to-spec' || path === '/scaling-roadmap' || path === '/hundredfold' || path === '/hundredfold/webinar'
+        : path === '/talking-website' || path === '/the-system' || path === '/ads' || path === '/chief' || path === '/command-center' || path === '/websites' || path === '/switchboard' || path === '/world' || path === '/mustard-launch' || path === '/mustard-mode' || path === '/seed-to-system' || path === '/the-terminal' || path === '/idea-to-spec' || path === '/scaling-roadmap' || path === '/hundredfold' || path === '/hundredfold/webinar'
           ? 0.95
           : path === '/work' || path === '/audit' || path === '/comic' || path === '/launch-checklist' || path === '/prompt-playbook'
             ? 0.9

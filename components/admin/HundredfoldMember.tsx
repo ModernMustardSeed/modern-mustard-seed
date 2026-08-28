@@ -84,7 +84,7 @@ type Tab = 'plan' | 'offer' | 'build' | 'interview';
 const STEPS = [
   { key: 'answers', label: 'Read the answers', note: 'about a minute' },
   { key: 'roadmap', label: 'Build the roadmap', note: 'three to five minutes' },
-  { key: 'offer', label: 'Forge the offer', note: 'three to five minutes' },
+  { key: 'offer', label: 'Build the offer', note: 'three to five minutes' },
 ] as const;
 
 export default function HundredfoldMember({ id }: { id: string }) {

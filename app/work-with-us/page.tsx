@@ -115,7 +115,7 @@ export default function WorkWithUsPage() {
             <div className="grid lg:grid-cols-2 gap-6 items-stretch">
               {/* Path one: productized */}
               <div className="pop-card p-8 md:p-9 flex flex-col">
-                <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold">Path one // Forge it free</span>
+                <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold">Path one // Build it free</span>
                 <h2 className="font-display text-2xl md:text-3xl font-black text-[#161616] tracking-tight mt-2.5 leading-[1.05]">
                   Productized doors, tried free before you pay.
                 </h2>
@@ -144,7 +144,7 @@ export default function WorkWithUsPage() {
                     href="/demos"
                     className="text-center px-6 py-3.5 text-[11px] uppercase tracking-[0.16em] font-sans font-extrabold text-[#161616] bg-[#F5B700] rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
                   >
-                    Forge free demos →
+                    Build free demos →
                   </Link>
                   <Link
                     href="/services"

@@ -437,7 +437,7 @@ export default function TalkingWebsitePage() {
             {[
               [
                 '1',
-                'Forge it free',
+                'Build it free',
                 'Tell us your business once. We build a real working demo site and a voice agent you can actually call, in your hands within the hour. No card, no meeting.',
               ],
               [

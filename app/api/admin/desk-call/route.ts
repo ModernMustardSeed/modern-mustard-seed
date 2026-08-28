@@ -2,14 +2,14 @@ import { NextResponse } from 'next/server';
 import { getAdminUser } from '@/lib/admin-auth';
 import { getSupabase } from '@/lib/supabase';
 import { buildHelpKnowledge } from '@/lib/mustard-help-knowledge';
-import { adminDeskPrompt, forgeDeskCall } from '@/lib/mustard-desk';
+import { adminDeskPrompt, buildDeskCall } from '@/lib/mustard-desk';
 import { mtDayBoundsUtc } from '@/lib/booking';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 /**
- * Forge Mr. Mustard's ADMIN desk call for the signed-in teammate. The live
+ * Build Mr. Mustard's ADMIN desk call for the signed-in teammate. The live
  * pipeline snapshot is best-effort: any query that fails simply drops its
  * line from the persona (the call must never break because a table moved).
  */
@@ -20,7 +20,7 @@ export async function POST() {
   const supabase = getSupabase();
   let leadsToday: number | null = null;
   let leadsWeek: number | null = null;
-  let forgeFloor: number | null = null;
+  let buildFloor: number | null = null;
   let demosReadyToday: number | null = null;
 
   if (supabase) {
@@ -34,20 +34,20 @@ export async function POST() {
     ]);
     leadsToday = today.error ? null : (today.count ?? null);
     leadsWeek = week.error ? null : (week.count ?? null);
-    forgeFloor = floor.error ? null : (floor.count ?? null);
+    buildFloor = floor.error ? null : (floor.count ?? null);
     demosReadyToday = ready.error ? null : (ready.count ?? null);
   }
 
   const prompt = adminDeskPrompt(
-    { name: user.name, role: user.role, leadsToday, leadsWeek, forgeFloor, demosReadyToday },
+    { name: user.name, role: user.role, leadsToday, leadsWeek, buildFloor, demosReadyToday },
     buildHelpKnowledge(),
   );
-  const forged = await forgeDeskCall('admin', {
+  const built = await buildDeskCall('admin', {
     greetName: user.name,
     email: user.email,
     systemPrompt: prompt,
     keyterms: ['Voice Agent', 'Outbound'],
   });
-  if (!forged.ok) return NextResponse.json({ error: forged.error }, { status: 503 });
-  return NextResponse.json({ call: forged.call });
+  if (!built.ok) return NextResponse.json({ error: built.error }, { status: 503 });
+  return NextResponse.json({ call: built.call });
 }

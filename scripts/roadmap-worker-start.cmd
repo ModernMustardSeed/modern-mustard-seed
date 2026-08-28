@@ -1,7 +1,7 @@
 @echo off
 REM Supervisor for the local roadmap worker, same shape as audit-worker-start.cmd.
 REM
-REM The forge taught this lesson the expensive way: a worker with no auto-start
+REM The build taught this lesson the expensive way: a worker with no auto-start
 REM only runs when somebody remembers, and a worker that exits quietly is
 REM indistinguishable from a working one that has nothing to do. Both roads were
 REM shut for five days in July before anyone noticed.

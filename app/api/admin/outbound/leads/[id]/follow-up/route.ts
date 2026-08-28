@@ -9,7 +9,7 @@ type Params = Promise<{ id: string }>;
 
 /**
  * Email the lead: the branded audit report when one exists, a warm intro
- * otherwise, or the forged-demo invite when includeDemo is set. Logging,
+ * otherwise, or the built-demo invite when includeDemo is set. Logging,
  * pixel, and last_email_at all live in lib/outbound-email.ts (shared with the
  * cadence cron).
  */

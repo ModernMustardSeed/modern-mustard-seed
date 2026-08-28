@@ -20,8 +20,8 @@ import { checkPace, sendCampaignEmail, sendDemoEmail, sendFollowup, sendSuiteEma
 import type { FollowupKind } from '@/lib/acq/campaign';
 import { evaluate, dueForStep, sequenceGaps } from '@/lib/acq/eligibility';
 import { activeSuppressions } from '@/lib/email-log';
-import { forgeProspectAgent } from '@/lib/acq/forge';
-import { forgeProspectSuite } from '@/lib/acq/suite';
+import { buildProspectAgent, rescueStalledBuilds } from '@/lib/acq/build';
+import { buildProspectSuite } from '@/lib/acq/suite';
 import { placeDemoCall } from '@/lib/acq/call';
 import { recordEvent } from '@/lib/acq/events';
 import type { AcqCampaign, AcqProspect } from '@/lib/acq/types';
@@ -33,13 +33,15 @@ export type DrainReport = {
   skipped: number;
   failed: number;
   reclaimed: number;
+  /** Builds that finished but never announced it, put back on the rails. */
+  rescuedBuilds: number;
   held: string | null;
   detail: { id: string; kind: string; outcome: string; note?: string }[];
 };
 
 export async function drainQueue(opts: { limit?: number; worker?: string } = {}): Promise<DrainReport> {
   const db = getSupabase();
-  const report: DrainReport = { claimed: 0, done: 0, skipped: 0, failed: 0, reclaimed: 0, held: null, detail: [] };
+  const report: DrainReport = { claimed: 0, done: 0, skipped: 0, failed: 0, reclaimed: 0, rescuedBuilds: 0, held: null, detail: [] };
   if (!db) {
     report.held = 'Database is not configured.';
     return report;
@@ -62,7 +64,13 @@ export async function drainQueue(opts: { limit?: number; worker?: string } = {})
 
   report.reclaimed = await reclaimStale(db);
 
-  // Pace decides how many EMAILS may go. Calls, forges and demo sends are not
+  // A stalled job and a stalled BUILD are the same class of problem, so they get
+  // swept in the same breath. This one matters more: a stranded job retries, a
+  // stranded build is a finished demo with somebody's name on it that nobody
+  // will ever be sent. See rescueStalledBuilds for what went wrong to earn it.
+  report.rescuedBuilds = await rescueStalledBuilds(db);
+
+  // Pace decides how many EMAILS may go. Calls, builds and demo sends are not
   // rate limited by the mail window: somebody who just asked to be called is
   // waiting with their phone in their hand.
   const pace = await checkPace(db, campaign);
@@ -74,11 +82,11 @@ export async function drainQueue(opts: { limit?: number; worker?: string } = {})
 
   // Demo suite emails go first, always.
   //
-  // A forged demo is a live agent and a live site standing there with the
+  // A built demo is a live agent and a live site standing there with the
   // prospect's own name on it, built because that person asked. A cold email
   // is a cold email. FIFO across one shared queue means a backlog of cold
   // sends starves the demos behind it, and at 25 an hour a thousand-job
-  // backlog is days: on 2026-08-24 sixteen forged demos sat behind 1,082 cold
+  // backlog is days: on 2026-08-24 sixteen built demos sat behind 1,082 cold
   // emails. The person who raised their hand does not wait behind the people
   // who did not.
   const demoFirst = await claimJobs(db, ['demo_email'], limit, worker);
@@ -176,7 +184,7 @@ export async function runJob(
     case 'call':
       return runCallJob(db, campaign, job, lead, perms);
     case 'forge':
-      return runForgeJob(db, lead, job);
+      return runBuildJob(db, lead, job);
     case 'research':
       return { kind: 'skip', note: 'Research runs in the Lead Finder worker, not the queue.' };
     default:
@@ -293,7 +301,7 @@ async function runDemoEmailJob(
   }
   if (lead.demo_emailed_at) return { kind: 'skip', note: 'The demo email already went out.' };
   if (!lead.hub_demo_url && !lead.demo_url) {
-    return { kind: 'defer', note: 'Nothing forged yet; waiting on the build.', until: new Date(Date.now() + 10 * 60_000) };
+    return { kind: 'defer', note: 'Nothing built yet; waiting on the build.', until: new Date(Date.now() + 10 * 60_000) };
   }
   const blocked = await guardMailable(db, lead, 0);
   if (blocked) return { kind: 'skip', note: blocked };
@@ -309,7 +317,7 @@ async function runDemoEmailJob(
   if (!sent.ok) return sent.permanent ? { kind: 'skip', note: sent.error } : { kind: 'fail', note: sent.error };
 
   // The "did you try to break it" sequence starts inside the senders now, so
-  // that a demo sent from the admin, the forge screen, demos-now or Mr. Mustard
+  // that a demo sent from the admin, the build screen, demos-now or Mr. Mustard
   // on a call gets the same follow-through this worker used to get alone. See
   // lib/acq/post-demo.ts.
   void job;
@@ -384,25 +392,25 @@ async function runCallJob(
   return { kind: 'done', note: `calling ${phone}`, result: { vapiCallId: placed.vapiCallId } };
 }
 
-async function runForgeJob(db: SupabaseClient, lead: AcqProspect, job: QueueJob): Promise<JobOutcome> {
+async function runBuildJob(db: SupabaseClient, lead: AcqProspect, job: QueueJob): Promise<JobOutcome> {
   const wantsSite = job.payload.site === true;
   const siteSettled = lead.site_demo_status === 'ready' || lead.site_demo_status === 'queued' || lead.site_demo_status === 'building';
-  // "Already forged" used to mean only the voice agent, so a job asking for the
+  // "Already built" used to mean only the voice agent, so a job asking for the
   // whole suite would be skipped by a prospect who had nothing but a receptionist.
   if (lead.demo_status === 'ready' && (!wantsSite || siteSettled)) {
-    return { kind: 'skip', note: 'Already forged.' };
+    return { kind: 'skip', note: 'Already built.' };
   }
 
-  // A forge job carrying no site flag is the phone path: Mr. Mustard forging
+  // A build job carrying no site flag is the phone path: Mr. Mustard building
   // mid-call, where the only thing that may run is what is instant. The board
   // sets site:true and gets the whole suite.
   if (!wantsSite) {
-    const result = await forgeProspectAgent(db, lead, (job.payload.context as Record<string, string>) ?? {});
+    const result = await buildProspectAgent(db, lead, (job.payload.context as Record<string, string>) ?? {});
     if (!result.ok) return result.retryable ? { kind: 'fail', note: result.error } : { kind: 'skip', note: result.error };
     return { kind: 'done', note: result.demoUrl, result: { demoUrl: result.demoUrl } };
   }
 
-  const result = await forgeProspectSuite(db, lead, {
+  const result = await buildProspectSuite(db, lead, {
     site: true,
     designTier: job.payload.designTier === 3 ? 3 : 2,
     talkingWebsite: job.payload.talkingWebsite === true,
@@ -413,7 +421,7 @@ async function runForgeJob(db: SupabaseClient, lead: AcqProspect, job: QueueJob)
   if (!result.ok) return result.retryable ? { kind: 'fail', note: result.error } : { kind: 'skip', note: result.error };
   return {
     kind: 'done',
-    note: result.created.length ? `Forged ${result.created.join(', ')}` : 'Already built',
+    note: result.created.length ? `Built ${result.created.join(', ')}` : 'Already built',
     result: { created: result.created, hubUrl: result.hubUrl, siteUrl: result.siteUrl, warnings: result.warnings },
   };
 }

@@ -2,17 +2,17 @@
 
 One walkthrough film per lead, cut from that lead's own suite.
 
-Sarah, 2026-08-01: *"On the demo forge video that is in the demo suite that goes out
+Sarah, 2026-08-01: *"On the demo build video that is in the demo suite that goes out
 to clients, it is supposed to show a new video of THEIR site and agent and command
 center. It is currently just playing Wills Electric's video and that is not what I
 want."*
 
 Before this, `/demo/hub/<id>` played one house film for everybody, shot on the Wills
-Electric build. Now the forge records a fresh one per business: their website, a
+Electric build. Now the build records a fresh one per business: their website, a
 **live call to their own voice agent**, and their own command center, with narration
 written from their own row.
 
-## Where it sits in the forge
+## Where it sits in the build
 
 ```
 site build finishes  ->  cutSuiteFilm()  ->  /api/hooks/suite-ready  ->  email + text

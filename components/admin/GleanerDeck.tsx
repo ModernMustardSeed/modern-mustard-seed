@@ -74,7 +74,7 @@ const ACTIVE = ['queued', 'scouting', 'fielding', 'forging', 'courting'];
 const GEARS = [
   { key: 'scouting', label: 'Scout' },
   { key: 'fielding', label: 'Field' },
-  { key: 'forging', label: 'Forge' },
+  { key: 'forging', label: 'Build' },
   { key: 'courting', label: 'Court' },
   { key: 'gated', label: 'Gate' },
 ] as const;
@@ -252,7 +252,7 @@ export default function GleanerDeck() {
               <p className="text-sm text-[#aab2c5] mt-2 max-w-xl">
                 {run
                   ? run.stage_detail || 'Working.'
-                  : `${m?.qualified || 0} qualified prospects scored. ${m?.liveDemos || 0} demos forged and answering their phones. ${m?.draftsWaiting || 0} drafts waiting on your yes.`}
+                  : `${m?.qualified || 0} qualified prospects scored. ${m?.liveDemos || 0} demos built and answering their phones. ${m?.draftsWaiting || 0} drafts waiting on your yes.`}
               </p>
 
               {/* Five gears */}
@@ -358,7 +358,7 @@ export default function GleanerDeck() {
         {/* ============ DEMOS GALLERY ============ */}
         <section className="animate-fade-in-up">
           <div className="flex items-baseline justify-between mb-3">
-            <h2 className="font-display text-2xl font-bold">The forge</h2>
+            <h2 className="font-display text-2xl font-bold">The build</h2>
             <p className={eyebrow}>demos that answer their own phones</p>
           </div>
           {data?.demos?.length ? (
@@ -368,7 +368,7 @@ export default function GleanerDeck() {
                   <div className="flex items-start justify-between gap-2">
                     <h3 className="font-sans font-bold text-base leading-snug">{d.brand_name}</h3>
                     <span className={`px-2 py-0.5 text-[8px] uppercase tracking-[0.15em] font-mono font-bold border rounded shrink-0 ${demoChip(d.status)}`}>
-                      {d.status === 'ready' || d.status === 'live' ? '● live' : d.status === 'forging' ? '⚙ forging' : d.status}
+                      {d.status === 'ready' || d.status === 'live' ? '● live' : d.status === 'forging' ? '⚙ building' : d.status}
                     </span>
                   </div>
                   <p className="text-[10px] font-mono text-[#161616]/50 mt-0.5">{d.vertical_slug || 'custom'}</p>
@@ -391,7 +391,7 @@ export default function GleanerDeck() {
             </div>
           ) : (
             <div className={`${card} p-8 text-center`}>
-              <p className="font-display text-xl font-bold">Nothing forged yet.</p>
+              <p className="font-display text-xl font-bold">Nothing built yet.</p>
               <p className="text-sm text-[#161616]/60 mt-1">The first lever pull sends headless Claude Code to build a callable demo on your Max plan.</p>
             </div>
           )}
@@ -566,7 +566,7 @@ export default function GleanerDeck() {
               </label>
               <div className="grid grid-cols-2 gap-4">
                 <label className="block">
-                  <span className="text-[10px] uppercase tracking-[0.22em] font-mono font-bold text-[#161616]/60">Demos to forge</span>
+                  <span className="text-[10px] uppercase tracking-[0.22em] font-mono font-bold text-[#161616]/60">Demos to build</span>
                   <select
                     value={form.maxDemos}
                     onChange={(e) => setForm({ ...form, maxDemos: Number(e.target.value) })}
@@ -587,7 +587,7 @@ export default function GleanerDeck() {
                 </label>
               </div>
               <p className="text-[11px] text-[#161616]/55 leading-relaxed">
-                The run scouts, sweeps the field, forges demos on your Max plan, drafts outreach, then parks at your gate. It never sends anything.
+                The run scouts, sweeps the field, builds demos on your Max plan, drafts outreach, then parks at your gate. It never sends anything.
               </p>
               {leverErr && <p className="text-xs font-mono font-bold text-[#E0301E]">{leverErr}</p>}
             </div>
