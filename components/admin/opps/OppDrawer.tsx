@@ -144,6 +144,7 @@ export default function OppDrawer({ id, onClose, onChange, onDeleted, push }: Pr
             <div className="flex flex-wrap gap-2">
               <a href={opp.url} target="_blank" rel="noopener noreferrer" className={btnPrimary} onClick={() => { if (opp.status === 'new') patch({ status: 'shortlist' }); }}>Open listing</a>
               <button className={btnGhost} onClick={openCompose}>Write the email</button>
+              <button className={btnGhost} aria-pressed={opp.starred} onClick={() => patch({ starred: !opp.starred }, opp.starred ? 'Star removed.' : 'Starred. Do this one first.')}>{opp.starred ? '★ Starred' : '☆ Star it'}</button>
               <a href={`mailto:${contactEmail || ''}?subject=${encodeURIComponent(draftIntro(opp, contactName).subject)}`} className={btnGhost}>Open in mail app</a>
             </div>
 

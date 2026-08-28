@@ -13,23 +13,29 @@ export async function GET(req: Request) {
   const status = url.searchParams.get('status');
   const group = url.searchParams.get('group');
   const q = (url.searchParams.get('q') || '').trim();
+  const starred = url.searchParams.get('starred') === '1';
 
   let query = guard.supabase
     .from('opps')
     .select('*')
+    .order('starred', { ascending: false })
     .order('priority', { ascending: true })
     .order('updated_at', { ascending: false })
     .limit(1000);
   if (status && (OPP_STATUSES as readonly string[]).includes(status)) query = query.eq('status', status);
   if (group && (OPP_GROUPS as readonly string[]).includes(group)) query = query.eq('group', group);
+  if (starred) query = query.eq('starred', true);
   if (q) query = query.or(`company.ilike.%${q.replace(/[%,]/g, '')}%,title.ilike.%${q.replace(/[%,]/g, '')}%`);
 
   const { data, error } = await query;
   if (error) return NextResponse.json({ error: error.message, opps: [] }, { status: 500 });
 
   const counts: Record<string, number> = {};
-  const { data: all } = await guard.supabase.from('opps').select('status');
-  for (const row of all ?? []) counts[row.status] = (counts[row.status] ?? 0) + 1;
+  const { data: all } = await guard.supabase.from('opps').select('status, starred');
+  for (const row of all ?? []) {
+    counts[row.status] = (counts[row.status] ?? 0) + 1;
+    if (row.starred) counts.starred = (counts.starred ?? 0) + 1;
+  }
 
   return NextResponse.json({ opps: data ?? [], counts });
 }
