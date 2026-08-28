@@ -15,7 +15,9 @@ REM
 REM Install: put a shortcut to this file in
 REM   %APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup
 REM (Task Scheduler is denied on this machine, no admin rights.)
-cd /d C:\Users\SMSca\dev\mms\products\modern-mustard-seed
+REM Repo root from this file's own location, never a hardcoded machine path.
+REM See the note in forge-worker-watchdog.cmd for what the hardcoded one cost.
+cd /d "%~dp0.."
 :loop
 echo [%DATE% %TIME%] starting roadmap worker >> "%LOCALAPPDATA%\Temp\roadmap-worker.log"
 npx tsx scripts\roadmap-worker.mts >> "%LOCALAPPDATA%\Temp\roadmap-worker.log" 2>&1

@@ -24,6 +24,7 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import { demoVoice } from '@/lib/demo-voice';
 import { SITE } from '@/lib/seo';
 import { frontOfficeTools } from '@/lib/front-office/tools';
+import { voiceStandard, voiceFormatPlan, VOICE_STANDARD_VERSION } from '@/lib/voice-standard';
 import { env, envAny } from '@/lib/env';
 
 const VAPI_BASE = 'https://api.vapi.ai';
@@ -87,7 +88,7 @@ export function buildInstructions(office: OfficeRow, transfers: TransferRow[]): 
   );
 
   bits.push('YOUR JOB, IN ORDER:', '  1. Find out who is calling and how to reach them. A name and a callback number, every time, before anything else.', '  2. Find out what they need and how urgent it is.');
-  if (office.booking_enabled) bits.push('  3. Get them booked in, using check_availability and then book_appointment. Never invent a time; only offer slots the tool gave you.');
+  if (office.booking_enabled) bits.push('  3. Get them booked in, using check_availability and then book_appointment. The calendar rules at the end of this prompt are not optional.');
   if (office.transfers_enabled && transfers.length) bits.push('  4. If it belongs with a person, use transfer_call.');
   bits.push('  5. Whatever happens, call log_call before the call ends so the owner knows what happened.', '');
 
@@ -147,11 +148,24 @@ export function buildInstructions(office: OfficeRow, transfers: TransferRow[]): 
     bits.push('IF THEY ASK WHEN SOMEBODY WILL CALL BACK:', `  ${office.after_hours_message}`, '');
   }
 
+  bits.push('IF THEY ARE UNHAPPY:', '  Do not argue. Get a human.', '');
+
+  /*
+   * THE STANDARD GOES LAST, ON PURPOSE.
+   *
+   * Everything above this line came from an owner: their greeting, their own
+   * rules, their services, their transfer list. A model reading a long prompt
+   * gives the end of it the most weight, and an owner must not be able to
+   * soften the floor by writing something that lands after it. It is also the
+   * only copy of these rules in the product, so a fix reaches every office on
+   * its next sync instead of waiting for somebody to remember which prompts
+   * needed editing.
+   */
   bits.push(
-    'NEVER:',
-    '  - Never make up a price, a time, an address, or an availability. If you do not know, say you will have somebody confirm.',
-    '  - Never keep talking after the caller has what they need. End the call cleanly.',
-    '  - Never argue. If they are unhappy, get a human.',
+    voiceStandard({
+      timezone: office.timezone,
+      booking: office.booking_enabled ? { check: 'check_availability', book: 'book_appointment' } : null,
+    }),
   );
 
   return bits.join('\n');
@@ -165,6 +179,12 @@ export function formatHours(hours: Record<string, unknown>): string | null {
   return set.map((d) => `${d[0].toUpperCase()}${d.slice(1, 3)} ${String(hours[d]).trim()}`).join(', ');
 }
 
+/** The business's own number, for the speech formatter. Settings is untyped, so read it defensively. */
+function officePhone(office: OfficeRow): string | null {
+  const raw = office.settings?.phone ?? office.settings?.phone_number ?? office.settings?.business_phone;
+  return typeof raw === 'string' && raw.trim() ? raw : null;
+}
+
 export function firstMessageFor(office: OfficeRow): string {
   return office.greeting?.trim() || `Thanks for calling ${office.business_name}. How can I help?`;
 }
@@ -174,7 +194,12 @@ export function assistantConfig(office: OfficeRow, transfers: TransferRow[]): Re
   return {
     name: `${office.business_name} front desk`,
     firstMessage: firstMessageFor(office),
-    voice: demoVoice(office.voice_gender),
+    // Both sides of this merge were right about different things. master
+    // removed Sidekick, so the voice comes from demoVoice now. This branch
+    // added the chunk plan, which is what actually groups spoken digits: the
+    // prompt can ask for them and only this catches what the model emitted on
+    // its way to the speech engine. Dropping either one loses real work.
+    voice: { ...demoVoice(office.voice_gender), chunkPlan: voiceFormatPlan(officePhone(office)) },
     model: {
       provider: 'openai',
       model: 'gpt-4o',
@@ -206,7 +231,7 @@ export function assistantConfig(office: OfficeRow, transfers: TransferRow[]): Re
     silenceTimeoutSeconds: 30,
     maxDurationSeconds: 900,
     endCallMessage: 'Thanks for calling. Somebody will be in touch shortly.',
-    metadata: { officeId: office.id, product: 'front-office' },
+    metadata: { officeId: office.id, product: 'front-office', voiceStandard: VOICE_STANDARD_VERSION },
   };
 }
 

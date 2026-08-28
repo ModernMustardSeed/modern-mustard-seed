@@ -28,7 +28,7 @@
 
 import { demoAgentTiers } from '@/data/demo-agent';
 
-export type DemoProductKey = 'voice' | 'site' | 'os';
+export type DemoProductKey = 'voice' | 'site' | 'os' | 'cornerstone';
 
 export type DemoProduct = {
   key: DemoProductKey;
@@ -61,6 +61,21 @@ export const DEMO_PRODUCTS: Record<DemoProductKey, DemoProduct> = {
     // Edits are unlimited and never metered (migration 078). Domain, hosting and
     // care ride along.
     finePrint: 'Unlimited edits, before it goes live and forever after. Your domain, hosting, and care all included.',
+  },
+  cornerstone: {
+    key: 'cornerstone',
+    name: 'Cornerstone',
+    setupCents: 49700,
+    monthlyCents: 39700,
+    standaloneOnly: true,
+    blurb:
+      'A crew of agents that works your jobs overnight and hands you one report at 5am. Your jobs, your money, your paperwork and the enquiries off your website, on one board.',
+    // standaloneOnly for the same reason as the command center: it is scoped
+    // with the builder first, it is not part of the demo suite, and it must
+    // never be bundled. The ladder invariant above only governs the suite, and
+    // this sits outside it.
+    finePrint:
+      'Set up with your jobs, your subs and your contracts loaded before you sign in. Unlimited changes, always included.',
   },
   os: {
     key: 'os',
@@ -117,7 +132,7 @@ export const DEMO_ORDER_KEYS: DemoProductKey[] = ['voice', 'site'];
  * builds them by hand. Taking something off the menu is not the same as taking
  * it off the price list.
  */
-export const PRICEABLE_KEYS: DemoProductKey[] = ['voice', 'site', 'os'];
+export const PRICEABLE_KEYS: DemoProductKey[] = ['voice', 'site', 'os', 'cornerstone'];
 
 export type DemoOrderQuote = {
   /** normalized selection; ['bundle'] when both paid pieces are picked */

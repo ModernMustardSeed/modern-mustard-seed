@@ -27,10 +27,13 @@
  */
 import { createClient } from '@supabase/supabase-js';
 import { spawn, spawnSync } from 'node:child_process';
-import { readFileSync, writeFileSync, mkdirSync, existsSync, rmSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, existsSync, rmSync, readdirSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { cliDirective, cliRealDirective, cliEditDirective, codexDemoDirective, tier2DemoDirective, tier3DemoDirective, withTemplate } from '../lib/site-directive.mjs';
+// Both sides of the merge added an export here and both are used further down:
+// editMultipageAddendum at the edit path, withTemplate at the template path.
+// Taking either side alone silently removes a working feature.
+import { cliDirective, cliRealDirective, cliEditDirective, codexDemoDirective, tier2DemoDirective, tier3DemoDirective, editMultipageAddendum, withTemplate } from '../lib/site-directive.mjs';
 import { templateFromBrief, isTemplateKey } from '../lib/site-templates.mjs';
 import { weighSite, weightLine, weightRefusal } from '../lib/site-weight.mjs';
 import { judgeDemo } from '../lib/demo-quality.mjs';
@@ -197,7 +200,7 @@ const MEDIA_NOTES = (
  * that. Both laws ride along here for the same reason.
  */
 const LAW_URL = new URL('../lib/site-directive.mjs', import.meta.url).href;
-const STARTUP_LAW = { cliDirective, cliRealDirective, cliEditDirective, codexDemoDirective, tier2DemoDirective, tier3DemoDirective, withTemplate };
+const STARTUP_LAW = { cliDirective, cliRealDirective, cliEditDirective, codexDemoDirective, tier2DemoDirective, tier3DemoDirective, editMultipageAddendum, withTemplate };
 
 /**
  * VARIANT ROTATION MEMORY. Tier 2's selection doctrine forbids repeating the
@@ -251,6 +254,7 @@ async function currentLaw() {
     TIER3_DIRECTIVE: (m.tier3DemoDirective || STARTUP_LAW.tier3DemoDirective)({ falEnv: FAL_ENV, mediaNotes: MEDIA_NOTES }),
     REAL_DIRECTIVE: m.cliRealDirective({ falEnv: FAL_ENV, mediaNotes: MEDIA_NOTES }),
     EDIT_DIRECTIVE: m.cliEditDirective(),
+    editMultipageAddendum: m.editMultipageAddendum || STARTUP_LAW.editMultipageAddendum || (() => ''),
     WITH_TEMPLATE: m.withTemplate || STARTUP_LAW.withTemplate,
   };
 }
@@ -835,6 +839,37 @@ async function process_(job) {
     writeFileSync(path.join(dir, 'BRIEF.md'), job.brief || '');
     // An edit needs the site it is editing on disk beside the change request.
     if (edit) writeFileSync(path.join(dir, 'CURRENT.html'), job.base_html || '');
+    // A paid site can be five files now, and an edit that only ever saw the home page
+    // would answer "change the services page" by editing the wrong document. Lay the
+    // whole current site down beside the change request. Lead demo edits have no
+    // project, so they take this branch not at all and behave exactly as before.
+    let editPages = [];
+    if (isProjectEdit(job)) {
+      const { data: proj } = await supabase
+        .from('projects')
+        .select('site_pages, site_pages_draft, site_html_draft')
+        .eq('id', job.project_id)
+        .maybeSingle();
+      // "Adjust" refines the DRAFT rather than the live site, and queues the draft's
+      // html as base_html. Pair it with the DRAFT's inner pages or the run mixes an
+      // edited home page with the four pages the previous edit already replaced.
+      const refiningDraft = Boolean(proj?.site_html_draft) && job.base_html === proj.site_html_draft;
+      const source = refiningDraft && proj?.site_pages_draft ? proj.site_pages_draft : proj?.site_pages;
+      if (refiningDraft) log('edit refines the existing draft, using its pages');
+      const map = source && typeof source === 'object' ? source : {};
+      const names = Object.keys(map).filter((n) => /^[a-z0-9][a-z0-9-]*\.html$/i.test(n) && typeof map[n] === 'string' && map[n].trim());
+      if (names.length) {
+        const cur = path.join(dir, 'current');
+        if (existsSync(cur)) rmSync(cur, { recursive: true, force: true });
+        mkdirSync(cur, { recursive: true });
+        writeFileSync(path.join(cur, 'index.html'), job.base_html || '');
+        for (const n of names) writeFileSync(path.join(cur, n), map[n]);
+        // Clear last run's output so an unwritten page cannot masquerade as this run's.
+        for (const n of names) { const stale = path.join(dir, n); if (existsSync(stale)) rmSync(stale, { force: true }); }
+        editPages = names.map((n) => `current/${n}`);
+        log(`edit covers ${names.length + 1} pages:`, ['index.html', ...names].join(', '));
+      }
+    }
     // A simple rebuild keeps the photography it already has.
     if (job.reuse_photos && job.html) {
       const n = harvestPhotos(dir, job.html);
@@ -844,7 +879,7 @@ async function process_(job) {
     const law = await currentLaw();
     let directive;
     let engineName = 'claude';
-    if (edit) directive = law.EDIT_DIRECTIVE;
+    if (edit) directive = law.EDIT_DIRECTIVE + law.editMultipageAddendum(editPages);
     else if (rebuild) directive = law.REAL_DIRECTIVE;
     else {
       const { tier, how } = tierOf(job);
@@ -1334,9 +1369,28 @@ async function rescueFinished() {
  * is that an agent's edit can never publish itself.
  */
 async function finishClientEdit(job, html) {
+  // A multi-page site's edit has to land as a WHOLE site, or approving the draft
+  // publishes the edited home page beside four pages that no longer exist. The edit
+  // directive is told to write every page back, changed or not; this collects them.
+  const pages = await collectExtraPages(job);
+  const pageCount = Object.keys(pages).length;
+  const { data: proj } = await supabase.from('projects').select('site_pages').eq('id', job.project_id).maybeSingle();
+  const had = Object.keys((proj?.site_pages && typeof proj.site_pages === 'object' ? proj.site_pages : {})).length;
+  if (had && pageCount < had) {
+    // Refuse rather than hand a human a draft that silently drops pages.
+    await fail(job, `the edit returned ${pageCount} of ${had} inner pages, so the draft would have lost ${had - pageCount}. Nothing was changed.`);
+    return;
+  }
+
   const { error } = await supabase
     .from('projects')
-    .update({ site_html_draft: html, edit_status: 'ready', edit_error: null, updated_at: new Date().toISOString() })
+    .update({
+      site_html_draft: html,
+      site_pages_draft: pageCount ? pages : null,
+      edit_status: 'ready',
+      edit_error: null,
+      updated_at: new Date().toISOString(),
+    })
     .eq('id', job.project_id);
   if (error) {
     await fail(job, `could not store the edited draft: ${error.message}`);
@@ -1362,6 +1416,50 @@ async function finishClientEdit(job, html) {
  * the site is out the door, an in-flight rebuild landing late must not silently
  * overwrite it, so we refuse and say so.
  */
+/**
+ * THE OTHER FOUR PAGES.
+ *
+ * A paid site is five REAL pages now, not five hash routes in one document (Sarah,
+ * 2026-08-14: "make all sites have 5 sep pages so it helps seo and geo"). Google
+ * discards everything after a '#', so the old shape indexed as one page however many
+ * rooms it had. Demos still ship as one page on purpose; only the paid path is
+ * multi-file.
+ *
+ * The build writes them beside index.html. Every one gets the SAME sealing the home
+ * page gets, because only the HTML is deployed: a page still pointing at a sibling
+ * jpg reaches the customer as a wall of broken images, and that failure has shipped
+ * before on the home page alone.
+ */
+async function collectExtraPages(job) {
+  const dir = path.join(SITES_DIR, job.id);
+  let names = [];
+  try {
+    names = readdirSync(dir).filter((n) => /\.html$/i.test(n) && n.toLowerCase() !== 'index.html' && n.toLowerCase() !== 'current.html');
+  } catch { return {}; }
+  const pages = {};
+  for (const name of names) {
+    let raw;
+    try { raw = readFileSync(path.join(dir, name), 'utf8'); } catch { continue; }
+    if (raw.length < 800 || !/<\/html>/i.test(raw)) {
+      log(`page ${name} looks incomplete (${raw.length} bytes), skipped`);
+      continue;
+    }
+    let result;
+    try { result = await inlineSiteAssets(raw, dir); } catch (e) {
+      log(`page ${name} could not be sealed: ${e?.message || e}`);
+      continue;
+    }
+    if (result.missing.length) { log(`page ${name} references missing assets, skipped: ${result.missing.slice(0, 4).join(', ')}`); continue; }
+    const left = remainingLocalRefs(result.html);
+    if (left.length) { log(`page ${name} still points at local files, skipped: ${left.slice(0, 4).join(', ')}`); continue; }
+    const blank = blankImageError(result.html);
+    if (blank) { log(`page ${name}: ${blank}, skipped`); continue; }
+    pages[name] = result.html;
+  }
+  if (names.length) log(`banked ${Object.keys(pages).length}/${names.length} extra page(s): ${Object.keys(pages).join(', ') || 'none'}`);
+  return pages;
+}
+
 async function finishRebuild(job, html) {
   const { data: project } = await supabase
     .from('projects')
@@ -1374,10 +1472,16 @@ async function finishRebuild(job, html) {
     return;
   }
 
+  const pages = await collectExtraPages(job);
+  const pageCount = Object.keys(pages).length;
+
   const { error } = await supabase
     .from('projects')
     .update({
       site_html: html,
+      // Null rather than {} when there are none, so "single page site" stays
+      // distinguishable from "multi-page build that produced nothing".
+      site_pages: pageCount ? pages : null,
       site_build_status: 'ready',
       site_build_error: null,
       updated_at: new Date().toISOString(),
@@ -1388,7 +1492,8 @@ async function finishRebuild(job, html) {
     return;
   }
 
-  log('REBUILD READY', job.id, `project ${job.project_id}`, `(${Math.round(html.length / 1024)}KB)`);
+  const totalKb = Math.round((html.length + Object.values(pages).reduce((a, p) => a + p.length, 0)) / 1024);
+  log('REBUILD READY', job.id, `project ${job.project_id}`, `(${pageCount + 1} page(s), ${totalKb}KB)`);
   log(`review it: ${SITE_URL}/admin/delivery/${job.project_id}/edit`);
 }
 

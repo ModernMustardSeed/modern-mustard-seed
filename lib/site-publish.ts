@@ -29,7 +29,7 @@ export type PublishResult =
 export async function publishProject(sb: SupabaseClient, projectId: string): Promise<PublishResult> {
   const { data: project } = await sb
     .from('projects')
-    .select('id, name, client_email, site_html, site_domain, site_vercel_project_id')
+    .select('id, name, client_email, site_html, site_pages, site_domain, site_vercel_project_id')
     .eq('id', projectId)
     .maybeSingle();
   if (!project) return { ok: false, error: 'No such project' };
@@ -81,8 +81,24 @@ export async function publishProject(sb: SupabaseClient, projectId: string): Pro
     logoUrl: logo ?? null,
   };
 
+  // A multi-page paid site carries its extra pages in site_pages. They go through the
+  // same cursor settling as the home page, or a stuck glyph ships on four of five.
+  const extraPages = Object.fromEntries(
+    Object.entries((project.site_pages as Record<string, string> | null) ?? {})
+      .filter(([, html]) => typeof html === 'string' && html.trim())
+      .map(([file, html]) => [file, settleCursorCompanions(html)]),
+  );
+
   const pub = await publishSite({
-    files: seoFiles(facts, takeBrownOff(levelMarquees(dressClosingBand(settleCursorCompanions(project.site_html as string))))),
+    // master added levelMarquees to the transform chain; this branch added the
+    // extra pages argument. Neither replaces the other: one is a transform on
+    // the index html, one is the multi-page set that ships beside it. Dropping
+    // the pages would publish a one page site for every multi page client.
+    files: seoFiles(
+      facts,
+      takeBrownOff(levelMarquees(dressClosingBand(settleCursorCompanions(project.site_html as string)))),
+      extraPages,
+    ),
     business,
     key: projectId,
     projectId: (project.site_vercel_project_id as string | null) ?? null,

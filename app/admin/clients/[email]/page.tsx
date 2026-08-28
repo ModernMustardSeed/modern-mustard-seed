@@ -6,6 +6,7 @@ import { templateName } from '@/components/admin/TemplatePicker';
 import Link from 'next/link';
 import AdminHeader from '@/components/admin/AdminHeader';
 import EmailThread from '@/components/admin/EmailThread';
+import DeliveryEmailPanel from '@/components/admin/DeliveryEmailPanel';
 import DripButton from '@/components/admin/DripButton';
 
 /**
@@ -22,7 +23,8 @@ type Message = { id: string; body: string; source: string; status: string; reply
 type Client = { email: string; name: string | null; company: string | null; tier: string | null; status: string | null; welcome_note: string | null; created_at: string } | null;
 type ClientFile = { id: string; label: string; url: string; kind: string; created_at: string };
 type ProposalRow = { id: string; status: string; one_time_total: number | null; monthly_total: number | null; deposit_status: string | null; balance_status: string | null; signed_at: string | null; sent_at: string | null; share_token: string | null; updated_at: string };
-type Payload = { email: string; client: Client; products: Product[]; projects: Project[]; orders: Order[]; billing: Billing; messages: Message[]; files?: ClientFile[]; proposals?: ProposalRow[] };
+type Payload = { email: string; client: Client; products: Product[]; projects: Project[]; orders: Order[]; billing: Billing; messages: Message[]; files?: ClientFile[]; proposals?: ProposalRow[];
+  intake?: { answers?: Record<string, unknown>; status?: string; submitted_at?: string } | null };
 
 const dollars = (cents: number | null | undefined) => (cents == null ? null : `$${Math.round(cents / 100).toLocaleString('en-US')}`);
 const fmtDate = (iso: string | null) => (iso ? new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '');
@@ -170,6 +172,50 @@ export default function ClientCommandView() {
               </div>
             )}
 
+            {/* What he told us.
+              *
+              * client_intake has existed and been written to since the first
+              * brand intake and this card never read it, so everything a client
+              * said about his own business was invisible on the one screen
+              * built to show us that client. */}
+            {data.intake?.answers ? (
+              <div>
+                <Eyebrow>What he told us</Eyebrow>
+                <Card>
+                  <div className="flex flex-wrap items-center gap-2 mb-4">
+                    <span className="text-[9px] uppercase tracking-[0.15em] font-mono font-bold px-2 py-0.5 rounded-full border bg-emerald-100 text-emerald-800 border-emerald-800/25">
+                      {data.intake.status ?? 'submitted'}
+                    </span>
+                    {data.intake.submitted_at && (
+                      <span className="font-mono text-[11px] text-[#161616]/55">
+                        {fmtDate(data.intake.submitted_at)}
+                      </span>
+                    )}
+                    {/* The delivery board already has the button that does
+                      * this: "Rebuild from their intake". Sending her there
+                      * beats a second route that would queue the same job by a
+                      * different name and drift from it. */}
+                    <a
+                      href="/admin/delivery"
+                      className="ml-auto text-[10px] uppercase tracking-[0.2em] font-mono font-bold text-[#1E50C8] hover:text-[#161616]"
+                    >
+                      Build the site from this &rarr;
+                    </a>
+                  </div>
+                  <dl className="grid sm:grid-cols-2 gap-x-6">
+                    {Object.entries(data.intake.answers)
+                      .filter(([, v]) => v != null && String(v).trim() !== '')
+                      .map(([k, v]) => (
+                        <div key={k} className="border-b border-[#161616]/10 py-2.5">
+                          <dt className="font-mono text-[10px] uppercase tracking-[0.12em] text-[#161616]/50">{k}</dt>
+                          <dd className="m-0 mt-1 font-body text-[14px] leading-snug">{String(v)}</dd>
+                        </div>
+                      ))}
+                  </dl>
+                </Card>
+              </div>
+            ) : null}
+
             {/* Build */}
             {data.projects.length > 0 && (
               <Card>
@@ -237,6 +283,40 @@ export default function ClientCommandView() {
                     </div>
                   ))}
                 </div>
+              </Card>
+            )}
+
+            {/* Type his address, read what will go, press send.
+              *
+              * Sarah, 2026-08-28: "i dont see the call sheet or email draft and
+              * send or any of that in my client card for him." The call sheet
+              * was on the card, as one grey pill among a dozen in "Everything
+              * we made", which is the same as not being there. Anything she
+              * uses BEFORE a client pays now sits above the fold with the two
+              * buttons that use it. */}
+            <DeliveryEmailPanel clientEmail={emailParam} onSent={() => void load()} />
+
+            {(data.files ?? []).some((f) => /call sheet|runbook|go-?live/i.test(f.label)) && (
+              <Card>
+                <Eyebrow>Before you ring him</Eyebrow>
+                <div className="flex flex-wrap gap-3">
+                  {(data.files ?? [])
+                    .filter((f) => /call sheet|runbook|go-?live/i.test(f.label))
+                    .map((f) => (
+                      <a
+                        key={f.id}
+                        href={f.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 rounded-lg border-2 border-[#161616] bg-[#F5B700] px-4 py-3 font-sans text-[14px] font-bold text-[#161616] shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-transform no-underline"
+                      >
+                        {f.label} <span aria-hidden="true">&rarr;</span>
+                      </a>
+                    ))}
+                </div>
+                <p className="mt-3 mb-0 font-body text-[13px] leading-relaxed text-[#6e7c87]">
+                  Open it and print it. Every question on it has a blank to write in.
+                </p>
               </Card>
             )}
 

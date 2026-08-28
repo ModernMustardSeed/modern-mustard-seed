@@ -37,7 +37,14 @@ function useCountUp(target: number, ms = 700): number {
   return v;
 }
 
-const PRODUCT_ICONS: Record<DemoProductKey, string> = { voice: '🎙', site: '🌐', os: '⚙' };
+// Exhaustive on DemoProductKey on purpose: adding a product without giving it
+// an icon should fail the build rather than render a blank square.
+const PRODUCT_ICONS: Record<DemoProductKey, string> = {
+  voice: '🎙',
+  site: '🌐',
+  os: '⚙',
+  cornerstone: '🏗',
+};
 
 /** The house mustard, used until a lead's own brand color has been built. */
 const MMS_THEME = { accent: '#F5B700', accentInk: '#161616' };

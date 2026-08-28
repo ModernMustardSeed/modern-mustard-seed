@@ -165,7 +165,11 @@ export async function queueRebuild(sb: SupabaseClient, input: RebuildInput): Pro
 
 /** Gather everything a rebuild needs, straight from the database. */
 export async function rebuildInputFor(sb: SupabaseClient, projectId: string): Promise<RebuildInput | { error: string }> {
-  const { data: project } = await sb.from('projects').select('id, name').eq('id', projectId).maybeSingle();
+  const { data: project } = await sb
+    .from('projects')
+    .select('id, name, client_email')
+    .eq('id', projectId)
+    .maybeSingle();
   if (!project) return { error: 'No such project.' };
 
   const { data: order } = await sb
@@ -173,15 +177,35 @@ export async function rebuildInputFor(sb: SupabaseClient, projectId: string): Pr
     .select('business_name, products, intake, outbound_lead_id')
     .eq('project_id', projectId)
     .maybeSingle();
-  if (!order) return { error: 'This project has no order behind it.' };
 
-  const intake = (order.intake ?? {}) as Record<string, unknown>;
+  /* Two places hold an intake, and this only ever read one of them.
+   *
+   * demo_orders.intake is filled by somebody who bought from a demo hub.
+   * client_intake.answers is filled by anybody who came through /welcome, which
+   * is how a client sold on the phone or handed over in person arrives. A
+   * rebuild that only knows about the first told the second kind of client
+   * "this project has no order behind it" and refused to build the thing they
+   * had already paid for and already described.
+   *
+   * The order wins where there is one, because it also carries which products
+   * were bought. Otherwise the answers do.
+   */
+  let intake = (order?.intake ?? {}) as Record<string, unknown>;
+  if (!Object.keys(intake).length && project.client_email) {
+    const { data: ci } = await sb
+      .from('client_intake')
+      .select('answers')
+      .eq('client_email', project.client_email)
+      .maybeSingle();
+    intake = ((ci?.answers ?? {}) as Record<string, unknown>) ?? {};
+  }
+
   if (!Object.keys(intake).length) {
     return { error: 'They have not filled in their intake yet, so there is nothing new to build from.' };
   }
 
   let lead: RebuildInput['lead'] = null;
-  if (order.outbound_lead_id) {
+  if (order?.outbound_lead_id) {
     const { data } = await sb
       .from('outbound_leads')
       .select('city, state, phone, niche, website')
@@ -192,9 +216,9 @@ export async function rebuildInputFor(sb: SupabaseClient, projectId: string): Pr
 
   return {
     projectId,
-    leadId: (order.outbound_lead_id as string | null) ?? null,
-    business: String(order.business_name ?? project.name ?? 'the business'),
-    products: Array.isArray(order.products) ? (order.products as string[]) : [],
+    leadId: (order?.outbound_lead_id as string | null) ?? null,
+    business: String(order?.business_name ?? project.name ?? 'the business'),
+    products: Array.isArray(order?.products) ? (order.products as string[]) : [],
     intake,
     lead,
   };
