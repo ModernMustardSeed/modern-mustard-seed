@@ -3,6 +3,7 @@ import { getSupabase } from '@/lib/supabase';
 import { sendViaResend } from '@/lib/send-email';
 import { OWNER_NOTIFY_TO } from '@/lib/owner';
 import { SITE } from '@/lib/seo';
+import { findStalls } from '@/lib/acq/stalls';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -128,6 +129,25 @@ export async function GET(req: Request) {
   for (const f of stuckOffices ?? []) {
     results.slaFlags.push(`office stuck in ${f.status}: ${f.business_name ?? 'unknown'} (since ${(f.created_at as string).slice(0, 10)})`);
   }
+
+  /*
+   * ── 3. The acquisition half of the loop ──────────────────────────────────
+   *
+   * The two checks above watch what happens AFTER somebody pays. Everything
+   * before that had nobody watching it at all, which is how a finished demo for
+   * Lyons Roofing sat unsent for a day and was found only because Sarah asked
+   * about that one lead by name (2026-08-27).
+   *
+   * Same digest rather than a new cron: one daily mail called "what is quietly
+   * stuck" is read, and two are not.
+   */
+  const stalls = await findStalls(db);
+  for (const s of stalls) results.slaFlags.push(`${s.severity === 'critical' ? 'STUCK' : 'watch'}: ${s.title}. ${s.detail}`);
+
+  // The heartbeat. Silence from this digest has to mean "checked and clean"
+  // rather than "the cron died three weeks ago", so every run stamps the clock
+  // whether or not it found anything, and findStalls reports its own staleness.
+  await db.from('app_state').upsert({ key: 'stalls:lastRun', value: { at: new Date().toISOString() } });
 
   if (results.slaFlags.length) {
     const today = new Date().toISOString().slice(0, 10);
