@@ -109,5 +109,19 @@ export async function GET(_req: Request, { params }: { params: Promise<{ email: 
     proposals = data ?? [];
   } catch { /* proposals not migrated */ }
 
-  return NextResponse.json({ email, client, products, projects, orders, billing, messages, files, proposals });
+  /* The intake answers. The table has existed and been written to since the
+   * first brand intake, and this card never read it, so everything a client
+   * told us about his own business was invisible on the one screen built to
+   * show us that client. */
+  let intake: Record<string, unknown> | null = null;
+  try {
+    const { data } = await sb
+      .from('client_intake')
+      .select('answers, status, submitted_at')
+      .eq('client_email', email)
+      .maybeSingle();
+    intake = (data as Record<string, unknown> | null) ?? null;
+  } catch { /* client_intake not migrated */ }
+
+  return NextResponse.json({ email, client, products, projects, orders, billing, messages, files, proposals, intake });
 }

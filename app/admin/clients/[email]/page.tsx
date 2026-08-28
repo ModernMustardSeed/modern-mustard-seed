@@ -21,7 +21,8 @@ type Message = { id: string; body: string; source: string; status: string; reply
 type Client = { email: string; name: string | null; company: string | null; tier: string | null; status: string | null; welcome_note: string | null; created_at: string } | null;
 type ClientFile = { id: string; label: string; url: string; kind: string; created_at: string };
 type ProposalRow = { id: string; status: string; one_time_total: number | null; monthly_total: number | null; deposit_status: string | null; balance_status: string | null; signed_at: string | null; sent_at: string | null; share_token: string | null; updated_at: string };
-type Payload = { email: string; client: Client; products: Product[]; projects: Project[]; orders: Order[]; billing: Billing; messages: Message[]; files?: ClientFile[]; proposals?: ProposalRow[] };
+type Payload = { email: string; client: Client; products: Product[]; projects: Project[]; orders: Order[]; billing: Billing; messages: Message[]; files?: ClientFile[]; proposals?: ProposalRow[];
+  intake?: { answers?: Record<string, unknown>; status?: string; submitted_at?: string } | null };
 
 const dollars = (cents: number | null | undefined) => (cents == null ? null : `$${Math.round(cents / 100).toLocaleString('en-US')}`);
 const fmtDate = (iso: string | null) => (iso ? new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '');
@@ -163,6 +164,46 @@ export default function ClientCommandView() {
                 </div>
               </div>
             )}
+
+            {/* What he told us.
+              *
+              * client_intake has existed and been written to since the first
+              * brand intake and this card never read it, so everything a client
+              * said about his own business was invisible on the one screen
+              * built to show us that client. */}
+            {data.intake?.answers ? (
+              <div>
+                <Eyebrow>What he told us</Eyebrow>
+                <Card>
+                  <div className="flex flex-wrap items-center gap-2 mb-4">
+                    <span className="text-[9px] uppercase tracking-[0.15em] font-mono font-bold px-2 py-0.5 rounded-full border bg-emerald-100 text-emerald-800 border-emerald-800/25">
+                      {data.intake.status ?? 'submitted'}
+                    </span>
+                    {data.intake.submitted_at && (
+                      <span className="font-mono text-[11px] text-[#161616]/55">
+                        {fmtDate(data.intake.submitted_at)}
+                      </span>
+                    )}
+                    <a
+                      href={`/admin/clients/${encodeURIComponent(data.email)}/customize`}
+                      className="ml-auto text-[10px] uppercase tracking-[0.2em] font-mono font-bold text-[#1E50C8] hover:text-[#161616]"
+                    >
+                      Build his site from this &rarr;
+                    </a>
+                  </div>
+                  <dl className="grid sm:grid-cols-2 gap-x-6">
+                    {Object.entries(data.intake.answers)
+                      .filter(([, v]) => v != null && String(v).trim() !== '')
+                      .map(([k, v]) => (
+                        <div key={k} className="border-b border-[#161616]/10 py-2.5">
+                          <dt className="font-mono text-[10px] uppercase tracking-[0.12em] text-[#161616]/50">{k}</dt>
+                          <dd className="m-0 mt-1 font-body text-[14px] leading-snug">{String(v)}</dd>
+                        </div>
+                      ))}
+                  </dl>
+                </Card>
+              </div>
+            ) : null}
 
             {/* Build */}
             {data.projects.length > 0 && (
