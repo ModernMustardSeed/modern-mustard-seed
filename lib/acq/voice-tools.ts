@@ -17,10 +17,11 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import { getSupabase } from '@/lib/supabase';
 import { recordEvent } from '@/lib/acq/events';
 import { enqueue, cancelPendingFor } from '@/lib/acq/queue';
-import { forgeProspectAgent } from '@/lib/acq/forge';
+import { foldCallContext } from '@/lib/acq/forge';
+import { forgeProspectSuite } from '@/lib/acq/suite';
 import { getCampaign } from '@/lib/acq/settings';
 import { revokeConsent } from '@/lib/acq/consent';
-import { sendDemoEmail, sendCheckoutLink } from '@/lib/acq/send';
+import { sendDemoEmail, sendSuiteEmail, sendCheckoutLink } from '@/lib/acq/send';
 import { OFFER } from '@/lib/acq/types';
 import type { AcqProspect, CallIntel } from '@/lib/acq/types';
 import { OWNER_NOTIFY_TO } from '@/lib/owner';
@@ -113,7 +114,29 @@ export async function handleForgeProspectAgent(
   after(async () => {
     const fresh = await loadLead(db, ctx.leadId);
     if (!fresh) return;
-    const result = await forgeProspectAgent(db, { ...fresh, email } as AcqProspect, context);
+
+    // THEIR OWN WORDS GO ON THE ROW FIRST.
+    //
+    // The voice agent's script, the command center and the website brief all
+    // read `notes`, so a forge that starts before this lands builds from what we
+    // guessed off a Google listing instead of what the owner just said out loud
+    // thirty seconds ago. This is the single most valuable thing on the call.
+    const notes = foldCallContext({ ...fresh, email } as AcqProspect, context);
+    await db.from('outbound_leads').update({ notes, email, demo_status: 'forging' }).eq('id', ctx.leadId);
+    const { data: ready } = await db.from('outbound_leads').select('*').eq('id', ctx.leadId).single();
+
+    // The WHOLE suite, website included (Sarah, 2026-08-22). Somebody who says
+    // yes on the phone used to end up with less than somebody Sarah forged from
+    // the board without ever speaking to them, which is backwards: the caller is
+    // the warmest lead in the building and they just told us about their own
+    // business for four minutes.
+    const result = await forgeProspectSuite(db, (ready ?? { ...fresh, email }) as AcqProspect, {
+      site: true,
+      by: 'mr-mustard',
+      capped: 'phone',
+      // He said the words "it lands at your email shortly" on a live call.
+      mailWhenReady: true,
+    });
     if (!result.ok) {
       await db.from('outbound_leads').update({ demo_status: 'failed' }).eq('id', ctx.leadId);
       await recordEvent(db, {
@@ -132,7 +155,10 @@ export async function handleForgeProspectAgent(
     ok: true,
     instruction:
       `The forge is running. Tell them in your own words: you are building the ${ctx.business ?? 'their'} version right now, ` +
-      `it lands at ${email} shortly, and they can call it and try to break it as many times as they like. It is free and there is no card. ` +
+      `and it is not just the phone agent, it is a whole website for them as well, designed from scratch off what they just told you. ` +
+      `The agent lands at ${email} within minutes and they can call it and try to break it as many times as they like. ` +
+      `The website takes longer, up to an hour, because a person's worth of work goes into it, and it turns up on the same page when it is done. ` +
+      `It is all free and there is no card. ` +
       `Then ask if they want you to email it as soon as it is ready, and if they say yes call email_prospect_demo.`,
   });
 }
@@ -171,7 +197,13 @@ export async function handleEmailProspectDemo(ctx: AcqCallContext, args: Record<
     });
   }
 
-  const sent = await sendDemoEmail(db, campaign, { ...lead, email } as AcqProspect);
+  // The suite email when there is a suite, his receptionist email when there is
+  // only a receptionist. Same rule the queue runs on, so the two paths cannot
+  // send different things about the same build.
+  const hasMoreThanVoice = Boolean(lead.os_demo_url) || (lead.site_demo_status === 'ready' && Boolean(lead.site_demo_url));
+  const sent = hasMoreThanVoice && lead.hub_demo_url
+    ? await sendSuiteEmail(db, campaign, { ...lead, email } as AcqProspect)
+    : await sendDemoEmail(db, campaign, { ...lead, email } as AcqProspect);
   if (!sent.ok) {
     await enqueue(db, { kind: 'demo_email', leadId: lead.id, campaignId: campaign.id, step: 0 });
     return say({ ok: false, instruction: `The send did not go through, but it is queued and will land at ${email}. Say that plainly and offer sarah@modernmustardseed.com as a backup.` });

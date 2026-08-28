@@ -150,7 +150,7 @@ export async function recordSubscriptionCommission(args: {
   subscriptionId: string;
   invoiceId: string;
   amountCents: number;
-  /** e.g. 'sidekick' — used only for the partner's earnings email label. */
+  /** e.g. 'demo-agent' — used only for the partner's earnings email label. */
   kind?: string;
 }): Promise<void> {
   const client = getSupabase();
@@ -198,7 +198,7 @@ export async function recordSubscriptionCommission(args: {
       .select('id')
       .single();
     if (!error && data) {
-      const label = args.kind === 'sidekick' ? 'a Voice Agent subscription' : 'a recurring subscription';
+      const label = args.kind === 'demo-agent' ? 'a Voice Agent subscription' : 'a recurring subscription';
       await notifyEarnings({ affiliate, amountCents: amount, productSlug: subTag, label });
     }
   } catch {

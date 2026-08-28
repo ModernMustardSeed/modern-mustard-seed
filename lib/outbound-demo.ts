@@ -1,12 +1,13 @@
 import { randomUUID } from 'node:crypto';
 import type { SupabaseClient } from '@supabase/supabase-js';
-import { forgeCall } from '@/lib/sidekick';
-import { saveRun, updateRunBrief } from '@/lib/sidekick-store';
+import { forgeCall } from '@/lib/demo-agent';
+import { saveRun, updateRunBrief } from '@/lib/demo-run-store';
 import { NICHE_LABELS } from '@/lib/outbound';
 import type { Niche, OutboundLead } from '@/lib/outbound';
 import { detectTrade, TRADE_PRESETS, VOICE_SERVICES } from '@/data/demo-os-trades';
 import type { OsTradeKey } from '@/data/demo-os-trades';
 import { SITE } from '@/lib/seo';
+import { parseSiteFacts, scrubClaims, siteFactsSummary } from '@/lib/site-facts';
 
 /**
  * The specific trade, detected from the lead's own words (name, notes, site).
@@ -29,7 +30,7 @@ export function leadTrade(lead: Pick<OutboundLead, 'business_name' | 'notes' | '
  */
 
 /** Cockpit niches to Voice Agent verticals. */
-export const SIDEKICK_VERTICAL: Record<Niche, string> = {
+export const DEMO_AGENT_VERTICAL: Record<Niche, string> = {
   home_service: 'home-services',
   restaurant: 'restaurant',
   dental_medspa: 'health',
@@ -103,7 +104,7 @@ export async function forgeLeadVoiceDemo(
   const instruction = (opts?.instruction ?? '').trim().slice(0, 600);
   const profile = {
     business: lead.business_name,
-    verticalId: SIDEKICK_VERTICAL[niche] ?? 'professional',
+    verticalId: DEMO_AGENT_VERTICAL[niche] ?? 'professional',
     city: lead.city || 'your area',
     ownerName: lead.contact_name || 'the owner',
     services: buildVoiceServices(lead, leadTrade(lead), instruction),
@@ -177,7 +178,11 @@ export async function ensureDemoHub(supabase: SupabaseClient, lead: OutboundLead
 /**
  * Forge the lead's BUSINESS OS (command center) demo if it does not exist yet.
  * Instant and token-free (a config-driven template), so it now rides along free
- * with every voice and website forge: the command center is included with any
+ * ⚠️ NOT AUTOMATIC ANY MORE (Sarah, 2026-08-22). Nothing calls this on its own:
+ * the command center left the demo suite and the offer, so the only caller left
+ * is the cockpit's explicit Forge OS button. Kept because she still builds them
+ * by hand. It used to ride along
+ * with every voice and website forge: the command center was included with any
  * website or voice agent, so every forged suite should show it. Fail-soft: if
  * the insert hiccups, the lead is returned unchanged and the rest of the suite
  * still ships. Idempotent: a ready OS demo is returned untouched.
@@ -209,8 +214,8 @@ export async function ensureOsDemo(supabase: SupabaseClient, lead: OutboundLead)
     channel: 'note',
     from_addr: 'cockpit',
     to_addr: lead.business_name,
-    subject: 'Command center included',
-    snippet: `Their command center (free with the site or voice agent) is live at ${osUrl}`,
+    subject: 'Command center built by hand',
+    snippet: `Built for you, not offered to them: ${osUrl}`,
     read: true,
     occurred_at: new Date().toISOString(),
   });
@@ -437,7 +442,7 @@ export function buildOsConfig(lead: OutboundLead): OsDemoConfig {
  * and prompt-ish framing) and hard-cap the length, so a value can only ever be
  * one short inert phrase on one line.
  */
-function briefField(raw: string | null | undefined, max = 120): string {
+export function briefField(raw: string | null | undefined, max = 120): string {
   const clean = (raw ?? '')
     .replace(/[\r\n\t]+/g, ' ')
     .replace(/[`#*_<>{}[\]|]/g, '')
@@ -468,13 +473,44 @@ export function ownerNotes(lead: OutboundLead, max = 600): string {
   return m ? briefField(m[1], max) : '';
 }
 
-export function buildSiteBrief(lead: OutboundLead, voiceDemoUrl: string | null): string {
+/**
+ * THEIR BRAND, CAPTURED OFF THEIR OWN SITE (2026-08-24, Sarah: "we need to brand
+ * websites to their colors, not our own random ones"). captureLeadBrand pulls
+ * the logo and the declared theme colour off the lead's live website; this is
+ * the block that hands them to the builder, with the law that a template's
+ * palette is a set of ROLES the business's own colours fill.
+ */
+export type SiteBrandHint = { logoUrl: string | null; brandColor: string | null };
+
+export function buildSiteBrief(lead: OutboundLead, voiceDemoUrl: string | null, brand?: SiteBrandHint | null): string {
   const niche = (lead.niche ?? 'other') as Niche;
+  const brandLines =
+    brand && (brand.logoUrl || brand.brandColor)
+      ? [
+          '',
+          '## THEIR BRAND (captured off their own website; the site wears THESE colours)',
+          brand.logoUrl ? `- Their logo: ${briefField(brand.logoUrl, 300)} (fetch it, read its colours, use it in the nav and footer at real size; never redraw it)` : null,
+          brand.brandColor ? `- Their declared brand colour: ${brand.brandColor}` : null,
+          'A template palette is a set of ROLES (ground, paper, ink, accent, support) with default hexes. When a business has established colours, in the logo, on their current site, on their trucks and signage in the mined evidence, those colours FILL the roles: their primary becomes the accent, the ground and ink take its temperature, and the template hex is used only for a role their brand does not cover. Never recolour a business whose brand is known, and never keep a template default that fights their logo. Keep the template\'s contrast relationships (a dark-ground template stays dark, a paper template stays light) and pass WCAG on every text pair.',
+        ].filter((l): l is string => l !== null)
+      : [
+          '',
+          '## THEIR BRAND',
+          'No logo or brand colour could be captured off a live website. Read their materials in the mined evidence for any established colour; if there is none, the template palette applies as written.',
+        ];
   const audit = lead.audit_json;
+  // The WEBSITE line is a person's research. Before it reaches a builder that
+  // will treat it as truth, every "no hours / no address / no email" clause is
+  // checked against the site as read live (lib/site-facts.ts) and dropped when
+  // the site has it. The facts themselves go in below, as the only contact
+  // details the builder may print.
+  const facts = parseSiteFacts(lead.notes);
   const evidence = (lead.notes ?? '')
     .split('\n')
     .filter((l) => /^(REVIEWS|WEBSITE):/.test(l.trim()))
+    .map((l) => (l.trim().startsWith('WEBSITE:') ? `WEBSITE: ${scrubClaims(l.replace(/^\s*WEBSITE:\s*/, ''), facts, 'notes').text}` : l))
     .join('\n');
+  const verifiedFacts = siteFactsSummary(facts);
   const business = briefField(lead.business_name, 90);
   const website = briefField(lead.website, 200);
   const owner = ownerNotes(lead);
@@ -506,6 +542,13 @@ export function buildSiteBrief(lead: OutboundLead, voiceDemoUrl: string | null):
           .join('; ')}`
       : null,
     evidence ? `- Why they qualified (mined evidence):\n${evidence.slice(0, 1200)}` : null,
+    // WHAT THEIR OWN SITE SAYS, READ LIVE. These are the only address, hours,
+    // email and booking details the builder may print. Anything not listed here
+    // was not found, and a site that shows a made-up street or a guessed
+    // opening time is worse than one that shows neither.
+    verifiedFacts.length
+      ? `- VERIFIED FROM THEIR LIVE WEBSITE (${facts?.verified}). Use these exactly. Do not invent any contact detail that is not in this list:\n${verifiedFacts.map((f) => `  - ${f}`).join('\n')}`
+      : '- No contact details could be verified from their website. Print the phone above and nothing else: no street address, no opening hours, no email.',
     // THEIR REAL REPUTATION, WHICH WE ALREADY HOLD AND USED TO THROW AWAY.
     //
     // outbound_leads.rating and .review_count are populated on roughly 4,400
@@ -532,6 +575,7 @@ export function buildSiteBrief(lead: OutboundLead, voiceDemoUrl: string | null):
           `"${owner}"`,
         ].join('\n')
       : null,
+    ...brandLines,
     '',
     '## REQUIRED: declare your palette',
     'Their command center demo re-skins itself to match this website, so the two',

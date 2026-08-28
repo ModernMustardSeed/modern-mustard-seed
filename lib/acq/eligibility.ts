@@ -12,6 +12,7 @@
 import type { AcqProspect } from '@/lib/acq/types';
 import { isMailableEmailStatus } from '@/lib/acq/types';
 import { emailKey } from '@/lib/acq/dedupe';
+import { isInternalAddress } from '@/lib/owner';
 
 export type Eligibility =
   | { eligible: true }
@@ -40,6 +41,14 @@ export function evaluate(lead: AcqProspect, ctx: EligibilityContext): Eligibilit
   const key = emailKey(lead.email);
   if (!key) return { eligible: false, reason: 'No usable email address.' };
   if (ctx.suppressed.has(key)) return { eligible: false, reason: 'Address is suppressed (opt-out, bounce or existing client).' };
+  // One of our own inboxes is never a prospect's address. The tracker has
+  // scraped ours off a page and filed it as the business's, which is how a cold
+  // campaign email once went to wildhopehouse@gmail.com believing it was Moses
+  // Tree Service of Bozeman. The address is wrong, so the lead is not mailable
+  // until somebody finds the real one.
+  if (isInternalAddress(key)) {
+    return { eligible: false, reason: 'That is one of our own addresses, not theirs. The email on this record is wrong.' };
+  }
   if (NO_REPLY.test(key)) return { eligible: false, reason: 'Unattended mailbox (no-reply style address).' };
   if (TEST_DOMAIN.test(key)) return { eligible: false, reason: 'Test or disposable email domain.' };
 

@@ -18,7 +18,7 @@ import { openWelcomeTour } from '@/components/admin/WelcomeTour';
  * the mustard chip, and the Inbox unread dot bubbles up to its group.
  */
 
-type Tab = 'overview' | 'hq' | 'portfolio' | 'gleaner' | 'pipeline' | 'tracker' | 'outbound' | 'acquisition' | 'factories' | 'partners' | 'team' | 'outreach' | 'campaigns' | 'texting' | 'ads' | 'facebook' | 'social' | 'artifacts' | 'audit' | 'roadmaps' | 'hundredfold' | 'call' | 'script' | 'callers' | 'training' | 'clients' | 'front-office' | 'proposals' | 'projects' | 'builds' | 'build-log' | 'delivery' | 'intakes' | 'approvals' | 'reviews' | 'calendar' | 'onboarding' | 'manual' | 'inbox';
+type Tab = 'overview' | 'hq' | 'portfolio' | 'gleaner' | 'pipeline' | 'tracker' | 'outbound' | 'acquisition' | 'factories' | 'partners' | 'team' | 'outreach' | 'campaigns' | 'texting' | 'ads' | 'facebook' | 'social' | 'artifacts' | 'audit' | 'roadmaps' | 'hundredfold' | 'call' | 'script' | 'callers' | 'training' | 'clients' | 'front-office' | 'proposals' | 'projects' | 'builds' | 'build-log' | 'delivery' | 'templates' | 'intakes' | 'approvals' | 'reviews' | 'calendar' | 'onboarding' | 'manual' | 'inbox';
 
 // `external: true` marks a public-facing offer page that opens in a new tab, so
 // clicking it from the admin never loses the team member's place. These items
@@ -42,7 +42,7 @@ const PINNED: Item[] = [
 // team can open, share, or demo any program in a click. All open in a new tab.
 const PROGRAMS: Item[] = [
   { key: 'p-demos', label: 'Demos', href: '/demos', external: true },
-  { key: 'p-sidekick', label: 'Voice Agent', href: '/voice-agents/forge', external: true },
+  { key: 'p-demo-agent', label: 'Voice Agent', href: '/voice-agents/forge', external: true },
   { key: 'p-chief', label: 'The Chief', href: '/chief', external: true },
   { key: 'p-mode', label: 'Mustard Mode', href: '/mustard-mode', external: true },
   { key: 'p-launch', label: 'Mustard Launch', href: '/mustard-launch', external: true },
@@ -64,6 +64,7 @@ const GROUPS: { name: string; items: Item[] }[] = [
       { key: 'clients', label: 'Client Book', href: '/admin/clients' },
       { key: 'front-office', label: 'Front Office', href: '/admin/front-office' },
       { key: 'delivery', label: 'Delivery', href: '/admin/delivery' },
+      { key: 'templates', label: 'Site Templates', href: '/admin/templates' },
       { key: 'projects', label: 'Projects', href: '/admin/projects' },
       { key: 'proposals', label: 'Proposals', href: '/admin/proposals' },
       { key: 'call', label: 'Intake Call', href: '/admin/intake-call' },

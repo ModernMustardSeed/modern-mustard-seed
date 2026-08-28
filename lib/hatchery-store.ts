@@ -1,6 +1,6 @@
 /**
  * Durable MUSTARD HATCHERY state on the existing app_state k/v table (no new
- * table, no DDL). Same atomic-claim spine as press/sidekick/pictures.
+ * table, no DDL). Same atomic-claim spine as press/demo agent / pictures.
  *
  * Keys:
  *   hatchery:glimpse:<email>  claimed the moment a free First Glimpse is granted

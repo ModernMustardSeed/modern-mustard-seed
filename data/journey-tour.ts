@@ -26,7 +26,7 @@ export const JOURNEY_TOUR: JourneyTourBeat[] = [
     id: 'orchard',
     anchor: 'tour-orchard',
     text:
-      'First, the orchards. We grow four things: a website that talks, a voice agent that answers, the command center that runs them both, and custom software when your idea needs its own row. ' +
+      'First, the orchards. We grow a website that talks and a voice agent that answers, and custom software when your idea needs its own row. ' +
       'Full apps, stores, agentic systems. Planted once, tended every day, and the first three go live in about a week.',
   },
   {
@@ -43,7 +43,7 @@ export const JOURNEY_TOUR: JourneyTourBeat[] = [
     anchor: 'tour-signs',
     text:
       'Now watch the roadside. Every sign out here is something real that you can walk into today. ' +
-      'The Talking Website, voice sidekicks, commercials, and free tools you can try before you spend a single dollar.',
+      'The Talking Website, voice demo agents, commercials, and free tools you can try before you spend a single dollar.',
   },
   {
     id: 'square',

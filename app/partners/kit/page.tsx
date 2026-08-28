@@ -30,7 +30,7 @@ const STEPS = [
     n: '2',
     accent: '#F5B700',
     t: 'A finished suite appears, under your flag',
-    d: 'A voice agent that answers as their business, a website designed from scratch, and a command center demo. The hub reads "Presented by you, with Modern Mustard Seed," with your code stamped into every checkout.',
+    d: 'A voice agent that answers as their business and a website designed from scratch. The hub reads "Presented by you, with Modern Mustard Seed," with your code stamped into every checkout.',
   },
   {
     n: '3',
@@ -177,7 +177,7 @@ export default function PartnerKitPage() {
             <span className="text-[9px] uppercase tracking-[0.25em] font-mono font-bold text-[#161616]/60 block mb-2">See one that is live</span>
             <h3 className="font-sans font-bold text-[#161616] text-lg mb-1">A real forged suite</h3>
             <p className="text-[#161616]/75 font-body text-sm leading-relaxed">
-              A full suite the forge minted start to finish. Voice Agent, website, and command center, all in one hub.
+              A full suite the forge minted start to finish. Voice Agent and website, both in one hub.
             </p>
           </a>
           <a

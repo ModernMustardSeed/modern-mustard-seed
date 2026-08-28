@@ -16,11 +16,12 @@ import { getSupabase } from '@/lib/supabase';
 import { claimJobs, completeJob, failJob, skipJob, reclaimStale, enqueue } from '@/lib/acq/queue';
 import type { QueueJob } from '@/lib/acq/queue';
 import { getAcqSettings, gate, getCampaign } from '@/lib/acq/settings';
-import { checkPace, sendCampaignEmail, sendDemoEmail, sendFollowup, sendCheckoutLink } from '@/lib/acq/send';
+import { checkPace, sendCampaignEmail, sendDemoEmail, sendFollowup, sendSuiteEmail, sendCheckoutLink } from '@/lib/acq/send';
 import type { FollowupKind } from '@/lib/acq/campaign';
 import { evaluate, dueForStep, sequenceGaps } from '@/lib/acq/eligibility';
 import { activeSuppressions } from '@/lib/email-log';
 import { forgeProspectAgent } from '@/lib/acq/forge';
+import { forgeProspectSuite } from '@/lib/acq/suite';
 import { placeDemoCall } from '@/lib/acq/call';
 import { recordEvent } from '@/lib/acq/events';
 import type { AcqCampaign, AcqProspect } from '@/lib/acq/types';
@@ -71,7 +72,18 @@ export async function drainQueue(opts: { limit?: number; worker?: string } = {})
   const worker = opts.worker ?? 'cron';
   const limit = opts.limit ?? 40;
 
-  const jobs = await claimJobs(db, null, limit, worker);
+  // Demo suite emails go first, always.
+  //
+  // A forged demo is a live agent and a live site standing there with the
+  // prospect's own name on it, built because that person asked. A cold email
+  // is a cold email. FIFO across one shared queue means a backlog of cold
+  // sends starves the demos behind it, and at 25 an hour a thousand-job
+  // backlog is days: on 2026-08-24 sixteen forged demos sat behind 1,082 cold
+  // emails. The person who raised their hand does not wait behind the people
+  // who did not.
+  const demoFirst = await claimJobs(db, ['demo_email'], limit, worker);
+  const rest = demoFirst.length < limit ? await claimJobs(db, null, limit - demoFirst.length, worker) : [];
+  const jobs = [...demoFirst, ...rest];
   report.claimed = jobs.length;
 
   let emailsSent = 0;
@@ -286,20 +298,20 @@ async function runDemoEmailJob(
   const blocked = await guardMailable(db, lead, 0);
   if (blocked) return { kind: 'skip', note: blocked };
 
-  const sent = await sendDemoEmail(db, campaign, lead);
+  // A prospect with a website or a command center gets the SUITE email, which
+  // names every piece that is finished. One with only a voice agent gets Mr.
+  // Mustard's receptionist email, unchanged, because that is what he promised
+  // them on the call.
+  const hasMoreThanVoice = Boolean(lead.os_demo_url) || (lead.site_demo_status === 'ready' && Boolean(lead.site_demo_url));
+  const sent = hasMoreThanVoice && lead.hub_demo_url
+    ? await sendSuiteEmail(db, campaign, lead)
+    : await sendDemoEmail(db, campaign, lead);
   if (!sent.ok) return sent.permanent ? { kind: 'skip', note: sent.error } : { kind: 'fail', note: sent.error };
 
-  // Start the "did you try to break it" sequence.
-  for (const [i, kind] of (['demo_no_purchase_1', 'demo_no_purchase_2', 'demo_no_purchase_3'] as FollowupKind[]).entries()) {
-    await enqueue(db, {
-      kind: 'followup',
-      leadId: lead.id,
-      campaignId: campaign.id,
-      step: 10 + i,
-      runAfter: addBusinessDays(new Date(), 2 + i * 3),
-      payload: { followup: kind },
-    });
-  }
+  // The "did you try to break it" sequence starts inside the senders now, so
+  // that a demo sent from the admin, the forge screen, demos-now or Mr. Mustard
+  // on a call gets the same follow-through this worker used to get alone. See
+  // lib/acq/post-demo.ts.
   void job;
   return { kind: 'done', note: sent.subject, result: { messageId: sent.messageId } };
 }
@@ -373,11 +385,37 @@ async function runCallJob(
 }
 
 async function runForgeJob(db: SupabaseClient, lead: AcqProspect, job: QueueJob): Promise<JobOutcome> {
-  if (lead.demo_status === 'ready') return { kind: 'skip', note: 'Already forged.' };
-  const result = await forgeProspectAgent(db, lead, (job.payload.context as Record<string, string>) ?? {});
+  const wantsSite = job.payload.site === true;
+  const siteSettled = lead.site_demo_status === 'ready' || lead.site_demo_status === 'queued' || lead.site_demo_status === 'building';
+  // "Already forged" used to mean only the voice agent, so a job asking for the
+  // whole suite would be skipped by a prospect who had nothing but a receptionist.
+  if (lead.demo_status === 'ready' && (!wantsSite || siteSettled)) {
+    return { kind: 'skip', note: 'Already forged.' };
+  }
+
+  // A forge job carrying no site flag is the phone path: Mr. Mustard forging
+  // mid-call, where the only thing that may run is what is instant. The board
+  // sets site:true and gets the whole suite.
+  if (!wantsSite) {
+    const result = await forgeProspectAgent(db, lead, (job.payload.context as Record<string, string>) ?? {});
+    if (!result.ok) return result.retryable ? { kind: 'fail', note: result.error } : { kind: 'skip', note: result.error };
+    return { kind: 'done', note: result.demoUrl, result: { demoUrl: result.demoUrl } };
+  }
+
+  const result = await forgeProspectSuite(db, lead, {
+    site: true,
+    designTier: job.payload.designTier === 3 ? 3 : 2,
+    talkingWebsite: job.payload.talkingWebsite === true,
+    by: String(job.payload.by ?? 'queue'),
+    // Nobody is watching this one, so it counts against the daily ceiling.
+    capped: 'queue',
+  });
   if (!result.ok) return result.retryable ? { kind: 'fail', note: result.error } : { kind: 'skip', note: result.error };
-  await recordEvent(db, { leadId: lead.id, type: 'forge_completed', label: 'Forged from the queue', detail: { demoUrl: result.demoUrl } });
-  return { kind: 'done', note: result.demoUrl, result: { demoUrl: result.demoUrl } };
+  return {
+    kind: 'done',
+    note: result.created.length ? `Forged ${result.created.join(', ')}` : 'Already built',
+    result: { created: result.created, hubUrl: result.hubUrl, siteUrl: result.siteUrl, warnings: result.warnings },
+  };
 }
 
 /* ─────────────────────────────── scheduling ────────────────────────────── */

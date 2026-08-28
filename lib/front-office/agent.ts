@@ -21,7 +21,7 @@
  */
 
 import type { SupabaseClient } from '@supabase/supabase-js';
-import { sidekickVoice } from '@/lib/sidekick-voice';
+import { demoVoice } from '@/lib/demo-voice';
 import { SITE } from '@/lib/seo';
 import { frontOfficeTools } from '@/lib/front-office/tools';
 import { voiceStandard, voiceFormatPlan, VOICE_STANDARD_VERSION } from '@/lib/voice-standard';
@@ -194,9 +194,12 @@ export function assistantConfig(office: OfficeRow, transfers: TransferRow[]): Re
   return {
     name: `${office.business_name} front desk`,
     firstMessage: firstMessageFor(office),
-    // The prompt can ask for grouped digits; only this catches what the model
-    // actually emitted, on its way to the speech engine.
-    voice: { ...sidekickVoice(office.voice_gender), chunkPlan: voiceFormatPlan(officePhone(office)) },
+    // Both sides of this merge were right about different things. master
+    // removed Sidekick, so the voice comes from demoVoice now. This branch
+    // added the chunk plan, which is what actually groups spoken digits: the
+    // prompt can ask for them and only this catches what the model emitted on
+    // its way to the speech engine. Dropping either one loses real work.
+    voice: { ...demoVoice(office.voice_gender), chunkPlan: voiceFormatPlan(officePhone(office)) },
     model: {
       provider: 'openai',
       model: 'gpt-4o',

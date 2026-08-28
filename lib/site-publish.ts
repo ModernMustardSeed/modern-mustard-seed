@@ -3,6 +3,7 @@ import { publishSite, attachDomain, projectSlug } from './vercel-platform';
 import { seoFiles, type SiteFacts } from './site-seo';
 import { settleCursorCompanions } from './cursor-companion';
 import { dressClosingBand } from './closing-band';
+import { levelMarquees } from './level-marquee';
 import { takeBrownOff } from './no-brown';
 import { resendClient } from './send-email';
 import { clientEmail } from './email';
@@ -89,7 +90,15 @@ export async function publishProject(sb: SupabaseClient, projectId: string): Pro
   );
 
   const pub = await publishSite({
-    files: seoFiles(facts, takeBrownOff(dressClosingBand(settleCursorCompanions(project.site_html as string))), extraPages),
+    // master added levelMarquees to the transform chain; this branch added the
+    // extra pages argument. Neither replaces the other: one is a transform on
+    // the index html, one is the multi-page set that ships beside it. Dropping
+    // the pages would publish a one page site for every multi page client.
+    files: seoFiles(
+      facts,
+      takeBrownOff(levelMarquees(dressClosingBand(settleCursorCompanions(project.site_html as string)))),
+      extraPages,
+    ),
     business,
     key: projectId,
     projectId: (project.site_vercel_project_id as string | null) ?? null,

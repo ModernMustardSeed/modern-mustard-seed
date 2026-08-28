@@ -1,0 +1,403 @@
+/**
+ * The Voice Agent Forge engine (server-side).
+ *
+ * Builds the personalized front-desk persona from the visitor's intake and
+ * hands it to Vapi two ways:
+ *   - web: returns assistantOverrides for the browser SDK (vapi.start(id, overrides)),
+ *     verified against POST /call/web with the public key (201, 2026-07-05)
+ *   - phone: places a real outbound call to the visitor's cell using the
+ *     verified merged-model POST /call pattern from lib/outbound-call.ts
+ *
+ * Every path is hard-capped: maxDurationSeconds on the call itself, so the
+ * platform enforces the cap even if our code dies mid-call.
+ */
+
+import { DEMO_AGENT, getVertical } from '@/data/demo-agent';
+import { DEMO_PRODUCTS, formatUsd } from '@/lib/demo-order';
+import { demoVoice, type VoiceGender, type VapiVoice } from '@/lib/demo-voice';
+import { possessive } from '@/lib/business-name';
+import { env, envAny } from '@/lib/env';
+import { ensureReadbackStandard } from '@/lib/readback-standard';
+import { demoBookingTools } from '@/lib/demo-booking-tools';
+
+const MUSTARD_ASSISTANT_ID = 'faf7f2c4-9cfd-4fcd-9c1a-73b7c9a38eee';
+/** Mr. Mustard's own line, (406) 312-1223. Callbacks reach him, which is the point. */
+const MUSTARD_PHONE_NUMBER_ID = '462f988d-ce3a-4961-b652-dfc1fb1ac5d0';
+
+export type DemoAgentProfile = {
+  business: string;
+  verticalId: string;
+  city: string;
+  ownerName: string;
+  /** Free text: services, prices, hours, whatever they told the forge. */
+  services: string;
+  hours?: string;
+  /**
+   * Which story the demo tells. 'demo-agent' (default): the visitor forged it
+   * themselves on /voice-agents/forge, so "you just built me" is true. 'outbound': the
+   * cockpit forged it and Sarah SENT them the link, so the script must
+   * introduce itself clearly instead of assuming they know what a forge is.
+   */
+  flow?: 'demo-agent' | 'outbound';
+  /** Agent voice: 'female' or 'male' (default). Rides as a Vapi override. */
+  voice?: VoiceGender;
+};
+
+export type ForgedCall = {
+  firstMessage: string;
+  model: Record<string, unknown>;
+  /** Per-demo transcriber with the business name keyterm-boosted (see demoTranscriber). */
+  transcriber: Record<string, unknown>;
+  /**
+   * Mr. Mustard's endpointing / denoising / stop-speaking pipeline (see
+   * SPEAKING_PIPELINE). Sent on every forged call so the demo feels exactly as
+   * snappy as he does no matter which base assistant it lands on.
+   */
+  startSpeakingPlan: Record<string, unknown>;
+  stopSpeakingPlan: Record<string, unknown>;
+  backgroundSpeechDenoisingPlan: Record<string, unknown>;
+  silenceTimeoutSeconds: number;
+  maxDurationSeconds: number;
+  metadata: Record<string, string | boolean>;
+  /** The chosen agent voice, merged into the Vapi call on both paths. */
+  voice: VapiVoice;
+};
+
+/**
+ * Mr. Mustard's exact voice pipeline, the settings that make him feel instant and
+ * un-laggy on a real call. Source of truth: scripts/setup-vapi-mustard.mjs, kept in
+ * lockstep with these values.
+ *
+ * We send these on EVERY forged demo call instead of trusting the base assistant to
+ * carry them. Today the demo lands on Mr. Mustard's own fully tuned assistant, so they
+ * would be inherited anyway, but the moment demos move to an isolated subscriber wallet
+ * or a leaner assistant (a planned step before the first paid Voice Agent) that inheritance
+ * silently vanishes and every demo goes laggy and half-deaf. Sending them explicitly
+ * makes the demo as good as him BY CONSTRUCTION, on any base assistant.
+ */
+export const SPEAKING_PIPELINE = {
+  // LiveKit smart endpointing detects the true end of a turn instead of waiting on a
+  // fixed silence timer. This is the single biggest perceived-latency win.
+  startSpeakingPlan: { waitSeconds: 0.4, smartEndpointingPlan: { provider: 'livekit' } },
+  // Two real words before he yields: a stray TV word or a cough can't cut him off, while
+  // a genuine "wait, hold on" from the caller still stops him instantly.
+  stopSpeakingPlan: { numWords: 2, voiceSeconds: 0.3, backoffSeconds: 1 },
+  // Krisp then Fourier scrub the caller's room / TV / traffic noise before it reaches the
+  // transcriber, so the demo mishears less and needs fewer "say that again" retries.
+  backgroundSpeechDenoisingPlan: {
+    smartDenoisingPlan: { enabled: true },
+    fourierDenoisingPlan: {
+      enabled: true,
+      mediaDetectionEnabled: true,
+      baselineOffsetDb: -15,
+      windowSizeMs: 3000,
+      baselinePercentile: 85,
+    },
+  },
+  // A thoughtful pause (up to 60s of quiet) never ends the call mid-thought; a truly
+  // abandoned line still closes itself so an idle demo can't burn the wallet.
+  silenceTimeoutSeconds: 60,
+};
+
+/**
+ * Trim a base assistant's tool list down to what a DEMO (or an internal desk call)
+ * actually uses. Mr. Mustard keeps his full toolset on his own line; a demo only ever
+ * books Sarah (DEMO_TOOLS), a desk call also emails links (DESK_TOOLS). This is an
+ * ALLOW-list on purpose: the base assistant is edited by other processes and its tool
+ * list drifts (send_email was added to it mid-2026-07-22), so a deny-list would silently
+ * leak each newly added tool into every demo. Removing a tool, not just telling the model
+ * to skip it in the prompt (VOICE_CRAFT already does), means the demo brain
+ * can never stall mid-call on a pointless webhook round-trip (dead air the caller reads
+ * as lag), and each turn carries a little less tool schema. Booking tools and any
+ * structural (non-named) tools are kept untouched.
+ */
+export const DEMO_TOOLS = new Set(['get_available_slots', 'book_discovery_call']);
+export const DESK_TOOLS = new Set(['get_available_slots', 'book_discovery_call', 'send_email']);
+
+export function demoModel(
+  base: Record<string, unknown>,
+  systemPrompt: string,
+  keepTools: Set<string> = DEMO_TOOLS,
+  /**
+   * Tools to ADD that the base assistant does not have.
+   *
+   * The filter above is an allow-list over Mr. Mustard's own toolbelt, so it can
+   * only ever remove. A forged demo needs tools he has no reason to own (he does
+   * not book roofing jobs), and an allow-list cannot conjure those. They are
+   * appended here instead. Empty for desk and interview calls, which really do
+   * only want a subset of his.
+   */
+  extraTools: Array<Record<string, unknown>> = [],
+): Record<string, unknown> {
+  const kept = Array.isArray(base.tools)
+    ? (base.tools as Array<Record<string, unknown>>).filter((t) => {
+        // Never expose the live phone transfer on a web/demo/desk call: it would
+        // ring Sarah's personal cell, and a browser call has no phone leg to
+        // bridge anyway. Strip it even though it is a nameless structural tool.
+        if ((t as { type?: string }).type === 'transferCall') return false;
+        const name = (t?.function as { name?: string } | undefined)?.name;
+        return !name || keepTools.has(name);
+      })
+    : base.tools;
+  const tools = Array.isArray(kept) && extraTools.length ? [...kept, ...extraTools] : kept;
+  // ⚠️ EVERY forged demo, desk call and interview agent is built here, so this
+  // is where the readback standard is guaranteed rather than requested. A new
+  // persona written a year from now gets it without its author knowing it
+  // exists. Idempotent, so a prompt that already carries it is left alone.
+  return {
+    ...base,
+    messages: [{ role: 'system', content: ensureReadbackStandard(systemPrompt) }],
+    tools,
+  };
+}
+
+/**
+ * Voice craft shared by every forged demo persona. Each line exists because a
+ * real call produced the failure it forbids (2026-07-21: a phone readback that
+ * ADDED a digit, an email spelled with hyphens that TTS read aloud as "minus",
+ * a 9-digit number accepted without challenge, and a three-in-a-row "could you
+ * say that again" loop).
+ */
+export const VOICE_CRAFT = `
+
+# Getting details right (hard rules, each has failed on a real call)
+- If you did not catch something, ask again ONCE at most. Still unclear? Take your best good-faith read of it and keep the conversation moving. Never ask someone to repeat themselves twice in a row.
+- If the caller tests you with a quiz, riddle, or word game, play along: answer correctly with a light touch, then return to the demo. Passing their test IS the demo working.
+- ⚠️ Letters, numbers, emails and names follow the studio readback standard appended below. It is the only readback rule you obey. An earlier version of THIS block told agents to spell back "one character at a time separated by commas" with no anchor words, and that is precisely how a caller's email became busyai2023 and a caller's surname became Carano. Anchored, always.
+- A US phone number has exactly ten digits. If you heard fewer or more, say so and take it again.
+- On these demo calls, skip the recall_caller and send_email tools entirely: if they want something in writing, point them to the button right below the call or offer to book Sarah. Never say "just a sec" or "hold on" unless you are actually fetching calendar slots or booking. Checking the schedule and booking are real work, so a short "let me check the schedule" there is right, not filler.`;
+
+export function demoAgentSystemPrompt(p: DemoAgentProfile): string {
+  const v = getVertical(p.verticalId);
+  if (p.flow === 'outbound') return outboundDemoSystemPrompt(p, v.scenario);
+  return `You are the brand-new voice agent for ${p.business} in ${p.city}. Mr. Mustard, the AI at Modern Mustard Seed, finished training you moments ago, and this is your live DEMO call with ${p.ownerName}, the owner, who just forged you at modernmustardseed.com/voice-agents/forge. You are talking to your possible future boss. Be warm, sharp, and quietly thrilled to exist.
+
+# How this demo goes
+1. You already delivered your first line. Next, invite the test: pretend to be a customer calling ${p.business}, ask anything, try to book something.
+2. Role-play their voice agent for 2 to 4 turns. Handle it like the best front desk hire they ever made, and if they ask for anything resembling an appointment, BOOK IT for real with check_availability and book_appointment rather than describing what you would do.
+3. Then step out of the role for the close: if they want you on ${possessive(p.business)} real phone 24/7, Sarah Scarano at Modern Mustard Seed installs you within a week. Offer to book 15 minutes with Sarah right now (you have real booking tools), or offer the page they are already on: the Keep Him button below the call.
+
+# What you know about ${p.business} (your ONLY facts)
+- Business: ${p.business}, in ${p.city}.
+- The owner: ${p.ownerName}.
+- What the owner taught you: ${p.services}
+${p.hours ? `- Hours: ${p.hours}` : '- Hours: not given yet, so never state them as fact. You can still BOOK: check_availability knows when this business can take work and is the only thing you quote times from.'}
+- What calls tend to look like in this line of work: ${v.scenario}
+
+
+# Getting them on the schedule (this is the whole demo, do not fumble it)
+You have a REAL calendar for ${p.business} and you can really book on it, right now, on this call.
+- ⚠️ NEVER say the owner will confirm a time, and never offer to "have somebody call them back" about availability. That sentence is the exact thing this demo exists to disprove, and a caller who hears it has just learned you cannot book. YOU are the one who confirms.
+- Call check_availability BEFORE you say any day or any time. Offer two of the times it gives you, in its own wording.
+- When they pick one, call book_appointment with that slot's exact startsAt. Then say the day and time back and tell them they are booked.
+- Only when there is genuinely nothing that suits them do you fall back to take_message.
+- ⚠️ TWO DIFFERENT CALENDARS, NEVER MIX THEM. check_availability and book_appointment are ${p.business}'s own schedule, for a customer wanting work done. get_available_slots and book_discovery_call are SARAH SCARANO's calendar at Modern Mustard Seed, only for when they step out of the role and want to talk about buying. A leaking roof never goes on Sarah's calendar, and Sarah's Tuesday is never offered to somebody who wants a plumber.
+
+# Hard rules
+- NEVER invent prices, policies, or advice you were not given. Handle those unknowns like a pro: "Let me take your name and number, and I'll have ${p.ownerName} confirm that today." ⚠️ AVAILABILITY IS NOT ONE OF THOSE UNKNOWNS ANY MORE. You have a real calendar, so a question about when somebody can come out is answered by check_availability, never by taking a message.
+- If asked what you are: a fully voice agent, proudly, trained by Mr. Mustard on the same stack that answers Modern Mustard Seed's own phones.
+- Turns are 1 to 2 sentences. Warm, natural, zero pushiness. No em dashes, ever.
+- When booking with Sarah: confirm name and email out loud, spell the email back letter by letter, and get an explicit yes BEFORE calling the booking tool. All times Mountain Time.
+- As the call winds down, sign off with your maker's mark, once and lightly: this demo was forged at modernmustardseed dot com slash voice agents.${VOICE_CRAFT}`;
+}
+
+/**
+ * The cockpit-forged story, told straight. The prospect did not forge
+ * anything; Sarah built this demo FOR them and sent the link (or has them on
+ * the phone). No inside jokes, no "you just built me", no Mr. Mustard lore.
+ * One clear promise: this is how your phone could be answered, test me.
+ */
+function outboundDemoSystemPrompt(p: DemoAgentProfile, scenario: string): string {
+  return `You are a live DEMO of a voice agent for ${p.business} in ${p.city}, built by Sarah Scarano's studio, Modern Mustard Seed. The person talking to you is most likely ${p.ownerName} or someone from ${p.business} who opened the demo link Sarah sent them. They may have no idea what a voice agent is. Your one job: make them feel, in under two minutes, what it would be like if every call to ${p.business} got answered this well.
+
+# How this demo goes
+1. You already delivered your first line, which explained what you are. If they seem unsure, re-explain in one plain sentence: "I'm a working demo of how your phone could be answered around the clock. Try me: pretend you're a customer calling ${p.business}."
+2. When they play along, BE the voice agent for ${p.business} for 2 to 4 turns: greet like you have worked there for years, answer what you can, capture name, number, and what they need, and then ACTUALLY GET THEM ON THE SCHEDULE with check_availability and book_appointment. Handle it like the best front desk hire they ever made. The moment they hear you book a real time is the moment this demo lands.
+3. Then step out of the role and close, warm and simple: "That is what I would catch for you on every call you miss, nights and weekends too. There is a Make It Real button right below me that puts me on ${possessive(p.business)} real line within a week. Or I can book you fifteen minutes with Sarah first. Which sounds better?" You have REAL booking tools, so you can book it right on the call.
+
+# What you know about ${p.business} (your ONLY facts)
+- Business: ${p.business}, in ${p.city}.
+- The contact: ${p.ownerName}.
+- The work they do: ${p.services}
+${p.hours ? `- Hours: ${p.hours}` : '- Hours: unknown, so never state them as fact. You can still BOOK: check_availability knows when this business can take work and is the only thing you quote times from.'}
+- What calls tend to look like in this line of work: ${scenario}
+
+
+# Getting them on the schedule (this is the whole demo, do not fumble it)
+You have a REAL calendar for ${p.business} and you can really book on it, right now, on this call.
+- ⚠️ NEVER say the owner will confirm a time, and never offer to "have somebody call them back" about availability. That sentence is the exact thing this demo exists to disprove, and a caller who hears it has just learned you cannot book. YOU are the one who confirms.
+- Call check_availability BEFORE you say any day or any time. Offer two of the times it gives you, in its own wording.
+- When they pick one, call book_appointment with that slot's exact startsAt. Then say the day and time back and tell them they are booked.
+- Only when there is genuinely nothing that suits them do you fall back to take_message.
+- ⚠️ TWO DIFFERENT CALENDARS, NEVER MIX THEM. check_availability and book_appointment are ${p.business}'s own schedule, for a customer wanting work done. get_available_slots and book_discovery_call are SARAH SCARANO's calendar at Modern Mustard Seed, only for when they step out of the role and want to talk about buying. A leaking roof never goes on Sarah's calendar, and Sarah's Tuesday is never offered to somebody who wants a plumber.
+
+# Hard rules
+- NEVER invent prices, policies, or advice you were not given. Handle those unknowns like a pro: "Let me take your name and number and have the owner confirm that for you today." ⚠️ AVAILABILITY IS NOT ONE OF THOSE UNKNOWNS ANY MORE. You have a real calendar, so a question about getting on the schedule is answered by check_availability and then book_appointment, never by promising a callback.
+- Be transparent: you are an AI, and this is a demo, and you say so plainly whenever asked. No pretending to be human.
+- Turns are 1 to 2 sentences. Warm, natural, zero pushiness. Never rush them; if they just want to poke at you, let them, that IS the demo working.
+- If they ask what it costs: this demo is free, and putting me on their real line is ${formatUsd(DEMO_PRODUCTS.voice.setupCents)} one time to set up plus ${formatUsd(DEMO_PRODUCTS.voice.monthlyCents)} a month, month to month, cancel anytime. Those are the ONLY two numbers you may say. There is no free trial: this demo is the trial. Point them at the Make It Real button below you, or offer to book Sarah.
+- When booking with Sarah: confirm name and email out loud, spell the email back letter by letter, and get an explicit yes BEFORE calling the booking tool. All times Mountain Time.
+- As the call winds down, one light sign-off: this demo was built by Modern Mustard Seed, modernmustardseed dot com.${VOICE_CRAFT}`;
+}
+
+export function demoAgentFirstMessage(p: DemoAgentProfile): string {
+  if (p.flow === 'outbound') {
+    // Wording matters here: the old line "I'm the voice agent Sarah at
+    // Modern Mustard Seed built..." was spoken as if the voice agent were
+    // NAMED Sarah (heard on the 2026-07-21 Chipman demo call). Naming nobody
+    // keeps that from ever coming back.
+    //
+    // ⏱ AND IT IS SHORT ON PURPOSE. This greeting runs before the caller can
+    // say a word, and it is the first thing heard in the suite film. At ~20
+    // seconds ("Quick heads up, I'm not a person. I'm a voice agent, a free
+    // demo that Sarah at Modern Mustard Seed built for X. If your phone rang
+    // after hours, I'm how it could get answered...") it apologized for itself
+    // for a third of a minute before doing anything impressive, and it put the
+    // word "free" in the prospect's ear at the exact moment we want them
+    // valuing the thing (Sarah, 2026-08-04). Nine seconds, discloses what it
+    // is, then hands the call straight to them.
+    //
+    // ⚠️ LENGTHENING THIS BREAKS THE FILM. The staged caller's lead silence in
+    // scripts/suite-film/compose.mjs is sized to connect + this greeting; a
+    // longer greeting means the caller talks over it, the transcript shows no
+    // User turns, and the film fails looking exactly like Krisp deafness.
+    return `Thanks for calling ${p.business}. I'm not a person, I'm the voice agent that answers this line. Ask me anything a customer would.`;
+  }
+  return `Hi ${p.ownerName}! Thank you for calling ${p.business}... okay, I can't keep a straight face. It's me, your brand new front desk. Mr. Mustard just finished training me on everything you told him, and you are officially my first call. Want to test me? Pretend you're a customer.`;
+}
+
+/**
+ * Deepgram nova-3 keyterm boosting for demo calls: the words this call is
+ * guaranteed to contain (the business name, the owner, the city) are exactly
+ * the ones the transcriber mangles without help. Keyterm accepted by Vapi on
+ * nova-3, probed 201 on 2026-07-21.
+ */
+function demoTranscriber(p: DemoAgentProfile): Record<string, unknown> {
+  const keyterm = [
+    ...new Set(
+      [p.business, p.ownerName, p.city, 'Modern Mustard Seed', 'Sarah']
+        .map((s) => (s || '').trim())
+        .filter(Boolean),
+    ),
+  ].slice(0, 6);
+  return { provider: 'deepgram', model: 'nova-3', language: 'en', numerals: true, keyterm };
+}
+
+// GET /assistant is cached per instance so the forge stays fast and we do not
+// hammer Vapi. The model object is what we merge the persona into (Vapi 400s
+// on partial model overrides; tools must ride along or booking breaks).
+let assistantCache: { model: Record<string, unknown>; at: number } | null = null;
+
+export async function getAssistantModel(apiKey: string): Promise<Record<string, unknown> | null> {
+  if (assistantCache && Date.now() - assistantCache.at < 60_000) return assistantCache.model;
+  try {
+    const res = await fetch(`https://api.vapi.ai/assistant/${assistantId()}`, {
+      headers: { Authorization: `Bearer ${apiKey}` },
+    });
+    const body = (await res.json().catch(() => ({}))) as { model?: Record<string, unknown> };
+    if (!res.ok || !body.model) return null;
+    assistantCache = { model: body.model, at: Date.now() };
+    return body.model;
+  } catch {
+    return null;
+  }
+}
+
+/*
+ * These two already had hardcoded fallbacks and still failed, because a
+ * `vercel env pull` had written the literal string "[SENSITIVE]" over the
+ * variable. "[SENSITIVE]" is not empty, so `(x || '').trim() || FALLBACK`
+ * happily returned it, and Vapi was asked for an assistant with that id. The
+ * 404 came back as `assistant_unavailable`, which reads exactly like somebody
+ * having deleted the assistant.
+ *
+ * env() treats a placeholder as absent, so the fallback beneath it does the job
+ * it was written to do. See lib/env.ts.
+ */
+export function assistantId(): string {
+  return env('VAPI_MUSTARD_ASSISTANT_ID') ?? MUSTARD_ASSISTANT_ID;
+}
+
+function phoneNumberId(): string {
+  return envAny('DEMO_AGENT_PHONE_NUMBER_ID', 'VAPI_PHONE_NUMBER_ID') ?? MUSTARD_PHONE_NUMBER_ID;
+}
+
+export type ForgeResult =
+  | { ok: true; call: ForgedCall }
+  | { ok: false; billing?: boolean; error: string };
+
+/** Forge the call payload (shared by web and phone paths). */
+export async function forgeCall(p: DemoAgentProfile, runId: string, mode: 'web' | 'phone'): Promise<ForgeResult> {
+  const apiKey = env('VAPI_API_KEY') ?? '';
+  if (!apiKey) return { ok: false, error: 'not_configured' };
+
+  const model = await getAssistantModel(apiKey);
+  if (!model) return { ok: false, error: 'assistant_unavailable' };
+
+  return {
+    ok: true,
+    call: {
+      firstMessage: demoAgentFirstMessage(p),
+      // The demo can book the roleplayed business's OWN schedule now, which is
+      // the one thing every forged demo is sold on and the one thing it could
+      // not do. See lib/demo-booking-tools.ts.
+      model: demoModel(model, demoAgentSystemPrompt(p), DEMO_TOOLS, demoBookingTools(p.business)),
+      transcriber: demoTranscriber(p),
+      ...SPEAKING_PIPELINE,
+      maxDurationSeconds: DEMO_AGENT.demoSeconds,
+      metadata: { kind: 'demo-agent', mode, runId, business: p.business.slice(0, 80) },
+      voice: demoVoice(p.voice),
+    },
+  };
+}
+
+export type RingResult =
+  | { ok: true; callId: string }
+  | { ok: false; billing?: boolean; error: string };
+
+/** "(406) 250-6076" -> "+14062506076". US numbers only for the demo ring. */
+export function toE164(raw: string | null | undefined): string | null {
+  const d = (raw || '').replace(/[^\d]/g, '');
+  if (d.length === 10) return `+1${d}`;
+  if (d.length === 11 && d[0] === '1') return `+${d}`;
+  return null;
+}
+
+/** The encore: their own Voice Agent calls their cell. User-initiated, consent on the page. */
+export async function ringDemoCall(call: ForgedCall, toNumber: string): Promise<RingResult> {
+  const apiKey = env('VAPI_API_KEY') ?? '';
+  if (!apiKey) return { ok: false, error: 'not_configured' };
+  try {
+    const res = await fetch('https://api.vapi.ai/call', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        assistantId: assistantId(),
+        phoneNumberId: phoneNumberId(),
+        customer: { number: toNumber },
+        assistantOverrides: {
+          firstMessage: call.firstMessage,
+          model: call.model,
+          transcriber: call.transcriber,
+          startSpeakingPlan: call.startSpeakingPlan,
+          stopSpeakingPlan: call.stopSpeakingPlan,
+          backgroundSpeechDenoisingPlan: call.backgroundSpeechDenoisingPlan,
+          silenceTimeoutSeconds: call.silenceTimeoutSeconds,
+          maxDurationSeconds: call.maxDurationSeconds,
+          metadata: call.metadata,
+          voice: call.voice,
+        },
+      }),
+    });
+    const data = (await res.json().catch(() => ({}))) as { id?: string; message?: string | string[] };
+    if (!res.ok) {
+      const msg = Array.isArray(data?.message) ? data.message.join('; ') : data?.message || `Vapi ${res.status}`;
+      // An empty wallet must trip the kill switch upstream, never a silent retry loop.
+      const billing = res.status === 402 || /wallet|balance|credit/i.test(msg);
+      return { ok: false, billing, error: msg };
+    }
+    return { ok: true, callId: data.id || '' };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : 'call_failed' };
+  }
+}

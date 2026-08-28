@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { buildMetadata } from '@/lib/seo';
-import { SIDEKICK } from '@/data/sidekick';
+import { DEMO_AGENT } from '@/data/demo-agent';
 
 export const metadata = buildMetadata({
   title: 'Your Voice Agent got the job',
@@ -10,7 +10,7 @@ export const metadata = buildMetadata({
   noindex: true,
 });
 
-export default function SidekickWelcomePage() {
+export default function DemoAgentWelcomePage() {
   const steps = [
     {
       n: '1',
@@ -67,7 +67,7 @@ export default function SidekickWelcomePage() {
           <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#F5B700] font-bold mb-2">Meanwhile</p>
           <p className="font-body text-sm leading-relaxed">
             Questions before Sarah&apos;s email arrives? Reply to the welcome note, or call Mr. Mustard at{' '}
-            <a href="tel:+14063121223" className="font-bold text-[#F5B700]">{SIDEKICK.phoneLine}</a>. He knows the drill. He wrote it.
+            <a href="tel:+14063121223" className="font-bold text-[#F5B700]">{DEMO_AGENT.phoneLine}</a>. He knows the drill. He wrote it.
           </p>
         </div>
 

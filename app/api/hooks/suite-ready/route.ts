@@ -10,7 +10,7 @@ export const maxDuration = 30;
  * THE SUITE-READY ANNOUNCEMENT (Sarah, 2026-07-30: "as soon as the website is
  * also done... it emails them with the total package and the video about their
  * stuff", refined 2026-08-01: the video must be a real recording of THEIR site
- * and agent and command center, and cutting it is the FINAL STEP before the
+ * and agent, and cutting it is the FINAL STEP before the
  * suite is published and shown to the client).
  *
  * So this fires last, not first. The forge worker knocks after the film has
@@ -128,9 +128,9 @@ export async function POST(req: Request) {
   const text = [
     `Hi ${first},`,
     '',
-    `We went ahead and built ${biz} a working demo: a brand-new website that answers its own phone, plus a command center that shows every call and booking in one place.`,
+    `We went ahead and built ${biz} a working demo: a brand-new website that answers its own phone, with a real voice agent behind it.`,
     '',
-    `It is all here, and the short video at the top is a walkthrough of your own: your site, a real call with your own agent, and your command center: ${hubUrl}`,
+    `It is all here, and the short video at the top is a walkthrough of your own: your site and a real call with your own agent: ${hubUrl}`,
     '',
     // No "nothing to set up and nothing owed" here any more. Sarah, 2026-08-04:
     // the email that carries the film should not talk about cost or effort at

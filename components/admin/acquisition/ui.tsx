@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 /**
  * Shared kit for the Acquisition machine. Same neo-brutalist grammar as the rest
@@ -80,14 +80,91 @@ export function useCountUp(target: number, ms = 700): number {
   return v;
 }
 
+
+/* --------------------------------- toasts --------------------------------- */
+
+export type Toast = { id: number; text: string; tone: 'ok' | 'error' };
+
+/**
+ * Feedback that does not steal the screen. Every action on the forge board
+ * either succeeds quietly or says exactly what refused it, in the same words
+ * the server used, because "something went wrong" in front of a queue of
+ * fifty businesses is worse than no message at all.
+ */
+export function useToasts() {
+  const [toasts, setToasts] = useState<Toast[]>([]);
+  const push = useCallback((text: string, tone: 'ok' | 'error' = 'ok') => {
+    const id = Date.now() + Math.random();
+    setToasts((t) => [...t, { id, text, tone }]);
+    window.setTimeout(() => setToasts((t) => t.filter((x) => x.id !== id)), tone === 'error' ? 9000 : 5500);
+  }, []);
+  return { toasts, push };
+}
+
+export function ToastHost({ toasts }: { toasts: Toast[] }) {
+  if (!toasts.length) return null;
+  return (
+    <div className="fixed bottom-5 right-5 z-50 flex w-[min(94vw,26rem)] flex-col gap-2" role="status" aria-live="polite">
+      {toasts.map((t) => (
+        <div
+          key={t.id}
+          className={`rounded-xl border-2 px-4 py-3 font-sans text-sm leading-snug shadow-[4px_4px_0_0_#161616] ${
+            t.tone === 'error'
+              ? 'border-[#E0301E] bg-[#FFF5F3] text-[#a32315]'
+              : 'border-[#161616] bg-[#F5B700] text-[#161616]'
+          }`}
+        >
+          {t.text}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/** The seed burst: a build landing is the payoff, so it gets a moment. */
+export function SeedBurst() {
+  const seeds = Array.from({ length: 14 }, (_, i) => i);
+  return (
+    <div className="pointer-events-none fixed inset-0 z-40 overflow-hidden" aria-hidden>
+      <style>{`
+        @keyframes mms-acq-seed {
+          0% { transform: translate3d(0,0,0) scale(.4); opacity: 0; }
+          15% { opacity: 1; }
+          100% { transform: translate3d(var(--dx), var(--dy), 0) scale(1.1) rotate(var(--rot)); opacity: 0; }
+        }
+      `}</style>
+      {seeds.map((i) => {
+        const angle = (i / seeds.length) * Math.PI * 2;
+        return (
+          <span
+            key={i}
+            className="absolute left-1/2 top-1/2 text-xl"
+            style={
+              {
+                '--dx': `${Math.cos(angle) * (140 + (i % 4) * 46)}px`,
+                '--dy': `${Math.sin(angle) * (110 + (i % 3) * 40)}px`,
+                '--rot': `${(i % 2 ? 1 : -1) * 220}deg`,
+                animation: `mms-acq-seed ${1.1 + (i % 5) * 0.12}s cubic-bezier(.2,.7,.3,1) forwards`,
+              } as React.CSSProperties
+            }
+          >
+            🌱
+          </span>
+        );
+      })}
+    </div>
+  );
+}
+
 /* ----------------------------------- nav ---------------------------------- */
 
-export type AcqTab = 'factory' | 'command' | 'engagement' | 'prospects' | 'finder' | 'campaign' | 'mustard' | 'calls' | 'sender' | 'intelligence' | 'settings';
+export type AcqTab = 'factory' | 'command' | 'engagement' | 'forge' | 'prospects' | 'finder' | 'campaign' | 'mustard' | 'calls' | 'sender' | 'intelligence' | 'settings';
 
 const TABS: { key: AcqTab; href: string; label: string }[] = [
   { key: 'factory', href: '/admin/acquisition', label: 'Client Factory' },
   { key: 'command', href: '/admin/acquisition/command', label: 'Command Center' },
   { key: 'engagement', href: '/admin/acquisition/engagement', label: 'Who is moving' },
+  { key: 'forge', href: '/admin/acquisition/forge', label: 'The Forge' },
   { key: 'prospects', href: '/admin/acquisition/prospects', label: 'Prospects' },
   { key: 'finder', href: '/admin/acquisition/lead-finder', label: 'Lead Finder' },
   { key: 'campaign', href: '/admin/acquisition/campaign', label: 'Campaign' },

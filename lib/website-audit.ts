@@ -10,6 +10,7 @@
  * and persists the report onto the prospect).
  */
 
+import { fetchSiteFacts, siteFactsSummary, type SiteFacts } from '@/lib/site-facts';
 import { parse } from 'node-html-parser';
 // Relative, not the '@/' alias: this module is also imported directly by the
 // tsx batch scripts (scripts/preaudit-leads.mts), which do not load tsconfig
@@ -367,7 +368,7 @@ function extractSignals(url: URL, html: string, status: number): Signals {
  * spawned CLI's failures actually happen.
  */
 
-export async function runWebsiteAudit(rawUrl: string): Promise<AuditResult> {
+export async function runWebsiteAudit(rawUrl: string, opts: { facts?: SiteFacts | null } = {}): Promise<AuditResult> {
   let raw = (rawUrl ?? '').trim();
   if (!raw) return { ok: false, status: 400, error: 'Drop your website URL.' };
   if (!/^https?:\/\//i.test(raw)) raw = `https://${raw}`;
@@ -425,13 +426,30 @@ export async function runWebsiteAudit(rawUrl: string): Promise<AuditResult> {
 
   // Built once and handed to whichever engine grades this run, so the two paths
   // can never drift into scoring the same site off different prompts.
+  // GROUND TRUTH FROM THE REST OF THE SITE. The signals above come from the
+  // homepage markup alone, and a legacy site that injects its content by script
+  // shows the grader an empty body. That is how a Tallahassee dentist with the
+  // address, hours and email on their contact page was told they had "no
+  // visible phone number". The grader is now handed what the other pages say
+  // and told never to call any of it missing (2026-08-25).
+  const facts = opts.facts !== undefined ? opts.facts : await fetchSiteFacts(target.toString(), { timeoutMs: 8000, maxPages: 3 }).catch(() => null);
+  const verified = siteFactsSummary(facts);
+  const truth = verified.length
+    ? [
+        '',
+        `VERIFIED ON OTHER PAGES OF THIS SITE (read live, ${facts?.verified}). These exist. Never say the site lacks any of them. If the homepage markup does not carry one, say exactly that: "on the contact page but not in the homepage's crawlable HTML".`,
+        ...verified.map((f) => `- ${f}`),
+        '',
+      ].join('\n')
+    : '';
+
   const userMessage = `Audit this website. Use the extracted signals to inform every category score. Be specific. Reference what you actually see.
 
 URL: ${target.toString()}
 
 Extracted signals (truncated):
 ${JSON.stringify(signals, null, 2)}
-
+${truth}
 Return the JSON report.`;
 
   const signalsSummary: AuditSignalsSummary = {

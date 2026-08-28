@@ -12,7 +12,7 @@
  *     never get recorded/fulfilled, i.e. money taken but nothing ships).
  *   - The payment RAIL: mint a real subscription session and a real one-time
  *     payment session (with tax), then expire them immediately (never payable).
- *   - Every INLINE-priced funnel's amounts (sidekick, ads, switchboard, demo,
+ *   - Every INLINE-priced funnel's amounts (demo agent, ads, switchboard, demo,
  *     care plan, portal edit, hatchery) resolve to valid positive cents. Catches
  *     a price silently drifting to 0 / undefined / NaN (the price-drift risk).
  *   - Every ENV-priced funnel (geo, pictures, press, programs, mustard-mode,
@@ -39,7 +39,7 @@ import { getSupabase } from '@/lib/supabase';
 import { resendClient } from '@/lib/send-email';
 import { leadNotification } from '@/lib/email';
 import { OWNER_NOTIFY_TO } from '@/lib/owner';
-import { sidekickTiers } from '@/data/sidekick';
+import { demoAgentTiers } from '@/data/demo-agent';
 import { broadcastTiers } from '@/data/ads';
 import { BUILD_FEE_USD, PRICE_TIERS } from '@/data/switchboard';
 import { HATCH } from '@/data/hatchery';
@@ -113,11 +113,11 @@ function summarize(problems: string[]): string | undefined {
 /** Inline-priced funnels (amounts come from code constants). Needs no network. */
 function inlinePriceChecks(): Check[] {
   const groups: { funnel: string; amounts: number[] }[] = [
-    ...sidekickTiers.map((t, i) => ({ funnel: `sidekick-tier-${i + 1}`, amounts: [t.monthlyCents, t.setupCents] })),
+    ...demoAgentTiers.map((t, i) => ({ funnel: `demo agent-tier-${i + 1}`, amounts: [t.monthlyCents, t.setupCents] })),
     ...broadcastTiers.map((t, i) => ({ funnel: `ads-tier-${i + 1}`, amounts: [t.monthlyCents, t.setupCents] })),
     { funnel: 'switchboard', amounts: [BUILD_FEE_USD, ...PRICE_TIERS.map((p) => p.perLocationUsd)] },
     // Every demo piece is individually purchasable, so each has a real positive
-    // price (the command center's is waived at quote time when paired, never $0
+    // price (nothing is waived at quote time any more, and nothing is ever $0
     // in the constants). All are validated.
     ...Object.entries(DEMO_PRODUCTS).map(([k, p]) => ({ funnel: `demo-${k}`, amounts: [p.monthlyCents, p.setupCents] })),
     { funnel: 'demo-bundle', amounts: [DEMO_BUNDLE.monthlyCents, DEMO_BUNDLE.setupCents] },

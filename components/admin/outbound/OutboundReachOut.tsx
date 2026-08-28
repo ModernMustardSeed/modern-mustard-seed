@@ -7,6 +7,9 @@ import type { EmailPreview, LeadContact, MessageDelivery, OutboundAudit, Outboun
 import { api, btnGhost, btnPrimary, btnSeed, card, eyebrow, inputCls, labelCls } from '@/components/admin/outbound/ui';
 import TapText from '@/components/admin/TapText';
 import { usePoll } from '@/lib/use-poll';
+import { TemplatePicker, templateName } from '@/components/admin/TemplatePicker';
+import DripPanel, { dripChipLabel } from '@/components/admin/outbound/DripPanel';
+import { RANDOM_TEMPLATE } from '@/lib/site-templates.mjs';
 
 /**
  * Every way to reach a lead, in one strip: Mr. Mustard AI calls, the audit
@@ -75,9 +78,24 @@ export function ReachOutDeck({
   // Sarah's design-tier picker, same convention as the Forge board. Tier 2 (the
   // Wildmere award-site world) is the house style and the default; tier 3 is the
   // Journey site, built on request. Governs the first forge and any rebuild.
-  const [designTier, setDesignTier] = useState<2 | 3>(2);
+  const [designTier, setDesignTier] = useState<1 | 2 | 3>(2);
+  // Sarah's template picker (2026-08-24): Random lets the studio rotate by trade;
+  // a named template is worn exactly. Rides the first forge and any rebuild.
+  const [siteTemplateKey, setSiteTemplateKey] = useState<string>(RANDOM_TEMPLATE);
   const [forgingOs, setForgingOs] = useState(false);
   const [reforgeOpen, setReforgeOpen] = useState(false);
+  // The drip campaign (2026-08-25): one button shows the whole sequence and
+  // starts it by sending email 1. The chip label reads the drip's state.
+  const [dripOpen, setDripOpen] = useState(false);
+  const [drip, setDrip] = useState<Parameters<typeof dripChipLabel>[0]>(null);
+  const [dripLength, setDripLength] = useState(5);
+  useEffect(() => {
+    let live = true;
+    void api<{ drip: Parameters<typeof dripChipLabel>[0]; length: number }>(`/api/admin/outbound/leads/${lead.id}/drip?summary=1`)
+      .then((r) => { if (live) { setDrip(r.drip); setDripLength(r.length); } })
+      .catch(() => {});
+    return () => { live = false; };
+  }, [lead.id]);
 
   // Tap-to-text: we write it, her own phone sends it. No Twilio, no A2P.
   const [textOpen, setTextOpen] = useState(false);
@@ -141,7 +159,7 @@ export function ReachOutDeck({
     try {
       const res = await api<{ lead?: OutboundLead }>(`/api/admin/outbound/leads/${lead.id}/forge-site`, {
         method: 'POST',
-        body: JSON.stringify(designTier ? { designTier } : {}),
+        body: JSON.stringify({ ...(designTier ? { designTier } : {}), siteTemplate: siteTemplateKey }),
       });
       if (res.lead) onLead(res.lead);
       push('Website queued. The forge builds it in the background; the chip flips to live when it is done.');
@@ -162,7 +180,7 @@ export function ReachOutDeck({
     try {
       const res = await api<{ already?: boolean }>(`/api/admin/outbound/leads/${lead.id}/refresh-site`, {
         method: 'POST',
-        body: JSON.stringify(designTier ? { designTier } : {}),
+        body: JSON.stringify({ ...(designTier ? { designTier } : {}), siteTemplate: siteTemplateKey }),
       });
       onLead({ ...lead, site_demo_status: 'queued' });
       push(
@@ -374,14 +392,36 @@ export function ReachOutDeck({
         {!siteForging && (
           <select
             value={designTier}
-            onChange={(e) => setDesignTier(Number(e.target.value) as 2 | 3)}
+            onChange={(e) => setDesignTier(Number(e.target.value) as 1 | 2 | 3)}
             className="bg-white border-2 border-[#1a1815]/20 rounded-lg px-2 py-1.5 font-oswald uppercase tracking-[0.06em] text-[11px] text-[#1a1815]/75 outline-none focus:border-[#b58a2a] hover:border-[#1a1815]"
             title="Which design tier the next website forge or rebuild uses. Tier 2 is the house style. Applies to the button below, not to a site already built."
             aria-label="Design tier for the website forge"
           >
+            <option value={1}>Design: Tier 1 · Award</option>
             <option value={2}>Design: Tier 2 · World</option>
             <option value={3}>Design: Tier 3 · Journey</option>
           </select>
+        )}
+
+        {!siteForging && (
+          <TemplatePicker
+            value={siteTemplateKey}
+            onChange={setSiteTemplateKey}
+            compact
+            className="bg-white border-2 border-[#1a1815]/20 rounded-lg px-2 py-1.5 font-oswald uppercase tracking-[0.06em] text-[11px] text-[#1a1815]/75 outline-none focus:border-[#F5B700] hover:border-[#1a1815] max-w-[220px]"
+          />
+        )}
+
+        {templateName(lead.site_template) && (
+          <a
+            href={`/admin/templates#${lead.site_template}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`${chip} bg-[#fffdf8] text-[#1a1815]/75 border-[#1a1815]/30 hover:border-[#1a1815]`}
+            title="The template their current website wears. Opens the gallery."
+          >
+            ◧ {templateName(lead.site_template)}
+          </a>
         )}
 
         {siteReady ? (
@@ -447,6 +487,14 @@ export function ReachOutDeck({
             {forgingOs ? 'Forging…' : '⚙ Forge business OS'}
           </button>
         )}
+
+        <button
+          onClick={() => setDripOpen(true)}
+          className={`${chip} ${drip?.status === 'active' ? 'bg-[#F5B700]/25 text-[#1a1815] border-[#1a1815]' : 'bg-white text-[#1a1815]/75 border-[#1a1815]/30'} hover:border-[#1a1815] hover:-translate-y-0.5`}
+          title="See every email the drip will send, dated, and start it by sending the first one"
+        >
+          {dripChipLabel(drip, dripLength)}
+        </button>
 
         {demoCount > 0 && (
           <button
@@ -541,6 +589,7 @@ export function ReachOutDeck({
       />
 
       <ReforgeModal lead={lead} open={reforgeOpen} onClose={() => setReforgeOpen(false)} onLead={onLead} push={push} />
+      <DripPanel lead={lead} open={dripOpen} onClose={() => setDripOpen(false)} onLead={onLead} onDrip={setDrip} push={push} />
     </>
   );
 }
@@ -1019,7 +1068,10 @@ function EmailComposer({
   const osReady = lead.os_demo_status === 'ready' && Boolean(lead.os_demo_url);
   const opts =
     mode === 'demos'
-      ? { includeDemo: Boolean(lead.demo_url), includeSite: siteReady, includeOs: osReady }
+      // includeOs is deliberately false: the command center is never named in
+      // an email to a prospect. Sarah still forges and opens one from the chips
+      // above; it is hers to show, not the email's to offer.
+      ? { includeDemo: Boolean(lead.demo_url), includeSite: siteReady, includeOs: false }
       : {};
 
   // Reset per open so a previous lead's draft can never be sent to this one.

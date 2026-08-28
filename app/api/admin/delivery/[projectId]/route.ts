@@ -4,6 +4,7 @@ import { getSupabase } from '@/lib/supabase';
 import { quoteDomain, buyDomain, attachDomain, normalizeDomain, type Contact } from '@/lib/vercel-platform';
 import { publishProject } from '@/lib/site-publish';
 import { queueRebuild, rebuildInputFor } from '@/lib/site-rebuild';
+import { queueProjectEdit } from '@/lib/site-edit';
 import { generateMoodboard, type MoodboardBrief } from '@/lib/moodboard';
 import { resendClient } from '@/lib/send-email';
 import { clientEmail } from '@/lib/email';
@@ -66,7 +67,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ project
   if (!sb) return NextResponse.json({ error: 'Database not configured' }, { status: 500 });
 
   const { projectId } = await params;
-  let body: { action?: string; domain?: string; html?: string; external?: boolean; revealAt?: string; address1?: string; city?: string; state?: string; zip?: string; phone?: string; steer?: string; moodboardOverride?: boolean; videoBeats?: boolean };
+  let body: { action?: string; domain?: string; html?: string; external?: boolean; revealAt?: string; address1?: string; city?: string; state?: string; zip?: string; phone?: string; steer?: string; moodboardOverride?: boolean; videoBeats?: boolean; instruction?: string };
   try {
     body = await req.json();
   } catch {
@@ -184,6 +185,33 @@ export async function POST(req: Request, { params }: { params: Promise<{ project
       if (broken) return NextResponse.json({ error: broken }, { status: 400 });
       await sb.from('projects').update({ site_html: html }).eq('id', projectId);
       return NextResponse.json({ ok: true, bytes: html.length });
+    }
+
+    /**
+     * EDIT FROM THE CLIENT CARD (2026-08-24). One sentence from Sarah, applied to
+     * the client's current site by the forge in the background: copy, colours, a
+     * new photograph, a swapped section. Same path the client's own portal edit
+     * takes, so it lands as a draft for approval, never straight onto the domain.
+     */
+    case 'edit': {
+      const instruction = (body.instruction || '').trim();
+      if (!instruction) return NextResponse.json({ error: 'Tell it what to change first.' }, { status: 400 });
+      if (instruction.length > 4000) return NextResponse.json({ error: 'That is a lot. Trim it down.' }, { status: 400 });
+      if (project.edit_status === 'queued' || project.edit_status === 'building') {
+        return NextResponse.json({ error: 'An edit is already on the forge. Wait for it to land, then send the next one.' }, { status: 400 });
+      }
+      const current = (project.site_html_draft as string | null) || (project.site_html as string | null);
+      if (!current) return NextResponse.json({ error: 'This project has no site to edit yet. Seed it from their demo first.' }, { status: 400 });
+      const queued = await queueProjectEdit(sb, {
+        projectId,
+        leadId: null,
+        business: project.name as string,
+        currentHtml: current,
+        instruction,
+        requestedBy: session.email,
+      });
+      if (!queued.ok) return NextResponse.json({ error: queued.error }, { status: 500 });
+      return NextResponse.json({ ok: true, jobId: queued.jobId, already: queued.already === true });
     }
 
     /* ── Rebuild their REAL site from the intake they filled in. ── */

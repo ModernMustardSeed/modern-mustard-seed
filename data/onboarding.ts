@@ -10,7 +10,7 @@
  * PDF handbook (lib/onboarding-pdf). Written for someone new to sales but never
  * made to feel new. Plain words, high octane, warm. No em dashes (Sarah's rule).
  * Keep it accurate to the real admin and the real offers (prices verified against
- * data/sidekick, pictures, press, geo, programs, products, pricing, proposal-menu).
+ * data/demo agent, pictures, press, geo, programs, products, pricing, proposal-menu).
  */
 
 export type GuideLink = { label: string; url: string; external?: boolean };

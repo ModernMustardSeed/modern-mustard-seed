@@ -17,8 +17,8 @@
  * uses, so the price on this link can never drift from the price on the site or
  * the price Mr. Mustard says out loud.
  *
- * The command-center rule rides along for free: quoteDemoOrder() already waives
- * it inside the bundle and charges it outside, so /pay/command-center is its own
+ * The command center is priced like anything else now: nothing is waived
+ * anywhere since 2026-08-22, so /pay/command-center is its own
  * price and /pay/talking-website includes it at zero. Nothing here re-implements
  * that decision.
  *
@@ -44,10 +44,10 @@ export const maxDuration = 30;
  * read aloud on a phone call and typed by a person, not by a program.
  */
 const SLUGS: Record<string, DemoProductKey[]> = {
-  'talking-website': ['voice', 'site', 'os'],
-  'the-talking-website': ['voice', 'site', 'os'],
-  everything: ['voice', 'site', 'os'],
-  bundle: ['voice', 'site', 'os'],
+  'talking-website': ['voice', 'site'],
+  'the-talking-website': ['voice', 'site'],
+  everything: ['voice', 'site'],
+  bundle: ['voice', 'site'],
   'voice-agent': ['voice'],
   voice: ['voice'],
   receptionist: ['voice'],

@@ -1,3 +1,4 @@
+import { parseSiteFacts, scrubClaims } from '@/lib/site-facts';
 import type { OutboundLead } from '@/lib/outbound';
 
 /**
@@ -48,7 +49,7 @@ type PlanStep = { t: string; d: string };
 function planSteps(voiceFirst: boolean): PlanStep[] {
   const voice: PlanStep = { t: 'An agent that answers every call', d: 'Your own AI front desk picks up when you cannot: after hours, weekends, lunch, mid-job. It answers real questions, books real appointments, and texts you the details. Scan the code below and talk to it yourself.' };
   const site: PlanStep = { t: 'A website that books while you sleep', d: 'Not a brochure. A site built to turn a search into a booked job: clear services, real reviews, tap-to-call, and online booking that works at 11pm.' };
-  const os: PlanStep = { t: 'One command center for all of it', d: 'Every call, booking, and lead in one dashboard you own. No logins to seven tools. You see exactly what the phone and the website brought in.' };
+  const os: PlanStep = { t: 'One place every lead lands', d: 'Every call, booking, and lead in one inbox you own. No logins to seven tools. You see exactly what the phone and the website brought in.' };
   return voiceFirst ? [voice, site, os] : [site, voice, os];
 }
 
@@ -57,10 +58,14 @@ export type GameplanQrs = { hubQr: string | null; siteQr: string | null; planQr:
 export function gameplanSheetHtml(l: OutboundLead, { hubQr, siteQr, planQr }: GameplanQrs): string {
   const notes = l.notes || '';
   const trade = noteLine(notes, 'TRADE') || '';
-  const web = sanitizeWeb(noteLine(notes, 'WEBSITE')) || '';
+  // Every claim about their website is checked against the site as read live
+  // (lib/site-facts.ts) before it prints. A clause that says the site lacks
+  // something the site has, or that we never verified, does not print.
+  const facts = parseSiteFacts(notes);
+  const web = scrubClaims(sanitizeWeb(noteLine(notes, 'WEBSITE')) || '', facts, 'public').text;
   const reviews = noteLine(notes, 'REVIEWS') || '';
   const hours = noteLine(notes, 'HOURS') || '';
-  const gap = noteLine(notes, 'GAP') || '';
+  const gap = scrubClaims(noteLine(notes, 'GAP') || '', facts, 'public').text;
   const voiceFirst = /voice demo only|voice-first|Voice only|voice demo first/i.test(notes);
   const steps = planSteps(voiceFirst);
   const found = [

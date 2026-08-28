@@ -137,7 +137,7 @@ if (UPDATE_ID === PLACEHOLDER) {
 /* ─────────────────── Prices (DERIVED, never typed) ───────────────────
  * mms-price-single-source is law: never hand-type a price. Mr. Mustard now
  * SAYS prices out loud, so his catalog is read out of the same TypeScript that
- * bills the customer (lib/demo-order.ts, data/sidekick.ts) at update time.
+ * bills the customer (lib/demo-order.ts, data/demo-agent.ts) at update time.
  * Reprice there and re-run --update; his script follows automatically.
  * Every lookup THROWS if the anchor moves, so a refactor can never quietly
  * ship a voice agent quoting a blank or a stale number to a live caller.
@@ -190,7 +190,7 @@ if (stdStart === -1 || stdEnd === -1) {
 const READBACK_STANDARD = stdSrc.slice(stdStart, stdEnd).trim();
 
 const orderSrc = readSrc('lib/demo-order.ts');
-const tierSrc = readSrc('data/sidekick.ts');
+const tierSrc = readSrc('data/demo-agent.ts');
 const usd = (cents) => `$${Math.round(cents / 100)}`;
 
 const PRICE = {
@@ -202,10 +202,10 @@ const PRICE = {
   siteMonthly: usd(centsAt(orderSrc, "key: 'site'", 'monthlyCents', 'Website')),
   osSetup: usd(centsAt(orderSrc, "key: 'os'", 'setupCents', 'Command Center')),
   osMonthly: usd(centsAt(orderSrc, "key: 'os'", 'monthlyCents', 'Command Center')),
-  proSetup: usd(centsAt(tierSrc, "slug: 'sidekick-pro'", 'setupCents', 'Voice Agent Pro')),
-  proMonthly: usd(centsAt(tierSrc, "slug: 'sidekick-pro'", 'monthlyCents', 'Voice Agent Pro')),
-  voiceMinutes: centsAt(tierSrc, "slug: 'sidekick'", 'minutesCap', 'base minutes').toLocaleString(),
-  proMinutes: centsAt(tierSrc, "slug: 'sidekick-pro'", 'minutesCap', 'pro minutes').toLocaleString(),
+  proSetup: usd(centsAt(tierSrc, "slug: 'demo-agent-pro'", 'setupCents', 'Voice Agent Pro')),
+  proMonthly: usd(centsAt(tierSrc, "slug: 'demo-agent-pro'", 'monthlyCents', 'Voice Agent Pro')),
+  voiceMinutes: centsAt(tierSrc, "slug: 'demo-agent'", 'minutesCap', 'base minutes').toLocaleString(),
+  proMinutes: centsAt(tierSrc, "slug: 'demo-agent-pro'", 'minutesCap', 'pro minutes').toLocaleString(),
 };
 
 /* ───────────────────────── Persona ───────────────────────── */
@@ -253,13 +253,13 @@ Mostly Main Street owners bleeding calls they never knew they missed: trades, cl
 - If they ask what happens to their voicemail, their cell, or their office phone: forwarding is theirs to set, they can send everything or only what rings out, and they can turn it off whenever they want.
 
 # What Sarah sells, and what it costs (these prices are PUBLIC, say them plainly)
-THE TALKING WEBSITE is the flagship: ${PRICE.bundleSetup} to build, ${PRICE.bundleMonthly} a month. A website and a voice agent built as one thing off one brain, so the answer someone reads on the page at noon is the same answer a caller hears at midnight. Not a site with a chat bubble bolted on. The Business Command Center rides along free inside it. This is the one to steer toward when someone needs both a presence and a phone answered.
+THE TALKING WEBSITE is the flagship: ${PRICE.bundleSetup} to build, ${PRICE.bundleMonthly} a month. A website and a voice agent built as one thing off one brain, so the answer someone reads on the page at noon is the same answer a caller hears at midnight. Not a site with a chat bubble bolted on. This is the one to steer toward when someone needs both a presence and a phone answered.
 
 Every piece also stands on its own:
 - Voice Agent: ${PRICE.voiceSetup} to build, ${PRICE.voiceMonthly} a month. Me, answering around the clock. ${PRICE.voiceMinutes} answered minutes a month, roughly two hundred calls.
 - Voice Agent Pro: ${PRICE.proSetup} and ${PRICE.proMonthly} a month. ${PRICE.proMinutes} minutes, roughly five hundred calls, caller memory so regulars get recognized between calls, booking wired into their real calendar, and a monthly retrain call with Sarah.
 - A new website: ${PRICE.siteSetup} to build, ${PRICE.siteMonthly} a month. Unlimited edits, forever, before and after launch. Domain, hosting, and care included.
-- Business Command Center: ${PRICE.osSetup} and ${PRICE.osMonthly} a month, and FREE only inside The Talking Website, where they take the site and the voice agent together. One piece on its own does not earn it, so quote the command center at its own price next to a single piece and tell them what taking both would cost instead. Every call transcribed, plus traffic, leads, customers, reviews, and money on one board.
+- Business Command Center: ${PRICE.osSetup} and ${PRICE.osMonthly} a month. Every call transcribed, plus traffic, leads, customers, reviews, and money on one board. ⚠️ DO NOT OFFER THIS, DO NOT SUGGEST IT, AND NEVER BUNDLE IT. It is built by hand and scoped first, so it is not one of the free demo pieces and you cannot forge one. If a caller asks for it unprompted: quote the price, tell them honestly that it is hand built and starts with a short conversation with Sarah, and use reach_sarah. Never bring it up yourself.
 - Custom work (apps, dashboards, internal tools, specialty AI, MVPs for founders) runs about twenty five hundred to forty five thousand dollars, scoped and quoted on a call. Any setup fee they already paid is credited in full toward a build over twenty five hundred.
 
 Terms that close people, so say them: month to month, cancel anytime, no free trials, live within about seven days, installed by hand. The minute caps are HARD, so at the ceiling I just take messages instead. There is never a surprise bill.
@@ -385,21 +385,21 @@ You are a real assistant, not a brochure. When someone wants something in writin
 # The forge: you can build it live on this call, but ONLY what they asked for
 You are not just describing what Sarah builds. You can fire the actual forge and have it built, right now, while you talk. Free, no card, and it is theirs to keep or toss.
 
-⚠️ THE ONE RULE: you build the ONE THING they need, not a pile. A business owner who wants their phone answered does not want a website, and handing them one anyway makes you look like a vending machine instead of a consultant. You have three pieces and you pick with them, out loud, before you fire anything:
+⚠️ THE ONE RULE: you build the ONE THING they need, not a pile. A business owner who wants their phone answered does not want a website, and handing them one anyway makes you look like a vending machine instead of a consultant. You have TWO pieces and you pick with them, out loud, before you fire anything:
 - VOICE AGENT: you, on their real number, answering every call around the clock.
 - WEBSITE: a real custom site, designed from scratch, not a template.
-- COMMAND CENTER: the back office board. Every call transcribed, plus traffic, leads, customers, reviews, and money in one place.
+
+There is no third piece. The Business Command Center is NOT forgeable, is NOT part of the demo suite, and is never suggested, offered, or bundled. Do not name it as an option here.
 
 1. QUALIFY FIRST, and make it a conversation, not a menu. You are diagnosing, so ask about their business and listen for which piece the answer points at. One question at a time:
    - "When somebody calls you right now and you're on a job, what happens?" Voicemail, a spouse, a ringing phone in an empty shop: that is the voice agent, and say so.
    - "Do you have a website today?" No site, or a site they are embarrassed by, or one they cannot edit: that is the website.
-   - "How do you keep track of who called and what they wanted?" A notebook, texts, memory, nothing: that is the command center.
    - Then say back what you heard and name the piece: "Sounds like the phone is the thing that's actually bleeding, not the website. So let's build you the voice agent."
 2. CONFIRM the pick out loud before you build, in one sentence, and let them correct you: "So just the voice agent for now, nothing else. Right?" If they want two, build two. If they want everything, build everything and call it The Talking Website. Their answer, not yours.
 3. Only offer what fits. If the phone is their problem, do not talk them into a site. If they have a great site already, say so and leave it alone. Naming what they do NOT need is the most trustworthy thing you can do on this call, and it sells the piece they DO need.
 4. WHAT you need before firing it, collected naturally, one or two at a time, never as a form: the business name exactly as it is on their sign, their name, their email (FULL spelling discipline from the email section, confirmed explicitly), the best phone number (ten digits, or confirm the one they are calling from), city and state, their trade in their own words, their current website if they have one, and one or two sentences about the business in their words (what they do, who they serve, what makes them good). Those sentences make it personal, so ask for them warmly.
 5. Call forge_demo_suite ONCE, only after the email is explicitly confirmed, and pass ONLY the pieces they picked in its build list. Never call it twice for the same business on one call. If they change their mind later in the call and want another piece, call it again with just that piece.
-6. THE PROMISE, after the tool succeeds: follow the tool's instruction field word for word, because it knows exactly what is on the build floor and you do not. Name ONLY the pieces you actually forged. A voice agent or a command center is ready in minutes. A website takes up to an hour, because it is designed from scratch and gets a short walkthrough film. It lands in their email inbox, and when they love it they can order it right from that same page, no second meeting needed. ⚠️ Never promise a website or a film on a build that did not include one.
+6. THE PROMISE, after the tool succeeds: follow the tool's instruction field word for word, because it knows exactly what is on the build floor and you do not. Name ONLY the pieces you actually forged. A voice agent is ready in minutes. A website takes up to an hour, because it is designed from scratch and gets a short walkthrough film. It lands in their email inbox, and when they love it they can order it right from that same page, no second meeting needed. ⚠️ Never promise a website or a film on a build that did not include one.
 7. THEN LET IT LAND, and do not put anything in front of it. The next step is their inbox, not a meeting. Tell them to watch for the email, that everything is in there including the button to order it for real, and that they can reply to that email or call this number back with any question at all. ⚠️ Do NOT offer Sarah's calendar here. Not "while the forge builds", not "just to walk you through it", not at all. If THEY ask for a call, book it gladly. Otherwise the forge is the close and the call is over.
 8. Honesty: never promise features you do not know, never say the word free about going LIVE (the demos are free; going live is a real order), and if the tool says the forge is at capacity or misfires, follow its instruction and do not over-apologize.
 9. The upsell is LATER, not now. Do not tack "and I could also build you a website" onto the close. Sarah's follow-up emails do that work, and their hub shows what else exists. If they ask for another piece themselves, gladly forge it.
@@ -579,7 +579,7 @@ const TOOLS = [
             type: 'array',
             items: { type: 'string' },
             description:
-              "Zero or more page keys to include as buttons. PAY LINKS, for a caller who has already said yes, send exactly one: 'pay-talking-website' (the whole system), 'pay-voice-agent', 'pay-website', 'pay-command-center'. Each opens a real secure checkout at the real price. Never send one unasked, and never send two. Everything else is information, not a bill. Valid keys ONLY: 'book' (book a call with Sarah), 'website-audit' (free website audit), 'bottleneck-breaker' (free 60-second business scan), 'voice-agents' (voice agents), 'sidekick' (build your own voice agent), 'store' (playbooks and courses), 'work' (the portfolio), 'work-with-us' (ways to work together), 'portal' (client portal sign-in), 'partner-hub' (partner dashboard), 'partners' (partner program), 'home' (the main site). On the internal ADMIN desk line ONLY, you may also send admin screens by key: 'admin-outbound' (dial floor), 'admin-pipeline' (every lead), 'admin-partner-hub', 'admin-delivery', 'admin-proposals', 'admin-campaigns', 'admin-inbox', 'admin-calendar', 'admin-academy' (onboarding), 'admin-audit'. Use only these keys; anything else is dropped, and admin keys are dropped on any non-admin call.",
+              "Zero or more page keys to include as buttons. PAY LINKS, for a caller who has already said yes, send exactly one: 'pay-talking-website' (the whole system), 'pay-voice-agent', 'pay-website', 'pay-command-center'. Each opens a real secure checkout at the real price. Never send one unasked, and never send two. Everything else is information, not a bill. Valid keys ONLY: 'book' (book a call with Sarah), 'website-audit' (free website audit), 'bottleneck-breaker' (free 60-second business scan), 'voice-agents' (voice agents), 'demo-agent' (build your own voice agent), 'store' (playbooks and courses), 'work' (the portfolio), 'work-with-us' (ways to work together), 'portal' (client portal sign-in), 'partner-hub' (partner dashboard), 'partners' (partner program), 'home' (the main site). On the internal ADMIN desk line ONLY, you may also send admin screens by key: 'admin-outbound' (dial floor), 'admin-pipeline' (every lead), 'admin-partner-hub', 'admin-delivery', 'admin-proposals', 'admin-campaigns', 'admin-inbox', 'admin-calendar', 'admin-academy' (onboarding), 'admin-audit'. Use only these keys; anything else is dropped, and admin keys are dropped on any non-admin call.",
           },
         },
         required: [],
@@ -633,15 +633,52 @@ const TOOLS = [
     function: {
       name: 'forge_demo_suite',
       description:
-        "Build the caller ONLY the free demo pieces they actually asked for, live on the call, emailed to their private hub where they can also place the order. ⚠️ `build` decides what gets made and there is no default: qualify FIRST, then pass exactly what they want. A voice agent or a command center is ready in minutes; a website takes up to an hour because it is designed from scratch and gets a walkthrough film. Also requires the business name, their name, a fully confirmed email (spell it back first), and a ten digit phone. Call it ONCE per business per call, after they say yes and the email is confirmed. If they later want a piece they did not take, call it again with only that piece.",
+        "Build the caller ONLY the free demo pieces they actually asked for, live on the call, emailed to their private hub where they can also place the order. ⚠️ `build` decides what gets made and there is no default: qualify FIRST, then pass exactly what they want. A voice agent is ready in minutes; a website takes up to an hour because it is designed from scratch and gets a walkthrough film. Also requires the business name, their name, a fully confirmed email (spell it back first), and a ten digit phone. Call it ONCE per business per call, after they say yes and the email is confirmed. If they later want a piece they did not take, call it again with only that piece.",
       parameters: {
         type: 'object',
         properties: {
+          /*
+           * ⚠️ NEVER PUT AN `enum` INSIDE `items` HERE. THE VOCABULARY GOES
+           * IN THE DESCRIPTION.
+           *
+           * This parameter shipped 2026-08-13 as
+           * `items: { type: 'string', enum: [...] }` and it silently zeroed the
+           * ENTIRE arguments object on every call. Not the one field: all ten.
+           * Vapi handed the model a tool it could select but could not fill, so
+           * `forge_demo_suite` arrived at the webhook as the literal `{}` on 16
+           * attempts out of 16 across 4 real calls between 2026-08-13 and
+           * 2026-08-24, and NOT ONE demo was ever forged on a phone call in
+           * those eleven days. It cost David Parker's call on 2026-08-24: three
+           * empty fires, then an apology and a handoff to Sarah, with every
+           * field already spoken out loud and sitting in the transcript.
+           *
+           * ⚠️ It is the NESTED enum specifically, not enums in general. A
+           * plain top-level string enum is fine: `book_walkthrough.urgency` is
+           * exactly that and filled 6 times out of 6. The proof, all of it from
+           * the Vapi call history rather than a hunch:
+           *   - Before the nested enum existed, this same tool arrived with 8
+           *     fields filled (2026-08-13, argLen 366 and 344).
+           *   - `send_email.links` is ALSO an array and ALSO gets filled
+           *     correctly (`links: ["pay-voice-agent"]`) on the very same days
+           *     this one arrived empty. It is declared `items: { type:
+           *     'string' }` and carries a 26-key vocabulary in its DESCRIPTION.
+           *   - Array plus enum is the only combination that has ever failed.
+           *
+           * So this mirrors `send_email.links` exactly, which is the only array
+           * shape this assistant has ever filled successfully. Never add the
+           * enum back for type safety: the model never sees a schema violation
+           * on a phone call, it just sends nothing and the caller hears an
+           * apology. `piecesFrom()` in lib/voice-forge-suite.ts is the
+           * enforcement point and it is deliberately permissive.
+           *
+           * scripts/vapi-lint.mjs fails the build if this shape reappears in
+           * any assistant config.
+           */
           build: {
             type: 'array',
-            items: { type: 'string', enum: ['voice_agent', 'website', 'command_center'] },
+            items: { type: 'string' },
             description:
-              "REQUIRED. Only the pieces they said they want, from what you learned asking. 'voice_agent' = the agent that answers their phone. 'website' = a custom site built from scratch. 'command_center' = the back office board (every call transcribed, leads, customers, reviews, money). Pass one when they want one. NEVER add a piece they did not ask for: building a website for someone who only wanted their phone answered wastes the day's build capacity and contradicts the price you quoted.",
+              "REQUIRED. Only the pieces they said they want, from what you learned asking. Valid values ONLY: 'voice_agent' (the agent that answers their phone) and 'website' (a custom site built from scratch). Pass an array of one or both of those exact strings, for example [\"voice_agent\"] or [\"voice_agent\", \"website\"]. There is no third value: the command center is hand built and cannot be forged here, so never pass it. NEVER add a piece they did not ask for: building a website for someone who only wanted their phone answered wastes the day's build capacity and contradicts the price you quoted.",
           },
           business: { type: 'string', description: 'The business name exactly as it appears on their sign.' },
           contact_name: { type: 'string', description: "The owner's full name." },
@@ -662,7 +699,7 @@ const TOOLS = [
   },
   // Live warm handoff to Sarah's real cell. This is a Vapi-native structural tool
   // (no function.name), so it is INTENTIONALLY stripped from every forged web/demo/
-  // desk call by demoModel() in lib/sidekick.ts: it can only ring Sarah's personal
+  // desk call by demoModel() in lib/demo-agent.ts: it can only ring Sarah's personal
   // phone from the real inbound line, never from an anonymous browser demo.
   {
     type: 'transferCall',
@@ -733,7 +770,7 @@ const TOOLS = [
  * month instead of the 60-80 minutes Starter allowed. It is still SHARED with
  * the homepage hero button, the chat widget and VoiceTalkButton in English (all
  * three call `vapi.start(id)` with NO voice override, so they use this voice and
- * this quota; forged demos do not, `sidekickVoice()` overrides them to native).
+ * this quota; forged demos do not, `demoVoice()` overrides them to native).
  * When it does run out, ElevenLabs 401s and the call dies mid-sentence with
  * `pipeline-error-eleven-labs-blocked`. Upgrading the plan is the fix, not a
  * different voice.
@@ -1217,7 +1254,7 @@ const assistant = {
 // --dry-run renders everything (including the DERIVED prices) and prints it
 // without touching Vapi. Always dry-run before pointing an edit at the live line.
 if (DRY_RUN) {
-  console.log('\n── DERIVED PRICES (from lib/demo-order.ts + data/sidekick.ts) ──');
+  console.log('\n── DERIVED PRICES (from lib/demo-order.ts + data/demo-agent.ts) ──');
   console.log(PRICE);
   console.log('\n── VOICE ──');
   console.log(voice);

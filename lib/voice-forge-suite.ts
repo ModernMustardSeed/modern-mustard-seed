@@ -6,7 +6,7 @@
  * and emailed to them... hes my ultimate sdr and right hand."
  *
  * This walks the same door as the public Demo Station (/api/demo-station):
- * lead on the dial floor, instant voice + command center demos, website queued
+ * lead on the dial floor, an instant voice demo, a website queued
  * to the worker (which cuts the suite film and fires the armed suite-ready
  * email when it banks), hub, CRM sync, welcome email. Two differences, both
  * deliberate:
@@ -27,7 +27,7 @@
 
 import { after } from 'next/server';
 import { getSupabase } from '@/lib/supabase';
-import { forgeLeadVoiceDemo, buildOsConfig, buildSiteBrief, ensureDemoHub } from '@/lib/outbound-demo';
+import { forgeLeadVoiceDemo, buildSiteBrief, ensureDemoHub } from '@/lib/outbound-demo';
 import { ensurePresenceAudit } from '@/lib/presence-audit';
 import { syncLeadToPipeline } from '@/lib/outbound-pipeline';
 import type { OutboundLead, Niche } from '@/lib/outbound';
@@ -36,6 +36,7 @@ import { clientEmail, demoFilmCard } from '@/lib/email';
 import { SITE } from '@/lib/seo';
 import { OWNER_NOTIFY_TO } from '@/lib/owner';
 import { possessive } from '@/lib/business-name';
+import { FORGE_PIECES, PIECE_LABEL, INSTANT, piecesFrom, listPieces, type ForgePiece } from '@/lib/forge-pieces';
 
 const DAILY_CAP = 12;
 
@@ -57,88 +58,33 @@ function nicheOf(trade: string): Niche {
   return 'other';
 }
 
-/**
- * WHAT HE FORGES IS NOW A CHOICE, NOT A FIXED SUITE.
- *
- * Sarah 2026-08-13: "it is currently making the whole demo forge, so even the
- * website and command center even if they just want a voice agent and not a
- * website. i want to make just the one thing they asked for, so have him ask
- * sales questions to see exactly what they need and just make that."
- *
- * Two reasons this matters beyond the obvious. A website build is the only
- * expensive leg (a headless builder plus a film cut, ~20-40 min of worker
- * floor), so forging one nobody asked for burns the daily ceiling on a lead who
- * will never look at it. And since 2026-08-13 the command center is billable
- * outside the bundle, so shipping it unasked contradicts the price he just
- * quoted on the phone.
- *
- * The wire words are his words; the values are the SAME keys the order card,
- * `quoteDemoOrder` and `demo-provision` already use, so a partial forge prices
- * and provisions itself with no translation layer.
+/*
+ * The piece vocabulary, the `build` parser, and the spoken labels now live in
+ * lib/forge-pieces.ts so they can be unit tested without booting next/server,
+ * Supabase and Resend. `piecesFrom` decides what actually gets built for a live
+ * caller and nothing exercised it for the eleven days the tool schema was
+ * sending it nothing at all; scripts/acq-test.mts pins it now.
  */
-export const FORGE_PIECES = {
-  voice_agent: 'voice',
-  website: 'site',
-  command_center: 'os',
-} as const;
-
-export type ForgePiece = (typeof FORGE_PIECES)[keyof typeof FORGE_PIECES];
-
-/** What each piece is called out loud, for his instruction field and the email. */
-const PIECE_LABEL: Record<ForgePiece, string> = {
-  voice: 'voice agent',
-  site: 'website',
-  os: 'command center',
-};
-
-/** Instant vs queued. Only the website goes to the worker floor, and only the
- *  website earns the "within the hour" promise or a walkthrough film. */
-const INSTANT: Record<ForgePiece, boolean> = { voice: true, site: false, os: true };
-
-function piecesFrom(build: unknown): ForgePiece[] {
-  const raw = Array.isArray(build) ? build : typeof build === 'string' ? [build] : [];
-  const out = new Set<ForgePiece>();
-  for (const v of raw) {
-    const k = String(v).trim().toLowerCase().replace(/[\s-]+/g, '_');
-    if (k in FORGE_PIECES) out.add(FORGE_PIECES[k as keyof typeof FORGE_PIECES]);
-    // He is a language model on a phone line, so accept the obvious near misses
-    // rather than bouncing a real request back at a live caller.
-    else if (/^(voice|agent|phone)/.test(k)) out.add('voice');
-    else if (/^(site|web)/.test(k)) out.add('site');
-    else if (/^(os|command|back_?office|dashboard)/.test(k)) out.add('os');
-  }
-  return (['voice', 'site', 'os'] as ForgePiece[]).filter((p) => out.has(p));
-}
+export { FORGE_PIECES, type ForgePiece } from '@/lib/forge-pieces';
 
 /**
  * The one soft line naming what they did NOT take. It runs in the delivery
  * email and nowhere else: on the call he is told to close and stop selling, so
- * the other pieces get named here instead, at the reader's own pace, next to
+ * the other piece gets named here instead, at the reader's own pace, next to
  * the order card that can actually take the money.
  *
- * When the missing piece would complete BOTH paid pieces, it says the command
- * center comes free with them. That is the `commandCenterUpsell` signpost every
- * ordering surface owes a buyer since the 2026-08-13 rule change, not a
- * flourish: voice plus a paid command center costs more for less than the
- * bundle, and nobody should reach that cart uninformed.
+ * It names ONLY the two forgeable pieces. The command center is not mentioned
+ * anywhere in this file any more (Sarah, 2026-08-22): it is sold on its own and
+ * never suggested alongside something else.
  */
 function upsellLine(pieces: ForgePiece[]): string {
   const has = (p: ForgePiece) => pieces.includes(p);
-  if (has('voice') && has('site') && has('os')) return '';
+  if (has('voice') && has('site')) return '';
   const wrap = (s: string) => `<p>${s} Just reply to this email or call us back, and we will forge that one too.</p>`;
-  const bundleNote = 'and taking the two together makes the command center free';
-  if (has('voice') && has('site')) return wrap('You have both paid pieces here, so the command center that files every call and every lead is already free with them: say the word and it goes on your hub.');
-  if (has('voice')) return wrap(`If you ever want the website to match, ${bundleNote}.`);
-  if (has('site')) return wrap(`If you ever want it to answer its own phone too, ${bundleNote}.`);
+  const pair = 'and taken together they are built as one thing, for less than the two apart';
+  if (has('voice')) return wrap(`If you ever want the website to match, ${pair}.`);
+  if (has('site')) return wrap(`If you ever want it to answer its own phone too, ${pair}.`);
   return wrap('If you ever want the voice agent that feeds it, or the website to match, we can build either one.');
-}
-
-/** "a voice agent", "a website and a command center", "all three". */
-function listPieces(pieces: ForgePiece[]): string {
-  const names = pieces.map((p) => PIECE_LABEL[p]);
-  if (names.length <= 1) return names[0] ?? 'nothing';
-  if (names.length === 2) return `${names[0]} and ${names[1]}`;
-  return `${names.slice(0, -1).join(', ')}, and ${names[names.length - 1]}`;
 }
 
 export type ForgeSuiteInput = {
@@ -218,7 +164,7 @@ export async function forgeSuiteFromCall(input: ForgeSuiteInput, callerNumber: s
     return JSON.stringify({
       ok: false,
       instruction:
-        'You have not established WHAT to build yet, and the forge will not guess. If they have ALREADY told you (somebody who said "a voice agent and a website" has told you ["voice_agent","website"]), put that in `build` and call this once more with the rest of the fields filled. Only if they genuinely have not said, ask them plainly which piece they need: the voice agent that answers their phone, a website, or the command center that runs the back office. Never build a piece they did not ask for.',
+        'You have not established WHAT to build yet, and the forge will not guess. If they have ALREADY told you (somebody who said "a voice agent and a website" has told you ["voice_agent","website"]), put that in `build` and call this once more with the rest of the fields filled. Only if they genuinely have not said, ask them plainly which one they need: the voice agent that answers their phone, or a website. Those are the only two. Never build a piece they did not ask for.',
     });
   }
 
@@ -269,7 +215,7 @@ export async function forgeSuiteFromCall(input: ForgeSuiteInput, callerNumber: s
 
   // Present on the prior lead = already forged, whatever its build status.
   const alreadyHas = (lead: OutboundLead, piece: ForgePiece): boolean =>
-    piece === 'voice' ? !!lead.demo_url : piece === 'site' ? !!lead.site_demo_id : !!lead.os_demo_id;
+    piece === 'voice' ? !!lead.demo_url : !!lead.site_demo_id;
 
   let addTo: OutboundLead | null = null;
   let pieces = wanted;
@@ -362,23 +308,6 @@ export async function forgeSuiteFromCall(input: ForgeSuiteInput, callerNumber: s
         if (voice.ok) lead = voice.lead;
       }
 
-      if (want('os')) {
-        const { data: osRow } = await supabase
-          .from('outbound_demo_os')
-          .insert({ lead_id: lead.id, business_name: lead.business_name, config: buildOsConfig(lead) })
-          .select('id')
-          .single();
-        if (osRow) {
-          const { data: updated } = await supabase
-            .from('outbound_leads')
-            .update({ os_demo_id: osRow.id, os_demo_url: `${SITE.url}/demo/os/${osRow.id}`, os_demo_status: 'ready' })
-            .eq('id', lead.id)
-            .select('*')
-            .single();
-          if (updated) lead = updated as OutboundLead;
-        }
-      }
-
       if (want('site')) {
         // buildSiteBrief takes the voice demo url so the site can link its own
         // agent. On a website-only forge there is no agent, and null is the
@@ -463,10 +392,9 @@ export async function forgeSuiteFromCall(input: ForgeSuiteInput, callerNumber: s
                 `<p>${one ? 'It lives' : 'It all lives'} at your private hub, and when you love it you can <strong>make it real right from that same page</strong>. No second meeting required.</p>` +
                 // The upsell belongs HERE, in writing, not on the phone. He was
                 // told on the call to close and stop selling, so this is where
-                // the other pieces get named, at the reader's pace. When both
-                // paid pieces would land it also says the command center comes
-                // free with them, which is the signpost demo-order.ts requires
-                // on every surface that can put a buyer in the dominated cart.
+                // the other piece gets named, at the reader's pace. It names the
+                // website and the voice agent and nothing else: the command
+                // center is off the offer and is never suggested (2026-08-25).
                 upsellLine(pieces),
               cta: { label: one ? `Open your ${PIECE_LABEL[pieces[0]]}` : 'Open your Demo Suite', url: lead.hub_demo_url },
               signature: 'Sarah',

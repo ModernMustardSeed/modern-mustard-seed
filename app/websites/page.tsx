@@ -26,14 +26,14 @@ const HERO_FILM = {
 export const metadata = buildMetadata({
   title: 'Small Business Websites That Work: not a brochure, a working engine',
   description:
-    'A website that captures every lead and follows up on its own. Elite custom design, funnels and SEO baked in, your domain, hosting, and care handled. Live in about a week from $147/mo. Add the voice agent and the command center comes free with the pair. See yours built free.',
+    'A website that captures every lead and follows up on its own. Elite custom design, funnels and SEO baked in, your domain, hosting, and care handled. Live in about a week from $147/mo. Add the voice agent and they are built as one thing. See yours built free.',
   path: '/websites',
 });
 
 const INCLUDED = [
   { icon: '🎨', name: 'Elite custom design', desc: 'Designed from scratch for your trade and your town. Not a template anyone else can buy.' },
   { icon: '🌐', name: 'Domain, hosting, and care', desc: 'Your domain, the hosting, and ongoing care all handled. Unlimited edits, before launch and forever after, and we keep it running.' },
-  { icon: '⚙', name: 'The command center', desc: 'A back office wired to your calls, traffic, customers, and reviews. Free when you take the voice agent with your site.' },
+  { icon: '📈', name: 'Funnels and SEO', desc: 'Built in from the first page, not bolted on later. Your site is found, and the people who find it get somewhere to go.' },
   { icon: '🧲', name: 'Funnels + a lead magnet', desc: 'A real capture flow and a reason to opt in, live and converting on day one, not someday.' },
   { icon: '🔎', name: 'SEO + GEO baked in', desc: 'Built to be found on Google and cited by AI search. Metadata, structured data, the works.' },
   { icon: '🔑', name: 'You own every line', desc: 'The repo, the domain, the accounts, all yours on launch day. No rental, no lock-in.' },
@@ -50,7 +50,7 @@ const FAQ = [
   },
   {
     q: 'How much does a website cost?',
-    a: `The productized website is ${formatUsd(site.setupCents)} to set up plus ${formatUsd(site.monthlyCents)} a month, and that includes your domain, hosting, and ongoing care. Add the voice agent and the command center rides along free with the pair. It goes live in about a week. For a bigger, fully bespoke build (custom booking, an embedded CRM, a vertical app, an AI sales rep), we scope a Full-Service Business Build and quote it after a free call. Month to month, cancel anytime, no trials.`,
+    a: `The productized website is ${formatUsd(site.setupCents)} to set up plus ${formatUsd(site.monthlyCents)} a month, and that includes your domain, hosting, and ongoing care. Add the voice agent and the two are built as one thing, for less than they cost apart. It goes live in about a week. For a bigger, fully bespoke build (custom booking, an embedded CRM, a vertical app, an AI sales rep), we scope a Full-Service Business Build and quote it after a free call. Month to month, cancel anytime, no trials.`,
   },
   {
     q: 'How fast does it go live?',
@@ -66,11 +66,11 @@ const FAQ = [
   },
   {
     q: 'Can I see it before I pay?',
-    a: 'Yes. Enter your business once and we forge a real working demo website designed from scratch for you, in your hands within the hour, plus a voice agent and a command center so you can judge the whole system. No card and no meeting. Buy the pieces you love, or walk away.',
+    a: 'Yes. Enter your business once and we forge a real working demo website designed from scratch for you, in your hands within the hour, plus a voice agent so you can judge the whole system. No card and no meeting. Buy the pieces you love, or walk away.',
   },
   {
     q: 'What if I already have a website?',
-    a: 'We can rebuild it as a working engine, or wire the parts you are missing (the voice agent, the command center, funnels, SEO and GEO) onto what you have. Start with a free demo or a free website audit and we will tell you the highest-leverage move.',
+    a: 'We can rebuild it as a working engine, or wire the parts you are missing (the voice agent, funnels, SEO and GEO) onto what you have. Start with a free demo or a free website audit and we will tell you the highest-leverage move.',
   },
 ];
 
@@ -90,7 +90,7 @@ function websitesJsonLd() {
         offers: {
           '@type': 'Offer',
           name: 'Website',
-          description: 'Custom website with funnels and SEO/GEO. Domain, hosting, and care included. Voice agent sold separately, and taking both makes the command center free.',
+          description: 'Custom website with funnels and SEO/GEO. Domain, hosting, and care included. Voice agent sold separately, and taking both builds them as one thing.',
           price: Math.round(site.monthlyCents / 100),
           priceCurrency: 'USD',
           priceSpecification: [
@@ -141,8 +141,8 @@ export default function WebsitesPage() {
               </h1>
               <p className="font-body text-[17px] text-[#161616]/75 mt-5 leading-relaxed">
                 Elite custom design, funnels and SEO baked in, your domain and hosting handled. It captures the lead
-                and follows up while you sleep, and it answers the phone too the day you add the voice agent, which is
-                also the day your command center goes free. From {formatUsd(site.monthlyCents)}/mo, and you own every line.
+                and follows up while you sleep, and it answers the phone too the day you add the voice agent. From{' '}
+                {formatUsd(site.monthlyCents)}/mo, and you own every line.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link
@@ -257,7 +257,7 @@ export default function WebsitesPage() {
                   'Add it to the site we build you',
                   'Or to the site you already have',
                   'Keeps the number you already have',
-                  'Take both and the command center is free',
+                  'Take both and they cost less than the two apart',
                 ].map((f) => (
                   <li key={f} className="flex items-start gap-2.5 font-body text-[13.5px] text-[#FBF6EA]/85">
                     <span className="mt-[7px] h-1.5 w-1.5 rounded-full bg-[#F5B700] shrink-0" aria-hidden />
@@ -283,7 +283,7 @@ export default function WebsitesPage() {
                   </p>
                   <p className="font-body text-[13px] text-[#161616]/80 mt-1.5 leading-relaxed">
                     The Talking Website (site + voice agent, one brain) is {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo +{' '}
-                    {formatUsd(DEMO_BUNDLE.setupCents)} setup, and the command center rides free inside it.
+                    {formatUsd(DEMO_BUNDLE.setupCents)} setup, less than the two apart.
                   </p>
                 </div>
                 <Link
@@ -309,7 +309,7 @@ export default function WebsitesPage() {
               </h2>
               <p className="font-body text-[15px] text-[#161616]/75 mt-4 leading-relaxed">
                 A real online store, not a plugin bolted onto a template. Full catalog, cart, and secure checkout,
-                inventory and shipping wired up, and the command center tracking every order the moment it lands.
+                inventory and shipping wired up, and an orders board that shows every sale the moment it lands.
                 Designed to look like the brand, built to actually sell.
               </p>
               <ul className="mt-6 grid sm:grid-cols-2 gap-x-6 gap-y-3">
@@ -317,7 +317,7 @@ export default function WebsitesPage() {
                   'Full product catalog + collections',
                   'Cart + secure checkout',
                   'Inventory, shipping, and taxes',
-                  'Orders wired to your command center',
+                  'An orders board you actually run it from',
                   'Discounts, email, abandoned-cart',
                   'You own the store and the data',
                 ].map((f) => (
@@ -361,7 +361,7 @@ export default function WebsitesPage() {
                 <div className="relative">
                   <Image
                     src={STORE.img}
-                    alt="Cross + Covenant, a full online store designed and built by Modern Mustard Seed, with catalog, cart, and checkout wired to the command center"
+                    alt="Cross + Covenant, a full online store designed and built by Modern Mustard Seed, with catalog, cart, and checkout wired to its orders board"
                     width={1600}
                     height={1000}
                     sizes="(min-width: 1024px) 50vw, 100vw"
@@ -369,12 +369,12 @@ export default function WebsitesPage() {
                   />
                   <div className="absolute top-3 right-3 max-w-[62%] rounded-xl border-2 border-[#161616] bg-[#FBF6EA] px-3.5 py-2 shadow-[3px_3px_0_0_#F5B700]">
                     <p className="font-mono text-[8px] uppercase tracking-[0.16em] text-[#C4160B] font-bold">New order</p>
-                    <p className="font-sans text-[11.5px] font-bold text-[#161616] mt-0.5 leading-snug">Filed to your command center</p>
+                    <p className="font-sans text-[11.5px] font-bold text-[#161616] mt-0.5 leading-snug">Filed to your orders board</p>
                   </div>
                 </div>
               </div>
               <p className="font-body text-[13px] text-[#161616]/70 mt-3">
-                A real store we built for Cross + Covenant. 80+ pieces, cart to checkout, orders in the command center.
+                A real store we built for Cross + Covenant. 80+ pieces, cart to checkout, every order on one board.
               </p>
             </div>
           </div>
@@ -405,7 +405,7 @@ export default function WebsitesPage() {
               </p>
               <p className="font-body text-[13.5px] text-[#161616]/80 mt-3 leading-relaxed flex-1">
                 A custom site designed from scratch, funnels and SEO baked in. Your domain, hosting, and care all
-                included. Month to month, cancel anytime. Add the voice agent any time and the command center is free.
+                included. Month to month, cancel anytime. Add the voice agent any time and it answers the phone too.
               </p>
               <Link
                 href="/demos"
@@ -446,7 +446,7 @@ export default function WebsitesPage() {
           <div className="grid sm:grid-cols-3 gap-8 sm:gap-6 mt-6">
             {[
               ['1', 'Forge it free', 'Tell us your business and we design a real working demo site for you, in your hands within the hour. Tour it, poke around, no card.'],
-              ['2', 'We build it for real', 'Order it and we customize the design, write the copy, wire the funnels and the command center, and put it on your domain by hand.'],
+              ['2', 'We build it for real', 'Order it and we customize the design, write the copy, wire the funnels and the forms, and put it on your domain by hand.'],
               ['3', 'Own it, and grow', 'Live in about a week. You get the repo, the domain, and every account. Add the voice agent whenever you want it answering the phone.'],
             ].map(([n, t, d]) => (
               <div key={n} className="flex gap-4 sm:block">
@@ -501,7 +501,7 @@ export default function WebsitesPage() {
             <p className="font-body text-[15px] text-[#161616]/80 mt-4 max-w-xl mx-auto leading-relaxed">
               Enter your business once and tour a real working site, designed from scratch for you, in your hands
               within the hour. Keep it for {formatUsd(site.monthlyCents)}/mo, or take the voice agent with it and the
-              command center is free.
+              pair costs less than the two apart.
             </p>
             <Link
               href="/demos"

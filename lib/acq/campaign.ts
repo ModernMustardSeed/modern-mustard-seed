@@ -13,16 +13,30 @@
  *   5  KEEP HER       nights and overflow only. Nobody loses a job over this.
  *   6  THE BREAKUP    permission to close the door.
  *
- * Emails 1, 2, 4, 5 and 6 have exactly one job, and it is not to explain AI or
- * book a discovery call. It is to make a contractor curious enough to say "yes,
- * let him call me." Email 3 is the one deliberate exception: by the third
- * message the ask has been made twice, so that is where the rest of what we
- * build gets named (Sarah, 2026-08-22).
+ * NOBODY IS ASKED FOR THEIR PHONE NUMBER ANY MORE (2026-08-25). Every email
+ * used to end by offering to have Mr. Mustard ring them, and the button
+ * collected a number. Sarah, reading the sends: "people dont seem too
+ * responsive... really, we should just have them call Mr. Mustard instead of
+ * asking him to call them."
  *
- * THREE DOORS, NOT THREE BUTTONS. Every email still has exactly one button.
- * What changed is that a contractor who will not click one is now given his
- * number to dial and a text link to the suite, because the fastest conversion
- * we have ever measured is a man reading an email at 6am and just calling.
+ * She is right, and the reason is that the old ask inverted the friction. A
+ * stranger had to hand over their number, then wait for a robot to phone them
+ * at a moment they did not choose, and it bought them nothing until it
+ * happened. Every email now offers two things a reader can have immediately:
+ *
+ *   the button    /demos. A working voice agent built for their business, free,
+ *                 plus a website if they want one. No card, no call to sit
+ *                 through, nothing to wait for.
+ *   the number    the ranch line, printed at 34px as a tel: link, because most
+ *                 of these are read on a phone and the fastest conversion we
+ *                 have ever measured is a man reading an email at 6am and just
+ *                 calling.
+ *
+ * A quieter text link goes to /talking-website for the reader who wants the
+ * website as well as the agent. One button, two text paths, no waiting on us.
+ *
+ * Email 3 is still the one that names the whole product rather than the phone,
+ * which is why it kept its own ending (Sarah, 2026-08-22).
  *
  * Two rules run through every line:
  *   NEVER FAKE FAMILIARITY. If we do not know their first name we say "Hi
@@ -49,7 +63,7 @@ import { proofStat, type ProofStat } from '@/data/proof-stats';
  * string on a link we send to strangers, and an open redirect on our own domain
  * is a phishing kit somebody else gets to use. Adding a door is a code change.
  */
-export type ClickDoor = 'mustard' | 'demos';
+export type ClickDoor = 'mustard' | 'demos' | 'talking-website';
 
 /** The ranch line. Mr. Mustard answers it himself, day or night. */
 export const RANCH_LINE = { display: '(406) 312-1223', tel: '+14063121223' };
@@ -110,8 +124,28 @@ export function firstNameOr(lead: Pick<AcqProspect, 'contact_name'>, fallback: s
 }
 
 /** Merge a variant subject. `{{first_name}}` degrades to the business name. */
+/**
+ * THE ASK IS "WANT ONE BUILT FOR YOU", NEVER "CAN HE CALL YOU" (Sarah,
+ * 2026-08-25). The variant rows in acq_variants were seeded when the button
+ * collected a phone number, and migration 111 rewrites them, but a row is data
+ * and data drifts: any label or subject that still asks for a call is replaced
+ * here, at render, so no send can carry the old ask whatever the table says.
+ */
+export const BUILD_CTA_LABEL = 'YES, BUILD MY DEMO';
+export const BUILD_SUBJECT = 'Can we build {{business_name}} a demo? It is free';
+const ASKS_FOR_A_CALL = /\bcall\b/i;
+/**
+ * EVERY EMAIL ASKS THE SAME THING (Sarah, 2026-08-25: "i want all of them to
+ * ask if we can build them a demo"). The row's label is ignored on purpose: one
+ * ask, one button, whatever an A/B row was seeded with.
+ */
+export function ctaLabelFor(_label: string | null | undefined): string {
+  return BUILD_CTA_LABEL;
+}
+
 export function renderSubject(variant: AcqVariant, lead: AcqProspect): string {
-  return variant.subject
+  const raw = ASKS_FOR_A_CALL.test(variant.subject) ? BUILD_SUBJECT : variant.subject;
+  return raw
     .replace(/\{\{\s*first_name\s*\}\}/gi, firstNameOr(lead, shortBusiness(lead.business_name)))
     .replace(/\{\{\s*business_name\s*\}\}/gi, shortBusiness(lead.business_name))
     .slice(0, 160);
@@ -140,23 +174,31 @@ export type BuiltCampaignEmail = {
 const CTA_STYLE_NOTE = 'The button IS the conversion. There is exactly one per email.';
 
 /**
- * Which door the button opens, per body.
+ * WHERE THE BUTTON GOES. ONE DOOR, EVERY EMAIL: the free build.
  *
- * Everything in the sequence asks for a callback and lands on /mustard. Email 3
- * is the exception: it is about the website and the suite, so its button lands
- * on /demos, where all three pieces get built free. Both go through the same
- * tracked redirect, so the click is measured either way.
+ * Until 2026-08-25 every email asked for permission to phone them, and the
+ * button opened /mustard to collect a number. Sarah, reading the sends: "people
+ * dont seem too responsive... we should just have them call Mr. Mustard instead
+ * of asking him to call them."
+ *
+ * She is right, and the reason is that the old ask inverted the friction. A
+ * stranger had to hand over their phone number, then wait for a robot to ring
+ * them at a moment they did not choose. That is a bigger commitment than buying
+ * something, and it bought them nothing until it happened. The new ask hands
+ * them a working voice agent and a website for their own business, free, with
+ * no number and no wait, and prints the ranch line at full size for anyone who
+ * would rather just dial it right now.
  */
-const CTA_DOORS: Record<string, ClickDoor> = { talking_website: 'demos' };
+const CTA_DOOR: ClickDoor = 'demos';
 
 /**
  * The second, quieter path. A text link, never a second button.
  *
- * Only the website email carries one, because it is the only email where a
- * reader can plausibly want a different thing (the suite) than the one the
- * button offers.
+ * On every email now, because the choice underneath is real: some readers want
+ * the phone answered, and some want the whole front of the business rebuilt.
+ * /talking-website is the page for the second kind.
  */
-const SECONDARY: Record<string, string> = { talking_website: 'Have him call me' };
+const SECONDARY_LABEL = 'Or the Talking Website';
 
 /**
  * Build one campaign email. Pure: no writes, no sends, so the admin preview
@@ -177,12 +219,8 @@ export function buildCampaignEmail(args: {
 
   const business = shortBusiness(lead.business_name);
   const greeting = greetingFor(lead);
-  const door = CTA_DOORS[variant.body_key] ?? 'mustard';
-  const cta = { label: variant.cta_label, url: permissionUrl(lead, step, variant.key, door) };
-  const secondaryLabel = SECONDARY[variant.body_key];
-  const secondary = secondaryLabel
-    ? { label: secondaryLabel, url: permissionUrl(lead, step, variant.key, door === 'mustard' ? 'demos' : 'mustard') }
-    : undefined;
+  const cta = { label: ctaLabelFor(variant.cta_label), url: permissionUrl(lead, step, variant.key, CTA_DOOR) };
+  const secondary = { label: SECONDARY_LABEL, url: permissionUrl(lead, step, variant.key, 'talking-website') };
 
   // The personalized variant only fires when we genuinely hold two independent
   // true things about this business. Otherwise it degrades to the plain email
@@ -200,6 +238,10 @@ export function buildCampaignEmail(args: {
       cta,
       secondary,
       signature: 'Sarah',
+      // The body already carries the ranch line at 34px with the line that
+      // makes the call a demo. The signature's own card would be the same
+      // number a second time, four inches lower.
+      ranchLine: false,
       trackId: lead.id,
     }) + complianceFooter(lead.email);
 
@@ -223,38 +265,80 @@ export function buildCampaignEmail(args: {
  * numbers came from their listing, so it is false for every plain send even
  * though the arithmetic underneath is identical.
  */
+/**
+ * THE BLANK MACHINE (Sarah, 2026-08-25). No estimate is printed in any cold
+ * email any more: the guessed job value was wrong often enough to cost the
+ * argument ("Dolphin Pools, $250 a job"). The machine ships empty, and the
+ * reader puts three numbers in on the live one. `machineFor` with an estimate
+ * stays for the admin preview of the old personalized layout.
+ */
+function blankMachineFor(lead: AcqProspect, business: string): string {
+  return recoveryMachineBlock({
+    blank: true,
+    business,
+    personalized: false,
+    // The live machine on the demo page, never /mustard (Sarah, 2026-08-25:
+    // "not ever send to mustard page"). The keys land on the calculator, and
+    // the build form is one scroll above it.
+    liveUrl: `${SITE.url}/demos?source=cold-email-calculator&p=${encodeURIComponent(lead.id)}#calculator`,
+    escape,
+  });
+}
+
 function machineFor(lead: AcqProspect, est: Estimate, business: string, personalized: boolean): string {
   return recoveryMachineBlock({
     est,
     business,
     personalized,
-    liveUrl: `${SITE.url}/mustard?source=cold-email-calculator&p=${encodeURIComponent(lead.id)}`,
+    // The live machine on the demo page, never /mustard (Sarah, 2026-08-25:
+    // "not ever send to mustard page"). The keys land on the calculator, and
+    // the build form is one scroll above it.
+    liveUrl: `${SITE.url}/demos?source=cold-email-calculator&p=${encodeURIComponent(lead.id)}#calculator`,
     escape,
   });
 }
 
 /**
- * THE TWO DOORS UNDER THE MACHINE.
+ * THE NUMBER, AT THE SIZE OF THE ASK.
  *
- * The button below this asks him to call them, which is a wait. Some people
- * will not wait, and the ranch line is answered by the same agent the button
- * would send. So the number is printed at full size, as a dial link, with the
- * one instruction that makes the call a demo instead of a wrong number: tell
- * him to pretend he works for you.
+ * This used to be a sentence with the number inside it, sitting under a button
+ * that asked him to call them. The button is gone and the order is reversed:
+ * the fastest thing a curious owner can do is dial, so the number is the
+ * largest thing in the email after the calculator, and it is a `tel:` link, so
+ * on the phone where most of these are read it is one tap.
+ *
+ * The instruction under it is what makes the call a demo rather than a wrong
+ * number: tell him to pretend he works for you. Without that line people ring
+ * the number, get a receptionist, and hang up confused.
  */
 function ranchLineBlock(business: string): string {
   const SANS = "-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Helvetica,Arial,sans-serif";
   return `
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:4px 0 18px">
-    <tr><td bgcolor="#FFF3CC" style="background:#FFF3CC;border:2px solid #161616;border-radius:14px;padding:16px 18px">
-      <p style="margin:0;font-family:${SANS};font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:#C2261A">Do not wait on me</p>
-      <p style="margin:7px 0 0;font-family:${SANS};font-size:15px;line-height:1.6;color:#161616">
-        Call him yourself, right now, at
-        <a href="tel:${RANCH_LINE.tel}" style="font-weight:700;color:#161616;text-decoration:none;white-space:nowrap">${RANCH_LINE.display}</a>.
-        He picks up in two rings at any hour. Tell him to pretend he works for ${escape(business)} and give him your worst customer.
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:6px 0 20px">
+    <tr><td bgcolor="#FFF3CC" align="center" style="background:#FFF3CC;border:2px solid #161616;border-radius:14px;padding:20px 18px">
+      <p style="margin:0;font-family:${SANS};font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:#C2261A">Call him now, he is awake</p>
+      <p style="margin:10px 0 0;line-height:1">
+        <a href="tel:${RANCH_LINE.tel}" style="font-family:${SANS};font-size:34px;font-weight:800;letter-spacing:-0.5px;color:#161616;text-decoration:none;white-space:nowrap">${RANCH_LINE.display}</a>
+      </p>
+      <p style="margin:10px 0 0;font-family:${SANS};font-size:14.5px;line-height:1.55;color:#161616">
+        He answers in two rings at any hour. Tell him to pretend he works for ${escape(business)} and give him your worst customer.
       </p>
     </td></tr>
   </table>`;
+}
+
+/**
+ * THE LINE ABOVE THE BUTTON.
+ *
+ * One sentence, in every email, naming what the button actually does. It has to
+ * carry the whole offer because it is the last thing read before the click:
+ * free, built for them, no card, no call, and it is a real working thing rather
+ * than a booked appointment to look at one.
+ */
+function buildItAsk(): string {
+  return p(
+    '<strong>Can we build you a demo?</strong> Say yes and we make you a working voice agent that answers as your business, plus a website to go with it if you want one. Free, no card, no meeting, nothing to sit through. It is with you inside the hour.',
+  );
 }
 
 /**
@@ -272,13 +356,12 @@ function emailPersonalized(lead: AcqProspect, est: Estimate, business: string): 
     p(
       `I built an AI receptionist named <strong>Mr. Mustard</strong> that answers, qualifies and books customers for service businesses. Before I pitch you anything, here is the only reason it would matter to you.`,
     ) +
-    machineFor(lead, est, business, true) +
-    machineAssumptions(est, escape) +
+    blankMachineFor(lead, business) +
     p(
-      `Rather than argue about the number, I would rather you hear what he does with those calls. He can pretend he is the receptionist for <strong>${escape(business)}</strong>, so you can test him on your own work.`,
+      `Put your own three numbers in; I would rather you see it than take my word for it. Then hear what he does with those calls: he can pretend he is the receptionist for <strong>${escape(business)}</strong>, so you can test him on your own work.`,
     ) +
     ranchLineBlock(business) +
-    p('<strong>Or have him call you, and pick the time yourself. Three minutes.</strong>')
+    buildItAsk()
   );
 }
 
@@ -294,7 +377,7 @@ function personalizedSubject(lead: AcqProspect, est: Estimate): string {
     case 'emergency':
       return `${business}, the 11pm emergency call`;
     default:
-      return `Want my AI receptionist to call you?`;
+      return `Your AI receptionist, built free`;
   }
 }
 
@@ -322,7 +405,7 @@ const PREHEADERS: Record<string, string> = {
   talking_website: 'He answers the phone. He also answers your website.',
   challenge: 'Do not let him present. Try to break him.',
   keep_her: 'Nights, weekends and overflow. Your front desk keeps her job.',
-  breakup: 'Last note from me on this.',
+  breakup: 'Last note from me. The line stays open either way.',
 };
 
 /** Every body key the renderer knows. Used by the tests and the admin preview. */
@@ -331,7 +414,7 @@ export const BODY_KEYS = Object.keys(BODIES).concat('personalized');
 /* ────────────────────────────── the five emails ──────────────────────────── */
 
 /**
- * EMAIL 1. The whole ask is "can he call you". Nothing else is sold.
+ * EMAIL 1. The whole ask is "hear him". Nothing else is sold.
  *
  * The machine ships here too, on house numbers rather than theirs, and it says
  * so on its own face. That is the line that keeps this honest: a stranger's
@@ -340,17 +423,16 @@ export const BODY_KEYS = Object.keys(BODIES).concat('personalized');
  * conversation we get.
  */
 function email1(business: string, lead: AcqProspect): string {
-  const est = estimateFor(lead);
   return (
     p('Slightly unusual question.') +
     p(
       `I built an AI receptionist named <strong>Mr. Mustard</strong> that answers, qualifies and books customers for service businesses. Before I pitch you anything, here is the only reason it would matter to you.`,
     ) +
-    machineFor(lead, est, business, false) +
-    p('Change those three numbers to yours and the display moves. Most owners find out they are wrong about the first one.') +
+    blankMachineFor(lead, business) +
+    p('Three numbers you already know, thirty seconds, and it is your business on the display instead of a stranger\'s guess.') +
     p(`Rather than send you a sales pitch, I would rather you hear what he does with the calls that fall through.`) +
     ranchLineBlock(business) +
-    p('<strong>Or have him call you, and pick the time yourself. Three minutes.</strong>')
+    buildItAsk()
   );
 }
 
@@ -370,7 +452,7 @@ function email1(business: string, lead: AcqProspect): string {
  * The forge close stays available to people who would rather talk than click,
  * because Mr. Mustard builds it live on the phone.
  */
-function emailTalkingWebsite(business: string, _lead: AcqProspect): string {
+function emailTalkingWebsite(business: string): string {
   const SANS = "-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Helvetica,Arial,sans-serif";
   const piece = (title: string, body: string, last = false) => `
     <tr>
@@ -393,17 +475,15 @@ function emailTalkingWebsite(business: string, _lead: AcqProspect): string {
         </p>
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
           ${piece('The voice agent', 'Answers as your business, day or night, qualifies the caller and books the job.')}
-          ${piece('The website', 'Designed from scratch for your trade and your town, with him answering on it.')}
-          ${piece('The command center', 'Every call written down, your leads, your customers and your money on one board.', true)}
+          ${piece('The website', 'Designed from scratch for your trade and your town, with him answering on it.', true)}
         </table>
       </td></tr>
     </table>` +
     p(
-      'All three are built for your business and cost nothing to look at. No card, no meeting, and it is with you inside the hour.',
+      'Both are built for your business and cost nothing to look at. No card, no meeting, and it is with you inside the hour.',
     ) +
-    p(
-      `Or skip the form: call Mr. Mustard on <a href="tel:${RANCH_LINE.tel}" style="color:#C2261A;font-weight:700;text-decoration:none;white-space:nowrap">${RANCH_LINE.display}</a> and tell him to build you a website. He does it while you are on the line with him.`,
-    )
+    p('Or skip the form entirely. Tell him to build you a website while you are on the line with him, and he does it.') +
+    ranchLineBlock(business)
   );
 }
 
@@ -416,8 +496,9 @@ function email2(business: string): string {
     p(
       `Have him pretend he works for ${escape(business)} and give him the sort of customer call your team actually receives.`,
     ) +
-    p('If you want to try it, the button below rings your phone in about ten seconds.') +
-    p('Takes about three minutes.')
+    p('Dial him right now and start with the worst one you got this month.') +
+    ranchLineBlock(business) +
+    buildItAsk()
   );
 }
 
@@ -451,7 +532,8 @@ function emailProof(business: string): string {
     p(
       `Mr. Mustard answers in two rings, at any hour, and every caller ends up as a name, a number and what they wanted, in writing.`,
     ) +
-    p(`<strong>Want him to call you and show you what that sounds like?</strong>`)
+    ranchLineBlock(business) +
+    buildItAsk()
   );
 }
 
@@ -534,7 +616,9 @@ function emailKeepHer(business: string): string {
     p(
       `You pick which. It is one sentence to set up and it changes nothing about your number, your phones, or who answers them during the day.`,
     ) +
-    p('<strong>Easiest way to judge it is to let him call you. Three minutes.</strong>')
+    p('Easiest way to judge it is to hear him work. Call the line and give him the six-thirty emergency.') +
+    ranchLineBlock(business) +
+    buildItAsk()
   );
 }
 
@@ -543,8 +627,10 @@ function email3(business: string): string {
   return (
     p('Last note from me.') +
     p(
-      `If you are curious what an AI receptionist would actually sound like answering calls for ${escape(business)}, I will have Mr. Mustard call you and demonstrate it.`,
+      `If you are ever curious what an AI receptionist would actually sound like answering calls for ${escape(business)}, the line is open and it costs you nothing to find out.`,
     ) +
+    ranchLineBlock(business) +
+    buildItAsk() +
     p('If not, no problem at all. I will not keep chasing you.')
   );
 }
@@ -627,8 +713,10 @@ export function buildDemoEmail(args: {
       eyebrow: 'YOUR RECEPTIONIST IS BUILT',
       greeting,
       body:
-        p('Mr. Mustard here.') +
-        p(`I built the ${escape(business)} version we talked about.`) +
+        // Never "we talked about": this email goes out whether or not anyone
+        // has spoken to them (Sarah, 2026-08-25). It opens as a gift, not a recap.
+        p('Mr. Mustard here. We made you something.') +
+        p(`A receptionist for ${escape(business)}, already answering to your name. Not a mockup: pick up the phone, and it picks up as you.`) +
         p('Test it like a customer. Try weird questions. Try an emergency. Try to stump it.') +
         auditBlock(args) +
         `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:14px 0"><tr>
@@ -660,6 +748,169 @@ export function buildDemoEmail(args: {
   };
 }
 
+
+/* ──────────────────────── the SUITE email (all of it) ───────────────────── */
+
+/** What actually got built for them. Only pieces that exist are ever named. */
+export type SuiteLinks = {
+  hubUrl: string;
+  voiceUrl: string | null;
+  siteUrl: string | null;
+  osUrl: string | null;
+  /** True when Sarah recorded a face-to-camera video for this business. */
+  personalVideo: boolean;
+  /** True when the walkthrough film of THEIR suite is cut and ready. */
+  film: boolean;
+};
+
+/**
+ * THE SUITE EMAIL.
+ *
+ * The demo email above says "I built your receptionist" and is Mr. Mustard's,
+ * sent to somebody who just spent four minutes talking to him. This one is for
+ * the far bigger audience that never picked up the phone: they opened the note,
+ * some of them walked all the way to the permission page, and then they closed
+ * the tab. Nothing was owed to them and nothing was ever sent.
+ *
+ * So this email leads with the thing itself. No pitch in the first line, no
+ * "just following up", no asking for a call. Their website exists, their
+ * receptionist answers, their back office is running, and the whole point of
+ * the email is the four links that prove it.
+ *
+ * It only ever names pieces that are actually built. A suite email that
+ * promises a website which is still on the anvil is worse than no email,
+ * because they click it inside the first minute.
+ */
+export function buildSuiteEmail(args: {
+  lead: AcqProspect;
+  suite: SuiteLinks;
+  checkoutUrl: string;
+  calendarUrl: string;
+  offerLine: string;
+  fromName: string;
+  fromEmail: string;
+  replyTo: string;
+  /** Mr. Mustard signs it when he has actually spoken to them. Otherwise Sarah does. */
+  fromMustard: boolean;
+}): BuiltCampaignEmail | null {
+  const { lead, suite } = args;
+  if (!lead.email) return null;
+  const business = shortBusiness(lead.business_name);
+  const greeting = greetingFor(lead);
+
+  const pieces: { label: string; blurb: string; url: string }[] = [];
+  if (suite.siteUrl) {
+    pieces.push({
+      label: 'Your website',
+      blurb: `Built around ${escape(business)}, not a template with your name dropped in. Open it on your phone.`,
+      url: suite.siteUrl,
+    });
+  }
+  if (suite.voiceUrl) {
+    pieces.push({
+      label: 'Your receptionist',
+      blurb: 'Answers as your business, in a real voice, on any call. Try to stump it.',
+      url: suite.voiceUrl,
+    });
+  }
+  // THE COMMAND CENTER IS NEVER NAMED IN AN OUTBOUND EMAIL. It came off the
+  // suite and out of the offer (Sarah, 2026-08-22, again on 2026-08-25), so
+  // there is no third piece to list and no freebie to promise. The demo suite
+  // page draws no door for it either (components/demo/DemoHub.tsx), so the
+  // email and the page they land on can never disagree. Do not add one back.
+  if (!pieces.length) return null;
+  const onlyVoice = pieces.length === 1 && Boolean(suite.voiceUrl);
+  const onlySite = pieces.length === 1 && Boolean(suite.siteUrl);
+
+  const list = pieces
+    .map(
+      (piece) => `
+      <tr><td style="padding:0 0 10px">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:2px solid #161616;border-radius:14px;background:#ffffff">
+          <tr><td style="padding:15px 18px">
+            <p style="margin:0 0 3px;font-size:11px;letter-spacing:2px;text-transform:uppercase;font-weight:700;color:#8a6a1f">${escape(piece.label)}</p>
+            <p style="margin:0 0 9px;font-size:14px;color:#5a564f;line-height:1.6">${piece.blurb}</p>
+            <a href="${escape(piece.url)}" style="font-size:14px;font-weight:bold;color:#161616;text-decoration:none">Open it &rarr;</a>
+          </td></tr>
+        </table>
+      </td></tr>`,
+    )
+    .join('');
+
+  // The video line is only ever written when a video genuinely exists. A
+  // promise of a walkthrough that is not there is the one thing that would
+  // make this email worse than silence.
+  const videoLine = suite.personalVideo
+    ? p(
+        `There is a short video of me at the top of that page walking you through what I built and why. Watch that first and the rest will make sense.`,
+      )
+    : suite.film
+      ? p(
+          `There is a two minute walkthrough at the top of that page: your site and a live call to your receptionist, recorded off the real thing.`,
+        )
+      : '';
+
+  const html =
+    clientEmail({
+      // The preheader is the first line they read in the inbox list, before the
+      // subject has even earned a click, so it names the same pieces the body
+      // does and nothing more. It promised a back office to everybody once; the
+      // back office is not part of this offer at all now.
+      preheader:
+        pieces.length === 2
+          ? `Your website and your receptionist are live. Nothing to sign up for.`
+          : onlySite
+            ? `Your website is live. Nothing to sign up for.`
+            : `Your receptionist is live. Nothing to sign up for.`,
+      eyebrow: 'IT IS BUILT',
+      greeting,
+      body:
+        p(`I built it.`) +
+        p(
+          pieces.length === 2
+            ? `${escape(business)} now has a website and an AI receptionist answering the phone on it. Both are live right now. Nothing to sign up for, no card, no call with me first.`
+            : `It is live right now. Nothing to sign up for, no card, no call with me first.`,
+        ) +
+        videoLine +
+        `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:16px 0 6px">${list}</table>` +
+        p(`Break it if you can. That is genuinely the best thing you could do with it today.`) +
+        `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:14px 0"><tr>
+          <td style="border:2px solid #161616;border-radius:14px;padding:16px 18px;background:#FBF6EA">
+            <p style="margin:0;font-size:15px;color:#161616"><strong>If you want the receptionist on your real incoming calls</strong></p>
+            <p style="margin:6px 0 0;font-size:14px;color:#5a564f;line-height:1.6">${escape(args.offerLine)}. Month to month, cancel anytime. Your number and your phones stay exactly as they are, and we install it by hand inside a week.</p>
+            <p style="margin:10px 0 0"><a href="${escape(args.checkoutUrl)}" style="font-size:14px;font-weight:bold;color:#8a6a1f;text-decoration:none">Put it on ${escape(possessive(business))} real calls &rarr;</a></p>
+          </td>
+        </tr></table>` +
+        p(
+          `Or if you would rather talk to a person about it, <a href="${escape(args.calendarUrl)}" style="color:#C2261A;font-weight:700;text-decoration:none">grab time with me</a>. If the answer is no, replying with the word no is a complete answer and I will stop.`,
+        ),
+      cta: { label: 'Open everything', url: suite.hubUrl },
+      signature: args.fromMustard ? 'Mr. Mustard' : 'Sarah',
+      trackId: lead.id,
+    }) + complianceFooter(lead.email);
+
+  return {
+    to: lead.email,
+    from: `${args.fromName} <${args.fromEmail}>`,
+    replyTo: args.replyTo,
+    // NOT escaped: a subject line is plain text, so an entity here would ship
+    // literally and turn Bob's Heating into Bob&#39;s Heating in the inbox.
+    // It also names only what is inside: a subject promising a website to
+    // somebody who is getting a receptionist is the first broken promise they
+    // read, and it is the one they judge everything else by.
+    subject: onlyVoice
+      ? `I built ${business} a receptionist`
+      : onlySite
+        ? `I built ${business} a website`
+        : `I built ${business} a website and a receptionist`,
+    html,
+    unsubscribeUrl: unsubscribeUrlFor(lead.email),
+    summary: `Sent the full forged suite: ${pieces.map((x) => x.label.toLowerCase()).join(', ')}.`,
+    step: 0,
+    variantKey: 'suite',
+  };
+}
+
 /* ──────────────── behavior-driven follow-ups after the demo ──────────────── */
 
 export type FollowupKind = 'no_call_after_consent' | 'called_no_forge' | 'demo_no_purchase_1' | 'demo_no_purchase_2' | 'demo_no_purchase_3';
@@ -687,7 +938,9 @@ export function buildFollowupEmail(args: {
   if (!lead.email) return null;
   const business = shortBusiness(lead.business_name);
   const greeting = greetingFor(lead);
-  const demo = args.demoUrl || permissionPageUrl(lead.id);
+  // Never /mustard from an email (Sarah, 2026-08-25). The demo page is where
+  // the build is asked for, so it is the fallback when no demo exists yet.
+  const demo = args.demoUrl || `${SITE.url}/demos?source=followup&p=${encodeURIComponent(lead.id)}`;
 
   const bodies: Record<FollowupKind, string> = {
     no_call_after_consent:

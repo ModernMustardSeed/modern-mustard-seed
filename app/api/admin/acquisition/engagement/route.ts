@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
-import type { SupabaseClient } from '@supabase/supabase-js';
 import { requireAcqAdmin } from '@/lib/acq/server';
-import { ENGAGEMENT_TYPES } from '@/lib/acq/events';
+import { isMachineHit, readEngagementEvents } from '@/lib/acq/engagement';
+import { suiteState } from '@/lib/acq/suite';
+import type { SuiteState } from '@/lib/acq/suite';
 import type { AcqEvent } from '@/lib/acq/types';
 
 export const runtime = 'nodejs';
@@ -44,6 +45,8 @@ type Person = {
   client_status: string | null;
   checkout_sent_at: string | null;
   demo_status: string | null;
+  demo_emailed_at: string | null;
+  suite: SuiteState;
   furthest: Step;
   last_activity: string;
   signals: Record<Step, Signal>;
@@ -110,25 +113,6 @@ async function inChunks<T>(ids: string[], fetch: (chunk: string[]) => Promise<T[
   return out;
 }
 
-async function eventsSince(db: SupabaseClient, since: string | null, cap: number): Promise<AcqEvent[]> {
-  const out: AcqEvent[] = [];
-  for (let from = 0; from < cap; from += 1000) {
-    let q = db
-      .from('acq_events')
-      .select('*')
-      .in('type', ENGAGEMENT_TYPES)
-      .order('occurred_at', { ascending: false })
-      .range(from, from + 999);
-    if (since) q = q.gte('occurred_at', since);
-    const { data, error } = await q;
-    if (error) throw new Error(error.message);
-    const rows = (data ?? []) as AcqEvent[];
-    out.push(...rows);
-    if (rows.length < 1000) break;
-  }
-  return out;
-}
-
 export async function GET(req: Request) {
   const gate = await requireAcqAdmin();
   if ('error' in gate) return gate.error;
@@ -142,7 +126,7 @@ export async function GET(req: Request) {
 
   let events: AcqEvent[];
   try {
-    events = await eventsSince(db, since, 5000);
+    events = await readEngagementEvents(db, since, 5000);
   } catch (e) {
     return NextResponse.json({ error: e instanceof Error ? e.message : 'Could not read the timeline.' }, { status: 500 });
   }
@@ -164,8 +148,10 @@ export async function GET(req: Request) {
 
   const ids = [...new Set([...events.map((e) => e.lead_id).filter(Boolean), ...openerIds])] as string[];
 
+  // ONE literal string on purpose: a concatenated list widens to `string` and
+  // supabase-js loses row typing entirely (every row becomes GenericStringError).
   const LEAD_COLS =
-    'id,business_name,contact_name,phone,email,city,state,trade,lead_score,acq_stage,email_stage,email_open_count,email_opened_at,last_open_at,consent_status,consent_at,call_stage,last_call_at,needs_human,checkout_sent_at,client_status,demo_status,unsubscribed_at,is_test,acq_campaign_id,reply_at';
+    'id,business_name,contact_name,phone,email,city,state,trade,lead_score,acq_stage,email_stage,email_open_count,email_opened_at,last_open_at,consent_status,consent_at,call_stage,last_call_at,needs_human,checkout_sent_at,client_status,demo_status,unsubscribed_at,is_test,acq_campaign_id,reply_at,demo_url,site_demo_url,site_demo_status,os_demo_url,hub_demo_url,suite_film_status,demo_emailed_at';
   type LeadRow = Record<string, unknown> & { id: string };
   const [leads, calls, consents] = await Promise.all([
     inChunks<LeadRow>(ids, async (chunk) => {
@@ -223,6 +209,8 @@ export async function GET(req: Request) {
       client_status: (l.client_status as string) ?? null,
       checkout_sent_at: (l.checkout_sent_at as string) ?? null,
       demo_status: (l.demo_status as string) ?? null,
+      demo_emailed_at: (l.demo_emailed_at as string) ?? null,
+      suite: suiteState(l as unknown as Parameters<typeof suiteState>[0]),
       furthest: 'opened',
       last_activity: '',
       signals: blank(),
@@ -281,7 +269,7 @@ export async function GET(req: Request) {
     // stays on the prospect's timeline, labelled, but it never puts anybody on
     // this board: a board that lists antivirus as movement is worse than an
     // empty one, because an empty one is honest.
-    if ((e.detail as Record<string, unknown> | null)?.machine === true) continue;
+    if (isMachineHit(e)) continue;
     const step = stepFor(e.type);
     if (!step) continue;
     const p = ensure(e.lead_id);

@@ -1,6 +1,9 @@
+import { parseSiteFacts, scrubClaims, siteFactsFresh } from '@/lib/site-facts';
+import { ensureSiteFacts } from '@/lib/site-facts-store';
 import { getSupabase } from '@/lib/supabase';
 import { buildMetadata } from '@/lib/seo';
 import DemoHub from '@/components/demo/DemoHub';
+import { demoAppointmentsFor } from '@/lib/demo-booking';
 import { leadTrade } from '@/lib/outbound-demo';
 import { recordDemoEvent } from '@/lib/demo-events';
 import type { Niche } from '@/lib/outbound';
@@ -109,7 +112,21 @@ export default async function DemoHubPage({ params }: { params: Promise<{ hubId:
   // notes is walk-in research: keep only the factual sentences (anything that
   // reads like our sales plan stays internal), and only when enough survives
   // to stand alone.
+  //
+  // AND ONLY WHEN IT IS TRUE. Sarah, 2026-08-25: the Murrell Dental hub said
+  // "the site does not even show hours or an address" while both sat on their
+  // contact page. Research is a person's note; the label is a claim in front of
+  // the prospect. So every clause that says the website is missing something is
+  // checked against the site as read live (`lib/site-facts.ts`) and dropped when
+  // the site has it, or when the site could not be read at all. What remains is
+  // only what we can back.
   const gapRaw = /^GAP:\s*(.+)$/m.exec((lead.notes as string) ?? '')?.[1] ?? null;
+  let siteFacts = parseSiteFacts(lead.notes as string | null);
+  if (gapRaw && lead.website && !siteFactsFresh(siteFacts)) {
+    // A lead nobody has read yet pays for one live read here, capped, and the
+    // result is stored so this never happens twice for the same business.
+    siteFacts = await ensureSiteFacts(sb, lead as { id: string; website?: string | null; notes?: string | null }, { timeoutMs: 10_000, maxPages: 4 });
+  }
   const noticedLine = (() => {
     if (!gapRaw) return null;
     const kept = gapRaw
@@ -118,7 +135,8 @@ export default async function DemoHubPage({ params }: { params: Promise<{ hubId:
       .join(' ')
       .trim()
       .replace(/[;,]$/, '');
-    return kept.length >= 30 ? kept : null;
+    const verified = scrubClaims(kept, siteFacts, 'public').text.replace(/[;,]$/, '');
+    return verified.length >= 30 ? verified : null;
   })();
   // Weekend-dark businesses start the slider closer to their reality.
   const missedPreset = /closed (both )?weekend|closed sat|closed sun|after-hours|every evening|nights and weekends/i.test((lead.notes as string) ?? '') ? 11 : null;
@@ -163,6 +181,14 @@ export default async function DemoHubPage({ params }: { params: Promise<{ hubId:
   // the voice agent and command center were forged for.
   const trade = leadTrade(lead);
 
+  /* What their agent booked while they were on the phone. Only ever non-empty
+   * for somebody who actually called their demo and played a customer, which is
+   * the single strongest signal in the whole funnel, so it is worth one query
+   * on every hub render. Fail-soft: no run id, or a table that does not answer,
+   * is simply no card. */
+  const bookedOnCall = lead.demo_run_id ? await demoAppointmentsFor(sb, lead.demo_run_id, 6) : [];
+
+
   return (
     <DemoHub
       hubId={hubId}
@@ -184,13 +210,13 @@ export default async function DemoHubPage({ params }: { params: Promise<{ hubId:
       voiceUrl={lead.demo_url}
       siteUrl={lead.site_demo_status === 'ready' ? lead.site_demo_url : null}
       sitePending={lead.site_demo_status === 'queued' || lead.site_demo_status === 'building' ? lead.site_demo_url : null}
-      osUrl={lead.os_demo_status === 'ready' ? lead.os_demo_url : null}
       integrationPlanUrl={lead.integration_plan_status === 'ready' ? lead.integration_plan_url : null}
       planQuote={planQuote}
       auditUrl={lead.presence_audit_url}
       auditScore={lead.presence_audit_score}
       auditHeadline={auditHeadline}
       demoRunId={lead.demo_run_id}
+      bookedOnCall={bookedOnCall}
       noticedLine={noticedLine}
       missedPreset={missedPreset}
       hasEmail={Boolean(lead.email)}

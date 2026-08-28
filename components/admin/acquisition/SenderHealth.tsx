@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import AdminHeader from '@/components/admin/AdminHeader';
+import TheHold, { useHold } from '@/components/admin/acquisition/TheHold';
 import { AcqNav, Section, Stat, Chip, api, card, cardFlat, btnPrimary, btnGhost, btnDanger, inputCls, labelCls, eyebrow } from '@/components/admin/acquisition/ui';
 
 type Check = { id: string; label: string; level: 'pass' | 'warning' | 'error' | 'unknown'; detail: string; fix?: string };
@@ -26,6 +27,7 @@ export default function SenderHealth() {
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
   const [busy, setBusy] = useState('');
+  const { hold, reload: reloadHold } = useHold();
 
   const load = useCallback(async () => {
     try {
@@ -35,7 +37,8 @@ export default function SenderHealth() {
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Could not read sender health.');
     }
-  }, []);
+    reloadHold();
+  }, [reloadHold]);
 
   useEffect(() => {
     void load();
@@ -50,6 +53,7 @@ export default function SenderHealth() {
         body: JSON.stringify(body),
       });
       setHealth(res.health);
+      reloadHold();
       if (res.result) setNotice(res.result.from === res.result.to ? res.result.reason : `${res.result.from} to ${res.result.to}. ${res.result.reason}`);
       else setNotice('Saved.');
     } catch (e) {
@@ -93,6 +97,10 @@ export default function SenderHealth() {
 
         {error && <p className="mb-3 text-sm font-semibold text-[#E0301E]">{error}</p>}
         {notice && <p className="mb-3 text-sm font-semibold text-[#3f5d34]">{notice}</p>}
+
+        <div className="mb-6">
+          <TheHold hold={hold} onDone={() => void load()} />
+        </div>
 
         <section className={`${card} p-6 mb-6`}>
           <p className={eyebrow}>Sending as</p>

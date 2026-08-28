@@ -8,9 +8,14 @@
  * cute and helpful".
  *
  * What had to change, and why:
- *   NO JAVASCRIPT       the keypad is decoration and the display is fixed. Every
- *                       key is still a link to the live machine, so a tap on "="
- *                       lands on the page where the numbers actually move.
+ *   NO JAVASCRIPT       no mail client runs any, so the display is a picture and
+ *                       the keys cannot type. They are links instead, and each
+ *                       digit key carries ITS OWN digit plus these three inputs
+ *                       to /mustard, so a tap on "6" opens the live machine with
+ *                       a 6 punched in and the same figure on the readout. The
+ *                       label says so, because a reader who taps four keys
+ *                       waiting for the total to move decides we sent a broken
+ *                       email.
  *   NO BOX SHADOW       Gmail strips it. The hard pop-art shadow is a black
  *                       rounded cell with the mustard panel sitting on its
  *                       top-left corner, which every client renders.
@@ -44,7 +49,15 @@ const SANS = "-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Helve
 const usd = (cents: number): string => '$' + Math.round(cents / 100).toLocaleString('en-US');
 
 export function recoveryMachineBlock(args: {
-  est: Estimate;
+  /** Their inputs, when we have them. Omitted in blank mode. */
+  est?: Estimate;
+  /**
+   * BLANK MODE (Sarah, 2026-08-25: "the ai guesstimator is remarkably wrong,
+   * Dolphin Pools came back at $250 a job"). No figure is printed anywhere.
+   * The slots read as empty, the display invites them, and every key opens the
+   * live machine with nothing pre-filled but the digit they pressed.
+   */
+  blank?: boolean;
   business: string;
   /** True only when the inputs came from this business's own public record. */
   personalized: boolean;
@@ -52,7 +65,33 @@ export function recoveryMachineBlock(args: {
   liveUrl: string;
   escape: (s: string) => string;
 }): string {
-  const { est, business, personalized, liveUrl, escape: esc } = args;
+  const { business, personalized, liveUrl, escape: esc } = args;
+  const blank = args.blank === true || !args.est;
+  const est: Estimate | null = blank ? null : (args.est as Estimate);
+
+  /**
+   * EVERY KEY CARRIES ITS DIGIT.
+   *
+   * No email client on earth runs JavaScript, so a keypad in an inbox can never
+   * change a number in place. What it CAN do is finish the job on the web: a tap
+   * on "6" opens the live machine with a 6 already punched into the active
+   * field, so the key does the thing it looks like it does, one screen later.
+   *
+   * The three inputs ride along too. Without them the reader lands on a
+   * calculator showing the house defaults, quoting a different figure than the
+   * email they just tapped, which is the fastest way to lose an argument you had
+   * already won.
+   */
+  const machineUrl = (typed?: string): string => {
+    const q = new URLSearchParams(
+      est ? { m: String(est.missedPerWeek), c: String(est.closeRatePct), t: String(Math.round(est.avgJobValue)) } : { blank: '1' },
+    );
+    if (typed) q.set('k', typed);
+    // The live machine may sit behind an anchor (/demos#calculator); the query
+    // goes before the hash or the browser treats it as part of the fragment.
+    const [base, hash] = liveUrl.split('#');
+    return base + (base.includes('?') ? '&' : '?') + q.toString() + (hash ? '#' + hash : '');
+  };
 
   const slot = (label: string, hint: string, value: string, on: boolean) =>
     '<tr><td style="padding:0 0 6px">' +
@@ -86,14 +125,14 @@ export function recoveryMachineBlock(args: {
 
   // The keypad is decoration that works. A key looks tappable, so every key is a
   // link to the live machine rather than a dead rectangle.
-  const key = (face: string, bg: string, fg: string, span = 1) =>
+  const key = (face: string, bg: string, fg: string, span = 1, typed?: string) =>
     '<td width="' +
     (span === 2 ? '50%' : '25%') +
     '" colspan="' +
     span +
     '" style="padding:3px">' +
     '<a href="' +
-    liveUrl +
+    machineUrl(typed) +
     '" style="display:block;text-align:center;text-decoration:none;background:' +
     bg +
     ';color:' +
@@ -111,7 +150,7 @@ export function recoveryMachineBlock(args: {
   const wordKey = (face: string, bg: string, fg: string) =>
     '<td width="25%" style="padding:3px">' +
     '<a href="' +
-    liveUrl +
+    machineUrl() +
     '" style="display:block;text-align:center;text-decoration:none;background:' +
     bg +
     ';color:' +
@@ -128,10 +167,10 @@ export function recoveryMachineBlock(args: {
 
   const keypad =
     '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:8px">' +
-    '<tr>' + key('7', '#FFFFFF', INK) + key('8', '#FFFFFF', INK) + key('9', '#FFFFFF', INK) + key('C', RED, '#FBF6EA') + '</tr>' +
-    '<tr>' + key('4', '#FFFFFF', INK) + key('5', '#FFFFFF', INK) + key('6', '#FFFFFF', INK) + key('&#9003;', BLUE, '#FBF6EA') + '</tr>' +
-    '<tr>' + key('1', '#FFFFFF', INK) + key('2', '#FFFFFF', INK) + key('3', '#FFFFFF', INK) + wordKey('NEXT', BLUE, '#FBF6EA') + '</tr>' +
-    '<tr>' + key('0', '#FFFFFF', INK, 2) + key('00', '#FFFFFF', INK) + key('=', INK, MUSTARD) + '</tr>' +
+    '<tr>' + key('7', '#FFFFFF', INK, 1, '7') + key('8', '#FFFFFF', INK, 1, '8') + key('9', '#FFFFFF', INK, 1, '9') + key('C', RED, '#FBF6EA', 1, 'C') + '</tr>' +
+    '<tr>' + key('4', '#FFFFFF', INK, 1, '4') + key('5', '#FFFFFF', INK, 1, '5') + key('6', '#FFFFFF', INK, 1, '6') + key('&#9003;', BLUE, '#FBF6EA') + '</tr>' +
+    '<tr>' + key('1', '#FFFFFF', INK, 1, '1') + key('2', '#FFFFFF', INK, 1, '2') + key('3', '#FFFFFF', INK, 1, '3') + wordKey('NEXT', BLUE, '#FBF6EA') + '</tr>' +
+    '<tr>' + key('0', '#FFFFFF', INK, 2, '0') + key('00', '#FFFFFF', INK, 1, '0') + key('=', INK, MUSTARD) + '</tr>' +
     '</table>';
 
   const plate =
@@ -152,16 +191,24 @@ export function recoveryMachineBlock(args: {
     '<td style="font-family:' + MONO + ';font-size:9px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:' + DIM + '">Leaking Every Month</td>' +
     '<td align="right" style="font-family:' + MONO + ';font-size:9px;font-weight:bold;letter-spacing:1.6px;text-transform:uppercase;color:' + RED + ';white-space:nowrap">&#9679; Live</td>' +
     '</tr></table>' +
-    '<div style="text-align:right;font-family:' + MONO + ';font-size:38px;font-weight:bold;color:' + DIGIT + ';line-height:1.15;padding-top:6px">' + usd(est.monthlyLeakCents) + '</div>' +
-    '<div style="text-align:right;font-family:' + MONO + ';font-size:9px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:' + DIM + ';padding-top:3px">' + usd(est.annualLeakCents) + ' a year</div>' +
+    '<div style="text-align:right;font-family:' + MONO + ';font-size:38px;font-weight:bold;color:' + DIGIT + ';line-height:1.15;padding-top:6px">' + (est ? usd(est.monthlyLeakCents) : '$ _ _ _ _') + '</div>' +
+    '<div style="text-align:right;font-family:' + MONO + ';font-size:9px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:' + DIM + ';padding-top:3px">' + (est ? usd(est.annualLeakCents) + ' a year' : 'your numbers, not ours') + '</div>' +
     '</td></tr></table>';
 
   // The false branch names nobody on purpose. A possessive built from a company
   // name is a coin flip ("Ross Plumbing's" against "Ross Plumbing'"), and the
   // sentence does not need the name to be true.
-  const label = personalized
-    ? 'Worked back from what ' + esc(business) + ' shows in public. Every guess is printed under the machine.'
-    : 'We could not see your numbers, so these three are ours. Tap a key and change them.';
+  // WHAT THE LABEL MAY PROMISE. It used to say "tap a key and change them",
+  // which describes a calculator that types. Nothing in an inbox types: a mail
+  // client runs no JavaScript, so the display below is a picture and the keys
+  // are links. Tapping one opens the live machine carrying these three numbers
+  // and the digit that was pressed. The label says that, because a reader who
+  // taps four keys waiting for the total to move decides the email is broken.
+  const label = blank
+    ? 'Nothing on this one is guessed. Tap any key to open the live machine, put in the three numbers you already know, and the display shows what the calls you miss are costing ' + esc(business) + '.'
+    : personalized
+      ? 'Worked back from what ' + esc(business) + ' shows in public. Every guess is printed under the machine. Tap any key to open it and change them.'
+      : 'We could not see your numbers, so these three are ours. Tap any key to open the live one and put yours in.';
 
   return (
     '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:22px 0 10px"><tr>' +
@@ -173,9 +220,9 @@ export function recoveryMachineBlock(args: {
     '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="' + CREAM + '" style="background:' + CREAM + ';border:2px solid ' + INK + ';border-radius:9px;margin-top:10px">' +
     '<tr><td style="padding:9px">' +
     '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">' +
-    slot('Calls You Miss A Week', 'Rings out, voicemail, after hours', String(est.missedPerWeek), true) +
-    slot('Would Have Hired You', 'Of the people you actually talk to', est.closeRatePct + '%', false) +
-    slot('Average Job Value', 'What one is worth to you', '$' + est.avgJobValue.toLocaleString('en-US'), false) +
+    slot('Calls You Miss A Week', 'Rings out, voicemail, after hours', est ? String(est.missedPerWeek) : '_ _', true) +
+    slot('Would Have Hired You', 'Of the people you actually talk to', est ? est.closeRatePct + '%' : '_ _ %', false) +
+    slot('Average Job Value', 'What one is worth to you', est ? '$' + est.avgJobValue.toLocaleString('en-US') : '$ _ _ _', false) +
     '</table>' +
     keypad +
     '</td></tr></table>' +

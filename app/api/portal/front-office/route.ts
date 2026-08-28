@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { getClientSession } from '@/lib/client-auth';
 import { getSupabase } from '@/lib/supabase';
 import { recordOfficeEvent } from '@/lib/front-office/provision';
-import { sidekickVoice } from '@/lib/sidekick-voice';
+import { demoVoice } from '@/lib/demo-voice';
 import { toE164 } from '@/lib/sms';
 import { syncAssistant } from '@/lib/front-office/agent';
 
@@ -98,7 +98,7 @@ export async function POST(req: Request) {
   // arriving from a browser is an instruction-injection hole.
   if (typeof body.voiceGender === 'string' && VOICE_GENDERS.includes(body.voiceGender)) {
     patch.voice_gender = body.voiceGender;
-    patch.voice_id = sidekickVoice(body.voiceGender).voiceId;
+    patch.voice_id = demoVoice(body.voiceGender).voiceId;
   }
   if (typeof body.forwardMode === 'string' && FORWARD_MODES.includes(body.forwardMode)) patch.forward_mode = body.forwardMode;
   if (typeof body.tone === 'string' && TONES.includes(body.tone)) patch.tone = body.tone;

@@ -117,6 +117,81 @@ for (const [slug, decl] of Object.entries(fleet.assistants)) {
   }
 }
 
+/*
+ * NO ENUM INSIDE AN ARRAY'S `items`. THIS ONE COST ELEVEN DAYS AND EVERY FORGE.
+ *
+ * `forge_demo_suite.build` shipped 2026-08-13 declared as
+ * `{ type: 'array', items: { type: 'string', enum: [...] } }`. That nested enum
+ * did not constrain the argument, it erased the whole call: Vapi handed the
+ * model a tool it could select and could not fill, so every `forge_demo_suite`
+ * call arrived at the webhook as the literal `{}`. Not the one field, all ten.
+ * 16 empty calls out of 16 between 2026-08-13 and 2026-08-24, zero demos ever
+ * forged on a phone call, and the caller heard an apology every time.
+ *
+ * ⚠️ IT IS SPECIFICALLY THE NESTED ONE. A plain top-level string enum is FINE
+ * and is not flagged here. The call history is unambiguous on both halves:
+ *   - `book_walkthrough.urgency`, a top-level string enum, filled 6 times
+ *     out of 6.
+ *   - `send_email.links`, an array of plain strings carrying a 26-key
+ *     vocabulary in its DESCRIPTION, fills correctly on the very same calls
+ *     that `forge_demo_suite` came back empty on.
+ *   - `forge_demo_suite` itself, before the nested enum existed, arrived with
+ *     8 fields filled.
+ * Array plus enum is the only combination that has ever failed, so that is the
+ * only combination this rule bans. Do not widen it to all enums on a hunch and
+ * do not narrow it away.
+ *
+ * It was invisible from here because nothing in this repo fails when a live
+ * model sends an empty object, and invisible from Vapi because the config
+ * PATCHes clean, stores clean and reads back clean. A 200 proves the schema is
+ * valid and nothing else, which is the same lesson the OpenAI TTS outage
+ * taught this fleet.
+ *
+ * The fix, every time: delete the nested enum, put the valid values in that
+ * parameter's description the way send_email.links does, and validate them on
+ * the server where a near miss costs nothing.
+ *
+ * Runs over every config in the directory, not only the ones fleet.json
+ * declares, because mr-mustard is deliberately outside the fleet and he is the
+ * agent this happened to.
+ */
+if (existsSync(CONFIG_DIR)) {
+  const { readdirSync } = await import('node:fs');
+  const findItemEnums = (node, path, hits) => {
+    if (Array.isArray(node)) {
+      node.forEach((v, i) => findItemEnums(v, `${path}[${i}]`, hits));
+      return;
+    }
+    if (!node || typeof node !== 'object') return;
+    if (node.items && typeof node.items === 'object' && 'enum' in node.items) {
+      hits.push(`${path}.items.enum`);
+    }
+    for (const [k, v] of Object.entries(node)) {
+      findItemEnums(v, path ? `${path}.${k}` : k, hits);
+    }
+  };
+  for (const f of readdirSync(CONFIG_DIR).filter((f) => f.endsWith('.json'))) {
+    const slug = f.replace(/\.json$/, '');
+    const cfg = JSON.parse(readFileSync(join(CONFIG_DIR, f), 'utf8'));
+    for (const tool of cfg.model?.tools ?? []) {
+      const name = tool.function?.name;
+      if (!name) continue;
+      const hits = [];
+      findItemEnums(tool.function.parameters ?? {}, '', hits);
+      for (const hit of hits) {
+        errors.push(
+          `${slug}: ${name} declares an enum inside array items at parameters.${hit}.` +
+            `\n    That shape does not constrain the value, it silently empties the ENTIRE` +
+            `\n    arguments object on every live call (see the note above this check).` +
+            `\n    Delete the nested enum, leave items as { type: 'string' }, list the valid` +
+            `\n    values in the parameter description the way send_email.links does, and` +
+            `\n    validate them on the server.`
+        );
+      }
+    }
+  }
+}
+
 // A config nobody declared is an agent nobody owns.
 if (existsSync(CONFIG_DIR)) {
   const { readdirSync } = await import('node:fs');

@@ -95,7 +95,7 @@ function Mile({ label, dark = false }: { label: string; dark?: boolean }) {
 
 /** Children of a `group` container that useReveal marks with data-in="1". */
 const revealBase =
-  'opacity-0 translate-y-6 transition-all duration-[900ms] ease-[cubic-bezier(.22,1,.36,1)] group-data-[in="1"]:opacity-100 group-data-[in="1"]:translate-y-0 motion-reduce:transition-none';
+  'mm-r opacity-0 translate-y-6 transition-all duration-[900ms] ease-[cubic-bezier(.22,1,.36,1)] group-data-[in="1"]:opacity-100 group-data-[in="1"]:translate-y-0 motion-reduce:transition-none';
 
 function openMustard(source: string) {
   track('journey_door', { door: source });
@@ -150,7 +150,7 @@ export function JourneyHero() {
             A Drive
           </h1>
           <p className={`mt-3 sm:mt-5 max-w-2xl lg:max-w-xl text-base sm:text-lg md:text-xl text-[#FBF6EA]/95 font-body ${revealBase}`} style={{ transitionDelay: '240ms' }}>
-            Websites that talk, voice agents that answer, and the command centers that run them.
+            Websites that talk and voice agents that answer, built as one thing.
             Live in about a week.
             <span className="hidden sm:inline"> This is Modern Mustard Seed, and this is the scenic route.</span>
           </p>
@@ -215,6 +215,12 @@ export function JourneyRing() {
 /* MI 12 · The Orchards                                                */
 /* ------------------------------------------------------------------ */
 
+/**
+ * THREE CROPS, NOT FOUR. The Command Center was the third row here until Sarah
+ * said on 2026-08-25: "I am not pushing command center anywhere." It is still
+ * sold at /command-center and /pay/command-center; the orchard just stops
+ * planting it next to the things we forge for free. Do not add it back.
+ */
 const CROPS = [
   {
     href: '/websites',
@@ -225,11 +231,6 @@ const CROPS = [
     href: '/voice-agents',
     label: 'The Voice Agent',
     line: 'Answers every call on the first ring, at noon and at two in the morning. Books the job while your hands are full.',
-  },
-  {
-    href: '/command-center',
-    label: 'The Command Center',
-    line: 'Every lead, booking, and conversation on one screen. The brain both of the others report to.',
   },
   {
     href: '/book',
@@ -253,11 +254,11 @@ export function JourneyOrchard() {
           <h2 className={`${anton.className} mt-5 uppercase text-[#161616] leading-[0.95] ${revealBase}`} style={{ fontSize: 'clamp(40px,5vw,72px)' }}>
             We Grow
             <br />
-            Four Things
+            Three Things
           </h2>
           <p className={`mt-5 max-w-xl text-lg text-[#161616]/80 ${revealBase}`} style={{ transitionDelay: '120ms' }}>
             The orchards up here hang heavy every summer because somebody planted rows on purpose.
-            Same idea down at the studio. Three crops planted together, and a fourth row for
+            Same idea down at the studio. Two crops planted together, and a third row for
             whatever your business needs built custom.
           </p>
           <div className="mt-8 space-y-4">
@@ -304,7 +305,7 @@ const SIGNS = [
     line: 'The flagship. A site and a voice agent built as one thing off one brain. The answer a visitor reads is the answer a midnight caller hears.',
     cta: 'Read The Sign',
   },
-  { href: '/demos', label: 'The Demo Forge', line: 'Tell us your trade. We forge your website, voice agent, and command center before you pay anything.', cta: 'Forge Mine Free' },
+  { href: '/demos', label: 'The Demo Forge', line: 'Tell us your trade. We forge your website and your voice agent before you pay anything.', cta: 'Forge Mine Free' },
   { href: '/website-audit', label: 'The Free Audit', line: 'Point our AI at your current website and get the honest report in minutes.', cta: 'Run My Audit' },
   { href: '/pictures', label: 'Mustard Pictures', line: 'Commercials, brand films, and social cuts, directed by the studio AI.', cta: 'Visit The Studio' },
   { href: '/store', label: 'The Playbook Store', line: 'The exact playbooks the studio runs on, written down and ready to use.', cta: 'Browse The Store' },
@@ -424,7 +425,7 @@ const SQUARE = [
     tag: 'Proof',
     label: 'The Numbers, In Plain English',
     line:
-      'Your command center shows calls answered, forms filled, reviews collected, and where every one of them came from. Written in sentences, not charts you have to decode.',
+      'You see calls answered, forms filled, reviews collected, and where every one of them came from. Written in sentences, not charts you have to decode.',
   },
 ];
 
@@ -561,8 +562,8 @@ export function JourneyPlanting() {
             Matthew 13:31&ndash;32
           </p>
           <p className={`mt-6 max-w-xl text-lg text-[#FBF6EA]/80 ${revealBase}`} style={{ transitionDelay: '200ms' }}>
-            That verse is the whole business plan. Every build here starts seed sized: one website, one voice agent, one
-            command center for one owner. Then it gets tended every day until the branches can hold weight.
+            That verse is the whole business plan. Every build here starts seed sized: one website and one voice agent
+            for one owner. Then it gets tended every day until the branches can hold weight.
           </p>
         </div>
       </div>
@@ -627,7 +628,7 @@ const DOORS = [
   {
     key: 'forge',
     label: 'Forge My Custom Demo',
-    line: 'Give us your name and trade. The forge builds your website, voice agent, and command center to keep or toss.',
+    line: 'Give us your name and trade. The forge builds your website and your voice agent to keep or toss.',
     cta: 'Start The Forge',
     href: '/demos',
   },

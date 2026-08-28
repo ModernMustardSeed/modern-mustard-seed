@@ -6,34 +6,9 @@ import type {
   ForgeRow,
   ForgeSiteRun,
   ForgeStage,
-  ForgeWorkerHealth,
-  ForgeWorkerVitals,
   SiteDemoStatus,
 } from '@/lib/outbound';
-import { FORGE_WORKER_DEAD_AFTER_S } from '@/lib/outbound';
-
-/**
- * Read the worker's heartbeat. Best effort in both directions: a missing row and
- * a failed read both mean "no signal", and neither may take the forge board down,
- * because the board is how Sarah works the floor.
- */
-type ForgeSupabase = Awaited<ReturnType<typeof requireOutboundAdmin>> extends infer G
-  ? G extends { supabase: infer S }
-    ? S
-    : never
-  : never;
-
-async function workerVitals(supabase: ForgeSupabase): Promise<ForgeWorkerVitals | null> {
-  try {
-    const { data } = await supabase.from('app_state').select('value').eq('key', 'forge_worker_health').maybeSingle();
-    const v = (data?.value ?? null) as ForgeWorkerHealth | null;
-    if (!v?.at) return null;
-    const ageSeconds = Math.max(0, Math.round((Date.now() - new Date(v.at).getTime()) / 1000));
-    return { ...v, ageSeconds, alive: ageSeconds <= FORGE_WORKER_DEAD_AFTER_S };
-  } catch {
-    return null;
-  }
-}
+import { readForgeWorkerVitals } from '@/lib/forge-worker';
 
 export const runtime = 'nodejs';
 
@@ -50,7 +25,7 @@ export const runtime = 'nodejs';
 // One literal string on purpose: a computed/joined list widens to `string` and
 // supabase-js loses row typing entirely (every row becomes GenericStringError).
 const LEAD_COLS =
-  'id, business_name, contact_name, phone, email, niche, city, state, status, source, origin, owner_rep_id, dnc_checked, audit_score, demo_url, demo_run_id, site_demo_id, site_demo_url, site_demo_status, os_demo_id, os_demo_url, hub_demo_id, hub_demo_url, integration_plan_url, integration_plan_status, presence_audit_url, presence_audit_score, hub_view_count, email_open_count, last_email_at, last_open_at, next_action_at, created_at, updated_at';
+  'id, business_name, contact_name, phone, email, niche, city, state, status, source, origin, owner_rep_id, dnc_checked, audit_score, demo_url, demo_run_id, site_demo_id, site_demo_url, site_demo_status, site_template, os_demo_id, os_demo_url, hub_demo_id, hub_demo_url, integration_plan_url, integration_plan_status, presence_audit_url, presence_audit_score, hub_view_count, email_open_count, last_email_at, last_open_at, next_action_at, created_at, updated_at';
 
 /** Anything forged for the lead: voice agent, website, command center, or the suite hub. */
 const FORGED_FILTER = 'demo_run_id.not.is.null,site_demo_id.not.is.null,os_demo_id.not.is.null,hub_demo_id.not.is.null';
@@ -268,7 +243,7 @@ export async function GET(req: Request) {
     { forging: 0, failed: 0, uncontacted: 0, waiting: 0, landed: 0, closed: 0, all: 0 },
   );
 
-  if (summaryOnly) return NextResponse.json({ counts, worker: await workerVitals(guard.supabase) });
+  if (summaryOnly) return NextResponse.json({ counts, worker: await readForgeWorkerVitals(guard.supabase) });
 
   // Work order, not chronology: what is building, what broke, what is built and
   // unspent, then the rest. Inside a bucket, the freshest forge leads.
@@ -281,5 +256,5 @@ export async function GET(req: Request) {
     return bt.localeCompare(at);
   });
 
-  return NextResponse.json({ rows, counts, reps, worker: await workerVitals(guard.supabase) });
+  return NextResponse.json({ rows, counts, reps, worker: await readForgeWorkerVitals(guard.supabase) });
 }

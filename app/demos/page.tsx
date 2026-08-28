@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { buildMetadata, SITE } from '@/lib/seo';
 import DemoStation from '@/components/DemoStation';
+import MissedMoney from '@/components/mustard/MissedMoney';
 import { DEMO_PRODUCTS, DEMO_BUNDLE, formatUsd } from '@/lib/demo-order';
 
 /**
@@ -16,22 +17,22 @@ import { DEMO_PRODUCTS, DEMO_BUNDLE, formatUsd } from '@/lib/demo-order';
 export const metadata = buildMetadata({
   title: 'Free Voice Agent and Website Demo for Your Business',
   description:
-    'Get three working AI demos free, no card and no sales call: a voice agent that answers as your business, a custom website built from scratch, and a business command center that is free when you take both. The whole suite is with you within the hour. Keep what you love from $147/mo.',
+    'Get two working AI demos free, no card and no sales call: a voice agent that answers as your business, and a custom website built from scratch. Both are with you within the hour. Keep what you love from $147/mo.',
   path: '/demos',
 });
 
 const FAQ = [
   {
     q: 'Is it really free?',
-    a: 'Yes. The three demos cost you nothing and there is no card and no meeting. We build them because the demos sell themselves; keep what you love from $147 a month, or walk away.',
+    a: 'Yes. Both demos cost you nothing and there is no card and no meeting. We build them because the demos sell themselves; keep what you love from $147 a month, or walk away.',
   },
   {
     q: 'What exactly do I get?',
-    a: 'Three working demos personalized to your business: a voice agent you can call and try to stump, a complete demo website designed from scratch, and a business command center with your name on the door, wired to your calls and your website traffic. Take the website and the voice agent together and the command center comes free, no build cost and no monthly. All three live at your private hub link.',
+    a: 'Two working demos personalized to your business: a voice agent you can call and try to stump, and a complete demo website designed from scratch, with the agent answering on it. Both live at your private hub link, and taking them together builds them as one thing for less than the two apart.',
   },
   {
     q: 'How fast?',
-    a: 'Your voice agent and your command center open right away. The website is different, because it is designed from scratch rather than filled into a template, and then we record you a walkthrough of the finished suite. We have the whole thing to you within the hour. It appears at your hub on its own and we email you the moment it lands, so you can close the tab.',
+    a: 'Your voice agent opens right away. The website is different, because it is designed from scratch rather than filled into a template, and then we record you a walkthrough of the finished suite. We have the whole thing to you within the hour. It appears at your hub on its own and we email you the moment it lands, so you can close the tab.',
   },
   {
     q: 'What happens if I want to keep something?',
@@ -53,13 +54,6 @@ const PIECES = [
     desc: 'Designed from scratch for your trade, your town, your phone number. A real working draft, not a template tour.',
     price: DEMO_PRODUCTS.site,
     tone: 'gold' as const,
-  },
-  {
-    icon: '⚙',
-    title: 'Command Center',
-    desc: 'Every call transcribed, your website traffic and leads, customers, reviews, and money on one board, with an AI that reads it all back to you.',
-    price: DEMO_PRODUCTS.os,
-    tone: 'white' as const,
   },
 ];
 
@@ -84,7 +78,9 @@ const PIECES = [
  * here: see the $197/$297 split that leaked into the trade FAQ schema.
  */
 function demosJsonLd() {
-  const products = [DEMO_PRODUCTS.voice, DEMO_PRODUCTS.site, DEMO_PRODUCTS.os];
+  // Two, not three: the command center is not one of the demos we forge, so it
+  // is not one of the offers this page advertises (Sarah, 2026-08-25).
+  const products = [DEMO_PRODUCTS.voice, DEMO_PRODUCTS.site];
   const offer = (name: string, monthlyCents: number, setupCents: number, desc: string) => ({
     '@type': 'Offer' as const,
     name,
@@ -117,9 +113,9 @@ function demosJsonLd() {
       {
         '@type': 'Service',
         name: 'The Demo Station by Modern Mustard Seed',
-        serviceType: 'Free AI business demos: voice agent, website, and command center',
+        serviceType: 'Free AI business demos: voice agent and website',
         description:
-          'A free self-serve forge. Enter your business once and receive three working demos: a voice agent trained on your company, a custom website designed from scratch, and a business command center that is free when you take the website and the voice agent together. No account and no credit card.',
+          'A free self-serve forge. Enter your business once and receive two working demos: a voice agent trained on your company, and a custom website designed from scratch. No account and no credit card.',
         provider: { '@type': 'Organization', name: 'Modern Mustard Seed', url: SITE.url },
         areaServed: 'US',
         offers: [
@@ -128,14 +124,14 @@ function demosJsonLd() {
               p.name,
               p.monthlyCents,
               p.setupCents,
-              p.freeInBundle ? `${p.blurb} Sold on its own, or free when you take the website and the voice agent together.` : p.blurb,
+              p.blurb,
             ),
           ),
           offer(
             DEMO_BUNDLE.name,
             DEMO_BUNDLE.monthlyCents,
             DEMO_BUNDLE.setupCents,
-            'The voice agent and website made real together at a discount, with the command center included free.',
+            'The voice agent and the website made real together, built as one thing, for less than the two apart.',
           ),
         ],
       },
@@ -151,8 +147,8 @@ function demosJsonLd() {
           },
           {
             '@type': 'HowToStep',
-            name: 'Meet your voice agent and command center',
-            text: 'Both open right away at your private hub. Talk to the voice agent in your browser and try to stump it.',
+            name: 'Meet your voice agent',
+            text: 'It opens right away at your private hub. Talk to it in your browser and try to stump it.',
           },
           {
             '@type': 'HowToStep',
@@ -180,7 +176,34 @@ function demosJsonLd() {
   };
 }
 
-export default function DemosPage() {
+export default async function DemosPage({
+  searchParams,
+}: {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  /**
+   * THE KEYPAD IN THE COLD EMAIL FINISHES HERE (2026-08-25). The email's
+   * Model RR-1 is drawn in tables with no JavaScript, so its keys are links to
+   * this page's live machine, carrying only the digit pressed (the email
+   * guesses no numbers). Clamped, because these arrive off a link a stranger
+   * can edit. /mustard used to be the landing; it is never linked from an
+   * email any more.
+   */
+  const params = (await searchParams) ?? {};
+  const one = (k: string): string => {
+    const v = params[k];
+    return (Array.isArray(v) ? v[0] : v) ?? '';
+  };
+  const num = (k: string, max: number): number | null => {
+    const v = Number(one(k));
+    return Number.isFinite(v) && v > 0 ? Math.min(max, Math.round(v)) : null;
+  };
+  const machine = {
+    missed: num('m', 200),
+    close: num('c', 100),
+    ticket: num('t', 500000),
+    typed: /^([0-9]|C)$/.test(one('k')) ? one('k') : null,
+  };
   return (
     <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
       <script
@@ -203,18 +226,18 @@ export default function DemosPage() {
               </span>
               <h1 className="font-display text-[2.6rem] sm:text-5xl xl:text-6xl font-bold mt-4 leading-[1.02] tracking-tight">
                 We build your business{' '}
-                <em className="italic text-[#C4160B]">three free demos.</em> Right now.
+                <em className="italic text-[#C4160B]">two free demos.</em> Right now.
               </h1>
               <p className="font-body text-[17px] text-[#161616]/70 mt-5 leading-relaxed">
-                A voice agent that answers as your business. A brand-new website. A command center with your name on
-                the door. Real and working, personalized to you, not a slideshow.
+                A voice agent that answers as your business, and a brand-new website with your name on the door. Real
+                and working, personalized to you, not a slideshow.
               </p>
 
               <ul className="mt-6 space-y-2.5">
                 {[
                   'No card. No meeting. No sales call to sit through.',
-                  'Two open right away. The whole suite is with you within the hour.',
-                  `Keep what you love from ${formatUsd(DEMO_PRODUCTS.site.monthlyCents)}/mo, command center free when you take both. Or keep nothing.`,
+                  'Your agent opens right away. The website is with you within the hour.',
+                  `Keep what you love from ${formatUsd(DEMO_PRODUCTS.site.monthlyCents)}/mo. Or keep nothing.`,
                 ].map((t) => (
                   <li key={t} className="flex items-start gap-2.5 font-body text-[15px] text-[#161616]/80">
                     <span
@@ -232,7 +255,7 @@ export default function DemosPage() {
                 href="#forge"
                 className="mt-8 inline-flex items-center gap-2 bg-[#161616] text-[#FBF6EA] border-2 border-[#161616] rounded-xl px-7 py-4 font-sans font-bold uppercase tracking-[0.1em] text-sm shadow-[5px_5px_0_0_#F5B700] hover:-translate-y-0.5 transition-transform lg:hidden"
               >
-                Forge my three demos →
+                Forge my demos →
               </a>
             </div>
 
@@ -281,7 +304,7 @@ export default function DemosPage() {
               <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#F5B700] font-bold">What lands, and when</p>
               <ul className="mt-3 space-y-2">
                 {[
-                  ['Right away', 'Your voice agent and your command center, live at your private hub.'],
+                  ['Right away', 'Your voice agent, live at your private hub.'],
                   ['Within the hour', 'Your website, designed from scratch (not a template), plus a recorded walkthrough of the finished suite, landing at the same hub.'],
                 ].map(([when, what]) => (
                   <li key={when} className="font-body text-[14px] text-[#FBF6EA]/80 leading-relaxed">
@@ -300,11 +323,37 @@ export default function DemosPage() {
           </div>
         </section>
 
+        {/* ── The calculator. The cold email's keypad lands here, and it lands
+             blank on purpose: the numbers are theirs to type. ── */}
+        <section id="calculator" className="grid gap-6 lg:grid-cols-[1fr_1.05fr] lg:items-start scroll-mt-8">
+          <MissedMoney
+            monthlyPrice={formatUsd(DEMO_BUNDLE.monthlyCents)}
+            missedPreset={machine.missed}
+            closePreset={machine.close}
+            ticketPreset={machine.ticket}
+            typedKey={machine.typed}
+          />
+          <div className="lg:pt-10">
+            <p className="font-mono text-[10px] font-bold uppercase tracking-[0.28em] text-[#C4160B]">What the display means</p>
+            <h3 className="mt-3 font-display text-[1.7rem] sm:text-[2.1rem] font-extrabold leading-tight tracking-tight">
+              Three numbers you already know. Nothing we guessed.
+            </h3>
+            <p className="mt-4 font-body text-[15px] leading-relaxed text-[#161616]/75">
+              Calls you miss in a week, how many of the people you do talk to hire you, and what one job is worth. The
+              display is what walks out the door every month while the phone rings out. The demo above is what stops it,
+              and it is free to look at.
+            </p>
+            <a href="#forge" className="inline-flex mt-6 items-center gap-2 bg-[#F5B700] text-[#161616] border-2 border-[#161616] rounded-xl px-5 py-3 font-sans font-extrabold uppercase tracking-[0.12em] text-[12px] shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-all">
+              Build my demo ↑
+            </a>
+          </div>
+        </section>
+
         {/* ── The three pieces. Flex columns, pills pinned to one baseline. ── */}
         <section>
           <h2 className="font-display text-3xl sm:text-4xl font-bold">What actually shows up</h2>
           <p className="font-body text-[15px] text-[#161616]/70 mt-2 max-w-2xl">
-            Three working things with your name on them. Play with all of them, keep any of them, or keep none.
+            Two working things with your name on them. Play with both, keep either, or keep neither.
           </p>
           <div className="grid sm:grid-cols-3 gap-5 mt-7">
             {PIECES.map((c) => (
@@ -335,14 +384,14 @@ export default function DemosPage() {
                 >
                   Free demo
                   <span className={c.tone === 'ink' ? 'text-[#FBF6EA]/40' : 'text-[#161616]/70'}> · </span>
-                  {c.price.freeInBundle ? <>{formatUsd(c.price.monthlyCents)}/mo, free when you take both</> : <>keep for {formatUsd(c.price.monthlyCents)}/mo</>}
+                  keep for {formatUsd(c.price.monthlyCents)}/mo
                 </p>
               </div>
             ))}
           </div>
           <p className="font-body text-[14px] text-[#161616]/60 mt-5">
-            Take the voice agent and the website together and your command center is free. That pair is The Talking
-            Website, {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo, month to month, and you order it right from your hub.
+            Take the voice agent and the website together and they are built as one thing: The Talking Website,
+            {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo, month to month, and you order it right from your hub.
           </p>
         </section>
 
@@ -352,11 +401,11 @@ export default function DemosPage() {
           <div className="grid sm:grid-cols-3 gap-8 sm:gap-6 mt-6">
             {[
               { n: '1', t: 'You tell us who you are', d: 'One short form, the one above. No card, no meeting.' },
-              { n: '2', t: 'The forge builds', d: 'Voice Agent and command center open right away. Your website is designed from scratch, then we record you a walkthrough of the finished suite. The whole thing is with you within the hour, at the same hub, on its own.' },
+              { n: '2', t: 'The forge builds', d: 'Your Voice Agent opens right away. Your website is designed from scratch, then we record you a walkthrough of the finished suite. The whole thing is with you within the hour, at the same hub, on its own.' },
               {
                 n: '3',
                 t: 'Keep what you love',
-                d: `Order at your hub: from ${formatUsd(DEMO_PRODUCTS.site.monthlyCents)}/mo per piece, ${formatUsd(DEMO_BUNDLE.monthlyCents)}/mo for The Talking Website (both pieces, command center free). Live within 7 days.`,
+                d: `Order at your hub: from ${formatUsd(DEMO_PRODUCTS.site.monthlyCents)}/mo per piece, ${formatUsd(DEMO_BUNDLE.monthlyCents)}/mo for The Talking Website (both pieces, built as one). Live within 7 days.`,
               },
             ].map((s) => (
               <div key={s.n} className="flex gap-4 sm:block">

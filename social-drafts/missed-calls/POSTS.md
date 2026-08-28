@@ -113,8 +113,8 @@ have never commented in a group, your first post there should not be this one.
 > $297 a month, and I scope it on a 15 minute call. Not trying to sell you in the
 > comments though, go break the demo first.
 
-> Price check before you post: that came from `data/sidekick.ts` on 2026-07-28
-> (SIDEKICK $397 setup / $297 mo, SIDEKICK PRO $597 / $497 mo). Never type a
+> Price check before you post: that came from `data/demo-agent.ts` on 2026-07-28
+> (DEMO_AGENT $397 setup / $297 mo, DEMO_AGENT PRO $597 / $497 mo). Never type a
 > price from memory, re-read the file if the tiers have moved.
 
 **"Does it sound fake?"**

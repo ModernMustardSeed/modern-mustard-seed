@@ -18,8 +18,11 @@ import { evaluate, dueForStep, businessDaysBetween, sequenceGaps, sequenceLength
 
 import { workerStatus } from '../app/api/admin/acquisition/lead-finder/route';
 import { TRADE_DEFS, SOURCEABLE_TRADES, PROVEN_TRADES } from '../lib/acq/trades';
+import { detectTrade } from '../data/demo-os-trades';
 import { neverDoFor, escalateOnFor, defaultGreeting, callerKey } from '../lib/front-office/provision';
 import { runwayDays } from '../lib/acq/reservoir';
+import { POST_DEMO_SEQUENCE, POST_DEMO_STEP_BASE, afterBusinessDays } from '../lib/acq/post-demo';
+import { idempotencyKey } from '../lib/acq/queue';
 import { buildInstructions, assistantConfig } from '../lib/front-office/agent';
 import { frontOfficeTools } from '../lib/front-office/tools';
 import { parseDayHours, sayable } from '../lib/front-office/calendar';
@@ -31,16 +34,22 @@ import { env, envAny, isPlaceholder, placeholderVars } from '../lib/env';
 import { parseTeam } from '../app/api/demo-order/intake/route';
 import { TRADE_LABELS, TRADE_SCENARIOS, TRADE_ROLEPLAY_NOTE } from '../lib/acq/types';
 import { classifyAgent, classifyHit, verdictDetail, HUMAN_DELAY_SECONDS, POLL_WINDOW_MINUTES } from '../lib/acq/bots';
+import { piecesFrom, listPieces, PIECE_ORDER } from '../lib/forge-pieces';
+import { demoHoursFrom, DEMO_DEFAULT_HOURS } from '../lib/demo-booking';
+import { slotsFrom, parseDayHours } from '../lib/front-office/calendar';
 
 /** Four gaps, so a five email sequence. A fixture for the date maths only;
  *  the shipped campaign runs six emails and reads its length off its own row. */
 const GAPS = [2, 4, 3, 4];
 import { idempotencyKey } from '../lib/acq/queue';
 import { CONSENT_VERSIONS, CURRENT_CONSENT, toE164, consentVersion } from '../lib/acq/consent';
-import { greetingFor, firstNameOr, renderSubject, shortBusiness, buildCampaignEmail, permissionUrl } from '../lib/acq/campaign';
+import { greetingFor, firstNameOr, renderSubject, shortBusiness, buildCampaignEmail, buildDemoEmail, permissionUrl } from '../lib/acq/campaign';
+import { DEMO_ORDER_KEYS, DEMO_PRODUCTS, DEMO_BUNDLE, quoteDemoOrder } from '../lib/demo-order';
+import { FORGE_PIECES } from '../lib/voice-forge-suite';
 import { pickVariant } from '../lib/acq/settings';
 import { normalizeObjection } from '../lib/acq/stats';
 import { addBusinessDays, shouldStopFollowup } from '../lib/acq/runner';
+import { suiteState, type AcqSuiteLead } from '../lib/acq/suite';
 import { cloudflareEmails, extractPhone, extractHours, extractServiceArea, parseOsmHours, matchesTrade, normalizePhone, decodeObfuscated, hostOf } from '../lib/acq/source';
 import { tradeOf, buildBriefing, firstMessage, acquisitionTools } from '../lib/acq/call';
 import { authorize, nextRampStep, backOffStep, tierFor } from '../lib/acq/governor';
@@ -48,7 +57,7 @@ import { goalLadder, forecast, monthsBetween, type FunnelRate } from '../lib/acq
 import { estimateFor, personalOpener } from '../lib/acq/personalize';
 import { recoveryMachineBlock, machineAssumptions } from '../lib/acq/machine';
 import {
-  scoreReviews, scoreProfile, scoreWebsite, blend, letterFor, buildPresenceReport,
+  scoreReviews, scoreProfile, scoreWebsite, blend, letterFor, buildPresenceReport, listingSeen,
   inputFromLead, PILLAR_WEIGHTS, type PresenceInput,
 } from '../lib/presence-audit';
 import { readAttribution, labelSource } from '../lib/mustard/surface';
@@ -266,6 +275,14 @@ test('eligibility: the deny list is absolute', () => {
     [{ phone: '555' }, /dialable/i],
     [{ lead_score: 10 }, /under the campaign minimum/i],
     [{ duplicate_of: 'x' }, /duplicate/i],
+    // One of our own inboxes is not a prospect's address, however it got there.
+    // Moses Tree Service of Bozeman was emailed at wildhopehouse@gmail.com
+    // because the tracker read it off a page; two other rows carry the tracker's
+    // own User-Agent string, which has our domain buried in the middle of it.
+    [{ email: 'wildhopehouse@gmail.com' }, /one of our own/i],
+    [{ email: 'sarah@modernmustardseed.com' }, /one of our own/i],
+    [{ email: 'makeourcitypretty@gmail.com' }, /one of our own/i],
+    [{ email: 'modernmustardseed-tracker%2f1.0+%28sarah@modernmustardseed.com' }, /one of our own/i],
   ];
   for (const [over, expected] of cases) {
     const v = evaluate(lead(over), ctx);
@@ -815,7 +832,7 @@ test('trades: every industry in the registry is complete and internally consiste
     assert.ok(d.match.test(d.label) || d.maps.some((q) => d.match.test(q)), `${key}: the strict filter does not match its own search terms`);
     assert.ok(TRADE_LABELS[key] && TRADE_SCENARIOS[key]?.length && TRADE_ROLEPLAY_NOTE[key], `${key}: missing from the derived tables`);
   }
-  assert.ok(SOURCEABLE_TRADES.length >= 16, 'the registry should carry every industry we can sell to');
+  assert.ok(SOURCEABLE_TRADES.length >= 26, 'the registry should carry every industry we can sell to');
   for (const t of PROVEN_TRADES) assert.ok(SOURCEABLE_TRADES.includes(t), `${t} is marked proven but is not in the registry`);
 });
 
@@ -838,6 +855,18 @@ test('trades: the keyword collisions that would poison a campaign are all reject
     ['Second Floor Dance Studio', 'flooring'],
     ['Scratch and Dent Appliance Store', 'appliance_repair'],
     ['Glacier Garden Center and Nursery', 'landscaping'],
+    /* the construction family. Every one of these reads exactly like the trade. */
+    ['Free Mason Lodge No 42', 'masonry'],
+    ['Community Foundation of the Flathead', 'concrete'],
+    ['Bozeman Fencing Club', 'fencing'],
+    ['Elite Window Tinting', 'windows_doors'],
+    ['Microsoft Windows Support', 'windows_doors'],
+    ['Gutter Ball Bowling Alley', 'siding_gutters'],
+    ['Rocky Mountain Construction Lending', 'general_contractor'],
+    ['Northern Excavation Archaeology Institute', 'excavation'],
+    ['Permian Basin Oil Well Drilling', 'well_water'],
+    ['Big Sky Wellness Center', 'well_water'],
+    ['Interstate Highway Paving Division', 'paving'],
   ];
   for (const [name, trade] of traps) {
     assert.equal(matchesTrade(name, trade), false, `"${name}" must never be sourced as ${trade}`);
@@ -859,10 +888,65 @@ test('trades: the keyword collisions that would poison a campaign are all reject
     ['Larson Painting Company', 'painting'],
     ['Glacier Flooring Gallery', 'flooring'],
     ['Evergreen Lawn Care', 'landscaping'],
+    /* and the construction family sources for real */
+    ['Flathead Valley Construction LLC', 'general_contractor'],
+    ['Summit Concrete and Flatwork', 'concrete'],
+    ['Glacier Masonry and Stonework', 'masonry'],
+    ['Big Sky Fence Company', 'fencing'],
+    ['Valley Seamless Gutters', 'siding_gutters'],
+    ['Kalispell Window and Door', 'windows_doors'],
+    ['Montana Septic Service', 'septic'],
+    ['Flathead Well Drilling and Pump', 'well_water'],
+    ['Whitefish Excavation and Site Work', 'excavation'],
+    ['Big Sky Asphalt Paving', 'paving'],
+    /* Real signage from a live Google Maps probe of Phoenix that the first cut
+       of these patterns threw away. Each one is a business we would have paid
+       to discover and then silently binned. */
+    ['RCC Block Wall Contractors Phoenix', 'masonry'],
+    ['Arizona Trench Company', 'excavation'],
+    ['Window World of Phoenix', 'windows_doors'],
+    ['American Pump & Well Service & Repair', 'well_water'],
+    ['Domres Grading Inc', 'excavation'],
+    ['Arizona Rain Gutters & Insulation', 'siding_gutters'],
+    ['Aria Builders LLC - General Contractor', 'general_contractor'],
   ];
   for (const [name, trade] of real) {
     assert.equal(matchesTrade(name, trade), true, `"${name}" should source as ${trade}`);
   }
+});
+
+test('trades: a sourced business forges as something better than a handyman', () => {
+  // Sourcing a trade and FORGING for it are two different registries: one finds
+  // the business, the other decides which price book, script and command centre
+  // it gets. Adding an industry to the first and forgetting the second is silent,
+  // because the forge just falls through to the generic preset and a fence
+  // company ends up with a demo about furnaces.
+  const forgesAs: [string, string][] = [
+    ['Summit Concrete and Flatwork', 'construction'],
+    ['Glacier Masonry and Stonework', 'construction'],
+    ['Big Sky Fence Company', 'construction'],
+    ['Valley Siding and Exteriors', 'construction'],
+    ['Kalispell Window and Door', 'construction'],
+    ['Whitefish Excavation and Site Work', 'construction'],
+    ['Big Sky Asphalt Paving', 'construction'],
+    ['Flathead Valley Construction LLC', 'construction'],
+    ['Montana Septic Service', 'septic'],
+    ['Flathead Well Drilling and Pump', 'plumbing'],
+  ];
+  for (const [name, expected] of forgesAs) {
+    assert.equal(detectTrade(name, 'home_service', name), expected, `${name} should forge as ${expected}`);
+  }
+
+  // And the words that carry the family must not drag in the neighbours who
+  // merely share vocabulary. A masonic lodge is not a contractor, and a
+  // wellness studio is not a well driller.
+  assert.notEqual(detectTrade('Free Mason Lodge No 42', 'other', 'Free Mason Lodge No 42'), 'construction');
+  assert.notEqual(detectTrade('Big Sky Wellness Center', 'other', 'Big Sky Wellness Center'), 'plumbing');
+
+  // The specific trades still win over the family. This is the ordering that
+  // keeps "Vance Roofing and Construction" a roofer.
+  assert.equal(detectTrade('Vance Roofing and Construction', 'home_service', 'Vance Roofing and Construction'), 'roofing');
+  assert.equal(detectTrade('Smith Plumbing and Excavation', 'home_service', 'Smith Plumbing and Excavation'), 'plumbing');
 });
 
 test('trades: an estimate is built for every industry, never just the original three', () => {
@@ -939,11 +1023,16 @@ test('emails: email one carries the machine, the ranch line and exactly one butt
   assert.match(html, /Model RR-1/, 'the pop-art calculator ships in the first email');
   assert.match(html, /\(406\) 312-1223/, 'his number is printed, not only linked in the signature');
   assert.match(html, /tel:\+14063121223/, 'and it is dialable from a phone');
-  // Two doors, one button. A second button splits the click and measures
-  // nothing; a phone number does not compete with a CTA. The keypad links to
-  // the live machine on /mustard, so it never lands on the tracked route.
+  assert.match(html, /font-size:34px/, 'the number is the biggest thing after the calculator');
+  // ONE BUTTON, TWO TRACKED LINKS. The button opens the free build; the text
+  // link under it opens the Talking Website. Both are measured, and only one of
+  // them is a button, because a second button splits the click and measures
+  // nothing. The keypad links to the live machine on /mustard, so it never
+  // lands on the tracked route.
   const tracked = html.match(/\/api\/acq\/click\?/g) ?? [];
-  assert.equal(tracked.length, 1, 'exactly one tracked button in the email');
+  assert.equal(tracked.length, 2, 'the button and its one text link, nothing else tracked');
+  assert.equal((html.match(/d=demos/g) ?? []).length, 1, 'exactly one button, and it opens the free build');
+  assert.equal((html.match(/d=talking-website/g) ?? []).length, 1, 'exactly one second path');
 });
 
 test('emails: the website email sells the suite and its button opens the suite', () => {
@@ -957,18 +1046,31 @@ test('emails: the website email sells the suite and its button opens the suite',
   });
   const html = built!.html;
   assert.match(html, /We build the website too/i);
-  assert.match(html, /The command center/);
+  assert.match(html, /The voice agent/);
+  // The command center came off the offer on 2026-08-22. It must not be named
+  // in the drip at all: not as a piece, not as a freebie, not as an aside.
+  assert.ok(!/command center/i.test(html), 'the command center is never suggested alongside anything');
   assert.match(html, /\(406\) 312-1223/, 'the forge close is on the phone, so the number is in the copy');
-  // The button must go to the demo suite, and the quieter second link back to
-  // the callback page. A button labelled BUILD MY SUITE that opens /mustard is
-  // a bait and switch.
+  // The button must go to the free build, and the quieter second link to the
+  // Talking Website. A button labelled BUILD MY SUITE that opens the callback
+  // page is a bait and switch.
   assert.match(html, /\/api\/acq\/click\?[^"]*d=demos/, 'the button carries the demos door');
   assert.ok(!/free\s+(website|suite)\s+for\s+\$/i.test(html), 'never a price on the free demo');
-  assert.match(html, /Have him call me/, 'the second door is a text link');
+  assert.match(html, /Or the Talking Website/, 'the second door is a text link');
 });
 
-test('emails: only the website email changes the door, and the door is a whitelist', () => {
-  for (const body_key of ['default', 'proof', 'challenge', 'keep_her', 'breakup']) {
+/**
+ * NOBODY IS ASKED FOR THEIR PHONE NUMBER (2026-08-25).
+ *
+ * The campaign used to end every email by offering to ring them, which put the
+ * wait and the commitment on the stranger. The new ask hands them a working
+ * agent for free and prints the line for anyone who would rather dial.
+ *
+ * This test is the guard on that decision. A body that asks to call them, or a
+ * button that reopens the permission page, fails here rather than in an inbox.
+ */
+test('emails: every email opens the free build, and none of them asks to call anybody', () => {
+  for (const body_key of ['default', 'proof', 'talking_website', 'challenge', 'keep_her', 'breakup']) {
     const built = buildCampaignEmail({
       lead: lead(),
       variant: { id: 'v', campaign_id: 'c', key: 'A', step: 1, subject: 'S', cta_label: 'YES', body_key, weight: 1, active: true },
@@ -977,10 +1079,125 @@ test('emails: only the website email changes the door, and the door is a whiteli
       fromEmail: 's@x.com',
       replyTo: 's@x.com',
     });
-    assert.ok(!built!.html.includes('d=demos'), `${body_key} must keep the callback door`);
+    const html = built!.html;
+    assert.match(html, /d=demos/, `${body_key} button must open the free build`);
+    assert.match(html, /d=talking-website/, `${body_key} must offer the second path`);
+    assert.ok(!html.includes('d=mustard'), `${body_key} must not reopen the permission page`);
+    assert.match(html, /\(406\) 312-1223/, `${body_key} must print the line to dial`);
+    // The exact phrasings the sequence used to close on. Any of them coming
+    // back means somebody reinstated the ask without reading why it went.
+    for (const ask of [/have him call you/i, /let him call me/i, /rings your phone/i, /I will have Mr\. Mustard call you/i]) {
+      assert.ok(!ask.test(html), `${body_key} still asks for a callback: ${ask}`);
+    }
   }
   assert.match(permissionUrl(lead(), 3, 'A', 'demos'), /d=demos/);
+  assert.match(permissionUrl(lead(), 3, 'A', 'talking-website'), /d=talking-website/);
   assert.ok(!permissionUrl(lead(), 1, 'A').includes('d='), 'the default door adds no parameter');
+});
+
+/**
+ * THE KEYPAD IN THE EMAIL HAS TO GO SOMEWHERE.
+ *
+ * No mail client runs JavaScript, so the keys cannot type and the readout cannot
+ * move. Sarah, looking at a send: "the calculator looks good, but its not
+ * working and letting me typ in it."
+ *
+ * It cannot, in an inbox, ever. What it can do is finish the press on the web:
+ * every digit key carries ITS OWN digit plus the three inputs the email printed,
+ * so /mustard opens on the same figure with that digit already entered. A key
+ * that dropped the numbers would land the reader on the house defaults, quoting
+ * a different total than the email that made them tap.
+ */
+test('emails: every keypad key carries its digit and the numbers on the display', () => {
+  const l = lead();
+  const built = buildCampaignEmail({
+    lead: l,
+    variant: { id: 'v', campaign_id: 'c', key: 'A', step: 1, subject: 'S', cta_label: 'BUILD', body_key: 'default', weight: 1, active: true },
+    step: 1,
+    fromName: 'Sarah',
+    fromEmail: 's@x.com',
+    replyTo: 's@x.com',
+  });
+  const html = built!.html;
+  // The keys land on the demo page's calculator, never /mustard (2026-08-25).
+  const keys = [...html.matchAll(/<a href="([^"]*\/demos\?[^"]*)"[^>]*>([^<]{1,6})<\/a>/g)];
+  assert.ok(!/href="[^"]*\/mustard[?"#]/.test(html), 'no email link may land on /mustard');
+  assert.equal(keys.length, 14, 'sixteen key faces, two of which span, so fourteen links');
+
+  for (const [, url, face] of keys) {
+    const q = new URL(url).searchParams;
+    // Since 2026-08-25 the email machine ships BLANK (Sarah: the guessed job
+    // value was wrong often enough to lose the argument), so no key carries a
+    // number; each carries only the blank flag and its own digit.
+    for (const p of ['m', 'c', 't']) {
+      assert.equal(q.get(p), null, `the "${face}" key must not carry a guessed ${p}`);
+    }
+    assert.equal(q.get('blank'), '1', `the "${face}" key opens the live machine blank`);
+    if (/^[0-9]$/.test(face)) assert.equal(q.get('k'), face, `the "${face}" key must carry its own digit`);
+    if (face === 'C') assert.equal(q.get('k'), 'C', 'clear must clear');
+  }
+  // The digits must not all point at the same place: that was the old bug, and
+  // it is invisible unless something counts.
+  const distinct = new Set(keys.map((k) => k[1]));
+  assert.ok(distinct.size >= 11, `expected a destination per digit, got ${distinct.size}`);
+
+  // And the keypad still never touches the tracked route: a man poking a
+  // calculator has not clicked the call to action.
+  assert.ok(!keys.some(([, u]) => u.includes('/api/acq/click')), 'the keypad is not the CTA');
+  assert.ok(keys.every(([, u]) => u.endsWith('#calculator')), 'a tap lands on the calculator, not the top of a long page');
+
+  // The label must not promise typing that cannot happen in an inbox.
+  assert.ok(!/tap a key and change them/i.test(html), 'the old label promised in-place editing');
+  assert.match(html, /Tap any key to open/i, 'it has to say where the tap goes');
+});
+
+/**
+ * A DEMO STARTS A SEQUENCE, IT DOES NOT END ONE.
+ *
+ * Sarah, 2026-08-25: "when we send a demo, it shouldnt end the drip sequence, it
+ * should start a new one for every demo sent."
+ *
+ * The cold drip does stop at demo_sent, and should. What must not stop is the
+ * follow-through, and "for every demo sent" is the part that was structurally
+ * impossible: the three jobs were keyed on (kind, lead, step) with nothing to
+ * tell one demo from the next, so demo two produced byte-identical keys and the
+ * unique index refused them. The ordinal in the key is what makes a second
+ * sequence possible at all, so it gets a test of its own.
+ */
+test('post-demo: every demo gets its own sequence, and they cannot collide', () => {
+  assert.equal(POST_DEMO_SEQUENCE.length, 3, 'three nudges after a demo');
+
+  // Front-loaded and strictly increasing: a demo is interesting on the day it
+  // lands and it is furniture the week after.
+  const gaps = POST_DEMO_SEQUENCE.map((s) => s.afterBusinessDays);
+  assert.deepEqual(gaps, [...gaps].sort((a, b) => a - b), 'the gaps only ever grow');
+  assert.ok(gaps[0] <= 2, 'the first nudge lands while they still remember opening it');
+  assert.ok(new Set(gaps).size === gaps.length, 'no two follow-ups on the same day');
+
+  const lead = 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee';
+  const keysFor = (demoNumber: number) =>
+    POST_DEMO_SEQUENCE.map((_, i) => idempotencyKey('followup', lead, POST_DEMO_STEP_BASE + i, `demo${demoNumber}`));
+
+  const first = keysFor(1);
+  const second = keysFor(2);
+  assert.equal(new Set(first).size, 3, 'the three jobs of one demo are distinct from each other');
+  assert.equal(new Set([...first, ...second]).size, 6, 'demo two must not collide with demo one');
+
+  // The regression this exists to catch: drop the discriminator and the second
+  // demo silently schedules nothing at all.
+  const undiscriminated = POST_DEMO_SEQUENCE.map((_, i) => idempotencyKey('followup', lead, POST_DEMO_STEP_BASE + i));
+  assert.equal(new Set([...undiscriminated, ...undiscriminated]).size, 3, 'without the ordinal, demo two IS demo one');
+});
+
+test('post-demo: the follow-ups land on a weekday, in the morning, never on a weekend', () => {
+  // Saturday. Every offset from here has to skip the weekend, not land in it.
+  const sat = new Date(Date.UTC(2026, 7, 22, 18, 0, 0));
+  for (const { afterBusinessDays: n } of POST_DEMO_SEQUENCE) {
+    const d = afterBusinessDays(n, sat);
+    assert.ok(d.getUTCDay() !== 0 && d.getUTCDay() !== 6, `${n} business days from Saturday landed on a weekend`);
+    assert.ok(d > sat, 'a follow-up is never scheduled into the past');
+    assert.equal(d.getUTCHours(), 16, 'sends land mid-morning Mountain, not at midnight');
+  }
 });
 
 test('emails: the proof email quotes only cited figures, and shows the contested one as a range', () => {
@@ -1020,7 +1237,7 @@ test('emails: the keep-her email promises nobody loses a job', () => {
   assert.match(html, /After hours and weekends/);
   assert.match(html, /Overflow only/);
   assert.match(html, /ABC Heating &amp; Air/, 'their name, escaped, not a raw ampersand');
-  assert.ok(!/fire|replace (her|your staff)|cut (a )?salary/i.test(html), 'never sells this as cutting staff');
+  assert.ok(!/\bfire\b|replace (her|your staff)|cut (a )?salary/i.test(html), 'never sells this as cutting staff');
 });
 
 test('emails: prose carries no em dashes, per the house rule', () => {
@@ -1512,9 +1729,133 @@ test('personalization: a thin prospect on the personalized variant gets the plai
   assert.match(built!.html, /Slightly unusual question/, 'falls back to the plain email');
   // The machine still ships, because it is the hook. What it must never do is
   // claim the numbers on it were read off a business we could not see.
-  assert.match(built!.html, /these three are ours/, 'the machine admits whose numbers these are');
+  assert.match(built!.html, /Nothing on this one is guessed/, 'the machine ships blank and says so');
   assert.ok(!built!.html.includes('shows in public'), 'no invented research');
   assert.ok(!built!.html.includes('worked back from your'), 'no invented citation');
+});
+
+/* --------------------- the command center is off the menu ----------------- */
+
+/**
+ * Sarah pulled the command center out of the suite and the offer on 2026-08-22:
+ * still sold, never bundled, never forged, never suggested. These are the
+ * guards, because that kind of decision is exactly the kind that leaks back in
+ * one helpful-looking cross-sell at a time.
+ */
+test('command center: the suite does not offer it, but a pay link can still price it', () => {
+  assert.ok(!DEMO_ORDER_KEYS.includes('os' as never), 'it is off the demo suite order card');
+  assert.deepEqual(DEMO_ORDER_KEYS, ['voice', 'site']);
+  // Still sold. /pay/command-center has to mint a real Stripe session.
+  const solo = quoteDemoOrder(['os']);
+  assert.ok(solo, 'a standalone command center still quotes');
+  assert.equal(solo!.setupCents, DEMO_PRODUCTS.os.setupCents);
+  assert.equal(solo!.monthlyCents, DEMO_PRODUCTS.os.monthlyCents);
+  assert.equal(solo!.isBundle, false);
+});
+
+test('command center: nothing is waived anywhere any more', () => {
+  const bundle = quoteDemoOrder(['voice', 'site']);
+  assert.ok(bundle!.isBundle, 'the two paid pieces are still the bundle');
+  assert.equal(bundle!.setupCents, DEMO_BUNDLE.setupCents);
+
+  // Ticking all three is no longer a bundle with a freebie: it is the bundle
+  // price plus a command center, billed. The old rule made this cart cheaper
+  // than the sum, which is exactly the waiver that is gone.
+  const all = quoteDemoOrder(['voice', 'site', 'os']);
+  assert.equal(all!.isBundle, false, 'three pieces is not the bundle');
+  assert.equal(
+    all!.monthlyCents,
+    DEMO_PRODUCTS.voice.monthlyCents + DEMO_PRODUCTS.site.monthlyCents + DEMO_PRODUCTS.os.monthlyCents,
+    'every piece bills at its own price',
+  );
+});
+
+test('command center: the bundle still clears the price ladder without it', () => {
+  // The ladder is the whole reason a la carte stays rational. It never counted
+  // the command center, so removing the freebie must not have moved it.
+  const pairSetup = DEMO_PRODUCTS.voice.setupCents + DEMO_PRODUCTS.site.setupCents;
+  const pairMonthly = DEMO_PRODUCTS.voice.monthlyCents + DEMO_PRODUCTS.site.monthlyCents;
+  const priciestSetup = Math.max(DEMO_PRODUCTS.voice.setupCents, DEMO_PRODUCTS.site.setupCents);
+  const priciestMonthly = Math.max(DEMO_PRODUCTS.voice.monthlyCents, DEMO_PRODUCTS.site.monthlyCents);
+  assert.ok(DEMO_BUNDLE.setupCents >= priciestSetup && DEMO_BUNDLE.setupCents < pairSetup, 'setup sits inside the ladder');
+  assert.ok(DEMO_BUNDLE.monthlyCents >= priciestMonthly && DEMO_BUNDLE.monthlyCents < pairMonthly, 'monthly sits inside the ladder');
+});
+
+test('command center: Mr. Mustard cannot forge one, and asking for one is not silently dropped into a build', () => {
+  assert.ok(!('command_center' in FORGE_PIECES), 'it is not a forgeable piece');
+  assert.deepEqual(Object.values(FORGE_PIECES).sort(), ['site', 'voice']);
+});
+
+/**
+ * 2026-08-25. Sarah found a live demo suite still telling a prospect the
+ * command center was free and to call Mr. Mustard to claim it. These pin the
+ * two halves of what she asked for: the command center is never shown, and a
+ * prospect who wants another piece gets a button, not a phone number.
+ */
+test('command center: the board never marks one as shown to a prospect, in any shape', () => {
+  const base: AcqSuiteLead = {
+    id: 'lead-1',
+    business_name: 'ABC Heating',
+    acq_stage: 'sent',
+    client_status: null,
+    unsubscribed_at: null,
+    demo_url: 'https://modernmustardseed.com/demo/voice/1',
+    site_demo_url: 'https://modernmustardseed.com/demo/site/1',
+    site_demo_status: 'ready',
+    // A lead forged before 2026-08-22 still carries one of these. It still
+    // resolves for anyone holding the link; it is simply never pointed at.
+    os_demo_url: 'https://modernmustardseed.com/demo/os/1',
+    hub_demo_url: 'https://modernmustardseed.com/demo/hub/1',
+    suite_film_status: 'ready',
+    demo_emailed_at: null,
+  } as unknown as AcqSuiteLead;
+
+  for (const shape of [
+    base,
+    { ...base, site_demo_status: 'building' },
+    { ...base, site_demo_url: null, site_demo_status: null },
+    { ...base, demo_url: null },
+  ]) {
+    assert.equal(suiteState(shape as AcqSuiteLead).osShown, false, 'never shown');
+  }
+
+  // And it is never counted as a piece the prospect can open.
+  const voiceOnly = suiteState({ ...base, site_demo_url: null, site_demo_status: null, suite_film_status: null } as AcqSuiteLead);
+  assert.equal(voiceOnly.pieces, 1, 'the agent, alone');
+});
+
+test('command center: no email names it even when the lead has one', () => {
+  const withOs = lead();
+  (withOs as Record<string, unknown>).os_demo_url = 'https://modernmustardseed.com/demo/os/1';
+  (withOs as Record<string, unknown>).os_demo_status = 'ready';
+  const built = buildDemoEmail({
+    lead: withOs,
+    demoUrl: 'https://modernmustardseed.com/demo/hub/x',
+    checkoutUrl: 'https://modernmustardseed.com/demo/hub/x',
+    calendarUrl: 'https://modernmustardseed.com/book',
+    offerLine: 'From $397 a month',
+    fromName: 'Mr. Mustard',
+    fromEmail: 'm@x.com',
+    replyTo: 'm@x.com',
+  });
+  assert.ok(built);
+  assert.ok(!/command cent|back office/i.test(built!.html), 'no command center, no back office');
+});
+
+test('command center: no suite email names it', () => {
+  const built = buildDemoEmail({
+    lead: lead(),
+    demoUrl: 'https://modernmustardseed.com/demo/hub/x',
+    checkoutUrl: 'https://modernmustardseed.com/demo/hub/x',
+    calendarUrl: 'https://modernmustardseed.com/book',
+    offerLine: 'From $397 a month',
+    fromName: 'Mr. Mustard',
+    fromEmail: 'm@x.com',
+    replyTo: 'm@x.com',
+  });
+  assert.ok(built);
+  assert.ok(!/command center/i.test(built!.html), 'the demo email never mentions it');
+  assert.match(built!.html, /rather show you than pitch you/i, 'the joke survives');
 });
 
 /* ----------------------------- the presence audit ------------------------- */
@@ -1534,6 +1875,8 @@ const presence = (over: Partial<PresenceInput> = {}): PresenceInput => ({
   emergency_service: true,
   trade: 'hvac',
   source_urls: ['https://www.google.com/maps/place/abc'],
+  listing_seen: true,
+  site_facts: null,
   ...over,
 });
 
@@ -1853,4 +2196,317 @@ test('bots: the verdict blob carries the reason only when there is one', () => {
   assert.equal(machine.machine_why, 'Scanner');
   assert.equal(human.machine_why, null);
   assert.equal(human.seconds_after_send, 900);
+});
+
+
+/*
+ * THE FORGE'S `build` PARSER.
+ *
+ * This is the function that decides what actually gets built for somebody on
+ * the phone, and until 2026-08-24 nothing exercised it at all. It did not need
+ * to be wrong to fail: the tool schema carried an enum nested inside `items`,
+ * which meant Vapi handed the model a tool it could select and could not fill,
+ * so `forge_demo_suite` arrived at the webhook as the literal `{}` on 16 calls
+ * out of 16 across eleven days and not one demo was ever forged on a phone
+ * call. The schema is now a plain array of strings and this parser is the only
+ * enforcement point, so these pin both halves of its job: take anything a
+ * language model might plausibly say, and still refuse to invent a piece.
+ */
+
+test('forge build: the exact wire vocabulary, which is the happy path', () => {
+  assert.deepEqual(piecesFrom(['voice_agent']), ['voice']);
+  assert.deepEqual(piecesFrom(['website']), ['site']);
+  assert.deepEqual(piecesFrom(['voice_agent', 'website']), ['voice', 'site']);
+});
+
+test('forge build: the command center is not forgeable, and asking for one builds nothing', () => {
+  // Sarah took it off the suite and out of the offer on 2026-08-22. Dropping
+  // the word is the point: an empty build is the branch that makes him stop and
+  // ask, which beats silently building the product she pulled.
+  assert.deepEqual(piecesFrom(['command_center']), []);
+  assert.deepEqual(piecesFrom('command_center'), []);
+  assert.deepEqual(piecesFrom(['command center']), []);
+  assert.deepEqual(piecesFrom(['back office']), []);
+  assert.deepEqual(piecesFrom(['dashboard']), []);
+  // And it must never sneak in beside a real piece.
+  assert.deepEqual(piecesFrom(['voice_agent', 'command_center']), ['voice']);
+});
+
+test('forge build: the separator split still does not tear a long value in half', () => {
+  // The \band\b word boundaries are still load bearing. This used to be proven
+  // with "command_center" (a bare "and" tore it into "comm" and "_center"), so
+  // it is proven here on a value that is still in the vocabulary rather than
+  // dropped along with the guard.
+  assert.deepEqual(piecesFrom(['brand_new_website']), ['site']);
+  assert.deepEqual(piecesFrom('brand_new_website'), ['site']);
+  assert.deepEqual(piecesFrom(['voice_agent and brand_new_website']), ['voice', 'site']);
+});
+
+test('forge build: the answer is in canonical order however it was said', () => {
+  assert.deepEqual(piecesFrom(['website', 'voice_agent']), PIECE_ORDER);
+  assert.deepEqual(piecesFrom(['website', 'voice_agent']), ['voice', 'site']);
+});
+
+test('forge build: one string instead of an array still gets built', () => {
+  assert.deepEqual(piecesFrom('voice_agent'), ['voice']);
+  assert.deepEqual(piecesFrom('voice_agent, website'), ['voice', 'site']);
+  assert.deepEqual(piecesFrom('voice agent and a website'), ['voice', 'site']);
+  assert.deepEqual(piecesFrom('voice_agent + website'), ['voice', 'site']);
+  assert.deepEqual(piecesFrom('website/voice_agent'), ['voice', 'site']);
+});
+
+test('forge build: the near misses a model actually says', () => {
+  assert.deepEqual(piecesFrom(['voice']), ['voice']);
+  assert.deepEqual(piecesFrom(['phone agent']), ['voice']);
+  assert.deepEqual(piecesFrom(['site']), ['site']);
+  assert.deepEqual(piecesFrom(['web site']), ['site']);
+  assert.deepEqual(piecesFrom(['receptionist']), ['voice']);
+});
+
+test('forge build: "everything" means every forgeable piece, and it beats the word inside it', () => {
+  assert.deepEqual(piecesFrom(['all']), PIECE_ORDER);
+  assert.deepEqual(piecesFrom(['everything']), PIECE_ORDER);
+  assert.deepEqual(piecesFrom(['the_whole_suite']), PIECE_ORDER);
+  // "talking_website" contains "website". If the individual patterns ran first
+  // the flagship would resolve to a bare site and two paid pieces would vanish.
+  assert.deepEqual(piecesFrom(['talking_website']), PIECE_ORDER);
+});
+
+test('forge build: nothing recognisable builds nothing, on purpose', () => {
+  // An empty result is what makes the tool bounce and ask. Building an
+  // unasked-for piece is the one failure worse than asking again: it burns the
+  // daily forge ceiling and contradicts the price he just quoted.
+  assert.deepEqual(piecesFrom([]), []);
+  assert.deepEqual(piecesFrom(undefined), []);
+  assert.deepEqual(piecesFrom(null), []);
+  assert.deepEqual(piecesFrom(''), []);
+  assert.deepEqual(piecesFrom({}), []);
+  assert.deepEqual(piecesFrom(['a pony']), []);
+  assert.deepEqual(piecesFrom(42), []);
+});
+
+test('forge build: no piece is ever duplicated', () => {
+  assert.deepEqual(piecesFrom(['voice_agent', 'voice', 'phone agent']), ['voice']);
+  assert.deepEqual(piecesFrom([['voice_agent'], ['website']]), ['voice', 'site']);
+});
+
+test('forge build: the spoken list matches what was actually forged', () => {
+  assert.equal(listPieces(['voice']), 'voice agent');
+  assert.equal(listPieces(['voice', 'site']), 'voice agent and website');
+  assert.equal(listPieces(PIECE_ORDER), 'voice agent and website');
+  assert.equal(listPieces([]), 'nothing');
+});
+
+
+/*
+ * WHAT THE DEMO AGENT IS ALLOWED TO OFFER.
+ *
+ * On 2026-08-25 a tester asked three forged demos for an appointment and all
+ * three said "the owner will confirm". They had no booking tool, and the
+ * persona prompt told them to treat availability as an unknown. Both halves are
+ * fixed; these pin the half that can silently rot, which is the time maths.
+ *
+ * The riskiest new code is demoHoursFrom: it reads whatever a stranger typed
+ * into a forge form. Getting it wrong in the CLOSED direction is the expensive
+ * one, because zero slots puts the agent straight back to deflecting.
+ */
+
+test('demo hours: nothing typed still gets a bookable week', () => {
+  // The real product treats an unreadable day as closed, which is right for a
+  // paying office and exactly wrong for a demo: it would offer nothing and the
+  // agent would deflect to the owner again, which is the bug being fixed.
+  for (const raw of [null, undefined, '', '   ']) {
+    const h = demoHoursFrom(raw as string | null | undefined);
+    assert.deepEqual(h, DEMO_DEFAULT_HOURS);
+    assert.ok(parseDayHours(h.monday), 'monday must be bookable');
+  }
+});
+
+test('demo hours: the shapes people actually type', () => {
+  const weekday = demoHoursFrom('Mon-Fri 8-5');
+  assert.ok(parseDayHours(weekday.monday));
+  assert.ok(parseDayHours(weekday.friday));
+  assert.ok(parseDayHours(weekday.wednesday), 'a day inside the range is open');
+
+  const spelled = demoHoursFrom('Monday through Friday 7am-6pm');
+  assert.ok(parseDayHours(spelled.tuesday));
+
+  const withSat = demoHoursFrom('Mon-Fri 8-5, Saturday 9-1');
+  assert.ok(parseDayHours(withSat.saturday));
+  assert.ok(parseDayHours(withSat.monday));
+});
+
+test('demo hours: a day nobody mentioned keeps the default, it does not close', () => {
+  // "Saturday 9-1" must not accidentally shut the business Monday to Friday.
+  const h = demoHoursFrom('Saturday 9-1');
+  assert.ok(parseDayHours(h.saturday));
+  assert.ok(parseDayHours(h.monday), 'an unmentioned weekday stays open');
+  assert.ok(parseDayHours(h.thursday));
+});
+
+test('demo hours: round the clock means every day', () => {
+  const h = demoHoursFrom('24/7');
+  for (const d of ['sunday', 'monday', 'saturday']) assert.ok(parseDayHours(h[d]), `${d} open`);
+});
+
+test('demo hours: unreadable text falls back to bookable, never to nothing', () => {
+  const h = demoHoursFrom('call us anytime lol');
+  assert.ok(parseDayHours(h.monday), 'garbage must not close the calendar');
+});
+
+test('demo slots: only real openings, and never sooner than the lead time', () => {
+  // Monday 9am. Two hour lead time means nothing before 11.
+  const now = new Date(2026, 7, 24, 9, 0, 0);
+  const slots = slotsFrom(DEMO_DEFAULT_HOURS, 'America/Denver', [], { now, limit: 3, minutes: 60 });
+  assert.ok(slots.length > 0, 'a demo must always have something to offer');
+  for (const s of slots) {
+    assert.ok(new Date(s.startsAt).getTime() >= now.getTime() + 120 * 60_000, 'past the lead time');
+    assert.ok(s.label && !/T\d\d:/.test(s.label), 'the label is sayable, not an ISO string');
+  }
+});
+
+test('demo slots: a booked time is gone for everybody after it', () => {
+  const now = new Date(2026, 7, 24, 9, 0, 0);
+  const first = slotsFrom(DEMO_DEFAULT_HOURS, 'America/Denver', [], { now, limit: 3, minutes: 60 });
+  const taken = [{ from: Date.parse(first[0].startsAt), to: Date.parse(first[0].endsAt) }];
+  const after = slotsFrom(DEMO_DEFAULT_HOURS, 'America/Denver', taken, { now, limit: 3, minutes: 60 });
+  assert.ok(
+    !after.some((s) => s.startsAt === first[0].startsAt),
+    'the slot the agent just booked must not be offered again',
+  );
+});
+
+test('demo slots: a closed day is never offered', () => {
+  // Sunday is closed in the demo default, so nothing may land on one.
+  const now = new Date(2026, 7, 24, 9, 0, 0);
+  const slots = slotsFrom(DEMO_DEFAULT_HOURS, 'America/Denver', [], { now, limit: 20, minutes: 60 });
+  assert.ok(!slots.some((s) => new Date(s.startsAt).getDay() === 0), 'no Sunday appointments');
+});
+
+test('demo slots: no hours at all means no slots, so the agent takes a message', () => {
+  // The one case where offering nothing is correct: every day explicitly shut.
+  const closed = Object.fromEntries(Object.keys(DEMO_DEFAULT_HOURS).map((d) => [d, 'closed']));
+  const slots = slotsFrom(closed, 'America/Denver', [], { now: new Date(2026, 7, 24, 9, 0, 0) });
+  assert.equal(slots.length, 0);
+});
+
+/* ------------------------------ site facts -------------------------------- */
+
+import { scrubClaims, contradicts, emailTrusted, siteFactsLine, parseSiteFacts, withSiteFactsLine, siteFactsSummary, type SiteFacts } from '../lib/site-facts';
+
+/** murrelldental.com as read on 2026-08-25: everything the note said was missing was there. */
+const murrell = (over: Partial<SiteFacts> = {}): SiteFacts => ({
+  url: 'https://www.murrelldental.com/',
+  verified: '2026-08-25',
+  reachable: true,
+  ssl_error: false,
+  address: '1286 Timberlane Road, Tallahassee, FL 32312',
+  hours_days: 5,
+  hours_sample: 'Monday 8:00 am - 5:00 pm',
+  email: 'info@murrelldental.com',
+  phone: '(850) 893-0711',
+  booking: null,
+  pages: ['/', '/contact-us.html'],
+  ...over,
+});
+
+test('site facts: a claim the site contradicts does not print (the Murrell sentence)', () => {
+  const r = scrubClaims('The site does not even show hours or an address; new patients cannot find the front door', murrell());
+  assert.equal(r.text, '', 'both clauses were false, nothing survives');
+  assert.equal(r.removed.length, 2);
+});
+
+test('site facts: only the false clause goes, the true research stays', () => {
+  const r = scrubClaims('clean enough design, but no address, no hours, and no online quoting on it; scheduling is call-or-email only', murrell({ address: null }), 'notes');
+  assert.ok(!/no hours/.test(r.text), 'hours are on the site, the claim is gone');
+  assert.ok(/no address/.test(r.text), 'no address was found, the claim stands');
+  assert.ok(/no online quoting/.test(r.text), 'no booking was found, the claim stands');
+  assert.ok(/call-or-email/.test(r.text), 'unrelated research is untouched');
+  assert.ok(!/,\s*$/.test(r.text) && !/,\s*and\s*,/.test(r.text), 'no dangling separators after surgery');
+});
+
+test('site facts: an unverified absence never prints in public, but survives in notes', () => {
+  const claim = 'no posted hours and no address block';
+  assert.equal(scrubClaims(claim, null, 'public').text, '', 'no facts, no claim');
+  assert.equal(scrubClaims(claim, murrell({ reachable: false, address: null, hours_days: 0 }), 'public').text, '', 'unreachable site, no claim');
+  assert.equal(scrubClaims(claim, null, 'notes').text, claim, 'notes keep the research until a read says otherwise');
+});
+
+test('site facts: "phone" means the printed number, not whether anyone answers it', () => {
+  // All three were scrubbed on the first sweep (2026-08-25) and all three are true.
+  for (const s of [
+    'Sales, rentals, winterization, consignment: all high-ticket, seasonal-surge phone traffic with no capture',
+    'Phone-only booking while the captain is on a boat with no hands free',
+    'A solo therapist physically cannot answer the phone mid-massage',
+  ]) {
+    assert.equal(scrubClaims(s, murrell()).text, s, s);
+  }
+  assert.equal(scrubClaims('no phone number anywhere on the site', murrell()).text, '', 'a claim about the number itself is still checked');
+});
+
+test('site facts: only an email that is plainly theirs fills the lead', () => {
+  assert.equal(emailTrusted('info@murrelldental.com', 'https://www.murrelldental.com/'), true);
+  assert.equal(emailTrusted('bowmancherries@gmail.com', 'https://bowmancherryorchards.com'), true);
+  assert.equal(emailTrusted('help.us@booksy.com', 'http://kentthebarber.booksy.com/'), false, 'the platform help desk is not the barber');
+  assert.equal(emailTrusted('info@lakestream.com', 'https://www.kalispellfamilydental.com'), false, 'the web agency in the footer is not the dentist');
+  assert.equal(emailTrusted('black9@qq.com', 'https://bigskycafe.top/'), false);
+  assert.equal(emailTrusted(null, 'https://x.com'), false);
+});
+
+test('site facts: sentences that are not about presence pass through untouched', () => {
+  const s = 'Real reservation demand with the phone as the funnel and online booking hidden';
+  assert.equal(contradicts('mid-2010s styling', murrell()), null);
+  assert.equal(scrubClaims('Every booking is a phone call the owner takes between guiding trips.', murrell()).text, 'Every booking is a phone call the owner takes between guiding trips.');
+  // "online booking hidden" is an absence claim; with no booking found it stands.
+  assert.equal(scrubClaims(s, murrell()).text, s);
+  // With a Calendly link on the site, that clause goes and the true half stays.
+  assert.equal(scrubClaims(s, murrell({ booking: 'https://calendly.com/x' })).text, 'Real reservation demand with the phone as the funnel');
+});
+
+test('site facts: the notes line round-trips and sits above OWNER NOTES', () => {
+  const f = murrell();
+  const line = siteFactsLine(f);
+  const back = parseSiteFacts(line)!;
+  assert.equal(back.address, f.address);
+  assert.equal(back.hours_days, 5);
+  assert.equal(back.email, f.email);
+  assert.equal(back.reachable, true);
+  assert.equal(back.verified, '2026-08-25');
+  const notes = withSiteFactsLine(['WEBSITE: x', 'GAP: y', 'OWNER NOTES: they said things', 'more owner words'].join('\n'), f);
+  assert.ok(notes.indexOf('SITE FACTS') < notes.indexOf('OWNER NOTES:'), 'OWNER NOTES swallows everything after it, so facts go above');
+  const again = withSiteFactsLine(notes, murrell({ verified: '2026-09-01' }));
+  assert.equal((again.match(/SITE FACTS/g) ?? []).length, 1, 'a second write replaces, never appends');
+  assert.match(again, /verified 2026-09-01/);
+  const summary = siteFactsSummary(f);
+  assert.ok(summary.some((l) => /1286 Timberlane/.test(l)));
+  assert.ok(!summary.some((l) => /none|missing/i.test(l)), 'the summary states presence only, never absence');
+});
+
+test('audit: a listing nobody read is withheld, not failed', () => {
+  assert.equal(listingSeen({ rating: null, review_count: null, source_urls: null, hours: null }), false);
+  assert.equal(listingSeen({ rating: 4.7 }), true);
+  assert.equal(listingSeen({ source_urls: ['https://www.google.com/maps/place/x'] }), true);
+  const blind = scoreProfile(presence({ listing_seen: false, address: null, hours: null, rating: null, review_count: null }));
+  assert.equal(blind.unknown, true, 'we never opened the profile, so it is not scored');
+  assert.equal(blind.checks.length, 0, 'no failed checks about a profile nobody read');
+  assert.match(blind.verdict, /did not read/);
+  const seen = scoreProfile(presence({ address: null }));
+  assert.equal(seen.unknown, false, 'a listing we read and found short is scored');
+  const report = buildPresenceReport(presence({ listing_seen: false, rating: null, review_count: null, address: null, hours: null }), null);
+  assert.ok(!/free stuff/i.test(report.headline), 'the profile headline cannot fire on a profile nobody read');
+  assert.ok(!report.top_fixes.some((f) => /address|hours|claim your/i.test(f.title)), 'no profile fixes for a profile nobody read');
+  const rev = report.pillars.find((p) => p.key === 'reviews')!;
+  assert.match(rev.verdict, /did not pull/, 'the reviews verdict says we did not look, not that there are none');
+});
+
+test('audit: the receipts print what the website itself says, presence only', () => {
+  const report = buildPresenceReport(presence({ listing_seen: false, rating: null, review_count: null, address: null, hours: null, site_facts: murrell() }), null);
+  const labels = report.provenance.map((r) => r.label);
+  assert.ok(labels.includes('Address on your site'));
+  assert.ok(labels.includes('Hours on your site'));
+  assert.ok(labels.includes('Email on your site'));
+  assert.ok(!labels.some((l) => /booking/i.test(l)), 'nothing found, nothing asserted');
+  const phone = report.provenance.find((r) => r.label === 'Phone')!;
+  assert.ok(!/Google/i.test(phone.source), 'a listing nobody opened is never cited as a source');
+  assert.ok(!/reviews say/i.test(report.summary), 'the summary cannot praise reviews it withheld');
 });

@@ -60,7 +60,7 @@ export function openCard({ business }) {
       ${esc(business)}
     </h1>
     <p class="fade d4" style="font-size:26px;line-height:1.5;margin-top:26px;color:${INK}B3">
-      A website, a voice agent, and a command center, made for ${esc(business)}.<br>
+      A website and a voice agent, made for ${esc(business)}.<br>
       <span style="background:${GOLD};border:2.5px solid ${INK};border-radius:99px;padding:5px 20px;
             display:inline-block;margin-top:20px;font-weight:700;color:${INK};font-size:21px;
             box-shadow:5px 5px 0 0 ${INK}">Everything you are about to see is live</span>

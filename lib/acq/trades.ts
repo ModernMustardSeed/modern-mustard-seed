@@ -417,6 +417,253 @@ export const TRADE_DEFS: Record<Exclude<Trade, 'other'>, TradeDef> = {
     roleplay:
       'VETERINARY MODE. You know appointments, wellness visits, vaccinations, and triage for urgent calls. Get the pet\'s name, species, breed and age, what is happening and for how long. Anything involving a possible poisoning, difficulty breathing, a seizure, bloating, or trauma goes straight to a human or to the emergency line, immediately, no questions first. You are a front desk, not a clinician: never give medical advice, dosing, or an opinion on whether a symptom is serious.',
   },
+
+  /* ───────────────────────── the construction family ─────────────────────────
+   *
+   * Everything above this line is a SERVICE call: something broke, somebody
+   * calls, a van turns up. The ten below are PROJECT work, and they qualify for
+   * a different reason worth writing down, because it changes the pitch.
+   *
+   * A project trade rarely gets an 11pm emergency. What it gets is a homeowner
+   * ringing four contractors on a Tuesday afternoon and hiring whoever picks up
+   * and turns up. The estimate IS the sale, the first estimate booked usually
+   * wins it, and one won job is worth more than a year of the agent. That makes
+   * a missed call worse here than anywhere else on this list, not better.
+   *
+   * The exception is the two that genuinely do ring at night, septic and wells,
+   * and they are flagged accordingly. Nobody waits until Monday for a tank
+   * backing up into a basement or a house with no running water.
+   *
+   * Their job values are deliberately, almost absurdly low. A real remodel is
+   * thirty thousand dollars and a real driveway is eight. The rule in this file
+   * is that if the arithmetic is wrong we want it wrong in the direction that
+   * survives an owner disagreeing with it out loud, so a general contractor is
+   * priced here at one small job.
+   */
+
+  general_contractor: {
+    key: 'general_contractor',
+    label: 'General contracting',
+    osm: { craft: '^(builder|carpenter|building)$', name: 'construction|contractor|builders|remodel|renovation' },
+    maps: ['general contractor', 'home remodeling contractor', 'home builder', 'kitchen and bath remodeling'],
+    match: /\b(general contract(or|ors|ing)|construction|builders?|remodel(ing|ers?|s)?|renovations?|home improvement|design[- ]?build|room additions?)\b/i,
+    // Heavy civil and the money side of building. Highway crews and mortgage
+    // brokers both describe themselves as construction and neither one is a
+    // local owner who answers their own phone.
+    notThis:
+      /\b(highway|roadway|bridge|pipeline|mining|marine|dock|crane|scaffold|steel erect\w*|utility contract\w*|mortgage|lending|loans?|title co|escrow|staffing|recruit\w*|software|management (co|company|group)|consult\w*)\b/i,
+    economics: { avgJobValue: 4500, closeRatePct: 20, callsPerReview: 5 },
+    emergency: false,
+    scenarios: [
+      'a kitchen remodel they want quoted before the holidays',
+      'a bathroom that has to be gutted after a leak',
+      'a garage conversion into a bedroom',
+      'a deck that failed inspection and needs rebuilding',
+      'an addition they have been planning for two years',
+    ],
+    roleplay:
+      'GENERAL CONTRACTING MODE. You know remodels, additions, kitchens and bathrooms, basements, garages, decks and framing. The job here is to book the walkthrough, because the estimate is the sale and whoever gets there first usually gets the work. Capture the scope in their words, the address, whether they have drawings or a budget in mind, and when they want it done by. Never quote a price or a timeline: every one of these depends on what is behind the wall.',
+  },
+
+  concrete: {
+    key: 'concrete',
+    label: 'Concrete',
+    osm: { craft: '^(concrete|builder)$', name: 'concrete|cement|foundation|flatwork' },
+    maps: ['concrete contractor', 'concrete driveway contractor', 'foundation repair company'],
+    match: /\b(concrete|cement|flatwork|foundations?|slabs?|driveways?|stamped concrete|footings?)\b/i,
+    // "Foundation" is a charity at least as often as it is a footing, and a
+    // cosmetics counter uses the word too.
+    notThis:
+      /\b(charit\w*|community foundation|family foundation|scholarship|endowment|nonprofit|non-?profit|makeup|cosmetics?|ready[- ]?mix (plant|supply)|batch plant)\b/i,
+    economics: { avgJobValue: 2200, closeRatePct: 30, callsPerReview: 7 },
+    emergency: false,
+    scenarios: [
+      'a cracked driveway they want replaced this season',
+      'a patio slab poured before a wedding in the yard',
+      'a foundation crack that is letting water in',
+      'a garage floor that needs levelling',
+      'a stamped concrete walkway quote',
+    ],
+    roleplay:
+      'CONCRETE MODE. You know driveways, patios, walkways, garage and shop floors, footings, foundations and stamped or coloured finishes. Get the square footage or rough dimensions, what is there now, and whether anything has to be torn out first. Weather and cure time drive everything, so ask when they need to be able to walk or park on it. Never quote per square foot on the phone; access and tear-out decide it.',
+  },
+
+  masonry: {
+    key: 'masonry',
+    label: 'Masonry',
+    osm: { craft: '^(stonemason|bricklayer)$', name: 'masonry|mason|brick|stone work|stonework' },
+    maps: ['masonry contractor', 'brick and stone mason', 'stone veneer installer'],
+    // "Block wall" is what half of them are actually called in the southwest,
+    // and a pattern that only knew "blockwork" dropped every one of them.
+    match: /\b(masonry|masons?|stonemasons?|bricklay\w*|brickwork|brick (and|&) stone|stone ?work|block ?(work|walls?)|tuck ?point\w*|repoint\w*|retaining walls?)\b/i,
+    // The Freemasons are not a contractor, and a chimney sweep is its own trade
+    // on this list with its own script.
+    notThis: /\b(free ?mason\w*|masonic|lodge|temple|shriners?|chimney sweep\w*|jars?)\b/i,
+    economics: { avgJobValue: 2000, closeRatePct: 30, callsPerReview: 7 },
+    emergency: false,
+    scenarios: [
+      'a retaining wall that is leaning after a wet spring',
+      'crumbling mortar on a brick façade',
+      'a stone veneer front they want quoted',
+      'a fire pit and seating wall for the backyard',
+      'chimney brickwork that failed a home inspection',
+    ],
+    roleplay:
+      'MASONRY MODE. You know brick, block and stone, retaining walls, veneer, tuckpointing and repointing, steps, patios and fire features. Ask what the existing material is, roughly how much of it there is, and whether anything is actively falling or leaning, because that moves it up the schedule. Never quote stone or brick by the foot over the phone: material choice swings it more than size does.',
+  },
+
+  fencing: {
+    key: 'fencing',
+    label: 'Fencing',
+    osm: { craft: '^(fence|fencing)$', name: 'fence|fencing|gates' },
+    maps: ['fence company', 'fence installation contractor', 'vinyl and chain link fencing'],
+    match: /\b(fenc(e|es|ing)|chain ?link|privacy fence|vinyl fence|split rail|gates? (and|&) fence)\b/i,
+    // The sport, and the horse people. Both describe themselves as fencing.
+    notThis: /\b(club|sabre|saber|epee|foil|olympic|salle|equestrian|dressage|arena)\b/i,
+    economics: { avgJobValue: 2500, closeRatePct: 35, callsPerReview: 8 },
+    emergency: false,
+    scenarios: [
+      'a fence section blown down in a storm',
+      'a privacy fence quote for a new yard',
+      'a gate that has dropped and will not latch',
+      'chain link for a dog run before a puppy arrives',
+      'replacing a rotted cedar fence along a property line',
+    ],
+    roleplay:
+      'FENCING MODE. You know wood, vinyl, chain link, ornamental and split rail, gates and gate hardware, and repairs after wind. Get the rough footage, the material they have in mind, and whether it is a repair or a full run. Ask if the property line is marked and whether there is an HOA, because both decide what can go in. Never quote by the foot without knowing the terrain.',
+  },
+
+  siding_gutters: {
+    key: 'siding_gutters',
+    label: 'Siding and gutters',
+    osm: { craft: '^(roofer|builder)$', name: 'siding|gutter|exteriors|soffit' },
+    maps: ['siding contractor', 'gutter installation company', 'seamless gutter company'],
+    match: /\b(siding|gutters?|seamless gutters?|gutter guards?|soffit|fascia|exteriors?|downspouts?)\b/i,
+    notThis: /\b(bowl(ing)?|rail ?road|snow removal only|window cleaning)\b/i,
+    economics: { avgJobValue: 1800, closeRatePct: 30, callsPerReview: 8 },
+    emergency: false,
+    scenarios: [
+      'gutters overflowing onto the foundation in every storm',
+      'siding torn loose by wind on one wall',
+      'a full siding replacement quote before selling',
+      'gutter guards after a season of cleaning them out',
+      'rotted soffit where squirrels are getting in',
+    ],
+    roleplay:
+      'SIDING AND GUTTERS MODE. You know vinyl, fibre cement and wood siding, seamless gutters, guards, downspouts, soffit and fascia. Ask how many stories, whether water is getting anywhere it should not, and whether it is storm damage, because insurance changes the whole conversation and the answer is that they should call their carrier as well as us. Never quote a full wrap over the phone.',
+  },
+
+  windows_doors: {
+    key: 'windows_doors',
+    label: 'Windows and doors',
+    osm: { craft: '^(window_construction|glaziery)$', name: 'window|windows|glazing|entry door' },
+    maps: ['window replacement company', 'window and door contractor', 'replacement windows installer'],
+    match: /\b(windows?|glazing|glaziers?|entry doors?|patio doors?|storm doors?|replacement windows?|egress windows?)\b/i,
+    // Half the collisions in this whole registry live here: window cleaners,
+    // tinting, blinds, stained glass, garage doors (their own trade), auto
+    // glass, and the operating system.
+    notThis:
+      /\b(clean(ing|ers?|s)?|washing|tint\w*|film|stained glass|blinds|shades|shutters?|curtains?|drapes?|treatments?|screens? only|garage doors?|overhead doors?|auto ?glass|windshields?|microsoft|software|window shopping)\b/i,
+    economics: { avgJobValue: 2600, closeRatePct: 25, callsPerReview: 7 },
+    emergency: false,
+    scenarios: [
+      'a broken window they need boarded and replaced',
+      'a whole-house window replacement quote',
+      'a patio door that will not slide any more',
+      'foggy double panes that lost their seal',
+      'an egress window for a basement bedroom',
+    ],
+    roleplay:
+      'WINDOWS AND DOORS MODE. You know replacement windows, entry and patio doors, storm doors, glass units that have fogged, and egress. Get a rough count of openings, whether it is one broken unit or a whole house, and whether anything is open to the weather right now, because that gets someone out sooner. Never quote per window on the phone: size, frame and glass package decide it.',
+  },
+
+  septic: {
+    key: 'septic',
+    label: 'Septic',
+    osm: { craft: '^(plumber|sewage_disposal)$', name: 'septic|leach field|drain field' },
+    maps: ['septic tank service', 'septic pumping company', 'septic system installation'],
+    match: /\b(septic|leach ?fields?|drain ?fields?|grease traps?|sewage (pump|system)s?)\b/i,
+    notThis: /\b(tank sales|portable toilets?|porta ?potty|porta ?john|dumpsters?)\b/i,
+    economics: { avgJobValue: 700, closeRatePct: 45, callsPerReview: 11 },
+    emergency: true,
+    scenarios: [
+      'sewage backing up into a basement shower tonight',
+      'a septic pump-out before the tank overflows',
+      'a soggy patch of lawn over the drain field',
+      'an inspection needed to close on a house sale',
+      'an alarm going off on the septic panel',
+    ],
+    roleplay:
+      'SEPTIC MODE. You know pump-outs, inspections for a sale, drain and leach fields, risers, alarms, and backups. A backup into the house, sewage surfacing in the yard, or an alarm sounding is urgent and goes to a human tonight: tell them to stop running water and stop flushing until somebody gets there. Get the address, when it was last pumped, and how many people are in the house. Never guess at whether a field has failed.',
+  },
+
+  well_water: {
+    key: 'well_water',
+    label: 'Well and water systems',
+    osm: { craft: '^(well_driller|plumber)$', name: 'water well|well drilling|well pump|water treatment' },
+    maps: ['water well drilling', 'well pump repair', 'water treatment and filtration company'],
+    // Every alternative needs a second word, because bare "well" is the whole
+    // wellness industry. "Pump & Well Service" is written that way on real
+    // signage and was being dropped by a pattern that wanted the two words
+    // adjacent, so the well-side alternatives are spelled out both ways.
+    match:
+      /\b(water ?wells?|wells? drilling|well drilling|well pumps?|well (service|repair|systems?)|pump (repair|service|replacement)|pumps? (and|&) wells?|water treatment|water filtration|water softeners?|water conditioning|pressure tanks?)\b/i,
+    // "Well" alone would match half the wellness industry, so every alternative
+    // above needs a second word. Oil and gas well drilling is a different
+    // planet commercially and is excluded outright.
+    notThis: /\b(wellness|well[- ]?being|oil ?(field|well)s?|gas well|petroleum|fracking|drilling (rig|mud) supply|bottled)\b/i,
+    economics: { avgJobValue: 900, closeRatePct: 45, callsPerReview: 10 },
+    emergency: true,
+    scenarios: [
+      'no water at any tap in the house since this morning',
+      'a well pump that is short cycling and tripping the breaker',
+      'water that suddenly smells like sulphur',
+      'a failed water test before closing on a property',
+      'a softener that stopped regenerating',
+    ],
+    roleplay:
+      'WELL AND WATER MODE. You know well pumps, pressure tanks, water treatment, softeners, filtration and water testing. A house with no water at all is urgent, especially with children, livestock or anyone elderly in it, and that goes to a human today. Ask whether there is no water at all or just bad water, whether the breaker has tripped, and how old the system is. Never tell anyone their water is safe or unsafe to drink: that is what a test is for.',
+  },
+
+  excavation: {
+    key: 'excavation',
+    label: 'Excavation and site work',
+    osm: { craft: '^(earthworks|excavation)$', name: 'excavat|earthwork|site work|grading' },
+    maps: ['excavation contractor', 'excavating company', 'land grading and site work'],
+    match: /\b(excavat\w+|earthworks?|site ?work|land clearing|grading|dozer|bulldoz\w*|backhoe|trench(ing|es|less)?|septic install\w*)\b/i,
+    notThis: /\b(archaeolog\w*|dig site|fossil|grades? \d|report cards?|coal|mining|quarry)\b/i,
+    economics: { avgJobValue: 1800, closeRatePct: 30, callsPerReview: 6 },
+    emergency: false,
+    scenarios: [
+      'a lot that needs clearing before a build starts',
+      'a driveway that washes out every spring and needs regrading',
+      'a trench for a new water line',
+      'a stump field and brush that has taken over an acre',
+      'drainage work after water pooled against the house',
+    ],
+    roleplay:
+      'EXCAVATION MODE. You know clearing, grading, trenching, drainage, driveways, pads and demolition. Ask how much ground, whether machines can get to it, and whether utilities have been located, because nothing starts before a locate. Get the address and whether there is a deadline tied to another trade starting. Never commit to a schedule on the phone: the weather and the ground decide it.',
+  },
+
+  paving: {
+    key: 'paving',
+    label: 'Paving and asphalt',
+    osm: { craft: '^(paver|road_construction)$', name: 'paving|asphalt|sealcoat|blacktop' },
+    maps: ['asphalt paving contractor', 'driveway paving company', 'sealcoating service'],
+    match: /\b(paving|pav(er|ers|ed)|asphalt|seal ?coat\w*|blacktop|chip ?seal|resurfac\w*|line strip\w*|parking lot (repair|maintenance))\b/i,
+    notThis: /\b(highway|state route|department of transport\w*|dot\b|airport runway|race ?track|stone yard)\b/i,
+    economics: { avgJobValue: 1500, closeRatePct: 30, callsPerReview: 7 },
+    emergency: false,
+    scenarios: [
+      'a driveway full of cracks they want sealed before winter',
+      'a parking lot with potholes a customer complained about',
+      'a gravel drive they want paved properly',
+      'faded striping in a lot that failed an inspection',
+      'an apron at the road that has broken up',
+    ],
+    roleplay:
+      'PAVING MODE. You know driveways, parking lots, sealcoating, crack filling, patching, overlays and striping. Ask the rough dimensions, what is there now, and whether it is residential or a commercial lot, because a lot has to be scheduled around business hours. Paving is weather and temperature bound, so never promise a date on the phone. Never quote a resurface without someone seeing the base.',
+  },
 };
 
 /** Every industry we can source, in a stable order. */

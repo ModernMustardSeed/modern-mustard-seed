@@ -1,8 +1,8 @@
 import { getSupabase } from '@/lib/supabase';
-import { getRun } from '@/lib/sidekick-store';
-import { forgeCall } from '@/lib/sidekick';
+import { getRun } from '@/lib/demo-run-store';
+import { forgeCall } from '@/lib/demo-agent';
 import { buildMetadata } from '@/lib/seo';
-import type { ForgedCall } from '@/lib/sidekick';
+import type { ForgedCall } from '@/lib/demo-agent';
 import SiteDemoShell from '@/components/demo/SiteDemoShell';
 import { possessive } from '@/lib/business-name';
 import SiteBuildProgress from '@/components/demo/SiteBuildProgress';
@@ -98,14 +98,13 @@ export default async function SiteDemoPage({ params }: { params: Promise<{ siteI
                     ☎ Call your voice agent
                   </a>
                 )}
-                {waitingLead?.os_demo_status === 'ready' && waitingLead?.os_demo_url && (
-                  <a
-                    href={waitingLead.os_demo_url}
-                    className="bg-transparent text-[#FBF6EA] border-2 border-[#FBF6EA]/40 rounded-xl px-5 py-3 font-sans font-bold uppercase tracking-[0.1em] text-[12px] hover:border-[#FBF6EA] transition-colors"
-                  >
-                    ⚙ Open your command center
-                  </a>
-                )}
+                {/*
+                  NO COMMAND CENTER DOOR. It came off the suite and out of the
+                  offer (Sarah, 2026-08-22, again 2026-08-25). A lead forged
+                  before then can still carry an os_demo_url and that page still
+                  resolves, so a link already emailed keeps working; we simply
+                  never point anybody at one again.
+                */}
               </div>
             </div>
           )}

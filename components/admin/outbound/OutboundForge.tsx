@@ -8,6 +8,8 @@ import { FORGE_STAGE_LABELS } from '@/lib/outbound';
 import type { ForgeCounts, ForgeRow, ForgeStage, ForgeWorkerVitals, Rep } from '@/lib/outbound';
 import { possessive } from '@/lib/business-name';
 import { usePoll } from '@/lib/use-poll';
+import { TemplatePicker } from '@/components/admin/TemplatePicker';
+import { RANDOM_TEMPLATE } from '@/lib/site-templates.mjs';
 import TradeChip from '@/components/admin/outbound/TradeChip';
 import {
   OutboundNav,
@@ -185,9 +187,11 @@ export default function OutboundForge() {
   // template). Tier 2 is the HOUSE STYLE and the default (Sarah, 2026-08-11);
   // the old roulette is retired because it made every unattended demo a coin
   // flip between two different products. Tier 1 returns when Sarah rewires it.
-  const [designTier, setDesignTier] = useState<2 | 3>(2);
+  const [designTier, setDesignTier] = useState<1 | 2 | 3>(2);
   // Make the talking layer the star of the demo (rides the brief as a flag).
   const [talkingWebsite, setTalkingWebsite] = useState(false);
+  // The template picker (2026-08-24): Random rotates by trade, a name is worn exactly.
+  const [siteTemplateKey, setSiteTemplateKey] = useState<string>(RANDOM_TEMPLATE);
   const [anvilAll, setAnvilAll] = useState(false);
   const [burst, setBurst] = useState(0);
   const { toasts, push } = useToasts();
@@ -285,7 +289,7 @@ export default function OutboundForge() {
     try {
       await api(`/api/admin/outbound/leads/${row.id}/forge-site`, {
         method: 'POST',
-        body: JSON.stringify({ ...(designTier ? { designTier } : {}), ...(talkingWebsite ? { talkingWebsite } : {}) }),
+        body: JSON.stringify({ ...(designTier ? { designTier } : {}), ...(talkingWebsite ? { talkingWebsite } : {}), siteTemplate: siteTemplateKey }),
       });
       push(`${row.business_name} is back on the anvil (Tier ${designTier} design)${talkingWebsite ? ', Talking Website front and center' : ''}.`);
       await load(true);
@@ -495,20 +499,20 @@ export default function OutboundForge() {
             </select>
             <span className="flex items-center gap-1.5" role="group" aria-label="Design tier for forge builds">
               <span className={`${eyebrow} mr-0.5`}>Design</span>
-              {([2, 3] as const).map((t) => {
+              {([1, 2, 3] as const).map((t) => {
                 const active = designTier === t;
                 return (
                   <button
                     key={t}
                     onClick={() => setDesignTier(t)}
-                    title={t === 2 ? 'The Wildmere award-site world. The house style.' : 'The Journey site (the Flathead homepage template)'}
+                    title={t === 1 ? 'The Award site: the Stack hero, the outline moment, the seal, the spine' : t === 2 ? 'The Wildmere award-site world. The house style.' : 'The Journey site (the Flathead homepage template)'}
                     className={`px-3 py-1.5 rounded-lg border-2 font-oswald uppercase tracking-[0.08em] text-[11px] transition-colors ${
                       active
                         ? 'bg-[#1a1815] text-[#f7f3e9] border-[#1a1815] shadow-[2px_2px_0_0_#b58a2a]'
                         : 'bg-white text-[#1a1815]/70 border-[#1a1815]/20 hover:border-[#b58a2a] hover:text-[#1a1815]'
                     }`}
                   >
-                    {t === 3 ? 'Tier 3 · Journey' : 'Tier 2 · World'}
+                    {t === 1 ? 'Tier 1 · Award' : t === 3 ? 'Tier 3 · Journey' : 'Tier 2 · World'}
                   </button>
                 );
               })}
@@ -524,6 +528,12 @@ export default function OutboundForge() {
               >
                 🗣 Talking Website
               </button>
+              <TemplatePicker
+                value={siteTemplateKey}
+                onChange={setSiteTemplateKey}
+                compact
+                className="px-3 py-1.5 rounded-lg border-2 bg-white text-[#1a1815]/70 border-[#1a1815]/20 hover:border-[#F5B700] font-oswald uppercase tracking-[0.08em] text-[11px] outline-none max-w-[210px]"
+              />
             </span>
             <span className="ml-auto font-oswald text-sm text-[#1a1815]/50 uppercase tracking-[0.1em]">
               {visible.length} {visible.length === 1 ? 'lead' : 'leads'}

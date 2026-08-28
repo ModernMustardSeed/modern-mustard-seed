@@ -59,7 +59,7 @@ agent already has a secret, and says so. Set webhook secrets in the dashboard.
 
 **Mr. Mustard is not managed here.** `setup-vapi-mustard.mjs` owns him, because
 his spoken prices are derived at build time from `lib/demo-order.ts` and
-`data/sidekick.ts`. Freezing those into a static snapshot would reintroduce
+`data/demo-agent.ts`. Freezing those into a static snapshot would reintroduce
 hand-typed pricing, the exact thing that script exists to prevent. He is
 diffed here so drift stays visible, but `--push` refuses to touch him.
 

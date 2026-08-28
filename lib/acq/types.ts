@@ -37,6 +37,17 @@ export const TRADES = [
   'flooring',
   'auto_repair',
   'veterinary',
+  /* the construction family (2026-08-22) */
+  'general_contractor',
+  'concrete',
+  'masonry',
+  'fencing',
+  'siding_gutters',
+  'windows_doors',
+  'septic',
+  'well_water',
+  'excavation',
+  'paving',
   'other',
 ] as const;
 export type Trade = (typeof TRADES)[number];
@@ -146,7 +157,7 @@ export type QueueKind = (typeof QUEUE_KINDS)[number];
 
 /**
  * The offer this campaign sells, read from the ONE place price lives
- * (data/sidekick.ts → lib/demo-order.ts). Never retype the number: if Sarah
+ * (data/demo-agent.ts → lib/demo-order.ts). Never retype the number: if Sarah
  * reprices the Voice Agent, the emails, the goal math and Mr. Mustard's script
  * all move with it on the next request.
  */
@@ -329,9 +340,15 @@ export type AcqProspect = {
   demo_url: string | null;
   hub_demo_id: string | null;
   hub_demo_url: string | null;
+  hub_view_count: number | null;
+  site_demo_id: string | null;
   site_demo_url: string | null;
   site_demo_status: string | null;
+  os_demo_id: string | null;
   os_demo_url: string | null;
+  os_demo_status: string | null;
+  /** The walkthrough film cut off THEIR suite, once the website build lands. */
+  suite_film_status: 'queued' | 'filming' | 'ready' | 'failed' | null;
   dnc_checked: boolean;
   status: string;
   created_at: string;

@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import { buildMetadata, SITE } from '@/lib/seo';
 import { JsonLd, faqJsonLd, serviceJsonLd, breadcrumbJsonLd } from '@/lib/jsonld';
 import { getTradePage, liveTradePages, tradeFaqs, DEMO_LINE } from '@/data/trade-pages';
-import { sidekickTiers, sidekickUsd } from '@/data/sidekick';
+import { demoAgentTiers, demoAgentUsd } from '@/data/demo-agent';
 import MissedCallMath from '@/components/voice-agents/MissedCallMath';
 
 /**
@@ -147,7 +147,7 @@ export default async function TradePage({ params }: { params: Promise<{ trade: s
               <p className="mt-2 font-display text-xl font-extrabold">{preset.signature.title}</p>
               <p className="mt-1 font-body text-sm text-[#5c554a]">{preset.signature.sub}</p>
               <p className="mt-3 font-body text-sm text-[#3d382e]">
-                Every forged demo ships with a full business command center for your trade, free to tour, and free
+                Every forged demo ships with a website designed from scratch for your trade, free to tour, and free
                 to keep when you take the voice agent and the website together. This board is its centerpiece.
               </p>
             </div>
@@ -288,8 +288,8 @@ export default async function TradePage({ params }: { params: Promise<{ trade: s
               Built for how {forWord.toLowerCase()} actually make money.
             </h2>
             <p className="mt-4 font-body text-[16px] text-[#3d382e] leading-relaxed max-w-2xl">
-              The voice agent is the front door. Behind it, the command center runs the follow-through that this
-              trade lives on, and it comes free when you take the voice agent and the website together.
+              The voice agent is the front door. Behind it, the website carries the follow-through that this
+              trade lives on, and taken together they are built as one thing.
             </p>
             <div className="mt-8 grid md:grid-cols-3 gap-6">
               {preset.extraAutomations.map((a) => (
@@ -327,7 +327,7 @@ export default async function TradePage({ params }: { params: Promise<{ trade: s
               {
                 n: '03',
                 t: 'We Install It',
-                b: `A human at Modern Mustard Seed wires it to your real line, services, hours, and booking flow. Plans from $${sidekickUsd(sidekickTiers[0].monthlyCents)} a month, hard caps, no trial games.`,
+                b: `A human at Modern Mustard Seed wires it to your real line, services, hours, and booking flow. Plans from $${demoAgentUsd(demoAgentTiers[0].monthlyCents)} a month, hard caps, no trial games.`,
               },
             ].map((s) => (
               <div key={s.n} className="rounded-2xl border-2 border-[#161616] bg-white p-6 shadow-[5px_5px_0_0_#161616]">

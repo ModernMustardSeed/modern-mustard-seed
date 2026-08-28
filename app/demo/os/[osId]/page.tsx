@@ -1,8 +1,8 @@
 import { getSupabase } from '@/lib/supabase';
-import { getRun } from '@/lib/sidekick-store';
-import { forgeCall } from '@/lib/sidekick';
+import { getRun } from '@/lib/demo-run-store';
+import { forgeCall } from '@/lib/demo-agent';
 import { buildMetadata } from '@/lib/seo';
-import type { ForgedCall } from '@/lib/sidekick';
+import type { ForgedCall } from '@/lib/demo-agent';
 import type { OsDemoConfig } from '@/lib/outbound-demo';
 import { extractPalette, themeFromPalette } from '@/lib/site-palette';
 import OsDemoApp from '@/components/demo/OsDemoApp';

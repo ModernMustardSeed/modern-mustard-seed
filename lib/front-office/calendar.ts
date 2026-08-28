@@ -59,6 +59,52 @@ export function parseDayHours(value: unknown): { open: number; close: number } |
   return { open, close };
 }
 
+export type Busy = { from: number; to: number };
+
+/**
+ * THE TIME MATHS, WITH NO DATABASE IN IT.
+ *
+ * Pulled out of `availableSlots` so the forged DEMO agents can offer real
+ * openings using the exact same rules a paying office runs on: inside posted
+ * hours, past the lead time, never on top of something already booked. There is
+ * one implementation of "when could somebody actually come out" and both the
+ * product and the demo of the product call it.
+ *
+ * That is not tidiness. A demo that invents times the product would never offer
+ * is a demo that lies about the product, and two implementations drift the
+ * moment one of them is fixed.
+ */
+export function slotsFrom(
+  hours: Hours,
+  timezone: string,
+  busy: Busy[],
+  opts: { days?: number; limit?: number; minutes?: number; now?: Date } = {},
+): Slot[] {
+  const days = opts.days ?? 10;
+  const limit = opts.limit ?? 6;
+  const minutes = opts.minutes ?? DEFAULT_MINUTES;
+  const now = opts.now ?? new Date();
+  const earliest = new Date(now.getTime() + LEAD_TIME_MINUTES * 60_000);
+
+  const out: Slot[] = [];
+  for (let d = 0; d < days && out.length < limit; d++) {
+    const day = new Date(now.getTime() + d * 24 * 3600_000);
+    const window = parseDayHours(hours[DAYS[day.getDay()]]);
+    if (!window) continue;
+
+    for (let m = window.open; m + minutes <= window.close && out.length < limit; m += minutes) {
+      const start = new Date(day);
+      start.setHours(Math.floor(m / 60), m % 60, 0, 0);
+      if (start < earliest) continue;
+      const end = new Date(start.getTime() + minutes * 60_000);
+      const clash = busy.some((b) => start.getTime() < b.to && end.getTime() > b.from);
+      if (clash) continue;
+      out.push({ startsAt: start.toISOString(), endsAt: end.toISOString(), label: sayable(start, timezone) });
+    }
+  }
+  return out;
+}
+
 /**
  * The next bookable slots.
  *
@@ -72,11 +118,7 @@ export async function availableSlots(
   opts: { days?: number; limit?: number; minutes?: number; now?: Date } = {},
 ): Promise<Slot[]> {
   const days = opts.days ?? 10;
-  const limit = opts.limit ?? 6;
-  const minutes = opts.minutes ?? DEFAULT_MINUTES;
   const now = opts.now ?? new Date();
-  const earliest = new Date(now.getTime() + LEAD_TIME_MINUTES * 60_000);
-
   const horizon = new Date(now.getTime() + days * 24 * 3600_000);
   const { data: taken } = await db
     .from('fo_appointments')
@@ -86,25 +128,12 @@ export async function availableSlots(
     .gte('starts_at', now.toISOString())
     .lte('starts_at', horizon.toISOString());
 
-  const busy = (taken ?? []).map((t) => ({ from: Date.parse(t.starts_at as string), to: Date.parse(t.ends_at as string) }));
+  const busy: Busy[] = (taken ?? []).map((t) => ({
+    from: Date.parse(t.starts_at as string),
+    to: Date.parse(t.ends_at as string),
+  }));
 
-  const out: Slot[] = [];
-  for (let d = 0; d < days && out.length < limit; d++) {
-    const day = new Date(now.getTime() + d * 24 * 3600_000);
-    const window = parseDayHours(office.hours[DAYS[day.getDay()]]);
-    if (!window) continue;
-
-    for (let m = window.open; m + minutes <= window.close && out.length < limit; m += minutes) {
-      const start = new Date(day);
-      start.setHours(Math.floor(m / 60), m % 60, 0, 0);
-      if (start < earliest) continue;
-      const end = new Date(start.getTime() + minutes * 60_000);
-      const clash = busy.some((b) => start.getTime() < b.to && end.getTime() > b.from);
-      if (clash) continue;
-      out.push({ startsAt: start.toISOString(), endsAt: end.toISOString(), label: sayable(start, office.timezone) });
-    }
-  }
-  return out;
+  return slotsFrom(office.hours, office.timezone, busy, opts);
 }
 
 /** A time an agent can read out loud without sounding like a database. */

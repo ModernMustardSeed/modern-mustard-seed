@@ -118,14 +118,14 @@ guides still say 300, they are wrong). Every line below is verified at or under
 
 ## 4. Products (price + link, they render as cards)
 
-Prices pulled from `data/sidekick.ts` on 2026-07-30. **Re-check against the live
+Prices pulled from `data/demo-agent.ts` on 2026-07-30. **Re-check against the live
 site before pasting.** Price lives in code, never in a doc.
 
 | Product | Price | Link |
 |---|---|---|
 | The Talking Website | $497 setup, then $497/mo | https://modernmustardseed.com/talking-website |
-| Voice Agent | $397 setup, then $397/mo | https://modernmustardseed.com/sidekick |
-| Voice Agent Pro | $597 setup, then $597/mo | https://modernmustardseed.com/sidekick |
+| Voice Agent | $397 setup, then $397/mo | https://modernmustardseed.com/demo agent |
+| Voice Agent Pro | $597 setup, then $597/mo | https://modernmustardseed.com/demo agent |
 | Free Website Audit | Free | https://modernmustardseed.com/website-audit |
 
 The free audit is the one that earns clicks from cold discovery traffic. Keep it

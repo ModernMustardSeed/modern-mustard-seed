@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { requireOutboundAdmin } from '@/lib/outbound-server';
-import { forgeLeadVoiceDemo, ensureOsDemo, ensureDemoHub } from '@/lib/outbound-demo';
+import { forgeLeadVoiceDemo, ensureDemoHub } from '@/lib/outbound-demo';
 
 export const runtime = 'nodejs';
 export const maxDuration = 30;
@@ -24,9 +24,8 @@ export async function POST(_req: Request, { params }: { params: Params }) {
   const forged = await forgeLeadVoiceDemo(guard.supabase, lead);
   if (!forged.ok) return NextResponse.json({ error: forged.error }, { status: forged.status });
 
-  // Every forged suite shows the command center too, whatever they end up buying:
-  // it is instant and token-free to build, and seeing it is what sells the pair.
-  const withOs = await ensureOsDemo(guard.supabase, forged.lead);
-  const withHub = await ensureDemoHub(guard.supabase, withOs);
+  // No command center rides along any more (Sarah, 2026-08-22). It is sold on
+  // its own and built by hand; the Forge OS button is the only way one appears.
+  const withHub = await ensureDemoHub(guard.supabase, forged.lead);
   return NextResponse.json({ ok: true, demo_url: forged.demoUrl, lead: withHub, existing: forged.existing });
 }

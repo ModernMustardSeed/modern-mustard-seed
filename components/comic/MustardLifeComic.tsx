@@ -7,7 +7,7 @@
  * absurdly well (yacht, rooftop, film set) and every time someone asks who is
  * minding the business, the answer is a Modern Mustard Seed product doing the
  * work. Every price on the page derives from the same data tables checkout
- * reads (data/sidekick.ts, lib/demo-order.ts, data/ads.ts, ...), never typed.
+ * reads (data/demo-agent.ts, lib/demo-order.ts, data/ads.ts, ...), never typed.
  *
  * All panel art is generated with the locked Mustard family character refs and
  * contains no text by brand rule; every word on this page is real HTML.
@@ -17,7 +17,7 @@ import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 
-import { SIDEKICK, sidekickTiers, sidekickUsd } from '@/data/sidekick';
+import { DEMO_AGENT, demoAgentTiers, demoAgentUsd } from '@/data/demo-agent';
 import { DEMO_PRODUCTS, DEMO_BUNDLE } from '@/lib/demo-order';
 import { picturesTiers } from '@/data/pictures';
 import { broadcastTiers, broadcastEntry } from '@/data/ads';
@@ -31,16 +31,15 @@ import { products } from '@/data/products';
 
 const INK = '#161616';
 const GOLD = '#F5B700';
-const usd = (cents: number) => `$${sidekickUsd(cents)}`;
+const usd = (cents: number) => `$${demoAgentUsd(cents)}`;
 
 /* ------------------------------------------------------------------ */
 /* Derived prices. The law: never type a price, always derive it.      */
 /* ------------------------------------------------------------------ */
 const P = {
-  sidekick: sidekickTiers.find((t) => t.slug === 'sidekick')!,
-  sidekickPro: sidekickTiers.find((t) => t.slug === 'sidekick-pro')!,
+  voiceAgent: demoAgentTiers.find((t) => t.slug === 'demo-agent')!,
+  demoAgentPro: demoAgentTiers.find((t) => t.slug === 'demo-agent-pro')!,
   site: DEMO_PRODUCTS.site,
-  os: DEMO_PRODUCTS.os,
   bundle: DEMO_BUNDLE,
   spot: picturesTiers.find((t) => t.name === 'THE SPOT')!,
   premiere: picturesTiers.find((t) => t.name === 'THE PREMIERE')!,
@@ -332,8 +331,8 @@ export default function MustardLifeComic() {
                 </div>
                 <ul className="divide-y divide-dashed divide-[#161616]/20 px-6 py-2">
                   {[
-                    { p: '04', label: 'The Voice Agent Forge', note: `voice agent, from ${usd(P.sidekick.setupCents)} + ${usd(P.sidekick.monthlyCents)}/mo`, href: '#sidekick' },
-                    { p: '06', label: 'Websites and Command Centers', note: `from ${usd(P.site.setupCents)} + ${usd(P.site.monthlyCents)}/mo`, href: '#websites' },
+                    { p: '04', label: 'The Voice Agent Forge', note: `voice agent, from ${usd(P.voiceAgent.setupCents)} + ${usd(P.voiceAgent.monthlyCents)}/mo`, href: '#voice-agent' },
+                    { p: '06', label: 'Websites and The Talking Website', note: `from ${usd(P.site.setupCents)} + ${usd(P.site.monthlyCents)}/mo`, href: '#websites' },
                     { p: '10', label: 'Pictures and Broadcast', note: `commercials from $${P.justCommercial.priceUsd}, managed ads from ${usd(P.onAir.setupCents)}`, href: '#pictures' },
                     { p: '12', label: 'Launch and the GEO Desk', note: `from $${P.launchKit.priceUsd}`, href: '#launch' },
                     { p: '14', label: 'The Switchboard', note: `franchises, from $${P.switchBest.perLocationUsd}/location`, href: '#switchboard' },
@@ -360,8 +359,8 @@ export default function MustardLifeComic() {
         </div>
       </section>
 
-      {/* ════════════════ p.04 THE SIDEKICK ════════════════ */}
-      <section id="sidekick" className="relative border-b-2 border-[#161616]">
+      {/* ════════════════ p.04 THE DEMO_AGENT ════════════════ */}
+      <section id="demo-agent" className="relative border-b-2 border-[#161616]">
         <div className="mx-auto max-w-6xl px-5 md:px-8 py-16 md:py-24">
           <PageRule page="p. 04" title="Cover Story" />
           <h2 className="font-display text-4xl md:text-6xl font-black italic leading-[0.95] mb-3">
@@ -391,27 +390,27 @@ export default function MustardLifeComic() {
                 The Voice Agent answers his line 24 hours a day, books the appointments, flags the urgent calls to
                 his cell, and sends him a tidy summary of every conversation. Tell Mr. Mustard about your
                 business and he trains one for you while you watch, then it talks to you live. The demo is free
-                and takes about a minute. {SIDEKICK.creditNote}
+                and takes about a minute. {DEMO_AGENT.creditNote}
               </p>
             </div>
 
             <div className="space-y-4">
               <PriceTag
-                name={P.sidekick.name}
-                price={`${usd(P.sidekick.setupCents)} + ${usd(P.sidekick.monthlyCents)}/mo`}
-                note={`${P.sidekick.minutesCap.toLocaleString()} answered minutes a month. At the cap he takes messages only. Never a surprise bill.`}
+                name={P.voiceAgent.name}
+                price={`${usd(P.voiceAgent.setupCents)} + ${usd(P.voiceAgent.monthlyCents)}/mo`}
+                note={`${P.voiceAgent.minutesCap.toLocaleString()} answered minutes a month. At the cap he takes messages only. Never a surprise bill.`}
               />
               <PriceTag
-                name={P.sidekickPro.name}
-                price={`${usd(P.sidekickPro.setupCents)} + ${usd(P.sidekickPro.monthlyCents)}/mo`}
-                note={`${P.sidekickPro.minutesCap.toLocaleString()} minutes, caller memory, real calendar booking, a monthly retrain call with Sarah.`}
+                name={P.demoAgentPro.name}
+                price={`${usd(P.demoAgentPro.setupCents)} + ${usd(P.demoAgentPro.monthlyCents)}/mo`}
+                note={`${P.demoAgentPro.minutesCap.toLocaleString()} minutes, caller memory, real calendar booking, a monthly retrain call with Sarah.`}
                 featured
                 delay={120}
               />
               <div className="mlc-pop flex flex-col gap-3 pt-2" style={{ transitionDelay: '220ms' }}>
                 <Cta href="/demos" solid>Forge Yours Free</Cta>
                 <p className="font-mono text-[11px] text-[#5c554a] leading-relaxed">
-                  Or call Mr. Mustard himself: <a className="font-bold text-[#1E50C8]" href="tel:+14063121223">{SIDEKICK.phoneLine}</a>. He loves visitors.
+                  Or call Mr. Mustard himself: <a className="font-bold text-[#1E50C8]" href="tel:+14063121223">{DEMO_AGENT.phoneLine}</a>. He loves visitors.
                 </p>
               </div>
             </div>
@@ -477,15 +476,16 @@ export default function MustardLifeComic() {
             </div>
             <div className="space-y-4">
               <p className="font-mono text-[10px] font-bold uppercase tracking-[0.35em] text-[#E0301E]">p. 08 · The Bridge</p>
+              {/*
+                NO COMMAND CENTER PRICE TAG. It had one here, and a paragraph
+                pitching it, until Sarah said on 2026-08-25: "I am not pushing
+                command center anywhere." It is still sold at /command-center
+                and /pay/command-center; the catalog simply stops selling it.
+              */}
               <p className="mlc-pop font-body text-[15px] leading-relaxed text-[#3a3733]">
-                The Business Command Center wires your calls, website traffic, customers, and reviews into one glowing
-                dashboard, and it rides free when you take the website and the voice agent together. One system, one login.
+                The Talking Website is the site and the phone built as one thing, off one brain, so the answer a
+                visitor reads is the answer a caller hears at midnight. One system, one login, one story.
               </p>
-              <PriceTag
-                name={P.os.name}
-                price={`${usd(P.os.setupCents)} + ${usd(P.os.monthlyCents)}/mo`}
-                note={`${P.os.blurb} Free when you take the website and the voice agent together.`}
-              />
               <PriceTag
                 name={P.bundle.name}
                 price={`${usd(P.bundle.setupCents)} + ${usd(P.bundle.monthlyCents)}/mo`}

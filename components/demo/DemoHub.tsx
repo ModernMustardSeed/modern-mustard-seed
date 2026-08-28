@@ -7,6 +7,7 @@ import type { OsTradeKey } from '@/data/demo-os-trades';
 import MakeItRealCTA from '@/components/demo/MakeItRealCTA';
 import RecoveryMachine, { type RecoveryValues } from '@/components/RecoveryMachine';
 import SuiteMoreForm from '@/components/demo/SuiteMoreForm';
+import BookedOnTheCall from '@/components/demo/BookedOnTheCall';
 import type { DemoProductKey } from '@/lib/demo-order';
 
 /**
@@ -39,7 +40,7 @@ function useTyped(text: string, speed = 28): { shown: string; typing: boolean } 
 
 /**
  * The encore: their own agent calls THEM. Rides the existing public
- * /api/sidekick/forge phone path, which enforces one ring per run, one ring
+ * /api/demo-agent/forge phone path, which enforces one ring per run, one ring
  * per number, and the Vapi billing kill switch. User-initiated, consent on
  * the page, US numbers only.
  */
@@ -51,7 +52,7 @@ function EncoreRing({ runId, business }: { runId: string; business: string }) {
     if (state === 'calling' || state === 'done') return;
     setState('calling');
     try {
-      const res = await fetch('/api/sidekick/forge', {
+      const res = await fetch('/api/demo-agent/forge', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ mode: 'phone', runId, phone }),
@@ -117,13 +118,13 @@ export default function DemoHub({
   voiceUrl,
   siteUrl,
   sitePending,
-  osUrl,
   integrationPlanUrl,
   planQuote,
   auditUrl,
   auditScore,
   auditHeadline,
   demoRunId,
+  bookedOnCall = [],
   noticedLine,
   missedPreset,
   hasEmail,
@@ -140,7 +141,7 @@ export default function DemoHub({
    *  personal video about this business, never a stock/house reel. */
   personalVideoUrl?: string | null;
   /** THEIR film: a fresh recording of this lead's own website, a live call with
-   *  their own voice agent, and their own command center. Outranks every other
+   *  their own voice agent. Outranks every other
    *  video here, because a tour of somebody else's business is what it replaced. */
   suiteFilmUrl?: string | null;
   suiteFilmPoster?: string | null;
@@ -153,7 +154,6 @@ export default function DemoHub({
   voiceUrl: string | null;
   siteUrl: string | null;
   sitePending: string | null;
-  osUrl: string | null;
   /** Their finished AI Integration Plan (/demo/plan/<id>), when written. It
    *  joins the suite as a door: free value that fills a voice-only page. */
   integrationPlanUrl?: string | null;
@@ -167,8 +167,11 @@ export default function DemoHub({
   /** The audit's own one-line verdict, quoted on the door. */
   auditHeadline?: string | null;
   /** The lead's forged voice run. Powers the encore: their agent calls THEM,
-   *  through the existing /api/sidekick/forge phone path with all its caps. */
+   *  through the existing /api/demo-agent/forge phone path with all its caps. */
   demoRunId?: string | null;
+  /** Appointments the forged agent booked on a demo call. Usually empty;
+   *  the card renders nothing at all when it is, on purpose. */
+  bookedOnCall?: React.ComponentProps<typeof BookedOnTheCall>['appointments'];
   /** A factual line from the walk-in research ("closed both weekend days..."),
    *  already sanitized server-side. Shown above the calculator so the numbers
    *  start as theirs. */
@@ -223,10 +226,25 @@ export default function DemoHub({
       : leak >= 8000
         ? "That's someone's salary walking out the door."
         : leak >= 3000
-          ? "That's a truck payment. Every month."
+          ? "That's money you already earned, going to someone else."
           : leak >= 1000
             ? 'That would cover this whole suite many times over.'
             : 'Even this adds up to real money over a year.';
+
+  /**
+   * THE COMMAND CENTER HAS NO DOOR HERE AT ALL.
+   *
+   * There used to be a gate here, added earlier the same day, that drew the
+   * door only when the voice agent and the website were both in the suite,
+   * because that was the only case where it was free. Sarah then took it off
+   * the suite and out of the offer entirely (2026-08-22): it is sold on its
+   * own, built by hand, and never suggested next to anything.
+   *
+   * That supersedes the gate rather than tightening it, so the gate is gone
+   * too. A lead forged before that decision can still carry an os_demo_url and
+   * that page still resolves, so a link already emailed keeps working. It is
+   * simply not part of a suite.
+   */
 
   const doors = useMemo(
     () =>
@@ -264,20 +282,6 @@ export default function DemoHub({
           tone: 'gold' as const,
           cta: siteUrl ? 'See it live' : 'Watch it forge',
         },
-        osUrl && {
-          href: osUrl,
-          icon: '⚙',
-          title: 'Your command center',
-          // Sarah 2026-08-20: when the agent and the website both live in the
-          // suite, the free command center is the headline, not a footnote.
-          desc:
-            voiceUrl && (siteUrl || sitePending)
-              ? 'Every call transcribed, your customers, reviews, quotes, and money on one board. It costs nothing extra: the website and the voice agent live here together, so this comes with them. Already built, already wearing your brand.'
-              : 'Every call transcribed, your website traffic, customers, reviews, quotes, and money on one board. Free when you keep the website and the voice agent together, nothing to install.',
-          tone: 'ink' as const,
-          cta: 'Open it',
-          badge: voiceUrl && (siteUrl || sitePending) ? 'FREE with these two' : 'Free with both',
-        },
         integrationPlanUrl && {
           href: integrationPlanUrl,
           icon: '📋',
@@ -290,7 +294,7 @@ export default function DemoHub({
           badge: 'Free',
         },
       ].filter(Boolean) as { href: string; icon: string; title: string; desc: string; tone: 'dark' | 'gold' | 'ink'; cta: string; badge?: string }[],
-    [voiceUrl, siteUrl, sitePending, osUrl, integrationPlanUrl, planQuote, auditUrl, auditScore, auditHeadline, business],
+    [voiceUrl, siteUrl, sitePending, integrationPlanUrl, planQuote, auditUrl, auditScore, auditHeadline, business],
   );
 
   /**
@@ -310,38 +314,33 @@ export default function DemoHub({
    * one quiet line at the bottom, after the order card, where it is an offer
    * rather than clutter over the thing they asked for.
    */
+  //
+  // THE COMMAND CENTER IS NOT A SUITE PIECE ANY MORE (Sarah, 2026-08-22). It is
+  // still sold and still built by hand, it is simply not forged, not shown here
+  // and not suggested next to anything. A lead forged before that date can
+  // still carry an os_demo_url and its page still resolves, so any link already
+  // emailed keeps working; it just no longer appears as a door.
+  //
   const forged = [
     voiceUrl ? 'voice' : null,
     siteUrl || sitePending ? 'site' : null,
-    osUrl ? 'os' : null,
-  ].filter(Boolean) as ('voice' | 'site' | 'os')[];
-  const PIECE_NAME: Record<'voice' | 'site' | 'os', string> = {
+  ].filter(Boolean) as ('voice' | 'site')[];
+  const PIECE_NAME: Record<'voice' | 'site', string> = {
     voice: 'Voice Agent',
     site: 'Website',
-    os: 'Command Center',
   };
   const onlyOne = forged.length === 1;
-  const missing = (['voice', 'site', 'os'] as const).filter((p) => !forged.includes(p));
-  // What the form can actually queue: the two sellable demos. The command
-  // center is included free at purchase, not forged on request.
-  const forgeMissing = missing.filter((p): p is 'voice' | 'site' => p === 'voice' || p === 'site');
+  const missing = (['voice', 'site'] as const).filter((p) => !forged.includes(p));
+  const forgeMissing = missing;
 
-  /**
-   * The line about what they did not take. It carries the command-center rule
-   * when it applies, because a buyer holding one paid piece who adds the other
-   * gets the back office free, and every surface that can put somebody in the
-   * dominated cart owes them that fact in the moment.
-   */
+  /** The line about the one piece they did not take. */
   const restLine = (() => {
     if (!missing.length) return null;
-    if (forged.includes('voice') && forged.includes('site')) {
-      return 'You have both paid pieces here, so the command center that files every call and every lead is already free with them. Say the word and it goes on this page.';
-    }
     if (forged.includes('voice')) {
-      return 'Want the website to match, built the same way, off the same brain? Taking the two together makes the command center free.';
+      return 'Want the website to match, built the same way, off the same brain? Taken together they become one thing, and it costs less than the two apart.';
     }
     if (forged.includes('site')) {
-      return 'Want it to answer its own phone too? Taking the two together makes the command center free.';
+      return 'Want it to answer its own phone too? Taken together they become one thing, and it costs less than the two apart.';
     }
     return 'Want the voice agent that feeds this, or the website to match? We can forge either one.';
   })();
@@ -428,8 +427,8 @@ export default function DemoHub({
                   </p>
                   <p className="font-body text-[14px] text-[#FBF6EA]/65 mt-2 max-w-sm mx-auto">
                     {suiteFilmPending
-                      ? 'A short film of your own site, a real call with your own agent, and your command center. We are working on it and will have it to you within the hour. Everything below is open now.'
-                      : 'A short film of your own site, a real call with your own agent, and your command center. It is not cut yet, so nothing plays here until it is. Everything below is open now, and reaching out gets it made today.'}
+                      ? 'A short film of your own site and a real call with your own agent. We are working on it and will have it to you within the hour. Everything below is open now.'
+                      : 'A short film of your own site and a real call with your own agent. It is not cut yet, so nothing plays here until it is. Everything below is open now, and reaching out gets it made today.'}
                   </p>
                 </div>
               </div>
@@ -471,13 +470,7 @@ export default function DemoHub({
         ) : (
         <section>
           <h2 className="font-display text-2xl font-bold mb-1">Your {doors.length} demos</h2>
-          {osUrl && voiceUrl && (siteUrl || sitePending) && (
-            <p className="font-body text-[14.5px] text-[#161616]/70 mb-4 max-w-xl">
-              Two of these are the products. The third, your command center, is <strong className="text-[#161616]">included free</strong> because
-              the website and the voice agent live together in this suite. You are not being upsold a dashboard; it comes with the pair.
-            </p>
-          )}
-          {!(osUrl && voiceUrl && (siteUrl || sitePending)) && <div className="mb-3" />}
+          <div className="mb-3" />
           <div className={`grid sm:grid-cols-2 ${doors.length >= 3 ? 'lg:grid-cols-3' : ''} gap-4`}>
             {doors.map((d, i) => (
               <a
@@ -505,6 +498,10 @@ export default function DemoHub({
 
         {/* The encore: strongest moment in the suite, one tap after the doors. */}
         {demoRunId && voiceUrl && <EncoreRing runId={demoRunId} business={business} />}
+
+        {/* Proof, in writing, of what the call already did out loud. Sits
+            right under the encore, because the encore is what produces it. */}
+        <BookedOnTheCall appointments={bookedOnCall} business={business} jobWord={job.label.toLowerCase()} />
 
         {/* Recovery Calculator: the shared pop-art desk machine, hub sized
             (Sarah, 2026-08-20: same calc as the landing page, a little smaller,
@@ -560,7 +557,6 @@ export default function DemoHub({
           forged={[
             voiceUrl ? ('voice' as DemoProductKey) : null,
             siteUrl || sitePending ? ('site' as DemoProductKey) : null,
-            osUrl ? ('os' as DemoProductKey) : null,
           ].filter(Boolean) as DemoProductKey[]}
         />
 
@@ -585,17 +581,14 @@ export default function DemoHub({
                 {onlyOne ? 'Want more than the one thing?' : 'One piece still missing'}
               </p>
               <p className="font-body mt-3 text-[15.5px] leading-relaxed text-[#161616]/80 max-w-xl mx-auto">{restLine}</p>
-              {forgeMissing.length ? (
-                <SuiteMoreForm hubId={hubId} missing={forgeMissing} hasEmail={hasEmail ?? false} />
-              ) : (
-                <a
-                  href="tel:+14063121223"
-                  className="mt-5 inline-flex min-h-[52px] items-center justify-center gap-2 rounded-xl border-2 border-[#161616] bg-[#F5B700] px-5 py-3 font-display text-[17px] font-bold text-[#161616] shadow-[4px_4px_0_0_#161616] transition-all hover:-translate-y-0.5 hover:shadow-[6px_6px_0_0_#161616]"
-                >
-                  <span aria-hidden="true">📞</span>
-                  Call Mr. Mustard and say the word
-                </a>
-              )}
+              {/*
+                NEVER "call Mr. Mustard and say the word." Sarah, 2026-08-25:
+                if they want to add a piece, hand them the button that adds it.
+                forgeMissing is non-empty whenever restLine is, so this form is
+                the only path out of this card; the phone lives inside it as
+                the small human fallback, not as the ask.
+              */}
+              <SuiteMoreForm hubId={hubId} missing={forgeMissing} hasEmail={hasEmail ?? false} />
             </div>
           </section>
         )}

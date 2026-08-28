@@ -85,7 +85,7 @@ const MENU_GROUPS = [
 // index, cross-sell CTA, sitemap, and llms.txt entry, and noindexed. Three voice
 // agent pages competed with each other; /voice-agents and /demos are the two
 // that stay. The route still answers so the Meta campaign, Stripe checkout
-// returns, and the Sidekick drip keep working, and the forged demos at
+// returns, and the demo agent drip keep working, and the forged demos at
 // /voice-agents/forge/demo/<runId> are untouched. To bring it back: restore this
 // row plus the Footer, sitemap, services-hub, llms.txt, front-desk, portfolio,
 // industries, partner-swipe, jsonld, and comic entries, drop the noindex flag on
@@ -338,7 +338,7 @@ export default function Navbar() {
                 Free Demos <span className="inline-block group-hover:translate-x-1 transition-transform">→</span>
               </span>
               <span className="block font-body text-[13px] text-[#161616]/75 mt-1 leading-relaxed">
-                A voice agent, a command center, and a new website. All three built for your business.
+                A voice agent and a new website. Both built for your business.
               </span>
             </Link>
 

@@ -18,7 +18,7 @@
  * with no readable diagnosis is not mailed a generic nudge, it is surfaced in
  * `unwritable()` for a human to look at.
  *
- * Design notes, mostly inherited from lib/sidekick-drip.ts because that pattern
+ * Design notes, mostly inherited from lib/demo-agent-drip.ts because that pattern
  * is proven here:
  *  - State lives in `app_state` as {step, at}, never as tags inside a notes
  *    string. Advances only after a CONFIRMED send.

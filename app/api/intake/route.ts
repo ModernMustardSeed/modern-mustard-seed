@@ -199,7 +199,8 @@ export async function POST(req: Request) {
       try {
         await resend.emails.send({
           from: 'Brand Intake <sarah@modernmustardseed.com>',
-          to: ['sarah@modernmustardseed.com', 'thompsonpolly71@gmail.com'],
+          // One recipient. This form is no longer one client's form.
+          to: ['sarah@modernmustardseed.com'],
           replyTo: email,
           subject: refusedOverwrite
             ? `Intake submitted (NOT SAVED, needs a look): ${ownerName} (${businessName})`
@@ -225,9 +226,9 @@ export async function POST(req: Request) {
 
       try {
         await resend.emails.send({
-          from: 'Polly at Modern Mustard Seed <polly.thompson@modernmustardseed.com>',
+          from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
           to: email,
-          replyTo: ['polly.thompson@modernmustardseed.com', 'sarah@modernmustardseed.com'],
+          replyTo: ['sarah@modernmustardseed.com'],
           subject: `Got it, ${firstName}. Your brand is in good hands`,
           html: clientEmail({
             preheader: 'Thank you. Here is exactly what happens next with your store and website.',
@@ -256,7 +257,7 @@ export async function POST(req: Request) {
       // Log the confirmation we sent on the client's correspondence thread.
       await logClientMessage({
         direction: 'outbound',
-        fromAddr: 'polly.thompson@modernmustardseed.com',
+        fromAddr: 'sarah@modernmustardseed.com',
         toAddr: email,
         subject: `Got it, ${firstName}. Your brand is in good hands`,
         body: `Thank you for sharing the heart of ${businessName}. Next: we design three directions, send you a moodboard to choose from, then build the real shoppable store.`,

@@ -28,6 +28,23 @@ import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+
+/* The readback standard, from the one file that holds it.
+ *
+ * This script used to hand-write "b as in boy, r as in Robert" into Heath's
+ * prompt. That is the same rules, and that is the problem: the moment somebody
+ * corrects the standard after a bad live call, his copy is the stale one. The
+ * build refuses to ship a prompt that does not come through here, which is how
+ * it caught this.
+ *
+ * Read as source text rather than imported, because this is .mjs and the
+ * standard is .ts. Same trick as vapi-spelling.mjs. */
+function readbackStandard() {
+  const src = readFileSync(resolve(__dirname, '../lib/readback-standard.ts'), 'utf8');
+  const m = /export const READBACK_STANDARD = `([\s\S]*?)`;/.exec(src);
+  if (!m) throw new Error('Could not read READBACK_STANDARD out of lib/readback-standard.ts');
+  return m[1];
+}
 const CONFIG = resolve(__dirname, '../vapi/assistants/wild-horse-concrete-front-desk.json');
 
 function loadEnvFile(path) {
@@ -76,6 +93,8 @@ if (!WEBHOOK_SECRET) {
   process.exit(1);
 }
 
+const READBACK = readbackStandard();
+
 const SYSTEM = `You are the front desk for Wild Horse Construction and Concrete in Kalispell, Montana. Heath owns the company. You answer the phone when he cannot, which on a concrete crew is most of the working day.
 
 WHO CALLS
@@ -113,8 +132,7 @@ Never promise a date, a start week, or that the crew is free. Say you will put i
 
 Never guess whether something is possible. If you do not know, say you do not know and that Heath will.
 
-SPELLING AND NUMBERS
-Read anything spelled back letter by letter at a measured pace with a word for each one: "b as in boy, r as in Robert". Never say letter sounds on their own. Read phone numbers back in groups of three, three and four, slowly, and confirm before moving on. A wrong callback number wastes the entire call.
+${READBACK}
 
 IF IT IS URGENT
 Concrete has real emergencies: a truck on the way with nowhere to put it, a pour going wrong, a form blowing out. If it sounds like that, say so plainly, get the number first, and tell them you are flagging it so Heath sees it ahead of everything else. Do not stay on the line trying to solve it.

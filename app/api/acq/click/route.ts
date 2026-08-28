@@ -11,9 +11,8 @@ export const runtime = 'nodejs';
 /**
  * THE CTA REDIRECT.
  *
- * Every "yes, have Mr. Mustard call me" button in the campaign points here, so
- * a click is a measured fact rather than an inference from an open. Then it
- * hands them to the ONE doorway.
+ * Every campaign button points here, so a click is a measured fact rather than
+ * an inference from an open. Then it hands them to the door the button named.
  *
  * It mints a signed magic link on the way through rather than putting the
  * prospect id in the URL. Two reasons: the recipient types nothing because
@@ -30,14 +29,20 @@ export async function GET(req: Request) {
   const step = url.searchParams.get('s');
   const variant = url.searchParams.get('v');
 
-  // The second door. Most of the sequence asks for a callback and lands on
-  // /mustard; the website email offers the free suite and lands on /demos.
+  // The three doors.
+  //
+  // `demos` is now the campaign's front door: since 2026-08-25 the sequence
+  // stops asking for permission to call and hands people the free build
+  // instead. `talking-website` is the second link under it, for the reader who
+  // wants the website as well as the agent. `mustard` stays because the
+  // permission page is still reachable from the /mustard QR, Sarah reading the
+  // URL down the phone, and every link minted before the change.
   //
   // A WHITELIST, NEVER A URL. This target rides in a query string on a link we
   // mail to strangers, so accepting an arbitrary destination would turn our own
   // domain into somebody else's phishing redirect. Anything unrecognised falls
-  // back to the doorway rather than erroring.
-  const DOORS: Record<string, string> = { mustard: '/mustard', demos: '/demos' };
+  // back to the free build rather than erroring.
+  const DOORS: Record<string, string> = { mustard: '/mustard', demos: '/demos', 'talking-website': '/talking-website' };
   const doorKey = DOORS[url.searchParams.get('d') ?? ''] ? (url.searchParams.get('d') as string) : 'mustard';
 
   const target = new URL(`${SITE.url}${DOORS[doorKey]}`);
@@ -61,8 +66,10 @@ export async function GET(req: Request) {
             label: hit.machine
               ? `Security scanner followed the link${step ? ` in email ${step}` : ''}`
               : doorKey === 'demos'
-                ? `Went for the free demo suite${step ? ` from email ${step}` : ''}`
-                : `Clicked the Mr. Mustard button${step ? ` from email ${step}` : ''}`,
+                ? `Went for the free build${step ? ` from email ${step}` : ''}`
+                : doorKey === 'talking-website'
+                  ? `Went for the Talking Website${step ? ` from email ${step}` : ''}`
+                  : `Clicked the Mr. Mustard button${step ? ` from email ${step}` : ''}`,
             detail: { step, variant, door: doorKey, referer: req.headers.get('referer'), ...verdictDetail(hit) },
           },
           // Gateways fetch the same URL twice in the same second. A person who

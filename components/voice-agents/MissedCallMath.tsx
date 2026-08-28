@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { sidekickTiers, sidekickUsd } from '@/data/sidekick';
+import { demoAgentTiers, demoAgentUsd } from '@/data/demo-agent';
 
 /**
  * The trade page's interactive moment: the visitor's own missed-call math.
@@ -9,11 +9,11 @@ import { sidekickTiers, sidekickUsd } from '@/data/sidekick';
  * Pure client state, no network, no deps. Sample defaults come from the
  * trade preset and are labeled as editable assumptions, never as claims.
  *
- * The price is DERIVED from sidekickTiers, never typed here. This page once
+ * The price is DERIVED from demoAgentTiers, never typed here. This page once
  * carried a hardcoded $197 while Stripe charged $297 (fixed 2026-07-20); a
  * quoted price that does not come from the tier table is a revenue bug.
  */
-const ENTRY_MONTHLY = sidekickUsd(sidekickTiers[0].monthlyCents);
+const ENTRY_MONTHLY = demoAgentUsd(demoAgentTiers[0].monthlyCents);
 export default function MissedCallMath({
   avgTicket,
   ticketWord,

@@ -16,8 +16,8 @@
  * see the same numbers on the page.
  */
 
-import { getAssistantModel, demoModel, DESK_TOOLS, SPEAKING_PIPELINE, VOICE_CRAFT, type ForgedCall } from '@/lib/sidekick';
-import { SIDEKICK_VOICES } from '@/lib/sidekick-voice';
+import { getAssistantModel, demoModel, DESK_TOOLS, SPEAKING_PIPELINE, VOICE_CRAFT, type ForgedCall } from '@/lib/demo-agent';
+import { DEMO_AGENT_VOICES } from '@/lib/demo-voice';
 import { env } from '@/lib/env';
 
 export type DeskKind = 'admin' | 'client' | 'partner';
@@ -162,7 +162,7 @@ const DESK_MAX_SECONDS: Record<DeskKind, number> = { admin: 43200, client: 43200
 
 /**
  * Forge the desk call payload for the browser widget. Same merged-model
- * pattern as the sidekick forge (partial model overrides 400 on Vapi; tools
+ * pattern as the demo agent forge (partial model overrides 400 on Vapi; tools
  * must ride along so booking keeps working). Voice is always Sid: this is
  * Mr. Mustard himself, not a demo voice agent.
  */
@@ -192,7 +192,7 @@ export async function forgeDeskCall(
       ...SPEAKING_PIPELINE,
       maxDurationSeconds: DESK_MAX_SECONDS[desk],
       metadata: { kind: 'mustard-desk', desk, email: opts.email.slice(0, 80) },
-      voice: SIDEKICK_VOICES.male,
+      voice: DEMO_AGENT_VOICES.male,
     },
   };
 }

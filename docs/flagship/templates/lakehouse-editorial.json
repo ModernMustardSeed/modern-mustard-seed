@@ -1,0 +1,41 @@
+{
+  "name": "daisys-lakehouse-editorial",
+  "version": "1.0.0",
+  "type": "website-forge-template",
+  "description": "An editorial, cream-and-black hospitality site system inspired by a lakeside destination cafe.",
+  "entry": "CLAUDE.md",
+  "tokens": [
+    "brand_name",
+    "descriptor",
+    "location",
+    "hero_headline",
+    "hero_supporting_copy",
+    "signature_ritual_name",
+    "signature_ritual_copy",
+    "event_name",
+    "event_schedule",
+    "next_event_theme",
+    "menu_categories_and_items",
+    "catering_or_service_copy",
+    "shipping_or_shop_copy",
+    "hours",
+    "contact_email",
+    "phone",
+    "booking_url_or_email"
+  ],
+  "palette": {
+    "cream": "#f2eddf",
+    "paper": "#f8f3e6",
+    "ink": "#11110f",
+    "accent": "#e7bf38",
+    "supporting_sage": "#8f9b75",
+    "supporting_brown": "#5b3824"
+  },
+  "asset_requirements": {
+    "minimum_generated_images": 6,
+    "formats": ["avif", "webp", "jpg"],
+    "social_card": "1200x630",
+    "text_inside_images": false
+  },
+  "sections": ["nav", "hero", "ticker", "intro", "image_break", "menu", "signature_ritual", "gallery", "event", "services", "reservation", "footer"]
+}
