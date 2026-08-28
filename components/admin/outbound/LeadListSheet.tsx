@@ -54,6 +54,7 @@ export default function LeadListSheet({
   leads,
   scopeLabel,
   selectionCount,
+  defaultTitle = 'Outbound leads',
   push,
 }: {
   open: boolean;
@@ -64,10 +65,12 @@ export default function LeadListSheet({
   scopeLabel: string;
   /** How many rows are ticked, so the sheet can say what it is about to send. */
   selectionCount: number;
+  /** What the sheet is called before anybody renames it. */
+  defaultTitle?: string;
   push: (msg: string, tone?: 'ok' | 'error') => void;
 }) {
   const [columns, setColumns] = useState<ColumnKey[]>(DEFAULT_COLUMNS);
-  const [title, setTitle] = useState('Outbound leads');
+  const [title, setTitle] = useState(defaultTitle);
   const [landscape, setLandscape] = useState(false);
   const [to, setTo] = useState('');
   const [note, setNote] = useState('');

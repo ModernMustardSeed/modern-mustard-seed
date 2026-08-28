@@ -158,12 +158,13 @@ export function SeedBurst() {
 
 /* ----------------------------------- nav ---------------------------------- */
 
-export type AcqTab = 'factory' | 'command' | 'engagement' | 'build' | 'prospects' | 'finder' | 'campaign' | 'mustard' | 'calls' | 'sender' | 'intelligence' | 'settings';
+export type AcqTab = 'factory' | 'command' | 'engagement' | 'followups' | 'build' | 'prospects' | 'finder' | 'campaign' | 'mustard' | 'calls' | 'sender' | 'intelligence' | 'settings';
 
 const TABS: { key: AcqTab; href: string; label: string }[] = [
   { key: 'factory', href: '/admin/acquisition', label: 'Client Factory' },
   { key: 'command', href: '/admin/acquisition/command', label: 'Command Center' },
   { key: 'engagement', href: '/admin/acquisition/engagement', label: 'Who is moving' },
+  { key: 'followups', href: '/admin/acquisition/followups', label: 'Follow Up' },
   { key: 'build', href: '/admin/acquisition/build', label: 'The Build' },
   { key: 'prospects', href: '/admin/acquisition/prospects', label: 'Prospects' },
   { key: 'finder', href: '/admin/acquisition/lead-finder', label: 'Lead Finder' },
