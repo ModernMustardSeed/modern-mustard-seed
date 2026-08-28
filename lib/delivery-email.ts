@@ -46,15 +46,29 @@ const PRIVATE = /^(go-live|golive|runbook|call sheet|notes|internal|admin|sent:)
 const esc = (s: string) =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
+/**
+ * One thing, said plainly, big enough to read on a phone.
+ *
+ * Sarah, 2026-08-28: "dont do the little dots where they have to open them to
+ * see, make it more clear, like heres your demo website and heres the console."
+ *
+ * She is right. A row of near-identical rectangles with short labels makes a
+ * man click each one to find out what it is, and a man who has to click to find
+ * out mostly does not click. Every block now says what the thing is in a line
+ * he can read without opening it, and carries a visible "open it" so the whole
+ * block reads as a door rather than as a bullet point.
+ */
 function button(href: string, label: string, sub: string, pay: boolean) {
   const fill = pay ? "#C4380C" : "#ffffff";
   const ink = pay ? "#ffffff" : "#14181c";
+  const quiet = pay ? "rgba(255,255,255,.85)" : "#5A626A";
   return `
-  <a href="${esc(href)}" style="display:block;text-decoration:none;margin:0 0 14px;">
+  <a href="${esc(href)}" style="display:block;text-decoration:none;margin:0 0 16px;">
     <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:separate;">
-      <tr><td style="background:${fill};border:2px solid #14181c;box-shadow:4px 4px 0 #14181c;padding:16px 20px;">
-        <div style="font:700 17px/1.25 -apple-system,Segoe UI,sans-serif;color:${ink};">${esc(label)}</div>
-        ${sub ? `<div style="font:400 13px/1.4 -apple-system,Segoe UI,sans-serif;color:${ink};opacity:.82;margin-top:4px;">${esc(sub)}</div>` : ""}
+      <tr><td style="background:${fill};border:2px solid #14181c;box-shadow:5px 5px 0 #14181c;padding:20px 22px;">
+        <div style="font:700 21px/1.22 -apple-system,Segoe UI,sans-serif;color:${ink};">${esc(label)}</div>
+        ${sub ? `<div style="font:400 15px/1.45 -apple-system,Segoe UI,sans-serif;color:${quiet};margin-top:7px;">${esc(sub)}</div>` : ""}
+        <div style="font:700 11px/1 -apple-system,Segoe UI,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:${pay ? "#F5B700" : "#C4380C"};margin-top:12px;">${pay ? "Tap to pay" : "Tap to open"} &nbsp;&rarr;</div>
       </td></tr>
     </table>
   </a>`;
@@ -69,10 +83,15 @@ function button(href: string, label: string, sub: string, pay: boolean) {
  */
 function subtitle(label: string): string {
   const l = label.toLowerCase();
-  if (l.includes("website") && !PAY.test(label)) return "Every page. Have a look on your phone.";
-  if (l.includes("console") || l.includes("cornerstone")) return "Your jobs, your money, your paperwork. Open it and read the top paragraph.";
-  if (l.includes("google")) return "Your listing. It already exists and it is not claimed yet.";
-  return "";
+  if (l.includes("website") && !PAY.test(label))
+    return "Every page of it, already built and already live. Open it on your phone and scroll.";
+  if (l.includes("console") || l.includes("cornerstone"))
+    return "Your jobs, your money, your paperwork, all on one screen. Open it and read the paragraph at the top. That is what lands on your phone every morning at five.";
+  if (l.includes("google"))
+    return "It already exists and it already has your reviews on it. Nobody has claimed it yet, which means anybody can suggest an edit to it.";
+  // Never nothing. A block with no explanation is the thing she asked us to
+  // stop doing, so anything unrecognised says at least where it goes.
+  return "Open it and have a look.";
 }
 
 /**
@@ -147,12 +166,12 @@ ${videos.length ? `<tr><td style="padding:20px 26px 0;">
 </td></tr>` : ""}
 
 ${looks.length ? `<tr><td style="padding:22px 26px 0;">
-  <div style="font:700 11px/1 -apple-system,Segoe UI,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#6e7c87;margin-bottom:12px;">Look at these first</div>
+  <div style="font:700 11px/1 -apple-system,Segoe UI,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#6e7c87;margin-bottom:12px;">Have a look at these. Nothing here charges you.</div>
   ${looks.map((l) => button(l.url, l.label, subtitle(l.label), false)).join("")}
 </td></tr>` : ""}
 
 ${pays.length ? `<tr><td style="padding:22px 26px 0;">
-  <div style="font:700 11px/1 -apple-system,Segoe UI,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#6e7c87;margin-bottom:12px;">When you are ready</div>
+  <div style="font:700 11px/1 -apple-system,Segoe UI,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#6e7c87;margin-bottom:12px;">These two take money. Only these two.</div>
   ${pays.map((l) => button(l.url, l.label.replace(PAY, ""), "", true)).join("")}
   <p style="margin:2px 0 0;font:400 13px/1.5 -apple-system,Segoe UI,sans-serif;color:#6e7c87;">Anything with a monthly on it is month to month. Cancel any month, no notice, no penalty.</p>
 </td></tr>` : ""}
