@@ -51,7 +51,7 @@ export async function sendIntakeWelcome(
 
   const html = `<div style="font:400 16px/1.6 -apple-system,Segoe UI,sans-serif;color:#14181c;max-width:520px;">
     <p style="margin:0 0 14px;">${first}, that is through. Thank you.</p>
-    <p style="margin:0 0 14px;">One thing left before I can build the real one: I need your photos, your logo and your licence number. It is one form and it takes about ten minutes.</p>
+    <p style="margin:0 0 14px;">One thing left before I can build the real one: I need your photos, your logo, your license number, and to know about your web address. It is one form and it takes about ten minutes.</p>
     <p style="margin:22px 0;">
       <a href="${link}" style="display:inline-block;background:#C4380C;color:#fff;text-decoration:none;font-weight:700;padding:15px 26px;border:2px solid #14181c;box-shadow:4px 4px 0 #14181c;">Fill it in here</a>
     </p>

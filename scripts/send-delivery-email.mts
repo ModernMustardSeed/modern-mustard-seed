@@ -21,6 +21,7 @@
 import { createClient } from "@supabase/supabase-js";
 import fs from "node:fs";
 import { buildDeliveryEmail, type DeliveryLink } from "../lib/delivery-email";
+import { sendViaResend } from "../lib/send-email";
 
 const env = Object.fromEntries(
   fs.readFileSync(".env.local", "utf8").split(/\r?\n/)
@@ -54,17 +55,21 @@ for (const l of (files ?? []).filter((l) => PRIVATE.test(l.label))) console.log(
 const TO = process.argv.slice(2).filter((a) => a.includes("@"));
 if (!TO.length) { console.log("\nNo recipient given, nothing sent."); process.exit(0); }
 
-const res = await fetch("https://api.resend.com/emails", {
-  method: "POST",
-  headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, "Content-Type": "application/json" },
-  body: JSON.stringify({
-    from: "Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>",
-    to: TO,
-    subject: built.subject,
-    html: built.html,
-    text: built.text,
-    reply_to: "sarah@modernmustardseed.com",
-  }),
+/* Through sendViaResend, never through the Resend API directly.
+ *
+ * The first version of this script posted straight to Resend. The mail went and
+ * was delivered, and Heath's client card said no email had ever been sent to
+ * him, because recordSentEmail only runs on this path. A send the admin has no
+ * record of is a send that did not happen as far as anybody looking at the card
+ * is concerned. */
+const res = await sendViaResend({
+  from: "Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>",
+  to: TO,
+  subject: built.subject,
+  html: built.html,
+  text: built.text,
+  replyTo: "sarah@modernmustardseed.com",
 });
-const out = await res.json();
-console.log(res.ok ? `\nsent to ${TO.join(", ")}  id ${out.id}` : `\nFAILED ${res.status} ${JSON.stringify(out)}`);
+console.log(res.ok ? `
+sent to ${TO.join(", ")}` : `
+FAILED ${res.error ?? "unknown"}`);

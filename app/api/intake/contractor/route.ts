@@ -6,11 +6,20 @@ export const runtime = 'nodejs';
 export const maxDuration = 30;
 
 /**
+ * Where "this landed" goes. Sarah reads sarah@, so that is where it goes.
+ * OPS_INBOX overrides it with a comma separated list if that ever changes.
+ */
+const OPS_INBOX = (process.env.OPS_INBOX ?? 'sarah@modernmustardseed.com')
+  .split(',')
+  .map((a) => a.trim())
+  .filter(Boolean);
+
+/**
  * The contractor intake.
  *
  * The existing brand intake asks about products, price lists and a shop. A
  * builder has none of those and does have four things it never asks for: a
- * contractor licence, proof of insurance, the towns he covers, and photographs
+ * contractor license, proof of insurance, the towns he covers, and photographs
  * of jobs rather than of stock.
  *
  * Identified by a token, not by a typed email. The old form asked the client to
@@ -25,7 +34,7 @@ export const maxDuration = 30;
  *      table the admin reads.
  *   3. Files every upload on client_files so they show on his card.
  *   4. Moves his project to `building`, because he has now done his part.
- *   5. Emails Sarah that it landed, with the licence number in the subject
+ *   5. Emails Sarah that it landed, with the license number in the subject
  *      line, because that is the thing that has to go on the live site.
  */
 
@@ -125,11 +134,11 @@ export async function POST(req: Request) {
     try {
       await resend.emails.send({
         from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
-        to: ['sarah@modernmustardseed.com'],
-        // The licence is in the subject because it is the one answer that has
+        to: OPS_INBOX,
+        // The license is in the subject because it is the one answer that has
         // to end up on the live site, and a subject line is the only part of an
         // email you can be sure gets read.
-        subject: `Intake in: ${who}${licence ? ` · licence ${licence}` : ' · NO LICENCE GIVEN'}`,
+        subject: `Intake in: ${who}${licence ? ` · license ${licence}` : ' · NO LICENSE GIVEN'}`,
         html: `<div style="font:400 15px/1.6 sans-serif;color:#14181c;">
           <p style="margin:0 0 6px;"><strong>${who}</strong> finished the intake form.</p>
           <p style="margin:0 0 16px;color:#6e7c87;">${files.length} file${files.length === 1 ? '' : 's'} uploaded. They are on his card.</p>

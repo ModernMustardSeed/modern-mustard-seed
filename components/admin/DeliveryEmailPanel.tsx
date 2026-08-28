@@ -22,18 +22,12 @@ import { useCallback, useEffect, useState } from 'react';
 /**
  * Where "send it to me first" goes by default.
  *
- * Sarah, 2026-08-28: "I didnt get an email at all, did you send same place as
- * before makeourcitypretty@gmail.com?"
- *
- * It was hard coded to sarah@modernmustardseed.com, a Zoho mailbox she does
- * not read on her phone. A preview she never receives is worse than no preview
- * at all: she waits for it, it does not come, and then she sends the real one
- * to a client without having read it.
- *
- * Editable and remembered in the browser, because the right address changes
- * and hard coding one is exactly what went wrong.
+ * It was hard coded, which meant that when a preview did not turn up there was
+ * no way to redirect it without a deploy. It is editable and remembered in the
+ * browser now, so a preview always goes wherever she is actually looking that
+ * day, and it defaults to the address of record.
  */
-const PREVIEW_DEFAULT = 'makeourcitypretty@gmail.com';
+const PREVIEW_DEFAULT = 'sarah@modernmustardseed.com';
 const PREVIEW_KEY = 'mms_preview_to';
 
 type Built = {
