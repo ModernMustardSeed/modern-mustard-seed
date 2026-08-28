@@ -7,6 +7,7 @@ import Link from 'next/link';
 import AdminHeader from '@/components/admin/AdminHeader';
 import EmailThread from '@/components/admin/EmailThread';
 import DeliveryEmailPanel from '@/components/admin/DeliveryEmailPanel';
+import ConsoleVisits from '@/components/admin/ConsoleVisits';
 import DripButton from '@/components/admin/DripButton';
 
 /**
@@ -295,6 +296,11 @@ export default function ClientCommandView() {
               * uses BEFORE a client pays now sits above the fold with the two
               * buttons that use it. */}
             <DeliveryEmailPanel clientEmail={emailParam} onSent={() => void load()} />
+
+            {/* Has he opened it. Sits directly under the send panel, because
+              * the two questions are asked in that order: did it go, and did he
+              * look. It renders nothing for a client with no console. */}
+            <ConsoleVisits clientEmail={emailParam} />
 
             {(data.files ?? []).some((f) => /call sheet|runbook|go-?live/i.test(f.label)) && (
               <Card>
