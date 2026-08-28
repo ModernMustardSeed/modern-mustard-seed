@@ -470,6 +470,41 @@ const SALES_DESK: PrompterScript[] = [
       },
     ],
   },
+  {
+    id: 'sales-the-cover-in-60',
+    kind: 'sales',
+    episode: 'Sales 9',
+    session: 'Sales Desk',
+    publish: 'Plays on the cover of modernmustardseed.com/sarahscarano',
+    pillar: 'STORY',
+    title: 'The Cover, in Sixty Seconds',
+    hook: 'I sold and designed high-ticket for fifteen years. Three years ago I started building the things myself.',
+    directorNote:
+      'One take, phone at eye level, morning light from the lake if you can get it. This is the video on the cover of your resume, so it is the first thing a founder sees before they read a word. Warm, quick, zero pitch. Land the three numbers cleanly (sixty-five, two thousand one hundred twenty, twenty) and do not rush the last line. Sixty seconds, hard stop. If you go long, cut Beat Two, not Beat Three.',
+    sections: [
+      {
+        heading: 'Beat One, the fifteen years (0:00 to 0:18)',
+        paragraphs: [
+          'Hi, I am Sarah Scarano. For fifteen years I sold and designed high-ticket. Outdoor kitchens on show floors, three million dollars a year of them. Then twenty-six historic houses I ran as rentals at ninety-six percent occupancy.',
+          'I know what people pay for and why, because I stood in front of them while they decided.',
+        ],
+      },
+      {
+        heading: 'Beat Two, the turn (0:18 to 0:40)',
+        paragraphs: [
+          'Three years ago I started building the things myself, in AI, automation and code. The last nine months I did it in the open: sixty-five repositories, two thousand one hundred twenty commits, twenty products in production.',
+          'My studio runs on seventeen agents. My voice agents take orders and send them to a kitchen, send decks, and start software builds while the caller is still on the line.',
+        ],
+      },
+      {
+        heading: 'Beat Three, why me (0:40 to 0:58)',
+        paragraphs: [
+          'Both my companies are bootstrapped and agentic, so they need less of me every month. I want a seat on a team building something new, in the room where the idea gets decided.',
+          'Flip through the issue. It takes two minutes. And if it is worth a conversation, I will have a prototype for you by the second call.',
+        ],
+      },
+    ],
+  },
 ];
 
 /**

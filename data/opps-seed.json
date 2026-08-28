@@ -12,18 +12,6 @@
   "verified": true
  },
  {
-  "company": "Arc XP",
-  "title": "Fractional Principal Technical Product Manager, Content Platform",
-  "url": "https://www.gofractional.com/job/workday-principal-technical-product-manager-content-platform",
-  "group": "lead",
-  "type": "fractional",
-  "pay": "$175 to $250 per hour listed, 10 to 30 hours a week",
-  "why_fit": "Own an AI-native content platform strategy across several pods. Same shape as the twelve-template site generator and the multi-tenant Client Factory. US remote, posted Aug 20.",
-  "source": "Go Fractional",
-  "deadline": null,
-  "verified": true
- },
- {
   "company": "Much Better Adventures",
   "title": "Chief Product Officer, fractional or interim",
   "url": "https://startup.jobs/chief-product-officer-fractional-interim-much-better-adventures-4618068",
@@ -36,18 +24,6 @@
   "verified": true
  },
  {
-  "company": "Human Intelligence",
-  "title": "Fractional CTO and AI Strategy Council",
-  "url": "https://apply.workable.com/humanintelligence/j/308F8AFF4D/",
-  "group": "lead",
-  "type": "advisory",
-  "pay": "Not listed. 6 to 12 month independent-contractor engagement, paid in USD",
-  "why_fit": "Contractor-only advisory seat guiding AI product direction and architecture reviews. Open to US candidates. Argue from a 17-agent back office and shipped voice agents.",
-  "source": "Workable",
-  "deadline": null,
-  "verified": true
- },
- {
   "company": "Ando Technologies",
   "title": "Fractional CTO, potential to full time",
   "url": "https://wellfound.com/jobs/4409050-fractional-cto",
@@ -56,18 +32,6 @@
   "pay": "Not listed",
   "why_fit": "AI-powered labor infrastructure startup wanting a hands-on fractional technical leader. Remote allowed, SF preferred. Their production system needs the Next.js and Supabase agentic stack architected.",
   "source": "Wellfound",
-  "deadline": null,
-  "verified": true
- },
- {
-  "company": "Empirical",
-  "title": "Fractional CTO, remote US",
-  "url": "https://builtin.com/job/empirical-fractional-cto-remote-us-or-latam/6461582",
-  "group": "lead",
-  "type": "fractional",
-  "pay": "Not listed. Tiered engagements from 10 to 40 hours a month",
-  "why_fit": "A fractional-leadership firm that places part-time CTOs into early and growth-stage startups. One application becomes a pipeline of set-scope engagements paid to the LLC.",
-  "source": "Built In",
   "deadline": null,
   "verified": true
  },
@@ -224,42 +188,6 @@
   "pay": "$50 to $150 per hour listed, scoped 3 to 6 week first project, US remote",
   "why_fit": "They embed production AI inside operators’ companies one vertical at a time and want senior people who already own a domain. Cornerstone plus the contractor client work makes the CON track a direct match. Apply by email to jobs@arcforma.ai with subject \"HN | CON | Sarah Scarano | background\".",
   "source": "Hacker News Who is Hiring, August 2026",
-  "deadline": null,
-  "verified": true
- },
- {
-  "company": "Surge AI",
-  "title": "Senior Software Engineer, agentic coding RL environments",
-  "url": "https://surgehq.ai/swe",
-  "group": "build",
-  "type": "contract",
-  "pay": "$100 to $150+ per hour listed; the page cites $200K to $300K+ a year at 20 to 40 hours a week",
-  "why_fit": "Building agentic coding environments is the multi-agent, Claude Code-driven system work she does daily. Fully remote, 1099, paid from the first task.",
-  "source": "surgehq.ai",
-  "deadline": null,
-  "verified": true
- },
- {
-  "company": "Mercor",
-  "title": "Legacy Codebase Migration Expert, AI lab contract",
-  "url": "https://work.mercor.com/jobs/list_AAABoCl905TW9jWTfs9Oh44S",
-  "group": "build",
-  "type": "contract",
-  "pay": "$200 per hour listed, part time, weekly payouts",
-  "why_fit": "Design and grade migration tasks for a frontier lab. Rewards a hands-on Next.js and Supabase builder who has modernized production systems for clients. Posted four days ago.",
-  "source": "work.mercor.com",
-  "deadline": null,
-  "verified": true
- },
- {
-  "company": "Snorkel AI",
-  "title": "Coding Expert, Snorkel Expert Community",
-  "url": "https://snorkel.ai/expert-community/coding/",
-  "group": "build",
-  "type": "contract",
-  "pay": "Task-based, rate shown per task; top experts earn $3,000+ a week",
-  "why_fit": "US contractor program evaluating frontier models on backend, DevOps and systems work. The Supabase, Vercel and cron-worker production stack maps onto the listed domains.",
-  "source": "snorkel.ai",
   "deadline": null,
   "verified": true
  },
@@ -504,18 +432,6 @@
   "verified": true
  },
  {
-  "company": "KRON Development",
-  "title": "Fractional CTO, full-stack AI with production LLM",
-  "url": "https://www.linkedin.com/jobs/view/4455883611",
-  "group": "lead",
-  "type": "fractional",
-  "pay": "Not listed. Executive level, part time, remote US",
-  "why_fit": "Hands-on production LLM integration plus architecture ownership; the Vapi, ElevenLabs, Supabase and Next.js stack covers both halves.",
-  "source": "LinkedIn",
-  "deadline": null,
-  "verified": true
- },
- {
   "company": "Alpus Consulting",
   "title": "Fractional CTO, client-facing",
   "url": "https://www.linkedin.com/jobs/view/4456212356",
@@ -528,18 +444,6 @@
   "verified": true
  },
  {
-  "company": "Fracton.ai",
-  "title": "Chief Technology and AI Officer",
-  "url": "https://www.linkedin.com/jobs/view/4454706098",
-  "group": "lead",
-  "type": "fractional",
-  "pay": "Not listed. Starts fractional with equity, converts after a milestone",
-  "why_fit": "Remote executive seat guiding GenAI, RAG and agentic capabilities while staying hands-on enough to prototype.",
-  "source": "LinkedIn",
-  "deadline": null,
-  "verified": true
- },
- {
   "company": "Coworked Harmony",
   "title": "Fractional Product Manager, Harmony AI coworker",
   "url": "https://www.linkedin.com/jobs/view/4445534763",
@@ -547,42 +451,6 @@
   "type": "contract",
   "pay": "Not listed. Contract, remote considered",
   "why_fit": "Owning strategy, discovery and web presence for an AI coworker product is a smaller version of her own agentic back office.",
-  "source": "LinkedIn",
-  "deadline": null,
-  "verified": true
- },
- {
-  "company": "Crossover, GT School",
-  "title": "Founder in Residence",
-  "url": "https://www.linkedin.com/jobs/view/4457638636",
-  "group": "eir",
-  "type": "EIR",
-  "pay": "$400,000 a year listed, independent contractor, remote with about a week a month in Austin",
-  "why_fit": "Requires having built a venture past $1M revenue with an AI-first mindset; the $3M sales record and the 26-home portfolio are the operating proof.",
-  "source": "LinkedIn",
-  "deadline": null,
-  "verified": true
- },
- {
-  "company": "Crossover, GT School",
-  "title": "Head of New Ventures",
-  "url": "https://www.linkedin.com/jobs/view/4457625756",
-  "group": "eir",
-  "type": "EIR",
-  "pay": "$400,000 a year listed, independent contractor, remote with Austin travel",
-  "why_fit": "Design, validate and scale a new campus model from a single prototype; prototype-to-portfolio is what she did in real estate and product.",
-  "source": "LinkedIn",
-  "deadline": null,
-  "verified": true
- },
- {
-  "company": "Crossover, GT School",
-  "title": "Head of New Business Lines",
-  "url": "https://www.linkedin.com/jobs/view/4457626752",
-  "group": "eir",
-  "type": "EIR",
-  "pay": "$400,000 a year listed, independent contractor, remote with Austin travel",
-  "why_fit": "A public-facing builder who launches new revenue lines; VP Sales, Creative Director and studio founder in one person.",
   "source": "LinkedIn",
   "deadline": null,
   "verified": true
@@ -619,42 +487,6 @@
   "type": "fractional",
   "pay": "Not listed. Scoped 90-day pilots with growth-stage clients",
   "why_fit": "Senior hands-on operators placed on 90-day scoped engagements, which maps onto her fixed-package delivery model.",
-  "source": "LinkedIn",
-  "deadline": null,
-  "verified": true
- },
- {
-  "company": "Keller Executive Search",
-  "title": "Interim positions registry, part time",
-  "url": "https://www.linkedin.com/jobs/view/4454027556",
-  "group": "expert",
-  "type": "fractional",
-  "pay": "Not listed. Interim mandates 1 to 3 days a week, 3 to 12 months",
-  "why_fit": "Registry for functional leaders taking interim growth mandates; revenue and AI product are two lanes she can be matched on.",
-  "source": "LinkedIn",
-  "deadline": null,
-  "verified": true
- },
- {
-  "company": "Toptal",
-  "title": "Freelance Product Manager, fractional and interim CPO track",
-  "url": "https://www.toptal.com/talent/apply",
-  "group": "build",
-  "type": "freelance",
-  "pay": "Not listed. Client-set senior rates, top-3% network",
-  "why_fit": "Toptal sells fractional and interim CPO engagements to clients; a shipped-product portfolio clears the screen more easily than a deck.",
-  "source": "toptal.com",
-  "deadline": null,
-  "verified": true
- },
- {
-  "company": "Blink UX",
-  "title": "Senior Product Manager, AI, contract engagements",
-  "url": "https://www.linkedin.com/jobs/view/4454689686",
-  "group": "build",
-  "type": "contract",
-  "pay": "$145,000 to $185,000 a year equivalent listed, contract, 1 to 6 month engagements",
-  "why_fit": "Agency pipeline of AI product engagements needing someone who has shipped LLM, agent and workflow products end to end.",
   "source": "LinkedIn",
   "deadline": null,
   "verified": true
@@ -704,30 +536,6 @@
   "pay": "Hourly rate, amount not listed. 20 hours a week",
   "why_fit": "A zero-to-one build for a field-service operator is the same buyer and stack as the landscaping, construction and lawn-and-snow clients.",
   "source": "arc.dev",
-  "deadline": null,
-  "verified": true
- },
- {
-  "company": "Arc (exclusive client)",
-  "title": "Independent SaaS architecture and code reviewer, multi-tenant",
-  "url": "https://arc.dev/remote-jobs/details/independent-saas-architecture-code-reviewer-multi-tenant-platform-pf5q7ystmw",
-  "group": "expert",
-  "type": "freelance",
-  "pay": "Hourly rate, amount not listed. 10 hours, one week",
-  "why_fit": "A senior review of a multi-tenant TypeScript and Postgres SaaS for local service businesses, which is the Client Factory architecture.",
-  "source": "arc.dev",
-  "deadline": null,
-  "verified": true
- },
- {
-  "company": "Toptal",
-  "title": "Freelance full-stack and AI engineer, talent network",
-  "url": "https://www.toptal.com/talent/apply?track=engineering",
-  "group": "build",
-  "type": "freelance",
-  "pay": "Not listed. Senior rates",
-  "why_fit": "Senior freelancers on enterprise product builds; 65 repos and 20 production projects clear both the technical and the client-facing screens.",
-  "source": "toptal.com",
   "deadline": null,
   "verified": true
  },
@@ -816,18 +624,6 @@
   "verified": true
  },
  {
-  "company": "Night",
-  "title": "Creative Director and Producer, part time",
-  "url": "https://www.linkedin.com/jobs/view/4425869678",
-  "group": "creative",
-  "type": "contract",
-  "pay": "Not listed",
-  "why_fit": "High-ownership remote creative lead running titles, story and a distributed edit team, the content-direction muscle behind CXC drops.",
-  "source": "LinkedIn",
-  "deadline": null,
-  "verified": true
- },
- {
   "company": "MANSCAPED",
   "title": "The MANSCAPED Creative Network, freelance",
   "url": "https://www.linkedin.com/jobs/view/4423066450",
@@ -883,18 +679,6 @@
   "type": "advisory",
   "pay": "Equity advisor grants, 1 to 2 hours a month",
   "why_fit": "A remote advisory seat at a 100M-location video map company; the hospitality-operator and brand-growth voice they are recruiting.",
-  "source": "LinkedIn",
-  "deadline": null,
-  "verified": true
- },
- {
-  "company": "HA Studio (Human Agency)",
-  "title": "Director of Brand and Product Design, contract to hire",
-  "url": "https://www.linkedin.com/jobs/view/4458760400",
-  "group": "creative",
-  "type": "contract",
-  "pay": "Not listed",
-  "why_fit": "Directing brand identity and design systems for clients navigating AI transformation, with working knowledge of AI product builds.",
   "source": "LinkedIn",
   "deadline": null,
   "verified": true
@@ -956,18 +740,6 @@
   "pay": "You set the rate, $100 to $2,000 an hour; 30% marketplace fee, 10% on expert-sourced bookings",
   "why_fit": "Price AI-for-SMB sessions at the top of the marketplace and route her own audience through the 10% lane.",
   "source": "intro.co",
-  "deadline": null,
-  "verified": true
- },
- {
-  "company": "micro1",
-  "title": "AI expert, engineering, flexible contract",
-  "url": "https://www.micro1.ai/experts/opportunities",
-  "group": "expert",
-  "type": "contract",
-  "pay": "Not listed. Referral bonus up to $3,000 per placed expert",
-  "why_fit": "Vetted engineers on lab data and eval projects that fit around other commitments; plus a referral program she can feed.",
-  "source": "micro1.ai",
   "deadline": null,
   "verified": true
  },
@@ -1100,18 +872,6 @@
   "pay": "Not listed. Negotiated per course",
   "why_fit": "A practitioner course on shipping voice agents and agentic systems with Claude Code is a credible, underserved topic she can teach from shipped work.",
   "source": "oreilly.com",
-  "deadline": null,
-  "verified": true
- },
- {
-  "company": "Mercor",
-  "title": "Frontend engineer talent network, AI training contracts",
-  "url": "https://work.mercor.com/jobs/list_AAABnHwqmLo6wvviVuRHh7T3/frontend-engineer-talent-network",
-  "group": "expert",
-  "type": "contract",
-  "pay": "$70 to $150 per hour listed, 15 to 30 hours a week per project",
-  "why_fit": "Open enrollment routing React and Next.js experts into lab projects; the twelve-template site generator is direct proof of frontend depth.",
-  "source": "work.mercor.com",
   "deadline": null,
   "verified": true
  },
