@@ -2834,6 +2834,69 @@ export async function POST(req: Request) {
     return NextResponse.json({ received: true, kind: 'care-plan' });
   }
 
+  /* A contractor buying a website or Cornerstone.
+   *
+   * provisionPurchase at the top of this handler has already done the universal
+   * layer: the client row, the ownership card and the welcome email carrying
+   * his intake form. What was still missing was everything below it. These two
+   * kinds carry no slug, so they fell through to the missing_fields bail, which
+   * meant the money never reached the orders table and no project was ever
+   * opened. The card said he owned something and the delivery board did not
+   * know he existed.
+   *
+   * Verified end to end on 2026-08-28 by posting a signed
+   * checkout.session.completed at production, which is how the gap was found. */
+  if ((session.metadata?.kind === 'website' || session.metadata?.kind === 'cornerstone') && email) {
+    const kind = session.metadata.kind;
+    const business = (session.metadata?.business || '').trim();
+    const sb = getSupabase();
+    if (!sb) return NextResponse.json({ received: true, kind, note: 'no database' });
+
+    try {
+      await sb.from('orders').insert({
+        stripe_session_id: session.id,
+        stripe_payment_intent_id:
+          typeof session.payment_intent === 'string' ? session.payment_intent : null,
+        product_slug: kind,
+        product_name: itemName ?? (kind === 'website' ? 'Website' : 'Cornerstone'),
+        item_type: kind,
+        price_paid_cents: session.amount_total ?? 0,
+        currency: session.currency ?? 'usd',
+        email,
+        name: name ?? null,
+        status: 'paid',
+      });
+    } catch (err) {
+      console.error('contractor order insert failed', err);
+    }
+
+    /* One project per client, not one per purchase. He buys the website and
+     * Cornerstone as two checkouts and it is one job of work; two rows would
+     * put him on the delivery board twice and neither would be the whole
+     * picture. */
+    try {
+      const { data: existing } = await sb
+        .from('projects')
+        .select('id')
+        .ilike('client_email', email)
+        .maybeSingle();
+      if (!existing) {
+        await sb.from('projects').insert({
+          client_email: email,
+          name: business ? `${business}: website and Cornerstone` : 'Website and Cornerstone',
+          status: 'discovery',
+          summary:
+            'Paid. Waiting on his intake: photos, logo, license number and the domain. The build starts the moment those land.',
+          progress: 5,
+        });
+      }
+    } catch (err) {
+      console.error('contractor project insert failed', err);
+    }
+
+    return NextResponse.json({ received: true, kind });
+  }
+
   if (!slug || !email) {
     console.error('Webhook missing slug or email:', session.id);
     return NextResponse.json({ error: 'missing_fields' }, { status: 200 });
