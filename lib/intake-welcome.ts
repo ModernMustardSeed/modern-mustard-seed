@@ -69,8 +69,9 @@ export async function sendIntakeWelcome(
       html,
       text: `${first}, that is through. Thank you.
 
-One thing left before I can build the real one: your photos, your logo and your
-licence number. One form, about ten minutes.
+One thing left before I can build the real one: your photos, your logo, your
+license number, and what you want your web address to be. One form, about ten
+minutes.
 
 ${link}
 
