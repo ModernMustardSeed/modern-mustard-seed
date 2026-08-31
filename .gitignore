@@ -77,3 +77,7 @@ scripts/.cache/
 # that Vercel would then build from, shipping dependency versions CI never tested.
 package-lock.json
 yarn.lock
+
+# The Mailer renders cards and proofs here. Never commit artwork with a real
+# business name and street address on it.
+.mailer-out/

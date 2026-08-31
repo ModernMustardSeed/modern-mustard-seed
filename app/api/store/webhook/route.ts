@@ -1815,7 +1815,13 @@ async function handleDemoOrderPaid(
     return;
   }
 
-  const intakeUrl = `${SITE.url}/demo/order/${hubId}/thanks?session_id=${session.id}`;
+  // A mailed order has no hub demo: the card was the demo. It comes home to
+  // /y/<code>/thanks instead, or every fulfilment email points at
+  // /demo/order/undefined/thanks.
+  const mailCode = session.metadata?.mail_code;
+  const intakeUrl = hubId
+    ? `${SITE.url}/demo/order/${hubId}/thanks?session_id=${session.id}`
+    : `${SITE.url}/y/${mailCode}/thanks?session_id=${session.id}`;
   const products = Array.isArray(order?.products) ? (order?.products as string[]).join(', ') : '';
   const money = order ? `$${Math.round((order.setup_cents || 0) / 100)} setup + $${Math.round((order.monthly_cents || 0) / 100)}/mo` : '';
 
