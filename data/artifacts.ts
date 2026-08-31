@@ -22,6 +22,17 @@ export type ArtifactEntry = {
 
 export const ARTIFACTS: ArtifactEntry[] = [
   {
+    id: '5b7e08c0-c35e-47e5-8362-6ea4fcf5f005',
+    title: 'Second Call',
+    url: 'https://claude.ai/code/artifact/5b7e08c0-c35e-47e5-8362-6ea4fcf5f005',
+    updated: '2026-08-31',
+    venture: 'MMS',
+    kind: 'Plan',
+    description:
+      'The reactivation offer: call a customer list that has gone quiet, as the business that owns it, book the ones who say yes, and charge $250 a booked job. The pitch, the unit economics, who it is for, and what is left to build.',
+    pinned: true,
+  },
+  {
     id: '06d1307f-79f9-4887-afcc-c3f03035b49b',
     title: 'The Hotline',
     url: 'https://claude.ai/code/artifact/06d1307f-79f9-4887-afcc-c3f03035b49b',
