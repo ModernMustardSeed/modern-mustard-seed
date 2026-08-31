@@ -18,7 +18,7 @@ import { openWelcomeTour } from '@/components/admin/WelcomeTour';
  * the mustard chip, and the Inbox unread dot bubbles up to its group.
  */
 
-type Tab = 'overview' | 'hq' | 'portfolio' | 'gleaner' | 'pipeline' | 'tracker' | 'outbound' | 'acquisition' | 'factories' | 'partners' | 'team' | 'outreach' | 'campaigns' | 'texting' | 'ads' | 'facebook' | 'social' | 'artifacts' | 'audit' | 'roadmaps' | 'hundredfold' | 'call' | 'script' | 'callers' | 'training' | 'clients' | 'front-office' | 'proposals' | 'projects' | 'builds' | 'build-log' | 'delivery' | 'templates' | 'intakes' | 'approvals' | 'reviews' | 'calendar' | 'onboarding' | 'manual' | 'inbox' | 'opps';
+type Tab = 'overview' | 'hq' | 'portfolio' | 'gleaner' | 'pipeline' | 'tracker' | 'outbound' | 'acquisition' | 'factories' | 'partners' | 'team' | 'outreach' | 'campaigns' | 'texting' | 'ads' | 'facebook' | 'social' | 'artifacts' | 'audit' | 'roadmaps' | 'hundredfold' | 'call' | 'script' | 'callers' | 'training' | 'clients' | 'front-office' | 'proposals' | 'projects' | 'builds' | 'build-log' | 'delivery' | 'templates' | 'intakes' | 'approvals' | 'reviews' | 'calendar' | 'onboarding' | 'manual' | 'inbox' | 'opps' | 'mailer';
 
 // `external: true` marks a public-facing offer page that opens in a new tab, so
 // clicking it from the admin never loses the team member's place. These items
@@ -79,6 +79,7 @@ const GROUPS: { name: string; items: Item[] }[] = [
   {
     name: 'Marketing',
     items: [
+      { key: 'mailer', label: 'The Mailer', href: '/admin/mailer' },
       { key: 'ads', label: 'Ads Playbook', href: '/admin/ads' },
       { key: 'facebook', label: 'Facebook Organic', href: '/admin/facebook' },
       { key: 'social', label: 'Social Cards', href: '/admin/social-cards' },
