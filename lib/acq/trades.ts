@@ -15,7 +15,7 @@
  *
  *   1. THE PHONE IS THE FRONT DOOR. Customers call. They do not fill in a form
  *      and wait, so a missed call is a lost job rather than a delayed one.
- *   2. A JOB IS WORTH REAL MONEY. $397 a month has to be obviously smaller than
+ *   2. A JOB IS WORTH REAL MONEY. $297 a month has to be obviously smaller than
  *      one saved job, or the arithmetic in email 2 does not survive contact.
  *   3. THE OWNER ANSWERS. Local and owner-operated, so the person who picks up
  *      our call can also say yes. No franchise call centres, no procurement.
@@ -25,7 +25,7 @@
  * ── WHAT IS DELIBERATELY MISSING ─────────────────────────────────────────────
  * DENTAL, MEDICAL, MED SPA. They fit commercially and they are excluded anyway.
  * An agent that answers those calls hears protected health information, which
- * means a BAA and a HIPAA posture we have not built. Selling a $397 voice agent
+ * means a BAA and a HIPAA posture we have not built. Selling a $297 voice agent
  * into a PHI environment without one puts the practice at risk, not just us.
  * Veterinary IS included: animal records are not PHI.
  *

@@ -12,7 +12,7 @@
  * anything scripted. This one has to hit specific beats in a fixed order and,
  * more importantly, has to stay TRUE about timing: the voice agent builds in
  * well under a minute and the WEBSITE takes about an hour and arrives by email.
- * An unbriefed agent quotes the standing $397 setup line from his own prompt,
+ * An unbriefed agent quotes the standing $297 setup line from his own prompt,
  * which is the price of putting him on a REAL line and not the price of the
  * free demo suite this ad is about. So he is scoped, using this repo's
  * established pattern.

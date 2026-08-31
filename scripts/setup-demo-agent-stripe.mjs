@@ -1,9 +1,14 @@
 /**
+ * SUPERSEDED. Nothing reads these env price IDs any more: /api/demo-agent/checkout
+ * builds inline price_data from data/demo-agent.ts, which is the only source of
+ * truth for what a Voice Agent costs. Kept for the Stripe catalog, re-synced to
+ * the 2026-08-31 prices so running it cannot mint a stale product.
+ *
  * Create the DEMO_AGENT Stripe products + prices (idempotent by product name).
- *   DEMO_AGENT setup        $297 one-time -> STRIPE_PRICE_DEMO_AGENT_SETUP
- *   DEMO_AGENT monthly      $197/mo       -> STRIPE_PRICE_DEMO_AGENT_MONTHLY
- *   DEMO_AGENT PRO setup    $497 one-time -> STRIPE_PRICE_DEMO_AGENT_PRO_SETUP
- *   DEMO_AGENT PRO monthly  $397/mo       -> STRIPE_PRICE_DEMO_AGENT_PRO_MONTHLY
+ *   VOICE AGENT setup       $297 one-time -> STRIPE_PRICE_DEMO_AGENT_SETUP
+ *   VOICE AGENT monthly     $297/mo       -> STRIPE_PRICE_DEMO_AGENT_MONTHLY
+ *   VOICE AGENT PRO setup   $597 one-time -> STRIPE_PRICE_DEMO_AGENT_PRO_SETUP
+ *   VOICE AGENT PRO monthly $597/mo       -> STRIPE_PRICE_DEMO_AGENT_PRO_MONTHLY
  *
  * Checkout runs in subscription mode with the setup fee as a one-time line
  * item on the first invoice. Prints the env lines to set locally and in
@@ -30,9 +35,9 @@ const stripe = new Stripe(key);
 
 const ITEMS = [
   { envName: 'STRIPE_PRICE_DEMO_AGENT_SETUP', product: 'DEMO_AGENT setup', desc: 'One-time hand installation of your AI front desk: persona tuning, line setup, booking wiring, live within 7 days. Credited toward any custom build over $2,500.', amount: 29700, recurring: null },
-  { envName: 'STRIPE_PRICE_DEMO_AGENT_MONTHLY', product: 'DEMO_AGENT', desc: 'Your AI front desk answering 24/7: 250 answered minutes a month (hard-capped, message-taking mode at the cap), call summaries to your inbox, urgent calls flagged. Month to month.', amount: 19700, recurring: { interval: 'month' } },
-  { envName: 'STRIPE_PRICE_DEMO_AGENT_PRO_SETUP', product: 'DEMO_AGENT PRO setup', desc: 'One-time hand installation of your AI front desk, Pro tier: everything in DEMO_AGENT setup plus calendar booking integration and caller memory. Credited toward any custom build over $2,500.', amount: 49700, recurring: null },
-  { envName: 'STRIPE_PRICE_DEMO_AGENT_PRO_MONTHLY', product: 'DEMO_AGENT PRO', desc: 'The Pro front desk: 600 answered minutes a month (hard-capped), caller memory, real calendar booking, a monthly retrain call with Sarah, priority support. Month to month.', amount: 39700, recurring: { interval: 'month' } },
+  { envName: 'STRIPE_PRICE_DEMO_AGENT_MONTHLY', product: 'DEMO_AGENT', desc: 'Your AI front desk answering 24/7: 500 answered minutes a month (hard-capped, message-taking mode at the cap), call summaries to your inbox, urgent calls flagged. Month to month.', amount: 29700, recurring: { interval: 'month' } },
+  { envName: 'STRIPE_PRICE_DEMO_AGENT_PRO_SETUP', product: 'DEMO_AGENT PRO setup', desc: 'One-time hand installation of your AI front desk, Pro tier: everything in VOICE AGENT setup plus calendar booking integration and caller memory. Credited toward any custom build over $2,500.', amount: 59700, recurring: null },
+  { envName: 'STRIPE_PRICE_DEMO_AGENT_PRO_MONTHLY', product: 'DEMO_AGENT PRO', desc: 'The Pro front desk: 1,200 answered minutes a month (hard-capped), caller memory, real calendar booking, a monthly retrain call with Sarah, priority support. Month to month.', amount: 59700, recurring: { interval: 'month' } },
 ];
 
 const lines = [];

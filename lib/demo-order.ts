@@ -23,7 +23,12 @@
  * website $497/$147, and the pair became THE TALKING WEBSITE at $497/$497. The
  * bundle price did NOT move when the command center came out of it on
  * 2026-08-22: it was always priced as the two paid pieces, and the ladder check
- * below still holds. All amounts in cents.
+ * below still holds.
+ *
+ * REPRICED AGAIN 2026-08-31 (Sarah): voice dropped to $297/$297 and the
+ * Talking Website monthly dropped to $397. Both setups held: website $497 and
+ * bundle $497. The ladder was re-run at the new numbers and is written out
+ * below. All amounts in cents.
  */
 
 import { demoAgentTiers } from '@/data/demo-agent';
@@ -47,8 +52,8 @@ export const DEMO_PRODUCTS: Record<DemoProductKey, DemoProduct> = {
   voice: {
     key: 'voice',
     name: 'Voice Agent',
-    setupCents: 39700,
-    monthlyCents: 39700,
+    setupCents: 29700,
+    monthlyCents: 29700,
     blurb: 'The voice that answered your demo, answering your calls, 24/7.',
     finePrint: `${demoAgentTiers[0].minutesCap.toLocaleString()} answered minutes a month, then message-taking mode.`,
   },
@@ -95,11 +100,11 @@ export const DEMO_PRODUCTS: Record<DemoProductKey, DemoProduct> = {
  *
  * The bundle must stay AT OR ABOVE the priciest single AND below the two-piece
  * sum, or a la carte becomes irrational and every bundle leaks. Ladder check at
- * $497 + $497/mo: setup $497 = $497 (site, the priciest single) and < $894
- * (pair), so the bundle absorbs the voice build but is never cheaper than a
- * piece of it; monthly $497 > $397 (voice, the priciest single) and < $544
- * (pair). No path buys more for less. Re-run this check every time a single
- * price moves. All surfaces derive from DEMO_PRODUCTS / DEMO_BUNDLE.
+ * $497 setup + $397/mo (2026-08-31): setup $497 = $497 (site, the priciest
+ * single) and < $794 (pair), so the bundle absorbs the voice build but is never
+ * cheaper than a piece of it; monthly $397 > $297 (voice, the priciest single)
+ * and < $444 (pair). No path buys more for less. Re-run this check every time a
+ * single price moves. All surfaces derive from DEMO_PRODUCTS / DEMO_BUNDLE.
  *
  * THE PRICE DID NOT MOVE when the command center left the bundle on 2026-08-22,
  * because the bundle was always priced as the two paid pieces and the ladder
@@ -110,7 +115,7 @@ export const DEMO_BUNDLE = {
   key: 'bundle' as const,
   name: 'The Talking Website',
   setupCents: 49700,
-  monthlyCents: 49700,
+  monthlyCents: 39700,
   blurb:
     'A website that answers its own phone. Your site and your voice agent built as one thing, off one brain, so every call and every form lands in the same place.',
 };

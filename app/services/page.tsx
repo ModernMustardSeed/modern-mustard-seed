@@ -41,7 +41,7 @@ const FAQ = [
   },
   {
     q: 'What does it cost?',
-    a: 'The productized doors show their price on each page (for example, a website is $497 setup plus $147 a month, and the voice agent is $397 plus $397 a month). Bespoke apps, tools, stores, and agentic systems are quoted per project after a free discovery call. Pricing is fixed before work starts, with no hourly billing.',
+    a: 'The productized doors show their price on each page (for example, a website is $497 setup plus $147 a month, and the voice agent is $297 plus $297 a month). Bespoke apps, tools, stores, and agentic systems are quoted per project after a free discovery call. Pricing is fixed before work starts, with no hourly billing.',
   },
 ];
 

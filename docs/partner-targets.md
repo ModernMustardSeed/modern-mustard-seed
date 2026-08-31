@@ -57,7 +57,7 @@ Lead offer: AI-Ready Blueprint ($47), AI-Native Playbook ($47), AI Sales Machine
 - **Greg Isenberg** ⚠ / **Liam Ottley** ⚠ (competing agency edu) — see notes
 
 ## CHANNEL 3 — SMB / local-service / franchise advisors (the recurring + builds engine)
-Lead offer: Voice Agent subs ($197-397/mo, 25% recurring to partner) + builds. This channel drives the real money.
+Lead offer: Voice Agent subs ($297/mo, 25% recurring to partner) + builds. This channel drives the real money.
 
 - **Josh Nelson / Seven Figure Agency** — members = home-services agencies; GHL/DigitalMarketer certified partner — apply/podcast — Conf High
 - **CEO Warrior (Scott August)** — thousands of trades owners, each a direct sub buyer — event sponsor/LinkedIn — Conf High
