@@ -140,8 +140,11 @@ export const demoAgentTiers: DemoAgentTier[] = [
     // Matches DEMO_PRODUCTS.voice in lib/demo-order.ts. It is the SAME product,
     // so it must not be cheaper here than in the demo funnel (Sarah, 2026-07-12).
     // Repriced with the funnel 2026-07-29: $397 setup + $397/mo.
-    setupCents: 39700,
-    monthlyCents: 39700,
+    // Repriced again 2026-08-31 (Sarah): $297 setup + $297/mo, cap unchanged at
+    // 500. The Talking Website monthly moved to $397 in the same pass, so the
+    // bundle still clears this tier's monthly by $100 and the ladder holds.
+    setupCents: 29700,
+    monthlyCents: 29700,
     // 250 -> 500 minutes (Sarah, 2026-07-29). Doubling the cap roughly doubles
     // the worst-case minute COGS while the price rose 34%, so the worst-case
     // margin compresses. It is still a HARD cap (message-taking mode at the
@@ -171,6 +174,9 @@ export const demoAgentTiers: DemoAgentTier[] = [
     // so Pro moved with it. $597/$597 restores the +$200/+$200 gap AND lifts
     // Pro's monthly clear of The Talking Website ($497/mo), which it briefly
     // tied. Minutes doubled 600 -> 1,200 to hold the same 2.4x ratio over base.
+    // 2026-08-31: base dropped to $297/$297 and the Talking Website monthly to
+    // $397. Pro did NOT move (Sarah repriced the base tier only), so the gap is
+    // now +$300/+$300 and Pro's monthly still clears the bundle by $200.
     setupCents: 59700,
     monthlyCents: 59700,
     minutesCap: 1200,

@@ -177,7 +177,7 @@ export const OFFER = {
   get monthlyUsd() {
     return Math.round(DEMO_PRODUCTS.voice.monthlyCents / 100);
   },
-  /** "$397 setup + $397/month" — the exact phrase every surface uses. */
+  /** "$297 setup + $297/month" — the exact phrase every surface uses. */
   get line() {
     return `$${Math.round(DEMO_PRODUCTS.voice.setupCents / 100)} setup + $${Math.round(
       DEMO_PRODUCTS.voice.monthlyCents / 100,

@@ -135,11 +135,11 @@ That is exactly the kind of thing that gets caught.
 > is an AI in the first sentence, because anything else is a trick.
 
 **"How much?"**
-> The call is free and always will be. If you want one of your own it is $397 to
+> The call is free and always will be. If you want one of your own it is $297 to
 > build and $297 a month, scoped on a 15 minute call. Go time your own phone
 > first though, you might just need the text-back switched on.
 
-> ⚠️ Price check before posting: from `data/demo-agent.ts`, 2026-07-28. Re-read the
+> ⚠️ Price check before posting: from `data/demo-agent.ts`, 2026-08-31. Re-read the
 > file if the tiers have moved. Never type a price from memory.
 
 ---

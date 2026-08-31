@@ -1840,7 +1840,7 @@ test('command center: no email names it even when the lead has one', () => {
     demoUrl: 'https://modernmustardseed.com/demo/hub/x',
     checkoutUrl: 'https://modernmustardseed.com/demo/hub/x',
     calendarUrl: 'https://modernmustardseed.com/book',
-    offerLine: 'From $397 a month',
+    offerLine: 'From $297 a month',
     fromName: 'Mr. Mustard',
     fromEmail: 'm@x.com',
     replyTo: 'm@x.com',
@@ -1855,7 +1855,7 @@ test('command center: no suite email names it', () => {
     demoUrl: 'https://modernmustardseed.com/demo/hub/x',
     checkoutUrl: 'https://modernmustardseed.com/demo/hub/x',
     calendarUrl: 'https://modernmustardseed.com/book',
-    offerLine: 'From $397 a month',
+    offerLine: 'From $297 a month',
     fromName: 'Mr. Mustard',
     fromEmail: 'm@x.com',
     replyTo: 'm@x.com',
@@ -2039,9 +2039,9 @@ test('mustard: only the token hash is ever stored', () => {
 /* ---------------------------------- price --------------------------------- */
 
 test('price: the offer is read from the one place price lives', () => {
-  assert.equal(OFFER.setupUsd, 397);
-  assert.equal(OFFER.monthlyUsd, 397);
-  assert.equal(OFFER.line, '$397 setup + $397/month');
+  assert.equal(OFFER.setupUsd, 297);
+  assert.equal(OFFER.monthlyUsd, 297);
+  assert.equal(OFFER.line, '$297 setup + $297/month');
 });
 
 /* ─────────────────────────── the machine filter ──────────────────────────── */

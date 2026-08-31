@@ -175,7 +175,7 @@ export const STACK: { item: string; valueCents: number; why: string }[] = [
   {
     item: 'A voice agent answering your calls and a site that answers for you',
     valueCents: 596_400,
-    why: 'The Talking Website is $497 to start plus $497 a month on its own.',
+    why: 'The Talking Website is $497 to start plus $397 a month on its own.',
   },
   {
     item: 'Your Command Center: live roadmap, gates, scoreboard, build queue',

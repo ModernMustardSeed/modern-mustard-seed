@@ -5,7 +5,8 @@
  *
  * Offer design: ops/offers/brand-rebrand/brand-rebrand.pdf (2026-08-25).
  * Prices here are the ones on that sheet. Presence and Whole Company hand off
- * into The Talking Website monthly ($497/mo, lib/demo-order.ts) with the setup
+ * into The Talking Website monthly ($397/mo since 2026-08-31, lib/demo-order.ts)
+ * with the setup
  * fee waived, never the monthly. Changes are included; there are no change
  * orders anywhere in this offer.
  */
@@ -61,7 +62,7 @@ export const brandTiers: BrandTier[] = [
     name: 'Presence',
     priceUsd: 8500,
     priceLabel: '$8,500',
-    monthly: 'then $497/mo from month two',
+    monthly: 'then $397/mo from month two',
     timeline: 'Three weeks',
     lede: 'Mark, plus the brand on every surface a customer meets. The site and the phone are built off the same identity in the same week, so the brand is live, not just designed.',
     includes: [
@@ -83,7 +84,7 @@ export const brandTiers: BrandTier[] = [
     name: 'Whole Company',
     priceUsd: 18500,
     priceLabel: '$18,500',
-    monthly: 'then $497/mo from month two',
+    monthly: 'then $397/mo from month two',
     timeline: 'Four weeks to launch, then ninety days of rollout',
     lede: 'Presence, plus the plan the brand exists to execute and the first ninety days of running it.',
     includes: [

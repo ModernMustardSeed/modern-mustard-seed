@@ -1,5 +1,11 @@
 # Demo "Order It Now" Build Brief (locked 2026-07-11)
 
+> SUPERSEDED PRICING. The table below is the 2026-07-11 record and has been
+> repriced twice since (2026-07-29, 2026-08-31). The live prices are in
+> `lib/demo-order.ts` and nowhere else: Voice Agent $297 setup + $297/mo,
+> Website $497 + $147/mo, Business Command Center $497 + $197/mo (standalone
+> only), The Talking Website $497 + $397/mo. The build plan below still stands.
+
 Sarah's call: prospects on the built-demo surfaces buy on the spot instead of
 being sent to /voice-agents/build or /book. We customize after purchase and release
 within a week.

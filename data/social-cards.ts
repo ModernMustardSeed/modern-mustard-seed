@@ -239,7 +239,7 @@ export const SOCIAL_SETS: SocialSet[] = [
     replies: [
       {
         q: 'How much?',
-        a: 'The call is free, always. If you want one of your own it is $397 to build and $397 a month, and I scope it on a 15 minute call. Not trying to sell you in the comments though, go break the demo first.',
+        a: 'The call is free, always. If you want one of your own it is $297 to build and $297 a month, and I scope it on a 15 minute call. Not trying to sell you in the comments though, go break the demo first.',
         warn: 'Price check before you post. That came from data/demo-agent.ts on 2026-07-28. Never type a price from memory, re-read the file if the tiers have moved.',
       },
       {
@@ -643,7 +643,7 @@ export const SOCIAL_SETS: SocialSet[] = [
       },
       {
         q: 'How much?',
-        a: 'The call is free and always will be. If you want one of your own it is $397 to build and $397 a month, scoped on a 15 minute call. Go time your own phone first though, you might just need the text-back switched on.',
+        a: 'The call is free and always will be. If you want one of your own it is $297 to build and $297 a month, scoped on a 15 minute call. Go time your own phone first though, you might just need the text-back switched on.',
         warn: 'Price from data/demo-agent.ts on 2026-07-28. Re-read the file if the tiers have moved. Never type a price from memory.',
       },
     ],

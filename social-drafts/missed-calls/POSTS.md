@@ -109,13 +109,13 @@ have never commented in a group, your first post there should not be this one.
 ## Comment replies to have ready
 
 **"How much?"**
-> The call is free, always. If you want one of your own it is $397 to build and
+> The call is free, always. If you want one of your own it is $297 to build and
 > $297 a month, and I scope it on a 15 minute call. Not trying to sell you in the
 > comments though, go break the demo first.
 
-> Price check before you post: that came from `data/demo-agent.ts` on 2026-07-28
-> (DEMO_AGENT $397 setup / $297 mo, DEMO_AGENT PRO $597 / $497 mo). Never type a
-> price from memory, re-read the file if the tiers have moved.
+> Price check before you post: that came from `data/demo-agent.ts` on 2026-08-31
+> (VOICE AGENT $297 setup / $297 mo, VOICE AGENT PRO $597 / $597 mo). Never type
+> a price from memory, re-read the file if the tiers have moved.
 
 **"Does it sound fake?"**
 > Judge it yourself, that is the whole point of putting the number out there.

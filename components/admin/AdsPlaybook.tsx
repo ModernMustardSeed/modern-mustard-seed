@@ -894,7 +894,7 @@ You do not have to believe any of that. The number below reaches the same agent 
 
 const AH_COPY_B = `82% of people who cannot reach you call a competitor instead. That is CallRail's 2025 number, and most of those calls land while you are under a sink, on a roof, or asleep.
 
-An AI voice agent answers every one of them in your business name, handles the question, and books the job on your calendar. It runs $397 to build and $397 a month, which covers about 200 calls.
+An AI voice agent answers every one of them in your business name, handles the question, and books the job on your calendar. It runs $297 to build and $297 a month, which covers about 200 calls.
 
 Hear it work before you decide. Call (406) 312-1223.`;
 

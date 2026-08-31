@@ -5,11 +5,13 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import AdminHeader from '@/components/admin/AdminHeader';
 import Modal from '@/components/ui/Modal';
 import { daysLeft, fmtMoney, formatPhone } from '@/lib/outbound';
+import { DEMO_BUNDLE } from '@/lib/demo-order';
 import type { OutboundLead, Pilot } from '@/lib/outbound';
 import { OutboundNav, NicheChip, ToastHost, useToasts, useCountUp, api, card, btnPrimary, btnSeed, btnGhost, btnDanger, inputCls, labelCls, eyebrow } from '@/components/admin/outbound/ui';
 
-/** Set-price assumption used in the MRR projection when no price is entered yet. */
-const DEFAULT_MONTHLY = 497;
+/** Set-price assumption used in the MRR projection when no price is entered yet.
+ *  Derived, so a reprice of the flagship cannot leave this projection stale. */
+const DEFAULT_MONTHLY = DEMO_BUNDLE.monthlyCents / 100;
 const PILOT_DAYS = 30;
 
 /** Projected monthly value of one pilot if it converts today. */
