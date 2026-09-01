@@ -480,24 +480,25 @@ const SALES_DESK: PrompterScript[] = [
     title: 'The Cover, in Sixty Seconds',
     hook: 'You are standing outside my resume. It is an art gallery, because I got tired of PDFs.',
     directorNote:
-      'The camera is the front door. Whoever is watching is on the gallery porch with the Enter button under their thumb, so talk to them like they are already standing there. No greeting and no name until the last beat; the door and the claim carry the open. One take, eyes to the lens, morning light off the lake. Say "every one of them is live" slowly, it is the whole video. Hard stop at sixty. If you run long, thin the numbers in Beat Two and never touch the door or the close. On "Come on in," a half-step aside beats a smile.',
+      'The camera is the front door. Whoever is watching is on the gallery porch with the Enter button under their thumb, so talk to them like they are already standing there. No greeting and no name until the last beat; the door and the claim carry the open. One take, eyes to the lens, morning light off the lake. Say "every one of them is live" slowly, it is the whole video. Hard stop at sixty. The repository and commit counts live on the gallery plaque, so the video only needs twenty products and nine books. If you run long, trim Beat Two and never touch the door, the books, or the close. On "Come on in," a half-step aside beats a smile.',
     sections: [
       {
         heading: 'Beat One, the door (0:00 to 0:12)',
         paragraphs: [
           'You are standing outside my resume. It is an art gallery, because I got tired of PDFs.',
-          'Twenty-six works hang inside, and every one of them is live. Real products. Real clients. Phone numbers you can call.',
+          'Twenty-six works hang inside, and every one of them is live. Real products, with phone numbers you can call.',
         ],
       },
       {
-        heading: 'Beat Two, the turn (0:12 to 0:36)',
+        heading: 'Beat Two, the turn (0:12 to 0:38)',
         paragraphs: [
           'I sold and designed high-ticket for fifteen years, three million dollars a year of it, face to face. Three years ago I stopped waiting for developers and became one.',
-          'Now a voice agent I built takes orders and fires them to a kitchen while the caller is still talking. A back office of seventeen agents runs my studio. Sixty-five repositories, over two thousand commits, twenty products in production, built by me and the machines I taught.',
+          'Now a voice agent I built takes orders and fires them to a kitchen while the caller is still talking. Twenty products in production, built by me and the machines I taught.',
+          'And this November I publish nine books: Eternal Optimist, and eight picture books for kids built on its best sentence.',
         ],
       },
       {
-        heading: 'Beat Three, the close (0:36 to 0:58)',
+        heading: 'Beat Three, the close (0:38 to 0:58)',
         paragraphs: [
           'I am Sarah Scarano. I build from a lake in Montana, and my companies are bootstrapped, agentic, and need less of me every month. That is exactly what I will build for you.',
           'The first call costs you thirty minutes. By the second, I will have built a prototype.',
