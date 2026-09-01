@@ -478,29 +478,30 @@ const SALES_DESK: PrompterScript[] = [
     publish: 'Plays on the cover of modernmustardseed.com/sarahscarano',
     pillar: 'STORY',
     title: 'The Cover, in Sixty Seconds',
-    hook: 'I sold and designed high-ticket for fifteen years. Three years ago I started building the things myself.',
+    hook: 'You are standing outside my resume. It is an art gallery, because I got tired of PDFs.',
     directorNote:
-      'One take, phone at eye level, morning light from the lake if you can get it. This is the video on the cover of your resume, so it is the first thing a founder sees before they read a word. Warm, quick, zero pitch. Land the three numbers cleanly (sixty-five, two thousand one hundred twenty, twenty) and do not rush the last line. Sixty seconds, hard stop. If you go long, cut Beat Two, not Beat Three.',
+      'The camera is the front door. Whoever is watching is on the gallery porch with the Enter button under their thumb, so talk to them like they are already standing there. No greeting and no name until the last beat; the door and the claim carry the open. One take, eyes to the lens, morning light off the lake. Say "every one of them is live" slowly, it is the whole video. Hard stop at sixty. If you run long, thin the numbers in Beat Two and never touch the door or the close. On "Come on in," a half-step aside beats a smile.',
     sections: [
       {
-        heading: 'Beat One, the fifteen years (0:00 to 0:18)',
+        heading: 'Beat One, the door (0:00 to 0:12)',
         paragraphs: [
-          'Hi, I am Sarah Scarano. For fifteen years I sold and designed high-ticket. Outdoor kitchens on show floors, three million dollars a year of them. Then twenty-six historic houses I ran as rentals at ninety-six percent occupancy.',
-          'I know what people pay for and why, because I stood in front of them while they decided.',
+          'You are standing outside my resume. It is an art gallery, because I got tired of PDFs.',
+          'Twenty-six works hang inside, and every one of them is live. Real products. Real clients. Phone numbers you can call.',
         ],
       },
       {
-        heading: 'Beat Two, the turn (0:18 to 0:40)',
+        heading: 'Beat Two, the turn (0:12 to 0:36)',
         paragraphs: [
-          'Three years ago I started building the things myself, in AI, automation and code. The last nine months I did it in the open: sixty-five repositories, two thousand one hundred twenty commits, twenty products in production.',
-          'My studio runs on seventeen agents. My voice agents take orders and send them to a kitchen, send decks, and start software builds while the caller is still on the line.',
+          'I sold and designed high-ticket for fifteen years, three million dollars a year of it, face to face. Three years ago I stopped waiting for developers and became one.',
+          'Now a voice agent I built takes orders and fires them to a kitchen while the caller is still talking. A back office of seventeen agents runs my studio. Sixty-five repositories, over two thousand commits, twenty products in production, built by me and the machines I taught.',
         ],
       },
       {
-        heading: 'Beat Three, why me (0:40 to 0:58)',
+        heading: 'Beat Three, the close (0:36 to 0:58)',
         paragraphs: [
-          'Both my companies are bootstrapped and agentic, so they need less of me every month. I want a seat on a team building something new, in the room where the idea gets decided.',
-          'Flip through the issue. It takes two minutes. And if it is worth a conversation, I will have a prototype for you by the second call.',
+          'I am Sarah Scarano. I build from a lake in Montana, and my companies are bootstrapped, agentic, and need less of me every month. That is exactly what I will build for you.',
+          'The first call costs you thirty minutes. By the second, I will have built a prototype.',
+          'Come on in.',
         ],
       },
     ],
