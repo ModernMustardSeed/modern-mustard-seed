@@ -22,6 +22,16 @@ export type ArtifactEntry = {
 
 export const ARTIFACTS: ArtifactEntry[] = [
   {
+    id: '3a20edc7-97cd-4b88-ad8b-0dcfe6837091',
+    title: 'The Rolodex',
+    url: 'https://claude.ai/code/artifact/3a20edc7-97cd-4b88-ad8b-0dcfe6837091',
+    updated: '2026-09-01',
+    venture: 'MMS',
+    kind: 'Social',
+    description: 'One business idea a day, free: forty pop-art Rolodex cards with the Facebook, X and TikTok copy for each, the posting calendar, and how to add the next idea. The idea bank lives at products/idea-rolodex.',
+    pinned: true,
+  },
+  {
     id: '06d1307f-79f9-4887-afcc-c3f03035b49b',
     title: 'The Hotline',
     url: 'https://claude.ai/code/artifact/06d1307f-79f9-4887-afcc-c3f03035b49b',
