@@ -36,7 +36,7 @@ import path from 'node:path';
 import { cliDirective, cliRealDirective, cliEditDirective, codexDemoDirective, tier2DemoDirective, tier3DemoDirective, editMultipageAddendum, withTemplate } from '../lib/site-directive.mjs';
 import { templateFromBrief, isTemplateKey } from '../lib/site-templates.mjs';
 import { weighSite, weightLine, weightRefusal } from '../lib/site-weight.mjs';
-import { judgeDemo } from '../lib/demo-quality.mjs';
+import { judgeDemo, thirdPersonLines } from '../lib/demo-quality.mjs';
 import { inlineSiteAssets, remainingLocalRefs } from './inline-site-assets.mjs';
 import { blankImageError } from '../lib/site-asset-refs.mjs';
 
@@ -1101,6 +1101,42 @@ async function storeFinished(job, html) {
         return;
       }
       await fail(job, `still slop after a retry: ${q.reasons.join('; ')}`);
+      return;
+    }
+  }
+
+  // THE FIRST PERSON LAW (Sarah, 2026-09-03). The site speaks as the business,
+  // never about its owner from the outside. An edit keeps the page it was
+  // handed, so only a fresh build or a rebuild, which writes the whole page,
+  // answers for its voice. Same shape as the slop gate: the lines go back to
+  // the builder once, and a second offence fails the job.
+  if (!isEdit(job)) {
+    // The brief names the owner ("- Owner / contact: Greg Miller"); the first name
+    // is what catches "Greg will call you", which carries no pronoun.
+    const ownerFirst = (String(job.brief || '').match(/^- Owner \/ contact:\s*(.+)$/m) || [])[1]?.trim().split(/\s+/)[0] || null;
+    const lines = thirdPersonLines(html, ownerFirst);
+    if (lines.length) {
+      const why =
+        'this page speaks about the owner in the third person and will not be sent: ' +
+        lines.slice(0, 6).map((l) => '"' + l + '"').join('; ') +
+        '. The site speaks AS the business. "Let us know what we are walking into", never "Tell him what he is walking into". ' +
+        'Rewrite every he, him, his, she, her, and every "{Owner} will ..." as we, us, our (or I for a one-person shop). ' +
+        "Third person survives only inside a customer's own quote in the proof wall.";
+      if (!/\[requeued after voice\]/.test(job.error || '')) {
+        log('THIRD PERSON, requeueing once:', job.id, why);
+        await supabase
+          .from('outbound_demo_sites')
+          .update({
+            status: 'queued',
+            worker: null,
+            claimed_at: null,
+            error: '[requeued after voice] ' + why,
+            updated_at: new Date().toISOString(),
+          })
+          .eq('id', job.id);
+        return;
+      }
+      await fail(job, 'still speaks about the owner in the third person after a retry: ' + lines.slice(0, 3).join(' | '));
       return;
     }
   }

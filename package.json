@@ -5,7 +5,7 @@
   "packageManager": "pnpm@11.21.0",
   "scripts": {
     "dev": "next dev -p 3001",
-    "build": "node scripts/check-worker-imports.mjs && node scripts/check-no-brown.mjs && node scripts/voice-standard-check.mjs && node scripts/cron-collision-check.mjs && node scripts/check-retired-templates.mjs && node scripts/check-template-fit.mjs && node scripts/check-slow-before-writes.mjs && next build",
+    "build": "node scripts/check-worker-imports.mjs && node scripts/check-no-brown.mjs && node scripts/voice-standard-check.mjs && node scripts/cron-collision-check.mjs && node scripts/check-retired-templates.mjs && node scripts/check-template-fit.mjs && node scripts/check-first-person.mjs && node scripts/check-slow-before-writes.mjs && next build",
     "crons:check": "node scripts/cron-collision-check.mjs",
     "start": "next start",
     "fieldguide:sheet": "tsx scripts/build-fieldguide-onepager.ts",
@@ -62,7 +62,8 @@
     "demo:booking": "tsx scripts/demo-booking-smoke.mts",
     "acq:demos": "tsx scripts/acq-demos-now.mts",
     "check:templates": "node scripts/check-retired-templates.mjs",
-    "check:fit": "node scripts/check-template-fit.mjs"
+    "check:fit": "node scripts/check-template-fit.mjs",
+    "check:voice": "node scripts/check-first-person.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.100.0",
