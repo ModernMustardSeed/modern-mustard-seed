@@ -21,6 +21,16 @@ export const runtime = 'nodejs';
 export const maxDuration = 60;
 
 /**
+ * "Mail them the suite" is a person selecting rows on the board and pressing a
+ * button, so it lifts the governor's PACING the same way the prospect card and
+ * the send-demos-now button do: the adaptive allowance, the hourly cap, the
+ * send window, the minimum gap. It lifts nothing that protects a recipient.
+ * Opt-outs, suppressions, prior bounces, do-not-contact, unmailable addresses
+ * and the hard rolling ceiling still refuse. See lib/acq/governor.ts.
+ */
+const BY_HAND = { reason: 'Suite mailed by hand from the build board.' } as const;
+
+/**
  * THE ACQUISITION BUILD BOARD.
  *
  * The outbound cockpit has had a build board since July. Acquisition has had
@@ -489,7 +499,7 @@ export async function POST(req: Request) {
       let sent = 0;
       const refused: string[] = [];
       for (const lead of leads) {
-        const res = await sendSuiteEmail(db, campaign, lead);
+        const res = await sendSuiteEmail(db, campaign, lead, {}, BY_HAND);
         if (res.ok) sent++;
         else refused.push(`${lead.business_name}: ${res.error}`);
       }

@@ -15,6 +15,22 @@ import type { AcqProspect } from '@/lib/acq/types';
 export const runtime = 'nodejs';
 export const maxDuration = 60;
 
+/**
+ * Every send on this route is one named person, chosen by hand, on a card
+ * somebody had to open first. The governor's pacing exists to stop a MACHINE
+ * from running away: the adaptive allowance, the hourly cap, the send window
+ * and the minimum gap between emails. None of them describe Sarah picking a
+ * prospect and pressing send, and until now they blocked her while the bulk
+ * "send demos now" button sailed straight through with an override. That was
+ * backwards.
+ *
+ * This lifts the pacing and NOTHING else. An unsubscribe, a suppression, a
+ * previous hard bounce, a do-not-contact flag, an unmailable address and the
+ * hard rolling ceiling all still refuse, exactly as they do everywhere else.
+ * See `override` in lib/acq/governor.ts for the full list.
+ */
+const BY_HAND = { reason: 'Sent by hand from the prospect card.' } as const;
+
 /** Everything about one prospect: the record, the timeline, the calls, the
  *  exact email that would go out next, and Sarah's prep brief. */
 export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -197,20 +213,20 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     }
     case 'send-demo': {
       if (!campaign) return NextResponse.json({ error: 'No campaign.' }, { status: 500 });
-      const sent = await sendDemoEmail(db, campaign, lead);
+      const sent = await sendDemoEmail(db, campaign, lead, BY_HAND);
       return sent.ok ? NextResponse.json({ ok: true }) : NextResponse.json({ error: sent.error }, { status: 409 });
     }
     /* Mail them everything that is finished, with the video leading it. */
     case 'send-suite': {
       if (!campaign) return NextResponse.json({ error: 'No campaign.' }, { status: 500 });
-      const sent = await sendSuiteEmail(db, campaign, lead, { resend: body.resend === true });
+      const sent = await sendSuiteEmail(db, campaign, lead, { resend: body.resend === true }, BY_HAND);
       return sent.ok
         ? NextResponse.json({ ok: true, subject: sent.subject })
         : NextResponse.json({ error: sent.error }, { status: 409 });
     }
     case 'send-checkout': {
       if (!campaign) return NextResponse.json({ error: 'No campaign.' }, { status: 500 });
-      const sent = await sendCheckoutLink(db, campaign, lead, body.note ? String(body.note) : undefined);
+      const sent = await sendCheckoutLink(db, campaign, lead, body.note ? String(body.note) : undefined, BY_HAND);
       return sent.ok ? NextResponse.json({ ok: true }) : NextResponse.json({ error: sent.error }, { status: 409 });
     }
     case 'mark-won': {
