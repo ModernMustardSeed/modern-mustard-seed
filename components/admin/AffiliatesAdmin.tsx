@@ -3,6 +3,8 @@
 import { useEffect, useState, useCallback, Fragment } from 'react';
 import AdminHeader from './AdminHeader';
 import { payoutMethodLabel } from '@/lib/payout-methods';
+import FieldGuide from '@/components/partners/FieldGuide';
+import type { PartnerGuide } from '@/lib/partner-guide';
 
 type Row = {
   id: string;
@@ -80,6 +82,23 @@ export default function AffiliatesAdmin() {
   const [add, setAdd] = useState({ name: '', email: '', sendWelcome: true });
   const [adding, setAdding] = useState(false);
   const [buildFor, setBuildFor] = useState<string | null>(null);
+  // The partner's field guide, opened under their row. Fetched on first open,
+  // cached by code; null means "asked, none written yet".
+  const [guideFor, setGuideFor] = useState<string | null>(null);
+  const [guides, setGuides] = useState<Record<string, PartnerGuide | null>>({});
+  const openGuide = async (r: Row) => {
+    if (guideFor === r.id) { setGuideFor(null); return; }
+    setGuideFor(r.id);
+    setBuildFor(null);
+    if (!r.code || r.code in guides) return;
+    try {
+      const res = await fetch(`/api/admin/partner-guide?code=${encodeURIComponent(r.code)}`);
+      const j = await res.json();
+      setGuides((g) => ({ ...g, [r.code as string]: (j.guide as PartnerGuide | null) ?? null }));
+    } catch {
+      setGuides((g) => ({ ...g, [r.code as string]: null }));
+    }
+  };
   const [bform, setBform] = useState({ fee: '', client: '', payable: false, notify: true, rate: 0.1 });
   const [qa, setQa] = useState<QaPending[]>([]);
   const [fly, setFly] = useState<Flywheel | null>(null);
@@ -591,6 +610,9 @@ export default function AffiliatesAdmin() {
                             <button onClick={() => openBuild(r.id)} className={`text-[10px] uppercase tracking-[0.15em] font-sans font-bold disabled:opacity-50 whitespace-nowrap ${buildFor === r.id ? 'text-[#161616]' : 'text-[#1E50C8] hover:text-[#161616]'}`}>
                               {buildFor === r.id ? 'Close' : 'Log build $'}
                             </button>
+                            <button onClick={() => openGuide(r)} className={`text-[10px] uppercase tracking-[0.15em] font-sans font-bold whitespace-nowrap ${guideFor === r.id ? 'text-[#161616]' : 'text-[#1E50C8] hover:text-[#161616]'}`}>
+                              {guideFor === r.id ? 'Close guide' : 'Field guide'}
+                            </button>
                             {r.payableCents > 0 && (
                               <button onClick={() => payout(r.id)} disabled={busy === r.id} className="text-[10px] uppercase tracking-[0.15em] font-sans font-bold text-emerald-700 hover:text-emerald-800 disabled:opacity-50 whitespace-nowrap">
                                 {busy === r.id ? '...' : 'Mark paid'}
@@ -605,6 +627,27 @@ export default function AffiliatesAdmin() {
                           </div>
                         </td>
                       </tr>
+                      {guideFor === r.id && (
+                        <tr className="border-b border-[#161616]/10 bg-[#FBF6EA]">
+                          <td colSpan={9} className="px-4 py-5 text-[#161616]">
+                            {!r.code ? (
+                              <p className="font-body text-sm italic text-[#161616]/60">This partner has no code yet, so no guide can be filed under them.</p>
+                            ) : !(r.code in guides) ? (
+                              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#161616]/50">Loading the guide…</p>
+                            ) : guides[r.code] ? (
+                              <div>
+                                <div className="flex flex-wrap items-baseline justify-between gap-2 mb-4">
+                                  <h3 className="font-display text-xl font-semibold">{guides[r.code]!.title}</h3>
+                                  <a href="/partners/hq/guide" target="_blank" rel="noopener noreferrer" className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#1E50C8] hover:text-[#161616]">What they see →</a>
+                                </div>
+                                <FieldGuide guide={guides[r.code]!} compact />
+                              </div>
+                            ) : (
+                              <p className="font-body text-sm text-[#161616]/70">No field guide written for {r.name ?? r.code} yet. POST one to <code className="font-mono text-[12px]">/api/admin/partner-guide</code> and it appears here and on their dashboard.</p>
+                            )}
+                          </td>
+                        </tr>
+                      )}
                       {buildFor === r.id && (
                         <tr className="border-b border-[#161616]/10 bg-[#FFF8E6]">
                           <td colSpan={9} className="px-4 py-4">
