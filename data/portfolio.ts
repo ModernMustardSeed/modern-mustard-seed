@@ -57,8 +57,9 @@ export const PORTFOLIO: PortfolioCategory[] = [
       },
       {
         name: 'Eternal Optimist',
+        url: 'https://sarahscarano.com/eternal-optimist',
         status: 'building',
-        blurb: 'Your book. Eternal Optimist: Walking on Sunshine, hardcover on November 22, 2026, plus the eight Sunny Bell picture books built on its best sentence. The preorder store opens on sarahscarano.com.',
+        blurb: 'Your book. Eternal Optimist: Walking on Sunshine, hardcover on November 22, 2026, plus the eight Sunny Bell picture books built on its best sentence. The preorder store is open on sarahscarano.com.',
         tags: ['books', 'publishing'],
       },
       {
