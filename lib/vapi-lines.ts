@@ -64,3 +64,17 @@ export const CALLBACK_NUMBER_E164 = '+14067096593';
 /** Env wins, so a line can be swapped in an emergency without a deploy. */
 export const CALLBACK_NUMBER_ID =
   real(process.env.VAPI_CALLBACK_NUMBER_ID) || '93647a40-4eff-4ac7-9ada-a57f7a9f1f5b';
+
+/**
+ * THE FLORIDA LINE. Inbound only.
+ *
+ * Bought inside Vapi on 2026-09-03 for the Florida card and flyer campaign, so a
+ * Panhandle caller dials a local number and reaches the same agent. It is a
+ * Vapi-provisioned number, which means the ten-a-day outbound cap applies to
+ * it, so nothing ever calls out from it; callbacks stay on CALLBACK_NUMBER.
+ * Spoken by the agent (the "Your three lines" section of
+ * scripts/setup-vapi-mustard.mjs), so a change here changes that prompt too.
+ */
+export const FLORIDA_NUMBER = '(850) 985-9252';
+export const FLORIDA_NUMBER_E164 = '+18509859252';
+export const FLORIDA_NUMBER_ID = '2e71b7e5-7d5d-43d1-9a91-ea79383cf375';
