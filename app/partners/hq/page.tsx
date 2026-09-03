@@ -13,6 +13,7 @@ import HelpGuide from '@/components/HelpGuide';
 import MustardDeskCall from '@/components/MustardDeskCall';
 import DeskWelcome from '@/components/DeskWelcome';
 import { PARTNER_HELP } from '@/lib/help-content';
+import { getPartnerGuide } from '@/lib/partner-guide';
 
 export const metadata = buildMetadata({ title: 'Partner Dashboard', path: '/partners/hq', noindex: true });
 export const dynamic = 'force-dynamic';
@@ -24,6 +25,8 @@ export default async function PartnerHQ() {
   if (!session) redirect('/portal/login');
 
   const affiliate = await getAffiliateByEmail(session.email);
+  // Written per partner by Sarah; null until theirs exists, and then the card below appears.
+  const guide = affiliate?.code ? await getPartnerGuide(affiliate.code) : null;
 
   if (!affiliate || affiliate.status !== 'approved' || !affiliate.code) {
     return (
@@ -113,6 +116,19 @@ export default async function PartnerHQ() {
             </div>
           </Link>
         </div>
+
+        {guide && (
+          <Link href="/partners/hq/guide" className="block group mb-8">
+            <div className="bg-white border-2 border-[#161616] rounded-2xl shadow-[6px_6px_0_0_#161616] p-6 transition-all group-hover:shadow-[8px_8px_0_0_#161616] group-hover:-translate-y-0.5 flex flex-wrap items-center justify-between gap-4">
+              <div>
+                <span className="text-[10px] uppercase tracking-[0.4em] text-[#E0301E] font-mono font-bold block mb-2">Your territory</span>
+                <h3 className="font-display text-2xl font-semibold text-[#161616]">{guide.title}</h3>
+                <p className="text-[#161616]/70 font-body text-sm mt-1">Where to walk in, which rooms are worth your time, the dated events with a vendor floor, and the ninety-second play. Written for you.</p>
+              </div>
+              <span className="inline-block text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] border-b-2 border-[#161616] whitespace-nowrap">Open the guide →</span>
+            </div>
+          </Link>
+        )}
 
         {/* The build: the strongest play a partner has */}
         <Link href="/partners/hq/build" className="block group mb-8">
