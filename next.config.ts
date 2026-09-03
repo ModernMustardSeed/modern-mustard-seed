@@ -75,11 +75,14 @@ const config: NextConfig = {
       // Sarah's own page: a self-contained, illustrated flip-book resume that
       // lives as one static HTML file in public/sarahscarano/. The rewrite lets
       // the clean URL serve it; the file is CDN-served, never traced.
-      { source: '/sarahscarano', destination: '/sarahscarano/index.html' },
     ];
   },
   async redirects() {
     return [
+      // The gallery moved to her own domain. Keep every old link working,
+      // including the plain resume PDF and the OG cover.
+      { source: '/sarahscarano', destination: 'https://sarahscarano.com', permanent: true },
+      { source: '/sarahscarano/:path*', destination: 'https://sarahscarano.com/:path*', permanent: true },
       // /Mustard is handled in middleware.ts, NOT here. Config redirects match
       // case-insensitively, so a `/Mustard -> /mustard` rule here also matches
       // `/mustard` and redirects the real page to itself in an infinite loop.
