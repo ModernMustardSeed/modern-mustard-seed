@@ -112,7 +112,14 @@ export type BuildSuiteInput = {
  */
 const EMPTY_BUILD_CALLS = new Map<string, number>();
 
-export async function buildSuiteFromCall(input: BuildSuiteInput, callerNumber: string | null): Promise<string> {
+/** The partner whose line the call came in on. The lead this builds is theirs. */
+export type BuildCredit = { affiliateId: string; code: string };
+
+export async function buildSuiteFromCall(
+  input: BuildSuiteInput,
+  callerNumber: string | null,
+  credit: BuildCredit | null = null,
+): Promise<string> {
   const business = clean(input.business, 90);
   const name = clean(input.contact_name, 80);
   const email = clean(input.email, 120).toLowerCase();
@@ -258,6 +265,11 @@ export async function buildSuiteFromCall(input: BuildSuiteInput, callerNumber: s
       .update({
         notes: [addTo.notes, `CALLED BACK AND ADDED: ${listPieces(pieces)} (built live by Mr. Mustard).`].filter(Boolean).join('\n'),
         next_action: `Called back for ${listPieces(pieces)}: they are buying in pieces, follow up while it is hot`,
+        // A lead that already belongs to a partner stays theirs. Only an
+        // unclaimed lead is credited to the line it called back on.
+        ...(credit && !(addTo as { affiliate_id?: string | null }).affiliate_id
+          ? { affiliate_id: credit.affiliateId, origin: 'partner' }
+          : {}),
       })
       .eq('id', addTo.id)
       .select('*')
@@ -277,9 +289,11 @@ export async function buildSuiteFromCall(input: BuildSuiteInput, callerNumber: s
         niche: nicheOf(trade),
         status: 'new',
         source: 'mr-mustard',
+        ...(credit ? { affiliate_id: credit.affiliateId, origin: 'partner' } : {}),
         notes: [
           'BUILT LIVE ON A CALL: Mr. Mustard took their details and fired the build himself.',
           asked,
+          credit ? `PARTNER: ${credit.code}. The call came in on their line, so this lead and its hub purchase are theirs.` : null,
           trade ? `TRADE (their words): ${trade}` : null,
           website ? null : 'WEBSITE: none, they came without one.',
           notes ? `OWNER NOTES: ${notes}` : null,

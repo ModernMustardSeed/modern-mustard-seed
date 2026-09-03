@@ -78,3 +78,27 @@ export const CALLBACK_NUMBER_ID =
 export const FLORIDA_NUMBER = '(850) 985-9252';
 export const FLORIDA_NUMBER_E164 = '+18509859252';
 export const FLORIDA_NUMBER_ID = '2e71b7e5-7d5d-43d1-9a91-ea79383cf375';
+
+/**
+ * WHICH PARTNER A LINE BELONGS TO.
+ *
+ * A line printed on one partner's cards and flyers is that partner's line.
+ * Every call that arrives on it is theirs: the lead it captures carries their
+ * name as owner, the demo it builds carries their affiliate_id (so the hub
+ * purchase pays them), every link Mr. Mustard emails from the call carries
+ * their ref code (so a later purchase pays them), and Sarah's summary says whose
+ * line rang. The code is the affiliate's `code` in the affiliates table, and
+ * the webhook resolves it to a live, approved row on every call, so a partner
+ * who is paused stops earning without a deploy.
+ *
+ * Web attribution is the same code: the QR on the same cards points at
+ * /?ref=<code>, which RefCapture turns into the 60-day mms_ref cookie.
+ */
+export type LinePartner = { code: string; label: string };
+export const LINE_PARTNERS: Record<string, LinePartner> = {
+  [FLORIDA_NUMBER_ID]: { code: 'EASTON', label: 'Florida line' },
+};
+export function partnerForLine(phoneNumberId: string | null | undefined): LinePartner | null {
+  if (!phoneNumberId) return null;
+  return LINE_PARTNERS[phoneNumberId] ?? null;
+}
