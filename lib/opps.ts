@@ -110,7 +110,7 @@ export const oppEmailSchema = z.object({
   body: z.string().trim().min(1).max(10000),
 });
 
-export const RESUME_URL = 'https://modernmustardseed.com/sarahscarano';
+export const RESUME_URL = 'https://sarahscarano.com';
 
 /**
  * A first-touch draft the desk offers with one click. Deterministic, short,
@@ -152,7 +152,7 @@ export function draftIntro(opp: Pick<Opp, 'company' | 'title' | 'why_fit' | 'gro
     '',
     why ? `Why this one: ${why}` : '',
     why ? '' : '',
-    `My resume is a fourteen-page issue you can flip through in two minutes: ${RESUME_URL}`,
+    `My resume is an art gallery you can walk in two minutes: ${RESUME_URL}`,
     '',
     'If it is worth a conversation, I can have a prototype for you by the second call.',
     '',
