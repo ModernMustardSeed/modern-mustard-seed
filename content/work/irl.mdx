@@ -1,0 +1,67 @@
+---
+title: "IRL: A Plan Generator That Checks the Weather Before It Decides"
+description: "Four doors, one machine. Everybody answers five questions separately, a wheel spins, and out comes one real plan with street addresses on it. No account, no database, no API key."
+date: "2026-09-03"
+dateModified: "2026-09-03"
+tag: "Consumer Product"
+client: "Modern Mustard Seed"
+liveUrl: "https://irl-delta.vercel.app"
+stack:
+  - "Next.js 16"
+  - "TypeScript strict"
+  - "Tailwind CSS 4"
+  - "Photon (OpenStreetMap)"
+  - "Open-Meteo"
+  - "Vercel"
+metrics:
+  - { label: "Doors", value: "4" }
+  - { label: "Plan shapes", value: "37" }
+  - { label: "Account required", value: "None" }
+  - { label: "API keys", value: "Zero" }
+---
+
+## Problem
+
+Two people have the same conversation forty times a year. What do you want to do. I do not know, what do you want to do. Then it is nine o'clock and nobody went anywhere.
+
+Every product aimed at this returns a list. Twelve restaurants, sorted by rating, and the decision is still yours. A list is not a plan. A plan has an order, times on it, and somebody else's name on the decision.
+
+The harder version is a household. Two adults and a seven year old want three different days, and the loudest voice wins. Or a group trip, where six people in a group chat produce nothing for a month.
+
+## Build
+
+IRL is one machine behind four doors: a date night, a family day, a night out on your own, and a trip of up to six cities.
+
+- **Everybody gets interviewed, separately.** Five questions each, on the same phone, passed hand to hand with a screen between people so nobody sees anybody else's answers. A kid gets different words for the same five axes. "How much running around do you have in you" instead of "where is your energy tonight."
+- **The blend has stated biases, not compromises.** The most tired person sets the pace. The tightest wallet sets the ceiling. Every craving survives. Every veto is absolute. Then the card prints The Split, one sentence naming how a disagreement got honored, by name: "Dana is running on empty and Reed is wired, so it opens somewhere everyone can hear each other and ends somewhere nobody can."
+- **The wheel checks the sky first.** Every plan carries its own forecast, read over the hours that plan occupies rather than the whole day. Rain takes water and open-ground shapes off the wheel entirely. A shape that ends at a viewpoint slides its whole evening so that act starts forty minutes before sundown, capped at ninety minutes, and says why. When an act has nowhere indoors to go, the card names it and tells you to take the coat.
+- **Real places, with street numbers.** Every act is an actual venue from OpenStreetMap with an address, the walk between stops measured, and a note when it is far enough that you should drive.
+- **The plan is the URL.** No account, no email, no database. A plan lives entirely inside its own link, seeded so the same link rebuilds the identical plan on any device. Rerolling a single act is a plain link, so it works with JavaScript switched off.
+
+## The part that went wrong
+
+The first version used Overpass, the usual way to query OpenStreetMap. It worked on the laptop and failed in production, and for a day the app described places instead of naming them.
+
+The cause was not a bug in the code. Measured against production: the identical query returned in one second from a laptop and timed out every single time from Vercel. Overpass throttles cloud egress, so a serverless app can never rely on it, and no amount of retrying or caching changes that.
+
+The fix was to move to Photon, komoot's search layer over the same OpenStreetMap data, which answers from a datacenter in about a second and returns a structured postal address that raw map tags usually do not carry. Two of its quirks only turn up by measuring: a single category filter returns one nearest match rather than a list, and firing several requests at once costs you a whole city. Both are handled.
+
+The lesson is the one worth keeping. A service that works from your machine has told you nothing about whether it works from your server.
+
+## Outcome
+
+Live and free. Four doors, thirty-seven plan shapes, thirty-nine venue categories, any city on earth with a map. Seventy-nine tests, including every one of 1,728 answer combinations building a plan without throwing.
+
+A three-city Italy trip renders in one pass: Bioparco and the Giardino di Villa Medici in Rome, L'Antica Cantina del Chianti in Florence, the Biblioteca Universitaria in Naples. Seven days, no place used twice, each city carrying its own map and its own week of weather. One city going dark says so on its own heading instead of blinding the trip.
+
+It costs nothing to run. No keys, no billing account, no per-request cost.
+
+## Stack
+
+Next.js 16 with the App Router, TypeScript in strict mode, Tailwind 4. Photon over OpenStreetMap for venues and Nominatim for city lookup, Open-Meteo for the forecast, all three free and keyless. Vercel for the deploy. The engine is pure functions with one network module, so swapping where a venue comes from touches one file.
+
+## What this is, generally
+
+What it looks like to build a product with an opinion. The rules are stated out loud, in the code and on the card: the tired one sets the pace, the tight wallet sets the ceiling, nothing gets recommended because somebody paid. Spinning stays free forever, and the paid tier is memory rather than suggestions.
+
+It is also what it looks like to be honest about failure inside a product. When the map goes quiet, the card says the places are described rather than named, and no business name is ever invented to fill the gap.
