@@ -33,6 +33,31 @@ import { clientEmail, demoFilmCard } from '@/lib/email';
 import { SITE } from '@/lib/seo';
 import { OWNER_NOTIFY_TO } from '@/lib/owner';
 import { possessive } from '@/lib/business-name';
+import { getAffiliateByCode } from '@/lib/affiliate';
+
+/**
+ * THE REFERRING PARTNER, IF THERE IS ONE.
+ *
+ * A visitor who arrived through a partner's link (or scanned the QR on a
+ * partner's card) carries the 60-day mms_ref cookie that RefCapture set. Until
+ * 2026-09-03 this route ignored it: the checkout would still pay the partner
+ * days later, but the demo lead itself was minted unassigned, so it never
+ * showed in the partner's portal and the floor treated it as a walk-in. Now the
+ * lead is theirs from the first write, the same stamp assign-territory.mjs and
+ * the partner build path use (affiliate_id + origin='partner'). Approved rows
+ * only; a bad or paused code resolves to nothing and the lead stays unassigned.
+ */
+async function referringPartner(req: Request): Promise<{ id: string; code: string } | null> {
+  const m = (req.headers.get('cookie') || '').match(/(?:^|;\s*)mms_ref=([^;]+)/);
+  const code = m ? decodeURIComponent(m[1]).trim().slice(0, 64) : '';
+  if (!code) return null;
+  try {
+    const aff = await getAffiliateByCode(code);
+    return aff?.code ? { id: aff.id, code: aff.code } : null;
+  } catch {
+    return null;
+  }
+}
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -166,10 +191,13 @@ export async function POST(req: Request) {
   }
 
   // The lead: this is the funnel's spine. source 'demo-station' marks it
-  // self-serve; unassigned, so the whole floor sees it in the queue.
+  // self-serve. Unassigned, so the whole floor sees it in the queue, unless a
+  // partner's link or card brought them here, in which case it is that partner's.
+  const partner = await referringPartner(req);
   const { data: leadRow, error: leadErr } = await supabase
     .from('outbound_leads')
     .insert({
+      ...(partner ? { affiliate_id: partner.id, origin: 'partner' } : {}),
       business_name: business,
       contact_name: name,
       email,
@@ -185,6 +213,7 @@ export async function POST(req: Request) {
       // in their own words drives all three demos, so it must survive here.
       notes: [
         `SELF-SERVE: built their own demo suite from ${SITE.url}/demos.`,
+        partner ? `PARTNER: ${partner.code}. They arrived through this partner's link or card, so the lead is theirs.` : null,
         website ? null : 'WEBSITE: none, they came without one.',
         notes ? `OWNER NOTES: ${notes}` : null,
       ]
