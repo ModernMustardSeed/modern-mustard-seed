@@ -9,7 +9,8 @@ import {
   escape,
   p,
 } from '@/lib/email';
-import { getAffiliateByEmail } from '@/lib/affiliate';
+import { getAffiliateByEmail, getAffiliateByCode } from '@/lib/affiliate';
+import { partnerForLine } from '@/lib/vapi-lines';
 import { insertLead, getSupabase } from '@/lib/supabase';
 import { recallCaller, rememberFromTool, rememberSummary } from '@/lib/voice-memory';
 import { getNextAvailableSlots, isSlotAvailable, displayForIso, bookingWindow } from '@/lib/booking';
@@ -192,6 +193,7 @@ async function bookSlot(
     painSummary: string;
   },
   callerNumber?: string | null,
+  line: LineCredit | null = null,
 ): Promise<string> {
   const ok = await isSlotAvailable(input.startIso);
   if (!ok) {
@@ -225,11 +227,12 @@ async function bookSlot(
         name,
         email,
         message: painSummary,
-        notes: `Discovery call · ${display}${business ? ` · ${business}` : ''} · booked by Mr. Mustard (voice)`,
+        notes: `Discovery call · ${display}${business ? ` · ${business}` : ''} · booked by Mr. Mustard (voice)${line ? ` · ${creditNote(line)}` : ''}`,
         timeline: input.startIso,
         status: 'booked',
         source: 'mustard-seed-booking',
         business_name: business ?? null,
+        owner: line?.name ?? null,
       });
     }
   } catch (err) {
@@ -334,6 +337,7 @@ async function captureLead(
     business?: string;
   },
   callerNumber?: string | null,
+  line: LineCredit | null = null,
 ): Promise<string> {
   const name = input.name?.trim() || 'Voice caller';
   const firstName = name.split(' ')[0];
@@ -354,7 +358,8 @@ async function captureLead(
       email,
       message: painSummary,
       source: 'mr-mustard-voice',
-      notes: business ? `Business: ${business}` : null,
+      notes: [business ? `Business: ${business}` : null, creditNote(line)].filter(Boolean).join(' · ') || null,
+      owner: line?.name ?? null,
     });
 
     const apiKey = process.env.RESEND_API_KEY;
@@ -373,6 +378,7 @@ async function captureLead(
             { label: 'Email', value: email },
             ...(business ? [{ label: 'Business', value: business }] : []),
             { label: 'Source', value: 'Mr. Mustard voice call' },
+            ...creditField(line),
           ],
           message: painSummary,
           suggestedAction: 'Speed to lead. Reply or call back today while it is warm.',
@@ -510,7 +516,7 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
  */
 async function sendResourceEmail(
   input: { email?: string; subject?: string; note?: string; links?: string[] },
-  ctx: { deskKind: string | null; authedEmail: string | null },
+  ctx: { deskKind: string | null; authedEmail: string | null; lineRefCode?: string | null },
 ): Promise<string> {
   const to = (input.email || '').trim() || (ctx.authedEmail || '').trim();
   if (!to || !EMAIL_RE.test(to)) {
@@ -540,6 +546,10 @@ async function sendResourceEmail(
       /* ref enrichment is best-effort */
     }
   }
+
+  // A partner's line: every link he sends from the call carries their code, so
+  // the purchase it leads to pays them the same as a link they shared by hand.
+  if (!refCode && ctx.lineRefCode) refCode = ctx.lineRefCode;
 
   const keys = Array.isArray(input.links) ? input.links : [];
   const resolved = keys
@@ -628,6 +638,7 @@ async function sendResourceEmail(
 async function reachSarah(
   input: { name?: string; phone?: string; reason?: string; email?: string },
   callerNumber: string | null,
+  line: LineCredit | null = null,
 ): Promise<string> {
   const name = (input.name || '').trim() || 'A caller';
   /**
@@ -677,6 +688,7 @@ async function reachSarah(
             ...(phone ? [{ label: 'Call them back at', value: phone }] : []),
             ...(email ? [{ label: 'Email (he read this back on the call)', value: email }] : []),
             { label: 'Source', value: 'Mr. Mustard voice call (they asked for you by name)' },
+            ...creditField(line),
           ],
           message: reason || 'A caller asked to speak with you directly.',
           suggestedAction: 'They asked for you personally. Call them back as soon as you can.',
@@ -715,6 +727,7 @@ async function handleEndOfCallReport(message: Record<string, unknown>) {
   const callerNumber = phoneNumber || 'Web call';
   const endedReason = (message.endedReason as string) || (call.endedReason as string) || '';
   const durationSeconds = Math.round(Number(message.durationSeconds ?? 0)) || undefined;
+  const line = await lineCreditFor(call, message);
 
   // If this was an outbound Mr. Mustard call to a tracked prospect, log the full
   // transcript (both sides) onto that lead's correspondence thread so Sarah can
@@ -747,7 +760,7 @@ async function handleEndOfCallReport(message: Record<string, unknown>) {
   // caller id against the acquisition prospects and put it on their timeline.
   if (!acq && phoneNumber && (call.type === 'inboundPhoneCall' || !call.type)) {
     try {
-      await noteInboundFromProspect(phoneNumber, { summary, durationSeconds, endedReason });
+      await noteInboundFromProspect(phoneNumber, { summary, durationSeconds, endedReason }, line);
     } catch (err) {
       console.error('acq inbound match failed', err);
     }
@@ -822,7 +835,7 @@ async function handleEndOfCallReport(message: Record<string, unknown>) {
       ? bookedCount
         ? `DEMO CALL, BOOKED: ${demoLine.business}`
         : `Demo call: ${demoLine.business}${durationSeconds ? ` · ${durationSeconds}s` : ''}`
-      : `Mr. Mustard call summary · ${callerNumber}`;
+      : `Mr. Mustard call summary · ${callerNumber}${line ? ` · ${line.label}` : ''}`;
 
     await sendLoud(resend, 'end-of-call-report', {
       from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
@@ -834,6 +847,7 @@ async function handleEndOfCallReport(message: Record<string, unknown>) {
         email: 'sarah@modernmustardseed.com',
         fields: [
           { label: 'Caller', value: callerNumber },
+          ...creditField(line),
           ...(demoLine ? [{ label: 'Demo', value: demoLine.business }] : []),
           ...(demoLine
             ? [
@@ -872,6 +886,7 @@ async function handleEndOfCallReport(message: Record<string, unknown>) {
 async function noteInboundFromProspect(
   callerNumber: string,
   info: { summary: string; durationSeconds?: number; endedReason: string },
+  line: LineCredit | null = null,
 ): Promise<void> {
   const sb = getSupabase();
   if (!sb) return;
@@ -880,11 +895,11 @@ async function noteInboundFromProspect(
   const last10 = digits.slice(-10);
   const { data } = await sb
     .from('outbound_leads')
-    .select('id,phone,acq_campaign_id,business_name')
+    .select('id,phone,acq_campaign_id,business_name,affiliate_id')
     .not('acq_campaign_id', 'is', null)
     .like('phone', `%${last10.slice(-4)}`)
     .limit(50);
-  const lead = ((data ?? []) as { id: string; phone: string | null; acq_campaign_id: string | null }[]).find(
+  const lead = ((data ?? []) as { id: string; phone: string | null; acq_campaign_id: string | null; affiliate_id?: string | null }[]).find(
     (l) => (l.phone ?? '').replace(/\D/g, '').slice(-10) === last10,
   );
   if (!lead) return;
@@ -901,7 +916,62 @@ async function noteInboundFromProspect(
     .update({ last_seen_at: stamp, reservoir_state: 'engaged', needs_human: `Called Mr. Mustard's line ${stamp.slice(0, 10)}. Call them back.` })
     .eq('id', lead.id)
     .in('reservoir_state', ['queued', 'contacted', 'engaged', 'ready', 'verified', 'email_found', 'qualified']);
+  // A prospect who rang a partner's line becomes that partner's lead, unless
+  // somebody already owns them. Never steals; the filter is the rule.
+  if (line && !lead.affiliate_id) {
+    await sb
+      .from('outbound_leads')
+      .update({ affiliate_id: line.affiliateId, origin: 'partner' })
+      .eq('id', lead.id)
+      .is('affiliate_id', null);
+  }
 }
+
+/* ───────── Whose line rang ───────── */
+
+/**
+ * THE LINE A CALL CAME IN ON, AND WHOSE IT IS.
+ *
+ * Mr. Mustard answers more than one number. A line printed on a partner's cards
+ * is that partner's line (lib/vapi-lines.ts LINE_PARTNERS), and a call that
+ * arrives on it credits them everywhere the call leaves a mark: the lead's
+ * owner, the built demo's affiliate_id, the ref code on every emailed link, and
+ * Sarah's summary. Vapi puts the number's id on the call object as
+ * `phoneNumberId` (older payloads nest it under `phoneNumber.id`, and some
+ * server messages carry `phoneNumber` at the top level), so all three are read.
+ * Web calls and calls on the studio line resolve to null and nothing changes.
+ */
+type LineCredit = { code: string; affiliateId: string; name: string; label: string };
+
+function lineIdOf(callObj: Record<string, unknown>, message: Record<string, unknown>): string | null {
+  const direct = callObj.phoneNumberId;
+  if (typeof direct === 'string' && direct) return direct;
+  const nested = (callObj.phoneNumber as Record<string, unknown> | undefined)?.id;
+  if (typeof nested === 'string' && nested) return nested;
+  const top = (message.phoneNumber as Record<string, unknown> | undefined)?.id;
+  return typeof top === 'string' && top ? top : null;
+}
+
+async function lineCreditFor(
+  callObj: Record<string, unknown>,
+  message: Record<string, unknown>,
+): Promise<LineCredit | null> {
+  const partner = partnerForLine(lineIdOf(callObj, message));
+  if (!partner) return null;
+  try {
+    // Approved rows only: a paused partner's line stops crediting without a deploy.
+    const aff = await getAffiliateByCode(partner.code);
+    if (!aff?.code) return null;
+    return { code: aff.code, affiliateId: aff.id, name: aff.name || aff.code, label: partner.label };
+  } catch {
+    return null;
+  }
+}
+
+const creditNote = (line: LineCredit | null): string | null =>
+  line ? `Partner: ${line.name} (${line.code}), call came in on the ${line.label}` : null;
+const creditField = (line: LineCredit | null): { label: string; value: string }[] =>
+  line ? [{ label: 'Partner credit', value: `${line.name} (${line.code}). The call came in on the ${line.label}.` }] : [];
 
 /* ───────── Webhook entry ───────── */
 
@@ -1106,6 +1176,9 @@ export async function POST(req: Request) {
     const deskKind = typeof meta.desk === 'string' ? meta.desk : null;
     const authedEmail = typeof meta.email === 'string' ? meta.email : null;
 
+    // Whose line rang. Null on the studio line, on web calls and on demos.
+    const line = await lineCreditFor(callObj, message);
+
     // An acquisition call carries acq:true plus the prospect it belongs to. His
     // five extra tools only resolve on those calls; on the studio line and every
     // built web demo this is null and nothing below changes.
@@ -1143,20 +1216,28 @@ export async function POST(req: Request) {
         } else if (fnName === 'get_available_slots') {
           result = await getSlots((args as { fromDate?: string }).fromDate);
         } else if (fnName === 'book_discovery_call') {
-          result = await bookSlot(args as Parameters<typeof bookSlot>[0], callerNumber);
+          result = await bookSlot(args as Parameters<typeof bookSlot>[0], callerNumber, line);
           // A booking made on an acquisition call is a funnel stage, so it is
           // carried onto the prospect. Without this the Command Center would
           // show a lead stuck at "Mr. Mustard called" who is already on Sarah's
           // calendar, and the chase emails would keep going out.
           if (acq) await noteAcqBooking(acq, args as { startIso?: string }, result);
         } else if (fnName === 'capture_lead') {
-          result = await captureLead(args as Parameters<typeof captureLead>[0], callerNumber);
+          result = await captureLead(args as Parameters<typeof captureLead>[0], callerNumber, line);
         } else if (fnName === 'send_email') {
-          result = await sendResourceEmail(args as Parameters<typeof sendResourceEmail>[0], { deskKind, authedEmail });
+          result = await sendResourceEmail(args as Parameters<typeof sendResourceEmail>[0], {
+            deskKind,
+            authedEmail,
+            lineRefCode: line?.code ?? null,
+          });
         } else if (fnName === 'reach_sarah') {
-          result = await reachSarah(args as Parameters<typeof reachSarah>[0], callerNumber);
+          result = await reachSarah(args as Parameters<typeof reachSarah>[0], callerNumber, line);
         } else if (fnName === 'forge_demo_suite') {
-          result = await buildSuiteFromCall(args as Parameters<typeof buildSuiteFromCall>[0], callerNumber);
+          result = await buildSuiteFromCall(
+            args as Parameters<typeof buildSuiteFromCall>[0],
+            callerNumber,
+            line ? { affiliateId: line.affiliateId, code: line.code } : null,
+          );
         } else if (DEMO_BOOKING_TOOL_NAMES.has(fnName)) {
           result = demoRunId
             ? await runDemoBooking(demoRunId, callObj.id as string | undefined, fnName, args)
