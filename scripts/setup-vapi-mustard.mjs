@@ -825,17 +825,24 @@ const TOOLS = [
  * is the 48k-character prompt being read, not the brain), and that is the
  * next lever, not another voice.
  *
- * Clark was picked from Cartesia's 209 English male voices on its description
- * ("approachable, confident, knowledgeable, customer service"), not by ear.
- * Sarah judges by ear. Levers, all one env var and one `--update`, no deploy:
- *   VAPI_VOICE_PROVIDER=cartesia VAPI_VOICE_ID=<Cartesia voice uuid>
- *     (browse with GET /voice-library/cartesia on the private key)
- *   VAPI_VOICE_PROVIDER=vapi     VAPI_VOICE_ID=Kai|Sid|Elliot|Nico|Godfrey
+ * Clark ran the line for about two hours. Sarah listened to the audition page
+ * the same afternoon and picked GODFREY (Vapi Voice V2, American, twenties,
+ * young and energetic): "Godfrey is my favorite." Her ear beats the
+ * millisecond, so Godfrey is the default. Vapi Voices are the bundled tier,
+ * so there is no credential and no quota to run out, and the spec gives a
+ * VapiVoice no fallbackPlan field, which is why the Cartesia branch keeps its
+ * fallback and this one does not.
+ *
+ * Levers, all one env var and one `--update`, no deploy:
+ *   VAPI_VOICE_PROVIDER=vapi     VAPI_VOICE_ID=Godfrey|Kai|Sid|Elliot|Nico
  *     (Vapi Voice V2; `version: '2'` is what selects the newer model, and the
  *      v1 Rohan she called robotic on 08-12 is not that model)
+ *   VAPI_VOICE_PROVIDER=cartesia VAPI_VOICE_ID=<Cartesia voice uuid>
+ *     (Clark c78dd7ae-6692-4c44-a2a2-834e365afe60 is the one that was benched;
+ *      browse the rest with GET /voice-library/cartesia on the private key)
  *   VAPI_VOICE_PROVIDER=11labs   puts Adam Spencer back, only once the
  *     ElevenLabs account is proven to return audio again on a real call. */
-const VOICE_PROVIDER = env('VAPI_VOICE_PROVIDER') || 'cartesia';
+const VOICE_PROVIDER = env('VAPI_VOICE_PROVIDER') || 'vapi';
 // 1.08 read awake and forward on ElevenLabs without chipmunking him. The Vapi
 // V2 voices run a touch quicker natively, so 1.05 lands in the same place.
 // Probed: 1.25 / 1.5 / 2.0 are all accepted, so there is headroom if she wants more.
@@ -943,7 +950,7 @@ const voice =
           // `language` stays unset on purpose: V2 auto-detects, which is what lets
           // him follow a caller into Spanish without a per-call override.
           provider: 'vapi',
-          voiceId: env('VAPI_VOICE_ID') || 'Kai',
+          voiceId: env('VAPI_VOICE_ID') || 'Godfrey',
           version: '2',
           speed: VOICE_SPEED,
         };

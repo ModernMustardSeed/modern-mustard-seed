@@ -487,20 +487,10 @@
       },
       "minCharacters": 30
     },
-    "fallbackPlan": {
-      "voices": [
-        {
-          "provider": "vapi",
-          "speed": 1.05,
-          "version": "2",
-          "voiceId": "Kai"
-        }
-      ]
-    },
-    "language": "en",
-    "model": "sonic-3.5",
-    "provider": "cartesia",
-    "voiceId": "c78dd7ae-6692-4c44-a2a2-834e365afe60"
+    "provider": "vapi",
+    "speed": 1.05,
+    "version": "2",
+    "voiceId": "Godfrey"
   },
   "voicemailMessage": "Please call back when you're available.",
   "_generatedBy": "setup-vapi-mustard.mjs"
