@@ -77,3 +77,6 @@ scripts/.cache/
 # that Vercel would then build from, shipping dependency versions CI never tested.
 package-lock.json
 yarn.lock
+
+# vapi-bench.mjs caller audio and saved bot audio
+.vapi-bench/
