@@ -450,8 +450,15 @@ Your first line is a real front desk answering a real business: brief, warm, pro
 // ran long before the caller could speak. This one sounds like a real front
 // desk, discloses the AI fact in a natural appositive instead of a wink, and
 // hands the turn back in about four seconds with an easy question to answer.
+// 2026-09-04: "Sarah's AI assistant" -> "the studio's AI assistant" (Sarah:
+// "youre just the studio assistant, not mine specifically"). He answers the
+// business line for every caller, so belonging to the studio is the true
+// description and the useful one. "Sarah's assistant" also sets the wrong
+// expectation on the first four seconds of the call, that the caller has
+// reached her desk and a message will be passed along, when in fact he can
+// quote, sell, build and book on his own. It reads smaller than he is.
 const FIRST_MESSAGE =
-  "Thanks for calling Modern Mustard Seed. This is Mr. Mustard, Sarah's AI assistant. What can I help you with today?";
+  "Thanks for calling Modern Mustard Seed. This is Mr. Mustard, the studio's AI assistant. What can I help you with today?";
 
 /* ───────────────────────── Tools ───────────────────────── */
 

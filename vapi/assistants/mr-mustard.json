@@ -27,7 +27,7 @@
     "talk soon",
     "end the call"
   ],
-  "firstMessage": "Thanks for calling Modern Mustard Seed. This is Mr. Mustard, Sarah's AI assistant. What can I help you with today?",
+  "firstMessage": "Thanks for calling Modern Mustard Seed. This is Mr. Mustard, the studio's AI assistant. What can I help you with today?",
   "maxDurationSeconds": 1800,
   "model": {
     "messages": [

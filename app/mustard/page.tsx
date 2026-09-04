@@ -255,8 +255,8 @@ export default async function MustardPage({
                 >
                   <p className="font-display text-[19px] leading-snug font-bold text-[#161616]">
                     &ldquo;Thanks for calling Modern Mustard Seed. This is{' '}
-                    <span className="italic">Mr. Mustard</span>, Sarah&apos;s AI assistant. What can I help you with
-                    today?&rdquo;
+                    <span className="italic">Mr. Mustard</span>, the studio&apos;s AI assistant. What can I help you
+                    with today?&rdquo;
                   </p>
                   <p className="mt-2.5 font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-[#C4160B]">
                     What you hear in about ten seconds
