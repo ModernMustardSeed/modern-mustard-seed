@@ -108,6 +108,7 @@ const DEPARTMENTS = [
   { name: 'The Hundredfold Roadmap', tag: 'FREE SCALING PLAN FOR YOUR BUSINESS', href: '/scaling-roadmap' },
   { name: 'Mustard Mode', tag: 'LEARN CLAUDE WITH A COACH', href: '/mustard-mode' },
   { name: 'Mustard Launch', tag: 'YOUR AI LAUNCH COACH', href: '/mustard-launch' },
+  { name: 'Super Nomad', tag: 'THE APP THAT DECIDES WHERE YOU LIVE NEXT', href: '/super-nomad' },
 ];
 
 export default function Navbar() {
