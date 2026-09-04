@@ -25,7 +25,7 @@ import { buildProspectSuite } from '@/lib/acq/suite';
 import { placeDemoCall } from '@/lib/acq/call';
 import { recordEvent } from '@/lib/acq/events';
 import { pageBuildFailed, pageBuildAtCapacity } from '@/lib/acq/pager';
-import type { AcqCampaign, AcqProspect } from '@/lib/acq/types';
+import type { AcqCampaign, AcqProspect, QueueKind } from '@/lib/acq/types';
 import { hasLiveConsent, toE164 } from '@/lib/acq/consent';
 
 export type DrainReport = {
@@ -99,8 +99,31 @@ export async function drainQueue(opts: { limit?: number; worker?: string } = {})
   // backlog is days: on 2026-08-24 sixteen built demos sat behind 1,082 cold
   // emails. The person who raised their hand does not wait behind the people
   // who did not.
-  const demoFirst = await claimJobs(db, ['demo_email'], limit, worker);
-  const rest = demoFirst.length < limit ? await claimJobs(db, null, limit - demoFirst.length, worker) : [];
+  /*
+   * OUTSIDE THE MAIL WINDOW, CLAIM ONLY WHAT CAN ACTUALLY RUN.
+   *
+   * The drain used to run only inside the send window, so this never came up.
+   * It now ticks around the clock, because a build somebody asked for at 9pm on
+   * a Friday should not wait until Monday morning, and a build that dies at 2am
+   * should reach Sarah's phone at 2am.
+   *
+   * Every email job claimed while the window is shut is claimed, deferred and
+   * released untouched: correct, but forty pointless round trips every twenty
+   * minutes all night. So when nothing may be mailed, only the kinds that do
+   * real work off-hours are claimed. Builds are the whole reason for the late
+   * tick, and pageDeadBuilds above has already run regardless.
+   */
+  const canMail = emailBudget > 0 && gate(settings, 'email').allowed;
+  // Only the three mail kinds are held by the window. A build, a call and a
+  // checkout link are not mail and were never rate limited by it, so they keep
+  // being claimed whenever the drain ticks, exactly as they were before it
+  // started ticking at night.
+  const NON_MAIL: QueueKind[] = ['forge', 'call', 'checkout', 'research'];
+  const demoFirst = canMail ? await claimJobs(db, ['demo_email'], limit, worker) : [];
+  const rest =
+    demoFirst.length < limit
+      ? await claimJobs(db, canMail ? null : NON_MAIL, limit - demoFirst.length, worker)
+      : [];
   const jobs = [...demoFirst, ...rest];
   report.claimed = jobs.length;
 

@@ -75,7 +75,11 @@
     },
     {
       "path": "/api/cron/acquisition",
-      "schedule": "0,20,40 14-23 * * 1-5"
+      "schedule": "0,20,40 * * * *"
+    },
+    {
+      "path": "/api/cron/zoho-sync",
+      "schedule": "2,17,32,47 * * * *"
     },
     {
       "path": "/api/cron/front-office",
