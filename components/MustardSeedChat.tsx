@@ -227,6 +227,10 @@ export default function MustardSeedChat() {
     if (window.location.pathname.startsWith('/voice-agents/build')) return;
     // The Screen Test is a theater; no teaser bubble over the reveal.
     if (window.location.pathname.startsWith('/pictures')) return;
+    // The Demo Station IS the start. Somebody who scanned a partner's card lands
+    // on the form, and on a phone the teaser sat on top of the hero button and
+    // then the form fields (seen 2026-09-03). The launcher stays; the bubble goes.
+    if (window.location.pathname.startsWith('/demos')) return;
     if (window.location.pathname === '/') return;
     const t = window.setTimeout(() => {
       try {

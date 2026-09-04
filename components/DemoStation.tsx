@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { track } from '@vercel/analytics';
 import { DEMO_PRODUCTS, DEMO_BUNDLE, formatUsd } from '@/lib/demo-order';
 
@@ -18,6 +18,23 @@ const NICHE_OPTIONS = [
   { value: 'other', label: 'Something else' },
 ];
 
+/**
+ * WHERE THEY ARE SCANNING FROM, AND WHO SENT THEM.
+ *
+ * A partner's card carries ?st=FL (and a campaign tag) so the form opens with
+ * their state filled and placeholders that read like their town, not ours: a
+ * roofer in Tallahassee should not have to overtype "Kalispell" and "MT" to
+ * feel like this page was meant for him. `st` wins; a known campaign name is
+ * the fallback; nothing happens without either. The ref code (URL first, then
+ * the mms_ref cookie RefCapture set) resolves to a first name through
+ * /api/partners/who so the form can say "Easton sent you."
+ */
+const REGION: Record<string, { city: string; phone: string }> = {
+  FL: { city: 'Tallahassee', phone: '(850) 555-0123' },
+  MT: { city: 'Kalispell', phone: '(406) 555-0123' },
+};
+const CAMPAIGN_STATE: Record<string, string> = { florida: 'FL', montana: 'MT' };
+
 const BUILD_LINES = [
   'Hiring your voice agent...',
   'Teaching her your business...',
@@ -31,6 +48,28 @@ export default function DemoStation() {
   const [phase, setPhase] = useState<'form' | 'forging' | 'error'>('form');
   const [line, setLine] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  const [regionCode, setRegionCode] = useState('MT');
+  const [referrer, setReferrer] = useState<string | null>(null);
+  const region = REGION[regionCode] ?? REGION.MT;
+
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search);
+    const st = (q.get('st') || CAMPAIGN_STATE[(q.get('utm_campaign') || '').toLowerCase()] || '').toUpperCase().slice(0, 2);
+    if (/^[A-Z]{2}$/.test(st)) {
+      const city = (q.get('city') || '').trim().slice(0, 60);
+      setValues((v) => ({ ...v, state: v.state || st, ...(city && !v.city ? { city } : {}) }));
+      if (REGION[st]) setRegionCode(st);
+    }
+    const cookieRef = document.cookie.match(/(?:^|;\s*)mms_ref=([^;]+)/)?.[1];
+    const code = (q.get('ref') || (cookieRef ? decodeURIComponent(cookieRef) : '')).trim().slice(0, 64);
+    if (!code) return;
+    fetch(`/api/partners/who?code=${encodeURIComponent(code)}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((j: { firstName?: string | null } | null) => {
+        if (j?.firstName) setReferrer(j.firstName);
+      })
+      .catch(() => {});
+  }, []);
 
   const set = (k: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
     setValues((v) => ({ ...v, [k]: e.target.value }));
@@ -95,6 +134,14 @@ export default function DemoStation() {
 
   return (
     <form onSubmit={submit} className="bg-white border-2 border-[#161616] rounded-2xl shadow-[8px_8px_0_0_#161616] p-6 sm:p-8">
+      {referrer && (
+        <div className="mb-6 flex flex-wrap items-center gap-x-4 gap-y-2">
+          <span className="inline-block -rotate-2 bg-[#E0301E] text-[#FBF6EA] border-2 border-[#161616] rounded-md px-3 py-1.5 text-[11px] uppercase tracking-[0.2em] font-mono font-bold shadow-[3px_3px_0_0_#161616]">
+            {referrer} sent you
+          </span>
+          <p className="font-body text-[14px] text-[#3a3733]">Your demos are on us. Nothing to pay, nothing to schedule.</p>
+        </div>
+      )}
       {/* The business name is the star (everything gets built against it), so it
           gets the full width instead of sharing a row. */}
       <label className="block">
@@ -114,9 +161,9 @@ export default function DemoStation() {
       <div className="grid sm:grid-cols-2 gap-4 mt-4">
         {[
           { k: 'name', label: 'Your name', ph: 'Rico Alvarez', required: true },
-          { k: 'phone', label: 'Business phone', ph: '(406) 555-0123', required: true, type: 'tel' },
+          { k: 'phone', label: 'Business phone', ph: region.phone, required: true, type: 'tel' },
           { k: 'email', label: 'Email', ph: 'rico@gmail.com', required: true, type: 'email' },
-          { k: 'city', label: 'City', ph: 'Kalispell' },
+          { k: 'city', label: 'City', ph: region.city },
         ].map((f) => (
           <label key={f.k} className="block">
             <span className={labelCls}>
@@ -145,7 +192,7 @@ export default function DemoStation() {
             maxLength={2}
             value={values.state || ''}
             onChange={set('state')}
-            placeholder="MT"
+            placeholder={regionCode}
             className={`${inputCls} uppercase`}
           />
         </label>
