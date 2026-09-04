@@ -20,10 +20,11 @@ import { checkPace, sendCampaignEmail, sendDemoEmail, sendFollowup, sendSuiteEma
 import type { FollowupKind } from '@/lib/acq/campaign';
 import { evaluate, dueForStep, sequenceGaps } from '@/lib/acq/eligibility';
 import { activeSuppressions } from '@/lib/email-log';
-import { buildProspectAgent, rescueStalledBuilds } from '@/lib/acq/build';
+import { buildProspectAgent, rescueStalledBuilds, pageDeadBuilds } from '@/lib/acq/build';
 import { buildProspectSuite } from '@/lib/acq/suite';
 import { placeDemoCall } from '@/lib/acq/call';
 import { recordEvent } from '@/lib/acq/events';
+import { pageBuildFailed, pageBuildAtCapacity } from '@/lib/acq/pager';
 import type { AcqCampaign, AcqProspect } from '@/lib/acq/types';
 import { hasLiveConsent, toE164 } from '@/lib/acq/consent';
 
@@ -35,13 +36,15 @@ export type DrainReport = {
   reclaimed: number;
   /** Builds that finished but never announced it, put back on the rails. */
   rescuedBuilds: number;
+  /** Builds that died making nothing, reported to Sarah's phone. */
+  pagedDeadBuilds: number;
   held: string | null;
   detail: { id: string; kind: string; outcome: string; note?: string }[];
 };
 
 export async function drainQueue(opts: { limit?: number; worker?: string } = {}): Promise<DrainReport> {
   const db = getSupabase();
-  const report: DrainReport = { claimed: 0, done: 0, skipped: 0, failed: 0, reclaimed: 0, rescuedBuilds: 0, held: null, detail: [] };
+  const report: DrainReport = { claimed: 0, done: 0, skipped: 0, failed: 0, reclaimed: 0, rescuedBuilds: 0, pagedDeadBuilds: 0, held: null, detail: [] };
   if (!db) {
     report.held = 'Database is not configured.';
     return report;
@@ -69,6 +72,13 @@ export async function drainQueue(opts: { limit?: number; worker?: string } = {})
   // stranded build is a finished demo with somebody's name on it that nobody
   // will ever be sent. See rescueStalledBuilds for what went wrong to earn it.
   report.rescuedBuilds = await rescueStalledBuilds(db);
+
+  // The half the rescue cannot save: stuck in 'forging' with nothing built and
+  // no error, because the build process went away rather than failing. There is
+  // nothing to announce and nothing to retry, so the only correct action is to
+  // tell a person. On a 90 minute clock, past the worst honest build time, and
+  // the pager's own quiet window stops this re-texting on every tick.
+  report.pagedDeadBuilds = await pageDeadBuilds(db);
 
   // Pace decides how many EMAILS may go. Calls, builds and demo sends are not
   // rate limited by the mail window: somebody who just asked to be called is
@@ -392,6 +402,14 @@ async function runCallJob(
   return { kind: 'done', note: `calling ${phone}`, result: { vapiCallId: placed.vapiCallId } };
 }
 
+/** How the prospect asked, in words a text message can carry. */
+function requestedViaLabel(by: string): string {
+  if (by === 'email-reply') return 'by replying to our email';
+  if (by === 'mr-mustard') return 'on the phone with Mr. Mustard';
+  if (by === 'forge-board') return 'from the build board';
+  return 'from the queue';
+}
+
 async function runBuildJob(db: SupabaseClient, lead: AcqProspect, job: QueueJob): Promise<JobOutcome> {
   const wantsSite = job.payload.site === true;
   const siteSettled = lead.site_demo_status === 'ready' || lead.site_demo_status === 'queued' || lead.site_demo_status === 'building';
@@ -415,10 +433,34 @@ async function runBuildJob(db: SupabaseClient, lead: AcqProspect, job: QueueJob)
     designTier: job.payload.designTier === 3 ? 3 : 2,
     talkingWebsite: job.payload.talkingWebsite === true,
     by: String(job.payload.by ?? 'queue'),
+    // A build somebody ASKED for has to mail itself when it lands. The board
+    // sets this false because Sarah is looking at the result before it goes;
+    // a reply-driven build has a person waiting on an inbox and nobody in the
+    // middle, so the flag rides on the job and is honoured here. It was being
+    // dropped, which made every queued build silent by construction.
+    mailWhenReady: job.payload.mailWhenReady === true,
     // Nobody is watching this one, so it counts against the daily ceiling.
     capped: 'queue',
   });
-  if (!result.ok) return result.retryable ? { kind: 'fail', note: result.error } : { kind: 'skip', note: result.error };
+  if (!result.ok) {
+    // A build a prospect is waiting on cannot fail quietly. Three outcomes, and
+    // they are not the same message: a full floor is a capacity decision Sarah
+    // can overrule, a permanent error is the end of a promise we made, and a
+    // retryable error is the queue doing its job and worth nobody's phone.
+    const asked = job.payload.mailWhenReady === true || job.payload.by === 'email-reply';
+    if (result.atCapacity && asked) {
+      await pageBuildAtCapacity({ db, lead, campaignId: lead.acq_campaign_id, detail: result.error });
+    } else if (!result.retryable) {
+      await pageBuildFailed({
+        db,
+        lead,
+        campaignId: lead.acq_campaign_id,
+        error: result.error,
+        requestedVia: requestedViaLabel(String(job.payload.by ?? 'queue')),
+      });
+    }
+    return result.retryable ? { kind: 'fail', note: result.error } : { kind: 'skip', note: result.error };
+  }
   return {
     kind: 'done',
     note: result.created.length ? `Built ${result.created.join(', ')}` : 'Already built',

@@ -315,7 +315,20 @@ export type SuiteBuildResult =
       /** Set when a piece failed but the rest of the suite still landed. */
       warnings: string[];
     }
-  | { ok: false; error: string; retryable: boolean };
+  | {
+      ok: false;
+      error: string;
+      retryable: boolean;
+      /**
+       * The daily ceiling refused it, rather than anything being broken.
+       *
+       * A caller needs to tell these apart: a broken build is a bug, a full
+       * floor is a capacity decision, and the person waiting deserves a
+       * different answer in each case. String-matching the message to work it
+       * out is how that distinction quietly rots.
+       */
+      atCapacity?: boolean;
+    };
 
 export type SuiteBuildOptions = SiteOptions & {
   /** Queue the demo WEBSITE too. Off means the instant pieces only. */
@@ -409,6 +422,7 @@ export async function buildProspectSuite(
     return {
       ok: false,
       retryable: true,
+      atCapacity: true,
       error:
         opts.capped === 'phone'
           ? `The build has built its ${SUITE_CAPS.phone} suites off the phone today. Take their details and tell them it gets built first thing.`

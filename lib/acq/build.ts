@@ -23,6 +23,7 @@ import { SITE } from '@/lib/seo';
 import { recordEvent } from '@/lib/acq/events';
 import { enqueue } from '@/lib/acq/queue';
 import { ensurePresenceAudit } from '@/lib/presence-audit';
+import { pageSarah } from '@/lib/acq/pager';
 import type { AcqProspect } from '@/lib/acq/types';
 
 /** His own ceiling. A phone line that can spawn builds is a wallet with a
@@ -236,7 +237,8 @@ export async function rescueStalledBuilds(db: SupabaseClient, olderThanMs = 15 *
     const hubUrl = (row.hub_demo_url as string | null) ?? null;
     const demoUrl = (row.demo_url as string | null) ?? null;
     // No agent means the build really did die before it made anything. That is
-    // a failure to retry, not a completion to announce, so leave it alone.
+    // a failure to retry, not a completion to announce, so leave it alone here.
+    // pageDeadBuilds picks these up on a longer clock and tells Sarah.
     if (!hubUrl && !demoUrl) continue;
 
     await db.from('outbound_leads').update({ demo_status: 'ready', acq_stage: 'forged' }).eq('id', id);
@@ -256,4 +258,73 @@ export async function rescueStalledBuilds(db: SupabaseClient, olderThanMs = 15 *
     rescued += 1;
   }
   return rescued;
+}
+
+/**
+ * BUILDS THAT DIED WITHOUT SAYING SO.
+ *
+ * `rescueStalledBuilds` handles the happy half of a stall: something WAS built
+ * and the process died before it could announce it, so the announcement is
+ * replayed. It deliberately walks past the other half, where the build made
+ * nothing at all, because there is nothing to announce.
+ *
+ * That half is the one with a person waiting on it, and until now it was the
+ * quietest failure in the whole loop: a lead sitting at `demo_status: 'forging'`
+ * forever, no error anywhere, nobody told. Sarah found the last one because she
+ * asked about that lead by name.
+ *
+ * The clock is deliberately much longer than the rescue's fifteen minutes. A
+ * real suite build is 24 to 60 minutes of headless Claude, so anything under an
+ * hour is work in progress, not a corpse. Ninety minutes is past the worst
+ * honest case with room to spare, which is what keeps this from crying wolf on
+ * every slow Tuesday.
+ */
+export async function pageDeadBuilds(db: SupabaseClient, olderThanMs = 90 * 60_000): Promise<number> {
+  const cutoff = new Date(Date.now() - olderThanMs).toISOString();
+  const { data } = await db
+    .from('outbound_leads')
+    .select('id,business_name,email,demo_url,hub_demo_url,site_demo_status,acq_campaign_id,updated_at')
+    .eq('demo_status', 'forging')
+    .is('demo_emailed_at', null)
+    .lt('updated_at', cutoff)
+    .limit(25);
+
+  let paged = 0;
+  for (const row of (data ?? []) as Record<string, unknown>[]) {
+    // Anything that produced a piece is the rescue's job, not this one.
+    if (row.hub_demo_url || row.demo_url) continue;
+
+    const stuckFor = Math.round((Date.now() - new Date(String(row.updated_at)).getTime()) / 60_000);
+    const res = await pageSarah({
+      db,
+      kind: 'build_stalled',
+      lead: {
+        id: String(row.id),
+        business_name: (row.business_name as string | null) ?? null,
+        email: (row.email as string | null) ?? null,
+      },
+      campaignId: (row.acq_campaign_id as string | null) ?? null,
+      sms:
+        `Build STUCK for ${String(row.business_name ?? 'a prospect')}: ${stuckFor} min in "forging" with nothing built ` +
+        `and no error. They are waiting. https://modernmustardseed.com/admin/acquisition/prospects/${String(row.id)}`,
+      subject: `Build stuck: ${String(row.business_name ?? 'a prospect')}`,
+      body: [
+        `${String(row.business_name ?? 'A prospect')} has been at demo_status "forging" for ${stuckFor} minutes.`,
+        ``,
+        `Nothing was built: no voice agent, no hub, no site. No error was recorded`,
+        `either, which means the build process went away rather than failing.`,
+        ``,
+        `site_demo_status: ${String(row.site_demo_status ?? 'null')}`,
+        `last touched:     ${String(row.updated_at)}`,
+        ``,
+        `Lead:  ${String(row.id)}`,
+        `Email: ${String(row.email ?? '(none on file)')}`,
+        `Card:  https://modernmustardseed.com/admin/acquisition/prospects/${String(row.id)}`,
+        ``,
+        `Check the build worker is running, then rebuild from the card.`,
+      ].join('\n'),
+    });
+    if (res.texted || res.emailed) paged += 1;
+  }
+  return paged;
 }

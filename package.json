@@ -61,6 +61,7 @@
     "voice:tools": "node scripts/vapi-tool-health.mjs",
     "demo:booking": "tsx scripts/demo-booking-smoke.mts",
     "acq:demos": "tsx scripts/acq-demos-now.mts",
+    "acq:ask": "tsx scripts/acq-ask-check.mts",
     "check:templates": "node scripts/check-retired-templates.mjs",
     "check:fit": "node scripts/check-template-fit.mjs"
   },

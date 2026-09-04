@@ -14,6 +14,8 @@ import { simpleParser } from 'mailparser';
 import { getSupabase } from '@/lib/supabase';
 import { listMailboxes, type Mailbox } from '@/lib/mailboxes';
 import { describeMailError, mailErrorLine } from '@/lib/mail-errors';
+import { handleInboundBuildAsk } from '@/lib/acq/build-ask';
+import type { AcqProspect } from '@/lib/acq/types';
 
 export type SyncResult = {
   ok: boolean;
@@ -134,6 +136,27 @@ export async function syncMailbox(box: Mailbox, opts: { sinceDays?: number } = {
               // 2026-08-25). A real inbound email is the reply; stamp it once.
               // Status stays: contacted is Sarah's mark, not the lead's reply.
               await sb.from('outbound_leads').update({ reply_at: new Date().toISOString() }).eq('id', outboundMatch.id).is('reply_at', null);
+
+              // AND THEN READ WHAT THEY ACTUALLY WROTE. Until now the reply was
+              // filed and never understood, so "yes, build it" and "unsubscribe"
+              // were the same event to this code. A clear yes queues the build
+              // and answers them; anything less certain goes to Sarah's phone
+              // rather than spending an hour of the build floor on a guess.
+              // Never allowed to throw: one odd message must not stop the sync.
+              try {
+                const { data: full } = await sb.from('outbound_leads').select('*').eq('id', outboundMatch.id).maybeSingle();
+                if (full) {
+                  const outcome = await handleInboundBuildAsk(sb, full as AcqProspect, {
+                    body: text,
+                    subject: msg.envelope?.subject || '',
+                  });
+                  if (outcome.action !== 'ignored') {
+                    console.log(`[zoho-sync] ${from}: ${outcome.verdict} -> ${outcome.action} (${outcome.note})`);
+                  }
+                }
+              } catch (askErr) {
+                console.error('[zoho-sync] build-ask failed:', askErr instanceof Error ? askErr.message : askErr);
+              }
             }
           }
         }

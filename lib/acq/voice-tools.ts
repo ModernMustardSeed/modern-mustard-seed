@@ -21,6 +21,7 @@ import { foldCallContext } from '@/lib/acq/build';
 import { buildProspectSuite } from '@/lib/acq/suite';
 import { getCampaign } from '@/lib/acq/settings';
 import { revokeConsent } from '@/lib/acq/consent';
+import { pageBuildFailed } from '@/lib/acq/pager';
 import { sendDemoEmail, sendSuiteEmail, sendCheckoutLink } from '@/lib/acq/send';
 import { OFFER } from '@/lib/acq/types';
 import type { AcqProspect, CallIntel } from '@/lib/acq/types';
@@ -146,8 +147,18 @@ export async function handleBuildProspectAgent(
         label: 'The build failed after the call',
         detail: { error: result.error },
       });
-      // A failed build is a promise we made out loud, so it becomes Sarah's problem.
+      // A failed build is a promise we made out loud, so it becomes Sarah's
+      // problem. `needs_human` puts it on the Follow Up list, which only helps
+      // if she is looking at the admin; this one was promised to a person on a
+      // live call, so it also goes to her phone.
       await db.from('outbound_leads').update({ needs_human: 'Build failed after Mr. Mustard promised it on the call.' }).eq('id', ctx.leadId);
+      await pageBuildFailed({
+        db,
+        lead: { id: ctx.leadId, business_name: ctx.business ?? fresh.business_name ?? null, email },
+        campaignId: ctx.campaignId,
+        error: result.error,
+        requestedVia: 'on the phone with Mr. Mustard',
+      });
     }
   });
 
