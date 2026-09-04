@@ -22,6 +22,26 @@ export type ArtifactEntry = {
 
 export const ARTIFACTS: ArtifactEntry[] = [
   {
+    id: 'a456976e-db1e-4561-9f13-6976bb916223',
+    title: 'One Desk, One Week',
+    url: 'https://claude.ai/code/artifact/a456976e-db1e-4561-9f13-6976bb916223',
+    updated: '2026-09-04',
+    venture: 'MMS',
+    kind: 'Social',
+    description: 'The 95-second film on what one week of work looks like with Claude Code and Codex as copilots. Landscape and vertical cuts, both 1080p and both saveable from the page, plus the six numbers behind it and a beat-by-beat guide to the cut.',
+    pinned: true,
+  },
+  {
+    id: '4b3b174e-ce16-4f59-917c-322d3ba194be',
+    title: 'A Week Powered',
+    url: 'https://claude.ai/code/artifact/4b3b174e-ce16-4f59-917c-322d3ba194be',
+    updated: '2026-09-04',
+    venture: 'Cross-venture',
+    kind: 'Build Log',
+    description: 'Aug 27 to Sep 3, 2026 with real receipts: 101 pull requests, 183 commits, 12 repositories. The day-by-day ledger, the week by venture, the Cross + Covenant remake, the Covenant Collective loop, the books, the plumbing that makes 45 parallel lanes possible, and twelve social cards with the post copy for every channel.',
+    pinned: true,
+  },
+  {
     id: '3a20edc7-97cd-4b88-ad8b-0dcfe6837091',
     title: 'The Rolodex',
     url: 'https://claude.ai/code/artifact/3a20edc7-97cd-4b88-ad8b-0dcfe6837091',
