@@ -61,6 +61,9 @@ const STATIC_PATHS = [
   '/montana',
   '/privacy',
   '/terms',
+  '/super-nomad',
+  '/super-nomad/privacy',
+  '/super-nomad/terms',
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
