@@ -21,7 +21,7 @@ const DEMO = 'https://super-nomad-preview.vercel.app';
 export const metadata = buildMetadata({
   title: 'Super Nomad: Where Should Your Life Happen Next?',
   description:
-    'An iOS app that ranks 94 places you could live in for a month against your own Nomad DNA: five years of measured climate, live weather, your passport, your work hours, your money. Every number says whether it was measured, estimated, or written by a person.',
+    'An iOS app that ranks 125 places you could live in for a month against your own Nomad DNA: five years of measured climate, live weather, your passport, your work hours, your money. Every number says whether it was measured, estimated, or written by a person.',
   path: '/super-nomad',
   image: '/super-nomad/og-super-nomad-1200.jpg',
 });
@@ -91,14 +91,14 @@ const powers = [
   {
     eyebrow: 'Scout',
     title: 'Ask for a life, not a hotel.',
-    body: 'Say it in a sentence. "Somewhere warm next month in Europe under $2,500 with mountains and ocean." Scout reads the money, the weather, the month, the terrain and your work hours out of it, shows you exactly what it understood, then puts Visa Guardian, Work Agent, Budget Agent and Atlas across all 94 places.',
+    body: 'Say it in a sentence. "Somewhere warm next month in Europe under $2,500 with mountains and ocean." Scout reads the money, the weather, the month, the terrain and your work hours out of it, shows you exactly what it understood, then puts Visa Guardian, Work Agent, Budget Agent and Atlas across all 125 places.',
     note: 'Every agent says what it removed and why. Nothing is hidden and nothing is invented.',
     shot: 'shot-scout-results',
     alt: 'Scout results ranking Chania at 91 and Kotor at 91, each with a climate strip, monthly cost and time difference',
   },
   {
     eyebrow: 'The Atlas',
-    title: '94 places, ranked for you, any month.',
+    title: '125 places, ranked for you, any month.',
     body: 'The planet drawn as a field of dots, every place a pin coloured by how well it fits you. Tap a different month and the whole map re-ranks, because a place that is perfect in October can be wrong in July.',
     note: 'Filters are honest subsets. Nothing is ever re-sorted by anyone paying.',
     shot: 'shot-atlas',
@@ -148,16 +148,16 @@ const stamps = [
 
 const faq = [
   {
+    q: 'Can I try it right now, without the App Store?',
+    a: 'Yes. The whole app runs in a browser at the demo link on this page. It is the real product, not a mockup: the same engine, the same 125 places, the same live weather and space weather. The only things missing are the subscription and the morning notification, both of which need the App Store.',
+  },
+  {
     q: 'Is this a travel planner?',
     a: 'No. It does not book anything and it never guesses a fare. It decides. Given what you told it about a good life, it ranks the places you could actually live in for a month, for any month of the year, and shows the receipt behind every score. The flight and stay links open a search with your route already filled in, with no referral attached.',
   },
   {
-    q: 'Can I try it before the App Store?',
-    a: 'Yes. The whole app runs in a browser at the demo link on this page. It is the real product, not a mockup: the same engine, the same 94 places, the same live weather. The only things missing are the subscription and the morning notification, both of which need the App Store.',
-  },
-  {
     q: 'What does free include?',
-    a: 'The whole thing, with limits. Your Nomad DNA, Scout with three answers per ask, all 94 places with measured climate and your fit, five saved places, the Endless Spring path, the standard What If lives, Earth Now, Radar and Missions.',
+    a: 'The whole thing, with limits. Your Nomad DNA, Scout with three answers per ask, all 125 places with measured climate and your fit, five saved places, the Endless Spring path, the standard What If lives, Earth Now, Radar and Missions.',
   },
   {
     q: 'What does Everywhere add?',
@@ -223,27 +223,34 @@ export default function SuperNomadPage() {
                   Where should your life happen next?
                 </h1>
                 <p className="mt-7 max-w-xl font-body text-lg leading-relaxed text-[#E6DCC6] md:text-xl">
-                  Not a travel planner. A way of deciding. Tell it what a good life feels like and it reads the planet for you: five years of measured climate for 94 places, live weather, your passport, your work hours, your money. One score per place, with the receipt.
+                  Not a travel planner. A way of deciding. Tell it what a good life feels like and it reads the planet for you: five years of measured climate for 125 places, live weather, your passport, your work hours, your money. One score per place, with the receipt.
                 </p>
-                <div className="mt-10 flex flex-col gap-4 sm:flex-row">
+                <div className="mt-10">
                   <a
                     href={DEMO}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center rounded-full bg-[#F5B700] px-8 py-4 text-sm font-semibold text-[#070D1A] transition-colors hover:bg-[#FFD24D]"
+                    className="group inline-flex w-full items-center justify-center gap-4 rounded-2xl bg-[#F5B700] px-8 py-6 text-center shadow-[0_18px_50px_-12px_rgba(245,183,0,0.55)] transition-all hover:-translate-y-0.5 hover:bg-[#FFD24D] hover:shadow-[0_22px_60px_-10px_rgba(245,183,0,0.7)] sm:w-auto sm:px-12"
                   >
-                    Open the working demo
-                  </a>
-                  <a
-                    href="#launch"
-                    className="inline-flex items-center justify-center rounded-full border border-[#F4ECDC]/25 px-8 py-4 text-sm font-semibold text-[#F4ECDC] transition-colors hover:border-[#F4ECDC]/60"
-                  >
-                    Get the launch note
+                    <span className="text-left">
+                      <span className="block font-display text-2xl font-black leading-tight text-[#070D1A] md:text-3xl">
+                        Use the demo now
+                      </span>
+                      <span className="mt-0.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-[#070D1A]/70">
+                        The real app, in your browser, free
+                      </span>
+                    </span>
+                    <span aria-hidden="true" className="text-3xl leading-none text-[#070D1A] transition-transform group-hover:translate-x-1">
+                      &rarr;
+                    </span>
                   </a>
                 </div>
-                <p className="mt-6 font-mono text-xs text-[#98A1B4]">
-                  The demo is the real app in a browser. Coming to the App Store, free, with an Everywhere subscription.
-                </p>
+                <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2">
+                  <a href="#launch" className="font-body text-sm text-[#E6DCC6] underline underline-offset-4 hover:text-[#F4ECDC]">
+                    Or just get the launch note
+                  </a>
+                  <span className="font-mono text-xs text-[#98A1B4]">Coming to the App Store</span>
+                </div>
               </div>
 
               <div className="lg:justify-self-end">
@@ -261,7 +268,7 @@ export default function SuperNomadPage() {
         <section className="relative border-y border-[#F4ECDC]/10 bg-[#0A1122]">
           <div className="mx-auto grid max-w-6xl grid-cols-2 gap-px px-6 md:grid-cols-4 md:px-8">
             {[
-              ['94', 'places you could live for a month'],
+              ['125', 'places you could live for a month'],
               ['56', 'countries, stay rules for five passports'],
               ['5 yr', 'of measured climate, per place, offline'],
               ['62', 'scheduled wonders with real windows'],
@@ -406,7 +413,7 @@ export default function SuperNomadPage() {
                 <ul className="space-y-3 font-body text-[#E6DCC6]/90">
                   <li>Your Nomad DNA, every question</li>
                   <li>Scout, three answers per ask</li>
-                  <li>All 94 places, measured climate, your fit</li>
+                  <li>All 125 places, measured climate, your fit</li>
                   <li>Five saved places</li>
                   <li>Endless Spring, What If, Earth Now, Radar, Missions</li>
                 </ul>
@@ -454,6 +461,20 @@ export default function SuperNomadPage() {
             <p className="mb-8 max-w-xl font-body text-lg leading-relaxed text-[#E6DCC6]/90">
               The App Store link, the free tier, and the first month of Earth Now. Nothing else, ever.
             </p>
+            <a
+              href={DEMO}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group mb-10 inline-flex w-full items-center justify-center gap-4 rounded-2xl bg-[#F5B700] px-8 py-6 text-center shadow-[0_18px_50px_-12px_rgba(245,183,0,0.55)] transition-all hover:-translate-y-0.5 hover:bg-[#FFD24D] sm:w-auto sm:px-12"
+            >
+              <span className="text-left">
+                <span className="block font-display text-2xl font-black leading-tight text-[#070D1A] md:text-3xl">Use the demo now</span>
+                <span className="mt-0.5 block font-mono text-[11px] uppercase tracking-[0.18em] text-[#070D1A]/70">No sign-up, nothing to install</span>
+              </span>
+              <span aria-hidden="true" className="text-3xl leading-none text-[#070D1A] transition-transform group-hover:translate-x-1">
+                &rarr;
+              </span>
+            </a>
             <NewsletterSignup variant="inline" />
             <div className="mt-10 flex flex-wrap items-center gap-x-3 gap-y-2 font-body text-sm text-[#98A1B4]">
               <a href={DEMO} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4 hover:text-[#F4ECDC]">
