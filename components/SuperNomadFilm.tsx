@@ -52,10 +52,17 @@ export default function SuperNomadFilm() {
               className="absolute inset-0 transition-colors group-hover:bg-[#070D1A]/10"
               style={{ background: 'radial-gradient(60% 60% at 50% 55%, rgba(7,13,26,0.28) 0%, rgba(7,13,26,0) 70%)' }}
             />
-            {/* The poster sets its type on the left, so the button takes the empty side. */}
-            <span className="absolute inset-0 flex items-center justify-center md:left-auto md:w-2/5">
-              <span className="flex h-20 w-20 items-center justify-center rounded-full bg-[#F5B700] shadow-[0_14px_40px_-8px_rgba(245,183,0,0.7)] transition-transform group-hover:scale-105 md:h-24 md:w-24">
-                <svg width="30" height="34" viewBox="0 0 30 34" aria-hidden="true">
+            {/* The poster sets its type on the left, so the button takes the empty
+                right two fifths. At every width, including a phone, where the
+                film is only 220px tall and a centred circle would sit on the
+                headline. */}
+            <span className="absolute inset-y-0 right-0 flex w-2/5 items-center justify-center">
+              <span className="flex h-14 w-14 items-center justify-center rounded-full bg-[#F5B700] shadow-[0_14px_40px_-8px_rgba(245,183,0,0.7)] transition-transform group-hover:scale-105 md:h-24 md:w-24">
+                <svg
+                  viewBox="0 0 30 34"
+                  aria-hidden="true"
+                  className="h-[18px] w-[16px] md:h-[34px] md:w-[30px]"
+                >
                   <path d="M28.5 15.3a2 2 0 0 1 0 3.4L3.1 33.6A2 2 0 0 1 0 31.9V2.1A2 2 0 0 1 3.1.4Z" fill="#070D1A" />
                 </svg>
               </span>
