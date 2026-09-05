@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import NewsletterSignup from '@/components/NewsletterSignup';
+import SuperNomadFilm from '@/components/SuperNomadFilm';
 import { JsonLd, breadcrumbJsonLd, faqJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
 
@@ -262,6 +263,11 @@ export default function SuperNomadPage() {
               </div>
             </div>
           </div>
+        </section>
+
+        {/* The film */}
+        <section className="mx-auto max-w-5xl px-6 pb-4 pt-2 md:px-8 md:pb-8">
+          <SuperNomadFilm />
         </section>
 
         {/* Proof strip */}
