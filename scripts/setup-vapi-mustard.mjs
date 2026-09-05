@@ -15,7 +15,7 @@
  *   VAPI_WEBHOOK_SECRET           (same value used here)
  */
 
-import { readFileSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -64,7 +64,12 @@ const PLACEHOLDER = '[SENSITIVE]';
 // way to check this agent, and needing a secret to read your own config would
 // make the safe path the inconvenient one. Placeholders only have to be fatal on
 // a run that actually writes to a live assistant.
-const DRY_RUN = process.argv.includes('--dry-run');
+const DRY_RUN = process.argv.includes('--dry-run') || process.argv.includes('--emit');
+// --emit <file> writes the rendered assistant body (server block stripped) so
+// the exact config can be PATCHed onto a throwaway clone and benched before it
+// touches the live line. Implies --dry-run.
+const emitIdx = process.argv.indexOf('--emit');
+const EMIT_PATH = emitIdx > -1 ? process.argv[emitIdx + 1] : null;
 const IS_UPDATE = process.argv.includes('--update');
 const placeholdersSeen = [];
 
@@ -445,8 +450,15 @@ Your first line is a real front desk answering a real business: brief, warm, pro
 // ran long before the caller could speak. This one sounds like a real front
 // desk, discloses the AI fact in a natural appositive instead of a wink, and
 // hands the turn back in about four seconds with an easy question to answer.
+// 2026-09-04: "Sarah's AI assistant" -> "the studio's AI assistant" (Sarah:
+// "youre just the studio assistant, not mine specifically"). He answers the
+// business line for every caller, so belonging to the studio is the true
+// description and the useful one. "Sarah's assistant" also sets the wrong
+// expectation on the first four seconds of the call, that the caller has
+// reached her desk and a message will be passed along, when in fact he can
+// quote, sell, build and book on his own. It reads smaller than he is.
 const FIRST_MESSAGE =
-  "Thanks for calling Modern Mustard Seed. This is Mr. Mustard, Sarah's AI assistant. What can I help you with today?";
+  "Thanks for calling Modern Mustard Seed. This is Mr. Mustard, the studio's AI assistant. What can I help you with today?";
 
 /* ───────────────────────── Tools ───────────────────────── */
 
@@ -793,13 +805,59 @@ const TOOLS = [
  *   node scripts/setup-vapi-mustard.mjs --update faf7f2c4-9cfd-4fcd-9c1a-73b7c9a38eee
  * ------------------------------------------------------------------ */
 
-// DEFAULT = 11labs. It must be the DEFAULT and not an env-only flip, or the next
-// `--update` run without the env var silently drops him to a voice Sarah has
-// already rejected out loud.
-const VOICE_PROVIDER = env('VAPI_VOICE_PROVIDER') || '11labs';
-// 1.08 reads noticeably more awake and forward without chipmunking him.
+/* ⚠️⚠️ OFF ELEVENLABS AS OF 2026-09-04, AND THIS TIME THE LINE WAS ALREADY DEAD.
+ * Sarah called him that morning and got the greeting and then silence. Vapi's
+ * per-call pipeline log (GET /call/{id}/call-logs, gzipped JSONL) showed the
+ * whole story on every turn: Anthropic answered in about a second, twenty
+ * "ElevenLabs text message sent" lines, one "ElevenLabs flush message sent",
+ * then NOTHING back for thirty seconds and a `hang` event. The greeting only
+ * played because Vapi had it cached ("Voice cached"). Nothing in the config
+ * had changed; the provider simply stopped returning audio on her key, and a
+ * 200 on the assistant proves nothing about that (see the lesson above).
+ *
+ * The replacement is Cartesia Sonic 3.5, which Vapi bundles: no credential on
+ * the org, no character quota shared with the homepage button, no second
+ * vendor account that can go quiet without telling anyone. Behind it sits a
+ * Vapi Voice V2 (Kai) as `fallbackPlan`, so the exact failure above, a voice
+ * provider returning nothing, degrades to a different voice instead of a
+ * dead line. Both were measured the same evening over websocket bench calls
+ * (scripts/vapi-bench.mjs) with identical synthesized caller audio, five
+ * runs each on the shipped Flux transcriber:
+ *   Cartesia Sonic 3.5 (Clark)  voice 670-779ms   caller-heard avg 2.14s
+ *   Vapi V2 (Kai)               voice 841-1046ms  caller-heard avg 2.68s
+ *   ElevenLabs multilingual_v2  voice 1261ms the last time it produced audio
+ * Run-to-run spread at one config is as wide as the gap between configs, so
+ * the direction is what was decided on, not the decimal. The model is now the
+ * biggest piece of every turn (1.0 to 1.6s on Sonnet 4.6 AND on Haiku, so it
+ * is the 48k-character prompt being read, not the brain), and that is the
+ * next lever, not another voice.
+ *
+ * Clark ran the line for about two hours. Sarah listened to the audition page
+ * the same afternoon and picked GODFREY (Vapi Voice V2, American, twenties,
+ * young and energetic): "Godfrey is my favorite." Her ear beats the
+ * millisecond, so Godfrey is the default. Vapi Voices are the bundled tier,
+ * so there is no credential and no quota to run out, and the spec gives a
+ * VapiVoice no fallbackPlan field, which is why the Cartesia branch keeps its
+ * fallback and this one does not.
+ *
+ * Levers, all one env var and one `--update`, no deploy:
+ *   VAPI_VOICE_PROVIDER=vapi     VAPI_VOICE_ID=Godfrey|Kai|Sid|Elliot|Nico
+ *     (Vapi Voice V2; `version: '2'` is what selects the newer model, and the
+ *      v1 Rohan she called robotic on 08-12 is not that model)
+ *   VAPI_VOICE_PROVIDER=cartesia VAPI_VOICE_ID=<Cartesia voice uuid>
+ *     (Clark c78dd7ae-6692-4c44-a2a2-834e365afe60 is the one that was benched;
+ *      browse the rest with GET /voice-library/cartesia on the private key)
+ *   VAPI_VOICE_PROVIDER=11labs   puts Adam Spencer back, only once the
+ *     ElevenLabs account is proven to return audio again on a real call. */
+const VOICE_PROVIDER = env('VAPI_VOICE_PROVIDER') || 'vapi';
+// 1.08 read awake and forward on ElevenLabs without chipmunking him. The Vapi
+// V2 voices run a touch quicker natively, so 1.05 lands in the same place.
 // Probed: 1.25 / 1.5 / 2.0 are all accepted, so there is headroom if she wants more.
-const VOICE_SPEED = Number(env('VAPI_VOICE_SPEED') || 1.08);
+const VOICE_SPEED = Number(env('VAPI_VOICE_SPEED') || (VOICE_PROVIDER === '11labs' ? 1.08 : 1.05));
+// Transcriber and endpointing travel together: Flux detects the end of a turn
+// itself, nova-3 needs LiveKit to do it. Reasoning at the transcriber block.
+const TRANSCRIBER_MODEL = env('VAPI_TRANSCRIBER_MODEL') || 'flux-general-en';
+const IS_FLUX = TRANSCRIBER_MODEL.startsWith('flux');
 
 const voice =
   VOICE_PROVIDER === '11labs'
@@ -878,14 +936,31 @@ const voice =
         similarityBoost: 0.75,
         speed: VOICE_SPEED,
       }
-    : {
-        // Any non-11labs provider: bundled Vapi natives are the safe fallback,
-        // because they need no credential and therefore cannot fail the way
-        // OpenAI did. Rohan over Sid, which Sarah called too soft on 08-06.
-        provider: VOICE_PROVIDER,
-        voiceId: env('VAPI_VOICE_ID') || 'Rohan',
-        speed: VOICE_SPEED,
-      };
+    : VOICE_PROVIDER === 'cartesia'
+      ? {
+          // Sonic 3.5 is Cartesia's current model; `language` is pinned so the
+          // voice never guesses. The bench call returned audio on the first
+          // try with no credential on the org, which is the whole point.
+          provider: 'cartesia',
+          model: env('VAPI_CARTESIA_MODEL') || 'sonic-3.5',
+          voiceId: env('VAPI_VOICE_ID') || 'c78dd7ae-6692-4c44-a2a2-834e365afe60',
+          language: 'en',
+          // If Cartesia ever does what ElevenLabs did on 09-04, the line keeps
+          // talking in Kai's voice instead of playing the greeting and dying.
+          fallbackPlan: {
+            voices: [{ provider: 'vapi', voiceId: 'Kai', version: '2', speed: VOICE_SPEED }],
+          },
+        }
+      : {
+          // Vapi Voices, version 2. `version` is what selects the upgraded model;
+          // omit it and Vapi silently serves the v1 mapping Sarah already rejected.
+          // `language` stays unset on purpose: V2 auto-detects, which is what lets
+          // him follow a caller into Spanish without a per-call override.
+          provider: 'vapi',
+          voiceId: env('VAPI_VOICE_ID') || 'Godfrey',
+          version: '2',
+          speed: VOICE_SPEED,
+        };
 
 /* ───────────────────────── Assistant body ───────────────────────── */
 
@@ -1118,25 +1193,56 @@ const assistant = {
            * one of them expands "." into "dot" for addresses, which is the only
            * remaining thing standing between our text and his voice. A period
            * sitting hard against digits right before "at gmail" is exactly what
-           * that formatter is looking for. The comma removes the bait. */
-          { type: 'exact', key: ' at modernmustardseed dot com', value: ', at modern mustard seed dot com,' },
-          { type: 'exact', key: ' at gmail dot com', value: ', at gmail dot com,' },
-          { type: 'exact', key: ' at yahoo dot com', value: ', at yahoo dot com,' },
-          { type: 'exact', key: ' at outlook dot com', value: ', at outlook dot com,' },
-          { type: 'exact', key: ' at hotmail dot com', value: ', at hotmail dot com,' },
-          { type: 'exact', key: ' at icloud dot com', value: ', at icloud dot com,' },
+           * that formatter is looking for. The comma removes the bait.
+           *
+           * ⚠️ LEADING COMMA ONLY, since 2026-09-04. These used to end in a
+           * comma too, for a beat after the domain. The model writes its own
+           * comma there most of the time, so the rule produced ",," and Vapi's
+           * formatter read that out loud: a bench call logged him saying
+           * "dalton at gmail dot com, comma, and the number is". The beat
+           * after the domain comes from the model's punctuation now. */
+          { type: 'exact', key: ' at modernmustardseed dot com', value: ', at modern mustard seed dot com' },
+          { type: 'exact', key: ' at gmail dot com', value: ', at gmail dot com' },
+          { type: 'exact', key: ' at yahoo dot com', value: ', at yahoo dot com' },
+          { type: 'exact', key: ' at outlook dot com', value: ', at outlook dot com' },
+          { type: 'exact', key: ' at hotmail dot com', value: ', at hotmail dot com' },
+          { type: 'exact', key: ' at icloud dot com', value: ', at icloud dot com' },
         ],
       },
     },
   },
   transcriber: {
-    // nova-3 is materially better than nova-2 at exactly what Mr. Mustard kept
-    // botching: spoken emails, names, and alphanumerics. NOTE: Vapi does NOT
-    // enum-validate Deepgram model strings (unlike Anthropic models), so it passes
-    // them straight through, so a typo here silently breaks transcription at call
-    // time. Revert instantly with VAPI_TRANSCRIBER_MODEL=nova-2 if a test call sounds off.
+    // 2026-09-04: nova-3 -> flux-general-en. Flux is Deepgram's conversational
+    // model: Nova-3 accuracy with turn detection built into the transcriber, so
+    // the LiveKit endpointer below is no longer in the loop. On the same call
+    // that showed the voice outage, LiveKit's log read "prediction 0.0000,
+    // awaiting 2860ms" on every pause it was unsure about, which is where the
+    // 0.5 to 1.7 seconds of endpointing on real calls came from. Bench calls
+    // with the same caller audio: endpointing 336-669ms on Flux against 503ms
+    // to 1.7s on nova-3 + LiveKit, and the transcriber itself 48-250ms.
+    //
+    // nova-3 was itself the fix for spoken emails and alphanumerics over nova-2,
+    // and Flux keeps that. NOTE: Vapi does NOT enum-validate Deepgram model
+    // strings the way it does Anthropic models, so a typo here silently breaks
+    // transcription at call time. Revert instantly with
+    // VAPI_TRANSCRIBER_MODEL=nova-3 if a test call sounds off; that also puts
+    // the LiveKit endpointer back (see startSpeakingPlan).
     provider: 'deepgram',
-    model: env('VAPI_TRANSCRIBER_MODEL') || 'nova-3',
+    model: TRANSCRIBER_MODEL,
+    ...(IS_FLUX
+      ? {
+          // End-of-turn confidence Flux needs before it hands the turn over.
+          // 0.7 (Vapi's default) fired on the pause after "Okay." in a bench
+          // call and he talked over the rest of the sentence; 0.8 did not, on
+          // the same audio. Above that he starts to feel slow to pick up.
+          eotThreshold: 0.8,
+          // The hard ceiling: hand the turn over after this much silence no
+          // matter what the model thinks. Vapi's default is 5000, which is the
+          // 25-second black hole Sarah hit on 09-04 in miniature. Three seconds
+          // is past any natural mid-sentence breath.
+          eotTimeoutMs: 3000,
+        }
+      : {}),
     // Format spoken numbers as actual digits in the transcript ("eight five" ->
     // "85") so the model reads the real digits instead of guessing at number
     // words. Directly targets the jumbled-email-numbers problem.
@@ -1185,10 +1291,17 @@ const assistant = {
   // proven on this line, and changing the brain and the endpointer in one shot
   // would make a regression impossible to attribute. Raise back to 0.3-0.4 if
   // he starts clipping people who pause mid-sentence.
-  startSpeakingPlan: {
-    waitSeconds: 0.2,
-    smartEndpointingPlan: { provider: 'livekit' },
-  },
+  // 2026-09-04: on Flux the transcriber owns end-of-turn, and Vapi's own docs
+  // say to leave smart endpointing OFF in that case so the system uses the
+  // transcriber's signal. waitSeconds is padding after that signal, so it goes
+  // to zero: Flux already waited for the confidence in eotThreshold. If nova-3
+  // comes back via VAPI_TRANSCRIBER_MODEL, LiveKit and the 0.2 come back with it.
+  startSpeakingPlan: IS_FLUX
+    ? { waitSeconds: 0 }
+    : {
+        waitSeconds: 0.2,
+        smartEndpointingPlan: { provider: 'livekit' },
+      },
   // Interruptions stay responsive but noise-robust: require two real words before
   // he yields, so a stray TV word or a baby's cry can't cut him off mid-sentence,
   // while a genuine "wait, hold on" from the caller still stops him immediately.
@@ -1255,6 +1368,13 @@ const assistant = {
     idleTimeoutSeconds: 8,
   },
 };
+
+if (EMIT_PATH) {
+  const { server: _server, ...rendered } = assistant;
+  writeFileSync(EMIT_PATH, JSON.stringify(rendered, null, 2));
+  console.log(`Rendered assistant written to ${EMIT_PATH} (server block stripped). Nothing sent to Vapi.`);
+  process.exitCode = 0;
+}
 
 /* ───────────────────────── API call ───────────────────────── */
 
