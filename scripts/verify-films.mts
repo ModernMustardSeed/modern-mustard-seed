@@ -36,6 +36,24 @@ for (const [name, film] of Object.entries(FILMS)) {
   }
 }
 
+console.log('\n--- 1b. every cut in the marketing video library is in the repo ---');
+// Same rule as above, applied to the /admin/videos catalogue. The page itself
+// HEADs the CDN at runtime; this is the build-time half, so a missing file is
+// caught before it ships rather than turning into a dead card in the admin.
+const { MARKETING_VIDEOS } = await import('../data/marketing-videos');
+for (const v of MARKETING_VIDEOS) {
+  const rels = [...v.formats.map((f) => f.file), ...(v.poster ? [v.poster] : [])];
+  for (const rel of rels) {
+    const abs = path.join(process.cwd(), 'public', rel.slice(1));
+    const there = existsSync(abs);
+    ok(v.id + ': ' + rel, there, there ? (statSync(abs).size / 1e6).toFixed(1) + ' MB' : 'MISSING');
+  }
+}
+// A film nothing plays is worth knowing about, but it is not a failure.
+const unusedFilms = MARKETING_VIDEOS.filter((v) => v.runsAt.length === 0);
+if (unusedFilms.length)
+  console.log('NOTE  ' + unusedFilms.length + ' film(s) referenced nowhere: ' + unusedFilms.map((v) => v.id).join(', '));
+
 console.log('\n--- 2. no page probes the filesystem for a film ---');
 // The bug this whole file exists for. `existsSync` on public/ is false on any
 // render that happens at request time, and the failure is silent.
