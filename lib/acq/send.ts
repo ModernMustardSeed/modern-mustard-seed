@@ -421,6 +421,11 @@ export async function sendSuiteEmail(
   campaign: AcqCampaign,
   lead: AcqProspect,
   opts: { resend?: boolean } = {},
+  /**
+   * Sarah, deliberately, now. Lifts the pacing gates and nothing else: see
+   * `override` in lib/acq/governor.ts for exactly which ones and why.
+   */
+  override?: { reason: string } | null,
 ): Promise<SendResult> {
   const hubUrl = lead.hub_demo_url;
   const siteReady = lead.site_demo_status === 'ready' && Boolean(lead.site_demo_url);
@@ -431,7 +436,7 @@ export async function sendSuiteEmail(
     return { ok: false, error: 'Their suite already went out. Use the follow-ups from here.', permanent: true };
   }
 
-  const gate = await gateOrRefuse(db, campaign, lead, 'demo');
+  const gate = await gateOrRefuse(db, campaign, lead, 'demo', override);
   if (!gate.ok) return gate.result;
 
   // Only claim a video that is actually attached. Both lookups fail soft: a
@@ -582,6 +587,11 @@ export async function sendCheckoutLink(
   campaign: AcqCampaign,
   lead: AcqProspect,
   note?: string,
+  /**
+   * Sarah, deliberately, now. Lifts the pacing gates and nothing else: see
+   * `override` in lib/acq/governor.ts for exactly which ones and why.
+   */
+  override?: { reason: string } | null,
 ): Promise<SendResult> {
   if (!lead.email) return permanent('No email address on the prospect.');
 
@@ -589,7 +599,7 @@ export async function sendCheckoutLink(
   // where the send window and the pacing caps would be actively unhelpful. It
   // still goes through the governor: opt-out, suppression, bounce, do-not-contact
   // and the hard ceiling all still apply.
-  const gate = await gateOrRefuse(db, campaign, lead, 'checkout');
+  const gate = await gateOrRefuse(db, campaign, lead, 'checkout', override);
   if (!gate.ok && gate.result.ok === false && gate.result.permanent) return gate.result;
 
   const { clientEmail, p, escape } = await import('@/lib/email');

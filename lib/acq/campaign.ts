@@ -800,9 +800,16 @@ export function buildSuiteEmail(args: {
 
   const pieces: { label: string; blurb: string; url: string }[] = [];
   if (suite.siteUrl) {
+    // When the voice agent exists too, the site is not a website sitting next
+    // to a receptionist: app/demo/site/[siteId]/page.tsx overlays that same
+    // agent on it as a live call widget, so it is a Talking Website and the
+    // email has to say so. Naming only "a website" is how somebody who asked
+    // for a Talking Website reads this and thinks we did not build it.
     pieces.push({
-      label: 'Your website',
-      blurb: `Built around ${escape(business)}, not a template with your name dropped in. Open it on your phone.`,
+      label: suite.voiceUrl ? 'Your talking website' : 'Your website',
+      blurb: suite.voiceUrl
+        ? `Built around ${escape(business)}, not a template with your name dropped in. Your receptionist is on it: tap the button in the corner and the same agent that answers the phone answers the page.`
+        : `Built around ${escape(business)}, not a template with your name dropped in. Open it on your phone.`,
       url: suite.siteUrl,
     });
   }
@@ -858,7 +865,7 @@ export function buildSuiteEmail(args: {
       // back office is not part of this offer at all now.
       preheader:
         pieces.length === 2
-          ? `Your website and your receptionist are live. Nothing to sign up for.`
+          ? `Your talking website and your receptionist are live. Nothing to sign up for.`
           : onlySite
             ? `Your website is live. Nothing to sign up for.`
             : `Your receptionist is live. Nothing to sign up for.`,
@@ -868,7 +875,7 @@ export function buildSuiteEmail(args: {
         p(`I built it.`) +
         p(
           pieces.length === 2
-            ? `${escape(business)} now has a website and an AI receptionist answering the phone on it. Both are live right now. Nothing to sign up for, no card, no call with me first.`
+            ? `${escape(business)} now has a website with your receptionist answering on it, and that same receptionist answering the phone. One employee in two places, not two systems that do not know about each other. Both are live right now. Nothing to sign up for, no card, no call with me first.`
             : `It is live right now. Nothing to sign up for, no card, no call with me first.`,
         ) +
         videoLine +
@@ -902,7 +909,7 @@ export function buildSuiteEmail(args: {
       ? `I built ${business} a receptionist`
       : onlySite
         ? `I built ${business} a website`
-        : `I built ${business} a website and a receptionist`,
+        : `I built ${business} a talking website and a receptionist`,
     html,
     unsubscribeUrl: unsubscribeUrlFor(lead.email),
     summary: `Sent the full built suite: ${pieces.map((x) => x.label.toLowerCase()).join(', ')}.`,

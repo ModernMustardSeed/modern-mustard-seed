@@ -207,18 +207,53 @@ export async function buildSuiteFromCall(
    * the existing lead rather than minting a duplicate that would split their
    * hub, their drip state and their order card in two. */
   const norm = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, '');
+  /*
+   * FIND THEM WHEREVER THEY ALREADY ARE, NOT JUST WHERE THIS TOOL PUT THEM.
+   *
+   * This used to look only at leads with source 'demo-station' or 'mr-mustard',
+   * and only at ones that already carried a hub. An acquisition lead carries
+   * source 'tracker' and, before its first build, no hub at all. So the one
+   * person we most wanted to recognise, somebody we cold emailed who then walks
+   * in and asks for a build, matched neither test and got a brand new row.
+   *
+   * That fork is expensive: their drip state, their reply history, their score
+   * and their timeline stay on the old row while the build lands on the new
+   * one, and the two never speak again.
+   *
+   * The name is the safety rail, not the source. Matching on email alone would
+   * be wrong, because one address genuinely serves several businesses in this
+   * table (a web developer's inbox on two roofers, a franchise office on four
+   * locations). A name that does not match falls through to a fresh row, which
+   * is exactly the old behaviour: the failure we accept is a duplicate, never
+   * a build appended to a stranger's record.
+   */
   const { data: priors } = await supabase
     .from('outbound_leads')
     .select('*')
     .eq('email', email)
-    .in('source', ['demo-station', 'mr-mustard'])
     .limit(50);
-  const existing = ((priors ?? []) as OutboundLead[]).find(
+  const tenDigits = (v: string | null | undefined) => String(v ?? '').replace(/\D/g, '').slice(-10);
+  const samePhone = (p: OutboundLead) => tenDigits(p.phone) === digits.slice(-10);
+  // is_test and duplicate_of live on the acquisition view of this row, not on
+  // the OutboundLead type, so they are read off the raw record.
+  const flag = (p: OutboundLead, key: 'is_test' | 'duplicate_of' | 'unsubscribed_at') =>
+    (p as unknown as Record<string, unknown>)[key];
+  const candidates = ((priors ?? []) as OutboundLead[]).filter(
     (p) =>
-      p.hub_demo_url &&
-      (p.phone ?? '').replace(/\D/g, '').slice(-10) === digits.slice(-10) &&
+      !flag(p, 'is_test') &&
+      !flag(p, 'duplicate_of') &&
+      !flag(p, 'unsubscribed_at') &&
       norm(p.business_name ?? '') === norm(business),
   );
+  // A record that has already been built wins, then one whose phone agrees,
+  // then the most recent. Sorting rather than picking the first match keeps
+  // this stable when an old duplicate pair is still on the table.
+  const existing = [...candidates].sort(
+    (a, b) =>
+      Number(Boolean(b.hub_demo_url)) - Number(Boolean(a.hub_demo_url)) ||
+      Number(samePhone(b)) - Number(samePhone(a)) ||
+      String(b.created_at ?? '').localeCompare(String(a.created_at ?? '')),
+  )[0];
 
   // Present on the prior lead = already built, whatever its build status.
   const alreadyHas = (lead: OutboundLead, piece: BuildPiece): boolean =>

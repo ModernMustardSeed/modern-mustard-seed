@@ -46,6 +46,8 @@ export type EventType =
   | 'unsubscribed'
   | 'suppressed'
   | 'needs_human'
+  /** The pager woke Sarah about this lead. Also what the pager dedupes on. */
+  | 'paged'
   | 'reply'
   | 'note'
   | 'dm_sent'
