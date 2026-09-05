@@ -4,13 +4,14 @@
  * Source of truth for the admin proposal builder. Mirrors mms-pricing.json and
  * the rate sheet (current 2026-06-04). Prices are real. Do not invent prices.
  * For a range, proposals default to the midpoint unless scope justifies more.
- * "from" units default to the floor. Hourly defaults to the rate times hours.
+ * "from" units default to the floor. Nothing here is priced by time: MMS sells
+ * set packages, and changes to what was built are included.
  *
  * Voice: no em dashes, stewardship not extraction, never call price an
  * "investment". Final scope and price are set in the proposal.
  */
 
-export type Unit = 'fixed' | 'free' | 'monthly' | 'fixed_from' | 'monthly_from' | 'hourly';
+export type Unit = 'fixed' | 'free' | 'monthly' | 'fixed_from' | 'monthly_from';
 export type ServiceStatus = 'set' | 'session_set' | 'recommended';
 
 export type Service = {
@@ -32,9 +33,7 @@ export type Service = {
 };
 
 export const ENGAGEMENT_MODELS = {
-  fixed_price: 'Defined scope, defined price, defined timeline. Covers most work.',
-  hourly_rate: 225,
-  hourly_use: 'Strategy and open-ended work that resists a fixed scope.',
+  fixed_price: 'Defined scope, defined price, defined timeline. Covers all work.',
   retained: 'Monthly, for ongoing build and operation after launch.',
   payment_terms: '50 percent to start, 50 percent on delivery, unless the proposal states otherwise.',
 } as const;
@@ -374,17 +373,6 @@ export const SERVICES: Service[] = [
     unit: 'fixed',
     status: 'set',
   },
-  {
-    id: 'advisory',
-    group: 'Advisory',
-    name: 'Consulting / Advisory',
-    description: 'Hourly, for strategy and open-ended work that resists a fixed scope.',
-    scope: ['Strategy and open-ended work', 'Billed against actual time at the hourly rate'],
-    priceMin: 225,
-    priceMax: 225,
-    unit: 'hourly',
-    status: 'set',
-  },
 ];
 
 /**
@@ -473,13 +461,12 @@ const round100 = (n: number): number => Math.round(n / 100) * 100;
 
 /**
  * The default proposal price for a service. Midpoint for ranges, floor for
- * "from" units, the rate for hourly, 0 for free. priceBasis() states the math.
+ * "from" units, 0 for free. priceBasis() states the math.
  */
 export function defaultPrice(s: Service): number {
   switch (s.unit) {
     case 'free':
       return 0;
-    case 'hourly':
     case 'fixed_from':
     case 'monthly_from':
       return s.priceMin;
@@ -496,8 +483,6 @@ export function priceBasis(s: Service): string {
   switch (s.unit) {
     case 'free':
       return 'Free';
-    case 'hourly':
-      return 'Hourly rate, billed against actual time';
     case 'fixed_from':
       return 'Starting price. Final set by scope';
     case 'monthly_from':
@@ -513,7 +498,6 @@ export function priceBasis(s: Service): string {
 }
 
 export const isRecurring = (u: Unit): boolean => u === 'monthly' || u === 'monthly_from';
-export const isHourly = (u: Unit): boolean => u === 'hourly';
 
 const money = (n: number): string => `$${n.toLocaleString('en-US')}`;
 export const formatMoney = money;
@@ -521,7 +505,6 @@ export const formatMoney = money;
 /** The list-price label for the menu, e.g. "$15,000 to $35,000" or "from $2,500". */
 export function listPrice(s: Service): string {
   if (s.unit === 'free') return 'Free';
-  if (s.unit === 'hourly') return `${money(s.priceMin)}/hr`;
   if (s.unit === 'fixed_from') return `from ${money(s.priceMin)}`;
   if (s.unit === 'monthly_from') return `from ${money(s.priceMin)}/mo`;
   const suffix = isRecurring(s.unit) ? '/mo' : '';
