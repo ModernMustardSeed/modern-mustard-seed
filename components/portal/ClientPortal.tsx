@@ -10,6 +10,7 @@ import DeskWelcome from '@/components/DeskWelcome';
 import { CLIENT_HELP } from '@/lib/help-content';
 import { OnboardingChecklist, OnboardingIntake } from '@/components/portal/Onboarding';
 import LaunchChecklist from '@/components/portal/LaunchChecklist';
+import LaunchRunbook from '@/components/portal/LaunchRunbook';
 import MoodboardCard from '@/components/portal/MoodboardCard';
 import FactoryPortalLink from '@/components/portal/FactoryPortalLink';
 import FrontOfficePortalLink from '@/components/portal/FrontOfficePortalLink';
@@ -457,6 +458,13 @@ export default function ClientPortal() {
                 {(data.audience === 'client' || data.audience === 'both') && !data.isDemoClient && data.billing && (
                   <OnboardingIntake onStatus={setIntakeStatus} />
                 )}
+
+                {/* THEIR HALF OF THEIR OWN LAUNCH.
+                    Above Connect Google on purpose: claiming the profile is the
+                    first item on this list, and a client who has not done that
+                    yet needs the steps before they need the connector. Renders
+                    nothing at all when no runbook is scoped to them. */}
+                <LaunchRunbook />
 
                 {/* Connect Google: the listing matters more than the website. */}
                 <ConnectionsCard />
