@@ -38,10 +38,16 @@ export const ENGAGEMENT_MODELS = {
   payment_terms: '50 percent to start, 50 percent on delivery, unless the proposal states otherwise.',
 } as const;
 
+/**
+ * The Idea to Product ladder. Four rungs, matching the operating rules and
+ * ops/pricing.json. The third rung used to be "own_and_operate", a retained
+ * monthly; that is not a tier of the offer. Launch and Hand Off are.
+ */
 export const TIERS = {
-  scope_and_sequence: 'Map the idea, sequence the build, price it.',
-  build_and_ship: 'Build and put in production. The execution tier.',
-  own_and_operate: 'Stay on to run and extend it. Retained.',
+  scope_and_sequence: 'The idea becomes a specified, sequenced build plan.',
+  build_and_ship: 'The product gets built and put in front of real users.',
+  launch: 'The product goes to market with the surrounding system in place.',
+  hand_off: 'Full transfer of the asset, access, and operating knowledge.',
 } as const;
 
 export const TERMS: string[] = [
