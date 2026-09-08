@@ -100,6 +100,8 @@ export function withArticle(word: string | null | undefined): string {
  * The grammar should not be their problem.
  */
 export function fillNoun(text: string, token: string, word: string): string {
+  // A preset with no job word must never leak the raw token onto a demo board.
+  if (!word) word = 'job';
   const tok = token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   return text
     .replace(new RegExp(`\\b([Aa])n?\\s+${tok}`, 'g'), (_m, a: string) => {
