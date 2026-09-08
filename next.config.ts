@@ -69,6 +69,9 @@ const config: NextConfig = {
     deviceSizes: [640, 750, 828, 1080, 1200, 1920],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     minimumCacheTTL: 60 * 60 * 24 * 30,
+    // The portfolio page at /sarahscarano renders the project images the gallery
+    // already serves, so the two never drift.
+    remotePatterns: [{ protocol: 'https', hostname: 'sarahscarano.com', pathname: '/images/web/**' }],
   },
   async rewrites() {
     return [
@@ -79,10 +82,11 @@ const config: NextConfig = {
   },
   async redirects() {
     return [
-      // The gallery moved to her own domain. Keep every old link working,
-      // including the plain resume PDF and the OG cover.
-      { source: '/sarahscarano', destination: 'https://sarahscarano.com', permanent: true },
-      { source: '/sarahscarano/:path*', destination: 'https://sarahscarano.com/:path*', permanent: true },
+      // /sarahscarano is a real page again (2026-09-08): her portfolio in the
+      // studio's grammar, sourced from data/sarah-portfolio.ts. The full gallery,
+      // the plain resume PDF and the OG cover stay on her own domain, so every
+      // old deep link under the path still forwards there.
+      { source: '/sarahscarano/:path+', destination: 'https://sarahscarano.com/:path+', permanent: true },
       // /Mustard is handled in middleware.ts, NOT here. Config redirects match
       // case-insensitively, so a `/Mustard -> /mustard` rule here also matches
       // `/mustard` and redirects the real page to itself in an infinite loop.

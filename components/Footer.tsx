@@ -90,6 +90,7 @@ export default function Footer() {
         { label: 'Super Nomad', href: '/super-nomad' },
         { label: 'Blog', href: '/blog' },
         { label: 'About', href: '/about' },
+        { label: 'Sarah Scarano', href: '/sarahscarano' },
         { label: 'Contact', href: '/contact' },
         { label: 'Privacy', href: '/privacy' },
         { label: 'Terms', href: '/terms' },

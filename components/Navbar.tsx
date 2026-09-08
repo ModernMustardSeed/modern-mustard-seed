@@ -56,6 +56,7 @@ const MENU_GROUPS = [
     heading: 'Company',
     links: [
       { label: 'About', href: '/about' },
+      { label: 'Sarah Scarano', href: '/sarahscarano' },
       { label: 'Mustard Life Comic', href: '/comic' },
       { label: 'Blog', href: '/blog' },
       { label: 'Store', href: '/store' },
