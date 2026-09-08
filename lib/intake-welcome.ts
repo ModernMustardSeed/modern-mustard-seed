@@ -92,3 +92,68 @@ sarah@modernmustardseed.com`,
   await sb.from('clients').update({ intake_welcomed_at: new Date().toISOString() }).eq('email', email);
   return { sent: true, key };
 }
+
+/**
+ * The welcome for a client who signed and paid on their own prep site
+ * (`metadata.onboard_url` on the checkout). They already have a custom
+ * onboarding page, so this says two things only: how the portal login works
+ * (a fresh link by email, no password), and where the onboarding questions
+ * are. Same idempotency as the intake welcome: a replayed webhook sends
+ * nothing twice.
+ */
+export async function sendPrepWelcome(
+  sb: SupabaseClient,
+  email: string,
+  opts: { name?: string | null; company?: string | null; onboardUrl: string },
+): Promise<{ sent: boolean; reason?: string }> {
+  const { data: client } = await sb
+    .from('clients')
+    .select('email, name, company, intake_welcomed_at')
+    .eq('email', email)
+    .maybeSingle();
+  if (!client) return { sent: false, reason: 'no client row' };
+  if (client.intake_welcomed_at) return { sent: false, reason: 'already welcomed' };
+
+  const first = String(opts.name ?? client.name ?? '').split(/\s+/)[0] || 'there';
+  const who = String(opts.company ?? client.company ?? '') || 'your business';
+  const login = `${SITE}/portal/login`;
+  const onboard = opts.onboardUrl;
+
+  const resend = resendClient();
+  if (!resend) return { sent: false, reason: 'resend not configured' };
+
+  const html = `<div style="font:400 16px/1.6 -apple-system,Segoe UI,sans-serif;color:#14181c;max-width:520px;">
+    <p style="margin:0 0 14px;">${first}, that is through. Thank you. Your signed quote and your receipt are in this inbox.</p>
+    <p style="margin:0 0 14px;"><strong>Your portal.</strong> Go to <a href="${login}" style="color:#C4380C;">${login.replace('https://', '')}</a>, enter this email address, and a sign-in link comes straight back. No password to keep. Everything we build for ${who} lives there.</p>
+    <p style="margin:0 0 14px;"><strong>The onboarding questions.</strong> About ten minutes, short answers are fine, and anything you skip we cover when we sit down.</p>
+    <p style="margin:22px 0;">
+      <a href="${onboard}" style="display:inline-block;background:#C4380C;color:#fff;text-decoration:none;font-weight:700;padding:15px 26px;border:2px solid #14181c;box-shadow:4px 4px 0 #14181c;">Answer the onboarding questions</a>
+    </p>
+    <p style="margin:22px 0 0;">Sarah<br><a href="mailto:sarah@modernmustardseed.com" style="color:#C4380C;">sarah@modernmustardseed.com</a></p>
+  </div>`;
+
+  try {
+    await resend.emails.send({
+      from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
+      to: [email],
+      replyTo: ['sarah@modernmustardseed.com'],
+      subject: `${who}: your portal and the onboarding questions`,
+      html,
+      text: `${first}, that is through. Thank you. Your signed quote and your receipt are in this inbox.
+
+Your portal: go to ${login}, enter this email address, and a sign-in link
+comes straight back. No password to keep.
+
+The onboarding questions, about ten minutes:
+${onboard}
+
+Sarah
+sarah@modernmustardseed.com`,
+    });
+  } catch (err) {
+    return { sent: false, reason: `send failed: ${String(err)}` };
+  }
+
+  await sb.from('clients').update({ intake_welcomed_at: new Date().toISOString() }).eq('email', email);
+  return { sent: true };
+}
