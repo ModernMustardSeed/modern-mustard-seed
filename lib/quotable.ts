@@ -1,4 +1,4 @@
-import { DEMO_PRODUCTS, DEMO_BUNDLE } from '@/lib/demo-order';
+import { DEMO_PRODUCTS, DEMO_BUNDLE, SITE_RUNGS } from '@/lib/demo-order';
 
 /**
  * WHAT AN AGENT IS ALLOWED TO QUOTE, AND WHAT IT MUST HAND TO SARAH.
@@ -47,10 +47,41 @@ export type QuotableProduct = {
  * published and owned by a single module we can import from.
  */
 export const QUOTABLE: QuotableProduct[] = [
-  { ...DEMO_PRODUCTS.site, page: '/websites' },
+  // The website and the bundle come in three sizes (2026-09-08). The entry
+  // rung keeps the plain name so a caller who says "the website" hears the
+  // number they will see on the page; the bigger ones carry their size.
+  { ...DEMO_PRODUCTS.site, name: `${DEMO_PRODUCTS.site.name} (${SITE_RUNGS.five.label})`, page: '/websites' },
+  {
+    key: 'site-20',
+    name: `${DEMO_PRODUCTS.site.name} (${SITE_RUNGS.twenty.label}, every service and every town on its own page)`,
+    setupCents: SITE_RUNGS.twenty.setupCents,
+    monthlyCents: SITE_RUNGS.twenty.monthlyCents,
+    page: '/websites',
+  },
+  {
+    key: 'site-50',
+    name: `${DEMO_PRODUCTS.site.name} (${SITE_RUNGS.fifty.label}, every service in every town)`,
+    setupCents: SITE_RUNGS.fifty.setupCents,
+    monthlyCents: SITE_RUNGS.fifty.monthlyCents,
+    page: '/websites',
+  },
   { ...DEMO_PRODUCTS.voice, page: '/voice-agents' },
   { ...DEMO_PRODUCTS.os, page: '/command-center' },
-  { ...DEMO_BUNDLE, page: '/talking-website' },
+  { ...DEMO_BUNDLE, name: `${DEMO_BUNDLE.name} (${SITE_RUNGS.five.label})`, page: '/talking-website' },
+  {
+    key: 'bundle-20',
+    name: `${DEMO_BUNDLE.name} (${SITE_RUNGS.twenty.label})`,
+    setupCents: SITE_RUNGS.twenty.bundleSetupCents,
+    monthlyCents: SITE_RUNGS.twenty.bundleMonthlyCents,
+    page: '/talking-website',
+  },
+  {
+    key: 'bundle-50',
+    name: `${DEMO_BUNDLE.name} (${SITE_RUNGS.fifty.label})`,
+    setupCents: SITE_RUNGS.fifty.bundleSetupCents,
+    monthlyCents: SITE_RUNGS.fifty.bundleMonthlyCents,
+    page: '/talking-website',
+  },
 ];
 
 /**

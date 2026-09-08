@@ -29,6 +29,26 @@
  * Talking Website monthly dropped to $397. Both setups held: website $497 and
  * bundle $497. The ladder was re-run at the new numbers and is written out
  * below. All amounts in cents.
+ *
+ * PAGE RUNGS (Sarah, 2026-09-08). The website now comes in three sizes and the
+ * price follows the size, because Google and AI search index pages, not
+ * sections, and a site with every service and every town on its own page is
+ * simply found more. The 5-page rung is the price everything above already
+ * quoted, unchanged. Locked by Sarah the same day:
+ *
+ *   5 pages         site $497 + $147/mo    Talking Website $497 + $397/mo
+ *   20 pages and up site $997 + $197/mo    Talking Website $997 + $447/mo
+ *   50 pages and up site $1,997 + $297/mo  Talking Website $1,997 + $547/mo
+ *
+ * The rule that makes it hold against unlimited edits: an edit to any page the
+ * client already has is free forever, and a NEW page beyond the rung is the
+ * next rung, not an edit. Without that line a 5-page buyer requests fifteen
+ * pages as edits and the 20-page rung never sells.
+ *
+ * DEMO_PRODUCTS.site and DEMO_BUNDLE stay the 5-page rung so every surface that
+ * already reads them keeps quoting the entry price. SITE_RUNGS is the ladder;
+ * quoteDemoOrder() takes a rung and prices from it. The ladder invariant is
+ * checked per rung by ladderViolations(), which gates the build.
  */
 
 import { demoAgentTiers } from '@/data/demo-agent';
@@ -139,13 +159,160 @@ export const DEMO_ORDER_KEYS: DemoProductKey[] = ['voice', 'site'];
  */
 export const PRICEABLE_KEYS: DemoProductKey[] = ['voice', 'site', 'os', 'cornerstone'];
 
+/**
+ * THE PAGE LADDER. Three sizes of website; the Talking Website bundle is priced
+ * per rung. The 5-page rung IS DEMO_PRODUCTS.site / DEMO_BUNDLE, so the two
+ * never drift: the rung reads its numbers from them, not the other way round.
+ *
+ * Ladder check at every rung, run by ladderViolations() below and gated in the
+ * build by scripts/check-price-ladder.mjs:
+ *   bundle setup   = site setup (the priciest single) and < site + voice
+ *   bundle monthly > voice monthly (the priciest single) and < site + voice
+ *   each rung strictly above the one below it, on setup and on monthly
+ *
+ *   5:  setup $497 = $497, < $794. monthly $397 > $297, < $444.  Saves $297 / $47.
+ *   20: setup $997 = $997, < $1,294. monthly $447 > $297, < $494. Saves $297 / $47.
+ *   50: setup $1,997 = $1,997, < $2,294. monthly $547 > $297, < $594. Saves $297 / $47.
+ */
+export type SiteRungKey = 'five' | 'twenty' | 'fifty';
+
+export type SiteRung = {
+  key: SiteRungKey;
+  /** The floor of the rung. 20 means "20 pages and up". */
+  pages: number;
+  /** Printed everywhere a person reads: "5 pages", "20 pages and up". */
+  label: string;
+  /** What the site is, in one line, for the card. */
+  pitch: string;
+  /** A concrete page plan for a trade business, so nobody is buying a number. */
+  plan: string;
+  setupCents: number;
+  monthlyCents: number;
+  bundleSetupCents: number;
+  bundleMonthlyCents: number;
+};
+
+export const SITE_RUNGS: Record<SiteRungKey, SiteRung> = {
+  five: {
+    key: 'five',
+    pages: 5,
+    label: '5 pages',
+    pitch: 'The storefront. One page per thing a customer needs, and every one of them found.',
+    plan: 'Home, services, about, reviews, and a contact page that books.',
+    setupCents: 49700,
+    monthlyCents: 14700,
+    bundleSetupCents: 49700,
+    bundleMonthlyCents: 39700,
+  },
+  twenty: {
+    key: 'twenty',
+    pages: 20,
+    label: '20 pages and up',
+    pitch: 'Every service and every town you serve, each on its own page, each one indexable.',
+    plan: 'The five above, plus a page for each service, a page for each town, and guides that answer what people ask AI.',
+    setupCents: 99700,
+    monthlyCents: 19700,
+    bundleSetupCents: 99700,
+    bundleMonthlyCents: 44700,
+  },
+  fifty: {
+    key: 'fifty',
+    pages: 50,
+    label: '50 pages and up',
+    pitch: 'The county. Every service in every town, so you are the answer wherever the question is asked.',
+    plan: 'Services, towns, and every service-in-town pairing, plus the guides. Built to own the map.',
+    setupCents: 199700,
+    monthlyCents: 29700,
+    bundleSetupCents: 199700,
+    bundleMonthlyCents: 54700,
+  },
+};
+
+/** Display order, smallest first. */
+export const SITE_RUNG_KEYS: SiteRungKey[] = ['five', 'twenty', 'fifty'];
+
+/** The rung a bare "site" or "bundle" means: the entry price. */
+export const DEFAULT_SITE_RUNG: SiteRungKey = 'five';
+
+export function isSiteRungKey(v: unknown): v is SiteRungKey {
+  return v === 'five' || v === 'twenty' || v === 'fifty';
+}
+
+/**
+ * Resolve a rung from anything a link or a form might carry: the key, the page
+ * floor as a number or string ("20", 20), or nothing (the entry rung). Unknown
+ * values fall to the entry rung rather than failing a checkout.
+ */
+export function resolveSiteRung(v: unknown): SiteRung {
+  if (isSiteRungKey(v)) return SITE_RUNGS[v];
+  const n = typeof v === 'number' ? v : typeof v === 'string' ? parseInt(v, 10) : NaN;
+  if (Number.isFinite(n)) {
+    // The largest rung whose floor the number reaches: 30 pages is the 20 rung.
+    const hit = [...SITE_RUNG_KEYS].reverse().find((k) => n >= SITE_RUNGS[k].pages);
+    if (hit) return SITE_RUNGS[hit];
+  }
+  return SITE_RUNGS[DEFAULT_SITE_RUNG];
+}
+
+/**
+ * The tag an order carries in its products array for a rung above the entry
+ * one: 'pages:20', 'pages:50'. Rides beside 'site' or 'bundle' so every reader
+ * that checks for those keys keeps working, and the size is never lost between
+ * the checkout, the webhook, the emails and the delivery board.
+ */
+export function pagesTag(rung: SiteRung): string | null {
+  return rung.key === DEFAULT_SITE_RUNG ? null : `pages:${rung.pages}`;
+}
+
+export function rungFromProducts(products: unknown): SiteRung {
+  const tag = Array.isArray(products) ? (products as unknown[]).find((p) => typeof p === 'string' && p.startsWith('pages:')) : null;
+  return resolveSiteRung(typeof tag === 'string' ? tag.slice('pages:'.length) : null);
+}
+
+/**
+ * Every way the ladder can be wrong, as sentences. Empty means the ladder
+ * holds. Run at build time (scripts/check-price-ladder.mjs) and by the
+ * checkout health check, so a repricing that breaks "no path buys more for
+ * less" cannot ship.
+ */
+export function ladderViolations(): string[] {
+  const out: string[] = [];
+  const voice = DEMO_PRODUCTS.voice;
+  const five = SITE_RUNGS.five;
+  if (five.setupCents !== DEMO_PRODUCTS.site.setupCents || five.monthlyCents !== DEMO_PRODUCTS.site.monthlyCents) {
+    out.push('the 5-page rung and DEMO_PRODUCTS.site disagree');
+  }
+  if (five.bundleSetupCents !== DEMO_BUNDLE.setupCents || five.bundleMonthlyCents !== DEMO_BUNDLE.monthlyCents) {
+    out.push('the 5-page rung and DEMO_BUNDLE disagree');
+  }
+  let below: SiteRung | null = null;
+  for (const key of SITE_RUNG_KEYS) {
+    const r = SITE_RUNGS[key];
+    const pairSetup = r.setupCents + voice.setupCents;
+    const pairMonthly = r.monthlyCents + voice.monthlyCents;
+    if (r.bundleSetupCents < Math.max(r.setupCents, voice.setupCents)) out.push(`${r.label}: bundle setup is below the priciest single`);
+    if (r.bundleSetupCents >= pairSetup) out.push(`${r.label}: bundle setup is not below the two pieces apart`);
+    if (r.bundleMonthlyCents <= Math.max(r.monthlyCents, voice.monthlyCents)) out.push(`${r.label}: bundle monthly is not above the priciest single`);
+    if (r.bundleMonthlyCents >= pairMonthly) out.push(`${r.label}: bundle monthly is not below the two pieces apart`);
+    if (below) {
+      if (r.pages <= below.pages) out.push(`${r.label}: page floor does not rise above ${below.label}`);
+      if (r.setupCents <= below.setupCents || r.monthlyCents <= below.monthlyCents) out.push(`${r.label}: site price does not rise above ${below.label}`);
+      if (r.bundleSetupCents <= below.bundleSetupCents || r.bundleMonthlyCents <= below.bundleMonthlyCents) out.push(`${r.label}: bundle price does not rise above ${below.label}`);
+    }
+    below = r;
+  }
+  return out;
+}
+
 export type DemoOrderQuote = {
-  /** normalized selection; ['bundle'] when both paid pieces are picked */
+  /** normalized selection; ['bundle'] when both paid pieces are picked, plus 'pages:N' above the entry rung */
   products: string[];
   label: string;
   setupCents: number;
   monthlyCents: number;
   isBundle: boolean;
+  /** The website size priced in, when a site or the bundle is in the quote. */
+  rung: SiteRung | null;
 };
 
 /**
@@ -157,32 +324,46 @@ export type DemoOrderQuote = {
  * standalone command center still quotes even though the suite no longer
  * offers it.
  */
-export function quoteDemoOrder(selection: string[]): DemoOrderQuote | null {
+export function quoteDemoOrder(selection: string[], rungWanted?: unknown): DemoOrderQuote | null {
   const picked = PRICEABLE_KEYS.filter((k) => selection.includes(k));
   if (picked.length === 0) return null;
   const hasVoice = picked.includes('voice');
   const hasSite = picked.includes('site');
+  // A rung only means something when a website is in the quote. A voice-only
+  // or command-center-only order carries none, whatever the link said.
+  const rung = hasSite ? resolveSiteRung(rungWanted) : null;
+  const tag = rung ? pagesTag(rung) : null;
+  // The label says the size above the entry rung, so the Stripe line, the
+  // receipt, the owner email and the delivery board all read the same thing.
+  const sized = (name: string) => (rung && tag ? `${name}, ${rung.label}` : name);
   // The Talking Website is exactly the two paid pieces. A command center added
   // deliberately alongside them is not part of it and bills on top, because
   // there is no waiver left anywhere in this file.
-  if (hasVoice && hasSite && picked.length === 2) {
+  if (hasVoice && hasSite && picked.length === 2 && rung) {
     return {
-      products: ['bundle'],
-      label: DEMO_BUNDLE.name,
-      setupCents: DEMO_BUNDLE.setupCents,
-      monthlyCents: DEMO_BUNDLE.monthlyCents,
+      products: tag ? ['bundle', tag] : ['bundle'],
+      label: sized(DEMO_BUNDLE.name),
+      setupCents: rung.bundleSetupCents,
+      monthlyCents: rung.bundleMonthlyCents,
       isBundle: true,
+      rung,
     };
   }
   // Nothing is waived anywhere: every picked piece is billable at its own price.
+  // The site bills at its rung; everything else at its one price.
   const billable = picked;
-  const items = billable.map((k) => DEMO_PRODUCTS[k]);
+  const items = billable.map((k) => {
+    const p = DEMO_PRODUCTS[k];
+    if (k === 'site' && rung) return { name: sized(p.name), setupCents: rung.setupCents, monthlyCents: rung.monthlyCents };
+    return { name: p.name, setupCents: p.setupCents, monthlyCents: p.monthlyCents };
+  });
   return {
-    products: billable,
+    products: tag ? [...billable, tag] : billable,
     label: items.map((i) => i.name).join(' + '),
     setupCents: items.reduce((s, i) => s + i.setupCents, 0),
     monthlyCents: items.reduce((s, i) => s + i.monthlyCents, 0),
     isBundle: false,
+    rung,
   };
 }
 

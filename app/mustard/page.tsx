@@ -540,7 +540,7 @@ export default async function MustardPage({
                   so the answer somebody reads at noon is the answer they hear at midnight.
                 </p>
                 <p className="mt-5 inline-block rounded-lg border-2 border-[#161616] bg-[#FBF6EA] px-4 py-2 font-mono text-[15px] font-bold tracking-wide">
-                  {formatUsd(DEMO_BUNDLE.setupCents)} to build, then {formatUsd(DEMO_BUNDLE.monthlyCents)} a month
+                  From {formatUsd(DEMO_BUNDLE.setupCents)} to build, then {formatUsd(DEMO_BUNDLE.monthlyCents)} a month
                 </p>
                 <p className="mt-4 text-[14px] leading-relaxed text-[#161616]/75">
                   Bought apart, the website is {formatUsd(DEMO_PRODUCTS.site.setupCents)} and{' '}

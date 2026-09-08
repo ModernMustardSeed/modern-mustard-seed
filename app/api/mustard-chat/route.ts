@@ -16,7 +16,7 @@ import { claimDailySpend, clientIp, ipAllowed } from '@/lib/spend-guard';
 import { randomUUID } from 'node:crypto';
 import { OWNER_NOTIFY_TO } from '@/lib/owner';
 import { DEPARTMENTS, BESPOKE } from '@/data/services-hub';
-import { DEMO_PRODUCTS, DEMO_BUNDLE, formatUsd } from '@/lib/demo-order';
+import { DEMO_PRODUCTS, DEMO_BUNDLE, SITE_RUNGS, formatUsd } from '@/lib/demo-order';
 import { products as storeProducts, bundles as storeBundles, isComingSoon } from '@/data/products';
 
 export const runtime = 'nodejs';
@@ -43,10 +43,10 @@ const BESPOKE_LINES = BESPOKE.map((b) => `- **${b.name}**: ${b.desc}`).join('\n'
 const STORE_LINES = [
   ...storeProducts
     .filter((p) => !isComingSoon(p.slug))
-    .map((p) => `- **${p.name}** ($${p.priceUsd}, ${p.pages}pp) at /store/${p.slug} — for: ${p.idealBuyer}`),
+    .map((p) => `- **${p.name}** ($${p.priceUsd}, ${p.pages}pp) at /store/${p.slug}. For: ${p.idealBuyer}`),
   ...storeBundles
     .filter((b) => !isComingSoon(b.slug))
-    .map((b) => `- **${b.name}** ($${b.priceUsd}, saves $${b.savings}) at /store/${b.slug} — ${b.pitch}`),
+    .map((b) => `- **${b.name}** ($${b.priceUsd}, saves $${b.savings}) at /store/${b.slug}. ${b.pitch}`),
 ].join('\n');
 
 const SYSTEM_PROMPT = `You are Mr. Mustard, the AI assistant for Modern Mustard Seed (modernmustardseed.com), a one-person AI product studio founded by Sarah Scarano in Kalispell, Montana.
@@ -70,7 +70,8 @@ At modernmustardseed.com/demos the visitor enters their business once and we bui
 - **Your New Website** (${formatUsd(SITE.setupCents)} setup + ${formatUsd(SITE.monthlyCents)}/mo, live in about a week) at /websites: elite custom design built from scratch, funnels and a lead magnet live day one, SEO and GEO baked in, and their domain, hosting, and ongoing care handled. They own the code, the domain, and every account on launch day.
 - **The Voice Agent** (${formatUsd(VOICE.setupCents)} setup + ${formatUsd(VOICE.monthlyCents)}/mo) at /voice-agents: answers their real number 24/7 in a natural voice, qualifies the caller, books the job, and texts them the details. ${VOICE.finePrint}
 - **The Business Command Center** (${formatUsd(OS.setupCents)} setup + ${formatUsd(OS.monthlyCents)}/mo) at /command-center: calls transcribed, website traffic, customers, reviews, and money on one board. NOTHING IS WAIVED AND IT IS NEVER BUNDLED. See the IMPORTANT note below: never offer it and never suggest it.
-- **The Talking Website** (${formatUsd(DEMO_BUNDLE.setupCents)} setup + ${formatUsd(DEMO_BUNDLE.monthlyCents)}/mo): the website and the voice agent built as one thing, off one brain, so the site literally answers its own phone. The first offer of its kind, and the one most people take.
+- **The Talking Website** (from ${formatUsd(DEMO_BUNDLE.setupCents)} setup + ${formatUsd(DEMO_BUNDLE.monthlyCents)}/mo): the website and the voice agent built as one thing, off one brain, so the site literally answers its own phone. The first offer of its kind, and the one most people take.
+- **Website sizes** (the site and the Talking Website both come in three): ${SITE_RUNGS.five.label} at ${formatUsd(SITE_RUNGS.five.setupCents)} + ${formatUsd(SITE_RUNGS.five.monthlyCents)}/mo alone or ${formatUsd(SITE_RUNGS.five.bundleSetupCents)} + ${formatUsd(SITE_RUNGS.five.bundleMonthlyCents)}/mo as the Talking Website; ${SITE_RUNGS.twenty.label} (every service and every town on its own page) at ${formatUsd(SITE_RUNGS.twenty.setupCents)} + ${formatUsd(SITE_RUNGS.twenty.monthlyCents)}/mo alone or ${formatUsd(SITE_RUNGS.twenty.bundleSetupCents)} + ${formatUsd(SITE_RUNGS.twenty.bundleMonthlyCents)}/mo as the Talking Website; ${SITE_RUNGS.fifty.label} (every service in every town) at ${formatUsd(SITE_RUNGS.fifty.setupCents)} + ${formatUsd(SITE_RUNGS.fifty.monthlyCents)}/mo alone or ${formatUsd(SITE_RUNGS.fifty.bundleSetupCents)} + ${formatUsd(SITE_RUNGS.fifty.bundleMonthlyCents)}/mo as the Talking Website. Google and AI search index pages, not sections, so more pages means more ways to be found. Edits to every page are free forever; a new page beyond the size bought is the next size up, not an edit. Pay links: /pay/talking-website, /pay/talking-website-20, /pay/talking-website-50, /pay/website, /pay/website-20, /pay/website-50.
 
 IMPORTANT: the voice agent is NOT included with the website. They are separate products with separate prices. The voice agent can be added to any website, the one we build or one they already have. Never say a website "comes with" or "includes" a voice agent. The command center is NOT part of the free demo suite and is never bundled or discounted. It is built by hand at its own price and starts with a conversation with Sarah. Never offer it, never suggest it, and only discuss it if the visitor raises it first.
 
@@ -356,7 +357,7 @@ async function executeCaptureLead(input: {
           name,
           email,
           fields,
-          message: `${painSummary}\n\nPlaybook:\n${steps.map((s, i) => `${i + 1}. ${s.title} — ${s.detail}`).join('\n')}`,
+          message: `${painSummary}\n\nPlaybook:\n${steps.map((s, i) => `${i + 1}. ${s.title}: ${s.detail}`).join('\n')}`,
           suggestedAction: 'Reply within 24 hours. Playbook already sent to visitor.',
         }),
       });
@@ -468,7 +469,7 @@ async function executeBookSlot(input: {
         uid: `${randomUUID()}@modernmustardseed.com`,
         startUtc: new Date(input.startIso),
         endUtc: new Date(endIso),
-        summary: `Modern Mustard Seed discovery call — Sarah Scarano + ${name}`,
+        summary: `Modern Mustard Seed discovery call: Sarah Scarano + ${name}`,
         description: `Discovery call with Sarah Scarano, Modern Mustard Seed.\n\nWhat the visitor said: ${painSummary}\n\nWebsite Audit: https://modernmustardseed.com/website-audit\nThe Work: https://modernmustardseed.com/work`,
         location: availability.conferenceLink || 'Video link will be sent before the call',
         organizerName: 'Sarah Scarano',
@@ -499,7 +500,7 @@ async function executeBookSlot(input: {
         from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
         to: email,
         replyTo: 'sarah@modernmustardseed.com',
-        subject: `${firstName}, you are on my calendar — ${shortLabel}`,
+        subject: `${firstName}, you are on my calendar: ${shortLabel}`,
         html: bookingConfirmationEmail({
           firstName,
           whenDisplay: display,

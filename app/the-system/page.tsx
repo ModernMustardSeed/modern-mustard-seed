@@ -31,7 +31,7 @@ const DOORS = [
   {
     eyebrow: 'The flagship // Free build first',
     name: 'The Talking Website',
-    price: `${formatUsd(DEMO_BUNDLE.setupCents)} setup, then ${formatUsd(DEMO_BUNDLE.monthlyCents)}/mo`,
+    price: `From ${formatUsd(DEMO_BUNDLE.setupCents)} setup, then ${formatUsd(DEMO_BUNDLE.monthlyCents)}/mo`,
     body: 'A website that answers its own phone. Your site and your voice agent built as one thing off one brain, so every call and every form lands in the same place. Stations 03, 04 and 07, live within a week.',
     href: '/demos',
     cta: 'Build Mine Free',

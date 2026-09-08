@@ -44,7 +44,7 @@ import { broadcastTiers } from '@/data/ads';
 import { BUILD_FEE_USD, PRICE_TIERS } from '@/data/switchboard';
 import { HATCH } from '@/data/hatchery';
 import { products, bundles } from '@/data/products';
-import { DEMO_PRODUCTS, DEMO_BUNDLE } from '@/lib/demo-order';
+import { DEMO_PRODUCTS, DEMO_BUNDLE, SITE_RUNGS, SITE_RUNG_KEYS, ladderViolations } from '@/lib/demo-order';
 import {
   createTransientCircuit,
   isTransientStripeError,
@@ -121,14 +121,24 @@ function inlinePriceChecks(): Check[] {
     // in the constants). All are validated.
     ...Object.entries(DEMO_PRODUCTS).map(([k, p]) => ({ funnel: `demo-${k}`, amounts: [p.monthlyCents, p.setupCents] })),
     { funnel: 'demo-bundle', amounts: [DEMO_BUNDLE.monthlyCents, DEMO_BUNDLE.setupCents] },
+    // The page rungs price the site and the bundle at three sizes (2026-09-08).
+    ...SITE_RUNG_KEYS.map((k) => {
+      const r = SITE_RUNGS[k];
+      return { funnel: `demo-site-${r.pages}`, amounts: [r.monthlyCents, r.setupCents, r.bundleMonthlyCents, r.bundleSetupCents] };
+    }),
     // The Care Plan ($97/mo) and the $29 portal edit were retired 2026-08-03 when
     // edits went unlimited. Nothing left to price-check: there is no checkout.
     { funnel: 'hatchery', amounts: [HATCH.priceUsd] },
   ];
-  return groups.map(({ funnel, amounts }) => {
+  const checks = groups.map(({ funnel, amounts }) => {
     const bad = amounts.filter((a) => !isPosInt(a));
     return { name: `price:${funnel}`, ok: bad.length === 0, detail: bad.length ? `invalid amount(s): ${JSON.stringify(bad)}` : undefined };
   });
+  // "No path buys more for less", at every rung. The build gates on the same
+  // function (scripts/check-price-ladder.mjs); this is the running copy.
+  const ladder = ladderViolations();
+  checks.push({ name: 'price:ladder', ok: ladder.length === 0, detail: ladder.length ? summarize(ladder) : undefined });
+  return checks;
 }
 
 // ------------------------------------------------------- supabase probes -----
@@ -184,7 +194,7 @@ function priceRefs(): PriceRef[] {
 /** Confirm a price exists and is active (a read; mints no session). */
 async function verifyPrice(stripe: StripeClient, id: string, deadline: Deadline, circuit: TransientCircuit): Promise<Verdict> {
   if (circuit.open()) {
-    return { ok: false, transient: true, detail: `${id} not checked: Stripe was throttling this batch — unproven, not a known break` };
+    return { ok: false, transient: true, detail: `${id} not checked: Stripe was throttling this batch: unproven, not a known break` };
   }
   try {
     const price = await withStripeRetry(() => stripe.prices.retrieve(id, stripeReadOptions), { attempts: READ_ATTEMPTS, deadline, label: id });
@@ -196,7 +206,7 @@ async function verifyPrice(stripe: StripeClient, id: string, deadline: Deadline,
     return {
       ok: false,
       transient,
-      detail: transient ? `${id} could not be verified (Stripe transient: ${reason(e)}) — unproven, not a known break` : `${id} retrieve failed: ${reason(e)}`,
+      detail: transient ? `${id} could not be verified (Stripe transient: ${reason(e)}): unproven, not a known break` : `${id} retrieve failed: ${reason(e)}`,
     };
   }
 }
@@ -414,12 +424,12 @@ async function resolveAndAlert(sb: SupabaseClient | null, failures: Check[], inc
 async function resendCheck(): Promise<Check> {
   const key = (process.env.RESEND_API_KEY || '').trim();
   if (!key || key === '[SENSITIVE]') {
-    return { name: 'resend_env', ok: false, detail: 'RESEND_API_KEY missing — all outbound email, including these alerts, is silently undeliverable' };
+    return { name: 'resend_env', ok: false, detail: 'RESEND_API_KEY missing: all outbound email, including these alerts, is silently undeliverable' };
   }
   try {
     const res = await fetch('https://api.resend.com/domains', { headers: { Authorization: `Bearer ${key}` } });
     if (res.status === 401 || res.status === 403) {
-      return { name: 'resend_api', ok: false, detail: `Resend rejected the API key (${res.status}) — all outbound email is down, including these alerts` };
+      return { name: 'resend_api', ok: false, detail: `Resend rejected the API key (${res.status}): all outbound email is down, including these alerts` };
     }
     if (!res.ok) return { name: 'resend_api', ok: false, inconclusive: true, detail: `Resend API returned ${res.status}` };
     return { name: 'resend_api', ok: true };
@@ -440,7 +450,7 @@ export async function runCheckoutHealth({ selftest = false }: { selftest?: boole
     // transient Resend hiccup is inconclusive, not a page.
     { name: 'supabase_env', ok: !!supabase, detail: supabase ? undefined : 'SUPABASE_URL / SERVICE_ROLE_KEY missing in prod' },
     { name: 'stripe_env', ok: !!stripe, detail: stripe ? undefined : 'STRIPE_SECRET_KEY missing in prod' },
-    { name: 'webhook_secret', ok: !!STRIPE_WEBHOOK_SECRET(), detail: STRIPE_WEBHOOK_SECRET() ? undefined : 'STRIPE_WEBHOOK_SECRET missing — paid orders would not be recorded/fulfilled' },
+    { name: 'webhook_secret', ok: !!STRIPE_WEBHOOK_SECRET(), detail: STRIPE_WEBHOOK_SECRET() ? undefined : 'STRIPE_WEBHOOK_SECRET missing: paid orders would not be recorded/fulfilled' },
   ];
 
   // The Supabase and Stripe halves are independent; run them together.
@@ -451,7 +461,7 @@ export async function runCheckoutHealth({ selftest = false }: { selftest?: boole
   ]);
 
   const checks: Check[] = [
-    ...(selftest ? [{ name: 'selftest', ok: false, detail: 'SELFTEST — synthetic failure to verify alerting. Ignore; not a real outage.' }] : []),
+    ...(selftest ? [{ name: 'selftest', ok: false, detail: 'SELFTEST: synthetic failure to verify alerting. Ignore; not a real outage.' }] : []),
     ...config,
     ...inlinePriceChecks(),
     ...supabaseResults,
@@ -463,7 +473,7 @@ export async function runCheckoutHealth({ selftest = false }: { selftest?: boole
   const inconclusive = checks.filter((c) => !c.ok && c.inconclusive);
   if (inconclusive.length > 0) {
     // Visible in the logs without paging anyone.
-    console.warn(`checkout-health: ${inconclusive.length} check(s) unproven (Stripe transient) —`, inconclusive.map((c) => c.name).join(', '));
+    console.warn(`checkout-health: ${inconclusive.length} check(s) unproven (Stripe transient):`, inconclusive.map((c) => c.name).join(', '));
   }
 
   const outcome = await resolveAndAlert(supabase, failures, inconclusive);

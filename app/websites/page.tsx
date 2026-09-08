@@ -2,7 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { buildMetadata, SITE } from '@/lib/seo';
 import { JsonLd, breadcrumbJsonLd, faqJsonLd } from '@/lib/jsonld';
-import { DEMO_PRODUCTS, DEMO_BUNDLE, formatUsd } from '@/lib/demo-order';
+import { DEMO_PRODUCTS, DEMO_BUNDLE, SITE_RUNGS, SITE_RUNG_KEYS, formatUsd } from '@/lib/demo-order';
 import { workByKey } from '@/data/website-work';
 import EngineToggle from '@/components/websites/EngineToggle';
 import WorkShowcase from '@/components/websites/WorkShowcase';
@@ -50,7 +50,7 @@ const FAQ = [
   },
   {
     q: 'How much does a website cost?',
-    a: `The productized website is ${formatUsd(site.setupCents)} to set up plus ${formatUsd(site.monthlyCents)} a month, and that includes your domain, hosting, and ongoing care. Add the voice agent and the two are built as one thing, for less than they cost apart. It goes live in about a week. For a bigger, fully bespoke build (custom booking, an embedded CRM, a vertical app, an AI sales rep), we scope a Full-Service Business Build and quote it after a free call. Month to month, cancel anytime, no trials.`,
+    a: `The productized website comes in three sizes. ${SITE_RUNGS.five.label}: ${formatUsd(SITE_RUNGS.five.setupCents)} to set up plus ${formatUsd(SITE_RUNGS.five.monthlyCents)} a month. ${SITE_RUNGS.twenty.label}, every service and every town on its own page: ${formatUsd(SITE_RUNGS.twenty.setupCents)} plus ${formatUsd(SITE_RUNGS.twenty.monthlyCents)} a month. ${SITE_RUNGS.fifty.label}, every service in every town: ${formatUsd(SITE_RUNGS.fifty.setupCents)} plus ${formatUsd(SITE_RUNGS.fifty.monthlyCents)} a month. Every size includes your domain, hosting, ongoing care, and unlimited edits to every page. A new page beyond your size is the next size up, not an edit. Add the voice agent and the two are built as one thing, for less than they cost apart. It goes live in about a week. For a bigger, fully bespoke build (custom booking, an embedded CRM, a vertical app, an AI sales rep), we scope a Full-Service Business Build and quote it after a free call. Month to month, cancel anytime, no trials.`,
   },
   {
     q: 'How fast does it go live?',
@@ -282,8 +282,8 @@ export default function WebsitesPage() {
                     Take both and save
                   </p>
                   <p className="font-body text-[13px] text-[#161616]/80 mt-1.5 leading-relaxed">
-                    The Talking Website (site + voice agent, one brain) is {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo +{' '}
-                    {formatUsd(DEMO_BUNDLE.setupCents)} setup, less than the two apart.
+                    The Talking Website (site + voice agent, one brain) is from {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo +{' '}
+                    {formatUsd(DEMO_BUNDLE.setupCents)} setup, less than the two apart at every size.
                   </p>
                 </div>
                 <Link
@@ -401,11 +401,29 @@ export default function WebsitesPage() {
               <span className="font-mono font-bold text-[10px] uppercase tracking-[0.2em] text-[#161616]">The Website</span>
               <h3 className="font-display italic font-extrabold text-2xl mt-2">Build it free, keep it monthly</h3>
               <p className="font-mono font-bold text-[15px] mt-3 text-[#161616]">
-                {formatUsd(site.monthlyCents)}/mo <span className="text-[#161616]/75">+ {formatUsd(site.setupCents)} setup</span>
+                From {formatUsd(site.monthlyCents)}/mo <span className="text-[#161616]/75">+ {formatUsd(site.setupCents)} setup</span>
               </p>
+              {/* Three sizes. Google and AI search index pages, so the price follows the page count. */}
+              <dl className="mt-4 space-y-2 font-body text-[13px]">
+                {SITE_RUNG_KEYS.map((k) => {
+                  const r = SITE_RUNGS[k];
+                  return (
+                    <div key={k} data-price={`website-${r.pages}`} className="flex justify-between gap-4 border-b border-dashed border-[#161616]/30 pb-2">
+                      <dt>
+                        <span className="font-bold">{r.label}</span>
+                        <span className="block text-[12px] text-[#161616]/70">{r.pitch}</span>
+                      </dt>
+                      <dd className="font-mono text-[12.5px] font-bold text-right shrink-0">
+                        {formatUsd(r.setupCents)} + {formatUsd(r.monthlyCents)}/mo
+                      </dd>
+                    </div>
+                  );
+                })}
+              </dl>
               <p className="font-body text-[13.5px] text-[#161616]/80 mt-3 leading-relaxed flex-1">
-                A custom site designed from scratch, funnels and SEO baked in. Your domain, hosting, and care all
-                included. Month to month, cancel anytime. Add the voice agent any time and it answers the phone too.
+                A custom site designed from scratch, funnels and SEO and GEO baked in. Your domain, hosting, and care
+                all included, and unlimited edits to every page. A new page beyond your size is the next size up.
+                Month to month, cancel anytime. Add the voice agent any time and it answers the phone too.
               </p>
               <Link
                 href="/demos"
@@ -500,7 +518,7 @@ export default function WebsitesPage() {
             </h2>
             <p className="font-body text-[15px] text-[#161616]/80 mt-4 max-w-xl mx-auto leading-relaxed">
               Enter your business once and tour a real working site, designed from scratch for you, in your hands
-              within the hour. Keep it for {formatUsd(site.monthlyCents)}/mo, or take the voice agent with it and the
+              within the hour. Keep it from {formatUsd(site.monthlyCents)}/mo, or take the voice agent with it and the
               pair costs less than the two apart.
             </p>
             <Link
