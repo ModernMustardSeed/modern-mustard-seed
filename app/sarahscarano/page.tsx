@@ -22,12 +22,13 @@ export const metadata = buildMetadata({
   path: PAGE_PATH,
 });
 
-// The facts strip. Verified against the gallery and lib/seo.ts on 2026-09-08.
-const FACTS: { n: string; l: string }[] = [
-  { n: '25', l: 'works, all live' },
-  { n: '3 yrs', l: 'AI, automation and code' },
-  { n: '15 yrs', l: 'sales and design before that' },
-  { n: '65+', l: 'repos since Nov 2025' },
+// What she does, in words. Sarah took the number strip off on 2026-09-08
+// ("I don't like that"); the disciplines below are the gallery's own four.
+const DISCIPLINES: { t: string; d: string }[] = [
+  { t: 'Product and software', d: 'Strategy, websites, custom applications, payments.' },
+  { t: 'AI and operations', d: 'Voice agents, lead pipelines, agent back offices, workflow automation.' },
+  { t: 'Brand and commerce', d: 'Direction, identity, storefronts, print, creative systems.' },
+  { t: 'Story and launch', d: 'Positioning, copy, commercials, films, the go-to-market around a product.' },
 ];
 
 // What she takes on. Package pricing lives on the studio pages, never here.
@@ -195,7 +196,7 @@ export default function SarahScaranoPage() {
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 bg-white text-[#161616] border-2 border-[#161616] rounded-full px-5 py-2.5 font-mono text-[12px] font-bold uppercase tracking-[0.15em] pop-shadow hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[3px_3px_0_0_#161616] transition"
                 >
-                  Resume, one page
+                  Resume, PDF
                 </a>
                 <Link
                   href="/book"
@@ -207,12 +208,12 @@ export default function SarahScaranoPage() {
             </div>
           </div>
 
-          {/* ─── Facts strip ─── */}
-          <div className="mt-14 md:mt-16 grid grid-cols-2 md:grid-cols-4 gap-3 max-w-4xl mx-auto">
-            {FACTS.map((f) => (
-              <div key={f.l} className="pop-card p-4 md:p-5 text-center">
-                <div className="font-display text-3xl md:text-4xl font-black text-[#161616] tracking-tight">{f.n}</div>
-                <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#161616]/60 mt-1.5">{f.l}</div>
+          {/* ─── What I do ─── */}
+          <div className="mt-14 md:mt-16 grid sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 max-w-5xl mx-auto">
+            {DISCIPLINES.map((s) => (
+              <div key={s.t} className="pop-card p-5">
+                <h2 className="font-display text-lg font-black text-[#161616] tracking-tight leading-tight">{s.t}</h2>
+                <p className="font-body text-[14px] text-[#3A3733] leading-relaxed mt-1.5">{s.d}</p>
               </div>
             ))}
           </div>
