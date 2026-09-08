@@ -439,7 +439,7 @@ export default function VoiceAgentsPage() {
               <Half
                 label="Your website"
                 body="Built from scratch, funnels and SEO baked in, live on your domain in about a week."
-                price={`${formatUsd(DEMO_PRODUCTS.site.setupCents)} + ${formatUsd(DEMO_PRODUCTS.site.monthlyCents)}/mo`}
+                price={`From ${formatUsd(DEMO_PRODUCTS.site.setupCents)} + ${formatUsd(DEMO_PRODUCTS.site.monthlyCents)}/mo`}
               />
               <div
                 aria-hidden="true"
@@ -465,7 +465,7 @@ export default function VoiceAgentsPage() {
                     {DEMO_BUNDLE.name}
                   </h3>
                   <p className="mt-3 font-display text-2xl md:text-3xl font-black tracking-tight">
-                    {formatUsd(DEMO_BUNDLE.setupCents)} to build ·{' '}
+                    From {formatUsd(DEMO_BUNDLE.setupCents)} to build ·{' '}
                     {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo
                   </p>
                   <p className="mt-3 font-body text-[15px] leading-6 text-[#161616]/80 max-w-xl">

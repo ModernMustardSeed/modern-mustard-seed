@@ -480,8 +480,13 @@ const RESOURCE_CATALOG: Record<string, CatalogEntry> = {
   // payment links and the actual product so they can just pay for it if they
   // want to." `ref: true` so a partner still earns on a link they caused.
   'pay-talking-website': { label: 'Start The Talking Website (secure checkout)', url: `${SITE_ROOT}/pay/talking-website`, ref: true },
+  // The page rungs (2026-09-08): same checkout, bigger site, priced by lib/demo-order.ts SITE_RUNGS.
+  'pay-talking-website-20': { label: 'Start The Talking Website, 20 pages and up (secure checkout)', url: `${SITE_ROOT}/pay/talking-website-20`, ref: true },
+  'pay-talking-website-50': { label: 'Start The Talking Website, 50 pages and up (secure checkout)', url: `${SITE_ROOT}/pay/talking-website-50`, ref: true },
   'pay-voice-agent': { label: 'Start your Voice Agent (secure checkout)', url: `${SITE_ROOT}/pay/voice-agent`, ref: true },
   'pay-website': { label: 'Start your website (secure checkout)', url: `${SITE_ROOT}/pay/website`, ref: true },
+  'pay-website-20': { label: 'Start your website, 20 pages and up (secure checkout)', url: `${SITE_ROOT}/pay/website-20`, ref: true },
+  'pay-website-50': { label: 'Start your website, 50 pages and up (secure checkout)', url: `${SITE_ROOT}/pay/website-50`, ref: true },
   'pay-command-center': { label: 'Start your Business Command Center (secure checkout)', url: `${SITE_ROOT}/pay/command-center`, ref: true },
   // Admin-desk-only deep links (auth-gated routes; useless to anyone not signed
   // into admin, so they are dropped on non-admin calls). Paths mirror the admin

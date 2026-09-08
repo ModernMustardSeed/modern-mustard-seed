@@ -30,7 +30,7 @@
 
 import { NextResponse } from 'next/server';
 import { getStripe } from '@/lib/stripe';
-import { quoteDemoOrder, formatUsd, type DemoProductKey } from '@/lib/demo-order';
+import { quoteDemoOrder, formatUsd, resolveSiteRung, type DemoProductKey } from '@/lib/demo-order';
 import { SITE } from '@/lib/seo';
 
 export const runtime = 'nodejs';
@@ -42,6 +42,12 @@ export const maxDuration = 30;
  * combination is resolved on this side of the wire so a bad slug can never mint
  * a checkout for the wrong thing. Aliases are generous on purpose: the slug is
  * read aloud on a phone call and typed by a person, not by a program.
+ *
+ * PAGE RUNGS (2026-09-08): a slug may end in the page floor, so
+ * /pay/talking-website-20 and /pay/website-50 mint the bigger site at its own
+ * price. A bare slug is the entry rung, exactly what it always was. The number
+ * is parsed off the end and resolved by lib/demo-order.ts, so "-30" still
+ * lands on the 20-and-up rung rather than nowhere.
  */
 const SLUGS: Record<string, DemoProductKey[]> = {
   'talking-website': ['voice', 'site'],
@@ -60,9 +66,16 @@ const SLUGS: Record<string, DemoProductKey[]> = {
   'voice-and-website': ['voice', 'site'],
 };
 
+/** "talking-website-20" splits into the product slug and the page floor. */
+function splitSlug(raw: string): { base: string; pages: number | null } {
+  const m = raw.match(/^(.*?)-(\d{1,3})(?:-pages?)?$/);
+  if (m && SLUGS[m[1]]) return { base: m[1], pages: parseInt(m[2], 10) };
+  return { base: raw, pages: null };
+}
+
 export async function GET(req: Request, ctx: { params: Promise<{ slug: string }> }) {
   const { slug } = await ctx.params;
-  const key = String(slug || '').toLowerCase().trim();
+  const { base: key, pages } = splitSlug(String(slug || '').toLowerCase().trim());
   const products = SLUGS[key];
 
   // An unknown slug sends them to the offer page rather than a 404. Somebody
@@ -70,7 +83,8 @@ export async function GET(req: Request, ctx: { params: Promise<{ slug: string }>
   // somewhere that sells.
   if (!products) return NextResponse.redirect(`${SITE.url}/work-with-us`, 302);
 
-  const quote = quoteDemoOrder(products);
+  const rung = pages === null ? undefined : resolveSiteRung(pages);
+  const quote = quoteDemoOrder(products, rung?.key);
   const stripe = getStripe();
   if (!quote || !stripe) {
     return NextResponse.redirect(`${SITE.url}/work-with-us?pay=unavailable`, 302);
@@ -98,6 +112,7 @@ export async function GET(req: Request, ctx: { params: Promise<{ slug: string }>
     item_name: quote.label,
     products: quote.products.join(','),
     slug: key,
+    ...(quote.rung ? { pages: String(quote.rung.pages) } : {}),
     ...(ref ? { ref } : {}),
   };
 
@@ -109,7 +124,7 @@ export async function GET(req: Request, ctx: { params: Promise<{ slug: string }>
         {
           price_data: {
             currency: 'usd',
-            product_data: { name: `${quote.label} — monthly` },
+            product_data: { name: `${quote.label}: monthly` },
             unit_amount: quote.monthlyCents,
             recurring: { interval: 'month' as const },
           },
@@ -118,7 +133,7 @@ export async function GET(req: Request, ctx: { params: Promise<{ slug: string }>
         {
           price_data: {
             currency: 'usd',
-            product_data: { name: `${quote.label} — one-time setup & customization` },
+            product_data: { name: `${quote.label}: one-time setup and customization` },
             unit_amount: quote.setupCents,
           },
           quantity: 1,

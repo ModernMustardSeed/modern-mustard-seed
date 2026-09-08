@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { buildMetadata, SITE } from '@/lib/seo';
 import { JsonLd, breadcrumbJsonLd, faqJsonLd } from '@/lib/jsonld';
-import { DEMO_PRODUCTS, DEMO_BUNDLE, formatUsd } from '@/lib/demo-order';
+import { DEMO_PRODUCTS, DEMO_BUNDLE, SITE_RUNGS, SITE_RUNG_KEYS, formatUsd } from '@/lib/demo-order';
 import { DEMO_LINE } from '@/data/trade-pages';
 import VoiceTalkButton from '@/components/VoiceTalkButton';
 import MissedCallCalculator from '@/components/MissedCallCalculator';
@@ -18,9 +18,14 @@ const PAIR_MONTHLY = voice.monthlyCents + site.monthlyCents;
 const SAVE_SETUP = PAIR_SETUP - DEMO_BUNDLE.setupCents;
 const SAVE_MONTHLY = PAIR_MONTHLY - DEMO_BUNDLE.monthlyCents;
 
+// The three sizes of the site, and therefore of the bundle. The entry rung is
+// DEMO_BUNDLE; the bigger ones are the same thing with every service and every
+// town on its own page (lib/demo-order.ts SITE_RUNGS).
+const RUNGS = SITE_RUNG_KEYS.map((k) => SITE_RUNGS[k]);
+
 export const metadata = buildMetadata({
   title: 'The Talking Website: a website that answers its own phone',
-  description: `Your website and your voice agent built as one thing, off one brain, so the answer a visitor reads is the exact answer a caller hears at midnight. ${formatUsd(DEMO_BUNDLE.setupCents)} setup plus ${formatUsd(DEMO_BUNDLE.monthlyCents)} a month. See yours built free.`,
+  description: `Your website and your voice agent built as one thing, off one brain, so the answer a visitor reads is the exact answer a caller hears at midnight. From ${formatUsd(DEMO_BUNDLE.setupCents)} setup plus ${formatUsd(DEMO_BUNDLE.monthlyCents)} a month, in three sizes: 5, 20, or 50 pages. See yours built free.`,
   path: '/talking-website',
   // Route-level card. buildMetadata sets openGraph.images, which overrides
   // the file-based opengraph-image convention, so it must be named here.
@@ -44,8 +49,8 @@ const PIECES = [
   {
     icon: '🌐',
     name: 'The website',
-    price: `${formatUsd(site.setupCents)} + ${formatUsd(site.monthlyCents)}/mo on its own`,
-    desc: 'Custom design for your trade and your town, funnels and a lead magnet live on day one, SEO and GEO baked in. We wire up your Google Business Profile and handle your reviews. Your domain, hosting, and care handled.',
+    price: `From ${formatUsd(site.setupCents)} + ${formatUsd(site.monthlyCents)}/mo on its own, in 5, 20, or 50 pages`,
+    desc: 'Custom design for your trade and your town, funnels and a lead magnet live on day one, SEO and GEO baked in. Every service and every town can have its own page. We wire up your Google Business Profile and handle your reviews. Your domain, hosting, and care handled.',
   },
   {
     icon: '☎️',
@@ -58,7 +63,7 @@ const PIECES = [
 const FAQ = [
   {
     q: 'What is The Talking Website?',
-    a: `A website that answers its own phone. Instead of buying a site from one vendor and bolting a phone robot on later, your website and your voice agent are built as one thing, off one brain, so the answer a visitor reads on the page is the exact answer a caller hears at midnight. It is ${formatUsd(DEMO_BUNDLE.setupCents)} to set up plus ${formatUsd(DEMO_BUNDLE.monthlyCents)} a month.`,
+    a: `A website that answers its own phone. Instead of buying a site from one vendor and bolting a phone robot on later, your website and your voice agent are built as one thing, off one brain, so the answer a visitor reads on the page is the exact answer a caller hears at midnight. It starts at ${formatUsd(DEMO_BUNDLE.setupCents)} to set up plus ${formatUsd(DEMO_BUNDLE.monthlyCents)} a month for a ${SITE_RUNGS.five.label.replace(' pages', '-page')} site, and comes in three sizes.`,
   },
   {
     q: 'How is this different from adding a chatbot to my site?',
@@ -66,11 +71,19 @@ const FAQ = [
   },
   {
     q: 'How much does it cost?',
-    a: `${formatUsd(DEMO_BUNDLE.setupCents)} to set up plus ${formatUsd(DEMO_BUNDLE.monthlyCents)} a month, month to month, cancel anytime, no trials. Bought separately the two paid pieces are ${formatUsd(PAIR_SETUP)} setup plus ${formatUsd(PAIR_MONTHLY)} a month, so the bundle saves you ${formatUsd(SAVE_SETUP)} up front and ${formatUsd(SAVE_MONTHLY)} every month.`,
+    a: `It comes in three sizes, and the price follows the size of the site. ${SITE_RUNGS.five.label}: ${formatUsd(SITE_RUNGS.five.bundleSetupCents)} to set up plus ${formatUsd(SITE_RUNGS.five.bundleMonthlyCents)} a month. ${SITE_RUNGS.twenty.label}: ${formatUsd(SITE_RUNGS.twenty.bundleSetupCents)} plus ${formatUsd(SITE_RUNGS.twenty.bundleMonthlyCents)} a month. ${SITE_RUNGS.fifty.label}: ${formatUsd(SITE_RUNGS.fifty.bundleSetupCents)} plus ${formatUsd(SITE_RUNGS.fifty.bundleMonthlyCents)} a month. Month to month, cancel anytime, no trials. At every size the bundle costs less than the site and the voice agent bought apart. At ${SITE_RUNGS.five.label} that is ${formatUsd(SAVE_SETUP)} less up front and ${formatUsd(SAVE_MONTHLY)} less every month.`,
+  },
+  {
+    q: 'Why would I want 20 or 50 pages?',
+    a: 'Because Google and AI search index pages, not sections. A page for each service and a page for each town you serve means you are the answer when somebody in that town asks for that job, on Google or in ChatGPT. Five pages is a real storefront. Twenty is every service and every town on its own page. Fifty is every service in every town, so you own the map. Bigger sites cost more because there is more to build and more to keep found.',
+  },
+  {
+    q: 'What counts as an edit, and what counts as a new page?',
+    a: 'Edits are free, forever, on every page you have: new copy, new photos, new prices, a new section, a whole new look. A page that did not exist before, beyond the size you bought, is the next size up. That is the only line, and it is the one that keeps the sizes honest.',
   },
   {
     q: 'Can I buy just the website or just the voice agent?',
-    a: `Yes. Every piece is sold on its own. The website is ${formatUsd(site.setupCents)} plus ${formatUsd(site.monthlyCents)} a month and the voice agent is ${formatUsd(voice.setupCents)} plus ${formatUsd(voice.monthlyCents)} a month. The Talking Website is what happens when you take them together, and it is cheaper than buying them separately.`,
+    a: `Yes. Every piece is sold on its own. The website is ${formatUsd(site.setupCents)} plus ${formatUsd(site.monthlyCents)} a month at ${SITE_RUNGS.five.label}, ${formatUsd(SITE_RUNGS.twenty.setupCents)} plus ${formatUsd(SITE_RUNGS.twenty.monthlyCents)} at ${SITE_RUNGS.twenty.label}, and ${formatUsd(SITE_RUNGS.fifty.setupCents)} plus ${formatUsd(SITE_RUNGS.fifty.monthlyCents)} at ${SITE_RUNGS.fifty.label}. The voice agent is ${formatUsd(voice.setupCents)} plus ${formatUsd(voice.monthlyCents)} a month. The Talking Website is what happens when you take them together, and at every size it is cheaper than buying them separately.`,
   },
   {
     q: 'Can I put the voice agent on the website I already have?',
@@ -108,16 +121,17 @@ function talkingWebsiteJsonLd() {
         provider: { '@type': 'Organization', name: 'Modern Mustard Seed', url: SITE.url },
         areaServed: 'US',
         url: `${SITE.url}/talking-website`,
-        offers: {
+        // One offer per size, so a search engine that reads prices reads all three.
+        offers: RUNGS.map((r) => ({
           '@type': 'Offer',
-          name: DEMO_BUNDLE.name,
-          description: DEMO_BUNDLE.blurb,
-          price: Math.round(DEMO_BUNDLE.monthlyCents / 100),
+          name: `${DEMO_BUNDLE.name}, ${r.label}`,
+          description: `${DEMO_BUNDLE.blurb} ${r.pitch}`,
+          price: Math.round(r.bundleMonthlyCents / 100),
           priceCurrency: 'USD',
           priceSpecification: [
             {
               '@type': 'UnitPriceSpecification',
-              price: Math.round(DEMO_BUNDLE.monthlyCents / 100),
+              price: Math.round(r.bundleMonthlyCents / 100),
               priceCurrency: 'USD',
               billingIncrement: 1,
               unitText: 'MONTH',
@@ -125,14 +139,14 @@ function talkingWebsiteJsonLd() {
             {
               '@type': 'UnitPriceSpecification',
               priceType: 'https://schema.org/Installment',
-              price: Math.round(DEMO_BUNDLE.setupCents / 100),
+              price: Math.round(r.bundleSetupCents / 100),
               priceCurrency: 'USD',
               description: 'One-time setup',
             },
           ],
-          url: `${SITE.url}/talking-website`,
+          url: `${SITE.url}/talking-website#pricing`,
           availability: 'https://schema.org/InStock',
-        },
+        })),
       },
       faqJsonLd(FAQ),
       // breadcrumbJsonLd prepends SITE.url itself, so these are PATHS. Passing
@@ -167,8 +181,14 @@ export default function TalkingWebsitePage() {
                 two are built as one thing, off one brain.
               </p>
               <p className="font-mono font-bold text-[15px] mt-5">
-                {formatUsd(DEMO_BUNDLE.setupCents)} setup{' '}
+                From {formatUsd(DEMO_BUNDLE.setupCents)} setup{' '}
                 <span className="text-[#161616]/70">+ {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo</span>
+                <span className="block sm:inline font-normal text-[12px] text-[#161616]/60 sm:ml-2">
+                  Three sizes: 5, 20, or 50 pages.{' '}
+                  <a href="#pricing" className="underline underline-offset-4 hover:text-[#161616]">
+                    See the ladder
+                  </a>
+                </span>
               </p>
               <div className="mt-7 flex flex-wrap gap-3">
                 <Link
@@ -326,108 +346,124 @@ export default function TalkingWebsitePage() {
           </div>
         </section>
 
-        {/* ── Pricing ── */}
-        <section>
+        {/* ── Pricing: the page ladder ── */}
+        <section id="pricing" className="scroll-mt-24">
           <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#C4160B] uppercase">
-            Pricing // Cheaper than the pieces
+            Pricing // Three sizes, one brain
           </p>
           <h2 className="font-display italic font-extrabold text-4xl md:text-5xl mt-3 leading-[1.02] max-w-3xl">
-            Take both and the bundle pays you.
+            Pick how much of the map you want to own.
           </h2>
+          <p className="font-body text-[15px] text-[#161616]/70 mt-4 max-w-2xl leading-relaxed">
+            Google and AI search index pages, not sections. Every service and every town on its own page is how you
+            become the answer. The voice agent reads every page, so a bigger site is a smarter phone too. At every
+            size the bundle costs less than the two pieces apart.
+          </p>
 
-          <div className="grid lg:grid-cols-12 gap-6 mt-10 items-stretch">
-            <div className="lg:col-span-7 relative flex flex-col border-2 border-[#161616] bg-[#F5B700] rounded-2xl shadow-[8px_8px_0_0_#161616] p-7 md:p-9">
-              <span
-                aria-hidden
-                className="absolute -top-4 -right-3 rotate-[8deg] bg-[#C4160B] text-[#FBF6EA] font-mono font-extrabold text-[10px] uppercase tracking-[0.14em] px-3 py-1.5 border-2 border-[#161616] shadow-[3px_3px_0_0_#161616]"
-              >
-                The flagship
-              </span>
-              <span className="font-mono font-bold text-[10px] uppercase tracking-[0.2em] text-[#161616]">
-                {DEMO_BUNDLE.name}
-              </span>
-              <h3 className="font-display italic font-extrabold text-3xl mt-2">The site and the phone, as one</h3>
-              <p className="font-mono font-bold text-[19px] mt-4 text-[#161616]">
-                {formatUsd(DEMO_BUNDLE.setupCents)} setup{' '}
-                <span className="text-[#161616]/75">+ {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo</span>
-              </p>
-              <ul className="mt-5 grid sm:grid-cols-2 gap-x-6 gap-y-2.5 flex-1">
-                {[
-                  'Custom website, live in about a week',
-                  'Voice agent answering your calls, 24/7',
-                  'One brain behind both',
-                  'Funnels, lead magnet, SEO and GEO',
-                  // The homepage Town Square (MI 47) promises both of these by
-                  // name. The flagship page has to say so too, or the CTA that
-                  // sends people here to "see what is baked in" is a dead end.
-                  'Google Business Profile set up and tuned',
-                  'Your reviews collected and answered',
-                  'Domain, hosting, and care handled',
-                  'You own the code and every account',
-                ].map((f) => (
-                  <li key={f} className="flex items-start gap-2.5 font-body text-[13.5px] text-[#161616]/85">
-                    <span className="mt-[7px] h-1.5 w-1.5 rounded-full bg-[#161616] shrink-0" aria-hidden />
-                    {f}
-                  </li>
-                ))}
-              </ul>
-              <Link
-                href="/demos"
-                className="mt-7 text-center border-2 border-[#161616] bg-[#161616] text-[#F5B700] rounded-full px-5 py-4 font-sans font-extrabold text-[12px] uppercase tracking-[0.16em] shadow-[4px_4px_0_0_#FBF6EA] hover:-translate-y-0.5 transition-all"
-              >
-                Build mine free →
-              </Link>
-              <p className="font-body text-[12.5px] text-[#161616]/75 mt-3 text-center">
-                Month to month, cancel anytime, no trials. The demo was the trial.
-              </p>
-            </div>
-
-            {/* The honest receipt */}
-            <div className="lg:col-span-5 flex flex-col border-2 border-[#161616] bg-white rounded-2xl shadow-[6px_6px_0_0_#C4160B] p-7 md:p-8">
-              <span className="font-mono font-bold text-[10px] uppercase tracking-[0.2em] text-[#C4160B]">
-                The receipt
-              </span>
-              <h3 className="font-display italic font-extrabold text-2xl mt-2">Bought separately</h3>
-              <dl className="mt-5 space-y-3 font-body text-[13.5px]">
-                <div className="flex justify-between gap-4 border-b border-dashed border-[#161616]/25 pb-2.5">
-                  <dt className="text-[#161616]/75">{site.name}</dt>
-                  <dd className="font-mono text-[12.5px] text-right shrink-0">
-                    {formatUsd(site.setupCents)} + {formatUsd(site.monthlyCents)}/mo
-                  </dd>
+          <div className="grid md:grid-cols-3 gap-5 mt-10 items-stretch">
+            {RUNGS.map((r, i) => {
+              const featured = r.key === 'twenty';
+              const pairSetup = r.setupCents + voice.setupCents;
+              const pairMonthly = r.monthlyCents + voice.monthlyCents;
+              return (
+                <div
+                  key={r.key}
+                  data-price={`talking-website-${r.pages}`}
+                  className={`relative flex flex-col border-2 border-[#161616] rounded-2xl p-6 md:p-7 ${
+                    featured ? 'bg-[#F5B700] shadow-[8px_8px_0_0_#161616]' : 'bg-white shadow-[6px_6px_0_0_#161616]'
+                  }`}
+                >
+                  {featured ? (
+                    <span
+                      aria-hidden
+                      className="absolute -top-4 -right-3 rotate-[8deg] bg-[#C4160B] text-[#FBF6EA] font-mono font-extrabold text-[10px] uppercase tracking-[0.14em] px-3 py-1.5 border-2 border-[#161616] shadow-[3px_3px_0_0_#161616]"
+                    >
+                      Built to be found
+                    </span>
+                  ) : null}
+                  <span className="font-mono font-bold text-[10px] uppercase tracking-[0.2em] text-[#161616]/70">
+                    Size {i + 1} of 3
+                  </span>
+                  <h3 className="font-display italic font-extrabold text-3xl mt-1.5 leading-none">{r.label}</h3>
+                  <p className="font-mono font-bold text-[19px] mt-4 text-[#161616]">
+                    {formatUsd(r.bundleSetupCents)} setup{' '}
+                    <span className="text-[#161616]/70">+ {formatUsd(r.bundleMonthlyCents)}/mo</span>
+                  </p>
+                  <p className="font-body text-[13.5px] text-[#161616]/80 mt-3 leading-relaxed">{r.pitch}</p>
+                  <p className="font-body text-[12.5px] text-[#161616]/65 mt-2 leading-relaxed flex-1">{r.plan}</p>
+                  <dl className="mt-5 pt-4 border-t-2 border-dashed border-[#161616]/25 space-y-1.5 font-body text-[12.5px]">
+                    <div className="flex justify-between gap-3">
+                      <dt className="text-[#161616]/70">Site alone</dt>
+                      <dd className="font-mono text-right shrink-0">
+                        {formatUsd(r.setupCents)} + {formatUsd(r.monthlyCents)}/mo
+                      </dd>
+                    </div>
+                    <div className="flex justify-between gap-3">
+                      <dt className="text-[#161616]/70">Voice agent alone</dt>
+                      <dd className="font-mono text-right shrink-0">
+                        {formatUsd(voice.setupCents)} + {formatUsd(voice.monthlyCents)}/mo
+                      </dd>
+                    </div>
+                    <div className="flex justify-between gap-3">
+                      <dt className="text-[#161616]/70">Apart</dt>
+                      <dd className="font-mono text-right shrink-0 line-through decoration-[#C4160B] decoration-2">
+                        {formatUsd(pairSetup)} + {formatUsd(pairMonthly)}/mo
+                      </dd>
+                    </div>
+                    <div className="flex justify-between gap-3 font-bold">
+                      <dt>You keep</dt>
+                      <dd className="font-mono text-right shrink-0 text-[#C4160B]">
+                        {formatUsd(pairSetup - r.bundleSetupCents)} + {formatUsd(pairMonthly - r.bundleMonthlyCents)}/mo
+                      </dd>
+                    </div>
+                  </dl>
+                  <div className="mt-6 grid gap-2">
+                    <Link
+                      href="/demos"
+                      className={`text-center border-2 border-[#161616] rounded-full px-5 py-3.5 font-sans font-extrabold text-[11px] uppercase tracking-[0.16em] hover:-translate-y-0.5 transition-all ${
+                        featured
+                          ? 'bg-[#161616] text-[#F5B700] shadow-[4px_4px_0_0_#FBF6EA]'
+                          : 'bg-[#F5B700] text-[#161616] shadow-[4px_4px_0_0_#161616]'
+                      }`}
+                    >
+                      Build mine free →
+                    </Link>
+                    <a
+                      href={`/pay/talking-website-${r.pages}`}
+                      className="text-center border-2 border-[#161616] bg-white text-[#161616] rounded-full px-5 py-3 font-sans font-bold text-[11px] uppercase tracking-[0.16em] hover:bg-[#FBF6EA] transition-colors"
+                    >
+                      Skip the demo, pay now
+                    </a>
+                  </div>
                 </div>
-                <div className="flex justify-between gap-4 border-b border-dashed border-[#161616]/25 pb-2.5">
-                  <dt className="text-[#161616]/75">{voice.name}</dt>
-                  <dd className="font-mono text-[12.5px] text-right shrink-0">
-                    {formatUsd(voice.setupCents)} + {formatUsd(voice.monthlyCents)}/mo
-                  </dd>
-                </div>
-                <div className="flex justify-between gap-4 pt-1">
-                  <dt className="font-bold">Separately</dt>
-                  <dd className="font-mono font-bold text-[12.5px] text-right shrink-0">
-                    {formatUsd(PAIR_SETUP)} + {formatUsd(PAIR_MONTHLY)}/mo
-                  </dd>
-                </div>
-                <div className="flex justify-between gap-4">
-                  <dt className="font-bold">Together</dt>
-                  <dd className="font-mono font-bold text-[12.5px] text-right shrink-0">
-                    {formatUsd(DEMO_BUNDLE.setupCents)} + {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo
-                  </dd>
-                </div>
-              </dl>
-              <div className="mt-5 pt-4 border-t-2 border-dashed border-[#161616]/25">
-                <p className="font-mono font-bold text-[10px] uppercase tracking-[0.16em] text-[#8f6600]">You keep</p>
-                <p className="font-display font-extrabold text-3xl mt-1.5 leading-none">
-                  {formatUsd(SAVE_SETUP)} up front
-                </p>
-                <p className="font-display font-extrabold text-3xl mt-1 leading-none">
-                  {formatUsd(SAVE_MONTHLY)} every month
-                </p>
-                <p className="font-body text-[12.5px] text-[#161616]/70 mt-3 leading-relaxed">
-                  Built as one system rather than two tools. We would rather you had the whole thing than half of it.
-                </p>
-              </div>
-            </div>
+              );
+            })}
           </div>
+
+          <ul className="mt-8 grid sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-2.5">
+            {[
+              'Custom website, live in about a week',
+              'Voice agent answering your calls, 24/7',
+              'One brain behind both',
+              'Funnels, lead magnet, SEO and GEO',
+              // The homepage Town Square (MI 47) promises both of these by
+              // name. The flagship page has to say so too, or the CTA that
+              // sends people here to "see what is baked in" is a dead end.
+              'Google Business Profile set up and tuned',
+              'Your reviews collected and answered',
+              'Domain, hosting, and care handled',
+              'You own the code and every account',
+            ].map((f) => (
+              <li key={f} className="flex items-start gap-2.5 font-body text-[13.5px] text-[#161616]/85">
+                <span className="mt-[7px] h-1.5 w-1.5 rounded-full bg-[#161616] shrink-0" aria-hidden />
+                {f}
+              </li>
+            ))}
+          </ul>
+          <p className="font-body text-[13px] text-[#161616]/70 mt-6 max-w-2xl">
+            Every size, every page: unlimited edits, forever. A new page beyond the size you bought is the next size
+            up, not an edit. Month to month, cancel anytime, no trials. The demo was the trial.
+          </p>
         </section>
 
         {/* ── How it works ── */}
@@ -512,7 +548,7 @@ export default function TalkingWebsitePage() {
             </h2>
             <p className="font-body text-[15px] text-[#161616]/80 mt-4 max-w-xl mx-auto leading-relaxed">
               Enter your business once and tour a real website built for you, then call the voice agent that came with
-              it. About twenty seconds to build, no card, no meeting. Keep it for{' '}
+              it. About twenty seconds to build, no card, no meeting. Keep it from{' '}
               {formatUsd(DEMO_BUNDLE.setupCents)} setup plus {formatUsd(DEMO_BUNDLE.monthlyCents)} a month.
             </p>
             <div className="mt-7 flex flex-wrap gap-3 justify-center">

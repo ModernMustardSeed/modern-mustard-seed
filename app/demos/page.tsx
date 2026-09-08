@@ -391,7 +391,7 @@ export default async function DemosPage({
           </div>
           <p className="font-body text-[14px] text-[#161616]/60 mt-5">
             Take the voice agent and the website together and they are built as one thing: The Talking Website,
-            {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo, month to month, and you order it right from your hub.
+            from {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo, month to month, and you order it right from your hub.
           </p>
         </section>
 

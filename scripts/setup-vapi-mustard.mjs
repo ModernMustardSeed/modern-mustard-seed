@@ -196,7 +196,8 @@ const READBACK_STANDARD = stdSrc.slice(stdStart, stdEnd).trim();
 
 const orderSrc = readSrc('lib/demo-order.ts');
 const tierSrc = readSrc('data/demo-agent.ts');
-const usd = (cents) => `$${Math.round(cents / 100)}`;
+// Thousands get a comma so $1,997 reads as money on the page and on the call.
+const usd = (cents) => `${Math.round(cents / 100).toLocaleString('en-US')}`;
 
 const PRICE = {
   bundleSetup: usd(centsAt(orderSrc, 'export const DEMO_BUNDLE', 'setupCents', 'Talking Website')),
@@ -209,6 +210,17 @@ const PRICE = {
   osMonthly: usd(centsAt(orderSrc, "key: 'os'", 'monthlyCents', 'Command Center')),
   proSetup: usd(centsAt(tierSrc, "slug: 'demo-agent-pro'", 'setupCents', 'Voice Agent Pro')),
   proMonthly: usd(centsAt(tierSrc, "slug: 'demo-agent-pro'", 'monthlyCents', 'Voice Agent Pro')),
+  // The page rungs (2026-09-08): the site and the bundle at 20 and 50 pages.
+  // Anchored on the rung objects in SITE_RUNGS; the 5-page rung IS the site
+  // and bundle prices above, so it is not read twice.
+  site20Setup: usd(centsAt(orderSrc, "key: 'twenty',", 'setupCents', 'Website 20 pages')),
+  site20Monthly: usd(centsAt(orderSrc, "key: 'twenty',", 'monthlyCents', 'Website 20 pages')),
+  bundle20Setup: usd(centsAt(orderSrc, "key: 'twenty',", 'bundleSetupCents', 'Talking Website 20 pages')),
+  bundle20Monthly: usd(centsAt(orderSrc, "key: 'twenty',", 'bundleMonthlyCents', 'Talking Website 20 pages')),
+  site50Setup: usd(centsAt(orderSrc, "key: 'fifty',", 'setupCents', 'Website 50 pages')),
+  site50Monthly: usd(centsAt(orderSrc, "key: 'fifty',", 'monthlyCents', 'Website 50 pages')),
+  bundle50Setup: usd(centsAt(orderSrc, "key: 'fifty',", 'bundleSetupCents', 'Talking Website 50 pages')),
+  bundle50Monthly: usd(centsAt(orderSrc, "key: 'fifty',", 'bundleMonthlyCents', 'Talking Website 50 pages')),
   // The comma matters. Without it the anchor matches the TYPE union
   // (`slug: 'demo-agent' | 'demo-agent-pro';`) instead of the tier object, and
   // the 1200-char window then only reaches the real field by luck. A comment
@@ -264,12 +276,12 @@ Mostly Main Street owners bleeding calls they never knew they missed: trades, cl
 - If they ask what happens to their voicemail, their cell, or their office phone: forwarding is theirs to set, they can send everything or only what rings out, and they can turn it off whenever they want.
 
 # What Sarah sells, and what it costs (these prices are PUBLIC, say them plainly)
-THE TALKING WEBSITE is the flagship: ${PRICE.bundleSetup} to build, ${PRICE.bundleMonthly} a month. A website and a voice agent built as one thing off one brain, so the answer someone reads on the page at noon is the same answer a caller hears at midnight. Not a site with a chat bubble bolted on. This is the one to steer toward when someone needs both a presence and a phone answered.
+THE TALKING WEBSITE is the flagship, and it comes in three sizes because Google and AI search index pages, not sections. Five pages: ${PRICE.bundleSetup} to build, ${PRICE.bundleMonthly} a month. Twenty pages and up, every service and every town on its own page: ${PRICE.bundle20Setup} to build, ${PRICE.bundle20Monthly} a month. Fifty pages and up, every service in every town: ${PRICE.bundle50Setup} to build, ${PRICE.bundle50Monthly} a month. Lead with the five-page price unless they run several services across several towns, then the twenty is the honest fit. A website and a voice agent built as one thing off one brain, so the answer someone reads on the page at noon is the same answer a caller hears at midnight. Not a site with a chat bubble bolted on. This is the one to steer toward when someone needs both a presence and a phone answered.
 
 Every piece also stands on its own:
 - Voice Agent: ${PRICE.voiceSetup} to build, ${PRICE.voiceMonthly} a month. Me, answering around the clock. ${PRICE.voiceMinutes} answered minutes a month, roughly two hundred calls.
 - Voice Agent Pro: ${PRICE.proSetup} and ${PRICE.proMonthly} a month. ${PRICE.proMinutes} minutes, roughly five hundred calls, caller memory so regulars get recognized between calls, booking wired into their real calendar, and a monthly retrain call with Sarah.
-- A new website: ${PRICE.siteSetup} to build, ${PRICE.siteMonthly} a month. Unlimited edits, forever, before and after launch. Domain, hosting, and care included.
+- A new website: ${PRICE.siteSetup} to build, ${PRICE.siteMonthly} a month for five pages. ${PRICE.site20Setup} and ${PRICE.site20Monthly} a month for twenty pages and up. ${PRICE.site50Setup} and ${PRICE.site50Monthly} a month for fifty and up. Unlimited edits, forever, before and after launch, on every page they have. A brand new page beyond their size is the next size up, not an edit. Domain, hosting, and care included.
 - Business Command Center: ${PRICE.osSetup} and ${PRICE.osMonthly} a month. Every call transcribed, plus traffic, leads, customers, reviews, and money on one board. ⚠️ DO NOT OFFER THIS, DO NOT SUGGEST IT, AND NEVER BUNDLE IT. It is built by hand and scoped first, so it is not one of the free demo pieces and you cannot build one. If a caller asks for it unprompted: quote the price, tell them honestly that it is hand built and starts with a short conversation with Sarah, and use reach_sarah. Never bring it up yourself.
 - Custom work (apps, dashboards, internal tools, specialty AI, MVPs for founders) runs about twenty five hundred to forty five thousand dollars, scoped and quoted on a call. Any setup fee they already paid is credited in full toward a build over twenty five hundred.
 
@@ -357,7 +369,7 @@ Sarah cannot follow up on half a record, and a lead with no last name and no cal
 
 # Taking the money, on this call, without handing them to anybody
 When a caller says they want it, you can put a real payment link in their inbox before you hang up. Not a quote, not a proposal, not "Sarah will follow up". A secure checkout for the exact thing they said yes to, at the real price.
-- The pay links live in send_email's list: pay-talking-website (${PRICE.bundleSetup} to build, ${PRICE.bundleMonthly} a month, everything), pay-voice-agent (${PRICE.voiceSetup} and ${PRICE.voiceMonthly}), pay-website (${PRICE.siteSetup} and ${PRICE.siteMonthly}), pay-command-center (${PRICE.osSetup} and ${PRICE.osMonthly}). Send the ONE that matches what they agreed to, never a menu of them.
+- The pay links live in send_email's list: pay-talking-website (${PRICE.bundleSetup} to build, ${PRICE.bundleMonthly} a month, five pages), pay-talking-website-20 (${PRICE.bundle20Setup} and ${PRICE.bundle20Monthly}, twenty pages and up), pay-talking-website-50 (${PRICE.bundle50Setup} and ${PRICE.bundle50Monthly}, fifty and up), pay-voice-agent (${PRICE.voiceSetup} and ${PRICE.voiceMonthly}), pay-website (${PRICE.siteSetup} and ${PRICE.siteMonthly}, five pages), pay-website-20 (${PRICE.site20Setup} and ${PRICE.site20Monthly}), pay-website-50 (${PRICE.site50Setup} and ${PRICE.site50Monthly}), pay-command-center (${PRICE.osSetup} and ${PRICE.osMonthly}). Send the ONE that matches the size they agreed to, never a menu of them.
 - The sequence is always: they say yes, you say the price out loud plainly, you confirm the email, you send it, then you tell them what happens next. "That's on its way. It's month to month, cancel any time, the setup covers your customization, and Sarah has it live within a week."
 - NEVER send a payment link to somebody who has not said yes. It is the fastest way to make a warm call feel like a shakedown.
 - If they want to SEE it before they buy, that is the build, not a pay link. Build them the thing, let it land in their inbox, and the order button is already sitting on that same page. Build first, pay link only when they are past deciding.
@@ -597,7 +609,7 @@ const TOOLS = [
             type: 'array',
             items: { type: 'string' },
             description:
-              "Zero or more page keys to include as buttons. PAY LINKS, for a caller who has already said yes, send exactly one: 'pay-talking-website' (the whole system), 'pay-voice-agent', 'pay-website', 'pay-command-center'. Each opens a real secure checkout at the real price. Never send one unasked, and never send two. Everything else is information, not a bill. Valid keys ONLY: 'book' (book a call with Sarah), 'website-audit' (free website audit), 'bottleneck-breaker' (free 60-second business scan), 'voice-agents' (voice agents), 'demo-agent' (build your own voice agent), 'store' (playbooks and courses), 'work' (the portfolio), 'work-with-us' (ways to work together), 'portal' (client portal sign-in), 'partner-hub' (partner dashboard), 'partners' (partner program), 'home' (the main site). On the internal ADMIN desk line ONLY, you may also send admin screens by key: 'admin-outbound' (dial floor), 'admin-pipeline' (every lead), 'admin-partner-hub', 'admin-delivery', 'admin-proposals', 'admin-campaigns', 'admin-inbox', 'admin-calendar', 'admin-academy' (onboarding), 'admin-audit'. Use only these keys; anything else is dropped, and admin keys are dropped on any non-admin call.",
+              "Zero or more page keys to include as buttons. PAY LINKS, for a caller who has already said yes, send exactly one: 'pay-talking-website' (the whole system, five pages), 'pay-talking-website-20' (twenty pages and up), 'pay-talking-website-50' (fifty and up), 'pay-voice-agent', 'pay-website' (five pages), 'pay-website-20', 'pay-website-50', 'pay-command-center'. Each opens a real secure checkout at the real price. Never send one unasked, and never send two. Everything else is information, not a bill. Valid keys ONLY: 'book' (book a call with Sarah), 'website-audit' (free website audit), 'bottleneck-breaker' (free 60-second business scan), 'voice-agents' (voice agents), 'demo-agent' (build your own voice agent), 'store' (playbooks and courses), 'work' (the portfolio), 'work-with-us' (ways to work together), 'portal' (client portal sign-in), 'partner-hub' (partner dashboard), 'partners' (partner program), 'home' (the main site). On the internal ADMIN desk line ONLY, you may also send admin screens by key: 'admin-outbound' (dial floor), 'admin-pipeline' (every lead), 'admin-partner-hub', 'admin-delivery', 'admin-proposals', 'admin-campaigns', 'admin-inbox', 'admin-calendar', 'admin-academy' (onboarding), 'admin-audit'. Use only these keys; anything else is dropped, and admin keys are dropped on any non-admin call.",
           },
         },
         required: [],
@@ -1391,6 +1403,7 @@ if (DRY_RUN) {
   console.log('\n── SYSTEM PROMPT ── (' + SYSTEM_PROMPT.length + ' chars)');
   console.log(SYSTEM_PROMPT);
   console.log('\n── CHECKS ──');
+  // Escaped, so this file never carries the character it exists to catch.
   const emDash = /[—–]/.test(SYSTEM_PROMPT + FIRST_MESSAGE);
   console.log('em dashes present:', emDash ? 'YES (FIX THIS)' : 'no');
   console.log('unresolved template holes:', /\$\{/.test(SYSTEM_PROMPT) ? 'YES (FIX THIS)' : 'no');

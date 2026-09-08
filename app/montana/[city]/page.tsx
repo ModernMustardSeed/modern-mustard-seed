@@ -201,7 +201,7 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
               {
                 t: 'The Website',
                 b: 'Designed from scratch for your business, not filled into a template. Lead capture, funnels, and SEO built in. You own the code, the domain, and every account.',
-                p: `${formatUsd(DEMO_PRODUCTS.site.setupCents)} setup, ${formatUsd(DEMO_PRODUCTS.site.monthlyCents)}/mo`,
+                p: `From ${formatUsd(DEMO_PRODUCTS.site.setupCents)} setup, ${formatUsd(DEMO_PRODUCTS.site.monthlyCents)}/mo`,
                 href: '/websites',
               },
               {

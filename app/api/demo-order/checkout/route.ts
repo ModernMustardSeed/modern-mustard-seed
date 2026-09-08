@@ -21,7 +21,9 @@ export const runtime = 'nodejs';
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
-  let body: { hubId?: string; products?: string[] };
+  // `pages` is the website size the buyer picked on the card: a rung key or a
+  // page floor. Missing or unknown means the entry rung, never a failed order.
+  let body: { hubId?: string; products?: string[]; pages?: string | number };
   try {
     body = await req.json();
   } catch {
@@ -32,7 +34,7 @@ export async function POST(req: Request) {
   if (!/^[0-9a-f-]{36}$/i.test(hubId)) {
     return NextResponse.json({ error: 'bad_hub' }, { status: 400 });
   }
-  const quote = quoteDemoOrder(Array.isArray(body.products) ? body.products : []);
+  const quote = quoteDemoOrder(Array.isArray(body.products) ? body.products : [], body.pages);
   if (!quote) return NextResponse.json({ error: 'no_products' }, { status: 400 });
 
   const supabase = getSupabase();
@@ -140,8 +142,9 @@ export async function POST(req: Request) {
     kind: 'demo-order',
     demo_order_id: order.id,
     hub_demo_id: hubId,
-    item_name: `${quote.label} — ${lead.business_name || 'your business'}`,
+    item_name: `${quote.label} for ${lead.business_name || 'your business'}`,
     products: quote.products.join(','),
+    ...(quote.rung ? { pages: String(quote.rung.pages) } : {}),
     ...(ref ? { ref } : {}),
   };
 
@@ -149,7 +152,7 @@ export async function POST(req: Request) {
     {
       price_data: {
         currency: 'usd',
-        product_data: { name: `${quote.label} — monthly` },
+        product_data: { name: `${quote.label}: monthly` },
         unit_amount: quote.monthlyCents,
         recurring: { interval: 'month' },
       },
@@ -158,7 +161,7 @@ export async function POST(req: Request) {
     {
       price_data: {
         currency: 'usd',
-        product_data: { name: `${quote.label} — one-time setup & customization` },
+        product_data: { name: `${quote.label}: one-time setup and customization` },
         unit_amount: quote.setupCents,
       },
       quantity: 1,

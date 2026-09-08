@@ -100,8 +100,8 @@ export default function FlagshipOffer() {
             </h3>
             <p className="font-body text-[14px] text-[#161616]/75 mt-2 leading-relaxed max-w-xl">
               Your site and your voice agent built as one thing, off one brain, so the answer a
-              visitor reads is the answer a caller hears. {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo +{' '}
-              {formatUsd(DEMO_BUNDLE.setupCents)} setup. That is{' '}
+              visitor reads is the answer a caller hears. From {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo +{' '}
+              {formatUsd(DEMO_BUNDLE.setupCents)} setup, in three sizes: 5, 20, or 50 pages. That is{' '}
               {formatUsd(
                 DEMO_PRODUCTS.voice.setupCents + DEMO_PRODUCTS.site.setupCents - DEMO_BUNDLE.setupCents
               )}{' '}

@@ -254,7 +254,7 @@ export default function DemoStation() {
       <p className="font-body text-[12px] text-[#161616]/70 text-center mt-3.5 leading-relaxed">
         No card, no meeting, no strings. If you love them:{' '}
         the website or the voice agent from {formatUsd(DEMO_PRODUCTS.site.monthlyCents)}/mo, or both together as The
-        Talking Website for {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo, which is less than the two apart. Month to month.
+        Talking Website from {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo, which is less than the two apart. Month to month.
       </p>
     </form>
   );
