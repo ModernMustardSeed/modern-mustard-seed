@@ -31,6 +31,7 @@
 import { NextResponse } from 'next/server';
 import { getStripe } from '@/lib/stripe';
 import { quoteDemoOrder, formatUsd, resolveSiteRung, type DemoProductKey } from '@/lib/demo-order';
+import { SUBSCRIPTION_SLUGS, type SubscriptionProduct } from '@/data/posting';
 import { SITE } from '@/lib/seo';
 
 export const runtime = 'nodejs';
@@ -73,9 +74,95 @@ function splitSlug(raw: string): { base: string; pages: number | null } {
   return { base: raw, pages: null };
 }
 
+/**
+ * Attribution: a partner's cookie still pays them on a link they shared.
+ * A malformed cookie degrades to no ref, never to a crash on the money path.
+ */
+function readRef(req: Request): string {
+  const cookieRef = (req.headers.get('cookie') || '').match(/(?:^|;\s*)mms_ref=([^;]+)/);
+  if (!cookieRef) return '';
+  try {
+    return decodeURIComponent(cookieRef[1]).trim().slice(0, 64);
+  } catch {
+    return cookieRef[1].replace(/[^A-Za-z0-9_-]/g, '').slice(0, 64);
+  }
+}
+
+/**
+ * `email` rides along when Mr. Mustard already has it, so the buyer does not
+ * retype an address he just confirmed on the call. It only ever prefills.
+ */
+function readEmail(req: Request): string {
+  const emailParam = new URL(req.url).searchParams.get('email') || '';
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailParam) ? emailParam.slice(0, 200) : '';
+}
+
+/**
+ * SUBSCRIPTION-ONLY PRODUCTS (2026-09-08, Daily Posting first). One recurring
+ * line, no setup line, same metadata shape as every other direct pay so the
+ * webhook's direct-pay handler records it without a special case. Priced from
+ * data/posting.ts and nowhere else.
+ */
+async function subscriptionCheckout(req: Request, product: SubscriptionProduct, slug: string) {
+  const stripe = getStripe();
+  if (!stripe) return NextResponse.redirect(`${SITE.url}/work-with-us?pay=unavailable`, 302);
+  const ref = readRef(req);
+  const email = readEmail(req);
+  const metadata = {
+    kind: 'direct-pay',
+    item_name: product.name,
+    products: product.key,
+    slug,
+    ...(ref ? { ref } : {}),
+  };
+  try {
+    const session = await stripe.checkout.sessions.create({
+      mode: 'subscription',
+      payment_method_types: ['card'],
+      line_items: [
+        {
+          price_data: {
+            currency: 'usd',
+            product_data: { name: `${product.name}: monthly`, description: product.description },
+            unit_amount: product.monthlyCents,
+            recurring: { interval: 'month' as const },
+          },
+          quantity: 1,
+        },
+      ],
+      success_url: `${SITE.url}/built?paid=1&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${SITE.url}/work-with-us`,
+      ...(email ? { customer_email: email } : {}),
+      allow_promotion_codes: true,
+      automatic_tax: { enabled: true },
+      tax_id_collection: { enabled: true },
+      billing_address_collection: 'auto',
+      phone_number_collection: { enabled: true },
+      metadata,
+      subscription_data: { metadata },
+      custom_text: {
+        submit: {
+          message: `${formatUsd(product.monthlyCents)} a month, month to month, cancel anytime, no setup fee. ${product.pitch} Posting starts the week your first photos land in your portal.`,
+        },
+      },
+    });
+    if (!session.url) return NextResponse.redirect(`${SITE.url}/work-with-us?pay=unavailable`, 302);
+    return NextResponse.redirect(session.url, 302);
+  } catch (err) {
+    console.error('subscription pay checkout failed:', err instanceof Error ? err.message : err);
+    return NextResponse.redirect(`${SITE.url}/work-with-us?pay=error`, 302);
+  }
+}
+
 export async function GET(req: Request, ctx: { params: Promise<{ slug: string }> }) {
   const { slug } = await ctx.params;
-  const { base: key, pages } = splitSlug(String(slug || '').toLowerCase().trim());
+  const raw = String(slug || '').toLowerCase().trim();
+
+  // Subscription-only products first: they have no page rung and no setup line.
+  const subscription = SUBSCRIPTION_SLUGS[raw];
+  if (subscription) return subscriptionCheckout(req, subscription, raw);
+
+  const { base: key, pages } = splitSlug(raw);
   const products = SLUGS[key];
 
   // An unknown slug sends them to the offer page rather than a 404. Somebody
@@ -90,22 +177,8 @@ export async function GET(req: Request, ctx: { params: Promise<{ slug: string }>
     return NextResponse.redirect(`${SITE.url}/work-with-us?pay=unavailable`, 302);
   }
 
-  // Attribution: a partner's cookie still pays them on a link they shared.
-  // A malformed cookie degrades to no ref, never to a crash on the money path.
-  const cookieRef = (req.headers.get('cookie') || '').match(/(?:^|;\s*)mms_ref=([^;]+)/);
-  let ref = '';
-  if (cookieRef) {
-    try {
-      ref = decodeURIComponent(cookieRef[1]).trim().slice(0, 64);
-    } catch {
-      ref = cookieRef[1].replace(/[^A-Za-z0-9_-]/g, '').slice(0, 64);
-    }
-  }
-
-  // `email` rides along when Mr. Mustard already has it, so the buyer does not
-  // retype an address he just confirmed on the call. It only ever prefills.
-  const emailParam = new URL(req.url).searchParams.get('email') || '';
-  const email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailParam) ? emailParam.slice(0, 200) : '';
+  const ref = readRef(req);
+  const email = readEmail(req);
 
   const metadata = {
     kind: 'direct-pay',
