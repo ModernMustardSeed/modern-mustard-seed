@@ -48,4 +48,17 @@ export const FILMS = {
     shipped: true,
     runtime: '3 min 4 sec',
   },
+  /** The IRL launch film, the example on /launch-film. Also served as webm. */
+  launchFilm: {
+    mp4: '/video/launch-film-irl.mp4',
+    poster: '/video/launch-film-irl-poster.jpg',
+    shipped: true,
+    runtime: '1 min 16 sec',
+  },
+  launchFilmTall: {
+    mp4: '/video/launch-film-irl-9x16.mp4',
+    poster: '/video/launch-film-irl-9x16-poster.jpg',
+    shipped: true,
+    runtime: '1 min 16 sec',
+  },
 } as const satisfies Record<string, Film>;

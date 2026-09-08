@@ -32,6 +32,7 @@ import { storeOrderConfirmationEmail, storeOrderNotificationEmail, programAccess
 import { getDemoAgentTier, demoAgentUsd } from '@/data/demo-agent';
 import { getChiefTier, chiefUsd } from '@/data/chief';
 import { getPicturesTier, PICTURES } from '@/data/pictures';
+import { getLaunchFilmTier, launchFilmUsd, LAUNCH_FILM } from '@/data/launch-film';
 import { getBroadcastTier } from '@/data/ads';
 import { getPicturesRun } from '@/lib/pictures-store';
 import { getPressTier, PRESS } from '@/data/press';
@@ -2065,6 +2066,95 @@ async function handleDemoOrderPaid(
  * production brief (the buyer's Screen Test storyboard), the buyer gets the
  * "you're in production" welcome.
  */
+/**
+ * THE LAUNCH FILM. One order row for a one-time film, a lead marked as a
+ * buyer, a production note to Sarah, and the greenlit note to the buyer. The
+ * season is a subscription, so it records the lead and the emails and lets
+ * Stripe own the billing rows.
+ */
+async function handleLaunchFilmPurchase(
+  session: Stripe.Checkout.Session,
+  slug: string,
+  email: string,
+  name: string | null
+) {
+  const tier = getLaunchFilmTier(slug);
+  const firstName = name?.split(' ')[0];
+  const isSub = tier?.mode === 'subscription';
+  const price = tier ? `${launchFilmUsd(tier.priceCents)}${isSub ? '/mo' : ''}` : '?';
+  const promise = slug === 'launch-campaign' ? LAUNCH_FILM.campaignDelivery : LAUNCH_FILM.delivery;
+
+  const supabase = getSupabase();
+  if (supabase && !isSub) {
+    const { error } = await supabase.from('orders').insert({
+      stripe_session_id: session.id,
+      stripe_payment_intent_id: typeof session.payment_intent === 'string' ? session.payment_intent : null,
+      product_slug: slug,
+      product_name: `THE LAUNCH FILM ${tier?.name ?? slug}`,
+      item_type: 'program',
+      price_paid_cents: session.amount_total ?? tier?.priceCents ?? 0,
+      currency: session.currency ?? 'usd',
+      email,
+      name: name ?? null,
+      status: 'paid',
+    });
+    if (error) console.error('launch-film order insert failed', error.message);
+  }
+
+  try {
+    await insertLead({
+      type: 'contact',
+      email,
+      name: name ?? null,
+      source: 'launch-film-buyer',
+      status: 'new',
+      notes: `[bought:${slug}] PRODUCE the launch film. Get the product URL and access, run the capture rig, send the treatment.`,
+    });
+  } catch (err) {
+    console.error('launch-film lead insert failed', err);
+  }
+
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) return;
+  const resend = resendClient();
+
+  try {
+    await resend.emails.send({
+      from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
+      to: OWNER_NOTIFY_TO,
+      subject: `PRODUCE ${tier?.name ?? 'LAUNCH FILM'}: ${name ?? email}`,
+      html: clientEmail({
+        preheader: 'A launch film was booked. The rig is in ~/.claude/skills/launch-film.',
+        eyebrow: 'THE LAUNCH FILM ORDER',
+        greeting: 'Roll it.',
+        body: `<p><strong>${escapeHtmlSafe(name ?? email)}</strong> booked <strong>${tier?.name ?? slug}</strong> (${price}).</p><p>Email: ${escapeHtmlSafe(email)}. Stripe session: ${session.id}.</p><p>Promise on the page: ${promise}. First move: reply for the product URL and access, run the capture rig, and send the treatment before rendering a frame. The method, the rig and the player are in the launch-film skill.</p>`,
+        signature: 'The Studio',
+      }),
+    });
+  } catch (err) {
+    console.error('launch-film produce email failed', err);
+  }
+
+  try {
+    await resend.emails.send({
+      from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
+      to: email,
+      replyTo: 'sarah@modernmustardseed.com',
+      subject: `${firstName ? `${firstName}, ` : ''}your launch film is in production`,
+      html: clientEmail({
+        preheader: 'Greenlit. Here is what happens next.',
+        eyebrow: `THE LAUNCH FILM ${tier?.name ?? ''}`.trim(),
+        greeting: firstName ? `${firstName}, your launch has a film now.` : 'Your launch has a film now.',
+        body: `<p>Your ${isSub ? 'launch season' : 'launch film'} is greenlit. Here is how it goes:</p><p><strong>1.</strong> Reply to this email with the product link and a login if it needs one. I run the product myself and keep what it produces; everything on screen in the film comes from that run.</p><p><strong>2.</strong> You get the treatment first: the shot list, the length and every cut point, on bar lines, before a frame is rendered. Mark it up or approve it.</p><p><strong>3.</strong> ${isSub ? 'Your first film ships within ten business days of the product running, then one a month on your release cadence.' : `The premiere lands in this inbox, ${promise}: every cut, the poster frames, the source rig, and the player installed on your site.`}</p><p>Changes to the film are included. The files, the rights and the rig are yours.</p>`,
+        cta: { label: 'Reply with the product link', url: 'mailto:sarah@modernmustardseed.com' },
+        signature: 'Sarah',
+      }),
+    });
+  } catch (err) {
+    console.error('launch-film welcome email failed', err);
+  }
+}
+
 async function handlePicturesPurchase(
   session: Stripe.Checkout.Session,
   slug: string,
@@ -2572,6 +2662,29 @@ async function handlePicturesSubscriptionDeleted(sub: Stripe.Subscription) {
   }
 }
 
+/** A Launch Season ended: no more monthly films, Sarah sends the wrap note. */
+async function handleLaunchFilmSubscriptionDeleted(sub: Stripe.Subscription) {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) return;
+  try {
+    const resend = resendClient();
+    await resend.emails.send({
+      from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
+      to: OWNER_NOTIFY_TO,
+      subject: `LAUNCH SEASON CANCELED: ${sub.id}`,
+      html: clientEmail({
+        preheader: 'A Launch Season ended.',
+        eyebrow: 'THE LAUNCH FILM OFFBOARD',
+        greeting: 'A season wrapped.',
+        body: `<p>Subscription ${sub.id} was canceled. No more monthly films. Send the wrap note and confirm the rig and every file stay theirs.</p>`,
+        signature: 'The Studio',
+      }),
+    });
+  } catch (err) {
+    console.error('launch-film offboard email failed', err);
+  }
+}
+
 /** A Voice Agent subscription ended: Sarah decommissions the line by hand. */
 async function handleDemoAgentSubscriptionDeleted(sub: Stripe.Subscription) {
   const apiKey = process.env.RESEND_API_KEY;
@@ -2706,6 +2819,10 @@ export async function POST(req: Request) {
     if (sub.metadata?.kind === 'chief') {
       await handleChiefSubscriptionDeleted(stripe, sub);
       return NextResponse.json({ received: true, kind: 'chief_subscription_canceled' });
+    }
+    if (sub.metadata?.kind === 'launch-film') {
+      await handleLaunchFilmSubscriptionDeleted(sub);
+      return NextResponse.json({ received: true, kind: 'launch_film_subscription_canceled' });
     }
     if (sub.metadata?.kind === 'pictures') {
       await handlePicturesSubscriptionDeleted(sub);
@@ -2952,6 +3069,12 @@ export async function POST(req: Request) {
   if (session.metadata?.kind === 'pictures') {
     await handlePicturesPurchase(session, slug, email, name ?? null);
     return NextResponse.json({ received: true, kind: 'pictures' });
+  }
+
+  // ── THE LAUNCH FILM booked (film, campaign, or a season) ──
+  if (session.metadata?.kind === 'launch-film') {
+    await handleLaunchFilmPurchase(session, slug, email, name ?? null);
+    return NextResponse.json({ received: true, kind: 'launch-film' });
   }
 
   // ── MUSTARD BROADCAST plan started (ON AIR, PRIME TIME) ──
