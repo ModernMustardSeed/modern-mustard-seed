@@ -20,6 +20,7 @@ import { getSupabase } from '@/lib/supabase';
 import { getAcqSettings } from '@/lib/acq/settings';
 import { rollingCounts, RATE_MEASUREMENT_FLOOR, SENDER_STATE_LABELS, RAMP_STEPS } from '@/lib/acq/governor';
 import type { SenderState } from '@/lib/acq/governor';
+import { OUTREACH_DOMAIN, OUTREACH_FROM } from '@/lib/outreach-domain';
 
 export type HealthLevel = 'pass' | 'warning' | 'error' | 'unknown';
 
@@ -60,7 +61,7 @@ export type SenderHealth = {
   worst: HealthLevel;
 };
 
-const SENDING_DOMAIN = 'modernmustardseed.com';
+const SENDING_DOMAIN = OUTREACH_DOMAIN;
 
 /* ─────────────────────────────── DNS facts ──────────────────────────────── */
 
@@ -356,7 +357,7 @@ export async function computeSenderHealth(dbIn?: SupabaseClient | null): Promise
 
   return {
     domain: SENDING_DOMAIN,
-    identity: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
+    identity: OUTREACH_FROM,
     state,
     stateLabel: SENDER_STATE_LABELS[state],
     stateReason: settings.sender_state_reason ?? null,

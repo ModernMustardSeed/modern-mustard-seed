@@ -26,6 +26,7 @@ import type { AcqCampaign, AcqProspect } from '@/lib/acq/types';
 import { SITE } from '@/lib/seo';
 import { authorize, recordSend, recordRefusal } from '@/lib/acq/governor';
 import { startPostDemoSequence } from '@/lib/acq/post-demo';
+import { outreachOnly } from '@/lib/outreach-domain';
 
 /** Above this share of the day's sends bouncing, stop and shout. */
 export const BOUNCE_ALARM_PCT = 4;
@@ -615,7 +616,7 @@ export async function sendCheckoutLink(
     }) + complianceFooter(lead.email);
 
   const sent = await sendViaResend({
-    from: `Mr. Mustard at Modern Mustard Seed <${campaign.from_email}>`,
+    from: outreachOnly(`Mr. Mustard at Modern Mustard Seed <${campaign.from_email}>`),
     to: lead.email,
     replyTo: campaign.reply_to,
     subject: `Your Voice Agent activation link, ${business}`,

@@ -40,6 +40,7 @@ import { SITE } from '@/lib/seo';
 import { HUNDREDFOLD, GUARANTEE, priceSentence } from '@/lib/hundredfold';
 import type { RoadmapReport } from '@/lib/roadmap-shape';
 import type { BuiltOffer } from '@/lib/hundredfold-synthesis';
+import { OUTREACH_FROM, OUTREACH_REPLY_TO } from '@/lib/outreach-domain';
 
 /* -------------------------------------------------------------------------- */
 /* Shared guards                                                               */
@@ -457,9 +458,9 @@ async function sendTouch(args: {
 }): Promise<boolean> {
   const unsub = unsubUrlFor(args.to);
   const result = await sendViaResend({
-    from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
+    from: OUTREACH_FROM,
     to: args.to,
-    replyTo: 'sarah@modernmustardseed.com',
+    replyTo: OUTREACH_REPLY_TO,
     subject: args.subject,
     html: args.html + unsubFooter(unsub),
     mailbox: 'sarah@modernmustardseed.com',

@@ -55,6 +55,7 @@ import { possessive } from '@/lib/business-name';
 import { estimateFor, personalOpener, type Estimate } from '@/lib/acq/personalize';
 import { recoveryMachineBlock, machineAssumptions } from '@/lib/acq/machine';
 import { proofStat, type ProofStat } from '@/data/proof-stats';
+import { outreachOnly } from '@/lib/outreach-domain';
 
 /**
  * Where a tracked click is allowed to land.
@@ -247,7 +248,7 @@ export function buildCampaignEmail(args: {
 
   return {
     to: lead.email,
-    from: `${args.fromName} <${args.fromEmail}>`,
+    from: outreachOnly(`${args.fromName} <${args.fromEmail}>`),
     replyTo: args.replyTo,
     subject: personalized ? personalizedSubject(lead, personalized) : renderSubject(variant, lead),
     html,
@@ -737,7 +738,7 @@ export function buildDemoEmail(args: {
 
   return {
     to: lead.email,
-    from: `${args.fromName} <${args.fromEmail}>`,
+    from: outreachOnly(`${args.fromName} <${args.fromEmail}>`),
     replyTo: args.replyTo,
     subject: `I built ${possessive(business)} receptionist`,
     html,
@@ -891,7 +892,7 @@ export function buildSuiteEmail(args: {
 
   return {
     to: lead.email,
-    from: `${args.fromName} <${args.fromEmail}>`,
+    from: outreachOnly(`${args.fromName} <${args.fromEmail}>`),
     replyTo: args.replyTo,
     // NOT escaped: a subject line is plain text, so an entity here would ship
     // literally and turn Bob's Heating into Bob&#39;s Heating in the inbox.
@@ -981,7 +982,7 @@ export function buildFollowupEmail(args: {
 
   return {
     to: lead.email,
-    from: `${args.fromName} <${args.fromEmail}>`,
+    from: outreachOnly(`${args.fromName} <${args.fromEmail}>`),
     replyTo: args.replyTo,
     subject: FOLLOWUP_SUBJECTS[kind],
     html,
