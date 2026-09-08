@@ -19,6 +19,7 @@ import { buildIcsInvite } from '@/lib/ics';
 import { sendMetaEvent } from '@/lib/meta-capi';
 import { randomUUID } from 'node:crypto';
 import { OWNER_NOTIFY_TO } from '@/lib/owner';
+import { recordEndOfCall } from '@/lib/voice-calls';
 import { buildSuiteFromCall } from '@/lib/voice-build-suite';
 import { DEMO_BOOKING_TOOL_NAMES, runDemoBookingTool } from '@/lib/demo-booking-tools';
 import { getRun } from '@/lib/demo-run-store';
@@ -249,7 +250,7 @@ async function bookSlot(
         uid: `${randomUUID()}@modernmustardseed.com`,
         startUtc: new Date(input.startIso),
         endUtc: new Date(endIso),
-        summary: `Modern Mustard Seed discovery call — Sarah Scarano + ${name}`,
+        summary: `Modern Mustard Seed discovery call: Sarah Scarano + ${name}`,
         description: `Discovery call with Sarah Scarano, Modern Mustard Seed.\n\nBooked by Mr. Mustard (voice agent).\n\nWhat the caller said: ${painSummary}\n\nThe Work: https://modernmustardseed.com/work`,
         location: availability.conferenceLink || 'Video link will be sent before the call',
         organizerName: 'Sarah Scarano',
@@ -729,6 +730,11 @@ async function handleEndOfCallReport(message: Record<string, unknown>) {
   const durationSeconds = Math.round(Number(message.durationSeconds ?? 0)) || undefined;
   const line = await lineCreditFor(call, message);
 
+  // The call log: one row per call, written the moment it ends so /admin/calls
+  // is never behind the phone. Best effort; the email below goes out regardless.
+  const loggedId = await recordEndOfCall(message);
+  const logUrl = loggedId ? `https://modernmustardseed.com/admin/calls?call=${loggedId}` : 'https://modernmustardseed.com/admin/calls';
+
   // If this was an outbound Mr. Mustard call to a tracked prospect, log the full
   // transcript (both sides) onto that lead's correspondence thread so Sarah can
   // read exactly how it went.
@@ -869,7 +875,7 @@ async function handleEndOfCallReport(message: Record<string, unknown>) {
           ? bookedCount
             ? 'They tested the booking and it worked. Call them today, this is the hottest signal in the funnel.'
             : 'Somebody tried the demo. Read what they asked for; if the agent could not answer it, that is the next fix.'
-          : 'Review the call. Follow up if Mr. Mustard did not close the booking.',
+          : `Review the call. Follow up if Mr. Mustard did not close the booking. Full transcript and recording: ${logUrl}`,
       }),
     });
   } catch (err) {

@@ -143,8 +143,9 @@ export default function ClientCommandView() {
               {!c && <p className="mt-2 text-[#8f6600] font-body text-sm">No client record yet. They may be a lead or an unprovisioned buyer.</p>}
               {/* Renders nothing unless this address has a lead row behind it,
                   because there is nothing to drip otherwise. */}
-              <div className="mt-4">
+              <div className="mt-4 flex flex-wrap items-center gap-3">
                 <DripButton email={data.email} businessName={c?.company ?? displayName} />
+                <Link href={`/admin/calls?client=${encodeURIComponent(data.email)}`} className="text-[11px] uppercase tracking-[0.2em] font-mono font-bold text-[#1E50C8] hover:text-[#161616]">Their calls &rarr;</Link>
               </div>
             </div>
 

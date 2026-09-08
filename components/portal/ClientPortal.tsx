@@ -13,6 +13,7 @@ import LaunchChecklist from '@/components/portal/LaunchChecklist';
 import MoodboardCard from '@/components/portal/MoodboardCard';
 import FactoryPortalLink from '@/components/portal/FactoryPortalLink';
 import FrontOfficePortalLink from '@/components/portal/FrontOfficePortalLink';
+import CallsPortalLink from '@/components/portal/CallsPortalLink';
 import { properName } from '@/lib/business-name';
 
 /**
@@ -202,6 +203,7 @@ export default function ClientPortal() {
           <>
             <FrontOfficePortalLink />
             <FactoryPortalLink />
+            <CallsPortalLink />
 
             {/* Welcome */}
             <div className="mb-8">
@@ -218,7 +220,7 @@ export default function ClientPortal() {
               </p>
             </div>
 
-            {/* What you own — the unified ownership rail. Every paid offer lands
+            {/* What you own: the unified ownership rail. Every paid offer lands
                 here as a first-class card, so a Chief, Voice Agent, commercial, or
                 press buyer with no build project still sees the thing they bought,
                 its status, and a door into it. */}
