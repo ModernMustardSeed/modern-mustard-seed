@@ -71,8 +71,19 @@ jobs:
       # Pre-install so the agent spends its turns on the task, not on `npm ci`.
       - run: pnpm install --frozen-lockfile
 
+      - name: Install Claude Code (the action's installer once reported success with no binary)
+        shell: bash
+        run: |
+          for i in 1 2 3; do
+            curl -fsSL https://claude.ai/install.sh | bash && test -x "$HOME/.local/bin/claude" && break
+            echo "install attempt $i did not leave a binary; retrying"; sleep 15
+          done
+          test -x "$HOME/.local/bin/claude" || { echo "::error::Claude Code did not install after three attempts"; exit 1; }
+          "$HOME/.local/bin/claude" --version
+
       - uses: anthropics/claude-code-action@v1
         with:
+          path_to_claude_code_executable: /home/runner/.local/bin/claude
           # SUBSCRIPTION, NOT THE METERED API. An @claude mention starts a
           # 30-minute agentic run with Write and Edit on the strong default
           # model, which is the single most expensive thing this repo can do on

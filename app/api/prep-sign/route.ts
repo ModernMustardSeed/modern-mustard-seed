@@ -26,7 +26,7 @@ const PROJECTS: Record<string, { name: string; origin: string; quoteUrl: string 
   'built-right': {
     name: 'Built Right in Montana',
     origin: 'https://built-right-prep.vercel.app',
-    quoteUrl: 'https://built-right-prep.vercel.app/docs/Built-Right-Quote.pdf',
+    quoteUrl: 'https://built-right-prep.vercel.app/quote',
   },
 };
 

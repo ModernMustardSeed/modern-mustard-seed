@@ -18,7 +18,7 @@
  */
 import type Stripe from 'stripe';
 import { getSupabase } from '@/lib/supabase';
-import { sendIntakeWelcome } from '@/lib/intake-welcome';
+import { sendIntakeWelcome, sendPrepWelcome } from '@/lib/intake-welcome';
 
 export type ProductStatus = 'provisioning' | 'building' | 'in_production' | 'active' | 'delivered';
 
@@ -171,6 +171,17 @@ export function productSpecFor(kind: string, session: Stripe.Checkout.Session): 
         homeUrl: '/portal',
         detail: 'Your build is underway. Everything lives in your portal.',
       };
+    case 'direct-pay':
+      // Bought off a /pay/<slug> link or a prep site's own /start page: somebody
+      // who had already decided. The card says exactly what they ticked.
+      return {
+        kind,
+        label: tier ?? 'Your Modern Mustard Seed build',
+        tier: (session.metadata?.products || '').trim() || null,
+        status: 'building',
+        homeUrl: '/portal',
+        detail: 'Built to your designs. Unlimited edits, before it goes live and after.',
+      };
     case 'store':
       if (!slug) return null; // a real store checkout always carries its slug
       return {
@@ -268,7 +279,13 @@ export async function provisionPurchase(session: Stripe.Checkout.Session): Promi
        * for a logo, and three weeks later somebody notices the site still says
        * Lorem. Idempotent, so a replayed webhook sends nothing twice. */
       try {
-        const welcome = await sendIntakeWelcome(supabase, email, { name, company });
+        // A prep client (Built Right) has its own onboarding page; the generic
+        // "one form and I can start" email would send them to the wrong form and
+        // talk about stand-in photos on a demo they never had.
+        const onboardUrl = (session.metadata?.onboard_url || '').trim();
+        const welcome = onboardUrl
+          ? await sendPrepWelcome(supabase, email, { name, company, onboardUrl })
+          : await sendIntakeWelcome(supabase, email, { name, company });
         if (!welcome.sent && welcome.reason && welcome.reason !== 'already welcomed') {
           console.error('provisionPurchase: intake welcome not sent:', welcome.reason);
         }

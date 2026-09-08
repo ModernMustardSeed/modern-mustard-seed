@@ -1762,9 +1762,16 @@ async function handleDirectPayPaid(
           { label: 'First invoice', value: amount },
           { label: 'Email', value: email || 'not given' },
           { label: 'Phone', value: phone || 'not given' },
+          ...(session.metadata?.signature_id
+            ? [{ label: 'Signed quote', value: `https://modernmustardseed.com/api/prep-sign?id=${session.metadata.signature_id}` }]
+            : []),
         ],
-        message: 'They paid off a direct link, so there is no built demo to release. This build starts from scratch.',
-        suggestedAction: 'Send the kickoff questionnaire and get the build on the delivery board',
+        message: session.metadata?.onboard_url
+          ? 'They signed and paid on their prep site. Their portal login and the onboarding link went to them automatically.'
+          : 'They paid off a direct link, so there is no built demo to release. This build starts from scratch.',
+        suggestedAction: session.metadata?.onboard_url
+          ? 'Watch for their onboarding answers, then get the build on the delivery board'
+          : 'Send the kickoff questionnaire and get the build on the delivery board',
       }),
     });
   } catch (err) {

@@ -91,8 +91,19 @@ jobs:
       - name: Every named import a worker makes resolves
         run: node scripts/check-worker-imports.mjs
 
+      - name: Install Claude Code (the action's installer once reported success with no binary)
+        shell: bash
+        run: |
+          for i in 1 2 3; do
+            curl -fsSL https://claude.ai/install.sh | bash && test -x "$HOME/.local/bin/claude" && break
+            echo "install attempt $i did not leave a binary; retrying"; sleep 15
+          done
+          test -x "$HOME/.local/bin/claude" || { echo "::error::Claude Code did not install after three attempts"; exit 1; }
+          "$HOME/.local/bin/claude" --version
+
       - uses: anthropics/claude-code-action@v1
         with:
+          path_to_claude_code_executable: /home/runner/.local/bin/claude
           # SUBSCRIPTION, NOT THE METERED API. This fires on `opened` AND on
           # `synchronize`, so every push to an open PR starts a fresh agent that
           # is allowed 60 turns and spawns its own sweep and refutation
