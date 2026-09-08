@@ -69,6 +69,10 @@ const FAQ = [
     a: 'Yes. Enter your business once and we build a real working demo website designed from scratch for you, in your hands within the hour, plus a voice agent so you can judge the whole system. No card and no meeting. Buy the pieces you love, or walk away.',
   },
   {
+    q: 'Can you build it on WordPress or Webflow?',
+    a: 'No. Every site we ship is built on Next.js and hosted on Vercel, and that is not a limitation you feel. Anything you use as a WordPress or Webflow plugin, whether it is an AI tool, a booking system, a CRM, a chat widget, or a payment processor, we wire in directly. You own the code, edits are included forever, and any JavaScript developer can pick it up if you leave. What you skip is the admin panel with thirty plugins that need updating every month.',
+  },
+  {
     q: 'What if I already have a website?',
     a: 'We can rebuild it as a working engine, or wire the parts you are missing (the voice agent, funnels, SEO and GEO) onto what you have. Start with a free demo or a free website audit and we will tell you the highest-leverage move.',
   },
@@ -481,6 +485,36 @@ export default function WebsitesPage() {
               See the sites we have shipped →
             </Link>
           </div>
+        </section>
+
+        {/* ── Why not WordPress or Webflow ── */}
+        <section>
+          <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#C4160B] uppercase">
+            Why not WordPress or Webflow // The platform question, answered
+          </p>
+          <h2 className="font-display italic font-extrabold text-4xl md:text-5xl mt-3 leading-[1.02] max-w-3xl">
+            We build on Next.js. Here is what that gets you.
+          </h2>
+          <p className="font-body text-[15px] text-[#161616]/70 mt-4 max-w-2xl leading-relaxed">
+            The platform question usually stands in for four real ones. Can I keep the tools I use, do I own it, can I
+            change it, and can I leave. Yes to all four.
+          </p>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-10">
+            {[
+              ['Keep your tools', 'Anything you run as a plugin today, an AI assistant, a booking system, a CRM, a chat widget, a payment processor, we wire in directly. No plugin marketplace in the way.'],
+              ['Own it', 'The code lives in a GitHub repo in your name. The hosting is a Vercel project in your name. The domain stays yours. Nothing runs through an account of ours.'],
+              ['Change it', 'Edits to what we built are included, before launch and forever after. Send the change, we ship it. No ticket and no charge.'],
+              ['Leave whenever', 'No theme license, no plugin subscription, no login of ours to get past. Any developer who works in JavaScript can pick the repo up the day you hand it over.'],
+            ].map(([t, d]) => (
+              <div key={t} className="border-2 border-[#161616] bg-white rounded-2xl shadow-[5px_5px_0_0_#161616] p-6">
+                <h3 className="font-display font-extrabold text-lg leading-tight">{t}</h3>
+                <p className="font-body text-[13px] text-[#161616]/75 mt-2 leading-relaxed">{d}</p>
+              </div>
+            ))}
+          </div>
+          <p className="font-body text-[13px] text-[#161616]/70 mt-6">
+            Already on WordPress or Webflow? We move the content over. We do not rebuild inside those tools.
+          </p>
         </section>
 
         {/* ── FAQ ── */}
