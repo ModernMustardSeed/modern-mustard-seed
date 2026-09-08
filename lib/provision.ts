@@ -96,6 +96,15 @@ export function productSpecFor(kind: string, session: Stripe.Checkout.Session): 
         homeUrl: '/portal',
         detail: 'Your commercial is in production. You review it before it ships.',
       };
+    case 'launch-film':
+      return {
+        kind,
+        label: 'The Launch Film',
+        tier,
+        status: 'in_production',
+        homeUrl: '/portal',
+        detail: 'Your launch film is in production. You approve the treatment before a frame is rendered.',
+      };
     case 'ads':
       return {
         kind,

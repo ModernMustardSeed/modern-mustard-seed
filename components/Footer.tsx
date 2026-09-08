@@ -34,6 +34,7 @@ export default function Footer() {
         { label: 'Meet Mr. Mustard', href: '/mustard' },
         { label: 'The Switchboard', href: '/switchboard' },
         { label: 'Mustard Broadcast', href: '/ads' },
+        { label: 'The Launch Film', href: '/launch-film' },
         { label: 'GEO Desk', href: '/website-audit' },
         { label: 'Mustard Launch', href: '/mustard-launch' },
         { label: 'Mustard Mode', href: '/mustard-mode' },
