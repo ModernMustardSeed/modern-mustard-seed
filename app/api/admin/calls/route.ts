@@ -53,7 +53,22 @@ export async function GET(req: Request) {
     label: c.company || c.name || c.email,
   }));
 
-  return NextResponse.json({ ok: true, rows: list.rows, agents, clients, sync, syncedAt: new Date().toISOString() });
+  // The lead behind a caller, matched on the last ten digits of the number, so
+  // the drawer can open their card and their audit without a second search.
+  const leadByPhone = new Map<string, { id: string; name: string | null; email: string | null; company: string | null; audit_url: string | null }>();
+  if (sb) {
+    const { data: leads } = await sb.from('leads').select('id,name,email,company,phone,audit_url').not('phone', 'is', null).order('created_at', { ascending: false }).limit(2000);
+    for (const l of (leads ?? []) as { id: string; name: string | null; email: string | null; company: string | null; phone: string | null; audit_url: string | null }[]) {
+      const key = String(l.phone ?? '').replace(/\D/g, '').slice(-10);
+      if (key.length === 10 && !leadByPhone.has(key)) leadByPhone.set(key, { id: l.id, name: l.name, email: l.email, company: l.company, audit_url: l.audit_url });
+    }
+  }
+  const rows = list.rows.map((r) => {
+    const key = String(r.caller_number ?? '').replace(/\D/g, '').slice(-10);
+    return { ...r, lead: key.length === 10 ? leadByPhone.get(key) ?? null : null };
+  });
+
+  return NextResponse.json({ ok: true, rows, agents, clients, sync, syncedAt: new Date().toISOString() });
 }
 
 export async function PATCH(req: Request) {

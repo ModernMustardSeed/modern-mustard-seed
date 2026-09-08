@@ -265,7 +265,15 @@ export default function LeadDrawer({ lead, onClose, onUpdate, onDelete }: Props)
                 {fields.map((f) => (
                   <div key={f.label} className="grid grid-cols-3 gap-3 text-sm">
                     <dt className="text-[#161616]/50 font-mono text-xs uppercase tracking-wider pt-0.5">{f.label}</dt>
-                    <dd className="col-span-2 text-[#3A3733] font-body break-words">{f.value}</dd>
+                    <dd className="col-span-2 text-[#3A3733] font-body break-words">
+                      {/^https?:\/\//i.test(String(f.value)) ? (
+                        <a href={String(f.value)} target="_blank" rel="noopener noreferrer" className="text-[#1E50C8] underline underline-offset-2 hover:text-[#161616]">
+                          {f.value}
+                        </a>
+                      ) : (
+                        f.value
+                      )}
+                    </dd>
                   </div>
                 ))}
               </dl>
