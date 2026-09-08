@@ -42,6 +42,7 @@ type Row = {
   transferred: boolean;
   transferred_to: string | null;
   booked: boolean;
+  lead?: { id: string; name: string | null; email: string | null; company: string | null; audit_url: string | null } | null;
 };
 
 type Agent = { assistant_id: string; name: string | null; client_email: string | null; business: string | null; kind: Row['kind']; hidden: boolean; last_seen_at: string | null };
@@ -393,6 +394,12 @@ export default function CallsPanel() {
               <span>{KIND_LABEL[open.kind]}</span>
               {open.client_email && <span>{clientLabel(open.client_email)}</span>}
               {open.cost_cents != null && <span>${(open.cost_cents / 100).toFixed(2)}</span>}
+              {open.lead?.email && <span>Lead: {open.lead.company || open.lead.name || open.lead.email}</span>}
+              {open.lead?.audit_url && (
+                <a href={open.lead.audit_url} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 text-[#1E50C8]">
+                  Audit report
+                </a>
+              )}
               <a
                 href={`https://dashboard.vapi.ai/calls/${open.vapi_call_id}`}
                 target="_blank"
