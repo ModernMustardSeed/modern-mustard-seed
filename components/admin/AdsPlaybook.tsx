@@ -213,6 +213,56 @@ const CX_CHECKLIST = [
   { id: 'review', label: 'Day 5-7: judge on cost per build-queue enquiry, not clicks. The truth metric is booked calls that mention the store.' },
 ];
 
+
+/* ============ Campaign twenty-three: While You Were Debating ============
+ *
+ * The studio's own proof, cut for the feed. No client, no invented company:
+ * one person, two companies (MMS and Cross + Covenant), twenty apps on the
+ * launch calendar, five stages of work on one system. Rendered frame by frame
+ * from real type in marketing/while-you-debated-2026-09-05, narrated and scored
+ * locally, nothing licensed. Every name on screen is a real product.
+ *
+ * It sells Idea to Product to the second-business operator, and the landing is
+ * Imagination Station, the free front door. Its hand-off posts to /api/contact
+ * with source "Imagination Station", so the leads are the studio's own.
+ */
+
+const DB_LANDING = 'https://imagine.modernmustardseed.com/?utm_source=meta&utm_medium=paid&utm_campaign=debating';
+
+const DB_COPY_A = `While the internet argues about whether AI takes jobs, one person in Kalispell built two companies and put twenty apps on a launch calendar.
+
+Not with a team. With a system. Ideation, code, financial models, creative and go-to-market run on one backend, so every project makes the next one easier.
+
+You have an idea you stopped saying out loud. Bring it. The front door is free.`;
+
+const DB_COPY_B = `You already run something that works. The second idea has been sitting in a notes app for a year, because building it meant hiring a team.
+
+We build it without the team. One studio, one system, twenty apps on the calendar right now, two companies already taking orders.
+
+Forty-four seconds. Then bring the idea.`;
+
+const DB_HEADLINE = 'Twenty apps. One person. Bring the idea.';
+const DB_DESCRIPTION = 'Idea to Product, from Modern Mustard Seed.';
+
+const DB_CUTS = [
+  { file: '/ads/debating-4x5.mp4', label: '4:5 · Feed', note: 'Facebook + Instagram feed. The workhorse placement.' },
+  { file: '/ads/debating-9x16.mp4', label: '9:16 · Reels + Stories + Shorts', note: 'Vertical placements, Meta and YouTube Shorts.' },
+  { file: '/ads/debating-16x9.mp4', label: '16:9 · In-stream + LinkedIn', note: 'Video feeds, YouTube, and the LinkedIn post.' },
+];
+
+const DB_CHECKLIST = [
+  { id: 'cell', label: 'One cell to start: objective Traffic (switch to Conversions once the pixel has volume). Budget $15/day. Learn More button → the Imagination Station UTM link above. Paste Copy Variant 1.' },
+  { id: 'placements', label: 'Upload the 4:5 cut, then customize placements: 9:16 for Reels/Stories, 16:9 for in-stream.' },
+  { id: 'audience', label: 'Audience: Advantage+, operator-tilted. Suggestions: Small business owners, Entrepreneurship, Startups, SaaS, Side business, Product management. Age 28-60, United States.' },
+  { id: 'captions', label: 'Decline Meta auto-captions. The film is typography and reads muted; auto-captions would sit on top of the type.' },
+  { id: 'linkedin', label: 'LinkedIn gets the 16:9 cut as an organic post the same morning, from Sarah, with the Imagination Station link in the first comment. This audience lives there.' },
+  { id: 'organic', label: 'Post the 9:16 as an organic Reel and the 4:5 to FB the same day. Caption: "Which one are you" over the hot-take feed, and let the debate happen under our video.' },
+  { id: 'abtest', label: 'Day 3: duplicate with Copy Variant 2 (the second-idea angle) and let them fight. Kill the loser at day 6.' },
+  { id: 'retarget', label: 'Day 3-4: retargeting ad set of 50% video viewers pointed at Imagination Station. Anyone who watched twenty app names go by has one of their own.' },
+  { id: 'proof', label: 'Answer every "is this real" comment with the two storefronts: modernmustardseed.com and crossandcovenant.co. The proof is the campaign.' },
+  { id: 'review', label: 'Day 5-7: judge on cost per Imagination Station hand-off (leads with source Imagination Station in the admin). The truth metric: booked calls that mention an idea.' },
+];
+
 // ============ Campaign five: The Voice Agent Build ============
 
 const SK_LANDING = 'https://modernmustardseed.com/voice-agents/forge?utm_source=meta&utm_medium=paid&utm_campaign=demo agent';
@@ -1044,7 +1094,7 @@ function CopyBlock({ title, text }: { title: string; text: string }) {
   );
 }
 
-type AdsTab = 'callme' | 'tw' | 'mm' | 'fm' | 'sk' | 'px' | 'pr' | 'geo' | 'gn' | 'py' | 'rest' | 'unv' | 'unvr' | 'unvf' | 'brg' | 'stone' | 'chief' | 'ans' | 'scenic' | 'cxc' | 'ah' | 'whaa' | 'social' | 'results';
+type AdsTab = 'callme' | 'tw' | 'mm' | 'fm' | 'sk' | 'px' | 'pr' | 'geo' | 'gn' | 'py' | 'rest' | 'unv' | 'unvr' | 'unvf' | 'brg' | 'stone' | 'chief' | 'ans' | 'scenic' | 'cxc' | 'ah' | 'whaa' | 'debate' | 'social' | 'results';
 
 const TABS: { key: AdsTab; num: string; label: string; blurb: string }[] = [
   { key: 'callme', num: '01', label: 'Call Me', blurb: 'Voice agents · call objective · $25/day' },
@@ -1069,6 +1119,7 @@ const TABS: { key: AdsTab; num: string; label: string; blurb: string }[] = [
   { key: 'cxc', num: '20', label: 'Cross + Covenant', blurb: 'Online stores · a real live storefront · $15/day' },
   { key: 'ah', num: '21', label: '9:47 PM', blurb: 'Voice agents · a REAL recorded call · $25/day' },
   { key: 'whaa', num: '22', label: 'Say Whaaa', blurb: 'The build · the agent that builds · $10/day' },
+  { key: 'debate', num: '23', label: 'While You Were Debating', blurb: 'Idea to Product · the studio proof · $15/day' },
   { key: 'social', num: '💬', label: 'Organic Social', blurb: 'FB + IG + X posts · free · same day as the paid cut' },
   { key: 'results', num: '📊', label: 'Results', blurb: 'How to read them all together' },
 ];
@@ -1085,7 +1136,7 @@ const TABS: { key: AdsTab; num: string; label: string; blurb: string }[] = [
 const CAMPAIGN_GROUPS: { name: string; keys: AdsTab[] }[] = [
   { name: 'Demo Funnel', keys: ['unv', 'unvr', 'unvf', 'brg', 'stone', 'ans'] },
   { name: 'Product Offers', keys: ['mm', 'sk', 'chief', 'px', 'pr', 'geo'] },
-  { name: 'Brand + Verticals', keys: ['callme', 'ah', 'tw', 'gn', 'rest', 'scenic', 'whaa', 'cxc'] },
+  { name: 'Brand + Verticals', keys: ['callme', 'ah', 'tw', 'gn', 'rest', 'scenic', 'whaa', 'cxc', 'debate'] },
   { name: 'Partners + Magnets', keys: ['fm', 'py'] },
   { name: 'Organic', keys: ['social'] },
 ];
@@ -1200,6 +1251,7 @@ export default function AdsPlaybook() {
   const [checkedWhaa, setCheckedWhaa] = useState<Record<string, boolean>>({});
   const [checkedCxc, setCheckedCxc] = useState<Record<string, boolean>>({});
   const [checkedAh, setCheckedAh] = useState<Record<string, boolean>>({});
+  const [checkedDb, setCheckedDb] = useState<Record<string, boolean>>({});
 
   // Remember the campaign you were working in.
   useEffect(() => {
@@ -1286,6 +1338,8 @@ export default function AdsPlaybook() {
       if (rawWhaa) setCheckedWhaa(JSON.parse(rawWhaa));
       const rawCxc = localStorage.getItem('mms-ads-checklist-cxc');
       if (rawCxc) setCheckedCxc(JSON.parse(rawCxc));
+      const rawDb = localStorage.getItem('mms-ads-checklist-debating');
+      if (rawDb) setCheckedDb(JSON.parse(rawDb));
     } catch { /* first visit */ }
   }, []);
 
@@ -1313,6 +1367,7 @@ export default function AdsPlaybook() {
   const toggleWhaa = mkToggle('mms-ads-checklist-whaa', setCheckedWhaa);
   const toggleAh = mkToggle('mms-ads-checklist-afterhours', setCheckedAh);
   const toggleCxc = mkToggle('mms-ads-checklist-cxc', setCheckedCxc);
+  const toggleDb = mkToggle('mms-ads-checklist-debating', setCheckedDb);
 
   const toggle = (id: string) => {
     setChecked((prev) => {
@@ -1376,6 +1431,7 @@ export default function AdsPlaybook() {
   const doneCountWhaa = SW_CHECKLIST.filter((c) => checkedWhaa[c.id]).length;
   const doneCountCxc = CX_CHECKLIST.filter((c) => checkedCxc[c.id]).length;
   const doneCountAh = AH_CHECKLIST.filter((c) => checkedAh[c.id]).length;
+  const doneCountDb = DB_CHECKLIST.filter((c) => checkedDb[c.id]).length;
 
   return (
     <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
@@ -3170,6 +3226,87 @@ export default function AdsPlaybook() {
                     className="mt-1 h-4 w-4 accent-[#F5B700] shrink-0"
                   />
                   <span className={`text-sm font-sans leading-relaxed ${checkedWhaa[item.id] ? 'text-[#161616]/40 line-through' : 'text-[#161616]/85'}`}>
+                    <b className="font-mono text-[#E0301E] mr-1.5">{String(i + 1).padStart(2, '0')}</b>
+                    {item.label}
+                  </span>
+                </label>
+              </li>
+            ))}
+          </ol>
+        </section>
+        </>)}
+
+        {tab === 'debate' && (<>
+        {/* ============ Campaign twenty-three: While You Were Debating (the studio proof) ============ */}
+        <section className="bg-[#080C16] border-2 border-[#161616] shadow-[6px_6px_0_0_#F5B700] p-6 md:p-8 relative overflow-hidden">
+          <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(rgba(245,183,0,0.5) 1.5px, transparent 1.6px)', backgroundSize: '16px 16px' }} aria-hidden />
+          <div className="relative">
+            <span className="text-[10px] uppercase tracking-[0.3em] text-[#FFDD55] font-mono font-bold">Campaign twenty-three &middot; Idea to Product, the studio proof</span>
+            <h2 className="font-display text-3xl md:text-4xl font-extrabold text-white mt-2">
+              &ldquo;While You Were Debating&rdquo; <span className="italic text-[#F5B700]">two companies, twenty apps, one person</span>
+            </h2>
+            <p className="text-white/75 mt-3 max-w-3xl font-sans">
+              Forty-four seconds of the studio&rsquo;s own scoreboard. The feed of hot takes, then Meanwhile: one
+              person, two companies taking orders, twenty real app names on the launch calendar, five stages of work
+              slamming in on the words, the architecture ring, and the reuse rows that show why every project makes
+              the next one easier. Rendered frame by frame from type, narrated and scored locally, nothing licensed.
+              Every name on screen is a real product. One cell at $15/day into Imagination Station, the free front door.
+            </p>
+            <div className="flex flex-wrap gap-3 mt-5">
+              <a href="https://adsmanager.facebook.com" target="_blank" rel="noopener noreferrer" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-[#F5B700] shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Open Ads Manager</a>
+              <a href="https://imagine.modernmustardseed.com" target="_blank" rel="noopener noreferrer" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Imagination Station (landing)</a>
+              <a href="https://claude.ai/code/artifact/3042c347-0d73-4f8f-8d0e-6fde5679438d" target="_blank" rel="noopener noreferrer" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Watch page + script</a>
+              <a href="/admin/leads" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Leads</a>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <h3 className="font-display text-2xl font-extrabold text-[#161616] mb-1">The film, one cut per placement</h3>
+          <p className="text-sm text-[#161616]/65 mb-5 font-sans">Kokoro narration over an original 120 BPM score. The film is typography, so it reads with the sound off. Right-click any video to save it.</p>
+          <div className="grid md:grid-cols-3 gap-5">
+            {DB_CUTS.map((c) => (
+              <div key={c.file} className="bg-white border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] p-4">
+                <video controls preload="metadata" poster="/ads/debating-poster.jpg" className="w-full border border-[#161616] bg-black" src={c.file} />
+                <div className="mt-3 flex items-center justify-between gap-2">
+                  <div>
+                    <p className="font-sans font-bold text-sm text-[#161616]">{c.label}</p>
+                    <p className="text-xs text-[#161616]/60 font-sans">{c.note}</p>
+                  </div>
+                  <a href={c.file} download className="shrink-0 text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-[#161616] px-3 py-1.5 border-2 border-[#161616] bg-[#F5B700] shadow-[2px_2px_0_0_#161616] hover:-translate-y-0.5 transition-transform">Download</a>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section>
+          <h3 className="font-display text-2xl font-extrabold text-[#161616] mb-5">Ad copy, ready to paste</h3>
+          <div className="grid md:grid-cols-2 gap-5">
+            <CopyBlock title="Primary text &mdash; Variant 1 (the scoreboard)" text={DB_COPY_A} />
+            <CopyBlock title="Primary text &mdash; Variant 2 (the second idea)" text={DB_COPY_B} />
+            <CopyBlock title="Headline" text={DB_HEADLINE} />
+            <CopyBlock title="Description" text={DB_DESCRIPTION} />
+            <CopyBlock title="Landing link with UTM" text={DB_LANDING} />
+          </div>
+        </section>
+
+        <section className="bg-white border-2 border-[#161616] shadow-[6px_6px_0_0_#161616] p-6 md:p-8">
+          <div className="flex items-center justify-between gap-3 mb-5">
+            <h3 className="font-display text-2xl font-extrabold text-[#161616]">Launch checklist</h3>
+            <span className="text-[11px] font-mono font-bold text-[#161616] bg-[#F5B700] border-2 border-[#161616] px-3 py-1 shadow-[2px_2px_0_0_#161616]">{doneCountDb}/{DB_CHECKLIST.length}</span>
+          </div>
+          <ol className="space-y-3">
+            {DB_CHECKLIST.map((item, i) => (
+              <li key={item.id}>
+                <label className="flex items-start gap-3 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    checked={!!checkedDb[item.id]}
+                    onChange={() => toggleDb(item.id)}
+                    className="mt-1 h-4 w-4 accent-[#F5B700] shrink-0"
+                  />
+                  <span className={`text-sm font-sans leading-relaxed ${checkedDb[item.id] ? 'text-[#161616]/40 line-through' : 'text-[#161616]/85'}`}>
                     <b className="font-mono text-[#E0301E] mr-1.5">{String(i + 1).padStart(2, '0')}</b>
                     {item.label}
                   </span>
