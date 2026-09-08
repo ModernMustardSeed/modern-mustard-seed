@@ -23,6 +23,7 @@ import { SITE } from '@/lib/seo';
 import { leadTrade } from '@/lib/outbound-demo';
 import { TRADE_PRESETS } from '@/data/demo-os-trades';
 import type { OutboundLead } from '@/lib/outbound';
+import { OUTREACH_FROM, OUTREACH_REPLY_TO } from '@/lib/outreach-domain';
 
 /* ------------------------------ demo-station drip ------------------------- */
 
@@ -245,9 +246,9 @@ export async function demoStationDrip(
       mail.html +
       `<div style="text-align:center;font-size:12px;color:#8a857a;padding:18px 0"><a href="${unsub}" style="color:#8a857a">Unsubscribe</a> and I will never email you again.</div>`;
     const result = await sendViaResend({
-      from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
+      from: OUTREACH_FROM,
       to: raw.email!,
-      replyTo: 'sarah@modernmustardseed.com',
+      replyTo: OUTREACH_REPLY_TO,
       subject: mail.subject,
       html,
       mailbox: 'sarah@modernmustardseed.com',

@@ -31,6 +31,7 @@ import { clientEmail, escape } from '@/lib/email';
 import { SITE } from '@/lib/seo';
 import { demoAgentTiers, demoAgentUsd } from '@/data/demo-agent';
 import { possessive } from '@/lib/business-name';
+import { OUTREACH_FROM } from '@/lib/outreach-domain';
 
 const CAP_PER_RUN = 12;
 const KEY = (id: string) => `skdrip:${id}`;
@@ -270,7 +271,7 @@ export async function demoAgentDrip(
       `<div style="text-align:center;font-size:12px;color:#8a857a;padding:18px 0"><a href="${unsub}" style="color:#8a857a">Unsubscribe</a> and I will never email you again.</div>`;
 
     const result = await sendViaResend({
-      from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
+      from: OUTREACH_FROM,
       to: lead.email,
       replyTo: 'sarah@modernmustardseed.com',
       subject: mail.subject,

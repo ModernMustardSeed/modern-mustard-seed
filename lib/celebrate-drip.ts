@@ -50,6 +50,7 @@ import {
   listWaitlist,
   type CelebrateEntry,
 } from '@/lib/celebrate-store';
+import { OUTREACH_FROM } from '@/lib/outreach-domain';
 
 /* -------------------------------------------------------------------------- */
 /* Guards                                                                      */
@@ -585,7 +586,7 @@ export async function celebrateDrip(
 
     const unsub = unsubUrlFor(entry.email);
     const send = await sendViaResend({
-      from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
+      from: OUTREACH_FROM,
       to: entry.email,
       replyTo: 'sarah@modernmustardseed.com',
       subject: letter.subject,

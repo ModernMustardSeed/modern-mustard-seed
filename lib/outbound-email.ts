@@ -5,8 +5,12 @@ import { ensureDemoHub } from '@/lib/outbound-demo';
 import type { OutboundLead } from '@/lib/outbound';
 import { possessive } from '@/lib/business-name';
 
-export const OUTBOUND_FROM = 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>';
-export const OUTBOUND_REPLY_TO = 'sarah@modernmustardseed.com';
+import { OUTREACH_FROM, OUTREACH_REPLY_TO } from '@/lib/outreach-domain';
+
+// Cold outreach and drips send from the outreach subdomain, never the root.
+// See lib/outreach-domain.ts for why.
+export const OUTBOUND_FROM = OUTREACH_FROM;
+export const OUTBOUND_REPLY_TO = OUTREACH_REPLY_TO;
 
 /**
  * COLD OUTREACH COMPLIANCE FOOTER.

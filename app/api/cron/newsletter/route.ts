@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { listContent } from '@/lib/content';
 import { resendClient } from '@/lib/send-email';
+import { OUTREACH_FROM } from '@/lib/outreach-domain';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -92,7 +93,7 @@ export async function GET(req: Request) {
   try {
     const create = await resend.broadcasts.create({
       audienceId,
-      from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
+      from: OUTREACH_FROM,
       replyTo: 'sarah@modernmustardseed.com',
       subject,
       html,
