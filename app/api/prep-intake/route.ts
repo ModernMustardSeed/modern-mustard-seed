@@ -81,6 +81,13 @@ export async function POST(req: Request) {
   const when = new Date(row.created_at).toLocaleString('en-US', { timeZone: 'America/Denver', dateStyle: 'long', timeStyle: 'short' });
   try {
     await sb.from('client_files').insert({ client_email: spec.email, label: `${LABEL[kind]}, ${when}`, url: viewUrl, kind: 'doc' });
+    // Files uploaded from the page arrive as "Uploaded file: <name>" answers
+    // whose value is the storage URL. Each becomes its own row on the card so
+    // Sarah opens a design without reading the whole submission.
+    const uploads = answers.filter((x) => x.q.startsWith('Uploaded file: ') && /^https:\/\//.test(x.a));
+    if (uploads.length) {
+      await sb.from('client_files').insert(uploads.map((x) => ({ client_email: spec.email, label: x.q.slice('Uploaded file: '.length).slice(0, 120), url: x.a, kind: 'design' })));
+    }
     const { data: lead } = await sb.from('leads').select('id, notes').ilike('email', spec.email).order('created_at', { ascending: false }).limit(1).maybeSingle();
     if (lead) {
       await sb.from('leads').update({ notes: `${(lead.notes as string | null) ?? ''}\n[${kind} ${row.created_at.slice(0, 10)}] ${submittedBy ?? 'submitted'}: ${answers.length} answers. ${viewUrl}`.trim() }).eq('id', lead.id);
