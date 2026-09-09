@@ -37,7 +37,7 @@ export default function SeedToSystemPage() {
   };
 
   return (
-    <main className="overflow-hidden bg-[#FBF6EA] text-[#161616]">
+    <div className="overflow-hidden bg-[#FBF6EA] text-[#161616]">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
 
       <section className="relative min-h-[90svh] border-b-2 border-[#161616]">
@@ -307,6 +307,6 @@ export default function SeedToSystemPage() {
           </div>
         </div>
       </section>
-    </main>
+    </div>
   );
 }

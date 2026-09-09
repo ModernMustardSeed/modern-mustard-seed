@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from '@/components/AttributionLink';
 import NewsletterSignup from '@/components/NewsletterSignup';
 import { JsonLd, breadcrumbJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';

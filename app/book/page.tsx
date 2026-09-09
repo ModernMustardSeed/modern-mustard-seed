@@ -117,7 +117,7 @@ export default function BookPage() {
       <section id="what-happens" className="scroll-mt-20 border-b-2 border-[#161616] bg-[#F5F0E8]">
         <div className="relative z-[2] max-w-5xl mx-auto px-6 py-16 md:py-24">
           <div className="text-center max-w-2xl mx-auto mb-10">
-            <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#E0301E] font-bold">What happens on it</p>
+            <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#C4160B] font-bold">What happens on it</p>
             <h2 className="mt-4 font-display text-3xl md:text-5xl font-extrabold leading-[1.05] text-[#161616]">
               Thirty minutes. Nobody books blind.
             </h2>

@@ -1,0 +1,50 @@
+---
+title: "How ChatGPT Finds Local Businesses: What Owners Can Verify"
+description: "Search access, public evidence, business identity and citations, with a clear line between documented behavior and an owner's working hypothesis."
+date: "2026-09-08"
+dateModified: "2026-09-08"
+author: "Sarah Scarano"
+tag: "AI Search Field Notes"
+---
+
+ChatGPT can use web search to answer questions about businesses. That does not make every response a live search result, and it does not give a business owner a fixed ranking position to buy.
+
+An owner can verify whether pages are accessible, whether the business is described accurately, and whether a particular answer cites a particular page. Those are useful observations. They are different from knowing the system's complete recommendation process.
+
+## What OpenAI actually documents
+
+[OpenAI's crawler documentation](https://developers.openai.com/api/docs/bots) distinguishes OAI-SearchBot, used for search discovery, from GPTBot, used for content that may support model training. The settings are independent. ChatGPT-User is another agent, associated with user-triggered actions rather than automatic search indexing.
+
+For a site that wants search discovery, inspect OAI-SearchBot access and the relevant hosting rules. A permissive robots file is not enough when a firewall challenges the actual request. OpenAI publishes IP ranges for crawler verification. A request with a copied user-agent string checks only how your server responds to that string.
+
+These facts establish an access requirement. They do not establish a recipe for winning a recommendation.
+
+## What a business page can make easier
+
+Suppose someone asks for an AI website developer near Kalispell. A page that identifies a custom software studio in Kalispell, names its services and links to relevant work gives the reader evidence to assess fit.
+
+A page that says “we transform your digital future” does not answer the same question. The reader still has to infer the location, offer and delivery model.
+
+Our engineering approach is to reduce that ambiguity. This is a practical inference about content quality, not a claim that we know a hidden ranking formula. [MMS's Kalispell page](/montana/kalispell), [AI website explanation](/ai-websites) and [work records](/work) serve different parts of that assessment.
+
+## Business identity is a consistency problem
+
+Use the same public name and contact details across pages. Describe the actual base and the places you serve. Keep company social profiles attached to the company and a founder's personal profile attached to that person.
+
+Structured data can express those relationships, but it should agree with visible content. Five service-area pages do not justify five businesses. A city-center coordinate is not proof of a studio address. A customer quote needs a real customer and permission, not only valid JSON.
+
+The point is not to make a bigger graph. It is to make a smaller set of claims that holds together.
+
+## Read a citation as evidence, not as a trophy
+
+When an answer names the business, inspect every cited URL. Does the cited page actually support the service, location or result being described? Is the information current? Did the assistant confuse the company with another business sharing part of the name?
+
+Record the answer and its sources. If the information is wrong on your site, correct the source. If it comes from an external profile you control, update that profile. If no cited source supports the claim, record that as an unsupported answer rather than repeating it in marketing copy.
+
+## A monthly test an owner can repeat
+
+Use the same ten customer questions each month. Keep spelling and location phrasing consistent. Record the system, date, search mode and citations. Run more than one observation before treating a change as a trend. Do not count repeated tests as independent customers.
+
+Pair that log with [identifiable AI referral traffic and conversion events](/blog/measure-ai-search-referrals). This will not reveal every no-click recommendation. It will show whether some visitors arrived through a recognizable source and took an action on your site.
+
+Our [Montana guide](/blog/montana-business-guide-chatgpt-search) turns this into a practical work sequence. Start with evidence you control. Keep the claims no larger than the evidence.

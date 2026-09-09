@@ -12,17 +12,20 @@ import { Suspense, useEffect, useState } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { GA4_ID, GOOGLE_ADS_ID, META_PIXEL_ID } from '@/lib/analytics';
 import { getConsent } from '@/lib/consent';
+import { attributionEventParams, captureAttribution } from '@/lib/ai-attribution';
 
 function PageViews() {
   const pathname = usePathname();
   const search = useSearchParams();
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    if (typeof window === 'undefined' || getConsent() !== 'granted') return;
+    captureAttribution(window.location.href, document.referrer);
     const qs = search?.toString();
     const path = pathname + (qs ? `?${qs}` : '');
     if (GA4_ID && typeof window.gtag === 'function') {
       window.gtag('event', 'page_view', {
+        ...attributionEventParams(),
         page_path: path,
         page_location: window.location.href,
       });
@@ -38,6 +41,8 @@ function PageViews() {
 export default function AnalyticsScripts() {
   // Consent gate: nothing non-essential loads until the visitor accepts.
   const [granted, setGranted] = useState(false);
+  const [googleReady, setGoogleReady] = useState(false);
+  const [metaReady, setMetaReady] = useState(false);
   useEffect(() => {
     setGranted(getConsent() === 'granted');
     const onChange = (e: Event) => setGranted((e as CustomEvent).detail === 'granted');
@@ -58,7 +63,7 @@ export default function AnalyticsScripts() {
             strategy="afterInteractive"
             src={`https://www.googletagmanager.com/gtag/js?id=${GA4_ID || GOOGLE_ADS_ID}`}
           />
-          <Script id="gtag-init" strategy="afterInteractive">
+          <Script id="gtag-init" strategy="afterInteractive" onReady={() => setGoogleReady(true)}>
             {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}window.gtag=gtag;gtag('consent','update',{ad_storage:'granted',analytics_storage:'granted',ad_user_data:'granted',ad_personalization:'granted'});gtag('js',new Date());${
               GA4_ID ? `gtag('config','${GA4_ID}',{send_page_view:false});` : ''
             }${GOOGLE_ADS_ID ? `gtag('config','${GOOGLE_ADS_ID}');` : ''}`}
@@ -67,14 +72,14 @@ export default function AnalyticsScripts() {
       )}
 
       {META_PIXEL_ID && (
-        <Script id="meta-pixel" strategy="afterInteractive">
+        <Script id="meta-pixel" strategy="afterInteractive" onReady={() => setMetaReady(true)}>
           {`!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','${META_PIXEL_ID}');`}
         </Script>
       )}
 
-      <Suspense fallback={null}>
+      {(!hasGoogle || googleReady) && (!META_PIXEL_ID || metaReady) && <Suspense fallback={null}>
         <PageViews />
-      </Suspense>
+      </Suspense>}
 
       {META_PIXEL_ID && (
         <noscript>

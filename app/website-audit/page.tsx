@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from '@/components/AttributionLink';
 import WebsiteAuditEngine from '@/components/WebsiteAuditEngine';
 import GeoDesk from '@/components/geo/GeoDesk';
 import { geoFaqAdditions } from '@/data/geo';
@@ -27,7 +27,7 @@ const FAQS = [
   },
   {
     q: 'What is GEO and why does it have its own category?',
-    a: 'GEO is generative engine optimization. It is the next frontier of search. ChatGPT, Perplexity, Claude, and Google AI Overviews pull answers from structured signals on your site: llms.txt, FAQ schema, citable claims, named brand mentions, structured Q and A blocks. Most websites score F in this category because they were built before LLM search mattered. We weight GEO heavily because the websites that lead here over the next five years are the ones that built for it now.',
+    a: 'GEO means generative engine optimization: making business information useful and understandable in AI search. We inspect crawl access, clear service descriptions, consistent business facts, visible answers and supporting evidence. The grade is our assessment of those signals, not a search ranking. Supplemental files such as llms.txt are optional documentation, not requirements for AI search.',
   },
   {
     q: 'What does the score actually measure?',
@@ -35,7 +35,7 @@ const FAQS = [
   },
   {
     q: 'How accurate is the grading?',
-    a: 'Claude is reading real signals from your page. It is not a personality quiz. The score reflects what is on the page right now. We tested it on dozens of sites including ours, our case study clients, and reference sites like Linear, Stripe, and Apple. The grading lands within a letter grade of an experienced human auditor in nearly every case.',
+    a: 'The audit reads the page and grades the signals it can retrieve. Treat the result as a prioritized inspection, then verify each finding against the site. The grade does not measure rankings, traffic, accessibility conformance or the frequency of AI recommendations.',
   },
   {
     q: 'Can you build the A version?',
@@ -111,6 +111,10 @@ export default function WebsiteAuditPage() {
 
         {/* GEO DESK: the conversion module on the graded report */}
         <GeoDesk />
+        <section className="max-w-5xl mx-auto px-6 py-10 mb-12">
+          <h2 className="font-display text-3xl font-bold">Know what the grade is telling you.</h2>
+          <p className="mt-4 leading-relaxed">Read our <Link href="/resources" className="text-[#1E50C8] underline font-bold">AI Search Field Notes</Link> for the technical checks and measurement behind this work. <Link href="/blog/geo-vs-seo-montana" className="text-[#1E50C8] underline font-bold">GEO and SEO share a foundation</Link>: accessible pages, useful information and evidence. Modern Mustard Seed builds that foundation from Kalispell for businesses nationwide.</p>
+        </section>
 
         {/* What we score */}
         <section className="max-w-5xl mx-auto px-6 md:px-8 mb-24">
@@ -141,7 +145,7 @@ export default function WebsiteAuditPage() {
               },
               {
                 t: 'GEO (AI search)',
-                d: 'The next frontier. llms.txt, .well-known/ai.txt, FAQ schema, citable claims, named mentions, structured Q&A blocks. Most sites score F here.',
+                d: 'Crawlable content, consistent business identity, useful visible answers and evidence. Optional AI text directories are documentation, not a search requirement.',
               },
               {
                 t: 'AI features',
@@ -190,7 +194,7 @@ export default function WebsiteAuditPage() {
                 <p className="text-[#3a3733] text-sm font-body leading-relaxed mb-3">
                   Beautiful, fast, brand-aligned site. Loads in under two seconds. Looks like a real business.
                 </p>
-                <p className="text-[#161616]/55 text-[11px] uppercase tracking-[0.25em] font-mono font-bold">
+                <p className="text-[#161616]/75 text-[11px] uppercase tracking-[0.25em] font-mono font-bold">
                   About a week · quoted after a free call
                 </p>
               </div>
@@ -201,7 +205,7 @@ export default function WebsiteAuditPage() {
                 <p className="text-[#3a3733] text-sm font-body leading-relaxed mb-3">
                   Site + bespoke booking with CRM + AI SDR + funnels + back office + embedded agents. The engine.
                 </p>
-                <p className="text-[#161616]/55 text-[11px] uppercase tracking-[0.25em] font-mono font-bold">
+                <p className="text-[#161616]/75 text-[11px] uppercase tracking-[0.25em] font-mono font-bold">
                   1 to 2 weeks · quoted after a free call
                 </p>
               </div>

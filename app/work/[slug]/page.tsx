@@ -1,4 +1,6 @@
-import Link from 'next/link';
+import Link from '@/components/AttributionLink';
+import EditorialByline from '@/components/EditorialByline';
+import CaseStudyEvidence from '@/components/CaseStudyEvidence';
 import { notFound } from 'next/navigation';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import remarkGfm from 'remark-gfm';
@@ -9,24 +11,25 @@ import { getAllSlugs, getContent } from '@/lib/content';
 type Params = Promise<{ slug: string }>;
 
 export async function generateStaticParams() {
-  return getAllSlugs('work').map((slug) => ({ slug }));
+  return getAllSlugs('work').filter((slug) => !getContent('work', slug)?.meta.draft).map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: { params: Params }) {
   const { slug } = await params;
   const study = getContent('work', slug);
-  if (!study) return buildMetadata({ title: 'Not Found', noindex: true });
+  if (!study || study.meta.draft) return buildMetadata({ title: 'Not Found', noindex: true });
   return buildMetadata({
     title: study.meta.title,
     description: study.meta.description,
     path: `/work/${slug}`,
+    article: { published: study.meta.date, modified: study.meta.dateModified },
   });
 }
 
 export default async function WorkDetail({ params }: { params: Params }) {
   const { slug } = await params;
   const study = getContent('work', slug);
-  if (!study) notFound();
+  if (!study || study.meta.draft) notFound();
 
   return (
     <>
@@ -120,8 +123,10 @@ export default async function WorkDetail({ params }: { params: Params }) {
                 </svg>
               </a>
             )}
+            <EditorialByline author={study.meta.author} date={study.meta.date} modified={study.meta.dateModified} />
           </header>
 
+          <CaseStudyEvidence evidence={study.meta.evidence} />
           <div className="mdx-prose mdx-prose-pop">
             <MDXRemote
               source={study.body}

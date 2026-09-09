@@ -1,4 +1,5 @@
-import Link from 'next/link';
+import Link from '@/components/AttributionLink';
+import { SITE } from '@/lib/seo';
 import Image from 'next/image';
 import { socials } from '@/data/socials';
 import { PARABLE_REFERENCE, PARABLE_SEGMENTS } from '@/data/parable';
@@ -57,6 +58,9 @@ export default function Footer() {
         { label: 'The System', href: '/the-system' },
         { label: 'How It Works', href: '/work-with-us' },
         { label: 'Services', href: '/services' },
+      { label: 'AI Websites', href: '/ai-websites' },
+      { label: 'AI Search Resources', href: '/resources' },
+      { label: 'Kalispell', href: '/montana/kalispell' },
         { label: 'Voice Agents', href: '/voice-agents' },
         { label: 'Industries We Build For', href: '/for' },
         { label: 'Northwest Montana', href: '/montana' },
@@ -103,6 +107,10 @@ export default function Footer() {
   return (
     <footer className="relative w-full bg-[#FBF6EA] text-[#161616] border-t-2 border-[#161616]">
       {/* ── Gold CTA band: the last ask ── */}
+      <div className="max-w-6xl mx-auto px-6 py-8 font-body text-sm leading-relaxed">
+        <p>{SITE.description}</p>
+        <p className="mt-2"><Link href="/about" className="font-bold underline">Founded by {SITE.founder}</Link>. <a href={`tel:${SITE.phoneE164}`} className="underline">{SITE.phone}</a> ? <a href={`mailto:${SITE.email}`} className="underline">{SITE.email}</a></p>
+      </div>
       <div className="relative halftone-bg border-b-2 border-[#161616] bg-[#F5B700]">
         <div className="relative z-[2] max-w-4xl mx-auto px-6 py-14 md:py-16 text-center">
           <p className="font-mono text-[10px] uppercase tracking-[0.3em] font-bold text-[#161616]/70">

@@ -89,7 +89,7 @@ export default function ServicesPage() {
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-6 py-16 lg:py-20 space-y-20">
+      <div className="max-w-6xl mx-auto px-6 py-16 lg:py-20 space-y-20">
         {/* ── The flagship trio ── */}
         <section>
           <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#C4160B] uppercase">
@@ -266,7 +266,7 @@ export default function ServicesPage() {
             </Link>
           </div>
         </section>
-      </main>
+      </div>
     </div>
   );
 }

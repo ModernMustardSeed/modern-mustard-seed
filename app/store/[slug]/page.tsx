@@ -129,7 +129,7 @@ export default async function StoreItemPage({
   const configured = !!item.stripePriceId && !isComingSoon(slug);
 
   return (
-    <main className="relative min-h-screen bg-[#FBF6EA] text-[#161616] pt-24 overflow-hidden">
+    <div className="relative min-h-screen bg-[#FBF6EA] text-[#161616] pt-24 overflow-hidden">
       <JsonLd data={jsonLd} />
 
       <div aria-hidden="true" className="absolute inset-0 halftone-bg opacity-40 pointer-events-none" />
@@ -364,6 +364,6 @@ export default async function StoreItemPage({
           </div>
         </section>
       </div>
-    </main>
+    </div>
   );
 }

@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from '@/components/AttributionLink';
 import { buildMetadata, SITE } from '@/lib/seo';
 import { JsonLd, faqJsonLd, breadcrumbJsonLd } from '@/lib/jsonld';
 import { MONTANA_CITIES } from '@/data/montana-cities';
@@ -10,8 +10,8 @@ import { MONTANA_CITIES } from '@/data/montana-cities';
  */
 
 export const metadata = buildMetadata({
-  title: 'Web Design and Voice Agents in Northwest Montana',
-  description: `A Kalispell studio building custom websites and 24/7 AI phone answering for businesses across the Flathead Valley: ${MONTANA_CITIES.map((c) => c.name).join(', ')}. Two working demos free before you pay. Call ${SITE.phone}.`,
+  title: 'AI Websites and Automation in Montana, Built in Kalispell',
+  description: 'Kalispell-based AI-native product studio building custom websites, voice agents, automation and software for Northwest Montana and clients nationwide.',
   path: '/montana',
 });
 
@@ -22,7 +22,7 @@ const FAQ = [
   },
   {
     q: 'Do you only work with Montana businesses?',
-    a: 'No. Most of our work is remote and nationwide. The local pages exist because a business in Whitefish or Polson deserves to know there is a studio twenty minutes away rather than an agency in another time zone, and because we understand how the seasons here actually hit a small business.',
+    a: 'No. Most of our work is remote and nationwide. Our studio is in Kalispell. These pages explain how the same tools fit the different seasonal and operational needs of businesses across Northwest Montana.',
   },
   {
     q: 'What does a website cost?',
@@ -65,15 +65,14 @@ export default function MontanaPage() {
             The AI studio in your valley, not in your inbox from three time zones away.
           </h1>
           <p className="mt-6 max-w-2xl text-lg md:text-xl text-[#3d382e] font-body leading-relaxed">
-            We build custom websites and 24/7 voice agents for Northwest Montana businesses, from Polson to the
-            Canadian border. Based in Kalispell. You own everything we build.
+            Modern Mustard Seed is an AI-native product studio based in Kalispell. We build custom AI websites, voice agents, automation and software for Northwest Montana and clients nationwide. You own everything we build.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
               href="/demos"
               className="rounded-full border-2 border-[#161616] bg-[#F5B700] px-8 py-4 font-sans font-extrabold text-sm uppercase tracking-[0.14em] shadow-[5px_5px_0_0_#161616] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#161616]"
             >
-              See Three Demos Free
+              See Free Demos
             </Link>
             <a
               href={`tel:${SITE.phoneE164}`}
@@ -85,6 +84,13 @@ export default function MontanaPage() {
         </div>
       </section>
 
+      <nav aria-label="Explore the studio" className="max-w-6xl mx-auto px-6 py-8 flex flex-wrap gap-6 font-bold text-[#1E50C8] underline underline-offset-4">
+        <Link href="/ai-websites">AI websites, explained</Link>
+        <Link href="/montana/kalispell">Our home in Kalispell</Link>
+        <Link href="/resources">The AI search field notes</Link>
+        <Link href="/work">What we have built</Link>
+        <Link href="/about">Meet Sarah Scarano</Link>
+      </nav>
       <section className="border-b-2 border-[#161616] bg-white">
         <div className="max-w-6xl mx-auto px-6 py-14 md:py-20">
           <p className="font-mono text-[11px] uppercase tracking-[0.3em] font-bold text-[#8f6600]">Pick Your Town</p>

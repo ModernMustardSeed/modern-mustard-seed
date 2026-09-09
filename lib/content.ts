@@ -5,6 +5,16 @@ import readingTime from 'reading-time';
 
 export type ContentType = 'blog' | 'work' | 'playbooks';
 
+export type CaseEvidence = {
+  relationship?: string;
+  location?: string;
+  challenge?: string;
+  delivered?: string;
+  results?: { claim: string; source: string; period: string; method: string }[];
+  screenshots?: { src: string; alt: string; width: number; height: number; caption: string }[];
+  quote?: { text: string; attribution: string; permission: boolean };
+};
+
 export type ContentMeta = {
   slug: string;
   title: string;
@@ -25,6 +35,7 @@ export type ContentMeta = {
   metrics?: { label: string; value: string }[];
   stack?: string[];
   liveUrl?: string;
+  evidence?: CaseEvidence;
 };
 
 const ROOT = path.join(process.cwd(), 'content');
@@ -39,6 +50,7 @@ export function getAllSlugs(type: ContentType): string[] {
 }
 
 export function getContent(type: ContentType, slug: string): { meta: ContentMeta; body: string } | null {
+  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) return null;
   const filePath = path.join(ROOT, type, `${slug}.mdx`);
   const altPath = path.join(ROOT, type, `${slug}.md`);
   const finalPath = fs.existsSync(filePath) ? filePath : fs.existsSync(altPath) ? altPath : null;
@@ -65,6 +77,7 @@ export function getContent(type: ContentType, slug: string): { meta: ContentMeta
       metrics: data.metrics,
       stack: data.stack,
       liveUrl: data.liveUrl,
+      evidence: data.evidence,
     },
     body: content,
   };

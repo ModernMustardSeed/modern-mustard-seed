@@ -1,3 +1,4 @@
+import { possessive } from '@/lib/business-name';
 /**
  * THE PRESENCE AUDIT.
  *
@@ -475,7 +476,7 @@ export function headlineFor(pillars: Pillar[], business: string): { headline: st
   if (rev.unknown && gbp.unknown) {
     return {
       headline: 'Your website, graded on its own.',
-      summary: `This audit read ${business}'s website live and scored it ${web.score}. The Google profile and reviews were not read this time, so they are not scored and do not count against you.`,
+      summary: `This audit read ${possessive(business)} website live and scored it ${web.score}. The Google profile and reviews were not read this time, so they are not scored and do not count against you.`,
     };
   }
   return {

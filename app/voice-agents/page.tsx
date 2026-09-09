@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from '@/components/AttributionLink';
 import Image from 'next/image';
 import { CALL_STATS } from '@/data/proof-stats';
 import NewsletterSignup from '@/components/NewsletterSignup';
@@ -210,6 +210,7 @@ export default function VoiceAgentsPage() {
               <br />
               <span className="text-[#F5B700]">Somebody picks up.</span>
             </h1>
+            <p className="mt-5 font-body text-base leading-relaxed">Built by Modern Mustard Seed, an AI-native product studio in Kalispell, Montana, serving Northwest Montana and clients nationwide. <Link href="/ai-websites" className="underline font-bold">See how our AI websites connect the page and the business.</Link></p>
 
             <div className="mt-10 grid lg:grid-cols-12 gap-10 lg:gap-12 items-center pb-4">
               <div className="lg:col-span-6">

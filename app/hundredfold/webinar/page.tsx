@@ -42,7 +42,7 @@ export default function HundredfoldWebinarPage() {
   const { mp4, poster, shipped: hasFilm } = FILMS.webinar;
 
   return (
-    <main className="relative min-h-screen bg-[#161616] text-[#FBF6EA] pt-32 md:pt-40 pb-24">
+    <div className="relative min-h-screen bg-[#161616] text-[#FBF6EA] pt-32 md:pt-40 pb-24">
       <div className="relative max-w-5xl mx-auto px-6 md:px-8">
         <div className="text-center max-w-3xl mx-auto">
           <p className="font-mono font-bold text-[10px] tracking-[0.4em] uppercase text-[#F5B700]">
@@ -110,6 +110,6 @@ export default function HundredfoldWebinarPage() {
           ))}
         </div>
       </div>
-    </main>
+    </div>
   );
 }

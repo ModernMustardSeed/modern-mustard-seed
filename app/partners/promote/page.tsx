@@ -44,7 +44,7 @@ export default async function PromoKit() {
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-6 py-8">
+      <div className="max-w-4xl mx-auto px-6 py-8">
         <h2 className="font-display text-3xl font-semibold text-[#161616] mb-1">Copy, reword, post, {firstName}.</h2>
         <p className="text-[#3A3733] font-body mb-8 max-w-2xl">
           Every offer below comes with ready-to-post copy in the format you need, and your own tracked link is already in it. Reword it in your voice so it sounds like you, keep the honest note that you earn a commission, and you are done.
@@ -56,7 +56,7 @@ export default async function PromoKit() {
           <p className="text-[#FBF6EA]/70 font-body text-sm mb-4">Where to find buyers, a phone script, and a daily routine, all pre-filled with your link.</p>
           <Link href="/partners/playbook" className="inline-block px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] border-2 border-[#F5B700] rounded-full">Open the Outreach Playbook →</Link>
         </div>
-      </main>
+      </div>
     </div>
   );
 }

@@ -209,7 +209,7 @@ export default function RecoveryMachine({
           <span className="block font-mono text-[9px] font-bold uppercase tracking-[0.24em] text-[#161616]">
             Modern Mustard Seed
           </span>
-          <span className="block font-mono text-[8px] font-bold uppercase tracking-[0.18em] text-[#161616]/60">
+          <span className="block font-mono text-[8px] font-bold uppercase tracking-[0.18em] text-[#161616]/75">
             Model RR-1 · Revenue Recovery
           </span>
         </div>
@@ -292,7 +292,7 @@ export default function RecoveryMachine({
                   <span className="flex items-center justify-between gap-2">
                     <span className="min-w-0">
                       <span className="block font-mono text-[9px] font-bold uppercase tracking-[0.14em] text-[#161616]">{f.label}</span>
-                      <span className="block truncate text-[10px] text-[#161616]/55">{f.hint}</span>
+                      <span className="block truncate text-[10px] text-[#161616]/75">{f.hint}</span>
                     </span>
                     <span className="flex shrink-0 items-baseline font-mono text-sm font-bold tabular-nums text-[#161616]">
                       {f.prefix}
@@ -318,7 +318,7 @@ export default function RecoveryMachine({
               );
             })}
           </div>
-          <p className="mt-2 font-mono text-[8px] uppercase tracking-[0.14em] text-[#161616]/45">Type here, or use the keys</p>
+          <p className="mt-2 font-mono text-[8px] uppercase tracking-[0.14em] text-[#161616]/75">Type here, or use the keys</p>
         </div>
 
         <div className="grid grid-cols-4 gap-1.5 self-start">

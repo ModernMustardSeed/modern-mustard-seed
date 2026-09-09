@@ -10,12 +10,12 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['"DM Sans"', '"DM Sans Fallback"', 'system-ui', 'sans-serif'],
-        body: ['"DM Sans"', '"DM Sans Fallback"', 'system-ui', 'sans-serif'],
-        serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
-        mono: ['"JetBrains Mono"', '"Space Mono"', 'monospace'],
-        display: ['"Playfair Display"', '"Playfair Fallback"', 'Georgia', 'serif'],
-        oswald: ['Oswald', '"DM Sans"', 'sans-serif'],
+        sans: ['var(--font-body)', '"DM Sans Fallback"', 'system-ui', 'sans-serif'],
+        body: ['var(--font-body)', '"DM Sans Fallback"', 'system-ui', 'sans-serif'],
+        serif: ['var(--font-serif)', 'Georgia', 'serif'],
+        mono: ['var(--font-mono)', '"Space Mono"', 'monospace'],
+        display: ['var(--font-display)', '"Playfair Fallback"', 'Georgia', 'serif'],
+        oswald: ['var(--font-oswald)', 'var(--font-body)', 'sans-serif'],
       },
       colors: {
         // Legacy "mustard" tokens REMAPPED to Campfire Brass so every existing

@@ -1,6 +1,6 @@
 'use client';
 
-import Link from 'next/link';
+import Link from '@/components/AttributionLink';
 import Image from 'next/image';
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
@@ -26,6 +26,9 @@ const MENU_GROUPS = [
       { label: 'The System', href: '/the-system' },
       { label: 'How It Works', href: '/work-with-us' },
       { label: 'Services', href: '/services' },
+      { label: 'AI Websites', href: '/ai-websites' },
+      { label: 'AI Search Resources', href: '/resources' },
+      { label: 'Kalispell', href: '/montana/kalispell' },
       { label: 'The Work', href: '/work' },
       { label: 'Northwest Montana', href: '/montana' },
       { label: 'Book a Free Call', href: '/book' },

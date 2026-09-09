@@ -287,7 +287,7 @@ export default async function DemosPage({
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-6 py-12 lg:py-16 space-y-16">
+      <div className="max-w-6xl mx-auto px-6 py-12 lg:py-16 space-y-16">
         {/* ── The form. The whole point of the page, so it does not hide below cards. ── */}
         <section id="build" className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-start scroll-mt-8">
           <div className="lg:col-span-5">
@@ -447,7 +447,7 @@ export default async function DemosPage({
         <p className="font-mono text-[11px] text-[#161616]/70 text-center pb-4">
           Modern Mustard Seed · Kalispell, MT · (406) 312-1223
         </p>
-      </main>
+      </div>
     </div>
   );
 }

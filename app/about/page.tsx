@@ -1,11 +1,11 @@
-import Link from 'next/link';
+import Link from '@/components/AttributionLink';
 import { JsonLd, aboutPageJsonLd, breadcrumbJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
 
 export const metadata = buildMetadata({
-  title: 'About',
+  title: 'Sarah Scarano and the AI Studio in Kalispell',
   description:
-    'Modern Mustard Seed is a small AI studio. We build AI voice and chat agents, websites, and custom AI tools that grow businesses, shipped in weeks and grounded in faith.',
+    'Meet Sarah Scarano, founder of Modern Mustard Seed, an AI-native product studio in Kalispell building websites, voice agents and software for clients nationwide.',
   path: '/about',
 });
 
@@ -62,14 +62,14 @@ export default function AboutPage() {
               </span>
             </h1>
             <p className="font-body text-lg md:text-xl text-[#3A3733] leading-relaxed max-w-2xl mx-auto">
-              We are a small AI studio that builds the tools businesses actually need, and ships them in weeks, not months.
+              Modern Mustard Seed is an AI-native product studio in Kalispell, Montana. We build custom websites, AI voice agents, automation and software for Northwest Montana and clients nationwide.
             </p>
           </div>
 
           {/* ─── Who we are ─── */}
           <div className="space-y-5 text-[#3A3733] font-body text-[17px] leading-relaxed max-w-2xl mx-auto">
             <p>
-              Modern Mustard Seed is a small team of builders. Not an agency with a sales floor and a waitlist, and not a freelancer with a template. We design, engineer, and ship real products for real businesses, and we stay close enough to care how every one of them turns out.
+              Sarah Scarano founded Modern Mustard Seed. She is the engineer and AI systems architect behind the studio, and the person you meet on a discovery call. We design, build and ship products businesses can own and operate.
             </p>
             <p>
               We build the way AI finally made possible. A focused team with a strong stack and a clear point of view can now deliver what used to take a room of ten. That leverage is the entire point. Our clients do not want a strategy deck. They want the thing built, shipped, and working, and they want it to look and feel like it cost far more than it did.
@@ -188,6 +188,9 @@ export default function AboutPage() {
           </div>
 
           {/* ─── CTAs ─── */}
+          <p className="mt-12 font-body leading-relaxed text-center">
+            <Link href="/sarahscarano" className="text-[#1E50C8] underline">Explore Sarah&apos;s portfolio</Link>, read our <Link href="/resources" className="text-[#1E50C8] underline">technical field notes</Link>, or see how we build <Link href="/ai-websites" className="text-[#1E50C8] underline">AI-native websites</Link> from our <Link href="/montana/kalispell" className="text-[#1E50C8] underline">Kalispell studio</Link>.
+          </p>
           <div className="mt-16 grid grid-cols-1 sm:grid-cols-3 gap-4">
             <Link href="/work" className="pop-card p-6 hover:-translate-y-1 transition-transform text-center">
               <span className="block text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold mb-2">Work</span>

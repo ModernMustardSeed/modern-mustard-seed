@@ -1,4 +1,5 @@
-import Link from 'next/link';
+import Link from '@/components/AttributionLink';
+import EditorialByline from '@/components/EditorialByline';
 import { notFound } from 'next/navigation';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import remarkGfm from 'remark-gfm';
@@ -11,24 +12,25 @@ import { getAllSlugs, getContent } from '@/lib/content';
 type Params = Promise<{ slug: string }>;
 
 export async function generateStaticParams() {
-  return getAllSlugs('playbooks').map((slug) => ({ slug }));
+  return getAllSlugs('playbooks').filter((slug) => !getContent('playbooks', slug)?.meta.draft).map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: { params: Params }) {
   const { slug } = await params;
   const pb = getContent('playbooks', slug);
-  if (!pb) return buildMetadata({ title: 'Not Found', noindex: true });
+  if (!pb || pb.meta.draft) return buildMetadata({ title: 'Not Found', noindex: true });
   return buildMetadata({
     title: pb.meta.title,
     description: pb.meta.description,
     path: `/playbooks/${slug}`,
+    article: { published: pb.meta.date, modified: pb.meta.dateModified },
   });
 }
 
 export default async function PlaybookPage({ params }: { params: Params }) {
   const { slug } = await params;
   const pb = getContent('playbooks', slug);
-  if (!pb) notFound();
+  if (!pb || pb.meta.draft) notFound();
 
   return (
     <>
@@ -73,6 +75,7 @@ export default async function PlaybookPage({ params }: { params: Params }) {
             <p className="text-[#3a3733] text-lg font-body leading-relaxed">
               {pb.meta.description}
             </p>
+            <EditorialByline author={pb.meta.author} date={pb.meta.date} modified={pb.meta.dateModified} />
           </header>
 
           <div className="mdx-prose mdx-prose-pop">
