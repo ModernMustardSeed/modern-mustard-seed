@@ -3,10 +3,9 @@ import { requireAcqAdmin } from '@/lib/acq/server';
 import { getSession } from '@/lib/admin-auth';
 import { listSettings, getSettings, saveSettings, EDITABLE_SETTINGS } from '@/lib/posting/settings';
 import { accountViews, connectFacebookByToken, connectXByTokens, disconnectAccount, setGbpLocation } from '@/lib/posting/accounts';
-import { planClient, planFromToday } from '@/lib/posting/planner';
+import { planClient, releaseForGraphic } from '@/lib/posting/planner';
 import { publishPost, markManual, ensureWords } from '@/lib/posting/publish';
-import { enqueueCaptions, scrub, type Brief } from '@/lib/posting/captions';
-import { evergreenFor } from '@/lib/posting/evergreen';
+import { enqueueCaptions, scrub } from '@/lib/posting/captions';
 import { listGbpLocations } from '@/lib/posting/publishers/gbp';
 import { mountainDate, addDays, mountainToUtc } from '@/lib/posting/time';
 import { PLATFORMS, type Platform, type PostRow, type MaterialRow, type SettingsRow } from '@/lib/posting/types';
@@ -17,8 +16,9 @@ export const maxDuration = 120;
 
 /**
  * THE POSTING DESK. Every client on Daily Posting, their connections, their
- * bin, their calendar, and every lever: connect by token, plan now, post now,
- * rewrite, hold, skip, mark the hand-posts done.
+ * queue, their graphic requests, their calendar, and every lever: connect by
+ * token, post now, re-edit, hold, skip, move, attach a graphic, mark the
+ * hand-posts done.
  */
 export async function GET(req: Request) {
   const gate = await requireAcqAdmin();
@@ -31,13 +31,14 @@ export async function GET(req: Request) {
   const today = mountainDate();
   const overview = await Promise.all(
     clients.map(async (s) => {
-      const [{ data: todays }, { data: next }, { count: fresh }, accounts] = await Promise.all([
+      const [{ data: todays }, { data: next }, { count: queued }, { count: graphics }, accounts] = await Promise.all([
         db.from('posting_posts').select('id, status, headline').eq('client_email', s.client_email).eq('scheduled_for', today).maybeSingle(),
-        db.from('posting_posts').select('scheduled_for').eq('client_email', s.client_email).gt('scheduled_for', today).order('scheduled_for').limit(1).maybeSingle(),
-        db.from('posting_materials').select('id', { count: 'exact', head: true }).eq('client_email', s.client_email).eq('status', 'fresh').eq('kind', 'photo'),
+        db.from('posting_posts').select('scheduled_for').eq('client_email', s.client_email).gt('scheduled_for', today).neq('status', 'skipped').order('scheduled_for').limit(1).maybeSingle(),
+        db.from('posting_posts').select('id', { count: 'exact', head: true }).eq('client_email', s.client_email).gt('scheduled_for', today).in('status', ['writing', 'scheduled', 'held']),
+        db.from('posting_materials').select('id', { count: 'exact', head: true }).eq('client_email', s.client_email).eq('wants_graphic', true).is('graphic_done_at', null).neq('status', 'archived'),
         accountViews(db, s.client_email),
       ]);
-      return { settings: s, today: todays ?? null, nextPlanned: next?.scheduled_for ?? null, freshPhotos: fresh ?? 0, connected: accounts.filter((a) => a.connected).map((a) => a.provider) };
+      return { settings: s, today: todays ?? null, nextPlanned: next?.scheduled_for ?? null, queued: queued ?? 0, graphicsWaiting: graphics ?? 0, connected: accounts.filter((a) => a.connected).map((a) => a.provider) };
     }),
   );
 
@@ -46,10 +47,10 @@ export async function GET(req: Request) {
   const settings = clients.find((s) => s.client_email === client) ?? null;
   if (!settings) return NextResponse.json({ clients: overview, detail: null, error: 'No posting settings for that client.' });
   const [posts, materials, accounts, leads] = await Promise.all([
-    db.from('posting_posts').select('*').eq('client_email', client).gte('scheduled_for', addDays(today, -21)).lte('scheduled_for', addDays(today, 7)).order('scheduled_for', { ascending: false }),
-    db.from('posting_materials').select('*').eq('client_email', client).neq('status', 'archived').order('kind').order('created_at', { ascending: false }).limit(120),
+    db.from('posting_posts').select('*').eq('client_email', client).gte('scheduled_for', addDays(today, -21)).lte('scheduled_for', addDays(today, 30)).order('scheduled_for', { ascending: false }),
+    db.from('posting_materials').select('*').eq('client_email', client).eq('kind', 'post').neq('status', 'archived').order('created_at', { ascending: false }).limit(120),
     accountViews(db, client),
-    db.from('client_leads').select('id, source, sources, name, phone, email, town, project_type, land, page, created_at').eq('client_email', client).order('created_at', { ascending: false }).limit(30),
+    db.from('client_leads').select('id, source, sources, name, phone, email, town, project_type, land, page, priority, handled_at, created_at').eq('client_email', client).order('created_at', { ascending: false }).limit(30),
   ]);
   return NextResponse.json({
     clients: overview,
@@ -91,10 +92,7 @@ export async function POST(req: Request) {
     case 'create': {
       if (!client || !body.business_name) return bad('Client email and business name are needed.');
       const r = await saveSettings(db, client, { business_name: String(body.business_name), site_url: (body.site_url as string) ?? null, phone: (body.phone as string) ?? null, towns: (body.towns as string[]) ?? [], services: (body.services as string[]) ?? [] });
-      if (!r.ok) return bad(r.error);
-      const s = await getSettings(db, client);
-      if (s) await planFromToday(db, s);
-      return NextResponse.json({ ok: true });
+      return r.ok ? NextResponse.json({ ok: true }) : bad(r.error);
     }
     case 'settings': {
       if (!client) return bad('Client is needed.');
@@ -131,30 +129,43 @@ export async function POST(req: Request) {
       if (p === 'facebook') await disconnectAccount(db, client, 'instagram');
       return NextResponse.json({ ok: true });
     }
-    case 'material': {
+    case 'post': {
+      // A submission entered on the client's behalf, in their words as they gave them (a text, a call, a note).
       if (!client) return bad('Client is needed.');
-      const url = String(body.url ?? '');
-      if (!/^https:\/\//.test(url)) return bad('A public image URL is needed.');
-      const kind = body.kind === 'brand' ? 'brand' : 'photo';
-      const { error } = await db.from('posting_materials').insert({ client_email: client, url, kind, note: String(body.note ?? '').slice(0, 1000) || null, uploaded_by: by, status: 'fresh' });
+      const text = String(body.text ?? '').trim().slice(0, 4000);
+      if (text.length < 3) return bad('Their words are needed.');
+      const url = body.url ? String(body.url) : null;
+      const { error } = await db.from('posting_materials').insert({ client_email: client, kind: 'post', text, url, wants_graphic: Boolean(body.wants_graphic) && !url, graphic_brief: (body.graphic_brief as string) ?? null, note: String(body.note ?? '').slice(0, 1000) || null, uploaded_by: by, status: 'fresh' });
       if (error) return bad(error.message, 500);
       const s = await getSettings(db, client);
-      if (s && kind === 'photo') await planClient(db, s, { days: 3 });
+      if (s) await planClient(db, s);
       return NextResponse.json({ ok: true });
     }
-    case 'material-archive': {
+    case 'post-archive': {
       await db.from('posting_materials').update({ status: 'archived' }).eq('id', String(body.id));
+      return NextResponse.json({ ok: true });
+    }
+    case 'graphic': {
+      // The graphic is made: attach it, mark the request done, release the day.
+      const id = String(body.id ?? '');
+      const url = String(body.url ?? '');
+      if (!id || !/^https:\/\//.test(url)) return bad('The material id and a public image URL are needed.');
+      const { data: m } = await db.from('posting_materials').select('client_email').eq('id', id).maybeSingle();
+      if (!m) return bad('No such submission.', 404);
+      await db.from('posting_materials').update({ url, graphic_done_at: new Date().toISOString(), graphic_by: by }).eq('id', id);
+      const s = await getSettings(db, m.client_email as string);
+      if (s) await releaseForGraphic(db, s, id);
+      // A post already carrying words but no image gets the image too.
+      await db.from('posting_posts').update({ image_url: url, updated_at: new Date().toISOString() }).eq('material_id', id).in('status', ['writing', 'scheduled', 'held']);
       return NextResponse.json({ ok: true });
     }
     case 'plan': {
       if (!client) return bad('Client is needed.');
       const s = await getSettings(db, client);
       if (!s) return bad('No settings.');
-      const r = body.fromToday ? await planFromToday(db, s) : await planClient(db, s, { force: Boolean(body.force) });
-      return NextResponse.json({ ok: true, plan: r });
+      return NextResponse.json({ ok: true, plan: await planClient(db, s) });
     }
     case 'words-now': {
-      // Fill the words this minute (template if the drainer has not answered), so the desk shows something to edit.
       const { data } = await db.from('posting_posts').select('*').eq('id', String(body.id)).maybeSingle();
       if (!data) return bad('No such post.', 404);
       const s = await getSettings(db, data.client_email as string);
@@ -163,7 +174,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ ok: true, post });
     }
     case 'rewrite': {
-      // Queue Claude again; the hourly upgrade swaps the words in when the answer lands.
       const { data } = await db.from('posting_posts').select('*').eq('id', String(body.id)).maybeSingle();
       if (!data) return bad('No such post.', 404);
       const post = data as PostRow;
@@ -174,8 +184,8 @@ export async function POST(req: Request) {
         const { data: m } = await db.from('posting_materials').select('*').eq('id', post.material_id).maybeSingle();
         material = (m as MaterialRow | null) ?? null;
       }
-      const brief: Brief = post.source === 'material' && material ? { kind: 'material', material, dateStr: post.scheduled_for } : { kind: 'evergreen', evergreen: evergreenFor(s, post.scheduled_for), dateStr: post.scheduled_for };
-      const jobId = await enqueueCaptions(s, brief);
+      if (!material?.text) return bad('No source text to edit from.');
+      const jobId = await enqueueCaptions(s, { material, dateStr: post.scheduled_for });
       await db.from('posting_posts').update({ llm_job_id: jobId, written_by: post.captions.facebook ? 'template' : null, edited_by: null, updated_at: new Date().toISOString() }).eq('id', post.id);
       return NextResponse.json({ ok: true, jobId });
     }
@@ -204,7 +214,7 @@ export async function POST(req: Request) {
       const has = Boolean((post.captions as Record<string, string>)?.facebook);
       const status = body.action === 'hold' ? 'held' : body.action === 'skip' ? 'skipped' : has ? 'scheduled' : 'writing';
       await db.from('posting_posts').update({ status, edited_by: by, updated_at: new Date().toISOString() }).eq('id', post.id as string);
-      if (post.material_id) await db.from('posting_materials').update({ status: body.action === 'skip' ? 'fresh' : 'used' }).eq('id', post.material_id as string).eq('kind', 'photo');
+      if (post.material_id) await db.from('posting_materials').update({ status: body.action === 'skip' ? 'archived' : 'used' }).eq('id', post.material_id as string);
       return NextResponse.json({ ok: true });
     }
     case 'reschedule': {

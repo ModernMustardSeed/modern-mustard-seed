@@ -19,8 +19,8 @@ export function PostingTile() {
       <div className="flex items-start justify-between gap-3">
         <div>
           <span className="text-[10px] uppercase tracking-[0.3em] text-[#C4160B] font-mono font-bold block mb-1">Daily Posting</span>
-          <h3 className="font-sans font-bold text-[#161616] leading-tight">Drop a photo, and it goes out everywhere tomorrow</h3>
-          <p className="text-[#161616]/70 font-body text-sm mt-2 leading-snug">Your calendar, every caption, and where each post went. No photo, and the feed still posts every day.</p>
+          <h3 className="font-sans font-bold text-[#161616] leading-tight">Say it once, and it goes out shaped for every platform</h3>
+          <p className="text-[#161616]/70 font-body text-sm mt-2 leading-snug">Type what you want said, add a photo or ask for a graphic, and see the day it takes, every version, and where it went.</p>
         </div>
         <span className="shrink-0 inline-flex items-center gap-1 text-[10px] uppercase tracking-[0.2em] font-mono font-bold text-[#1E50C8] group-hover:text-[#161616] transition-colors">Open →</span>
       </div>
