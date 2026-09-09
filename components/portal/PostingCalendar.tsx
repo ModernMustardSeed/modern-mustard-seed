@@ -239,7 +239,7 @@ function AccountRow({ platform, account, onDisconnect }: { platform: Platform; a
     <li className="flex items-start justify-between gap-3">
       <div className="min-w-0">
         <p className="font-sans font-bold text-sm text-[#161616]">{PLATFORM_LABEL[platform]}</p>
-        <p className="font-body text-xs text-[#161616]/60 truncate">
+        <p className="font-body text-xs text-[#161616]/60">
           {connected ? `Connected: ${account?.accountName ?? 'yes'}` : platform === 'houzz' ? 'Posted by hand each day' : account?.status === 'revoked' ? 'Connection dropped. Reconnect.' : platform === 'facebook' || platform === 'instagram' ? 'Sarah connects this once you have added her as admin' : 'Not connected yet'}
         </p>
       </div>
