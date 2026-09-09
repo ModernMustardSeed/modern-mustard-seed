@@ -7,6 +7,7 @@ import { launchCountdown } from '@/lib/launch';
 import HelpGuide from '@/components/HelpGuide';
 import MustardDeskCall from '@/components/MustardDeskCall';
 import DeskWelcome from '@/components/DeskWelcome';
+import { PostingTile, LeadsCard } from '@/components/portal/PortalExtras';
 import { CLIENT_HELP } from '@/lib/help-content';
 import { OnboardingChecklist, OnboardingIntake } from '@/components/portal/Onboarding';
 import LaunchChecklist from '@/components/portal/LaunchChecklist';
@@ -38,6 +39,8 @@ type PortalData = {
    *  onboarded by the demo intake, not the proposal/deposit/intake flow, so the
    *  proposal-based onboarding is suppressed for them. */
   isDemoClient?: boolean;
+  /** True when this client is on Daily Posting; the calendar is at /portal/posting. */
+  posting?: boolean;
   billing: {
     oneTime: number;
     deposit: number;
@@ -261,6 +264,9 @@ export default function ClientPortal() {
                 </div>
               </div>
             )}
+
+            {data.posting && <PostingTile />}
+            {(data.audience === 'client' || data.audience === 'both') && <LeadsCard />}
 
             <div className="grid lg:grid-cols-3 gap-6">
               {/* Main column */}
