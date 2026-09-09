@@ -24,6 +24,9 @@ const settings = {
   hard_nos: 'Never a price, a price per square foot, a timeline, a completion date, or anything about financing unless their own text says it. Nothing cartoonish. Never invent a project, a client, a review or an award. Never claim our name is on a building, truck or sign. Never mention Web Express or any past vendor.',
   platforms: ['facebook', 'instagram', 'linkedin', 'x', 'gbp', 'houzz'],
   post_hour_mt: 9,
+  platform_hours: {},           // the feed defaults: Facebook 9, Instagram 11, LinkedIn 8, X 12, Google 9, Houzz 9
+  visible: false,               // hidden from Shan and Carmen until Sarah flips "Show to the client" on the desk
+  approve_first: false,
   auto_publish: true,
   weekly_summary: true,
   notify_emails: [CLIENT],

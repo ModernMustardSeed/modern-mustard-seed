@@ -210,11 +210,11 @@ export async function GET() {
 
   const googleReviewUrl = process.env.GOOGLE_REVIEW_URL || GOOGLE_REVIEW_FALLBACK;
 
-  // Daily Posting: on when a brief exists for this email. The calendar lives at /portal/posting.
+  // Daily Posting: on when a brief exists AND Sarah has switched the calendar on for them. Until then the portal shows nothing of it.
   let posting = false;
   try {
-    const { data: ps } = await supabase.from('posting_settings').select('client_email').eq('client_email', email).maybeSingle();
-    posting = Boolean(ps);
+    const { data: ps } = await supabase.from('posting_settings').select('visible').eq('client_email', email).maybeSingle();
+    posting = Boolean(ps?.visible);
   } catch {
     /* posting_settings not migrated */
   }
