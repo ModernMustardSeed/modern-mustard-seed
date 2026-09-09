@@ -1,0 +1,63 @@
+# Nothing in CI may bill the metered Anthropic API.
+#
+# WHY THIS EXISTS: Sarah pays for a Claude subscription. Every workflow here
+# already authenticates with CLAUDE_CODE_OAUTH_TOKEN, and every worker under
+# scripts/ deletes ANTHROPIC_API_KEY from the child environment before it starts
+# the CLI, because a key that is merely present flips the CLI back to metered
+# billing without saying so. This job keeps that true.
+#
+# It is here because cross-covenant drifted the other way and nobody noticed for
+# a month: its gate authenticated with an anthropic api key input, that account
+# ran out of credit on 2026-08-11, and every pull request carried a red check
+# that was never about the code. The discipline in this repo was correct and
+# unenforced, which is the same thing as luck.
+#
+# It costs no tokens and calls no model. It is a grep.
+#
+# NOTE FOR ANYONE EDITING THIS FILE: do not write the GitHub expression opener
+# anywhere in it, not even inside a shell comment or a quoted string. Actions
+# evaluates that sequence everywhere in a workflow, including inside run blocks,
+# and a backslash does not escape it. An unparseable expression fails the whole
+# workflow before a single job starts, and the run shows up named after the file
+# path with no jobs and no log. That is exactly how the first version of this
+# file failed.
+
+name: no-metered-billing
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/**"
+  push:
+    branches: [master]
+    paths:
+      - ".github/workflows/**"
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: No workflow may authenticate with a metered API key
+        run: |
+          # Two shapes are refused: the action input anthropic_api_key followed
+          # by a colon, and an ANTHROPIC_API_KEY environment entry whose value is
+          # a secrets expression. A comment that merely names the variable, or a
+          # script line that deletes it from a child environment, has neither
+          # shape and passes.
+          hits=$(grep -rnE 'anthropic_api_key[[:space:]]*:|ANTHROPIC_API_KEY[[:space:]]*:[[:space:]]*[$][{][{]' \
+            .github/workflows \
+            --include='*.yml' --include='*.yaml' \
+            --exclude='no-metered-billing.yml' || true)
+          if [ -n "$hits" ]; then
+            echo "$hits"
+            echo ""
+            echo "::error::A workflow is authenticating with the metered Anthropic API."
+            echo "Use the claude_code_oauth_token input with the CLAUDE_CODE_OAUTH_TOKEN secret."
+            echo "That draws on the subscription. The API key bills a separate account,"
+            echo "and when it empties every check goes red for reasons unrelated to the code."
+            exit 1
+          fi
+          echo "No workflow bills the metered API."
