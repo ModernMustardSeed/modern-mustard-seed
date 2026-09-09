@@ -167,10 +167,10 @@ export default function TalkingWebsitePage() {
       {/* ── Hero ── */}
       <header className="halftone-bg border-b-2 border-[#161616]">
         <div className="max-w-6xl mx-auto px-6 pt-32 pb-16 md:pt-40 lg:pb-20">
-          <div className="grid lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+          <div className="grid grid-cols-1 [&>*]:min-w-0 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
             <div className="lg:col-span-6 xl:col-span-5">
               <span className="font-mono text-[11px] uppercase tracking-[0.32em] text-[#C4160B] font-bold">
-                The Talking Website // First of its kind
+                The Talking Website // One shared brain
               </span>
               <h1 className="font-display text-[2.6rem] sm:text-5xl xl:text-6xl font-bold mt-4 leading-[1.02] tracking-tight">
                 A website that answers its <em className="italic text-[#C4160B]">own phone.</em>
@@ -252,7 +252,7 @@ export default function TalkingWebsitePage() {
 
         {/* ── Talk to this page ── */}
         <section className="border-2 border-[#161616] bg-[#161616] rounded-2xl shadow-[8px_8px_0_0_#F5B700] p-7 sm:p-10">
-          <div className="grid lg:grid-cols-12 gap-8 items-center">
+          <div className="grid grid-cols-1 [&>*]:min-w-0 lg:grid-cols-12 gap-8 items-center">
             <div className="lg:col-span-7">
               <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#F5B700] uppercase">
                 Proof // Right now, in your browser

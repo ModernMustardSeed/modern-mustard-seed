@@ -7,7 +7,6 @@ import { chromium } from 'playwright';
 const base = process.argv[2] || 'http://localhost:3108';
 const output = process.env.AI_QA_OUT || 'C:/Users/SMSca/artifacts/mms-ai-discoverability';
 await fs.mkdir(output, { recursive: true });
-const origin = 'https://modernmustardseed.com';
 const report = { base, checkedAt: new Date().toISOString(), pages: [], crawlers: [], browser: [], issues: [] };
 const xmlResponse = await fetch(`${base}/sitemap.xml`);
 assert.equal(xmlResponse.status, 200);
@@ -61,6 +60,7 @@ try {
       const essential = page.getByRole('button', { name: 'Essential only', exact: true });
       if (await essential.isVisible()) await essential.click();
       await page.evaluate(() => document.fonts.ready);
+      await page.evaluate(async () => { await Promise.all(document.getAnimations().filter((animation) => Number.isFinite(animation.effect?.getTiming().iterations)).map((animation) => animation.finished.catch(() => {}))); });
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1);
       const mainCount = await page.locator('main').count();
       const h1Count = await page.locator('h1').count();
@@ -71,6 +71,7 @@ try {
       });
       const item = { route, width, overflow, mainCount, h1Count, a11y, errors: errors.splice(0) };
       report.browser.push(item);
+      if (overflow || mainCount !== 1 || h1Count !== 1 || item.errors.length) report.issues.push(item);
       if (['/ai-websites', '/resources', '/blog/ai-readable-website-checklist'].includes(route) && (overflow || mainCount !== 1 || h1Count !== 1 || a11y.length || item.errors.length)) report.issues.push(item);
       if (['/ai-websites', '/resources', '/montana/kalispell', '/'].includes(route)) await page.screenshot({ path: path.join(output, `${route.replace(/\//g, '-') || 'home'}-${width}.png`), fullPage: route !== '/' });
     }
