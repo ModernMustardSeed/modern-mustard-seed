@@ -10,17 +10,18 @@ import { prettyDate, prettyHour } from '@/lib/posting/time';
 /**
  * THE CLIENT'S POSTING CALENDAR.
  *
- * Three things on one page, in the order a client uses them: drop photos,
- * see what goes out and when, connect the accounts. Every post can be read,
- * edited, or skipped up to the hour it posts; after that it shows where it
- * went, with the live links.
+ * They say it, we shape it. The page is three things in the order a client
+ * uses them: type a post (with a photo, or ask for a graphic), see the day it
+ * takes and every platform version, connect the accounts. Every version can
+ * be read, edited, or skipped up to the hour it posts; after that it shows
+ * where it went, with the live links.
  */
-type Data = { settings: SettingsRow | null; today: string; posts: PostRow[]; materials: MaterialRow[]; accounts: AccountView[] };
+type Data = { settings: SettingsRow | null; today: string; posts: PostRow[]; materials: MaterialRow[]; accounts: AccountView[]; emptyDays: number };
 
 const STATUS: Record<PostRow['status'], { label: string; cls: string }> = {
-  writing: { label: 'Being written', cls: 'bg-[#F5B700]/25 text-[#8f6600] border-[#8f6600]/30' },
+  writing: { label: 'Being shaped', cls: 'bg-[#F5B700]/25 text-[#8f6600] border-[#8f6600]/30' },
   scheduled: { label: 'Scheduled', cls: 'bg-blue-100 text-[#1E50C8] border-[#1E50C8]/30' },
-  held: { label: 'Held', cls: 'bg-white text-[#161616] border-[#161616]/30' },
+  held: { label: 'Waiting on the graphic', cls: 'bg-white text-[#161616] border-[#161616]/30' },
   publishing: { label: 'Posting now', cls: 'bg-[#F5B700]/25 text-[#161616] border-[#161616]/30' },
   published: { label: 'Posted', cls: 'bg-emerald-100 text-emerald-800 border-emerald-800/25' },
   partial: { label: 'Partly posted', cls: 'bg-emerald-50 text-emerald-800 border-emerald-800/25' },
@@ -32,6 +33,9 @@ const CARD = 'bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0
 const EYEBROW = 'text-[10px] uppercase tracking-[0.3em] text-[#C4160B] font-mono font-bold block';
 const BTN = 'px-4 py-2 text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-white border-2 border-[#161616] rounded-lg shadow-[3px_3px_0_0_#161616] disabled:opacity-50 hover:-translate-y-0.5 transition-transform';
 const BTN_GOLD = BTN.replace('bg-white', 'bg-[#F5B700]');
+const INPUT = 'w-full rounded-xl border-2 border-[#161616]/30 bg-[#FBF6EA] px-3 py-2 font-body text-sm text-[#161616] focus:border-[#161616] outline-none';
+
+type ActResult = { ok: boolean; planned: Array<{ date: string; action: string }> };
 
 export default function PostingCalendar() {
   const params = useSearchParams();
@@ -48,8 +52,7 @@ export default function PostingCalendar() {
         setUnauth(true);
         return;
       }
-      const j = (await res.json()) as Data;
-      setData(j);
+      setData((await res.json()) as Data);
     } finally {
       setLoading(false);
     }
@@ -69,21 +72,14 @@ export default function PostingCalendar() {
     else if (c.includes('failed')) setError(`The connection did not go through${c.includes(':') ? `: ${c.split(':').slice(1).join(':')}` : ''}.`);
   }, [params]);
 
-  const act = async (body: Record<string, unknown>) => {
+  const act = async (body: Record<string, unknown>): Promise<ActResult> => {
     setError(null);
     const res = await fetch('/api/portal/posting', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
-    const j = (await res.json().catch(() => ({}))) as { error?: string };
+    const j = (await res.json().catch(() => ({}))) as { error?: string; planned?: Array<{ date: string; action: string }> };
     if (!res.ok) setError(j.error ?? 'That did not go through.');
     await load();
-    return res.ok;
+    return { ok: res.ok, planned: j.planned ?? [] };
   };
-
-  const onUploaded = async (files: Uploaded[]) => {
-    for (const f of files) await act({ action: 'material', url: f.url, note: pendingNote.trim() || undefined });
-    setPendingNote('');
-    setNotice(files.length === 1 ? 'Photo in. It takes the next open day.' : `${files.length} photos in. Each takes its own day.`);
-  };
-  const [pendingNote, setPendingNote] = useState('');
 
   const { upcoming, past } = useMemo(() => {
     const posts = data?.posts ?? [];
@@ -116,7 +112,7 @@ export default function PostingCalendar() {
   }
 
   const s = data.settings;
-  const fresh = data.materials.filter((m) => m.status === 'fresh');
+  const graphicsWaiting = data.materials.filter((m) => m.wants_graphic && !m.graphic_done_at && m.status !== 'archived');
 
   return (
     <Shell business={s.business_name}>
@@ -125,42 +121,17 @@ export default function PostingCalendar() {
 
       <div className="grid lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
-          {/* 1. Drop */}
-          <section className={`${CARD} p-6`}>
-            <span className={`${EYEBROW} mb-1`}>Drop it here</span>
-            <h2 className="font-display text-2xl font-semibold text-[#161616] mb-1">Photos from the job</h2>
-            <p className="font-body text-sm text-[#161616]/65 mb-4">A photo and a line is all it takes. Each one becomes a day's post on every platform, in your voice, at {prettyHour(s.post_hour_mt)}. No photo, and the feed still posts every day from what we know about the business.</p>
-            <textarea
-              value={pendingNote}
-              onChange={(e) => setPendingNote(e.target.value)}
-              placeholder="A line about it: what, where, anything worth saying. Applies to the photos you drop next."
-              rows={2}
-              className="w-full mb-3 rounded-xl border-2 border-[#161616]/30 bg-[#FBF6EA] px-3 py-2 font-body text-sm text-[#161616] focus:border-[#161616] outline-none"
-            />
-            <PhotoDrop onUploaded={onUploaded} />
-            {fresh.length > 0 && (
-              <div className="mt-4">
-                <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#161616]/55 mb-2">Waiting for a day ({fresh.length})</p>
-                <div className="flex flex-wrap gap-2">
-                  {fresh.map((m) => (
-                    <div key={m.id} className="relative group">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={m.url} alt="" className="h-20 w-20 object-cover rounded-lg border-2 border-[#161616]" />
-                      <button type="button" onClick={() => void act({ action: 'material-archive', id: m.id })} title="Remove" className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-white border-2 border-[#161616] text-[11px] font-bold leading-none opacity-0 group-hover:opacity-100">×</button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </section>
+          <Composer hour={s.post_hour_mt} onSubmit={act} onDone={(msg) => setNotice(msg)} />
 
-          {/* 2. Calendar */}
           <section>
-            <span className={`${EYEBROW} mb-3`}>Coming up</span>
+            <div className="flex items-baseline justify-between mb-3">
+              <span className={EYEBROW}>Coming up</span>
+              {data.emptyDays > 0 && upcoming.length > 0 && <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-[#161616]/50">{data.emptyDays} open {data.emptyDays === 1 ? 'day' : 'days'} this week</span>}
+            </div>
             <div className="space-y-4">
-              {upcoming.length === 0 && <p className={`${CARD} p-5 font-body text-sm text-[#161616]/60`}>Tomorrow's post is written every evening. Check back after 8 PM.</p>}
+              {upcoming.length === 0 && <p className={`${CARD} p-5 font-body text-sm text-[#161616]/60`}>Nothing queued. Type a post above and it takes the next open day at {prettyHour(s.post_hour_mt)}.</p>}
               {upcoming.map((p) => (
-                <PostCard key={p.id} post={p} platforms={s.platforms} today={data.today} onAct={act} />
+                <PostCard key={p.id} post={p} platforms={s.platforms} today={data.today} graphicPending={graphicsWaiting.some((m) => m.id === p.material_id)} onAct={act} />
               ))}
             </div>
           </section>
@@ -170,7 +141,7 @@ export default function PostingCalendar() {
               <span className={`${EYEBROW} mb-3`}>Posted</span>
               <div className="space-y-4">
                 {past.map((p) => (
-                  <PostCard key={p.id} post={p} platforms={s.platforms} today={data.today} onAct={act} />
+                  <PostCard key={p.id} post={p} platforms={s.platforms} today={data.today} graphicPending={false} onAct={act} />
                 ))}
               </div>
             </section>
@@ -178,7 +149,16 @@ export default function PostingCalendar() {
         </div>
 
         <aside className="space-y-6">
-          {/* 3. Connections */}
+          <section className={`${CARD} p-6`}>
+            <span className={`${EYEBROW} mb-1`}>How it works</span>
+            <ol className="font-body text-sm text-[#161616]/75 space-y-2 mt-2 list-decimal pl-4">
+              <li>You write what you want said, as you would say it. A photo or graphic with it if you have one.</li>
+              <li>We shape it for each platform: paragraphs for Facebook, lines and hashtags for Instagram, a professional frame for LinkedIn, one thought for X, something a searcher can use for Google, a project note for Houzz. Your meaning and your voice stay yours.</li>
+              <li>It goes out at {prettyHour(s.post_hour_mt)} on the day it took. Read every version before then, change any line, or skip the day.</li>
+              <li>Need a graphic? Tick the box and say what you picture. We make it, and the day waits until it is on.</li>
+            </ol>
+          </section>
+
           <section className={`${CARD} p-6`}>
             <span className={`${EYEBROW} mb-1`}>Where it goes</span>
             <h3 className="font-display text-xl font-semibold text-[#161616] mb-3">Your accounts</h3>
@@ -194,11 +174,7 @@ export default function PostingCalendar() {
           <section className={`${CARD} p-6`}>
             <span className={`${EYEBROW} mb-1`}>When</span>
             <h3 className="font-display text-xl font-semibold text-[#161616] mb-3">Posting hour</h3>
-            <select
-              value={s.post_hour_mt}
-              onChange={(e) => void act({ action: 'settings', post_hour_mt: Number(e.target.value) })}
-              className="w-full rounded-xl border-2 border-[#161616] bg-white px-3 py-2 font-sans font-bold text-[#161616]"
-            >
+            <select value={s.post_hour_mt} onChange={(e) => void act({ action: 'settings', post_hour_mt: Number(e.target.value) })} className="w-full rounded-xl border-2 border-[#161616] bg-white px-3 py-2 font-sans font-bold text-[#161616]">
               {[6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18].map((h) => (
                 <option key={h} value={h}>{prettyHour(h)} Mountain</option>
               ))}
@@ -211,6 +187,62 @@ export default function PostingCalendar() {
         </aside>
       </div>
     </Shell>
+  );
+}
+
+function Composer({ hour, onSubmit, onDone }: { hour: number; onSubmit: (b: Record<string, unknown>) => Promise<ActResult>; onDone: (msg: string) => void }) {
+  const [text, setText] = useState('');
+  const [image, setImage] = useState<Uploaded | null>(null);
+  const [wantsGraphic, setWantsGraphic] = useState(false);
+  const [brief, setBrief] = useState('');
+  const [busy, setBusy] = useState(false);
+
+  const submit = async () => {
+    if (text.trim().length < 3) return;
+    setBusy(true);
+    try {
+      const r = await onSubmit({ action: 'post', text, url: image?.url ?? null, wants_graphic: wantsGraphic && !image, graphic_brief: brief });
+      if (r.ok) {
+        const day = r.planned[r.planned.length - 1];
+        onDone(day ? (day.action === 'held' ? `In. It takes ${prettyDate(day.date)} once the graphic is made.` : `In. It goes out ${prettyDate(day.date)} at ${prettyHour(hour)}.`) : 'In. It takes the next open day.');
+        setText('');
+        setImage(null);
+        setWantsGraphic(false);
+        setBrief('');
+      }
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <section className={`${CARD} p-6`}>
+      <span className={`${EYEBROW} mb-1`}>Say it</span>
+      <h2 className="font-display text-2xl font-semibold text-[#161616] mb-1">Your next post</h2>
+      <p className="font-body text-sm text-[#161616]/65 mb-4">Write it the way you would say it. We shape it for each platform and it goes out at {prettyHour(hour)} on the next open day.</p>
+      <textarea value={text} onChange={(e) => setText(e.target.value)} rows={5} placeholder="What do you want to say?" className={`${INPUT} mb-3`} />
+      {image ? (
+        <div className="flex items-center gap-3 mb-3">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={image.url} alt="" className="h-20 w-20 object-cover rounded-lg border-2 border-[#161616]" />
+          <button type="button" onClick={() => setImage(null)} className={BTN}>Remove</button>
+        </div>
+      ) : (
+        <PhotoDrop compact label="Add a photo or graphic (optional)" onUploaded={async (files) => setImage(files[0] ?? null)} />
+      )}
+      {!image && (
+        <div className="mt-3">
+          <label className="flex items-center gap-2 font-body text-sm text-[#161616]/80">
+            <input type="checkbox" checked={wantsGraphic} onChange={(e) => setWantsGraphic(e.target.checked)} />
+            Make me a graphic for this
+          </label>
+          {wantsGraphic && <textarea value={brief} onChange={(e) => setBrief(e.target.value)} rows={2} placeholder="What do you picture? Colors, words on it, a photo of yours to build on, the feel." className={`${INPUT} mt-2`} />}
+        </div>
+      )}
+      <div className="mt-4">
+        <button type="button" onClick={() => void submit()} disabled={busy || text.trim().length < 3} className={BTN_GOLD}>{busy ? 'Sending' : 'Queue it'}</button>
+      </div>
+    </section>
   );
 }
 
@@ -252,7 +284,9 @@ function AccountRow({ platform, account, onDisconnect }: { platform: Platform; a
   );
 }
 
-function PostCard({ post, platforms, today, onAct }: { post: PostRow; platforms: Platform[]; today: string; onAct: (b: Record<string, unknown>) => Promise<boolean> }) {
+type Res = { ok?: boolean; pending?: boolean; manual?: boolean; url?: string; error?: string } | undefined;
+
+function PostCard({ post, platforms, today, graphicPending, onAct }: { post: PostRow; platforms: Platform[]; today: string; graphicPending: boolean; onAct: (b: Record<string, unknown>) => Promise<ActResult> }) {
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Platform | null>(null);
   const [draft, setDraft] = useState('');
@@ -263,8 +297,8 @@ function PostCard({ post, platforms, today, onAct }: { post: PostRow; platforms:
 
   const save = async () => {
     if (!editing) return;
-    const ok = await onAct({ action: 'caption', id: post.id, platform: editing, text: draft });
-    if (ok) setEditing(null);
+    const r = await onAct({ action: 'caption', id: post.id, platform: editing, text: draft });
+    if (r.ok) setEditing(null);
   };
 
   return (
@@ -274,21 +308,20 @@ function PostCard({ post, platforms, today, onAct }: { post: PostRow; platforms:
           // eslint-disable-next-line @next/next/no-img-element
           <img src={post.image_url} alt="" className="h-24 w-24 sm:h-28 sm:w-28 object-cover rounded-xl border-2 border-[#161616] shrink-0" />
         ) : (
-          <div className="h-24 w-24 sm:h-28 sm:w-28 rounded-xl border-2 border-dashed border-[#161616]/30 shrink-0 flex items-center justify-center font-mono text-[10px] text-[#161616]/40">words only</div>
+          <div className="h-24 w-24 sm:h-28 sm:w-28 rounded-xl border-2 border-dashed border-[#161616]/30 shrink-0 flex items-center justify-center text-center px-2 font-mono text-[10px] text-[#161616]/40">{graphicPending ? 'graphic being made' : 'words only'}</div>
         )}
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2 mb-1">
             <span className="font-mono text-[11px] font-bold uppercase tracking-[0.15em] text-[#161616]/70">{isToday ? 'Today' : prettyDate(post.scheduled_for)}</span>
             <span className={`text-[9px] uppercase tracking-[0.15em] font-mono font-bold px-2.5 py-1 rounded-full border ${st.cls}`}>{st.label}</span>
-            {post.source === 'evergreen' && <span className="text-[9px] uppercase tracking-[0.15em] font-mono text-[#161616]/45">from the bank</span>}
           </div>
-          <h3 className="font-sans font-bold text-[#161616] leading-tight">{post.headline ?? 'Being written'}</h3>
-          {main ? <p className="font-body text-sm text-[#161616]/70 mt-1 line-clamp-2 whitespace-pre-line">{main}</p> : <p className="font-body text-sm italic text-[#161616]/50 mt-1">The words land in the evening.</p>}
+          <h3 className="font-sans font-bold text-[#161616] leading-tight">{post.headline ?? 'Post'}</h3>
+          {main ? <p className="font-body text-sm text-[#161616]/70 mt-1 line-clamp-2 whitespace-pre-line">{main}</p> : <p className="font-body text-sm italic text-[#161616]/50 mt-1">Being shaped for each platform. Your words are in.</p>}
           <div className="flex flex-wrap gap-1.5 mt-3">
             {platforms.map((p) => {
-              const r = post.results[p];
+              const r = post.results[p] as Res;
               const cls = r?.ok ? 'bg-emerald-100 text-emerald-800 border-emerald-800/25' : r?.pending ? 'bg-white text-[#161616]/60 border-[#161616]/25' : r ? 'bg-red-50 text-[#C4160B] border-[#C4160B]/30' : 'bg-white text-[#161616]/45 border-[#161616]/15';
-              const label = r?.ok ? (r.manual ? `${PLATFORM_LABEL[p]} ✓` : `${PLATFORM_LABEL[p]} ✓`) : r?.pending ? `${PLATFORM_LABEL[p]} · by hand` : r ? `${PLATFORM_LABEL[p]} · failed` : PLATFORM_LABEL[p];
+              const label = r?.ok ? `${PLATFORM_LABEL[p]} ✓` : r?.pending ? `${PLATFORM_LABEL[p]} · by hand` : r ? `${PLATFORM_LABEL[p]} · failed` : PLATFORM_LABEL[p];
               return r?.url ? (
                 <a key={p} href={r.url} target="_blank" rel="noopener noreferrer" className={`text-[9px] uppercase tracking-[0.12em] font-mono font-bold px-2 py-1 rounded-full border ${cls}`}>{label} ↗</a>
               ) : (
@@ -305,28 +338,31 @@ function PostCard({ post, platforms, today, onAct }: { post: PostRow; platforms:
       </div>
       {open && (
         <div className="px-5 pb-5 space-y-4 bg-[#FBF6EA]/60">
-          {platforms.map((p) => (
-            <div key={p}>
-              <div className="flex items-center justify-between mb-1">
-                <span className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-[#C4160B]">{PLATFORM_LABEL[p]}</span>
-                {!locked && editing !== p && (
-                  <button type="button" onClick={() => { setEditing(p); setDraft(post.captions[p] ?? ''); }} className="font-mono text-[10px] uppercase tracking-[0.15em] text-[#1E50C8] hover:text-[#161616]">Edit</button>
-                )}
-              </div>
-              {editing === p ? (
-                <div>
-                  <textarea value={draft} onChange={(e) => setDraft(e.target.value)} rows={6} className="w-full rounded-xl border-2 border-[#161616] bg-white px-3 py-2 font-body text-sm text-[#161616]" />
-                  <div className="flex gap-2 mt-2">
-                    <button type="button" onClick={() => void save()} className={BTN_GOLD}>Save</button>
-                    <button type="button" onClick={() => setEditing(null)} className={BTN}>Cancel</button>
-                  </div>
+          {platforms.map((p) => {
+            const r = post.results[p] as Res;
+            return (
+              <div key={p}>
+                <div className="flex items-center justify-between mb-1">
+                  <span className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-[#C4160B]">{PLATFORM_LABEL[p]}</span>
+                  {!locked && editing !== p && (
+                    <button type="button" onClick={() => { setEditing(p); setDraft(post.captions[p] ?? ''); }} className="font-mono text-[10px] uppercase tracking-[0.15em] text-[#1E50C8] hover:text-[#161616]">Edit</button>
+                  )}
                 </div>
-              ) : (
-                <p className="font-body text-sm text-[#161616]/80 whitespace-pre-line bg-white rounded-xl border-2 border-[#161616]/15 px-3 py-2">{post.captions[p] ?? <span className="italic opacity-60">Not written yet.</span>}</p>
-              )}
-              {post.results[p]?.error && !post.results[p]?.ok && !post.results[p]?.pending && <p className="mt-1 text-xs font-semibold text-[#C4160B]">{post.results[p]?.error}</p>}
-            </div>
-          ))}
+                {editing === p ? (
+                  <div>
+                    <textarea value={draft} onChange={(e) => setDraft(e.target.value)} rows={6} className="w-full rounded-xl border-2 border-[#161616] bg-white px-3 py-2 font-body text-sm text-[#161616]" />
+                    <div className="flex gap-2 mt-2">
+                      <button type="button" onClick={() => void save()} className={BTN_GOLD}>Save</button>
+                      <button type="button" onClick={() => setEditing(null)} className={BTN}>Cancel</button>
+                    </div>
+                  </div>
+                ) : (
+                  <p className="font-body text-sm text-[#161616]/80 whitespace-pre-line bg-white rounded-xl border-2 border-[#161616]/15 px-3 py-2">{post.captions[p] ?? <span className="italic opacity-60">Not shaped yet.</span>}</p>
+                )}
+                {r?.error && !r.ok && !r.pending && <p className="mt-1 text-xs font-semibold text-[#C4160B]">{r.error}</p>}
+              </div>
+            );
+          })}
         </div>
       )}
     </article>

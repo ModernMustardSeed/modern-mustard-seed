@@ -9,11 +9,12 @@ import { prettyDate, prettyHour } from '@/lib/posting/time';
 
 /**
  * THE POSTING DESK. One row per client on Daily Posting; open one and every
- * lever is on the page: connect by token, the bin, the calendar with every
- * caption editable, post now, hold, skip, and the hand-post ticks.
+ * lever is on the page: the graphic requests waiting on a person, the queue
+ * in their words, the calendar with every platform version editable, post
+ * now, hold, skip, move, connect by token, and the hand-post ticks.
  */
-type Overview = { settings: SettingsRow; today: { id: string; status: string; headline: string | null } | null; nextPlanned: string | null; freshPhotos: number; connected: Platform[] };
-type Lead = { id: string; source: string; sources: string[]; name: string | null; phone: string | null; email: string | null; town: string | null; project_type: string | null; land: string | null; page: string | null; created_at: string };
+type Overview = { settings: SettingsRow; today: { id: string; status: string; headline: string | null } | null; nextPlanned: string | null; queued: number; graphicsWaiting: number; connected: Platform[] };
+type Lead = { id: string; source: string; sources: string[]; name: string | null; phone: string | null; email: string | null; town: string | null; project_type: string | null; land: string | null; page: string | null; priority: number | null; handled_at: string | null; created_at: string };
 type Detail = { settings: SettingsRow; today: string; posts: PostRow[]; materials: MaterialRow[]; accounts: AccountView[]; leads: Lead[]; env: { x: boolean; linkedin: boolean; google: boolean; facebookApp: boolean } };
 
 const CARD = 'rounded-2xl border-2 border-[#161616] bg-white p-5 shadow-[5px_5px_0_0_#161616]';
@@ -21,6 +22,8 @@ const BTN = 'rounded-lg border-2 border-[#161616] bg-white px-3 py-1.5 font-mono
 const BTN_GOLD = BTN.replace('bg-white', 'bg-[#F5B700]');
 const BTN_RED = BTN.replace('bg-white', 'bg-[#E0301E]/10');
 const INPUT = 'w-full rounded-lg border-2 border-[#161616]/40 bg-[#FBF6EA] px-3 py-2 text-[14px] text-[#161616] focus:border-[#161616] outline-none';
+
+type Act = (b: Record<string, unknown>, label?: string) => Promise<Record<string, unknown>>;
 
 export default function PostingDesk() {
   const params = useSearchParams();
@@ -50,14 +53,14 @@ export default function PostingDesk() {
     else setError(`Connection: ${c}`);
   }, [params]);
 
-  const act = async (body: Record<string, unknown>, label?: string) => {
+  const act: Act = async (body, label) => {
     setError(null);
-    setBusy(label ?? body.action as string);
+    setBusy(label ?? (body.action as string));
     try {
       const res = await fetch('/api/admin/posting', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ client: selected, ...body }) });
-      const j = (await res.json().catch(() => ({}))) as { error?: string; choices?: Array<{ id: string; name: string }> | null; page?: { name: string }; instagram?: { username: string | null } | null; username?: string; outcome?: unknown; locations?: Array<{ name: string; title: string }> };
+      const j = (await res.json().catch(() => ({}))) as Record<string, unknown>;
       if (!res.ok) {
-        setError(j.error ?? 'That did not go through.');
+        setError((j.error as string) ?? 'That did not go through.');
         return j;
       }
       await load();
@@ -77,29 +80,25 @@ export default function PostingDesk() {
         <div className="mb-6 grid gap-3 sm:grid-cols-4">
           <Tile label="Clients posting" value={clients.filter((c) => c.settings.active).length} />
           <Tile label="Out today" value={clients.filter((c) => c.today && ['published', 'partial'].includes(c.today.status)).length} tone="seed" />
-          <Tile label="Waiting on a hand" value={clients.filter((c) => c.today && ['failed', 'partial'].includes(c.today.status)).length} tone="red" />
-          <Tile label="Fresh photos" value={clients.reduce((n, c) => n + c.freshPhotos, 0)} />
+          <Tile label="Graphics to make" value={clients.reduce((n, c) => n + c.graphicsWaiting, 0)} tone="red" />
+          <Tile label="Queued ahead" value={clients.reduce((n, c) => n + c.queued, 0)} />
         </div>
 
-        {!clients.length && <p className={`${CARD} text-[15px] text-[#161616]/70`}>Nobody is on Daily Posting yet. Run `node scripts/posting-seed-built-right.mjs` for the first client, or create one below.</p>}
+        {!clients.length && <p className={`${CARD} text-[15px] text-[#161616]/70`}>Nobody is on Daily Posting yet. Run `node scripts/posting-seed-built-right.mjs` for the first client.</p>}
 
         <div className="space-y-3 mb-8">
           {clients.map((c) => (
-            <button
-              key={c.settings.client_email}
-              type="button"
-              onClick={() => setSelected(c.settings.client_email === selected ? null : c.settings.client_email)}
-              className={`w-full text-left ${CARD} ${selected === c.settings.client_email ? 'bg-[#F5B700]/20' : ''}`}
-            >
+            <button key={c.settings.client_email} type="button" onClick={() => setSelected(c.settings.client_email === selected ? null : c.settings.client_email)} className={`w-full text-left ${CARD} ${selected === c.settings.client_email ? 'bg-[#F5B700]/20' : ''}`}>
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
                   <h2 className="font-display text-[20px] font-bold leading-tight">{c.settings.business_name}</h2>
                   <p className="font-mono text-[11px] text-[#161616]/55">{c.settings.client_email} · {prettyHour(c.settings.post_hour_mt)} MT · {c.settings.platforms.map((p) => PLATFORM_LABEL[p]).join(', ')}</p>
                 </div>
                 <div className="flex flex-wrap gap-2 text-[10px] font-mono font-bold uppercase tracking-[0.12em]">
-                  <span className={`rounded-lg border-2 border-[#161616] px-2 py-1 ${c.today?.status === 'published' ? 'bg-[#F5B700]' : c.today?.status === 'failed' ? 'bg-[#E0301E]/10' : 'bg-white'}`}>Today: {c.today ? c.today.status : 'no row'}</span>
+                  <span className={`rounded-lg border-2 border-[#161616] px-2 py-1 ${c.today?.status === 'published' ? 'bg-[#F5B700]' : c.today?.status === 'failed' ? 'bg-[#E0301E]/10' : 'bg-white'}`}>Today: {c.today ? c.today.status : 'nothing queued'}</span>
+                  {c.graphicsWaiting > 0 && <span className="rounded-lg border-2 border-[#E0301E] bg-[#E0301E]/10 px-2 py-1">{c.graphicsWaiting} graphic{c.graphicsWaiting === 1 ? '' : 's'} to make</span>}
+                  <span className="rounded-lg border-2 border-[#161616] bg-white px-2 py-1">{c.queued} queued</span>
                   <span className="rounded-lg border-2 border-[#161616] bg-white px-2 py-1">Connected: {c.connected.length ? c.connected.map((p) => PLATFORM_LABEL[p]).join(', ') : 'none'}</span>
-                  <span className="rounded-lg border-2 border-[#161616] bg-white px-2 py-1">{c.freshPhotos} fresh</span>
                 </div>
               </div>
             </button>
@@ -112,15 +111,15 @@ export default function PostingDesk() {
   );
 }
 
-function ClientDetail({ d, act, busy, onNotice, client }: { d: Detail; act: (b: Record<string, unknown>, label?: string) => Promise<Record<string, unknown>>; busy: string | null; onNotice: (s: string) => void; client: string }) {
+function ClientDetail({ d, act, busy, onNotice, client }: { d: Detail; act: Act; busy: string | null; onNotice: (s: string) => void; client: string }) {
   const s = d.settings;
   const [fbToken, setFbToken] = useState('');
   const [fbChoices, setFbChoices] = useState<Array<{ id: string; name: string }> | null>(null);
   const [xAccess, setXAccess] = useState('');
   const [xRefresh, setXRefresh] = useState('');
   const [gbpLocations, setGbpLocations] = useState<Array<{ name: string; title: string }> | null>(null);
-  const [note, setNote] = useState('');
-  const [brandUrl, setBrandUrl] = useState('');
+  const [theirText, setTheirText] = useState('');
+  const [theirImage, setTheirImage] = useState<Uploaded | null>(null);
   const [settings, setSettings] = useState<Partial<SettingsRow>>({});
 
   const connectFb = async (pageId?: string) => {
@@ -141,51 +140,57 @@ function ClientDetail({ d, act, busy, onNotice, client }: { d: Detail; act: (b: 
     onNotice('Settings saved.');
   };
 
-  const fresh = d.materials.filter((m) => m.kind === 'photo' && m.status === 'fresh');
-  const brand = d.materials.filter((m) => m.kind === 'brand');
+  const graphics = d.materials.filter((m) => m.wants_graphic && !m.graphic_done_at);
+  const queue = d.materials.filter((m) => m.status === 'fresh' && !m.wants_graphic);
   const upcoming = d.posts.filter((p) => p.scheduled_for >= d.today).sort((a, b) => a.scheduled_for.localeCompare(b.scheduled_for));
   const past = d.posts.filter((p) => p.scheduled_for < d.today);
 
   return (
     <div className="grid gap-6 lg:grid-cols-3">
       <div className="space-y-6 lg:col-span-2">
-        {/* Calendar */}
+        {graphics.length > 0 && (
+          <section className={`${CARD} border-[#E0301E]`}>
+            <h3 className="font-display text-[18px] font-bold mb-1">Graphics to make ({graphics.length})</h3>
+            <p className="text-[12px] text-[#161616]/65 mb-3">Their words and what they pictured. Make it, drop it here, and the day releases with the image on.</p>
+            <div className="space-y-4">
+              {graphics.map((m) => <GraphicRequest key={m.id} m={m} act={act} busy={busy} client={client} />)}
+            </div>
+          </section>
+        )}
+
         <section>
           <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
             <h3 className="font-display text-[18px] font-bold">Calendar</h3>
-            <div className="flex gap-2">
-              <button type="button" className={BTN} disabled={!!busy} onClick={() => void act({ action: 'plan', fromToday: true }, 'plan')}>Plan from today</button>
-              <button type="button" className={BTN} disabled={!!busy} onClick={() => void act({ action: 'plan', force: true }, 'plan')}>Re-plan the next 3 days</button>
-            </div>
+            <button type="button" className={BTN} disabled={!!busy} onClick={() => void act({ action: 'plan' }, 'plan')}>Give the queue its days</button>
           </div>
           <div className="space-y-3">
-            {upcoming.map((p) => <AdminPost key={p.id} p={p} s={s} today={d.today} act={act} busy={busy} />)}
-            {upcoming.length === 0 && <p className={`${CARD} text-sm text-[#161616]/60`}>Nothing planned ahead. Plan from today to fill the next four days.</p>}
+            {upcoming.map((p) => <AdminPost key={p.id} p={p} s={s} today={d.today} act={act} busy={busy} material={d.materials.find((m) => m.id === p.material_id) ?? null} />)}
+            {upcoming.length === 0 && <p className={`${CARD} text-sm text-[#161616]/60`}>Nothing queued ahead. Their next post lands here the moment they type it.</p>}
           </div>
           {past.length > 0 && (
             <>
               <h4 className="mt-6 mb-2 font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-[#161616]/60">Past three weeks</h4>
-              <div className="space-y-3">{past.map((p) => <AdminPost key={p.id} p={p} s={s} today={d.today} act={act} busy={busy} />)}</div>
+              <div className="space-y-3">{past.map((p) => <AdminPost key={p.id} p={p} s={s} today={d.today} act={act} busy={busy} material={d.materials.find((m) => m.id === p.material_id) ?? null} />)}</div>
             </>
           )}
         </section>
 
-        {/* Leads */}
         <section className={CARD}>
           <h3 className="font-display text-[18px] font-bold mb-2">Leads from the site</h3>
           {d.leads.length === 0 ? (
             <p className="text-sm text-[#161616]/60">None yet. Every form and the chat on their site post to /api/client-lead.</p>
           ) : (
             <table className="w-full text-[13px]">
-              <thead><tr className="font-mono text-[10px] uppercase tracking-[0.12em] text-[#161616]/55 text-left"><th className="py-1 pr-3">When</th><th className="py-1 pr-3">Who</th><th className="py-1 pr-3">Through</th><th className="py-1 pr-3">Town</th><th className="py-1">Starting point</th></tr></thead>
+              <thead><tr className="font-mono text-[10px] uppercase tracking-[0.12em] text-[#161616]/55 text-left"><th className="py-1 pr-3">When</th><th className="py-1 pr-3">P</th><th className="py-1 pr-3">Who</th><th className="py-1 pr-3">Through</th><th className="py-1 pr-3">Town</th><th className="py-1">Called</th></tr></thead>
               <tbody>
                 {d.leads.map((l) => (
                   <tr key={l.id} className="border-t border-[#161616]/10 align-top">
                     <td className="py-1.5 pr-3 whitespace-nowrap font-mono text-[11px]">{new Date(l.created_at).toLocaleString('en-US', { timeZone: 'America/Denver', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}</td>
+                    <td className="py-1.5 pr-3 font-mono font-bold">{l.priority ?? '·'}</td>
                     <td className="py-1.5 pr-3"><strong>{l.name ?? 'No name'}</strong><br /><span className="text-[#161616]/60">{l.phone ?? l.email ?? ''}</span></td>
                     <td className="py-1.5 pr-3">{(l.sources?.length ? l.sources : [l.source]).join(' → ')}</td>
                     <td className="py-1.5 pr-3">{l.town ?? ''}</td>
-                    <td className="py-1.5">{l.land ?? ''}</td>
+                    <td className="py-1.5 font-mono text-[11px]">{l.handled_at ? 'yes' : ''}</td>
                   </tr>
                 ))}
               </tbody>
@@ -195,7 +200,6 @@ function ClientDetail({ d, act, busy, onNotice, client }: { d: Detail; act: (b: 
       </div>
 
       <aside className="space-y-6">
-        {/* Accounts */}
         <section className={CARD}>
           <h3 className="font-display text-[18px] font-bold mb-3">Accounts</h3>
           <ul className="space-y-3">
@@ -252,57 +256,42 @@ function ClientDetail({ d, act, busy, onNotice, client }: { d: Detail; act: (b: 
           )}
         </section>
 
-        {/* Bin */}
         <section className={CARD}>
-          <h3 className="font-display text-[18px] font-bold mb-2">The bin</h3>
-          <input value={note} onChange={(e) => setNote(e.target.value)} placeholder="Note for the next photos" className={`${INPUT} mb-2`} />
-          <PhotoDrop compact client={client} label="Drop photos for them" onUploaded={async (files: Uploaded[]) => { for (const f of files) await act({ action: 'material', url: f.url, note: note || undefined }); setNote(''); }} />
-          {fresh.length > 0 && (
-            <div className="mt-3 flex flex-wrap gap-2">
-              {fresh.map((m) => (
-                <div key={m.id} className="relative group" title={m.note ?? ''}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={m.url} alt="" className="h-16 w-16 rounded-lg border-2 border-[#161616] object-cover" />
-                  <button type="button" onClick={() => void act({ action: 'material-archive', id: m.id })} className="absolute -top-2 -right-2 h-5 w-5 rounded-full border-2 border-[#161616] bg-white text-[10px] font-bold leading-none opacity-0 group-hover:opacity-100">×</button>
-                </div>
-              ))}
+          <h3 className="font-display text-[18px] font-bold mb-1">Enter a post for them</h3>
+          <p className="text-[12px] text-[#161616]/65 mb-2">Their words as they gave them: a text, a call, a note. Not ours.</p>
+          <textarea value={theirText} onChange={(e) => setTheirText(e.target.value)} rows={4} placeholder="What they want said" className={`${INPUT} mb-2`} />
+          {theirImage ? (
+            <div className="flex items-center gap-2 mb-2">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={theirImage.url} alt="" className="h-14 w-14 rounded-lg border-2 border-[#161616] object-cover" />
+              <button type="button" className={BTN} onClick={() => setTheirImage(null)}>Remove</button>
+            </div>
+          ) : (
+            <PhotoDrop compact client={client} label="Their photo or graphic (optional)" onUploaded={async (files: Uploaded[]) => setTheirImage(files[0] ?? null)} />
+          )}
+          <button type="button" className={`${BTN_GOLD} mt-2`} disabled={theirText.trim().length < 3 || !!busy} onClick={async () => { await act({ action: 'post', text: theirText, url: theirImage?.url ?? null }); setTheirText(''); setTheirImage(null); }}>Queue it</button>
+          {queue.length > 0 && (
+            <div className="mt-3 border-t-2 border-[#161616]/10 pt-3">
+              <p className="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-[#161616]/60 mb-1">Waiting for a day ({queue.length})</p>
+              {queue.map((m) => <p key={m.id} className="text-[12px] text-[#161616]/75 truncate">· {m.text}</p>)}
             </div>
           )}
-          <div className="mt-4 border-t-2 border-[#161616]/10 pt-3">
-            <p className="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-[#161616]/60 mb-1">Brand pool ({brand.length})</p>
-            <p className="text-[12px] text-[#161616]/65 mb-2">Evergreen days pull the least-used photo from here. Public JPEG URLs.</p>
-            <div className="flex gap-2">
-              <input value={brandUrl} onChange={(e) => setBrandUrl(e.target.value)} placeholder="https://.../photo.jpg" className={INPUT} />
-              <button type="button" className={BTN} disabled={!brandUrl.trim() || !!busy} onClick={async () => { await act({ action: 'material', url: brandUrl.trim(), kind: 'brand' }); setBrandUrl(''); }}>Add</button>
-            </div>
-            {brand.length > 0 && (
-              <div className="mt-2 flex flex-wrap gap-1.5">
-                {brand.map((m) => (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img key={m.id} src={m.url} alt="" title={`used ${m.used_count}×`} className="h-10 w-10 rounded border border-[#161616]/40 object-cover" />
-                ))}
-              </div>
-            )}
-          </div>
         </section>
 
-        {/* Settings */}
         <section className={CARD}>
-          <h3 className="font-display text-[18px] font-bold mb-2">The brief</h3>
+          <h3 className="font-display text-[18px] font-bold mb-2">The brief for the editor</h3>
           <Field label="Business name"><input defaultValue={s.business_name} onChange={(e) => setSettings((v) => ({ ...v, business_name: e.target.value }))} className={INPUT} /></Field>
           <Field label="Site"><input defaultValue={s.site_url ?? ''} onChange={(e) => setSettings((v) => ({ ...v, site_url: e.target.value || null }))} className={INPUT} /></Field>
           <Field label="Phone"><input defaultValue={s.phone ?? ''} onChange={(e) => setSettings((v) => ({ ...v, phone: e.target.value || null }))} className={INPUT} /></Field>
           <Field label="Towns, lead towns first (one per line)"><textarea defaultValue={s.towns.join('\n')} rows={3} onChange={(e) => setSettings((v) => ({ ...v, towns: e.target.value as unknown as string[] }))} className={INPUT} /></Field>
-          <Field label="Services (one per line)"><textarea defaultValue={s.services.join('\n')} rows={3} onChange={(e) => setSettings((v) => ({ ...v, services: e.target.value as unknown as string[] }))} className={INPUT} /></Field>
-          <Field label="Facts the writer may use"><textarea defaultValue={s.facts ?? ''} rows={5} onChange={(e) => setSettings((v) => ({ ...v, facts: e.target.value || null }))} className={INPUT} /></Field>
-          <Field label="Tone"><textarea defaultValue={s.tone ?? ''} rows={2} onChange={(e) => setSettings((v) => ({ ...v, tone: e.target.value || null }))} className={INPUT} /></Field>
+          <Field label="How they talk"><textarea defaultValue={s.tone ?? ''} rows={2} onChange={(e) => setSettings((v) => ({ ...v, tone: e.target.value || null }))} className={INPUT} /></Field>
           <Field label="Hard rules"><textarea defaultValue={s.hard_nos ?? ''} rows={3} onChange={(e) => setSettings((v) => ({ ...v, hard_nos: e.target.value || null }))} className={INPUT} /></Field>
           <Field label="Platforms">
             <div className="flex flex-wrap gap-2">
               {PLATFORMS.map((p) => {
                 const on = (settings.platforms ?? s.platforms).includes(p);
                 return (
-                  <button key={p} type="button" onClick={() => setSettings((v) => { const cur = v.platforms ?? s.platforms; return { ...v, platforms: on ? cur.filter((x) => x !== p) : [...cur, p] }; })} className={`${on ? BTN_GOLD : BTN}`}>{PLATFORM_LABEL[p]}</button>
+                  <button key={p} type="button" onClick={() => setSettings((v) => { const cur = v.platforms ?? s.platforms; return { ...v, platforms: on ? cur.filter((x) => x !== p) : [...cur, p] }; })} className={on ? BTN_GOLD : BTN}>{PLATFORM_LABEL[p]}</button>
                 );
               })}
             </div>
@@ -321,30 +310,49 @@ function ClientDetail({ d, act, busy, onNotice, client }: { d: Detail; act: (b: 
   );
 }
 
-function AdminPost({ p, s, today, act, busy }: { p: PostRow; s: SettingsRow; today: string; act: (b: Record<string, unknown>, label?: string) => Promise<Record<string, unknown>>; busy: string | null }) {
+function GraphicRequest({ m, act, busy, client }: { m: MaterialRow; act: Act; busy: string | null; client: string }) {
+  const [url, setUrl] = useState('');
+  return (
+    <div className="rounded-xl border-2 border-[#161616]/20 bg-[#FBF6EA] p-4">
+      <p className="text-[14px] whitespace-pre-line">{m.text}</p>
+      {m.graphic_brief && <p className="mt-2 text-[13px]"><span className="font-mono text-[10px] uppercase tracking-[0.14em] text-[#C4160B] font-bold">They pictured: </span>{m.graphic_brief}</p>}
+      <p className="mt-1 font-mono text-[10px] text-[#161616]/50">asked {new Date(m.created_at).toLocaleString('en-US', { timeZone: 'America/Denver', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}</p>
+      <div className="mt-3 grid gap-2 sm:grid-cols-2">
+        <PhotoDrop compact client={client} label="Drop the finished graphic" onUploaded={async (files: Uploaded[]) => { if (files[0]) await act({ action: 'graphic', id: m.id, url: files[0].url }, 'graphic'); }} />
+        <div className="flex gap-2">
+          <input value={url} onChange={(e) => setUrl(e.target.value)} placeholder="or paste a public image URL" className={INPUT} />
+          <button type="button" className={BTN_GOLD} disabled={!/^https:\/\//.test(url) || !!busy} onClick={() => void act({ action: 'graphic', id: m.id, url }, 'graphic')}>Attach</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function AdminPost({ p, s, today, act, busy, material }: { p: PostRow; s: SettingsRow; today: string; act: Act; busy: string | null; material: MaterialRow | null }) {
   const [open, setOpen] = useState(false);
   const [drafts, setDrafts] = useState<Partial<Record<Platform, string>>>({});
   const [links, setLinks] = useState<Partial<Record<Platform, string>>>({});
   const [date, setDate] = useState(p.scheduled_for);
   const locked = ['published', 'publishing'].includes(p.status);
-  const tone = p.status === 'published' ? 'bg-[#F5B700]' : ['failed'].includes(p.status) ? 'bg-[#E0301E]/10' : 'bg-white';
+  const tone = p.status === 'published' ? 'bg-[#F5B700]' : p.status === 'failed' ? 'bg-[#E0301E]/10' : p.status === 'held' ? 'bg-[#E0301E]/10' : 'bg-white';
   return (
     <div className={CARD}>
       <div className="flex gap-4">
         {p.image_url ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={p.image_url} alt="" className="h-20 w-20 shrink-0 rounded-lg border-2 border-[#161616] object-cover" />
-        ) : <div className="h-20 w-20 shrink-0 rounded-lg border-2 border-dashed border-[#161616]/30" />}
+        ) : <div className="h-20 w-20 shrink-0 rounded-lg border-2 border-dashed border-[#161616]/30 flex items-center justify-center text-center font-mono text-[9px] text-[#161616]/40 px-1">{p.status === 'held' ? 'graphic pending' : 'no image'}</div>}
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
             <span className="font-mono text-[11px] font-bold uppercase tracking-[0.12em]">{p.scheduled_for === today ? 'Today' : prettyDate(p.scheduled_for)}</span>
             <span className={`rounded-lg border-2 border-[#161616] px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-[0.12em] ${tone}`}>{p.status}</span>
-            <span className="font-mono text-[10px] text-[#161616]/50">{p.source}{p.written_by ? ` · ${p.written_by}` : ''}{p.edited_by ? ' · edited' : ''}</span>
+            <span className="font-mono text-[10px] text-[#161616]/50">{p.written_by ? `edit: ${p.written_by}` : 'not shaped yet'}{p.edited_by ? ' · hand-edited' : ''}</span>
           </div>
           <input defaultValue={p.headline ?? ''} placeholder="Headline" onBlur={(e) => e.target.value !== (p.headline ?? '') && void act({ action: 'headline', id: p.id, text: e.target.value })} className="mt-1 w-full bg-transparent font-display text-[17px] font-bold outline-none" />
+          {material?.text && <p className="mt-1 text-[12px] text-[#161616]/60 line-clamp-2 whitespace-pre-line"><span className="font-mono text-[9px] uppercase tracking-[0.12em] text-[#C4160B] font-bold">Their words: </span>{material.text}</p>}
           <div className="mt-2 flex flex-wrap gap-1.5">
             {s.platforms.map((pl) => {
-              const r = p.results[pl];
+              const r = p.results[pl] as { ok?: boolean; pending?: boolean; url?: string; error?: string } | undefined;
               const cls = r?.ok ? 'bg-[#F5B700] border-[#161616]' : r?.pending ? 'bg-white border-[#161616]/40 text-[#161616]/70' : r ? 'bg-[#E0301E]/10 border-[#E0301E]' : 'bg-white border-[#161616]/20 text-[#161616]/50';
               return (
                 <span key={pl} title={r?.error ?? ''} className={`rounded-md border-2 px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-[0.1em] ${cls}`}>
@@ -361,8 +369,8 @@ function AdminPost({ p, s, today, act, busy }: { p: PostRow; s: SettingsRow; tod
         {!locked && p.status !== 'held' && p.status !== 'skipped' && <button type="button" className={BTN} disabled={!!busy} onClick={() => void act({ action: 'hold', id: p.id })}>Hold</button>}
         {(p.status === 'held' || p.status === 'skipped') && <button type="button" className={BTN} disabled={!!busy} onClick={() => void act({ action: 'release', id: p.id })}>Release</button>}
         {!locked && p.status !== 'skipped' && <button type="button" className={BTN_RED} disabled={!!busy} onClick={() => void act({ action: 'skip', id: p.id })}>Skip</button>}
-        {!p.captions.facebook && <button type="button" className={BTN} disabled={!!busy} onClick={() => void act({ action: 'words-now', id: p.id }, 'words')}>Write it now</button>}
-        {!locked && <button type="button" className={BTN} disabled={!!busy} onClick={() => void act({ action: 'rewrite', id: p.id })}>Ask Claude again</button>}
+        {!p.captions.facebook && <button type="button" className={BTN} disabled={!!busy} onClick={() => void act({ action: 'words-now', id: p.id }, 'words')}>Shape it now</button>}
+        {!locked && <button type="button" className={BTN} disabled={!!busy} onClick={() => void act({ action: 'rewrite', id: p.id })}>Ask Claude to re-edit</button>}
         {!locked && (
           <span className="ml-auto flex items-center gap-1">
             <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="rounded-lg border-2 border-[#161616]/40 bg-white px-2 py-1 font-mono text-[11px]" />
@@ -373,7 +381,7 @@ function AdminPost({ p, s, today, act, busy }: { p: PostRow; s: SettingsRow; tod
       {open && (
         <div className="mt-4 space-y-3 border-t-2 border-[#161616]/10 pt-4">
           {s.platforms.map((pl) => {
-            const r = p.results[pl];
+            const r = p.results[pl] as { ok?: boolean; error?: string } | undefined;
             return (
               <div key={pl}>
                 <div className="flex items-center justify-between">

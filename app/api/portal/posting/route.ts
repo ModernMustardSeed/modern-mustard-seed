@@ -3,10 +3,11 @@ import { getClientSession } from '@/lib/client-auth';
 import { getSupabase } from '@/lib/supabase';
 import { getSettings, saveSettings } from '@/lib/posting/settings';
 import { accountViews, disconnectAccount } from '@/lib/posting/accounts';
-import { planClient } from '@/lib/posting/planner';
+import { planClient, emptyDaysAhead } from '@/lib/posting/planner';
+import { sendGraphicRequest } from '@/lib/posting/notify';
 import { scrub } from '@/lib/posting/captions';
 import { mountainDate, addDays } from '@/lib/posting/time';
-import { PLATFORMS, type Platform, type PostRow } from '@/lib/posting/types';
+import { PLATFORMS, type MaterialRow, type Platform, type PostRow } from '@/lib/posting/types';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -14,10 +15,13 @@ export const maxDuration = 60;
 
 /**
  * THE CLIENT'S POSTING CALENDAR. Every read and write is scoped by the
- * session email, never by an id in the request. A client sees their own
- * material, their own posts, their own connections, and can change the words
- * on a post that has not gone out yet, skip a day, or put a day back.
+ * session email, never by an id in the request. A client types what they
+ * want said, attaches a photo or asks for a graphic, and sees the day it
+ * takes. They can change any version until the hour it posts, skip a day,
+ * or put a day back.
  */
+const UPLOAD_RE = /^https:\/\/[a-z0-9.-]+\.supabase\.co\/storage\/v1\/object\/public\/client-intake\/posting\//i;
+
 export async function GET() {
   const session = await getClientSession();
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -29,23 +33,18 @@ export async function GET() {
   if (!settings) return NextResponse.json({ settings: null });
 
   const today = mountainDate();
-  const [posts, materials, accounts] = await Promise.all([
-    sb.from('posting_posts').select('*').eq('client_email', email).gte('scheduled_for', addDays(today, -30)).lte('scheduled_for', addDays(today, 7)).order('scheduled_for', { ascending: false }),
-    sb.from('posting_materials').select('*').eq('client_email', email).eq('kind', 'photo').neq('status', 'archived').order('created_at', { ascending: false }).limit(60),
+  const [posts, materials, accounts, empty] = await Promise.all([
+    sb.from('posting_posts').select('*').eq('client_email', email).gte('scheduled_for', addDays(today, -30)).lte('scheduled_for', addDays(today, 30)).order('scheduled_for', { ascending: false }),
+    sb.from('posting_materials').select('*').eq('client_email', email).eq('kind', 'post').neq('status', 'archived').order('created_at', { ascending: false }).limit(60),
     accountViews(sb, email),
+    emptyDaysAhead(sb, settings, 7),
   ]);
-  return NextResponse.json({
-    settings,
-    today,
-    posts: (posts.data ?? []) as PostRow[],
-    materials: materials.data ?? [],
-    accounts,
-  });
+  return NextResponse.json({ settings, today, posts: (posts.data ?? []) as PostRow[], materials: (materials.data ?? []) as MaterialRow[], accounts, emptyDays: empty });
 }
 
 type Body =
-  | { action: 'material'; url: string; note?: string }
-  | { action: 'material-archive'; id: string }
+  | { action: 'post'; text: string; url?: string | null; wants_graphic?: boolean; graphic_brief?: string; note?: string }
+  | { action: 'post-archive'; id: string }
   | { action: 'caption'; id: string; platform: Platform; text: string }
   | { action: 'skip'; id: string }
   | { action: 'unskip'; id: string }
@@ -68,19 +67,31 @@ export async function POST(req: Request) {
   if (!settings) return NextResponse.json({ error: 'Daily Posting is not on this account.' }, { status: 403 });
 
   switch (body.action) {
-    case 'material': {
-      const url = String(body.url ?? '');
-      if (!/^https:\/\/[a-z0-9.-]+\.supabase\.co\/storage\/v1\/object\/public\/client-intake\/posting\//i.test(url)) {
-        return NextResponse.json({ error: 'That is not one of your uploads.' }, { status: 400 });
-      }
-      const note = String(body.note ?? '').trim().slice(0, 1000) || null;
-      const { data, error } = await sb.from('posting_materials').insert({ client_email: email, url, kind: 'photo', note, uploaded_by: email, status: 'fresh' }).select('*').single();
+    case 'post': {
+      const text = String(body.text ?? '').trim().slice(0, 4000);
+      if (text.length < 3) return NextResponse.json({ error: 'Type what you want said first.' }, { status: 400 });
+      const url = body.url ? String(body.url) : null;
+      if (url && !UPLOAD_RE.test(url)) return NextResponse.json({ error: 'That is not one of your uploads.' }, { status: 400 });
+      const wantsGraphic = Boolean(body.wants_graphic) && !url;
+      const row = {
+        client_email: email,
+        kind: 'post',
+        text,
+        url,
+        wants_graphic: wantsGraphic,
+        graphic_brief: wantsGraphic ? String(body.graphic_brief ?? '').trim().slice(0, 1000) || null : null,
+        note: String(body.note ?? '').trim().slice(0, 1000) || null,
+        uploaded_by: email,
+        status: 'fresh',
+      };
+      const { data, error } = await sb.from('posting_materials').insert(row).select('*').single();
       if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-      // A fresh photo takes the next open day at once, so the client sees it land on the calendar.
-      await planClient(sb, settings, { days: 3 });
-      return NextResponse.json({ ok: true, material: data });
+      const planned = await planClient(sb, settings);
+      if (wantsGraphic) await sendGraphicRequest(settings, data as MaterialRow);
+      return NextResponse.json({ ok: true, material: data, planned });
     }
-    case 'material-archive': {
+    case 'post-archive': {
+      // Only a submission that has not taken a day yet can be pulled back.
       await sb.from('posting_materials').update({ status: 'archived' }).eq('id', String(body.id)).eq('client_email', email).eq('status', 'fresh');
       return NextResponse.json({ ok: true });
     }
@@ -100,8 +111,7 @@ export async function POST(req: Request) {
       if (!post) return NextResponse.json({ error: 'No such post' }, { status: 404 });
       if (['published', 'publishing', 'partial'].includes(String(post.status))) return NextResponse.json({ error: 'That one has already gone out.' }, { status: 409 });
       await sb.from('posting_posts').update({ status: 'skipped', edited_by: email, updated_at: new Date().toISOString() }).eq('id', post.id as string);
-      // The photo goes back in the bin for another day.
-      if (post.material_id) await sb.from('posting_materials').update({ status: 'fresh' }).eq('id', post.material_id as string).eq('kind', 'photo');
+      if (post.material_id) await sb.from('posting_materials').update({ status: 'archived' }).eq('id', post.material_id as string);
       return NextResponse.json({ ok: true });
     }
     case 'unskip': {

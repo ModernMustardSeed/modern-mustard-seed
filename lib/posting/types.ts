@@ -56,11 +56,20 @@ export type PostRow = {
   updated_at: string;
 };
 
+/**
+ * A submission: what the client wants to say, in their words, with any photo
+ * or graphic they have. `kind` 'post' is the only kind the planner turns into
+ * a day; 'photo' and 'brand' are older rows that stay for the record.
+ */
 export type MaterialRow = {
   id: string;
   client_email: string;
-  url: string;
-  kind: 'photo' | 'brand';
+  url: string | null;
+  kind: 'post' | 'photo' | 'brand';
+  text: string | null;
+  wants_graphic: boolean;
+  graphic_brief: string | null;
+  graphic_done_at: string | null;
   note: string | null;
   uploaded_by: string | null;
   status: 'fresh' | 'used' | 'archived';
