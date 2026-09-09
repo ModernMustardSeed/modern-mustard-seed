@@ -15,7 +15,7 @@
  * - No em dashes, no prices, Title Case labels.
  */
 
-import Link from 'next/link';
+import Link from '@/components/AttributionLink';
 import { useEffect, useRef, useState } from 'react';
 import { Anton, Caveat } from 'next/font/google';
 import { track } from '@vercel/analytics';
@@ -150,9 +150,8 @@ export function JourneyHero() {
             A Drive
           </h1>
           <p className={`mt-3 sm:mt-5 max-w-2xl lg:max-w-xl text-base sm:text-lg md:text-xl text-[#FBF6EA]/95 font-body ${revealBase}`} style={{ transitionDelay: '240ms' }}>
-            Websites that talk and voice agents that answer, built as one thing.
-            Live in about a week.
-            <span className="hidden sm:inline"> This is Modern Mustard Seed, and this is the scenic route.</span>
+            Modern Mustard Seed. AI-native websites and voice agents, built in Kalispell for businesses nationwide.
+            <span className="hidden sm:inline"> One shared brain. This is the scenic route.</span>
           </p>
           <div className={`mt-4 sm:mt-6 flex flex-wrap items-center justify-center gap-4 lg:justify-end ${revealBase}`} style={{ transitionDelay: '360ms' }}>
             <a

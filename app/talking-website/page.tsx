@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from '@/components/AttributionLink';
 import { buildMetadata, SITE } from '@/lib/seo';
 import { JsonLd, breadcrumbJsonLd, faqJsonLd } from '@/lib/jsonld';
 import { DEMO_PRODUCTS, DEMO_BUNDLE, SITE_RUNGS, SITE_RUNG_KEYS, formatUsd } from '@/lib/demo-order';
@@ -167,14 +167,15 @@ export default function TalkingWebsitePage() {
       {/* ── Hero ── */}
       <header className="halftone-bg border-b-2 border-[#161616]">
         <div className="max-w-6xl mx-auto px-6 pt-32 pb-16 md:pt-40 lg:pb-20">
-          <div className="grid lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+          <div className="grid grid-cols-1 [&>*]:min-w-0 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
             <div className="lg:col-span-6 xl:col-span-5">
               <span className="font-mono text-[11px] uppercase tracking-[0.32em] text-[#C4160B] font-bold">
-                The Talking Website // First of its kind
+                The Talking Website // One shared brain
               </span>
               <h1 className="font-display text-[2.6rem] sm:text-5xl xl:text-6xl font-bold mt-4 leading-[1.02] tracking-tight">
                 A website that answers its <em className="italic text-[#C4160B]">own phone.</em>
               </h1>
+            <p className="mt-5 font-body text-base leading-relaxed">Built by Modern Mustard Seed, an AI-native product studio in Kalispell, Montana, serving Northwest Montana and clients nationwide. <Link href="/ai-websites" className="underline font-bold">See how our AI websites connect the page and the business.</Link></p>
               <p className="font-body text-[17px] text-[#161616]/75 mt-5 leading-relaxed">
                 Not a site with a chat bubble bolted on. Your website and your voice agent, built as one thing off one
                 brain, so the answer a visitor reads at noon is the exact answer a caller hears at midnight. The
@@ -233,7 +234,7 @@ export default function TalkingWebsitePage() {
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-6 py-16 lg:py-20 space-y-20">
+      <div className="max-w-6xl mx-auto px-6 py-16 lg:py-20 space-y-20">
         {/* ── Signature moment: one brain, two mouths ── */}
         <section>
           <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#C4160B] uppercase">
@@ -251,7 +252,7 @@ export default function TalkingWebsitePage() {
 
         {/* ── Talk to this page ── */}
         <section className="border-2 border-[#161616] bg-[#161616] rounded-2xl shadow-[8px_8px_0_0_#F5B700] p-7 sm:p-10">
-          <div className="grid lg:grid-cols-12 gap-8 items-center">
+          <div className="grid grid-cols-1 [&>*]:min-w-0 lg:grid-cols-12 gap-8 items-center">
             <div className="lg:col-span-7">
               <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#F5B700] uppercase">
                 Proof // Right now, in your browser
@@ -390,7 +391,7 @@ export default function TalkingWebsitePage() {
                     <span className="text-[#161616]/70">+ {formatUsd(r.bundleMonthlyCents)}/mo</span>
                   </p>
                   <p className="font-body text-[13.5px] text-[#161616]/80 mt-3 leading-relaxed">{r.pitch}</p>
-                  <p className="font-body text-[12.5px] text-[#161616]/65 mt-2 leading-relaxed flex-1">{r.plan}</p>
+                  <p className="font-body text-[12.5px] text-[#161616]/80 mt-2 leading-relaxed flex-1">{r.plan}</p>
                   <dl className="mt-5 pt-4 border-t-2 border-dashed border-[#161616]/25 space-y-1.5 font-body text-[12.5px]">
                     <div className="flex justify-between gap-3">
                       <dt className="text-[#161616]/70">Site alone</dt>
@@ -412,7 +413,7 @@ export default function TalkingWebsitePage() {
                     </div>
                     <div className="flex justify-between gap-3 font-bold">
                       <dt>You keep</dt>
-                      <dd className="font-mono text-right shrink-0 text-[#C4160B]">
+                      <dd className="font-mono text-right shrink-0 text-[#161616]">
                         {formatUsd(pairSetup - r.bundleSetupCents)} + {formatUsd(pairMonthly - r.bundleMonthlyCents)}/mo
                       </dd>
                     </div>
@@ -537,7 +538,7 @@ export default function TalkingWebsitePage() {
             ))}
           </div>
         </section>
-      </main>
+      </div>
 
       {/* ── Close ── */}
       <div className="max-w-6xl mx-auto px-6 pb-16 lg:pb-20">

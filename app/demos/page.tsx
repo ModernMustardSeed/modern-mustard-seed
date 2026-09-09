@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { buildMetadata, SITE } from '@/lib/seo';
 import DemoStation from '@/components/DemoStation';
 import MissedMoney from '@/components/mustard/MissedMoney';
@@ -218,7 +217,7 @@ export default async function DemosPage({
            Measured: this keeps a 64-96px gap under the nav at every breakpoint. */}
       <header className="halftone-bg border-b-2 border-[#161616]">
         <div className="max-w-6xl mx-auto px-6 pt-32 pb-14 md:pt-40 lg:pb-20">
-          <div className="grid lg:grid-cols-12 gap-10 lg:gap-12 items-start">
+          <div className="grid grid-cols-1 [&>*]:min-w-0 lg:grid-cols-12 gap-10 lg:gap-12 items-start">
             {/* The pitch */}
             <div className="lg:col-span-6 xl:col-span-5">
               <span className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#C4160B] font-bold">
@@ -287,9 +286,9 @@ export default async function DemosPage({
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-6 py-12 lg:py-16 space-y-16">
+      <div className="max-w-6xl mx-auto px-6 py-12 lg:py-16 space-y-16">
         {/* ── The form. The whole point of the page, so it does not hide below cards. ── */}
-        <section id="build" className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-start scroll-mt-8">
+        <section id="build" className="grid grid-cols-1 [&>*]:min-w-0 lg:grid-cols-12 gap-8 lg:gap-12 items-start scroll-mt-8">
           <div className="lg:col-span-5">
             <span className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#C4160B] font-bold">Start the build</span>
             <h2 className="font-display text-3xl sm:text-4xl font-bold mt-3 leading-[1.08]">
@@ -325,7 +324,7 @@ export default async function DemosPage({
 
         {/* ── The calculator. The cold email's keypad lands here, and it lands
              blank on purpose: the numbers are theirs to type. ── */}
-        <section id="calculator" className="grid gap-6 lg:grid-cols-[1fr_1.05fr] lg:items-start scroll-mt-8">
+        <section id="calculator" className="grid grid-cols-1 [&>*]:min-w-0 gap-6 lg:grid-cols-[1fr_1.05fr] lg:items-start scroll-mt-8">
           <MissedMoney
             monthlyPrice={formatUsd(DEMO_BUNDLE.monthlyCents)}
             missedPreset={machine.missed}
@@ -420,7 +419,7 @@ export default async function DemosPage({
         </section>
 
         {/* ── FAQ ── */}
-        <section className="grid lg:grid-cols-12 gap-8">
+        <section className="grid grid-cols-1 [&>*]:min-w-0 lg:grid-cols-12 gap-8">
           <div className="lg:col-span-4">
             <h2 className="font-display text-3xl font-bold">Fair questions</h2>
             <p className="font-body text-[14px] text-[#161616]/60 mt-3">
@@ -447,7 +446,7 @@ export default async function DemosPage({
         <p className="font-mono text-[11px] text-[#161616]/70 text-center pb-4">
           Modern Mustard Seed · Kalispell, MT · (406) 312-1223
         </p>
-      </main>
+      </div>
     </div>
   );
 }

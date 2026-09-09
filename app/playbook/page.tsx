@@ -13,7 +13,7 @@ const PDF = '/downloads/modern-mustard-seed-playbook.pdf';
 
 export default function PlaybookPage() {
   return (
-    <main className="relative isolate overflow-hidden bg-[#FBF6EA] min-h-screen border-b-4 border-[#161616] pt-32 md:pt-40 pb-24 px-6">
+    <div className="relative isolate overflow-hidden bg-[#FBF6EA] min-h-screen border-b-4 border-[#161616] pt-32 md:pt-40 pb-24 px-6">
       {/* Halftone dot field */}
       <div
         aria-hidden="true"
@@ -104,6 +104,6 @@ export default function PlaybookPage() {
           </div>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

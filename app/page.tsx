@@ -18,12 +18,12 @@ import {
   JourneyDoors,
 } from '@/components/journey/chapters';
 import { JsonLd, breadcrumbJsonLd, faqJsonLd, parableJsonLd } from '@/lib/jsonld';
-import { buildMetadata } from '@/lib/seo';
+import { buildMetadata, SITE } from '@/lib/seo';
 
 export const metadata = buildMetadata({
-  title: 'Websites, Voice Agents, and AI Command Centers',
+  title: 'AI Websites and Voice Agents in Kalispell, Montana',
   description:
-    'Do you want your business to thrive? Custom websites, voice agents, and AI command centers, live in about a week. Custom apps and stores too. Now booking new builds.',
+    'Kalispell-based AI-native product studio. Custom websites, AI voice agents, automation and software for Northwest Montana and clients nationwide. See a free demo.',
 });
 
 const homeJsonLd = {
@@ -31,9 +31,8 @@ const homeJsonLd = {
   '@type': 'WebPage',
   '@id': 'https://modernmustardseed.com/#webpage',
   url: 'https://modernmustardseed.com',
-  name: 'Modern Mustard Seed | Websites, Voice Agents, and AI Command Centers',
-  description:
-    'Do you want your business to thrive? Custom websites, voice agents, and AI command centers, live in about a week. Custom apps and stores too.',
+  name: 'Modern Mustard Seed | AI Websites and Voice Agents in Kalispell, Montana',
+  description: SITE.description,
   isPartOf: { '@id': 'https://modernmustardseed.com/#website' },
   about: { '@id': 'https://modernmustardseed.com/#organization' },
   // The planting chapter and the footer card are the same verse.
@@ -43,10 +42,6 @@ const homeJsonLd = {
     url: 'https://modernmustardseed.com/opengraph-image',
     width: 1200,
     height: 630,
-  },
-  speakable: {
-    '@type': 'SpeakableSpecification',
-    cssSelector: ['h1', 'h2'],
   },
 };
 
@@ -64,11 +59,11 @@ const offerJsonLd = {
 const HOME_FAQ = [
   {
     q: 'What does Modern Mustard Seed do?',
-    a: 'Modern Mustard Seed is a one-person product studio that builds custom websites, voice agents, AI command centers, and apps for businesses. Founded by Sarah Scarano, it ships fixed-scope, fixed-quote builds fast: websites, voice agents, and command centers go live in about a week. Now booking new builds.',
+    a: 'Modern Mustard Seed is an AI-native product studio in Kalispell, Montana. We build custom websites, AI voice agents, automation, command centers and software for Northwest Montana and clients nationwide. Founded by Sarah Scarano, it ships fixed-scope, fixed-quote builds fast: websites, voice agents, and command centers go live in about a week. Now booking new builds.',
   },
   {
     q: 'Who is Sarah Scarano?',
-    a: 'Sarah Scarano is the founder, engineer, and strategist behind Modern Mustard Seed. She is a self-taught full-stack engineer and AI systems architect who has shipped 40+ products across AI, e-commerce, real estate, hospitality, and SaaS, and runs four ventures from one desk.',
+    a: 'Sarah Scarano is the founder, engineer, and strategist behind Modern Mustard Seed. She is a self-taught full-stack engineer and AI systems architect who builds across AI, e-commerce, real estate, hospitality and SaaS. Her portfolio and case studies are available on this site.',
   },
   {
     q: 'How long does a build take?',
@@ -80,7 +75,7 @@ const HOME_FAQ = [
   },
   {
     q: 'What does it cost?',
-    a: 'Each engagement is quoted per project after a free 30-minute discovery call. Pricing is fixed before work starts. No hourly billing, no surprises.',
+    a: 'Each engagement is quoted per project after a free 30-minute discovery call. Pricing is fixed before work starts. A set package price, agreed before the build.',
   },
   {
     q: 'What tech stack do you use?',
@@ -129,7 +124,7 @@ export default function HomePage() {
           breadcrumbJsonLd([{ name: 'Home', url: '/' }]),
         ]}
       />
-      <main className="relative bg-[#FBF6EA] text-[#161616]">
+      <div className="relative bg-[#FBF6EA] text-[#161616]">
         <JourneyRig />
         <JourneyHero />
         {/* MI 4. The turnout: one field, one promise, the phone rings. It used
@@ -178,7 +173,7 @@ export default function HomePage() {
         </section>
         {/* Ava, bottom left, opposite Mr. Mustard. She yields to him. */}
         <JourneyTour />
-      </main>
+      </div>
     </>
   );
 }

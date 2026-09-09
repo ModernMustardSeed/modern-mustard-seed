@@ -21,7 +21,7 @@ export const GEO = {
   wordmark: '[ THE EXAMINER’S DESK ]',
   tagline: 'Be the answer AI gives.',
   promise:
-    'ChatGPT, Perplexity, and Google AI answer your customers’ questions by reading structured signals most local sites never installed. The free audit grades yours. The GEO DESK installs what’s missing: written for your business, ready to paste.',
+    'Make your business easier to understand. The free audit checks the page. GEO Desk prepares business-specific content and structured data, with an installation guide and a re-scan to check the changes.',
   metaAddon: 'AI Findability (GEO) grading and fixes',
   freeRerunsPerPack: 3,
 } as const;
@@ -146,7 +146,7 @@ export const geoFaqAdditions = [
   },
   {
     q: 'Will this get me recommended by ChatGPT?',
-    a: 'Honest answer: nobody can promise what an AI engine will say, and anyone who does is selling snake oil. What we promise is concrete: the structured signals AI engines read will exist on your site, correctly installed, verified by re-grade. That is the part of GEO you control, and almost no local business has done it yet.',
+    a: 'No package guarantees a recommendation. The deliverable is business-specific content and structured data, installation instructions and a re-scan. Search visibility still depends on accessible pages, useful evidence and the search system. An audit score is not a recommendation count.',
   },
   {
     q: 'I am not technical. Can I actually install this?',

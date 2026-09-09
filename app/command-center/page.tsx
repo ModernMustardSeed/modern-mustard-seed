@@ -167,7 +167,7 @@ export default function CommandCenterPage() {
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-6 py-16 lg:py-20 space-y-20">
+      <div className="max-w-6xl mx-auto px-6 py-16 lg:py-20 space-y-20">
         {/* ── One board, wired to everything ── */}
         <section>
           <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#C4160B] uppercase">
@@ -311,7 +311,7 @@ export default function CommandCenterPage() {
             </Link>
           </div>
         </section>
-      </main>
+      </div>
     </div>
   );
 }

@@ -47,7 +47,7 @@ export default function SampleProposalPage() {
   const hasVariable = lines.some((l) => svc(l)?.variable);
 
   return (
-    <main className="relative min-h-screen bg-[#FBF6EA] text-[#161616] pt-28 pb-24 px-5">
+    <div className="relative min-h-screen bg-[#FBF6EA] text-[#161616] pt-28 pb-24 px-5">
       <JsonLd data={breadcrumbJsonLd([{ name: 'Home', url: '/' }, { name: 'Sample Proposal', url: '/sample-proposal' }])} />
       <div aria-hidden="true" className="absolute inset-0 halftone-bg opacity-40 pointer-events-none" />
       <div className="relative max-w-3xl mx-auto">
@@ -92,6 +92,6 @@ export default function SampleProposalPage() {
           </div>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

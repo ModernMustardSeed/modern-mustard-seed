@@ -1,26 +1,11 @@
-import Link from 'next/link';
+import Link from '@/components/AttributionLink';
 import { notFound } from 'next/navigation';
 import { buildMetadata, SITE } from '@/lib/seo';
-import { JsonLd, faqJsonLd, breadcrumbJsonLd } from '@/lib/jsonld';
+import { JsonLd, faqJsonLd, breadcrumbJsonLd, serviceJsonLd, webPageJsonLd } from '@/lib/jsonld';
 import { MONTANA_CITIES, getCity, cityFaqs } from '@/data/montana-cities';
 import { DEMO_PRODUCTS, formatUsd } from '@/lib/demo-order';
 
-/**
- * THE LOCAL FLEET: /montana/[city].
- *
- * The site had 116 indexable URLs and none of them targeted a place, so every
- * page was competing nationally for terms a Kalispell studio cannot win. These
- * pages compete where we can actually finish first.
- *
- * The schema here is the point as much as the copy: each page emits its OWN
- * LocalBusiness with that city's geo and areaServed, so "web designer near me"
- * in Whitefish resolves to a page that is genuinely about Whitefish.
- *
- * Design language is inherited from the trade fleet (/voice-agents/[trade]):
- * halftone hero, pop-cards with 2px ink borders and hard offset shadows, gold
- * CTAs. Gold-on-cream small text MUST be #8f6600, never #F5B700 (fails AA).
- */
-
+// Five service areas, one Kalispell business. Preserve each town's local context.
 export const dynamicParams = false;
 
 export function generateStaticParams() {
@@ -32,8 +17,8 @@ export async function generateMetadata({ params }: { params: Promise<{ city: str
   const city = getCity(slug);
   if (!city) return buildMetadata({ noindex: true });
   return buildMetadata({
-    title: `Web Design and Voice Agents in ${city.nameWithState}`,
-    description: `Custom websites and 24/7 AI phone answering for ${city.name}, Montana businesses, built by a studio in the Flathead Valley. See two working demos free before you pay anything. Call ${SITE.phone}.`,
+    title: `AI Website Design and Voice Agents in ${city.name}, Montana`,
+    description: `AI websites, voice agents, automation and custom software for ${city.name} businesses. Built in Kalispell, Montana. Start with a free demo.`,
     path: `/montana/${city.slug}`,
   });
 }
@@ -46,48 +31,19 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
   const faqs = cityFaqs(city);
   const others = MONTANA_CITIES.filter((c) => c.slug !== city.slug);
 
-  /**
-   * A city-scoped LocalBusiness. Distinct @id per city so the five pages do not
-   * collapse into one entity, with geo pointed at the city itself.
-   */
-  const localForCity = {
-    '@context': 'https://schema.org',
-    '@type': 'ProfessionalService',
-    '@id': `${SITE.url}/montana/${city.slug}#localbusiness`,
-    name: `${SITE.name} (serving ${city.name}, Montana)`,
-    url: `${SITE.url}/montana/${city.slug}`,
-    description: `Website design, voice agents, and business automation for ${city.name}, Montana businesses. Built in the Flathead Valley.`,
-    telephone: SITE.phoneE164,
-    email: SITE.email,
-    image: `${SITE.url}/opengraph-image`,
-    priceRange: '$$',
-    parentOrganization: { '@id': `${SITE.url}/#organization` },
-    address: {
-      '@type': 'PostalAddress',
-      addressLocality: SITE.city,
-      addressRegion: SITE.region,
-      postalCode: SITE.postalCode,
-      addressCountry: SITE.country,
-    },
-    geo: { '@type': 'GeoCoordinates', latitude: city.lat, longitude: city.lng },
-    areaServed: [
-      { '@type': 'City', name: city.name },
-      ...city.alsoServes.map((n) => ({ '@type': 'Place', name: n })),
-      { '@type': 'AdministrativeArea', name: 'Flathead Valley' },
-    ],
-    openingHoursSpecification: {
-      '@type': 'OpeningHoursSpecification',
-      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-      opens: '00:00',
-      closes: '23:59',
-    },
-  };
+  const path = `/montana/${city.slug}`;
+  const description = `AI website design, voice agents, automation and custom software for ${city.name} businesses, built by Modern Mustard Seed in Kalispell, Montana.`;
+  const localForCity = serviceJsonLd({
+    path, name: `AI websites and business systems for ${city.name}`, description,
+    areaServed: [{ '@type': 'City', name: city.name, containedInPlace: { '@type': 'State', name: 'Montana' } }],
+  });
 
   return (
     <div className="bg-[#FBF6EA] text-[#161616]">
       <JsonLd
         data={[
           localForCity,
+          webPageJsonLd({ path, name: `AI websites in ${city.name}`, description }),
           faqJsonLd(faqs),
           // breadcrumbJsonLd prepends SITE.url itself, so these are PATHS.
           breadcrumbJsonLd([
@@ -109,15 +65,14 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
                 Websites and a phone that always answers, for {city.name} businesses.
               </h1>
               <p className="mt-6 max-w-xl text-lg md:text-xl text-[#3d382e] font-body leading-relaxed">
-                We are a studio in the Flathead Valley, {city.slug === 'kalispell' ? 'right here in Kalispell' : `a short drive from ${city.name}`}. We
-                build the website and the 24/7 voice agent behind it, then hand you the keys. You own everything.
+                Modern Mustard Seed is an AI-native product studio based in Kalispell, serving {city.name} and clients nationwide. We build custom websites, AI voice agents, automation and software. You own the code and accounts.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link
                   href="/demos"
                   className="rounded-full border-2 border-[#161616] bg-[#F5B700] text-[#161616] px-8 py-4 font-sans font-extrabold text-sm uppercase tracking-[0.14em] shadow-[5px_5px_0_0_#161616] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#161616]"
                 >
-                  See Three Demos Free
+                  See Free Demos
                 </Link>
                 <a
                   href={`tel:${SITE.phoneE164}`}
@@ -145,6 +100,23 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
       </section>
 
       {/* ─────────────── THE TOWN ─────────────── */}
+      <section className="border-b-2 border-[#161616] bg-[#F5B700]">
+        <div className="max-w-6xl mx-auto px-6 py-12">
+          <h2 className="font-display text-3xl font-extrabold">A front door connected to the work behind it.</h2>
+          <p className="mt-4 max-w-3xl leading-relaxed">{city.slug === 'kalispell'
+            ? 'A Kalispell contractor needs more than a gallery of finished jobs. The website should explain the work, qualify a request by service area and job type, and put the enquiry where the crew can act on it. That is a concrete brief for an AI website and a connected workflow.'
+            : `For ${city.name} businesses, we scope the system around the enquiries you actually receive. Booking rules, service boundaries and human follow-up come before adding an AI feature.`}</p>
+          <nav aria-label="Website and AI services" className="mt-6 flex flex-wrap gap-x-6 gap-y-3 font-bold underline underline-offset-4">
+            <Link href="/ai-websites">How our AI websites work</Link>
+            <Link href="/talking-website">The Talking Website</Link>
+            <Link href="/voice-agents">AI voice agents</Link>
+            <Link href="/services">Automation and custom software</Link>
+            <Link href="/work">See the builds</Link>
+            <Link href="/resources">AI search field notes</Link>
+          </nav>
+        </div>
+      </section>
+
       <section className="border-b-2 border-[#161616] bg-white">
         <div className="max-w-6xl mx-auto px-6 py-14 md:py-20 grid lg:grid-cols-2 gap-10 lg:gap-14">
           <div>

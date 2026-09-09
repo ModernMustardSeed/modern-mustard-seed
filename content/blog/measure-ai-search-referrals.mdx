@@ -1,0 +1,56 @@
+---
+title: "How Local Businesses Can Measure Traffic From AI Search"
+description: "Separate identifiable referrals, citations and conversions. Build a monthly report that follows the enquiry instead of celebrating a mention."
+date: "2026-09-08"
+dateModified: "2026-09-08"
+author: "Sarah Scarano"
+tag: "AI Search Field Notes"
+---
+
+A screenshot of an AI assistant naming your business is not an acquisition report. It proves that a particular answer named the business at a particular moment. A visit, an enquiry and a sale need their own evidence.
+
+Start with three columns: observed citations, identifiable referral visits, and completed customer actions. Keeping them separate makes the numbers useful.
+
+## Recognize the source without overstating it
+
+Visits can carry a referrer from domains such as chatgpt.com, perplexity.ai, gemini.google.com or copilot.microsoft.com. A tagged link can also contain a source parameter. Use a strict hostname comparison. A domain that merely contains the word “chatgpt” is not proof of a ChatGPT referral.
+
+Record which evidence you have. A recognized referrer and a user-supplied UTM tag are different signals. Anyone can write a tagged URL, including your own team testing the site. Exclude those tests from commercial reporting.
+
+Do not force unknown traffic into an AI bucket. Apps, privacy settings, redirects and copied links can omit referral information. Those visits remain unclassified unless another reliable source identifies them.
+
+## Find the traffic in GA4
+
+In a configured GA4 property, open Reports, Acquisition, Traffic acquisition and use Session source / medium. Filter for the recognizable source domains and inspect the landing pages and completed events. [Google's traffic-acquisition documentation](https://support.google.com/analytics/answer/12923437) explains the session-based report and its dimensions.
+
+The report is about visits. It cannot count every person who saw a recommendation and did not click. A zero in a referral report does not establish zero AI visibility.
+
+For MMS, the implementation adds an AI source to existing analytics events after the visitor grants analytics consent. The source persists through the browsing session, so a visitor can arrive on a guide and later book a call without losing that context. With consent declined, the analytics events and that storage remain off.
+
+## Follow the action that matters
+
+A useful funnel is landing page, demo or contact entry, successful enquiry or booking, then the commercial result recorded by the business. Track success after the operation succeeds. A click on “Book” is interest; a confirmed appointment is a booking.
+
+MMS already has lead, booking and purchase events. Attaching source context to those existing events is more useful than inventing another dashboard that counts only visits. It also avoids treating a failed form submission as a lead.
+
+Campaign parameters should survive important internal landing-to-conversion links where the implementation depends on them. Preserve the destination's own parameters and fragments. Do not decorate external, payment, authentication or signed URLs indiscriminately.
+
+## Build the monthly sheet
+
+| Measure | Evidence | What it establishes |
+| --- | --- | --- |
+| Business mentioned | Exact prompt, answer, system, date | One observed answer |
+| Page cited | Citation URL and supported claim | A source used in that answer |
+| Identifiable AI visit | Referrer or documented campaign source | A classified visit, subject to available attribution |
+| Enquiry or booking | Success event and saved record | A completed action |
+| Customer outcome | CRM or payment record | The business result actually recorded |
+
+Review landing pages as well as totals. If a guide attracts visitors who never reach a relevant offer, inspect its next step. If visitors start a demo and fail at the same field, fix the flow before publishing another guide.
+
+## Benchmark questions consistently
+
+Repeat a short set of customer questions each month. Record search-enabled versus non-search answers separately. Keep the phrasing, location and observation method stable. Save cited sources and factual errors, not only whether the business appeared.
+
+Use the log to decide what evidence is missing. Then improve the page that should answer the question. [Our Montana guide](/blog/montana-business-guide-chatgpt-search) and [AI website explanation](/ai-websites) show how those corrections connect to a useful customer journey.
+
+The report should end with a decision: fix a broken handoff, improve a specific service page, substantiate a claim, or continue observing. A chart that cannot change the next move is decoration.

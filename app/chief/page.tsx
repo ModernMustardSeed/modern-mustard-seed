@@ -140,7 +140,7 @@ export default function ChiefPage() {
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-6 py-16 lg:py-20 space-y-20 lg:space-y-24">
+      <div className="max-w-6xl mx-auto px-6 py-16 lg:py-20 space-y-20 lg:space-y-24">
         {/* ── The wedge: Voice Agent answers your customers. The Chief works for you. ── */}
         <section className="grid sm:grid-cols-2 gap-5">
           <div className="flex flex-col border-2 border-[#161616] bg-white rounded-2xl shadow-[6px_6px_0_0_#161616] p-7">
@@ -431,7 +431,7 @@ export default function ChiefPage() {
             </div>
           </div>
         </section>
-      </main>
+      </div>
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from '@/components/AttributionLink';
 import Image from 'next/image';
 import { buildMetadata, SITE } from '@/lib/seo';
 import { JsonLd, breadcrumbJsonLd, faqJsonLd } from '@/lib/jsonld';
@@ -46,7 +46,7 @@ const FAQ = [
   },
   {
     q: 'Is the voice agent included with the website?',
-    a: `No, and we will not pretend otherwise. The Voice Agent is its own product at ${formatUsd(voice.setupCents)} to set up plus ${formatUsd(voice.monthlyCents)} a month, and it can be added to any website: the one we build you, or the one you already have. It answers your calls 24/7, qualifies the caller, books the job, and texts you the details. Take it with a new website and the pair becomes THE TALKING WEBSITE, the first of its kind: one brain answering the page and the phone, ${formatUsd(DEMO_BUNDLE.setupCents)} setup plus ${formatUsd(DEMO_BUNDLE.monthlyCents)} a month, a real discount on buying them separately.`,
+    a: `No, and we will not pretend otherwise. The Voice Agent is its own product at ${formatUsd(voice.setupCents)} to set up plus ${formatUsd(voice.monthlyCents)} a month, and it can be added to any website: the one we build you, or the one you already have. It answers your calls 24/7, qualifies the caller, books the job, and texts you the details. Take it with a new website and the pair becomes THE TALKING WEBSITE: one brain answering the page and the phone, ${formatUsd(DEMO_BUNDLE.setupCents)} setup plus ${formatUsd(DEMO_BUNDLE.monthlyCents)} a month, a real discount on buying them separately.`,
   },
   {
     q: 'How much does a website cost?',
@@ -143,6 +143,7 @@ export default function WebsitesPage() {
               <h1 className="font-display text-[2.6rem] sm:text-5xl xl:text-6xl font-bold mt-4 leading-[1.02] tracking-tight">
                 Not a brochure. A website that <em className="italic text-[#C4160B]">works.</em>
               </h1>
+            <p className="mt-5 font-body text-base leading-relaxed">Built by Modern Mustard Seed, an AI-native product studio in Kalispell, Montana, serving Northwest Montana and clients nationwide. <Link href="/ai-websites" className="underline font-bold">See how our AI websites connect the page and the business.</Link></p>
               <p className="font-body text-[17px] text-[#161616]/75 mt-5 leading-relaxed">
                 Elite custom design, funnels and SEO baked in, your domain and hosting handled. It captures the lead
                 and follows up while you sleep, and it answers the phone too the day you add the voice agent. From{' '}
@@ -204,7 +205,7 @@ export default function WebsitesPage() {
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-6 py-16 lg:py-20 space-y-20">
+      <div className="max-w-6xl mx-auto px-6 py-16 lg:py-20 space-y-20">
         {/* ── Signature: brochure vs engine ── */}
         <section>
           <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#C4160B] uppercase">
@@ -538,7 +539,7 @@ export default function WebsitesPage() {
           </div>
         </section>
 
-      </main>
+      </div>
 
       {/* ── Real work: the scrolling reel of sites we shipped ── */}
       <WorkShowcase />

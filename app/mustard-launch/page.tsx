@@ -65,7 +65,7 @@ const jsonLd = {
 
 export default function MustardLaunchPage() {
   return (
-    <main className="bg-[#FBF6EA] text-[#161616]">
+    <div className="bg-[#FBF6EA] text-[#161616]">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       {/* Hero */}
@@ -104,6 +104,6 @@ export default function MustardLaunchPage() {
       <ProofSection />
       <FaqSection />
       <FinalCta />
-    </main>
+    </div>
   );
 }

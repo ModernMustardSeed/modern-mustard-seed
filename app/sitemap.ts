@@ -22,6 +22,8 @@ const STATIC_PATHS = [
   '/chief',
   '/command-center',
   '/websites',
+  '/ai-websites',
+  '/resources',
   '/comic',
   '/switchboard',
   '/world',
@@ -69,11 +71,9 @@ const STATIC_PATHS = [
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const now = new Date();
 
   const staticUrls = STATIC_PATHS.map((path) => ({
     url: `${SITE.url}${path}`,
-    lastModified: now,
     changeFrequency: (path === '' ? 'weekly' : 'monthly') as 'weekly' | 'monthly',
     priority:
       path === '' || path === '/book'
@@ -108,21 +108,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const industryPages = industries.map((i) => ({
     url: `${SITE.url}/for/${i.slug}`,
-    lastModified: now,
     changeFrequency: 'monthly' as const,
     priority: 0.85,
   }));
 
   const storeItems = [...products, ...bundles].map((item) => ({
     url: `${SITE.url}/store/${item.slug}`,
-    lastModified: now,
     changeFrequency: 'weekly' as const,
     priority: 0.9,
   }));
 
   const tradePages = liveTradePages().map((t) => ({
     url: `${SITE.url}/voice-agents/${t.slug}`,
-    lastModified: now,
     changeFrequency: 'monthly' as const,
     priority: 0.9,
   }));
@@ -130,12 +127,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // Local fleet. High priority: these are the queries we can realistically win.
   const cityPages = MONTANA_CITIES.map((c) => ({
     url: `${SITE.url}/montana/${c.slug}`,
-    lastModified: now,
     changeFrequency: 'monthly' as const,
     priority: 0.9,
   }));
 
-  return [
+  const entries = [
     ...staticUrls,
     ...blog,
     ...studies,
@@ -145,4 +141,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...tradePages,
     ...cityPages,
   ];
+  return Array.from(new Map(entries.map((entry) => [entry.url, entry])).values());
 }

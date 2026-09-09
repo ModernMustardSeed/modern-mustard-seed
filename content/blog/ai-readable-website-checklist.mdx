@@ -1,0 +1,60 @@
+---
+title: "The Technical Checklist for an AI-Readable Website"
+description: "Test public HTML, status codes, canonicals, crawler access, schema relationships and the customer handoff with concrete pass conditions."
+date: "2026-09-08"
+dateModified: "2026-09-08"
+author: "Sarah Scarano"
+tag: "AI Search Field Notes"
+---
+
+Run this checklist on the page a customer is supposed to land on. A green homepage says very little about a broken service route three clicks away.
+
+Keep the URL, observation date and evidence with each result. A screenshot proves appearance. An HTTP response proves something different. Use the right evidence for the claim.
+
+## 1. The page is reachable
+
+Open it without signing in and fetch its HTTP response. A public service page should return 200. A retired URL should redirect intentionally to an appropriate destination or return a genuine not-found response. An unknown path should not return a success page with a generic homepage message.
+
+Check the response headers for X-Robots-Tag and the HTML for robots metadata. A page intended for indexing must not carry noindex. An authentication redirect is a failure for a public marketing page even when the login screen looks polished.
+
+## 2. The URL describes one page
+
+Inspect the canonical URL. It should use the preferred HTTPS host and clean path, without campaign parameters or fragments. Confirm internal links and the sitemap use the same URL.
+
+Test trailing slashes and old URLs. Do not add a redirect that matches its own destination. On a framework with case-insensitive redirect matching, a naive uppercase-to-lowercase rule can create a loop. Verify the final response instead of trusting a config file.
+
+## 3. Search crawlers can reach the same content
+
+Read robots.txt, then inspect hosting rules separately. Public CSS, scripts and images needed to render the page should be reachable. Search access and model-training policy are distinct decisions.
+
+For ChatGPT search, inspect OAI-SearchBot treatment using [OpenAI's crawler reference](https://developers.openai.com/api/docs/bots). For production verification, check requests against the provider's published network information. A simulated user agent cannot prove that a real crawler passed a firewall.
+
+Robots rules are not authentication. Private records need access control even when their paths are disallowed.
+
+## 4. The answer exists in visible HTML
+
+Load the page with JavaScript disabled. The business name, main offer, location or service area, proof and contact path should still be understandable. A working phone number or ordinary contact link gives visitors a fallback when an interactive booking widget cannot run.
+
+Do not hide the entire offer in a carousel, animation state or chat conversation. Native expandable answers are useful when the question and answer already exist in the document.
+
+## 5. Metadata and schema agree with the page
+
+Check a descriptive title, unique description and self-canonical. Parse every JSON-LD script, then inspect its meaning. Valid JSON can still describe the wrong company.
+
+Use one business identity. Service pages should reference that provider. A founder is a Person connected to the business. An article needs an actual author and accurate dates. A service-area page does not create an office. FAQ markup should use the same answers a visitor can read.
+
+[Google's structured-data policies](https://developers.google.com/search/docs/appearance/structured-data/sd-policies) require representative content. Structured data is a description, not a place to store facts you are unwilling to show customers.
+
+## 6. The sitemap is a clean directory
+
+Confirm it lists the important indexable pages and excludes private, draft, redirected and duplicate URLs. Use real modification dates when known. Rebuilding the application does not mean every article was substantively edited that morning.
+
+IndexNow can notify participating search engines about changed URLs. Its [protocol documentation](https://www.indexnow.org/documentation) explains the required verification key. Notification is not proof that the page was indexed or recommended.
+
+## 7. The next action survives a real test
+
+Tab through navigation and forms. Labels should name the fields. Buttons should explain the action. Check a narrow phone viewport for overflow and clipped dialogs. Confirm images reserve their space and meaningful images have useful alternative text.
+
+In a test environment, submit the form, inspect the saved record and test a failure. For a voice workflow, verify the downstream action as well as the spoken response. Never accept “you're booked” when the calendar rejected the request.
+
+Our [AI website approach](/ai-websites) joins these requirements to the business workflow. [The GEO Desk audit](/website-audit) is a useful first inspection; it does not replace the implementation and live checks described here.

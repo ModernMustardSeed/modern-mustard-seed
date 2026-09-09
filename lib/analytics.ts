@@ -1,3 +1,6 @@
+import { attributionEventParams } from '@/lib/ai-attribution';
+import { getConsent } from '@/lib/consent';
+
 /**
  * Centralized client-side conversion tracking for GA4, Google Ads, and Meta Pixel.
  *
@@ -38,12 +41,12 @@ declare global {
 }
 
 function gtagEvent(name: string, params: Params = {}) {
-  if (typeof window === 'undefined' || typeof window.gtag !== 'function') return;
-  window.gtag('event', name, params);
+  if (typeof window === 'undefined' || getConsent() !== 'granted' || typeof window.gtag !== 'function') return;
+  window.gtag('event', name, { ...attributionEventParams(), ...params });
 }
 
 function fbqTrack(name: string, params: Params = {}, eventId?: string) {
-  if (typeof window === 'undefined' || typeof window.fbq !== 'function') return;
+  if (typeof window === 'undefined' || getConsent() !== 'granted' || typeof window.fbq !== 'function') return;
   // Pass eventID so the server Conversions API event with the same id dedupes.
   if (eventId) window.fbq('track', name, params, { eventID: eventId });
   else window.fbq('track', name, params);

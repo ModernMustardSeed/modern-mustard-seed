@@ -148,7 +148,7 @@ export default function TheSystemPage() {
         </div>
       </header>
 
-      <main>
+      <div>
         {/* ── The loop ── */}
         <section id="the-loop" className="max-w-6xl mx-auto px-6 py-16 lg:py-24">
           <p className="font-mono font-bold text-[11px] tracking-[0.18em] uppercase" style={{ color: RED }}>
@@ -402,7 +402,7 @@ export default function TheSystemPage() {
           </div>
           <MrMustardHeroCTA location="the-system" />
         </section>
-      </main>
+      </div>
     </div>
   );
 }

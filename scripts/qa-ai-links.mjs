@@ -1,0 +1,13 @@
+﻿import fs from 'node:fs/promises';
+import { parse } from 'node-html-parser';
+const base=process.argv[2] || 'http://localhost:3108';
+const xml=await (await fetch(`${base}/sitemap.xml`)).text();
+const pages=[...xml.matchAll(/<loc>(.*?)<\/loc>/g)].map(m=>new URL(m[1]).pathname);
+const targets=new Map();
+const queue=[...pages];
+await Promise.all(Array.from({length:5},async()=>{while(queue.length){const path=queue.shift();const html=await(await fetch(base+path)).text();for(const a of parse(html).querySelectorAll('a[href]')){const href=a.getAttribute('href');if(!href.startsWith('/') || href.startsWith('//'))continue;const url=new URL(href,base);if(/^\/(api|admin|portal|demo|proposal|pay|intake)(\/|$)/.test(url.pathname)||/\.[a-z0-9]{2,5}$/i.test(url.pathname))continue;if(!targets.has(url.pathname))targets.set(url.pathname,path);}}}));
+const links=[...targets];const report=[];
+await Promise.all(Array.from({length:5},async()=>{while(links.length){const [path,from]=links.shift();const response=await fetch(base+path,{redirect:'manual'});if(response.status>=400)report.push({path,from,status:response.status});}}));
+await fs.writeFile('C:/Users/SMSca/artifacts/mms-ai-discoverability/links.json',JSON.stringify({pages:pages.length,targets:targets.size,failures:report},null,2));
+console.log(JSON.stringify({pages:pages.length,targets:targets.size,failures:report}));
+if(report.length)process.exitCode=1;

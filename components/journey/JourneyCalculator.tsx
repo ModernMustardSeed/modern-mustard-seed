@@ -315,7 +315,7 @@ export default function JourneyCalculator() {
               p.tone === 'yellow'
                 ? 'bg-[#F5B700] text-[#161616]'
                 : p.tone === 'red'
-                  ? 'bg-[#E0301E] text-[#FBF6EA]'
+                  ? 'bg-[#C4160B] text-[#FBF6EA]'
                   : p.tone === 'ink'
                     ? 'bg-[#161616] text-[#FBF6EA]'
                     : 'bg-[#1E50C8] text-[#FBF6EA]';
@@ -334,8 +334,8 @@ export default function JourneyCalculator() {
                 >
                   {p.stat}
                 </span>
-                <p className="mt-3 flex-1 text-[15px] leading-relaxed opacity-90">{p.line}</p>
-                <span className="mt-4 block border-t border-current pt-3 font-mono text-[10px] uppercase tracking-[0.14em] opacity-60">
+                <p className="mt-3 flex-1 text-[15px] leading-relaxed opacity-100">{p.line}</p>
+                <span className="mt-4 block border-t border-current pt-3 font-mono text-[10px] uppercase tracking-[0.14em] opacity-100">
                   {p.src}
                 </span>
               </div>
@@ -383,7 +383,7 @@ export default function JourneyCalculator() {
                   <span className="block font-mono text-[10px] font-bold uppercase tracking-[0.26em] text-[#161616]">
                     Modern Mustard Seed
                   </span>
-                  <span className="block font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-[#161616]/60">
+                  <span className="block font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-[#161616]/75">
                     Model RR-1 · Revenue Recovery
                   </span>
                 </div>
@@ -421,7 +421,7 @@ export default function JourneyCalculator() {
                     Recovered Revenue
                   </span>
                   <span className="flex items-center gap-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-[#E0301E]">
-                    <span className="block h-2 w-2 rounded-full bg-[#E0301E]" aria-hidden />
+                    <span className="block h-2 w-2 rounded-full bg-[#C4160B]" aria-hidden />
                     Live
                   </span>
                 </div>
@@ -471,7 +471,7 @@ export default function JourneyCalculator() {
               <div className="mt-4 grid gap-4 lg:grid-cols-[1.05fr_1fr] lg:gap-5">
                 {/* Input slots */}
                 <div className="rounded-xl border-2 border-[#161616] bg-[#FFFDF6] p-3.5 sm:p-4">
-                  <span className="mb-3 block font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-[#161616]/60">
+                  <span className="mb-3 block font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-[#161616]/75">
                     Your Numbers
                   </span>
                   <div className="flex flex-col gap-2">
@@ -492,7 +492,7 @@ export default function JourneyCalculator() {
                               <span className="block font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-[#161616]">
                                 {f.label}
                               </span>
-                              <span className="block truncate text-[11px] text-[#161616]/55">{f.hint}</span>
+                              <span className="block truncate text-[11px] text-[#161616]/75">{f.hint}</span>
                             </span>
                             <span className="flex shrink-0 items-baseline font-mono text-base font-bold tabular-nums text-[#161616] sm:text-lg">
                               {f.prefix}
@@ -518,7 +518,7 @@ export default function JourneyCalculator() {
                       );
                     })}
                   </div>
-                  <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.14em] text-[#161616]/45">
+                  <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.14em] text-[#161616]/75">
                     Type here, or use the keys
                   </p>
                 </div>
@@ -530,7 +530,7 @@ export default function JourneyCalculator() {
                       {d}
                     </PopKey>
                   ))}
-                  <PopKey label="Clear this field" onClick={clearKey} className="bg-[#E0301E] py-3 text-sm text-[#FBF6EA] sm:py-3.5">
+                  <PopKey label="Clear this field" onClick={clearKey} className="bg-[#C4160B] py-3 text-sm text-[#FBF6EA] sm:py-3.5">
                     C
                   </PopKey>
 
@@ -565,7 +565,7 @@ export default function JourneyCalculator() {
                   <Link
                     href={buildHref}
                     onClick={() => onBuild('keypad')}
-                    className="col-span-4 mt-1 flex select-none items-center justify-center gap-2 rounded-xl border-2 border-[#161616] bg-[#E0301E] py-4 font-sans text-xs font-extrabold uppercase tracking-[0.18em] text-[#FBF6EA] shadow-[0_5px_0_0_#161616] transition-[transform,box-shadow] duration-75 hover:-translate-y-[1px] hover:shadow-[0_6px_0_0_#161616] active:translate-y-[4px] active:shadow-[0_1px_0_0_#161616] motion-reduce:transition-none sm:text-sm"
+                    className="col-span-4 mt-1 flex select-none items-center justify-center gap-2 rounded-xl border-2 border-[#161616] bg-[#C4160B] py-4 font-sans text-xs font-extrabold uppercase tracking-[0.18em] text-[#FBF6EA] shadow-[0_5px_0_0_#161616] transition-[transform,box-shadow] duration-75 hover:-translate-y-[1px] hover:shadow-[0_6px_0_0_#161616] active:translate-y-[4px] active:shadow-[0_1px_0_0_#161616] motion-reduce:transition-none sm:text-sm"
                   >
                     Build My Demo
                     <span aria-hidden>→</span>
@@ -603,7 +603,7 @@ export default function JourneyCalculator() {
                 <div className="text-center font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-[#161616]">
                   Modern Mustard Seed
                 </div>
-                <div className="mt-0.5 text-center font-mono text-[9px] uppercase tracking-[0.16em] text-[#161616]/50">
+                <div className="mt-0.5 text-center font-mono text-[9px] uppercase tracking-[0.16em] text-[#161616]/75">
                   Revenue Recovery · RR-1
                 </div>
                 <div className="my-3 border-t-2 border-dashed border-[#161616]/25" />
@@ -755,7 +755,7 @@ export default function JourneyCalculator() {
                 </button>
               </div>
               {error && <p className="mt-3 font-mono text-xs text-[#C4160B]">{error}</p>}
-              <p className="mt-3 font-body text-[11px] text-[#161616]/60">
+              <p className="mt-3 font-body text-[11px] text-[#161616]/75">
                 No spam. One reply from a real person. Unsubscribe anytime.
               </p>
             </form>
@@ -763,7 +763,7 @@ export default function JourneyCalculator() {
         </div>
 
         {/* ── How the math works, so nobody has to guess ── */}
-        <p className="mx-auto mt-8 max-w-3xl text-center font-mono text-[11px] leading-relaxed text-[#161616]/55">
+        <p className="mx-auto mt-8 max-w-3xl text-center font-mono text-[11px] leading-relaxed text-[#161616]/75">
           The web line applies a 30% conversion lift to a 2.35% baseline, the conservative floor of the
           documented range. The phone line assumes the agent answers every call you currently miss. Your
           close rate is applied to both. {PROOF_SOURCES}
@@ -774,7 +774,7 @@ export default function JourneyCalculator() {
           <div className="halftone-ink pointer-events-none absolute inset-0" aria-hidden />
           <div className="relative mx-auto max-w-3xl text-center">
             <span className="inline-flex items-center gap-2 rounded-full border-2 border-[#F5B700] px-4 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-[#F5B700]">
-              <span className="block h-2 w-2 rounded-full bg-[#E0301E]" aria-hidden />
+              <span className="block h-2 w-2 rounded-full bg-[#C4160B]" aria-hidden />
               The Demo Build · Free
             </span>
             <h3

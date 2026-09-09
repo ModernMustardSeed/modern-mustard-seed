@@ -5,7 +5,7 @@ export const SITE = {
   url: 'https://modernmustardseed.com',
   tagline: 'Apps, Sites, and Specialty AI Tools',
   description:
-    'Custom apps, websites, and specialty AI tools for your business. Shipped in weeks, not months. Now booking new builds.',
+    'AI-native product studio in Kalispell, Montana. Custom websites, AI voice agents, automation and software for Northwest Montana and clients nationwide.',
   twitter: '@modmustardseed',
   founder: 'Sarah Scarano',
   email: 'sarah@modernmustardseed.com',
@@ -32,12 +32,13 @@ type SeoArgs = {
   path?: string;
   image?: string;
   noindex?: boolean;
+  article?: { published: string; modified?: string; author?: string };
 };
 
-export function buildMetadata({ title, description, path = '/', image, noindex }: SeoArgs = {}): Metadata {
+export function buildMetadata({ title, description, path = '/', image, noindex, article }: SeoArgs = {}): Metadata {
   const fullTitle = title ? `${title} | ${SITE.name}` : `${SITE.name} | ${SITE.tagline}`;
   const desc = description ?? SITE.description;
-  const url = `${SITE.url}${path}`;
+  const url = canonicalUrl(path);
   const ogImage = image ?? SITE.ogImage;
 
   return {
@@ -58,7 +59,8 @@ export function buildMetadata({ title, description, path = '/', image, noindex }
       siteName: SITE.name,
       images: [{ url: ogImage, width: 1200, height: 630, alt: SITE.name, type: 'image/png' }],
       locale: 'en_US',
-      type: 'website',
+      type: article ? 'article' : 'website',
+      ...(article ? { publishedTime: article.published, modifiedTime: article.modified ?? article.published, authors: [article.author ?? `${SITE.url}/about`] } : {}),
     },
     twitter: {
       card: 'summary_large_image',
@@ -69,4 +71,11 @@ export function buildMetadata({ title, description, path = '/', image, noindex }
       images: [ogImage],
     },
   };
+}
+
+/** Canonicals describe the page, never its campaign, fragment or trailing slash. */
+export function canonicalUrl(path = '/') {
+  const url = new URL(path, `${SITE.url}/`);
+  if (url.origin !== SITE.url) throw new Error('Canonical must use the MMS origin');
+  return `${SITE.url}${url.pathname.replace(/\/+$/, '')}`;
 }

@@ -18,11 +18,11 @@ type LastAudit = { url: string; grade: string; score: number };
 
 function prescription(grade: string): string {
   const g = grade.toUpperCase().charAt(0);
-  if (g === 'A') return 'Frame it. Then put THE WATCH on it so it stays an A while your competitors figure out what GEO means.';
-  if (g === 'B') return 'Close. A handful of missing signals separate you from the sites AI engines can actually read. The Fix Pack writes them.';
-  if (g === 'C') return 'The bones are there, the signals are not. Structured data and llms.txt are the difference between findable and invisible.';
-  if (g === 'D') return 'AI engines are answering your customers right now without you in the conversation. Every missing signal below is installable this week.';
-  return 'Blunt diagnosis: to AI search, this site barely exists. The good news: the fix is mechanical, and the pack writes every piece for you.';
+  if (g === 'A') return 'A strong audit baseline. Keep the information current and monitor the parts that change.';
+  if (g === 'B') return 'Review the missing signals in your report. Verify each finding, then fix the highest-impact gaps.';
+  if (g === 'C') return 'Start with crawlability, accurate business facts and clear service pages. The report gives you a sequence.';
+  if (g === 'D') return 'The audit found substantial gaps. Check access and page content before adding more pages.';
+  return 'Start with the evidence in the report. A low audit grade identifies work to inspect; it does not prove the site is absent from AI search.';
 }
 
 export default function GeoDesk() {
@@ -59,7 +59,7 @@ export default function GeoDesk() {
             <p className="font-body text-sm text-[#161616]/75 mt-2">Your receipt and next steps are in your inbox. Watch subscribers: the baseline re-grade lands within a day. White glove: Sarah emails within one business day.</p>
           </div>
         )}
-        <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#E0301E] font-bold mb-3 text-center">{GEO.wordmark}</p>
+        <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#C4160B] font-bold mb-3 text-center">{GEO.wordmark}</p>
         <h2 className="font-display text-3xl md:text-5xl font-black text-[#161616] tracking-tight text-center leading-[1.05]">
           Be the answer AI gives.
         </h2>

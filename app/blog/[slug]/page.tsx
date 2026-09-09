@@ -1,4 +1,7 @@
-import Link from 'next/link';
+import Link from '@/components/AttributionLink';
+import EditorialByline from '@/components/EditorialByline';
+import { AI_RESOURCE_SLUGS } from '@/data/ai-resources';
+import { listContent } from '@/lib/content';
 import { notFound } from 'next/navigation';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import remarkGfm from 'remark-gfm';
@@ -10,24 +13,27 @@ import { getAllSlugs, getContent } from '@/lib/content';
 type Params = Promise<{ slug: string }>;
 
 export async function generateStaticParams() {
-  return getAllSlugs('blog').map((slug) => ({ slug }));
+  return getAllSlugs('blog').filter((slug) => !getContent('blog', slug)?.meta.draft).map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: { params: Params }) {
   const { slug } = await params;
   const post = getContent('blog', slug);
-  if (!post) return buildMetadata({ title: 'Not Found', noindex: true });
+  if (!post || post.meta.draft) return buildMetadata({ title: 'Not Found', noindex: true });
   return buildMetadata({
     title: post.meta.title,
     description: post.meta.description,
     path: `/blog/${slug}`,
+    article: { published: post.meta.date, modified: post.meta.dateModified },
   });
 }
 
 export default async function BlogPost({ params }: { params: Params }) {
   const { slug } = await params;
   const post = getContent('blog', slug);
-  if (!post) notFound();
+  if (!post || post.meta.draft) notFound();
+
+  const related = listContent('blog').filter((p) => p.slug !== slug && AI_RESOURCE_SLUGS.some((key) => key === p.slug)).slice(0, 3);
 
   return (
     <>
@@ -85,14 +91,25 @@ export default async function BlogPost({ params }: { params: Params }) {
             <p className="text-[#3a3733] text-lg font-body leading-relaxed">
               {post.meta.description}
             </p>
+            <EditorialByline author={post.meta.author} date={post.meta.date} modified={post.meta.dateModified} />
           </header>
 
           <div className="mdx-prose mdx-prose-pop">
             <MDXRemote
               source={post.body}
+              components={{ a: ({ href = '', children }) => href.startsWith('/')
+                ? <Link href={href}>{children}</Link>
+                : <a href={href} target="_blank" rel="noopener noreferrer">{children}</a> }}
               options={{ mdxOptions: { remarkPlugins: [remarkGfm] } }}
             />
           </div>
+
+          <section className="mt-14 pop-card-yellow p-7">
+            <h2 className="font-display text-2xl font-bold">Put the field notes to work.</h2>
+            <p className="mt-4 leading-relaxed"><Link href="/ai-websites" className="underline font-bold">Explore our AI websites</Link>, <Link href="/demos" className="underline font-bold">see a free demo</Link>, or <Link href="/book" className="underline font-bold">talk with Sarah</Link> about your business.</p>
+            <ul className="mt-5 space-y-3">{related.map((p) => <li key={p.slug}><Link href={`/blog/${p.slug}`} className="underline font-bold">{p.title}</Link></li>)}</ul>
+            <Link href="/resources" className="mt-5 inline-block underline font-bold">All AI Search Field Notes</Link>
+          </section>
 
           {/* Visible FAQ, rendered from the same frontmatter that feeds the
               FAQPage schema, so markup and page content never drift apart. */}
