@@ -214,6 +214,53 @@ const CX_CHECKLIST = [
 ];
 
 
+/* ============ Campaign twenty-four: The Launch Film ============
+ *
+ * The premium film door, sold with fifteen seconds of the IRL launch film:
+ * the neon sign, the wheel spin, the end card. Cut from the rendered frames
+ * with the score re-laid, so nothing is a trim of a screen recording. Every
+ * place and address in the full film came out of the running app.
+ *
+ * It sells The Launch Film ($7,500 / $15,000 / $4,500 a month) to founders
+ * and product teams, and the landing is /launch-film, where the free
+ * treatment form posts to /api/contact with source "launch-film".
+ */
+
+const LF_LANDING = 'https://modernmustardseed.com/launch-film?utm_source=meta&utm_medium=paid&utm_campaign=launchfilm';
+
+const LF_COPY_A = `Fifteen seconds of a launch film built from the real product. Every place and address in it came out of the app the day we ran it.
+
+We run your product, cut a film to a score written for it, render every frame, and hand you widescreen, vertical and square with the source rig.
+
+Send the product. The treatment comes back free.`;
+
+const LF_COPY_B = `A launch film made of mockups sells a product that does not exist yet. Ours is built the other way round.
+
+We drive your app for real, keep what it produces, and cut the film from that. Rendered frame by frame. Scored from scratch. Installed on your homepage.
+
+Three set prices. Changes included. The treatment is free.`;
+
+const LF_HEADLINE = 'The film your launch deserves.';
+const LF_DESCRIPTION = 'Built from the real product, by Modern Mustard Seed.';
+
+const LF_CUTS = [
+  { file: '/ads/launch-film-4x5.mp4', label: '4:5 · Feed', note: 'Facebook + Instagram feed. The workhorse placement.' },
+  { file: '/ads/launch-film-9x16.mp4', label: '9:16 · Reels + Stories + Shorts', note: 'Vertical placements, Meta, TikTok and YouTube Shorts.' },
+  { file: '/ads/launch-film-16x9.mp4', label: '16:9 · In-stream + LinkedIn', note: 'Video feeds, YouTube, and the LinkedIn post.' },
+];
+
+const LF_CHECKLIST = [
+  { id: 'cell', label: 'One cell to start: objective Traffic (switch to Conversions once the pixel has volume). Budget $20/day. Learn More button → the /launch-film UTM link above. Paste Copy Variant 1.' },
+  { id: 'placements', label: 'Upload the 4:5 cut, then customize placements: 9:16 for Reels/Stories, 16:9 for in-stream.' },
+  { id: 'audience', label: 'Audience: Advantage+, founder-tilted. Suggestions: Startups, SaaS, Product Hunt, Indie Hackers, App development, Small business owners, Entrepreneurship. Age 25-55, United States.' },
+  { id: 'captions', label: 'Decline Meta auto-captions. The film is type and neon; auto-captions would sit on the sign.' },
+  { id: 'linkedin', label: 'LinkedIn gets the 16:9 cut as an organic post the same morning, from Sarah, with the /launch-film link in the first comment. Founders and product teams live there.' },
+  { id: 'organic', label: 'Post the 9:16 as an organic Reel and the 4:5 to FB the same day. The copy is in the IRL rig out folder: launch-film-post-copy.txt.' },
+  { id: 'abtest', label: 'Day 3: duplicate with Copy Variant 2 (the mockup angle) and let them fight. Kill the loser at day 6.' },
+  { id: 'retarget', label: 'Day 3-4: retargeting ad set of 50% video viewers pointed at /launch-film#treatment. Anyone who watched the wheel spin has a product to show.' },
+  { id: 'review', label: 'Day 5-7: judge on treatment requests (leads with source launch-film) and booked calls, not clicks. One booked film pays for a year of this cell.' },
+];
+
 /* ============ Campaign twenty-three: While You Were Debating ============
  *
  * The studio's own proof, cut for the feed. No client, no invented company:
@@ -1094,7 +1141,7 @@ function CopyBlock({ title, text }: { title: string; text: string }) {
   );
 }
 
-type AdsTab = 'callme' | 'tw' | 'mm' | 'fm' | 'sk' | 'px' | 'pr' | 'geo' | 'gn' | 'py' | 'rest' | 'unv' | 'unvr' | 'unvf' | 'brg' | 'stone' | 'chief' | 'ans' | 'scenic' | 'cxc' | 'ah' | 'whaa' | 'debate' | 'social' | 'results';
+type AdsTab = 'callme' | 'tw' | 'mm' | 'fm' | 'sk' | 'px' | 'pr' | 'geo' | 'gn' | 'py' | 'rest' | 'unv' | 'unvr' | 'unvf' | 'brg' | 'stone' | 'chief' | 'ans' | 'scenic' | 'cxc' | 'ah' | 'whaa' | 'debate' | 'lf' | 'social' | 'results';
 
 const TABS: { key: AdsTab; num: string; label: string; blurb: string }[] = [
   { key: 'callme', num: '01', label: 'Call Me', blurb: 'Voice agents · call objective · $25/day' },
@@ -1120,6 +1167,7 @@ const TABS: { key: AdsTab; num: string; label: string; blurb: string }[] = [
   { key: 'ah', num: '21', label: '9:47 PM', blurb: 'Voice agents · a REAL recorded call · $25/day' },
   { key: 'whaa', num: '22', label: 'Say Whaaa', blurb: 'The build · the agent that builds · $10/day' },
   { key: 'debate', num: '23', label: 'While You Were Debating', blurb: 'Idea to Product · the studio proof · $15/day' },
+  { key: 'lf', num: '24', label: 'The Launch Film', blurb: 'Launch films · fifteen seconds of IRL · $20/day' },
   { key: 'social', num: '💬', label: 'Organic Social', blurb: 'FB + IG + X posts · free · same day as the paid cut' },
   { key: 'results', num: '📊', label: 'Results', blurb: 'How to read them all together' },
 ];
@@ -1135,7 +1183,7 @@ const TABS: { key: AdsTab; num: string; label: string; blurb: string }[] = [
  */
 const CAMPAIGN_GROUPS: { name: string; keys: AdsTab[] }[] = [
   { name: 'Demo Funnel', keys: ['unv', 'unvr', 'unvf', 'brg', 'stone', 'ans'] },
-  { name: 'Product Offers', keys: ['mm', 'sk', 'chief', 'px', 'pr', 'geo'] },
+  { name: 'Product Offers', keys: ['mm', 'sk', 'chief', 'px', 'pr', 'geo', 'lf'] },
   { name: 'Brand + Verticals', keys: ['callme', 'ah', 'tw', 'gn', 'rest', 'scenic', 'whaa', 'cxc', 'debate'] },
   { name: 'Partners + Magnets', keys: ['fm', 'py'] },
   { name: 'Organic', keys: ['social'] },
@@ -1252,6 +1300,7 @@ export default function AdsPlaybook() {
   const [checkedCxc, setCheckedCxc] = useState<Record<string, boolean>>({});
   const [checkedAh, setCheckedAh] = useState<Record<string, boolean>>({});
   const [checkedDb, setCheckedDb] = useState<Record<string, boolean>>({});
+  const [checkedLf, setCheckedLf] = useState<Record<string, boolean>>({});
 
   // Remember the campaign you were working in.
   useEffect(() => {
@@ -1340,6 +1389,8 @@ export default function AdsPlaybook() {
       if (rawCxc) setCheckedCxc(JSON.parse(rawCxc));
       const rawDb = localStorage.getItem('mms-ads-checklist-debating');
       if (rawDb) setCheckedDb(JSON.parse(rawDb));
+      const rawLf = localStorage.getItem('mms-ads-checklist-launchfilm');
+      if (rawLf) setCheckedLf(JSON.parse(rawLf));
     } catch { /* first visit */ }
   }, []);
 
@@ -1368,6 +1419,7 @@ export default function AdsPlaybook() {
   const toggleAh = mkToggle('mms-ads-checklist-afterhours', setCheckedAh);
   const toggleCxc = mkToggle('mms-ads-checklist-cxc', setCheckedCxc);
   const toggleDb = mkToggle('mms-ads-checklist-debating', setCheckedDb);
+  const toggleLf = mkToggle('mms-ads-checklist-launchfilm', setCheckedLf);
 
   const toggle = (id: string) => {
     setChecked((prev) => {
@@ -1430,6 +1482,7 @@ export default function AdsPlaybook() {
   const doneCountScenic = SR_CHECKLIST.filter((c) => checkedScenic[c.id]).length;
   const doneCountWhaa = SW_CHECKLIST.filter((c) => checkedWhaa[c.id]).length;
   const doneCountCxc = CX_CHECKLIST.filter((c) => checkedCxc[c.id]).length;
+  const doneCountLf = LF_CHECKLIST.filter((c) => checkedLf[c.id]).length;
   const doneCountAh = AH_CHECKLIST.filter((c) => checkedAh[c.id]).length;
   const doneCountDb = DB_CHECKLIST.filter((c) => checkedDb[c.id]).length;
 
@@ -3307,6 +3360,87 @@ export default function AdsPlaybook() {
                     className="mt-1 h-4 w-4 accent-[#F5B700] shrink-0"
                   />
                   <span className={`text-sm font-sans leading-relaxed ${checkedDb[item.id] ? 'text-[#161616]/40 line-through' : 'text-[#161616]/85'}`}>
+                    <b className="font-mono text-[#E0301E] mr-1.5">{String(i + 1).padStart(2, '0')}</b>
+                    {item.label}
+                  </span>
+                </label>
+              </li>
+            ))}
+          </ol>
+        </section>
+        </>)}
+
+        {tab === 'lf' && (<>
+        {/* ============ Campaign twenty-four: The Launch Film (fifteen seconds of IRL) ============ */}
+        <section className="bg-[#0D172A] border-2 border-[#161616] shadow-[6px_6px_0_0_#F5B700] p-6 md:p-8 relative overflow-hidden">
+          <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(rgba(245,183,0,0.5) 1.5px, transparent 1.6px)', backgroundSize: '16px 16px' }} aria-hidden />
+          <div className="relative">
+            <span className="text-[10px] uppercase tracking-[0.3em] text-[#FFDD55] font-mono font-bold">Campaign twenty-four &middot; the premium film door</span>
+            <h2 className="font-display text-3xl md:text-4xl font-extrabold text-white mt-2">
+              &ldquo;The Launch Film&rdquo; <span className="italic text-[#F5B700]">fifteen seconds of the real thing</span>
+            </h2>
+            <p className="text-white/75 mt-3 max-w-3xl font-sans">
+              The IRL launch film, cut to fifteen seconds: the neon sign catches, the wheel spins and lands, the end
+              card. Cut from the rendered frames with the score re-laid, not trimmed from a recording. It sells the
+              film itself: $7,500 for one, $15,000 with the launch week around it, $4,500 a month for a film every
+              release. The landing is /launch-film, where the free treatment form files a lead as source launch-film.
+              One cell at $20/day. One booked film pays for the year.
+            </p>
+            <div className="flex flex-wrap gap-3 mt-5">
+              <a href="https://adsmanager.facebook.com" target="_blank" rel="noopener noreferrer" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-[#F5B700] shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Open Ads Manager</a>
+              <a href="/launch-film" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">The Launch Film (landing)</a>
+              <a href="https://irl.modernmustardseed.com" target="_blank" rel="noopener noreferrer" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">IRL, the product in the film</a>
+              <a href="/admin/leads" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Leads</a>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <h3 className="font-display text-2xl font-extrabold text-[#161616] mb-1">The film, one cut per placement</h3>
+          <p className="text-sm text-[#161616]/65 mb-5 font-sans">Fifteen seconds, the synthesised score re-laid and normalised. No captions burned in: the film is type. Right-click any video to save it.</p>
+          <div className="grid md:grid-cols-3 gap-5">
+            {LF_CUTS.map((c) => (
+              <div key={c.file} className="bg-white border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] p-4">
+                <video controls preload="metadata" poster="/ads/launch-film-poster.jpg" className="w-full border border-[#161616] bg-black" src={c.file} />
+                <div className="mt-3 flex items-center justify-between gap-2">
+                  <div>
+                    <p className="font-sans font-bold text-sm text-[#161616]">{c.label}</p>
+                    <p className="text-xs text-[#161616]/60 font-sans">{c.note}</p>
+                  </div>
+                  <a href={c.file} download className="shrink-0 text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-[#161616] px-3 py-1.5 border-2 border-[#161616] bg-[#F5B700] shadow-[2px_2px_0_0_#161616] hover:-translate-y-0.5 transition-transform">Download</a>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section>
+          <h3 className="font-display text-2xl font-extrabold text-[#161616] mb-5">Ad copy, ready to paste</h3>
+          <div className="grid md:grid-cols-2 gap-5">
+            <CopyBlock title="Primary text &mdash; Variant 1 (the real product)" text={LF_COPY_A} />
+            <CopyBlock title="Primary text &mdash; Variant 2 (the mockup angle)" text={LF_COPY_B} />
+            <CopyBlock title="Headline" text={LF_HEADLINE} />
+            <CopyBlock title="Description" text={LF_DESCRIPTION} />
+            <CopyBlock title="Landing link with UTM" text={LF_LANDING} />
+          </div>
+        </section>
+
+        <section className="bg-white border-2 border-[#161616] shadow-[6px_6px_0_0_#161616] p-6 md:p-8">
+          <div className="flex items-center justify-between gap-3 mb-5">
+            <h3 className="font-display text-2xl font-extrabold text-[#161616]">Launch checklist</h3>
+            <span className="text-[11px] font-mono font-bold text-[#161616] bg-[#F5B700] border-2 border-[#161616] px-3 py-1 shadow-[2px_2px_0_0_#161616]">{doneCountLf}/{LF_CHECKLIST.length}</span>
+          </div>
+          <ol className="space-y-3">
+            {LF_CHECKLIST.map((item, i) => (
+              <li key={item.id}>
+                <label className="flex items-start gap-3 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    checked={!!checkedLf[item.id]}
+                    onChange={() => toggleLf(item.id)}
+                    className="mt-1 h-4 w-4 accent-[#F5B700] shrink-0"
+                  />
+                  <span className={`text-sm font-sans leading-relaxed ${checkedLf[item.id] ? 'text-[#161616]/40 line-through' : 'text-[#161616]/85'}`}>
                     <b className="font-mono text-[#E0301E] mr-1.5">{String(i + 1).padStart(2, '0')}</b>
                     {item.label}
                   </span>
