@@ -210,5 +210,14 @@ export async function GET() {
 
   const googleReviewUrl = process.env.GOOGLE_REVIEW_URL || GOOGLE_REVIEW_FALLBACK;
 
-  return NextResponse.json({ email, client, projects, files, orders, products, bookings, audience, isDemoClient, billing, audit, googleReviewUrl, updates });
+  // Daily Posting: on when a brief exists for this email. The calendar lives at /portal/posting.
+  let posting = false;
+  try {
+    const { data: ps } = await supabase.from('posting_settings').select('client_email').eq('client_email', email).maybeSingle();
+    posting = Boolean(ps);
+  } catch {
+    /* posting_settings not migrated */
+  }
+
+  return NextResponse.json({ email, client, projects, files, orders, products, bookings, audience, isDemoClient, billing, audit, googleReviewUrl, updates, posting });
 }
