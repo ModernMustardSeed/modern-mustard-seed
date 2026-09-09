@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { buildMetadata, SITE } from '@/lib/seo';
-import { LAUNCH_FILM, EXAMPLE_FILM, launchFilmTiers, launchFilmMethod, launchFilmFaq, launchFilmUsd } from '@/data/launch-film';
+import { LAUNCH_FILM, EXAMPLE_FILM, REEL, launchFilmTiers, launchFilmMethod, launchFilmFaq, launchFilmUsd } from '@/data/launch-film';
 import LaunchFilmPlayer from '@/components/launch-film/LaunchFilmPlayer';
 import LaunchFilmTiers from '@/components/launch-film/LaunchFilmTiers';
 import TreatmentForm from '@/components/launch-film/TreatmentForm';
@@ -186,6 +186,49 @@ export default function LaunchFilmPage() {
                 <h3 className="font-display text-xl font-black text-[#161616] mt-3">{s.title}</h3>
                 <p className="font-body text-sm text-[#161616]/70 leading-relaxed mt-2.5">{s.body}</p>
               </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── THE BODY OF WORK ─── */}
+      <section className="py-16 md:py-24 bg-[#161616]" aria-labelledby="reel-heading">
+        <div className="max-w-6xl mx-auto px-5">
+          <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#F5B700] font-bold mb-3 text-center">[ The body of work ]</p>
+          <h2 id="reel-heading" className="font-display text-3xl md:text-5xl font-black text-[#FBF6EA] tracking-tight text-center leading-[1.05]">
+            Three films. One rig.
+          </h2>
+          <p className="font-body text-[#FBF6EA]/70 text-center max-w-2xl mx-auto mt-4">
+            A product, a studio and a storefront, each cut on the same engine. The numbers under each one are read from the delivered files.
+          </p>
+          <div className="grid md:grid-cols-3 gap-8 md:gap-6 mt-12">
+            {REEL.map((f) => (
+              <article key={f.slug} className="flex flex-col">
+                <LaunchFilmPlayer
+                  cuts={{ webm: f.webm, mp4: f.mp4 }}
+                  poster={f.poster}
+                  runtime={`${Math.floor(f.seconds / 60)}:${String(f.seconds % 60).padStart(2, '0')}`}
+                  film={`reel-${f.slug}`}
+                  title={`${f.title}, the film`}
+                />
+                <h3 className="font-display text-xl font-black text-[#FBF6EA] mt-5">{f.title}</h3>
+                <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#F5B700] mt-1">{f.for}</p>
+                <p className="font-body text-sm text-[#FBF6EA]/70 leading-relaxed mt-3">{f.note}</p>
+                <dl className="mt-4 grid grid-cols-3 gap-2 border-t-2 border-[#FBF6EA]/15 pt-4">
+                  <div>
+                    <dt className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#FBF6EA]/50">Seconds</dt>
+                    <dd className="font-display text-2xl font-black text-[#FBF6EA]">{f.seconds}</dd>
+                  </div>
+                  <div>
+                    <dt className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#FBF6EA]/50">Frames</dt>
+                    <dd className="font-display text-2xl font-black text-[#FBF6EA]">{f.frames.toLocaleString('en-US')}</dd>
+                  </div>
+                  <div>
+                    <dt className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#FBF6EA]/50">Score</dt>
+                    <dd className="font-body text-sm font-bold text-[#FBF6EA] leading-tight mt-1">{f.score === 'synthesised' ? 'Original, synthesised' : 'Silent by design'}</dd>
+                  </div>
+                </dl>
+              </article>
             ))}
           </div>
         </div>
