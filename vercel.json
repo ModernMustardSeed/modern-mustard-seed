@@ -88,6 +88,10 @@
     {
       "path": "/api/cron/posting-publish",
       "schedule": "55 * * * *"
+    },
+    {
+      "path": "/api/cron/leads-digest",
+      "schedule": "35 13 * * 1"
     }
   ]
 }
