@@ -78,6 +78,14 @@ export async function recordEvent(
   }
 }
 
+/**
+ * The prospect's timeline, oldest first, and always the NEWEST `limit` rows.
+ *
+ * Read newest-first and reversed on purpose. Ascending with a limit returns
+ * the oldest rows and drops everything after them, so a prospect with a long
+ * history of opens would show a card that ends months ago and never shows the
+ * suite going out. The thing that just happened is the thing being looked for.
+ */
 export async function timelineFor(leadId: string, limit = 200): Promise<AcqEvent[]> {
   const db = getSupabase();
   if (!db) return [];
@@ -85,9 +93,9 @@ export async function timelineFor(leadId: string, limit = 200): Promise<AcqEvent
     .from('acq_events')
     .select('*')
     .eq('lead_id', leadId)
-    .order('occurred_at', { ascending: true })
+    .order('occurred_at', { ascending: false })
     .limit(limit);
-  return (data ?? []) as AcqEvent[];
+  return ((data ?? []) as AcqEvent[]).reverse();
 }
 
 /**

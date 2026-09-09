@@ -489,7 +489,9 @@ export async function POST(req: Request) {
       let sent = 0;
       const refused: string[] = [];
       for (const lead of leads) {
-        const res = await sendSuiteEmail(db, campaign, lead);
+        // Sarah, on the board, choosing these people. The switches and the
+        // pacing step aside; see `override` in lib/acq/governor.ts.
+        const res = await sendSuiteEmail(db, campaign, lead, {}, { reason: 'Sent by hand from the build board' });
         if (res.ok) sent++;
         else refused.push(`${lead.business_name}: ${res.error}`);
       }
