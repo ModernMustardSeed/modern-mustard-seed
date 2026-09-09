@@ -168,6 +168,19 @@ async function gateOrRefuse(
   const decision = await authorize({ db, lead, kind, campaign, override });
   if (decision.allowed) return { ok: true };
   await recordRefusal(db, lead, campaign.id, decision.reason ?? 'refused', kind);
+  // A demo or a checkout link is sent while somebody is looking at the card,
+  // so the refusal goes on the timeline where they are looking. Campaign and
+  // follow-up refusals stay off it: the queue retries those on its own clock
+  // and a line per attempt would bury everything a person did.
+  if (kind === 'demo' || kind === 'checkout') {
+    await recordEvent(db, {
+      leadId: lead.id,
+      campaignId: campaign.id,
+      type: 'email_failed',
+      label: `${kind === 'demo' ? 'Their suite was not sent' : 'The checkout link was not sent'}: ${decision.reason ?? 'refused by the outbound governor'}`,
+      detail: { kind, refused: decision.reason, ...(override ? { override: override.reason } : {}) },
+    });
+  }
   // A refusal about THIS person is permanent for this job; a refusal about
   // volume or the window is not, and the queue should come back later.
   const aboutTheRecipient = /opt-out|suppress|bounce|do not contact|confidence|test prospect|no email/i.test(decision.reason ?? '');
@@ -422,6 +435,12 @@ export async function sendSuiteEmail(
   campaign: AcqCampaign,
   lead: AcqProspect,
   opts: { resend?: boolean } = {},
+  /**
+   * Sarah, deliberately, now. Lifts the switches and the pacing gates and
+   * nothing else: see `override` in lib/acq/governor.ts for exactly which
+   * ones and why.
+   */
+  override?: { reason: string } | null,
 ): Promise<SendResult> {
   const hubUrl = lead.hub_demo_url;
   const siteReady = lead.site_demo_status === 'ready' && Boolean(lead.site_demo_url);
@@ -432,7 +451,7 @@ export async function sendSuiteEmail(
     return { ok: false, error: 'Their suite already went out. Use the follow-ups from here.', permanent: true };
   }
 
-  const gate = await gateOrRefuse(db, campaign, lead, 'demo');
+  const gate = await gateOrRefuse(db, campaign, lead, 'demo', override);
   if (!gate.ok) return gate.result;
 
   // Only claim a video that is actually attached. Both lookups fail soft: a
@@ -500,7 +519,7 @@ export async function sendSuiteEmail(
     leadId: lead.id,
     campaignId: campaign.id,
     type: 'demo_emailed',
-    label: `Their full suite was emailed to ${built.to}`,
+    label: `Their full suite was emailed to ${built.to}${override ? ' (sent by hand)' : ''}${opts.resend ? ' (sent again)' : ''}`,
     detail: {
       hubUrl,
       voice: Boolean(lead.demo_url),
@@ -513,6 +532,8 @@ export async function sendSuiteEmail(
       followupsQueued: chase.queued,
       drip: chase.drip.enrolled ? `enrolled, next ${chase.drip.nextAt}` : `not enrolled: ${chase.drip.reason ?? 'unknown'}`,
       ...(chase.cancelled ? { supersededFollowups: chase.cancelled } : {}),
+      ...(override ? { override: override.reason } : {}),
+      ...(opts.resend ? { resend: true } : {}),
     },
   });
 
@@ -583,6 +604,8 @@ export async function sendCheckoutLink(
   campaign: AcqCampaign,
   lead: AcqProspect,
   note?: string,
+  /** Sarah, deliberately, now. See `override` in lib/acq/governor.ts. */
+  override?: { reason: string } | null,
 ): Promise<SendResult> {
   if (!lead.email) return permanent('No email address on the prospect.');
 
@@ -590,7 +613,7 @@ export async function sendCheckoutLink(
   // where the send window and the pacing caps would be actively unhelpful. It
   // still goes through the governor: opt-out, suppression, bounce, do-not-contact
   // and the hard ceiling all still apply.
-  const gate = await gateOrRefuse(db, campaign, lead, 'checkout');
+  const gate = await gateOrRefuse(db, campaign, lead, 'checkout', override);
   if (!gate.ok && gate.result.ok === false && gate.result.permanent) return gate.result;
 
   const { clientEmail, p, escape } = await import('@/lib/email');

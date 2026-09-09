@@ -1558,6 +1558,44 @@ test('governor: the send window refuses outside hours and says when it opens', a
   }
 });
 
+test('governor: a hand send steps past the switches and the pacing, never past a person', async () => {
+  const byHand = { reason: 'Sent by hand from the prospect card' };
+  const hand = (over: Parameters<typeof decide>[0] = {}) =>
+    authorize({
+      db: fakeDb,
+      lead: lead(over.lead ?? {}),
+      settings: settingsFor(over.settings),
+      campaign: campaignFor(over.campaign),
+      rolling: over.rolling ?? clean,
+      override: byHand,
+    });
+
+  // The three switches a person flips. 2026-09-09: the master switch refused
+  // a suite Sarah sent by hand, and nothing on the card said so.
+  for (const over of [
+    { settings: { master_paused: true, paused_reason: 'Paused by Sarah' } },
+    { settings: { email_enabled: false } },
+    { campaign: { status: 'paused' as const } },
+  ] as Parameters<typeof decide>[0][]) {
+    assert.equal((await decide(over)).allowed, false, 'the machine is still stopped');
+    const d = await hand(over);
+    assert.equal(d.allowed, true, d.reason ?? '');
+    const lifted = d.checks.filter((c) => /Lifted by hand/.test(c.detail));
+    assert.equal(lifted.length, 1, 'exactly one gate was lifted, and it says so');
+    assert.match(lifted[0].detail, /Sent by hand from the prospect card/);
+  }
+
+  // The pacing gates lift too.
+  assert.equal((await hand({ campaign: { send_start_hour: 25, send_end_hour: 26 } })).allowed, true, 'the window lifts');
+  assert.equal((await hand({ settings: { adaptive_daily_allowance: 10 }, rolling: { ...clean, sent24h: 10 } })).allowed, true, 'the allowance lifts');
+
+  // The person's own gates do not, and neither do the domain's findings.
+  assert.equal((await hand({ lead: { unsubscribed_at: new Date().toISOString() } })).allowed, false, 'an opt-out stands');
+  assert.equal((await hand({ lead: { email: null } })).allowed, false, 'no address stands');
+  assert.equal((await hand({ settings: { sender_state: 'restricted', sender_state_reason: 'complaints' } })).allowed, false, 'a restricted sender stands');
+  assert.equal((await hand({ rolling: { ...clean, sent24h: 4500 } })).allowed, false, 'the ceiling stands');
+});
+
 test('governor: the ramp goes up one step and comes down a whole one', () => {
   assert.equal(nextRampStep(100, 4500), 250);
   assert.equal(nextRampStep(1000, 4500), 1500);

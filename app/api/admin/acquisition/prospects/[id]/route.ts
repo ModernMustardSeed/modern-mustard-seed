@@ -15,6 +15,9 @@ import type { AcqProspect } from '@/lib/acq/types';
 export const runtime = 'nodejs';
 export const maxDuration = 60;
 
+/** A send from this card is a person choosing one prospect. See `override` in lib/acq/governor.ts. */
+const BY_HAND = { reason: 'Sent by hand from the prospect card' };
+
 /** Everything about one prospect: the record, the timeline, the calls, the
  *  exact email that would go out next, and Sarah's prep brief. */
 export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -195,22 +198,29 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
       const { data: after } = await db.from('outbound_leads').select('*').eq('id', id).single();
       return NextResponse.json({ ok: true, note: queued.note, lead: after });
     }
+    /*
+     * The three hand sends. Every one of them is Sarah, on this card, choosing
+     * this one person, so each carries the override: the master switch, the
+     * email toggle, the campaign status and the pacing gates step aside, and
+     * the gates that protect the recipient do not. The refusal, when there is
+     * one, lands on the timeline as well as in the red line at the top.
+     */
     case 'send-demo': {
       if (!campaign) return NextResponse.json({ error: 'No campaign.' }, { status: 500 });
-      const sent = await sendDemoEmail(db, campaign, lead);
+      const sent = await sendDemoEmail(db, campaign, lead, BY_HAND);
       return sent.ok ? NextResponse.json({ ok: true }) : NextResponse.json({ error: sent.error }, { status: 409 });
     }
     /* Mail them everything that is finished, with the video leading it. */
     case 'send-suite': {
       if (!campaign) return NextResponse.json({ error: 'No campaign.' }, { status: 500 });
-      const sent = await sendSuiteEmail(db, campaign, lead, { resend: body.resend === true });
+      const sent = await sendSuiteEmail(db, campaign, lead, { resend: body.resend === true }, BY_HAND);
       return sent.ok
         ? NextResponse.json({ ok: true, subject: sent.subject })
         : NextResponse.json({ error: sent.error }, { status: 409 });
     }
     case 'send-checkout': {
       if (!campaign) return NextResponse.json({ error: 'No campaign.' }, { status: 500 });
-      const sent = await sendCheckoutLink(db, campaign, lead, body.note ? String(body.note) : undefined);
+      const sent = await sendCheckoutLink(db, campaign, lead, body.note ? String(body.note) : undefined, BY_HAND);
       return sent.ok ? NextResponse.json({ ok: true }) : NextResponse.json({ error: sent.error }, { status: 409 });
     }
     case 'mark-won': {

@@ -144,10 +144,18 @@ export type AuthorizeInput = {
    * A human, at a keyboard, right now, deliberately overriding the pacing.
    *
    * This lifts the gates that exist to stop a MACHINE from sending too much
-   * too fast: the send window, the hourly rate, the adaptive allowance, the
-   * bounce and complaint brakes, and the minimum gap between two emails to
+   * too fast: the send window, the per-hour send cap, the adaptive allowance,
+   * the bounce and complaint brakes, and the minimum gap between two emails to
    * the same person. Those protect the domain from volume, and volume is not
    * what is happening when Sarah sends sixteen demos she just built.
+   *
+   * It also lifts the three switches a person flips: the master switch, the
+   * outbound email toggle, and the campaign's live status. Those exist so one
+   * hand can stop the engine, and the hand that stopped it is the same hand
+   * pressing "send their suite" on one prospect's card (2026-09-09: Sarah
+   * paused the engine on the 8th, built two suites on the 9th, sent one by
+   * hand, and the master switch refused it with nothing on the card to say
+   * so). A refused hand send is not protection, it is a silent no.
    *
    * It lifts NOTHING that protects a person. An unsubscribe, a suppression, a
    * previous hard bounce, a do-not-contact flag and a missing address still
@@ -155,8 +163,10 @@ export type AuthorizeInput = {
    * them. That is not caution, it is the law, and it is also the only reason
    * a list stays worth having.
    *
-   * The hard rolling ceiling still stands. It is the one volume number that
-   * exists to keep this domain out of a blocklist, and no button gets past it.
+   * Two domain gates stand as well. The sender state, when the health machine
+   * has set it to restricted or paused, is a deliverability finding and not a
+   * switch. And the hard rolling ceiling is the one volume number that exists
+   * to keep this domain out of a blocklist, and no button gets past it.
    */
   override?: { reason: string } | null;
 };
@@ -201,15 +211,20 @@ export async function authorize(input: AuthorizeInput): Promise<GovernorDecision
 
   /* ── global posture ── */
 
-  add('master', 'Master switch', !settings.master_paused, settings.master_paused ? (settings.paused_reason ?? 'The acquisition engine is paused.') : 'Running.');
-  if (settings.master_paused) return deny();
+  // The three switches. Each one is a hand on the engine, and a hand on one
+  // prospect's send button outranks it, with the reason written on the check.
+  const pausedDetail = settings.paused_reason ?? 'The acquisition engine is paused.';
+  add('master', 'Master switch', !settings.master_paused || Boolean(override), settings.master_paused ? (override ? lifted(pausedDetail) : pausedDetail) : 'Running.');
+  if (settings.master_paused && !override) return deny();
 
-  add('email-toggle', 'Outbound email', settings.email_enabled, settings.email_enabled ? 'Enabled.' : 'Outbound email is switched off in Acquisition settings.');
-  if (!settings.email_enabled) return deny();
+  const emailOffDetail = 'Outbound email is switched off in Acquisition settings.';
+  add('email-toggle', 'Outbound email', settings.email_enabled || Boolean(override), settings.email_enabled ? 'Enabled.' : override ? lifted(emailOffDetail) : emailOffDetail);
+  if (!settings.email_enabled && !override) return deny();
 
   const campaignLive = campaign?.status === 'live';
-  add('campaign', 'Campaign status', campaignLive, campaignLive ? 'Live.' : `Campaign is ${campaign?.status ?? 'missing'}.`);
-  if (!campaignLive) return deny();
+  const campaignDetail = `Campaign is ${campaign?.status ?? 'missing'}.`;
+  add('campaign', 'Campaign status', campaignLive || Boolean(override), campaignLive ? 'Live.' : override ? lifted(campaignDetail) : campaignDetail);
+  if (!campaignLive && !override) return deny();
 
   add(
     'sender-state',
