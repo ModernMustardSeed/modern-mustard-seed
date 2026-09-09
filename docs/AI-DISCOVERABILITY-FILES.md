@@ -77,6 +77,7 @@ Implementation manifest, September 8, 2026. Baseline: origin/master. Related ver
 - `scripts/qa-ai-discoverability.mjs`
 - `scripts/qa-ai-links.mjs`
 - `scripts/qa-ai-performance.mjs`
+- `scripts/qa-ai-preview.mjs`
 - `scripts/test-ai-discoverability.tsx`
 - `tailwind.config.ts`
 - `docs/AI-DISCOVERABILITY-FILES.md`

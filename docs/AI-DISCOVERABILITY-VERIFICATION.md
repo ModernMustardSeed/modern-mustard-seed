@@ -41,4 +41,21 @@ See the scorecard for evidence that requires Sarah and the full changed-file man
 
 Robots access keeps search discovery separate from training policy. Existing IndexNow key, endpoint and schedule remain in place. No keys, pricing data, payment integration or voice-agent provisioning were replaced.
 
-Production release state and preview verification will be recorded below after the remote build completes.
+## September 9 recovery and integration
+
+Recovered the interrupted session and rebased the three implementation commits onto `ce8da84a`, preserving the AI Native offer, Daily Posting payment page and direct-payment Delivery Board changes merged overnight.
+
+- TypeScript passes. Full lint has zero errors and 328 warnings. The preview test also passes focused lint.
+- All eight discovery regression tests and all 29 copy tests pass.
+- The production build passes, generating 455 pages with all repository build gates enabled. Evidence: `build-resumed.log` in the artifact directory above.
+- Rebased integration QA passes all 142 sitemap pages, 118 internal link destinations and 39 browser checks. Five simulated crawler responses are readable; five JavaScript-disabled pages retain their content. Consent, attribution, contact, booking and demo conversion tests pass against intercepted business APIs. Evidence: `resumed/report.json`, `links.json` and `conversions.json` in the artifact directory.
+- The September 8 preview at `modern-mustard-seed-mtxmkczp2-sarah-7990s-projects.vercel.app` contains the new pages. The interrupted test was reading Vercel authentication HTML rather than application HTML. Authenticated verification passes nine HTTP checks and nine browser checks at 320, 390 and 1440 pixels.
+- Vercel's preview `X-Robots-Tag: noindex` is expected. The test separately requires production responses to have no noindex header. Application canonicals always point to the production domain.
+
+`scripts/qa-ai-preview.mjs` supports `VERCEL_AUTOMATION_BYPASS_SECRET` supplied in the process environment. It sends that credential only to the specified deployment origin, never to external browser requests, and never writes it into reports. No deployment protection setting was changed. For public production verification, omit the credential:
+
+```powershell
+node scripts/qa-ai-preview.mjs https://modernmustardseed.com
+```
+
+Use `AI_QA_OUT` to choose a separate evidence directory. Release state is confirmed by the merged PR and the final deployment report, not by the preview build status alone.
