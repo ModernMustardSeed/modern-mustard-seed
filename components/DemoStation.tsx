@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { track } from '@vercel/analytics';
+import { trackLead } from '@/lib/analytics';
 import { DEMO_PRODUCTS, DEMO_BUNDLE, formatUsd } from '@/lib/demo-order';
 
 /**
@@ -92,6 +93,7 @@ export default function DemoStation() {
       const json = (await res.json()) as { url?: string; message?: string; returning?: boolean };
       if (!res.ok || !json.url) throw new Error(json.message || 'The build hiccuped. Try again in a minute.');
       track('station_forged', { returning: String(Boolean(json.returning)) });
+      if (!json.returning) trackLead({ source: 'demo_station' });
       // Let the sequence land its last line before the reveal.
       window.setTimeout(() => {
         window.location.href = json.url as string;

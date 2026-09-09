@@ -68,13 +68,22 @@ try {
   for (const shouldFail of [true, false]) {
     failDemo = shouldFail;
     await page.goto(`${base}/demos`, { waitUntil: 'networkidle' });
+    await page.evaluate(() => { window.__events = []; window.gtag = (...args) => window.__events.push(args); });
     await page.getByLabel('Business name', { exact: false }).fill('Local QA Studio');
     await page.getByLabel('Your name', { exact: false }).fill('Local QA');
     await page.getByLabel('Business phone', { exact: false }).fill('4065550123');
-    await page.getByLabel('Email', { exact: false }).fill('qa@example.test');
+    await page.getByRole('textbox', { name: /^Email/ }).fill('qa@example.test');
     await page.getByRole('button', { name: 'Build my demos, free', exact: false }).click();
-    if (shouldFail) await page.getByText('Intercepted demo failure', { exact: true }).waitFor();
-    else await page.waitForURL(`${base}/resources`);
+    if (shouldFail) {
+      await page.getByText('Intercepted demo failure', { exact: true }).waitFor();
+      assert.equal(await page.evaluate(() => window.__events.filter((e) => e[1] === 'generate_lead').length), 0);
+    } else {
+      await page.waitForFunction(() => window.__events.some((e) => e[1] === 'generate_lead'));
+      const demo = await page.evaluate(() => window.__events.find((e) => e[1] === 'generate_lead'));
+      assert.equal(demo[2].ai_source, 'chatgpt');
+      assert.equal(demo[2].event_source, 'demo_station');
+      await page.waitForURL(`${base}/resources`);
+    }
   }
 
   await page.getByRole('button', { name: 'Cookie Preferences', exact: false }).click();

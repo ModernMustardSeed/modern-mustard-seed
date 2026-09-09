@@ -9,6 +9,7 @@ Implemented September 8, 2026. This document describes identifiable referral tra
 
 | Display name | Event parameter | Values / meaning |
 | --- | --- | --- |
+| Conversion location | `event_source` | Existing form source, including `demo_station` for new demos |
 | AI source | `ai_source` | chatgpt, perplexity, gemini, copilot, claude, grok, you |
 | AI source evidence | `ai_source_evidence` | `referrer` or `utm` |
 | AI landing page | `ai_landing_page` | Original public page path, without query or fragment |
@@ -27,7 +28,7 @@ The code uses the existing `NEXT_PUBLIC_GA4_ID`. It contains no analytics creden
 
 `AcquisitionCapture` retains the initial URL and referrer in memory until consent is granted. Only after analytics consent does it persist sanitized campaign identifiers and AI context in `sessionStorage`. It keeps the first context in the current tab session, with a 30-minute inactivity cutoff. It clears that context on consent withdrawal. Private operational landing paths are excluded. It does not store the full referring URL, arbitrary query parameters, email addresses or signed tokens. Storage failures fall back to memory.
 
-`lib/analytics.ts` adds this context to existing successful lead, booking and purchase events and other events using the shared helper. It now guards both Google and Meta event dispatch against denied or withdrawn consent. Existing Vercel analytics is unchanged. A Vercel-only event does not automatically receive the new GA4 dimensions.
+`lib/analytics.ts` adds this context to existing successful lead, booking and purchase events and other events using the shared helper. It now guards both Google and Meta event dispatch against denied or withdrawn consent. A newly created demo also emits `generate_lead` with `event_source=demo_station` after the API confirms success. Returning demo lookups do not count as new leads. Existing Vercel analytics is unchanged. A Vercel-only event does not automatically receive the new GA4 dimensions.
 
 `AnalyticsScripts` adds context to page views and waits for tag initialization before sending its first page view. This avoids dispatching that event before the platform configuration has run.
 
@@ -43,7 +44,7 @@ Start the production build on port 3108, then run:
 node scripts/qa-ai-conversions.mjs
 ```
 
-The test arrives from a simulated ChatGPT referrer with a campaign, checks no pre-consent storage, grants consent, checks the demo link, submits a contact form and a booking against intercepted local API responses, verifies the preserved source, verifies that a failed contact request does not emit a lead, then withdraws consent and verifies storage removal. It sends no live enquiries, emails, calls or calendar bookings. Evidence is written to `C:/Users/SMSca/artifacts/mms-ai-discoverability/conversions.json`.
+The test arrives from a simulated ChatGPT referrer with a campaign, checks no pre-consent storage, grants consent, checks the demo link, submits a contact form and a booking against intercepted local API responses, verifies the preserved source, verifies that a failed contact request does not emit a lead, checks demo failure recovery and a successful demo lead/redirect, then withdraws consent and verifies storage removal. It sends no live enquiries, emails, calls or calendar bookings. Evidence is written to `C:/Users/SMSca/artifacts/mms-ai-discoverability/conversions.json`.
 
 Run the pure classifier and canonical tests with:
 
