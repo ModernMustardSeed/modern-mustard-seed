@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import AdminHeader from '@/components/admin/AdminHeader';
 import SocialPosts from '@/components/admin/SocialPosts';
+import FreeAuditCampaign from '@/components/admin/FreeAuditCampaign';
 import Link from 'next/link';
 
 /**
@@ -1141,7 +1142,7 @@ function CopyBlock({ title, text }: { title: string; text: string }) {
   );
 }
 
-type AdsTab = 'callme' | 'tw' | 'mm' | 'fm' | 'sk' | 'px' | 'pr' | 'geo' | 'gn' | 'py' | 'rest' | 'unv' | 'unvr' | 'unvf' | 'brg' | 'stone' | 'chief' | 'ans' | 'scenic' | 'cxc' | 'ah' | 'whaa' | 'debate' | 'lf' | 'social' | 'results';
+type AdsTab = 'freeaudit' | 'callme' | 'tw' | 'mm' | 'fm' | 'sk' | 'px' | 'pr' | 'geo' | 'gn' | 'py' | 'rest' | 'unv' | 'unvr' | 'unvf' | 'brg' | 'stone' | 'chief' | 'ans' | 'scenic' | 'cxc' | 'ah' | 'whaa' | 'debate' | 'lf' | 'social' | 'results';
 
 const TABS: { key: AdsTab; num: string; label: string; blurb: string }[] = [
   { key: 'callme', num: '01', label: 'Call Me', blurb: 'Voice agents · call objective · $25/day' },
@@ -1168,6 +1169,7 @@ const TABS: { key: AdsTab; num: string; label: string; blurb: string }[] = [
   { key: 'whaa', num: '22', label: 'Say Whaaa', blurb: 'The build · the agent that builds · $10/day' },
   { key: 'debate', num: '23', label: 'While You Were Debating', blurb: 'Idea to Product · the studio proof · $15/day' },
   { key: 'lf', num: '24', label: 'The Launch Film', blurb: 'Launch films · fifteen seconds of IRL · $20/day' },
+  { key: 'freeaudit', num: '25', label: 'Free Website Audit', blurb: 'Original song, reel, feed post, Stories, and copy' },
   { key: 'social', num: '💬', label: 'Organic Social', blurb: 'FB + IG + X posts · free · same day as the paid cut' },
   { key: 'results', num: '📊', label: 'Results', blurb: 'How to read them all together' },
 ];
@@ -1185,7 +1187,7 @@ const CAMPAIGN_GROUPS: { name: string; keys: AdsTab[] }[] = [
   { name: 'Demo Funnel', keys: ['unv', 'unvr', 'unvf', 'brg', 'stone', 'ans'] },
   { name: 'Product Offers', keys: ['mm', 'sk', 'chief', 'px', 'pr', 'geo', 'lf'] },
   { name: 'Brand + Verticals', keys: ['callme', 'ah', 'tw', 'gn', 'rest', 'scenic', 'whaa', 'cxc', 'debate'] },
-  { name: 'Partners + Magnets', keys: ['fm', 'py'] },
+  { name: 'Partners + Magnets', keys: ['freeaudit', 'fm', 'py'] },
   { name: 'Organic', keys: ['social'] },
 ];
 
@@ -1305,6 +1307,11 @@ export default function AdsPlaybook() {
   // Remember the campaign you were working in.
   useEffect(() => {
     try {
+      const requested = new URLSearchParams(window.location.search).get('campaign');
+      if (requested && TABS.some((t) => t.key === requested)) {
+        setTab(requested as AdsTab);
+        return;
+      }
       const saved = localStorage.getItem('mms-ads-tab') as AdsTab | null;
       if (saved && TABS.some((t) => t.key === saved)) setTab(saved);
     } catch { /* first visit */ }
@@ -3451,6 +3458,7 @@ export default function AdsPlaybook() {
         </section>
         </>)}
 
+        {tab === 'freeaudit' && <FreeAuditCampaign />}
         {tab === 'social' && <SocialPosts />}
 
         {tab === 'results' && (<>
