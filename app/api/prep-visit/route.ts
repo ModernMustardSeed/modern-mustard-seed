@@ -18,7 +18,10 @@ export const runtime = 'nodejs';
  */
 
 const PROJECTS = new Set(['built-right']);
-const SURFACES = new Set(['deck', 'audit', 'site']);
+// Every page a prospect can open: the pitch (deck, audit, site) and the close
+// (quote, start, done) and the forms (onboard, handover). Sarah asks 'has he
+// opened anything yet' and the answer has to cover the pages that matter most.
+const SURFACES = new Set(['deck', 'audit', 'site', 'quote', 'start', 'done', 'onboard', 'handover']);
 
 function cors(res: NextResponse): NextResponse {
   res.headers.set('Access-Control-Allow-Origin', '*');
