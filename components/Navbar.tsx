@@ -104,6 +104,7 @@ const DEPARTMENTS = [
   { name: 'The Switchboard', tag: 'FREE FRANCHISE DEMO LINE', href: '/switchboard' },
   { name: 'Mustard Broadcast', tag: 'WE RUN YOUR ADS', href: '/ads' },
   { name: 'The Launch Film', tag: 'A FILM BUILT FROM YOUR REAL PRODUCT', href: '/launch-film' },
+  { name: 'AI Native', tag: 'YOUR COMPANY ON AI, YOUR TEAM RUNNING IT', href: '/ai-native' },
   // Mustard Pictures is unlisted while the studio uses it internally
   // (Sarah, 2026-08-20). The route still works for anyone holding the URL.
   { name: 'GEO Desk', tag: 'FREE AI-FINDABILITY GRADE', href: '/website-audit' },
