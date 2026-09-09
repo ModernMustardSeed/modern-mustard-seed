@@ -53,6 +53,67 @@ export const EXAMPLE_FILM = {
   ],
 } as const;
 
+/**
+ * The body of work: every film this rig has shipped, with what each one
+ * measures. Numbers come from the delivered files (ffprobe) and the render
+ * logs, never from memory. Add a film here only after it is in public/video
+ * and declared in lib/films.ts, or verify-films will not know about it.
+ */
+export type ReelFilm = {
+  slug: string;
+  title: string;
+  for: string;
+  seconds: number;
+  frames: number;
+  formats: number;
+  score: 'synthesised' | 'silent by design';
+  note: string;
+  mp4: string;
+  webm?: string;
+  poster: string;
+};
+
+export const REEL: ReelFilm[] = [
+  {
+    slug: 'irl',
+    title: 'IRL',
+    for: 'The app that decides tonight for you. A product launch.',
+    seconds: 76,
+    frames: 2280,
+    formats: 3,
+    score: 'synthesised',
+    note: 'Every venue, address and forecast came out of the running app. The wheel, the sky and the skyline are painted procedurally.',
+    mp4: '/video/launch-film-irl.mp4',
+    webm: '/video/launch-film-irl.webm',
+    poster: '/video/launch-film-irl-poster.jpg',
+  },
+  {
+    slug: 'mms',
+    title: 'A Wonderful Time To Be Alive',
+    for: 'Modern Mustard Seed. A brand film with a cast.',
+    seconds: 96,
+    frames: 2880,
+    formats: 2,
+    score: 'synthesised',
+    note: 'Narrated, with four illustrations drawn to one character sheet so the cast holds across every frame. Every act starts on a bar line at 100 BPM.',
+    mp4: '/video/launch-film-mms.mp4',
+    webm: '/video/launch-film-mms.webm',
+    poster: '/video/launch-film-mms-poster.jpg',
+  },
+  {
+    slug: 'cxc',
+    title: 'Wear the Gospel',
+    for: 'Cross + Covenant. A collection film for a storefront.',
+    seconds: 42,
+    frames: 1260,
+    formats: 3,
+    score: 'silent by design',
+    note: 'Twenty-nine real product photographs flip on a steady beat, so any track drops onto it. Built to run on a feed with the sound off.',
+    mp4: '/video/launch-film-cxc.mp4',
+    poster: '/video/launch-film-cxc-poster.jpg',
+  },
+];
+
 export type LaunchFilmTier = {
   slug: 'launch-film' | 'launch-campaign' | 'launch-season';
   name: string;

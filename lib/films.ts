@@ -61,4 +61,18 @@ export const FILMS = {
     shipped: true,
     runtime: '1 min 16 sec',
   },
+  /** The MMS brand film, on the /launch-film reel. Also served as webm. */
+  launchFilmMms: {
+    mp4: '/video/launch-film-mms.mp4',
+    poster: '/video/launch-film-mms-poster.jpg',
+    shipped: true,
+    runtime: '1 min 36 sec',
+  },
+  /** The CXC collection film, on the /launch-film reel. Silent by design. */
+  launchFilmCxc: {
+    mp4: '/video/launch-film-cxc.mp4',
+    poster: '/video/launch-film-cxc-poster.jpg',
+    shipped: true,
+    runtime: '42 sec',
+  },
 } as const satisfies Record<string, Film>;
