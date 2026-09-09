@@ -45,6 +45,7 @@ import { BUILD_FEE_USD, PRICE_TIERS } from '@/data/switchboard';
 import { HATCH } from '@/data/hatchery';
 import { products, bundles } from '@/data/products';
 import { DEMO_PRODUCTS, DEMO_BUNDLE, SITE_RUNGS, SITE_RUNG_KEYS, ladderViolations } from '@/lib/demo-order';
+import { DAILY_POSTING } from '@/data/posting';
 import {
   createTransientCircuit,
   isTransientStripeError,
@@ -126,6 +127,8 @@ function inlinePriceChecks(): Check[] {
       const r = SITE_RUNGS[k];
       return { funnel: `demo-site-${r.pages}`, amounts: [r.monthlyCents, r.setupCents, r.bundleMonthlyCents, r.bundleSetupCents] };
     }),
+    // Daily Posting is subscription only: one monthly amount, no setup line.
+    { funnel: 'posting', amounts: [DAILY_POSTING.monthlyCents] },
     // The Care Plan ($97/mo) and the $29 portal edit were retired 2026-08-03 when
     // edits went unlimited. Nothing left to price-check: there is no checkout.
     { funnel: 'hatchery', amounts: [HATCH.priceUsd] },
