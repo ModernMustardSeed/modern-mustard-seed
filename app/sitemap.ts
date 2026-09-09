@@ -18,6 +18,7 @@ const STATIC_PATHS = [
   '/brand',
   '/ads',
   '/launch-film',
+  '/ai-native',
   '/chief',
   '/command-center',
   '/websites',
@@ -77,7 +78,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority:
       path === '' || path === '/book'
         ? 1.0
-        : path === '/talking-website' || path === '/the-system' || path === '/ads' || path === '/launch-film' || path === '/chief' || path === '/command-center' || path === '/websites' || path === '/switchboard' || path === '/world' || path === '/mustard-launch' || path === '/mustard-mode' || path === '/seed-to-system' || path === '/the-terminal' || path === '/idea-to-spec' || path === '/scaling-roadmap' || path === '/hundredfold' || path === '/hundredfold/webinar'
+        : path === '/talking-website' || path === '/the-system' || path === '/ads' || path === '/launch-film' || path === '/ai-native' || path === '/chief' || path === '/command-center' || path === '/websites' || path === '/switchboard' || path === '/world' || path === '/mustard-launch' || path === '/mustard-mode' || path === '/seed-to-system' || path === '/the-terminal' || path === '/idea-to-spec' || path === '/scaling-roadmap' || path === '/hundredfold' || path === '/hundredfold/webinar'
           ? 0.95
           : path === '/work' || path === '/audit' || path === '/comic' || path === '/launch-checklist' || path === '/prompt-playbook'
             ? 0.9

@@ -33,6 +33,7 @@ import { getDemoAgentTier, demoAgentUsd } from '@/data/demo-agent';
 import { getChiefTier, chiefUsd } from '@/data/chief';
 import { getPicturesTier, PICTURES } from '@/data/pictures';
 import { getLaunchFilmTier, launchFilmUsd, LAUNCH_FILM } from '@/data/launch-film';
+import { getAiNativeTier, aiNativeUsd, AI_NATIVE } from '@/data/ai-native';
 import { getBroadcastTier } from '@/data/ads';
 import { getPicturesRun } from '@/lib/pictures-store';
 import { getPressTier, PRESS } from '@/data/press';
@@ -2685,6 +2686,118 @@ async function handleLaunchFilmSubscriptionDeleted(sub: Stripe.Subscription) {
   }
 }
 
+/**
+ * AI NATIVE booked. One order row for the map or the build, a lead marked as
+ * a buyer, a kickoff note to Sarah, and the booked note to the buyer. THE
+ * TENDING is a subscription, so it records the lead and the emails and lets
+ * Stripe own the billing rows.
+ */
+async function handleAiNativePurchase(
+  session: Stripe.Checkout.Session,
+  slug: string,
+  email: string,
+  name: string | null
+) {
+  const tier = getAiNativeTier(slug);
+  const firstName = name?.split(' ')[0];
+  const isSub = tier?.mode === 'subscription';
+  const price = tier ? `${aiNativeUsd(tier.priceCents)}${isSub ? '/mo' : ''}` : '?';
+  const promise = slug === 'ai-map' ? AI_NATIVE.mapDelivery : AI_NATIVE.buildDelivery;
+
+  const supabase = getSupabase();
+  if (supabase && !isSub) {
+    const { error } = await supabase.from('orders').insert({
+      stripe_session_id: session.id,
+      stripe_payment_intent_id: typeof session.payment_intent === 'string' ? session.payment_intent : null,
+      product_slug: slug,
+      product_name: `AI NATIVE ${tier?.name ?? slug}`,
+      item_type: 'program',
+      price_paid_cents: session.amount_total ?? tier?.priceCents ?? 0,
+      currency: session.currency ?? 'usd',
+      email,
+      name: name ?? null,
+      status: 'paid',
+    });
+    if (error) console.error('ai-native order insert failed', error.message);
+  }
+
+  try {
+    await insertLead({
+      type: 'contact',
+      email,
+      name: name ?? null,
+      source: 'ai-native-buyer',
+      status: 'new',
+      notes: `[bought:${slug}] KICK OFF AI NATIVE. Set the sixty-minute kickoff with the owner and whoever runs the day to day, then start the map.`,
+    });
+  } catch (err) {
+    console.error('ai-native lead insert failed', err);
+  }
+
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) return;
+  const resend = resendClient();
+
+  try {
+    await resend.emails.send({
+      from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
+      to: OWNER_NOTIFY_TO,
+      subject: `KICK OFF ${tier?.name ?? 'AI NATIVE'}: ${name ?? email}`,
+      html: clientEmail({
+        preheader: 'An AI Native engagement was booked. Set the kickoff.',
+        eyebrow: 'AI NATIVE ORDER',
+        greeting: 'Set the kickoff.',
+        body: `<p><strong>${escapeHtmlSafe(name ?? email)}</strong> booked <strong>${tier?.name ?? slug}</strong> (${price}).</p><p>Email: ${escapeHtmlSafe(email)}. Stripe session: ${session.id}.</p><p>Promise on the page: ${isSub ? 'two live team sessions a month and a same-day line between them' : promise}. First move: reply with two kickoff times and ask for the name of the person who runs their day to day. The map starts the moment the kickoff is on the calendar.</p>`,
+        signature: 'The Studio',
+      }),
+    });
+  } catch (err) {
+    console.error('ai-native kickoff email failed', err);
+  }
+
+  try {
+    await resend.emails.send({
+      from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
+      to: email,
+      replyTo: 'sarah@modernmustardseed.com',
+      subject: `${firstName ? `${firstName}, ` : ''}your company is going native`,
+      html: clientEmail({
+        preheader: 'Booked. Here is what happens next.',
+        eyebrow: `AI NATIVE ${tier?.name ?? ''}`.trim(),
+        greeting: firstName ? `${firstName}, the map starts now.` : 'The map starts now.',
+        body: `<p>Your ${isSub ? 'tending' : slug === 'ai-map' ? 'AI map' : 'AI Native build'} is booked. Here is how it goes:</p><p><strong>1.</strong> Reply to this email with two kickoff times that work and the name of the person who runs your day to day. The kickoff is sixty minutes, and you bring nothing. I come with the questions.</p><p><strong>2.</strong> ${isSub ? 'We set the two monthly session times and open the standing line for your team the same week.' : `You get the map first, ${AI_NATIVE.mapDelivery}: every workflow written down, scored and ranked, the first five named, and every tool priced. You read it before anything is built or bought.`}</p><p><strong>3.</strong> ${isSub ? 'Every month one more workflow moves onto AI and the playbook is kept current. Cancel the day your team stops needing it.' : slug === 'ai-map' ? 'The map ends with a working session on the first move, and it credits in full toward AI NATIVE within ninety days.' : `The first five go live across eight weeks with six working sessions on your team's real work, ${AI_NATIVE.buildDelivery}. On the last day every admin seat is in your name.`}</p><p>Changes to what we build are included. The accounts, the keys, the playbook and the habit are yours.</p>`,
+        cta: { label: 'Reply with two kickoff times', url: 'mailto:sarah@modernmustardseed.com' },
+        signature: 'Sarah',
+      }),
+    });
+  } catch (err) {
+    console.error('ai-native welcome email failed', err);
+  }
+}
+
+/** THE TENDING ended: no more monthly sessions, Sarah sends the wrap note. */
+async function handleAiNativeSubscriptionDeleted(sub: Stripe.Subscription) {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) return;
+  try {
+    const resend = resendClient();
+    await resend.emails.send({
+      from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
+      to: OWNER_NOTIFY_TO,
+      subject: `TENDING CANCELED: ${sub.id}`,
+      html: clientEmail({
+        preheader: 'A Tending ended.',
+        eyebrow: 'AI NATIVE OFFBOARD',
+        greeting: 'A team graduated.',
+        body: `<p>Subscription ${sub.id} was canceled. No more monthly sessions. Send the wrap note, confirm every account and the playbook stay theirs, and close the standing line.</p>`,
+        signature: 'The Studio',
+      }),
+    });
+  } catch (err) {
+    console.error('ai-native offboard email failed', err);
+  }
+}
+
 /** A Voice Agent subscription ended: Sarah decommissions the line by hand. */
 async function handleDemoAgentSubscriptionDeleted(sub: Stripe.Subscription) {
   const apiKey = process.env.RESEND_API_KEY;
@@ -2823,6 +2936,10 @@ export async function POST(req: Request) {
     if (sub.metadata?.kind === 'launch-film') {
       await handleLaunchFilmSubscriptionDeleted(sub);
       return NextResponse.json({ received: true, kind: 'launch_film_subscription_canceled' });
+    }
+    if (sub.metadata?.kind === 'ai-native') {
+      await handleAiNativeSubscriptionDeleted(sub);
+      return NextResponse.json({ received: true, kind: 'ai_native_subscription_canceled' });
     }
     if (sub.metadata?.kind === 'pictures') {
       await handlePicturesSubscriptionDeleted(sub);
@@ -3075,6 +3192,12 @@ export async function POST(req: Request) {
   if (session.metadata?.kind === 'launch-film') {
     await handleLaunchFilmPurchase(session, slug, email, name ?? null);
     return NextResponse.json({ received: true, kind: 'launch-film' });
+  }
+
+  // ── AI NATIVE booked (the map, the build, or the tending) ──
+  if (session.metadata?.kind === 'ai-native') {
+    await handleAiNativePurchase(session, slug, email, name ?? null);
+    return NextResponse.json({ received: true, kind: 'ai-native' });
   }
 
   // ── MUSTARD BROADCAST plan started (ON AIR, PRIME TIME) ──

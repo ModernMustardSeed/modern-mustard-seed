@@ -35,6 +35,7 @@ export const DEPARTMENTS: Dept[] = [
   { key: 'ads', name: 'Mustard Broadcast', tag: 'We run your ads', blurb: 'We make the cinematic commercial and run the Meta and Google ads in your own account.', href: '/ads', icon: '📺' },
   { key: 'pictures', name: 'Mustard Pictures', tag: 'Free screen test', blurb: 'Your business as a real cinematic commercial, directed by our AI. Preview yours free.', href: '/pictures', icon: '🎬' },
   { key: 'launch-film', name: 'The Launch Film', tag: 'Free treatment', blurb: 'A launch film for your app or product, built from the real screens, scored from scratch, finished in three formats.', href: '/launch-film', icon: '🎞' },
+  { key: 'ai-native', name: 'AI Native', tag: 'Free AI Read', blurb: 'Every workflow mapped, the first five moved onto AI in accounts you own, and your team coached to run it. Set prices, eight weeks.', href: '/ai-native', icon: '🧭' },
   { key: 'geo', name: 'GEO Desk', tag: 'Free findability grade', blurb: 'Get found and cited by ChatGPT, Perplexity, and Google AI. Graded, then fixed.', href: '/website-audit', icon: '🔎' },
   { key: 'launch', name: 'Mustard Launch', tag: 'Your AI launch coach', blurb: 'A free personalized launch plan for any new business, then a coach that ships it with you.', href: '/mustard-launch', icon: '🚀' },
   { key: 'switchboard', name: 'The Switchboard', tag: 'Franchise demo line', blurb: 'A 24/7 AI concierge line for multi-location and franchise operators. Call the live demo.', href: '/switchboard', icon: '☎️' },
@@ -57,6 +58,7 @@ export const GOALS: Goal[] = [
   { label: 'Launch something new', emoji: '🚀', deptKeys: ['launch', 'brand', 'websites', 'demo-agent'], note: 'A free launch plan, then the site and the phone line to open the doors.' },
   { label: 'Sell products online', emoji: '🛍', deptKeys: ['websites'], note: 'A custom storefront on the Full-Service Business Build. Start with a free demo.' },
   { label: 'Learn to build it myself', emoji: '🎓', deptKeys: ['mode', 'launch'], note: 'A coach that teaches you to run Claude and build the thing yourself.' },
+  { label: 'Put AI in my whole company', emoji: '🧭', deptKeys: ['ai-native', 'chief', 'demo-agent'], note: 'The workflows mapped and moved onto AI, your team coached to run it, and the front desk answered while they learn.' },
   // 'Keep my people happy' goal re-parked with Celebrate 2026-08-20 (Sarah):
   // the row existed to sell Celebrate, and pointing it at The Chief alone
   // would put a gifting pitch on a chief-of-staff door.
