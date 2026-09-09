@@ -10,9 +10,14 @@ Set these in Vercel Project Settings → Environment Variables (Production scope
 |---|---|---|
 | `RESEND_API_KEY` | Yes | All transactional email (contact, build queue, audit drip, newsletter) |
 | `RESEND_AUDIENCE_ID` | For newsletter | Resend audience used by the weekly cron broadcast |
-| `ANTHROPIC_API_KEY` | For audit | Powers the free AI Audit |
 | `CRON_SECRET` | For cron | Shared secret. Vercel auto-passes this as `Authorization: Bearer <value>` on cron hits |
 | `INDEXNOW_KEY` | For indexing | Hex string. Also drop a file at `/public/<KEY>.txt` containing only the key |
+
+There is no model API key in this list on purpose. Every prompt in the product
+goes through `lib/llm.ts`, which ends at the Claude Code CLI on the Max
+subscription: run directly where a CLI exists, and queued through `llm_jobs`
+for a drainer everywhere else. Setting `ANTHROPIC_API_KEY` anywhere does not
+enable a feature; it only creates a second bill nobody is watching.
 
 ## 2. Resend setup
 

@@ -125,7 +125,7 @@ const C = [
   { b: 'leads, clients, projects, proposals, orders, testimonials.' },
   { b: 'affiliates, commissions, affiliate_clicks, prospects, outreach_messages, entitlements.' },
   { h2: 'Environment variables that matter' },
-  { b: 'ANTHROPIC_API_KEY (audits + AI drafting), RESEND_API_KEY (all email).' },
+  { b: 'RESEND_API_KEY (all email). There is no model API key: audits and AI drafting run on the Claude subscription through the llm_jobs queue.' },
   { b: 'STRIPE_SECRET_KEY + STRIPE_WEBHOOK_SECRET (deposits, balances, store).' },
   { b: 'SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY (all data).' },
   { b: 'GOOGLE_REVIEW_URL (optional override; the review link is also set in code).' },
