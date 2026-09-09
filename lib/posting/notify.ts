@@ -134,7 +134,16 @@ export async function sendWeeklySummary(s: SettingsRow, posts: PostRow[], leads:
           return r?.url ? `<a href="${r.url}" style="color:#C4380C;">${PLATFORM_LABEL[k]}</a>` : PLATFORM_LABEL[k];
         })
         .join(', ');
-      return `<tr><td style="padding:6px 10px 6px 0;white-space:nowrap;vertical-align:top;">${esc(prettyDate(p.scheduled_for).replace(/^\w+, /, ''))}</td><td style="padding:6px 0;vertical-align:top;"><strong>${esc(p.headline ?? 'Post')}</strong><br><span style="opacity:.7;">${links || 'Not posted'}</span></td></tr>`;
+      const numbers = (Object.keys(p.stats ?? {}) as Platform[])
+        .map((k) => {
+          const st = p.stats?.[k];
+          if (!st) return null;
+          const bits = [st.reach != null ? `${st.reach} reached` : null, st.likes != null ? `${st.likes} likes` : null, st.comments ? `${st.comments} comments` : null, st.shares ? `${st.shares} shares` : null].filter(Boolean);
+          return bits.length ? `${PLATFORM_LABEL[k]}: ${bits.join(', ')}` : null;
+        })
+        .filter(Boolean)
+        .join(' · ');
+      return `<tr><td style="padding:6px 10px 6px 0;white-space:nowrap;vertical-align:top;">${esc(prettyDate(p.scheduled_for).replace(/^\w+, /, ''))}</td><td style="padding:6px 0;vertical-align:top;"><strong>${esc(p.headline ?? 'Post')}</strong><br><span style="opacity:.7;">${links || 'Not posted'}</span>${numbers ? `<br><span style="opacity:.6;font-size:13px;">${esc(numbers)}</span>` : ''}</td></tr>`;
     })
     .join('');
   const portal = `${SITE.url}/portal/posting`;

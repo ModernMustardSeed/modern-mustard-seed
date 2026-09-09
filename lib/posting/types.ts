@@ -1,7 +1,6 @@
 /**
- * DAILY POSTING. One post a day, on every platform the client has connected,
- * from the photos and lines they drop in their portal. When the portal is
- * empty the evergreen bank fills the day, so the feed never goes quiet.
+ * DAILY POSTING. Their words, our edit, one version per platform, at the hour
+ * each feed rewards. Nothing posts that the client did not write.
  */
 export const PLATFORMS = ['facebook', 'instagram', 'linkedin', 'x', 'gbp', 'houzz'] as const;
 export type Platform = (typeof PLATFORMS)[number];
@@ -18,7 +17,23 @@ export const PLATFORM_LABEL: Record<Platform, string> = {
   houzz: 'Houzz',
 };
 
+/**
+ * The hour (Mountain) each feed tends to reward, used when a client has not
+ * set their own. Instagram and X later in the morning when people are on
+ * their phones; LinkedIn early on a workday; Facebook and Google at the
+ * business's own hour.
+ */
+export const DEFAULT_PLATFORM_HOURS: Record<Platform, number> = {
+  facebook: 9,
+  instagram: 11,
+  linkedin: 8,
+  x: 12,
+  gbp: 9,
+  houzz: 9,
+};
+
 export type Captions = Partial<Record<Platform, string>>;
+export type Notes = Partial<Record<Platform, string>>;
 
 export type PostResult = {
   ok: boolean;
@@ -32,6 +47,8 @@ export type PostResult = {
   pending?: boolean;
 };
 
+export type PlatformStats = { reach?: number; likes?: number; comments?: number; shares?: number; saves?: number; clicks?: number; at: string };
+
 export type PostStatus = 'writing' | 'scheduled' | 'held' | 'publishing' | 'published' | 'partial' | 'failed' | 'skipped';
 
 export type PostRow = {
@@ -43,10 +60,17 @@ export type PostRow = {
   image_url: string | null;
   headline: string | null;
   captions: Captions;
+  notes: Notes | null;
+  platforms: Platform[] | null;
+  link: string | null;
   source: 'material' | 'evergreen' | 'manual';
   evergreen_key: string | null;
   status: PostStatus;
-  results: Partial<Record<Platform, PostResult>>;
+  results: Partial<Record<Platform, PostResult>> & { note?: string };
+  stats: Partial<Record<Platform, PlatformStats>> | null;
+  stats_at: string | null;
+  approved_at: string | null;
+  approved_by: string | null;
   llm_job_id: string | null;
   written_by: string | null;
   edited_by: string | null;
@@ -58,8 +82,8 @@ export type PostRow = {
 
 /**
  * A submission: what the client wants to say, in their words, with any photo
- * or graphic they have. `kind` 'post' is the only kind the planner turns into
- * a day; 'photo' and 'brand' are older rows that stay for the record.
+ * or graphic they have, the platforms they want it on, and a link if there
+ * is one. `kind` 'post' is the only kind the planner turns into a day.
  */
 export type MaterialRow = {
   id: string;
@@ -67,6 +91,8 @@ export type MaterialRow = {
   url: string | null;
   kind: 'post' | 'photo' | 'brand';
   text: string | null;
+  platforms: Platform[] | null;
+  link: string | null;
   wants_graphic: boolean;
   graphic_brief: string | null;
   graphic_done_at: string | null;
@@ -90,13 +116,22 @@ export type SettingsRow = {
   hard_nos: string | null;
   platforms: Platform[];
   post_hour_mt: number;
+  platform_hours: Partial<Record<Platform, number>>;
   auto_publish: boolean;
+  approve_first: boolean;
+  visible: boolean;
   weekly_summary: boolean;
   notify_emails: string[];
   active: boolean;
   created_at: string;
   updated_at: string;
 };
+
+/** The hour a platform posts for this client: their own setting, else the feed's default. */
+export function hourFor(s: SettingsRow, p: Platform): number {
+  const h = s.platform_hours?.[p];
+  return typeof h === 'number' && h >= 0 && h <= 23 ? h : DEFAULT_PLATFORM_HOURS[p];
+}
 
 export type AccountView = {
   provider: Platform;

@@ -3,6 +3,7 @@ import { getSupabase } from '@/lib/supabase';
 import { listSettings } from '@/lib/posting/settings';
 import { publishDue, retryFailed, upgradeWords } from '@/lib/posting/publish';
 import { planClient, emptyDaysAhead } from '@/lib/posting/planner';
+import { refreshRecentStats } from '@/lib/posting/insights';
 import { sendQueueNudge, sendStallNote, sendWeeklySummary } from '@/lib/posting/notify';
 import { mountainDate, mountainHour, mountainWeekday, addDays } from '@/lib/posting/time';
 import type { PostRow } from '@/lib/posting/types';
@@ -12,14 +13,16 @@ export const maxDuration = 300;
 export const dynamic = 'force-dynamic';
 
 /**
- * THE HOURLY TICK. Five jobs, each bounded and idempotent:
+ * THE HOURLY TICK. Six jobs, each bounded and idempotent:
  *   1. Give every new submission a day (so a post typed at 4 PM is on the
  *      calendar by 5, not tomorrow evening).
- *   2. Publish whatever has come due.
+ *   2. Publish whatever has come due, platform by platform at each one's hour.
  *   3. Swap the mechanical edit for Claude's on posts still ahead of their hour.
- *   4. Retry yesterday's failures once an hour, in case a reconnect fixed them.
- *   5. Safety nets: shout at 1 PM if a post was due and did not go, the Friday
- *      nudge when next week is empty, the Monday summary at 9 AM.
+ *   4. Retry failures once an hour, in case a reconnect fixed them.
+ *   5. At 7 AM, pull the numbers on the last eight days of posts.
+ *   6. Safety nets: shout at 1 PM if a post was due and did not go, the Friday
+ *      nudge when next week is empty, the Monday summary at 9 AM. The client
+ *      hears nothing until Sarah has switched their calendar on.
  */
 export async function GET(req: Request) {
   const secret = process.env.CRON_SECRET;
@@ -50,15 +53,19 @@ export async function GET(req: Request) {
   const { data: waiting } = await sb.from('posting_posts').select('*').eq('status', 'scheduled').eq('written_by', 'template').gt('publish_at', now.toISOString()).limit(20);
   for (const row of waiting ?? []) await upgradeWords(sb, row as PostRow);
 
+  let stats = 0;
+  if (hour === 7) stats = await refreshRecentStats(sb, now);
+
   for (const s of clients) {
     if (!s.active) continue;
     if (hour === 13) {
       const { data: todays } = await sb.from('posting_posts').select('status').eq('client_email', s.client_email).eq('scheduled_for', today).maybeSingle();
-      if (todays && ['failed', 'scheduled', 'writing', 'publishing'].includes(String(todays.status))) {
+      if (todays && ['failed', 'writing', 'publishing'].includes(String(todays.status))) {
         await sendStallNote(s, `Today's post is "${todays.status}" at 1 PM.`);
         say(s.client_email, 'stall note sent');
       }
     }
+    if (!s.visible) continue; // nothing reaches the client before Sarah shows them the calendar
     if (weekday === 5 && hour === 9) {
       const empty = await emptyDaysAhead(sb, s, 7);
       if (empty >= 4) {
@@ -73,5 +80,5 @@ export async function GET(req: Request) {
     }
   }
 
-  return NextResponse.json({ ok: true, published, retried, upgraded: (waiting ?? []).length, notes });
+  return NextResponse.json({ ok: true, published, retried, upgraded: (waiting ?? []).length, stats, notes });
 }

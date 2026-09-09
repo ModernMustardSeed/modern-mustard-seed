@@ -24,17 +24,23 @@ export async function POST(req: Request) {
   }
 
   let email: string | null = null;
+  let asAdmin = false;
   const client = await getClientSession();
   if (client) email = client.email;
   else {
     const admin = await getAdminSession();
-    if (admin && body.client) email = String(body.client).toLowerCase().trim();
+    if (admin && body.client) {
+      email = String(body.client).toLowerCase().trim();
+      asAdmin = true;
+    }
   }
   if (!email) return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 });
 
   const sb = getSupabase();
   if (!sb) return NextResponse.json({ ok: false, error: 'no storage' }, { status: 503 });
-  if (!(await getSettings(sb, email))) return NextResponse.json({ ok: false, error: 'Daily Posting is not on this account.' }, { status: 403 });
+  const settings = await getSettings(sb, email);
+  // A client can upload only once Sarah has shown them the calendar; Sarah can upload for them any time.
+  if (!settings || (!asAdmin && !settings.visible)) return NextResponse.json({ ok: false, error: 'Daily Posting is not on this account.' }, { status: 403 });
 
   const size = Number(body.size ?? 0);
   if (!Number.isFinite(size) || size <= 0 || size > MAX_BYTES) return NextResponse.json({ ok: false, error: 'Photos up to 12 MB each.' }, { status: 413 });
