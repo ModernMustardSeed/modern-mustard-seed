@@ -1747,6 +1747,48 @@ async function handleDirectPayPaid(
     console.error('direct-pay lead insert failed:', err instanceof Error ? err.message : err);
   }
 
+  /* The Delivery Board reads `projects`. A direct pay used to write the lead,
+   * the portal card and the owner email and stop there, so a client who signed
+   * and paid on his prep site was never on the board. Found on 2026-09-09 the
+   * morning Built Right in Montana paid; his row was opened by hand that day.
+   * One project per client, like the website and Cornerstone path: a second
+   * purchase joins the job that already exists rather than opening another. */
+  if (email) {
+    const sb = getSupabase();
+    if (sb) {
+      try {
+        const business = (session.metadata?.business || session.metadata?.client || '').trim();
+        const { data: existing } = await sb.from('projects').select('id').ilike('client_email', email).maybeSingle();
+        let projectId = existing?.id ?? null;
+        if (!projectId) {
+          const { data: created } = await sb
+            .from('projects')
+            .insert({
+              client_email: email,
+              name: business ? `${business}: ${itemName}` : itemName,
+              status: 'discovery',
+              summary: `Paid ${amount} on a direct pay link. Waiting on the onboarding answers and the client's materials. The build starts the moment those land.`,
+              progress: 5,
+              milestones: [
+                { done: true, title: 'Paid', detail: `${itemName} (${products}). First invoice ${amount}.` },
+                { done: false, title: 'Onboarding answers and materials', detail: 'Photos, logo, words and access. Nothing is built from a guess.' },
+                { done: false, title: 'Built and reviewed', detail: 'Built to what they gave us. Unlimited edits before and after launch.' },
+                { done: false, title: 'Live on their domain', detail: 'Pointed, verified on the domain, handed over.' },
+              ],
+            })
+            .select('id')
+            .single();
+          projectId = created?.id ?? null;
+        }
+        if (projectId) {
+          await sb.from('client_products').update({ project_id: projectId }).ilike('client_email', email).is('project_id', null);
+        }
+      } catch (err) {
+        console.error('direct-pay project open failed:', err instanceof Error ? err.message : err);
+      }
+    }
+  }
+
   if (!process.env.RESEND_API_KEY) return;
   try {
     const resend = resendClient();
