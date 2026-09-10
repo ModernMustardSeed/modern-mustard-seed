@@ -80,9 +80,10 @@ const PLACEHOLDER = /@example\.|unknown@|@\.com$|yourbusiness|@company\.site|saf
 
 type Row = AcqProspect & { suite_film_status?: string | null; status?: string | null; is_test?: boolean };
 
-const cols =
-  'id,business_name,contact_name,email,phone,source,acq_campaign_id,acq_cohort_id,acq_stage,consent_status,call_stage,demo_url,' +
-  'site_demo_status,site_demo_url,suite_film_status,hub_demo_url,os_demo_url,demo_emailed_at,unsubscribed_at,is_test,client_status,status,created_at';
+// The WHOLE row. The governor reads email_status, email_source and
+// email_confidence off it, and a narrower select once fed it four blanks that
+// read as Tier HOLD and refused four verified addresses (2026-09-09).
+const cols = '*';
 
 /* ── 1. everyone who asked, by the lead row ── */
 const { data: byRow, error: rowErr } = await db
