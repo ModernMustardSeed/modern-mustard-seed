@@ -147,6 +147,31 @@ export async function findAskers(db: SupabaseClient, opts: { only?: string } = {
   const leads = new Map<string, AskerLead>();
   for (const l of [...((byRow ?? []) as AskerLead[]), ...byEvent]) leads.set(l.id, l);
 
+  /*
+   * ── what has ALREADY been mailed, from both records ──
+   *
+   * `demo_emailed_at` on the lead is one record. The suite-ready hook keeps
+   * another: a `messages` row titled "Demo suite emailed", which is its own
+   * dedupe key. Between 2026-07-30 and 2026-09-09 the hook wrote only the
+   * second one, so fifty-three people who have their suite still read as
+   * never mailed until scripts/acq-backfill-suite-sent.mts is run.
+   *
+   * Reading one record and not the other is exactly how four prospects were
+   * sent the same suite three times on 2026-09-03. So this reads both and
+   * takes the earlier, and it keeps working whether or not the backfill has
+   * been run.
+   */
+  const { data: announcements } = await db
+    .from('messages')
+    .select('outbound_lead_id,occurred_at')
+    .eq('subject', 'Demo suite emailed');
+  const announcedAt = new Map<string, string>();
+  for (const m of ((announcements ?? []) as { outbound_lead_id: string | null; occurred_at: string }[])) {
+    if (!m.outbound_lead_id) continue;
+    const prior = announcedAt.get(m.outbound_lead_id);
+    if (!prior || m.occurred_at < prior) announcedAt.set(m.outbound_lead_id, m.occurred_at);
+  }
+
   /* ── the website build rows, so "landed after the email" is a fact and not a guess ── */
   const siteIds = [...leads.values()].map((l) => l.site_demo_id).filter((v): v is string => Boolean(v));
   const builtAt = new Map<string, string | null>();
@@ -184,7 +209,9 @@ export async function findAskers(db: SupabaseClient, opts: { only?: string } = {
     if (!siteReady) missing.push('site');
 
     // A piece that landed after the email went is news they have not had.
-    const emailedAt = lead.demo_emailed_at ? Date.parse(lead.demo_emailed_at) : NaN;
+    // Whichever record is older is when they actually heard from us.
+    const stamps = [lead.demo_emailed_at, announcedAt.get(lead.id)].filter((v): v is string => Boolean(v)).map((v) => Date.parse(v));
+    const emailedAt = stamps.length ? Math.min(...stamps) : NaN;
     const siteBuiltAt = lead.site_demo_id ? Date.parse(builtAt.get(lead.site_demo_id) ?? '') : NaN;
     const siteIsNews = siteReady && Number.isFinite(emailedAt) && Number.isFinite(siteBuiltAt) && siteBuiltAt > emailedAt;
 
