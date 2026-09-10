@@ -28,7 +28,6 @@ export type RowSuite = {
   osUrl: string | null;
   osShown: boolean;
   hubUrl: string | null;
-  filmStatus: string | null;
   pieces: number;
 };
 

@@ -353,7 +353,11 @@ export type AcqProspect = {
   os_demo_id: string | null;
   os_demo_url: string | null;
   os_demo_status: string | null;
-  /** The walkthrough film cut off THEIR suite, once the website build lands. */
+  /**
+   * RETIRED 2026-09-10. Nothing cuts one any more and nothing waits on one.
+   * The column stays because the hub still plays a film that was already cut,
+   * which keeps the emails that named one honest.
+   */
   suite_film_status: 'queued' | 'filming' | 'ready' | 'failed' | null;
   dnc_checked: boolean;
   status: string;

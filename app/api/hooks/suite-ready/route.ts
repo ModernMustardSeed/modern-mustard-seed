@@ -14,15 +14,10 @@ export const maxDuration = 30;
 
 /**
  * THE SUITE-READY ANNOUNCEMENT (Sarah, 2026-07-30: "as soon as the website is
- * also done... it emails them with the total package and the video about their
- * stuff", refined 2026-08-01: the video must be a real recording of THEIR site
- * and agent, and cutting it is the FINAL STEP before the
- * suite is published and shown to the client).
+ * also done... it emails them with the total package").
  *
- * So this fires last, not first. The build worker knocks after the film has
- * been cut and uploaded; if the film is not ready the announcement is held,
- * and the worker knocks again on the next attempt. Nobody is ever pointed at a
- * suite whose walkthrough is still being made.
+ * So this fires last, not first: the build worker knocks once the website is
+ * banked. Nobody is ever pointed at a suite that is still being made.
  *
  * Guards, in order:
  *  - Bearer FORGE_NOTIFY_SECRET (its own secret; not CRON_SECRET, not a session).
@@ -31,9 +26,6 @@ export const maxDuration = 30;
  *  - Fresh demo builds only (no edits, no rebuilds, no paid projects).
  *  - THE DEMO MUST BE PRESENTABLE: self-contained and carrying real imagery,
  *    not a page of blank placeholder fills (2026-08-03, Polly Thompson).
- *  - THE FILM MUST EXIST. This is the publish gate.
- *  - THE FILM MUST NOT PREDATE THE SITE, or it is a walkthrough of a page that
- *    no longer exists.
  *  - One announcement per lead ever: the messages note is the dedupe record.
  *  - Not if Sarah already sent the suite by hand after this site was built.
  *  - A campaign prospect passes the outbound governor, like every other
@@ -81,7 +73,7 @@ export async function POST(req: Request) {
   //
   // This route is the last thing between a build and a stranger's inbox, and on
   // 2026-08-03 it put Polly Thompson in front of a page whose photographs were
-  // blank fills. The worker seal and the film both refuse that now, but this is
+  // blank fills. The worker seal refuses that now, but this is
   // the surface with the irreversible consequence: a held email can be sent a
   // minute later, a sent one cannot be recalled. So it checks for itself rather
   // than trusting the two gates upstream.
@@ -91,9 +83,7 @@ export async function POST(req: Request) {
   }
 
   const { data: leadRow } = await supabase.from('outbound_leads').select('*').eq('id', site.lead_id).maybeSingle();
-  // The film clock is written by the worker and never read by the acquisition
-  // type, so it rides alongside rather than being added to a type it is not for.
-  const lead = leadRow as (AcqProspect & { suite_film_at?: string | null }) | null;
+  const lead = leadRow as AcqProspect | null;
   if (!lead?.email) return NextResponse.json({ ok: false, skipped: 'lead has no email' });
   const hubUrl = lead.hub_demo_url || lead.site_demo_url;
   if (!hubUrl) return NextResponse.json({ ok: false, skipped: 'no hub url' });
@@ -105,33 +95,23 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, skipped: 'they opted out' });
   }
 
-  // THE PUBLISH GATE. The walkthrough is the last thing made and the first
-  // thing they will watch, so the suite is not announced without it.
-  if (lead.suite_film_status !== 'ready') {
-    return NextResponse.json({ ok: false, skipped: 'suite film not cut yet', filmStatus: lead.suite_film_status ?? null });
-  }
-
-  // AND THE FILM MUST BE OF THE SITE THAT EXISTS NOW.
-  //
-  // The film records the live page at cut time, so anything that rewrites the
-  // html afterwards leaves a 'ready' film showing footage of a page nobody can
-  // visit any more (a hero swap did exactly this to Kylers Lawncare on
-  // 2026-08-02). The email calls that video "a walkthrough of your own", so a
-  // stale one is worse than none. Both timestamps already exist; no new column
-  // is needed to tell which came last.
-  const filmAt = lead.suite_film_at ? Date.parse(lead.suite_film_at as string) : NaN;
+  /*
+   * THE FILM GATE IS GONE (Sarah, 2026-09-10: "no film needed, actually take
+   * the film thing out altogether").
+   *
+   * A walkthrough video used to be the publish gate here: no film, no
+   * announcement, and a film older than the site held it too. The intent was
+   * right, that nobody is pointed at a half-made suite. The cost landed on the
+   * wrong side. Cutting one drove a browser and placed a live call on Sarah's
+   * own machine, and on 2026-09-10 one render hung for three and a half hours
+   * while finished suites sat unsent behind it.
+   *
+   * What actually protects the recipient is still here, and it is stricter
+   * than a video ever was: the build must be a fresh, ready, lead demo, the
+   * page must be presentable, they must not have opted out, and the governor
+   * still decides. A suite is finished when the website is built.
+   */
   const builtAt = site.built_at ? Date.parse(site.built_at as string) : NaN;
-  if (!Number.isFinite(filmAt)) {
-    return NextResponse.json({ ok: false, skipped: 'film has no timestamp, cannot prove it matches the site' });
-  }
-  if (Number.isFinite(builtAt) && builtAt > filmAt) {
-    return NextResponse.json({
-      ok: false,
-      skipped: 'the film predates the current site; re-cut it before announcing',
-      filmAt: lead.suite_film_at,
-      builtAt: site.built_at,
-    });
-  }
 
   const { data: prior } = await supabase
     .from('messages')
@@ -142,7 +122,7 @@ export async function POST(req: Request) {
   if (prior?.length) return NextResponse.json({ ok: false, skipped: 'already emailed' });
 
   // AND NOT IF THEY ALREADY HAVE IT. Sarah can send a suite by hand from the
-  // card before the film is cut. If that send went out AFTER this website was
+  // card before this ran. If that send went out AFTER this website was
   // built, it pointed at this website, and a second email announcing it is
   // the same news twice. A hand send from before the site existed is a
   // different email about a different suite, and the website is still news.
@@ -203,9 +183,8 @@ export async function POST(req: Request) {
     `It is all here, and the short video at the top is a walkthrough of your own: your site and a real call with your own agent: ${hubUrl}`,
     '',
     // No "nothing to set up and nothing owed" here any more. Sarah, 2026-08-04:
-    // the email that carries the film should not talk about cost or effort at
-    // the moment we want them valuing what they are looking at. It is the same
-    // rule the film narration now runs on (scripts/suite-film/lines.mjs).
+    // this email should not talk about cost or effort at the moment we want
+    // them valuing what they are looking at.
     `It is yours to poke at for as long as you like. Tap the gold button and talk to the website. If you want it live, or want anything changed, just reply. And if this is not for you, reply "no thanks" and that is the end of it.`,
     '',
     '❤️, Sarah',
@@ -278,11 +257,10 @@ export async function POST(req: Request) {
     leadId: lead.id,
     campaignId: campaign?.id ?? null,
     type: 'demo_emailed',
-    label: `Their finished suite was emailed to ${lead.email} (website, voice agent and walkthrough film)`,
+    label: `Their finished suite was emailed to ${lead.email} (website and voice agent)`,
     detail: {
       hubUrl,
       siteId: site.id,
-      film: true,
       messageId: sent.id,
       from: fromEmail,
       announcement: true,

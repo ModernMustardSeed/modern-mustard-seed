@@ -760,8 +760,6 @@ export type SuiteLinks = {
   osUrl: string | null;
   /** True when Sarah recorded a face-to-camera video for this business. */
   personalVideo: boolean;
-  /** True when the walkthrough film of THEIR suite is cut and ready. */
-  film: boolean;
 };
 
 /**
@@ -873,11 +871,7 @@ export function buildSuiteEmail(args: {
     ? p(
         `There is a short video of me at the top of that page walking you through what I built and why. Watch that first and the rest will make sense.`,
       )
-    : suite.film
-      ? p(
-          `There is a two minute walkthrough at the top of that page: your site and a live call to your receptionist, recorded off the real thing.`,
-        )
-      : '';
+    : '';
 
   const html =
     clientEmail({

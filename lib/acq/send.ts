@@ -463,7 +463,6 @@ export async function sendSuiteEmail(
   } catch {
     personalVideo = false;
   }
-  const film = (lead as unknown as { suite_film_status?: string | null }).suite_film_status === 'ready';
 
   const built = buildSuiteEmail({
     lead,
@@ -472,9 +471,7 @@ export async function sendSuiteEmail(
       voiceUrl: lead.demo_url,
       siteUrl: siteReady ? lead.site_demo_url : null,
       osUrl: lead.os_demo_url,
-      personalVideo,
-      film,
-    },
+      personalVideo,    },
     checkoutUrl: checkoutUrlFor(lead),
     calendarUrl: CALENDAR_URL,
     offerLine: OFFER.line,
@@ -527,9 +524,7 @@ export async function sendSuiteEmail(
       voice: Boolean(lead.demo_url),
       site: siteReady,
       os: Boolean(lead.os_demo_url),
-      personalVideo,
-      film,
-      messageId: sent.id,
+      personalVideo,      messageId: sent.id,
       demoNumber: chase.demoNumber,
       followupsQueued: chase.queued,
       drip: chase.drip.enrolled ? `enrolled, next ${chase.drip.nextAt}` : `not enrolled: ${chase.drip.reason ?? 'unknown'}`,

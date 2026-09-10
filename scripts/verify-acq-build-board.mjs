@@ -26,7 +26,7 @@ const LEAD_COLS =
   'id,business_name,contact_name,email,phone,website,city,state,trade,rating,review_count,lead_score,' +
   'acq_stage,acq_campaign_id,consent_status,consent_at,call_stage,call_attempts,last_call_at,' +
   'demo_status,demo_url,demo_emailed_at,site_demo_id,site_demo_url,site_demo_status,os_demo_id,os_demo_url,' +
-  'hub_demo_id,hub_demo_url,suite_film_status,checkout_sent_at,client_status,unsubscribed_at,is_test,' +
+  'hub_demo_id,hub_demo_url,checkout_sent_at,client_status,unsubscribed_at,is_test,' +
   'reservoir_state,created_at,updated_at';
 
 const BUILT_FILTER = 'demo_url.not.is.null,site_demo_id.not.is.null,os_demo_id.not.is.null,hub_demo_id.not.is.null';
@@ -44,7 +44,7 @@ function suiteState(l) {
   // Never shown to a prospect: the command center is off the suite entirely.
   const osShown = false;
   const pieces =
-    (l.demo_url ? 1 : 0) + (siteReady ? 1 : 0) + (l.suite_film_status === 'ready' ? 1 : 0);
+    (l.demo_url ? 1 : 0) + (siteReady ? 1 : 0);
   let stage;
   if (l.unsubscribed_at || ['client', 'lost'].includes(l.acq_stage) || l.client_status === 'client') stage = 'closed';
   else if (siteBusy) stage = 'forging';

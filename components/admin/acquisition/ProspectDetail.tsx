@@ -72,7 +72,6 @@ type Suite = {
   /** Always false: the prospect never sees a command center. */
   osShown: boolean;
   hubUrl: string | null;
-  filmStatus: string | null;
   pieces: number;
 };
 type Brief = { headline: string; facts: { label: string; value: string }[]; intent: string; lines: string[]; call: { duration: string | null; scenario: string | null; summary: string | null } | null };
@@ -763,16 +762,6 @@ function SuitePanel({
             ? 'Built by hand and yours only. It is not part of the suite or the offer, so their page has no door for it and their email never names it.'
             : null,
           'Not part of the suite. Sold on its own, built by hand from the Build OS button.',
-        )}
-        {piece(
-          'Walkthrough film',
-          null,
-          s?.filmStatus === 'ready'
-            ? 'Cut from their own site and their own agent. It plays on their suite page.'
-            : s?.filmStatus === 'queued' || s?.filmStatus === 'filming'
-              ? 'Being cut now, off their own suite.'
-              : null,
-          'Cut automatically once their website lands.',
         )}
       </div>
 

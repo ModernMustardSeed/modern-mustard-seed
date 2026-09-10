@@ -84,13 +84,8 @@ const MAX_RUNTIME_MS = Number(process.env.DEMO_SITE_MAX_MS || 90 * 60 * 1000);
 // timeout means a job that is still legitimately building gets reclaimed and
 // handed to a second worker, and two workers race to write the same row.
 const STALE_MS = Number(process.env.DEMO_SITE_STALE_MS || 100 * 60 * 1000);
-// The walkthrough film runs inline after a fresh build (see cutSuiteFilm). It
-// is normally 3-6 minutes: narration, a real ~30s call, then the encode. The
-// ceiling exists so a wedged browser or a locked fal wallet cannot hold the
-// whole build queue hostage; blowing it fails the film, never the build.
-const SUITE_FILM_MAX_MS = Number(process.env.SUITE_FILM_MAX_MS || 14 * 60 * 1000);
-// The tour is a handful of short TTS clips and an upload, no browser and no
-// call, so it lives in a different order of magnitude from the film.
+// The walkthrough film is retired (Sarah, 2026-09-10). Nothing here cuts one.
+// The tour is a handful of short TTS clips and an upload, no browser and no call.
 const SITE_TOUR_MAX_MS = Number(process.env.SITE_TOUR_MAX_MS || 4 * 60 * 1000);
 const WORKER = os.hostname();
 /** When this process started. The orphan sweep's only safe dividing line. */
@@ -111,8 +106,7 @@ try {
  * HOW MANY BUILDS RUN SIDE BY SIDE.
  *
  * Measured off this worker's log on 2026-08-25, thirteen consecutive builds: the
- * claude child runs 24 to 60 minutes (median 29, mean 36) and the film behind it
- * adds three to fourteen more. One lane therefore clears roughly one lead an
+ * claude child runs 24 to 60 minutes (median 29, mean 36). One lane therefore clears roughly one lead an
  * hour, which is exactly what Sarah was watching: five queued leads, the oldest
  * waiting 194 minutes, and nothing wrong anywhere. Nothing was broken. The queue
  * was serial.
@@ -1180,40 +1174,34 @@ async function storeFinished(job, html) {
   });
   log(isEdit(job) ? 'EDITED' : 'READY', job.id, siteUrl, `(${Math.round(html.length / 1024)}KB)`);
 
-  // Fresh demo banked = the whole suite exists. The walkthrough film and the
-  // announcement behind it hand off to the finishing lane; this lane is a BUILD
+  // Fresh demo banked = the whole suite exists. The site tour and the
+  // announcement hand off to the finishing lane; this lane is a BUILD
   // lane and goes back to building.
   if (!isEdit(job)) queueFinishing(job);
 }
 
 /**
- * THE FINISHING LANE: the film, and the announcement that waits on it.
+ * THE FINISHING LANE: the site tour, and the announcement.
  *
- * The film used to run inline, on purpose, and the reason was good: one
- * definition of "this suite is finished" and no second daemon to keep alive at
- * 2am. That trade was right when this worker had one lane and is wrong now. Three
- * to fourteen minutes of narration, a real phone call and an encode is work no
- * BUILDER is needed for, and holding a build lane through it throws away the
- * throughput the lanes exist to buy, once per suite.
+ * Work that no BUILDER is needed for, moved one step sideways out of a build
+ * lane so the lanes keep building. Same worker, same lifetime, same log.
+ * STRICTLY ONE AT A TIME, in suite-finished order, because that is the order
+ * Sarah watches them land.
  *
- * So it moves one step sideways, not into a second process. Same worker, same
- * lifetime, same log. STRICTLY ONE AT A TIME: the film drives a browser and
- * places a live call, and two of those at once is a machine on its knees. In
- * suite-finished order, because that is the order Sarah watches them land.
- *
- * Every guarantee that mattered is kept. The film still GATES the announcement,
- * because notifySuiteReady still runs behind it in this same chain, and
- * suite-ready refuses to send without a ready film either way. A failure is
- * still loud on the row. And a suite whose film never ran (a shutdown mid-queue)
- * keeps its suite_film_status and is picked up by the daily suite sweep, exactly
- * as it was before.
+ * THE WALKTHROUGH FILM IS RETIRED (Sarah, 2026-09-10: "no film needed,
+ * actually take the film thing out altogether"). It cut a two minute video of
+ * the finished site and a live call, and it gated the announcement behind
+ * itself. On 2026-09-10 that cost more than it returned: it drove a browser
+ * and placed a call on a machine already short of memory, one render hung for
+ * three and a half hours, and finished suites waited behind a gate for a video
+ * nobody had asked for. A suite is finished when the website is built.
  */
 const finishing = [];
 let finishingPump = null;
 
 function queueFinishing(job) {
   finishing.push(job);
-  if (finishing.length > 1) log(`finishing lane: ${finishing.length} suites waiting on the film`);
+  if (finishing.length > 1) log(`finishing lane: ${finishing.length} suites waiting to be finished`);
   if (!finishingPump) finishingPump = pumpFinishing().finally(() => { finishingPump = null; });
 }
 
@@ -1222,7 +1210,6 @@ async function pumpFinishing() {
     const job = finishing.shift();
     try {
       await buildSiteTour(job);
-      await cutSuiteFilm(job);
       await notifySuiteReady(job);
     } catch (e) {
       // A finishing failure must never take the worker down, and must never
@@ -1238,14 +1225,11 @@ async function pumpFinishing() {
  * Sarah 2026-08-07, after hearing it on Glimmer: *"use that voice for all the
  * sites we do this with... and make that part of how we do websites for
  * future."* So the tour is no longer a thing done by hand per site; a finished
- * build gets one the way it gets a film.
+ * build gets one automatically.
  *
- * ⚠️ NON-FATAL, unlike the film. The film IS the publish gate, so its failure
- * correctly holds the whole announcement. A missing tour costs the visitor a
- * welcome and nothing else, and `SiteTour` already renders nothing when there
- * is no manifest. Holding a finished suite hostage over a nice-to-have would
- * be the wrong trade. Runs BEFORE the film so the recorder never catches a
- * half-written manifest.
+ * ⚠️ NON-FATAL. A missing tour costs the visitor a welcome and nothing else,
+ * and `SiteTour` already renders nothing when there is no manifest. Nothing in
+ * the finishing lane may hold a finished suite hostage over a nice-to-have.
  */
 /**
  * ⏸️ PAUSED, 2026-08-11. Sarah: *"the narration is not quite right. take it off
@@ -1290,49 +1274,6 @@ async function buildSiteTour(job) {
   // Exit 2 is the builder refusing to ship a stub tour, which is a correct
   // outcome on a thin page, not a breakage.
   log(ok ? 'site tour: ready' : 'site tour: not built (the suite ships without a guide)');
-}
-
-/**
- * THE WALKTHROUGH FILM, the final step of the build.
- *
- * Sarah 2026-08-01: the video at the top of a suite has to be a fresh
- * recording of THAT lead's site, agent and command center. It had been serving
- * one house film (shot on the Wills Electric build) to everybody.
- *
- * Serial on purpose. The film is minutes against a build that is tens of
- * minutes, and running it inline keeps ONE definition of "this suite is
- * finished" instead of a second queue to keep alive at 2am. A failure here is
- * loud on the row (suite_film_status='failed') and simply holds the
- * announcement: suite-ready refuses to send without a ready film, so the worst
- * case is a suite that waits for a human, never one that goes out half-made.
- */
-async function cutSuiteFilm(job) {
-  if (!job.lead_id) return;
-  const script = path.join(process.cwd(), 'scripts', 'suite-film', 'build.mjs');
-  if (!existsSync(script)) return log('suite film: script missing, skipped');
-
-  await supabase.from('outbound_leads').update({ suite_film_status: 'queued' }).eq('id', job.lead_id);
-  log('suite film: rolling for', job.business_name);
-
-  const ok = await new Promise((resolve) => {
-    const child = spawn(process.execPath, [script, '--lead', job.lead_id], {
-      cwd: process.cwd(),
-      env,
-      stdio: ['ignore', 'pipe', 'pipe'],
-    });
-    const timer = setTimeout(() => {
-      log('suite film: over time, killing');
-      try { killTree(child); } catch { /* already gone */ }
-      resolve(false);
-    }, SUITE_FILM_MAX_MS);
-    const relay = (buf) => String(buf).split(/\r?\n/).filter(Boolean).forEach((l) => log('  film|', l.slice(0, 200)));
-    child.stdout.on('data', relay);
-    child.stderr.on('data', relay);
-    child.on('error', (e) => { clearTimeout(timer); log('suite film: could not start:', e?.message); resolve(false); });
-    child.on('close', (code) => { clearTimeout(timer); resolve(code === 0); });
-  });
-
-  log(ok ? 'suite film: cut' : 'suite film: FAILED (the suite will wait for a human, not go out without it)');
 }
 
 /**
@@ -1747,7 +1688,7 @@ if (ONCE) {
   const did = await tick();
   if (!did) log('no queued site builds.');
   // The build no longer finishes inside tick(), so --once has to wait for it and
-  // for the film behind it. Without this the process exits mid-build and the
+  // for the finishing lane behind it. Without this the process exits mid-build and the
   // lead's claim goes back to the queue, which is a worse --once than none.
   await Promise.allSettled([...running]);
   if (finishingPump) await finishingPump;

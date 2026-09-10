@@ -1,5 +1,5 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
-import { auditReportEmail, clientEmail, demoFilmCard, personalVideoCard, suiteFilmCard, escape, SARAH_WELCOME_READY } from '@/lib/email';
+import { auditReportEmail, clientEmail, demoFilmCard, personalVideoCard,  escape, SARAH_WELCOME_READY } from '@/lib/email';
 import { sendViaResend } from '@/lib/send-email';
 import { ensureDemoHub } from '@/lib/outbound-demo';
 import type { OutboundLead } from '@/lib/outbound';
@@ -163,20 +163,18 @@ export async function buildOutboundEmail(
           : 'We went ahead and built you something. Not a mockup, the real thing, already answering to your name:'
       }</p>` +
       (hub
-        // Order of who the video is actually about: THEIR walkthrough, then
-        // Sarah's personal take, then the house film. A tour of somebody
-        // else's business must never outrank a recording of their own.
-        ? lead.suite_film_status === 'ready'
-          ? suiteFilmCard({ href: hub, business: lead.business_name })
-          : hasPersonalVideo
-            ? personalVideoCard({ href: hub, business: lead.business_name })
-            : demoFilmCard({
-                film,
-                href: hub,
-                caption: SARAH_WELCOME_READY
-                  ? `A quick hello from Sarah on what we built ${lead.business_name}.`
-                  : `A first look while we finish ${possessive(lead.business_name)} own walkthrough film.`,
-              })
+        // Sarah's personal take outranks the house film: a recording about them
+        // must never sit behind a generic one. The per-lead walkthrough film is
+        // retired (Sarah, 2026-09-10), so there is no third option any more.
+        ? hasPersonalVideo
+          ? personalVideoCard({ href: hub, business: lead.business_name })
+          : demoFilmCard({
+              film,
+              href: hub,
+              caption: SARAH_WELCOME_READY
+                ? `A quick hello from Sarah on what we built ${lead.business_name}.`
+                : `A first look at what we built ${lead.business_name}.`,
+            })
         : '') +
       rows +
       (hub

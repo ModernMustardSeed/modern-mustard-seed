@@ -57,7 +57,6 @@ type Suite = {
   /** Always false: the prospect never sees a command center. */
   osShown: boolean;
   hubUrl: string | null;
-  filmStatus: string | null;
   pieces: number;
 };
 
@@ -318,11 +317,6 @@ function SuiteChips({ row }: { row: Row }) {
             + Add your video
           </Link>
         )
-      )}
-      {row.suite.filmStatus === 'ready' && (
-        <span className={`${chip} border-[#3f5d34]/45 bg-[#3f5d34]/10 text-[#2c4225]`} title="The walkthrough film cut from their own suite is ready.">
-          🎬 Film
-        </span>
       )}
       {row.segment === 'failed' && row.siteRun?.error && (
         <span className="max-w-[420px] truncate font-sans text-[11px] text-[#a32315]" title={row.siteRun.error}>

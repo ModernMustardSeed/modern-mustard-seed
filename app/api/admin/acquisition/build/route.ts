@@ -129,7 +129,7 @@ const LEAD_COLS =
   'id,business_name,contact_name,email,phone,website,city,state,trade,rating,review_count,lead_score,' +
   'acq_stage,acq_campaign_id,consent_status,consent_at,call_stage,call_attempts,last_call_at,' +
   'demo_status,demo_url,demo_emailed_at,site_demo_id,site_demo_url,site_demo_status,os_demo_id,os_demo_url,' +
-  'hub_demo_id,hub_demo_url,suite_film_status,checkout_sent_at,client_status,unsubscribed_at,is_test,' +
+  'hub_demo_id,hub_demo_url,checkout_sent_at,client_status,unsubscribed_at,is_test,' +
   'reservoir_state,created_at,updated_at';
 
 /** Anything built for the prospect: voice agent, website, command center, or hub. */

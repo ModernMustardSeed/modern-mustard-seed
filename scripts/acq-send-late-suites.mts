@@ -97,7 +97,6 @@ function preview(a: Asker, kind: 'late' | 'landed') {
       siteUrl: l.site_demo_status === 'ready' ? l.site_demo_url : null,
       osUrl: l.os_demo_url,
       personalVideo: false,
-      film: l.suite_film_status === 'ready',
     },
     checkoutUrl: checkoutUrlFor(l as AcqProspect),
     calendarUrl: CALENDAR_URL,
