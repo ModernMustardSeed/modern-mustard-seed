@@ -405,6 +405,14 @@ export async function startDrip(sb: SupabaseClient, lead: OutboundLead, startedB
  *
  * Never throws. A delivered demo must not be reported as a failure because its
  * follow-up could not be scheduled.
+ *
+ * IT ASKS WHETHER OUTBOUND EMAIL IS ON (2026-09-10). This drip does not go
+ * through the governor, on purpose, so that hand-worked outbound survives an
+ * acquisition pause. That exemption meant a hand send re-armed a four-email
+ * sequence on the same afternoon Sarah stopped cold email, and two prospects
+ * were queued for "the missed-call math" while she was pivoting away from
+ * email entirely. Delivering somebody their demo is a thing a person chose.
+ * Signing them up for four more emails is the machine, and the machine is off.
  */
 export async function enrollDripAfterDemo(
   sb: SupabaseClient,
@@ -414,6 +422,11 @@ export async function enrollDripAfterDemo(
   try {
     const stop = dripStopReason(lead, false);
     if (stop) return { ok: false, error: stop };
+
+    const { data: settings } = await sb.from('acq_settings').select('email_enabled').limit(1).maybeSingle();
+    if (settings && settings.email_enabled === false) {
+      return { ok: false, error: 'Outbound email is switched off, so no follow-up sequence was started.' };
+    }
 
     const existing = await getDrip(sb, lead.id);
     const nowIso = new Date().toISOString();
