@@ -806,12 +806,26 @@ export function buildSuiteEmail(args: {
    * because the apology is hers.
    */
   late?: boolean;
+  /**
+   * THE WEBSITE LANDED AFTER THE EMAIL DID (Sarah, 2026-09-10).
+   *
+   * Two people were sent their late suite holding only a receptionist,
+   * because the website build had died on an expired login that morning.
+   * When the rebuild lands, the website is real news and they should hear it,
+   * but they must not hear the apology twice. So this is its own short note:
+   * the website is done, here are both doors, same one ask.
+   */
+  siteLanded?: boolean;
 }): BuiltCampaignEmail | null {
   const { lead, suite } = args;
   if (!lead.email) return null;
   const business = shortBusiness(lead.business_name);
   const greeting = greetingFor(lead);
-  const late = Boolean(args.late);
+  const landed = Boolean(args.siteLanded);
+  // The apology belongs to the first email only. Never both.
+  const late = Boolean(args.late) && !landed;
+  /** The two variants that end on "call my agent and book a slot with me". */
+  const asksForTheCall = late || landed;
 
   const pieces: { label: string; blurb: string; url: string }[] = [];
   if (suite.siteUrl) {
@@ -871,17 +885,24 @@ export function buildSuiteEmail(args: {
       // subject has even earned a click, so it names the same pieces the body
       // does and nothing more. It promised a back office to everybody once; the
       // back office is not part of this offer at all now.
-      preheader: late
+      preheader: landed
+        ? `The website is finished, and your receptionist answers on it.`
+        : late
         ? `You asked for a demo. It is live now, and it is yours to break.`
         : pieces.length === 2
           ? `Your website and your receptionist are live. Nothing to sign up for.`
           : onlySite
             ? `Your website is live. Nothing to sign up for.`
             : `Your receptionist is live. Nothing to sign up for.`,
-      eyebrow: late ? 'YOUR DEMO IS READY' : 'IT IS BUILT',
+      eyebrow: landed ? 'THE WEBSITE IS DONE' : late ? 'YOUR DEMO IS READY' : 'IT IS BUILT',
       greeting,
       body:
-        (late
+        (landed
+          ? p(`The website is done too.`) +
+            p(
+              `I sent you a receptionist for ${escape(business)} the other day. The matching website is finished now, and that same receptionist answers on it. Both are live, and both are yours to poke at.`,
+            )
+          : late
           ? p(`You asked for a demo and it took me longer than it should have to get it to you. I am sorry about that. The response was bigger than we planned for, and I am glad ${escape(business)} was in it.`) +
             p(
               pieces.length === 2
@@ -896,7 +917,7 @@ export function buildSuiteEmail(args: {
             )) +
         videoLine +
         `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:16px 0 6px">${list}</table>` +
-        (late
+        (asksForTheCall
           ? p(`Break it if you can. Then let's talk about it.`) +
             `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:14px 0"><tr>
           <td style="border:2px solid #161616;border-radius:14px;padding:16px 18px;background:#FBF6EA">
@@ -914,12 +935,12 @@ export function buildSuiteEmail(args: {
           </td>
         </tr></table>` +
         p(
-          late
+          asksForTheCall
             ? `Or skip the phone and <a href="${escape(args.calendarUrl)}" style="color:#C2261A;font-weight:700;text-decoration:none">book the slot yourself</a>. If the answer is no, replying with the word no is a complete answer and I will stop.`
             : `Or if you would rather talk to a person about it, <a href="${escape(args.calendarUrl)}" style="color:#C2261A;font-weight:700;text-decoration:none">grab time with me</a>. If the answer is no, replying with the word no is a complete answer and I will stop.`,
         ),
-      cta: { label: 'Open everything', url: suite.hubUrl },
-      signature: args.fromMustard && !late ? 'Mr. Mustard' : 'Sarah',
+      cta: { label: landed ? 'Open the website' : 'Open everything', url: suite.hubUrl },
+      signature: args.fromMustard && !asksForTheCall ? 'Mr. Mustard' : 'Sarah',
       trackId: lead.id,
     }) + complianceFooter(lead.email);
 
@@ -932,11 +953,13 @@ export function buildSuiteEmail(args: {
     // It also names only what is inside: a subject promising a website to
     // somebody who is getting a receptionist is the first broken promise they
     // read, and it is the one they judge everything else by.
-    subject: onlyVoice
-      ? `I built ${business} a receptionist`
-      : onlySite
-        ? `I built ${business} a website`
-        : `I built ${business} a website and a receptionist`,
+    subject: landed
+      ? `The ${business} website is finished`
+      : onlyVoice
+        ? `I built ${business} a receptionist`
+        : onlySite
+          ? `I built ${business} a website`
+          : `I built ${business} a website and a receptionist`,
     html,
     unsubscribeUrl: unsubscribeUrlFor(lead.email),
     summary: `Sent the full built suite: ${pieces.map((x) => x.label.toLowerCase()).join(', ')}.`,
