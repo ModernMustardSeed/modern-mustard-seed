@@ -36,6 +36,25 @@ export type Film = {
 };
 
 export const FILMS = {
+  makeItReal: {
+    mp4: '/ads/make-it-real/make-it-real-16x9.mp4',
+    poster: '/ads/make-it-real/preview/poster-16x9-800.webp',
+    shipped: true,
+    runtime: '38 sec',
+  },
+  makeItRealTall: {
+    mp4: '/ads/make-it-real/make-it-real-9x16.mp4',
+    poster: '/ads/make-it-real/preview/poster-9x16-800.webp',
+    shipped: true,
+    runtime: '38 sec',
+  },
+  makeItRealSquare: {
+    mp4: '/ads/make-it-real/make-it-real-1x1.mp4',
+    poster: '/ads/make-it-real/preview/poster-1x1-800.webp',
+    shipped: true,
+    runtime: '38 sec',
+  },
+
   hero: {
     mp4: '/video/hundredfold-film.mp4',
     poster: '/video/hundredfold-film.jpg',
