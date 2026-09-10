@@ -793,11 +793,25 @@ export function buildSuiteEmail(args: {
   replyTo: string;
   /** Mr. Mustard signs it when he has actually spoken to them. Otherwise Sarah does. */
   fromMustard: boolean;
+  /**
+   * THE LATE SUITE (Sarah, 2026-09-09).
+   *
+   * For somebody who asked for a demo and waited too long for it: they built
+   * one at the demo station, clicked "the free build" in a campaign email, or
+   * asked Mr. Mustard on a call, and the suite sat finished on the board. The
+   * email owns the wait in one sentence, never in the subject, gives the
+   * reason a person can accept (the response outran us), and asks for one
+   * thing: call Mr. Mustard and book a slot with Sarah. Nothing about our
+   * internals. Sarah signs it whether or not Mr. Mustard spoke to them,
+   * because the apology is hers.
+   */
+  late?: boolean;
 }): BuiltCampaignEmail | null {
   const { lead, suite } = args;
   if (!lead.email) return null;
   const business = shortBusiness(lead.business_name);
   const greeting = greetingFor(lead);
+  const late = Boolean(args.late);
 
   const pieces: { label: string; blurb: string; url: string }[] = [];
   if (suite.siteUrl) {
@@ -857,24 +871,41 @@ export function buildSuiteEmail(args: {
       // subject has even earned a click, so it names the same pieces the body
       // does and nothing more. It promised a back office to everybody once; the
       // back office is not part of this offer at all now.
-      preheader:
-        pieces.length === 2
+      preheader: late
+        ? `You asked for a demo. It is live now, and it is yours to break.`
+        : pieces.length === 2
           ? `Your website and your receptionist are live. Nothing to sign up for.`
           : onlySite
             ? `Your website is live. Nothing to sign up for.`
             : `Your receptionist is live. Nothing to sign up for.`,
-      eyebrow: 'IT IS BUILT',
+      eyebrow: late ? 'YOUR DEMO IS READY' : 'IT IS BUILT',
       greeting,
       body:
-        p(`I built it.`) +
-        p(
-          pieces.length === 2
-            ? `${escape(business)} now has a website and an AI receptionist answering the phone on it. Both are live right now. Nothing to sign up for, no card, no call with me first.`
-            : `It is live right now. Nothing to sign up for, no card, no call with me first.`,
-        ) +
+        (late
+          ? p(`You asked for a demo and it took me longer than it should have to get it to you. I am sorry about that. The response was bigger than we planned for, and I am glad ${escape(business)} was in it.`) +
+            p(
+              pieces.length === 2
+                ? `Here is what I built: a website for ${escape(business)} and an AI receptionist answering the phone on it. Both are live right now. Nothing to sign up for, no card.`
+                : `Here is what I built. It is live right now. Nothing to sign up for, no card.`,
+            )
+          : p(`I built it.`) +
+            p(
+              pieces.length === 2
+                ? `${escape(business)} now has a website and an AI receptionist answering the phone on it. Both are live right now. Nothing to sign up for, no card, no call with me first.`
+                : `It is live right now. Nothing to sign up for, no card, no call with me first.`,
+            )) +
         videoLine +
         `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:16px 0 6px">${list}</table>` +
-        p(`Break it if you can. That is genuinely the best thing you could do with it today.`) +
+        (late
+          ? p(`Break it if you can. Then let's talk about it.`) +
+            `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:14px 0"><tr>
+          <td style="border:2px solid #161616;border-radius:14px;padding:16px 18px;background:#FBF6EA">
+            <p style="margin:0;font-size:15px;color:#161616"><strong>Call my agent and book a slot with me</strong></p>
+            <p style="margin:6px 0 0;font-size:14px;color:#5a564f;line-height:1.6">Mr. Mustard answers our line. Tell him you want time with Sarah and he will put you on my calendar while you are on the phone. He is the same technology that is answering for ${escape(business)} in the demo, so the call is a second look at it.</p>
+            <p style="margin:10px 0 0"><a href="tel:${escape(SITE.phoneE164)}" style="font-size:16px;font-weight:bold;color:#8a6a1f;text-decoration:none">${escape(SITE.phone)}</a></p>
+          </td>
+        </tr></table>`
+          : p(`Break it if you can. That is genuinely the best thing you could do with it today.`)) +
         `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:14px 0"><tr>
           <td style="border:2px solid #161616;border-radius:14px;padding:16px 18px;background:#FBF6EA">
             <p style="margin:0;font-size:15px;color:#161616"><strong>If you want the receptionist on your real incoming calls</strong></p>
@@ -883,10 +914,12 @@ export function buildSuiteEmail(args: {
           </td>
         </tr></table>` +
         p(
-          `Or if you would rather talk to a person about it, <a href="${escape(args.calendarUrl)}" style="color:#C2261A;font-weight:700;text-decoration:none">grab time with me</a>. If the answer is no, replying with the word no is a complete answer and I will stop.`,
+          late
+            ? `Or skip the phone and <a href="${escape(args.calendarUrl)}" style="color:#C2261A;font-weight:700;text-decoration:none">book the slot yourself</a>. If the answer is no, replying with the word no is a complete answer and I will stop.`
+            : `Or if you would rather talk to a person about it, <a href="${escape(args.calendarUrl)}" style="color:#C2261A;font-weight:700;text-decoration:none">grab time with me</a>. If the answer is no, replying with the word no is a complete answer and I will stop.`,
         ),
       cta: { label: 'Open everything', url: suite.hubUrl },
-      signature: args.fromMustard ? 'Mr. Mustard' : 'Sarah',
+      signature: args.fromMustard && !late ? 'Mr. Mustard' : 'Sarah',
       trackId: lead.id,
     }) + complianceFooter(lead.email);
 

@@ -434,7 +434,7 @@ export async function sendSuiteEmail(
   db: SupabaseClient,
   campaign: AcqCampaign,
   lead: AcqProspect,
-  opts: { resend?: boolean } = {},
+  opts: { resend?: boolean; late?: boolean } = {},
   /**
    * Sarah, deliberately, now. Lifts the switches and the pacing gates and
    * nothing else: see `override` in lib/acq/governor.ts for exactly which
@@ -480,8 +480,9 @@ export async function sendSuiteEmail(
     offerLine: OFFER.line,
     // He only signs it if he has actually spoken to them. A stranger getting a
     // warm note from a character they have never met reads as a bot.
-    fromMustard: lead.call_stage === 'completed',
-    fromName: lead.call_stage === 'completed' ? 'Mr. Mustard at Modern Mustard Seed' : campaign.from_name,
+    fromMustard: lead.call_stage === 'completed' && !opts.late,
+    late: Boolean(opts.late),
+    fromName: lead.call_stage === 'completed' && !opts.late ? 'Mr. Mustard at Modern Mustard Seed' : campaign.from_name,
     fromEmail: campaign.from_email,
     replyTo: campaign.reply_to,
   });
@@ -519,7 +520,7 @@ export async function sendSuiteEmail(
     leadId: lead.id,
     campaignId: campaign.id,
     type: 'demo_emailed',
-    label: `Their full suite was emailed to ${built.to}${override ? ' (sent by hand)' : ''}${opts.resend ? ' (sent again)' : ''}`,
+    label: `Their full suite was emailed to ${built.to}${opts.late ? ' (the late suite, with the apology)' : ''}${override ? ' (sent by hand)' : ''}${opts.resend ? ' (sent again)' : ''}`,
     detail: {
       hubUrl,
       voice: Boolean(lead.demo_url),
@@ -534,6 +535,7 @@ export async function sendSuiteEmail(
       ...(chase.cancelled ? { supersededFollowups: chase.cancelled } : {}),
       ...(override ? { override: override.reason } : {}),
       ...(opts.resend ? { resend: true } : {}),
+      ...(opts.late ? { late: true } : {}),
     },
   });
 
