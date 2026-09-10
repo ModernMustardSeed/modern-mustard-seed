@@ -43,12 +43,11 @@ import { estimateFor } from '@/lib/acq/personalize';
 /* ───────────────────────────── what is built ───────────────────────────── */
 
 /**
- * The suite has four pieces and they land at different speeds: the voice agent
- * and the command center are instant, the website takes the local worker
- * twenty to forty minutes, and the walkthrough film is cut after the website.
- * A single boolean would hide all of that, so the board reads this instead.
+ * The pieces land at different speeds: the voice agent and the command center
+ * are instant, and the website takes the local worker twenty to forty minutes.
+ * A single boolean would hide that, so the board reads this instead.
  */
-export type SuitePiece = 'voice' | 'site' | 'os' | 'film';
+export type SuitePiece = 'voice' | 'site' | 'os';
 
 export type SuiteStage =
   /** Nothing built. */
@@ -92,7 +91,6 @@ export type SuiteState = {
    */
   osShown: boolean;
   hubUrl: string | null;
-  filmStatus: string | null;
   /** How many pieces the prospect can actually open. */
   pieces: number;
 };
@@ -106,10 +104,7 @@ export function suiteState(lead: AcqSuiteLead): SuiteState {
   // The command center is never a piece of a prospect's suite any more, so it
   // is never shown and never counted. See SuiteState.osShown.
   const osShown = false;
-  const pieces =
-    (lead.demo_url ? 1 : 0) +
-    (siteReady ? 1 : 0) +
-    (lead.suite_film_status === 'ready' ? 1 : 0);
+  const pieces = (lead.demo_url ? 1 : 0) + (siteReady ? 1 : 0);
 
   let stage: SuiteStage;
   if (lead.unsubscribed_at || CLOSED_STAGES.includes(lead.acq_stage) || lead.client_status === 'client') stage = 'closed';
@@ -127,7 +122,6 @@ export function suiteState(lead: AcqSuiteLead): SuiteState {
     osUrl: lead.os_demo_url,
     osShown,
     hubUrl: lead.hub_demo_url,
-    filmStatus: lead.suite_film_status ?? null,
     pieces,
   };
 }
@@ -146,7 +140,7 @@ export type AcqSuiteLead = Pick<
   | 'site_demo_url'
   | 'site_demo_status'
   | 'unsubscribed_at'
-> & { suite_film_status?: string | null };
+>;
 
 /* ─────────────────────────── the design tiers ──────────────────────────── */
 
@@ -538,8 +532,7 @@ export type SiteQueueResult =
  * The build itself runs on Sarah's machine: scripts/demo-site-worker.mjs claims
  * the row and runs headless Claude Code on the Max plan (flat subscription,
  * never the metered API). The finished page ships at /demo/site/<id> with their
- * built voice agent overlaid as a live call widget, and the worker queues the
- * walkthrough film as its last step.
+ * built voice agent overlaid as a live call widget.
  *
  * Idempotent by default: a queued, building or ready run is left exactly as it
  * is. `force` re-queues from scratch, which is the retry path for a failed

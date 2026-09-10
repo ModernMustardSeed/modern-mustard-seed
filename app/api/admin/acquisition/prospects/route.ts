@@ -19,7 +19,7 @@ const LIST_COLS =
   'payment_status,client_status,unsubscribed_at,bounced,is_test,duplicate_of,needs_human,source,' +
   'open_24_7,emergency_service,created_at,updated_at,imported_at,last_researched_at,assigned_to,reply_at,' +
   // What is built for them, so a row can build and send without opening it.
-  'demo_url,site_demo_url,site_demo_status,os_demo_url,hub_demo_url,suite_film_status';
+  'demo_url,site_demo_url,site_demo_status,os_demo_url,hub_demo_url';
 
 /** The CRM list: search, filter, sort, page. */
 export async function GET(req: Request) {

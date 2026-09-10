@@ -155,8 +155,8 @@ export type OutboundLead = {
   presence_audit_url: string | null;
   presence_audit_score: number | null;
   presence_audit_at: string | null;
-  /** Their own walkthrough film, cut as the last step of the build
-   *  (scripts/suite-film). The suite is not announced until this is 'ready'. */
+  /** RETIRED 2026-09-10. Nothing cuts one and nothing waits on one; the
+   *  column stays so a film already cut still plays on the hub. */
   suite_film_status: 'queued' | 'filming' | 'ready' | 'failed' | null;
   affiliate_id: string | null;
   origin: BuildOrigin | null;

@@ -159,7 +159,6 @@ const full = buildSuiteEmail({
     siteUrl: prospect.site_demo_url,
     osUrl: prospect.os_demo_url,
     personalVideo: true,
-    film: true,
   },
   checkoutUrl: 'https://modernmustardseed.com/demo/order/hub-1',
   calendarUrl: 'https://modernmustardseed.com/book',
@@ -187,7 +186,6 @@ const partial = buildSuiteEmail({
     siteUrl: null,
     osUrl: prospect.os_demo_url,
     personalVideo: false,
-    film: false,
   },
   checkoutUrl: 'https://modernmustardseed.com/demo/order/hub-1',
   calendarUrl: 'https://modernmustardseed.com/book',
@@ -208,7 +206,7 @@ console.log('written          :', path.join(OUT, 'acq-suite-email-partial.html')
 /* ── 4. the email refuses when nothing is built ── */
 const none = buildSuiteEmail({
   lead: prospect,
-  suite: { hubUrl: prospect.hub_demo_url!, voiceUrl: null, siteUrl: null, osUrl: null, personalVideo: false, film: false },
+  suite: { hubUrl: prospect.hub_demo_url!, voiceUrl: null, siteUrl: null, osUrl: null, personalVideo: false },
   checkoutUrl: 'x',
   calendarUrl: 'y',
   offerLine: OFFER.line,
@@ -273,15 +271,15 @@ rule('THE COMMAND CENTER RULE (never named, in any shape)');
 const shapes = [
   {
     name: 'voice agent alone (an os_demo_url from before the change is present)',
-    suite: { hubUrl: prospect.hub_demo_url!, voiceUrl: prospect.demo_url, siteUrl: null, osUrl: prospect.os_demo_url, personalVideo: false, film: false },
+    suite: { hubUrl: prospect.hub_demo_url!, voiceUrl: prospect.demo_url, siteUrl: null, osUrl: prospect.os_demo_url, personalVideo: false },
   },
   {
     name: 'website alone',
-    suite: { hubUrl: prospect.hub_demo_url!, voiceUrl: null, siteUrl: prospect.site_demo_url, osUrl: prospect.os_demo_url, personalVideo: false, film: false },
+    suite: { hubUrl: prospect.hub_demo_url!, voiceUrl: null, siteUrl: prospect.site_demo_url, osUrl: prospect.os_demo_url, personalVideo: false },
   },
   {
     name: 'the pair',
-    suite: { hubUrl: prospect.hub_demo_url!, voiceUrl: prospect.demo_url, siteUrl: prospect.site_demo_url, osUrl: prospect.os_demo_url, personalVideo: false, film: false },
+    suite: { hubUrl: prospect.hub_demo_url!, voiceUrl: prospect.demo_url, siteUrl: prospect.site_demo_url, osUrl: prospect.os_demo_url, personalVideo: false },
   },
 ];
 

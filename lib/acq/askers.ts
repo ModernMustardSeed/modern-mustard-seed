@@ -54,7 +54,6 @@ export const OURS = /makeourcitypretty|wildhopehouse|fiatluxdesign84|theclawconc
 export const PLACEHOLDER = /@example\.|unknown@|@\.com$|yourbusiness|@company\.site|safeguarding@|^abuse@|@fairpoint\.net$/i;
 
 export type AskerLead = AcqProspect & {
-  suite_film_status?: string | null;
   status?: string | null;
   is_test?: boolean;
 };
@@ -241,7 +240,6 @@ export function piecesOf(a: Asker): string {
     [
       l.demo_url ? 'receptionist' : null,
       l.site_demo_status === 'ready' && l.site_demo_url ? 'website' : l.site_demo_status ? `website ${l.site_demo_status}` : 'no website',
-      l.suite_film_status === 'ready' ? 'film' : null,
     ]
       .filter(Boolean)
       .join(' + ') || 'nothing'

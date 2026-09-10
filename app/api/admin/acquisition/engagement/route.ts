@@ -151,7 +151,7 @@ export async function GET(req: Request) {
   // ONE literal string on purpose: a concatenated list widens to `string` and
   // supabase-js loses row typing entirely (every row becomes GenericStringError).
   const LEAD_COLS =
-    'id,business_name,contact_name,phone,email,city,state,trade,lead_score,acq_stage,email_stage,email_open_count,email_opened_at,last_open_at,consent_status,consent_at,call_stage,last_call_at,needs_human,checkout_sent_at,client_status,demo_status,unsubscribed_at,is_test,acq_campaign_id,reply_at,demo_url,site_demo_url,site_demo_status,os_demo_url,hub_demo_url,suite_film_status,demo_emailed_at';
+    'id,business_name,contact_name,phone,email,city,state,trade,lead_score,acq_stage,email_stage,email_open_count,email_opened_at,last_open_at,consent_status,consent_at,call_stage,last_call_at,needs_human,checkout_sent_at,client_status,demo_status,unsubscribed_at,is_test,acq_campaign_id,reply_at,demo_url,site_demo_url,site_demo_status,os_demo_url,hub_demo_url,demo_emailed_at';
   type LeadRow = Record<string, unknown> & { id: string };
   const [leads, calls, consents] = await Promise.all([
     inChunks<LeadRow>(ids, async (chunk) => {
