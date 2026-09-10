@@ -3,7 +3,7 @@
 import { useRef, useState } from 'react';
 import copy from '@/data/free-audit-campaign.json';
 
-const BASE = '/ads/free-audit';
+const BASE = '/ads/free-audit/v2';
 const card = 'border-2 border-[#161616] bg-white p-5 shadow-[4px_4px_0_0_#161616]';
 const button = 'inline-flex items-center justify-center border-2 border-[#161616] bg-[#F5B700] px-4 py-2 text-sm font-bold text-[#161616] hover:bg-[#FFDD55] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4';
 
@@ -32,7 +32,7 @@ function CopyCard({ title, text }: { title: string; text: string }) {
 
 const images = [
   { file: 'feed-post', label: 'Feed post', size: '1080 × 1350', alt: copy['Image alt text'] },
-  { file: 'reel-cover', label: 'Reel cover', size: '1080 × 1920', alt: 'Mustard yellow phone and storefront. Your audit is free. Comment AUDIT.' },
+  { file: 'reel-cover', label: 'Reel cover', size: '1080 × 1920', alt: 'A miniature mustard yellow storefront in a golden spotlight. Get found. Start with a free audit. Comment AUDIT.' },
   { file: 'story-1', label: 'Story 1: Search', size: '1080 × 1920', alt: 'Search has changed. AI is part of how people find a business. Free audit from Modern Mustard Seed.' },
   { file: 'story-2', label: 'Story 2: Follow-up', size: '1080 × 1920', alt: 'They reach out. What happens? Forms, booking, and follow-up. Free audit from Modern Mustard Seed.' },
   { file: 'story-3', label: 'Story 3: Invitation', size: '1080 × 1920', alt: 'Your website and online presence audit is free. Reply AUDIT and send your website in a message.' },
@@ -43,7 +43,7 @@ export default function FreeAuditCampaign() {
     <section className="border-2 border-[#161616] bg-[#080C16] p-6 text-[#FBF6EA] shadow-[6px_6px_0_0_#F5B700] md:p-8">
       <p className="font-mono text-xs text-[#F5B700]">Campaign 25 / Free Website Audit</p>
       <h2 className="mt-3 font-display text-3xl font-bold md:text-4xl">Good at what you do. <span className="text-[#F5B700]">Let&apos;s help them find you.</span></h2>
-      <p className="mt-4 max-w-3xl">The original sung reel, ad graphics, regular post, Stories, and replies. A free website and online presence audit covering search visibility, AI discoverability, and the path from inquiry to follow-up.</p>
+      <p className="mt-4 max-w-3xl">The cinematic reel with the original song, redesigned ad graphics, regular post, Stories, and replies. A free website and online presence audit covering search visibility, AI discoverability, and the path from inquiry to follow-up.</p>
       <div className="mt-5 flex flex-wrap gap-3">
         <a className={button} href={`${BASE}/mms-free-audit-campaign.zip`} download>Download complete campaign</a>
         <a className={button} href={`${BASE}/campaign-kit.pdf`} download>Download copy kit PDF</a>
@@ -57,7 +57,7 @@ export default function FreeAuditCampaign() {
         <video controls playsInline preload="none" poster={`${BASE}/preview/reel-cover-800.webp`} className="aspect-[9/16] w-full bg-[#080C16]" src={`${BASE}/free-audit-reel.mp4`}>
           <track kind="captions" src={`${BASE}/reel-captions.vtt`} srcLang="en" label="English lyrics" />
         </video>
-        <p className="my-3 text-sm">1080 × 1920. Original song and burned-in lyric captions.</p>
+        <p className="my-3 text-sm">1080 × 1920. Six animated scenes with the original song and on-screen messaging.</p>
         <a className={button} href={`${BASE}/free-audit-reel.mp4`} download>Download reel</a>
       </div>
       <div className="space-y-5">
