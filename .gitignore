@@ -88,3 +88,4 @@ artifacts/
 # The esbuild bundle addresses.mjs makes of lib/enrich.ts at run time.
 .door-drop-enrich.mjs
 .revert-lib.mjs
+.door-drop-source.mjs
