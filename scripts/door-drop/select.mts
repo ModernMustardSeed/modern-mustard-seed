@@ -46,28 +46,50 @@ export const FLATHEAD = [
 
 /**
  * Brands whose local sign says one thing and whose website belongs to a head
- * office.
+ * office. Split into two lists, because the two kinds of name fail differently.
  *
- * Matched on WORD boundaries, not as substrings. The first version used
- * `includes` and dropped Wildflowers Salon in Bigfork because "lowe" is inside
- * "Wildflowers". A local salon silently disappearing from a door drop is the
- * kind of bug that costs a customer and never announces itself.
+ * CHAINS are distinctive enough to match anywhere in a business name on word
+ * boundaries. Nobody in the Flathead is called "Panda Express Excavating".
+ * Boundaries, not `includes`: the first version dropped Wildflowers Salon in
+ * Bigfork because "lowe" sits inside "Wildflowers".
+ *
+ * CHAINS_EXACT are ordinary words that happen to be a brand, and they only
+ * match when they are essentially the WHOLE name. "Michaels" is a craft store
+ * and "Michaels Auto Body" is a Kalispell body shop; a word-boundary match
+ * drops both and never says why in a way anyone would notice. The failure modes
+ * are not symmetric here. A chain that slips through gets printed and then gets
+ * spotted by eye on the route sheet, which costs one sheet of paper. A local
+ * business wrongly matched disappears from the campaign silently. So this list
+ * is deliberately timid.
  */
 const CHAINS = [
-  'panda express', 'subway', 'mcdonald', 'starbucks', 'taco bell', 'wendy', 'burger king',
-  'domino', 'pizza hut', 'kfc', 'dairy queen', 'arby', 'jimmy john', 'papa john',
+  'panda express', 'mcdonald', 'starbucks', 'taco bell', 'burger king',
+  'pizza hut', 'dairy queen', 'jimmy john', 'papa john', 'papa murphy',
   'applebee', 'wingstop', 'chipotle', 'dunkin', 'sonic drive', 'little caesars', 'mod pizza',
   'holiday inn', 'best western', 'hampton inn', 'super 8', 'red lion', 'la quinta',
-  'comfort inn', 'motel 6', 'days inn', 'hilton', 'marriott', 'kwataqnuk',
-  'walmart', 'target', 'costco', 'home depot', 'lowe', 'safeway', 'albertsons',
+  'comfort inn', 'motel 6', 'days inn', 'kwataqnuk',
+  'walmart', 'costco', 'home depot', 'safeway', 'albertsons',
   'ace hardware', 'napa auto', "o'reilly", 'autozone', 'jiffy lube', 'les schwab',
   'great clips', 'supercuts', 'anytime fitness', 'planet fitness', 'snap fitness',
   'h&r block', 'jackson hewitt', 'edward jones', 'state farm', 'allstate', 'farmers insurance',
-  'u-haul', 'fedex', 'ups store', 'verizon', 't-mobile', 'at&t', 'xfinity', 'spectrum',
+  'u-haul', 'fedex', 'ups store', 'verizon', 't-mobile', 'xfinity', 'spectrum',
+  'sherwin williams', 'ross dress', 'tj maxx', 'petsmart', 'dollar tree', 'family dollar',
+  'dollar general', 'walgreens', 'rite aid', 'sally beauty', 'batteries plus',
+  'sport clips', 'cost cutters', 'five guys', 'cold stone', 'dutch bros',
+  'scooters coffee', 'taco john', 'mackenzie river', 'famous daves', 'ulta beauty',
+  "lowe's home improvement", 'lowes home improvement', 'subway sandwiches',
   // The boundary match wants a non-letter after the name, so the possessive and
   // plural spellings a scrape actually produces need their own entries.
   'wendys', 'arbys', 'dominos', 'lowes', 'mcdonalds', 'papa johns', 'jimmy johns',
-  'applebees', 'little caesars', 'dennys', 'mcdonald’s',
+  'applebees', 'dennys', 'papa murphys', 'taco johns', 'mcdonald’s',
+];
+
+/** Only when the whole name is the brand. See the note above. */
+const CHAINS_EXACT = [
+  'subway', 'target', 'lowe', 'hilton', 'marriott', 'michaels', 'ulta', 'petco',
+  'cvs', 'maurices', 'joann', 'gamestop', 'midas', 'meineke', 'firestone',
+  'panera', 'qdoba', 'jamba', 'baskin robbins', 'wendy', 'arby', 'domino',
+  'kfc', 'at&t',
 ];
 
 /**
@@ -266,6 +288,25 @@ export const NOSITE_MARK = 'NO WEBSITE: confirmed on Google Maps';
  */
 export const NOSITE_DATED = /NO WEBSITE: confirmed on Google Maps (\d{4}-\d{2}-\d{2})/;
 
+/**
+ * Is the business name essentially just this brand? Corporate filler and a store
+ * number come off first, so "Subway #1204", "Target Stores Inc" and "Ulta Beauty
+ * Kalispell" all reduce to the brand, and "Michaels Auto Body" does not.
+ */
+const FILLER = /(inc|llc|l\.l\.c|co|corp|company|stores?|the|of|at|kalispell|whitefish|bigfork|polson|somers|lakeside|columbia falls|montana|mt)/g;
+/** "#1204" and a bare trailing store number. The `#` has no word boundary in
+ *  front of it after a space, which is why it cannot live inside FILLER. */
+const STORE_NO = /#\s*\d+|\s\d{3,}\s*$/g;
+function isExactChain(name: string): string | null {
+  const reduced = name.toLowerCase()
+    .replace(STORE_NO, ' ')
+    .replace(FILLER, ' ')
+    .replace(/[^a-z0-9& ]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+  return CHAINS_EXACT.find((c) => reduced === c || reduced === `${c}s` || reduced === `${c}'s`) ?? null;
+}
+
 export type Gated = { keep: Lead[]; nosite: Lead[]; stale: Lead[]; dropped: Dropped[] };
 
 export function gate(
@@ -324,7 +365,7 @@ export function gate(
       continue;
     }
 
-    const chain = CHAINS.find((c) => chainRe(c).test(lowerName));
+    const chain = CHAINS.find((c) => chainRe(c).test(lowerName)) ?? isExactChain(name);
     if (chain) { drop(l, 'local', `national chain by name (${chain})`); continue; }
     const sharedBy = l.domain_key ? (shared.get(l.domain_key) ?? 0) : 0;
     if (sharedBy >= 3) {
