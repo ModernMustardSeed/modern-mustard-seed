@@ -25,7 +25,10 @@ const flag = (n: string, d: string) => {
   return i === -1 ? d : (argv[i + 1] ?? d);
 };
 const OUT = path.resolve(flag('out', path.join('artifacts', 'door-drop', 'full')));
-const COPIES_EACH = Number(flag('copies-each', '25'));
+const COPIES_EACH = Number(flag('copies-each', '3'));
+/** Must match the --format the run was built with. */
+const FORMAT = (flag('format', 'page') || 'page').toLowerCase();
+const IS_PAGE = FORMAT === 'page';
 
 type Manifest = {
   generated_at: string;
@@ -39,9 +42,9 @@ const businesses = m.printed.length;
 const byTown = new Map<string, number>();
 for (const p of m.printed) byTown.set(p.city, (byTown.get(p.city) ?? 0) + 1);
 
-const sheetsPerBusiness = Math.ceil(COPIES_EACH / 2);
-const totalSheets = businesses * sheetsPerBusiness;
 const totalFlyers = businesses * COPIES_EACH;
+/** A full page is one sheet per piece. A half page is two pieces per sheet. */
+const totalSheets = IS_PAGE ? totalFlyers : businesses * Math.ceil(COPIES_EACH / 2);
 
 const rows = [...byTown.entries()].map(([t, n]) => `<tr><td>${t}</td><td class="n">${n}</td><td class="n">${n * COPIES_EACH}</td></tr>`).join('');
 
@@ -80,24 +83,29 @@ ol { margin: 4pt 0 0; padding-left: 15pt; } li { margin-bottom: 4pt; }
 </style></head><body>
 
 <div class="eyebrow">Print Spec &middot; ${m.generated_at.slice(0, 10)}</div>
-<h1>Flathead Door Drop, half page</h1>
+<h1>Flathead Door Drop${IS_PAGE ? '' : ', half page'}</h1>
 
 <div class="warn">
   <b>Every flyer in this file is a different business.</b><br>
-  This is not one design at quantity ${totalFlyers}. It is ${businesses} separate two sided flyers, each carrying
-  its own company name, its own score and its own text. Pages run front, back, front, back in order. Please do
-  not print page one repeatedly.
+  This is not one design at quantity ${totalFlyers}. It is ${businesses} separate flyers, each carrying its own
+  company name, its own score and its own text. ${IS_PAGE
+    ? 'One page per business, in order, single sided.'
+    : 'Pages run front, back, front, back in order.'} Please do not print page one repeatedly.
 </div>
 
 <h2>The job</h2>
 <dl>
-  <dt>File</dt><dd><b>press/flyers-press.pdf</b>, ${businesses * 2} pages</dd>
-  <dt>Trim size</dt><dd>8.5 in wide by 5.5 in tall, landscape. Half of a letter sheet.</dd>
-  <dt>File size</dt><dd>8.75 in by 5.75 in. That is 0.125 in of bleed on all four sides, with crop marks.</dd>
-  <dt>Sides</dt><dd>Two, 4/4 full colour. Page 1 is the front of flyer 1, page 2 is its back, and so on.</dd>
+  <dt>File</dt><dd><b>press/flyers-press.pdf</b>, ${IS_PAGE ? businesses : businesses * 2} pages</dd>
+  <dt>Trim size</dt><dd>${IS_PAGE ? '8.5 in by 11 in, portrait. A letter sheet.' : '8.5 in wide by 5.5 in tall, landscape. Half of a letter sheet.'}</dd>
+  <dt>File size</dt><dd>${IS_PAGE ? '8.75 in by 11.25 in' : '8.75 in by 5.75 in'}. That is 0.125 in of bleed on all four sides, with crop marks.</dd>
+  <dt>Sides</dt><dd>${IS_PAGE
+    ? '<b>ONE SIDE ONLY</b>, 4/0 full colour. One page per business, in order. The back stays blank.'
+    : 'Two, 4/4 full colour. Page 1 is the front of flyer 1, page 2 is its back, and so on.'}</dd>
   <dt>Quantity</dt><dd><b>${COPIES_EACH} of each</b> of the ${businesses} businesses, ${totalFlyers} pieces in total.</dd>
   <dt>Stock</dt><dd>100 lb matte cover preferred. 80 lb gloss text is acceptable if it keeps the job same day.</dd>
-  <dt>Finishing</dt><dd>Cut to trim. No fold, no score, no round corner, no coating that kills a pen.</dd>
+  <dt>Finishing</dt><dd>${IS_PAGE
+    ? 'Cut to trim. No fold, no score, no round corner, no coating that kills a pen. Nothing else.'
+    : 'Cut to trim. No fold, no score, no round corner, no coating that kills a pen.'}</dd>
   <dt>Colour</dt><dd>File is RGB. Convert with US Web Coated SWOP. Match the swatches below rather than
       auto-correcting; the cream ground should stay warm and must not print white.</dd>
 </dl>
@@ -120,14 +128,15 @@ ol { margin: 4pt 0 0; padding-left: 15pt; } li { margin-bottom: 4pt; }
 </table>
 
 <h2>If you would rather we ran it in house</h2>
-<p style="margin:4pt 0 0">The file <b>office/flyers-2up.pdf</b> is the same artwork imposed two up on letter,
-the same business on both halves of a sheet. Print it double sided, <b>flip on the LONG edge</b>, then make one
-straight cut across the middle of the stack. Short edge flip turns every back upside down. That file carries
-${m.copies_per_business} copies of each business as built; ask for a different number and it will be rebuilt.</p>
+<p style="margin:4pt 0 0">${IS_PAGE
+  ? `The file <b>office/flyers-letter.pdf</b> is the same artwork at trim size with no bleed and no marks, ${m.copies_per_business} copies of each business in order. Print it single sided on letter. There is nothing to cut and nothing to flip.`
+  : 'The file <b>office/flyers-2up.pdf</b> is the same artwork imposed two up on letter, the same business on both halves of a sheet. Print it double sided, <b>flip on the LONG edge</b>, then make one straight cut across the middle of the stack. Short edge flip turns every back upside down.'}</p>
 
 <h2>Proofing</h2>
 <ol>
-  <li>Pull one sheet before the run and check that the company name at the top matches the company name on the back.</li>
+  <li>${IS_PAGE
+    ? 'Pull three sheets from anywhere in the run and check that all three carry different company names.'
+    : 'Pull one sheet before the run and check that the company name at the top matches the company name on the back.'}</li>
   <li>Check the cream reads warm and not grey. If it has gone grey the profile is wrong.</li>
   <li>Scan the QR square on the front with a phone. It must open a web page. If it does not, stop and call.</li>
 </ol>
@@ -145,4 +154,7 @@ await page.pdf({ path: path.join(OUT, 'press', 'printer-spec.pdf'), format: 'Let
 await page.screenshot({ path: path.join(OUT, 'proof', 'printer-spec.png'), fullPage: true });
 await browser.close();
 
-console.log(`printer-spec.pdf written: ${businesses} businesses, ${COPIES_EACH} each, ${totalFlyers} pieces, ${totalSheets} sheets if run 2-up.`);
+console.log(
+  `printer-spec.pdf written: ${businesses} businesses, ${COPIES_EACH} each, ${totalFlyers} pieces, `
+  + `${totalSheets} letter sheets${IS_PAGE ? ' single sided' : ' run 2-up duplex'}.`,
+);

@@ -10,6 +10,21 @@ engine that read their site.
 
 ## What runs
 
+The order that produced the 2026-09-11 run, start to finish:
+
+```powershell
+# 1. fill in addresses and settle the website question, one Maps page load each
+node scripts/door-drop/addresses.mjs --apply
+
+# 2. re-read every site whose audit has aged out, then build everything
+npx tsx scripts/door-drop/build.mts --all --refresh --out artifacts/door-drop/final
+
+# 3. the sheet that goes to the printer with the file
+npx tsx scripts/door-drop/spec.mts --out artifacts/door-drop/final --copies-each 3
+```
+
+Other runs:
+
 ```powershell
 # proof run: twelve businesses, whatever audits are already fresh
 npx tsx scripts/door-drop/build.mts
@@ -17,12 +32,30 @@ npx tsx scripts/door-drop/build.mts
 # the real run: re-read every site first, then print everything that passes
 npx tsx scripts/door-drop/build.mts --all --refresh --out artifacts/door-drop/full
 
-# fill in street addresses so the route sheet has somewhere to send her
-node scripts/door-drop/addresses.mjs --apply
-
-# the sheet that goes to the printer with the file
-npx tsx scripts/door-drop/spec.mts --out artifacts/door-drop/full --copies-each 25
+# just one piece or the other
+npx tsx scripts/door-drop/build.mts --all --audit-only
+npx tsx scripts/door-drop/build.mts --all --nosite-only
 ```
+
+## The 2026-09-11 run
+
+203 businesses across the seven towns: 188 graded, 15 with no website of their
+own. 406 press pages. Nobody scored above a C+.
+
+| Grade | Count |
+| --- | --- |
+| C+ / C / C- | 21 |
+| D+ / D | 54 |
+| F | 113 |
+| no website | 15 |
+
+24 dropped at the gates, 18 left out because their site could not be read at all,
+44 printed without a street address because the Maps phone disagreed and the
+route sheet says so rather than guessing.
+
+Six of the graded businesses live on a booking platform, and the engine read
+each one correctly rather than grading the platform: *"This is not your website.
+It is Booksy's, and it rents you one page."*
 
 Flags on `build.mts`:
 

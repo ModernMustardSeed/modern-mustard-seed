@@ -117,7 +117,7 @@ export function firstSentences(text: string, max: number): string {
   let cut = comma > max * 0.55 ? window.slice(0, comma) : window.slice(0, window.lastIndexOf(' '));
 
   // Walk the tail back off anything that was introducing a clause we just cut.
-  let words = cut.split(' ');
+  const words = cut.split(' ');
   while (words.length > 4 && DANGLING.has(words[words.length - 1].toLowerCase().replace(/[^a-z]/g, ''))) {
     words.pop();
   }
@@ -344,7 +344,7 @@ export function frontInner(lead: Lead, qr: string, opts: FlyerOptions): string {
 
       <div class="card yellow" style="padding:0.11in 0.14in">
         <p style="margin:0;font-family:'Playfair Display',Georgia,serif;font-weight:900;font-size:12.5pt;line-height:1.15;color:${INK}">
-          Every one of these is fixable, and none of it needs a new business.
+          Every one of these is fixable.
         </p>
         <p style="margin:0.055in 0 0;font-size:7.9pt;line-height:1.33;color:rgba(22,22,22,0.78)">
           Turn this over for the three we would do first.
@@ -388,7 +388,7 @@ export function frontInner(lead: Lead, qr: string, opts: FlyerOptions): string {
 }
 
 /** BACK: the prescription, then one sentence of offer. Trim contents only. */
-export function backInner(lead: Lead, qr: string, opts: FlyerOptions): string {
+export function backInner(lead: Lead, qr: string, _opts: FlyerOptions): string {
   const r = lead.audit_json as AuditReport;
   const fixes = (r.top_three_fixes ?? []).slice(0, 3);
 
