@@ -40,7 +40,9 @@
  *   node scripts/door-drop/addresses.mjs --apply               the whole backlog
  *   node scripts/door-drop/addresses.mjs --apply --headed      watch it work
  */
-import { readFileSync } from 'node:fs';
+import { readFileSync, rmSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
+import { pathToFileURL } from 'node:url';
 import path from 'node:path';
 import { chromium } from 'playwright';
 import { createClient } from '@supabase/supabase-js';
@@ -65,6 +67,27 @@ const sb = createClient(
   env.SUPABASE_SERVICE_ROLE_KEY || env.supabase_service_role_key,
   { auth: { persistSession: false } },
 );
+
+/**
+ * THE GATE THIS SCRIPT ONCE SKIPPED, and what it cost.
+ *
+ * The Maps panel's "website" link is whatever the owner put in the box, and for
+ * a business with no site that is usually their Facebook page. The first version
+ * of this pass wrote that link straight into `website` and moved seven Kalispell
+ * businesses out of the no-website campaign and into the audit one, where the
+ * engine would have graded facebook.com and printed the score under their name.
+ *
+ * enrich-maps.mjs has always run the link through `badDomain` first. The same
+ * bundle is reused here rather than a second copy of the rules, so this script
+ * and the button can never disagree about what counts as a real website.
+ */
+const BUNDLE = path.join(process.cwd(), '.door-drop-enrich.mjs');
+execFileSync(
+  'npx',
+  ['--no-install', 'esbuild', 'lib/enrich.ts', '--bundle', '--platform=node', '--format=esm', `--outfile=${BUNDLE}`],
+  { stdio: 'pipe', shell: process.platform === 'win32' },
+);
+const { badDomain, hostOf } = await import(pathToFileURL(BUNDLE).href);
 
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36';
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -116,6 +139,7 @@ const readPanel = () =>
 const out = { written: [], mismatch: [], noaddr: [], noplace: [], blocked: [], nosite: [], foundsite: [] };
 
 const NOSITE_MARK = 'NO WEBSITE: confirmed on Google Maps';
+const PRESENCE_MARK = 'WEB PRESENCE:';
 const today = new Date().toISOString().slice(0, 10);
 
 /**
@@ -128,7 +152,35 @@ async function appendNote(lead, note, marker) {
   const notes = [lead.notes, note].filter(Boolean).join(' · ').slice(0, 4000);
   const { error } = await sb.from('outbound_leads').update({ notes }).eq('id', lead.id);
   if (error) console.log(`   ! note not saved: ${error.message}`);
+  lead.notes = notes;
   return !error;
+}
+
+/**
+ * Stamp the no-website confirmation WITH TODAY'S DATE, replacing any older one.
+ *
+ * This cannot go through appendNote, and the reason is a bug that cost a whole
+ * pass. enrich-maps.mjs stamped an UNDATED `NO WEBSITE: confirmed on Google
+ * Maps` on these rows months ago. appendNote dedupes on the marker, the marker
+ * is that same string, so every dated stamp was skipped as a duplicate and
+ * eight confirmed businesses came out of the pass still undated and therefore
+ * still unprintable. The old line is rewritten rather than added to, so the row
+ * carries exactly one confirmation and it is the newest one.
+ */
+async function stampNoSite(lead) {
+  const line = `${NOSITE_MARK} ${today}`;
+  const existing = String(lead.notes ?? '');
+  const stripped = existing
+    .replace(/NO WEBSITE: confirmed on Google Maps(\s+\d{4}-\d{2}-\d{2})?/g, '')
+    .replace(/\s*·\s*·\s*/g, ' · ')
+    .replace(/^\s*·\s*|\s*·\s*$/g, '')
+    .trim();
+  const notes = [stripped, line].filter(Boolean).join(' · ').slice(0, 4000);
+  if (notes === existing) return false;
+  const { error } = await sb.from('outbound_leads').update({ notes }).eq('id', lead.id);
+  if (error) { console.log(`   ! note not saved: ${error.message}`); return false; }
+  lead.notes = notes;
+  return true;
 }
 let n = 0;
 
@@ -177,11 +229,27 @@ for (const lead of leads) {
   // that, which is what earns the second flyer the right to say so in print.
   let siteNote = '';
   if (!lead.website && got.website) {
-    if (APPLY) await sb.from('outbound_leads').update({ website: got.website }).eq('id', lead.id);
-    out.foundsite.push(`${lead.business_name}: ${got.website}`);
-    siteNote = `  site found: ${got.website}`;
+    const why = badDomain(hostOf(got.website) ?? '');
+    if (why) {
+      /**
+       * A Facebook page IS the finding, not a website. It is recorded so the
+       * lead is settled and a re-run skips it, and so the second flyer can say
+       * the accurate thing: your listing points at a Facebook page, which is a
+       * sharper sentence than "you have no website" and just as checkable.
+       */
+      if (APPLY) {
+        await appendNote(lead, `${PRESENCE_MARK} ${got.website} (no site of their own)`, PRESENCE_MARK);
+        await stampNoSite(lead);
+      }
+      out.nosite.push(lead.business_name);
+      siteNote = `  NO SITE OF THEIR OWN (${why.split(' is ')[0]})`;
+    } else {
+      if (APPLY) await sb.from('outbound_leads').update({ website: got.website }).eq('id', lead.id);
+      out.foundsite.push(`${lead.business_name}: ${got.website}`);
+      siteNote = `  site found: ${got.website}`;
+    }
   } else if (!lead.website && !got.website) {
-    if (APPLY) await appendNote(lead, `${NOSITE_MARK} ${today}`, NOSITE_MARK);
+    if (APPLY) await stampNoSite(lead);
     out.nosite.push(lead.business_name);
     siteNote = '  NO WEBSITE confirmed';
   }
@@ -212,6 +280,7 @@ for (const lead of leads) {
 }
 
 await browser.close();
+try { rmSync(BUNDLE); } catch { /* nothing to clean */ }
 
 console.log('');
 console.log(`addresses ${APPLY ? 'written' : 'found'}: ${out.written.length}`);

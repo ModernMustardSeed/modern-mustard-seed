@@ -50,6 +50,38 @@ export function prettyPhone(p: string | null): string | null {
   return `(${n.slice(0, 3)}) ${n.slice(3, 6)}-${n.slice(6)}`;
 }
 
+/**
+ * What their Google listing points at, when it points at something that is not
+ * a website of their own.
+ *
+ * Seven of the nine Kalispell businesses in this campaign are here: their
+ * listing carries a Facebook page or a Square booking link. Printing "you have
+ * no website" at them would be met with "yes I do, it's on Facebook", and the
+ * conversation would be over before it started. Naming the thing they actually
+ * have is both more accurate and a sharper pitch, because the point is not that
+ * the page is missing, it is that the page is not theirs.
+ *
+ * Read out of the `WEB PRESENCE:` note that scripts/door-drop/addresses.mjs
+ * stamps when the Maps link fails lib/enrich.ts's `badDomain`.
+ */
+const PLATFORMS: [RegExp, string][] = [
+  [/facebook\.com|fb\.com/i, 'a Facebook page'],
+  [/instagram\.com/i, 'an Instagram page'],
+  [/linkedin\.com/i, 'a LinkedIn page'],
+  [/square\.site|squareup\.com/i, 'a Square booking link'],
+  [/yelp\.com/i, 'a Yelp listing'],
+  [/nextdoor\.com/i, 'a Nextdoor page'],
+  [/business\.site|godaddysites\.com|wixsite\.com/i, "a page on a builder's own domain"],
+];
+
+export function presenceOf(lead: Lead): { url: string; what: string } | null {
+  const m = /WEB PRESENCE: (\S+)/.exec(lead.notes ?? '');
+  if (!m) return null;
+  const url = m[1];
+  const hit = PLATFORMS.find(([re]) => re.test(url));
+  return { url, what: hit ? hit[1] : "a page on somebody else's platform" };
+}
+
 /** Extra rules this piece needs on top of the shared stylesheet. */
 export const NOSITE_CSS = `
 .nosite-mark { font-family: 'Playfair Display', Georgia, serif; font-weight: 900; line-height: 0.82;
@@ -78,6 +110,7 @@ export function noSiteFrontInner(lead: Lead, qr: string, opts: FlyerOptions): st
   const phone = prettyPhone(lead.phone);
   const address = lead.address ? clean(lead.address) : null;
   const checked = longDate(opts.auditedOn);
+  const presence = presenceOf(lead);
 
   return `<div class="pad">
   <div style="display:flex;align-items:baseline;justify-content:space-between;gap:0.2in">
@@ -90,11 +123,13 @@ export function noSiteFrontInner(lead: Lead, qr: string, opts: FlyerOptions): st
 
     <div style="display:flex;flex-direction:column;min-width:0">
       <h1 class="name" data-fit data-max="29" data-min="14" style="margin:0;font-size:29pt">${esc(lead.business_name)}</h1>
-      <div class="domain" style="margin-top:0.07in">no website on your Google listing</div>
+      <div class="domain" style="margin-top:0.07in">${presence ? `your Google listing points at ${esc(presence.what)}` : 'no website on your Google listing'}</div>
 
-      <p class="headline" style="margin:0.12in 0 0" data-clamp="3">
-        We came to audit your website and there is not one to audit. That is the finding, and it is
-        the most expensive one on this street.
+      <p class="headline" style="margin:0.12in 0 0" data-clamp="3">${presence
+        ? `We came to audit your website and found ${esc(presence.what)} instead. That is the finding, and it is
+           the most expensive one on this street.`
+        : `We came to audit your website and there is not one to audit. That is the finding, and it is
+           the most expensive one on this street.`}
       </p>
 
       <div class="eyebrow" style="margin:0.17in 0 0.08in">What That Costs You</div>
@@ -102,9 +137,12 @@ export function noSiteFrontInner(lead: Lead, qr: string, opts: FlyerOptions): st
         <li class="finding">
           <span class="xmark">&#10007;</span>
           <span style="min-width:0">
-            <span class="finding-cat">Every Search Ends Somewhere Else</span>
-            <span class="finding-note" data-clamp="3">Someone who looks you up lands on a page Google owns, beside
-              competitors who each have one of their own. You do not choose what that page says.</span>
+            <span class="finding-cat">${presence ? 'You Are Renting Your Front Door' : 'Every Search Ends Somewhere Else'}</span>
+            <span class="finding-note" data-clamp="3">${presence
+              ? `Someone who looks you up lands on ${esc(presence.what)}. You do not own it, you cannot change how it
+                 works, and it can be taken down without asking you.`
+              : `Someone who looks you up lands on a page Google owns, beside competitors who each have one of their
+                 own. You do not choose what that page says.`}</span>
           </span>
         </li>
         <li class="finding">
@@ -112,7 +150,8 @@ export function noSiteFrontInner(lead: Lead, qr: string, opts: FlyerOptions): st
           <span style="min-width:0">
             <span class="finding-cat">The AI Assistants Cannot Quote You</span>
             <span class="finding-note" data-clamp="3">When a customer asks an assistant who to call in ${esc(place)},
-              it answers out of pages businesses wrote about themselves. You have not written one.</span>
+              it answers out of pages businesses wrote about themselves${presence ? ', and it does not read social posts' : ''}.
+              You have not written one.</span>
           </span>
         </li>
         <li class="finding">
@@ -137,8 +176,8 @@ export function noSiteFrontInner(lead: Lead, qr: string, opts: FlyerOptions): st
       </div>
 
       <p class="note" style="margin:0.105in 0 0">
-        We opened your Google listing on ${esc(checked)} and read what it shows. Nothing here is a guess.
-        Check it yourself on your phone in ten seconds.
+        We opened your Google listing on ${esc(checked)} and read what it shows${presence ? `: ${esc(presence.url).slice(0, 72)}` : ''}.
+        Nothing here is a guess. Check it yourself on your phone in ten seconds.
       </p>
     </div>
 
@@ -170,7 +209,7 @@ export function noSiteFrontInner(lead: Lead, qr: string, opts: FlyerOptions): st
           <span class="tick no">&#10007;</span>
           <span style="min-width:0">
             <span class="listing-label">Website</span>
-            <span class="listing-value missing">None shown</span>
+            <span class="listing-value missing" data-clamp="2">${presence ? esc(presence.what) : 'None shown'}</span>
           </span>
         </li>
       </ul>
