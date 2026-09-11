@@ -21,7 +21,7 @@
  *   node scripts/door-drop/publish.mjs --out artifacts/door-drop/mt-final --region montana
  *   node scripts/door-drop/publish.mjs --out ... --region florida --label 2026-09-12
  */
-import { readFileSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import path from 'node:path';
 
 const argv = process.argv.slice(2);
@@ -77,6 +77,66 @@ for (const [rel, name, type] of FILES) {
 
 console.log('');
 for (const [name, url] of links) console.log(`${name}\n  ${url}\n`);
+
+/**
+ * THE EMAIL, WRITTEN FROM THE RUN.
+ *
+ * The first two of these were typed by hand, which means the page count in the
+ * email and the page count in the PDF were two separate facts that agreed by
+ * luck. A printer works from the email. If it says 19 pages and the file holds
+ * 97, somebody prints the wrong job and nobody finds out until the box is
+ * opened. Every number here is read out of the manifest that produced the file.
+ */
+const manifest = JSON.parse(readFileSync(path.join(OUT, 'manifest.json'), 'utf8'));
+const pages = manifest.printed.length;
+const press = links.find(([n]) => n === 'flyers-press.pdf')?.[1] ?? '';
+const spec = links.find(([n]) => n === 'printer-spec.pdf')?.[1] ?? '';
+const phone = REGION === 'florida' ? '(850) 985-9252' : '(406) 312-1223';
+
+const email = `Subject: Print job, ${pages} single sided colour letter pages, ready to download
+
+Hi,
+
+I have a print job ready and the file is already online, so there is nothing to
+upload or email back and forth.
+
+The file:
+${press}
+
+A one page spec sheet with the same details is here:
+${spec}
+
+The one thing to know before you start: every page in that file is a different
+business. It is not one design at quantity ${pages}. It is ${pages} separate flyers, each
+with its own company name and its own text, so please print the file straight
+through, one copy of each page, rather than repeating page one.
+
+  File            flyers-press.pdf, ${pages} pages
+  Quantity        1 of each page, ${pages} sheets total
+  Sides           ONE SIDE ONLY, full colour. The back stays blank.
+  Trim size       8.5 x 11, standard letter, portrait
+  File size       8.75 x 11.25, which is 0.125 bleed on all four sides with
+                  crop marks. Trim to 8.5 x 11.
+  Stock           100 lb matte cover preferred. 80 lb text is fine if it keeps
+                  the job same day.
+  Finishing       Cut to trim. No fold, no score, no round corner, and no
+                  coating that stops a pen writing on it.
+  Colour          The file is RGB. The background is a warm cream, #FBF6EA, and
+                  it should not come out white or grey. The yellow is #F5B700
+                  and needs to stay saturated.
+
+Could you confirm the price and when it can be picked up? If matte cover pushes
+the turnaround out, text weight is fine and I would rather have it sooner.
+
+Thanks,
+
+Sarah Scarano
+Modern Mustard Seed
+${phone}
+sarah@modernmustardseed.com
+`;
+writeFileSync(path.join(OUT, 'email-to-printer.txt'), email, 'utf8');
+console.log(`email-to-printer.txt written for ${pages} pages.`);
 
 // Prove the link works before anybody is told it does.
 if (links.length) {
