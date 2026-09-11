@@ -241,7 +241,20 @@ async function main() {
 
   if (REFRESH && stale.length) {
     const refreshed = await refreshAudits(sb, stale.slice(0, ALL ? stale.length : LIMIT));
-    const re = gate(refreshed, shared, { maxAgeDays: MAX_AGE_DAYS, allowStale: false, skipNames });
+    /**
+     * THE REFRESHED LEADS GO THROUGH THE SAME GATE, INCLUDING THE ADDRESS ONE.
+     *
+     * This line used to call `gate` alone and concatenate the result, which
+     * quietly re-opened the door the address gate had just closed: any lead that
+     * came back from a re-audit was printed whether or not we knew where it was.
+     * It is the worst shape of bug in this file, because the run that triggers it
+     * is exactly the run that matters (`--refresh`), and the only evidence would
+     * be a flyer in the box with nowhere to deliver it.
+     *
+     * Found by the ship gate on PR #253, confirmed three times over.
+     */
+    const reRaw = gate(refreshed, shared, { maxAgeDays: MAX_AGE_DAYS, allowStale: false, skipNames });
+    const re = ANY_ADDRESS ? reRaw : requireAddress(reRaw);
     keep = keep.concat(re.keep);
     nosite = nosite.concat(re.nosite);
     dropped = dropped.concat(re.dropped);
