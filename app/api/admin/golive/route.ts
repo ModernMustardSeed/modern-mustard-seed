@@ -1,21 +1,49 @@
 import { NextResponse } from 'next/server';
 import { getAdminUser } from '@/lib/admin-auth';
-import { addExtraItem, createRunbook, setItemDone, type GoliveWho } from '@/lib/golive';
+import { addExtraItem, createRunbook, createStandardLaunch, setItemDone, type GoliveWho } from '@/lib/golive';
+import type { LaunchFacts } from '@/data/launch-standard';
 
 export const runtime = 'nodejs';
 
-/** Create a runbook from the hub's Add A Project form. */
+/**
+ * Create a runbook from the hub's Add A Project form.
+ *
+ * With a clientEmail and facts it creates THE STANDARD LAUNCH instead: the
+ * checklist for a business with no Google Business Profile yet, split into our
+ * steps and theirs, with their half showing up in their portal. That is the
+ * default shape for a client launch now, because it is the shape almost every
+ * one of them has.
+ */
 export async function PUT(req: Request) {
   const user = await getAdminUser();
   if (!user) return NextResponse.json({ ok: false, error: 'unauthorized' }, { status: 401 });
 
-  let body: { title?: string; repo_path?: string; prod_url?: string; kind?: 'ours' | 'client' };
+  let body: {
+    title?: string;
+    repo_path?: string;
+    prod_url?: string;
+    kind?: 'ours' | 'client';
+    clientEmail?: string;
+    facts?: LaunchFacts;
+  };
   try {
     body = await req.json();
   } catch {
     return NextResponse.json({ ok: false, error: 'bad payload' }, { status: 400 });
   }
   if (!body.title?.trim()) return NextResponse.json({ ok: false, error: 'title required' }, { status: 400 });
+
+  if (body.clientEmail?.trim() && body.facts?.business) {
+    const slug = await createStandardLaunch({
+      title: body.title,
+      clientEmail: body.clientEmail,
+      facts: body.facts,
+      repo_path: body.repo_path,
+      prod_url: body.prod_url,
+    });
+    if (!slug) return NextResponse.json({ ok: false, error: 'create failed' }, { status: 500 });
+    return NextResponse.json({ ok: true, slug, standard: true });
+  }
 
   const slug = await createRunbook(body as Parameters<typeof createRunbook>[0]);
   if (!slug) return NextResponse.json({ ok: false, error: 'create failed' }, { status: 500 });
