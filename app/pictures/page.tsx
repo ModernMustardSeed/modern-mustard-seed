@@ -38,7 +38,7 @@ export default function PicturesPage() {
         '@type': 'HowTo',
         name: 'Get a commercial made for your business in days',
         step: [
-          { '@type': 'HowToStep', name: 'Take the free Screen Test', text: 'Tell Mr. Mustard your story; he writes your logline, six-shot storyboard, and taglines on the spot, plus one cinematic hero frame.' },
+          { '@type': 'HowToStep', name: 'Start with the Screen Test', text: 'Tell Mr. Mustard your story; he writes your logline, six-shot storyboard, and taglines on the spot, plus one cinematic hero frame.' },
           { '@type': 'HowToStep', name: 'Roll film', text: 'Pick a tier. The studio generates your commercial from the approved treatment: your business, your colors, no stock footage.' },
           { '@type': 'HowToStep', name: 'Opening night', text: 'Hand-reviewed cuts land in your inbox within days: widescreen, vertical, and square, with full commercial rights.' },
         ],
@@ -70,7 +70,7 @@ export default function PicturesPage() {
               {PICTURES.promise}
             </p>
             <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-[#161616]/50 mt-5">
-              Free screen test · No card · The treatment is yours to keep
+              The screen test comes first · The treatment is yours to keep
             </p>
           </div>
           <div className="max-w-2xl mx-auto">

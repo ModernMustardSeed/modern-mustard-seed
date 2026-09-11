@@ -114,7 +114,7 @@ export default function LaunchFilmPage() {
               href="#treatment"
               className="rounded-full bg-white border-2 border-[#161616] px-8 py-3.5 font-sans font-extrabold text-[#161616] text-xs uppercase tracking-[0.18em] shadow-[4px_4px_0_0_#161616] transition-all hover:-translate-y-0.5"
             >
-              Get the free treatment
+              Start with the treatment
             </a>
           </div>
         </div>
@@ -257,11 +257,11 @@ export default function LaunchFilmPage() {
         </div>
       </section>
 
-      {/* ─── THE FREE TREATMENT ─── */}
+      {/* ─── THE TREATMENT COMES FIRST ─── */}
       <section id="treatment" className="py-16 md:py-24 bg-[#F5B700] border-y-2 border-[#161616] scroll-mt-20" aria-labelledby="treatment-heading">
         <div className="max-w-5xl mx-auto px-5 grid md:grid-cols-2 gap-10 md:gap-14 items-center">
           <div>
-            <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#161616]/70 font-bold mb-3">[ Free, first ]</p>
+            <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#161616]/70 font-bold mb-3">[ The treatment, first ]</p>
             <h2 id="treatment-heading" className="font-display text-3xl md:text-5xl font-black text-[#161616] tracking-tight leading-[1.05]">
               Send the product. Get the treatment.
             </h2>
@@ -317,7 +317,7 @@ export default function LaunchFilmPage() {
               Book the film
             </a>
             <Link
-              href="/book"
+              href="/inquire"
               className="inline-block rounded-full bg-transparent border-2 border-[#FBF6EA] px-10 py-4 font-sans font-extrabold text-[#FBF6EA] text-sm uppercase tracking-[0.18em] transition-all hover:-translate-y-0.5"
             >
               Talk to Sarah first

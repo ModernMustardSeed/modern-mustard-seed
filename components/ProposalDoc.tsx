@@ -320,9 +320,9 @@ export default function ProposalDoc({
         {hidePrices ? (
           <div className="mt-7 rounded-xl bg-[#FFF3CC] border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] p-5">
             <p className="text-[14px] text-[#3a3733] font-body leading-relaxed">
-              Every line is quoted per project, in writing, before any work begins. Most builds run on a
+              Every line is quoted per engagement, in writing, before any work begins. Most builds run on a
               50% deposit to start and the balance on delivery, with software and compute billed at cost.
-              You will see your exact, fixed numbers on your own proposal after a free call.
+              You will see your exact, fixed numbers on your own proposal.
             </p>
           </div>
         ) : (

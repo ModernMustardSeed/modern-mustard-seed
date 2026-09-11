@@ -10,7 +10,7 @@ import { HUNDREDFOLD, money } from '@/lib/hundredfold';
 export const metadata = buildMetadata({
   title: 'The System: your whole company, AI native',
   description:
-    'Website, voice agent, command center, lead finder, campaigns, deal tracking, social scheduling, forms, interviews, automations, and custom software, built as one loop off one brain. See the whole cycle a lead travels, from found to grown, and start with a free build.',
+    'Website, voice agent, command center, lead finder, campaigns, deal tracking, social scheduling, forms, interviews, automations, and custom software, built as one loop off one brain. See the whole cycle a lead travels, from found to grown.',
   path: '/the-system',
 });
 
@@ -29,12 +29,12 @@ const ARCHITECT_SPEC = [
 
 const DOORS = [
   {
-    eyebrow: 'The flagship // Free build first',
+    eyebrow: 'The flagship // Built as one thing',
     name: 'The Talking Website',
     price: `From ${formatUsd(DEMO_BUNDLE.setupCents)} setup, then ${formatUsd(DEMO_BUNDLE.monthlyCents)}/mo`,
     body: 'A website that answers its own phone. Your site and your voice agent built as one thing off one brain, so every call and every form lands in the same place. Stations 03, 04 and 07, live within a week.',
     href: '/demos',
-    cta: 'Build Mine Free',
+    cta: 'See The Flagship',
     tone: 'yellow',
   },
   {
@@ -49,7 +49,7 @@ const DOORS = [
   {
     eyebrow: 'The custom build // Fixed quote, fixed timeline',
     name: 'Idea to Product',
-    price: 'Quoted after a free 30-minute call',
+    price: 'Scoped and quoted privately',
     body: 'The portal, the app, the store, the agentic tool nobody sells off the shelf. Scoped and sequenced, built and shipped, launched, then handed off with the repo and every credential in your name.',
     href: '/book',
     cta: 'Book the Call',
@@ -105,16 +105,16 @@ export default function TheSystemPage() {
               </p>
               <div className="flex flex-wrap gap-3 mt-8">
                 <Link
-                  href="/demos"
+                  href="/inquire"
                   className="inline-flex items-center gap-2 bg-[#161616] text-[#FBF6EA] border-2 border-[#161616] rounded-full px-7 py-4 font-sans font-bold uppercase tracking-[0.14em] text-[12px] shadow-[5px_5px_0_0_#F5B700] hover:-translate-y-0.5 transition-transform"
                 >
-                  Build Mine Free →
+                  Begin An Engagement →
                 </Link>
                 <Link
-                  href="/book"
+                  href="/inquire"
                   className="inline-flex items-center gap-2 bg-white text-[#161616] border-2 border-[#161616] rounded-full px-7 py-4 font-sans font-bold uppercase tracking-[0.14em] text-[12px] shadow-[5px_5px_0_0_#161616] hover:-translate-y-0.5 transition-all"
                 >
-                  Book a Free Call
+                  See The Work
                 </Link>
               </div>
               <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#161616]/60 mt-5">
@@ -325,7 +325,7 @@ export default function TheSystemPage() {
               The offer // See it built before you pay for it
             </p>
             <h2 className="font-display italic font-extrabold text-4xl md:text-5xl mt-3 leading-[1.02] max-w-3xl">
-              Start at any station. Every door opens with a free build.
+              Start at any station. The loop is one system, however you enter it.
             </h2>
             <p className="font-body text-[15px] text-[#161616]/75 mt-4 max-w-2xl leading-relaxed">
               We build your demo first, for your trade, with your name on it. You see the loop running before a card is on the table. Then you pick the door.

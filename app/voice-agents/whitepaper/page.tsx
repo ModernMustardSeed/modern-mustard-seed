@@ -66,7 +66,7 @@ export default function WhitepaperPage() {
               <WhitepaperGate />
               <p className="text-center mt-3 text-sm font-body text-[#161616]/60">
                 or{' '}
-                <Link href="/book" className="text-[#1E50C8] font-bold underline underline-offset-2">
+                <Link href="/inquire" className="text-[#1E50C8] font-bold underline underline-offset-2">
                   book a call
                 </Link>{' '}
                 and we will walk you through it.
@@ -128,7 +128,7 @@ export default function WhitepaperPage() {
                 Try the Live Demo
               </Link>
               <Link
-                href="/book"
+                href="/inquire"
                 className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-white bg-[#161616] rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_rgba(22,22,22,0.3)] hover:-translate-y-0.5 transition-all"
               >
                 Book a Discovery Call
@@ -138,7 +138,7 @@ export default function WhitepaperPage() {
 
           <NewsletterSignup
             headline="More plays like this. Weekly."
-            subhead="How small businesses stop the leak with AI, automation, and faster follow-up. Free to read. Free to copy."
+            subhead="How small businesses stop the leak with AI, automation, and faster follow-up. One letter a week, from the desk."
           />
         </article>
       </div>

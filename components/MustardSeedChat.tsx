@@ -333,8 +333,10 @@ export default function MustardSeedChat() {
 
   return (
     <>
-      {/* First-visit teaser bubble. Sits above the launcher, leads with the
-          free-playbook value-add, dismissible, shown once per visitor. */}
+      {/* First-visit teaser bubble. Sits above the launcher, dismissible, shown
+          once per visitor. Sarah 2026-09-11: it used to lead with a free 5-step
+          playbook. The studio does not advertise a giveaway to open a
+          conversation, so the bubble says who is answering instead. */}
       {showGreet && !open && (
         <div className="fixed bottom-28 right-6 z-[79] w-[262px] sm:w-[296px] animate-fade-in-up">
           <div className="relative rounded-2xl border-2 border-[#161616] bg-white shadow-[4px_4px_0_0_#161616] px-4 py-3.5">
@@ -352,10 +354,10 @@ export default function MustardSeedChat() {
               className="block w-full text-left"
             >
               <p className="font-display font-black text-[#161616] text-[15px] leading-snug mb-1">
-                Not sure where to start?
+                Anything you want to ask?
               </p>
               <p className="font-body text-[13px] text-[#3a3733] leading-snug">
-                Talk to me live or type it out. I&apos;ll find your bottleneck and map you a free 5-step playbook in 60 seconds.
+                I answer for the studio, day or night. Talk to me live or type it out, and I can put a real conversation with Sarah on the calendar.
               </p>
               <span className="mt-2.5 inline-flex items-center gap-1 text-[11px] uppercase tracking-[0.18em] font-mono font-bold text-[#C4160B]">
                 Ask Mr. Mustard &rarr;
@@ -472,7 +474,7 @@ export default function MustardSeedChat() {
             >
               <span className="flex flex-col leading-tight">
                 <span className="font-sans font-extrabold text-[#161616] text-sm">Chat</span>
-                <span className="font-body text-[11px] text-[#161616]/70 mt-0.5">Type it out, get a 5-step playbook</span>
+                <span className="font-body text-[11px] text-[#161616]/70 mt-0.5">Type it out, he answers</span>
               </span>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="shrink-0 transition-transform duration-200 group-hover:scale-110 group-hover:rotate-6">
                 <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v8a2.5 2.5 0 0 1-2.5 2.5H9l-4.2 3.6A.7.7 0 0 1 3.6 19V5.5z" fill="none" stroke="#161616" strokeWidth="2" strokeLinejoin="round" transform="translate(0.4 0.5)" />
@@ -481,7 +483,7 @@ export default function MustardSeedChat() {
           </div>
 
           <p className="px-5 pb-4 text-center text-[9px] uppercase tracking-[0.25em] text-[#161616]/40 font-mono font-medium">
-            Free &middot; No signup &middot; He books real calls
+            The studio line &middot; He books real calls
           </p>
         </div>
       )}

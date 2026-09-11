@@ -299,10 +299,10 @@ export default async function IndustryPage({ params }: { params: Params }) {
                 Run the Bottleneck Breaker
               </Link>
               <Link
-                href="/book"
+                href="/inquire"
                 className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-white/60 border border-white/15 rounded-full hover:bg-white/5 hover:border-white/30 transition-all"
               >
-                Book a Free Call
+                Begin an Engagement
               </Link>
             </div>
           </div>

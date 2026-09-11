@@ -12,14 +12,13 @@ import CallTicker from '@/components/voice-agents/CallTicker';
 import NightShiftFilm from '@/components/voice-agents/NightShiftFilm';
 import StickyCallBar from '@/components/voice-agents/StickyCallBar';
 import { DEMO_LINE } from '@/data/trade-pages';
-import { DEMO_PRODUCTS, DEMO_BUNDLE, formatUsd } from '@/lib/demo-order';
 import { JsonLd, breadcrumbJsonLd, faqJsonLd, serviceJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
 
 export const metadata = buildMetadata({
   title: 'Voice Agents That Answer Every Call, in Any Language',
   description:
-    'Call (406) 312-1223 and talk to a real AI voice agent right now, free. A 24/7 voice agent that picks up every call in a natural human voice, books appointments, answers FAQs, and routes urgent calls to you. Multilingual: it greets and serves callers in 100+ languages and detects the caller automatically. For restaurants, it takes phone orders, books tables, and saves the dinner rush from voicemail. Stop losing customers to voicemail or a language barrier.',
+    'Call (406) 312-1223 and hear a real AI voice agent answer. A voice agent that picks up every call in a natural human voice, books appointments, answers questions, and routes the urgent ones to you. Multilingual: it greets and serves callers in 100+ languages and detects the caller automatically. Designed and built per engagement by a boutique studio in Kalispell, Montana.',
   path: '/voice-agents',
 });
 
@@ -94,7 +93,7 @@ const steps = [
 const faq = [
   {
     q: 'Can I just call it and hear it myself?',
-    a: `Yes, that is the whole point. Dial ${DEMO_LINE.display} any hour and Mr. Mustard picks up. Ask him what he would do for your business, make him role-play answering your phone, or have him book you a real call with Sarah before you hang up. Free, no form, no card.`,
+    a: `Yes. ${DEMO_LINE.display} is the studio's own line and Mr. Mustard answers it at any hour. Ask him what he would do for your business, or have him put a real conversation with Sarah on the calendar before you hang up. He is the work, not a recording of it.`,
   },
   {
     q: 'Does it actually sound human?',
@@ -138,23 +137,16 @@ const faq = [
   },
 ];
 
-/** What The Talking Website saves against buying the two pieces apart. Derived,
- *  never typed, so it can never drift from what Stripe charges. */
-const bundleSavings = {
-  setup: DEMO_PRODUCTS.voice.setupCents + DEMO_PRODUCTS.site.setupCents - DEMO_BUNDLE.setupCents,
-  monthly:
-    DEMO_PRODUCTS.voice.monthlyCents + DEMO_PRODUCTS.site.monthlyCents - DEMO_BUNDLE.monthlyCents,
-};
-
-/** One half of The Talking Website, on the dark band. */
-function Half({ label, body, price }: { label: string; body: string; price: string }) {
+/** One half of The Talking Website, on the dark band. Sarah 2026-09-11: the
+ *  third line used to be a price. It is what the half actually does now. */
+function Half({ label, body, note }: { label: string; body: string; note: string }) {
   return (
     <div className="rounded-2xl border-2 border-[#FBF6EA]/20 bg-[#1F1F1F] p-6 md:p-7">
       <span className="block font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-[#F5B700]">
         {label}
       </span>
       <p className="mt-3 font-body text-[15px] leading-6 text-[#FBF6EA]/70">{body}</p>
-      <p className="mt-4 font-mono text-[13px] font-bold text-[#FBF6EA]">{price}</p>
+      <p className="mt-4 font-mono text-[13px] font-bold text-[#FBF6EA]">{note}</p>
     </div>
   );
 }
@@ -210,7 +202,7 @@ export default function VoiceAgentsPage() {
               <br />
               <span className="text-[#F5B700]">Somebody picks up.</span>
             </h1>
-            <p className="mt-5 font-body text-base leading-relaxed">Built by Modern Mustard Seed, an AI-native product studio in Kalispell, Montana, serving Northwest Montana and clients nationwide. <Link href="/ai-websites" className="underline font-bold">See how our AI websites connect the page and the business.</Link></p>
+            <p className="mt-5 font-body text-base leading-relaxed">Designed and built by Modern Mustard Seed, a boutique design and AI studio in Kalispell, Montana, working with clients nationwide. <Link href="/ai-websites" className="underline font-bold">See how our AI websites connect the page and the business.</Link></p>
 
             <div className="mt-10 grid lg:grid-cols-12 gap-10 lg:gap-12 items-center pb-4">
               <div className="lg:col-span-6">
@@ -362,22 +354,23 @@ export default function VoiceAgentsPage() {
             <div className="grid lg:grid-cols-12 gap-10 items-center">
               <div className="lg:col-span-7">
                 <span className="inline-flex items-center gap-2 rounded-full border-2 border-[#161616] bg-white px-3.5 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-[#C4160B] shadow-[3px_3px_0_0_#161616]">
-                  New · The Free Demo
+                  The studio line · Answering now
                 </span>
                 <h2 className="mt-6 font-display text-3xl md:text-5xl font-black tracking-tight leading-[1.03] text-[#161616]">
-                  That was ours. Now hear one trained on{' '}
-                  <span className="italic">yours</span>.
+                  That was ours. Yours is trained on{' '}
+                  <span className="italic">your</span> business.
                 </h2>
                 <p className="mt-5 max-w-xl font-body text-base md:text-lg leading-relaxed text-[#161616]/80">
-                  Tell Mr. Mustard about your business. He trains a personalized front desk on the
-                  spot, then you call it and hear it answer as <em>your</em> company. Free, no card.
+                  Mr. Mustard answers for this studio, so what you hear on that call is the
+                  standard of the work. Your agent is built the same way: your services, your
+                  hours, your pricing, and the questions your callers actually ask.
                 </p>
                 <div className="mt-8 flex flex-col sm:flex-row gap-3">
                   <Link
-                    href="/demos"
+                    href="/inquire"
                     className="rounded-full border-2 border-[#161616] bg-[#161616] px-9 py-4 text-center font-sans text-[12px] font-extrabold uppercase tracking-[0.18em] text-[#FBF6EA] shadow-[5px_5px_0_0_#FBF6EA] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#FBF6EA]"
                   >
-                    Build Mine, Free →
+                    Begin An Engagement →
                   </Link>
                   <Link
                     href="/voice-agents/whitepaper"
@@ -426,7 +419,7 @@ export default function VoiceAgentsPage() {
               </span>
               <h2 className="mt-6 font-display text-3xl md:text-5xl font-black tracking-tight leading-[1.03]">
                 Put him on your website and you get{' '}
-                <span className="text-[#F5B700]">{DEMO_BUNDLE.name}</span>
+                <span className="text-[#F5B700]">The Talking Website</span>
               </h2>
               <p className="mt-6 font-body text-base md:text-lg leading-relaxed text-[#FBF6EA]/70">
                 Not a website with a chat bubble bolted on. Your site and your voice agent built as
@@ -439,8 +432,8 @@ export default function VoiceAgentsPage() {
             <div className="mt-12 grid md:grid-cols-[1fr_auto_1fr] gap-6 md:gap-4 items-stretch max-w-4xl mx-auto">
               <Half
                 label="Your website"
-                body="Built from scratch, funnels and SEO baked in, live on your domain in about a week."
-                price={`From ${formatUsd(DEMO_PRODUCTS.site.setupCents)} + ${formatUsd(DEMO_PRODUCTS.site.monthlyCents)}/mo`}
+                body="Designed from scratch, funnels and SEO baked in, live on your domain."
+                note="You own every line of it"
               />
               <div
                 aria-hidden="true"
@@ -450,8 +443,8 @@ export default function VoiceAgentsPage() {
               </div>
               <Half
                 label="Your voice agent"
-                body="The one you just called, answering your real number 24/7 in your business name."
-                price={`${formatUsd(DEMO_PRODUCTS.voice.setupCents)} + ${formatUsd(DEMO_PRODUCTS.voice.monthlyCents)}/mo`}
+                body="The one you just called, answering your real number around the clock in your business name."
+                note="It keeps the number you have"
               />
             </div>
 
@@ -460,27 +453,26 @@ export default function VoiceAgentsPage() {
               <div className="md:flex md:items-center md:justify-between gap-8">
                 <div className="md:flex-1">
                   <span className="block font-mono text-[10px] font-bold uppercase tracking-[0.28em] text-[#161616]/70">
-                    Take both, together
+                    Commissioned together
                   </span>
                   <h3 className="mt-2 font-display text-3xl md:text-4xl font-black tracking-tight italic">
-                    {DEMO_BUNDLE.name}
+                    The Talking Website
                   </h3>
                   <p className="mt-3 font-display text-2xl md:text-3xl font-black tracking-tight">
-                    From {formatUsd(DEMO_BUNDLE.setupCents)} to build ·{' '}
-                    {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo
+                    One brain. The page and the phone.
                   </p>
                   <p className="mt-3 font-body text-[15px] leading-6 text-[#161616]/80 max-w-xl">
-                    That is {formatUsd(bundleSavings.setup)} off the build and{' '}
-                    {formatUsd(bundleSavings.monthly)}/mo off buying them apart. Month to month, cancel
-                    anytime, no trials.
+                    Built as one engagement rather than two, which is why the answers never drift
+                    apart. Scoped in one conversation and quoted privately, with the price agreed in
+                    writing before anything is built.
                   </p>
                 </div>
                 <div className="mt-6 md:mt-0 flex flex-col gap-3 shrink-0">
                   <Link
-                    href="/demos"
+                    href="/inquire"
                     className="text-center rounded-full border-2 border-[#161616] bg-[#161616] px-8 py-4 font-sans text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#FBF6EA] shadow-[4px_4px_0_0_#FBF6EA] transition-all hover:-translate-y-0.5"
                   >
-                    See Mine Built Free →
+                    Begin An Engagement →
                   </Link>
                   <Link
                     href="/websites"
@@ -736,10 +728,10 @@ export default function VoiceAgentsPage() {
 
             <div className="mt-14 flex flex-col sm:flex-row gap-3 justify-center">
               <Link
-                href="/book"
+                href="/inquire"
                 className="rounded-full border-2 border-[#F5B700] bg-[#F5B700] px-9 py-4 text-center font-sans text-[12px] font-extrabold uppercase tracking-[0.18em] text-[#161616] transition-all hover:-translate-y-0.5"
               >
-                Book A Discovery Call
+                Begin An Engagement
               </Link>
               <Link
                 href="/playbooks/14-day-voice-agent"
@@ -757,7 +749,7 @@ export default function VoiceAgentsPage() {
           <div className="mt-14">
             <NewsletterSignup
               headline="Speed-to-lead plays. Weekly."
-              subhead="How small businesses stop the leak with AI, automation, and faster follow-up. Free to read. Free to copy."
+              subhead="How small businesses stop the leak with AI, automation, and faster follow-up. One letter a week, from the desk."
             />
           </div>
         </div>

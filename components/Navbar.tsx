@@ -21,57 +21,57 @@ function FacebookMark() {
 // through Services, the footer, and in-page cross-links.
 const MENU_GROUPS = [
   {
-    heading: 'Work With Us',
+    heading: 'The Studio',
     links: [
-      { label: 'The System', href: '/the-system' },
-      { label: 'How It Works', href: '/work-with-us' },
-      { label: 'Services', href: '/services' },
-      { label: 'AI Websites', href: '/ai-websites' },
-      { label: 'AI Search Resources', href: '/resources' },
-      { label: 'Kalispell', href: '/montana/kalispell' },
       { label: 'The Work', href: '/work' },
+      { label: 'Services', href: '/services' },
+      { label: 'How We Work', href: '/work-with-us' },
+      { label: 'The System', href: '/the-system' },
+      { label: 'About Sarah', href: '/about' },
+      { label: 'Begin An Engagement', href: '/inquire' },
+    ],
+  },
+  {
+    heading: 'Disciplines',
+    links: [
+      { label: 'Websites And Brand', href: '/websites' },
+      { label: 'Brand / Rebrand', href: '/brand' },
+      { label: 'Voice Agents', href: '/voice-agents' },
+      { label: 'AI Native', href: '/ai-native' },
+      { label: 'Mustard Pictures', href: '/pictures' },
+      { label: 'The Launch Film', href: '/launch-film' },
+    ],
+  },
+  {
+    heading: 'Where We Work',
+    links: [
       { label: 'Northwest Montana', href: '/montana' },
-      { label: 'Book a Free Call', href: '/book' },
-    ],
-  },
-  {
-    heading: 'Programs',
-    links: [
-      { label: 'Hundredfold', href: '/hundredfold' },
-      { label: 'Watch: How It Works', href: '/hundredfold/webinar' },
-      { label: 'Seed to System', href: '/seed-to-system' },
-      { label: 'Idea to Spec', href: '/idea-to-spec' },
-      { label: 'The Terminal', href: '/the-terminal' },
-    ],
-  },
-  {
-    heading: 'Free Tools',
-    links: [
-      { label: 'Scaling Roadmap', href: '/scaling-roadmap' },
-      { label: 'Bottleneck Breaker', href: '/audit' },
-      { label: 'Launch Checklist', href: '/launch-checklist' },
-      { label: 'Prompt Playbook', href: '/prompt-playbook' },
-      { label: 'Claude Code Field Guide', href: '/fieldguide' },
-      { label: 'Free Playbooks', href: '/playbooks' },
+      { label: 'Kalispell', href: '/montana/kalispell' },
+      { label: 'Industries We Build For', href: '/for' },
     ],
   },
   {
     heading: 'Company',
     links: [
-      { label: 'About', href: '/about' },
+      { label: 'Journal', href: '/blog' },
       { label: 'Sarah Scarano', href: '/sarahscarano' },
-      { label: 'Mustard Life Comic', href: '/comic' },
-      { label: 'Blog', href: '/blog' },
-      { label: 'Store', href: '/store' },
       { label: 'Contact', href: '/contact' },
       { label: 'Client Portal', href: '/portal' },
     ],
   },
 ];
 
-// The Studio Departments: every door opens free. Rendered as the signature
-// ink panel near the bottom of the drawer (names in Title Case, descriptors
-// in tracked mono caps; never a lowercase opener).
+// The Studio Departments. Rendered as the signature ink panel near the bottom
+// of the drawer (names in Title Case, descriptors in tracked mono caps; never a
+// lowercase opener).
+//
+// PARKED 2026-09-11 (Sarah, the boutique pass): every department whose tag was
+// a giveaway or a self-serve price came off this panel. GEO Desk, The
+// Hundredfold Roadmap, The Switchboard, Mustard Mode, Mustard Launch,
+// HUNDREDFOLD, Seed to System, Idea to Spec, The Terminal, the Store, the
+// Playbooks, the Field Guide, the comic, and the demo build are all still live
+// at their URLs so links, ads, Stripe returns, and drips keep working. They are
+// simply not advertised from the studio's own navigation any more.
 //
 // PARKED 2026-08-07 (Sarah): The Mustard Tree, Mustard Press, and Mustard
 // Hatchery are pulled from every nav, index, sitemap, and llms.txt entry. The
@@ -96,25 +96,18 @@ const MENU_GROUPS = [
 // industries, partner-swipe, jsonld, and comic entries, drop the noindex flag on
 // app/voice-agents/build/page.tsx, and repoint the cross-sell CTAs.
 const DEPARTMENTS = [
-  { name: 'HUNDREDFOLD', tag: 'THE FLAGSHIP SCALING PROGRAM', href: '/hundredfold' },
   { name: 'The Talking Website', tag: 'A SITE THAT ANSWERS ITS OWN PHONE', href: '/talking-website' },
-  { name: 'Brand / Rebrand', tag: 'A NEW BRAND ON EVERY SURFACE', href: '/brand' },
+  { name: 'Websites And Brand', tag: 'DESIGN-LED, BUILT TO BE FOUND', href: '/websites' },
+  { name: 'Brand / Rebrand', tag: 'A NEW MARK ON EVERY SURFACE', href: '/brand' },
+  { name: 'Voice Agents', tag: `THE STUDIO LINE: ${DEMO_LINE.display}`, href: '/voice-agents' },
+  { name: 'Custom Software', tag: 'APPLICATIONS, STORES, AGENTIC SYSTEMS', href: '/services' },
+  { name: 'AI Native', tag: 'YOUR COMPANY ON AI, YOUR TEAM RUNNING IT', href: '/ai-native' },
   { name: 'The Chief', tag: 'YOUR AI CHIEF OF STAFF', href: '/chief' },
   { name: 'Command Center', tag: 'THE AI BACK OFFICE', href: '/command-center' },
-  { name: 'Websites', tag: 'FREE WEBSITE DEMO', href: '/websites' },
-  { name: 'Voice Agents', tag: `CALL HIM: ${DEMO_LINE.display}`, href: '/voice-agents' },
-  { name: 'Meet Mr. Mustard', tag: 'HE CALLS YOU IN TEN SECONDS', href: '/mustard' },
-  { name: 'The Switchboard', tag: 'FREE FRANCHISE DEMO LINE', href: '/switchboard' },
-  { name: 'Mustard Broadcast', tag: 'WE RUN YOUR ADS', href: '/ads' },
+  { name: 'Mustard Pictures', tag: 'COMMERCIALS AND BRAND FILMS', href: '/pictures' },
   { name: 'The Launch Film', tag: 'A FILM BUILT FROM YOUR REAL PRODUCT', href: '/launch-film' },
-  { name: 'AI Native', tag: 'YOUR COMPANY ON AI, YOUR TEAM RUNNING IT', href: '/ai-native' },
-  // Mustard Pictures is unlisted while the studio uses it internally
-  // (Sarah, 2026-08-20). The route still works for anyone holding the URL.
-  { name: 'GEO Desk', tag: 'FREE AI-FINDABILITY GRADE', href: '/website-audit' },
-  { name: 'The Hundredfold Roadmap', tag: 'FREE SCALING PLAN FOR YOUR BUSINESS', href: '/scaling-roadmap' },
-  { name: 'Mustard Mode', tag: 'LEARN CLAUDE WITH A COACH', href: '/mustard-mode' },
-  { name: 'Mustard Launch', tag: 'YOUR AI LAUNCH COACH', href: '/mustard-launch' },
-  { name: 'Super Nomad', tag: 'THE APP THAT DECIDES WHERE YOU LIVE NEXT', href: '/super-nomad' },
+  { name: 'Mustard Broadcast', tag: 'WE RUN YOUR ADS', href: '/ads' },
+  { name: 'Meet Mr. Mustard', tag: 'THE STUDIO ANSWERS, DAY AND NIGHT', href: '/mustard' },
 ];
 
 export default function Navbar() {
@@ -206,10 +199,9 @@ export default function Navbar() {
           </Link>
 
           <div className="flex items-center gap-3 sm:gap-4 xl:gap-6">
-            {/* The inline link row rides at xl. Free Demos made it five links next to
-                two pills, which wrapped the bar to two rows (and 102px tall) from 768
-                to 1279. Below xl the row folds into the hamburger, and the two doors
-                that earn their keep (Free Demos, Book a Call) stay out as pills. */}
+            {/* The inline link row rides at xl. Below xl it folds into the
+                hamburger and the one door that earns its keep, Inquire, stays
+                out as a pill. */}
             <div className="hidden xl:flex items-center gap-6">
               {navLinks.map((link) => (
                 <Link
@@ -227,19 +219,19 @@ export default function Navbar() {
                 Clients
               </Link>
               <Link
-                href="/book"
+                href="/inquire"
                 className="px-5 py-2.5 text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] rounded-full border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] hover:shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
               >
-                Book a Call
+                Inquire
               </Link>
             </div>
 
-            {/* Between the phone and the full row, Free Demos is the door that pays. */}
+            {/* Between the phone and the full row, the inquiry is the door. */}
             <Link
-              href="/demos"
+              href="/inquire"
               className="hidden sm:inline-flex xl:hidden items-center px-4 py-2.5 text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] rounded-full border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] hover:shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
             >
-              Free Demos
+              Inquire
             </Link>
 
             {/* Facebook: the company page, one tap from every screen. */}
@@ -333,21 +325,21 @@ export default function Navbar() {
               </button>
             </div>
 
-            {/* Free Demos: the door the ads point at. On phones the nav pill is
-                hidden, so this is where it lives. */}
+            {/* The inquiry: the one door the whole site closes on. On phones the
+                nav pill is hidden, so this is where it lives. */}
             <Link
-              href="/demos"
+              href="/inquire"
               onClick={() => setMenuOpen(false)}
               className="group block rounded-2xl border-2 border-[#161616] bg-[#F5B700] shadow-[5px_5px_0_0_#161616] p-5 md:p-6 mb-5 hover:-translate-y-0.5 transition-transform"
             >
               <span className="block text-[10px] uppercase tracking-[0.32em] text-[#161616]/70 font-mono font-bold mb-1.5">
-                Free · No Card · No Meeting
+                By Inquiry · Answered Personally
               </span>
               <span className="block font-display font-black text-2xl md:text-3xl tracking-tight text-[#161616] leading-snug">
-                Free Demos <span className="inline-block group-hover:translate-x-1 transition-transform">→</span>
+                Begin an engagement <span className="inline-block group-hover:translate-x-1 transition-transform">→</span>
               </span>
               <span className="block font-body text-[13px] text-[#161616]/75 mt-1 leading-relaxed">
-                A voice agent and a new website. Both built for your business.
+                Tell us what you are building. Sarah answers inside one business day.
               </span>
             </Link>
 
@@ -357,7 +349,7 @@ export default function Navbar() {
                 {MENU_GROUPS[0].heading}
               </span>
               <p className="font-display italic font-bold text-[#161616] text-base md:text-lg leading-snug mb-5">
-                Bring your idea. We bring it to life in weeks, not months.
+                A small number of engagements at a time, designed and built by one hand.
               </p>
               <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
                 {MENU_GROUPS[0].links.map((link) => {
@@ -420,7 +412,7 @@ export default function Navbar() {
               />
               <div className="relative p-6 md:p-7">
                 <span className="block text-[10px] uppercase tracking-[0.32em] text-[#F5B700] font-mono font-bold mb-4">
-                  The Studio Departments · Every Door Opens Free
+                  The Studio Departments
                 </span>
                 <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
                   {DEPARTMENTS.map((d) => {
@@ -453,18 +445,18 @@ export default function Navbar() {
             {/* Primary CTAs */}
             <div className="mt-11 flex flex-col sm:flex-row gap-3">
               <Link
-                href="/book"
+                href="/inquire"
                 onClick={() => setMenuOpen(false)}
                 className="flex-1 text-center px-6 py-4 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
               >
-                Book a Call
+                Inquire
               </Link>
               <Link
-                href="/demos"
+                href="/work"
                 onClick={() => setMenuOpen(false)}
                 className="flex-1 text-center px-6 py-4 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-white rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
               >
-                See Free Demos
+                See the Work
               </Link>
             </div>
 

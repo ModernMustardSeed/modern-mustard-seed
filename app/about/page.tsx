@@ -5,7 +5,7 @@ import { buildMetadata } from '@/lib/seo';
 export const metadata = buildMetadata({
   title: 'Sarah Scarano and the AI Studio in Kalispell',
   description:
-    'Meet Sarah Scarano, founder of Modern Mustard Seed, an AI-native product studio in Kalispell building websites, voice agents and software for clients nationwide.',
+    'Meet Sarah Scarano, founder of Modern Mustard Seed, a boutique design and AI studio in Kalispell building websites and brand, custom software, and voice agents for clients nationwide.',
   path: '/about',
 });
 
@@ -25,7 +25,7 @@ const OFFERINGS: { t: string; d: string }[] = [
   { t: 'AI voice + chat agents', d: 'A 24/7 voice agent that answers the phone and books the job, plus a helper that never lets a lead go cold.' },
   { t: 'Websites that sell', d: 'Not a brochure. A clear offer, real proof, and an obvious next step, live in weeks and yours to keep.' },
   { t: 'Custom apps + AI tools', d: 'The one clean tool built for exactly how a business runs, instead of five apps held together by a spreadsheet.' },
-  { t: 'The Studio', d: 'Instant, self-serve wow: Voice Agent, Pictures, Press, and GEO Desk. Free to try, yours in a click.' },
+  { t: 'The Studio', d: 'The departments a working engagement reaches for: Voice Agents, Pictures, the Launch Film, and the GEO Desk.' },
   { t: 'Mustard Mode', d: 'Rather build it yourself? We coach you to ship with AI, in your own hands, one mission at a time.' },
 ];
 
@@ -62,7 +62,7 @@ export default function AboutPage() {
               </span>
             </h1>
             <p className="font-body text-lg md:text-xl text-[#3A3733] leading-relaxed max-w-2xl mx-auto">
-              Modern Mustard Seed is an AI-native product studio in Kalispell, Montana. We build custom websites, AI voice agents, automation and software for Northwest Montana and clients nationwide.
+              Modern Mustard Seed is a boutique design and AI studio in Kalispell, Montana. We design and build websites and brand, custom software, and voice agents for Northwest Montana and clients nationwide, and we advise operators putting AI into a business that already works.
             </p>
           </div>
 

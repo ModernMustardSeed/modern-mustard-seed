@@ -8,7 +8,7 @@ import { buildMetadata, SITE } from '@/lib/seo';
 export const metadata = buildMetadata({
   title: 'Contact',
   description:
-    'Get in touch with Modern Mustard Seed. Send Sarah a note and a human answers inside a day, book a free 30-minute discovery call, or email her directly.',
+    'Get in touch with Modern Mustard Seed. Send Sarah a note and she answers inside one business day, or email her directly. To begin an engagement, start at modernmustardseed.com/inquire.',
   path: '/contact',
 });
 
@@ -46,11 +46,11 @@ export default async function ContactPage({ searchParams }: { searchParams: Sear
               </p>
               <p className="mt-5 font-body leading-relaxed">Based in {SITE.city}, {SITE.regionName}. Serving Northwest Montana and clients nationwide. <a href={`tel:${SITE.phoneE164}`} className="font-bold text-[#1E50C8] underline">{SITE.phone}</a> ? <a href={`mailto:${SITE.email}`} className="text-[#1E50C8] underline">{SITE.email}</a></p>
               <p className="mt-6 font-body text-[15px] text-[#5c554a]">
-                Would rather talk it through?{' '}
-                <Link href="/book" className="font-bold text-[#1E50C8] underline decoration-2 underline-offset-2 hover:text-[#E0301E]">
-                  Get on the book
+                Here to build something?{' '}
+                <Link href="/inquire" className="font-bold text-[#1E50C8] underline decoration-2 underline-offset-2 hover:text-[#E0301E]">
+                  Start an inquiry
                 </Link>{' '}
-                for a free 30 minutes with Sarah.
+                and Sarah answers inside one business day.
               </p>
             </div>
 

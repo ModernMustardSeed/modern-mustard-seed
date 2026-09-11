@@ -13,6 +13,9 @@
  *   a fully readable static page and swaps footage for posters.
  * - Every offer stays reachable: the roadside signs link the live funnels.
  * - No em dashes, no prices, Title Case labels.
+ * - Sarah 2026-09-11: and no free. Nothing on this page is given away, nothing
+ *   carries a price, and every close lands on /inquire. The studio is sold by
+ *   inquiry now, not by lead magnet.
  */
 
 import Link from '@/components/AttributionLink';
@@ -150,8 +153,9 @@ export function JourneyHero() {
             A Drive
           </h1>
           <p className={`mt-3 sm:mt-5 max-w-2xl lg:max-w-xl text-base sm:text-lg md:text-xl text-[#FBF6EA]/95 font-body ${revealBase}`} style={{ transitionDelay: '240ms' }}>
-            Modern Mustard Seed. AI-native websites and voice agents, built in Kalispell for businesses nationwide.
-            <span className="hidden sm:inline"> One shared brain. This is the scenic route.</span>
+            Modern Mustard Seed. A design and AI studio in Kalispell, working with a
+            small number of clients at a time.
+            <span className="hidden sm:inline"> This is the scenic route.</span>
           </p>
           <div className={`mt-4 sm:mt-6 flex flex-wrap items-center justify-center gap-4 lg:justify-end ${revealBase}`} style={{ transitionDelay: '360ms' }}>
             <a
@@ -215,26 +219,32 @@ export function JourneyRing() {
 /* ------------------------------------------------------------------ */
 
 /**
- * THREE CROPS, NOT FOUR. The Command Center was the third row here until Sarah
- * said on 2026-08-25: "I am not pushing command center anywhere." It is still
- * sold at /command-center and /pay/command-center; the orchard just stops
- * planting it next to the things we build for free. Do not add it back.
+ * FOUR DISCIPLINES. The Command Center is still not planted here (Sarah,
+ * 2026-08-25: "I am not pushing command center anywhere"); it is sold on its
+ * own page at its own price. Advisory joined the row on 2026-09-11, because
+ * counsel is the highest-value thing the studio sells and it was the one
+ * discipline the site had never named.
  */
 const CROPS = [
   {
     href: '/websites',
-    label: 'The Website',
-    line: 'Built to be found on Google and to greet whoever lands on it. Your site reads its own tour out loud.',
+    label: 'Websites And Brand',
+    line: 'Design-led sites for businesses that get judged on how they look before they get judged on anything else. Identity, art direction, and the build, from one hand.',
+  },
+  {
+    href: '/services',
+    label: 'Custom Software',
+    line: 'Applications, stores, internal tools, and agentic systems built to your operation instead of configured around somebody else. You own the repository outright.',
   },
   {
     href: '/voice-agents',
-    label: 'The Voice Agent',
-    line: 'Answers every call on the first ring, at noon and at two in the morning. Books the job while your hands are full.',
+    label: 'Voice Agents',
+    line: 'A trained voice that answers every call, knows the business, books the work, and hands you the transcript. Built on the same brain as the site it belongs to.',
   },
   {
-    href: '/book',
-    label: 'The Custom Build',
-    line: 'Full apps, stores, and agentic software grown from scratch for your operation. Bring the idea, book a call, and we scope it together.',
+    href: '/inquire',
+    label: 'Advisory',
+    line: 'Retained counsel for operators putting AI into a business that already works. What to build, what to refuse, what to automate, and in what order.',
   },
 ];
 
@@ -251,14 +261,14 @@ export function JourneyOrchard() {
         <div>
           <Mile label="MI 12 · The Orchards" />
           <h2 className={`${anton.className} mt-5 uppercase text-[#161616] leading-[0.95] ${revealBase}`} style={{ fontSize: 'clamp(40px,5vw,72px)' }}>
-            We Grow
+            Four
             <br />
-            Three Things
+            Disciplines
           </h2>
           <p className={`mt-5 max-w-xl text-lg text-[#161616]/80 ${revealBase}`} style={{ transitionDelay: '120ms' }}>
-            The orchards up here hang heavy every summer because somebody planted rows on purpose.
-            Same idea down at the studio. Two crops planted together, and a third row for
-            whatever your business needs built custom.
+            The orchards up here hang heavy every summer because somebody planted rows on
+            purpose and then tended them. Same idea down at the studio. Four disciplines,
+            practiced deliberately, and often more than one of them in a single engagement.
           </p>
           <div className="mt-8 space-y-4">
             {CROPS.map((c, i) => (
@@ -304,13 +314,12 @@ const SIGNS = [
     line: 'The flagship. A site and a voice agent built as one thing off one brain. The answer a visitor reads is the answer a midnight caller hears.',
     cta: 'Read The Sign',
   },
-  { href: '/demos', label: 'The Demo Build', line: 'Tell us your trade. We build your website and your voice agent before you pay anything.', cta: 'Build Mine Free' },
-  { href: '/website-audit', label: 'The Free Audit', line: 'Point our AI at your current website and get the honest report in minutes.', cta: 'Run My Audit' },
-  { href: '/pictures', label: 'Mustard Pictures', line: 'Commercials, brand films, and social cuts, directed by the studio AI.', cta: 'Visit The Studio' },
-  { href: '/store', label: 'The Playbook Store', line: 'The exact playbooks the studio runs on, written down and ready to use.', cta: 'Browse The Store' },
-  { href: '/mustard-mode', label: 'Mustard Mode', line: 'Coach-led training that makes you dangerous with Claude. First session free.', cta: 'Take The Ramp' },
-  { href: '/comic', label: 'Mustard Life', line: 'The whole catalog told as a glossy magazine comic. Every product, every price, printed in ink. Free.', cta: 'Read The Issue' },
-  { href: '/hundredfold', label: 'HUNDREDFOLD', line: 'The scaling program for the operator who already has something working. We interview you, build the offer, and build the agents that run the plan.', cta: 'See The Program' },
+  { href: '/work', label: 'The Work', line: 'Case studies with the problem, the build, the stack, and what it does now. Real businesses, running on the web right now.', cta: 'See The Work' },
+  { href: '/brand', label: 'Brand And Rebrand', line: 'A mark, a palette, a voice, and every surface it has to live on. Built to be recognised before it is read.', cta: 'See The Studio' },
+  { href: '/pictures', label: 'Mustard Pictures', line: 'Commercials, brand films, and social cuts, built from the real product rather than stock.', cta: 'Visit The Studio' },
+  { href: '/ai-native', label: 'AI Native', line: 'Your company running on AI, with your own team operating it. Advisory and build, engaged together.', cta: 'Read The Sign' },
+  { href: '/about', label: 'The Studio', line: 'One desk in Kalispell, four disciplines, and the person who does the design and the build herself.', cta: 'Meet Sarah' },
+  { href: '/inquire', label: 'Begin An Engagement', line: 'Tell us what you are building. Sarah reads every inquiry herself and answers inside one business day.', cta: 'Write To Us' },
 ];
 
 /**
@@ -418,7 +427,7 @@ const SQUARE = [
     tag: 'Funnels',
     label: 'The Follow Up Runs Itself',
     line:
-      'Most people are not ready on the first visit. So there is something free worth having, an email that shows up on its own, a missed call that texts back in seconds, and a booking link that never sleeps.',
+      'Most people are not ready on the first visit. So there is a reason to come back, an email that shows up on its own, a missed call that texts back in seconds, and a booking link that never sleeps.',
   },
   {
     tag: 'Proof',
@@ -609,34 +618,40 @@ export function JourneyTree() {
 /* Arrival · The Four Doors                                            */
 /* ------------------------------------------------------------------ */
 
+/**
+ * Sarah 2026-09-11: the free demo build door and the "have him pretend to be
+ * YOUR receptionist" door both came out. Giving the work away before the
+ * conversation was the single loudest thing cheapening this page. The inquiry
+ * is the first door now and everything else on the site closes on it.
+ */
 const DOORS = [
   {
+    key: 'inquire',
+    label: 'Begin An Engagement',
+    line: 'Tell us what you are building, what it has to do, and when you need it. Sarah reads every inquiry herself and answers inside one business day.',
+    cta: 'Write To Us',
+    href: '/inquire',
+  },
+  {
+    key: 'work',
+    label: 'See The Work',
+    line: 'Case studies with the problem, the build, the stack, and what it does now. Then go poke around the live sites yourself.',
+    cta: 'Open The Portfolio',
+    href: '/work',
+  },
+  {
     key: 'call',
-    label: 'Ask Him Anything',
-    line: 'Mr. Mustard is live right now. Ask how any of this works, what it would look like for your business, or anything else on your mind.',
+    label: 'Ask The Studio Line',
+    line: 'Mr. Mustard answers for the studio, day and night. Ask how any of this works or what it would look like for your business.',
     cta: 'Talk To Mr. Mustard',
     action: 'voice' as const,
   },
   {
-    key: 'demo',
-    label: 'Hear A Live Demo',
-    line: 'Have him step into character as YOUR receptionist and take a pretend call for your business, on the spot.',
-    cta: 'Run The Demo',
-    href: '/voice-agents',
-  },
-  {
-    key: 'forge',
-    label: 'Build My Custom Demo',
-    line: 'Give us your name and trade. We build your website and your voice agent to keep or toss.',
-    cta: 'Start The Build',
-    href: '/demos',
-  },
-  {
-    key: 'book',
-    label: 'Book A Call With Sarah',
-    line: 'Thirty minutes, free, with the person who will actually build it. She takes every call herself.',
-    cta: 'See The Calendar',
-    href: '/book',
+    key: 'about',
+    label: 'Meet Sarah',
+    line: 'One desk in Kalispell, four disciplines, and the person who does the design and the build herself. She is who you work with.',
+    cta: 'Read Her Story',
+    href: '/about',
   },
 ];
 
@@ -656,7 +671,7 @@ export function JourneyDoors() {
           <br className="md:hidden" /> All Open
         </h2>
         <p className={`mx-auto mt-4 max-w-2xl text-lg text-[#161616]/80 ${revealBase}`} style={{ transitionDelay: '100ms' }}>
-          The drive is over. However you like to walk in, somebody answers.
+          The drive is over. However you like to walk in, the same person answers.
         </p>
         <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {DOORS.map((d, i) => {

@@ -47,7 +47,7 @@ const faq = [
   },
   {
     q: 'What does it cost?',
-    a: 'Quoted per business after a free discovery call. We will know within one conversation whether this is a fit and what the right scope is.',
+    a: 'Scoped and quoted privately, as one set package price agreed before work starts. We will know within one conversation whether this is a fit and what the right scope is.',
   },
 ];
 
@@ -152,14 +152,14 @@ export default function AiProofPage() {
                 href="/audit"
                 className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-white rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
               >
-                Run the Free Audit First
+                Read The Work First
               </Link>
             </div>
           </div>
 
           <NewsletterSignup
             headline="AI-proofing playbooks. Weekly."
-            subhead="Real plays for defending an existing business through the AI shift. Free to read. Free to copy."
+            subhead="Real plays for defending an existing business through the AI shift. One letter a week, from the desk."
           />
         </div>
       </div>

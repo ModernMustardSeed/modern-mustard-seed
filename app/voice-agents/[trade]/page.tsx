@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: { params: Promise<{ trade: st
   if (!page) return buildMetadata({ noindex: true });
   return buildMetadata({
     title: `Voice Agent For ${page.forWord}. Hear It Answer Live`,
-    description: `A 24/7 voice agent built for ${page.forWord.toLowerCase()}: ${page.services.toLowerCase()}. Build a free demo trained on your business and hear it answer live.`,
+    description: `An always-on voice agent built for ${page.forWord.toLowerCase()}: ${page.services.toLowerCase()}. Trained on your services, your hours, and the questions your callers actually ask.`,
     path: `/voice-agents/${page.slug}`,
   });
 }
@@ -73,10 +73,10 @@ export default async function TradePage({ params }: { params: Promise<{ trade: s
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link
-                  href="/demos"
+                  href="/inquire"
                   className="rounded-full border-2 border-[#161616] bg-[#F5B700] text-[#161616] px-8 py-4 font-sans font-extrabold text-sm uppercase tracking-[0.14em] shadow-[5px_5px_0_0_#161616] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#161616]"
                 >
-                  Build My Free Demo
+                  Begin An Engagement
                 </Link>
                 <a
                   href={`tel:${DEMO_LINE.tel}`}
@@ -147,8 +147,9 @@ export default async function TradePage({ params }: { params: Promise<{ trade: s
               <p className="mt-2 font-display text-xl font-extrabold">{preset.signature.title}</p>
               <p className="mt-1 font-body text-sm text-[#5c554a]">{preset.signature.sub}</p>
               <p className="mt-3 font-body text-sm text-[#3d382e]">
-                Every built demo ships with a website designed from scratch for your trade, free to tour, and free
-                to keep when you take the voice agent and the website together. This board is its centerpiece.
+                Commission the voice agent and the website together and they are built as one thing, off
+                one brain, so the page and the phone never tell a caller two different stories. This board
+                is its centerpiece.
               </p>
             </div>
           </div>
@@ -373,14 +374,14 @@ export default async function TradePage({ params }: { params: Promise<{ trade: s
             Your next {preset.jobWord} is calling.
           </h2>
           <p className="mt-4 font-body text-lg text-[#3d382e]">
-            Build the free demo and hear your own voice agent in about a minute.
+            Build the engagement and hear your own voice agent in about a minute.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link
-              href="/demos"
+              href="/inquire"
               className="rounded-full border-2 border-[#161616] bg-[#F5B700] px-9 py-4 font-sans font-extrabold text-sm uppercase tracking-[0.14em] shadow-[5px_5px_0_0_#161616] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#161616]"
             >
-              Build My Free Demo
+              Begin An Engagement
             </Link>
             <a
               href={`tel:${DEMO_LINE.tel}`}

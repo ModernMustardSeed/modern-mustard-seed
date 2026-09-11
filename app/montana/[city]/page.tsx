@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: { params: Promise<{ city: str
   if (!city) return buildMetadata({ noindex: true });
   return buildMetadata({
     title: `AI Website Design and Voice Agents in ${city.name}, Montana`,
-    description: `AI websites, voice agents, automation and custom software for ${city.name} businesses. Built in Kalispell, Montana. Start with a free demo.`,
+    description: `Design-led websites, voice agents, and custom software for ${city.name} businesses. Built in Kalispell, Montana, by a boutique design and AI studio.`,
     path: `/montana/${city.slug}`,
   });
 }
@@ -65,14 +65,14 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
                 Websites and a phone that always answers, for {city.name} businesses.
               </h1>
               <p className="mt-6 max-w-xl text-lg md:text-xl text-[#3d382e] font-body leading-relaxed">
-                Modern Mustard Seed is an AI-native product studio based in Kalispell, serving {city.name} and clients nationwide. We build custom websites, AI voice agents, automation and software. You own the code and accounts.
+                Modern Mustard Seed is a boutique design and AI studio based in Kalispell, serving {city.name} and clients nationwide. We design and build websites and brand, custom software, and voice agents. You own the code and accounts.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link
-                  href="/demos"
+                  href="/inquire"
                   className="rounded-full border-2 border-[#161616] bg-[#F5B700] text-[#161616] px-8 py-4 font-sans font-extrabold text-sm uppercase tracking-[0.14em] shadow-[5px_5px_0_0_#161616] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#161616]"
                 >
-                  See Free Demos
+                  See the Work
                 </Link>
                 <a
                   href={`tel:${SITE.phoneE164}`}
@@ -243,17 +243,17 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
       <section className="halftone-bg">
         <div className="max-w-4xl mx-auto px-6 py-16 md:py-24 text-center">
           <h2 className="font-display text-4xl md:text-5xl font-extrabold leading-[1.02]">
-            See it built for your {city.name} business, free.
+            Built for your {city.name} business.
           </h2>
           <p className="mt-4 font-body text-lg text-[#3d382e]">
-            Two working demos: your agent opens right away and the website lands within the hour. No card and no meeting.
+            Tell us the business and what it has to do. Sarah reads every inquiry herself and answers inside one business day.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link
-              href="/demos"
+              href="/inquire"
               className="rounded-full border-2 border-[#161616] bg-[#F5B700] px-9 py-4 font-sans font-extrabold text-sm uppercase tracking-[0.14em] shadow-[5px_5px_0_0_#161616] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#161616]"
             >
-              Build My Demos
+              Begin An Engagement
             </Link>
             <a
               href={`tel:${SITE.phoneE164}`}

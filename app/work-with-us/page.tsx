@@ -5,28 +5,26 @@ import PortalShowcase from '@/components/PortalShowcase';
 import { JsonLd, breadcrumbJsonLd, faqJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
 import { pricingFaq } from '@/data/pricing';
-import { bookingUrl } from '@/data/socials';
-import { DEMO_PRODUCTS, DEMO_BUNDLE, formatUsd } from '@/lib/demo-order';
 
 export const metadata = buildMetadata({
   title: 'How We Work',
   description:
-    'How Modern Mustard Seed works: try any productized door free (a website, a voice agent, and more) then keep it monthly, or scope a fully custom build. Fixed scope, fixed timeline, and you own everything on launch day.',
+    'How Modern Mustard Seed works: one written scope, one set package price agreed before anything is built, changes included permanently, and you own everything on launch day.',
   path: '/work-with-us',
 });
 
 const PROCESS_STEPS = [
   {
     number: '01',
-    title: 'Discovery',
+    title: 'The Inquiry',
     body:
-      'A free 30-minute call. You tell us what you are trying to build or fix. We tell you whether we are a fit and what the right engagement looks like.',
+      'You write. Sarah reads every inquiry herself and answers inside one business day, then one working session settles what you are trying to build and whether we are the right hands for it.',
   },
   {
     number: '02',
     title: 'Scope & Quote',
     body:
-      'Within 48 hours we send a written scope with a fixed timeline and a fixed quote. No decks, no surprises, no hourly billing. You see the full cost before anything starts.',
+      'Within 48 hours we send a written scope with a fixed timeline and one set package price. No decks and no surprises. You see the whole cost before anything starts, and it does not move afterwards.',
   },
   {
     number: '03',
@@ -45,11 +43,11 @@ const PROCESS_STEPS = [
 const PRINCIPLES = [
   {
     title: 'Fixed scope, fixed timeline',
-    body: 'You see the full cost and the full delivery date before any work begins. No hourly drift.',
+    body: 'You see the whole cost and the whole delivery date before any work begins, and the number is the number.',
   },
   {
-    title: 'We iterate until it is right',
-    body: 'Revisions are part of every engagement. We do not stop when a contract says so. We stop when you are happy.',
+    title: 'Changes are included',
+    body: 'Adjustments to what we built are included, permanently. No change order, no second invoice, and no conversation about whether it counts.',
   },
   {
     title: 'You own everything',
@@ -91,16 +89,16 @@ export default function WorkWithUsPage() {
               How We Work
             </span>
             <h1 className="font-display text-4xl md:text-6xl font-black text-[#161616] tracking-tight leading-[1.1] mb-6">
-              Two ways in.{' '}
+              One note in.{' '}
               <span className="text-[#F5B700]" style={{ WebkitTextStroke: '2px #161616' }}>
                 One standard.
               </span>
             </h1>
             <p className="text-[#3a3733] text-base md:text-lg font-body leading-relaxed max-w-2xl mx-auto mb-3">
-              Try a productized door free and keep it monthly, or scope a fully custom build. Either way it is a fixed scope, a fixed timeline, and a quote you see before anyone writes a line of code. No hourly billing, no surprise scope.
+              Every engagement runs the same way: one written scope, one set package price agreed before anyone writes a line of code, changes included permanently, and you own everything on launch day.
             </p>
             <p className="text-[#161616]/70 text-sm font-body italic">
-              Not sure which fits? We quote after a free discovery call.
+              Studio engagements begin in the five figures. Advisory is retained by the quarter.
             </p>
             <Link
               href="/sample-proposal"
@@ -115,36 +113,37 @@ export default function WorkWithUsPage() {
             <div className="grid lg:grid-cols-2 gap-6 items-stretch">
               {/* Path one: productized */}
               <div className="pop-card p-8 md:p-9 flex flex-col">
-                <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold">Path one // Build it free</span>
+                <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold">Path one // The disciplines</span>
                 <h2 className="font-display text-2xl md:text-3xl font-black text-[#161616] tracking-tight mt-2.5 leading-[1.05]">
-                  Productized doors, tried free before you pay.
+                  The work the studio practises every week.
                 </h2>
                 <p className="text-[#3a3733] text-sm font-body leading-6 mt-3">
-                  Each one opens with a real working demo, built for your business and in your hands within the hour. Keep what
-                  you love, month to month, cancel anytime, no trials. Live within a week.
+                  Well-worn ground, which is why it moves fast and why the finish is what it is. Most of
+                  these go live within a week or two of kickoff.
                 </p>
                 <ul className="mt-5 space-y-2.5">
                   {[
-                    ['🌐', 'Website', `from ${formatUsd(DEMO_PRODUCTS.site.monthlyCents)}/mo + ${formatUsd(DEMO_PRODUCTS.site.setupCents)} setup, in 5, 20, or 50 pages`],
-                    ['🎙', 'voice agent', `${formatUsd(DEMO_PRODUCTS.voice.monthlyCents)}/mo + ${formatUsd(DEMO_PRODUCTS.voice.setupCents)} setup`],
-                    ['⚙', 'Command center', 'Sold on its own'],
-                    ['✦', 'The Talking Website', `from ${formatUsd(DEMO_BUNDLE.monthlyCents)}/mo + ${formatUsd(DEMO_BUNDLE.setupCents)} setup`],
-                  ].map(([icon, name, price]) => (
+                    ['🌐', 'Websites and brand', 'Identity, art direction, and the build'],
+                    ['🎙', 'Voice agents', 'It answers, it qualifies, it books the job'],
+                    ['⚙', 'Command center', 'The whole back office on one board'],
+                    ['✦', 'The Talking Website', 'The page and the phone, off one brain'],
+                  ].map(([icon, name, note]) => (
                     <li key={name} className="flex items-center justify-between gap-3 border-b border-dashed border-[#161616]/15 pb-2.5 last:border-0">
                       <span className="font-sans font-bold text-[14px] text-[#161616]"><span aria-hidden="true">{icon}</span> {name}</span>
-                      <span className="font-mono font-bold text-[12.5px] text-[#8f6600] text-right whitespace-nowrap">{price}</span>
+                      <span className="font-body text-[12px] text-[#161616]/70 text-right">{note}</span>
                     </li>
                   ))}
                 </ul>
                 <p className="text-[#161616]/70 text-[12.5px] font-body mt-4">
-                  Broadcast, Pictures, Press, the GEO Desk, Launch, and more each open free too.
+                  Broadcast, Pictures, the Launch Film, the GEO Desk and the rest are reached for as the
+                  work needs them.
                 </p>
                 <div className="mt-6 flex flex-col sm:flex-row gap-3">
                   <Link
-                    href="/demos"
+                    href="/inquire"
                     className="text-center px-6 py-3.5 text-[11px] uppercase tracking-[0.16em] font-sans font-extrabold text-[#161616] bg-[#F5B700] rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
                   >
-                    Build free demos →
+                    Begin an engagement →
                   </Link>
                   <Link
                     href="/services"
@@ -159,16 +158,16 @@ export default function WorkWithUsPage() {
               <div className="pop-card-yellow p-8 md:p-9 flex flex-col">
                 <span className="text-[10px] uppercase tracking-[0.3em] text-[#161616] font-mono font-bold">Path two // Built to spec</span>
                 <h2 className="font-display text-2xl md:text-3xl font-black text-[#161616] tracking-tight mt-2.5 leading-[1.05]">
-                  Bespoke builds, quoted after a free call.
+                  Software nobody sells yet, built to spec.
                 </h2>
                 <p className="text-[#161616]/80 text-sm font-body leading-6 mt-3">
-                  When you need more than a productized door: custom software, a tool only your industry has, an online
-                  store, or a system of agents. Fixed scope, fixed quote, and you own all of it.
+                  When the answer is an application, a tool only your industry has, an online store, or a
+                  system of agents. One scope, one price, and you own all of it.
                 </p>
                 <ul className="mt-5 space-y-2.5">
                   {[
                     ['📱', 'Custom apps & software', 'Web and mobile, built end to end'],
-                    ['🛠', 'Specialty AI tools', 'The $3K workflow becomes a $99 tool'],
+                    ['🛠', 'Specialty AI tools', 'The costliest repeated task, as software you own'],
                     ['🏪', 'Online stores', 'Headless commerce with an AI concierge'],
                     ['🤖', 'Agentic systems', 'Multi-agent workflows that run themselves'],
                   ].map(([icon, name, note]) => (
@@ -182,7 +181,7 @@ export default function WorkWithUsPage() {
                   ))}
                 </ul>
                 <Link
-                  href="/book"
+                  href="/inquire"
                   className="mt-auto pt-6 inline-block text-center px-6 py-3.5 text-[11px] uppercase tracking-[0.16em] font-sans font-extrabold text-[#F5B700] bg-[#161616] rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_rgba(22,22,22,0.3)] hover:-translate-y-0.5 transition-all"
                 >
                   Scope a custom build →
@@ -278,7 +277,7 @@ export default function WorkWithUsPage() {
                   We do not take every project, and we say no early
                 </h3>
                 <ul className="space-y-2.5 text-[#3a3733] text-sm font-body leading-6 list-disc pl-5">
-                  <li>Anyone looking for a $300 website or a magic-button AI tool.</li>
+                  <li>Anyone shopping for the cheapest website on the internet, or a magic-button AI tool.</li>
                   <li>Founders who want endless meetings instead of a shipped build.</li>
                   <li>Projects that need 8 stakeholders to approve a button color.</li>
                   <li>Businesses chasing AI hype without a problem to solve.</li>
@@ -324,23 +323,22 @@ export default function WorkWithUsPage() {
                 Not sure which engagement fits?
               </h3>
               <p className="text-[#161616]/75 text-base font-body font-medium mb-6 max-w-lg mx-auto">
-                Book a free call. Sarah takes every one herself, and you leave with a fit-check and a recommendation. No pressure, no decks.
+                Say what you are trying to make happen. Sarah reads every inquiry herself and answers
+                inside one business day with a fit check and a recommendation. No decks, no pressure.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Link
-                  href="/book"
+                  href="/inquire"
                   className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-white bg-[#161616] rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_rgba(22,22,22,0.35)] hover:-translate-y-0.5 transition-all"
                 >
-                  Book a Free Call
+                  Begin an Engagement
                 </Link>
-                <a
-                  href={bookingUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <Link
+                  href="/work"
                   className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-white rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
                 >
-                  Book a Discovery Call
-                </a>
+                  See the Work
+                </Link>
               </div>
             </div>
 
@@ -351,7 +349,7 @@ export default function WorkWithUsPage() {
           <div className="px-6 md:px-8 py-20">
             <NewsletterSignup
               headline="Get the playbooks we use in client engagements."
-              subhead="One playbook per week. Free to read, free to run. The same plays we charge to execute."
+              subhead="One playbook per week, from the desk. The same plays that run inside client engagements."
             />
           </div>
         </div>

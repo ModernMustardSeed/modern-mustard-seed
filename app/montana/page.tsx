@@ -11,7 +11,7 @@ import { MONTANA_CITIES } from '@/data/montana-cities';
 
 export const metadata = buildMetadata({
   title: 'AI Websites and Automation in Montana, Built in Kalispell',
-  description: 'Kalispell-based AI-native product studio building custom websites, voice agents, automation and software for Northwest Montana and clients nationwide.',
+  description: 'A Kalispell-based boutique design and AI studio: websites and brand, custom software, voice agents, and advisory for Northwest Montana and clients nationwide.',
   path: '/montana',
 });
 
@@ -26,11 +26,11 @@ const FAQ = [
   },
   {
     q: 'What does a website cost?',
-    a: 'The productized website is $497 to set up and $147 a month, including domain, hosting, and care. Bigger custom builds are scoped and quoted after a free call. Month to month, cancel anytime, no trials, and you own the code and every account.',
+    a: 'There is no price list. Every engagement is scoped in one conversation and quoted privately as a set package price, agreed in writing before work starts, and it does not move afterwards. Domain, hosting, and ongoing care are inside the engagement, changes are included permanently, and you own the code and every account. Studio engagements begin in the five figures.',
   },
   {
     q: 'Can I try it before paying?',
-    a: 'Yes. Enter your business once at the demo station and you get two working demos free: a voice agent you can talk to and a website designed from scratch. No card, no meeting.',
+    a: 'Yes. Every site in the portfolio is live right now and you are welcome to go poke around any of them, and the studio line answers day or night so you can hear a voice agent for yourself. For engagements that reach the proposal stage we design a full concept before either side commits.',
   },
 ];
 
@@ -65,14 +65,14 @@ export default function MontanaPage() {
             The AI studio in your valley, not in your inbox from three time zones away.
           </h1>
           <p className="mt-6 max-w-2xl text-lg md:text-xl text-[#3d382e] font-body leading-relaxed">
-            Modern Mustard Seed is an AI-native product studio based in Kalispell. We build custom AI websites, voice agents, automation and software for Northwest Montana and clients nationwide. You own everything we build.
+            Modern Mustard Seed is a boutique design and AI studio based in Kalispell. We design and build websites and brand, custom software, and voice agents for Northwest Montana and clients nationwide. You own everything we build.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
-              href="/demos"
+              href="/inquire"
               className="rounded-full border-2 border-[#161616] bg-[#F5B700] px-8 py-4 font-sans font-extrabold text-sm uppercase tracking-[0.14em] shadow-[5px_5px_0_0_#161616] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#161616]"
             >
-              See Free Demos
+              See The Work
             </Link>
             <a
               href={`tel:${SITE.phoneE164}`}

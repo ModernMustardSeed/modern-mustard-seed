@@ -2,14 +2,11 @@ import Link from '@/components/AttributionLink';
 import Image from 'next/image';
 import { buildMetadata, SITE } from '@/lib/seo';
 import { JsonLd, breadcrumbJsonLd, faqJsonLd } from '@/lib/jsonld';
-import { DEMO_PRODUCTS, DEMO_BUNDLE, SITE_RUNGS, SITE_RUNG_KEYS, formatUsd } from '@/lib/demo-order';
 import { workByKey } from '@/data/website-work';
 import EngineToggle from '@/components/websites/EngineToggle';
 import WorkShowcase from '@/components/websites/WorkShowcase';
 import HeroFilm from '@/components/websites/HeroFilm';
 
-const site = DEMO_PRODUCTS.site;
-const voice = DEMO_PRODUCTS.voice;
 const STORE = workByKey['cross-covenant'];
 
 // The hero film: a real scroll through a real build, recorded off the live
@@ -24,9 +21,9 @@ const HERO_FILM = {
 };
 
 export const metadata = buildMetadata({
-  title: 'Small Business Websites That Work: not a brochure, a working engine',
+  title: 'Websites and Brand: design-led sites that work',
   description:
-    'A website that captures every lead and follows up on its own. Elite custom design, funnels and SEO baked in, your domain, hosting, and care handled. Live in about a week from $147/mo. Add the voice agent and they are built as one thing. See yours built free.',
+    'Design-led websites from a boutique studio. Identity, art direction, funnels and SEO baked in, your domain and hosting handled, and you own every line. Scoped and quoted privately, by inquiry.',
   path: '/websites',
 });
 
@@ -46,15 +43,15 @@ const FAQ = [
   },
   {
     q: 'Is the voice agent included with the website?',
-    a: `No, and we will not pretend otherwise. The Voice Agent is its own product at ${formatUsd(voice.setupCents)} to set up plus ${formatUsd(voice.monthlyCents)} a month, and it can be added to any website: the one we build you, or the one you already have. It answers your calls 24/7, qualifies the caller, books the job, and texts you the details. Take it with a new website and the pair becomes THE TALKING WEBSITE: one brain answering the page and the phone, ${formatUsd(DEMO_BUNDLE.setupCents)} setup plus ${formatUsd(DEMO_BUNDLE.monthlyCents)} a month, a real discount on buying them separately.`,
+    a: 'No, and we will not pretend otherwise. The voice agent is its own discipline and it bolts onto any site, the one we build you or the one you already have. It answers your calls around the clock, qualifies the caller, books the job, and texts you the details. Commissioned together, the site and the agent become the Talking Website: one brain answering the page and the phone, scoped as a single engagement.',
   },
   {
     q: 'How much does a website cost?',
-    a: `The productized website comes in three sizes. ${SITE_RUNGS.five.label}: ${formatUsd(SITE_RUNGS.five.setupCents)} to set up plus ${formatUsd(SITE_RUNGS.five.monthlyCents)} a month. ${SITE_RUNGS.twenty.label}, every service and every town on its own page: ${formatUsd(SITE_RUNGS.twenty.setupCents)} plus ${formatUsd(SITE_RUNGS.twenty.monthlyCents)} a month. ${SITE_RUNGS.fifty.label}, every service in every town: ${formatUsd(SITE_RUNGS.fifty.setupCents)} plus ${formatUsd(SITE_RUNGS.fifty.monthlyCents)} a month. Every size includes your domain, hosting, ongoing care, and unlimited edits to every page. A new page beyond your size is the next size up, not an edit. Add the voice agent and the two are built as one thing, for less than they cost apart. It goes live in about a week. For a bigger, fully bespoke build (custom booking, an embedded CRM, a vertical app, an AI sales rep), we scope a Full-Service Business Build and quote it after a free call. Month to month, cancel anytime, no trials.`,
+    a: 'There is no price list, because a five page site for one town and a full engine with booking, a CRM, and a store are not the same piece of work. Every engagement is scoped in one conversation and quoted privately as a set package price, agreed in writing before anything is built. That number does not move, and changes to what we built are included permanently. Studio engagements begin in the five figures.',
   },
   {
     q: 'How fast does it go live?',
-    a: 'About a week from kickoff for the productized site. You can tour a free demo version built for your business, in your hands within the hour, before you decide anything. Bigger custom builds take two to four weeks depending on scope, and you see the exact timeline in your quote before any work begins.',
+    a: 'A focused site is typically live within a week or two of kickoff. Deeper builds with booking, a store, or an embedded back office run two to six weeks depending on scope. You see the exact timeline in your proposal, next to the price, before any work begins.',
   },
   {
     q: 'How is this different from Wix, Squarespace, or an agency?',
@@ -65,8 +62,8 @@ const FAQ = [
     a: 'Yes, fully. Every line of code, the domain, the hosting account, and every credential are transferred to you. You can hire any other engineer to change it later. There is no vendor lock-in and no per-seat fee.',
   },
   {
-    q: 'Can I see it before I pay?',
-    a: 'Yes. Enter your business once and we build a real working demo website designed from scratch for you, in your hands within the hour, plus a voice agent so you can judge the whole system. No card and no meeting. Buy the pieces you love, or walk away.',
+    q: 'Can I see the work before I commit?',
+    a: 'Yes. Every site in the portfolio on this page is live right now and you can go poke around any of them. For engagements that reach the proposal stage, we design a full concept before either side commits, so you are approving real work rather than a description of it.',
   },
   {
     q: 'Can you build it on WordPress or Webflow?',
@@ -74,7 +71,7 @@ const FAQ = [
   },
   {
     q: 'What if I already have a website?',
-    a: 'We can rebuild it as a working engine, or wire the parts you are missing (the voice agent, funnels, SEO and GEO) onto what you have. Start with a free demo or a free website audit and we will tell you the highest-leverage move.',
+    a: 'We can rebuild it as a working engine, or wire the parts you are missing onto what you have: the voice agent, the funnels, the SEO and GEO work. Say what you have in your inquiry and the first reply will tell you which of the two is actually worth your money.',
   },
 ];
 
@@ -87,32 +84,15 @@ function websitesJsonLd() {
         name: 'Small Business Website Builds by Modern Mustard Seed',
         serviceType: 'Custom small-business website design and development (funnels, SEO/GEO, optional voice agent add-on)',
         description:
-          'Custom websites that work: elite design, funnels and a lead magnet day one, SEO plus GEO built in, and your domain, hosting, and care handled. Live in about a week. You own the code, domain, and accounts. The voice agent is a separate product that can be added to this site or to a site you already have.',
+          'Design-led websites from a boutique studio: identity and art direction, funnels and a lead magnet on day one, SEO plus GEO built in, and your domain, hosting, and care handled. You own the code, the domain, and the accounts. The voice agent is its own discipline and can be added to this site or to one you already have.',
         provider: { '@type': 'Organization', name: 'Modern Mustard Seed', url: SITE.url },
         areaServed: 'US',
         url: `${SITE.url}/websites`,
         offers: {
           '@type': 'Offer',
-          name: 'Website',
-          description: 'Custom website with funnels and SEO/GEO. Domain, hosting, and care included. Voice agent sold separately, and taking both builds them as one thing.',
-          price: Math.round(site.monthlyCents / 100),
-          priceCurrency: 'USD',
-          priceSpecification: [
-            {
-              '@type': 'UnitPriceSpecification',
-              price: Math.round(site.monthlyCents / 100),
-              priceCurrency: 'USD',
-              billingIncrement: 1,
-              unitText: 'MONTH',
-            },
-            {
-              '@type': 'UnitPriceSpecification',
-              priceType: 'https://schema.org/Installment',
-              price: Math.round(site.setupCents / 100),
-              priceCurrency: 'USD',
-              description: 'One-time setup',
-            },
-          ],
+          name: 'Website engagement',
+          description:
+            'Design-led website with funnels and SEO/GEO. Domain, hosting, and care included. Scoped and quoted privately per engagement as a set package price. The voice agent is its own discipline and can be commissioned with the site or added to one you already have.',
           url: `${SITE.url}/websites`,
           availability: 'https://schema.org/InStock',
         },
@@ -138,33 +118,33 @@ export default function WebsitesPage() {
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-12 items-center">
             <div className="lg:col-span-6 xl:col-span-5">
               <span className="font-mono text-[11px] uppercase tracking-[0.32em] text-[#C4160B] font-bold">
-                Websites // Live in about a week
+                Websites and Brand // By inquiry
               </span>
               <h1 className="font-display text-[2.6rem] sm:text-5xl xl:text-6xl font-bold mt-4 leading-[1.02] tracking-tight">
                 Not a brochure. A website that <em className="italic text-[#C4160B]">works.</em>
               </h1>
-            <p className="mt-5 font-body text-base leading-relaxed">Built by Modern Mustard Seed, an AI-native product studio in Kalispell, Montana, serving Northwest Montana and clients nationwide. <Link href="/ai-websites" className="underline font-bold">See how our AI websites connect the page and the business.</Link></p>
+            <p className="mt-5 font-body text-base leading-relaxed">Designed and built by Modern Mustard Seed, a boutique design and AI studio in Kalispell, Montana, working with clients nationwide. <Link href="/ai-websites" className="underline font-bold">See how our AI websites connect the page and the business.</Link></p>
               <p className="font-body text-[17px] text-[#161616]/75 mt-5 leading-relaxed">
-                Elite custom design, funnels and SEO baked in, your domain and hosting handled. It captures the lead
-                and follows up while you sleep, and it answers the phone too the day you add the voice agent. From{' '}
-                {formatUsd(site.monthlyCents)}/mo, and you own every line.
+                Identity and art direction, funnels and SEO baked in, your domain and hosting handled.
+                It captures the lead and follows up while you sleep, and it answers the phone too the
+                day you commission the voice agent. You own every line of it.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link
-                  href="/demos"
+                  href="/inquire"
                   className="inline-flex items-center gap-2 bg-[#161616] text-[#FBF6EA] border-2 border-[#161616] rounded-full px-7 py-4 font-sans font-bold uppercase tracking-[0.14em] text-[12px] shadow-[5px_5px_0_0_#F5B700] hover:-translate-y-0.5 transition-transform"
                 >
-                  Build mine free →
+                  Begin an engagement →
                 </Link>
                 <Link
-                  href="/book"
+                  href="/work"
                   className="inline-flex items-center gap-2 bg-white text-[#161616] border-2 border-[#161616] rounded-full px-7 py-4 font-sans font-bold uppercase tracking-[0.14em] text-[12px] shadow-[5px_5px_0_0_#161616] hover:-translate-y-0.5 transition-all"
                 >
-                  Book a call
+                  See the work
                 </Link>
               </div>
               <p className="font-body text-[13px] text-[#161616]/70 mt-4">
-                A real working demo, designed for your business, in your hands within the hour. No card.
+                A small number of engagements at a time. Sarah answers every inquiry herself, inside one business day.
               </p>
             </div>
 
@@ -247,7 +227,7 @@ export default function WebsitesPage() {
           <div className="grid lg:grid-cols-12 gap-8 lg:gap-10 items-center border-2 border-[#161616] bg-[#161616] rounded-2xl shadow-[8px_8px_0_0_#F5B700] p-7 sm:p-10">
             <div className="lg:col-span-7">
               <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#F5B700] uppercase">
-                Add-on // Sold separately
+                A second discipline // Commissioned separately
               </p>
               <h2 className="font-display italic font-extrabold text-3xl md:text-[2.75rem] mt-3 leading-[1.04] text-[#FBF6EA]">
                 Want it to answer the phone? Add the voice agent.
@@ -262,7 +242,7 @@ export default function WebsitesPage() {
                   'Add it to the site we build you',
                   'Or to the site you already have',
                   'Keeps the number you already have',
-                  'Take both and they cost less than the two apart',
+                  'Commission both and they are built as one thing',
                 ].map((f) => (
                   <li key={f} className="flex items-start gap-2.5 font-body text-[13.5px] text-[#FBF6EA]/85">
                     <span className="mt-[7px] h-1.5 w-1.5 rounded-full bg-[#F5B700] shrink-0" aria-hidden />
@@ -277,18 +257,20 @@ export default function WebsitesPage() {
                 <span className="font-mono font-bold text-[10px] uppercase tracking-[0.2em] text-[#C4160B]">
                   The Voice Agent
                 </span>
-                <p className="font-mono font-bold text-[17px] mt-2.5 text-[#161616]">
-                  {formatUsd(voice.monthlyCents)}/mo{' '}
-                  <span className="text-[#161616]/70">+ {formatUsd(voice.setupCents)} setup</span>
+                <p className="font-display italic font-extrabold text-[22px] mt-2.5 text-[#161616] leading-tight">
+                  It answers, it qualifies, it books.
                 </p>
-                <p className="font-body text-[12.5px] text-[#161616]/70 mt-2 leading-relaxed">{voice.finePrint}</p>
+                <p className="font-body text-[12.5px] text-[#161616]/70 mt-2 leading-relaxed">
+                  Trained on your services, your hours, your pricing, and the questions your callers
+                  actually ask. It keeps the number you already have.
+                </p>
                 <div className="mt-4 pt-4 border-t-2 border-dashed border-[#161616]/25">
                   <p className="font-mono font-bold text-[10px] uppercase tracking-[0.16em] text-[#8f6600]">
-                    Take both and save
+                    Commissioned together
                   </p>
                   <p className="font-body text-[13px] text-[#161616]/80 mt-1.5 leading-relaxed">
-                    The Talking Website (site + voice agent, one brain) is from {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo +{' '}
-                    {formatUsd(DEMO_BUNDLE.setupCents)} setup, less than the two apart at every size.
+                    Site and agent built off one brain becomes the Talking Website. The answer a visitor
+                    reads is the answer a midnight caller hears.
                   </p>
                 </div>
                 <Link
@@ -334,15 +316,15 @@ export default function WebsitesPage() {
               </ul>
               <div className="mt-7 flex items-center gap-3 border-2 border-[#161616] bg-white rounded-xl px-4 py-3 shadow-[4px_4px_0_0_#161616] max-w-md">
                 <span className="font-mono font-bold text-[10px] uppercase tracking-[0.16em] text-[#C4160B] shrink-0">
-                  Priced as its own build
+                  Its own engagement
                 </span>
                 <span className="font-body text-[12.5px] text-[#161616]/75 leading-snug">
-                  More than a site. Quoted per catalog after a free call.
+                  More than a site. Scoped around your catalog and quoted privately.
                 </span>
               </div>
               <div className="mt-7">
                 <Link
-                  href="/book"
+                  href="/inquire"
                   className="inline-flex items-center gap-2 bg-[#161616] text-[#F5B700] border-2 border-[#161616] rounded-full px-7 py-4 font-sans font-bold uppercase tracking-[0.14em] text-[12px] shadow-[5px_5px_0_0_#F5B700] hover:-translate-y-0.5 transition-transform"
                 >
                   Scope my store →
@@ -385,82 +367,76 @@ export default function WebsitesPage() {
           </div>
         </section>
 
-        {/* ── Pricing: two tiers ── */}
+        {/* ── How an engagement is scoped ──
+            Sarah 2026-09-11: this was a two-card price ladder (three site rungs
+            with setup and monthly, then "Quoted after a free call"). A published
+            number is a ceiling, so it came out. What replaces it is the thing a
+            buyer actually wants to know: how the number gets arrived at, and
+            that it does not move afterwards. */}
         <section>
           <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#C4160B] uppercase">
-            Pricing // Productized or bespoke
+            Scope // How the number is arrived at
           </p>
           <h2 className="font-display italic font-extrabold text-4xl md:text-5xl mt-3 leading-[1.02] max-w-3xl">
-            A real site fast, or the whole engine built to spec.
+            One price, agreed in writing, before anything is built.
           </h2>
+          <p className="font-body text-[15px] text-[#161616]/70 mt-4 max-w-2xl leading-relaxed">
+            There is no price list here, because a focused site for one town and a full engine with
+            booking, a CRM, and a store are not the same piece of work. What follows instead is
+            exactly how the quote gets made.
+          </p>
 
-          <div className="grid md:grid-cols-2 gap-6 mt-10 items-stretch">
-            {/* Productized */}
-            <div className="relative flex flex-col border-2 border-[#161616] bg-[#F5B700] rounded-2xl shadow-[8px_8px_0_0_#161616] p-7 md:p-8">
-              <span
-                aria-hidden
-                className="absolute -top-4 -right-3 rotate-[8deg] bg-[#C4160B] text-[#FBF6EA] font-mono font-extrabold text-[10px] uppercase tracking-[0.14em] px-3 py-1.5 border-2 border-[#161616] shadow-[3px_3px_0_0_#161616]"
+          <div className="grid md:grid-cols-3 gap-6 mt-10 items-stretch">
+            {[
+              {
+                k: 'What decides it',
+                h: 'The shape of the work',
+                d: 'How many pages have to earn their keep, whether every service and every town needs its own, and what has to run behind the page: booking, a store, a CRM, an AI sales rep, a back office.',
+              },
+              {
+                k: 'What is always in',
+                h: 'The whole surface',
+                d: 'Design and art direction, the copy, the funnels, SEO and GEO, your domain, the hosting, and ongoing care. Plus every account and every line of code, transferred to you on launch day.',
+              },
+              {
+                k: 'What never costs extra',
+                h: 'Changes',
+                d: 'Changes to what we built are included, permanently. No change order, no second invoice, no conversation about whether it counts. Work that adds something we never agreed to build is a new engagement.',
+              },
+            ].map((c) => (
+              <div
+                key={c.k}
+                className="flex flex-col border-2 border-[#161616] bg-white rounded-2xl shadow-[6px_6px_0_0_#161616] p-7 md:p-8"
               >
-                Live in a week
-              </span>
-              <span className="font-mono font-bold text-[10px] uppercase tracking-[0.2em] text-[#161616]">The Website</span>
-              <h3 className="font-display italic font-extrabold text-2xl mt-2">Build it free, keep it monthly</h3>
-              <p className="font-mono font-bold text-[15px] mt-3 text-[#161616]">
-                From {formatUsd(site.monthlyCents)}/mo <span className="text-[#161616]/75">+ {formatUsd(site.setupCents)} setup</span>
-              </p>
-              {/* Three sizes. Google and AI search index pages, so the price follows the page count. */}
-              <dl className="mt-4 space-y-2 font-body text-[13px]">
-                {SITE_RUNG_KEYS.map((k) => {
-                  const r = SITE_RUNGS[k];
-                  return (
-                    <div key={k} data-price={`website-${r.pages}`} className="flex justify-between gap-4 border-b border-dashed border-[#161616]/30 pb-2">
-                      <dt>
-                        <span className="font-bold">{r.label}</span>
-                        <span className="block text-[12px] text-[#161616]/70">{r.pitch}</span>
-                      </dt>
-                      <dd className="font-mono text-[12.5px] font-bold text-right shrink-0">
-                        {formatUsd(r.setupCents)} + {formatUsd(r.monthlyCents)}/mo
-                      </dd>
-                    </div>
-                  );
-                })}
-              </dl>
-              <p className="font-body text-[13.5px] text-[#161616]/80 mt-3 leading-relaxed flex-1">
-                A custom site designed from scratch, funnels and SEO and GEO baked in. Your domain, hosting, and care
-                all included, and unlimited edits to every page. A new page beyond your size is the next size up.
-                Month to month, cancel anytime. Add the voice agent any time and it answers the phone too.
-              </p>
-              <Link
-                href="/demos"
-                className="mt-6 text-center border-2 border-[#161616] bg-[#161616] text-[#F5B700] rounded-full px-5 py-3.5 font-sans font-extrabold text-[11px] uppercase tracking-[0.16em] shadow-[4px_4px_0_0_#FBF6EA] hover:-translate-y-0.5 transition-all"
-              >
-                Build mine free
-              </Link>
-            </div>
+                <span className="font-mono font-bold text-[10px] uppercase tracking-[0.2em] text-[#C4160B]">{c.k}</span>
+                <h3 className="font-display italic font-extrabold text-2xl mt-2 leading-tight">{c.h}</h3>
+                <p className="font-body text-[13.5px] text-[#161616]/75 mt-3 leading-relaxed flex-1">{c.d}</p>
+              </div>
+            ))}
+          </div>
 
-            {/* Bespoke */}
-            <div className="flex flex-col border-2 border-[#161616] bg-white rounded-2xl shadow-[6px_6px_0_0_#161616] p-7 md:p-8">
-              <span className="font-mono font-bold text-[10px] uppercase tracking-[0.2em] text-[#C4160B]">Full-Service Business Build</span>
-              <h3 className="font-display italic font-extrabold text-2xl mt-2">The whole engine, built to spec</h3>
-              <p className="font-mono font-bold text-[15px] mt-3">Quoted after a free call</p>
-              <p className="font-body text-[13.5px] text-[#161616]/75 mt-3 leading-relaxed flex-1">
-                For operators who need more than a site: custom booking with an embedded CRM, an AI sales rep capturing
-                every lead, a vertical app (ordering, a store, an academy), and the back office wired around it. Fixed
-                scope, fixed quote, and you own all of it.
-              </p>
+          <div className="mt-8 border-2 border-[#161616] bg-[#F5B700] rounded-2xl shadow-[8px_8px_0_0_#161616] p-7 md:p-9">
+            <div className="flex flex-col md:flex-row md:items-center gap-6 md:gap-10">
+              <div className="flex-1">
+                <p className="font-mono font-bold text-[10px] uppercase tracking-[0.2em] text-[#161616]">
+                  Before you write
+                </p>
+                <p className="font-display italic font-extrabold text-2xl md:text-[1.9rem] mt-2 leading-[1.1] text-[#161616]">
+                  Studio engagements begin in the five figures.
+                </p>
+                <p className="font-body text-[13.5px] text-[#161616]/80 mt-3 leading-relaxed max-w-xl">
+                  Said plainly so nobody wastes an afternoon. If you are earlier than that, say so in
+                  your note anyway and Sarah will point you somewhere useful.
+                </p>
+              </div>
               <Link
-                href="/book"
-                className="mt-6 text-center border-2 border-[#161616] bg-[#F5B700] text-[#161616] rounded-full px-5 py-3.5 font-sans font-extrabold text-[11px] uppercase tracking-[0.16em] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
+                href="/inquire"
+                className="shrink-0 text-center border-2 border-[#161616] bg-[#161616] text-[#F5B700] rounded-full px-8 py-4 font-sans font-extrabold text-[11px] uppercase tracking-[0.16em] shadow-[4px_4px_0_0_#FBF6EA] hover:-translate-y-0.5 transition-all"
               >
-                Scope my build
+                Begin an engagement
               </Link>
             </div>
           </div>
-          <p className="font-body text-[13px] text-[#161616]/70 mt-6 text-center">
-            Not sure which? Build a free demo, or{' '}
-            <Link href="/website-audit" className="font-bold text-[#1E50C8] underline underline-offset-4 hover:text-[#161616]">grade your current site free</Link>{' '}
-            and we will tell you the highest-leverage move.
-          </p>
         </section>
 
         {/* ── How it works ── */}
@@ -468,9 +444,9 @@ export default function WebsitesPage() {
           <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#F5B700] font-bold">How it works</span>
           <div className="grid sm:grid-cols-3 gap-8 sm:gap-6 mt-6">
             {[
-              ['1', 'Build it free', 'Tell us your business and we design a real working demo site for you, in your hands within the hour. Tour it, poke around, no card.'],
-              ['2', 'We build it for real', 'Order it and we customize the design, write the copy, wire the funnels and the forms, and put it on your domain by hand.'],
-              ['3', 'Own it, and grow', 'Live in about a week. You get the repo, the domain, and every account. Add the voice agent whenever you want it answering the phone.'],
+              ['1', 'The conversation', 'You write, Sarah answers herself, and one working session maps the outcome and the constraints. Then a written scope with a set package price and a fixed timeline.'],
+              ['2', 'The build', 'We design it, write the copy, wire the funnels and the forms, and put it on your domain by hand. You watch it happen and you weigh in the whole way through.'],
+              ['3', 'Own it, and grow', 'You get the repo, the domain, and every account. Commission the voice agent whenever you want it answering the phone. Changes stay included, permanently.'],
             ].map(([n, t, d]) => (
               <div key={n} className="flex gap-4 sm:block">
                 <span className="font-display text-5xl font-bold text-[#F5B700] leading-none shrink-0">{n}</span>
@@ -549,18 +525,17 @@ export default function WebsitesPage() {
         <section className="relative halftone-bg border-2 border-[#161616] rounded-2xl bg-[#F5B700] p-10 md:p-14 text-center overflow-hidden">
           <div className="relative">
             <h2 className="font-display italic font-extrabold text-3xl md:text-5xl leading-[1.02]">
-              See your website, built free.
+              Tell us what you are building.
             </h2>
             <p className="font-body text-[15px] text-[#161616]/80 mt-4 max-w-xl mx-auto leading-relaxed">
-              Enter your business once and tour a real working site, designed from scratch for you, in your hands
-              within the hour. Keep it from {formatUsd(site.monthlyCents)}/mo, or take the voice agent with it and the
-              pair costs less than the two apart.
+              The business, the problem, and what a good outcome looks like. Sarah reads every inquiry
+              herself and answers inside one business day, whether or not it is a fit.
             </p>
             <Link
-              href="/demos"
+              href="/inquire"
               className="mt-7 inline-block border-2 border-[#161616] bg-[#161616] text-[#F5B700] rounded-full px-9 py-4 font-sans font-extrabold text-[12px] uppercase tracking-[0.16em] shadow-[5px_5px_0_0_rgba(22,22,22,0.3)] hover:-translate-y-0.5 transition-all"
             >
-              Build mine free →
+              Begin an engagement →
             </Link>
           </div>
         </section>

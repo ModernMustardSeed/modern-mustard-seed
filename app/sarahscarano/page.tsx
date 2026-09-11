@@ -199,7 +199,7 @@ export default function SarahScaranoPage() {
                   Resume, PDF
                 </a>
                 <Link
-                  href="/book"
+                  href="/inquire"
                   className="inline-flex items-center gap-2 bg-[#161616] text-[#FBF6EA] border-2 border-[#161616] rounded-full px-5 py-2.5 font-mono text-[12px] font-bold uppercase tracking-[0.15em] shadow-[4px_4px_0_0_#F5B700] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[3px_3px_0_0_#F5B700] transition"
                 >
                   Book 30 minutes
