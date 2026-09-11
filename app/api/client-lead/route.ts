@@ -5,6 +5,7 @@ import { resendClient } from '@/lib/send-email';
 import { sendSms, toE164 } from '@/lib/sms';
 import { SITE } from '@/lib/seo';
 import { CLIENT_PROJECTS, PRIORITY_LABEL, confirmVisitor, priorityFromLand } from '@/lib/client-leads';
+import { checkAnswer } from '@/lib/human-check';
 
 export const runtime = 'nodejs';
 export const maxDuration = 30;
@@ -122,6 +123,19 @@ export async function POST(req: Request) {
   if (str(body.hp)) return reply({ ok: true, id: 'ok' });
   if (!toolCallId && elapsedMs != null && elapsedMs < 3000 && lead.message) return reply({ ok: true, id: 'ok' });
   if (!lead.phone && !lead.email) return reply({ ok: false, error: 'a phone or an email is needed' }, 400);
+
+  // The human check. Only the site forms carry it; the chat tool cannot show a
+  // question, and a caller who reached a Vapi agent is already a person.
+  if (!toolCallId && (body.human_token || body.human_answer)) {
+    const verdict = checkAnswer(body.human_token, body.human_answer);
+    if (!verdict.ok) {
+      const msg =
+        verdict.reason === 'expired'
+          ? 'That page was open a while. Answer the question once more and send it again.'
+          : 'That answer did not match. Have another look at the question.';
+      return reply({ ok: false, error: msg, human: verdict.reason }, 400);
+    }
+  }
 
   const smsConsent = yes(body.sms_consent);
   const smsPromo = yes(body.sms_promo);
