@@ -41,6 +41,91 @@ import {
   type AuditCategory, type AuditReport, type Lead,
 } from './select.mts';
 import { presenceOf, prettyPhone } from './flyer-nosite.mts';
+import { readFileSync, existsSync } from 'node:fs';
+import path from 'node:path';
+
+/**
+ * Sarah's signature, embedded.
+ *
+ * A door drop that ends in a logo is from a company. A door drop that ends in a
+ * signature is from a person, and on a piece that has just graded somebody's
+ * life's work an F, a person is what it needs to be from. It sits beside the
+ * receipts line rather than inside the offer block on purpose: the offer is the
+ * business talking, and this is the last thing on the page before the footer.
+ *
+ * Inlined as a data URI because the renderer calls setContent with no base URL,
+ * so a src path would resolve against nothing and print a broken image box. It
+ * is read once at module load; a missing file degrades to no signature rather
+ * than to a broken page.
+ */
+const SIGNATURE = (() => {
+  const f = path.join(process.cwd(), 'public', 'brand', 'sig-name.png');
+  if (!existsSync(f)) return null;
+  return `data:image/png;base64,${readFileSync(f).toString('base64')}`;
+})();
+
+/** The receipts line, signed. */
+function signedNote(note: string): string {
+  if (!SIGNATURE) return `<p class="pnote" style="margin:0.1in 0 0">${note}</p>`;
+  return `<div style="display:grid;grid-template-columns:1.65in 1fr;column-gap:0.24in;align-items:center;margin-top:0.1in">
+    <img src="${SIGNATURE}" alt="Sarah Scarano" style="width:1.65in;display:block" />
+    <p class="pnote" style="margin:0">${note}</p>
+  </div>`;
+}
+
+/**
+ * WHERE THEY STAND, measured across the run itself.
+ *
+ * The single most valuable thing this campaign owns is not any one audit, it is
+ * all of them. 188 Flathead websites graded in one month is a dataset nobody
+ * else in the valley has, and the numbers in it reframe the whole pitch:
+ *
+ *   177 of 188 have no AI tools at all. 168 of 188 cannot be quoted by an AI
+ *   search engine.
+ *
+ * A grade on its own is an accusation, and a man reading an F about his own
+ * business gets defensive before he gets curious. The same F beside an
+ * explanation is an opportunity: search changed underneath everybody, most of
+ * these sites were built for the old rules, and almost nobody has made the move
+ * yet. That is why the scores are low, it is true, and it hands the reader a
+ * reason rather than a verdict.
+ *
+ * WHAT IS DELIBERATELY NOT ON THE PAPER. The run also knows that not one
+ * business reached a B and the valley's best is a C+ (bestGrade, atB below, and
+ * the build prints them to the console). Sarah cut that line on 2026-09-11: a
+ * flyer that announces the whole town is failing reads as a sneer, and it makes
+ * the reader's own grade feel less like something worth fixing. The fields stay
+ * because they are worth knowing internally. They do not go on the page.
+ *
+ * Every figure is computed from the run that produced the PDF, so the paper can
+ * never quote a number that was true last month. The copy says "we graded",
+ * never "the Flathead", because the cohort is the businesses we read and not
+ * every website in the county.
+ */
+/**
+ * Below this many graded sites the band prints no counts.
+ *
+ * A twelve-business proof run computed a cohort of twelve and the page read "of
+ * the 2 we graded this month, 2 have no AI on them at all", which is true,
+ * useless, and makes the studio look like it audited two websites. A statistic
+ * has to be big enough to mean something before it earns ink. Under the floor
+ * the sentence still runs, just without the numbers, and the scale beside it is
+ * about this business alone so it is unaffected either way.
+ */
+const COHORT_FLOOR = 30;
+
+export type Cohort = {
+  /** How many websites were graded in this run. */
+  graded: number;
+  /** The highest score and its letter. */
+  bestScore: number;
+  bestGrade: string;
+  /** How many reached a B. Zero on 2026-09-11, which is the whole point. */
+  atB: number;
+  /** Failing AI search, and failing AI tools. */
+  geoF: number;
+  aiF: number;
+};
 
 /** Letter, portrait. Trim and bleed in inches. */
 export const PAGE_W = 8.5;
@@ -81,7 +166,7 @@ body { font-family: 'DM Sans', system-ui, sans-serif; font-feature-settings: 'li
 .sheet:last-child { page-break-after: auto; break-after: auto; }
 .sheetfill { position: absolute; inset: 0; background: #FBF6EA; }
 .sheettrim { position: absolute; inset: ${opts.bleed ? PAGE_BLEED + 'in' : '0'}; width: ${PAGE_W}in; height: ${PAGE_H}in; }
-.sheetpad { position: absolute; inset: 0; padding: 0.46in 0.56in 0.38in; display: flex; flex-direction: column; }
+.sheetpad { position: absolute; inset: 0; padding: 0.42in 0.54in 0.34in; display: flex; flex-direction: column; }
 
 .pcrop { position: absolute; background: ${INK}; }
 .pcrop.h { width: 0.11in; height: 0.006in; }
@@ -182,13 +267,13 @@ const SEED = `<svg viewBox="0 0 64 64" class="pseed" xmlns="http://www.w3.org/20
 
 /** The offer, identical on both pieces. One sentence, after the receipts. */
 function offerBlock(qr: string, line: string): string {
-  return `<div class="pcard ink" style="padding:0.19in 0.21in;display:grid;grid-template-columns:1fr 1.05in;column-gap:0.22in;align-items:center">
+  return `<div class="pcard ink" style="padding:0.17in 0.2in;display:grid;grid-template-columns:1fr 1.05in;column-gap:0.22in;align-items:center">
     <div style="min-width:0">
       <h2 style="margin:0;font-family:'Playfair Display',Georgia,serif;font-weight:900;font-size:18pt;line-height:1.12;color:${PAPER}">${line}</h2>
       <p style="margin:0.1in 0 0;font-size:9pt;line-height:1.4;color:rgba(255,253,246,0.82)">
-        A one person product studio here in Kalispell. Websites, AI systems, and phone agents that answer, at a
-        set package price. You own the code, the domain, and the accounts. Call the ranch line and Mr. Mustard,
-        our own AI, books you in.
+        This is the moment it is cheapest to catch up, and it will not read as early for long. A one person
+        product studio here in Kalispell: websites, AI systems, and phone agents that answer, at a set package
+        price. You own the code, the domain, and the accounts. Call the ranch line and Mr. Mustard books you in.
       </p>
       <p style="margin:0.12in 0 0;font-family:'JetBrains Mono',monospace;font-size:9.6pt;font-weight:700;letter-spacing:0.04em;color:${MUSTARD}">
         (406) 312-1223 &nbsp;&middot;&nbsp; sarah@modernmustardseed.com
@@ -199,7 +284,7 @@ function offerBlock(qr: string, line: string): string {
 }
 
 function footer(): string {
-  return `<div style="display:flex;align-items:center;gap:0.12in;margin-top:0.13in">
+  return `<div style="display:flex;align-items:center;gap:0.12in;margin-top:0.11in">
     ${SEED}
     <span class="pfoot">Modern Mustard Seed &middot; Kalispell, MT &middot; Apps, Sites, and Specialty AI Tools</span>
     <span style="flex:1"></span>
@@ -207,8 +292,52 @@ function footer(): string {
   </div>`;
 }
 
+/**
+ * The standing band. One scale, their mark on it, and three numbers.
+ *
+ * The scale runs 0 to 100 with the grade bands shaded behind it, so the reader
+ * sees at a glance that the whole valley is sitting in the red and the amber.
+ * Their own mark is the only thing labelled. There is no leaderboard and no
+ * ranking against a named neighbour: the point is the shape of the field, not
+ * a fight with the shop across the street, and a rank would make the piece feel
+ * like a shaming rather than a survey.
+ */
+function standingBand(score: number, c: Cohort): string {
+  const pct = Math.max(0, Math.min(100, score));
+  return `<div style="display:grid;grid-template-columns:2.95in 1fr;column-gap:0.26in;align-items:end;margin-top:0.2in">
+    <div style="min-width:0">
+      <div class="peyebrow">Where You Stand</div>
+      <div style="position:relative;height:0.3in;margin-top:0.09in">
+        <div style="position:absolute;left:0;right:0;top:0.14in;height:0.095in;border:0.014in solid ${INK};border-radius:0.05in;overflow:hidden;display:flex">
+          <div style="width:60%;background:${CRIMSON}"></div>
+          <div style="width:10%;background:${AMBER}"></div>
+          <div style="width:10%;background:#C79A2E"></div>
+          <div style="width:20%;background:${GREEN}"></div>
+        </div>
+        <div style="position:absolute;left:${pct}%;top:0;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center">
+          <span class="tabular" style="font-family:'JetBrains Mono',monospace;font-size:7pt;font-weight:700;color:${INK};white-space:nowrap">YOU ${score}</span>
+          <span style="width:0.034in;height:0.175in;background:${INK};margin-top:0.01in"></span>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:space-between">
+        <span class="pfinding-cat" style="letter-spacing:0.1em">F</span>
+        <span class="pfinding-cat" style="letter-spacing:0.1em">D</span>
+        <span class="pfinding-cat" style="letter-spacing:0.1em">C</span>
+        <span class="pfinding-cat" style="letter-spacing:0.1em">B &nbsp;&nbsp; A</span>
+      </div>
+    </div>
+    <p class="pnote" style="margin:0 0 0.03in;color:rgba(22,22,22,0.72);font-size:8.6pt;line-height:1.4">
+      <b style="color:${INK}">Search changed underneath everybody.</b> Most sites here were built for how Google
+      worked five years ago, not for how it and the AI assistants work now.${c.graded >= COHORT_FLOOR
+        ? ` Of the <b style="color:${INK}">${c.graded}</b> we graded across these towns this month,
+           <b style="color:${INK}">${c.aiF}</b> have no AI on them at all.`
+        : ''} Very few businesses anywhere have made the move yet, which is what makes right now the cheap moment.
+    </p>
+  </div>`;
+}
+
 /** THE AUDIT FULL PAGE: diagnosis and prescription on one surface. */
-export function auditPageInner(lead: Lead, qr: string, opts: FlyerOptions): string {
+export function auditPageInner(lead: Lead, qr: string, opts: FlyerOptions, cohort?: Cohort): string {
   const r = lead.audit_json as AuditReport;
   const score = Math.round(r.overall_score ?? lead.audit_score ?? 0);
   const domain = host(lead.audit_url || lead.website) ?? '';
@@ -236,7 +365,7 @@ export function auditPageInner(lead: Lead, qr: string, opts: FlyerOptions): stri
     <span class="px">&#10007;</span>
     <span style="min-width:0">
       <span class="pfinding-cat">${esc(CATEGORY_LABELS[x.k] ?? x.k)}<span class="pfinding-grade" style="color:${gradeColor(x.c.score)}">${esc(x.c.letter)}</span></span>
-      <span class="pfinding-note" data-clamp="2">${esc(firstSentences(x.c.notes, 150))}</span>
+      <span class="pfinding-note" data-clamp="4">${esc(firstSentences(x.c.notes, 150))}</span>
     </span>
   </li>`).join('');
 
@@ -254,12 +383,12 @@ export function auditPageInner(lead: Lead, qr: string, opts: FlyerOptions): stri
    * sits above those cards and makes the argument; the card only has to say
    * what gets built.
    */
-  const fixes = (r.top_three_fixes ?? []).slice(0, 3).map((f, i) => `<div class="pcard" style="padding:0.16in 0.17in;display:flex;flex-direction:column;min-width:0">
+  const fixes = (r.top_three_fixes ?? []).slice(0, 3).map((f, i) => `<div class="pcard" style="padding:0.15in 0.16in;display:flex;flex-direction:column;min-width:0">
     <div style="display:flex;align-items:flex-start;gap:0.1in">
       <span class="pfixnum" style="color:${MUSTARD};-webkit-text-stroke:0.013in ${INK};flex:none">${i + 1}</span>
       <span class="pfixtitle" data-clamp="3">${esc(clean(f.title))}</span>
     </div>
-    <p class="pfixhow" style="margin:0.11in 0 0" data-clamp="7">${esc(firstSentences(f.how, 230))}</p>
+    <p class="pfixhow" style="margin:0.11in 0 0" data-clamp="14">${esc(firstSentences(f.how, 230))}</p>
   </div>`).join('');
 
   return `<div class="sheetpad">
@@ -284,25 +413,25 @@ export function auditPageInner(lead: Lead, qr: string, opts: FlyerOptions): stri
     </div>
   </div>
 
-  <div class="pbars" style="margin-top:0.24in">${bars}</div>
+  <div class="pbars" style="margin-top:0.22in">${bars}</div>
 
-  <div class="prule" style="margin:0.24in 0 0.17in;height:0.014in;background:rgba(22,22,22,0.2)"></div>
+  ${cohort ? standingBand(score, cohort) : ''}
+
+  <div class="prule" style="margin:0.19in 0 0.15in;height:0.014in;background:rgba(22,22,22,0.2)"></div>
 
   <div class="peyebrow">What We Found</div>
   <ul class="pfindings" style="margin-top:0.13in">${findings}</ul>
 
-  <div class="peyebrow" style="margin:0.24in 0 0.12in">The Three To Fix First</div>
+  <div class="peyebrow" style="margin:0.2in 0 0.11in">The Three To Fix First</div>
   <div style="display:grid;grid-template-columns:repeat(3,1fr);column-gap:0.18in;align-items:stretch">${fixes}</div>
 
   <div style="flex:1;min-height:0.14in"></div>
 
   ${offerBlock(qr, `Every one of these is fixable. We do all three, then take the whole site to an <span style="color:${MUSTARD}">A+</span>.`)}
 
-  <p class="pnote" style="margin:0.12in 0 0">
-    We opened ${esc(domain || 'your website')} on ${esc(longDate(opts.auditedOn))} and graded it the way a first time
-    customer and an AI search engine each see it. Nothing here is a guess. The code above opens the whole report, free,
-    whether you call us or not.
-  </p>
+  ${signedNote(`We opened ${esc(domain || 'your website')} on ${esc(longDate(opts.auditedOn))} and read it the way a
+    first time customer and an AI search engine each do. Nothing here is a guess, and the code above opens the whole
+    report free.`)}
 
   ${footer()}
 </div>`;
@@ -357,16 +486,16 @@ export function noSitePageInner(lead: Lead, qr: string, opts: FlyerOptions): str
     <span class="px">&#10007;</span>
     <span style="min-width:0">
       <span class="pfinding-cat">${esc(c.cat)}</span>
-      <span class="pfinding-note" data-clamp="2">${esc(firstSentences(c.note, 150))}</span>
+      <span class="pfinding-note" data-clamp="4">${esc(firstSentences(c.note, 150))}</span>
     </span>
   </li>`).join('');
 
-  const moves = MOVES.map((m, i) => `<div class="pcard" style="padding:0.16in 0.17in;display:flex;flex-direction:column;min-width:0">
+  const moves = MOVES.map((m, i) => `<div class="pcard" style="padding:0.15in 0.16in;display:flex;flex-direction:column;min-width:0">
     <div style="display:flex;align-items:flex-start;gap:0.1in">
       <span class="pfixnum" style="color:${MUSTARD};-webkit-text-stroke:0.013in ${INK};flex:none">${i + 1}</span>
       <span class="pfixtitle" data-clamp="3">${esc(m.title)}</span>
     </div>
-    <p class="pfixhow" style="margin:0.11in 0 0" data-clamp="7">${esc(m.how)}</p>
+    <p class="pfixhow" style="margin:0.11in 0 0" data-clamp="14">${esc(m.how)}</p>
   </div>`).join('');
 
   return `<div class="sheetpad">
@@ -390,7 +519,7 @@ export function noSitePageInner(lead: Lead, qr: string, opts: FlyerOptions): str
     </div>
   </div>
 
-  <div class="peyebrow" style="margin:0.24in 0 0.12in">Your Listing Today</div>
+  <div class="peyebrow" style="margin:0.2in 0 0.11in">Your Listing Today</div>
   <ul class="plisting">
     <li>
       <span class="ptick ${phone ? 'yes' : 'no'}">${phone ? '&#10003;' : '&#10007;'}</span>
@@ -420,7 +549,7 @@ export function noSitePageInner(lead: Lead, qr: string, opts: FlyerOptions): str
   <div class="peyebrow">What That Costs You</div>
   <ul class="pfindings" style="margin-top:0.13in">${costs}</ul>
 
-  <div class="peyebrow" style="margin:0.24in 0 0.12in">What We Would Build, In Order</div>
+  <div class="peyebrow" style="margin:0.2in 0 0.11in">What We Would Build, In Order</div>
   <div style="display:grid;grid-template-columns:repeat(3,1fr);column-gap:0.18in;align-items:stretch">${moves}</div>
 
   <div style="flex:1;min-height:0.14in"></div>

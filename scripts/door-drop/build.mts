@@ -44,8 +44,40 @@ import {
 import { noSiteFrontInner, noSiteBackInner, NOSITE_CSS } from './flyer-nosite.mts';
 import {
   auditPageInner, noSitePageInner, pageCss, pageCropMarks,
-  PAGE_W, PAGE_H, PAGE_BLEED,
+  PAGE_W, PAGE_H, PAGE_BLEED, type Cohort,
 } from './flyer-page.mts';
+
+/**
+ * The run measuring itself.
+ *
+ * Every number in the standing band comes from the pieces actually being
+ * printed, not from a figure typed into the copy. That is the only way paper can
+ * carry a statistic honestly: re-run it in October against different sites and
+ * the sentence changes with them, or it does not print at all.
+ *
+ * Computed over the graded pieces only. A business with no website has no score
+ * and would drag the cohort down while telling you nothing about websites.
+ */
+function cohortOf(pieces: Piece[]): Cohort {
+  const graded = pieces.filter((p) => p.kind === 'audit' && typeof p.lead.audit_score === 'number');
+  const scores = graded.map((p) => p.lead.audit_score as number);
+  const best = graded.reduce(
+    (acc, p) => ((p.lead.audit_score as number) > acc.score
+      ? { score: p.lead.audit_score as number, grade: p.lead.audit_json?.letter_grade ?? '' }
+      : acc),
+    { score: -1, grade: '' },
+  );
+  const catF = (k: 'geo' | 'ai_features') =>
+    graded.filter((p) => p.lead.audit_json?.categories?.[k]?.letter === 'F').length;
+  return {
+    graded: graded.length,
+    bestScore: best.score,
+    bestGrade: best.grade,
+    atB: scores.filter((n) => n >= 80).length,
+    geoF: catF('geo'),
+    aiF: catF('ai_features'),
+  };
+}
 
 /**
  * Two pieces, one run. A graded business gets the audit half page; a business
@@ -59,8 +91,8 @@ const frontOf = (p: Piece, qr: string, o: FlyerOpts) =>
 const backOf = (p: Piece, qr: string, o: FlyerOpts) =>
   p.kind === 'nosite' ? noSiteBackInner(p.lead, qr, o) : backInner(p.lead, qr, o);
 /** The full page carries everything on one surface, so there is no second side. */
-const pageOf = (p: Piece, qr: string, o: FlyerOpts) =>
-  p.kind === 'nosite' ? noSitePageInner(p.lead, qr, o) : auditPageInner(p.lead, qr, o);
+const pageOf = (p: Piece, qr: string, o: FlyerOpts, c?: Cohort) =>
+  p.kind === 'nosite' ? noSitePageInner(p.lead, qr, o) : auditPageInner(p.lead, qr, o, c);
 type FlyerOpts = { reportUrl: string; auditedOn: Date; bleed: boolean };
 
 /**
@@ -120,6 +152,9 @@ if (FORMAT !== 'page' && FORMAT !== 'half') {
   process.exit(1);
 }
 const IS_PAGE = FORMAT === 'page';
+
+/** Filled in once the pieces are chosen, and read by every page render after. */
+let COHORT: Cohort | undefined;
 
 /**
  * What the printed square points at. `/s/<id>` records the scan and then sends
@@ -233,6 +268,12 @@ async function main() {
   mkdirSync(path.join(OUT, 'route'), { recursive: true });
   if (PROOFS) mkdirSync(path.join(OUT, 'proof'), { recursive: true });
 
+  COHORT = cohortOf(chosen);
+  console.log(
+    `The field: ${COHORT.graded} graded, best is ${COHORT.bestGrade} (${COHORT.bestScore}), `
+    + `${COHORT.atB} reached a B, ${COHORT.aiF} have no AI at all.`,
+  );
+
   const qrs = new Map<string, string>();
   for (const p of chosen) qrs.set(p.lead.id, await qrSvg(scanUrl(p.lead.id)));
 
@@ -311,7 +352,7 @@ async function renderPress(browser: Browser, pieces: Piece[], qrs: Map<string, s
   for (const p of pieces) {
     const qr = qrs.get(p.lead.id)!;
     const o: FlyerOpts = { reportUrl: scanUrl(p.lead.id), auditedOn: readOn(p), bleed: true };
-    if (IS_PAGE) sheets.push(fullSheet(pageOf(p, qr, o), true));
+    if (IS_PAGE) sheets.push(fullSheet(pageOf(p, qr, o, COHORT), true));
     else sheets.push(wrap(frontOf(p, qr, o), true), wrap(backOf(p, qr, o), true));
   }
   const html = IS_PAGE ? pageDocument(sheets, true) : documentHtml(sheets, { bleed: true, extraCss: NOSITE_CSS });
@@ -367,14 +408,27 @@ function pageFitScript() {
   * time until the sheet fits. It stops at four lines and never cuts mid word,
   * because the clamp lands on a line boundary.
   */
+ /**
+  * THE LAST INCH, and why it shrinks type instead of cutting words.
+  *
+  * The first version dropped a line of clamp at a time until the sheet fit.
+  * That works, and it put "Link to th..." on the page. An ellipsis mid sentence
+  * is the mail merge tell this whole campaign is built to avoid, and on paper it
+  * cannot be taken back. So the crowded pages give up a fraction of a point of
+  * type instead, down to a floor of 6.7pt, and every word the audit wrote
+  * survives. Most sheets never enter this loop at all.
+  */
  document.querySelectorAll('.sheettrim').forEach(function(t){
    var pad=t.querySelector('.sheetpad'); if(!pad) return;
-   var hows=t.querySelectorAll('.pfixhow');
-   for(var n=0;n<4 && pad.scrollHeight>pad.clientHeight+2;n++){
+   // The receipts line joins the shrink set. It is the least important text on
+   // the page and the last one anybody reads, so on the one sheet in two hundred
+   // that needs a final hair, it gives it up before the fixes do.
+   var els=t.querySelectorAll('.pfixhow, .pfinding-note, .pfixwhy, .pnote');
+   for(var n=0;n<40 && pad.scrollHeight>pad.clientHeight+2;n++){
      var shrank=false;
-     hows.forEach(function(h){
-       var c=parseInt(h.style.webkitLineClamp||h.dataset.clamp,10);
-       if(c>4){h.style.webkitLineClamp=String(c-1);shrank=true;}
+     els.forEach(function(h){
+       var cur=parseFloat(h.style.fontSize)||parseFloat(getComputedStyle(h).fontSize)*0.75;
+       if(cur>6.7){h.style.fontSize=(cur-0.15).toFixed(2)+'pt';shrank=true;}
      });
      if(!shrank) break;
    }
@@ -509,7 +563,7 @@ async function renderOfficePages(browser: Browser, pieces: Piece[], qrs: Map<str
   for (const p of pieces) {
     const qr = qrs.get(p.lead.id)!;
     const o: FlyerOpts = { reportUrl: scanUrl(p.lead.id), auditedOn: readOn(p), bleed: false };
-    for (let i = 0; i < COPIES; i++) sheets.push(fullSheet(pageOf(p, qr, o), false));
+    for (let i = 0; i < COPIES; i++) sheets.push(fullSheet(pageOf(p, qr, o, COHORT), false));
   }
   const page = await browser.newPage({ viewport: { width: 900, height: 1180 }, deviceScaleFactor: 2 });
   await page.setContent(pageDocument(sheets, false), { waitUntil: 'networkidle' });
@@ -632,7 +686,7 @@ async function renderProofs(browser: Browser, pieces: Piece[], qrs: Map<string, 
     const n = String(i).padStart(3, '0');
     const tag = p.kind === 'nosite' ? 'nosite-' : '';
     if (IS_PAGE) {
-      await page.setContent(pageDocument([fullSheet(pageOf(p, qr, o), false)], false), { waitUntil: 'networkidle' });
+      await page.setContent(pageDocument([fullSheet(pageOf(p, qr, o, COHORT), false)], false), { waitUntil: 'networkidle' });
       await page.waitForFunction('window.__fitted === true', null, { timeout: 30_000 });
       const sheet = page.locator('.sheet').first();
       await sheet.screenshot({ path: path.join(OUT, 'proof', `${n}-${tag}${slug(l.business_name)}.png`) });
