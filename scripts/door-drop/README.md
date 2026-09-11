@@ -1,6 +1,6 @@
 # The Flathead door drop
 
-One audited business, one half page, her name on it, in her hand.
+One audited business, one page, her name on it, in her hand.
 
 This is the paper version of the audit that closed Built Right Montana. Nothing
 is pre-built for these businesses. We read their live website, grade it, name the
@@ -29,18 +29,39 @@ Other runs:
 # proof run: twelve businesses, whatever audits are already fresh
 npx tsx scripts/door-drop/build.mts
 
-# the real run: re-read every site first, then print everything that passes
-npx tsx scripts/door-drop/build.mts --all --refresh --out artifacts/door-drop/full
+# the old half page, two sides, two up on letter
+npx tsx scripts/door-drop/build.mts --all --format half
 
 # just one piece or the other
 npx tsx scripts/door-drop/build.mts --all --audit-only
 npx tsx scripts/door-drop/build.mts --all --nosite-only
 ```
 
+Flags on `build.mts`:
+
+| Flag | Default | What it does |
+| --- | --- | --- |
+| `--format` | `page` | `page` is one side of letter. `half` is 8.5 x 5.5, two sides, two up |
+| `--all` | off | every business that passes, not just the first twelve |
+| `--limit N` | 12 | how many to print |
+| `--cities A,B` | the seven towns | which towns, north to south |
+| `--refresh` | off | re-read every site whose audit has aged out, free, on the Max subscription |
+| `--max-age-days N` | 21 | how old an audit may be and still go on paper |
+| `--allow-stale` | off | print an older audit anyway. For proofing only |
+| `--copies N` | 2 | copies per business in the office file |
+| `--concurrency N` | 6 | parallel audits during a refresh |
+| `--audit-only` | off | only the graded businesses |
+| `--nosite-only` | off | only the businesses with no website |
+| `--no-proofs` | off | skip the PNG proofs |
+
+`spec.mts` takes `--copies-each` and the same `--format`. Every number on it is
+read back off the run's own manifest, so the spec and the press file cannot drift
+apart.
+
 ## The 2026-09-11 run
 
 203 businesses across the seven towns: 188 graded, 15 with no website of their
-own. 406 press pages. Nobody scored above a C+.
+own. 203 press pages, one side each. Nobody scored above a C+.
 
 | Grade | Count |
 | --- | --- |
@@ -57,73 +78,113 @@ Six of the graded businesses live on a booking platform, and the engine read
 each one correctly rather than grading the platform: *"This is not your website.
 It is Booksy's, and it rents you one page."*
 
-Flags on `build.mts`:
-
-| Flag | Default | What it does |
-| --- | --- | --- |
-| `--all` | off | every business that passes, not just the first twelve |
-| `--limit N` | 12 | how many to print |
-| `--cities A,B` | the seven towns | which towns, north to south |
-| `--refresh` | off | re-read every site whose audit has aged out, free, on the Max subscription |
-| `--max-age-days N` | 21 | how old an audit may be and still go on paper |
-| `--allow-stale` | off | print an older audit anyway. For proofing only |
-| `--copies N` | 2 | copies per business in the office 2-up file |
-| `--concurrency N` | 6 | parallel audits during a refresh |
-| `--audit-only` | off | only the graded businesses |
-| `--nosite-only` | off | only the businesses with no website |
-| `--no-proofs` | off | skip the PNG proofs |
-
 ## What comes out
 
 ```
 artifacts/door-drop/<date>/
-  press/flyers-press.pdf    the printer's file. 8.75 x 5.75 with bleed and crop marks
+  press/flyers-press.pdf    the printer's file. 8.75 x 11.25 with bleed and crop marks
   press/printer-spec.pdf    the one page that goes with it
-  office/flyers-2up.pdf     letter, 2-up, duplex LONG edge, one horizontal cut
+  office/flyers-letter.pdf  letter, trim size, no marks. What her own printer wants
   route/route-sheet.pdf     town by town with a box to tick
   route/route-sheet.csv     the same, for a phone
-  proof/*.png               every flyer, both sides, plus an imposed sheet
+  proof/*.png               every flyer, plus the route sheet and the spec
   manifest.json             who is in the box, which piece, their grade, their scan link
   skipped.csv               who is not, and which gate they hit
 ```
 
+Under `--format half` the press file is 8.75 x 5.75 and two pages per business,
+and the office file becomes `flyers-2up.pdf`.
+
+## Why one side
+
+The half page put the diagnosis on the front and the close on the back. Clean
+design, resting on one bad assumption: that the paper gets turned over. Handed
+across a counter to somebody mid-shift, it often does not. He reads his own name,
+he reads the F, and if the paper never flips he has been told his website is
+failing and never told what to do about it. The three fixes and the offer are the
+only reason the grade is on there.
+
+One side removes that failure, and with it the duplex setting, the long-edge flip
+and the cut, which are the three things a print shop can get wrong. A full sheet
+also reads like an inspection notice, which is what it is. A half page reads like
+a coupon.
+
+The cost argument goes the same way, which was the surprise. 203 businesses at
+three apiece is 609 simplex letter sheets and no finishing, against 406 duplex
+sheets plus a guillotine pass. Colour duplex runs close to double colour simplex
+at any shop, so the sheet count roughly cancels and the cutting charge does not.
+
+The half page is kept behind `--format half`. It is the right piece for a counter
+display or a windshield, where the size is the point.
+
+## Where you stand
+
+The most valuable thing this campaign owns is not any one audit, it is all of
+them. 188 Flathead websites graded in one month is a dataset nobody else in the
+valley has, and the numbers in it change what the paper can say:
+
+| | |
+| --- | --- |
+| Graded across the seven towns | 188 |
+| That reached a B | **0** |
+| Best website in the valley | C+ (79) |
+| With no AI on the site at all | 177 |
+| That an AI search engine cannot quote | 168 |
+
+A grade on its own is an accusation, and a man reading an F about his own
+business gets defensive before he gets curious. The same F beside "so did almost
+everyone, and nobody has taken the top spot yet" is an opportunity, and it is the
+truth. It also makes the grade checkable in a way a lone number never is: he can
+ask about the shop down the street and we can answer.
+
+So every audit page carries a scale with his own mark on it and the field's
+numbers beside it, and the offer block leads with the consequence: *nobody in
+this valley has taken the top spot yet, which makes it cheap to take.*
+
+There is deliberately **no rank and no named neighbour**. The point is the shape
+of the field, not a fight with the shop across the street, and a leaderboard
+would make the piece feel like a shaming rather than a survey.
+
+Every figure is computed by `cohortOf()` from the pieces actually being printed,
+so the paper can never quote a number that was true last month. The copy says
+"we graded", never "the Flathead", because the cohort is the businesses we read
+and not every website in the county.
+
 ## Two pieces, one route
 
-Both are 8.5 by 5.5 inches, landscape, two sides, and they travel together in
-the same press file, the same 2-up file and the same route sheet. She is driving
-one route and carrying one box, so sorting them into separate piles would only
-mean driving Whitefish twice. `--audit-only` and `--nosite-only` split them when
-that is what you want.
+Both travel in the same press file, the same office file and the same route
+sheet. She is driving one route and carrying one box, so sorting them into
+separate piles would only mean driving Whitefish twice.
 
-### The audit half page
+### The audit page
 
-For a business whose website was read and graded.
+For a business whose website was read and graded. Their name in the largest type
+on the page, their own domain, the audit's one honest sentence, the grade, and
+the seven bars that add up to it. Then the three weakest categories in the
+engine's own words, then the three highest-leverage fixes, then one line saying
+we do all three and take the whole thing to an A+.
 
-**Front is the diagnosis.** Their name in the largest type on the page, their own
-domain under it, the audit's one honest sentence, then the three weakest
-categories in the engine's own words. On the right, the grade and the seven bars
-that add up to it. A grade with no working shown is an insult. A grade with the
-bars beside it is a report.
+A grade with no working shown is an insult. A grade with the bars beside it is a
+report. The offer is one sentence, after the receipts, never instead of them.
 
-**Back is the prescription.** The three highest-leverage fixes, each with why it
-matters and what to actually do, then one line: we will do all three and take the
-whole site to an A+. The offer is one sentence, after the receipts, never instead
-of them.
+The fix cards carry the title and the how, not the why. On one page the findings
+sit directly above them and make the same argument in the engine's own words, and
+printing both cost half an inch of trim to repeat itself.
 
-### The no-website half page
+### The no-website page
 
-For a business whose Google listing was opened and found to carry no website at
-all. There are roughly thirty of these in the seven towns and they are the
-easiest sale in the valley, which is why they get a piece instead of a rejection.
+For a business whose Google listing was opened and found to carry no website of
+its own. Roughly thirty of these in the seven towns, and they are the easiest
+sale in the valley, which is why they get a piece instead of a rejection.
 
-**Front** says the finding is the absence. Their name, "no website on your Google
-listing", and three consequences in plain English. On the right, where the grade
-panel sits on the other piece, one word: **None**, under "Websites You Own". Then
-their listing as it stands today, phone and address ticked, website crossed.
+Where the grade panel sits on the other piece, this one says **None** under
+"Websites You Own". Beside it, their listing as it stands: phone ticked, address
+ticked, website crossed. Then what that costs them, then the three moves, then
+the same offer.
 
-**Back** is the three moves, in order, as fixed copy. When a business has no
-website the work is the same work every time, and dressing it in their trade name
-to look bespoke would be the mail-merge tell this campaign exists to avoid.
+The three moves are fixed copy. When a business has no website the work is the
+same work every time, and dressing it in their trade name to look bespoke would
+be the mail-merge tell this campaign exists to avoid.
 
 "You have no website" never prints off an empty database column. A blank
 `website` field is just as likely to mean nobody ever looked. The piece is built
@@ -131,6 +192,12 @@ only for a lead whose listing was opened and stamped
 `NO WEBSITE: confirmed on Google Maps <date>`, and the date it prints is that
 date. An undated confirmation from an older run is sent back to the Maps pass
 rather than printed with today's date.
+
+Seven of the fifteen have a Facebook page or a Square booking link on the
+listing, and the piece names it: *"your Google listing points at a Facebook
+page"*, with the URL printed underneath so it can be checked in ten seconds. That
+survives the owner saying "yes I do, it's on Facebook". The generic version did
+not.
 
 ## The scan
 
@@ -150,13 +217,10 @@ dropped, so the count of real scans stays clean and a leaked URL is visible
 instead of silent. `/s/` is disallowed in robots.txt and every response carries
 `X-Robots-Tag: noindex`.
 
-## Why landscape
-
-Two portrait halves side by side look tidy until they are printed on both sides.
-A long-edge duplex flip mirrors the sheet left to right, so the back of the left
-flyer lands on the right. Two landscape halves stack instead, and a long-edge
-flip leaves top on top. One horizontal cut, no mirroring, nothing for a copy shop
-to set wrong.
+The report they land on books through `/book`, the real page with real slots, and
+offers the ranch line as a `tel:` link underneath. It used to point at `/?book=1`,
+which opens the chat launcher on the homepage: fine for somebody already reading
+the homepage, and a bounce for somebody who just scanned a code and wants a time.
 
 ## The gates
 
@@ -167,7 +231,10 @@ gates and every rejection is written to `skipped.csv` with its reason.
    list remembers every business it ever found, buyers included.
 1. **Reachable.** Not a duplicate, not a test row, not unsubscribed, not on
    `skip.txt`. No website is not a rejection here, it is the other piece.
-2. **Local.** Not a national chain. A franchisee cannot buy a website.
+2. **Local.** Not a national chain. A franchisee cannot buy a website. Two lists:
+   distinctive names match anywhere on word boundaries, ordinary words that
+   happen to be a brand only match when they are essentially the whole name, so
+   Michaels is a craft store and Michaels Auto Body is a body shop.
 3. **Owned.** The audit ran against the same host as the website on file.
 4. **Complete.** The report has all seven categories and three fixes.
 5. **Fresh.** The audit is younger than `--max-age-days`.
@@ -175,6 +242,24 @@ gates and every rejection is written to `skipped.csv` with its reason.
 Gate 5 is also what keeps the site-facts law honest. Nothing on the paper says a
 site lacks hours, an address or a phone unless the engine read the live site and
 did not find it, this month.
+
+## Fitting the page
+
+The build reports overflow **by how much, in inches**. That is not decoration:
+the first two attempts at the full page were guesses at padding, and "it
+overflows by 0.74in" sized the fix on the first try after that.
+
+A handful of sheets still run long, because one business draws three unusually
+long fixes at once. Shaving the layout for those would make two hundred pages
+worse, so the crowded pages give themselves the space back: the fix text and the
+finding notes give up a fraction of a point of type, down to a floor of 7pt,
+until the sheet fits.
+
+**It shrinks type rather than cutting lines, and that is the whole point.** The
+first version dropped a line of clamp at a time, which works and which put
+"Link to th..." on the page. An ellipsis mid sentence is the mail merge tell this
+campaign exists to avoid, and on paper it cannot be taken back. Most sheets never
+enter the loop at all.
 
 ## Hand skip list
 
@@ -192,9 +277,15 @@ on the lead. It caught Alpine Laundry on the first dry run, whose Maps result is
 a different business called Glacier Wash and Fold.
 
 It settles the website question on the same page load, because the Maps panel
-carries both and opening it twice is the expensive part. Either it finds a
+carries both and opening it twice is the expensive part. Either it finds a real
 website and records it, which moves the lead into the audit campaign, or it finds
 none and date-stamps that, which moves the lead into the no-website campaign.
+
+The Maps link goes through `badDomain` from `lib/enrich.ts` first. The first
+version of this pass did not, and wrote seven Facebook pages into the `website`
+column: those businesses left the campaign they belonged in, and the audit engine
+would have graded facebook.com under their name. Reuse the bundle, never
+re-implement the rules.
 
 It paces itself on purpose. Past roughly a hundred rapid place loads Google
 serves a panel with an empty h1, which throws nothing and looks exactly like a
