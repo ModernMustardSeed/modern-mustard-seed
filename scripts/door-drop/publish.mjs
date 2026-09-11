@@ -47,6 +47,7 @@ if (!U || !K) { console.error('No supabase creds in .env.local'); process.exit(1
 const FILES = [
   ['press/flyers-press.pdf', 'flyers-press.pdf', 'application/pdf'],
   ['press/printer-spec.pdf', 'printer-spec.pdf', 'application/pdf'],
+  ['route/route-by-town.pdf', 'route-by-town.pdf', 'application/pdf'],
   ['route/route-sheet.pdf', 'route-sheet.pdf', 'application/pdf'],
   ['route/route-sheet.csv', 'route-sheet.csv', 'text/csv'],
 ];

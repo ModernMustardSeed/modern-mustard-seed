@@ -34,7 +34,7 @@
  */
 import { execFileSync } from 'node:child_process';
 import { pathToFileURL } from 'node:url';
-import { rmSync } from 'node:fs';
+import { rmSync, readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
 import path from 'node:path';
 import type { Page } from 'playwright';
 import { openBrowser, runQuery, parseCard, parseRating, cityFrom } from '../acq-maps.mts';
@@ -89,6 +89,12 @@ const { badDomain, hostOf } = (await import(pathToFileURL(BUNDLE).href)) as {
   badDomain: (h: string) => string | null;
   hostOf: (u: string) => string | null;
 };
+
+/** The same cache the route sheet reads, so a sourced lead arrives already pinned. */
+const GEO = path.join('artifacts', 'door-drop', '.geocache.json');
+mkdirSync(path.dirname(GEO), { recursive: true });
+const geo: Record<string, { lat: number; lon: number } | null> =
+  existsSync(GEO) ? JSON.parse(readFileSync(GEO, 'utf8')) : {};
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 const phoneKey = (p: string | null) => {
@@ -207,6 +213,20 @@ async function main() {
   type Pending = { name: string; address: string; town: string; card: Awaited<ReturnType<typeof runQuery>>[number] };
   const pending: Pending[] = [];
 
+  /**
+   * ROUND ROBIN, NOT CATEGORY BY CATEGORY.
+   *
+   * The first hundred came back as a hundred restaurants. One Tallahassee
+   * restaurant search returns 116 cards, which filled the target before the loop
+   * ever reached cafes, and a door drop of nothing but restaurants is not main
+   * street. Walking the categories outermost and taking a slice from each keeps
+   * the box mixed: some cafes, some salons, some body shops, some dentists.
+   *
+   * PER_QUERY caps what any single search may contribute. Twelve is enough that
+   * a small town still fills up and few enough that Tallahassee's restaurant
+   * feed cannot own the run.
+   */
+  const PER_QUERY = 12;
   outer: for (const category of CATEGORIES) {
     for (const town of REGION.towns) {
       if (found.length + pending.length >= TARGET) break outer;
@@ -256,6 +276,7 @@ async function main() {
         seen.add(nk);
         pending.push({ name, address, town, card: c });
         added += 1;
+        if (added >= PER_QUERY) break;
         if (found.length + pending.length >= TARGET) break;
       }
       const tally = Object.entries(why).filter(([, n]) => n).map(([k, n]) => `${k} ${n}`).join(' ');
@@ -311,6 +332,14 @@ shortlisted ${pending.length}. Opening each place page for the phone, the websit
       notes: note,
       coord: d.coord,
     });
+    /**
+     * The place page already gave us the pin, so hand it to the route sheet
+     * now rather than making coords.mjs open the same page again tomorrow.
+     */
+    if (d.coord) {
+      geo[`biz|${pnd.name.toLowerCase().trim()}|${(cityFrom(address) ?? pnd.town).toLowerCase().trim()}`] = d.coord;
+      writeFileSync(GEO, JSON.stringify(geo), 'utf8');
+    }
     console.log(`${label} ${website ? 'site' : note ? 'presence' : 'no site'}  ${d.phone ?? 'no phone'}`);
     await sleep(2500);
   }
