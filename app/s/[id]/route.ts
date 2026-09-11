@@ -33,6 +33,12 @@ export const dynamic = 'force-dynamic';
  * Crawlers are classified and recorded as machines rather than dropped, so the
  * count of real scans stays clean and a leaked URL is visible instead of silent
  * (lib/acq/bots.ts, the same reader that caught the cold-email scanner traffic).
+ *
+ * NOT A NAV ENTRY, and deliberately so. The repo rule that a new public route
+ * ships with Footer, Navbar and sitemap links in the same commit is about pages
+ * a visitor can be sent to. This is a turnstile: it has no content, it is
+ * reachable only by scanning a printed square, and it is disallowed in
+ * robots.txt. Linking it anywhere would be the bug.
  */
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;

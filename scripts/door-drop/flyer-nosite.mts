@@ -203,7 +203,7 @@ const MOVES = [
       + 'On your own domain, in your own account, so it cannot be taken away from you.',
   },
   {
-    title: 'Put where the machines read',
+    title: 'Put it where the machines read',
     body: 'Structured data, a real FAQ, and an llms.txt file, so Google and the AI assistants can quote you '
       + 'instead of guessing. Most sites in this valley have none of it.',
   },
@@ -230,6 +230,8 @@ export function noSiteBackInner(lead: Lead, qr: string, _opts: FlyerOptions): st
     <span class="eyebrow muted">${esc(lead.business_name)}</span>
   </div>
   <div class="rule" style="margin:0.075in 0 0.15in"></div>
+
+  <div style="flex:0.5;min-height:0"></div>
 
   <div style="display:grid;grid-template-columns:repeat(3,1fr);column-gap:0.15in;align-items:stretch">${cards}</div>
 

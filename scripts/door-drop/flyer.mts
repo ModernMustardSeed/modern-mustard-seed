@@ -411,6 +411,8 @@ export function backInner(lead: Lead, qr: string, opts: FlyerOptions): string {
   </div>
   <div class="rule" style="margin:0.075in 0 0.15in"></div>
 
+  <div style="flex:0.5;min-height:0"></div>
+
   <div style="display:grid;grid-template-columns:repeat(3,1fr);column-gap:0.15in;align-items:stretch">${cards}</div>
 
   <div style="flex:1;min-height:0.08in"></div>
