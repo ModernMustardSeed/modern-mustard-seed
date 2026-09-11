@@ -5,6 +5,7 @@ import { sendViaResend } from '@/lib/send-email';
 import { clientEmail, escape, p } from '@/lib/email';
 import { OWNER_NOTIFY_TO } from '@/lib/owner';
 import { SITE } from '@/lib/seo';
+import { encryptSecret } from '@/lib/crypto';
 
 export const runtime = 'nodejs';
 
@@ -60,7 +61,16 @@ export async function POST(req: Request) {
   const answers = Array.isArray(body.answers)
     ? (body.answers as QA[]).filter((x) => x && typeof x.q === 'string').map((x) => ({ q: x.q.slice(0, 300), a: String(x.a ?? '').slice(0, 4000) })).filter((x) => x.a.trim())
     : [];
-  if (!spec || !KINDS.has(kind) || !answers.length) {
+  // Credentials travel apart from answers: encrypted at rest, never emailed.
+  type Secret = { label?: unknown; value?: unknown };
+  const secrets = Array.isArray(body.secrets)
+    ? (body.secrets as Secret[])
+        .filter((x) => x && typeof x.label === 'string' && String(x.value ?? '').trim())
+        .map((x) => ({ label: String(x.label).slice(0, 160), value: String(x.value).slice(0, 4000) }))
+        .slice(0, 30)
+    : [];
+
+  if (!spec || !KINDS.has(kind) || (!answers.length && !secrets.length)) {
     return cors(NextResponse.json({ ok: false, error: 'missing fields' }, { status: 400 }), origin);
   }
   const ip = (req.headers.get('x-forwarded-for') ?? '').split(',')[0].trim();
@@ -76,6 +86,23 @@ export async function POST(req: Request) {
     .select('id, created_at')
     .single();
   if (error || !row) return cors(NextResponse.json({ ok: false, error: 'could not record' }, { status: 500 }), origin);
+
+  // Credentials, encrypted with the same AES-GCM helper the OAuth tokens use.
+  // Caught on its own: a failure here must never lose the submission.
+  let secretsSaved = 0;
+  if (secrets.length) {
+    try {
+      const rows = secrets.map((x) => {
+        const enc = encryptSecret(x.value);
+        return { intake_id: row.id, project, client_email: spec.email, label: x.label, ciphertext: enc.ciphertext, iv: enc.iv, tag: enc.tag, submitted_by: submittedBy };
+      });
+      const { error: sErr } = await sb.from('prep_secrets').insert(rows);
+      if (sErr) console.error('prep-intake secrets failed', sErr);
+      else secretsSaved = rows.length;
+    } catch (err) {
+      console.error('prep-intake encryption failed', err);
+    }
+  }
 
   const viewUrl = `${SITE.url}/api/prep-intake?id=${row.id}`;
   const when = new Date(row.created_at).toLocaleString('en-US', { timeZone: 'America/Denver', dateStyle: 'long', timeStyle: 'short' });
@@ -96,7 +123,15 @@ export async function POST(req: Request) {
     console.error('prep-intake filing failed', err);
   }
   try {
-    const bodyHtml = answers.map((x) => `<p style="margin:0 0 14px"><strong>${escape(x.q)}</strong><br>${escape(x.a).replace(/\n/g, '<br>')}</p>`).join('');
+    const answersHtml = answers.map((x) => `<p style="margin:0 0 14px"><strong>${escape(x.q)}</strong><br>${escape(x.a).replace(/\n/g, '<br>')}</p>`).join('');
+    // Credentials are named, never printed. The value lives encrypted and is
+    // read once from the admin, then changed.
+    const secretsHtml = secretsSaved
+      ? `<p style="margin:22px 0 8px"><strong>${secretsSaved} credential${secretsSaved === 1 ? '' : 's'} came with this. They are held encrypted and deliberately not printed here:</strong></p>` +
+        `<ul style="margin:0 0 14px;padding-left:20px">${secrets.map((x) => `<li>${escape(x.label)}</li>`).join('')}</ul>` +
+        `<p style="margin:0 0 14px">Open them from the client book, use each one once, and change every password as you go.</p>`
+      : '';
+    const bodyHtml = answersHtml + secretsHtml;
     await sendViaResend({
       from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
       to: OWNER_NOTIFY_TO,
