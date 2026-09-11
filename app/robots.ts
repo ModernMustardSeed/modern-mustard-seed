@@ -4,11 +4,11 @@ import { SITE } from '@/lib/seo';
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
-      { userAgent: '*', allow: '/', disallow: ['/api/', '/admin/', '/portal/'] },
+      { userAgent: '*', allow: '/', disallow: ['/api/', '/admin/', '/portal/', '/s/'] },
       {
         userAgent: ['OAI-SearchBot', 'Googlebot', 'Bingbot', 'Applebot', 'PerplexityBot'],
         allow: '/',
-        disallow: ['/api/', '/admin/', '/portal/'],
+        disallow: ['/api/', '/admin/', '/portal/', '/s/'],
       },
       // Discovery rules above do not opt in to model training. GPTBot and
       // other training crawlers retain the pre-existing wildcard policy.

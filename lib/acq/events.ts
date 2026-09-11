@@ -49,6 +49,7 @@ export type EventType =
   | 'reply'
   | 'note'
   | 'dm_sent'
+  | 'flyer_scanned'
   | 'stage_changed';
 
 export async function recordEvent(
@@ -107,6 +108,7 @@ export async function timelineFor(leadId: string, limit = 200): Promise<AcqEvent
 export const ENGAGEMENT_TYPES: EventType[] = [
   'email_opened',
   'link_clicked',
+  'flyer_scanned',
   'permission_visited',
   'consent_captured',
   'consent_revoked',
