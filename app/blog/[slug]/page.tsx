@@ -106,7 +106,7 @@ export default async function BlogPost({ params }: { params: Params }) {
 
           <section className="mt-14 pop-card-yellow p-7">
             <h2 className="font-display text-2xl font-bold">Put the field notes to work.</h2>
-            <p className="mt-4 leading-relaxed"><Link href="/ai-websites" className="underline font-bold">Explore our AI websites</Link>, <Link href="/demos" className="underline font-bold">see a free demo</Link>, or <Link href="/book" className="underline font-bold">talk with Sarah</Link> about your business.</p>
+            <p className="mt-4 leading-relaxed"><Link href="/ai-websites" className="underline font-bold">Explore our AI websites</Link>, <Link href="/work" className="underline font-bold">see the work</Link>, or <Link href="/inquire" className="underline font-bold">talk with Sarah</Link> about your business.</p>
             <ul className="mt-5 space-y-3">{related.map((p) => <li key={p.slug}><Link href={`/blog/${p.slug}`} className="underline font-bold">{p.title}</Link></li>)}</ul>
             <Link href="/resources" className="mt-5 inline-block underline font-bold">All AI Search Field Notes</Link>
           </section>

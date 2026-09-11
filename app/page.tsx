@@ -1,14 +1,12 @@
 import ProofBand from '@/components/home/ProofBand';
-import JourneyCalculator from '@/components/journey/JourneyCalculator';
+import RecentWork from '@/components/home/RecentWork';
 import JourneyRig from '@/components/journey/JourneyRig';
-import JourneyTour from '@/components/journey/JourneyTour';
 // Parked 2026-08-08 at Sarah's request: hide the review band until there is
 // more than one review to show. Uncomment this and the <GoogleReviews /> tag
 // below, plus the 'reviews' beat in data/journey-tour.ts, to bring it back.
 // import GoogleReviews from '@/components/home/GoogleReviews';
 import {
   JourneyHero,
-  JourneyRing,
   JourneyOrchard,
   JourneySigns,
   JourneySquare,
@@ -21,9 +19,9 @@ import { JsonLd, breadcrumbJsonLd, faqJsonLd, parableJsonLd } from '@/lib/jsonld
 import { buildMetadata, SITE } from '@/lib/seo';
 
 export const metadata = buildMetadata({
-  title: 'AI Websites and Voice Agents in Kalispell, Montana',
+  title: 'A Design and AI Studio in Kalispell, Montana',
   description:
-    'Kalispell-based AI-native product studio. Custom websites, AI voice agents, automation and software for Northwest Montana and clients nationwide. See a free demo.',
+    'Modern Mustard Seed is a boutique design and AI studio. Websites and brand, custom software, voice agents, and advisory for operators building something worth owning. By inquiry.',
 });
 
 const homeJsonLd = {
@@ -31,7 +29,7 @@ const homeJsonLd = {
   '@type': 'WebPage',
   '@id': 'https://modernmustardseed.com/#webpage',
   url: 'https://modernmustardseed.com',
-  name: 'Modern Mustard Seed | AI Websites and Voice Agents in Kalispell, Montana',
+  name: 'Modern Mustard Seed | A Design and AI Studio in Kalispell, Montana',
   description: SITE.description,
   isPartOf: { '@id': 'https://modernmustardseed.com/#website' },
   about: { '@id': 'https://modernmustardseed.com/#organization' },
@@ -48,69 +46,82 @@ const homeJsonLd = {
 const offerJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Service',
-  name: 'Idea to Product, Fast',
+  name: 'Design and AI Studio Engagements',
   description:
-    'Custom websites, voice agents, and AI command centers live in about a week. Custom apps, software, and stores in weeks. Fixed scope, fixed timeline. Now booking new builds.',
+    'Design-led websites and brand, custom software, voice agents, and retained AI advisory. Every engagement is scoped and quoted privately, with a set package price agreed before work starts.',
   provider: { '@id': 'https://modernmustardseed.com/#organization' },
-  serviceType: 'Custom software development',
+  serviceType: 'Design and custom software development',
   areaServed: 'Worldwide',
 };
 
 const HOME_FAQ = [
   {
     q: 'What does Modern Mustard Seed do?',
-    a: 'Modern Mustard Seed is an AI-native product studio in Kalispell, Montana. We build custom websites, AI voice agents, automation, command centers and software for Northwest Montana and clients nationwide. Founded by Sarah Scarano, it ships fixed-scope, fixed-quote builds fast: websites, voice agents, and command centers go live in about a week. Now booking new builds.',
+    a: 'Modern Mustard Seed is a boutique design and AI studio in Kalispell, Montana, founded by Sarah Scarano. Four disciplines: design-led websites and brand, custom software, voice agents, and retained advisory for operators putting AI into a business that already works. We take a small number of engagements at a time and work with clients nationwide.',
   },
   {
     q: 'Who is Sarah Scarano?',
-    a: 'Sarah Scarano is the founder, engineer, and strategist behind Modern Mustard Seed. She is a self-taught full-stack engineer and AI systems architect who builds across AI, e-commerce, real estate, hospitality and SaaS. Her portfolio and case studies are available on this site.',
+    a: 'Sarah Scarano is the founder, designer, and engineer behind Modern Mustard Seed. She is a full-stack engineer and AI systems architect who has shipped products across AI, e-commerce, real estate, hospitality and SaaS. She does the design and the build herself, and she is the person you talk to from the first note to the handoff.',
+  },
+  {
+    q: 'How do engagements begin?',
+    a: 'With a written inquiry at modernmustardseed.com/inquire. Sarah reads every one herself and replies inside one business day. If it is a fit, the next step is one working conversation, then a written scope with a set package price and a fixed timeline.',
+  },
+  {
+    q: 'What does an engagement cost?',
+    a: 'There is no price list, because the right answer depends on what you are building. Every engagement is scoped and quoted privately as a set package price, agreed in writing before work starts, and it does not move. Studio engagements begin in the five figures. Advisory is retained by the quarter.',
+  },
+  {
+    q: 'Are changes billed separately?',
+    a: 'No. Changes to what we built are included, permanently. There is no change order and no second invoice. Work that adds a deliverable we never agreed to build is a new engagement, quoted the same way as the first.',
   },
   {
     q: 'How long does a build take?',
-    a: 'Websites, voice agents, and command centers go live in about a week from kickoff. Custom software, full apps, and online stores are deeper builds and usually take two to four weeks. Fixed scope, fixed timeline, fixed quote. Modern Mustard Seed is now booking new builds and gives each engagement focused attention.',
+    a: 'A website or a voice agent is typically live within a week or two of kickoff. Custom software, full applications, and stores are deeper builds and usually run two to six weeks. The timeline is fixed in the proposal alongside the price.',
   },
   {
-    q: 'How do I get started?',
-    a: 'Book a free 30-minute call at modernmustardseed.com/book. Sarah takes every call herself. Every client also gets Mr. Mustard, the studio AI, on call 24/7 for questions between conversations.',
-  },
-  {
-    q: 'What does it cost?',
-    a: 'Each engagement is quoted per project after a free 30-minute discovery call. Pricing is fixed before work starts. A set package price, agreed before the build.',
+    q: 'What is the advisory work?',
+    a: 'Retained counsel for operators putting AI into a business that already works. What to build, what to refuse, what to automate, and in what order. It is engaged by the quarter and it is often the right first step when the answer is not yet a specific build.',
   },
   {
     q: 'What tech stack do you use?',
-    a: 'React 19, Next.js 16, TypeScript, Tailwind CSS, Supabase, Stripe, Vercel, Trigger.dev, Expo and React Native for mobile, plus Anthropic Claude, OpenAI, and Google Gemini for AI. Vapi for voice agents. Same stack across every engagement, refined in production.',
+    a: 'React 19, Next.js 16, TypeScript, Tailwind CSS, Supabase, Stripe, Vercel, Trigger.dev, Expo and React Native for mobile, plus Anthropic Claude, OpenAI, and Google Gemini for AI. Vapi for voice agents. The same stack across every engagement, refined in production.',
   },
   {
-    q: 'Do I own the code when the build is finished?',
-    a: 'Yes. You receive the repository, the live deployment, and the documentation. You own the product outright.',
+    q: 'Do I own the work when it is finished?',
+    a: 'Yes, outright. You receive the repository, the live deployment, the accounts, and the documentation to run all of it without us. We build assets you own, not a dependency on the studio.',
   },
   {
-    q: 'What is MUSTARD MODE?',
-    a: 'MUSTARD MODE is the coach-led way to master Claude and Claude Code. Mr. Mustard, a live AI coach, trains you through four tracks (Code, Design, Cowork, Ideate) with 28 missions, a prompt library, and a progress HUD. The first coaching session is free at modernmustardseed.com/mustard-mode, and paid levels start at $197 once with lifetime access.',
+    q: 'What has the studio built?',
+    a: 'Recent work includes Wild Hope, a Flathead Lake retreat village told through seventeen original oil paintings; Cross + Covenant, a direct-to-consumer apparel brand taken from sketch to live storefront in sixty days; Lago Society, a lakeside fashion house with an AI personal stylist; Fiat Lux Design, an AI staging studio for real estate; and D&D Landscaping, a design-build landscaper with a full back office behind it.',
   },
   {
-    q: 'What kinds of products has Modern Mustard Seed built?',
-    a: 'Recent builds include DEED AI (FSBO command center for home sellers), PTG AI Deal Analyzer (real estate investment analyzer), Cross + Covenant (direct-to-consumer faith apparel brand), Olive Shoot (agentic OS for solopreneurs), Make Me Studio (AI creative studio), Alive Notes (mobile OS for human intention), Luxe Design (AI real estate staging), and the Wild Daisy Command Center (30-agent operations hub).',
-  },
-  {
-    q: 'Do I need to know AI to work with Modern Mustard Seed?',
-    a: 'No. The studio is built for everyone, from a small business owner who needs their first real website to a founder shipping a custom AI tool. The discovery call translates your goal into a scoped build.',
+    q: 'Do I need to know AI to work with the studio?',
+    a: 'No. Most clients run a business that already works and want a product built without hiring a team. The first conversation translates the goal into a scoped build, in plain language.',
   },
   {
     q: 'Why is it called Modern Mustard Seed?',
-    a: 'The name comes from the mustard seed parable in Matthew 13: the smallest seed in the field grows into a tree the birds perch in. Every build here starts seed-sized, and that is the plan. The homepage is a drive around Flathead Lake that ends at that exact tree.',
+    a: 'The name comes from the mustard seed parable in Matthew 13: the smallest seed in the field grows into a tree the birds perch in. Every build here starts seed sized, and that is the plan. The homepage is a drive around Flathead Lake that ends at that exact tree.',
   },
 ];
 
 const homeFaq = faqJsonLd(HOME_FAQ);
 
 /**
- * Homepage: THE FLATHEAD JOURNEY (branch build, approved direction B world +
- * A chrome, 2026-08-07). One scrolling drive around the lake: pickup,
- * orchards, roadside signs, the gate, proof, the planting, the tree, four
- * doors. Ava narrates opt-in; Mr. Mustard takes the close. Every funnel from
- * the previous homepage is reachable from the roadside signs and the doors.
+ * Homepage: THE FLATHEAD JOURNEY. One scrolling drive around the lake: pickup,
+ * orchards, the work, roadside signs, the square, the gate, proof, the
+ * planting, the tree, the doors.
+ *
+ * Sarah 2026-09-11, the boutique pass. Three things came off this page and the
+ * reasoning belongs here so nobody puts them back by accident:
+ *
+ * - Ava's audio narration. An opt-in hostess reading the page out loud is a
+ *   gimmick, and it undercuts everything else the page is trying to say.
+ * - The missed-revenue calculator, which closed on a free demo build.
+ * - Every price, and every use of the word free.
+ *
+ * RecentWork took the calculator's slot. The portfolio is the better argument
+ * and it is the one that belongs on a studio page.
  */
 export default function HomePage() {
   return (
@@ -127,15 +138,18 @@ export default function HomePage() {
       <div className="relative bg-[#FBF6EA] text-[#161616]">
         <JourneyRig />
         <JourneyHero />
-        {/* MI 4. The turnout: one field, one promise, the phone rings. It used
-            to sit inside the hero (Sarah 2026-08-19: too crowded up there), so
-            it gets its own band the moment the drive starts. */}
-        <JourneyRing />
+        {/* MI 4. The turnout held the "drop your number and Mr. Mustard calls
+            you right now" band. Sarah 2026-09-11: a phone capture one screen
+            into a studio homepage reads as a lead magnet, not as craft. The
+            same widget still lives on /voice-agents, where somebody who is
+            already interested can ask for the call themselves. JourneyRing is
+            kept in chapters.tsx, unmounted, if it is ever wanted back. */}
         <JourneyOrchard />
-        {/* MI 19. The leak, priced. Conversion proof for the talking website and
-            the voice agent, then a working pop-art calculator that totals what
-            the silence costs, and the Build as the next move. */}
-        <JourneyCalculator />
+        {/* MI 19. The work itself, in browser windows, directly under the three
+            things we make. Sarah 2026-09-11: the missed-revenue calculator used
+            to sit here and it closed on a free demo build. The portfolio is the
+            better argument and it is the one that belongs on a studio page. */}
+        <RecentWork />
         <JourneySigns />
         {/* MI 47. How a business gets found and gets chosen: the Google profile,
             the reviews, the AI answers, the conversion path, the follow up. */}
@@ -171,8 +185,6 @@ export default function HomePage() {
             </div>
           </div>
         </section>
-        {/* Ava, bottom left, opposite Mr. Mustard. She yields to him. */}
-        <JourneyTour />
       </div>
     </>
   );

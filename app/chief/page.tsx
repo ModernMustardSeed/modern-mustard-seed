@@ -277,7 +277,7 @@ export default function ChiefPage() {
           </h2>
           <p className="font-body text-[15px] text-[#161616]/70 mt-4 max-w-2xl leading-relaxed">
             Every plan is hard-capped on voice minutes and never overages. Hit the cap and he keeps going on text, chat,
-            and email. No trials, because the free demo call was the trial.
+            and email. Scoped with you first, then quoted privately as one set package price.
           </p>
 
           <div className="grid md:grid-cols-3 gap-6 mt-10 items-stretch">
@@ -343,7 +343,7 @@ export default function ChiefPage() {
           <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#F5B700] font-bold">How it works</span>
           <div className="grid sm:grid-cols-3 gap-8 sm:gap-6 mt-6">
             {[
-              ['1', 'Meet him free', `Call ${PHONE_DISPLAY} and talk to Mr. Mustard yourself, or hire him and skip the line. The demo is the trial.`],
+              ['1', 'Meet him', `Call ${PHONE_DISPLAY} and talk to Mr. Mustard yourself. He answers for this studio, so the call is the standard of the work rather than a description of it.`],
               ['2', 'We train him by hand', 'In your first week we load your world: your business, your calendar, your people, your voice, and how you like things done. He becomes yours.'],
               ['3', 'He runs your week', 'He calls you awake, drafts your email, books your day, preps your meetings, and follows up on your leads. You just say the word.'],
             ].map(([n, t, d]) => (

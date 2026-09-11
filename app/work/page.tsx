@@ -65,12 +65,18 @@ export default function WorkIndex() {
                   <p className="text-[#3a3733] text-sm font-body leading-7 mb-5">
                     {s.description}
                   </p>
+                  {/* Three metrics across a card that is ~280px wide on a phone
+                      leaves 83px a column, and a value like "$5K-$10K/mo" ran
+                      straight out of the card. The cells shrink and the values
+                      wrap now instead of spilling. */}
                   {s.metrics && (
                     <div className="grid grid-cols-3 gap-3 pt-5 border-t-2 border-[#161616]/10">
                       {s.metrics.slice(0, 3).map((m) => (
-                        <div key={m.label}>
-                          <div className="font-display text-lg font-black text-[#E0301E]">{m.value}</div>
-                          <div className="text-[9px] uppercase tracking-[0.2em] text-[#161616]/40 font-mono mt-1">
+                        <div key={m.label} className="min-w-0">
+                          <div className="font-display text-[15px] sm:text-lg font-black leading-tight text-[#E0301E] break-words hyphens-auto">
+                            {m.value}
+                          </div>
+                          <div className="text-[9px] uppercase tracking-[0.2em] text-[#161616]/40 font-mono mt-1 break-words">
                             {m.label}
                           </div>
                         </div>
@@ -94,10 +100,10 @@ export default function WorkIndex() {
               Now booking new builds. Drop your idea and Sarah will review it personally.
             </p>
             <Link
-              href="/book"
+              href="/inquire"
               className="inline-block px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-white bg-[#161616] rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_rgba(22,22,22,0.35)] hover:-translate-y-0.5 transition-all"
             >
-              Book a Free Call
+              Begin an Engagement
             </Link>
           </div>
         </div>

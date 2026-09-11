@@ -17,84 +17,59 @@ export default function Footer() {
   const linkSections = [
     // PARKED 2026-08-07 (Sarah): The Mustard Tree, Mustard Press, and Mustard
     // Hatchery are pulled from every nav and index. The pages still answer at
-    // their URLs; they are only unlisted. Celebrate was unparked 2026-08-11 when
-    // the launch countdown shipped. See the note in Navbar.tsx.
+    // their URLs; they are only unlisted. See the note in Navbar.tsx.
+    //
+    // PARKED 2026-09-11 (Sarah, the boutique pass): the Programs column, the
+    // Free Tools column, the Demo Station, the Store, the Playbooks, the GEO
+    // Desk, the Switchboard, Mustard Mode, Mustard Launch, HUNDREDFOLD, and the
+    // comic all came out of the footer. Every one of those routes still answers,
+    // so ads, QR codes, Stripe returns, and drip emails keep working. The studio
+    // simply no longer advertises a price or a giveaway from its own chrome.
     {
-      title: 'The Departments',
+      title: 'Disciplines',
       links: [
-        { label: 'HUNDREDFOLD', href: '/hundredfold' },
         { label: 'The Talking Website', href: '/talking-website' },
+        { label: 'Websites And Brand', href: '/websites' },
         { label: 'Brand / Rebrand', href: '/brand' },
+        { label: 'Voice Agents', href: '/voice-agents' },
+        { label: 'Custom Software', href: '/services' },
+        { label: 'AI Native', href: '/ai-native' },
         { label: 'The Chief', href: '/chief' },
         { label: 'Command Center', href: '/command-center' },
-        { label: 'Websites', href: '/websites' },
-        // The Voice Agent Build was parked 2026-08-12 (Sarah) and held this
-        // slot alone, so /voice-agents takes it rather than leaving the footer
-        // with no voice agent department. See the note in Navbar.tsx.
-        { label: 'Voice Agents', href: '/voice-agents' },
-        { label: 'Meet Mr. Mustard', href: '/mustard' },
-        { label: 'The Switchboard', href: '/switchboard' },
-        { label: 'Mustard Broadcast', href: '/ads' },
+        { label: 'Mustard Pictures', href: '/pictures' },
         { label: 'The Launch Film', href: '/launch-film' },
-        { label: 'AI Native', href: '/ai-native' },
-        { label: 'GEO Desk', href: '/website-audit' },
-        { label: 'Mustard Launch', href: '/mustard-launch' },
-        { label: 'Mustard Mode', href: '/mustard-mode' },
+        { label: 'Mustard Broadcast', href: '/ads' },
+        { label: 'Meet Mr. Mustard', href: '/mustard' },
       ],
     },
     {
-      title: 'Programs',
+      title: 'The Studio',
       links: [
-        { label: 'Seed to System', href: '/seed-to-system' },
-        { label: 'Idea to Spec', href: '/idea-to-spec' },
-        { label: 'The Terminal', href: '/the-terminal' },
-        { label: 'The Store', href: '/store' },
-        { label: 'Free Playbooks', href: '/playbooks' },
-      ],
-    },
-    {
-      title: 'Work With Us',
-      links: [
-        { label: 'The System', href: '/the-system' },
-        { label: 'How It Works', href: '/work-with-us' },
-        { label: 'Services', href: '/services' },
-      { label: 'AI Websites', href: '/ai-websites' },
-      { label: 'AI Search Resources', href: '/resources' },
-      { label: 'Kalispell', href: '/montana/kalispell' },
-        { label: 'Voice Agents', href: '/voice-agents' },
-        { label: 'Industries We Build For', href: '/for' },
-        { label: 'Northwest Montana', href: '/montana' },
         { label: 'The Work', href: '/work' },
+        { label: 'How We Work', href: '/work-with-us' },
+        { label: 'The System', href: '/the-system' },
+        { label: 'Services', href: '/services' },
         { label: 'What You Get', href: '/playbook' },
+        { label: 'AI Websites', href: '/ai-websites' },
+        { label: 'AI Search Resources', href: '/resources' },
       ],
     },
     {
-      title: 'Get Started',
+      title: 'Where We Work',
       links: [
-        { label: 'Book a Free Call', href: '/book' },
-        { label: 'The Demo Station', href: '/demos' },
+        { label: 'Northwest Montana', href: '/montana' },
+        { label: 'Kalispell', href: '/montana/kalispell' },
+        { label: 'Industries We Build For', href: '/for' },
         { label: 'AI-Proof Your Business', href: '/ai-proof' },
         { label: 'Partner Program', href: '/partners' },
       ],
     },
     {
-      title: 'Free Tools',
-      links: [
-        { label: 'The Hundredfold Roadmap', href: '/scaling-roadmap' },
-        { label: 'New Business Checklist', href: '/launch-checklist' },
-        { label: 'Bottleneck Breaker', href: '/audit' },
-        { label: 'Website Audit', href: '/website-audit' },
-        { label: 'Prompt Playbook', href: '/prompt-playbook' },
-        { label: 'Claude Code Field Guide', href: '/fieldguide' },
-      ],
-    },
-    {
       title: 'Company',
       links: [
+        { label: 'Begin An Engagement', href: '/inquire' },
         { label: 'The Mustard Seed World', href: '/world' },
-        { label: 'Mustard Life Comic', href: '/comic' },
-        { label: 'Super Nomad', href: '/super-nomad' },
-        { label: 'Blog', href: '/blog' },
+        { label: 'Journal', href: '/blog' },
         { label: 'About', href: '/about' },
         { label: 'Sarah Scarano', href: '/sarahscarano' },
         { label: 'Contact', href: '/contact' },
@@ -103,6 +78,7 @@ export default function Footer() {
       ],
     },
   ];
+
 
   return (
     <footer className="relative w-full bg-[#FBF6EA] text-[#161616] border-t-2 border-[#161616]">
@@ -114,23 +90,23 @@ export default function Footer() {
       <div className="relative halftone-bg border-b-2 border-[#161616] bg-[#F5B700]">
         <div className="relative z-[2] max-w-4xl mx-auto px-6 py-14 md:py-16 text-center">
           <p className="font-mono text-[10px] uppercase tracking-[0.3em] font-bold text-[#161616]/70">
-            One desk. Your idea. Weeks, not months.
+            One desk. A small number of engagements at a time.
           </p>
           <h2 className="mt-3 font-display italic text-3xl md:text-5xl font-extrabold leading-[1.02] text-[#161616]">
             Let&rsquo;s build the tree.
           </h2>
           <div className="mt-7 flex flex-col sm:flex-row gap-3 justify-center">
             <Link
-              href="/book"
+              href="/inquire"
               className="rounded-full border-2 border-[#161616] bg-[#161616] text-[#F5B700] px-8 py-4 font-sans font-extrabold text-[12px] uppercase tracking-[0.16em] shadow-[5px_5px_0_0_rgba(22,22,22,.3)] transition-all hover:-translate-y-0.5"
             >
-              Book a Free Call
+              Begin an Engagement
             </Link>
             <Link
-              href="/demos"
+              href="/work"
               className="rounded-full border-2 border-[#161616] bg-white text-[#161616] px-8 py-4 font-sans font-extrabold text-[12px] uppercase tracking-[0.16em] shadow-[5px_5px_0_0_#161616] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#161616]"
             >
-              See Free Demos
+              See the Work
             </Link>
           </div>
         </div>

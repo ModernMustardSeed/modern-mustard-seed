@@ -102,7 +102,7 @@ export default function AiNativePage() {
               href="#read"
               className="rounded-full bg-white border-2 border-[#161616] px-8 py-3.5 font-sans font-extrabold text-[#161616] text-xs uppercase tracking-[0.18em] shadow-[4px_4px_0_0_#161616] transition-all hover:-translate-y-0.5"
             >
-              Get the free AI Read
+              Start with the AI Read
             </a>
           </div>
           <p className="font-body text-sm text-[#161616]/60 text-center mt-6">
@@ -270,11 +270,11 @@ export default function AiNativePage() {
         </div>
       </section>
 
-      {/* ─── THE FREE READ ─── */}
+      {/* ─── THE READ COMES FIRST ─── */}
       <section id="read" className="py-16 md:py-24 bg-[#F5B700] border-b-2 border-[#161616] scroll-mt-20" aria-labelledby="read-heading">
         <div className="max-w-5xl mx-auto px-5 grid md:grid-cols-2 gap-10 md:gap-14 items-center">
           <div>
-            <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#161616]/70 font-bold mb-3">[ Free, first ]</p>
+            <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#161616]/70 font-bold mb-3">[ The read, first ]</p>
             <h2 id="read-heading" className="font-display text-3xl md:text-5xl font-black text-[#161616] tracking-tight leading-[1.05]">
               Send the business. Get the AI Read.
             </h2>
@@ -330,7 +330,7 @@ export default function AiNativePage() {
               Book the map
             </a>
             <Link
-              href="/book"
+              href="/inquire"
               className="inline-block rounded-full bg-transparent border-2 border-[#FBF6EA] px-10 py-4 font-sans font-extrabold text-[#FBF6EA] text-sm uppercase tracking-[0.18em] transition-all hover:-translate-y-0.5"
             >
               Talk to Sarah first

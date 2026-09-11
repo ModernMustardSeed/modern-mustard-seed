@@ -7,7 +7,7 @@ import ProposalDoc from '@/components/ProposalDoc';
 export const metadata = buildMetadata({
   title: 'See a Sample Proposal',
   description:
-    'A real example of a Modern Mustard Seed proposal. See exactly what you get: clear scope, deliverables, and one-tap sign and pay. Every project is quoted individually after a free call.',
+    'A real example of a Modern Mustard Seed proposal. See exactly what you get: clear scope, deliverables, and one-tap sign and pay. Every engagement is scoped and quoted privately as a set package price, agreed before work starts.',
   path: '/sample-proposal',
 });
 
@@ -83,10 +83,10 @@ export default function SampleProposalPage() {
             <span className="px-6 py-3 rounded-lg text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-white bg-[#161616] border-2 border-[#161616]">Pay deposit to begin</span>
           </div>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Link href="/website-audit" className="px-7 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all">
-              Start with a free audit
+            <Link href="/work" className="px-7 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all">
+              See the work
             </Link>
-            <Link href="/book" className="px-7 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-white rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all">
+            <Link href="/inquire" className="px-7 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-white rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all">
               Get your own proposal
             </Link>
           </div>

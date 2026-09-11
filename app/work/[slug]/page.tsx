@@ -85,11 +85,11 @@ export default async function WorkDetail({ params }: { params: Params }) {
             {study.meta.metrics && study.meta.metrics.length > 0 && (
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                 {study.meta.metrics.map((m) => (
-                  <div key={m.label} className="pop-card p-5 text-center">
-                    <div className="font-display text-2xl md:text-3xl font-black text-[#E0301E] tracking-tight">
+                  <div key={m.label} className="pop-card min-w-0 p-5 text-center">
+                    <div className="font-display text-xl sm:text-2xl md:text-3xl font-black leading-tight text-[#E0301E] tracking-tight break-words hyphens-auto">
                       {m.value}
                     </div>
-                    <div className="text-[10px] uppercase tracking-[0.2em] text-[#161616]/45 font-mono font-bold mt-2">
+                    <div className="text-[10px] uppercase tracking-[0.2em] text-[#161616]/45 font-mono font-bold mt-2 break-words">
                       {m.label}
                     </div>
                   </div>

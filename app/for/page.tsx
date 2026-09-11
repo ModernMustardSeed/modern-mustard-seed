@@ -18,7 +18,7 @@ const collectionJsonLd = {
   url: `${SITE.url}/for`,
   name: 'Industries Modern Mustard Seed Builds For',
   description:
-    'Specialty AI tools, apps, and sites for six core industries. Each industry page documents what we build, real receipts, pricing, and a free Bottleneck Breaker funnel.',
+    'Specialty AI tools, apps, and sites for six core industries. Each industry page documents what we build, the real receipts, and how an engagement in that trade is scoped.',
   isPartOf: { '@id': `${SITE.url}/#website` },
   hasPart: [
     ...industries.map((i) => ({

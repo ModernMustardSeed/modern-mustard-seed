@@ -7,7 +7,7 @@ import { buildMetadata, SITE } from '@/lib/seo';
 export const metadata = buildMetadata({
   title: 'AI for Restaurants and Franchises. Phone Ordering and Missed-Call Revenue.',
   description:
-    'A 24/7 voice agent for restaurants and multi-unit franchise operators that takes phone orders, books tables, captures catering, and saves the dinner rush from voicemail. Fires orders to Toast, Square, or Clover, and rolls out per location across your whole footprint. Hear one trained on your restaurant, free.',
+    'An always-on voice agent for restaurants and multi-unit franchise operators that takes phone orders, books tables, captures catering, and saves the dinner rush from voicemail. Fires orders to Toast, Square, or Clover, and rolls out per location across your whole footprint.',
   path: '/for/restaurants',
 });
 
@@ -61,7 +61,7 @@ const faqs = [
   },
   {
     q: 'How fast can it go live, and what does it cost?',
-    a: 'Most restaurant systems are live in about two weeks, answering the number you already have. Pricing is simple and per store: $799 a month with a one-time $1,000 activation, or $749 a month per store across a committed fleet of 25 or more with the activation waived. Enterprise rollouts are custom. That includes to-go and catering ordering, the operator dashboard, and up to 1,200 answered calls a month. One recovered catering order a month more than covers a store, and a 30-day pilot proves the number before you commit.',
+    a: 'Most restaurant systems are live in about two weeks, answering the number you already have. Pricing is per store and scoped to the fleet: a single location, a committed fleet, and a whole-brand rollout are three different pieces of work, so each is quoted privately as a set package price agreed before anything goes live. That covers to-go and catering ordering, the operator dashboard, and the answered-call volume we agree on. One recovered catering order a month more than covers a store, and a thirty-day pilot proves the number before you commit the fleet.',
   },
   {
     q: 'Does it actually sound human?',
@@ -73,7 +73,7 @@ const faqs = [
   },
   {
     q: 'We are a franchisee. Can we add this ourselves, or do we need corporate approval?',
-    a: 'In almost every franchise system the individual operator owns their own phone line and local vendor decisions, so you can add an AI host at the store or group level without waiting on corporate. A few brands mandate a specific ordering stack from headquarters, so we confirm your exact situation on a short call before anything goes live. Most franchisees start with the free built demo, hear it answer their own restaurant, and roll it out across their locations from there.',
+    a: 'In almost every franchise system the individual operator owns their own phone line and local vendor decisions, so you can add an AI host at the store or group level without waiting on corporate. A few brands mandate a specific ordering stack from headquarters, so we confirm your exact situation on a short call before anything goes live. Most franchisees start with one store, hear it answer their own restaurant, and roll it out across their locations from there.',
   },
   {
     q: 'Can one voice agent cover all of my locations?',
@@ -143,10 +143,10 @@ export default function RestaurantsPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link
-                href="/demos"
+                href="/inquire"
                 className="px-8 py-4 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
               >
-                Hear it answer my restaurant, free
+                Start a rollout
               </Link>
               <a
                 href="#calculator"
@@ -156,18 +156,17 @@ export default function RestaurantsPage() {
               </a>
             </div>
             <p className="mt-4 text-[13px] font-body text-[#161616]/55 max-w-md mx-auto">
-              Free, no card. Mr. Mustard builds a host trained on your restaurant,
-              then it answers a live call.{' '}
+              Trained on your menu, your hours, and the questions your callers actually ask.{' '}
               <Link
-                href="/book"
+                href="/inquire"
                 className="text-[#1E50C8] font-semibold underline underline-offset-2 hover:text-[#E0301E] transition-colors"
               >
-                Or book a call.
+                Tell us about your restaurant.
               </Link>
             </p>
           </div>
 
-          {/* Hear it live: the free built demo (the productized entry point) */}
+          {/* Hear it live: the studio line, which is the standard of the work */}
           <div className="pop-card p-8 md:p-10 bg-[#F5B700] mb-24">
             <div className="flex flex-col md:flex-row md:items-center gap-6">
               <div className="flex-1">
@@ -178,16 +177,16 @@ export default function RestaurantsPage() {
                   Hear one trained on your restaurant.
                 </h2>
                 <p className="text-[#161616]/75 text-base font-body leading-7 max-w-xl">
-                  Tell Mr. Mustard your restaurant name and menu. He builds a
-                  host that answers in your voice, then it talks to you live or calls your cell. Free,
-                  no card. It is the fastest way to hear exactly what your callers would.
+                  Your host is trained on your restaurant: the menu, the hours, the catering questions,
+                  and the way your regulars ask for things. It answers in your voice and fires the order
+                  straight through. Tell us the restaurant and we will tell you exactly what it would do.
                 </p>
               </div>
               <Link
-                href="/demos"
+                href="/inquire"
                 className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full border-2 border-[#161616] bg-[#161616] text-[12px] uppercase tracking-[0.18em] font-sans font-extrabold text-[#FBF6EA] shadow-[4px_4px_0_0_#FBF6EA] hover:-translate-y-0.5 transition-all whitespace-nowrap"
               >
-                Build mine, free →
+                Start a rollout →
               </Link>
             </div>
           </div>
@@ -304,13 +303,13 @@ export default function RestaurantsPage() {
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Link
-                  href="/demos"
+                  href="/inquire"
                   className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#FBF6EA] bg-[#161616] rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_rgba(22,22,22,0.3)] hover:-translate-y-0.5 transition-all"
                 >
-                  Build mine, free →
+                  Start a rollout →
                 </Link>
                 <Link
-                  href="/book"
+                  href="/inquire"
                   className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-white rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
                 >
                   Talk multi-unit rollout
@@ -323,19 +322,19 @@ export default function RestaurantsPage() {
           <div className="mb-24">
             <div className="text-center mb-10">
               <span className="text-[10px] uppercase tracking-[0.5em] text-[#E0301E] font-mono font-bold mb-5 block">
-                What this costs
+                How a rollout is scoped
               </span>
               <h2 className="font-display text-3xl md:text-5xl font-black text-[#161616] tracking-tight leading-[1.1]">
                 The order-taking system,{' '}
                 <span className="text-[#F5B700]" style={{ WebkitTextStroke: '1.5px #161616' }}>
-                  priced per store
+                  scoped per store
                 </span>
               </h2>
               <p className="text-[#3a3733] text-lg font-body leading-relaxed max-w-2xl mx-auto mt-5">
-                Start free by hearing one trained on your restaurant. This is the full system: it takes
-                to-go and catering orders into your POS, recognizes returning guests, and rolls recovered
-                revenue up per location. Simple per-store pricing, with a 30-day pilot to prove the number
-                before you commit the fleet.
+                This is the full system: it takes to-go and catering orders into your POS, recognizes
+                returning guests, and rolls recovered revenue up per location. Scoped per store and
+                quoted privately, with a thirty-day pilot to prove the number before you commit the
+                fleet.
               </p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5 items-stretch">
@@ -343,25 +342,25 @@ export default function RestaurantsPage() {
                 {
                   name: 'Standard',
                   note: 'Single or a few stores',
-                  price: '$799',
-                  cadence: '/mo per store',
-                  setup: 'Plus $1,000 one-time activation',
+                  price: 'Per store',
+                  cadence: '',
+                  setup: 'Quoted privately, activation included',
                   includes: [
-                    '1,200 answered calls / mo',
+                    'Answered-call volume set in your scope',
                     'To-go + catering ordering',
                     'Catering lead capture',
                     'Returning-guest recognition',
                     'Operator revenue dashboard',
-                    '$0.45 / call over 1,200',
+                    'Overage rate agreed up front',
                   ],
                   featured: false,
                 },
                 {
                   name: 'Fleet',
                   note: '25+ stores · most operators',
-                  price: '$749',
-                  cadence: '/mo per store',
-                  setup: 'Activation waived',
+                  price: 'Fleet rate',
+                  cadence: '',
+                  setup: 'Better per store, activation waived',
                   includes: [
                     'Everything in Standard',
                     'Fleet rollup dashboard',
@@ -377,7 +376,7 @@ export default function RestaurantsPage() {
                   note: 'Whole brand, one rollout',
                   price: 'Custom',
                   cadence: '',
-                  setup: 'Scoped on a call',
+                  setup: 'Scoped with your brand team',
                   includes: [
                     'Every location, one rollout',
                     'POS integration (Olo, Toast, Square)',
@@ -399,7 +398,7 @@ export default function RestaurantsPage() {
                   </span>
                   <h3 className="font-display text-2xl font-black text-[#161616] mb-3">{t.name}</h3>
                   <div className="mb-1">
-                    <span className="font-display text-4xl font-black text-[#161616] tracking-tight">{t.price}</span>
+                    <span className="font-display text-3xl font-black text-[#161616] tracking-tight">{t.price}</span>
                     {t.cadence && <span className="font-mono text-sm text-[#161616]/60 ml-1">{t.cadence}</span>}
                   </div>
                   <span className="text-[#161616]/60 text-xs font-body block mb-5">{t.setup}</span>
@@ -417,22 +416,22 @@ export default function RestaurantsPage() {
               ))}
             </div>
             <p className="text-center text-[#161616]/55 text-sm font-body mt-6 max-w-2xl mx-auto">
-              One recovered catering order a month more than covers a store. Every quote is fixed and in
-              writing, and the 30-day pilot proves the number on your own phones before you roll out the
-              fleet.
+              One recovered catering order a month more than covers a store. Every quote is one set
+              package price, fixed and in writing, and the thirty-day pilot proves the number on your
+              own phones before you roll out the fleet.
             </p>
             <div className="mt-7 flex flex-col sm:flex-row gap-3 justify-center">
               <Link
-                href="/demos"
+                href="/voice-agents"
                 className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all text-center"
               >
-                Hear it free →
+                Hear one answer →
               </Link>
               <Link
-                href="/book"
+                href="/inquire"
                 className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-white bg-[#161616] rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_rgba(22,22,22,0.3)] hover:-translate-y-0.5 transition-all text-center"
               >
-                Book a rollout call →
+                Start a rollout →
               </Link>
             </div>
             <p className="text-center mt-6">
@@ -484,16 +483,16 @@ export default function RestaurantsPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link
-                href="/book"
+                href="/inquire"
                 className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-white rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
               >
                 Book a Discovery Call
               </Link>
               <Link
-                href="/book"
+                href="/inquire"
                 className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
               >
-                Book a Free Call
+                Begin an Engagement
               </Link>
             </div>
           </div>

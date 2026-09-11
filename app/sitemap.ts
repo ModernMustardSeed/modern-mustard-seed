@@ -2,67 +2,56 @@ import type { MetadataRoute } from 'next';
 import { listContent } from '@/lib/content';
 import { SITE } from '@/lib/seo';
 import { industries } from '@/data/industries';
-import { products, bundles } from '@/data/products';
 import { liveTradePages } from '@/data/trade-pages';
 import { MONTANA_CITIES } from '@/data/montana-cities';
 
 // PARKED 2026-08-07 (Sarah): /mustard-tree, /press, and /hatchery are out of
 // the sitemap and noindexed. The routes still answer directly; they are simply
-// not advertised to crawlers or AI answer engines. /celebrate was unparked
-// 2026-08-11 with the launch countdown. /voice-agents/build was parked
-// 2026-08-12 the same way: out of the sitemap and noindexed, still answering for
-// the Meta campaign, Stripe returns, and the drip. See Navbar.tsx.
+// not advertised to crawlers or AI answer engines. See Navbar.tsx.
+//
+// PARKED 2026-09-11 (Sarah, the boutique pass): the self-serve catalog and the
+// lead magnets came out of the sitemap too. /demos, /store and its items,
+// /playbooks, /audit, /website-audit, /scaling-roadmap, /launch-checklist,
+// /prompt-playbook, /fieldguide, /hundredfold, /seed-to-system, /idea-to-spec,
+// /the-terminal, /mustard-mode, /mustard-launch, /switchboard, /comic and
+// /book. Every one of those routes still answers, so existing links, ads, QR
+// codes, Stripe returns and drip emails keep working. They are no longer
+// advertised, because a studio that publishes a price list and a shelf of
+// giveaways is selling against its own positioning.
+//
+// /inquire is the front door now and carries the top priority beside the
+// homepage.
 const STATIC_PATHS = [
   '',
-  '/talking-website',
-  '/brand',
-  '/ads',
-  '/launch-film',
-  '/ai-native',
-  '/chief',
-  '/command-center',
-  '/websites',
-  '/ai-websites',
-  '/resources',
-  '/comic',
-  '/switchboard',
-  '/world',
-  '/mustard-launch',
-  '/mustard-mode',
-  '/mustard-mode/start-here',
-  '/seed-to-system',
-  '/the-terminal',
-  '/idea-to-spec',
-  '/partners',
-  '/playbook',
-  '/book',
+  '/inquire',
   '/work',
   '/services',
+  '/work-with-us',
+  '/the-system',
+  '/talking-website',
+  '/websites',
+  '/ai-websites',
+  '/brand',
   '/voice-agents',
   '/voice-agents/whitepaper',
+  '/command-center',
+  '/chief',
+  '/ai-native',
+  '/ads',
+  '/launch-film',
   '/mustard',
-  '/the-system',
-  '/work-with-us',
-  '/blog',
-  '/playbooks',
-  '/audit',
-  '/demos',
-  '/website-audit',
-  '/scaling-roadmap',
-  '/hundredfold',
-  '/hundredfold/webinar',
-  '/launch-checklist',
-  '/prompt-playbook',
-  '/fieldguide',
-  '/sarahscarano',
+  '/playbook',
   '/ai-proof',
   '/for',
   '/for/restaurants',
-  '/about',
-  '/contact',
-  '/store',
-  '/sample-proposal',
   '/montana',
+  '/resources',
+  '/blog',
+  '/about',
+  '/sarahscarano',
+  '/world',
+  '/contact',
+  '/sample-proposal',
   '/privacy',
   '/terms',
   '/super-nomad',
@@ -70,17 +59,18 @@ const STATIC_PATHS = [
   '/super-nomad/terms',
 ];
 
+
 export default function sitemap(): MetadataRoute.Sitemap {
 
   const staticUrls = STATIC_PATHS.map((path) => ({
     url: `${SITE.url}${path}`,
     changeFrequency: (path === '' ? 'weekly' : 'monthly') as 'weekly' | 'monthly',
     priority:
-      path === '' || path === '/book'
+      path === '' || path === '/inquire'
         ? 1.0
-        : path === '/talking-website' || path === '/the-system' || path === '/ads' || path === '/launch-film' || path === '/ai-native' || path === '/chief' || path === '/command-center' || path === '/websites' || path === '/switchboard' || path === '/world' || path === '/mustard-launch' || path === '/mustard-mode' || path === '/seed-to-system' || path === '/the-terminal' || path === '/idea-to-spec' || path === '/scaling-roadmap' || path === '/hundredfold' || path === '/hundredfold/webinar'
+        : path === '/work' || path === '/services' || path === '/talking-website' || path === '/websites' || path === '/voice-agents' || path === '/brand'
           ? 0.95
-          : path === '/work' || path === '/audit' || path === '/comic' || path === '/launch-checklist' || path === '/prompt-playbook'
+          : path === '/work-with-us' || path === '/the-system' || path === '/command-center' || path === '/chief' || path === '/ai-native' || path === '/ads' || path === '/launch-film' || path === '/about'
             ? 0.9
             : 0.7,
   }));
@@ -99,12 +89,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.85,
   }));
 
-  const playbooks = listContent('playbooks').map((pb) => ({
-    url: `${SITE.url}/playbooks/${pb.slug}`,
-    lastModified: new Date(pb.dateModified ?? pb.date),
-    changeFrequency: 'monthly' as const,
-    priority: 0.8,
-  }));
+  // Parked with the playbooks index, 2026-09-11. Still answering at their URLs.
+  const playbooks: MetadataRoute.Sitemap = [];
 
   const industryPages = industries.map((i) => ({
     url: `${SITE.url}/for/${i.slug}`,
@@ -112,11 +98,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.85,
   }));
 
-  const storeItems = [...products, ...bundles].map((item) => ({
-    url: `${SITE.url}/store/${item.slug}`,
-    changeFrequency: 'weekly' as const,
-    priority: 0.9,
-  }));
+  // Parked with the store itself, 2026-09-11. The product routes still answer
+  // for anyone holding a link or returning from Stripe.
+  const storeItems: MetadataRoute.Sitemap = [];
 
   const tradePages = liveTradePages().map((t) => ({
     url: `${SITE.url}/voice-agents/${t.slug}`,

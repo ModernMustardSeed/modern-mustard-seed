@@ -20,10 +20,10 @@ export default function AIWebsitesPage() {
         <div className="mt-6 grid lg:grid-cols-[1.3fr_1fr] gap-10 items-end">
           <div>
             <h1 className="font-display text-4xl sm:text-5xl lg:text-7xl font-black leading-[1.02]">An AI website should<br /><em>carry its share.</em></h1>
-            <p className="mt-6 text-lg leading-relaxed max-w-2xl">Modern Mustard Seed is an AI-native product studio in Kalispell, Montana. We build custom websites that explain your business clearly, connect the enquiry to the next job, and work with the systems behind the counter.</p>
+            <p className="mt-6 text-lg leading-relaxed max-w-2xl">Modern Mustard Seed is a boutique design and AI studio in Kalispell, Montana. We design and build websites that explain your business clearly, connect the enquiry to the next job, and work with the systems behind the counter.</p>
             <div className="mt-8 flex flex-wrap gap-4">
-              <Link href="/demos" className="pop-card-yellow px-6 py-4 font-bold">Build My Free Demo</Link>
-              <Link href="/book" className="pop-card px-6 py-4 font-bold">Talk With Sarah</Link>
+              <Link href="/inquire" className="pop-card-yellow px-6 py-4 font-bold">Begin an Engagement</Link>
+              <Link href="/inquire" className="pop-card px-6 py-4 font-bold">Talk With Sarah</Link>
             </div>
           </div>
           <aside className="pop-card p-7 md:p-9 rotate-1">
@@ -76,7 +76,7 @@ export default function AIWebsitesPage() {
         <div><h2 className="font-display text-3xl font-black">Built for owners with work to do.</h2><p className="mt-5 leading-relaxed">Service businesses, hospitality operators, retailers and founders with a defined customer problem. Especially the operator building a second business who needs the product built without assembling an engineering team. Explore the <Link href="/for" className={linkStyle}>industries we build for</Link>.</p><p className="mt-4 leading-relaxed">Productized websites usually go live about a week after kickoff. Custom builds have a scoped delivery schedule. You receive the repository, accounts and documentation. Changes to what we built are included. A new deliverable is a separately scoped engagement.</p></div>
         <div><h2 className="font-display text-3xl font-black">Meet the builder. Inspect the work.</h2><p className="mt-5 leading-relaxed"><Link href="/about" className={linkStyle}>Sarah Scarano</Link> founded MMS and builds from <Link href="/montana/kalispell" className={linkStyle}>Kalispell</Link>. We serve <Link href="/montana" className={linkStyle}>Northwest Montana</Link> and work remotely with clients nationwide.</p><p className="mt-4 leading-relaxed">The <Link href="/work/cross-and-covenant" className={linkStyle}>Cross + Covenant storefront</Link> shows commerce and brand work. The <Link href="/work/wild-daisy-command-center" className={linkStyle}>Wild Daisy build record</Link> describes an operations system. Read the scope and evidence in <Link href="/work" className={linkStyle}>our work</Link>, then judge a demo built for your business.</p></div>
       </section>
-      <section className="bg-[#F5B700] border-y-2 border-[#161616] px-6 py-14 text-center"><h2 className="font-display text-3xl md:text-4xl font-black">Put your business in the driver&apos;s seat.</h2><p className="mt-4">See a working website and voice-agent demo before you buy. No card required.</p><div className="mt-7 flex flex-wrap justify-center gap-4"><Link href="/demos" className="pop-card px-7 py-4 font-bold">Build My Free Demo</Link><a href={`tel:${SITE.phoneE164}`} className="pop-card px-7 py-4 font-bold">Call {SITE.phone}</a></div></section>
+      <section className="bg-[#F5B700] border-y-2 border-[#161616] px-6 py-14 text-center"><h2 className="font-display text-3xl md:text-4xl font-black">Put your business in the driver&apos;s seat.</h2><p className="mt-4">Tell us what the page and the phone have to do, and Sarah answers inside one business day.</p><div className="mt-7 flex flex-wrap justify-center gap-4"><Link href="/inquire" className="pop-card px-7 py-4 font-bold">Begin an Engagement</Link><a href={`tel:${SITE.phoneE164}`} className="pop-card px-7 py-4 font-bold">Call {SITE.phone}</a></div></section>
     </article>
   );
 }

@@ -109,7 +109,7 @@ export default function BookCall() {
       <div className="grid lg:grid-cols-[1.05fr_.95fr] gap-8 lg:gap-10 items-start">
 
         {/* ───── Left: the questions, then the times ───── */}
-        <div className="space-y-6">
+        <div className="min-w-0 space-y-6">
           <div className="rounded-2xl border-2 border-[#161616] bg-white p-6 md:p-8 shadow-[5px_5px_0_0_#161616] space-y-4">
             <span className="font-mono text-[10px] uppercase tracking-[0.3em] font-bold text-[#E0301E] block">
               A little prep, so we make the most of it
@@ -239,7 +239,7 @@ export default function BookCall() {
         </div>
 
         {/* ───── Right: the card that writes itself, and the button ───── */}
-        <div className="lg:sticky lg:top-24">
+        <div className="min-w-0 lg:sticky lg:top-24">
           <AppointmentCard name={form.name} business={form.business} focus={form.focus} timeLabel={picked?.display ?? ''} stamp={stamp} />
 
           <div className="mt-8">
@@ -273,7 +273,7 @@ function AppointmentCard({
   name, business, focus, timeLabel, stamp,
 }: { name: string; business: string; focus: string; timeLabel: string; stamp: StampState }) {
   return (
-    <figure className="relative mx-auto max-w-md rotate-[-1.5deg] rounded-2xl border-2 border-[#161616] bg-white p-5 md:p-6 shadow-[7px_7px_0_0_#161616]">
+    <figure className="relative mx-auto w-full min-w-0 max-w-md rotate-[-1deg] sm:rotate-[-1.5deg] rounded-2xl border-2 border-[#161616] bg-white p-5 md:p-6 pb-16 sm:pb-5 md:pb-6 shadow-[4px_4px_0_0_#161616] sm:shadow-[7px_7px_0_0_#161616]">
       <div className="flex items-start justify-between gap-3 border-b-2 border-[#161616] pb-3">
         <div>
           <p className="font-mono text-[8px] font-bold uppercase tracking-[0.24em] text-[#5c554a]">Modern Mustard Seed</p>
@@ -285,19 +285,30 @@ function AppointmentCard({
         </span>
       </div>
 
-      <div className="mt-4 space-y-3">
+      <div className="mt-4 min-w-0 space-y-3">
         <CardRow label="Name" value={name} ghost="Your name" />
         <CardRow label="Business" value={business} ghost="Optional" />
         <CardRow label="Working on" value={focus} ghost="What you want to build" clamp />
-        <CardRow label="Time · Mountain" value={timeLabel} ghost="Pick a time below" mono />
+        {/* The time wraps rather than truncates. On a phone the card is ~318px
+            wide and "Tuesday, September 15 at 9:00 AM MT" does not fit on one
+            line, so truncating it hid the half a visitor actually needs. */}
+        <CardRow label="Time · Mountain" value={timeLabel} ghost="Pick a time below" mono clamp />
       </div>
 
-      {/* The rubber stamp. Blue while it is only held, red once it is booked. */}
+      {/* The rubber stamp. Blue while it is only held, red once it is booked.
+          It hangs off the corner from sm: up, where there is room for it. On a
+          phone it tucks inside: the card already fills the gutter, so hanging a
+          rotated 88px stamp past its right edge pushed the whole document to
+          450px inside a 360px screen and cut the page off down the right side
+          the moment a visitor picked a time. The card carries extra bottom
+          padding on phones so the stamp lands in clear space instead of sitting
+          on the time, which is the one line on the card that has to stay
+          readable. */}
       {stamp !== 'none' && (
         <div
           key={stamp}
           aria-hidden="true"
-          className={`bc-stamp absolute -bottom-3 -right-2 rotate-[-13deg] rounded-lg border-[3px] bg-[#FBF6EA]/85 px-3 py-1 ${
+          className={`bc-stamp absolute bottom-3 right-4 sm:-bottom-3 sm:-right-2 rotate-[-13deg] rounded-lg border-[3px] bg-[#FBF6EA]/85 px-3 py-1 ${
             stamp === 'booked' ? 'border-[#E0301E]' : 'border-[#1E50C8]'
           }`}
         >
@@ -316,7 +327,7 @@ function AppointmentCard({
 function CardRow({ label, value, ghost, clamp, mono }: { label: string; value: string; ghost: string; clamp?: boolean; mono?: boolean }) {
   const filled = value.trim().length > 0;
   return (
-    <div>
+    <div className="min-w-0">
       <p className="font-mono text-[8px] font-bold uppercase tracking-[0.2em] text-[#5c554a]">{label}</p>
       <p
         className={`mt-1 min-h-[22px] border-b border-dashed border-[#161616]/30 pb-1 text-[15px] leading-snug transition-colors ${

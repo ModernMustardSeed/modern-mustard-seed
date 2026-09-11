@@ -136,8 +136,8 @@ export default function ContactForm({ defaultPackage, defaultMessage }: Props) {
                 </p>
                 <p className="mt-5 font-body text-sm text-[#5c554a]">
                   In a hurry?{' '}
-                  <Link href="/book" className="font-bold text-[#1E50C8] underline decoration-2 underline-offset-2 hover:text-[#E0301E]">
-                    Get on the book instead
+                  <Link href="/inquire" className="font-bold text-[#1E50C8] underline decoration-2 underline-offset-2 hover:text-[#E0301E]">
+                    Start an inquiry instead
                   </Link>
                   .
                 </p>
@@ -254,16 +254,16 @@ export default function ContactForm({ defaultPackage, defaultMessage }: Props) {
         {/* ───── The direct lines ───── */}
         <div className="space-y-6">
           <div className="rounded-2xl border-2 border-[#161616] bg-[#F5B700] p-7 shadow-[5px_5px_0_0_#161616]">
-            <span className="mb-3 block font-mono text-[9px] font-bold uppercase tracking-[0.3em] text-[#161616]/70">Rather just talk?</span>
-            <h2 className="font-display text-xl font-extrabold text-[#161616]">Get on the book.</h2>
+            <span className="mb-3 block font-mono text-[9px] font-bold uppercase tracking-[0.3em] text-[#161616]/70">Here to build something?</span>
+            <h2 className="font-display text-xl font-extrabold text-[#161616]">Start an inquiry instead.</h2>
             <p className="mt-2 mb-5 font-body text-[15px] font-medium leading-relaxed text-[#161616]/80">
-              A free 30-minute discovery call with Sarah. Pick a time, tell her what you are building, and she comes prepared.
+              Tell us what you are building, what it has to do, and when you need it. Sarah reads every one herself and answers inside one business day.
             </p>
             <Link
-              href="/book"
+              href="/inquire"
               className="block w-full rounded-lg border-2 border-[#161616] bg-[#161616] py-3 text-center font-sans text-[10px] font-extrabold uppercase tracking-[0.2em] text-[#F5B700] transition-all hover:-translate-y-0.5 hover:shadow-[3px_3px_0_0_rgba(22,22,22,.35)]"
             >
-              Pick a time
+              Begin an engagement
             </Link>
           </div>
 

@@ -204,8 +204,8 @@ export default async function MustardPage({
             */}
             <div className="mt-6 hidden flex-wrap items-center gap-3 sm:flex">
               {([
-                ['Free call', 'bg-[#FBF6EA]', '-rotate-2'],
-                ['No card', 'bg-white', 'rotate-1'],
+                ['The studio line', 'bg-[#FBF6EA]', '-rotate-2'],
+                ['He answers, day or night', 'bg-white', 'rotate-1'],
                 ['He rings in ten seconds', 'bg-[#FBF6EA]', '-rotate-1'],
               ] as const).map(([label, bg, rot]) => (
                 <span
@@ -270,10 +270,11 @@ export default async function MustardPage({
           <div id="ask" className="order-2 scroll-mt-24 lg:col-start-2 lg:row-start-1 lg:row-span-2 lg:sticky lg:top-24">
             {/*
               The card gets its two pop-art companions: Mr. Mustard himself
-              standing on the top edge of his own form, and a FREE CALL
+              standing on the top edge of his own form, and a TEN SECONDS
               starburst stamped over the corner. Both are decoration with a
-              job: the mascot says a character answers, the burst kills the
-              "what does this cost" hesitation at the exact spot the eye lands.
+              job: the mascot says a character answers, the burst says how fast,
+              at the exact spot the eye lands. Sarah 2026-09-11: the burst used
+              to read FREE CALL. The speed is the boast, not the price.
               pt-14 reserves the headroom so neither one clips or overlaps the
               headline above on mobile.
             */}
@@ -293,9 +294,9 @@ export default async function MustardPage({
                     <polygon points="50.0,1.0 59.6,14.3 74.5,7.6 76.2,23.8 92.4,25.5 85.7,40.4 99.0,50.0 85.7,59.6 92.4,74.5 76.2,76.2 74.5,92.4 59.6,85.7 50.0,99.0 40.4,85.7 25.5,92.4 23.8,76.2 7.6,74.5 14.3,59.6 1.0,50.0 14.3,40.4 7.6,25.5 23.8,23.8 25.5,7.6 40.4,14.3" fill="#E0301E" stroke="#161616" strokeWidth="2.5" />
                   </svg>
                   <span className="relative text-center font-display text-[15px] font-extrabold uppercase leading-[1.05] text-[#FBF6EA]">
-                    Free
+                    Ten
                     <br />
-                    call
+                    seconds
                   </span>
                 </div>
               </div>
@@ -834,7 +835,7 @@ export default async function MustardPage({
               How the voice agent works
             </Link>{' '}
             and{' '}
-            <a className="font-bold text-[#F5B700] underline underline-offset-4" href="/demos">
+            <a className="font-bold text-[#F5B700] underline underline-offset-4" href="/inquire">
               what it costs
             </a>
             .

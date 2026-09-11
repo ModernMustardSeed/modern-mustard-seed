@@ -1,6 +1,6 @@
 # Modern Mustard Seed
 
-> AI-native product studio in Kalispell, Montana. Custom websites, AI voice agents, automation and software for Northwest Montana and clients nationwide.
+> A boutique design and AI studio in Kalispell, Montana. Design-led websites and brand, custom software, voice agents, and retained advisory, for Northwest Montana and clients nationwide. Engagements begin by written inquiry.
 
 ## Business facts
 
@@ -11,20 +11,22 @@
 - Website: https://modernmustardseed.com
 - The Talking Website combines a custom website and voice agent around shared business information.
 - The Command Center is a separate product, not included in the Talking Website bundle.
-- Current scope and pricing are on the public product pages linked below.
-- Custom builds use set package pricing. Clients own the code and accounts.
+- Four disciplines: websites and brand, custom software, voice agents, and advisory.
+- There is no published price list. Every engagement is scoped in one conversation and quoted privately as a set package price, agreed in writing before work starts. Studio engagements begin in the five figures; advisory is retained by the quarter.
+- Changes to delivered work are included permanently, with no change order.
+- Clients own the repository, the deployment, and every account outright.
+- The studio takes a small number of engagements at a time.
 
 ## Services and demonstrations
 
 - AI websites, category and approach: https://modernmustardseed.com/ai-websites
-- Website packages: https://modernmustardseed.com/websites
+- Websites and brand: https://modernmustardseed.com/websites
 - The Talking Website: https://modernmustardseed.com/talking-website
 - AI voice agents: https://modernmustardseed.com/voice-agents
 - Command Center: https://modernmustardseed.com/command-center
 - Custom software, automation and services: https://modernmustardseed.com/services
+- How an engagement runs: https://modernmustardseed.com/work-with-us
 - Branding and rebranding: https://modernmustardseed.com/brand
-- GEO Desk and website audit: https://modernmustardseed.com/website-audit
-- Free demos: https://modernmustardseed.com/demos
 - Meet Mr. Mustard: https://modernmustardseed.com/mustard
 - Industries: https://modernmustardseed.com/for
 
@@ -42,7 +44,7 @@
 - AI Search Field Notes: https://modernmustardseed.com/resources
 - Blog: https://modernmustardseed.com/blog
 - Contact: https://modernmustardseed.com/contact
-- Book a call: https://modernmustardseed.com/book
+- Begin an engagement: https://modernmustardseed.com/inquire
 
 ## Site directory
 

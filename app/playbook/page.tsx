@@ -5,7 +5,7 @@ import { buildMetadata } from '@/lib/seo';
 export const metadata = buildMetadata({
   title: 'What You Get',
   description:
-    'A founder-led studio that turns your idea into real, shipped software. See exactly what working with Modern Mustard Seed looks like, from the free audit to launch and beyond.',
+    'A founder-led studio that turns your idea into real, shipped software. See exactly what working with Modern Mustard Seed looks like, from the first conversation to launch and beyond.',
   path: '/playbook',
 });
 
@@ -61,7 +61,7 @@ export default function PlaybookPage() {
 
         <p className="mt-6 text-base md:text-xl font-body text-[#3a3733] max-w-2xl mx-auto leading-relaxed">
           A founder-led studio that turns your idea into real, shipped software. This is exactly
-          what working together looks like, from the first free audit to launch and beyond. No
+          what working together looks like, from the first conversation to launch and beyond. No
           jargon, no surprises.
         </p>
 
@@ -78,7 +78,7 @@ export default function PlaybookPage() {
             href="/audit"
             className="px-8 py-4 text-[12px] uppercase tracking-[0.18em] font-sans font-extrabold text-[#161616] bg-white rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:shadow-[6px_6px_0_0_#161616] hover:-translate-y-0.5 transition-all"
           >
-            Get a Free Audit
+            Begin an Engagement
           </Link>
         </div>
 

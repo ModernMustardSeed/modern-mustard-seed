@@ -2,19 +2,16 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { buildMetadata, SITE } from '@/lib/seo';
 import { JsonLd, breadcrumbJsonLd, faqJsonLd } from '@/lib/jsonld';
-import { DEMO_PRODUCTS, formatUsd } from '@/lib/demo-order';
 import StackCalculator from '@/components/command-center/StackCalculator';
 
-// One product, one price. The bundle, the paired middle rung and the voice
-// agent's price all used to be imported here to build a three-column comparison
-// grid whose job was to push the buyer into the bundle where this came free.
-// That rule is gone (Sarah, 2026-08-22) and so is the grid.
-const os = DEMO_PRODUCTS.os;
+// Sarah 2026-08-22: the command center is sold on its own and never suggested
+// next to anything. Sarah 2026-09-11: and its price no longer appears on the
+// page. It still lives in lib/demo-order.ts and reaches a buyer in a proposal.
 
 export const metadata = buildMetadata({
   title: 'Business Command Center: the AI back office for your whole business',
   description:
-    'One board that runs the whole business: every call transcribed, your website traffic, customers, reviews, invoices, and reports, wired together. $197/mo, built by hand and scoped with you first.',
+    'One board that runs the whole business: every call transcribed, your website traffic, customers, reviews, invoices, and reports, wired together. Built by hand around the software you already run, and scoped with you first.',
   path: '/command-center',
 });
 
@@ -36,7 +33,7 @@ const FAQ = [
   },
   {
     q: 'How much does it cost?',
-    a: `${formatUsd(os.setupCents)} to set up plus ${formatUsd(os.monthlyCents)} a month, month to month, cancel anytime, no trials. It is sold on its own and it is not bundled with anything: every one is built by hand around the tools you already run, so it is scoped with you before it is built.`,
+    a: 'There is no list price for it, because no two are the same board. Every one is built by hand around the tools you already run, so it is scoped with you before it is built and quoted privately as a set package price. It is sold on its own and it is never bundled with anything.',
   },
   {
     q: 'What does it replace?',
@@ -48,7 +45,7 @@ const FAQ = [
   },
   {
     q: 'Can I buy just the command center?',
-    a: `That is the only way it is sold. ${formatUsd(os.setupCents)} setup plus ${formatUsd(os.monthlyCents)} a month, month to month. It is not part of the free demo suite and it is not bundled with anything: every one is built by hand around the software you already run, so it starts with a short conversation rather than a form.`,
+    a: 'That is the only way it is sold. It is not part of any suite and it is never bundled: every one is built by hand around the software you already run, so it starts with a real conversation rather than a form.',
   },
   {
     q: 'How fast can I have it?',
@@ -56,7 +53,7 @@ const FAQ = [
   },
   {
     q: 'Do I own it, and can I cancel?',
-    a: 'It is month to month and you can cancel anytime, no contract. There are no free trials because the free demo was the trial: you get to use the real thing before you pay a cent.',
+    a: 'You own the board and the data on it, and the terms are agreed in writing before it is built. Changes to what we built are included, permanently, with no change order and no second invoice.',
   },
 ];
 
@@ -76,25 +73,8 @@ function commandCenterJsonLd() {
         offers: {
           '@type': 'Offer',
           name: 'Business Command Center',
-          description: 'Standalone, or free when the website and the voice agent are taken together.',
-          price: Math.round(os.monthlyCents / 100),
-          priceCurrency: 'USD',
-          priceSpecification: [
-            {
-              '@type': 'UnitPriceSpecification',
-              price: Math.round(os.monthlyCents / 100),
-              priceCurrency: 'USD',
-              billingIncrement: 1,
-              unitText: 'MONTH',
-            },
-            {
-              '@type': 'UnitPriceSpecification',
-              priceType: 'https://schema.org/Installment',
-              price: Math.round(os.setupCents / 100),
-              priceCurrency: 'USD',
-              description: 'One-time setup',
-            },
-          ],
+          description:
+            'Sold on its own and built by hand around the tools you already run. Scoped with you first and quoted privately as a set package price.',
           url: `${SITE.url}/command-center`,
           availability: 'https://schema.org/InStock',
         },
@@ -127,25 +107,27 @@ export default function CommandCenterPage() {
               </h1>
               <p className="font-body text-[17px] text-[#161616]/75 mt-5 leading-relaxed">
                 Every call transcribed, your website traffic, customers, reviews, invoices, and reports, wired
-                together on one board with an AI that sees all of it. {formatUsd(os.monthlyCents)}/mo, built by
+                together on one board with an AI that sees all of it. Built by hand around the
+                software you already run.
                 hand around the software you already run.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link
-                  href="/book"
+                  href="/inquire"
                   className="inline-flex items-center gap-2 bg-[#161616] text-[#FBF6EA] border-2 border-[#161616] rounded-full px-7 py-4 font-sans font-bold uppercase tracking-[0.14em] text-[12px] shadow-[5px_5px_0_0_#F5B700] hover:-translate-y-0.5 transition-transform"
                 >
                   Scope mine with Sarah →
                 </Link>
                 <Link
-                  href="/book"
+                  href="/work"
                   className="inline-flex items-center gap-2 bg-white text-[#161616] border-2 border-[#161616] rounded-full px-7 py-4 font-sans font-bold uppercase tracking-[0.14em] text-[12px] shadow-[5px_5px_0_0_#161616] hover:-translate-y-0.5 transition-all"
                 >
-                  Book a call
+                  See the work
                 </Link>
               </div>
               <p className="font-body text-[13px] text-[#161616]/70 mt-4">
-                Built free and open right away. No card, no meeting.
+                Every one is scoped with you before it is built, so it replaces tools instead of
+                becoming a sixth login.
               </p>
             </div>
 
@@ -209,47 +191,43 @@ export default function CommandCenterPage() {
           <StackCalculator />
         </section>
 
-        {/* ── Pricing ──
-            ONE CARD, ON PURPOSE (Sarah, 2026-08-22). This section used to be a
-            three-column grid whose whole job was to push the buyer into the
-            bundle where the command center came free. It is not in the bundle
-            any more and it is not in the demo suite, so a grid that compares it
-            to two things it no longer ships with would be selling a rule that
-            does not exist. It is one product at one price, and the honest thing
-            about it is that it is hand built, which is also why it is not free.
+        {/* ── How it gets scoped ──
+            ONE CARD, ON PURPOSE (Sarah, 2026-08-22): this used to be a
+            three-column grid pushing the buyer into a bundle where the command
+            center came free. That rule is gone. Sarah 2026-09-11: the single
+            price card went too. What it is really selling is that the board is
+            built around the tools you already run, and that is what it says now.
         */}
         <section>
           <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#C4160B] uppercase">
-            Pricing // One product, one price
+            Scope // One board, not a sixth login
           </p>
           <h2 className="font-display italic font-extrabold text-4xl md:text-5xl mt-3 leading-[1.02] max-w-3xl">
             Built by hand, around what you already run.
           </h2>
           <p className="font-body text-[16px] text-[#161616]/75 mt-4 max-w-2xl leading-relaxed">
-            Most businesses that want this already have software doing pieces of it. That is exactly why every one of
-            these is scoped before it is built: the point is one board, not a sixth login. So this is not part of the
-            free demo suite, and it is never bundled with anything else.
+            Most businesses that want this already have software doing pieces of it. That is exactly
+            why every one is scoped before it is built: the point is one board, not another tab. It
+            is sold on its own and it is never bundled with anything else.
           </p>
 
           <div className="mt-9 max-w-xl border-2 border-[#161616] bg-[#F5B700] rounded-2xl shadow-[8px_8px_0_0_#161616] p-7 sm:p-9">
             <span className="font-mono font-bold text-[10px] uppercase tracking-[0.2em] text-[#161616]">Business Command Center</span>
-            <p className="font-mono font-bold text-[20px] mt-3 text-[#161616]">
-              {formatUsd(os.monthlyCents)}/mo <span className="text-[#161616]/75">+ {formatUsd(os.setupCents)} setup</span>
+            <p className="font-display italic font-extrabold text-[26px] mt-3 text-[#161616] leading-tight">
+              The whole back office, on one board.
             </p>
             <p className="font-body text-[14px] text-[#161616]/80 mt-4 leading-relaxed">
-              The whole back office, wired to your phone, your site, and your customers. Month to month, cancel
-              anytime. We scope it with you first so it replaces tools instead of joining them.
+              Wired to your phone, your site, and your customers. We work out what it has to replace
+              first, then quote it privately as one set package price, agreed in writing before it is
+              built. Changes after that are included, permanently.
             </p>
             <Link
-              href="/book"
+              href="/inquire"
               className="mt-7 inline-block text-center border-2 border-[#161616] bg-[#161616] text-[#F5B700] rounded-full px-7 py-3.5 font-sans font-extrabold text-[11px] uppercase tracking-[0.16em] shadow-[4px_4px_0_0_#FBF6EA] hover:-translate-y-0.5 transition-all"
             >
               Scope mine with Sarah
             </Link>
           </div>
-          <p className="font-body text-[13px] text-[#161616]/70 mt-6 max-w-xl">
-            Month to month, cancel anytime, no trials.
-          </p>
         </section>
 
         {/* ── How it works ── */}
@@ -300,11 +278,11 @@ export default function CommandCenterPage() {
               Let us scope your command center.
             </h2>
             <p className="font-body text-[15px] text-[#161616]/80 mt-4 max-w-xl mx-auto leading-relaxed">
-              Enter your business once and tour a working command center, open right away. Keep it for
-              {' '}{formatUsd(os.monthlyCents)}/mo, or take the website and the voice agent together and it is free.
+              Tell us what you are running now and what it is costing you to keep it all straight.
+              Sarah reads every inquiry herself and answers inside one business day.
             </p>
             <Link
-              href="/book"
+              href="/inquire"
               className="mt-7 inline-block border-2 border-[#161616] bg-[#161616] text-[#F5B700] rounded-full px-9 py-4 font-sans font-extrabold text-[12px] uppercase tracking-[0.16em] shadow-[5px_5px_0_0_rgba(22,22,22,0.3)] hover:-translate-y-0.5 transition-all"
             >
               Scope mine with Sarah →

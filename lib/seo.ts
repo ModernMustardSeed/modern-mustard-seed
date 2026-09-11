@@ -3,9 +3,9 @@ import type { Metadata } from 'next';
 export const SITE = {
   name: 'Modern Mustard Seed',
   url: 'https://modernmustardseed.com',
-  tagline: 'Apps, Sites, and Specialty AI Tools',
+  tagline: 'A Design and AI Studio',
   description:
-    'AI-native product studio in Kalispell, Montana. Custom websites, AI voice agents, automation and software for Northwest Montana and clients nationwide.',
+    'A boutique design and AI studio in Kalispell, Montana. Design-led websites and brand, custom software, voice agents, and retained advisory for Northwest Montana and clients nationwide. By inquiry.',
   twitter: '@modmustardseed',
   founder: 'Sarah Scarano',
   email: 'sarah@modernmustardseed.com',
