@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { byId, isRecurring, isHourly, formatMoney as money, TERMS, type Service } from '@/data/proposal-menu';
+import { byId, isRecurring, formatMoney as money, TERMS, type Service } from '@/data/proposal-menu';
 
 /**
  * The shared, on-brand proposal document. One component renders the live token
@@ -42,7 +42,6 @@ export type ProposalDocProps = {
 function linePriceLabel(s: Service, l: ProposalLine, hidePrices = false): string {
   if (s.unit === 'free') return 'Included';
   if (hidePrices) return s.variable ? 'Billed at cost' : 'Quoted per project';
-  if (isHourly(s.unit)) return `${money(l.price)}/hr × ${l.qty} = ${money(l.price * l.qty)}`;
   if (isRecurring(s.unit)) return `${money(l.price)}/mo`;
   const base = money(l.price * (l.qty || 1));
   return s.unit === 'fixed_from' ? `from ${base}` : base;
