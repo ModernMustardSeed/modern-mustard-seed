@@ -80,3 +80,7 @@ yarn.lock
 
 # vapi-bench.mjs caller audio and saved bot audio
 .vapi-bench/
+
+# Door-drop print runs: large generated PDFs and proofs, rebuilt by
+# scripts/door-drop/build.mts on demand.
+artifacts/

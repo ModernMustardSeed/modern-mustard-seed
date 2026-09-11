@@ -1,0 +1,2 @@
+# Businesses that must never get a flyer. One name per line, exactly as it
+# appears in business_name. Lines starting with # are ignored.
