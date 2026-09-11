@@ -207,6 +207,8 @@ body { font-family: 'DM Sans', system-ui, sans-serif; font-feature-settings: 'li
 .px { display: grid; place-items: center; width: 0.185in; height: 0.185in; margin-top: 0.015in;
   border: 0.015in solid ${INK}; border-radius: 0.038in; background: ${CRIMSON}; color: ${PAPER};
   font-size: 7pt; line-height: 1; font-weight: 700; }
+/* A category that is merely the weakest of seven good ones is not a failure. */
+.px.warn { background: ${AMBER}; }
 .pfinding-cat { display: block; font-family: 'JetBrains Mono', monospace; font-size: 7pt; font-weight: 700;
   text-transform: uppercase; letter-spacing: 0.13em; color: rgba(22,22,22,0.72); }
 .pfinding-grade { font-size: 7pt; margin-left: 0.06in; letter-spacing: 0.06em; }
@@ -366,8 +368,25 @@ export function auditPageInner(lead: Lead, qr: string, opts: FlyerOptions, cohor
     .sort((a, b) => (a.c.score ?? 0) - (b.c.score ?? 0))
     .slice(0, 3);
 
+  /**
+   * THE MARK HAS TO MATCH THE GRADE.
+   *
+   * The three findings are the three LOWEST categories, which on a bad site are
+   * all failures and on a good one are not. Kelly's Garage Door Services scored
+   * a C overall, and its three lowest read "you have the hard signals: license
+   * shown in the header, a real street address" and "better than almost every
+   * trade site we audit". A red cross beside a compliment makes the whole page
+   * look automated, and it tells a man his best work is broken.
+   *
+   * So a category at C or better gets an amber exclamation instead: still worth
+   * his attention, not a failure. The engine already decided which it is; this
+   * only stops the icon from contradicting it.
+   */
+  const mark = (score: number) =>
+    score >= 70 ? '<span class="px warn">!</span>' : '<span class="px">&#10007;</span>';
+
   const findings = weakest.map((x) => `<li class="pfinding">
-    <span class="px">&#10007;</span>
+    ${mark(x.c.score ?? 0)}
     <span style="min-width:0">
       <span class="pfinding-cat">${esc(CATEGORY_LABELS[x.k] ?? x.k)}<span class="pfinding-grade" style="color:${gradeColor(x.c.score)}">${esc(x.c.letter)}</span></span>
       <span class="pfinding-note" data-clamp="4">${esc(firstSentences(x.c.notes, 150))}</span>
