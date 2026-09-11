@@ -121,34 +121,38 @@ display or a windshield, where the size is the point.
 
 The most valuable thing this campaign owns is not any one audit, it is all of
 them. 188 Flathead websites graded in one month is a dataset nobody else in the
-valley has, and the numbers in it change what the paper can say:
-
-| | |
-| --- | --- |
-| Graded across the seven towns | 188 |
-| That reached a B | **0** |
-| Best website in the valley | C+ (79) |
-| With no AI on the site at all | 177 |
-| That an AI search engine cannot quote | 168 |
+valley has, and it answers the question the grade raises.
 
 A grade on its own is an accusation, and a man reading an F about his own
-business gets defensive before he gets curious. The same F beside "so did almost
-everyone, and nobody has taken the top spot yet" is an opportunity, and it is the
-truth. It also makes the grade checkable in a way a lone number never is: he can
-ask about the shop down the street and we can answer.
+business gets defensive before he gets curious. The same F beside a reason is an
+opportunity, and the reason is true: **search changed underneath everybody.**
+Most of these sites were built for how Google worked five years ago, not for how
+it and the AI assistants work now. 177 of the 188 have no AI on them at all. Very
+few businesses anywhere have made the move yet, which is what makes right now the
+cheap moment.
 
-So every audit page carries a scale with his own mark on it and the field's
-numbers beside it, and the offer block leads with the consequence: *nobody in
-this valley has taken the top spot yet, which makes it cheap to take.*
+So every audit page carries a scale with his own mark on it and that sentence
+beside it, and the offer block leads with the consequence: *this is the moment it
+is cheapest to catch up, and it will not read as early for long.*
 
-There is deliberately **no rank and no named neighbour**. The point is the shape
-of the field, not a fight with the shop across the street, and a leaderboard
-would make the piece feel like a shaming rather than a survey.
+**What is deliberately not on the paper.** The run also knows that not one
+business reached a B and the valley's best is a C+; `cohortOf()` computes both
+and the build prints them to the console. Sarah cut that line on 2026-09-11. A
+flyer announcing that the whole town is failing reads as a sneer, and it makes
+the reader's own grade feel less like something worth fixing. There is no rank
+and no named neighbour either, for the same reason: the point is the shape of the
+field, not a fight with the shop across the street.
 
-Every figure is computed by `cohortOf()` from the pieces actually being printed,
-so the paper can never quote a number that was true last month. The copy says
-"we graded", never "the Flathead", because the cohort is the businesses we read
-and not every website in the county.
+Under `COHORT_FLOOR` (30 graded) the band prints the sentence without any counts.
+A twelve-business proof run produced "of the 2 we graded this month, 2 have no AI
+on them at all", which is true, useless, and makes the studio look like it
+audited two websites. A statistic has to be big enough to mean something before
+it earns ink.
+
+Every figure is computed from the pieces actually being printed, so the paper can
+never quote a number that was true last month. The copy says "we graded", never
+"the Flathead", because the cohort is the businesses we read and not every
+website in the county.
 
 ## Two pieces, one route
 

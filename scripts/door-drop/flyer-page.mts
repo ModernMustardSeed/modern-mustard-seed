@@ -49,21 +49,40 @@ import { presenceOf, prettyPhone } from './flyer-nosite.mts';
  * all of them. 188 Flathead websites graded in one month is a dataset nobody
  * else in the valley has, and the numbers in it reframe the whole pitch:
  *
- *   Not one business scored a B. The best website in seven towns is a C+.
  *   177 of 188 have no AI tools at all. 168 of 188 cannot be quoted by an AI
  *   search engine.
  *
  * A grade on its own is an accusation, and a man reading an F about his own
- * business gets defensive before he gets curious. The same F beside "so did
- * almost everyone, and nobody has taken the top spot yet" is an opportunity, and
- * it is the truth. It also makes the grade checkable in a way a lone number
- * never is: he can ask about the shop down the street and we can answer.
+ * business gets defensive before he gets curious. The same F beside an
+ * explanation is an opportunity: search changed underneath everybody, most of
+ * these sites were built for the old rules, and almost nobody has made the move
+ * yet. That is why the scores are low, it is true, and it hands the reader a
+ * reason rather than a verdict.
+ *
+ * WHAT IS DELIBERATELY NOT ON THE PAPER. The run also knows that not one
+ * business reached a B and the valley's best is a C+ (bestGrade, atB below, and
+ * the build prints them to the console). Sarah cut that line on 2026-09-11: a
+ * flyer that announces the whole town is failing reads as a sneer, and it makes
+ * the reader's own grade feel less like something worth fixing. The fields stay
+ * because they are worth knowing internally. They do not go on the page.
  *
  * Every figure is computed from the run that produced the PDF, so the paper can
  * never quote a number that was true last month. The copy says "we graded",
  * never "the Flathead", because the cohort is the businesses we read and not
  * every website in the county.
  */
+/**
+ * Below this many graded sites the band prints no counts.
+ *
+ * A twelve-business proof run computed a cohort of twelve and the page read "of
+ * the 2 we graded this month, 2 have no AI on them at all", which is true,
+ * useless, and makes the studio look like it audited two websites. A statistic
+ * has to be big enough to mean something before it earns ink. Under the floor
+ * the sentence still runs, just without the numbers, and the scale beside it is
+ * about this business alone so it is unaffected either way.
+ */
+const COHORT_FLOOR = 30;
+
 export type Cohort = {
   /** How many websites were graded in this run. */
   graded: number;
@@ -221,9 +240,9 @@ function offerBlock(qr: string, line: string): string {
     <div style="min-width:0">
       <h2 style="margin:0;font-family:'Playfair Display',Georgia,serif;font-weight:900;font-size:18pt;line-height:1.12;color:${PAPER}">${line}</h2>
       <p style="margin:0.1in 0 0;font-size:9pt;line-height:1.4;color:rgba(255,253,246,0.82)">
-        Nobody in this valley has taken the top spot yet, which makes it cheap to take. A one person product
-        studio here in Kalispell: websites, AI systems, and phone agents that answer, at a set package price.
-        You own the code, the domain, and the accounts. Call the ranch line and Mr. Mustard books you in.
+        This is the moment it is cheapest to catch up, and it will not read as early for long. A one person
+        product studio here in Kalispell: websites, AI systems, and phone agents that answer, at a set package
+        price. You own the code, the domain, and the accounts. Call the ranch line and Mr. Mustard books you in.
       </p>
       <p style="margin:0.12in 0 0;font-family:'JetBrains Mono',monospace;font-size:9.6pt;font-weight:700;letter-spacing:0.04em;color:${MUSTARD}">
         (406) 312-1223 &nbsp;&middot;&nbsp; sarah@modernmustardseed.com
@@ -277,11 +296,11 @@ function standingBand(score: number, c: Cohort): string {
       </div>
     </div>
     <p class="pnote" style="margin:0 0 0.03in;color:rgba(22,22,22,0.72);font-size:8.6pt;line-height:1.4">
-      We graded <b style="color:${INK}">${c.graded}</b> websites across the seven towns this month.
-      ${c.atB === 0
-        ? `<b style="color:${INK}">Not one reached a B.</b> The best in the valley is a ${c.bestGrade}.`
-        : `Only ${c.atB} reached a B.`}
-      <b style="color:${INK}">${c.aiF}</b> of them have no AI on the site at all.
+      <b style="color:${INK}">Search changed underneath everybody.</b> Most sites here were built for how Google
+      worked five years ago, not for how it and the AI assistants work now.${c.graded >= COHORT_FLOOR
+        ? ` Of the <b style="color:${INK}">${c.graded}</b> we graded across these towns this month,
+           <b style="color:${INK}">${c.aiF}</b> have no AI on them at all.`
+        : ''} Very few businesses anywhere have made the move yet, which is what makes right now the cheap moment.
     </p>
   </div>`;
 }
