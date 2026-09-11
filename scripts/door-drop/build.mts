@@ -42,6 +42,10 @@ import {
   TRIM_W, TRIM_H, BLEED, INK, CREAM, MUSTARD, CRIMSON,
 } from './flyer.mts';
 import { noSiteFrontInner, noSiteBackInner, NOSITE_CSS } from './flyer-nosite.mts';
+import {
+  auditPageInner, noSitePageInner, pageCss, pageCropMarks,
+  PAGE_W, PAGE_H, PAGE_BLEED,
+} from './flyer-page.mts';
 
 /**
  * Two pieces, one run. A graded business gets the audit half page; a business
@@ -54,6 +58,9 @@ const frontOf = (p: Piece, qr: string, o: FlyerOpts) =>
   p.kind === 'nosite' ? noSiteFrontInner(p.lead, qr, o) : frontInner(p.lead, qr, o);
 const backOf = (p: Piece, qr: string, o: FlyerOpts) =>
   p.kind === 'nosite' ? noSiteBackInner(p.lead, qr, o) : backInner(p.lead, qr, o);
+/** The full page carries everything on one surface, so there is no second side. */
+const pageOf = (p: Piece, qr: string, o: FlyerOpts) =>
+  p.kind === 'nosite' ? noSitePageInner(p.lead, qr, o) : auditPageInner(p.lead, qr, o);
 type FlyerOpts = { reportUrl: string; auditedOn: Date; bleed: boolean };
 
 /**
@@ -90,6 +97,29 @@ const CONCURRENCY = Number(flag('concurrency', '6'));
 const PROOFS = !has('no-proofs');
 const AUDIT_ONLY = has('audit-only');
 const NOSITE_ONLY = has('nosite-only');
+
+/**
+ * THE FORMAT, and why `page` is the default.
+ *
+ * `page` is one side of letter. `half` is the 8.5 x 5.5 landscape piece printed
+ * on both sides, two up, with a cut.
+ *
+ * The half page put the close on the back, which assumes the paper gets turned
+ * over. Handed across a counter to somebody mid-shift, it often does not: he
+ * reads his own name, he reads the F, and he never reaches the three fixes or
+ * the offer, which are the only reason the grade is on there at all. One side
+ * removes that failure, and with it the duplex setting, the long-edge flip and
+ * the cut, which are the three things a print shop can get wrong.
+ *
+ * `--format half` is still the right piece for a counter display or a
+ * windshield, where the size is the point.
+ */
+const FORMAT = (flag('format', 'page') || 'page').toLowerCase();
+if (FORMAT !== 'page' && FORMAT !== 'half') {
+  console.error(`Unknown --format "${FORMAT}". Use "page" (one side of letter) or "half" (8.5 x 5.5, two sides).`);
+  process.exit(1);
+}
+const IS_PAGE = FORMAT === 'page';
 
 /**
  * What the printed square points at. `/s/<id>` records the scan and then sends
@@ -196,7 +226,7 @@ async function main() {
     process.exit(1);
   }
   const nAudit = chosen.filter((p) => p.kind === 'audit').length;
-  console.log(`Printing ${chosen.length} businesses: ${nAudit} graded, ${chosen.length - nAudit} with no website.`);
+  console.log(`Printing ${chosen.length} businesses: ${nAudit} graded, ${chosen.length - nAudit} with no website. Format: ${IS_PAGE ? 'full page, one side' : 'half page, two sides'}.`);
 
   mkdirSync(path.join(OUT, 'press'), { recursive: true });
   mkdirSync(path.join(OUT, 'office'), { recursive: true });
@@ -220,8 +250,13 @@ async function main() {
 
   console.log('');
   console.log(`Done. ${OUT}`);
-  console.log(`  press/flyers-press.pdf   ${chosen.length * 2} pages, 8.75 x 5.75 with bleed and crop marks`);
-  console.log(`  office/flyers-2up.pdf    ${chosen.length * 2 * Math.ceil(COPIES / 2)} letter sides, duplex long edge, one cut`);
+  if (IS_PAGE) {
+    console.log(`  press/flyers-press.pdf   ${chosen.length} pages, 8.75 x 11.25 with bleed and crop marks, ONE SIDE each`);
+    console.log(`  office/flyers-letter.pdf ${chosen.length * COPIES} letter sides, single sided, no cut`);
+  } else {
+    console.log(`  press/flyers-press.pdf   ${chosen.length * 2} pages, 8.75 x 5.75 with bleed and crop marks`);
+    console.log(`  office/flyers-2up.pdf    ${chosen.length * 2 * Math.ceil(COPIES / 2)} letter sides, duplex long edge, one cut`);
+  }
   console.log(`  route/route-sheet.pdf    ${chosen.length} stops`);
   console.log(`  skipped.csv              ${dropped.length} businesses and why each one is not in the box`);
 }
@@ -272,26 +307,87 @@ async function settle(page: Awaited<ReturnType<Browser['newPage']>>, label: stri
 }
 
 async function renderPress(browser: Browser, pieces: Piece[], qrs: Map<string, string>) {
-  const opts = { bleed: true as const };
-  const pages: string[] = [];
+  const sheets: string[] = [];
   for (const p of pieces) {
     const qr = qrs.get(p.lead.id)!;
     const o: FlyerOpts = { reportUrl: scanUrl(p.lead.id), auditedOn: readOn(p), bleed: true };
-    pages.push(wrap(frontOf(p, qr, o), true), wrap(backOf(p, qr, o), true));
+    if (IS_PAGE) sheets.push(fullSheet(pageOf(p, qr, o), true));
+    else sheets.push(wrap(frontOf(p, qr, o), true), wrap(backOf(p, qr, o), true));
   }
-  const html = documentHtml(pages, { ...opts, extraCss: NOSITE_CSS });
+  const html = IS_PAGE ? pageDocument(sheets, true) : documentHtml(sheets, { bleed: true, extraCss: NOSITE_CSS });
   const page = await browser.newPage();
   await page.setContent(html, { waitUntil: 'networkidle' });
   await settle(page, 'press');
   await page.pdf({
     path: path.join(OUT, 'press', 'flyers-press.pdf'),
-    width: `${TRIM_W + BLEED * 2}in`,
-    height: `${TRIM_H + BLEED * 2}in`,
+    width: `${(IS_PAGE ? PAGE_W : TRIM_W) + (IS_PAGE ? PAGE_BLEED : BLEED) * 2}in`,
+    height: `${(IS_PAGE ? PAGE_H : TRIM_H) + (IS_PAGE ? PAGE_BLEED : BLEED) * 2}in`,
     printBackground: true,
     margin: { top: '0', bottom: '0', left: '0', right: '0' },
     preferCSSPageSize: true,
   });
   await page.close();
+}
+
+/** One full-page sheet, with crop marks when it is the press file. */
+const fullSheet = (inner: string, bleed: boolean) =>
+  `<div class="sheet"><div class="sheetfill"></div>${bleed ? pageCropMarks() : ''}<div class="sheettrim">${inner}</div></div>`;
+
+function pageDocument(sheets: string[], bleed: boolean): string {
+  return `<!doctype html><html><head><meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:wght@700;900&family=JetBrains+Mono:wght@400;500;700&display=block" rel="stylesheet">
+<style>${pageCss({ bleed })}</style>
+</head><body>${sheets.join('\n')}<script>${pageFitScript()}</script></body></html>`;
+}
+
+/**
+ * The fit pass for the full page. Same job as the half page's, against
+ * `.sheetpad` rather than `.pad`, and reporting overflow the same way so a
+ * layout that runs past the trim is caught here and not in the box.
+ */
+function pageFitScript() {
+  return `
+(function(){function fit(){
+ document.querySelectorAll('[data-fit]').forEach(function(el){
+   var max=parseFloat(el.dataset.max),min=parseFloat(el.dataset.min),size=max;
+   el.style.fontSize=size+'pt'; var box=el.parentElement;
+   var lim=function(){return parseFloat(getComputedStyle(el).lineHeight)*2+1;};
+   while(size>min&&(el.scrollWidth>box.clientWidth||el.scrollHeight>lim())){size-=0.5;el.style.fontSize=size+'pt';}
+ });
+ document.querySelectorAll('[data-clamp]').forEach(function(el){
+   el.style.display='-webkit-box';el.style.webkitBoxOrient='vertical';
+   el.style.webkitLineClamp=el.dataset.clamp;el.style.overflow='hidden';
+ });
+ /**
+  * THE LAST INCH. One sheet in two hundred still runs past the trim, because one
+  * business got three long fixes at once. Shaving the whole layout for that one
+  * makes 202 pages worse to save one, so the page gives itself back the space
+  * instead: the longest block on it, the "how" under each fix, loses a line at a
+  * time until the sheet fits. It stops at four lines and never cuts mid word,
+  * because the clamp lands on a line boundary.
+  */
+ document.querySelectorAll('.sheettrim').forEach(function(t){
+   var pad=t.querySelector('.sheetpad'); if(!pad) return;
+   var hows=t.querySelectorAll('.pfixhow');
+   for(var n=0;n<4 && pad.scrollHeight>pad.clientHeight+2;n++){
+     var shrank=false;
+     hows.forEach(function(h){
+       var c=parseInt(h.style.webkitLineClamp||h.dataset.clamp,10);
+       if(c>4){h.style.webkitLineClamp=String(c-1);shrank=true;}
+     });
+     if(!shrank) break;
+   }
+ });
+ var over=[];
+ document.querySelectorAll('.sheettrim').forEach(function(t,i){
+   var pad=t.querySelector('.sheetpad');
+   // Report BY HOW MUCH, in inches. "It overflows" sends you guessing at the
+   // padding; "it overflows by 0.31in" sizes the fix on the first try.
+   if(pad&&pad.scrollHeight>pad.clientHeight+2)over.push(i+' by '+((pad.scrollHeight-pad.clientHeight)/96).toFixed(2)+'in');
+ });
+ window.__overflow=over; window.__fitted=true;}
+ if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fit);else fit();})();`;
 }
 
 function wrap(inner: string, bleed: boolean) {
@@ -322,6 +418,12 @@ function cropHtml() {
  * way a 2-up half page comes out of a copy shop wrong.
  */
 async function renderOffice(browser: Browser, pieces: Piece[], qrs: Map<string, string>) {
+  /**
+   * There is nothing to impose on a full page: it IS letter, one side, no cut.
+   * The office file becomes the same artwork without bleed or crop marks, which
+   * is what her own printer wants.
+   */
+  if (IS_PAGE) return renderOfficePages(browser, pieces, qrs);
   const sheetsPerBusiness = Math.ceil(COPIES / 2);
   const sheets: string[] = [];
   for (const p of pieces) {
@@ -399,6 +501,27 @@ function fitScript() {
  });
  window.__fitted=true;}
  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fit);else fit();})();`;
+}
+
+/** The full page, trim size, no marks. What comes out of her own printer. */
+async function renderOfficePages(browser: Browser, pieces: Piece[], qrs: Map<string, string>) {
+  const sheets: string[] = [];
+  for (const p of pieces) {
+    const qr = qrs.get(p.lead.id)!;
+    const o: FlyerOpts = { reportUrl: scanUrl(p.lead.id), auditedOn: readOn(p), bleed: false };
+    for (let i = 0; i < COPIES; i++) sheets.push(fullSheet(pageOf(p, qr, o), false));
+  }
+  const page = await browser.newPage({ viewport: { width: 900, height: 1180 }, deviceScaleFactor: 2 });
+  await page.setContent(pageDocument(sheets, false), { waitUntil: 'networkidle' });
+  await page.waitForFunction('window.__fitted === true', null, { timeout: 60_000 });
+  await page.pdf({
+    path: path.join(OUT, 'office', 'flyers-letter.pdf'),
+    format: 'Letter',
+    printBackground: true,
+    margin: { top: '0', bottom: '0', left: '0', right: '0' },
+    preferCSSPageSize: true,
+  });
+  await page.close();
 }
 
 /** The sheet that rides on the passenger seat. */
@@ -496,19 +619,29 @@ ${sections}
 
 /** Screen proofs at 200 dpi, so the run gets looked at before it gets printed. */
 async function renderProofs(browser: Browser, pieces: Piece[], qrs: Map<string, string>) {
-  const page = await browser.newPage({ viewport: { width: 1700, height: 1100 }, deviceScaleFactor: 2 });
+  const page = await browser.newPage({
+    viewport: IS_PAGE ? { width: 900, height: 1180 } : { width: 1700, height: 1100 },
+    deviceScaleFactor: 2,
+  });
   let i = 0;
   for (const p of pieces) {
     i += 1;
     const l = p.lead;
     const qr = qrs.get(l.id)!;
     const o: FlyerOpts = { reportUrl: scanUrl(l.id), auditedOn: readOn(p), bleed: false };
+    const n = String(i).padStart(3, '0');
+    const tag = p.kind === 'nosite' ? 'nosite-' : '';
+    if (IS_PAGE) {
+      await page.setContent(pageDocument([fullSheet(pageOf(p, qr, o), false)], false), { waitUntil: 'networkidle' });
+      await page.waitForFunction('window.__fitted === true', null, { timeout: 30_000 });
+      const sheet = page.locator('.sheet').first();
+      await sheet.screenshot({ path: path.join(OUT, 'proof', `${n}-${tag}${slug(l.business_name)}.png`) });
+      continue;
+    }
     const html = documentHtml([wrap(frontOf(p, qr, o), false), wrap(backOf(p, qr, o), false)], { bleed: false, extraCss: NOSITE_CSS });
     await page.setContent(html, { waitUntil: 'networkidle' });
     await page.waitForFunction('window.__fitted === true', null, { timeout: 30_000 });
     const sides = await page.locator('.page').all();
-    const n = String(i).padStart(3, '0');
-    const tag = p.kind === 'nosite' ? 'nosite-' : '';
     await sides[0].screenshot({ path: path.join(OUT, 'proof', `${n}-${tag}${slug(l.business_name)}-front.png`) });
     await sides[1].screenshot({ path: path.join(OUT, 'proof', `${n}-${tag}${slug(l.business_name)}-back.png`) });
   }

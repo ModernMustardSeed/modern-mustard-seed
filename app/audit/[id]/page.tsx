@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import AuditReport, { type AuditReportData } from '@/components/AuditReport';
 import { getSupabase } from '@/lib/supabase';
-import { buildMetadata } from '@/lib/seo';
+import { buildMetadata, SITE } from '@/lib/seo';
 
 // Per-lead reports are private links, never indexed. Always fresh so a re-run
 // audit shows the latest.
@@ -83,14 +83,37 @@ export default async function LeadAuditReportPage({ params }: { params: Params }
             This is the exact audit we run on paying clients. If you want the score above turned into a site that actually earns,
             grab 10 minutes with Sarah. No pitch deck, just what we&apos;d build and what it costs.
           </p>
+          {/*
+            THE BUTTON GOES TO /book, NOT TO ?book=1.
+
+            `/?book=1` lands on the homepage and opens the chat launcher, which
+            is a fine thing for somebody already reading the homepage and the
+            wrong thing for somebody who just scanned a QR code off a flyer and
+            wants a time. It reads as a bounce: they asked to book and got a
+            landing page and a bot. `/book` is the real page, with real slots
+            off /api/book/slots.
+
+            The phone line under it is the other half. Mr. Mustard answers the
+            ranch line, takes the booking on the call, and for a contractor
+            standing in a shop with greasy hands that is a lower bar than any
+            form. It is a `tel:` link so it dials straight from the phone that
+            scanned the code.
+          */}
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Link href="/?book=1" className="inline-flex items-center justify-center bg-[#161616] text-[#FBF6EA] font-display font-black tracking-tight px-7 py-3.5 rounded-lg border-2 border-[#161616] hover:bg-[#E0301E] transition-colors">
+            <Link href="/book" className="inline-flex items-center justify-center bg-[#161616] text-[#FBF6EA] font-display font-black tracking-tight px-7 py-3.5 rounded-lg border-2 border-[#161616] hover:bg-[#E0301E] transition-colors">
               Book 10 minutes with Sarah &rarr;
             </Link>
             <Link href="/website-audit" className="inline-flex items-center justify-center bg-white text-[#161616] font-display font-black tracking-tight px-7 py-3.5 rounded-lg border-2 border-[#161616] hover:bg-[#F5B700] transition-colors">
               Audit another site
             </Link>
           </div>
+          <p className="text-[#161616]/80 font-body font-medium leading-relaxed mt-6">
+            Or call Mr. Mustard, our AI, on{' '}
+            <a href={`tel:+1${SITE.phone.replace(/\D/g, '')}`} className="font-mono font-bold underline decoration-2 underline-offset-4 hover:text-[#E0301E]">
+              {SITE.phone}
+            </a>
+            {' '}and he will book the call with Sarah while you are on the line.
+          </p>
         </div>
       </div>
     </div>
