@@ -34,8 +34,8 @@ import { mkdirSync, writeFileSync, existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { chromium, type Browser } from 'playwright';
 import {
-  FLATHEAD, loadEnv, supabase, fetchTownLeads, gate, host,
-  CATEGORY_ORDER, type Lead,
+  REGIONS, loadEnv, supabase, fetchTownLeads, gate, requireAddress, host,
+  CATEGORY_ORDER, type Lead, type Region,
 } from './select.mts';
 import {
   documentHtml, frontInner, backInner, qrSvg, css, clean,
@@ -92,7 +92,7 @@ const backOf = (p: Piece, qr: string, o: FlyerOpts) =>
   p.kind === 'nosite' ? noSiteBackInner(p.lead, qr, o) : backInner(p.lead, qr, o);
 /** The full page carries everything on one surface, so there is no second side. */
 const pageOf = (p: Piece, qr: string, o: FlyerOpts, c?: Cohort) =>
-  p.kind === 'nosite' ? noSitePageInner(p.lead, qr, o) : auditPageInner(p.lead, qr, o, c);
+  p.kind === 'nosite' ? noSitePageInner(p.lead, qr, o, REGION) : auditPageInner(p.lead, qr, o, c, REGION);
 type FlyerOpts = { reportUrl: string; auditedOn: Date; bleed: boolean };
 
 /**
@@ -118,11 +118,25 @@ const has = (n: string) => argv.includes(`--${n}`);
 
 const ALL = has('all');
 const LIMIT = ALL ? Number.MAX_SAFE_INTEGER : Number(flag('limit', '12'));
-const CITIES = (flag('cities') || '').trim() ? flag('cities')!.split(',').map((s) => s.trim()) : FLATHEAD;
+/**
+ * Which run this is. `montana` is Sarah's own: her ranch line, her signature,
+ * the studio named where it is. `florida` is Easton's: the Florida line, his
+ * partner code on every scan link, no signature, and no Montana anywhere on the
+ * page. See REGIONS in select.mts for why each of those is the way it is.
+ */
+const REGION_KEY = (flag('region', 'montana') || 'montana').toLowerCase();
+if (!REGIONS[REGION_KEY]) {
+  console.error(`Unknown --region "${REGION_KEY}". Known: ${Object.keys(REGIONS).join(', ')}.`);
+  process.exit(1);
+}
+const REGION: Region = REGIONS[REGION_KEY];
+const CITIES = (flag('cities') || '').trim() ? flag('cities')!.split(',').map((s) => s.trim()) : REGION.towns;
 const MAX_AGE_DAYS = Number(flag('max-age-days', '21'));
 const REFRESH = has('refresh');
 const ALLOW_STALE = has('allow-stale');
-const COPIES = Math.max(1, Number(flag('copies', '2')));
+const COPIES = Math.max(1, Number(flag('copies', '1')));
+/** Off only for a proof run: a flyer with no address is a flyer she cannot deliver. */
+const ANY_ADDRESS = has('any-address');
 const BASE = flag('base', 'https://modernmustardseed.com')!;
 const OUT = path.resolve(flag('out', path.join('artifacts', 'door-drop', stamp()))!);
 const CONCURRENCY = Number(flag('concurrency', '6'));
@@ -162,7 +176,7 @@ let COHORT: Cohort | undefined;
  * report URL, which is four fewer rows of modules in the square and a faster
  * lock on a phone in a dim shop.
  */
-const scanUrl = (id: string) => `${BASE}/s/${id}`;
+const scanUrl = (id: string) => `${BASE}/s/${id}${REGION.ref ? `?ref=${REGION.ref}` : ''}`;
 
 function stamp() {
   const d = new Date();
@@ -179,8 +193,8 @@ const csvCell = (v: unknown) => {
 };
 const csv = (rows: unknown[][]) => rows.map((r) => r.map(csvCell).join(',')).join('\n') + '\n';
 
-/** North to south, the way she will actually drive it. */
-const TOWN_ORDER = new Map(FLATHEAD.map((t, i) => [t.toLowerCase(), i]));
+/** North to south, the way the route is actually driven. Per region. */
+const TOWN_ORDER = new Map(REGION.towns.map((t: string, i: number) => [t.toLowerCase(), i]));
 const townRank = (c: string | null) => TOWN_ORDER.get((c ?? '').toLowerCase()) ?? 99;
 
 async function main() {
@@ -193,11 +207,13 @@ async function main() {
       : [],
   );
 
+  console.log(`Region: ${REGION.key} (${REGION.phone}${REGION.ref ? `, credited to ${REGION.ref}` : ''})`);
   console.log(`Towns: ${CITIES.join(', ')}`);
   const { leads, shared } = await fetchTownLeads(sb, CITIES);
   console.log(`Leads on file in those towns: ${leads.length}`);
 
-  const gated = gate(leads, shared, { maxAgeDays: MAX_AGE_DAYS, allowStale: ALLOW_STALE, skipNames });
+  const gatedRaw = gate(leads, shared, { maxAgeDays: MAX_AGE_DAYS, allowStale: ALLOW_STALE, skipNames });
+  const gated = ANY_ADDRESS ? gatedRaw : requireAddress(gatedRaw);
   let { keep, nosite, dropped } = gated;
   let { stale } = gated;
   console.log(`Graded and printable: ${keep.length}. No website, confirmed: ${nosite.length}. Stale or never audited: ${stale.length}. Dropped: ${dropped.length}.`);
