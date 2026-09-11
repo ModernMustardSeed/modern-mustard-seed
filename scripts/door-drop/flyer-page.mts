@@ -41,6 +41,37 @@ import {
   type AuditCategory, type AuditReport, type Lead,
 } from './select.mts';
 import { presenceOf, prettyPhone } from './flyer-nosite.mts';
+import { readFileSync, existsSync } from 'node:fs';
+import path from 'node:path';
+
+/**
+ * Sarah's signature, embedded.
+ *
+ * A door drop that ends in a logo is from a company. A door drop that ends in a
+ * signature is from a person, and on a piece that has just graded somebody's
+ * life's work an F, a person is what it needs to be from. It sits beside the
+ * receipts line rather than inside the offer block on purpose: the offer is the
+ * business talking, and this is the last thing on the page before the footer.
+ *
+ * Inlined as a data URI because the renderer calls setContent with no base URL,
+ * so a src path would resolve against nothing and print a broken image box. It
+ * is read once at module load; a missing file degrades to no signature rather
+ * than to a broken page.
+ */
+const SIGNATURE = (() => {
+  const f = path.join(process.cwd(), 'public', 'brand', 'sig-name.png');
+  if (!existsSync(f)) return null;
+  return `data:image/png;base64,${readFileSync(f).toString('base64')}`;
+})();
+
+/** The receipts line, signed. */
+function signedNote(note: string): string {
+  if (!SIGNATURE) return `<p class="pnote" style="margin:0.1in 0 0">${note}</p>`;
+  return `<div style="display:grid;grid-template-columns:1.65in 1fr;column-gap:0.24in;align-items:center;margin-top:0.1in">
+    <img src="${SIGNATURE}" alt="Sarah Scarano" style="width:1.65in;display:block" />
+    <p class="pnote" style="margin:0">${note}</p>
+  </div>`;
+}
 
 /**
  * WHERE THEY STAND, measured across the run itself.
@@ -236,7 +267,7 @@ const SEED = `<svg viewBox="0 0 64 64" class="pseed" xmlns="http://www.w3.org/20
 
 /** The offer, identical on both pieces. One sentence, after the receipts. */
 function offerBlock(qr: string, line: string): string {
-  return `<div class="pcard ink" style="padding:0.19in 0.21in;display:grid;grid-template-columns:1fr 1.05in;column-gap:0.22in;align-items:center">
+  return `<div class="pcard ink" style="padding:0.17in 0.2in;display:grid;grid-template-columns:1fr 1.05in;column-gap:0.22in;align-items:center">
     <div style="min-width:0">
       <h2 style="margin:0;font-family:'Playfair Display',Georgia,serif;font-weight:900;font-size:18pt;line-height:1.12;color:${PAPER}">${line}</h2>
       <p style="margin:0.1in 0 0;font-size:9pt;line-height:1.4;color:rgba(255,253,246,0.82)">
@@ -253,7 +284,7 @@ function offerBlock(qr: string, line: string): string {
 }
 
 function footer(): string {
-  return `<div style="display:flex;align-items:center;gap:0.12in;margin-top:0.13in">
+  return `<div style="display:flex;align-items:center;gap:0.12in;margin-top:0.11in">
     ${SEED}
     <span class="pfoot">Modern Mustard Seed &middot; Kalispell, MT &middot; Apps, Sites, and Specialty AI Tools</span>
     <span style="flex:1"></span>
@@ -352,7 +383,7 @@ export function auditPageInner(lead: Lead, qr: string, opts: FlyerOptions, cohor
    * sits above those cards and makes the argument; the card only has to say
    * what gets built.
    */
-  const fixes = (r.top_three_fixes ?? []).slice(0, 3).map((f, i) => `<div class="pcard" style="padding:0.16in 0.17in;display:flex;flex-direction:column;min-width:0">
+  const fixes = (r.top_three_fixes ?? []).slice(0, 3).map((f, i) => `<div class="pcard" style="padding:0.15in 0.16in;display:flex;flex-direction:column;min-width:0">
     <div style="display:flex;align-items:flex-start;gap:0.1in">
       <span class="pfixnum" style="color:${MUSTARD};-webkit-text-stroke:0.013in ${INK};flex:none">${i + 1}</span>
       <span class="pfixtitle" data-clamp="3">${esc(clean(f.title))}</span>
@@ -398,10 +429,9 @@ export function auditPageInner(lead: Lead, qr: string, opts: FlyerOptions, cohor
 
   ${offerBlock(qr, `Every one of these is fixable. We do all three, then take the whole site to an <span style="color:${MUSTARD}">A+</span>.`)}
 
-  <p class="pnote" style="margin:0.1in 0 0">
-    We opened ${esc(domain || 'your website')} on ${esc(longDate(opts.auditedOn))} and read it the way a first time
-    customer and an AI search engine each do. Nothing here is a guess, and the code above opens the whole report free.
-  </p>
+  ${signedNote(`We opened ${esc(domain || 'your website')} on ${esc(longDate(opts.auditedOn))} and read it the way a
+    first time customer and an AI search engine each do. Nothing here is a guess, and the code above opens the whole
+    report free.`)}
 
   ${footer()}
 </div>`;
@@ -460,7 +490,7 @@ export function noSitePageInner(lead: Lead, qr: string, opts: FlyerOptions): str
     </span>
   </li>`).join('');
 
-  const moves = MOVES.map((m, i) => `<div class="pcard" style="padding:0.16in 0.17in;display:flex;flex-direction:column;min-width:0">
+  const moves = MOVES.map((m, i) => `<div class="pcard" style="padding:0.15in 0.16in;display:flex;flex-direction:column;min-width:0">
     <div style="display:flex;align-items:flex-start;gap:0.1in">
       <span class="pfixnum" style="color:${MUSTARD};-webkit-text-stroke:0.013in ${INK};flex:none">${i + 1}</span>
       <span class="pfixtitle" data-clamp="3">${esc(m.title)}</span>

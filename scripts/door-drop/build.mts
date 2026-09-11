@@ -415,17 +415,20 @@ function pageFitScript() {
   * That works, and it put "Link to th..." on the page. An ellipsis mid sentence
   * is the mail merge tell this whole campaign is built to avoid, and on paper it
   * cannot be taken back. So the crowded pages give up a fraction of a point of
-  * type instead, down to a floor of 7pt, and every word the audit wrote
+  * type instead, down to a floor of 6.7pt, and every word the audit wrote
   * survives. Most sheets never enter this loop at all.
   */
  document.querySelectorAll('.sheettrim').forEach(function(t){
    var pad=t.querySelector('.sheetpad'); if(!pad) return;
-   var els=t.querySelectorAll('.pfixhow, .pfinding-note, .pfixwhy');
-   for(var n=0;n<24 && pad.scrollHeight>pad.clientHeight+2;n++){
+   // The receipts line joins the shrink set. It is the least important text on
+   // the page and the last one anybody reads, so on the one sheet in two hundred
+   // that needs a final hair, it gives it up before the fixes do.
+   var els=t.querySelectorAll('.pfixhow, .pfinding-note, .pfixwhy, .pnote');
+   for(var n=0;n<40 && pad.scrollHeight>pad.clientHeight+2;n++){
      var shrank=false;
      els.forEach(function(h){
        var cur=parseFloat(h.style.fontSize)||parseFloat(getComputedStyle(h).fontSize)*0.75;
-       if(cur>7.0){h.style.fontSize=(cur-0.15).toFixed(2)+'pt';shrank=true;}
+       if(cur>6.7){h.style.fontSize=(cur-0.15).toFixed(2)+'pt';shrank=true;}
      });
      if(!shrank) break;
    }

@@ -203,6 +203,21 @@ page"*, with the URL printed underneath so it can be checked in ten seconds. Tha
 survives the owner saying "yes I do, it's on Facebook". The generic version did
 not.
 
+## The signature
+
+`public/brand/sig-name.png`, inlined as a data URI and set beside the receipts
+line, under the offer and above the footer.
+
+A door drop that ends in a logo is from a company. A door drop that ends in a
+signature is from a person, and on a piece that has just graded somebody's life's
+work an F, a person is what it needs to be from. It sits outside the offer block
+on purpose: the offer is the business talking, and this is the last thing on the
+page before the footer.
+
+It is a data URI because the renderer calls `setContent` with no base URL, so a
+`src` path resolves against nothing and prints a broken image box. A missing file
+degrades to no signature rather than to a broken page.
+
 ## The scan
 
 The QR square points at `modernmustardseed.com/s/<lead id>`, which records the
