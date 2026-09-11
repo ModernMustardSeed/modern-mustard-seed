@@ -131,6 +131,7 @@ export type Lead = {
   duplicate_of: string | null;
   is_test: boolean | null;
   domain_key: string | null;
+  notes: string | null;
   client_status: string | null;
   payment_status: string | null;
   won_at: string | null;
@@ -197,7 +198,7 @@ const FIELDS = [
   'id', 'business_name', 'contact_name', 'phone', 'website', 'city', 'state', 'address', 'postal_code',
   'niche', 'trade', 'rating', 'review_count', 'status', 'audit_score', 'audit_url', 'audit_at', 'audit_json',
   'integration_plan_url', 'integration_plan_status', 'unsubscribed_at', 'suppression_reason',
-  'duplicate_of', 'is_test', 'domain_key', 'client_status', 'payment_status', 'won_at',
+  'duplicate_of', 'is_test', 'domain_key', 'notes', 'client_status', 'payment_status', 'won_at',
 ].join(',');
 
 /**
@@ -248,7 +249,24 @@ function chainRe(c: string): RegExp {
   return re;
 }
 
-export type Gated = { keep: Lead[]; stale: Lead[]; dropped: Dropped[] };
+/**
+ * The marker scripts/door-drop/addresses.mjs stamps when it OPENED a Google
+ * listing and found no website on it. A blank `website` column is not evidence
+ * of anything; this is. Nothing may print "you have no website" without it.
+ */
+export const NOSITE_MARK = 'NO WEBSITE: confirmed on Google Maps';
+
+/**
+ * The marker with the date it was checked. enrich-maps.mjs stamped an undated
+ * version of this line months ago, and an undated confirmation cannot go on
+ * paper: the flyer prints "we opened your listing on <date>", so there has to be
+ * a date to print. An undated row is sent back to the Maps pass to be confirmed
+ * again rather than printed with today's date, which would be a lie about when
+ * we looked.
+ */
+export const NOSITE_DATED = /NO WEBSITE: confirmed on Google Maps (\d{4}-\d{2}-\d{2})/;
+
+export type Gated = { keep: Lead[]; nosite: Lead[]; stale: Lead[]; dropped: Dropped[] };
 
 export function gate(
   leads: Lead[],
@@ -256,6 +274,7 @@ export function gate(
   opts: { maxAgeDays: number; allowStale: boolean; skipNames: Set<string> },
 ): Gated {
   const keep: Lead[] = [];
+  const nosite: Lead[] = [];
   const stale: Lead[] = [];
   const dropped: Dropped[] = [];
   const cutoff = Date.now() - opts.maxAgeDays * 86_400_000;
@@ -286,7 +305,24 @@ export function gate(
     if (l.duplicate_of) { drop(l, 'reachable', 'duplicate of another lead'); continue; }
     if (l.unsubscribed_at || l.suppression_reason) { drop(l, 'reachable', 'unsubscribed or suppressed'); continue; }
     if (opts.skipNames.has(lowerName)) { drop(l, 'reachable', 'on the hand skip list'); continue; }
-    if (!l.website) { drop(l, 'reachable', 'no website on file'); continue; }
+    /**
+     * No website is not a rejection, it is the other campaign. It only counts
+     * when somebody opened the listing and saw that: the marker carries the date
+     * and the source, and the second flyer prints both.
+     */
+    if (!l.website) {
+      const note = l.notes ?? '';
+      const dated = NOSITE_DATED.exec(note);
+      if (dated) {
+        if (Date.parse(dated[1]) >= cutoff) nosite.push(l);
+        else stale.push(l);
+      } else if (note.includes(NOSITE_MARK)) {
+        stale.push(l); // confirmed once, but nobody wrote down when
+      } else {
+        drop(l, 'reachable', 'no website on file and the listing was never opened to confirm it');
+      }
+      continue;
+    }
 
     const chain = CHAINS.find((c) => chainRe(c).test(lowerName));
     if (chain) { drop(l, 'local', `national chain by name (${chain})`); continue; }
@@ -320,5 +356,5 @@ export function gate(
     }
     keep.push(l);
   }
-  return { keep, stale, dropped };
+  return { keep, nosite, stale, dropped };
 }

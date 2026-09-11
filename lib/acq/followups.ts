@@ -20,6 +20,7 @@ import type { AcqProspect } from '@/lib/acq/types';
  */
 
 export type FollowupReason =
+  | 'scanned-the-flyer'
   | 'flagged'
   | 'talked-no-next-step'
   | 'has-demo-went-quiet'
@@ -41,6 +42,7 @@ export type Followup = {
 };
 
 const LABEL: Record<FollowupReason, { move: string; rank: number }> = {
+  'scanned-the-flyer': { move: 'Go back. They held the paper and scanned it.', rank: 1 },
   flagged: { move: 'Call them. Mr. Mustard asked for you by name.', rank: 1 },
   'talked-no-next-step': { move: 'Call them back. They talked and nothing was booked.', rank: 1 },
   'email-is-dead': { move: 'Call them. Their agent is built and their email bounces.', rank: 2 },
@@ -81,6 +83,51 @@ export async function findFollowups(db: SupabaseClient, limit = 200): Promise<Fo
     const { data } = await db.from('outbound_leads').select('*').not('needs_human', 'is', null).limit(limit);
     for (const l of (data ?? []) as AcqProspect[]) {
       claim(l, 'flagged', String(l.needs_human ?? 'Flagged on a call'), l.updated_at as string);
+    }
+  });
+
+  /**
+   * 1b. THEY SCANNED THE FLYER.
+   *
+   * The hottest signal the engine can receive, and the only one that proves the
+   * prospect was physically holding something of ours. A cold-email click can be
+   * a mail gateway; nothing scans a QR square off a piece of paper except a
+   * person with a phone in their hand.
+   *
+   * It runs before the call rule because a scan is newer information than any
+   * email sequence, and it deliberately has NO cooling-off window: the other
+   * rules wait two days so the drip can do its job first, but nothing is
+   * dripping on a flyer. She is in the truck, and the shop is four doors down.
+   */
+  await safe(async () => {
+    const { data: hits } = await db
+      .from('acq_events')
+      .select('lead_id,label,occurred_at,detail')
+      .eq('type', 'flyer_scanned')
+      .gte('occurred_at', ago(45))
+      .order('occurred_at', { ascending: false })
+      .limit(600);
+    const byLead = new Map<string, { at: string; label: string; times: number }>();
+    for (const e of (hits ?? []) as Record<string, unknown>[]) {
+      const d = (e.detail ?? {}) as { machine?: boolean };
+      if (d.machine) continue; // a crawler that found the code is not a prospect
+      const id = String(e.lead_id ?? '');
+      if (!id) continue;
+      const seen = byLead.get(id);
+      if (seen) { seen.times += 1; continue; }
+      byLead.set(id, { at: String(e.occurred_at ?? ''), label: String(e.label ?? 'Scanned the flyer'), times: 1 });
+    }
+    if (!byLead.size) return;
+    const { data } = await db.from('outbound_leads').select('*').in('id', [...byLead.keys()].slice(0, limit));
+    for (const l of (data ?? []) as AcqProspect[]) {
+      if (l.acq_stage === 'meeting' || l.acq_stage === 'client' || l.checkout_sent_at) continue;
+      const h = byLead.get(l.id)!;
+      claim(
+        l,
+        'scanned-the-flyer',
+        h.times > 1 ? `Scanned the flyer ${h.times} times and read the report.` : 'Scanned the flyer and read the report.',
+        h.at,
+      );
     }
   });
 

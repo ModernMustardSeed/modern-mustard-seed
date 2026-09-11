@@ -36,6 +36,8 @@ Flags on `build.mts`:
 | `--allow-stale` | off | print an older audit anyway. For proofing only |
 | `--copies N` | 2 | copies per business in the office 2-up file |
 | `--concurrency N` | 6 | parallel audits during a refresh |
+| `--audit-only` | off | only the graded businesses |
+| `--nosite-only` | off | only the businesses with no website |
 | `--no-proofs` | off | skip the PNG proofs |
 
 ## What comes out
@@ -48,13 +50,21 @@ artifacts/door-drop/<date>/
   route/route-sheet.pdf     town by town with a box to tick
   route/route-sheet.csv     the same, for a phone
   proof/*.png               every flyer, both sides, plus an imposed sheet
-  manifest.json             who is in the box, their grade, their QR target
+  manifest.json             who is in the box, which piece, their grade, their scan link
   skipped.csv               who is not, and which gate they hit
 ```
 
-## The piece
+## Two pieces, one route
 
-8.5 by 5.5 inches, landscape, two sides.
+Both are 8.5 by 5.5 inches, landscape, two sides, and they travel together in
+the same press file, the same 2-up file and the same route sheet. She is driving
+one route and carrying one box, so sorting them into separate piles would only
+mean driving Whitefish twice. `--audit-only` and `--nosite-only` split them when
+that is what you want.
+
+### The audit half page
+
+For a business whose website was read and graded.
 
 **Front is the diagnosis.** Their name in the largest type on the page, their own
 domain under it, the audit's one honest sentence, then the three weakest
@@ -67,8 +77,45 @@ matters and what to actually do, then one line: we will do all three and take th
 whole site to an A+. The offer is one sentence, after the receipts, never instead
 of them.
 
-The QR on both sides opens `modernmustardseed.com/audit/<lead id>`, which is the
-full report, live today, free whether they call or not.
+### The no-website half page
+
+For a business whose Google listing was opened and found to carry no website at
+all. There are roughly thirty of these in the seven towns and they are the
+easiest sale in the valley, which is why they get a piece instead of a rejection.
+
+**Front** says the finding is the absence. Their name, "no website on your Google
+listing", and three consequences in plain English. On the right, where the grade
+panel sits on the other piece, one word: **None**, under "Websites You Own". Then
+their listing as it stands today, phone and address ticked, website crossed.
+
+**Back** is the three moves, in order, as fixed copy. When a business has no
+website the work is the same work every time, and dressing it in their trade name
+to look bespoke would be the mail-merge tell this campaign exists to avoid.
+
+"You have no website" never prints off an empty database column. A blank
+`website` field is just as likely to mean nobody ever looked. The piece is built
+only for a lead whose listing was opened and stamped
+`NO WEBSITE: confirmed on Google Maps <date>`, and the date it prints is that
+date. An undated confirmation from an older run is sent back to the Maps pass
+rather than printed with today's date.
+
+## The scan
+
+The QR square points at `modernmustardseed.com/s/<lead id>`, which records the
+scan and then sends the reader on: to their own report if they have one, to the
+free-build door at `/demos` if the flyer they are holding is the no-website one.
+
+That moment is the hottest signal the acquisition engine can receive. A cold
+email click can be a mail security gateway. Nothing scans a QR square off a piece
+of paper except a person with a phone in their hand. So the scan puts the
+business at the top of **Follow Up** with its own reason, "Go back. They held the
+paper and scanned it," and it never sets `contacted`, which means a person spoke
+to a person and nothing automated may ever write it.
+
+Crawlers are classified by `lib/acq/bots.ts` and recorded as machines rather than
+dropped, so the count of real scans stays clean and a leaked URL is visible
+instead of silent. `/s/` is disallowed in robots.txt and every response carries
+`X-Robots-Tag: noindex`.
 
 ## Why landscape
 
@@ -85,8 +132,8 @@ gates and every rejection is written to `skipped.csv` with its reason.
 
 0. **Ours.** Not a client, not one we already won, not Cross + Covenant. The lead
    list remembers every business it ever found, buyers included.
-1. **Reachable.** Has a website, not a duplicate, not a test row, not
-   unsubscribed, not on `skip.txt`.
+1. **Reachable.** Not a duplicate, not a test row, not unsubscribed, not on
+   `skip.txt`. No website is not a rejection here, it is the other piece.
 2. **Local.** Not a national chain. A franchisee cannot buy a website.
 3. **Owned.** The audit ran against the same host as the website on file.
 4. **Complete.** The report has all seven categories and three fixes.
@@ -110,6 +157,11 @@ under the rule the acquisition engine already paid for: **the phone is the
 proof.** An address is written only when the Maps phone matches the phone already
 on the lead. It caught Alpine Laundry on the first dry run, whose Maps result is
 a different business called Glacier Wash and Fold.
+
+It settles the website question on the same page load, because the Maps panel
+carries both and opening it twice is the expensive part. Either it finds a
+website and records it, which moves the lead into the audit campaign, or it finds
+none and date-stamps that, which moves the lead into the no-website campaign.
 
 It paces itself on purpose. Past roughly a hundred rapid place loads Google
 serves a panel with an empty h1, which throws nothing and looks exactly like a

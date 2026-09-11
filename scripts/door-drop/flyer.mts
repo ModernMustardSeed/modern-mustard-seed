@@ -489,12 +489,19 @@ export const FIT_SCRIPT = `
 })();
 `;
 
-export function documentHtml(pages: string[], opts: { bleed: boolean }): string {
+/**
+ * `extraCss` rather than an import, because the no-site piece brings its own
+ * rules and importing them here would make flyer.mts and flyer-nosite.mts
+ * depend on each other. The caller owns which pieces are in the document, so
+ * the caller owns which rules go with them.
+ */
+export function documentHtml(pages: string[], opts: { bleed: boolean; extraCss?: string }): string {
   return `<!doctype html><html><head><meta charset="utf-8">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:wght@700;900&family=JetBrains+Mono:wght@400;500;700&display=block" rel="stylesheet">
-<style>${css(opts)}</style>
+<style>${css(opts)}
+${opts.extraCss ?? ''}</style>
 </head><body>${pages.join('\n')}<script>${FIT_SCRIPT}</script></body></html>`;
 }
 

@@ -1,6 +1,18 @@
 /**
- * WHERE THEY ACTUALLY ARE. Backfills the street address for the Flathead leads,
- * so the route sheet says "225 Main St" instead of "address not on file".
+ * WHERE THEY ACTUALLY ARE, AND WHETHER THEY HAVE A SITE AT ALL.
+ *
+ * Backfills the street address for the Flathead leads so the route sheet says
+ * "225 Main St" instead of "address not on file", and settles the website
+ * question on the same page load, because the Maps panel carries both and
+ * opening it twice is the expensive part.
+ *
+ * The website half matters for the second flyer. A business with no website
+ * cannot be audited, and "you have no website" is a claim that must never be
+ * printed off an empty database column: a blank `website` field is just as
+ * likely to mean nobody ever looked. So a no-website flyer is only built for a
+ * lead whose listing was OPENED and found to carry no site, stamped into notes
+ * as `NO WEBSITE: confirmed on Google Maps` with the date. That marker is the
+ * evidence the print gate checks.
  *
  * The Flathead rows predate the Maps lead finder, which is why 104 audited
  * businesses in these towns carry a phone, a website and a grade but not one
@@ -72,9 +84,9 @@ function parseAddress(label) {
 
 const { data, error } = await sb
   .from('outbound_leads')
-  .select('id, business_name, city, state, phone, address')
+  .select('id, business_name, city, state, phone, address, website, notes')
   .in('city', CITIES)
-  .is('address', null)
+  .or('address.is.null,website.is.null')
   .not('phone', 'is', null)
   .order('city')
   .order('business_name')
@@ -97,10 +109,27 @@ const readPanel = () =>
       h1: q('h1')?.innerText?.trim() || null,
       phoneItem: q('button[data-item-id^="phone"]')?.getAttribute('data-item-id') || null,
       addressLabel: q('button[data-item-id="address"]')?.getAttribute('aria-label') || null,
+      website: q('a[data-item-id="authority"]')?.href || null,
     };
   });
 
-const out = { written: [], mismatch: [], noaddr: [], noplace: [], blocked: [] };
+const out = { written: [], mismatch: [], noaddr: [], noplace: [], blocked: [], nosite: [], foundsite: [] };
+
+const NOSITE_MARK = 'NO WEBSITE: confirmed on Google Maps';
+const today = new Date().toISOString().slice(0, 10);
+
+/**
+ * A note is appended, never replaced. These rows carry research somebody else
+ * wrote and an enrichment pass that overwrites it is an enrichment pass that
+ * destroys evidence.
+ */
+async function appendNote(lead, note, marker) {
+  if (String(lead.notes ?? '').includes(marker)) return false;
+  const notes = [lead.notes, note].filter(Boolean).join(' · ').slice(0, 4000);
+  const { error } = await sb.from('outbound_leads').update({ notes }).eq('id', lead.id);
+  if (error) console.log(`   ! note not saved: ${error.message}`);
+  return !error;
+}
 let n = 0;
 
 for (const lead of leads) {
@@ -143,8 +172,33 @@ for (const lead of leads) {
     continue;
   }
 
+  // THE WEBSITE QUESTION, settled on the same panel and under the same proof.
+  // Either they have one and we record it, or they do not and we date-stamp
+  // that, which is what earns the second flyer the right to say so in print.
+  let siteNote = '';
+  if (!lead.website && got.website) {
+    if (APPLY) await sb.from('outbound_leads').update({ website: got.website }).eq('id', lead.id);
+    out.foundsite.push(`${lead.business_name}: ${got.website}`);
+    siteNote = `  site found: ${got.website}`;
+  } else if (!lead.website && !got.website) {
+    if (APPLY) await appendNote(lead, `${NOSITE_MARK} ${today}`, NOSITE_MARK);
+    out.nosite.push(lead.business_name);
+    siteNote = '  NO WEBSITE confirmed';
+  }
+
   const a = parseAddress(got.addressLabel);
-  if (!a.street && !a.full) { out.noaddr.push(lead.business_name); console.log(`${label} no address on the panel`); await sleep(2500); continue; }
+  if (!a.street && !a.full) {
+    out.noaddr.push(lead.business_name);
+    console.log(`${label} no address on the panel${siteNote}`);
+    await sleep(2500);
+    continue;
+  }
+
+  if (lead.address) {
+    console.log(`${label} address already on file${siteNote}`);
+    await sleep(2500);
+    continue;
+  }
 
   const patch = { address: a.street || a.full };
   if (a.zip) patch.postal_code = a.zip;
@@ -153,7 +207,7 @@ for (const lead of leads) {
     if (upErr) { console.log(`${label} ! could not save: ${upErr.message}`); await sleep(2500); continue; }
   }
   out.written.push(`${lead.business_name}: ${patch.address}`);
-  console.log(`${label} ${patch.address}${a.zip ? ` ${a.zip}` : ''}${APPLY ? '' : '   (dry)'}`);
+  console.log(`${label} ${patch.address}${a.zip ? ` ${a.zip}` : ''}${siteNote}${APPLY ? '' : '   (dry)'}`);
   await sleep(2600);
 }
 
@@ -161,6 +215,8 @@ await browser.close();
 
 console.log('');
 console.log(`addresses ${APPLY ? 'written' : 'found'}: ${out.written.length}`);
+console.log(`websites found on Maps:      ${out.foundsite.length}`);
+console.log(`NO WEBSITE confirmed:        ${out.nosite.length}`);
 console.log(`phone disagreed:            ${out.mismatch.length}`);
 console.log(`no address on panel:        ${out.noaddr.length}`);
 console.log(`no matching place:          ${out.noplace.length}`);

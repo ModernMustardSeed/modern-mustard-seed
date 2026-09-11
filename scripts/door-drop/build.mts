@@ -41,6 +41,31 @@ import {
   documentHtml, frontInner, backInner, qrSvg, css, clean,
   TRIM_W, TRIM_H, BLEED, INK, CREAM, MUSTARD, CRIMSON,
 } from './flyer.mts';
+import { noSiteFrontInner, noSiteBackInner, NOSITE_CSS } from './flyer-nosite.mts';
+
+/**
+ * Two pieces, one run. A graded business gets the audit half page; a business
+ * whose listing was opened and found to carry no website gets the second one.
+ * They travel together in the same press file, the same 2-up file and the same
+ * route sheet, because she is driving one route and carrying one box.
+ */
+type Piece = { lead: Lead; kind: 'audit' | 'nosite' };
+const frontOf = (p: Piece, qr: string, o: FlyerOpts) =>
+  p.kind === 'nosite' ? noSiteFrontInner(p.lead, qr, o) : frontInner(p.lead, qr, o);
+const backOf = (p: Piece, qr: string, o: FlyerOpts) =>
+  p.kind === 'nosite' ? noSiteBackInner(p.lead, qr, o) : backInner(p.lead, qr, o);
+type FlyerOpts = { reportUrl: string; auditedOn: Date; bleed: boolean };
+
+/**
+ * When the piece was read off the live source it quotes. The audit flyer prints
+ * the day the engine read the website; the no-site flyer prints the day the
+ * Google listing was opened, which is stamped into the notes beside the marker.
+ */
+function readOn(p: Piece): Date {
+  if (p.kind === 'audit') return new Date(p.lead.audit_at!);
+  const m = /NO WEBSITE: confirmed on Google Maps (\d{4}-\d{2}-\d{2})/.exec(p.lead.notes ?? '');
+  return m ? new Date(`${m[1]}T12:00:00Z`) : new Date();
+}
 
 const ROOT = process.cwd();
 loadEnv(ROOT);
@@ -63,6 +88,16 @@ const BASE = flag('base', 'https://modernmustardseed.com')!;
 const OUT = path.resolve(flag('out', path.join('artifacts', 'door-drop', stamp()))!);
 const CONCURRENCY = Number(flag('concurrency', '6'));
 const PROOFS = !has('no-proofs');
+const AUDIT_ONLY = has('audit-only');
+const NOSITE_ONLY = has('nosite-only');
+
+/**
+ * What the printed square points at. `/s/<id>` records the scan and then sends
+ * the reader to their own report. It is twenty characters shorter than the
+ * report URL, which is four fewer rows of modules in the square and a faster
+ * lock on a phone in a dim shop.
+ */
+const scanUrl = (id: string) => `${BASE}/s/${id}`;
 
 function stamp() {
   const d = new Date();
@@ -97,13 +132,37 @@ async function main() {
   const { leads, shared } = await fetchTownLeads(sb, CITIES);
   console.log(`Leads on file in those towns: ${leads.length}`);
 
-  let { keep, stale, dropped } = gate(leads, shared, { maxAgeDays: MAX_AGE_DAYS, allowStale: ALLOW_STALE, skipNames });
-  console.log(`Passed every gate: ${keep.length}. Stale or never audited: ${stale.length}. Dropped: ${dropped.length}.`);
+  const gated = gate(leads, shared, { maxAgeDays: MAX_AGE_DAYS, allowStale: ALLOW_STALE, skipNames });
+  let { keep, nosite, dropped } = gated;
+  let { stale } = gated;
+  console.log(`Graded and printable: ${keep.length}. No website, confirmed: ${nosite.length}. Stale or never audited: ${stale.length}. Dropped: ${dropped.length}.`);
+
+  /**
+   * Two kinds of stale, and only one of them is the audit engine's problem. A
+   * lead with a website needs its site re-read; a lead with no website needs its
+   * Google listing opened again so the no-site confirmation carries a date. The
+   * second is a browser job, not a model job, and it lives in addresses.mjs.
+   */
+  const needsMaps = stale.filter((l) => !l.website);
+  stale = stale.filter((l) => Boolean(l.website));
+  if (needsMaps.length) {
+    console.log(
+      `${needsMaps.length} lead(s) have no website and no dated confirmation. `
+      + 'Run: node scripts/door-drop/addresses.mjs --apply',
+    );
+    for (const l of needsMaps) {
+      dropped.push({
+        id: l.id, business_name: l.business_name, city: l.city, gate: 'fresh',
+        reason: 'no website, and the listing has not been opened recently enough to say so in print',
+      });
+    }
+  }
 
   if (REFRESH && stale.length) {
     const refreshed = await refreshAudits(sb, stale.slice(0, ALL ? stale.length : LIMIT));
     const re = gate(refreshed, shared, { maxAgeDays: MAX_AGE_DAYS, allowStale: false, skipNames });
     keep = keep.concat(re.keep);
+    nosite = nosite.concat(re.nosite);
     dropped = dropped.concat(re.dropped);
     for (const s of re.stale) dropped.push({ id: s.id, business_name: s.business_name, city: s.city, gate: 'fresh', reason: 're-audit did not produce a usable report' });
     console.log(`After the refresh pass: ${keep.length} printable.`);
@@ -116,14 +175,28 @@ async function main() {
     }
   }
 
-  keep.sort((a, b) => townRank(a.city) - townRank(b.city) || a.business_name.localeCompare(b.business_name));
-  const chosen = keep.slice(0, LIMIT);
+  /**
+   * One box, one route. The two pieces are merged and sorted together by town so
+   * the press file, the 2-up file and the route sheet all run north to south in
+   * the same order. Sorting them into separate piles would mean driving
+   * Whitefish twice.
+   */
+  const all: Piece[] = [
+    ...(NOSITE_ONLY ? [] : keep.map((lead): Piece => ({ lead, kind: 'audit' }))),
+    ...(AUDIT_ONLY ? [] : nosite.map((lead): Piece => ({ lead, kind: 'nosite' }))),
+  ].sort(
+    (a, b) =>
+      townRank(a.lead.city) - townRank(b.lead.city) ||
+      a.lead.business_name.localeCompare(b.lead.business_name),
+  );
+  const chosen = all.slice(0, LIMIT);
   if (!chosen.length) {
     console.error('Nothing passed the gates. Run with --refresh, or widen --max-age-days.');
     writeReports(dropped, []);
     process.exit(1);
   }
-  console.log(`Printing ${chosen.length} businesses.`);
+  const nAudit = chosen.filter((p) => p.kind === 'audit').length;
+  console.log(`Printing ${chosen.length} businesses: ${nAudit} graded, ${chosen.length - nAudit} with no website.`);
 
   mkdirSync(path.join(OUT, 'press'), { recursive: true });
   mkdirSync(path.join(OUT, 'office'), { recursive: true });
@@ -131,7 +204,7 @@ async function main() {
   if (PROOFS) mkdirSync(path.join(OUT, 'proof'), { recursive: true });
 
   const qrs = new Map<string, string>();
-  for (const l of chosen) qrs.set(l.id, await qrSvg(`${BASE}/audit/${l.id}`));
+  for (const p of chosen) qrs.set(p.lead.id, await qrSvg(scanUrl(p.lead.id)));
 
   const browser = await chromium.launch();
   try {
@@ -198,15 +271,15 @@ async function settle(page: Awaited<ReturnType<Browser['newPage']>>, label: stri
   if (overflow?.length) console.warn(`  ! ${label}: ${overflow.length} page(s) overflow the trim: ${overflow.join(', ')}`);
 }
 
-async function renderPress(browser: Browser, leads: Lead[], qrs: Map<string, string>) {
+async function renderPress(browser: Browser, pieces: Piece[], qrs: Map<string, string>) {
   const opts = { bleed: true as const };
   const pages: string[] = [];
-  for (const l of leads) {
-    const qr = qrs.get(l.id)!;
-    const o = { reportUrl: `${BASE}/audit/${l.id}`, auditedOn: new Date(l.audit_at!), bleed: true };
-    pages.push(wrap(frontInner(l, qr, o), true), wrap(backInner(l, qr, o), true));
+  for (const p of pieces) {
+    const qr = qrs.get(p.lead.id)!;
+    const o: FlyerOpts = { reportUrl: scanUrl(p.lead.id), auditedOn: readOn(p), bleed: true };
+    pages.push(wrap(frontOf(p, qr, o), true), wrap(backOf(p, qr, o), true));
   }
-  const html = documentHtml(pages, opts);
+  const html = documentHtml(pages, { ...opts, extraCss: NOSITE_CSS });
   const page = await browser.newPage();
   await page.setContent(html, { waitUntil: 'networkidle' });
   await settle(page, 'press');
@@ -248,14 +321,14 @@ function cropHtml() {
  * back. Short-edge flip would turn the backs upside down, which is the classic
  * way a 2-up half page comes out of a copy shop wrong.
  */
-async function renderOffice(browser: Browser, leads: Lead[], qrs: Map<string, string>) {
+async function renderOffice(browser: Browser, pieces: Piece[], qrs: Map<string, string>) {
   const sheetsPerBusiness = Math.ceil(COPIES / 2);
   const sheets: string[] = [];
-  for (const l of leads) {
-    const qr = qrs.get(l.id)!;
-    const o = { reportUrl: `${BASE}/audit/${l.id}`, auditedOn: new Date(l.audit_at!), bleed: false };
-    const f = frontInner(l, qr, o);
-    const b = backInner(l, qr, o);
+  for (const p of pieces) {
+    const qr = qrs.get(p.lead.id)!;
+    const o: FlyerOpts = { reportUrl: scanUrl(p.lead.id), auditedOn: readOn(p), bleed: false };
+    const f = frontOf(p, qr, o);
+    const b = backOf(p, qr, o);
     for (let i = 0; i < sheetsPerBusiness; i++) {
       sheets.push(sheet(f, f), sheet(b, b));
     }
@@ -265,6 +338,7 @@ async function renderOffice(browser: Browser, leads: Lead[], qrs: Map<string, st
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:wght@700;900&family=JetBrains+Mono:wght@400;500;700&display=block" rel="stylesheet">
 <style>
 ${css({ bleed: false })}
+${NOSITE_CSS}
 @page { size: 8.5in 11in; margin: 0; }
 .sheet { position: relative; width: 8.5in; height: 11in; background: #fff; page-break-after: always; break-after: page; }
 .sheet:last-child { page-break-after: auto; break-after: auto; }
@@ -328,20 +402,21 @@ function fitScript() {
 }
 
 /** The sheet that rides on the passenger seat. */
-async function renderRoute(browser: Browser, leads: Lead[]) {
-  const byTown = new Map<string, Lead[]>();
-  for (const l of leads) {
-    const t = (l.city ?? 'Unknown').trim();
+async function renderRoute(browser: Browser, pieces: Piece[]) {
+  const byTown = new Map<string, Piece[]>();
+  for (const p of pieces) {
+    const t = (p.lead.city ?? 'Unknown').trim();
     if (!byTown.has(t)) byTown.set(t, []);
-    byTown.get(t)!.push(l);
+    byTown.get(t)!.push(p);
   }
 
-  const rows: unknown[][] = [['Town', 'Business', 'Grade', 'Score', 'Phone', 'Address', 'Website', 'Report link', 'Status']];
+  const rows: unknown[][] = [['Town', 'Business', 'Flyer', 'Grade', 'Score', 'Phone', 'Address', 'Website', 'Scan link', 'Status']];
   for (const [t, list] of byTown) {
-    for (const l of list) {
+    for (const { lead: l, kind } of list) {
       rows.push([
-        t, l.business_name, l.audit_json?.letter_grade ?? '', l.audit_score ?? '',
-        l.phone ?? '', l.address ?? '', host(l.website) ?? '', `${BASE}/audit/${l.id}`, l.status ?? '',
+        t, l.business_name, kind === 'nosite' ? 'no website' : 'audit',
+        l.audit_json?.letter_grade ?? '', l.audit_score ?? '',
+        l.phone ?? '', l.address ?? '', host(l.website) ?? '', scanUrl(l.id), l.status ?? '',
       ]);
     }
   }
@@ -352,10 +427,12 @@ async function renderRoute(browser: Browser, leads: Lead[]) {
       <h2>${t} <span class="count">${list.length} ${list.length === 1 ? 'stop' : 'stops'}</span></h2>
       <table>
         <thead><tr><th class="tick"></th><th>Business</th><th class="g">Grade</th><th>Phone</th><th>Address</th></tr></thead>
-        <tbody>${list.map((l) => `<tr>
+        <tbody>${list.map(({ lead: l, kind }) => `<tr>
           <td class="tick"><span class="box"></span></td>
-          <td class="biz">${clean(l.business_name)}<span class="dom">${host(l.website) ?? ''}</span></td>
-          <td class="g"><span class="chip">${l.audit_json?.letter_grade ?? ''}</span></td>
+          <td class="biz">${clean(l.business_name)}<span class="dom">${kind === 'nosite' ? 'no website' : host(l.website) ?? ''}</span></td>
+          <td class="g">${kind === 'nosite'
+            ? '<span class="chip none">No site</span>'
+            : `<span class="chip">${l.audit_json?.letter_grade ?? ''}</span>`}</td>
           <td class="mono">${l.phone ?? ''}</td>
           <td class="addr">${l.address ? clean(l.address) : '<span class="need">address not on file</span>'}</td>
         </tr>`).join('')}</tbody>
@@ -387,8 +464,9 @@ tr { break-inside: avoid; }
 .biz { font-weight: 700; }
 .dom { display: block; font-family: 'JetBrains Mono', monospace; font-size: 7pt; font-weight: 400;
   color: rgba(22,22,22,0.5); margin-top: 1.5pt; }
-.g { width: 44pt; } .chip { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 8pt;
+.g { width: 56pt; } .chip { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 8pt;
   font-weight: 700; border: 1.2pt solid ${INK}; border-radius: 3pt; padding: 1pt 5pt; background: ${MUSTARD}; }
+.chip.none { background: ${CRIMSON}; color: #FFFDF6; font-size: 7pt; }
 .mono { font-family: 'JetBrains Mono', monospace; font-size: 8pt; white-space: nowrap; }
 .addr { font-size: 8.5pt; color: #3A3733; }
 .need { color: ${CRIMSON}; font-family: 'JetBrains Mono', monospace; font-size: 7pt; text-transform: uppercase;
@@ -417,25 +495,30 @@ ${sections}
 }
 
 /** Screen proofs at 200 dpi, so the run gets looked at before it gets printed. */
-async function renderProofs(browser: Browser, leads: Lead[], qrs: Map<string, string>) {
+async function renderProofs(browser: Browser, pieces: Piece[], qrs: Map<string, string>) {
   const page = await browser.newPage({ viewport: { width: 1700, height: 1100 }, deviceScaleFactor: 2 });
   let i = 0;
-  for (const l of leads) {
+  for (const p of pieces) {
     i += 1;
+    const l = p.lead;
     const qr = qrs.get(l.id)!;
-    const o = { reportUrl: `${BASE}/audit/${l.id}`, auditedOn: new Date(l.audit_at!), bleed: false };
-    const html = documentHtml([wrap(frontInner(l, qr, o), false), wrap(backInner(l, qr, o), false)], { bleed: false });
+    const o: FlyerOpts = { reportUrl: scanUrl(l.id), auditedOn: readOn(p), bleed: false };
+    const html = documentHtml([wrap(frontOf(p, qr, o), false), wrap(backOf(p, qr, o), false)], { bleed: false, extraCss: NOSITE_CSS });
     await page.setContent(html, { waitUntil: 'networkidle' });
     await page.waitForFunction('window.__fitted === true', null, { timeout: 30_000 });
     const sides = await page.locator('.page').all();
     const n = String(i).padStart(3, '0');
-    await sides[0].screenshot({ path: path.join(OUT, 'proof', `${n}-${slug(l.business_name)}-front.png`) });
-    await sides[1].screenshot({ path: path.join(OUT, 'proof', `${n}-${slug(l.business_name)}-back.png`) });
+    const tag = p.kind === 'nosite' ? 'nosite-' : '';
+    await sides[0].screenshot({ path: path.join(OUT, 'proof', `${n}-${tag}${slug(l.business_name)}-front.png`) });
+    await sides[1].screenshot({ path: path.join(OUT, 'proof', `${n}-${tag}${slug(l.business_name)}-back.png`) });
   }
   await page.close();
 }
 
-function writeReports(dropped: { id: string; business_name: string; city: string | null; gate: string; reason: string }[], chosen: Lead[]) {
+function writeReports(
+  dropped: { id: string; business_name: string; city: string | null; gate: string; reason: string }[],
+  chosen: Piece[],
+) {
   mkdirSync(OUT, { recursive: true });
   writeFileSync(
     path.join(OUT, 'skipped.csv'),
@@ -449,16 +532,23 @@ function writeReports(dropped: { id: string; business_name: string; city: string
       towns: CITIES,
       max_age_days: MAX_AGE_DAYS,
       copies_per_business: COPIES,
-      printed: chosen.map((l) => ({
+      printed: chosen.map(({ lead: l, kind }) => ({
         id: l.id,
         business_name: l.business_name,
         city: l.city,
+        flyer: kind,
         website: host(l.website),
-        grade: l.audit_json?.letter_grade,
-        score: l.audit_score,
-        audited_at: l.audit_at,
-        report_url: `${BASE}/audit/${l.id}`,
-        categories: Object.fromEntries(CATEGORY_ORDER.map((k) => [k, l.audit_json?.categories?.[k]?.letter ?? null])),
+        grade: kind === 'nosite' ? null : (l.audit_json?.letter_grade ?? null),
+        score: kind === 'nosite' ? null : (l.audit_score ?? null),
+        audited_at: kind === 'nosite' ? null : l.audit_at,
+        phone: l.phone,
+        address: l.address,
+        report_url: kind === 'nosite' ? `${BASE}/demos` : `${BASE}/audit/${l.id}`,
+        scan_url: scanUrl(l.id),
+        categories:
+          kind === 'nosite'
+            ? null
+            : Object.fromEntries(CATEGORY_ORDER.map((k) => [k, l.audit_json?.categories?.[k]?.letter ?? null])),
       })),
       skipped: dropped,
     }, null, 2),
