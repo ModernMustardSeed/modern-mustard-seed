@@ -3,7 +3,7 @@ import RecentWork from '@/components/home/RecentWork';
 import JourneyRig from '@/components/journey/JourneyRig';
 // Parked 2026-08-08 at Sarah's request: hide the review band until there is
 // more than one review to show. Uncomment this and the <GoogleReviews /> tag
-// below, plus the 'reviews' beat in data/journey-tour.ts, to bring it back.
+// below to bring it back.
 // import GoogleReviews from '@/components/home/GoogleReviews';
 import {
   JourneyHero,
@@ -116,7 +116,13 @@ const homeFaq = faqJsonLd(HOME_FAQ);
  * reasoning belongs here so nobody puts them back by accident:
  *
  * - Ava's audio narration. An opt-in hostess reading the page out loud is a
- *   gimmick, and it undercuts everything else the page is trying to say.
+ *   gimmick, and it undercuts everything else the page is trying to say. Her
+ *   components (JourneyTour, HomeTour) and her script (data/journey-tour.ts)
+ *   were deleted on 2026-09-12 so nobody mounts her again by accident. The
+ *   recorded clips still sit in public/tour/journey and public/tour/mms, unused;
+ *   delete those and scripts/site-tour/build-journey.mjs and build-mms.mjs to
+ *   finish the job. SiteTour itself stays: the demo client sites narrate, and
+ *   that is a product, not this page.
  * - The missed-revenue calculator, which closed on a free demo build.
  * - Every price, and every use of the word free.
  *

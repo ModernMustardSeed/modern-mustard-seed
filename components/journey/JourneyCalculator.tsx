@@ -7,8 +7,8 @@
  *
  * Sits between the Orchards (MI 12) and the Roadside (MI 31). The rail nav in
  * JourneyRig picks it up automatically off `data-journey-chapter`, so nothing
- * else has to be registered. Ava does not narrate this stop yet; adding a beat
- * to data/journey-tour.ts requires rebuilding her audio manifest.
+ * else has to be registered. The page no longer narrates itself at all
+ * (Sarah, 2026-09-11), and this section is no longer mounted on it.
  *
  * Rules honored: no em dashes, no prices, Title Case labels, transform and
  * opacity only, every number on screen carries a named source.
