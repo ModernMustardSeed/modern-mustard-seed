@@ -229,7 +229,7 @@ const CROPS = [
   {
     href: '/websites',
     label: 'Websites And Brand',
-    line: 'Design-led sites for businesses that get judged on how they look before they get judged on anything else. Identity, art direction, and the build, from one hand.',
+    line: 'Design-led sites for businesses that get judged on how they look before they get judged on anything else. Identity, art direction, and the build, from one hand. Then we wire the back end: SEO and AI answer optimization baked into the pages, automations behind the forms, and the follow up running itself. Built to get you found and to turn the people who find you into leads.',
   },
   {
     href: '/services',

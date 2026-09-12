@@ -1,5 +1,4 @@
 import ProofBand from '@/components/home/ProofBand';
-import RecentWork from '@/components/home/RecentWork';
 import JourneyRig from '@/components/journey/JourneyRig';
 // Parked 2026-08-08 at Sarah's request: hide the review band until there is
 // more than one review to show. Uncomment this and the <GoogleReviews /> tag
@@ -126,8 +125,9 @@ const homeFaq = faqJsonLd(HOME_FAQ);
  * - The missed-revenue calculator, which closed on a free demo build.
  * - Every price, and every use of the word free.
  *
- * RecentWork took the calculator's slot. The portfolio is the better argument
- * and it is the one that belongs on a studio page.
+ * RecentWork took the calculator's slot and then came off again on 2026-09-12,
+ * because the portfolio deserves a better treatment than a row of browser
+ * windows. The slot is empty on purpose until that treatment exists.
  */
 export default function HomePage() {
   return (
@@ -151,11 +151,12 @@ export default function HomePage() {
             already interested can ask for the call themselves. JourneyRing is
             kept in chapters.tsx, unmounted, if it is ever wanted back. */}
         <JourneyOrchard />
-        {/* MI 19. The work itself, in browser windows, directly under the three
-            things we make. Sarah 2026-09-11: the missed-revenue calculator used
-            to sit here and it closed on a free demo build. The portfolio is the
-            better argument and it is the one that belongs on a studio page. */}
-        <RecentWork />
+        {/* MI 19 is empty for now. The missed-revenue calculator held this slot
+            until 2026-09-11, then RecentWork did. Sarah 2026-09-12: the work
+            reel comes off while we work out how the portfolio should really be
+            shown. RecentWork is untouched in components/home/, still pointing at
+            five live sites, so bringing it back is one line. The Roadside still
+            carries The Work as a sign, and /work is still in the nav. */}
         <JourneySigns />
         {/* MI 47. How a business gets found and gets chosen: the Google profile,
             the reviews, the AI answers, the conversion path, the follow up. */}
