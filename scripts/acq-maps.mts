@@ -74,7 +74,7 @@ type RawCard = { name: string; mapsUrl: string; ratingLabel: string; text: strin
  * is the area code, and an earlier version of the house harvester gave three
  * Indianapolis plumbers exactly "317 reviews" that way.
  */
-function parseRating(label: string, text: string): { rating: number | null; reviews: number | null } {
+export function parseRating(label: string, text: string): { rating: number | null; reviews: number | null } {
   let rating: number | null = null;
   let reviews: number | null = null;
   const m = /([0-9](?:\.[0-9])?)\s*stars?/i.exec(label);
@@ -94,7 +94,7 @@ function parseRating(label: string, text: string): { rating: number | null; revi
   return { rating, reviews };
 }
 
-function parseCard(text: string): { phone: string | null; category: string | null; address: string | null; closed: boolean; open24: boolean } {
+export function parseCard(text: string): { phone: string | null; category: string | null; address: string | null; closed: boolean; open24: boolean } {
   const phone = (/\(\d{3}\)\s?\d{3}-\d{4}/.exec(text) || [null])[0];
   let category: string | null = null;
   let address: string | null = null;
@@ -128,7 +128,7 @@ export async function openBrowser(headed = false): Promise<{ browser: Browser; p
   return { browser, page };
 }
 
-async function runQuery(page: Page, q: string): Promise<RawCard[]> {
+export async function runQuery(page: Page, q: string): Promise<RawCard[]> {
   await page.goto(`https://www.google.com/maps/search/${encodeURIComponent(q)}?hl=en&gl=us`, {
     waitUntil: 'domcontentloaded',
     timeout: 60000,
@@ -208,7 +208,7 @@ export async function discoverMaps(page: Page, market: Market, trade: Trade, max
   return out;
 }
 
-function cityFrom(address: string | null): string | null {
+export function cityFrom(address: string | null): string | null {
   if (!address) return null;
   // Feed addresses are usually just "6205 Rucker Rd" with no city, so this is
   // deliberately conservative: only accept a trailing ", City" shape.

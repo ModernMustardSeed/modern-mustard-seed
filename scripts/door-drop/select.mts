@@ -44,6 +44,80 @@ export const FLATHEAD = [
   'Polson',
 ];
 
+/** Tallahassee and the Wakulla county towns south of it, north to south. */
+export const BIG_BEND = [
+  'Tallahassee',
+  'Woodville',
+  'Crawfordville',
+  'Medart',
+  'Shadeville',
+  'Sopchoppy',
+  'Panacea',
+  'St. Marks',
+  'Saint Marks',
+];
+
+/**
+ * A REGION IS A PHONE NUMBER, A PARTNER, AND A SET OF TOWNS.
+ *
+ * The Flathead run is Sarah's own: her ranch line, her signature at the foot,
+ * and the studio named where it actually is.
+ *
+ * The Big Bend run is Easton's. He hands the paper over, so the number on it is
+ * the Florida line, which `lib/vapi-lines.ts` already maps to partner code
+ * EASTON: every call that arrives on it carries his name as owner and pays him
+ * on a later purchase, with no deploy and no extra wiring. The QR carries the
+ * same code so a scan that never calls is still attributed. Sarah still answers
+ * and still books, which is the arrangement, and none of that changes here.
+ *
+ * Two things come OFF the Big Bend piece rather than being translated. Sarah's
+ * signature, because the person handing it over is not Sarah and a signature
+ * from somebody who is not in the room is worse than none. And every mention of
+ * Montana, because a flyer in Crawfordville that name-checks Kalispell is a
+ * flyer from somewhere else.
+ */
+export type Region = {
+  key: string;
+  /** Printed in the eyebrow after the town: "Kalispell, Montana". */
+  state: string;
+  towns: string[];
+  /** As it appears on the paper, and as the tel: link dials. */
+  phone: string;
+  phoneE164: string;
+  /** Partner code appended to the scan link, or null for Sarah's own run. */
+  ref: string | null;
+  /** Sarah's signature at the foot. Hers to give, and only on her own run. */
+  signature: boolean;
+  /** The studio sentence in the offer block. Names Kalispell only where that helps. */
+  studio: string;
+};
+
+export const REGIONS: Record<string, Region> = {
+  montana: {
+    key: 'montana',
+    state: 'Montana',
+    towns: FLATHEAD,
+    phone: '(406) 312-1223',
+    phoneE164: '+14063121223',
+    ref: null,
+    signature: true,
+    studio: 'A one person product studio here in Kalispell: websites, AI systems, and phone agents that answer, '
+      + 'at a set package price. You own the code, the domain, and the accounts. Call the ranch line and Mr. '
+      + 'Mustard books you in.',
+  },
+  florida: {
+    key: 'florida',
+    state: 'Florida',
+    towns: BIG_BEND,
+    phone: '(850) 985-9252',
+    phoneE164: '+18509859252',
+    ref: 'EASTON',
+    signature: false,
+    studio: 'A small product studio: websites, AI systems, and phone agents that answer, at a set package price. '
+      + 'You own the code, the domain, and the accounts. Call the number and Mr. Mustard, our own AI, books you in.',
+  },
+};
+
 /**
  * Brands whose local sign says one thing and whose website belongs to a head
  * office. Split into two lists, because the two kinds of name fail differently.
@@ -308,6 +382,32 @@ function isExactChain(name: string): string | null {
 }
 
 export type Gated = { keep: Lead[]; nosite: Lead[]; stale: Lead[]; dropped: Dropped[] };
+
+/**
+ * Gate six: a street address she can actually find.
+ *
+ * Added 2026-09-11 at Sarah's word. The route sheet was honest about the 44
+ * businesses whose address could not be confirmed, printing "address not on
+ * file" in red rather than guessing, but honest is not the same as useful: a
+ * flyer she cannot deliver is a flyer that costs money and sits in the truck.
+ * The Maps pass writes an address only when the phone proves identity, so a
+ * missing one means we genuinely do not know where they are.
+ *
+ * They are not lost. They sit in skipped.csv under the `findable` gate, and the
+ * next Maps pass may settle them.
+ */
+export function requireAddress(gated: Gated): Gated {
+  const keep: Lead[] = [];
+  const nosite: Lead[] = [];
+  const dropped = [...gated.dropped];
+  for (const [bucket, out] of [[gated.keep, keep], [gated.nosite, nosite]] as const) {
+    for (const l of bucket) {
+      if (l.address && l.address.trim()) out.push(l);
+      else dropped.push({ id: l.id, business_name: l.business_name, city: l.city, gate: 'findable', reason: 'no street address we could confirm, so there is nowhere to hand it over' });
+    }
+  }
+  return { keep, nosite, stale: gated.stale, dropped };
+}
 
 export function gate(
   leads: Lead[],

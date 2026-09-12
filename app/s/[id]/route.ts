@@ -88,6 +88,25 @@ type ScanLead = { id: string; business_name: string; city: string | null; audit_
       ? new URL('/demos', SITE.url)
       : new URL(`/audit/${id}`, SITE.url);
 
+  /**
+   * THE PARTNER CODE RIDES THROUGH.
+   *
+   * A flyer Easton hands out in Wakulla carries /s/<id>?ref=EASTON, and the
+   * whole point of that code is that it survives to a page where RefCapture can
+   * see it and set the sixty day mms_ref cookie. A redirect that drops the query
+   * string loses the attribution at the only moment it exists, and the partner
+   * goes unpaid on a sale he made.
+   *
+   * The phone number on the same flyer credits him through a different path
+   * entirely (lib/vapi-lines.ts maps the Florida line to his code on every
+   * call), so a scan and a call both land on him, which is the arrangement.
+   *
+   * Only `ref` is carried, and only when it looks like an affiliate code. A
+   * redirect that forwards arbitrary query strings is an open door.
+   */
+  const ref = req.nextUrl.searchParams.get('ref');
+  if (ref && /^[A-Za-z0-9]{3,24}$/.test(ref)) target.searchParams.set('ref', ref);
+
   const res = send(target);
   if (!lead) return res;
 
