@@ -61,12 +61,19 @@ export async function GET(req: NextRequest, ctx: { params: Promise<{ id: string 
   const sb = getSupabase();
   if (!sb) return send(new URL(`/audit/${id}`, SITE.url));
 
-type ScanLead = { id: string; business_name: string; city: string | null; audit_score: number | null };
+type ScanLead = {
+    id: string;
+    business_name: string;
+    city: string | null;
+    audit_score: number | null;
+    presence_audit_id: string | null;
+    presence_audit_score: number | null;
+  };
   let lead: ScanLead | null = null;
   try {
     const { data } = await sb
       .from('outbound_leads')
-      .select('id, business_name, city, audit_score')
+      .select('id, business_name, city, audit_score, presence_audit_id, presence_audit_score')
       .eq('id', id)
       .maybeSingle();
     lead = (data ?? null) as ScanLead | null;
@@ -75,18 +82,23 @@ type ScanLead = { id: string; business_name: string; city: string | null; audit_
   }
 
   /**
-   * Two flyers, two destinations.
+   * WHERE A SCAN LANDS, best page first.
    *
-   * A graded business gets its own report. A business with no website has no
-   * report to get, and sending it to a page that says "your report is being
-   * prepared" would be a lie told to the one person who reached for the door
-   * handle. It goes to the free-build door instead, which is what its flyer
-   * offered.
+   * 1. The presence report, when there is one. It is the fuller picture and the
+   *    only one that can carry good news: a business with 742 reviews and a bad
+   *    website scores an F on the site alone and a 78 here. It also carries the
+   *    offer, which the website report does not.
+   * 2. The website report, for anything audited before the presence pass ran.
+   * 3. The free-build door, for a business with no website at all. Sending that
+   *    one to a page reading "your report is being prepared" would be a lie told
+   *    to the one person who reached for the door handle.
    */
   const target =
-    lead && lead.audit_score == null
-      ? new URL('/demos', SITE.url)
-      : new URL(`/audit/${id}`, SITE.url);
+    lead?.presence_audit_id && lead.presence_audit_score != null
+      ? new URL(`/demo/audit/${lead.presence_audit_id}`, SITE.url)
+      : lead && lead.audit_score == null
+        ? new URL('/demos', SITE.url)
+        : new URL(`/audit/${id}`, SITE.url);
 
   /**
    * THE PARTNER CODE RIDES THROUGH.
