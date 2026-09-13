@@ -7,7 +7,7 @@ import { launchCountdown } from '@/lib/launch';
 import HelpGuide from '@/components/HelpGuide';
 import MustardDeskCall from '@/components/MustardDeskCall';
 import DeskWelcome from '@/components/DeskWelcome';
-import { PostingTile, LeadsCard } from '@/components/portal/PortalExtras';
+import { PostingTile, LeadsCard, ArticlesCard } from '@/components/portal/PortalExtras';
 import { CLIENT_HELP } from '@/lib/help-content';
 import { OnboardingChecklist, OnboardingIntake } from '@/components/portal/Onboarding';
 import LaunchChecklist from '@/components/portal/LaunchChecklist';
@@ -267,6 +267,7 @@ export default function ClientPortal() {
 
             {data.posting && <PostingTile />}
             {(data.audience === 'client' || data.audience === 'both') && <LeadsCard />}
+            {(data.audience === 'client' || data.audience === 'both') && <ArticlesCard />}
 
             <div className="grid lg:grid-cols-3 gap-6">
               {/* Main column */}
