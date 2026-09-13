@@ -242,7 +242,7 @@ const CROPS = [
     line: 'A trained voice that answers every call, knows the business, books the work, and hands you the transcript. Built on the same brain as the site it belongs to.',
   },
   {
-    href: '/inquire',
+    href: '/advisory',
     label: 'Advisory',
     line: 'Retained counsel for operators putting AI into a business that already works. What to build, what to refuse, what to automate, and in what order.',
   },

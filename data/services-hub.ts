@@ -30,6 +30,7 @@ export const DEPARTMENTS: Dept[] = [
   // Build parked 2026-08-12 (Sarah); this row points at /voice-agents now. See Navbar.tsx.
   { key: 'demo-agent', name: 'Voice Agents', tag: 'It answers, it books, it texts you', blurb: 'Answers your calls 24/7 in a natural voice, books the job, texts you the details.', href: '/voice-agents', icon: '🎙', flagship: true },
   { key: 'command-center', name: 'Command Center', tag: 'The AI back office', blurb: 'One board: calls transcribed, website traffic, customers, reviews, and money, wired together.', href: '/command-center', icon: '⚙', flagship: true },
+  { key: 'advisory', name: 'Advisory', tag: 'Retained counsel, by the quarter', blurb: 'What to build, what to refuse, what to automate, and in what order. No build attached.', href: '/advisory', icon: '🧭' },
   { key: 'brand', name: 'Brand / Rebrand', tag: 'A new mark on every surface', blurb: 'Logo, look, mascot, site, voice agent, and the plan behind it. Designed once, live on every surface in three weeks.', href: '/brand', icon: '🎨' },
   { key: 'chief', name: 'The Chief', tag: 'Your AI chief of staff', blurb: 'Mr. Mustard runs your day: calendar, email, calls, research, and sales coaching, in voice, text, and chat.', href: '/chief', icon: '🧑‍✈️' },
   { key: 'ads', name: 'Mustard Broadcast', tag: 'We run your ads', blurb: 'We make the cinematic commercial and run the Meta and Google ads in your own account.', href: '/ads', icon: '📺' },
