@@ -101,7 +101,7 @@ export const REGIONS: Record<string, Region> = {
     phoneE164: '+14063121223',
     ref: null,
     signature: true,
-    studio: 'A one person product studio here in Kalispell: websites, AI systems, and phone agents that answer, '
+    studio: 'A small studio in Kalispell, Montana: websites, AI systems, and phone agents that answer, '
       + 'at a set package price. You own the code, the domain, and the accounts. Call the ranch line and Mr. '
       + 'Mustard books you in.',
   },
