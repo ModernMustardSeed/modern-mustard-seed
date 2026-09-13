@@ -33,6 +33,7 @@ export default function Footer() {
         { label: 'Brand / Rebrand', href: '/brand' },
         { label: 'Voice Agents', href: '/voice-agents' },
         { label: 'Custom Software', href: '/services' },
+        { label: 'Advisory', href: '/advisory' },
         { label: 'AI Native', href: '/ai-native' },
         { label: 'The Chief', href: '/chief' },
         { label: 'Command Center', href: '/command-center' },

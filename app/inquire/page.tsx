@@ -1,3 +1,4 @@
+import Link from '@/components/AttributionLink';
 import InquiryForm from '@/components/InquiryForm';
 import { JsonLd, breadcrumbJsonLd, webPageJsonLd } from '@/lib/jsonld';
 import { buildMetadata, SITE } from '@/lib/seo';
@@ -33,6 +34,7 @@ const DISCIPLINES = [
   {
     name: 'Advisory',
     line: 'Retained counsel for operators putting AI into a business that already works. What to build, what to refuse, what to automate, and in what order.',
+    href: '/advisory',
   },
 ];
 
@@ -125,13 +127,21 @@ export default function InquirePage() {
             </p>
             <div className="mt-6 space-y-6">
               {DISCIPLINES.map((d) => (
-                <div key={d.name} className="border-l-2 border-[#F5B700] pl-5">
+                <div key={d.name} className="min-w-0 border-l-2 border-[#F5B700] pl-5">
                   <h2 className="font-display text-xl font-extrabold leading-snug text-[#161616]">
                     {d.name}
                   </h2>
                   <p className="mt-1.5 font-body text-[15px] leading-relaxed text-[#5c554a]">
                     {d.line}
                   </p>
+                  {d.href && (
+                    <Link
+                      href={d.href}
+                      className="mt-2 inline-block font-sans text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#C4160B] transition-colors hover:text-[#161616]"
+                    >
+                      Read the argument →
+                    </Link>
+                  )}
                 </div>
               ))}
             </div>
