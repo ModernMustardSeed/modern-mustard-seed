@@ -199,7 +199,23 @@ export default async function PresenceAuditPage({ params }: { params: Params }) 
         {r.website_categories && (
           <section className="pop-card p-6 sm:p-8">
             <span className="font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-[#E0301E]">Website, category by category</span>
-            <h2 className="font-display text-2xl sm:text-3xl font-black mt-1 mb-5">{r.website || 'Your site'}</h2>
+            {/*
+              A URL IS NOT A HEADLINE, and on a phone it is not even a line.
+
+              This printed the raw website string at text-2xl in the display face.
+              "https://www.kalispellchiropractic.com/" has no spaces in it, so it
+              cannot wrap, and at 390px it ran off the right edge of the card with
+              the end of the domain simply gone. Reported from a real phone after
+              scanning a real flyer.
+
+              Two changes. The protocol and any trailing slash come off, because
+              nobody reads "https://" and it is a third of the width. And the
+              element is allowed to break mid-word, which is the only way a long
+              domain fits a narrow screen at all.
+            */}
+            <h2 className="font-display text-xl sm:text-3xl font-black mt-1 mb-5 break-words [overflow-wrap:anywhere]">
+              {(r.website || 'Your site').replace(/^https?:\/\//i, '').replace(/\/+$/, '')}
+            </h2>
             <div className="grid gap-4 sm:grid-cols-2">
               {Object.entries(r.website_categories).map(([key, cat]) => (
                 <div key={key} className="border-2 border-[#161616]/15 rounded-xl p-4">

@@ -101,7 +101,7 @@ export const REGIONS: Record<string, Region> = {
     phoneE164: '+14063121223',
     ref: null,
     signature: true,
-    studio: 'A one person product studio here in Kalispell: websites, AI systems, and phone agents that answer, '
+    studio: 'A small studio in Kalispell, Montana: websites, AI systems, and phone agents that answer, '
       + 'at a set package price. You own the code, the domain, and the accounts. Call the ranch line and Mr. '
       + 'Mustard books you in.',
   },
@@ -220,6 +220,8 @@ export type Lead = {
   audit_url: string | null;
   audit_at: string | null;
   audit_json: AuditReport | null;
+  presence_audit_id: string | null;
+  presence_audit_score: number | null;
   integration_plan_url: string | null;
   integration_plan_status: string | null;
   unsubscribed_at: string | null;
@@ -293,7 +295,7 @@ export function host(u: string | null | undefined): string | null {
 const FIELDS = [
   'id', 'business_name', 'contact_name', 'phone', 'website', 'city', 'state', 'address', 'postal_code',
   'niche', 'trade', 'rating', 'review_count', 'status', 'audit_score', 'audit_url', 'audit_at', 'audit_json',
-  'integration_plan_url', 'integration_plan_status', 'unsubscribed_at', 'suppression_reason',
+  'presence_audit_id', 'presence_audit_score', 'integration_plan_url', 'integration_plan_status', 'unsubscribed_at', 'suppression_reason',
   'duplicate_of', 'is_test', 'domain_key', 'notes', 'client_status', 'payment_status', 'won_at',
 ].join(',');
 

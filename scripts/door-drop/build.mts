@@ -42,6 +42,7 @@ import {
   TRIM_W, TRIM_H, BLEED, INK, CREAM, MUSTARD, CRIMSON,
 } from './flyer.mts';
 import { noSiteFrontInner, noSiteBackInner, NOSITE_CSS } from './flyer-nosite.mts';
+import { presencePageInner, PRESENCE_CSS, type PresenceReport } from './flyer-presence.mts';
 import {
   auditPageInner, noSitePageInner, pageCss, pageCropMarks,
   PAGE_W, PAGE_H, PAGE_BLEED, type Cohort,
@@ -85,14 +86,22 @@ function cohortOf(pieces: Piece[]): Cohort {
  * They travel together in the same press file, the same 2-up file and the same
  * route sheet, because she is driving one route and carrying one box.
  */
-type Piece = { lead: Lead; kind: 'audit' | 'nosite' };
+type Piece = { lead: Lead; kind: 'audit' | 'nosite'; presence?: PresenceReport };
 const frontOf = (p: Piece, qr: string, o: FlyerOpts) =>
   p.kind === 'nosite' ? noSiteFrontInner(p.lead, qr, o) : frontInner(p.lead, qr, o);
 const backOf = (p: Piece, qr: string, o: FlyerOpts) =>
   p.kind === 'nosite' ? noSiteBackInner(p.lead, qr, o) : backInner(p.lead, qr, o);
 /** The full page carries everything on one surface, so there is no second side. */
-const pageOf = (p: Piece, qr: string, o: FlyerOpts, c?: Cohort) =>
-  p.kind === 'nosite' ? noSitePageInner(p.lead, qr, o, REGION) : auditPageInner(p.lead, qr, o, c, REGION);
+/**
+ * The presence page whenever there is a presence report, because that is the
+ * score the QR code shows. A flyer that prints an F while the page behind it
+ * says 78 is a flyer arguing with itself in the owner's hand.
+ */
+const pageOf = (p: Piece, qr: string, o: FlyerOpts, c?: Cohort) => {
+  if (p.kind === 'nosite') return noSitePageInner(p.lead, qr, o, REGION);
+  if (p.presence) return presencePageInner(p.lead, p.presence, qr, o, REGION);
+  return auditPageInner(p.lead, qr, o, c, REGION);
+};
 type FlyerOpts = { reportUrl: string; auditedOn: Date; bleed: boolean };
 
 /**
@@ -297,6 +306,30 @@ async function main() {
   mkdirSync(path.join(OUT, 'route'), { recursive: true });
   if (PROOFS) mkdirSync(path.join(OUT, 'proof'), { recursive: true });
 
+  /**
+   * The presence report for everything in the run, in one round trip.
+   *
+   * Anything without one falls back to the website page rather than printing a
+   * blank, which is what the very first runs shipped and what the flyers already
+   * in the box still show.
+   */
+  const withPresence = chosen.filter((p) => p.kind === 'audit' && p.lead.presence_audit_id);
+  if (withPresence.length) {
+    const { data: reports } = await sb
+      .from('presence_audits')
+      .select('id, report')
+      .in('id', withPresence.map((p) => p.lead.presence_audit_id as string));
+    const byId = new Map((reports ?? []).map((r) => [r.id as string, r.report as PresenceReport]));
+    for (const p of withPresence) {
+      const rep = byId.get(p.lead.presence_audit_id as string);
+      // A zero means every pillar came back empty. That is a business with no
+      // website, which already has its own piece and must never be handed a page
+      // reading 0 out of 100.
+      if (rep && rep.overall_score > 0) p.presence = rep;
+    }
+    console.log(`Presence reports: ${chosen.filter((p) => p.presence).length} of ${chosen.length} pieces.`);
+  }
+
   COHORT = cohortOf(chosen);
   console.log(
     `The field: ${COHORT.graded} graded, best is ${COHORT.bestGrade} (${COHORT.bestScore}), `
@@ -407,7 +440,8 @@ function pageDocument(sheets: string[], bleed: boolean): string {
   return `<!doctype html><html><head><meta charset="utf-8">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:wght@700;900&family=JetBrains+Mono:wght@400;500;700&display=block" rel="stylesheet">
-<style>${pageCss({ bleed })}</style>
+<style>${pageCss({ bleed })}
+${PRESENCE_CSS}</style>
 </head><body>${sheets.join('\n')}<script>${pageFitScript()}</script></body></html>`;
 }
 

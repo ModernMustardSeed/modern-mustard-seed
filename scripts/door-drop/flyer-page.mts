@@ -65,7 +65,7 @@ const SIGNATURE = (() => {
 })();
 
 /** The receipts line, signed where the signature belongs to whoever hands it over. */
-function signedNote(note: string, region: Region): string {
+export function signedNote(note: string, region: Region): string {
   if (!SIGNATURE || !region.signature) return `<p class="pnote" style="margin:0.1in 0 0">${note}</p>`;
   return `<div style="display:grid;grid-template-columns:1.65in 1fr;column-gap:0.24in;align-items:center;margin-top:0.1in">
     <img src="${SIGNATURE}" alt="Sarah Scarano" style="width:1.65in;display:block" />
@@ -283,7 +283,7 @@ function offerBlock(qr: string, line: string, region: Region): string {
   </div>`;
 }
 
-function footer(region: Region): string {
+export function footer(region: Region): string {
   /**
    * The company's town is in the footer on Sarah's own run and off Easton's. A
    * flyer handed over in Crawfordville that name-checks Kalispell in its own
