@@ -27,12 +27,28 @@ import { useRouter } from 'next/navigation';
  *
  * The AI integration plan is on the list and free either way, which is true and
  * is the least demanding thing on it: a document he keeps whether or not he ever
- * calls back.
- *
- * NOT ON THE LIST: the Business Command Center. It sells on its own page at its
- * own price and is never suggested, bundled or stamped free.
+ * calls back. It is the only item that carries the word free, because it is the
+ * only one that is.
  */
 
+/**
+ * THE WHOLE SHELF, not a starter kit.
+ *
+ * Sarah, 2026-09-13: show them everything we can build. We are an upmarket
+ * studio and the list should read that way, magnetic rather than eager, full of
+ * value rather than full of offers.
+ *
+ * THE COMMAND CENTER IS ON THIS LIST BY HER EXPLICIT INSTRUCTION, and that
+ * reverses a standing rule she wrote herself ("never suggested, bundled, or
+ * stamped free"). The reason behind that rule is preserved in how it appears
+ * here: it is named as a thing we build, it is not bundled into anything else,
+ * and it is not stamped free. Only the plan carries the word free, because only
+ * the plan is.
+ *
+ * Ordered by how close each one sits to the audit the reader just finished.
+ * The website is what was graded, so it leads. The plan is last because it is
+ * the smallest ask and the easiest yes.
+ */
 const WANTS = [
   {
     key: 'website',
@@ -43,6 +59,21 @@ const WANTS = [
     key: 'voice',
     label: 'A voice agent that answers your phone',
     detail: 'It picks up while you are on a job, answers questions, and books the work.',
+  },
+  {
+    key: 'agents',
+    label: 'Agents that do the work',
+    detail: 'Agentic systems built around how you already operate: quoting, follow up, scheduling, intake, the jobs nobody has time for.',
+  },
+  {
+    key: 'command',
+    label: 'A command center',
+    detail: 'One board for the whole operation. Leads, jobs, calls and numbers in a single place instead of six.',
+  },
+  {
+    key: 'advisory',
+    label: 'AI advisory',
+    detail: 'A standing seat at your table. Where AI is worth your money this year, where it is not, and what to do first.',
   },
   {
     key: 'plan',
@@ -104,14 +135,14 @@ export default function PresenceAsk({
         We can take {business} to an <span className="text-[#F5B700]">A+</span>.
       </h2>
       <p className="font-body text-[15px] leading-relaxed text-[#FBF6EA]/85 mt-3 max-w-2xl">
-        Tell us what you would like us to make, and we will build it and walk you through it on a call.
-        Or skip the build and just book the call to talk about what is on this page. Either way you are
-        not committing to anything, and the plan is yours to keep.
+        This is what we build. Tick anything you would like to see made for {business} and we will build it,
+        then walk you through it on a call. Or skip the build and just book the call to go through what is on
+        this page. Nothing here commits you to anything.
       </p>
 
       <fieldset className="mt-6">
         <legend className="font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-[#FBF6EA]/55 mb-3">
-          What would you like us to build?
+          What we can build for you
         </legend>
         <div className="grid gap-2.5">
           {WANTS.map((w) => {

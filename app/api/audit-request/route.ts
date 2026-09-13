@@ -32,6 +32,9 @@ const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const WANTS: Record<string, string> = {
   website: 'a website',
   voice: 'a voice agent',
+  agents: 'agents that do the work',
+  command: 'a command center',
+  advisory: 'AI advisory',
   plan: 'an AI integration plan',
 };
 
