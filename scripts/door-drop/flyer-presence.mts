@@ -35,7 +35,7 @@ import {
   clean, firstSentences, type FlyerOptions,
 } from './flyer.mts';
 import { REGIONS, host, type Lead, type Region } from './select.mts';
-import { signedNote, footer } from './flyer-page.mts';
+import { signedNote, footer, mascotColumn, qrColumn, OFFER_COLUMNS } from './flyer-page.mts';
 
 export type PresencePillar = {
   key: string;
@@ -202,7 +202,7 @@ export function presencePageInner(
 
   <div style="flex:1;min-height:0.14in"></div>
 
-  <div class="pcard ink" style="padding:0.17in 0.2in;display:grid;grid-template-columns:1fr 1.05in;column-gap:0.22in;align-items:center">
+  <div class="pcard ink" style="padding:0.17in 0.2in;display:grid;grid-template-columns:${OFFER_COLUMNS};column-gap:0.17in;align-items:center">
     <div style="min-width:0">
       <h2 style="margin:0;font-family:'Playfair Display',Georgia,serif;font-weight:900;font-size:18pt;line-height:1.12;color:${PAPER}">
         We can take this to an <span style="color:${MUSTARD}">A+</span>.
@@ -216,7 +216,8 @@ export function presencePageInner(
         ${region.phone} &nbsp;&middot;&nbsp; sarah@modernmustardseed.com
       </p>
     </div>
-    <div style="background:${PAPER};border-radius:0.07in;padding:0.06in;width:1.05in;height:1.05in">${qr}</div>
+    ${mascotColumn()}
+    ${qrColumn(qr)}
   </div>
 
   ${signedNote(`We read ${esc(domain || 'your website')}, your Google listing and your reviews on

@@ -58,6 +58,28 @@ import path from 'node:path';
  * is read once at module load; a missing file degrades to no signature rather
  * than to a broken page.
  */
+/**
+ * MR. MUSTARD, embedded.
+ *
+ * The offer block has always ended "call the ranch line and Mr. Mustard books
+ * you in", which is a strange sentence to read about a stranger's AI with
+ * nothing beside it. He is a character with a job here, not decoration: he
+ * answers that number. Giving the sentence a face is the difference between a
+ * studio that has a mascot and a studio that has somebody who picks up.
+ *
+ * He stands next to the QR square at the foot, so the two things a reader can
+ * actually do, scan or call, sit together and are both attended.
+ *
+ * Same data URI treatment as the signature, for the same reason: the renderer
+ * calls setContent with no base URL, so a src path would print a broken image
+ * box on 159 sheets.
+ */
+const MASCOT = (() => {
+  const f = path.join(process.cwd(), 'public', 'brand', 'mascot.png');
+  if (!existsSync(f)) return null;
+  return `data:image/png;base64,${readFileSync(f).toString('base64')}`;
+})();
+
 const SIGNATURE = (() => {
   const f = path.join(process.cwd(), 'public', 'brand', 'sig-name.png');
   if (!existsSync(f)) return null;
@@ -165,6 +187,17 @@ body { font-family: 'DM Sans', system-ui, sans-serif; font-feature-settings: 'li
   page-break-after: always; break-after: page; background: #FBF6EA; }
 .sheet:last-child { page-break-after: auto; break-after: auto; }
 .sheetfill { position: absolute; inset: 0; background: #FBF6EA; }
+/*
+  The house halftone, as a real dot field rather than an image. Kept to 9% ink
+  and confined to a band behind the masthead: a full sheet of dots reads as
+  noise on paper and eats toner, but a band under the name gives the page the
+  comic-print ground the brand is built on.
+*/
+.halftone { position: absolute; left: 0; right: 0; top: 0; height: 2.15in; pointer-events: none;
+  background-image: radial-gradient(${INK} 0.9px, transparent 0.9px);
+  background-size: 0.055in 0.055in; opacity: 0.09;
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 55%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 55%, transparent 100%); }
 .sheettrim { position: absolute; inset: ${opts.bleed ? PAGE_BLEED + 'in' : '0'}; width: ${PAGE_W}in; height: ${PAGE_H}in; }
 .sheetpad { position: absolute; inset: 0; padding: 0.42in 0.54in 0.34in; display: flex; flex-direction: column; }
 
@@ -230,7 +263,19 @@ body { font-family: 'DM Sans', system-ui, sans-serif; font-feature-settings: 'li
 .pfoot { font-family: 'JetBrains Mono', monospace; font-size: 7pt; font-weight: 500;
   letter-spacing: 0.08em; text-transform: uppercase; color: rgba(22,22,22,0.55); }
 .pcredit { color: ${MUSTARD}; font-weight: 700; }
-.pseed { width: 0.34in; height: 0.34in; display: block; }
+
+/*
+  He is printed at 0.96in wide off a 440px file, which is roughly 460 dpi, so
+  the halftone dots in his shading stay dots on paper instead of turning into a
+  grey wash. Do not print him larger than about 1.2in from this asset.
+*/
+.pmascot { justify-self: center; text-align: center; }
+.pmascot img { width: 0.96in; display: block; }
+.pmascot-name { display: block; margin-top: 0.045in; font-family: 'JetBrains Mono', monospace;
+  font-size: 5.9pt; font-weight: 700; letter-spacing: 0.11em; text-transform: uppercase; color: ${MUSTARD}; }
+.pscan { margin-top: 0.045in; text-align: center; font-family: 'JetBrains Mono', monospace;
+  font-size: 5.9pt; font-weight: 700; letter-spacing: 0.11em; text-transform: uppercase;
+  color: rgba(255,253,246,0.55); }
 `;
 }
 
@@ -248,28 +293,40 @@ export function pageCropMarks(): string {
   return out.join('');
 }
 
-/** The same mark the half page carries, from app/icon.svg. */
-const SEED = `<svg viewBox="0 0 64 64" class="pseed" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <linearGradient id="pgSeed" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#FFE16A"/><stop offset="45%" stop-color="#F4C518"/><stop offset="100%" stop-color="#D69A0E"/>
-    </linearGradient>
-    <linearGradient id="pgLeaf" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#FFD83A"/><stop offset="100%" stop-color="#E2A60C"/>
-    </linearGradient>
-  </defs>
-  <g stroke="#1c1205" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round">
-    <path d="M32 17 C 22 21, 16 31, 16 41 C 16 52, 24 58, 32 58 C 40 58, 48 52, 48 41 C 48 31, 42 21, 32 17 Z" fill="url(#pgSeed)"/>
-    <path d="M32 18 L 32 11" fill="none"/>
-    <path d="M32 12 C 27 6, 20 4, 14 6 C 18 12, 26 14, 32 12 Z" fill="url(#pgLeaf)"/>
-    <path d="M32 12 C 37 5, 45 3, 51 6 C 47 12, 38 15, 32 12 Z" fill="url(#pgLeaf)"/>
-  </g>
-  <ellipse cx="26" cy="31" rx="4.2" ry="6.8" fill="#FFFFFF" opacity="0.32" transform="rotate(-20 26 31)"/>
-</svg>`;
+/**
+ * MR. MUSTARD, STANDING IN THE OFFER BLOCK.
+ *
+ * He goes between the sentence that names him and the code that reaches him,
+ * which is the only place on the sheet he has a job. The name under his feet is
+ * what turns "call the ranch line and Mr. Mustard books you in" from a line of
+ * copy into a person who picks up, and it costs six point of mono to say it.
+ *
+ * The column returns empty when the file is missing, and the grid above it
+ * drops to two columns, so a missing asset loses the mascot rather than the
+ * offer.
+ */
+export function mascotColumn(): string {
+  if (!MASCOT) return '';
+  return `<div class="pmascot">
+    <img src="${MASCOT}" alt="" />
+    <span class="pmascot-name">Mr. Mustard</span>
+  </div>`;
+}
+
+/** The grid the offer block runs on, two columns or three depending on him. */
+export const OFFER_COLUMNS = MASCOT ? '1fr 0.96in 1.05in' : '1fr 1.05in';
+
+/** The QR square, captioned, so the code reads as an instruction not a badge. */
+export function qrColumn(qr: string): string {
+  return `<div>
+    <div style="background:${PAPER};border-radius:0.07in;padding:0.06in;width:1.05in;height:1.05in">${qr}</div>
+    <div class="pscan">Scan this</div>
+  </div>`;
+}
 
 /** The offer, identical on both pieces. One sentence, after the receipts. */
 function offerBlock(qr: string, line: string, region: Region): string {
-  return `<div class="pcard ink" style="padding:0.17in 0.2in;display:grid;grid-template-columns:1fr 1.05in;column-gap:0.22in;align-items:center">
+  return `<div class="pcard ink" style="padding:0.17in 0.2in;display:grid;grid-template-columns:${OFFER_COLUMNS};column-gap:0.17in;align-items:center">
     <div style="min-width:0">
       <h2 style="margin:0;font-family:'Playfair Display',Georgia,serif;font-weight:900;font-size:18pt;line-height:1.12;color:${PAPER}">${line}</h2>
       <p style="margin:0.1in 0 0;font-size:9pt;line-height:1.4;color:rgba(255,253,246,0.82)">
@@ -279,7 +336,8 @@ function offerBlock(qr: string, line: string, region: Region): string {
         ${region.phone} &nbsp;&middot;&nbsp; sarah@modernmustardseed.com
       </p>
     </div>
-    <div style="background:${PAPER};border-radius:0.07in;padding:0.06in;width:1.05in;height:1.05in">${qr}</div>
+    ${mascotColumn()}
+    ${qrColumn(qr)}
   </div>`;
 }
 
@@ -291,9 +349,10 @@ export function footer(region: Region): string {
    * door drop cannot be. The name and the tagline stay: the studio is real, its
    * address is simply not what this piece is about.
    */
-  return `<div style="display:flex;align-items:center;gap:0.12in;margin-top:0.11in">
-    ${SEED}
-    <span class="pfoot">Modern Mustard Seed${region.key === 'montana' ? ' &middot; Kalispell, MT' : ''} &middot; Apps, Sites, and Specialty AI Tools</span>
+  return `<div class="prule" style="margin-top:0.15in;height:0.014in;background:${MUSTARD}"></div>
+  <div style="display:flex;align-items:center;gap:0.12in;margin-top:0.085in">
+    <span class="pfoot" style="color:${INK};font-weight:700;letter-spacing:0.13em">Modern Mustard Seed</span>
+    <span class="pfoot">${region.key === 'montana' ? 'Kalispell, MT &middot; ' : ''}Apps, Sites, and Specialty AI Tools</span>
     <span style="flex:1"></span>
     <span class="pfoot pcredit">modernmustardseed.com</span>
   </div>`;
