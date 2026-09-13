@@ -1,0 +1,63 @@
+# Modern Mustard Seed Website — AGENTS.md
+
+## What This Is
+Company website for Modern Mustard Seed. Marketing site, blog, case studies, playbooks, AI audit tool, and contact + build-queue intake.
+
+## Tech Stack
+- Next.js 16 (App Router)
+- React 19 + TypeScript
+- Tailwind CSS 3
+- MDX (next-mdx-remote) for blog, work, and playbook content
+- Supabase (contact/audit/build-queue inbox)
+- Resend (transactional email)
+- Three.js (visual accents only, not core)
+- Vercel (host) + Vercel Analytics
+- Anthropic Codex API (AI Audit engine on /audit)
+
+## SEO & GEO
+- Per-route metadata via `lib/seo.ts` (`buildMetadata` helper).
+- JSON-LD graph in `lib/jsonld.tsx`: Organization, Person (Sarah), WebSite (with SearchAction).
+- Per-page schemas: BlogPosting, Article, HowTo, FAQPage, Service, BreadcrumbList, AboutPage. All with `dateModified`, `wordCount`, `speakable`.
+- Dynamic sitemap (`app/sitemap.ts`), robots (`app/robots.ts`), llms.txt (`public/llms.txt`), .well-known/ai.txt.
+- OG image generated dynamically by `app/opengraph-image.tsx`.
+- FAQ schema on the homepage.
+
+## Build & Run
+This repo installs with **pnpm** everywhere: local, CI, and Vercel. There is one
+lockfile, `pnpm-lock.yaml`, and `package-lock.json` / `yarn.lock` are gitignored.
+A second lockfile is how production and CI drifted apart once before.
+```bash
+pnpm install --frozen-lockfile
+pnpm dev              # Dev server
+pnpm build            # Production build
+pnpm lint             # ESLint CLI (Next 16 removed `next lint`)
+pnpm exec tsc --noEmit
+```
+
+## Live URL
+https://modernmustardseed.com
+
+## Branch
+master
+
+## Deploy Hygiene (incident 2026-07-11: domain 404'd DEPLOYMENT_NOT_FOUND for ~1 hour)
+- NEVER run `vercel alias set/rm` or `vercel domains add/rm` on this project. The production domain must stay a project domain that Vercel flips atomically when a build goes Ready. Hand-managed aliases point at queued builds and take the site DOWN for the whole build.
+- Do not stack production deploys. Before `vercel --prod`, run `vercel ls` and wait if a production build is already Queued/Building. Batch your changes into one deploy instead of deploying per commit.
+- If the site 404s with `X-Vercel-Error: DEPLOYMENT_NOT_FOUND`: diagnose with `curl -sI https://modernmustardseed.com` → `vercel ls` → `vercel domains inspect modernmustardseed.com` → `vercel alias ls | grep mustardseed`. Only re-attach (`vercel domains add modernmustardseed.com`) if the inspect table shows NO project AND no build is in flight.
+
+## Conventions
+- No em dashes in user-facing prose (Sarah's rule).
+- Internal links use `next/link`. Outbound links open in new tab with `rel="noopener noreferrer"`.
+- MDX content lives in `content/{blog,work,playbooks}`. Frontmatter is parsed by `lib/content.ts`.
+- **Nav completeness: a new public route ships with its links in the same commit.** Every new customer-facing page must be added to (1) the footer columns in `components/Footer.tsx`, (2) the navbar in `components/Navbar.tsx` (the `DEPARTMENTS` panel if it is a product or department, otherwise the fitting menu group), and (3) the static path list in `app/sitemap.ts` if it is not content-driven. Nav labels are Title Case, never lowercase. (Rule added 2026-07-19 after an audit found 11 live product pages, Switchboard and Demos included, with zero footer links.)
+- **Modals/popups must never clip their top on short screens.** A centered overlay whose child can be taller than the viewport will push its top off-screen with no way to scroll up. Always build modal cards as a height-capped flex column: overlay `fixed inset-0 flex items-center justify-center p-4`, card `max-h-[90vh] flex flex-col`, header `shrink-0` (pinned), body `overflow-y-auto`. (Side drawers: full-height `overflow-y-auto` + sticky header. Bottom-anchored panels: `max-h-[..vh]` + internal scroll.) Verify every new modal at a short viewport (e.g. 1100x620).
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

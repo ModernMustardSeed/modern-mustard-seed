@@ -37,8 +37,8 @@ import {
   clean, firstSentences, type FlyerOptions,
 } from './flyer.mts';
 import {
-  CATEGORY_ORDER, CATEGORY_LABELS, CATEGORY_SHORT, host,
-  type AuditCategory, type AuditReport, type Lead,
+  CATEGORY_ORDER, CATEGORY_LABELS, CATEGORY_SHORT, host, REGIONS,
+  type AuditCategory, type AuditReport, type Lead, type Region,
 } from './select.mts';
 import { presenceOf, prettyPhone } from './flyer-nosite.mts';
 import { readFileSync, existsSync } from 'node:fs';
@@ -64,9 +64,9 @@ const SIGNATURE = (() => {
   return `data:image/png;base64,${readFileSync(f).toString('base64')}`;
 })();
 
-/** The receipts line, signed. */
-function signedNote(note: string): string {
-  if (!SIGNATURE) return `<p class="pnote" style="margin:0.1in 0 0">${note}</p>`;
+/** The receipts line, signed where the signature belongs to whoever hands it over. */
+function signedNote(note: string, region: Region): string {
+  if (!SIGNATURE || !region.signature) return `<p class="pnote" style="margin:0.1in 0 0">${note}</p>`;
   return `<div style="display:grid;grid-template-columns:1.65in 1fr;column-gap:0.24in;align-items:center;margin-top:0.1in">
     <img src="${SIGNATURE}" alt="Sarah Scarano" style="width:1.65in;display:block" />
     <p class="pnote" style="margin:0">${note}</p>
@@ -207,6 +207,8 @@ body { font-family: 'DM Sans', system-ui, sans-serif; font-feature-settings: 'li
 .px { display: grid; place-items: center; width: 0.185in; height: 0.185in; margin-top: 0.015in;
   border: 0.015in solid ${INK}; border-radius: 0.038in; background: ${CRIMSON}; color: ${PAPER};
   font-size: 7pt; line-height: 1; font-weight: 700; }
+/* A category that is merely the weakest of seven good ones is not a failure. */
+.px.warn { background: ${AMBER}; }
 .pfinding-cat { display: block; font-family: 'JetBrains Mono', monospace; font-size: 7pt; font-weight: 700;
   text-transform: uppercase; letter-spacing: 0.13em; color: rgba(22,22,22,0.72); }
 .pfinding-grade { font-size: 7pt; margin-left: 0.06in; letter-spacing: 0.06em; }
@@ -266,27 +268,32 @@ const SEED = `<svg viewBox="0 0 64 64" class="pseed" xmlns="http://www.w3.org/20
 </svg>`;
 
 /** The offer, identical on both pieces. One sentence, after the receipts. */
-function offerBlock(qr: string, line: string): string {
+function offerBlock(qr: string, line: string, region: Region): string {
   return `<div class="pcard ink" style="padding:0.17in 0.2in;display:grid;grid-template-columns:1fr 1.05in;column-gap:0.22in;align-items:center">
     <div style="min-width:0">
       <h2 style="margin:0;font-family:'Playfair Display',Georgia,serif;font-weight:900;font-size:18pt;line-height:1.12;color:${PAPER}">${line}</h2>
       <p style="margin:0.1in 0 0;font-size:9pt;line-height:1.4;color:rgba(255,253,246,0.82)">
-        This is the moment it is cheapest to catch up, and it will not read as early for long. A one person
-        product studio here in Kalispell: websites, AI systems, and phone agents that answer, at a set package
-        price. You own the code, the domain, and the accounts. Call the ranch line and Mr. Mustard books you in.
+        This is the moment it is cheapest to catch up, and it will not read as early for long. ${region.studio}
       </p>
       <p style="margin:0.12in 0 0;font-family:'JetBrains Mono',monospace;font-size:9.6pt;font-weight:700;letter-spacing:0.04em;color:${MUSTARD}">
-        (406) 312-1223 &nbsp;&middot;&nbsp; sarah@modernmustardseed.com
+        ${region.phone} &nbsp;&middot;&nbsp; sarah@modernmustardseed.com
       </p>
     </div>
     <div style="background:${PAPER};border-radius:0.07in;padding:0.06in;width:1.05in;height:1.05in">${qr}</div>
   </div>`;
 }
 
-function footer(): string {
+function footer(region: Region): string {
+  /**
+   * The company's town is in the footer on Sarah's own run and off Easton's. A
+   * flyer handed over in Crawfordville that name-checks Kalispell in its own
+   * small print is a flyer from somewhere else, which is the one thing a local
+   * door drop cannot be. The name and the tagline stay: the studio is real, its
+   * address is simply not what this piece is about.
+   */
   return `<div style="display:flex;align-items:center;gap:0.12in;margin-top:0.11in">
     ${SEED}
-    <span class="pfoot">Modern Mustard Seed &middot; Kalispell, MT &middot; Apps, Sites, and Specialty AI Tools</span>
+    <span class="pfoot">Modern Mustard Seed${region.key === 'montana' ? ' &middot; Kalispell, MT' : ''} &middot; Apps, Sites, and Specialty AI Tools</span>
     <span style="flex:1"></span>
     <span class="pfoot pcredit">modernmustardseed.com</span>
   </div>`;
@@ -337,11 +344,11 @@ function standingBand(score: number, c: Cohort): string {
 }
 
 /** THE AUDIT FULL PAGE: diagnosis and prescription on one surface. */
-export function auditPageInner(lead: Lead, qr: string, opts: FlyerOptions, cohort?: Cohort): string {
+export function auditPageInner(lead: Lead, qr: string, opts: FlyerOptions, cohort?: Cohort, region: Region = REGIONS.montana): string {
   const r = lead.audit_json as AuditReport;
   const score = Math.round(r.overall_score ?? lead.audit_score ?? 0);
   const domain = host(lead.audit_url || lead.website) ?? '';
-  const place = town(lead.city) || 'The Flathead';
+  const place = town(lead.city) || region.state;
 
   const bars = CATEGORY_ORDER.map((k) => {
     const c = r.categories?.[k];
@@ -361,8 +368,25 @@ export function auditPageInner(lead: Lead, qr: string, opts: FlyerOptions, cohor
     .sort((a, b) => (a.c.score ?? 0) - (b.c.score ?? 0))
     .slice(0, 3);
 
+  /**
+   * THE MARK HAS TO MATCH THE GRADE.
+   *
+   * The three findings are the three LOWEST categories, which on a bad site are
+   * all failures and on a good one are not. Kelly's Garage Door Services scored
+   * a C overall, and its three lowest read "you have the hard signals: license
+   * shown in the header, a real street address" and "better than almost every
+   * trade site we audit". A red cross beside a compliment makes the whole page
+   * look automated, and it tells a man his best work is broken.
+   *
+   * So a category at C or better gets an amber exclamation instead: still worth
+   * his attention, not a failure. The engine already decided which it is; this
+   * only stops the icon from contradicting it.
+   */
+  const mark = (score: number) =>
+    score >= 70 ? '<span class="px warn">!</span>' : '<span class="px">&#10007;</span>';
+
   const findings = weakest.map((x) => `<li class="pfinding">
-    <span class="px">&#10007;</span>
+    ${mark(x.c.score ?? 0)}
     <span style="min-width:0">
       <span class="pfinding-cat">${esc(CATEGORY_LABELS[x.k] ?? x.k)}<span class="pfinding-grade" style="color:${gradeColor(x.c.score)}">${esc(x.c.letter)}</span></span>
       <span class="pfinding-note" data-clamp="4">${esc(firstSentences(x.c.notes, 150))}</span>
@@ -394,7 +418,7 @@ export function auditPageInner(lead: Lead, qr: string, opts: FlyerOptions, cohor
   return `<div class="sheetpad">
   <div style="display:flex;align-items:baseline;justify-content:space-between;gap:0.2in">
     <span class="peyebrow">Free Website Audit</span>
-    <span class="peyebrow muted">${esc(place)}, Montana &middot; ${esc(longDate(opts.auditedOn))}</span>
+    <span class="peyebrow muted">${esc(place)}, ${esc(region.state)} &middot; ${esc(longDate(opts.auditedOn))}</span>
   </div>
   <div class="prule" style="margin:0.085in 0 0.18in"></div>
 
@@ -427,13 +451,13 @@ export function auditPageInner(lead: Lead, qr: string, opts: FlyerOptions, cohor
 
   <div style="flex:1;min-height:0.14in"></div>
 
-  ${offerBlock(qr, `Every one of these is fixable. We do all three, then take the whole site to an <span style="color:${MUSTARD}">A+</span>.`)}
+  ${offerBlock(qr, `Every one of these is fixable. We do all three, then take the whole site to an <span style="color:${MUSTARD}">A+</span>.`, region)}
 
   ${signedNote(`We opened ${esc(domain || 'your website')} on ${esc(longDate(opts.auditedOn))} and read it the way a
     first time customer and an AI search engine each do. Nothing here is a guess, and the code above opens the whole
-    report free.`)}
+    report free.`, region)}
 
-  ${footer()}
+  ${footer(region)}
 </div>`;
 }
 
@@ -460,8 +484,8 @@ const MOVES = [
 ];
 
 /** THE NO-WEBSITE FULL PAGE. */
-export function noSitePageInner(lead: Lead, qr: string, opts: FlyerOptions): string {
-  const place = town(lead.city) || 'The Flathead';
+export function noSitePageInner(lead: Lead, qr: string, opts: FlyerOptions, region: Region = REGIONS.montana): string {
+  const place = town(lead.city) || region.state;
   const phone = prettyPhone(lead.phone);
   const address = lead.address ? clean(lead.address) : null;
   const checked = longDate(opts.auditedOn);
@@ -501,7 +525,7 @@ export function noSitePageInner(lead: Lead, qr: string, opts: FlyerOptions): str
   return `<div class="sheetpad">
   <div style="display:flex;align-items:baseline;justify-content:space-between;gap:0.2in">
     <span class="peyebrow">Free Listing Check</span>
-    <span class="peyebrow muted">${esc(place)}, Montana &middot; ${esc(checked)}</span>
+    <span class="peyebrow muted">${esc(place)}, ${esc(region.state)} &middot; ${esc(checked)}</span>
   </div>
   <div class="prule" style="margin:0.085in 0 0.18in"></div>
 
@@ -554,13 +578,13 @@ export function noSitePageInner(lead: Lead, qr: string, opts: FlyerOptions): str
 
   <div style="flex:1;min-height:0.14in"></div>
 
-  ${offerBlock(qr, `This is the cheapest problem you have. We build it, then grade it in front of you and take it to an <span style="color:${MUSTARD}">A+</span>.`)}
+  ${offerBlock(qr, `This is the cheapest problem you have. We build it, then grade it in front of you and take it to an <span style="color:${MUSTARD}">A+</span>.`, region)}
 
   <p class="pnote" style="margin:0.12in 0 0">
     We opened your Google listing on ${esc(checked)} and read what it shows${presence ? `: ${esc(presence.url).slice(0, 84)}` : ''}.
     Check it yourself in ten seconds. The code above builds you a real one, free, before you decide anything.
   </p>
 
-  ${footer()}
+  ${footer(region)}
 </div>`;
 }

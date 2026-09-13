@@ -84,3 +84,8 @@ yarn.lock
 # Door-drop print runs: large generated PDFs and proofs, rebuilt by
 # scripts/door-drop/build.mts on demand.
 artifacts/
+
+# The esbuild bundle addresses.mjs makes of lib/enrich.ts at run time.
+.door-drop-enrich.mjs
+.revert-lib.mjs
+.door-drop-source.mjs

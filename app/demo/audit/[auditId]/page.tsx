@@ -1,6 +1,7 @@
 import { getSupabase } from '@/lib/supabase';
 import { buildMetadata } from '@/lib/seo';
 import { PILLAR_WEIGHTS, type PresenceAuditReport, type Pillar } from '@/lib/presence-audit';
+import PresenceAsk from '@/components/PresenceAsk';
 
 export const dynamic = 'force-dynamic';
 export const metadata = buildMetadata({ title: 'Your Presence Audit', noindex: true });
@@ -122,11 +123,6 @@ export default async function PresenceAuditPage({ params }: { params: Params }) 
 
   // The hub, so the audit sends them back to the rest of the suite rather than
   // dead-ending on a score.
-  let hubUrl: string | null = null;
-  if (row.lead_id) {
-    const { data: lead } = await sb.from('outbound_leads').select('hub_demo_url').eq('id', row.lead_id).maybeSingle();
-    hubUrl = (lead?.hub_demo_url as string | null) ?? null;
-  }
 
   const overallColor = RING(r.overall_score);
   const generated = new Date(r.generated_at || Date.now()).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
@@ -246,31 +242,8 @@ export default async function PresenceAuditPage({ params }: { params: Params }) 
           </section>
         )}
 
-        {/* ── the one sales sentence, after the receipts ── */}
-        <section className="rounded-2xl border-2 border-[#161616] bg-[#161616] text-[#FBF6EA] p-6 sm:p-9 shadow-[5px_5px_0_0_#F5B700]">
-          <span className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-[#F5B700]">What we would do about it</span>
-          <h2 className="font-display text-2xl sm:text-3xl font-black mt-2 leading-tight">
-            We would rather show you than pitch you.
-          </h2>
-          <p className="font-body text-[15px] leading-relaxed text-[#FBF6EA]/85 mt-3 max-w-2xl">
-            So we already built it. A website for {business}, a voice agent that answers as you at two in the morning,
-            and a step-by-step AI plan you keep either way. All free to look at, all yours, no card and no meeting.
-          </p>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <a
-              href={hubUrl ?? 'https://modernmustardseed.com/demos'}
-              className="inline-block bg-[#F5B700] text-[#161616] border-2 border-[#F5B700] rounded-xl px-6 py-3 font-sans font-bold uppercase tracking-[0.1em] text-sm"
-            >
-              {hubUrl ? 'Open your demo suite' : 'Get your free demo suite'}
-            </a>
-            <a
-              href="tel:+14063121223"
-              className="inline-block border-2 border-[#FBF6EA]/40 rounded-xl px-6 py-3 font-sans font-bold uppercase tracking-[0.1em] text-sm text-[#FBF6EA]"
-            >
-              Or call Mr. Mustard, (406) 312-1223
-            </a>
-          </div>
-        </section>
+        {/* ── the ask, after the receipts and never instead of them ── */}
+        <PresenceAsk business={business} leadId={String(row.lead_id ?? '')} score={r.overall_score} />
 
         {/* ── the receipts ── */}
         {r.provenance?.length > 0 && (

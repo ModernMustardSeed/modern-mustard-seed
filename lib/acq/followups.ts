@@ -65,9 +65,9 @@ function reachable(l: AcqProspect): boolean {
 export async function findFollowups(db: SupabaseClient, limit = 200): Promise<Followup[]> {
   const found = new Map<string, Followup>();
   /** First reason wins, and the rules run hottest first. */
-  const claim = (lead: AcqProspect, reason: FollowupReason, why: string, at: string | null) => {
+  const claim = (lead: AcqProspect, reason: FollowupReason, why: string, at: string | null, move?: string) => {
     if (!reachable(lead) || found.has(lead.id)) return;
-    found.set(lead.id, { lead, reason, why, move: LABEL[reason].move, rank: LABEL[reason].rank, at: at ?? new Date(0).toISOString() });
+    found.set(lead.id, { lead, reason, why, move: move ?? LABEL[reason].move, rank: LABEL[reason].rank, at: at ?? new Date(0).toISOString() });
   };
 
   const safe = async (fn: () => Promise<void>) => {
@@ -82,7 +82,21 @@ export async function findFollowups(db: SupabaseClient, limit = 200): Promise<Fo
   await safe(async () => {
     const { data } = await db.from('outbound_leads').select('*').not('needs_human', 'is', null).limit(limit);
     for (const l of (data ?? []) as AcqProspect[]) {
-      claim(l, 'flagged', String(l.needs_human ?? 'Flagged on a call'), l.updated_at as string);
+      const flag = String(l.needs_human ?? 'Flagged on a call');
+      /**
+       * A flag no longer only comes from a call. The foot of a presence audit
+       * sets one when somebody asks us to build something, and telling Sarah
+       * "Mr. Mustard asked for you by name" about a web form is a small false
+       * detail on the one screen that has to be trusted completely.
+       */
+      const fromForm = /presence audit|Asked for /i.test(flag);
+      claim(
+        l,
+        'flagged',
+        flag,
+        l.updated_at as string,
+        fromForm ? 'Call them. They asked us to build it and want to talk it through.' : undefined,
+      );
     }
   });
 

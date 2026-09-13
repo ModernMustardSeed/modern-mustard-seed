@@ -61,12 +61,19 @@ export async function GET(req: NextRequest, ctx: { params: Promise<{ id: string 
   const sb = getSupabase();
   if (!sb) return send(new URL(`/audit/${id}`, SITE.url));
 
-type ScanLead = { id: string; business_name: string; city: string | null; audit_score: number | null };
+type ScanLead = {
+    id: string;
+    business_name: string;
+    city: string | null;
+    audit_score: number | null;
+    presence_audit_id: string | null;
+    presence_audit_score: number | null;
+  };
   let lead: ScanLead | null = null;
   try {
     const { data } = await sb
       .from('outbound_leads')
-      .select('id, business_name, city, audit_score')
+      .select('id, business_name, city, audit_score, presence_audit_id, presence_audit_score')
       .eq('id', id)
       .maybeSingle();
     lead = (data ?? null) as ScanLead | null;
@@ -75,18 +82,42 @@ type ScanLead = { id: string; business_name: string; city: string | null; audit_
   }
 
   /**
-   * Two flyers, two destinations.
+   * WHERE A SCAN LANDS, best page first.
    *
-   * A graded business gets its own report. A business with no website has no
-   * report to get, and sending it to a page that says "your report is being
-   * prepared" would be a lie told to the one person who reached for the door
-   * handle. It goes to the free-build door instead, which is what its flyer
-   * offered.
+   * 1. The presence report, when there is one. It is the fuller picture and the
+   *    only one that can carry good news: a business with 742 reviews and a bad
+   *    website scores an F on the site alone and a 78 here. It also carries the
+   *    offer, which the website report does not.
+   * 2. The website report, for anything audited before the presence pass ran.
+   * 3. The free-build door, for a business with no website at all. Sending that
+   *    one to a page reading "your report is being prepared" would be a lie told
+   *    to the one person who reached for the door handle.
    */
   const target =
-    lead && lead.audit_score == null
-      ? new URL('/demos', SITE.url)
-      : new URL(`/audit/${id}`, SITE.url);
+    lead?.presence_audit_id && lead.presence_audit_score != null
+      ? new URL(`/demo/audit/${lead.presence_audit_id}`, SITE.url)
+      : lead && lead.audit_score == null
+        ? new URL('/demos', SITE.url)
+        : new URL(`/audit/${id}`, SITE.url);
+
+  /**
+   * THE PARTNER CODE RIDES THROUGH.
+   *
+   * A flyer Easton hands out in Wakulla carries /s/<id>?ref=EASTON, and the
+   * whole point of that code is that it survives to a page where RefCapture can
+   * see it and set the sixty day mms_ref cookie. A redirect that drops the query
+   * string loses the attribution at the only moment it exists, and the partner
+   * goes unpaid on a sale he made.
+   *
+   * The phone number on the same flyer credits him through a different path
+   * entirely (lib/vapi-lines.ts maps the Florida line to his code on every
+   * call), so a scan and a call both land on him, which is the arrangement.
+   *
+   * Only `ref` is carried, and only when it looks like an affiliate code. A
+   * redirect that forwards arbitrary query strings is an open door.
+   */
+  const ref = req.nextUrl.searchParams.get('ref');
+  if (ref && /^[A-Za-z0-9]{3,24}$/.test(ref)) target.searchParams.set('ref', ref);
 
   const res = send(target);
   if (!lead) return res;

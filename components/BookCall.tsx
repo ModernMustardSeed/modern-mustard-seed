@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, FormEvent } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { trackBooking } from '@/lib/analytics';
 
@@ -18,6 +19,27 @@ export default function BookCall() {
   const [lastDate, setLastDate] = useState('');
   const [lastDateLabel, setLastDateLabel] = useState('');
   const [form, setForm] = useState({ name: '', email: '', business: '', focus: '', current: '', success: '', timeline: '', startIso: '' });
+
+  /**
+   * PREFILL FROM WHEREVER THEY CAME FROM.
+   *
+   * The foot of a presence audit sends people here with what they asked for
+   * already written out: "Scored 78. Would like us to build: a website, a voice
+   * agent." Making somebody retype that, having just picked it from a list one
+   * page ago, is the kind of small insult that loses a booking. Both fields stay
+   * editable; this fills them, it does not lock them.
+   */
+  const params = useSearchParams();
+  useEffect(() => {
+    const business = params.get('business') ?? '';
+    const focus = params.get('focus') ?? '';
+    if (!business && !focus) return;
+    setForm((f) => ({
+      ...f,
+      business: f.business || business.slice(0, 200),
+      focus: f.focus || focus.slice(0, 2000),
+    }));
+  }, [params]);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [done, setDone] = useState<string | null>(null);
