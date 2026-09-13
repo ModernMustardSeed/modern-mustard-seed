@@ -434,7 +434,7 @@ async function renderPress(browser: Browser, pieces: Piece[], qrs: Map<string, s
 
 /** One full-page sheet, with crop marks when it is the press file. */
 const fullSheet = (inner: string, bleed: boolean) =>
-  `<div class="sheet"><div class="sheetfill"></div><div class="halftone"></div>${bleed ? pageCropMarks() : ''}<div class="sheettrim">${inner}</div></div>`;
+  `<div class="sheet"><div class="sheetfill"></div>${bleed ? pageCropMarks() : ''}<div class="sheettrim">${inner}</div></div>`;
 
 function pageDocument(sheets: string[], bleed: boolean): string {
   return `<!doctype html><html><head><meta charset="utf-8">

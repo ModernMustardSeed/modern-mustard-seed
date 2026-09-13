@@ -75,9 +75,27 @@ import path from 'node:path';
  * box on 159 sheets.
  */
 const MASCOT = (() => {
-  const f = path.join(process.cwd(), 'public', 'brand', 'mascot.png');
-  if (!existsSync(f)) return null;
-  return `data:image/png;base64,${readFileSync(f).toString('base64')}`;
+  /**
+   * THE PRINT CUT, NOT THE WEB CUT, and the reason is 58 megabytes.
+   *
+   * Chrome embeds a raster once per PAGE in a PDF and dedupes nothing. The web
+   * asset is 440px with an alpha channel, which lands as roughly 366KB on every
+   * sheet: a 159 page press file of 58MB, over the storage ceiling and past
+   * what a print shop wants to be handed.
+   *
+   * mascot-print.png is the same drawing flattened onto ink, resized to 288px,
+   * and quantised. 288px across 0.96in is 300dpi, which is the floor for a
+   * raster on a press sheet, so nothing is lost on paper. Flattening is safe
+   * only because the card he stands on is exactly this ink: put him on any
+   * other background and he arrives in a black box.
+   *
+   * Regenerate it from mascot.png with scripts/door-drop/mascot-print.py.
+   */
+  for (const name of ['mascot-print.png', 'mascot.png']) {
+    const f = path.join(process.cwd(), 'public', 'brand', name);
+    if (existsSync(f)) return `data:image/png;base64,${readFileSync(f).toString('base64')}`;
+  }
+  return null;
 })();
 
 const SIGNATURE = (() => {
@@ -187,17 +205,6 @@ body { font-family: 'DM Sans', system-ui, sans-serif; font-feature-settings: 'li
   page-break-after: always; break-after: page; background: #FBF6EA; }
 .sheet:last-child { page-break-after: auto; break-after: auto; }
 .sheetfill { position: absolute; inset: 0; background: #FBF6EA; }
-/*
-  The house halftone, as a real dot field rather than an image. Kept to 9% ink
-  and confined to a band behind the masthead: a full sheet of dots reads as
-  noise on paper and eats toner, but a band under the name gives the page the
-  comic-print ground the brand is built on.
-*/
-.halftone { position: absolute; left: 0; right: 0; top: 0; height: 2.15in; pointer-events: none;
-  background-image: radial-gradient(${INK} 0.9px, transparent 0.9px);
-  background-size: 0.055in 0.055in; opacity: 0.09;
-  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 55%, transparent 100%);
-  mask-image: linear-gradient(to bottom, #000 0%, #000 55%, transparent 100%); }
 .sheettrim { position: absolute; inset: ${opts.bleed ? PAGE_BLEED + 'in' : '0'}; width: ${PAGE_W}in; height: ${PAGE_H}in; }
 .sheetpad { position: absolute; inset: 0; padding: 0.42in 0.54in 0.34in; display: flex; flex-direction: column; }
 
@@ -265,11 +272,11 @@ body { font-family: 'DM Sans', system-ui, sans-serif; font-feature-settings: 'li
 .pcredit { color: ${MUSTARD}; font-weight: 700; }
 
 /*
-  He is printed at 0.96in wide off a 440px file, which is roughly 460 dpi, so
-  the halftone dots in his shading stay dots on paper instead of turning into a
-  grey wash. Do not print him larger than about 1.2in from this asset.
+  He prints 0.96in wide off a 288px file, which is 300dpi: the floor for a
+  raster on a press sheet, and the size mascot-print.png is cut to. Print him
+  larger than this and the dot shading turns into a grey wash.
 */
-.pmascot { justify-self: center; text-align: center; }
+.pmascot { justify-self: center; align-self: end; text-align: center; }
 .pmascot img { width: 0.96in; display: block; }
 .pmascot-name { display: block; margin-top: 0.045in; font-family: 'JetBrains Mono', monospace;
   font-size: 5.9pt; font-weight: 700; letter-spacing: 0.11em; text-transform: uppercase; color: ${MUSTARD}; }
@@ -318,7 +325,7 @@ export const OFFER_COLUMNS = MASCOT ? '1fr 0.96in 1.05in' : '1fr 1.05in';
 
 /** The QR square, captioned, so the code reads as an instruction not a badge. */
 export function qrColumn(qr: string): string {
-  return `<div>
+  return `<div style="align-self:end">
     <div style="background:${PAPER};border-radius:0.07in;padding:0.06in;width:1.05in;height:1.05in">${qr}</div>
     <div class="pscan">Scan this</div>
   </div>`;

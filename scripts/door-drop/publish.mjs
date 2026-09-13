@@ -53,6 +53,8 @@ const FILES = [
 ];
 
 const links = [];
+/** Anything that answered 200 and then stored the wrong number of bytes. */
+const failures = [];
 for (const [rel, name, type] of FILES) {
   const src = path.join(OUT, rel);
   if (!existsSync(src)) { console.log(`  skipped ${name}: not in this run`); continue; }
@@ -71,8 +73,32 @@ for (const [rel, name, type] of FILES) {
   });
   if (!res.ok) { console.error(`  FAILED ${name}: ${res.status} ${(await res.text()).slice(0, 160)}`); continue; }
   const url = `${U}/storage/v1/object/public/${BUCKET}/${key}`;
+
+  /**
+   * READ BACK THE LENGTH. A 200 IS NOT A FILE.
+   *
+   * A 58MB press run once answered 200 here and left 4.5MB at the other end,
+   * which is a press file that opens, shows some of the businesses, and is
+   * missing the rest. Nothing in the upload said so. The only honest check is
+   * to ask the public URL how many bytes it actually holds and compare it with
+   * what was sent, because that is the number the printer will download.
+   */
+  const head = await fetch(url, { method: 'HEAD' });
+  const got = Number(head.headers.get('content-length') ?? -1);
+  if (!head.ok || got !== body.length) {
+    console.error(`  TRUNCATED ${name}: sent ${body.length} bytes, stored ${got}. NOT PUBLISHED.`);
+    failures.push(name);
+    continue;
+  }
+
   links.push([name, url, (body.length / 1048576).toFixed(1)]);
   console.log(`  ${name.padEnd(20)} ${(body.length / 1048576).toFixed(1)} MB`);
+}
+
+if (failures.length) {
+  console.error(`
+${failures.length} file(s) did not land: ${failures.join(', ')}`);
+  console.error('The links below are the ones that did. Do not send the email until this is clean.');
 }
 
 console.log('');
