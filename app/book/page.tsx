@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import BookCall from '@/components/BookCall';
@@ -164,7 +165,19 @@ export default function BookPage() {
               Your card writes itself as you go. Answer what you can, skip what you cannot, and pick whichever time fits. The optional questions just make the thirty minutes count for more.
             </p>
           </div>
-          <BookCall />
+          {/*
+            SUSPENSE IS REQUIRED, not decoration.
+
+            BookCall reads useSearchParams so the foot of a presence audit can
+            hand it "Scored 78. Would like us to build: a website." A client
+            component that reads search params inside a statically prerendered
+            page fails the export outright, which is what happened: "Error
+            occurred prerendering page /book". The boundary is what lets the rest
+            of the page stay static while the form waits for the URL.
+          */}
+          <Suspense fallback={<div className="min-h-[420px]" />}>
+            <BookCall />
+          </Suspense>
         </div>
       </section>
 
