@@ -66,6 +66,7 @@ type ScanLead = {
     business_name: string;
     city: string | null;
     audit_score: number | null;
+    website: string | null;
     presence_audit_id: string | null;
     presence_audit_score: number | null;
   };
@@ -73,7 +74,7 @@ type ScanLead = {
   try {
     const { data } = await sb
       .from('outbound_leads')
-      .select('id, business_name, city, audit_score, presence_audit_id, presence_audit_score')
+      .select('id, business_name, city, audit_score, website, presence_audit_id, presence_audit_score')
       .eq('id', id)
       .maybeSingle();
     lead = (data ?? null) as ScanLead | null;
@@ -92,9 +93,18 @@ type ScanLead = {
    * 3. The free-build door, for a business with no website at all. Sending that
    *    one to a page reading "your report is being prepared" would be a lie told
    *    to the one person who reached for the door handle.
+   *
+   * A BUSINESS WITH NO WEBSITE NEVER SEES ITS PRESENCE SCORE. Weaver Excavating
+   * has no site, no rating and no reviews on file, so all three pillars come
+   * back empty and the audit scores it zero. Handing somebody a page that says
+   * their business is a 0 out of 100 is the single most insulting thing this
+   * campaign could do, and it would land on exactly the people whose flyer
+   * already told them the honest, useful version: you have no website, here is
+   * what we would build. They keep going to the free-build door their flyer
+   * offered.
    */
   const target =
-    lead?.presence_audit_id && lead.presence_audit_score != null
+    lead?.presence_audit_id && lead.presence_audit_score != null && lead.website
       ? new URL(`/demo/audit/${lead.presence_audit_id}`, SITE.url)
       : lead && lead.audit_score == null
         ? new URL('/demos', SITE.url)
