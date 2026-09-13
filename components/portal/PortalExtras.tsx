@@ -194,3 +194,109 @@ function TallyBox({ title, rows }: { title: string; rows: Tally }) {
     </div>
   );
 }
+
+type Article = { id: string; url: string; title: string | null; published_on: string | null; publisher: string | null; status: string; live_at: string | null; created_at: string };
+
+const STATUS_WORD: Record<string, string> = {
+  new: 'With Sarah',
+  written: 'Summary written',
+  live: 'On your website',
+};
+
+/**
+ * Carmen writes for Kalispell Montana Hidden Gems every month. Each piece runs
+ * under their byline on someone else's domain, so a summary of it belongs on
+ * their own blog, carrying the same trade words and town names, with a link to
+ * the full article. She pastes the link; we do the rest.
+ */
+export function ArticlesCard() {
+  const [items, setItems] = useState<Article[] | null>(null);
+  const [url, setUrl] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [note, setNote] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const load = useCallback(async () => {
+    try {
+      const r = await fetch('/api/portal/articles');
+      const j = (r.ok ? await r.json() : null) as { articles?: Article[] } | null;
+      setItems(j?.articles ?? []);
+    } catch {
+      setItems([]);
+    }
+  }, []);
+
+  useEffect(() => {
+    void load();
+  }, [load]);
+
+  const add = async () => {
+    if (!url.trim()) return;
+    setBusy(true);
+    setError(null);
+    setNote(null);
+    try {
+      const r = await fetch('/api/portal/articles', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ url }) });
+      const j = (await r.json().catch(() => ({}))) as { ok?: boolean; error?: string; article?: { title?: string | null } };
+      if (!r.ok) setError(j.error ?? 'That did not go through.');
+      else {
+        setNote(j.article?.title ? `Got it: "${j.article.title}". We will write the summary and put it on your website.` : 'Got it. We will write the summary and put it on your website.');
+        setUrl('');
+        await load();
+      }
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  if (!items || items.length === 0) return null;
+
+  return (
+    <section className={`${CARD} p-6 mb-8`}>
+      <span className="text-[10px] uppercase tracking-[0.3em] text-[#C4160B] font-mono font-bold block mb-1">Your writing</span>
+      <h3 className="font-display text-xl font-semibold text-[#161616] mb-1">Articles on your website</h3>
+      <p className="text-[#161616]/65 font-body text-sm mb-4">
+        When Hidden Gems publishes your next piece, paste the link here. We write a summary in your voice, put it on your blog with a link to the full article, and it starts working for you in search. One paste is all we need.
+      </p>
+
+      <div className="flex flex-col sm:flex-row gap-2 mb-4">
+        <input
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
+          onKeyDown={(e) => e.key === 'Enter' && void add()}
+          placeholder="Paste the link to your article"
+          className="flex-1 rounded-xl border-2 border-[#161616]/30 bg-[#FBF6EA] px-3 py-2 font-body text-sm text-[#161616] focus:border-[#161616] outline-none"
+        />
+        <button
+          type="button"
+          onClick={() => void add()}
+          disabled={busy || !url.trim()}
+          className="shrink-0 px-5 py-2 text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-lg shadow-[3px_3px_0_0_#161616] disabled:opacity-50 hover:-translate-y-0.5 transition-transform"
+        >
+          {busy ? 'Adding' : 'Add it'}
+        </button>
+      </div>
+      {note && <p className="mb-3 rounded-xl border-2 border-emerald-800/30 bg-emerald-50 px-4 py-2.5 text-sm font-semibold text-emerald-800">{note}</p>}
+      {error && <p className="mb-3 rounded-xl border-2 border-[#C4160B]/30 bg-red-50 px-4 py-2.5 text-sm font-semibold text-[#C4160B]">{error}</p>}
+
+      <ul className="divide-y divide-[#161616]/10">
+        {items.map((a) => (
+          <li key={a.id} className="py-3 flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <a href={a.url} target="_blank" rel="noopener noreferrer" className="font-sans font-bold text-sm text-[#161616] hover:text-[#C4380C] block">
+                {a.title ?? a.url.replace(/^https?:\/\//, '').slice(0, 70)}
+              </a>
+              <p className="font-body text-xs text-[#161616]/60">
+                {a.published_on ? new Date(`${a.published_on}T12:00:00`).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : 'Date not read'}
+                {a.publisher ? ` · ${a.publisher}` : ''}
+              </p>
+            </div>
+            <span className={`shrink-0 text-[9px] uppercase tracking-[0.15em] font-mono font-bold px-2.5 py-1 rounded-full border ${a.status === 'live' ? 'bg-emerald-100 text-emerald-800 border-emerald-800/25' : 'bg-[#F5B700]/25 text-[#8f6600] border-[#8f6600]/30'}`}>
+              {STATUS_WORD[a.status] ?? a.status}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
