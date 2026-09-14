@@ -46,6 +46,18 @@ if (!U || !K) { console.error('No supabase creds in .env.local'); process.exit(1
 /** What a printer needs, and nothing else. The proofs and the manifest stay home. */
 const FILES = [
   ['press/flyers-press.pdf', 'flyers-press.pdf', 'application/pdf'],
+  /*
+   * THE COUNTER FILE, published alongside the press file.
+   *
+   * A retail copy counter cannot trim to bleed. Hand Staples the 8.75 x 11.25
+   * press file and their machine scales it down to fit letter, which shrinks
+   * the artwork and rings every sheet in white: the cream stops short of the
+   * edge and the page stops looking printed. flyers-letter.pdf is the same
+   * artwork already at 8.5 x 11 with no crop marks, which is what a counter,
+   * a kiosk, or her own printer should be given. The press file stays for a
+   * shop that actually trims.
+   */
+  ['office/flyers-letter.pdf', 'flyers-letter.pdf', 'application/pdf'],
   ['press/printer-spec.pdf', 'printer-spec.pdf', 'application/pdf'],
   ['route/route-by-town.pdf', 'route-by-town.pdf', 'application/pdf'],
   ['route/route-sheet.pdf', 'route-sheet.pdf', 'application/pdf'],
