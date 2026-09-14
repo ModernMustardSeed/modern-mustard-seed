@@ -29,8 +29,6 @@ const jsonLd = {
         .map((t) => ({
           '@type': 'Offer',
           name: `Mustard Launch ${t.name}`,
-          price: String(t.priceUsd),
-          priceCurrency: 'USD',
           category: t.cadence === 'monthly' ? 'Subscription' : 'One-time',
         })),
     },

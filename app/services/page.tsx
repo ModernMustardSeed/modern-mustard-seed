@@ -5,9 +5,9 @@ import { DEPARTMENTS, BESPOKE } from '@/data/services-hub';
 import PathFinder from '@/components/services/PathFinder';
 
 export const metadata = buildMetadata({
-  title: 'Services: everything the studio builds, one desk',
+  title: 'Services: everything the studio builds',
   description:
-    'Websites and brand, voice agents, custom software, command centers, commercials, ads, and print, plus specialty AI tools, stores, agentic systems, and retained advisory. Designed and built end to end by one hand. Scoped and quoted privately.',
+    'Websites and brand, voice agents, custom software, command centers, commercials, ads, and print, plus specialty AI tools, stores, agentic systems, and retained advisory. Designed and built end to end by the studio. Scoped and quoted privately.',
   path: '/services',
 });
 
@@ -63,15 +63,15 @@ export default function ServicesPage() {
       <header className="halftone-bg border-b-2 border-[#161616]">
         <div className="max-w-5xl mx-auto px-6 pt-32 pb-16 md:pt-40 lg:pb-20 text-center">
           <span className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#C4160B] font-bold">
-            The studio // Four disciplines, one desk
+            The studio // Four disciplines, one standard
           </span>
           <h1 className="font-display text-[2.7rem] sm:text-6xl xl:text-7xl font-bold mt-4 leading-[1.0] tracking-tight">
-            Everything we build.<br /><em className="italic text-[#C4160B]">One desk.</em>
+            Everything we build.<br /><em className="italic text-[#C4160B]">One standard.</em>
           </h1>
           <p className="font-body text-[17px] text-[#161616]/75 mt-6 leading-relaxed max-w-2xl mx-auto">
             Not a list of services on a slide. Four disciplines practiced deliberately, and the
             departments underneath them that a working engagement actually reaches for. Designed and
-            shipped end to end by one hand, and you own everything on launch day.
+            shipped end to end by the studio, and you own everything on launch day.
           </p>
           <div className="mt-8 flex flex-wrap gap-3 justify-center">
             <Link
@@ -205,7 +205,7 @@ export default function ServicesPage() {
         {/* ── How we engage ── */}
         <section>
           <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#C4160B] uppercase">
-            How we engage // One operator, no handoffs
+            How we engage // Straight through, start to finish
           </p>
           <h2 className="font-display italic font-extrabold text-4xl md:text-5xl mt-3 leading-[1.02] max-w-3xl">
             You pay for the outcome, agreed up front.
@@ -214,7 +214,7 @@ export default function ServicesPage() {
             {[
               ['One price, agreed in writing', 'You see the set package price and the timeline before any work begins, and the number does not move afterwards.'],
               ['Changes are included', 'Adjustments to what we built are included, permanently. No change order, no second invoice, no conversation about whether it counts.'],
-              ['Shipped end to end', 'One operator-engineer who has built the same thing dozens of times. No junior handoffs, no strategy decks that never become products.'],
+              ['Shipped end to end', 'The people who scope it are the people who build it. No strategy decks that never become products, and no handing your project to somebody who has not read it.'],
               ['You own it outright', 'The repo, the domain, the accounts, and every credential are yours on launch day. Keep us on a retainer or walk. No lock-in.'],
             ].map(([t, d]) => (
               <div key={t} className="border-2 border-[#161616] bg-white rounded-2xl shadow-[5px_5px_0_0_#161616] p-6">

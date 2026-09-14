@@ -144,7 +144,7 @@ export default function WebsitesPage() {
                 </Link>
               </div>
               <p className="font-body text-[13px] text-[#161616]/70 mt-4">
-                A small number of engagements at a time. Sarah answers every inquiry herself, inside one business day.
+                A boutique design and AI studio in Kalispell, Montana. Every inquiry is answered personally, inside one business day.
               </p>
             </div>
 

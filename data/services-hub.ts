@@ -38,8 +38,6 @@ export const DEPARTMENTS: Dept[] = [
   { key: 'launch-film', name: 'The Launch Film', tag: 'Cut from your real product', blurb: 'A launch film for your app or product, built from the real screens, scored from scratch, finished in three formats.', href: '/launch-film', icon: '🎞' },
   { key: 'ai-native', name: 'AI Native', tag: 'Your company on AI', blurb: 'Every workflow mapped, the first five moved onto AI in accounts you own, and your team coached to run it. Eight weeks.', href: '/ai-native', icon: '🧭' },
   { key: 'geo', name: 'GEO Desk', tag: 'Found and cited by AI search', blurb: 'Get found and cited by ChatGPT, Perplexity, and Google AI. Graded, then fixed.', href: '/website-audit', icon: '🔎' },
-  { key: 'launch', name: 'Mustard Launch', tag: 'Your AI launch coach', blurb: 'A personalized launch plan for a new business, then a coach that ships it with you.', href: '/mustard-launch', icon: '🚀' },
-  { key: 'switchboard', name: 'The Switchboard', tag: 'Multi-location concierge', blurb: 'An always-on AI concierge line for multi-location and franchise operators.', href: '/switchboard', icon: '☎️' },
   { key: 'mode', name: 'Mustard Mode', tag: 'Learn with a coach', blurb: 'Learn to run Claude like the studio does. A live AI coach across four tracks.', href: '/mustard-mode', icon: '🎓' },
   // Celebrate re-parked 2026-08-20 (Sarah): see the note in Navbar.tsx.
 ];
@@ -51,14 +49,14 @@ export type Goal = { label: string; emoji: string; deptKeys: string[]; note: str
 /** The goal router. Each goal surfaces the right doors. */
 export const GOALS: Goal[] = [
   { label: 'Get more customers', emoji: '📈', deptKeys: ['ads', 'websites', 'geo'], note: 'A site that converts, ads that run in your account, and findability on Google and AI search.' },
-  { label: 'Stop missing calls', emoji: '📞', deptKeys: ['demo-agent', 'switchboard'], note: 'A voice agent answering day or night, on the number you already have. Multi-location? The Switchboard.' },
+  { label: 'Stop missing calls', emoji: '📞', deptKeys: ['demo-agent', 'advisory'], note: 'A voice agent answering day or night, on the number you already have.' },
   { label: 'Run the whole business', emoji: '🧭', deptKeys: ['command-center', 'demo-agent', 'websites'], note: 'One command center wired to your calls, your site, and your customers.' },
   { label: 'Get my hours back', emoji: '⏳', deptKeys: ['chief', 'command-center'], note: 'An AI chief of staff who runs your calendar, email, and follow-up, with the back office behind it.' },
   { label: 'Look professional online', emoji: '✨', deptKeys: ['brand', 'websites', 'pictures'], note: 'A brand designed once, then a website and a commercial that wear it.' },
   { label: 'Get found by AI & Google', emoji: '🔎', deptKeys: ['geo', 'websites'], note: 'Your findability graded honestly, then the signals installed that get you cited.' },
-  { label: 'Launch something new', emoji: '🚀', deptKeys: ['launch', 'brand', 'websites', 'demo-agent'], note: 'A launch plan, then the site and the phone line to open the doors.' },
+  { label: 'Launch something new', emoji: '🚀', deptKeys: ['brand', 'websites', 'demo-agent'], note: 'A launch plan, then the site and the phone line to open the doors.' },
   { label: 'Sell products online', emoji: '🛍', deptKeys: ['websites'], note: 'A custom storefront designed around your catalog, scoped as its own engagement.' },
-  { label: 'Learn to build it myself', emoji: '🎓', deptKeys: ['mode', 'launch'], note: 'A coach that teaches you to run Claude and build the thing yourself.' },
+  { label: 'Learn to build it myself', emoji: '🎓', deptKeys: ['mode', 'advisory'], note: 'A coach that teaches you to run Claude and build the thing yourself.' },
   { label: 'Put AI in my whole company', emoji: '🧭', deptKeys: ['ai-native', 'chief', 'demo-agent'], note: 'The workflows mapped and moved onto AI, your team coached to run it, and the front desk answered while they learn.' },
   // 'Keep my people happy' goal re-parked with Celebrate 2026-08-20 (Sarah):
   // the row existed to sell Celebrate, and pointing it at The Chief alone

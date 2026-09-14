@@ -23,7 +23,7 @@ export const PICTURES = {
     'Tell Mr. Mustard about your business and he directs your commercial on the spot: a full storyboard, your tagline options, and one cinematic frame of the film. Free. If you love it, roll film and the finished spot is yours within days.',
   metaTitle: 'AI Commercial for Your Business. Free Screen Test',
   metaDescription:
-    'Get a free Screen Test: Mr. Mustard storyboards a cinematic commercial for YOUR business in 60 seconds, tagline included. Love it? The finished spot ships within days, from $197. By Modern Mustard Seed, the studio behind The Graduate and Night Shift.',
+    'Get a free Screen Test: Mr. Mustard storyboards a cinematic commercial for YOUR business in 60 seconds, tagline included. Love it? The finished spot ships within days, at a set package price. By Modern Mustard Seed, the studio behind The Graduate and Night Shift.',
   deliveryPromiseSpot: 'delivered within 2 business days',
   deliveryPromisePremiere: 'delivered within 3 business days',
 } as const;
@@ -143,7 +143,7 @@ export const picturesFaq = [
   },
   {
     q: 'What if I want changes?',
-    a: 'THE PREMIERE includes a revision pass. On THE SPOT, small text and end-card fixes are always free; bigger reshoots are quoted honestly (usually under $50, it is our pipeline after all).',
+    a: 'THE PREMIERE includes a revision pass. On THE SPOT, small text and end-card fixes are always free; bigger reshoots are quoted honestly and they are never much, because it is our own pipeline.',
   },
   {
     q: 'Can Mr. Mustard be IN my commercial?',

@@ -27,10 +27,10 @@ export const CHIEF = {
     'He sounds like Mr. Mustard and works like a six-thousand-dollar-a-month executive assistant. Call him, text him, or type to him any hour. He already knows your business, your calendar, and your goals, and he handles the rest so you can build.',
   // The whole offer in one line: the price anchor Sarah asked to lead with.
   anchor:
-    'You thought a personal assistant was expensive. A human chief of staff runs $4,000 to $8,000 a month. Yours starts at $597.',
+    'You thought a personal assistant was expensive. A human chief of staff runs $4,000 to $8,000 a month. Yours is a set package price, and it is not close.',
   metaTitle: 'AI Chief of Staff You Can Call Anytime, 24/7',
   metaDescription:
-    'Meet The Chief: a proactive AI chief of staff from Modern Mustard Seed. Call, text, or type any hour. He runs your calendar, drafts and sends email, makes calls, researches anything, runs sales role-play, builds your lead list, and wakes you with scripture and your day. Trained on your business, with a command center included. From $597/mo, a fraction of a human assistant.',
+    'Meet The Chief: a proactive AI chief of staff from Modern Mustard Seed. Call, text, or type any hour. He runs your calendar, drafts and sends email, makes calls, researches anything, runs sales role-play, builds your lead list, and wakes you with scripture and your day. Trained on your business, with a command center included. A set package price, quoted privately, and a fraction of a human assistant.',
   phoneLineNote: 'He answers in Mr. Mustard’s voice, the same AI who runs our own front desk at (406) 312-1223. Call and hear him yourself.',
 } as const;
 
@@ -271,7 +271,7 @@ export const chiefFaq = [
   },
   {
     q: 'Is he really cheaper than a human assistant?',
-    a: 'By a wide margin. A capable human executive assistant or chief of staff runs $52,000 to $96,000 a year, before benefits, and works one shift. The Chief starts at $597 a month, works every hour, never calls in sick, and remembers everything. Run the numbers on the page: most owners keep tens of thousands and get more done.',
+    a: 'By a wide margin. A capable human executive assistant or chief of staff runs $52,000 to $96,000 a year, before benefits, and works one shift. The Chief is a set package price agreed before he is built, works every hour, never calls in sick, and remembers everything. Run the numbers on the page: most owners keep tens of thousands and get more done.',
   },
   {
     q: 'What is the wake-up call?',

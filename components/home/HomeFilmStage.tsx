@@ -26,7 +26,7 @@ export default function HomeFilmStage() {
           <span className="italic text-[#8f6600]">business.</span>
         </h2>
         <p className="font-body text-base md:text-lg text-[#161616]/70 leading-relaxed mt-4 max-w-2xl mx-auto">
-          One desk, your idea, and a few weeks. This is how it grows.
+          Your idea, a few weeks, and a studio that ships. This is how it grows.
         </p>
 
         <div className="mt-9 md:mt-12">

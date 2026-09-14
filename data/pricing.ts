@@ -135,7 +135,7 @@ export const packages: Engagement[] = [
 export const pricingFaq = [
   {
     q: 'How is this different from a traditional agency?',
-    a: 'Traditional agencies bill for hours and hand off to junior staff. We work as a single embedded operator-engineer who owns your project end to end. AI handles the leverage. You pay for outcomes, not hours.',
+    a: 'Traditional agencies bill for time and hand your project down the line. We work as an embedded team that owns it end to end, with AI doing the leverage. You pay for the outcome, agreed as a set package price before anything starts.',
   },
   {
     q: 'How does pricing work?',

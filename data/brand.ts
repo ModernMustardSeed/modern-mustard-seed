@@ -39,7 +39,7 @@ export const brandTiers: BrandTier[] = [
     key: 'mark',
     name: 'Mark',
     priceUsd: 3500,
-    priceLabel: '$3,500',
+    priceLabel: 'Set package price',
     timeline: 'Two weeks',
     lede: 'The identity, decided and documented. Everything else is built on this.',
     includes: [
@@ -61,8 +61,7 @@ export const brandTiers: BrandTier[] = [
     key: 'presence',
     name: 'Presence',
     priceUsd: 8500,
-    priceLabel: '$8,500',
-    monthly: 'then $397/mo from month two',
+    priceLabel: 'Set package price',
     timeline: 'Three weeks',
     lede: 'Mark, plus the brand on every surface a customer meets. The site and the phone are built off the same identity in the same week, so the brand is live, not just designed.',
     includes: [
@@ -83,8 +82,7 @@ export const brandTiers: BrandTier[] = [
     key: 'whole',
     name: 'Whole Company',
     priceUsd: 18500,
-    priceLabel: '$18,500',
-    monthly: 'then $397/mo from month two',
+    priceLabel: 'Set package price',
     timeline: 'Four weeks to launch, then ninety days of rollout',
     lede: 'Presence, plus the plan the brand exists to execute and the first ninety days of running it.',
     includes: [
@@ -142,7 +140,7 @@ export const brandFaq = [
   },
   {
     q: 'What is the monthly for?',
-    a: 'Presence and Whole Company hand off into The Talking Website: your site and your voice agent running off one brain, with unlimited edits, 500 answered minutes a month, hosting, and care. The $497 setup fee is waived because the brand build covered it. The monthly starts in month two.',
+    a: 'Presence and Whole Company hand off into The Talking Website: your site and your voice agent running off one brain, with unlimited edits, 500 answered minutes a month, hosting, and care. The setup is waived because the brand build covered it, and the care plan starts in month two.',
   },
   {
     q: 'What is not included?',

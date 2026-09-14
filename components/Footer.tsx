@@ -91,7 +91,7 @@ export default function Footer() {
       <div className="relative halftone-bg border-b-2 border-[#161616] bg-[#F5B700]">
         <div className="relative z-[2] max-w-4xl mx-auto px-6 py-14 md:py-16 text-center">
           <p className="font-mono text-[10px] uppercase tracking-[0.3em] font-bold text-[#161616]/70">
-            One desk. A small number of engagements at a time.
+            A boutique design and AI studio in Kalispell, Montana.
           </p>
           <h2 className="mt-3 font-display italic text-3xl md:text-5xl font-extrabold leading-[1.02] text-[#161616]">
             Let&rsquo;s build the tree.

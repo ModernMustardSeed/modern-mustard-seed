@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { buildMetadata, SITE } from '@/lib/seo';
-import { LAUNCH_FILM, EXAMPLE_FILM, REEL, launchFilmTiers, launchFilmMethod, launchFilmFaq, launchFilmUsd } from '@/data/launch-film';
+import { LAUNCH_FILM, EXAMPLE_FILM, REEL, launchFilmTiers, launchFilmMethod, launchFilmFaq } from '@/data/launch-film';
 import LaunchFilmPlayer from '@/components/launch-film/LaunchFilmPlayer';
 import LaunchFilmTiers from '@/components/launch-film/LaunchFilmTiers';
 import TreatmentForm from '@/components/launch-film/TreatmentForm';
@@ -30,8 +30,6 @@ export default function LaunchFilmPage() {
         offers: launchFilmTiers.map((t) => ({
           '@type': 'Offer',
           name: `${LAUNCH_FILM.name} ${t.name}`,
-          price: t.priceCents / 100,
-          priceCurrency: 'USD',
           url: `${SITE.url}/launch-film#book`,
           availability: 'https://schema.org/InStock',
         })),
@@ -307,7 +305,7 @@ export default function LaunchFilmPage() {
             <br className="hidden md:block" /> Give it a premiere.
           </h2>
           <p className="font-body text-[#FBF6EA]/70 mt-4 max-w-xl mx-auto">
-            From {launchFilmUsd(launchFilmTiers[0].priceCents)}, {LAUNCH_FILM.delivery}. Or send the product first and read the treatment before you decide.
+            A set package price, {LAUNCH_FILM.delivery}. Or send the product first and read the treatment before you decide.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
             <a

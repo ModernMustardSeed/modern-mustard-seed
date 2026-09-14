@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { buildMetadata, SITE } from '@/lib/seo';
 import { BRAND, brandTiers, brandWeeks, brandFaq } from '@/data/brand';
+import { PRICE_HEADLINE, PRICE_CADENCE_ONCE } from '@/lib/public-pricing';
 
 export const metadata = buildMetadata({
   title: BRAND.metaTitle,
@@ -16,7 +17,7 @@ const BOOK_HREF = '/book?idea=' + encodeURIComponent('A brand or rebrand: new id
 const SURFACES = [
   { verb: 'Sees', what: 'The mark on the truck, the site on their phone, the card on the counter. One look, everywhere.' },
   { verb: 'Hears', what: 'The voice that answers the phone at 9pm, in the tone you chose, saying the name the way you say it.' },
-  { verb: 'Reads', what: 'The tagline, the quote email, the review ask, the proposal. Written in one voice, by one hand.' },
+  { verb: 'Reads', what: 'The tagline, the quote email, the review ask, the proposal. Written in one voice, all the way through.' },
 ];
 
 const MARKET = [
@@ -41,8 +42,6 @@ export default function BrandPage() {
         offers: brandTiers.map((t) => ({
           '@type': 'Offer',
           name: `BRAND / REBRAND ${t.name}`,
-          price: t.priceUsd,
-          priceCurrency: 'USD',
           url: `${SITE.url}/brand#tiers`,
           availability: 'https://schema.org/InStock',
         })),
@@ -175,13 +174,12 @@ export default function BrandPage() {
                   <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#F5B700] font-bold mb-3">The one most owners choose</p>
                 )}
                 <h3 className="font-display text-3xl font-black">{t.name}</h3>
-                <p className={`font-sans text-4xl font-extrabold tracking-tight mt-3 ${t.halo ? 'text-[#F5B700]' : ''}`}>
-                  {t.priceLabel}
-                  <span className={`font-body text-sm font-semibold ml-2 ${t.halo ? 'text-[#FBF6EA]/60' : 'text-[#161616]/55'}`}>one time</span>
+                <p className={`font-sans text-[26px] font-extrabold leading-tight tracking-tight mt-3 ${t.halo ? 'text-[#F5B700]' : ''}`}>
+                  {PRICE_HEADLINE}
                 </p>
-                {t.monthly && (
-                  <p className={`font-mono text-[11px] uppercase tracking-[0.2em] mt-1 ${t.halo ? 'text-[#FBF6EA]/60' : 'text-[#161616]/55'}`}>{t.monthly}</p>
-                )}
+                <p className={`font-mono text-[11px] uppercase tracking-[0.2em] mt-1 ${t.halo ? 'text-[#FBF6EA]/60' : 'text-[#161616]/55'}`}>
+                  {PRICE_CADENCE_ONCE}
+                </p>
                 <p className={`font-mono text-[11px] uppercase tracking-[0.2em] mt-3 ${t.halo ? 'text-[#F5B700]' : 'text-[#E0301E]'}`}>{t.timeline}</p>
                 <p className={`font-body mt-4 leading-relaxed ${t.halo ? 'text-[#FBF6EA]/85' : 'text-[#161616]/75'}`}>{t.lede}</p>
                 <ul className={`mt-5 space-y-2 font-body text-sm leading-relaxed ${t.halo ? 'text-[#FBF6EA]/85' : 'text-[#161616]/80'}`}>

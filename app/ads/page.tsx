@@ -29,9 +29,7 @@ export default function AdsPage() {
         offers: broadcastTiers.map((t) => ({
           '@type': 'Offer',
           name: `MUSTARD BROADCAST ${t.name}`,
-          price: t.monthlyCents / 100,
-          priceCurrency: 'USD',
-          description: `$${t.setupCents / 100} one-time launch production, then $${t.monthlyCents / 100}/mo. ${t.pitch}`,
+          description: `A set package price, quoted privately before anything runs. ${t.pitch}`,
           url: `${SITE.url}/ads#packages`,
           availability: 'https://schema.org/InStock',
         })),

@@ -10,6 +10,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Reveal from '@/components/mustard-mode/Reveal';
 import { broadcastTiers, broadcastEntry, type BroadcastTier } from '@/data/ads';
+import { PRICE_HEADLINE } from '@/lib/public-pricing';
 
 function usd(cents: number) {
   return `$${(cents / 100).toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
@@ -79,11 +80,11 @@ export default function BroadcastPackages() {
 
                 <div className="flex items-end gap-3 mt-5 pb-5 border-b-2 border-dashed border-[#161616]/25">
                   <p className="font-display text-5xl font-black text-[#161616] leading-none">
-                    {usd(tier.monthlyCents)}
+                    {PRICE_HEADLINE}
                     <span className="font-sans text-base font-bold text-[#161616]/60">/mo</span>
                   </p>
                   <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-[#161616]/60 pb-1">
-                    + {usd(tier.setupCents)} to launch
+                    Quoted privately, before anything runs
                   </p>
                 </div>
 
@@ -129,7 +130,7 @@ export default function BroadcastPackages() {
               <div className="flex-1">
                 <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#8f6600] font-bold">{broadcastEntry.chip}</p>
                 <h3 className="font-display text-xl font-black text-[#161616] mt-1">
-                  {broadcastEntry.name} · ${broadcastEntry.priceUsd}
+                  {broadcastEntry.name}
                 </h3>
                 <p className="font-body text-sm text-[#161616]/70 mt-1">{broadcastEntry.pitch} {broadcastEntry.includes[2]}.</p>
               </div>

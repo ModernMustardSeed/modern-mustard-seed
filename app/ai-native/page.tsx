@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { buildMetadata, SITE } from '@/lib/seo';
-import { AI_NATIVE, STUDIO_PROOF, aiNativeTiers, aiNativeMethod, aiNativeFaq, aiNativeUsd } from '@/data/ai-native';
+import { AI_NATIVE, STUDIO_PROOF, aiNativeTiers, aiNativeMethod, aiNativeFaq } from '@/data/ai-native';
 import AiNativeTiers from '@/components/ai-native/AiNativeTiers';
 import ReadForm from '@/components/ai-native/ReadForm';
 
@@ -52,8 +52,6 @@ export default function AiNativePage() {
         offers: aiNativeTiers.map((t) => ({
           '@type': 'Offer',
           name: `${AI_NATIVE.name} ${t.name}`,
-          price: t.priceCents / 100,
-          priceCurrency: 'USD',
           url: `${SITE.url}/ai-native#book`,
           availability: 'https://schema.org/InStock',
         })),
@@ -320,7 +318,7 @@ export default function AiNativePage() {
             <br className="hidden md:block" /> Now let it run on AI.
           </h2>
           <p className="font-body text-[#FBF6EA]/70 mt-4 max-w-xl mx-auto">
-            From {aiNativeUsd(aiNativeTiers[0].priceCents)}, {AI_NATIVE.mapDelivery}. Or send the business first and read the AI Read before you decide.
+            A set package price, {AI_NATIVE.mapDelivery}. Or send the business first and read the AI Read before you decide.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
             <a

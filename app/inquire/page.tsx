@@ -6,7 +6,7 @@ import { buildMetadata, SITE } from '@/lib/seo';
 export const metadata = buildMetadata({
   title: 'Inquire',
   description:
-    'Modern Mustard Seed takes a small number of engagements at a time. Tell us what you are building and Sarah Scarano answers personally inside one business day.',
+    'Modern Mustard Seed is a boutique design and AI studio. Tell us what you are building and you will hear back personally inside one business day.',
   path: '/inquire',
 });
 
@@ -21,7 +21,7 @@ export const metadata = buildMetadata({
 const DISCIPLINES = [
   {
     name: 'Websites and brand',
-    line: 'Design-led sites for businesses that are judged on how they look before they are judged on anything else. Identity, art direction, and the build, from one hand.',
+    line: 'Design-led sites for businesses that are judged on how they look before they are judged on anything else. Identity, art direction, and the build, held together as one piece of work.',
   },
   {
     name: 'Custom software',
@@ -104,10 +104,9 @@ export default function InquirePage() {
               <em className="italic text-[#B48600]">building</em>.
             </h1>
             <p className="mt-7 max-w-2xl font-body text-lg leading-relaxed text-[#3d382e] md:text-xl">
-              Modern Mustard Seed is a design and AI studio in Northwest Montana. We take a small
-              number of engagements at a time, which is the only way the work stays this
-              considered. There is no catalog to browse and no price list, because the right
-              answer depends entirely on what you are trying to make happen.
+              Modern Mustard Seed is a boutique design and AI studio in Northwest Montana.
+              There is no catalog to browse and no price list, because the right answer depends
+              entirely on what you are trying to make happen.
             </p>
             <p className="mt-5 max-w-2xl font-body text-lg leading-relaxed text-[#3d382e]">
               Write us a real note. You will hear back from Sarah, not a sequence.
