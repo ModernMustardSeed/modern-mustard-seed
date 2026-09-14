@@ -469,8 +469,20 @@ export function oneEach(gated: Gated): Gated {
       const key = h ? `site:${h}` : `at:${norm(l.business_name)}|${norm(l.address)}`;
       const prev = seen.get(key);
       if (!prev) { seen.set(key, l); out.push(l); continue; }
-      const loser = filled(l) > filled(prev) ? prev : l;
-      const winner = loser === prev ? l : prev;
+      /**
+       * TIES BREAK ON THE ID, so the same row wins every time.
+       *
+       * Without this the winner was whichever of the pair came back first,
+       * which is scrape order and is not stable between queries. Three
+       * businesses came out of the Kalispell run under one lead id and out of
+       * the Montana run under the other: identical sheets, different QR
+       * targets, and a scan credited to whichever row happened to win that
+       * build. It also made the claim that Kalispell is a subset of Montana
+       * quietly false, which is the claim the printing instructions rest on.
+       */
+      const better = filled(l) - filled(prev) || prev.id.localeCompare(l.id);
+      const loser = better > 0 ? prev : l;
+      const winner = better > 0 ? l : prev;
       seen.set(key, winner);
       if (loser === prev) { out.splice(out.indexOf(prev), 1); out.push(l); }
       dropped.push({
