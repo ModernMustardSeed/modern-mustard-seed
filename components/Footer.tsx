@@ -86,7 +86,7 @@ export default function Footer() {
       {/* ── Gold CTA band: the last ask ── */}
       <div className="max-w-6xl mx-auto px-6 py-8 font-body text-sm leading-relaxed">
         <p>{SITE.description}</p>
-        <p className="mt-2"><Link href="/about" className="font-bold underline">Founded by {SITE.founder}</Link>. <a href={`tel:${SITE.phoneE164}`} className="underline">{SITE.phone}</a> ? <a href={`mailto:${SITE.email}`} className="underline">{SITE.email}</a></p>
+        <p className="mt-2"><Link href="/about" className="font-bold underline">Founded by {SITE.founder}</Link>. <a href={`tel:${SITE.phoneE164}`} className="underline">{SITE.phone}</a> &middot; <a href={`mailto:${SITE.email}`} className="underline">{SITE.email}</a></p>
       </div>
       <div className="relative halftone-bg border-b-2 border-[#161616] bg-[#F5B700]">
         <div className="relative z-[2] max-w-4xl mx-auto px-6 py-14 md:py-16 text-center">
