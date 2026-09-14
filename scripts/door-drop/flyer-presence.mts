@@ -35,7 +35,7 @@ import {
   clean, firstSentences, type FlyerOptions,
 } from './flyer.mts';
 import { REGIONS, host, type Lead, type Region } from './select.mts';
-import { signedNote, footer, mascotColumn, qrColumn, OFFER_COLUMNS } from './flyer-page.mts';
+import { signedNote, footer, mascotColumn, qrColumn, dateline, OFFER_COLUMNS } from './flyer-page.mts';
 
 export type PresencePillar = {
   key: string;
@@ -61,9 +61,6 @@ const esc = (s: string) =>
   String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
 const gradeColor = (score: number) => (score >= 80 ? GREEN : score >= 60 ? AMBER : CRIMSON);
-
-const town = (c: string | null) =>
-  (c ?? '').replace(/\w\S*/g, (w) => w[0].toUpperCase() + w.slice(1).toLowerCase()).trim();
 
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 const longDate = (d: Date) => `${MONTHS[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
@@ -119,7 +116,7 @@ export function presencePageInner(
    */
   const readOn = report.generated_at ? new Date(report.generated_at) : opts.auditedOn;
   const domain = host(lead.website) ?? '';
-  const place = town(lead.city) || region.state;
+  const where = dateline(lead, region);
 
   const order = ['website', 'reviews', 'profile'];
   const pillars = order
@@ -171,7 +168,7 @@ export function presencePageInner(
   return `<div class="sheetpad">
   <div style="display:flex;align-items:baseline;justify-content:space-between;gap:0.2in">
     <span class="peyebrow">Free Online Presence Check</span>
-    <span class="peyebrow muted">${esc(place)}, ${esc(region.state)} &middot; ${esc(longDate(readOn))}</span>
+    <span class="peyebrow muted">${esc(where)} &middot; ${esc(longDate(readOn))}</span>
   </div>
   <div class="prule" style="margin:0.085in 0 0.18in"></div>
 

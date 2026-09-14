@@ -47,6 +47,8 @@ const CACHE = path.join(OUT, '..', '.geocache.json');
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 type Stop = {
+  /** The lead id, which is how build.mts matches a sheet to a stop. */
+  id: string;
   business_name: string;
   city: string;
   address: string | null;
@@ -249,6 +251,8 @@ async function main() {
   );
 
   const sheets: string[] = [];
+  /** Every stop id in the order she drives them, towns in the region's order. */
+  const walk: string[] = [];
   for (const town of towns) {
     const stops = byTown.get(town)!;
     /**
@@ -296,6 +300,17 @@ async function main() {
     }
     console.log(` -> ${ordered.length} placed, ${unplaced.length} not, ${total.toFixed(0)} mi`);
     sheets.push(sheet(town, ordered, unplaced, total, when));
+    /*
+     * The order is worth more than the sheet it is printed on.
+     *
+     * The press file has always come out alphabetical, so the stack in her hand
+     * and the list on her clipboard ran in two different orders. That means
+     * fanning 108 sheets looking for one name at every one of 108 doors, which
+     * is the whole day this routing was built to save handed straight back.
+     * build.mts reads this file and prints the stack in the order she walks, so
+     * the next sheet is always the one on top.
+     */
+    for (const s of [...ordered, ...unplaced]) walk.push(s.id);
   }
 
   const html = `<!doctype html><html><head><meta charset="utf-8">
@@ -344,6 +359,11 @@ tr { break-inside: avoid; }
 </style></head><body>${sheets.join('\n')}</body></html>`;
 
   mkdirSync(path.join(OUT, 'route'), { recursive: true });
+  writeFileSync(
+    path.join(OUT, 'route', 'route-order.json'),
+    JSON.stringify({ built_at: new Date().toISOString(), towns, walk }, null, 2),
+    'utf8',
+  );
   const browser = await chromium.launch();
   const page = await browser.newPage({ viewport: { width: 850, height: 1100 }, deviceScaleFactor: 2 });
   await page.setContent(html, { waitUntil: 'networkidle' });

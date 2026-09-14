@@ -105,6 +105,26 @@ const SIGNATURE = (() => {
 })();
 
 /** The receipts line, signed where the signature belongs to whoever hands it over. */
+/**
+ * THE STREET, NOT JUST THE TOWN.
+ *
+ * The dateline used to read "Kalispell, Montana". Leading with their own
+ * address does two jobs at once. To the owner it says the audit is about THIS
+ * location, which is the difference between a report and a circular, and it is
+ * the first thing a business with two shops needs to see. To Sarah it turns
+ * every sheet into its own label: 108 pieces of paper walked to 108 doors, and
+ * each one says which door.
+ *
+ * It degrades to the town where there is no address, which after requireAddress
+ * should be never on a printed run.
+ */
+export function dateline(lead: Lead, region: Region): string {
+  const place = (lead.city ?? '').replace(/\w\S*/g, (w) => w[0].toUpperCase() + w.slice(1).toLowerCase()).trim()
+    || region.state;
+  const tail = `${place}, ${region.state}`;
+  return lead.address?.trim() ? `${clean(lead.address)} · ${tail}` : tail;
+}
+
 export function signedNote(note: string, region: Region): string {
   if (!SIGNATURE || !region.signature) return `<p class="pnote" style="margin:0.1in 0 0">${note}</p>`;
   return `<div style="display:grid;grid-template-columns:1.65in 1fr;column-gap:0.24in;align-items:center;margin-top:0.1in">
@@ -414,7 +434,6 @@ export function auditPageInner(lead: Lead, qr: string, opts: FlyerOptions, cohor
   const r = lead.audit_json as AuditReport;
   const score = Math.round(r.overall_score ?? lead.audit_score ?? 0);
   const domain = host(lead.audit_url || lead.website) ?? '';
-  const place = town(lead.city) || region.state;
 
   const bars = CATEGORY_ORDER.map((k) => {
     const c = r.categories?.[k];
@@ -484,7 +503,7 @@ export function auditPageInner(lead: Lead, qr: string, opts: FlyerOptions, cohor
   return `<div class="sheetpad">
   <div style="display:flex;align-items:baseline;justify-content:space-between;gap:0.2in">
     <span class="peyebrow">Free Website Audit</span>
-    <span class="peyebrow muted">${esc(place)}, ${esc(region.state)} &middot; ${esc(longDate(opts.auditedOn))}</span>
+    <span class="peyebrow muted">${esc(dateline(lead, region))} &middot; ${esc(longDate(opts.auditedOn))}</span>
   </div>
   <div class="prule" style="margin:0.085in 0 0.18in"></div>
 
@@ -591,7 +610,7 @@ export function noSitePageInner(lead: Lead, qr: string, opts: FlyerOptions, regi
   return `<div class="sheetpad">
   <div style="display:flex;align-items:baseline;justify-content:space-between;gap:0.2in">
     <span class="peyebrow">Free Listing Check</span>
-    <span class="peyebrow muted">${esc(place)}, ${esc(region.state)} &middot; ${esc(checked)}</span>
+    <span class="peyebrow muted">${esc(dateline(lead, region))} &middot; ${esc(checked)}</span>
   </div>
   <div class="prule" style="margin:0.085in 0 0.18in"></div>
 

@@ -150,6 +150,8 @@ const CHAINS = [
   'sherwin williams', 'ross dress', 'tj maxx', 'petsmart', 'dollar tree', 'family dollar',
   'dollar general', 'walgreens', 'rite aid', 'sally beauty', 'batteries plus',
   'sport clips', 'cost cutters', 'five guys', 'cold stone', 'dutch bros',
+  // Found on the Kalispell sheet the morning it was going out the door.
+  'chick-fil-a', 'chick fil a', 'bojangles', 'buffalo wild wings',
   'scooters coffee', 'taco john', 'mackenzie river', 'famous daves', 'ulta beauty',
   "lowe's home improvement", 'lowes home improvement', 'subway sandwiches',
   // The boundary match wants a non-letter after the name, so the possessive and
@@ -352,6 +354,16 @@ function chainRe(c: string): RegExp {
  * listing and found no website on it. A blank `website` column is not evidence
  * of anything; this is. Nothing may print "you have no website" without it.
  */
+/**
+ * A BUSINESS GOOGLE SAYS IS GONE.
+ *
+ * Written by scripts/door-drop/open-check.mts and read by the `open` gate. It
+ * matters because this campaign is walked, not mailed: a stop that closed last
+ * spring costs a drive, a parking space, and a minute in front of a dark
+ * window. Delete the line from notes if a place reopens.
+ */
+export const CLOSED_MARK = 'CLOSED: confirmed on Google Maps';
+
 export const NOSITE_MARK = 'NO WEBSITE: confirmed on Google Maps';
 
 /**
@@ -411,6 +423,59 @@ export function requireAddress(gated: Gated): Gated {
   return { keep, nosite, stale: gated.stale, dropped };
 }
 
+/**
+ * ONE SHEET PER DOOR.
+ *
+ * Six Kalispell businesses were in the box twice: same street address, same
+ * website, same phone written two different ways, because they were scraped
+ * twice and `duplicate_of` was never set on either row. On a mailing that is a
+ * wasted stamp. On a walk it is Sarah handing a second flyer to a chiropractor
+ * who already has one, six times, which does not read as thorough.
+ *
+ * Identity is the website host where there is one, because two rows pointing at
+ * the same domain are the same company however the name was typed. Failing
+ * that it is the name and the street together: the name alone would collapse
+ * two genuine locations of one shop into one, and this campaign wants both of
+ * those doors.
+ *
+ * The survivor is the row with the most on it, so the sheet gets the better
+ * data of the two rather than whichever was scraped first.
+ */
+export function oneEach(gated: Gated): Gated {
+  const dropped = [...gated.dropped];
+  const seen = new Map<string, Lead>();
+  const norm = (v: string | null) => (v ?? '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+  const filled = (l: Lead) =>
+    [l.website, l.address, l.phone, l.rating, l.audit_score].filter((v) => v != null && v !== '').length;
+
+  const pass = (bucket: Lead[]): Lead[] => {
+    const out: Lead[] = [];
+    for (const l of bucket) {
+      const h = host(l.website);
+      const key = h ? `site:${h}` : `at:${norm(l.business_name)}|${norm(l.address)}`;
+      const prev = seen.get(key);
+      if (!prev) { seen.set(key, l); out.push(l); continue; }
+      const loser = filled(l) > filled(prev) ? prev : l;
+      const winner = loser === prev ? l : prev;
+      seen.set(key, winner);
+      if (loser === prev) { out.splice(out.indexOf(prev), 1); out.push(l); }
+      dropped.push({
+        id: loser.id,
+        business_name: loser.business_name,
+        city: loser.city,
+        gate: 'once',
+        reason: `already in the box as ${winner.business_name}, same ${h ? 'website' : 'address'}`,
+      });
+    }
+    return out;
+  };
+
+  // Audited first, so a graded row wins the tie against a no-website twin.
+  const keep = pass(gated.keep);
+  const nosite = pass(gated.nosite);
+  return { keep, nosite, stale: gated.stale, dropped };
+}
+
 export function gate(
   leads: Lead[],
   shared: Map<string, number>,
@@ -427,6 +492,18 @@ export function gate(
   for (const l of leads) {
     const name = (l.business_name || '').trim();
     if (!name) { drop(l, 'reachable', 'no business name'); continue; }
+
+    /*
+     * Gate minus one: still trading. This run is walked, so a business Google
+     * has marked closed is not a weak lead, it is a locked door and a wasted
+     * drive. Only an explicit mark from open-check.mts drops one; a business
+     * nobody could check stays in, because the costly mistake here is removing
+     * a living customer nobody ever hears from again.
+     */
+    if (String(l.notes ?? '').includes(CLOSED_MARK)) {
+      drop(l, 'open', 'Google says this one is closed, so there is nobody to hand it to');
+      continue;
+    }
 
     // Gate zero: ours. A client or one of Sarah's own ventures never gets a cold
     // audit handed to them on paper.

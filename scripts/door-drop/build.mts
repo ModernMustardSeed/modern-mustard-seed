@@ -34,7 +34,7 @@ import { mkdirSync, writeFileSync, existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { chromium, type Browser } from 'playwright';
 import {
-  REGIONS, loadEnv, supabase, fetchTownLeads, gate, requireAddress, host,
+  REGIONS, loadEnv, supabase, fetchTownLeads, gate, requireAddress, oneEach, host,
   CATEGORY_ORDER, type Lead, type Region,
 } from './select.mts';
 import {
@@ -222,7 +222,7 @@ async function main() {
   console.log(`Leads on file in those towns: ${leads.length}`);
 
   const gatedRaw = gate(leads, shared, { maxAgeDays: MAX_AGE_DAYS, allowStale: ALLOW_STALE, skipNames });
-  const gated = ANY_ADDRESS ? gatedRaw : requireAddress(gatedRaw);
+  const gated = oneEach(ANY_ADDRESS ? gatedRaw : requireAddress(gatedRaw));
   let { keep, nosite, dropped } = gated;
   let { stale } = gated;
   console.log(`Graded and printable: ${keep.length}. No website, confirmed: ${nosite.length}. Stale or never audited: ${stale.length}. Dropped: ${dropped.length}.`);
@@ -263,7 +263,7 @@ async function main() {
      * Found by the ship gate on PR #253, confirmed three times over.
      */
     const reRaw = gate(refreshed, shared, { maxAgeDays: MAX_AGE_DAYS, allowStale: false, skipNames });
-    const re = ANY_ADDRESS ? reRaw : requireAddress(reRaw);
+    const re = oneEach(ANY_ADDRESS ? reRaw : requireAddress(reRaw));
     keep = keep.concat(re.keep);
     nosite = nosite.concat(re.nosite);
     dropped = dropped.concat(re.dropped);
@@ -292,6 +292,37 @@ async function main() {
       townRank(a.lead.city) - townRank(b.lead.city) ||
       a.lead.business_name.localeCompare(b.lead.business_name),
   );
+  /*
+   * THE STACK IS PRINTED IN THE ORDER SHE WALKS IT.
+   *
+   * Alphabetical is the right order for a mailing and the wrong one for a
+   * campaign on foot. The route sheet has always solved the driving and the
+   * press file has always ignored it, so the paper in her hand and the list on
+   * her clipboard ran in two different orders: fan 108 sheets looking for one
+   * name, at every one of 108 doors. That is the day the routing was built to
+   * save, handed straight back.
+   *
+   * route.mts writes route-order.json from the same manifest. When it is there
+   * the stack follows it exactly and the next sheet is the one on top. When it
+   * is not, this stays alphabetical and says so, because a stack silently in
+   * the wrong order is worse than one she knows to check. Order of operations:
+   * build, route, build again.
+   */
+  const orderFile = path.join(OUT, 'route', 'route-order.json');
+  if (existsSync(orderFile)) {
+    const { walk } = JSON.parse(readFileSync(orderFile, 'utf8')) as { walk: string[] };
+    const rank = new Map(walk.map((id, i) => [id, i]));
+    const missing = all.filter((p) => !rank.has(p.lead.id)).length;
+    // A stop the route has never seen goes last rather than to the front, which
+    // is what Infinity buys: a new business cannot displace a solved route.
+    all.sort((a, b) => (rank.get(a.lead.id) ?? Infinity) - (rank.get(b.lead.id) ?? Infinity));
+    console.log(
+      `Stack is in driving order from route-order.json${missing ? `, except ${missing} the route has not seen yet` : ''}.`,
+    );
+  } else {
+    console.log('Stack is alphabetical. Run route.mts then build again to print it in driving order.');
+  }
+
   const chosen = all.slice(0, LIMIT);
   if (!chosen.length) {
     console.error('Nothing passed the gates. Run with --refresh, or widen --max-age-days.');
