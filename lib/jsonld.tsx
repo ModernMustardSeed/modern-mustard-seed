@@ -1,5 +1,5 @@
 import { SITE, canonicalUrl } from './seo';
-import { socials } from '@/data/socials';
+import { googleProfileUrl, socials } from '@/data/socials';
 import { PARABLE_REFERENCE, PARABLE_TEXT } from '@/data/parable';
 
 export const PERSON_ID = `${SITE.url}/#sarah`;
@@ -38,7 +38,26 @@ export const orgJsonLd = {
     postalCode: SITE.postalCode, addressCountry: SITE.country,
   },
   areaServed: SERVICE_AREAS,
-  sameAs: socials.filter((s) => s.name !== 'LinkedIn').map((s) => s.url),
+  /**
+   * The studio's coordinates. Re-added 2026-09-14 (they were dropped in the
+   * schema rewrite). Kalispell in prose is a string; `geo` is the only part of
+   * this node a map surface can actually place, and the Google Business Profile
+   * is currently a service-area listing with no service area set, so the site is
+   * the only place we state where this business is.
+   */
+  geo: { '@type': 'GeoCoordinates', latitude: SITE.latitude, longitude: SITE.longitude },
+  /**
+   * ENTITY CORROBORATION. The Google Business Profile, added 2026-09-14.
+   *
+   * `sameAs` is how a search engine learns the website entity and the Google
+   * Business Profile entity are one company. Without it the site and the listing
+   * are two strangers sharing a name, and "Modern Mustard Seed" shares its name
+   * with a condiment, a plant, a parable, a decor brand and three restaurants.
+   * `hasMap` is the same claim in the property Google's local documentation
+   * names. Both point at the CID URL in `data/socials.ts`; never retype it.
+   */
+  sameAs: [googleProfileUrl, ...socials.filter((s) => s.name !== 'LinkedIn').map((s) => s.url)],
+  hasMap: googleProfileUrl,
   knowsAbout: ['Brand identity and art direction', 'Custom website design and development',
     'AI-native websites', 'AI voice agents', 'Custom software and applications',
     'Agentic systems', 'Business automation', 'CRM and workflow systems',
