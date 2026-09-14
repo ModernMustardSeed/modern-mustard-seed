@@ -153,8 +153,8 @@ export function JourneyHero() {
             A Drive
           </h1>
           <p className={`mt-3 sm:mt-5 max-w-2xl lg:max-w-xl text-base sm:text-lg md:text-xl text-[#FBF6EA]/95 font-body ${revealBase}`} style={{ transitionDelay: '240ms' }}>
-            Modern Mustard Seed. A design and AI studio in Kalispell, working with a
-            small number of clients at a time.
+            Modern Mustard Seed. A boutique design and AI studio in Kalispell,
+            Montana.
             <span className="hidden sm:inline"> This is the scenic route.</span>
           </p>
           <div className={`mt-4 sm:mt-6 flex flex-wrap items-center justify-center gap-4 lg:justify-end ${revealBase}`} style={{ transitionDelay: '360ms' }}>
@@ -229,7 +229,7 @@ const CROPS = [
   {
     href: '/websites',
     label: 'Websites And Brand',
-    line: 'Design-led sites for businesses that get judged on how they look before they get judged on anything else. Identity, art direction, and the build, from one hand. Then we wire the back end: SEO and AI answer optimization baked into the pages, automations behind the forms, and the follow up running itself. Built to get you found and to turn the people who find you into leads.',
+    line: 'Design-led sites for businesses that get judged on how they look before they get judged on anything else. Identity, art direction, and the build, held together as one piece of work. Then we wire the back end: SEO and AI answer optimization baked into the pages, automations behind the forms, and the follow up running itself. Built to get you found and to turn the people who find you into leads.',
   },
   {
     href: '/services',
@@ -318,7 +318,7 @@ const SIGNS = [
   { href: '/brand', label: 'Brand And Rebrand', line: 'A mark, a palette, a voice, and every surface it has to live on. Built to be recognised before it is read.', cta: 'See The Studio' },
   { href: '/pictures', label: 'Mustard Pictures', line: 'Commercials, brand films, and social cuts, built from the real product rather than stock.', cta: 'Visit The Studio' },
   { href: '/ai-native', label: 'AI Native', line: 'Your company running on AI, with your own team operating it. Advisory and build, engaged together.', cta: 'Read The Sign' },
-  { href: '/about', label: 'The Studio', line: 'One desk in Kalispell, four disciplines, and the person who does the design and the build herself.', cta: 'Meet Sarah' },
+  { href: '/about', label: 'The Studio', line: 'A boutique design and AI studio in Kalispell, Montana, practising four disciplines and shipping all of them.', cta: 'Meet The Studio' },
   { href: '/inquire', label: 'Begin An Engagement', line: 'Tell us what you are building. Sarah reads every inquiry herself and answers inside one business day.', cta: 'Write To Us' },
 ];
 
@@ -649,7 +649,7 @@ const DOORS = [
   {
     key: 'about',
     label: 'Meet Sarah',
-    line: 'One desk in Kalispell, four disciplines, and the person who does the design and the build herself. She is who you work with.',
+    line: 'A boutique design and AI studio in Kalispell, Montana. Four disciplines, one standard, and the founder on every engagement.',
     cta: 'Read Her Story',
     href: '/about',
   },

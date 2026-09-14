@@ -15,7 +15,6 @@
 - There is no published price list. Every engagement is scoped in one conversation and quoted privately as a set package price, agreed in writing before work starts. Studio engagements begin in the five figures; advisory is retained by the quarter.
 - Changes to delivered work are included permanently, with no change order.
 - Clients own the repository, the deployment, and every account outright.
-- The studio takes a small number of engagements at a time.
 
 ## Services and demonstrations
 

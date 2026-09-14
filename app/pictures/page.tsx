@@ -28,8 +28,6 @@ export default function PicturesPage() {
         offers: picturesTiers.map((t) => ({
           '@type': 'Offer',
           name: `MUSTARD PICTURES ${t.name}`,
-          price: t.priceUsd,
-          priceCurrency: 'USD',
           url: `${SITE.url}/pictures#roll`,
           availability: 'https://schema.org/InStock',
         })),

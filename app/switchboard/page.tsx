@@ -33,8 +33,6 @@ export default function SwitchboardPage() {
         offers: PRICE_TIERS.map((t) => ({
           '@type': 'Offer',
           name: `The Switchboard, ${t.label}`,
-          price: t.perLocationUsd,
-          priceCurrency: 'USD',
           url: `${SITE.url}/switchboard#board`,
           availability: 'https://schema.org/InStock',
         })),

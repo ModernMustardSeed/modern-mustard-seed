@@ -251,7 +251,7 @@ export const launchFilmFaq = [
   },
   {
     q: 'Why not Mustard Pictures?',
-    a: 'Mustard Pictures makes a cinematic commercial for a local business from a storyboard, from $197. The Launch Film is for a product: an app, a platform, a company. The screens are real, the data is real, and the film is written to the thing you built.',
+    a: 'Mustard Pictures makes a cinematic commercial for a local business from a storyboard. The Launch Film is for a product: an app, a platform, a company. The screens are real, the data is real, and the film is written to the thing you built.',
   },
   {
     q: 'Can you put it on my site?',

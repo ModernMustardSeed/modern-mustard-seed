@@ -19,7 +19,7 @@ import { buildMetadata, SITE } from '@/lib/seo';
 export const metadata = buildMetadata({
   title: 'HUNDREDFOLD. The Scaling Program That Builds The Machine With You.',
   description:
-    'Mr. Mustard interviews you, we build your offer, we build the AI agents that run your plan, and a coach that knows your plan answers you at any hour. $5,000 to start, then $2,500 a month, month to month.',
+    'Mr. Mustard interviews you, we build your offer, we build the AI agents that run your plan, and a coach that knows your plan answers you at any hour. A set package price, quoted privately, month to month.',
   path: '/hundredfold',
 });
 

@@ -47,7 +47,7 @@ export default function MarketingKit({
     },
   ];
 
-  const blurb = `Modern Mustard Seed builds websites, AI assistants, voice agents, and custom software for small businesses. Founder-led, fast, and honest. Idea to launched in weeks, not months.`;
+  const blurb = `Modern Mustard Seed builds websites, AI assistants, voice agents, and custom software for small businesses. A boutique studio: fast, honest, and built to be owned. Idea to launched in weeks, not months.`;
 
   const shareX = `https://twitter.com/intent/tweet?text=${encodeURIComponent(captions[0].text)}`;
   const shareLI = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(primaryUrl)}`;

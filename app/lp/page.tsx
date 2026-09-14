@@ -19,7 +19,7 @@ export const metadata = buildMetadata({
 const PROOF = [
   { stat: '2-4 weeks', label: 'From kickoff to shipped, not a six-month agency slog.' },
   { stat: '60 sec', label: 'Free AI audit returns real opportunities, no call required.' },
-  { stat: 'Full-stack', label: 'One operator who designs, builds, and ships. No handoffs.' },
+  { stat: 'Full-stack', label: 'Design, build and ship under one roof. No handoffs.' },
 ];
 
 const STEPS = [
@@ -57,7 +57,7 @@ export default function LandingPage() {
               <span className="text-gradient-mustard">fast</span>
             </h1>
             <p className="text-white/70 text-base md:text-lg font-body font-light leading-relaxed max-w-2xl mx-auto mb-10">
-              Custom AI tools, apps, and websites for your business. Built by one operator who
+              Custom AI tools, apps, and websites for your business. Built by a studio that
               designs, builds, and ships the whole thing. Start with a free 60-second audit and
               see exactly where AI moves your numbers.
             </p>

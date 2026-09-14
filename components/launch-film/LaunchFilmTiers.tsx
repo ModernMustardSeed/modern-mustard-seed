@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { launchFilmTiers, launchFilmUsd, type LaunchFilmTier } from '@/data/launch-film';
+import { launchFilmTiers, type LaunchFilmTier } from '@/data/launch-film';
+import { PRICE_HEADLINE, priceCadence } from '@/lib/public-pricing';
 import { trackEvent } from '@/lib/analytics';
 
 /** The three doors, each one minting a live Stripe Checkout from data/launch-film.ts. */
@@ -57,9 +58,13 @@ function TierCard({ tier }: { tier: LaunchFilmTier }) {
       )}
       <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-[#161616]/60">{tier.chip}</p>
       <h3 className="font-display text-2xl font-black tracking-tight text-[#161616] mt-2">{tier.name}</h3>
-      <p className="mt-3 flex items-baseline gap-1.5">
-        <span className="font-display text-4xl font-black tracking-tight text-[#161616]">{launchFilmUsd(tier.priceCents)}</span>
-        <span className="font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-[#161616]/60">{tier.cadence === 'monthly' ? '/ month' : 'once'}</span>
+      <p className="mt-3">
+        <span className="block font-display text-[26px] font-black leading-tight tracking-tight text-[#161616]">
+          {PRICE_HEADLINE}
+        </span>
+        <span className="mt-1 block font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-[#161616]/60">
+          {priceCadence(tier.cadence)}
+        </span>
       </p>
       <p className="font-body text-sm leading-relaxed text-[#161616]/75 mt-3">{tier.pitch}</p>
       <ul className="mt-5 space-y-2.5 flex-1">

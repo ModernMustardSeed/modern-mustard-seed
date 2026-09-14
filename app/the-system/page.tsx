@@ -31,7 +31,7 @@ const DOORS = [
   {
     eyebrow: 'The flagship // Built as one thing',
     name: 'The Talking Website',
-    price: `From ${formatUsd(DEMO_BUNDLE.setupCents)} setup, then ${formatUsd(DEMO_BUNDLE.monthlyCents)}/mo`,
+    price: 'Scoped and quoted privately',
     body: 'A website that answers its own phone. Your site and your voice agent built as one thing off one brain, so every call and every form lands in the same place. Stations 03, 04 and 07, live within a week.',
     href: '/demos',
     cta: 'See The Flagship',
@@ -40,7 +40,7 @@ const DOORS = [
   {
     eyebrow: 'The program // Twelve months, four gates',
     name: HUNDREDFOLD.name,
-    price: `${money(HUNDREDFOLD.setupCents)} to start, then ${money(HUNDREDFOLD.monthlyCents)} a month`,
+    price: 'Scoped and quoted privately',
     body: 'The scaling program that builds the machine with you. The offer rebuilt, the whole loop installed station by station, the agents running, and a build queue that does not stop until the branches hold weight.',
     href: HUNDREDFOLD.path,
     cta: 'See Hundredfold',
@@ -91,7 +91,7 @@ export default function TheSystemPage() {
           <div className="grid lg:grid-cols-[1.15fr_0.85fr] gap-10 items-center">
             <div>
               <span className="font-mono text-[11px] uppercase tracking-[0.35em] font-bold" style={{ color: RED }}>
-                The system // One desk, one brain, every door
+                The system // One brain, every door
               </span>
               <h1 className="font-display text-[2.8rem] sm:text-6xl xl:text-[5.2rem] font-extrabold mt-4 leading-[0.98] tracking-tight">
                 Your whole company,
@@ -264,7 +264,7 @@ export default function TheSystemPage() {
                 One digital architect. One agentic engineer. Same person.
               </h2>
               <p className="font-body text-[15px] text-[#161616]/75 mt-5 leading-relaxed">
-                Sarah Scarano, self-taught full-stack engineer and AI systems architect, Kalispell, Montana. Forty plus shipped products, four ventures run from one desk on this exact system. The person who draws the blueprint is the person who pours the foundation and the person who hands you the keys.
+Sarah Scarano, self-taught full-stack engineer and AI systems architect, Kalispell, Montana. Forty plus shipped products and four ventures running on this exact system. The people who draw the blueprint are the people who pour the foundation and hand you the keys.
               </p>
               <p className="font-body text-[15px] text-[#161616]/75 mt-4 leading-relaxed">
                 Off-the-shelf software makes you bend your business around it. Custom infrastructure bends around you: your intake, your pricing, your crew, your customer. That is the difference between a tool you rent and an asset you own.

@@ -12,6 +12,7 @@ import {
 } from '@/data/chief';
 import DayWithYourChief from '@/components/chief/DayWithYourChief';
 import ChiefCheckoutButton from '@/components/chief/ChiefCheckoutButton';
+import { PRICE_HEADLINE, PRICE_CADENCE_MONTHLY } from '@/lib/public-pricing';
 
 export const metadata = buildMetadata({
   title: CHIEF.metaTitle,
@@ -41,9 +42,6 @@ function chiefJsonLd() {
         url: `${SITE.url}/chief`,
         offers: {
           '@type': 'AggregateOffer',
-          priceCurrency: 'USD',
-          lowPrice: chiefUsd(entry.monthlyCents),
-          highPrice: chiefUsd(cabinet.monthlyCents),
           offerCount: chiefTiers.length,
           availability: 'https://schema.org/InStock',
           url: `${SITE.url}/chief`,
@@ -82,7 +80,7 @@ export default function ChiefPage() {
                 <p className="font-body text-[15px] leading-relaxed">
                   <strong className="font-display italic text-[1.15rem]">You thought a personal assistant was expensive.</strong>{' '}
                   A human chief of staff runs ${humanAssistantYear.low.toLocaleString()} to ${humanAssistantYear.high.toLocaleString()} a year.
-                  Yours starts at <strong>${chiefUsd(entry.monthlyCents)}</strong> a month.
+                  Yours is a <strong>set package price</strong>, quoted privately, and it is not close.
                 </p>
               </div>
               <div className="mt-8 flex flex-wrap gap-3">
@@ -261,9 +259,8 @@ export default function ChiefPage() {
             </div>
           </div>
           <p className="font-body text-[15px] text-[#FBF6EA]/75 mt-7 max-w-2xl leading-relaxed">
-            He works every hour, never calls in sick, remembers everything, and starts at{' '}
-            <strong className="text-[#F5B700]">${chiefUsd(entry.monthlyCents)}/mo</strong>. Most owners keep tens of
-            thousands of dollars and still get more done.
+            He works every hour, never calls in sick, and remembers everything. Most owners keep tens of
+            thousands of dollars against a human hire and still get more done.
           </p>
         </section>
 
@@ -302,10 +299,10 @@ export default function ChiefPage() {
                     {tier.chip}
                   </span>
                   <h3 className="font-display italic font-extrabold text-2xl mt-2">{tier.name}</h3>
-                  <p className="font-mono font-bold text-[15px] mt-3">
-                    ${chiefUsd(tier.monthlyCents).toLocaleString()}/mo{' '}
-                    <span className={featured ? 'text-[#161616]/75' : 'text-[#161616]/70'}>
-                      + ${chiefUsd(tier.setupCents).toLocaleString()} setup
+                  <p className="mt-3">
+                    <span className="block font-display text-[22px] font-extrabold leading-tight">{PRICE_HEADLINE}</span>
+                    <span className={`mt-1 block font-mono text-[10px] font-bold uppercase tracking-[0.2em] ${featured ? 'text-[#161616]/70' : 'text-[#161616]/60'}`}>
+                      {PRICE_CADENCE_MONTHLY}
                     </span>
                   </p>
                   <p className={`font-body text-[13.5px] mt-3 leading-relaxed ${featured ? 'text-[#161616]/80' : 'text-[#161616]/70'}`}>
@@ -412,8 +409,8 @@ export default function ChiefPage() {
               Stop doing it all yourself.
             </h2>
             <p className="font-body text-[15px] text-[#161616]/80 mt-4 max-w-xl mx-auto leading-relaxed">
-              Hear him first at {PHONE_DISPLAY}, or hire him today and have your own Chief on the line this week. From
-              ${chiefUsd(entry.monthlyCents)}/mo, a fraction of a human assistant.
+              Hear him first at {PHONE_DISPLAY}, or bring him on and have your own Chief on the line this week.
+              A set package price, quoted privately, and a fraction of a human assistant.
             </p>
             <div className="mt-7 flex flex-wrap gap-3 justify-center">
               <Link

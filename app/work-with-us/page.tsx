@@ -54,8 +54,8 @@ const PRINCIPLES = [
     body: 'Code, deploys, credentials, accounts. All transferred from day one. No vendor lock-in.',
   },
   {
-    title: 'One operator, end to end',
-    body: 'No handoffs to junior staff. No coordination tax. The person who scopes it is the person who ships it.',
+    title: 'Straight through, start to finish',
+    body: 'No coordination tax and no telephone game. The people who scope your engagement are the people who build it.',
   },
   {
     title: 'Payment plans, on request',
