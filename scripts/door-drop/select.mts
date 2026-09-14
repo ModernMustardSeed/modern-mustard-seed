@@ -364,6 +364,20 @@ function chainRe(c: string): RegExp {
  */
 export const CLOSED_MARK = 'CLOSED: confirmed on Google Maps';
 
+/**
+ * AND ONE WE LOOKED AT AND FOUND TRADING.
+ *
+ * Dated, because "open" is a fact with a shelf life in a way "no website" is
+ * not: a shop confirmed open in March says nothing about September. The date is
+ * what lets open-check.mts skip a business it settled recently and re-read one
+ * it has not, instead of re-driving all 159 every time one town needs checking.
+ *
+ * Nothing gates on this. It exists only to save lookups, so a stale one costs a
+ * wasted check and never a wrong sheet.
+ */
+export const OPEN_MARK = 'OPEN: confirmed on Google Maps';
+export const OPEN_DATED = /OPEN: confirmed on Google Maps (\d{4}-\d{2}-\d{2})/;
+
 export const NOSITE_MARK = 'NO WEBSITE: confirmed on Google Maps';
 
 /**

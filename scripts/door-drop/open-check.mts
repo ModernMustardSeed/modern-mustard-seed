@@ -33,7 +33,7 @@ import { pathToFileURL } from 'node:url';
 import { readFileSync, writeFileSync, rmSync } from 'node:fs';
 import path from 'node:path';
 import { openBrowser } from '../acq-maps.mts';
-import { loadEnv, supabase, REGIONS, CLOSED_MARK, type Region } from './select.mts';
+import { loadEnv, supabase, REGIONS, CLOSED_MARK, OPEN_MARK, OPEN_DATED, type Region } from './select.mts';
 
 const argv = process.argv.slice(2);
 const flag = (n: string, d: string) => {
@@ -44,6 +44,8 @@ const OUT = path.resolve(flag('out', path.join('artifacts', 'door-drop', 'kalisp
 const REGION: Region = REGIONS[(flag('region', 'montana') || 'montana').toLowerCase()] ?? REGIONS.montana;
 const APPLY = argv.includes('--apply');
 const HEADED = argv.includes('--headed');
+/** How long a confirmed-open reading is trusted before it is read again. */
+const FRESH_DAYS = Number(flag('fresh-days', '14'));
 
 loadEnv(process.cwd());
 const sb = supabase();
@@ -74,12 +76,30 @@ const { data: rows } = await sb
   .select('id, business_name, city, address, phone, notes')
   .in('id', ids);
 
-const todo = (rows ?? []).filter((r) => !String(r.notes ?? '').includes(CLOSED_MARK));
-console.log(`${ids.length} on the sheet, ${todo.length} to check${APPLY ? '' : '   (DRY RUN)'}\n`);
+/**
+ * Skip what is already settled. A business marked closed is out of the run by
+ * the gate, and one confirmed open inside the freshness window does not need
+ * driving again: Montana's 159 contains Kalispell's 108, so without this every
+ * region run re-reads the same hundred panels.
+ */
+const cutoff = Date.now() - FRESH_DAYS * 86_400_000;
+const fresh = (notes: string | null) => {
+  const m = OPEN_DATED.exec(String(notes ?? ''));
+  return m ? new Date(`${m[1]}T12:00:00Z`).getTime() >= cutoff : false;
+};
+const all = rows ?? [];
+const todo = all.filter((r) => !String(r.notes ?? '').includes(CLOSED_MARK) && !fresh(r.notes));
+const settled = all.length - todo.length;
+console.log(
+  `${ids.length} on the sheet, ${todo.length} to check`
+  + `${settled ? `, ${settled} settled within ${FRESH_DAYS} days` : ''}`
+  + `${APPLY ? '' : '   (DRY RUN)'}\n`,
+);
 
 const { browser, page } = await openBrowser(HEADED);
 const closed: { id: string; business_name: string; address: string | null; why: string }[] = [];
 const unknown: { business_name: string; why: string }[] = [];
+const stillOpen: string[] = [];
 let open = 0;
 
 for (let i = 0; i < todo.length; i++) {
@@ -152,6 +172,7 @@ for (let i = 0; i < todo.length; i++) {
     console.log(`${label} X ${why}`);
   } else {
     open += 1;
+    stillOpen.push(lead.id);
     console.log(`${label} open`);
   }
   await sleep(2200);
@@ -171,10 +192,11 @@ for (const c of closed) console.log(`  ${c.business_name} - ${c.why}`);
 
 if (!APPLY) {
   console.log('\nDRY RUN. Nothing written. Re-run with --apply to mark them.');
-} else if (closed.length) {
+} else {
   const today = new Date().toISOString().slice(0, 10);
+
   for (const c of closed) {
-    const row = (rows ?? []).find((r) => r.id === c.id);
+    const row = all.find((r) => r.id === c.id);
     const note = String(row?.notes ?? '').trim();
     const line = `${CLOSED_MARK} ${today}: ${c.why}`;
     await sb
@@ -182,5 +204,29 @@ if (!APPLY) {
       .update({ notes: note ? `${note}\n${line}` : line })
       .eq('id', c.id);
   }
-  console.log(`\nMarked ${closed.length}. They drop out of the next build.`);
+
+  /**
+   * The open stamp is REWRITTEN, never appended. addresses.mjs learned this the
+   * expensive way with the no-website marker: append plus a dedupe on the bare
+   * string means the second reading is silently dropped and the row keeps a
+   * date from months ago. One line per row, and it is the newest one.
+   */
+  for (const id of stillOpen) {
+    const row = all.find((r) => r.id === id);
+    const existing = String(row?.notes ?? '');
+    const stripped = existing
+      .replace(/OPEN: confirmed on Google Maps(\s+\d{4}-\d{2}-\d{2})?/g, '')
+      .replace(/\s*·\s*·\s*/g, ' · ')
+      .replace(/^\s*·\s*|\s*·\s*$/g, '')
+      .trim();
+    const notes = [stripped, `${OPEN_MARK} ${today}`].filter(Boolean).join(' · ').slice(0, 4000);
+    if (notes !== existing) await sb.from('outbound_leads').update({ notes }).eq('id', id);
+  }
+
+  console.log(
+    closed.length
+      ? `\nMarked ${closed.length} closed. They drop out of the next build.`
+      : '\nNothing closed.',
+  );
+  console.log(`Stamped ${stillOpen.length} open today, so the next run skips them.`);
 }
