@@ -132,37 +132,11 @@ export const packages: Engagement[] = [
   },
 ];
 
-export const pricingFaq = [
-  {
-    q: 'How is this different from a traditional agency?',
-    a: 'Traditional agencies bill for time and hand your project down the line. We work as an embedded team that owns it end to end, with AI doing the leverage. You pay for the outcome, agreed as a set package price before anything starts.',
-  },
-  {
-    q: 'How does pricing work?',
-    a: 'Every engagement is quoted after a free discovery call. We propose a flat fee tied to a defined deliverable and a tight timeline, no hourly billing. You will know the full cost and timeline before any work begins.',
-  },
-  {
-    q: 'How fast will my build go live?',
-    a: 'Websites, voice agents, and command centers go live in about a week from kickoff. Custom apps, software, and online stores usually take two to four weeks. AI-Proof engagements run longer because they cover a whole operation. You see the exact timeline in your quote before work begins.',
-  },
-  {
-    q: 'I do not know much about AI. Is this still for me?',
-    a: 'Yes. A website or a voice agent does not require you to know any AI at all, and a custom build starts with us figuring out what to build together. You bring the vision and the domain knowledge. We bring the technical decisions.',
-  },
-  {
-    q: 'What if my project does not fit a productized door?',
-    a: 'Many do not, exactly, and that is what the bespoke path is for. Book a discovery call. We will map your situation and propose a custom scope before any large commitment.',
-  },
-  {
-    q: 'Do you offer payment plans?',
-    a: 'Yes. Most engagements can be split into milestone payments that fit your situation. Tell us what works during the discovery call and we will structure it together.',
-  },
-  {
-    q: 'Who owns the code and assets?',
-    a: 'You do, fully. All code is delivered to your repos. All credentials, accounts, and infrastructure are yours from day one.',
-  },
-  {
-    q: 'What if I am not happy with what gets built?',
-    a: 'We do not work in handoffs. We work in iterations. We do not stop until the build is right by you. Revision rounds are baked into every engagement, not bolted on. We do not offer refunds because we do not walk away. We finish the work until it is what you wanted.',
-  },
-];
+/**
+ * RETIRED 2026-09-14. This list still said "free discovery call" and
+ * "productized door", both of which are gone, and it was the FAQ on
+ * /work-with-us. The corrected questions live in data/engagement.ts as
+ * ENGAGEMENT_FAQ and are rendered on /work-with-us. Kept as a re-export so any
+ * importer gets the right answers rather than the stale ones.
+ */
+export { ENGAGEMENT_FAQ as pricingFaq } from './engagement';
