@@ -16,12 +16,17 @@ export default function PhotoDrop({
   client,
   label = 'Drop photos here, or tap to choose',
   compact = false,
+  folder = 'posting',
+  hint = 'Phone photos are fine. They are sized for the feeds on the way up.',
 }: {
   onUploaded: (files: Uploaded[]) => Promise<void> | void;
   /** Admin use only: upload on a client's behalf. */
   client?: string;
   label?: string;
   compact?: boolean;
+  /** Where it lands: the posting folder, or a project page's folder. */
+  folder?: 'posting' | 'projects';
+  hint?: string;
 }) {
   const input = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState<string | null>(null);
@@ -61,7 +66,7 @@ export default function PhotoDrop({
         const start = await fetch('/api/portal/posting/upload', {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ name: f.name.replace(/\.[^.]+$/, '.jpg'), size: jpeg.size, type: 'image/jpeg', client }),
+          body: JSON.stringify({ name: f.name.replace(/\.[^.]+$/, '.jpg'), size: jpeg.size, type: 'image/jpeg', client, folder }),
         });
         const j = (await start.json().catch(() => ({}))) as { ok?: boolean; uploadUrl?: string; url?: string; error?: string };
         if (!start.ok || !j.ok || !j.uploadUrl || !j.url) throw new Error(j.error ?? 'Could not start the upload.');
@@ -98,7 +103,7 @@ export default function PhotoDrop({
         className={`w-full border-2 border-dashed rounded-2xl text-center transition-colors ${compact ? 'px-4 py-5' : 'px-6 py-10'} ${over ? 'border-[#161616] bg-[#F5B700]/25' : 'border-[#161616]/40 bg-white hover:bg-[#F5B700]/10'} disabled:opacity-60`}
       >
         <span className="block font-sans font-bold text-[#161616]">{busy ?? label}</span>
-        <span className="block text-[#161616]/55 font-body text-sm mt-1">Phone photos are fine. They are sized for the feeds on the way up.</span>
+        <span className="block text-[#161616]/55 font-body text-sm mt-1">{hint}</span>
       </button>
       <input ref={input} type="file" accept="image/*,.heic,.heif" multiple hidden onChange={(e) => e.target.files && void handle(e.target.files)} />
       {error && <p className="mt-2 text-sm font-semibold text-[#E0301E]">{error}</p>}

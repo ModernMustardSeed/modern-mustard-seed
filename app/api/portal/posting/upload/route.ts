@@ -3,6 +3,7 @@ import { getClientSession } from '@/lib/client-auth';
 import { getSession as getAdminSession } from '@/lib/admin-auth';
 import { getSupabase } from '@/lib/supabase';
 import { getSettings } from '@/lib/posting/settings';
+import { projectForEmail } from '@/lib/client-leads';
 
 export const runtime = 'nodejs';
 
@@ -16,7 +17,7 @@ const BUCKET = 'client-intake';
 const MAX_BYTES = 12 * 1000 * 1000;
 
 export async function POST(req: Request) {
-  let body: { name?: string; size?: number; type?: string; client?: string } = {};
+  let body: { name?: string; size?: number; type?: string; client?: string; folder?: string } = {};
   try {
     body = (await req.json()) as typeof body;
   } catch {
@@ -38,9 +39,16 @@ export async function POST(req: Request) {
 
   const sb = getSupabase();
   if (!sb) return NextResponse.json({ ok: false, error: 'no storage' }, { status: 503 });
-  const settings = await getSettings(sb, email);
-  // A client can upload only once Sarah has shown them the calendar; Sarah can upload for them any time.
-  if (!settings || (!asAdmin && !settings.visible)) return NextResponse.json({ ok: false, error: 'Daily Posting is not on this account.' }, { status: 403 });
+  // Two folders. `posting` opens once Sarah has shown the calendar. `projects`
+  // is for photos bound for a project page and opens for any client on a
+  // project site. Sarah can upload for them any time.
+  const folderKind = body.folder === 'projects' ? 'projects' : 'posting';
+  if (folderKind === 'projects') {
+    if (!asAdmin && !projectForEmail(email)) return NextResponse.json({ ok: false, error: 'Project photos are not on this account.' }, { status: 403 });
+  } else {
+    const settings = await getSettings(sb, email);
+    if (!settings || (!asAdmin && !settings.visible)) return NextResponse.json({ ok: false, error: 'Daily Posting is not on this account.' }, { status: 403 });
+  }
 
   const size = Number(body.size ?? 0);
   if (!Number.isFinite(size) || size <= 0 || size > MAX_BYTES) return NextResponse.json({ ok: false, error: 'Photos up to 12 MB each.' }, { status: 413 });
@@ -51,7 +59,7 @@ export async function POST(req: Request) {
   const stem = rawName.replace(/\.[^.]+$/, '').replace(/[^a-z0-9]+/gi, '-').replace(/^-+|-+$/g, '').slice(0, 40) || 'photo';
   const ext = type === 'image/png' ? 'png' : 'jpg';
   const folder = email.replace(/[^a-z0-9]+/gi, '-');
-  const path = `posting/${folder}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}-${stem}.${ext}`;
+  const path = `${folderKind}/${folder}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}-${stem}.${ext}`;
 
   const { data, error } = await sb.storage.from(BUCKET).createSignedUploadUrl(path);
   if (error || !data) return NextResponse.json({ ok: false, error: 'could not start upload' }, { status: 500 });
