@@ -20,7 +20,7 @@ import { prettyDate, prettyHour } from '@/lib/posting/time';
  */
 type Overview = { settings: SettingsRow; today: { id: string; status: string; headline: string | null } | null; nextPlanned: string | null; queued: number; graphicsWaiting: number; approvalsWaiting: number; connected: Platform[] };
 type Lead = { id: string; source: string; sources: string[]; name: string | null; phone: string | null; email: string | null; town: string | null; project_type: string | null; land: string | null; page: string | null; priority: number | null; handled_at: string | null; created_at: string };
-type Detail = { settings: SettingsRow; today: string; posts: PostRow[]; materials: MaterialRow[]; accounts: AccountView[]; leads: Lead[]; guide: GuideSection[]; clientGuide: GuideSection[]; commandCenter: { guide: GuideSection[]; clientGuide: GuideSection[] } | null; env: { x: boolean; linkedin: boolean; google: boolean; facebookApp: boolean } };
+type Detail = { settings: SettingsRow; today: string; posts: PostRow[]; materials: MaterialRow[]; accounts: AccountView[]; leads: Lead[]; guide: GuideSection[]; clientGuide: GuideSection[]; commandCenter: { guide: GuideSection[]; clientGuide: GuideSection[]; visible: boolean } | null; env: { x: boolean; linkedin: boolean; google: boolean; facebookApp: boolean } };
 
 const CARD = 'rounded-2xl border-2 border-[#161616] bg-white p-5 shadow-[5px_5px_0_0_#161616]';
 const BTN = 'rounded-lg border-2 border-[#161616] bg-white px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-[#161616] disabled:opacity-50 hover:-translate-y-0.5 transition-transform';
@@ -166,6 +166,11 @@ function ClientDetail({ d, act, busy, onNotice, client }: { d: Detail; act: Act;
         <div className="flex gap-2">
           <button type="button" className={`${BTN} flex-none`} onClick={() => setTab(tab === 'desk' ? 'words' : 'desk')}>{tab === 'desk' ? 'The words for them' : 'Back to the desk'}</button>
           <button type="button" className={`${s.visible ? BTN_RED : BTN_INK} flex-none`} disabled={!!busy} onClick={() => void act({ action: 'settings', visible: !s.visible }, 'visible')}>{s.visible ? 'Hide from the client' : 'Show to the client'}</button>
+          {d.commandCenter && (
+            <button type="button" className={`${d.commandCenter.visible ? BTN_RED : BTN_INK} flex-none`} disabled={!!busy} onClick={() => void act({ action: 'command-center', visible: !d.commandCenter!.visible }, 'command-center')}>
+              {d.commandCenter.visible ? 'Hide the Command Center' : 'Show the Command Center'}
+            </button>
+          )}
         </div>
       </div>
 

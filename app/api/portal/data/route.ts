@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getClientSession } from '@/lib/client-auth';
 import { getSupabase } from '@/lib/supabase';
 import { displayForIso } from '@/lib/booking';
+import { commandCenterVisible } from '@/lib/command-center/visible';
 import { googleReviewUrl as GOOGLE_REVIEW_FALLBACK } from '@/data/socials';
 
 export const runtime = 'nodejs';
@@ -219,5 +220,7 @@ export async function GET() {
     /* posting_settings not migrated */
   }
 
-  return NextResponse.json({ email, client, projects, files, orders, products, bookings, audience, isDemoClient, billing, audit, googleReviewUrl, updates, posting });
+  // The Command Center is built before it is bought; the client sees it only once Sarah shows it.
+  const commandCenter = await commandCenterVisible(supabase, email);
+  return NextResponse.json({ email, client, projects, files, orders, products, bookings, audience, isDemoClient, billing, audit, googleReviewUrl, updates, posting, commandCenter });
 }

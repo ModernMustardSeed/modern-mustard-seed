@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getClientSession } from '@/lib/client-auth';
 import { getSupabase } from '@/lib/supabase';
-import { projectForEmail } from '@/lib/client-leads';
+import { visibleProject } from '@/lib/command-center/visible';
 import { buildertrendStatus, connectBuildertrend, disconnectBuildertrend } from '@/lib/buildertrend';
 import { resendClient } from '@/lib/send-email';
 
@@ -18,7 +18,7 @@ export async function GET() {
   const session = await getClientSession();
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const sb = getSupabase();
-  const project = projectForEmail(session.email);
+  const project = sb ? await visibleProject(sb, session.email) : null;
   if (!sb || !project || project.crm !== 'buildertrend') return NextResponse.json({ buildertrend: null });
   const status = await buildertrendStatus(sb, session.email);
   const { count: pushed } = await sb.from('client_leads').select('id', { count: 'exact', head: true }).eq('client_email', session.email).not('crm_pushed_at', 'is', null);
@@ -31,7 +31,7 @@ export async function POST(req: Request) {
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const sb = getSupabase();
   if (!sb) return NextResponse.json({ error: 'Database not configured' }, { status: 500 });
-  const project = projectForEmail(session.email);
+  const project = sb ? await visibleProject(sb, session.email) : null;
   if (!project || project.crm !== 'buildertrend') return NextResponse.json({ error: 'Buildertrend is not part of this account.' }, { status: 404 });
   let body: { embed?: string };
   try {

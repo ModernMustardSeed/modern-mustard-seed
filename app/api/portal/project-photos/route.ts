@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getClientSession } from '@/lib/client-auth';
 import { getSupabase } from '@/lib/supabase';
-import { projectForEmail } from '@/lib/client-leads';
+import { visibleProject } from '@/lib/command-center/visible';
 import { resendClient } from '@/lib/send-email';
 import { SITE } from '@/lib/seo';
 
@@ -20,7 +20,7 @@ export async function GET() {
   const session = await getClientSession();
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const sb = getSupabase();
-  const project = projectForEmail(session.email);
+  const project = sb ? await visibleProject(sb, session.email) : null;
   if (!sb || !project) return NextResponse.json({ projectPhotos: null });
   let photos: Photo[] = [];
   try {
@@ -36,7 +36,7 @@ export async function POST(req: Request) {
   const session = await getClientSession();
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const sb = getSupabase();
-  const project = projectForEmail(session.email);
+  const project = sb ? await visibleProject(sb, session.email) : null;
   if (!sb || !project) return NextResponse.json({ error: 'Not on a project.' }, { status: 404 });
   let body: { project?: string; photos?: Array<{ url?: string; name?: string }>; caption?: string };
   try {
