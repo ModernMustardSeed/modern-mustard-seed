@@ -263,6 +263,30 @@ export async function sendReply(sb: SupabaseClient, clientEmail: string, mailId:
   return { ok: true };
 }
 
+/**
+ * A fresh draft to anyone, in their Gmail Drafts. The guide uses this when
+ * the owner says "email Bob about Thursday": the words are written, the
+ * draft is in their own Drafts folder, and nothing has been sent.
+ */
+export async function draftNewMail(sb: SupabaseClient, clientEmail: string, to: string, subject: string, text: string): Promise<{ ok: true; address: string } | { ok: false; error: string }> {
+  const creds = await credsFor(sb, clientEmail);
+  if (!creds) return { ok: false, error: 'The mailbox is not connected.' };
+  const addr = to.trim();
+  if (!/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(addr)) return { ok: false, error: 'That does not look like an email address.' };
+  const raw = [`From: ${creds.address}`, `To: ${addr}`, `Subject: ${subject.replace(/[\r\n]+/g, ' ').slice(0, 200)}`, 'Content-Type: text/plain; charset=utf-8', 'MIME-Version: 1.0', '', text.trim(), ''].join('\r\n');
+  const client = new ImapFlow({ host: creds.imap, port: 993, secure: true, auth: { user: creds.address, pass: creds.pass }, logger: false });
+  try {
+    await client.connect();
+    const boxes = await client.list();
+    const drafts = boxes.find((b) => (b.specialUse ?? '').toLowerCase() === '\\drafts')?.path ?? '[Gmail]/Drafts';
+    await client.append(drafts, Buffer.from(raw, 'utf8'), ['\\Draft', '\\Seen']);
+    await client.logout();
+  } catch (err) {
+    return { ok: false, error: `Could not save the draft: ${err instanceof Error ? err.message : String(err)}` };
+  }
+  return { ok: true, address: creds.address };
+}
+
 /** Put the draft in their Gmail Drafts folder, to finish on their phone. */
 export async function saveDraft(sb: SupabaseClient, clientEmail: string, mailId: string, text: string): Promise<{ ok: true } | { ok: false; error: string }> {
   const creds = await credsFor(sb, clientEmail);

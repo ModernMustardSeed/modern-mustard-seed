@@ -51,6 +51,7 @@ export function clientGuide(p: ClientProject): GuideSection[] {
       lines: [
         'The box at the top is what matters right now, in order: who is waiting on a call, which email needs a reply, what renews soon, what goes out today, which sign got scanned. Every line is read from your own records the moment you open the page. Nothing in it is written by a model.',
         'The guide in the corner reads the same records. Ask it who is waiting, which sign is working, or what came in this week, and it answers with the numbers.',
+        'It also does four things when you ask: writes an email to anyone and puts it in your own Gmail drafts (it never sends), sends a review ask, marks a lead as called, and makes a QR code. Say "email Bob Miller at bob@example.com about the Thursday walkthrough" and the draft is waiting in Gmail before you finish your coffee.',
       ],
     },
     {
