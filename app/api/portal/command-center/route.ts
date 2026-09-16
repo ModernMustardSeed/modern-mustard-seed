@@ -28,6 +28,11 @@ export async function GET() {
   try {
     const views = await accountViews(sb, session.email);
     for (const v of views) {
+      // Google Business Profile gets its own line below, with the manager step.
+      if (v.provider === 'gbp') continue;
+      // `needs` names the studio-side keys still missing; that is Sarah's list,
+      // not the owner's. The owner reads that we are on it.
+      const ours = Boolean(v.needs) && !v.connected;
       lines.push({
         key: v.provider,
         label: PLATFORM_LABEL[v.provider],
@@ -37,9 +42,11 @@ export async function GET() {
           : v.connected
             ? `Connected as ${v.accountName ?? 'your account'}.`
             : v.status === 'error'
-              ? v.error ?? 'The connection needs a fresh login.'
-              : v.needs ?? 'Add sarah@modernmustardseed.com as an admin, and it connects from our side.',
-        action: v.connected || v.manualOnly ? null : 'Add Sarah as admin',
+              ? 'The connection needs a fresh login; we will ask you when it is time.'
+              : ours
+                ? 'Being wired from our side. Nothing for you to do yet.'
+                : 'Add sarah@modernmustardseed.com as an admin, and it connects from our side.',
+        action: null,
         href: null,
       });
     }
