@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getClientSession } from '@/lib/client-auth';
-import { getSupabase } from '@/lib/supabase';
-import { visibleProject } from '@/lib/command-center/visible';
+import { projectForEmail } from '@/lib/client-leads';
 import { clientGuide } from '@/lib/command-center/guide';
 import { SITE } from '@/lib/seo';
 
@@ -19,8 +18,9 @@ const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replac
 export async function GET() {
   const session = await getClientSession();
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  const sb = getSupabase();
-  const project = sb ? await visibleProject(sb, session.email) : null;
+  // The manual is the proposal as much as the handbook: a client on a
+  // project may read it before the Command Center is switched on.
+  const project = projectForEmail(session.email);
   if (!project) return NextResponse.json({ error: 'Not on a project.' }, { status: 404 });
   const guide = clientGuide(project);
   const today = new Date().toLocaleDateString('en-US', { timeZone: 'America/Denver', month: 'long', day: 'numeric', year: 'numeric' });
