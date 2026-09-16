@@ -97,7 +97,7 @@ export default function OfficeShell() {
               </a>
               <nav className="flex items-center gap-1 sm:gap-3">
                 <a href={office.siteUrl} target="_blank" rel="noopener noreferrer" className="text-[11px] uppercase tracking-[0.2em] font-medium px-3 py-2" style={{ color: c.accent }}>Your website ↗</a>
-                {state === 'ready' && <a href="/api/portal/manual" target="_blank" rel="noopener noreferrer" className="hidden sm:inline text-[11px] uppercase tracking-[0.2em] font-medium px-3 py-2" style={{ color: c.accent }}>Manual</a>}
+                <a href="/api/portal/manual" target="_blank" rel="noopener noreferrer" className="hidden sm:inline text-[11px] uppercase tracking-[0.2em] font-medium px-3 py-2" style={{ color: c.accent }}>Manual</a>
                 <button type="button" onClick={async () => { await fetch('/api/portal/logout', { method: 'POST' }); setState('login'); }} className="text-[11px] uppercase tracking-[0.2em] font-medium px-3 py-2 opacity-60 hover:opacity-100">Sign out</button>
               </nav>
             </div>
@@ -115,10 +115,23 @@ export default function OfficeShell() {
                 <p className="text-[10px] uppercase tracking-[0.3em] font-medium mb-1" style={{ color: c.accent2 }}>Almost</p>
                 <h2 className="text-2xl font-semibold mb-2">Your Command Center is built and waiting for your yes</h2>
                 <p className="font-body text-sm opacity-75 mb-4">Leads into Buildertrend, the chat conversations, QR codes for signs, review asks, project photos, your inbox sorted with replies drafted, every domain and its renewal, and a guide you can talk to. It turns on the day you tick it on your start page.</p>
-                <a href="https://built-right-prep.vercel.app/add" className="inline-block rounded-lg px-5 py-3 text-[11px] uppercase tracking-[0.2em] font-semibold text-white" style={{ background: c.accent }}>Turn it on</a>
-                <p className="font-body text-xs opacity-60 mt-4">Your leads and your articles are in your portal in the meantime: <a className="underline" href="/portal">modernmustardseed.com/portal</a>.</p>
+                <div className="flex flex-wrap items-center gap-4">
+                  <a href="https://built-right-prep.vercel.app/add" className="inline-block rounded-lg px-5 py-3 text-[11px] uppercase tracking-[0.2em] font-semibold text-white" style={{ background: c.accent }}>Turn it on</a>
+                  <a href="/api/portal/manual" target="_blank" rel="noopener noreferrer" className="text-[11px] uppercase tracking-[0.2em] font-medium" style={{ color: c.accent }}>Read the manual first ↗</a>
+                </div>
               </section>
-            ) : (
+            ) : null}
+
+            {state === 'waiting' && (
+              <div className="mt-8">
+                <p className="text-[10px] uppercase tracking-[0.3em] font-medium mb-3" style={{ color: c.accent2 }}>Yours already, with the website</p>
+                {data?.posting && <PostingTile />}
+                <LeadsCard />
+                <ArticlesCard />
+              </div>
+            )}
+
+            {state === 'ready' && (
               <>
                 <TodayCard />
                 {data?.posting && <PostingTile />}
