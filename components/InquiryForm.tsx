@@ -19,15 +19,6 @@ import { trackLead, metaDedup } from '@/lib/analytics';
  * lead lands in the same inbox and the same table.
  */
 
-const BUDGETS = [
-  { value: 'under-10k', label: 'Under $10,000' },
-  { value: '10-25k', label: '$10,000 to $25,000' },
-  { value: '25-50k', label: '$25,000 to $50,000' },
-  { value: '50k-plus', label: '$50,000 and up' },
-  { value: 'advisory', label: 'Advisory retainer, ongoing' },
-  { value: 'unsure', label: 'Not sure yet' },
-];
-
 const TIMELINES = [
   { value: 'now', label: 'Ready now' },
   { value: 'quarter', label: 'This quarter' },
@@ -56,7 +47,6 @@ export default function InquiryForm() {
     phone: '',
     company: '',
     message: '',
-    budget: '',
     timeline: '',
   });
   const [kind, setKind] = useState<string | null>(null);
@@ -72,7 +62,6 @@ export default function InquiryForm() {
     setSending(true);
     setError('');
 
-    const budget = BUDGETS.find((b) => b.value === form.budget)?.label ?? 'Not given';
     const timeline = TIMELINES.find((t) => t.value === form.timeline)?.label ?? 'Not given';
     const engagement = ENGAGEMENTS.find((x) => x.id === kind)?.label ?? 'Not given';
 
@@ -84,7 +73,6 @@ export default function InquiryForm() {
       '---',
       `Engagement: ${engagement}`,
       `Company: ${form.company.trim() || 'Not given'}`,
-      `Budget: ${budget}`,
       `Timeline: ${timeline}`,
       `Phone: ${form.phone.trim() || 'Not given'}`,
     ].join('\n');
@@ -161,7 +149,13 @@ export default function InquiryForm() {
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="mt-7 space-y-6">
+      <form
+        onSubmit={handleSubmit}
+        name="studio-inquiry"
+        id="studio-inquiry"
+        autoComplete="on"
+        className="mt-7 space-y-6"
+      >
         <fieldset>
           <legend className={labelCls}>What are you after?</legend>
           <div className="flex flex-wrap gap-2">
@@ -189,30 +183,71 @@ export default function InquiryForm() {
         <div className="grid gap-5 sm:grid-cols-2">
           <label className="block">
             <span className={labelCls}>Name</span>
-            <input type="text" required value={form.name} onChange={set('name')} className={inputCls} placeholder="Your name" />
+            <input
+              id="inq-name"
+              name="name"
+              type="text"
+              autoComplete="name"
+              required
+              value={form.name}
+              onChange={set('name')}
+              className={inputCls}
+              placeholder="Your name"
+            />
           </label>
           <label className="block">
             <span className={labelCls}>Email</span>
-            <input type="email" required value={form.email} onChange={set('email')} className={inputCls} placeholder="you@company.com" />
+            <input
+              id="inq-email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              required
+              value={form.email}
+              onChange={set('email')}
+              className={inputCls}
+              placeholder="you@company.com"
+            />
           </label>
         </div>
 
         <div className="grid gap-5 sm:grid-cols-2">
           <label className="block">
             <span className={labelCls}>Company</span>
-            <input type="text" value={form.company} onChange={set('company')} className={inputCls} placeholder="Where you operate" />
+            <input
+              id="inq-company"
+              name="organization"
+              type="text"
+              autoComplete="organization"
+              value={form.company}
+              onChange={set('company')}
+              className={inputCls}
+              placeholder="Where you operate"
+            />
           </label>
           <label className="block">
             <span className={labelCls}>
               Phone <span className="font-body text-[10px] font-normal normal-case tracking-normal">(optional)</span>
             </span>
-            <input type="tel" value={form.phone} onChange={set('phone')} className={inputCls} placeholder="(406) 555 0134" />
+            <input
+              id="inq-phone"
+              name="phone"
+              type="tel"
+              autoComplete="tel"
+              value={form.phone}
+              onChange={set('phone')}
+              className={inputCls}
+              placeholder="(406) 555 0134"
+            />
           </label>
         </div>
 
         <label className="block">
           <span className={labelCls}>What are you building?</span>
           <textarea
+            id="inq-message"
+            name="message"
+            autoComplete="off"
             required
             rows={5}
             value={form.message}
@@ -222,23 +257,18 @@ export default function InquiryForm() {
           />
         </label>
 
-        <div className="grid gap-5 sm:grid-cols-2">
-          <label className="block">
-            <span className={labelCls}>Budget</span>
-            <select required value={form.budget} onChange={set('budget')} className={inputCls}>
-              <option value="" disabled>
-                Select a range
-              </option>
-              {BUDGETS.map((b) => (
-                <option key={b.value} value={b.value}>
-                  {b.label}
-                </option>
-              ))}
-            </select>
-          </label>
+        <div className="grid gap-5">
           <label className="block">
             <span className={labelCls}>Timeline</span>
-            <select required value={form.timeline} onChange={set('timeline')} className={inputCls}>
+            <select
+              id="inq-timeline"
+              name="timeline"
+              autoComplete="off"
+              required
+              value={form.timeline}
+              onChange={set('timeline')}
+              className={inputCls}
+            >
               <option value="" disabled>
                 Select a timeline
               </option>
@@ -251,11 +281,15 @@ export default function InquiryForm() {
           </label>
         </div>
 
-        {/* The fence. It does the qualifying a price list used to do, without
-            putting a ceiling on the page. Do not soften this line. */}
+        {/* This used to carry a five-figure floor next to a budget dropdown.
+            Both came off on 2026-09-16 (Sarah): the numbers read as a gate, and
+            the plan is to lead with value rather than qualify at the door. */}
         <p className="rounded-lg border-2 border-dashed border-[#161616]/30 bg-[#FBF6EA] px-4 py-3 font-body text-[13px] leading-relaxed text-[#5c554a]">
-          Studio engagements begin in the five figures. Advisory is retained by the quarter. If
-          you are earlier than that, say so anyway and Sarah will point you somewhere useful.
+          Would rather just pick a time?{' '}
+          <a href="/book" className="font-bold text-[#1E50C8] underline decoration-2 underline-offset-2 hover:text-[#E0301E]">
+            Book a call
+          </a>{' '}
+          and put yourself straight on the calendar. This form is for when writing it out is easier.
         </p>
 
         {error && (

@@ -835,7 +835,7 @@ export default async function MustardPage({
               How the voice agent works
             </Link>{' '}
             and{' '}
-            <a className="font-bold text-[#F5B700] underline underline-offset-4" href="/inquire">
+            <a className="font-bold text-[#F5B700] underline underline-offset-4" href="/book">
               what it costs
             </a>
             .

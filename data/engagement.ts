@@ -37,7 +37,7 @@ export const STEPS: Step[] = [
     promise: 'You write. A person answers.',
     body:
       'Tell us the business, the problem, and what a good outcome looks like. Detail helps, and so does telling us what you already tried and why it did not stick. Every inquiry gets read and answered, including the ones that are not a fit, because a fast no is worth more to you than a slow maybe.',
-    yours: 'One honest note, and a budget range so nobody wastes an afternoon.',
+    yours: 'One honest note. What you have tried already is the useful part.',
     output: 'A straight answer on fit, and the first question worth arguing about.',
     clock: 'Answered inside one business day',
   },
@@ -253,8 +253,8 @@ export const ENGAGEMENT_FAQ = [
     a: 'Every engagement is scoped in one working session and quoted privately as a set package price, agreed in writing before anything is built. You see the whole cost and the whole timeline before work starts and the number does not move afterwards. There is no price list on this site because a focused site and a full operating system are not the same piece of work.',
   },
   {
-    q: 'What does an engagement begin at?',
-    a: 'Studio engagements begin in the five figures, and advisory is retained by the quarter. We say that plainly so nobody spends an afternoon finding out. If you are earlier than that, say so in your inquiry anyway and we will point you somewhere useful.',
+    q: 'Where do most people start?',
+    a: 'With the free audit, usually. It takes sixty seconds, it names the one thing quietly costing you the most, and you keep the answer whether or not you ever hire us. Most engagements begin there rather than with a sales conversation, because it is easier to decide what to build once you can see what is leaking.',
   },
   {
     q: 'How fast does it go live?',

@@ -319,7 +319,7 @@ const SIGNS = [
   { href: '/pictures', label: 'Mustard Pictures', line: 'Commercials, brand films, and social cuts, built from the real product rather than stock.', cta: 'Visit The Studio' },
   { href: '/ai-native', label: 'AI Native', line: 'Your company running on AI, with your own team operating it. Advisory and build, engaged together.', cta: 'Read The Sign' },
   { href: '/about', label: 'The Studio', line: 'A boutique design and AI studio in Kalispell, Montana, practising four disciplines and shipping all of them.', cta: 'Meet The Studio' },
-  { href: '/inquire', label: 'Begin An Engagement', line: 'Tell us what you are building. Sarah reads every inquiry herself and answers inside one business day.', cta: 'Write To Us' },
+  { href: '/audit', label: 'The Free Audit', line: 'Drop your website in and find the one thing quietly costing you the most. Sixty seconds, no card, and the answer is yours to keep.', cta: 'Run My Audit' },
 ];
 
 /**
@@ -626,18 +626,18 @@ export function JourneyTree() {
  */
 const DOORS = [
   {
-    key: 'inquire',
-    label: 'Begin An Engagement',
-    line: 'Tell us what you are building, what it has to do, and when you need it. Sarah reads every inquiry herself and answers inside one business day.',
-    cta: 'Write To Us',
-    href: '/inquire',
+    key: 'audit',
+    label: 'The Free Audit',
+    line: 'Sixty seconds on your website and you get the one thing quietly costing you the most, in plain words. No card, and the answer is yours to keep whether or not we ever work together.',
+    cta: 'Run My Audit',
+    href: '/audit',
   },
   {
-    key: 'work',
-    label: 'See The Work',
-    line: 'Case studies with the problem, the build, the stack, and what it does now. Then go poke around the live sites yourself.',
-    cta: 'Open The Portfolio',
-    href: '/work',
+    key: 'book',
+    label: 'Book A Call',
+    line: 'Pick a time that suits you and put yourself straight on the calendar. Thirty minutes with Sarah, no pitch, and you leave with a recommendation either way.',
+    cta: 'See The Calendar',
+    href: '/book',
   },
   {
     key: 'call',

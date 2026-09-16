@@ -105,13 +105,13 @@ export default function TheSystemPage() {
               </p>
               <div className="flex flex-wrap gap-3 mt-8">
                 <Link
-                  href="/inquire"
+                  href="/book"
                   className="inline-flex items-center gap-2 bg-[#161616] text-[#FBF6EA] border-2 border-[#161616] rounded-full px-7 py-4 font-sans font-bold uppercase tracking-[0.14em] text-[12px] shadow-[5px_5px_0_0_#F5B700] hover:-translate-y-0.5 transition-transform"
                 >
                   Begin An Engagement →
                 </Link>
                 <Link
-                  href="/inquire"
+                  href="/book"
                   className="inline-flex items-center gap-2 bg-white text-[#161616] border-2 border-[#161616] rounded-full px-7 py-4 font-sans font-bold uppercase tracking-[0.14em] text-[12px] shadow-[5px_5px_0_0_#161616] hover:-translate-y-0.5 transition-all"
                 >
                   See The Work

@@ -113,7 +113,7 @@ export default function CommandCenterPage() {
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link
-                  href="/inquire"
+                  href="/book"
                   className="inline-flex items-center gap-2 bg-[#161616] text-[#FBF6EA] border-2 border-[#161616] rounded-full px-7 py-4 font-sans font-bold uppercase tracking-[0.14em] text-[12px] shadow-[5px_5px_0_0_#F5B700] hover:-translate-y-0.5 transition-transform"
                 >
                   Scope mine with Sarah →
@@ -222,7 +222,7 @@ export default function CommandCenterPage() {
               built. Changes after that are included, permanently.
             </p>
             <Link
-              href="/inquire"
+              href="/book"
               className="mt-7 inline-block text-center border-2 border-[#161616] bg-[#161616] text-[#F5B700] rounded-full px-7 py-3.5 font-sans font-extrabold text-[11px] uppercase tracking-[0.16em] shadow-[4px_4px_0_0_#FBF6EA] hover:-translate-y-0.5 transition-all"
             >
               Scope mine with Sarah
@@ -282,7 +282,7 @@ export default function CommandCenterPage() {
               Sarah reads every inquiry herself and answers inside one business day.
             </p>
             <Link
-              href="/inquire"
+              href="/book"
               className="mt-7 inline-block border-2 border-[#161616] bg-[#161616] text-[#F5B700] rounded-full px-9 py-4 font-sans font-extrabold text-[12px] uppercase tracking-[0.16em] shadow-[5px_5px_0_0_rgba(22,22,22,0.3)] hover:-translate-y-0.5 transition-all"
             >
               Scope mine with Sarah →

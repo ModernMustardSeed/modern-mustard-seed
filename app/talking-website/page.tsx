@@ -162,7 +162,7 @@ export default function TalkingWebsitePage() {
               </p>
               <div className="mt-7 flex flex-wrap gap-3">
                 <Link
-                  href="/inquire"
+                  href="/book"
                   className="inline-flex items-center gap-2 bg-[#161616] text-[#FBF6EA] border-2 border-[#161616] rounded-full px-7 py-4 font-sans font-bold uppercase tracking-[0.14em] text-[12px] shadow-[5px_5px_0_0_#F5B700] hover:-translate-y-0.5 transition-transform"
                 >
                   Begin an engagement →
@@ -379,11 +379,11 @@ export default function TalkingWebsitePage() {
                 </p>
                 <p className="font-body text-[13.5px] text-[#FBF6EA]/75 mt-3 leading-relaxed max-w-xl">
                   Scoped in one conversation, quoted privately as a set package price, and it does not
-                  move afterwards. Studio engagements begin in the five figures.
+                  move afterwards. Changes to what we built stay included, permanently.
                 </p>
               </div>
               <Link
-                href="/inquire"
+                href="/book"
                 className="shrink-0 text-center border-2 border-[#F5B700] bg-[#F5B700] text-[#161616] rounded-full px-8 py-4 font-sans font-extrabold text-[11px] uppercase tracking-[0.16em] transition-all hover:-translate-y-0.5"
               >
                 Begin an engagement
@@ -504,7 +504,7 @@ export default function TalkingWebsitePage() {
             </p>
             <div className="mt-7 flex flex-wrap gap-3 justify-center">
               <Link
-                href="/inquire"
+                href="/book"
                 className="inline-block border-2 border-[#161616] bg-[#161616] text-[#F5B700] rounded-full px-9 py-4 font-sans font-extrabold text-[12px] uppercase tracking-[0.16em] shadow-[5px_5px_0_0_rgba(22,22,22,0.3)] hover:-translate-y-0.5 transition-all"
               >
                 Begin an engagement →
