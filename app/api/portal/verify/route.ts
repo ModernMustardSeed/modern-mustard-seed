@@ -31,5 +31,9 @@ export async function GET(req: Request) {
   }
 
   await setClientSessionCookie(session.email);
+  // A client's own Command Center is reached through its own address, which
+  // hands the request to us. A relative Location keeps the browser on that
+  // address; an absolute one would drag them back to ours.
+  if (next.startsWith('/office')) return new NextResponse(null, { status: 302, headers: { Location: next } });
   return NextResponse.redirect(`${origin}${next}`);
 }

@@ -35,6 +35,20 @@ export type ClientProject = {
   reviews: Array<{ key: 'google' | 'houzz' | 'facebook'; label: string; url: string }>;
   /** The project pages on their site, for jobsite signs and photo drops. */
   projects: Array<{ slug: string; title: string }>;
+  /**
+   * Their Command Center's own front: their name, their address, their
+   * marks and colours. The same app answers there; only the door is theirs.
+   */
+  office: {
+    name: string;
+    host: string;
+    /** Origins allowed to request a sign-in link that lands on the office. */
+    origins: string[];
+    logo: string;
+    logoOnDark: string;
+    colors: { ink: string; paper: string; accent: string; accent2: string };
+    guideName: string;
+  };
 };
 
 /** Built Right's project pages, as built. Keep in step with the site's build.mjs. */
@@ -74,8 +88,23 @@ export const CLIENT_PROJECTS: Record<string, ClientProject> = {
       { key: 'facebook', label: 'Facebook', url: 'https://www.facebook.com/BuiltRightInMontana/reviews' },
     ],
     projects: BUILT_RIGHT_PROJECTS,
+    office: {
+      name: 'Built Right in Montana Command Center',
+      host: 'office.builtrightinmontana.com',
+      origins: ['https://office.builtrightinmontana.com', 'https://built-right-office.vercel.app'],
+      logo: 'https://built-right-montana-demo.vercel.app/images/logo.svg',
+      logoOnDark: 'https://built-right-montana-demo.vercel.app/images/logo-footer.svg',
+      colors: { ink: '#161616', paper: '#f6f3ee', accent: '#48603c', accent2: '#9b4f2f' },
+      guideName: 'your Built Right guide',
+    },
   },
 };
+
+/** The project whose office front this origin belongs to, if any. */
+export function projectForOfficeOrigin(origin: string): ClientProject | null {
+  const o = origin.replace(/\/$/, '').toLowerCase();
+  return Object.values(CLIENT_PROJECTS).find((p) => p.office.origins.includes(o)) ?? null;
+}
 
 /** The project a signed-in client belongs to, if any. */
 export function projectForEmail(email: string): ClientProject | null {

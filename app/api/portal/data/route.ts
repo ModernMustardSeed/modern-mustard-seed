@@ -3,6 +3,7 @@ import { getClientSession } from '@/lib/client-auth';
 import { getSupabase } from '@/lib/supabase';
 import { displayForIso } from '@/lib/booking';
 import { commandCenterVisible } from '@/lib/command-center/visible';
+import { projectForEmail } from '@/lib/client-leads';
 import { googleReviewUrl as GOOGLE_REVIEW_FALLBACK } from '@/data/socials';
 
 export const runtime = 'nodejs';
@@ -222,5 +223,8 @@ export async function GET() {
 
   // The Command Center is built before it is bought; the client sees it only once Sarah shows it.
   const commandCenter = await commandCenterVisible(supabase, email);
-  return NextResponse.json({ email, client, projects, files, orders, products, bookings, audience, isDemoClient, billing, audit, googleReviewUrl, updates, posting, commandCenter });
+  // Their own front, when they have one: name, marks and colours for the office shell.
+  const proj = projectForEmail(email);
+  const office = proj ? { name: proj.office.name, business: proj.business, host: proj.office.host, logo: proj.office.logo, logoOnDark: proj.office.logoOnDark, colors: proj.office.colors, guideName: proj.office.guideName, siteUrl: proj.siteUrl, publicUrl: proj.publicUrl } : null;
+  return NextResponse.json({ email, client, projects, files, orders, products, bookings, audience, isDemoClient, billing, audit, googleReviewUrl, updates, posting, commandCenter, office });
 }
