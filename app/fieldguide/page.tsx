@@ -747,6 +747,14 @@ export default function FieldGuidePage() {
                   Free to share, print, and pass along. Send it to the friend who keeps saying they would build it if
                   they knew how.
                 </p>
+
+                <p className="mt-3 text-center text-[12px] font-body text-[#161616]/60">
+                  Read next:{' '}
+                  <Link href="/handbook" className="font-bold text-[#161616] underline underline-offset-2 decoration-[#F5B700] decoration-2">
+                    The Final Word
+                  </Link>
+                  , a Christian&apos;s handbook for AI. The Spirit has the final word. The machine is a tool.
+                </p>
               </section>
 
               <div className="pt-4">

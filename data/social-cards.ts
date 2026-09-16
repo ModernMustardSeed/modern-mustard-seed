@@ -61,6 +61,7 @@ export type SocialSet = {
 };
 
 import { FIELD_GUIDE_POSTS, FIELD_GUIDE_RULES } from './fieldguide-social';
+import { HANDBOOK_POSTS } from './handbook';
 
 /**
  * Set fifteen is assembled rather than typed out, because the same words also
@@ -116,7 +117,70 @@ const FIELD_GUIDE_SET: SocialSet = {
   ],
 };
 
+/**
+ * Set sixteen is The Final Word, assembled from data/handbook.ts the same
+ * way, so the card library, the Organic Social tab, and the page share one set
+ * of words. The cards are drawn in code by social-drafts/final-word/render.mjs.
+ */
+const HANDBOOK_SET: SocialSet = {
+  id: 'final-word',
+  name: 'The Final Word',
+  eyebrow: 'Set sixteen · Christians and AI',
+  blurb:
+    'Six cards for the free Christian handbook on AI at crossandcovenant.co/handbook, mirrored at /handbook here. The thesis on every card: the Spirit has the final word, the machine is a tool. Each caption gives away one complete idea from the handbook, so a believer who never clicks still leaves with the test, the rule, or the four-minute Google move.',
+  cta: 'crossandcovenant.co/handbook',
+  accent: '#F5B700',
+  rules: [
+    'Run them in order: Final Word first, it states the thesis. Then Never, Preferred Source, The Eight Tests, Build, and Benefits and Warnings last.',
+    'These belong in church, small group, pastor, Christian parenting, and Christian entrepreneur groups. Serve in a group for a week before posting one.',
+    'Every caption teaches one complete thing. Do not trim to a link and a hashtag.',
+    'Facebook keeps the link. Instagram cannot carry one, so the URL is typed out. X stays under 280.',
+    'Never let a caption speak as God or promise a word from God. The handbook forbids it and the audience will notice first.',
+    'Post the commercial cut (Ads Playbook, campaign 28) organically the same day as the first card.',
+  ],
+  cards: HANDBOOK_POSTS.map((p) => ({
+    file: p.file,
+    headline: p.headline,
+    use: p.use,
+    alt: p.alt,
+  })),
+  posts: HANDBOOK_POSTS.map((p, i) => ({
+    n: i + 1,
+    title: p.angle,
+    graphic: `${p.file}.png`,
+    body: p.fb.split('\n\n'),
+    variants: [
+      { label: 'Instagram (no links, the typed URL is the CTA)', text: p.ig },
+      { label: 'X (under 280)', text: p.x },
+    ],
+  })),
+  replies: [
+    {
+      q: 'Is this anti-AI?',
+      a: 'No. Chapter 6 is about carrying the gospel further with it and Chapter 7 is about building with it. The handbook is against replacing people and against letting a machine speak as God. Both columns of the ledger are in there.',
+    },
+    {
+      q: 'Is it actually free?',
+      a: 'Free, forever. No signup, no email, no paywall. Read it at crossandcovenant.co/handbook or download the PDF from the same page.',
+    },
+    {
+      q: 'What translation do you quote?',
+      a: 'The ESV, quoted exactly with book, chapter, and verse. The notice is at the bottom of the handbook.',
+    },
+    {
+      q: 'Does the Google thing really work for any website?',
+      a: 'Any domain or subdomain, yes. Not a page path. Sign in, open google.com/preferences/source, search the site, tick the box. It then shows a Preferred badge in Top Stories, AI Overviews, and AI Mode. Verified against Google help pages on 2026-09-16.',
+    },
+    {
+      q: 'Can you build something like this for our church?',
+      a: 'Yes, that is the studio. Write to us at modernmustardseed.com/inquire and bring the idea.',
+      warn: 'Only once the person has asked. The set works because it gives the handbook away first.',
+    },
+  ],
+};
+
 export const SOCIAL_SETS: SocialSet[] = [
+  HANDBOOK_SET,
   FIELD_GUIDE_SET,
   {
     id: 'missed-calls',

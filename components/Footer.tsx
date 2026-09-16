@@ -73,6 +73,7 @@ export default function Footer() {
         { label: 'Or Write Instead', href: '/inquire' },
         { label: 'The Mustard Seed World', href: '/world' },
         { label: 'Journal', href: '/blog' },
+        { label: 'The Final Word', href: '/handbook' },
         { label: 'About', href: '/about' },
         { label: 'Sarah Scarano', href: '/sarahscarano' },
         { label: 'Contact', href: '/contact' },

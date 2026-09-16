@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { FIELD_GUIDE_POSTS } from '@/data/fieldguide-social';
+import { HANDBOOK_POSTS } from '@/data/handbook';
 
 /**
  * THE ORGANIC SOCIAL LIBRARY, inside the Ads Playbook.
@@ -253,8 +254,27 @@ const GUIDE_POSTS: Post[] = FIELD_GUIDE_POSTS.map((p) => ({
   x: p.x,
 }));
 
-/** Both sets, one library. Mr. Mustard first, the guide behind him. */
-const ALL_POSTS: Post[] = [...POSTS, ...GUIDE_POSTS];
+/**
+ * SET THREE: THE FINAL WORD (/handbook, canonical at crossandcovenant.co).
+ *
+ * The words live in data/handbook.ts beside the handbook itself, so the card
+ * library at /admin/social-cards, this tab, and the page can never drift.
+ * These give a free thing away to a believer, so every caption teaches one
+ * complete, true thing on its own, the same rule as the field guide set.
+ */
+const HANDBOOK_SOCIAL: Post[] = HANDBOOK_POSTS.map((p) => ({
+  id: p.id,
+  angle: p.angle,
+  use: p.use,
+  card: `final-word/${p.file}`,
+  topic: 'The Final Word',
+  fb: p.fb,
+  ig: p.ig,
+  x: p.x,
+}));
+
+/** All three sets, one library. Mr. Mustard first, the guide, then the handbook. */
+const ALL_POSTS: Post[] = [...POSTS, ...GUIDE_POSTS, ...HANDBOOK_SOCIAL];
 
 const X_ADS = [
   { id: 'x-objective', label: 'Objective: Website traffic. X does not have a call objective, so the phone number lives in the post text and the link goes to /mustard.' },
