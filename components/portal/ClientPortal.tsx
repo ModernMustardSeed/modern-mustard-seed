@@ -10,6 +10,7 @@ import DeskWelcome from '@/components/DeskWelcome';
 import { PostingTile, LeadsCard, ArticlesCard } from '@/components/portal/PortalExtras';
 import { ConversationsCard, DomainsCard, AccountsCard } from '@/components/portal/CommandCenter';
 import { TodayCard, CampaignsCard, MailCard } from '@/components/portal/CommandCenterMore';
+import { ProjectPhotosCard, ReviewsCard } from '@/components/portal/CommandCenterOps';
 import { CLIENT_HELP } from '@/lib/help-content';
 import { OnboardingChecklist, OnboardingIntake } from '@/components/portal/Onboarding';
 import LaunchChecklist from '@/components/portal/LaunchChecklist';
@@ -273,6 +274,8 @@ export default function ClientPortal() {
             {(data.audience === 'client' || data.audience === 'both') && <MailCard />}
             {(data.audience === 'client' || data.audience === 'both') && <ConversationsCard />}
             {(data.audience === 'client' || data.audience === 'both') && <CampaignsCard />}
+            {(data.audience === 'client' || data.audience === 'both') && <ReviewsCard />}
+            {(data.audience === 'client' || data.audience === 'both') && <ProjectPhotosCard />}
             {(data.audience === 'client' || data.audience === 'both') && <ArticlesCard />}
             {(data.audience === 'client' || data.audience === 'both') && <DomainsCard />}
             {(data.audience === 'client' || data.audience === 'both') && <AccountsCard />}

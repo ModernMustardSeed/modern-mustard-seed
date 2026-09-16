@@ -56,11 +56,11 @@ export function TodayCard() {
 /* ------------------------------------------------------------------ */
 
 type Campaign = { id: string; code: string; label: string; medium: string; path: string; scans: number; leads: number; created_at: string; url: string; scansThisWeek: number };
-const MEDIUM_WORD: Record<string, string> = { sign: 'Sign', truck: 'Truck or trailer', card: 'Business card', print: 'Flyer or brochure', ad: 'Ad', mail: 'Mailer', other: 'Other' };
+const MEDIUM_WORD: Record<string, string> = { sign: 'Yard sign', jobsite: 'Jobsite sign', truck: 'Truck or trailer', card: 'Business card', print: 'Flyer or brochure', ad: 'Ad', mail: 'Mailer', other: 'Other' };
 
 export function CampaignsCard() {
   const [items, setItems] = useState<Campaign[] | null | undefined>(undefined);
-  const [pages, setPages] = useState<string[]>(['/']);
+  const [pages, setPages] = useState<Array<{ path: string; label: string; group: string }>>([{ path: '/', label: 'Home page', group: 'Pages' }]);
   const [base, setBase] = useState('');
   const [label, setLabel] = useState('');
   const [medium, setMedium] = useState('sign');
@@ -72,7 +72,7 @@ export function CampaignsCard() {
   const load = useCallback(async () => {
     try {
       const r = await fetch('/api/portal/campaigns');
-      const j = (r.ok ? await r.json() : null) as { campaigns?: Campaign[] | null; pages?: string[]; base?: string } | null;
+      const j = (r.ok ? await r.json() : null) as { campaigns?: Campaign[] | null; pages?: Array<{ path: string; label: string; group: string }>; base?: string } | null;
       setItems(j?.campaigns ?? null);
       if (j?.pages) setPages(j.pages);
       if (j?.base) setBase(j.base);
@@ -131,8 +131,12 @@ export function CampaignsCard() {
             ))}
           </select>
           <select value={path} onChange={(e) => setPath(e.target.value)} className={INPUT}>
-            {pages.map((p) => (
-              <option key={p} value={p}>{p === '/' ? 'Home page' : p}</option>
+            {[...new Set(pages.map((p) => p.group))].map((g) => (
+              <optgroup key={g} label={g}>
+                {pages.filter((p) => p.group === g).map((p) => (
+                  <option key={p.path} value={p.path}>{p.label}</option>
+                ))}
+              </optgroup>
             ))}
           </select>
         </div>

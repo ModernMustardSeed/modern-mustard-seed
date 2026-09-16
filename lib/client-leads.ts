@@ -31,7 +31,25 @@ export type ClientProject = {
   emailDomain: string | null;
   /** The Google Business Profile, when one exists, for the reviews and profile links. */
   googleProfile: { reviewUrl: string | null; mapsUrl: string | null } | null;
+  /** Where a happy customer leaves a review. Google first, Houzz for a builder. */
+  reviews: Array<{ key: 'google' | 'houzz' | 'facebook'; label: string; url: string }>;
+  /** The project pages on their site, for jobsite signs and photo drops. */
+  projects: Array<{ slug: string; title: string }>;
 };
+
+/** Built Right's project pages, as built. Keep in step with the site's build.mjs. */
+const BUILT_RIGHT_PROJECTS = [
+  { slug: 'kalispell-montana-mountain-views', title: 'Kalispell Montana Mountain Views' },
+  { slug: 'mountain-modern-living-flathead-montana', title: 'Mountain Modern Living Flathead Montana' },
+  { slug: 'montana-lakefront-luxury-retreat', title: 'Montana Lakefront Luxury Retreat' },
+  { slug: 'secluded-flathead-montana-luxury', title: 'Secluded Flathead Montana Luxury' },
+  { slug: 'barndominium-flathead-montana', title: 'Barndominium Flathead Montana Style' },
+  { slug: 'river-frontage-montana-style', title: 'River Frontage Montana Style' },
+  { slug: 'montana-luxury-log-cabin', title: 'Montana Luxury Log Cabin' },
+  { slug: 'modern-living-montana-built', title: 'Modern Living Montana Built' },
+  { slug: 'glacier-park-retreat', title: 'Glacier Park Retreat' },
+  { slug: 'flathead-lake-luxury-remodel', title: 'Flathead Lake Luxury Remodel' },
+];
 
 export const CLIENT_PROJECTS: Record<string, ClientProject> = {
   'built-right': {
@@ -47,7 +65,15 @@ export const CLIENT_PROJECTS: Record<string, ClientProject> = {
     assistantId: '5269bb2d-360f-4bf6-a07b-509ae488b482',
     crm: 'buildertrend',
     emailDomain: 'brimhomes.com',
-    googleProfile: null,
+    // The profile exists (Google business id 510096537776531516). A short review
+    // link needs manager access; until Carmen adds Sarah, the listing itself is the door.
+    googleProfile: { reviewUrl: 'https://www.google.com/maps?cid=510096537776531516', mapsUrl: 'https://www.google.com/maps?cid=510096537776531516' },
+    reviews: [
+      { key: 'google', label: 'Google', url: 'https://www.google.com/maps?cid=510096537776531516' },
+      { key: 'houzz', label: 'Houzz', url: 'https://www.houzz.com/professionals/home-builders/built-right-in-montana-llc-pfvwus-pf~1763541567' },
+      { key: 'facebook', label: 'Facebook', url: 'https://www.facebook.com/BuiltRightInMontana/reviews' },
+    ],
+    projects: BUILT_RIGHT_PROJECTS,
   },
 };
 

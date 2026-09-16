@@ -14,8 +14,8 @@ import type { ClientProject } from '@/lib/client-leads';
 
 export type Campaign = { id: string; code: string; label: string; medium: string; path: string; scans: number; leads: number; archived_at: string | null; created_at: string };
 
-export const MEDIA = ['sign', 'truck', 'card', 'print', 'ad', 'mail', 'other'] as const;
-export const MEDIUM_WORD: Record<string, string> = { sign: 'Sign', truck: 'Truck or trailer', card: 'Business card', print: 'Flyer or brochure', ad: 'Ad', mail: 'Mailer', other: 'Other' };
+export const MEDIA = ['sign', 'jobsite', 'truck', 'card', 'print', 'ad', 'mail', 'other'] as const;
+export const MEDIUM_WORD: Record<string, string> = { sign: 'Yard sign', jobsite: 'Jobsite sign', truck: 'Truck or trailer', card: 'Business card', print: 'Flyer or brochure', ad: 'Ad', mail: 'Mailer', other: 'Other' };
 
 /** The link the QR opens. Always the real domain: signs outlive hosting. */
 export function campaignUrl(p: ClientProject, c: { code: string; path: string }): string {

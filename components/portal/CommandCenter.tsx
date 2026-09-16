@@ -372,7 +372,10 @@ export function AccountsCard() {
       )}
 
       <div className="border-t-2 border-[#161616]/10 pt-4">
-        <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#161616]/55 font-bold mb-2">How your Command Center works</p>
+        <div className="flex items-center justify-between gap-3 mb-2">
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#161616]/55 font-bold">How your Command Center works</p>
+          <a href="/api/portal/manual" target="_blank" rel="noopener noreferrer" className="text-[10px] uppercase tracking-[0.2em] font-mono font-bold text-[#1E50C8] hover:text-[#161616]">Print the owner&apos;s manual ↗</a>
+        </div>
         <ul className="divide-y divide-[#161616]/10">
           {cc.guide.map((g, i) => (
             <li key={g.title} className="py-2">

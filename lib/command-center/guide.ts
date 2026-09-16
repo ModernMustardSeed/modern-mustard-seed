@@ -62,6 +62,26 @@ export function clientGuide(p: ClientProject): GuideSection[] {
       ],
     },
     {
+      title: 'Reviews',
+      lines: [
+        'When a job closes, type the homeowner\'s name and email (or mobile) and one short note goes out from the business with the places to leave a review, Google first, then Houzz. Add a personal line if you want; otherwise it thanks them for building with you.',
+        'Every ask is kept on the card so nobody is asked twice. Reviews on Google outrank the website for a local builder; this is the cheapest thing you can do for the phone.',
+      ],
+    },
+    {
+      title: 'Project photos',
+      lines: [
+        'Pick a project, drop the photos, and they go on that project\'s page at the next build of the website. The card shows which are live and which are waiting. A photo you sent by mistake can be taken back until it is on the page.',
+        'The same photos are there for Daily Posting to use, so a finished house gets its page and its posts from one drop.',
+      ],
+    },
+    {
+      title: 'The monthly page',
+      lines: [
+        'On the first of every month you and Carmen get one email: last month by the numbers. Leads by door and by sign, chat conversations, replies sent, posts that went out, photos added, review asks, and any domain renewing in the next sixty days. Every line is a count from your own records.',
+      ],
+    },
+    {
       title: 'Your mail',
       lines: [
         'Connect your mailbox once with an app password from Google (2-Step Verification on, then Security, App passwords, "Mail"). We read your inbox twice an hour and sort it: new inquiries, customers, subs and suppliers, money, newsletters, notifications, everything else.',
@@ -100,7 +120,9 @@ export function deskGuide(p: ClientProject): GuideSection[] {
       lines: [
         'A visitor fills a form or chats. The lead is saved, texted and emailed to them, the visitor is thanked, and the lead is pushed into Buildertrend through their Lead Contact Form. If Buildertrend refuses (a captcha on their form is the only cause), the refusal is written on the lead and shown in their portal with the fix: ask Buildertrend support to turn the captcha off.',
         'Monday 7:35 AM: the leads digest. Monday 8:12 AM: every domain re-read from the registry; anything inside 45 days lands in your inbox. Every hour at :07 and :37: their inbox is read over IMAP, new mail is sorted by a queued LLM job, and replies are drafted; nothing sends without their click.',
-        'QR codes: each campaign is a code in the link (?src=). The site posts a scan to /api/client-visit and carries the code on every lead, so scans and leads are counted per sign.',
+        'QR codes: each campaign is a code in the link (?src=). The site posts a scan to /api/client-visit and carries the code on every lead, so scans and leads are counted per sign. Jobsite signs are the same thing pointed at a project page.',
+        'Project photos land in client_project_photos as `new`; the site build reads them onto /projects/<slug> and marks them `live`. Review asks send by email through Resend from the business (reply-to Shan) and by text when Twilio is back; each is logged in client_review_requests. The monthly page goes out the 1st at 8:23 AM from /api/cron/client-monthly-report (the cron fires daily and the route sends only on the 1st; ?force=1 sends a test).',
+        'The owner\'s manual at /api/portal/manual is the How-it-works words set for paper; print to PDF from the browser, so it can never drift from the portal.',
         'Daily Posting plans at 7:35 PM and publishes on the hour. Their Hidden Gems articles come in through the Articles card; you write the summary, the site session puts it on /blog.',
       ],
     },

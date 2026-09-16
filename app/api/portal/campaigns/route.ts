@@ -30,7 +30,17 @@ export async function GET() {
   const { data: week } = await sb.from('client_visits').select('campaign_code').eq('client_email', session.email).gte('created_at', since);
   const weekBy = new Map<string, number>();
   for (const v of week ?? []) weekBy.set(v.campaign_code as string, (weekBy.get(v.campaign_code as string) ?? 0) + 1);
-  const pages = ['/', '/contact', '/projects', '/services', '/about', '/custom-homes-kalispell-mt', '/custom-homes-whitefish-mt', '/custom-homes-bigfork-mt', '/custom-homes-eureka-mt', '/custom-homes-columbia-falls-mt', '/custom-homes-lakeside-mt', '/custom-homes-polson-mt', '/blog', '/community', '/faq'];
+  const pages: Array<{ path: string; label: string; group: string }> = [
+    { path: '/', label: 'Home page', group: 'Pages' },
+    { path: '/contact', label: 'Contact', group: 'Pages' },
+    { path: '/projects', label: 'Projects', group: 'Pages' },
+    { path: '/services', label: 'Services', group: 'Pages' },
+    { path: '/about', label: 'About', group: 'Pages' },
+    { path: '/blog', label: 'Blog', group: 'Pages' },
+    { path: '/community', label: 'Community', group: 'Pages' },
+    ...['kalispell', 'whitefish', 'bigfork', 'eureka', 'columbia-falls', 'lakeside', 'polson'].map((t) => ({ path: `/custom-homes-${t}-mt`, label: `Custom homes, ${t.replace('-', ' ').replace(/\b\w/g, (c) => c.toUpperCase())}`, group: 'Towns' })),
+    ...project.projects.map((p) => ({ path: `/projects/${p.slug}`, label: p.title, group: 'Projects (jobsite signs)' })),
+  ];
   return NextResponse.json({
     campaigns: rows.map((c) => ({ ...c, url: campaignUrl(project, c), scansThisWeek: weekBy.get(c.code) ?? 0 })),
     pages,
