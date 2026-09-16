@@ -1,5 +1,142 @@
 import type { NextConfig } from 'next';
 
+/**
+ * SECURITY HEADERS.
+ *
+ * Added 2026-09-16 after an outside audit flagged a missing Content Security
+ * Policy and missing frame protection. Before this the site served exactly one
+ * security header, Strict-Transport-Security, and nothing else.
+ *
+ * ── Why the CSP is split in two ──
+ *
+ * A Content Security Policy written from guesswork breaks a site silently: the
+ * browser blocks a request, nothing throws, and a form or a video or the voice
+ * widget simply stops working with no error anybody sees.
+ *
+ * The riskiest thing here is the voice agent. @vapi-ai/web runs the call over
+ * Daily's WebRTC stack, which opens websockets and media connections to a set
+ * of origins that a census of ordinary page loads never sees, because none of
+ * it loads until somebody presses the button.
+ *
+ * So the policy ships in two parts:
+ *
+ *   ENFORCED    the directives that cannot break a working page and close the
+ *               holes the audit named: framing, base tag injection, plugin
+ *               embedding, form hijacking, mixed content.
+ *
+ *   REPORT-ONLY the full lockdown, including script-src and connect-src.
+ *               Browsers report violations to the console without blocking
+ *               anything, so the allow-list can be completed from real traffic
+ *               and then promoted into the enforced policy.
+ *
+ * To promote it: watch the console on the homepage, /book, /audit and a real
+ * voice call, fold every violated origin into the lists below, then move the
+ * directives from REPORT_ONLY_CSP into ENFORCED_CSP.
+ *
+ * ── The allow-lists ──
+ *
+ * Measured, not guessed. A crawl of 24 public pages found the browser touching
+ * only this origin plus Google Analytics. The rest below are origins the code
+ * can reach but the crawl did not trigger: the Meta Pixel (env-gated), Vapi and
+ * Daily (voice), YouTube (the video component), and Google Fonts (two pages
+ * that load a face at runtime rather than through next/font).
+ */
+const SELF = "'self'";
+
+const GOOGLE_ANALYTICS = [
+  'https://www.googletagmanager.com',
+  'https://www.google-analytics.com',
+  'https://analytics.google.com',
+  'https://stats.g.doubleclick.net',
+  'https://www.google.com',
+  'https://googleads.g.doubleclick.net',
+];
+
+const META_PIXEL = ['https://connect.facebook.net', 'https://www.facebook.com'];
+
+// The voice agent. Vapi brokers the call, Daily carries the audio.
+const VOICE = [
+  'https://api.vapi.ai',
+  'wss://api.vapi.ai',
+  'https://*.daily.co',
+  'wss://*.daily.co',
+  'https://*.wss.daily.co',
+];
+
+const GOOGLE_FONTS = ['https://fonts.googleapis.com', 'https://fonts.gstatic.com'];
+
+/**
+ * ENFORCED. Every directive here is one that cannot break a page that already
+ * works, and between them they close what the audit flagged.
+ *
+ * frame-ancestors 'none' is the frame protection. Nothing embeds this site, so
+ * denying it outright costs nothing and stops clickjacking.
+ */
+const ENFORCED_CSP = [
+  // ⚠️ NO default-src HERE, ON PURPOSE.
+  //
+  // The first version of this policy carried
+  // `default-src 'self' https: data: blob:` and it broke the entire site in
+  // testing: script-src and style-src fall back to default-src, that value has
+  // no 'unsafe-inline', and so every Next.js hydration script and every React
+  // inline style was refused. 281 violations across 28 pages, and the failure
+  // mode is a page that renders and then never wakes up.
+  //
+  // None of the directives below fall back to default-src, so leaving it out
+  // means this policy restricts exactly what it names and nothing else. The
+  // full lockdown lives in REPORT_ONLY_CSP until its allow-list is proven.
+  "frame-ancestors 'none'",
+  "base-uri 'self'",
+  "object-src 'none'",
+  // Every form on the site posts to our own API via fetch. Stripe is reached by
+  // redirect rather than by form post, so 'self' is the whole truth.
+  "form-action 'self'",
+  'upgrade-insecure-requests',
+].join('; ');
+
+/**
+ * REPORT-ONLY. The real lockdown, reporting rather than blocking until the
+ * allow-list is proven against a live voice call.
+ *
+ * script-src keeps 'unsafe-inline' deliberately. Next.js emits inline hydration
+ * scripts and the gtag bootstrap is inline, so removing it needs a nonce, and a
+ * nonce forces every page to render dynamically, which would cost the whole
+ * static cache. That trade is worth making separately, not silently.
+ */
+const REPORT_ONLY_CSP = [
+  "default-src 'self'",
+  `script-src ${[SELF, "'unsafe-inline'", "'unsafe-eval'", ...GOOGLE_ANALYTICS, ...META_PIXEL].join(' ')}`,
+  `style-src ${[SELF, "'unsafe-inline'", ...GOOGLE_FONTS].join(' ')}`,
+  `font-src ${[SELF, 'data:', ...GOOGLE_FONTS].join(' ')}`,
+  `img-src ${[SELF, 'data:', 'blob:', 'https:'].join(' ')}`,
+  `media-src ${[SELF, 'data:', 'blob:'].join(' ')}`,
+  `connect-src ${[SELF, ...GOOGLE_ANALYTICS, ...META_PIXEL, ...VOICE].join(' ')}`,
+  `frame-src ${[SELF, 'https://www.youtube.com', 'https://www.youtube-nocookie.com', 'https://*.daily.co'].join(' ')}`,
+  `worker-src ${[SELF, 'blob:'].join(' ')}`,
+  "frame-ancestors 'none'",
+  "base-uri 'self'",
+  "object-src 'none'",
+  "form-action 'self'",
+].join('; ');
+
+const SECURITY_HEADERS = [
+  { key: 'Content-Security-Policy', value: ENFORCED_CSP },
+  { key: 'Content-Security-Policy-Report-Only', value: REPORT_ONLY_CSP },
+  // Belt and braces with frame-ancestors, for anything that still reads this.
+  { key: 'X-Frame-Options', value: 'DENY' },
+  { key: 'X-Content-Type-Options', value: 'nosniff' },
+  { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+  // The microphone stays open to our own origin or the voice agent dies.
+  {
+    key: 'Permissions-Policy',
+    value: 'accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(self), payment=(self), usb=()',
+  },
+  // allow-popups, not same-origin: Stripe and OAuth open windows.
+  { key: 'Cross-Origin-Opener-Policy', value: 'same-origin-allow-popups' },
+  // Two years, subdomains, and preload-eligible. It was two years and nothing else.
+  { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains; preload' },
+];
+
 const config: NextConfig = {
   reactStrictMode: true,
   // Dev-only: without this, hitting the dev server as 127.0.0.1 (how most of
@@ -72,6 +209,9 @@ const config: NextConfig = {
     // The portfolio page at /sarahscarano renders the project images the gallery
     // already serves, so the two never drift.
     remotePatterns: [{ protocol: 'https', hostname: 'sarahscarano.com', pathname: '/images/web/**' }],
+  },
+  async headers() {
+    return [{ source: '/:path*', headers: SECURITY_HEADERS }];
   },
   async rewrites() {
     return [
