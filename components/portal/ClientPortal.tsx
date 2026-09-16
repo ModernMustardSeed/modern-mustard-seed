@@ -1476,10 +1476,10 @@ function DownloadRow({ sessionId, productName }: { sessionId: string; productNam
 }
 
 /* In-portal AI guide with a one-tap guided tour. */
-function PortalAssistant({ firstName, audience, onNoteSent }: { firstName: string; audience: string; onNoteSent?: () => void }) {
+export function PortalAssistant({ firstName, audience, onNoteSent, intro }: { firstName: string; audience: string; onNoteSent?: () => void; intro?: string }) {
   const greeting: Msg = {
     role: 'assistant',
-    text: `Hi ${firstName}. I am Mr. Mustard Seed, your guide. I can walk you through your portal, explain where your project stands, or pass a change or note straight to Sarah. Just tell me what you need.`,
+    text: intro ?? `Hi ${firstName}. I am Mr. Mustard Seed, your guide. I can walk you through your portal, explain where your project stands, or pass a change or note straight to Sarah. Just tell me what you need.`,
   };
   const [messages, setMessages] = useState<Msg[]>([greeting]);
   const [input, setInput] = useState('');

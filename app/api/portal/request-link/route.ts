@@ -3,6 +3,7 @@ import { resendClient } from '@/lib/send-email';
 import { createMagicToken, normalizeEmail } from '@/lib/client-auth';
 import { magicLinkEmail } from '@/lib/email';
 import { getSupabase } from '@/lib/supabase';
+import { projectForOfficeOrigin } from '@/lib/client-leads';
 
 export const runtime = 'nodejs';
 
@@ -14,7 +15,7 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
  * carries a 20-minute signed token to /api/portal/verify.
  */
 export async function POST(req: Request) {
-  let body: { email?: string; next?: string };
+  let body: { email?: string; next?: string; origin?: string };
   try {
     body = await req.json();
   } catch {
@@ -49,17 +50,21 @@ export async function POST(req: Request) {
 
   try {
     const token = await createMagicToken(email);
-    const origin = new URL(req.url).origin || 'https://modernmustardseed.com';
+    // A client's own Command Center front asks from its own origin, so the
+    // link lands there and the session cookie belongs to their address.
+    // Only an origin we issued counts; anything else gets our own.
+    const officeProject = typeof body.origin === 'string' ? projectForOfficeOrigin(body.origin) : null;
+    const origin = officeProject ? body.origin!.replace(/\/$/, '') : new URL(req.url).origin || 'https://modernmustardseed.com';
     const url = `${origin}/api/portal/verify?token=${encodeURIComponent(token)}${next ? `&next=${encodeURIComponent(next)}` : ''}`;
 
     const apiKey = process.env.RESEND_API_KEY;
     if (apiKey) {
       const resend = resendClient();
       await resend.emails.send({
-        from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
+        from: officeProject ? `${officeProject.business} <sarah@modernmustardseed.com>` : 'Modern Mustard Seed <sarah@modernmustardseed.com>',
         to: email,
         replyTo: 'sarah@modernmustardseed.com',
-        subject: 'Your Modern Mustard Seed sign-in link',
+        subject: officeProject ? `Your ${officeProject.office.name} sign-in link` : 'Your Modern Mustard Seed sign-in link',
         html: magicLinkEmail({ firstName, url }),
       });
     } else {
