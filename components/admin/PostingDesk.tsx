@@ -170,8 +170,10 @@ function ClientDetail({ d, act, busy, onNotice, client }: { d: Detail; act: Act;
       </div>
 
       {tab === 'words' ? (
-        <WordsPanel guide={d.guide} clientGuide={d.clientGuide} business={s.business_name} />
-        {d.commandCenter && <WordsPanel guide={d.commandCenter.guide} clientGuide={d.commandCenter.clientGuide} business={s.business_name} heading="The Command Center" source="lib/command-center/guide.ts" />}
+        <div className="space-y-6">
+          <WordsPanel guide={d.guide} clientGuide={d.clientGuide} business={s.business_name} />
+          {d.commandCenter && <WordsPanel guide={d.commandCenter.guide} clientGuide={d.commandCenter.clientGuide} business={s.business_name} heading="The Command Center" source="lib/command-center/guide.ts" />}
+        </div>
       ) : (
         <div className="grid gap-6 lg:grid-cols-3">
           <div className="space-y-6 lg:col-span-2">
