@@ -9,6 +9,7 @@ import MustardDeskCall from '@/components/MustardDeskCall';
 import DeskWelcome from '@/components/DeskWelcome';
 import { PostingTile, LeadsCard, ArticlesCard } from '@/components/portal/PortalExtras';
 import { ConversationsCard, DomainsCard, AccountsCard } from '@/components/portal/CommandCenter';
+import { TodayCard, CampaignsCard, MailCard } from '@/components/portal/CommandCenterMore';
 import { CLIENT_HELP } from '@/lib/help-content';
 import { OnboardingChecklist, OnboardingIntake } from '@/components/portal/Onboarding';
 import LaunchChecklist from '@/components/portal/LaunchChecklist';
@@ -266,9 +267,12 @@ export default function ClientPortal() {
               </div>
             )}
 
+            {(data.audience === 'client' || data.audience === 'both') && <TodayCard />}
             {data.posting && <PostingTile />}
             {(data.audience === 'client' || data.audience === 'both') && <LeadsCard />}
+            {(data.audience === 'client' || data.audience === 'both') && <MailCard />}
             {(data.audience === 'client' || data.audience === 'both') && <ConversationsCard />}
+            {(data.audience === 'client' || data.audience === 'both') && <CampaignsCard />}
             {(data.audience === 'client' || data.audience === 'both') && <ArticlesCard />}
             {(data.audience === 'client' || data.audience === 'both') && <DomainsCard />}
             {(data.audience === 'client' || data.audience === 'both') && <AccountsCard />}

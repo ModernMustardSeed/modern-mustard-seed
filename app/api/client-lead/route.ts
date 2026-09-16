@@ -6,6 +6,7 @@ import { sendSms, toE164 } from '@/lib/sms';
 import { SITE } from '@/lib/seo';
 import { CLIENT_PROJECTS, PRIORITY_LABEL, confirmVisitor, priorityFromLand } from '@/lib/client-leads';
 import { pushLeadToBuildertrend } from '@/lib/buildertrend';
+import { creditLead, isCode } from '@/lib/campaigns';
 import { checkAnswer } from '@/lib/human-check';
 
 export const runtime = 'nodejs';
@@ -118,6 +119,9 @@ export async function POST(req: Request) {
 
   const lead: Record<string, string | null> = {};
   for (const f of FIELDS) lead[f] = str(body[f], f === 'message' ? 4000 : 300);
+  // The sign they scanned, if the site remembered one. Only a code we issued counts.
+  const campaignRaw = String(body.campaign ?? body.src ?? '').trim().toLowerCase();
+  const campaign = isCode(campaignRaw) ? campaignRaw : null;
   const elapsed = Number(body.elapsed_ms);
   const elapsedMs = Number.isFinite(elapsed) && elapsed >= 0 ? Math.min(Math.round(elapsed), 86_400_000) : null;
   // Bots: the honeypot, or a filled message inside three seconds of the page loading. Say nothing, keep nothing.
@@ -164,7 +168,7 @@ export async function POST(req: Request) {
   const emailKey = lead.email?.toLowerCase() ?? null;
   const { data: recent } = await sb
     .from('client_leads')
-    .select('id, phone, email, sources, answers, message, name, town, project_type, land, page, priority, sms_consent, sms_promo, confirmed')
+    .select('id, phone, email, sources, answers, message, name, town, project_type, land, page, priority, sms_consent, sms_promo, confirmed, campaign')
     .eq('client_email', project.clientEmail)
     .gte('created_at', since)
     .order('created_at', { ascending: false })
@@ -184,14 +188,16 @@ export async function POST(req: Request) {
     if (smsConsent != null) patch.sms_consent = smsConsent || Boolean(existing.sms_consent);
     if (smsPromo != null) patch.sms_promo = smsPromo || Boolean(existing.sms_promo);
     if (elapsedMs != null) patch.elapsed_ms = elapsedMs;
+    if (campaign && !existing.campaign) patch.campaign = campaign;
     await sb.from('client_leads').update(patch).eq('id', existing.id as string);
     id = existing.id as string;
     merged = true;
   } else {
-    const row = { client_email: project.clientEmail, project: project.key, source, sources: [source], ...lead, answers, priority, sms_consent: smsConsent, sms_promo: smsPromo, elapsed_ms: elapsedMs, ip_hash: ipHash, ua };
+    const row = { client_email: project.clientEmail, project: project.key, source, sources: [source], ...lead, campaign, answers, priority, sms_consent: smsConsent, sms_promo: smsPromo, elapsed_ms: elapsedMs, ip_hash: ipHash, ua };
     const { data, error } = await sb.from('client_leads').insert(row).select('id').single();
     if (error || !data) return reply({ ok: false, error: 'could not save' }, 500);
     id = data.id as string;
+    if (campaign) await creditLead(sb, project.clientEmail, campaign);
   }
 
   // Tell the client, twice. Plain words, everything they need to call back.
@@ -280,6 +286,7 @@ export async function POST(req: Request) {
         land: lead.land ?? (existing?.land as string | null) ?? null,
         message: lead.message ?? (existing?.message as string | null) ?? null,
         page: lead.page ?? null,
+        campaign: campaign ?? (existing?.campaign as string | null) ?? null,
         source,
         referrer_name: lead.referrer_name ?? null,
         answers: answers ?? ((existing?.answers as Array<{ q: string; a: string }> | null) ?? null),

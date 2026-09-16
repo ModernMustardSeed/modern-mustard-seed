@@ -16,6 +16,8 @@ export type ClientProject = {
   clientEmail: string;
   business: string;
   siteUrl: string;
+  /** The domain that outlives hosting. QR codes and printed links point here. */
+  publicUrl: string;
   origins: string[];
   notify: { phone: string | null; emails: string[] };
   /** Who answers the phone, by first name, for the visitor's confirmation. */
@@ -37,6 +39,7 @@ export const CLIENT_PROJECTS: Record<string, ClientProject> = {
     clientEmail: 'builtbyshan@gmail.com',
     business: 'Built Right in Montana',
     siteUrl: 'https://built-right-montana-demo.vercel.app',
+    publicUrl: 'https://builtrightinmontana.com',
     origins: ['https://built-right-montana-demo.vercel.app', 'https://builtrightinmontana.com', 'https://www.builtrightinmontana.com', 'https://built-right-prep.vercel.app'],
     notify: { phone: '(406) 471-5613', emails: ['builtbyshan@gmail.com'] },
     answers: 'Carmen',
