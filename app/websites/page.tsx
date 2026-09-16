@@ -47,7 +47,7 @@ const FAQ = [
   },
   {
     q: 'How much does a website cost?',
-    a: 'There is no price list, because a five page site for one town and a full engine with booking, a CRM, and a store are not the same piece of work. Every engagement is scoped in one conversation and quoted privately as a set package price, agreed in writing before anything is built. That number does not move, and changes to what we built are included permanently. Studio engagements begin in the five figures.',
+    a: 'There is no price list, because a five page site for one town and a full engine with booking, a CRM, and a store are not the same piece of work. Every engagement is scoped in one conversation and quoted privately as a set package price, agreed in writing before anything is built. That number does not move, and changes to what we built are included permanently.',
   },
   {
     q: 'How fast does it go live?',
@@ -131,7 +131,7 @@ export default function WebsitesPage() {
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link
-                  href="/inquire"
+                  href="/book"
                   className="inline-flex items-center gap-2 bg-[#161616] text-[#FBF6EA] border-2 border-[#161616] rounded-full px-7 py-4 font-sans font-bold uppercase tracking-[0.14em] text-[12px] shadow-[5px_5px_0_0_#F5B700] hover:-translate-y-0.5 transition-transform"
                 >
                   Begin an engagement →
@@ -324,7 +324,7 @@ export default function WebsitesPage() {
               </div>
               <div className="mt-7">
                 <Link
-                  href="/inquire"
+                  href="/book"
                   className="inline-flex items-center gap-2 bg-[#161616] text-[#F5B700] border-2 border-[#161616] rounded-full px-7 py-4 font-sans font-bold uppercase tracking-[0.14em] text-[12px] shadow-[5px_5px_0_0_#F5B700] hover:-translate-y-0.5 transition-transform"
                 >
                   Scope my store →
@@ -419,18 +419,18 @@ export default function WebsitesPage() {
             <div className="flex flex-col md:flex-row md:items-center gap-6 md:gap-10">
               <div className="flex-1">
                 <p className="font-mono font-bold text-[10px] uppercase tracking-[0.2em] text-[#161616]">
-                  Before you write
+                  Start here
                 </p>
                 <p className="font-display italic font-extrabold text-2xl md:text-[1.9rem] mt-2 leading-[1.1] text-[#161616]">
-                  Studio engagements begin in the five figures.
+                  See what your site is costing you first.
                 </p>
                 <p className="font-body text-[13.5px] text-[#161616]/80 mt-3 leading-relaxed max-w-xl">
-                  Said plainly so nobody wastes an afternoon. If you are earlier than that, say so in
-                  your note anyway and Sarah will point you somewhere useful.
+                  The audit takes sixty seconds, names the one thing quietly leaking the most, and
+                  the answer is yours whether or not you ever hire us.
                 </p>
               </div>
               <Link
-                href="/inquire"
+                href="/book"
                 className="shrink-0 text-center border-2 border-[#161616] bg-[#161616] text-[#F5B700] rounded-full px-8 py-4 font-sans font-extrabold text-[11px] uppercase tracking-[0.16em] shadow-[4px_4px_0_0_#FBF6EA] hover:-translate-y-0.5 transition-all"
               >
                 Begin an engagement
@@ -532,7 +532,7 @@ export default function WebsitesPage() {
               herself and answers inside one business day, whether or not it is a fit.
             </p>
             <Link
-              href="/inquire"
+              href="/book"
               className="mt-7 inline-block border-2 border-[#161616] bg-[#161616] text-[#F5B700] rounded-full px-9 py-4 font-sans font-extrabold text-[12px] uppercase tracking-[0.16em] shadow-[5px_5px_0_0_rgba(22,22,22,0.3)] hover:-translate-y-0.5 transition-all"
             >
               Begin an engagement →

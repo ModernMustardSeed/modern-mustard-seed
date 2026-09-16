@@ -68,7 +68,7 @@ const HOME_FAQ = [
   },
   {
     q: 'What does an engagement cost?',
-    a: 'There is no price list, because the right answer depends on what you are building. Every engagement is scoped and quoted privately as a set package price, agreed in writing before work starts, and it does not move. Studio engagements begin in the five figures. Advisory is retained by the quarter.',
+    a: 'There is no price list, because the right answer depends on what you are building. Every engagement is scoped and quoted privately as a set package price, agreed in writing before work starts, and it does not move. Advisory is retained by the quarter.',
   },
   {
     q: 'Are changes billed separately?',

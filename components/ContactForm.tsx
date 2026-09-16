@@ -173,7 +173,10 @@ export default function ContactForm({ defaultPackage, defaultMessage }: Props) {
                     <label className="block">
                       <span className="mb-2 block font-mono text-[9px] font-bold uppercase tracking-[0.3em] text-[#5c554a]">Name</span>
                       <input
+                        id="contact-name"
+                        name="name"
                         type="text"
+                        autoComplete="name"
                         required
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -184,7 +187,10 @@ export default function ContactForm({ defaultPackage, defaultMessage }: Props) {
                     <label className="block">
                       <span className="mb-2 block font-mono text-[9px] font-bold uppercase tracking-[0.3em] text-[#5c554a]">Email</span>
                       <input
+                        id="contact-email"
+                        name="email"
                         type="email"
+                        autoComplete="email"
                         required
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}

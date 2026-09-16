@@ -75,7 +75,7 @@ export default function PlaybookPage() {
             </p>
             <div className="mt-9 flex flex-wrap gap-3">
               <Link
-                href="/inquire"
+                href="/book"
                 className="inline-flex items-center gap-2 rounded-full border-2 border-[#161616] bg-[#161616] px-7 py-4 font-sans text-[12px] font-bold uppercase tracking-[0.14em] text-[#FBF6EA] shadow-[5px_5px_0_0_#F5B700] transition-transform hover:-translate-y-0.5"
               >
                 Begin an engagement →
@@ -268,7 +268,7 @@ export default function PlaybookPage() {
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link
-              href="/inquire"
+              href="/book"
               className="rounded-full border-2 border-[#F5B700] bg-[#F5B700] px-9 py-4 font-sans text-[12px] font-extrabold uppercase tracking-[0.16em] text-[#161616] transition-transform hover:-translate-y-0.5"
             >
               Begin an engagement →

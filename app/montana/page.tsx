@@ -26,7 +26,7 @@ const FAQ = [
   },
   {
     q: 'What does a website cost?',
-    a: 'There is no price list. Every engagement is scoped in one conversation and quoted privately as a set package price, agreed in writing before work starts, and it does not move afterwards. Domain, hosting, and ongoing care are inside the engagement, changes are included permanently, and you own the code and every account. Studio engagements begin in the five figures.',
+    a: 'There is no price list. Every engagement is scoped in one conversation and quoted privately as a set package price, agreed in writing before work starts, and it does not move afterwards. Domain, hosting, and ongoing care are inside the engagement, changes are included permanently, and you own the code and every account.',
   },
   {
     q: 'Can I try it before paying?',
@@ -69,7 +69,7 @@ export default function MontanaPage() {
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
-              href="/inquire"
+              href="/book"
               className="rounded-full border-2 border-[#161616] bg-[#F5B700] px-8 py-4 font-sans font-extrabold text-sm uppercase tracking-[0.14em] shadow-[5px_5px_0_0_#161616] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#161616]"
             >
               See The Work

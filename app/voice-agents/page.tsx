@@ -367,7 +367,7 @@ export default function VoiceAgentsPage() {
                 </p>
                 <div className="mt-8 flex flex-col sm:flex-row gap-3">
                   <Link
-                    href="/inquire"
+                    href="/book"
                     className="rounded-full border-2 border-[#161616] bg-[#161616] px-9 py-4 text-center font-sans text-[12px] font-extrabold uppercase tracking-[0.18em] text-[#FBF6EA] shadow-[5px_5px_0_0_#FBF6EA] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#FBF6EA]"
                   >
                     Begin An Engagement →
@@ -469,7 +469,7 @@ export default function VoiceAgentsPage() {
                 </div>
                 <div className="mt-6 md:mt-0 flex flex-col gap-3 shrink-0">
                   <Link
-                    href="/inquire"
+                    href="/book"
                     className="text-center rounded-full border-2 border-[#161616] bg-[#161616] px-8 py-4 font-sans text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#FBF6EA] shadow-[4px_4px_0_0_#FBF6EA] transition-all hover:-translate-y-0.5"
                   >
                     Begin An Engagement →
@@ -728,7 +728,7 @@ export default function VoiceAgentsPage() {
 
             <div className="mt-14 flex flex-col sm:flex-row gap-3 justify-center">
               <Link
-                href="/inquire"
+                href="/book"
                 className="rounded-full border-2 border-[#F5B700] bg-[#F5B700] px-9 py-4 text-center font-sans text-[12px] font-extrabold uppercase tracking-[0.18em] text-[#161616] transition-all hover:-translate-y-0.5"
               >
                 Begin An Engagement

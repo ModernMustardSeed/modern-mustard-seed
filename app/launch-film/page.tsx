@@ -315,7 +315,7 @@ export default function LaunchFilmPage() {
               Book the film
             </a>
             <Link
-              href="/inquire"
+              href="/book"
               className="inline-block rounded-full bg-transparent border-2 border-[#FBF6EA] px-10 py-4 font-sans font-extrabold text-[#FBF6EA] text-sm uppercase tracking-[0.18em] transition-all hover:-translate-y-0.5"
             >
               Talk to Sarah first

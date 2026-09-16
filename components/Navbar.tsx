@@ -28,7 +28,9 @@ const MENU_GROUPS = [
       { label: 'How We Work', href: '/work-with-us' },
       { label: 'The System', href: '/the-system' },
       { label: 'About Sarah', href: '/about' },
-      { label: 'Begin An Engagement', href: '/inquire' },
+      { label: 'The Free Audit', href: '/audit' },
+      { label: 'Book A Call', href: '/book' },
+      { label: 'Or Write Instead', href: '/inquire' },
     ],
   },
   {
@@ -103,6 +105,7 @@ const DEPARTMENTS = [
   { name: 'Voice Agents', tag: `THE STUDIO LINE: ${DEMO_LINE.display}`, href: '/voice-agents' },
   { name: 'Custom Software', tag: 'APPLICATIONS, STORES, AGENTIC SYSTEMS', href: '/services' },
   { name: 'Advisory', tag: 'RETAINED COUNSEL, BY THE QUARTER', href: '/advisory' },
+  { name: 'The Free Audit', tag: 'SIXTY SECONDS, YOURS TO KEEP', href: '/audit' },
   { name: 'AI Native', tag: 'YOUR COMPANY ON AI, YOUR TEAM RUNNING IT', href: '/ai-native' },
   { name: 'The Chief', tag: 'YOUR AI CHIEF OF STAFF', href: '/chief' },
   { name: 'Command Center', tag: 'THE AI BACK OFFICE', href: '/command-center' },
@@ -221,19 +224,19 @@ export default function Navbar() {
                 Clients
               </Link>
               <Link
-                href="/inquire"
+                href="/book"
                 className="px-5 py-2.5 text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] rounded-full border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] hover:shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
               >
-                Inquire
+                Book a Call
               </Link>
             </div>
 
             {/* Between the phone and the full row, the inquiry is the door. */}
             <Link
-              href="/inquire"
+              href="/book"
               className="hidden sm:inline-flex xl:hidden items-center px-4 py-2.5 text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] rounded-full border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] hover:shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
             >
-              Inquire
+              Book a Call
             </Link>
 
             {/* Facebook: the company page, one tap from every screen. */}
@@ -330,18 +333,18 @@ export default function Navbar() {
             {/* The inquiry: the one door the whole site closes on. On phones the
                 nav pill is hidden, so this is where it lives. */}
             <Link
-              href="/inquire"
+              href="/audit"
               onClick={() => setMenuOpen(false)}
               className="group block rounded-2xl border-2 border-[#161616] bg-[#F5B700] shadow-[5px_5px_0_0_#161616] p-5 md:p-6 mb-5 hover:-translate-y-0.5 transition-transform"
             >
               <span className="block text-[10px] uppercase tracking-[0.32em] text-[#161616]/70 font-mono font-bold mb-1.5">
-                By Inquiry · Answered Personally
+                Free · Sixty Seconds · No Card
               </span>
               <span className="block font-display font-black text-2xl md:text-3xl tracking-tight text-[#161616] leading-snug">
-                Begin an engagement <span className="inline-block group-hover:translate-x-1 transition-transform">→</span>
+                The free audit <span className="inline-block group-hover:translate-x-1 transition-transform">→</span>
               </span>
               <span className="block font-body text-[13px] text-[#161616]/75 mt-1 leading-relaxed">
-                Tell us what you are building. Sarah answers inside one business day.
+                Find the one thing quietly costing you the most. Yours to keep either way.
               </span>
             </Link>
 
@@ -447,18 +450,18 @@ export default function Navbar() {
             {/* Primary CTAs */}
             <div className="mt-11 flex flex-col sm:flex-row gap-3">
               <Link
-                href="/inquire"
+                href="/book"
                 onClick={() => setMenuOpen(false)}
                 className="flex-1 text-center px-6 py-4 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
               >
-                Inquire
+                Book a Call
               </Link>
               <Link
-                href="/work"
+                href="/audit"
                 onClick={() => setMenuOpen(false)}
                 className="flex-1 text-center px-6 py-4 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-white rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
               >
-                See the Work
+                Run the Free Audit
               </Link>
             </div>
 

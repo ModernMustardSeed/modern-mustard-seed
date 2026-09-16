@@ -85,7 +85,7 @@ export default function WorkWithUsPage() {
             </p>
             <div className="mt-9 flex flex-wrap gap-3">
               <Link
-                href="/inquire"
+                href="/book"
                 className="inline-flex items-center gap-2 rounded-full border-2 border-[#161616] bg-[#161616] px-7 py-4 font-sans text-[12px] font-bold uppercase tracking-[0.14em] text-[#FBF6EA] shadow-[5px_5px_0_0_#F5B700] transition-transform hover:-translate-y-0.5"
               >
                 Begin an engagement →
@@ -226,21 +226,21 @@ export default function WorkWithUsPage() {
 
           <div className="min-w-0 rounded-2xl border-2 border-[#161616] bg-[#F5B700] p-7 shadow-[8px_8px_0_0_#161616] md:p-9">
             <p className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-[#161616]">
-              Before you write
+              Where to start
             </p>
             <p className="mt-3 font-display text-[1.7rem] font-extrabold italic leading-[1.1] md:text-[2rem]">
-              Studio engagements begin in the five figures.
+              Start with the audit, not the sales call.
             </p>
             <p className="mt-4 font-body text-[14px] leading-relaxed text-[#161616]/80">
-              Advisory is retained by the quarter. We say it plainly so nobody spends an afternoon
-              finding out. If you are earlier than that, say so anyway and we will point you
-              somewhere useful.
+              Sixty seconds, no card. It names the one thing quietly costing you the most, and the
+              answer is yours to keep whether or not we ever work together. Most engagements begin
+              there, because it is easier to decide what to build once you can see what is leaking.
             </p>
             <Link
-              href="/inquire"
+              href="/audit"
               className="mt-7 inline-block rounded-full border-2 border-[#161616] bg-[#161616] px-7 py-3.5 font-sans text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#F5B700] shadow-[4px_4px_0_0_#FBF6EA] transition-transform hover:-translate-y-0.5"
             >
-              Begin an engagement
+              Run the free audit
             </Link>
           </div>
         </div>
@@ -335,7 +335,7 @@ export default function WorkWithUsPage() {
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link
-              href="/inquire"
+              href="/book"
               className="rounded-full border-2 border-[#161616] bg-[#161616] px-9 py-4 font-sans text-[12px] font-extrabold uppercase tracking-[0.16em] text-[#F5B700] shadow-[5px_5px_0_0_rgba(22,22,22,0.3)] transition-transform hover:-translate-y-0.5"
             >
               Begin an engagement →

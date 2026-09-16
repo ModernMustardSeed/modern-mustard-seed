@@ -41,7 +41,7 @@ const FAQ = [
   },
   {
     q: 'What does it cost?',
-    a: 'There is no price list on this site, because the right answer depends entirely on what is being built. Every engagement is scoped in one conversation and quoted privately as a set package price, agreed in writing before work starts. That number does not move, and changes to what we built are included permanently. Studio engagements begin in the five figures, and advisory is retained by the quarter.',
+    a: 'There is no price list on this site, because the right answer depends entirely on what is being built. Every engagement is scoped in one conversation and quoted privately as a set package price, agreed in writing before work starts. That number does not move, and changes to what we built are included permanently. Advisory is retained by the quarter.',
   },
 ];
 
@@ -75,7 +75,7 @@ export default function ServicesPage() {
           </p>
           <div className="mt-8 flex flex-wrap gap-3 justify-center">
             <Link
-              href="/inquire"
+              href="/book"
               className="inline-flex items-center gap-2 bg-[#161616] text-[#FBF6EA] border-2 border-[#161616] rounded-full px-7 py-4 font-sans font-bold uppercase tracking-[0.14em] text-[12px] shadow-[5px_5px_0_0_#F5B700] hover:-translate-y-0.5 transition-transform"
             >
               Begin an engagement →
@@ -188,7 +188,7 @@ export default function ServicesPage() {
           </div>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
-              href="/inquire"
+              href="/book"
               className="inline-block border-2 border-[#161616] bg-[#F5B700] text-[#161616] rounded-full px-7 py-3.5 font-sans font-extrabold text-[11px] uppercase tracking-[0.16em] shadow-[4px_4px_0_0_#000000] hover:-translate-y-0.5 transition-all"
             >
               Scope a custom build
@@ -261,7 +261,7 @@ export default function ServicesPage() {
               reads every inquiry herself and answers inside one business day.
             </p>
             <Link
-              href="/inquire"
+              href="/book"
               className="mt-7 inline-block border-2 border-[#161616] bg-[#161616] text-[#F5B700] rounded-full px-9 py-4 font-sans font-extrabold text-[12px] uppercase tracking-[0.16em] shadow-[5px_5px_0_0_rgba(22,22,22,0.3)] hover:-translate-y-0.5 transition-all"
             >
               Begin an engagement →

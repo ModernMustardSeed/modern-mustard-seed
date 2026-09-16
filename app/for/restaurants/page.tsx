@@ -143,7 +143,7 @@ export default function RestaurantsPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link
-                href="/inquire"
+                href="/book"
                 className="px-8 py-4 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
               >
                 Start a rollout
@@ -158,7 +158,7 @@ export default function RestaurantsPage() {
             <p className="mt-4 text-[13px] font-body text-[#161616]/55 max-w-md mx-auto">
               Trained on your menu, your hours, and the questions your callers actually ask.{' '}
               <Link
-                href="/inquire"
+                href="/book"
                 className="text-[#1E50C8] font-semibold underline underline-offset-2 hover:text-[#E0301E] transition-colors"
               >
                 Tell us about your restaurant.
@@ -183,7 +183,7 @@ export default function RestaurantsPage() {
                 </p>
               </div>
               <Link
-                href="/inquire"
+                href="/book"
                 className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full border-2 border-[#161616] bg-[#161616] text-[12px] uppercase tracking-[0.18em] font-sans font-extrabold text-[#FBF6EA] shadow-[4px_4px_0_0_#FBF6EA] hover:-translate-y-0.5 transition-all whitespace-nowrap"
               >
                 Start a rollout →
@@ -303,13 +303,13 @@ export default function RestaurantsPage() {
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Link
-                  href="/inquire"
+                  href="/book"
                   className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#FBF6EA] bg-[#161616] rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_rgba(22,22,22,0.3)] hover:-translate-y-0.5 transition-all"
                 >
                   Start a rollout →
                 </Link>
                 <Link
-                  href="/inquire"
+                  href="/book"
                   className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-white rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
                 >
                   Talk multi-unit rollout
@@ -428,7 +428,7 @@ export default function RestaurantsPage() {
                 Hear one answer →
               </Link>
               <Link
-                href="/inquire"
+                href="/book"
                 className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-white bg-[#161616] rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_rgba(22,22,22,0.3)] hover:-translate-y-0.5 transition-all text-center"
               >
                 Start a rollout →
@@ -483,13 +483,13 @@ export default function RestaurantsPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link
-                href="/inquire"
+                href="/book"
                 className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-white rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
               >
                 Book a Discovery Call
               </Link>
               <Link
-                href="/inquire"
+                href="/book"
                 className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
               >
                 Begin an Engagement

@@ -68,7 +68,9 @@ export default function Footer() {
     {
       title: 'Company',
       links: [
-        { label: 'Begin An Engagement', href: '/inquire' },
+        { label: 'The Free Audit', href: '/audit' },
+        { label: 'Book A Call', href: '/book' },
+        { label: 'Or Write Instead', href: '/inquire' },
         { label: 'The Mustard Seed World', href: '/world' },
         { label: 'Journal', href: '/blog' },
         { label: 'About', href: '/about' },
@@ -98,16 +100,16 @@ export default function Footer() {
           </h2>
           <div className="mt-7 flex flex-col sm:flex-row gap-3 justify-center">
             <Link
-              href="/inquire"
+              href="/book"
               className="rounded-full border-2 border-[#161616] bg-[#161616] text-[#F5B700] px-8 py-4 font-sans font-extrabold text-[12px] uppercase tracking-[0.16em] shadow-[5px_5px_0_0_rgba(22,22,22,.3)] transition-all hover:-translate-y-0.5"
             >
-              Begin an Engagement
+              Book a Call
             </Link>
             <Link
-              href="/work"
+              href="/audit"
               className="rounded-full border-2 border-[#161616] bg-white text-[#161616] px-8 py-4 font-sans font-extrabold text-[12px] uppercase tracking-[0.16em] shadow-[5px_5px_0_0_#161616] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#161616]"
             >
-              See the Work
+              Run the Free Audit
             </Link>
           </div>
         </div>
