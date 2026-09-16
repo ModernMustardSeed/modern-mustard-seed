@@ -17,6 +17,7 @@ import { useEffect, useState } from 'react';
 function shellHome(pathname: string): string {
   if (pathname.startsWith('/admin')) return '/admin';
   if (pathname.startsWith('/portal')) return '/portal';
+  if (pathname.startsWith('/office')) return '/office';
   if (pathname.startsWith('/partners/hq')) return '/partners/hq';
   return '/';
 }
