@@ -64,6 +64,39 @@ const FILES = [
   ['route/route-sheet.csv', 'route-sheet.csv', 'text/csv'],
 ];
 
+/**
+ * A RUN THAT DESCRIBES ITSELF.
+ *
+ * The Printed Audits desk in the admin lists whatever is in this bucket, so a
+ * rebuild has to show up there without a deploy. That only works if the page
+ * count, the towns and the date travel WITH the files rather than living in a
+ * constant somebody has to remember to edit. manifest.json stays home because
+ * it carries every lead; this is the shape of the run and nothing about who is
+ * in it.
+ */
+const manifestNow = JSON.parse(readFileSync(path.join(OUT, 'manifest.json'), 'utf8'));
+const townCount = {};
+for (const p of manifestNow.printed) {
+  const t = (p.city || 'Unknown').trim();
+  townCount[t] = (townCount[t] ?? 0) + 1;
+}
+const runJson = path.join(OUT, 'run.json');
+writeFileSync(
+  runJson,
+  JSON.stringify({
+    region: REGION,
+    label: LABEL,
+    pages: manifestNow.printed.length,
+    towns: townCount,
+    built_at: manifestNow.generated_at,
+    published_at: new Date().toISOString(),
+    phone: REGION === 'florida' ? '(850) 985-9252' : '(406) 312-1223',
+    partner: REGION === 'florida' ? 'Easton' : null,
+  }, null, 2),
+  'utf8',
+);
+FILES.push(['run.json', 'run.json', 'application/json']);
+
 const links = [];
 /** Anything that answered 200 and then stored the wrong number of bytes. */
 const failures = [];
@@ -96,7 +129,25 @@ for (const [rel, name, type] of FILES) {
    * what was sent, because that is the number the printer will download.
    */
   const head = await fetch(url, { method: 'HEAD' });
-  const got = Number(head.headers.get('content-length') ?? -1);
+  let got = Number(head.headers.get('content-length') ?? -1);
+  /*
+   * A MISSING LENGTH IS NOT A SHORT FILE.
+   *
+   * Storage answers a HEAD on a PDF with a content-length and a HEAD on JSON
+   * without one, because the small text response goes back compressed. Reading
+   * that absent header as -1 called three perfectly good run.json uploads
+   * truncated. When the header is not there, download the object and count the
+   * bytes: slower, only happens on the small files, and it is the actual
+   * question rather than a proxy for it.
+   */
+  if (head.ok && got < 0) {
+    try {
+      const whole = await fetch(url, { cache: 'no-store' });
+      got = whole.ok ? (await whole.arrayBuffer()).byteLength : -1;
+    } catch {
+      got = -1;
+    }
+  }
   if (!head.ok || got !== body.length) {
     console.error(`  TRUNCATED ${name}: sent ${body.length} bytes, stored ${got}. NOT PUBLISHED.`);
     failures.push(name);

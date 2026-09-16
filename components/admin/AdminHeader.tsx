@@ -18,7 +18,7 @@ import { openWelcomeTour } from '@/components/admin/WelcomeTour';
  * the mustard chip, and the Inbox unread dot bubbles up to its group.
  */
 
-type Tab = 'overview' | 'hq' | 'portfolio' | 'gleaner' | 'pipeline' | 'tracker' | 'outbound' | 'acquisition' | 'factories' | 'partners' | 'team' | 'outreach' | 'campaigns' | 'texting' | 'ads' | 'facebook' | 'social' | 'artifacts' | 'audit' | 'roadmaps' | 'hundredfold' | 'call' | 'script' | 'callers' | 'calls' | 'training' | 'clients' | 'front-office' | 'posting' | 'proposals' | 'projects' | 'builds' | 'build-log' | 'delivery' | 'templates' | 'intakes' | 'approvals' | 'reviews' | 'calendar' | 'onboarding' | 'manual' | 'inbox' | 'opps';
+type Tab = 'overview' | 'hq' | 'portfolio' | 'gleaner' | 'pipeline' | 'tracker' | 'outbound' | 'acquisition' | 'factories' | 'partners' | 'team' | 'outreach' | 'campaigns' | 'texting' | 'ads' | 'facebook' | 'social' | 'artifacts' | 'audit' | 'print-runs' | 'roadmaps' | 'hundredfold' | 'call' | 'script' | 'callers' | 'calls' | 'training' | 'clients' | 'front-office' | 'posting' | 'proposals' | 'projects' | 'builds' | 'build-log' | 'delivery' | 'templates' | 'intakes' | 'approvals' | 'reviews' | 'calendar' | 'onboarding' | 'manual' | 'inbox' | 'opps';
 
 // `external: true` marks a public-facing offer page that opens in a new tab, so
 // clicking it from the admin never loses the team member's place. These items
@@ -89,6 +89,9 @@ const GROUPS: { name: string; items: Item[] }[] = [
       { key: 'gleaner', label: 'Gleaner', href: '/admin/gleaner' },
       { key: 'outreach', label: 'Outreach', href: '/admin/outreach' },
       { key: 'audit', label: 'Audit Desk', href: '/admin/audit' },
+      // Named apart from the Audit Desk on purpose: that one runs an audit on a
+      // URL, this one holds the audits already printed and waiting for a shop.
+      { key: 'print-runs', label: 'Printed Audits', href: '/admin/print-runs' },
       { key: 'roadmaps', label: 'Roadmap Desk', href: '/admin/roadmaps' },
     ],
   },
