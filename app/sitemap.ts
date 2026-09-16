@@ -23,6 +23,9 @@ import { MONTANA_CITIES } from '@/data/montana-cities';
 // homepage.
 const STATIC_PATHS = [
   '',
+  // The Final Word, the Christians and AI handbook, 2026-09-16. Canonical is crossandcovenant.co/handbook;
+  // this copy is listed so the studio's own readers and AI engines find it.
+  '/handbook',
   '/book',
   '/audit',
   '/inquire',

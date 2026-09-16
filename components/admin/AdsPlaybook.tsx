@@ -313,6 +313,57 @@ const DB_CHECKLIST = [
   { id: 'review', label: 'Day 5-7: judge on cost per Imagination Station hand-off (leads with source Imagination Station in the admin). The truth metric: booked calls that mention an idea.' },
 ];
 
+// ============ Campaign twenty-eight: The Final Word ============
+/*
+ * A Christian's handbook for AI, free at crossandcovenant.co/handbook and
+ * mirrored at /handbook on this site. The film is forty-five seconds of the
+ * handbook's own words: the Spirit has the final word, the machine is a tool,
+ * never your pastor, the four-minute Google move, the eight tests, then the
+ * door. Rendered frame by frame from type in
+ * marketing/berean-handbook-2026-09-16, narrated and scored locally.
+ *
+ * The cuts below are registered ahead of the files. The film is rendering in a
+ * parallel session and lands at public/ads/final-word/ on this branch before it
+ * merges; until then the players show an empty poster slot. Landing is the
+ * canonical CXC page, so a click counts once, on one domain.
+ */
+
+const FW_LANDING = 'https://crossandcovenant.co/handbook?utm_source=meta&utm_medium=paid&utm_campaign=berean';
+
+const FW_COPY_A = `The Spirit has the final word. The machine is a tool.
+
+That is the first sentence of a free handbook for Christians on AI, and everything else in it hangs on that order. What a model actually is. Why it will never be your pastor, your confessor, your closest friend, or your Bible. Eight tests to run on any teaching, any answer, any clip. How to build with it for the gospel, and the ten warnings that sit beside the ten benefits.
+
+Ten chapters. No signup. Share it with your church.`;
+
+const FW_COPY_B = `Google lets you tell it which websites you trust, and then pulls them forward in Top Stories, AI Overviews, and AI Mode with a Preferred badge.
+
+Most Christians have never set it. Four minutes: sign in, open google.com/preferences/source, search your church, tick the box. Now the machine answers from the teachers you trust instead of the loudest voice online.
+
+That is one chapter of a free handbook for Christians on AI. The rest is how to test what it tells you, and how to build with it without letting it replace the people God gave you.`;
+
+const FW_HEADLINE = 'The Spirit has the final word. The machine is a tool.';
+const FW_DESCRIPTION = 'A free handbook for Christians on AI. No signup.';
+
+const FW_CUTS = [
+  { file: '/ads/final-word/final-word-4x5.mp4', label: '4:5 · Feed', note: 'Facebook + Instagram feed. The workhorse placement.' },
+  { file: '/ads/final-word/final-word-9x16.mp4', label: '9:16 · Reels + Stories + Shorts', note: 'Vertical placements, Meta and YouTube Shorts.' },
+  { file: '/ads/final-word/final-word-16x9.mp4', label: '16:9 · In-stream + YouTube', note: 'Video feeds, YouTube, and the church newsletter embed.' },
+];
+
+const FW_CHECKLIST = [
+  { id: 'cell', label: 'One cell to start: objective Traffic. Budget $10/day. Learn More button to the crossandcovenant.co/handbook UTM link above. Paste Copy Variant 1.' },
+  { id: 'placements', label: 'Upload the 4:5 cut, then customize placements: 9:16 for Reels/Stories, 16:9 for in-stream.' },
+  { id: 'audience', label: 'Audience: Advantage+, faith-tilted. Suggestions: Christianity, Bible, Church, Christian music, Pastors, Bible study, Christian parenting, Christian entrepreneurs. Age 25-65, United States.' },
+  { id: 'captions', label: 'Decline Meta auto-captions. The film is typography and reads muted; auto-captions would sit on top of the type.' },
+  { id: 'organic', label: 'Same day, post SET THREE from the Organic Social tab: Final Word on the Page and in one church or small-group Facebook group, the 9:16 cut as a Reel, the 4:5 to Facebook. The card set lives at /admin/social-cards under The Final Word.' },
+  { id: 'church', label: 'Send the 16:9 cut and the PDF to three pastors you know with one line: free, no signup, share it with your people. Ask them to add the church as a preferred source while they are there.' },
+  { id: 'abtest', label: 'Day 3: duplicate with Copy Variant 2 (the four-minute Google move) and let them fight. Kill the loser at day 6.' },
+  { id: 'retarget', label: 'Day 3-4: retargeting ad set of 50% video viewers pointed at the handbook. Anyone who watched to the eight tests wants the list.' },
+  { id: 'proof', label: 'Answer every "is this anti-AI" comment with Chapter 6 and Chapter 7: carrying the gospel further, building what God put in you. Never argue in the comments about a specific preacher.' },
+  { id: 'review', label: 'Day 5-7: judge on cost per handbook read (Vercel analytics on /handbook at crossandcovenant.co) and PDF downloads, not on impressions. The truth metric: churches that write in.' },
+];
+
 // ============ Campaign five: The Voice Agent Build ============
 
 const SK_LANDING = 'https://modernmustardseed.com/voice-agents/forge?utm_source=meta&utm_medium=paid&utm_campaign=demo agent';
@@ -1144,7 +1195,7 @@ function CopyBlock({ title, text }: { title: string; text: string }) {
   );
 }
 
-type AdsTab = 'makeitreal' | 'flathead' | 'freeaudit' | 'callme' | 'tw' | 'mm' | 'fm' | 'sk' | 'px' | 'pr' | 'geo' | 'gn' | 'py' | 'rest' | 'unv' | 'unvr' | 'unvf' | 'brg' | 'stone' | 'chief' | 'ans' | 'scenic' | 'cxc' | 'ah' | 'whaa' | 'debate' | 'lf' | 'social' | 'results';
+type AdsTab = 'makeitreal' | 'flathead' | 'freeaudit' | 'callme' | 'tw' | 'mm' | 'fm' | 'sk' | 'px' | 'pr' | 'geo' | 'gn' | 'py' | 'rest' | 'unv' | 'unvr' | 'unvf' | 'brg' | 'stone' | 'chief' | 'ans' | 'scenic' | 'cxc' | 'ah' | 'whaa' | 'debate' | 'finalword' | 'lf' | 'social' | 'results';
 
 const TABS: { key: AdsTab; num: string; label: string; blurb: string }[] = [
   { key: 'callme', num: '01', label: 'Call Me', blurb: 'Voice agents · call objective · $25/day' },
@@ -1171,6 +1222,7 @@ const TABS: { key: AdsTab; num: string; label: string; blurb: string }[] = [
   { key: 'whaa', num: '22', label: 'Say Whaaa', blurb: 'The build · the agent that builds · $10/day' },
   { key: 'debate', num: '23', label: 'While You Were Debating', blurb: 'Idea to Product · the studio proof · $15/day' },
   { key: 'lf', num: '24', label: 'The Launch Film', blurb: 'Launch films · fifteen seconds of IRL · $20/day' },
+  { key: 'finalword', num: '28', label: 'The Final Word', blurb: 'Free handbook · Christians and AI · $10/day' },
   { key: 'makeitreal', num: '27', label: 'Make It Real', blurb: 'Original song, cinematic brand film, three cuts and post copy' },
   { key: 'flathead', num: '26', label: 'Flathead Community Audit', blurb: 'Flathead Lake + Bigfork, local films and neighborhood post' },
   { key: 'freeaudit', num: '25', label: 'Free Website Audit', blurb: 'Original song, reel, feed post, Stories, and copy' },
@@ -1191,7 +1243,7 @@ const CAMPAIGN_GROUPS: { name: string; keys: AdsTab[] }[] = [
   { name: 'Demo Funnel', keys: ['unv', 'unvr', 'unvf', 'brg', 'stone', 'ans'] },
   { name: 'Product Offers', keys: ['mm', 'sk', 'chief', 'px', 'pr', 'geo', 'lf'] },
   { name: 'Brand + Verticals', keys: ['makeitreal', 'callme', 'ah', 'tw', 'gn', 'rest', 'scenic', 'whaa', 'cxc', 'debate'] },
-  { name: 'Partners + Magnets', keys: ['flathead', 'freeaudit', 'fm', 'py'] },
+  { name: 'Partners + Magnets', keys: ['flathead', 'freeaudit', 'fm', 'py', 'finalword'] },
   { name: 'Organic', keys: ['social'] },
 ];
 
@@ -1306,6 +1358,7 @@ export default function AdsPlaybook() {
   const [checkedCxc, setCheckedCxc] = useState<Record<string, boolean>>({});
   const [checkedAh, setCheckedAh] = useState<Record<string, boolean>>({});
   const [checkedDb, setCheckedDb] = useState<Record<string, boolean>>({});
+  const [checkedFw, setCheckedFw] = useState<Record<string, boolean>>({});
   const [checkedLf, setCheckedLf] = useState<Record<string, boolean>>({});
 
   // Remember the campaign you were working in.
@@ -1400,6 +1453,8 @@ export default function AdsPlaybook() {
       if (rawCxc) setCheckedCxc(JSON.parse(rawCxc));
       const rawDb = localStorage.getItem('mms-ads-checklist-debating');
       if (rawDb) setCheckedDb(JSON.parse(rawDb));
+      const rawFw = localStorage.getItem('mms-ads-checklist-final-word');
+      if (rawFw) setCheckedFw(JSON.parse(rawFw));
       const rawLf = localStorage.getItem('mms-ads-checklist-launchfilm');
       if (rawLf) setCheckedLf(JSON.parse(rawLf));
     } catch { /* first visit */ }
@@ -1430,6 +1485,7 @@ export default function AdsPlaybook() {
   const toggleAh = mkToggle('mms-ads-checklist-afterhours', setCheckedAh);
   const toggleCxc = mkToggle('mms-ads-checklist-cxc', setCheckedCxc);
   const toggleDb = mkToggle('mms-ads-checklist-debating', setCheckedDb);
+  const toggleFw = mkToggle('mms-ads-checklist-final-word', setCheckedFw);
   const toggleLf = mkToggle('mms-ads-checklist-launchfilm', setCheckedLf);
 
   const toggle = (id: string) => {
@@ -1496,6 +1552,7 @@ export default function AdsPlaybook() {
   const doneCountLf = LF_CHECKLIST.filter((c) => checkedLf[c.id]).length;
   const doneCountAh = AH_CHECKLIST.filter((c) => checkedAh[c.id]).length;
   const doneCountDb = DB_CHECKLIST.filter((c) => checkedDb[c.id]).length;
+  const doneCountFw = FW_CHECKLIST.filter((c) => checkedFw[c.id]).length;
 
   return (
     <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
@@ -3371,6 +3428,87 @@ export default function AdsPlaybook() {
                     className="mt-1 h-4 w-4 accent-[#F5B700] shrink-0"
                   />
                   <span className={`text-sm font-sans leading-relaxed ${checkedDb[item.id] ? 'text-[#161616]/40 line-through' : 'text-[#161616]/85'}`}>
+                    <b className="font-mono text-[#E0301E] mr-1.5">{String(i + 1).padStart(2, '0')}</b>
+                    {item.label}
+                  </span>
+                </label>
+              </li>
+            ))}
+          </ol>
+        </section>
+        </>)}
+
+        {tab === 'finalword' && (<>
+        {/* ============ Campaign twenty-eight: The Final Word (Christians and AI) ============ */}
+        <section className="bg-[#FBFBF8] border-2 border-[#161616] shadow-[6px_6px_0_0_#F5B700] p-6 md:p-8 relative overflow-hidden">
+          <div className="absolute inset-0 opacity-30" style={{ backgroundImage: 'radial-gradient(rgba(245,183,0,0.6) 1.5px, transparent 1.6px)', backgroundSize: '16px 16px' }} aria-hidden />
+          <div className="relative">
+            <span className="text-[10px] uppercase tracking-[0.3em] text-[#8A1006] font-mono font-bold">Campaign twenty-eight &middot; a free handbook for Christians on AI</span>
+            <h2 className="font-display text-3xl md:text-4xl font-extrabold text-[#161616] mt-2">
+              &ldquo;The Final Word&rdquo; <span className="italic text-[#8A1006]">the Spirit has the final word, the machine is a tool</span>
+            </h2>
+            <p className="text-[#161616]/75 mt-3 max-w-3xl font-sans">
+              Forty-five seconds of the handbook&rsquo;s own words. The thesis cold, then never your pastor, never your
+              confessor, never your closest friend, never your Bible; the four-minute move that puts a pastor in front of
+              Google&rsquo;s AI answers; the eight tests; the door. Rendered frame by frame from type, narrated and scored
+              locally, nothing licensed. It gives the handbook away and asks for nothing, which is why a church shares it.
+              One cell at $10/day into the canonical page at crossandcovenant.co, mirrored at /handbook here.
+            </p>
+            <div className="flex flex-wrap gap-3 mt-5">
+              <a href="https://adsmanager.facebook.com" target="_blank" rel="noopener noreferrer" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-[#F5B700] shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-transform text-[#161616]">Open Ads Manager</a>
+              <a href="https://crossandcovenant.co/handbook" target="_blank" rel="noopener noreferrer" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-transform text-[#161616]">The handbook (landing)</a>
+              <a href="/handbook" target="_blank" rel="noopener noreferrer" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-transform text-[#161616]">The copy on this site</a>
+              <a href="/admin/social-cards#final-word" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-white shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-transform text-[#161616]">The six cards</a>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <h3 className="font-display text-2xl font-extrabold text-[#161616] mb-1">The film, one cut per placement</h3>
+          <p className="text-sm text-[#161616]/65 mb-5 font-sans">Kokoro narration over an original score. The film is typography, so it reads with the sound off. Right-click any video to save it.</p>
+          <div className="grid md:grid-cols-3 gap-5">
+            {FW_CUTS.map((c) => (
+              <div key={c.file} className="bg-white border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] p-4">
+                <video controls preload="metadata" poster="/ads/final-word/final-word-poster.jpg" className="w-full border border-[#161616] bg-black" src={c.file} />
+                <div className="mt-3 flex items-center justify-between gap-2">
+                  <div>
+                    <p className="font-sans font-bold text-sm text-[#161616]">{c.label}</p>
+                    <p className="text-xs text-[#161616]/60 font-sans">{c.note}</p>
+                  </div>
+                  <a href={c.file} download className="shrink-0 text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-[#161616] px-3 py-1.5 border-2 border-[#161616] bg-[#F5B700] shadow-[2px_2px_0_0_#161616] hover:-translate-y-0.5 transition-transform">Download</a>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section>
+          <h3 className="font-display text-2xl font-extrabold text-[#161616] mb-5">Ad copy, ready to paste</h3>
+          <div className="grid md:grid-cols-2 gap-5">
+            <CopyBlock title="Primary text &mdash; Variant 1 (the final word)" text={FW_COPY_A} />
+            <CopyBlock title="Primary text &mdash; Variant 2 (the four-minute Google move)" text={FW_COPY_B} />
+            <CopyBlock title="Headline" text={FW_HEADLINE} />
+            <CopyBlock title="Description" text={FW_DESCRIPTION} />
+            <CopyBlock title="Landing link with UTM" text={FW_LANDING} />
+          </div>
+        </section>
+
+        <section className="bg-white border-2 border-[#161616] shadow-[6px_6px_0_0_#161616] p-6 md:p-8">
+          <div className="flex items-center justify-between gap-3 mb-5">
+            <h3 className="font-display text-2xl font-extrabold text-[#161616]">Launch checklist</h3>
+            <span className="text-[11px] font-mono font-bold text-[#161616] bg-[#F5B700] border-2 border-[#161616] px-3 py-1 shadow-[2px_2px_0_0_#161616]">{doneCountFw}/{FW_CHECKLIST.length}</span>
+          </div>
+          <ol className="space-y-3">
+            {FW_CHECKLIST.map((item, i) => (
+              <li key={item.id}>
+                <label className="flex items-start gap-3 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    checked={!!checkedFw[item.id]}
+                    onChange={() => toggleFw(item.id)}
+                    className="mt-1 h-4 w-4 accent-[#F5B700] shrink-0"
+                  />
+                  <span className={`text-sm font-sans leading-relaxed ${checkedFw[item.id] ? 'text-[#161616]/40 line-through' : 'text-[#161616]/85'}`}>
                     <b className="font-mono text-[#E0301E] mr-1.5">{String(i + 1).padStart(2, '0')}</b>
                     {item.label}
                   </span>
