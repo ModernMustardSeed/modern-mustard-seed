@@ -24,3 +24,12 @@ export const bookingUrl = '/?book=1';
 
 // Google Business Profile review link. Shareable cleanly via /review.
 export const googleReviewUrl = 'https://g.page/r/CQPWYcgFAJByEAI/review';
+
+/**
+ * The public Google Business Profile (CID 8255098141806810627).
+ *
+ * SINGLE SOURCE. This URL is the only thing that ties the website entity to the
+ * Google Business Profile entity in structured data, so it is imported, never
+ * retyped. Used by `lib/jsonld.tsx` (sameAs + hasMap) and `data/google-reviews.ts`.
+ */
+export const googleProfileUrl = 'https://www.google.com/maps?cid=8255098141806810627';

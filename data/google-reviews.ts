@@ -21,7 +21,7 @@
  * To refresh: open the profile, read the reviews tab, and transcribe. Adding a
  * second entry needs no layout work; the band grids at two or more.
  */
-import { googleReviewUrl } from '@/data/socials';
+import { googleProfileUrl, googleReviewUrl } from '@/data/socials';
 
 export type GoogleReview = {
   /** Exactly as Google displays it. Never expand an initial into a full name. */
@@ -36,10 +36,16 @@ export const GOOGLE_PROFILE = {
   rating: '5.0',
   count: 1,
   /** The public listing. Opens the profile with its reviews. */
-  profileUrl: 'https://www.google.com/maps?cid=8255098141806810627',
+  profileUrl: googleProfileUrl,
   /** One tap straight into the review box, not the listing. */
   writeUrl: googleReviewUrl,
-  readAt: '2026-08-08',
+  /**
+   * Re-read on the live profile 2026-09-14: still 5.0 across exactly ONE public
+   * review. If a surface anywhere claims two, it is not this file and it is not
+   * Google's public count; check which Google account that surface is signed in
+   * to before changing the number here.
+   */
+  readAt: '2026-09-14',
 };
 
 export const GOOGLE_REVIEWS: GoogleReview[] = [
