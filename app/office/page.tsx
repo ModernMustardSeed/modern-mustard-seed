@@ -4,7 +4,7 @@ import OfficeShell from '@/components/office/OfficeShell';
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Command Center',
+  title: 'Built Right in Montana Command Center',
   robots: { index: false, follow: false },
 };
 
