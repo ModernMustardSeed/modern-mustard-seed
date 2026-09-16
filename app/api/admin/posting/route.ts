@@ -9,6 +9,8 @@ import { refreshStats } from '@/lib/posting/insights';
 import { enqueueCaptions, scrub } from '@/lib/posting/captions';
 import { listGbpLocations } from '@/lib/posting/publishers/gbp';
 import { deskGuide, clientGuide } from '@/lib/posting/guide';
+import { deskGuide as ccDeskGuide, clientGuide as ccClientGuide } from '@/lib/command-center/guide';
+import { projectForEmail } from '@/lib/client-leads';
 import { mountainDate, addDays, mountainToUtc } from '@/lib/posting/time';
 import { PLATFORMS, type Platform, type PostRow, type MaterialRow, type SettingsRow } from '@/lib/posting/types';
 
@@ -66,6 +68,8 @@ export async function GET(req: Request) {
       leads: leads.data ?? [],
       guide: deskGuide(settings),
       clientGuide: clientGuide(settings),
+      // The Command Center words for the same client, when they are on a project.
+      commandCenter: projectForEmail(client) ? { guide: ccDeskGuide(projectForEmail(client)!), clientGuide: ccClientGuide(projectForEmail(client)!) } : null,
       env: {
         x: Boolean(process.env.X_OAUTH2_CLIENT_ID),
         linkedin: Boolean(process.env.LINKEDIN_CLIENT_ID),

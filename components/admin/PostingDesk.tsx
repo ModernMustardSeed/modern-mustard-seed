@@ -20,7 +20,7 @@ import { prettyDate, prettyHour } from '@/lib/posting/time';
  */
 type Overview = { settings: SettingsRow; today: { id: string; status: string; headline: string | null } | null; nextPlanned: string | null; queued: number; graphicsWaiting: number; approvalsWaiting: number; connected: Platform[] };
 type Lead = { id: string; source: string; sources: string[]; name: string | null; phone: string | null; email: string | null; town: string | null; project_type: string | null; land: string | null; page: string | null; priority: number | null; handled_at: string | null; created_at: string };
-type Detail = { settings: SettingsRow; today: string; posts: PostRow[]; materials: MaterialRow[]; accounts: AccountView[]; leads: Lead[]; guide: GuideSection[]; clientGuide: GuideSection[]; env: { x: boolean; linkedin: boolean; google: boolean; facebookApp: boolean } };
+type Detail = { settings: SettingsRow; today: string; posts: PostRow[]; materials: MaterialRow[]; accounts: AccountView[]; leads: Lead[]; guide: GuideSection[]; clientGuide: GuideSection[]; commandCenter: { guide: GuideSection[]; clientGuide: GuideSection[] } | null; env: { x: boolean; linkedin: boolean; google: boolean; facebookApp: boolean } };
 
 const CARD = 'rounded-2xl border-2 border-[#161616] bg-white p-5 shadow-[5px_5px_0_0_#161616]';
 const BTN = 'rounded-lg border-2 border-[#161616] bg-white px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-[#161616] disabled:opacity-50 hover:-translate-y-0.5 transition-transform';
@@ -171,6 +171,7 @@ function ClientDetail({ d, act, busy, onNotice, client }: { d: Detail; act: Act;
 
       {tab === 'words' ? (
         <WordsPanel guide={d.guide} clientGuide={d.clientGuide} business={s.business_name} />
+        {d.commandCenter && <WordsPanel guide={d.commandCenter.guide} clientGuide={d.commandCenter.clientGuide} business={s.business_name} heading="The Command Center" source="lib/command-center/guide.ts" />}
       ) : (
         <div className="grid gap-6 lg:grid-cols-3">
           <div className="space-y-6 lg:col-span-2">
@@ -347,11 +348,11 @@ function ClientDetail({ d, act, busy, onNotice, client }: { d: Detail; act: Act;
   );
 }
 
-function WordsPanel({ guide, clientGuide, business }: { guide: GuideSection[]; clientGuide: GuideSection[]; business: string }) {
+function WordsPanel({ guide, clientGuide, business, heading, source }: { guide: GuideSection[]; clientGuide: GuideSection[]; business: string; heading?: string; source?: string }) {
   return (
     <div className="grid gap-6 lg:grid-cols-2">
       <section className={CARD}>
-        <p className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-[#C4160B] mb-1">For you</p>
+        <p className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-[#C4160B] mb-1">{heading ? `${heading}, for you` : 'For you'}</p>
         <h3 className="font-display text-[20px] font-bold mb-3">How to hold this across a table</h3>
         {guide.map((sec) => (
           <div key={sec.title} className="mb-4">
@@ -363,7 +364,7 @@ function WordsPanel({ guide, clientGuide, business }: { guide: GuideSection[]; c
         ))}
       </section>
       <section className={CARD}>
-        <p className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-[#C4160B] mb-1">What {business} reads</p>
+        <p className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-[#C4160B] mb-1">{heading ? `${heading}, what ${business} reads` : `What ${business} reads`}</p>
         <h3 className="font-display text-[20px] font-bold mb-3">The How it works card, word for word</h3>
         {clientGuide.map((sec) => (
           <div key={sec.title} className="mb-4">
@@ -373,7 +374,7 @@ function WordsPanel({ guide, clientGuide, business }: { guide: GuideSection[]; c
             </ul>
           </div>
         ))}
-        <p className="mt-2 text-[12px] text-[#161616]/55">This copy lives in lib/posting/guide.ts and follows the brief: hours and approval mode change the lines on their own.</p>
+        <p className="mt-2 text-[12px] text-[#161616]/55">{source ? `This copy lives in ${source}.` : 'This copy lives in lib/posting/guide.ts and follows the brief: hours and approval mode change the lines on their own.'}</p>
       </section>
     </div>
   );

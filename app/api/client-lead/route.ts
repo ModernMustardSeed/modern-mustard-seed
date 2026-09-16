@@ -5,6 +5,7 @@ import { resendClient } from '@/lib/send-email';
 import { sendSms, toE164 } from '@/lib/sms';
 import { SITE } from '@/lib/seo';
 import { CLIENT_PROJECTS, PRIORITY_LABEL, confirmVisitor, priorityFromLand } from '@/lib/client-leads';
+import { pushLeadToBuildertrend } from '@/lib/buildertrend';
 import { checkAnswer } from '@/lib/human-check';
 
 export const runtime = 'nodejs';
@@ -258,10 +259,42 @@ export async function POST(req: Request) {
     });
   }
 
-  const { data: prior } = await sb.from('client_leads').select('notified').eq('id', id).maybeSingle();
+  const { data: prior } = await sb.from('client_leads').select('notified, crm_pushed_at').eq('id', id).maybeSingle();
   const history = { ...((prior?.notified as Record<string, unknown>) ?? {}), [`${source}@${new Date().toISOString()}`]: notified };
   const patch: Record<string, unknown> = { notified: history };
   if (confirmed) patch.confirmed = { ...confirmed, at: new Date().toISOString() };
+
+  // Into their CRM, once per person. A lead that is already in Buildertrend
+  // is not sent again when the same person comes back through another door;
+  // the second visit is on the lead here and in the client's inbox.
+  if (project.crm === 'buildertrend' && !prior?.crm_pushed_at) {
+    const pushed = await pushLeadToBuildertrend(
+      sb,
+      project.clientEmail,
+      {
+        name: lead.name ?? (existing?.name as string | null) ?? null,
+        phone: lead.phone ?? (existing?.phone as string | null) ?? null,
+        email: lead.email ?? (existing?.email as string | null) ?? null,
+        town: lead.town ?? (existing?.town as string | null) ?? null,
+        project_type: lead.project_type ?? (existing?.project_type as string | null) ?? null,
+        land: lead.land ?? (existing?.land as string | null) ?? null,
+        message: lead.message ?? (existing?.message as string | null) ?? null,
+        page: lead.page ?? null,
+        source,
+        referrer_name: lead.referrer_name ?? null,
+        answers: answers ?? ((existing?.answers as Array<{ q: string; a: string }> | null) ?? null),
+      },
+      VIA[source]
+    );
+    patch.crm = 'buildertrend';
+    if (pushed.ok) {
+      patch.crm_pushed_at = new Date().toISOString();
+      patch.crm_ref = pushed.ref;
+      patch.crm_error = null;
+    } else if (!pushed.skipped) {
+      patch.crm_error = pushed.error;
+    }
+  }
   await sb.from('client_leads').update(patch).eq('id', id);
 
   return reply({ ok: true, id, merged });
