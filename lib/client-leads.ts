@@ -21,6 +21,14 @@ export type ClientProject = {
   /** Who answers the phone, by first name, for the visitor's confirmation. */
   answers: string;
   phone: string;
+  /** The Vapi assistant behind the website chat; its conversations show in the portal. */
+  assistantId: string | null;
+  /** The CRM every lead is handed to. Only Buildertrend is wired today. */
+  crm: 'buildertrend' | null;
+  /** The domain their business email lives on, for the Command Center's email check. */
+  emailDomain: string | null;
+  /** The Google Business Profile, when one exists, for the reviews and profile links. */
+  googleProfile: { reviewUrl: string | null; mapsUrl: string | null } | null;
 };
 
 export const CLIENT_PROJECTS: Record<string, ClientProject> = {
@@ -33,8 +41,18 @@ export const CLIENT_PROJECTS: Record<string, ClientProject> = {
     notify: { phone: '(406) 471-5613', emails: ['builtbyshan@gmail.com'] },
     answers: 'Carmen',
     phone: '(406) 471-5613',
+    assistantId: '5269bb2d-360f-4bf6-a07b-509ae488b482',
+    crm: 'buildertrend',
+    emailDomain: 'brimhomes.com',
+    googleProfile: null,
   },
 };
+
+/** The project a signed-in client belongs to, if any. */
+export function projectForEmail(email: string): ClientProject | null {
+  const e = email.toLowerCase();
+  return Object.values(CLIENT_PROJECTS).find((p) => p.clientEmail.toLowerCase() === e) ?? null;
+}
 
 export const PRIORITY_LABEL: Record<number, string> = { 1: 'Land and plans', 2: 'Land, no plans', 3: 'Plans, no land', 4: 'Remodel' };
 
