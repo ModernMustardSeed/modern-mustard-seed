@@ -47,6 +47,29 @@ export function clientGuide(p: ClientProject): GuideSection[] {
       ],
     },
     {
+      title: 'Today',
+      lines: [
+        'The box at the top is what matters right now, in order: who is waiting on a call, which email needs a reply, what renews soon, what goes out today, which sign got scanned. Every line is read from your own records the moment you open the page. Nothing in it is written by a model.',
+        'The guide in the corner reads the same records. Ask it who is waiting, which sign is working, or what came in this week, and it answers with the numbers.',
+      ],
+    },
+    {
+      title: 'Signs and ads',
+      lines: [
+        'Make a QR code for anything you print: a yard sign, the truck door, a business card, a Chamber ad, a mailer. Each one gets its own code in its link, so when someone scans it the site knows which sign brought them, and any lead that follows carries that name.',
+        'Download the PNG for a sign shop or the SVG for a printer. The codes point at builtrightinmontana.com and never change, so a sign printed today still works in five years.',
+        'The card shows scans this week, scans all time, and leads per code. That is how you learn which corner of the valley is reading your signs.',
+      ],
+    },
+    {
+      title: 'Your mail',
+      lines: [
+        'Connect your mailbox once with an app password from Google (2-Step Verification on, then Security, App passwords, "Mail"). We read your inbox twice an hour and sort it: new inquiries, customers, subs and suppliers, money, newsletters, notifications, everything else.',
+        'Anything that needs an answer gets a draft written in your voice, waiting under the message. Read it, change what you like, press Send and it goes from your own address, threaded under theirs. Or save it to your Gmail drafts and finish on your phone.',
+        'Nothing is ever sent, moved or deleted without your click. The drafts never quote a price, a timeline or financing; those are yours to say in person.',
+      ],
+    },
+    {
       title: 'Your accounts',
       lines: [
         'The accounts everything runs on, and whether each one is connected: Facebook, Instagram, LinkedIn, Houzz, Google Business Profile, Buildertrend, Google Workspace.',
@@ -76,7 +99,8 @@ export function deskGuide(p: ClientProject): GuideSection[] {
       title: 'The loop, end to end',
       lines: [
         'A visitor fills a form or chats. The lead is saved, texted and emailed to them, the visitor is thanked, and the lead is pushed into Buildertrend through their Lead Contact Form. If Buildertrend refuses (a captcha on their form is the only cause), the refusal is written on the lead and shown in their portal with the fix: ask Buildertrend support to turn the captcha off.',
-        'Monday 7:35 AM: the leads digest. Monday 8:12 AM: every domain re-read from the registry; anything inside 45 days lands in your inbox.',
+        'Monday 7:35 AM: the leads digest. Monday 8:12 AM: every domain re-read from the registry; anything inside 45 days lands in your inbox. Every hour at :07 and :37: their inbox is read over IMAP, new mail is sorted by a queued LLM job, and replies are drafted; nothing sends without their click.',
+        'QR codes: each campaign is a code in the link (?src=). The site posts a scan to /api/client-visit and carries the code on every lead, so scans and leads are counted per sign.',
         'Daily Posting plans at 7:35 PM and publishes on the hour. Their Hidden Gems articles come in through the Articles card; you write the summary, the site session puts it on /blog.',
       ],
     },

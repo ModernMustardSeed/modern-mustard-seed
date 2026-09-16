@@ -113,6 +113,8 @@ export type LeadForCrm = {
   land: string | null;
   message: string | null;
   page: string | null;
+  /** The sign or ad they scanned, when the site remembered one. */
+  campaign: string | null;
   source: string;
   referrer_name: string | null;
   answers: Array<{ q: string; a: string }> | null;
@@ -128,6 +130,7 @@ function splitName(name: string | null): { first: string; last: string } {
 function notesFor(lead: LeadForCrm, via: string): string {
   const lines = [
     `Came in through the ${via} on the website${lead.page ? ` (${lead.page})` : ''}.`,
+    lead.campaign ? `Scanned the QR code: ${lead.campaign}` : null,
     lead.project_type ? `Project: ${lead.project_type}` : null,
     lead.land ? `Starting point: ${lead.land}` : null,
     lead.referrer_name ? `Referred by: ${lead.referrer_name}` : null,

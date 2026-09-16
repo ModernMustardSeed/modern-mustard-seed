@@ -96,6 +96,10 @@
     {
       "path": "/api/cron/domains-check",
       "schedule": "12 14 * * 1"
+    },
+    {
+      "path": "/api/cron/client-mail-sync",
+      "schedule": "7,37 * * * *"
     }
   ]
 }

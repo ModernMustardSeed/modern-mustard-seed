@@ -4,6 +4,8 @@ import { getClientSession } from '@/lib/client-auth';
 import { getSupabase } from '@/lib/supabase';
 import { displayForIso } from '@/lib/booking';
 import { createClientRequest } from '@/lib/client-requests';
+import { projectForEmail } from '@/lib/client-leads';
+import { commandCenterContext } from '@/lib/command-center/context';
 
 export const runtime = 'nodejs';
 export const maxDuration = 30;
@@ -21,6 +23,7 @@ Your job:
 - Help this client understand their project status, find their files, see upcoming calls, and use what Sarah built for them.
 - If they bought a playbook (PDF), help them get the most from it and answer questions about applying it.
 - Offer a short guided tour of their portal when they arrive or ask for one.
+- When the context includes a Command Center, answer from it: who is waiting on a call, what came in, which QR code is being scanned, which email needs a reply, when a domain renews, what is still to connect. Give the numbers as they are. Do not tell them to check a screen you can already read.
 - When useful, suggest booking a call (their portal has a booking button) or point them to the right section.
 - Pass messages to Sarah. When the client wants a change, an edit, a fix, has feedback, or asks you to tell Sarah something, use the send_note_to_sarah tool. Capture exactly what they want, with all the specifics they gave. After it succeeds, confirm warmly in one sentence that you have passed it to Sarah and she will follow up. Never claim you sent something to Sarah unless you actually used the tool.
 
@@ -102,6 +105,15 @@ export async function POST(req: Request) {
       const next = booked?.find((b) => b.timeline);
       if (next) ctx.push(`Next call: ${displayForIso(next.timeline as string).display}.`);
     } catch {}
+    // A client on a project has a Command Center. The guide reads it too, so
+    // "who is waiting on me" and "which sign is working" get real answers.
+    const project = projectForEmail(email);
+    if (project) {
+      try {
+        const cc = await commandCenterContext(supabase, email);
+        if (cc.length) ctx.push('', 'Their Command Center right now:', ...cc);
+      } catch {}
+    }
   }
   const contextBlock = ctx.join('\n');
 
