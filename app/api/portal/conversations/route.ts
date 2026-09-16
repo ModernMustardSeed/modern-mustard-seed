@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getClientSession } from '@/lib/client-auth';
-import { projectForEmail } from '@/lib/client-leads';
+import { getSupabase } from '@/lib/supabase';
+import { visibleProject } from '@/lib/command-center/visible';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -23,7 +24,8 @@ type Chat = { id: string; previousChatId?: string; createdAt: string; input?: Ar
 export async function GET() {
   const session = await getClientSession();
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  const project = projectForEmail(session.email);
+  const sb = getSupabase();
+  const project = sb ? await visibleProject(sb, session.email) : null;
   const key = process.env.VAPI_API_KEY || process.env.VAPI_PRIVATE_KEY;
   if (!project?.assistantId || !key || /^\[SENSITIVE\]$/i.test(key)) return NextResponse.json({ conversations: [], days: 30 });
 

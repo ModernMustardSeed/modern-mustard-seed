@@ -4,7 +4,7 @@ import { getClientSession } from '@/lib/client-auth';
 import { getSupabase } from '@/lib/supabase';
 import { displayForIso } from '@/lib/booking';
 import { createClientRequest } from '@/lib/client-requests';
-import { projectForEmail } from '@/lib/client-leads';
+import { visibleProject } from '@/lib/command-center/visible';
 import { commandCenterContext } from '@/lib/command-center/context';
 
 export const runtime = 'nodejs';
@@ -107,7 +107,7 @@ export async function POST(req: Request) {
     } catch {}
     // A client on a project has a Command Center. The guide reads it too, so
     // "who is waiting on me" and "which sign is working" get real answers.
-    const project = projectForEmail(email);
+    const project = await visibleProject(supabase, email);
     if (project) {
       try {
         const cc = await commandCenterContext(supabase, email);

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getSupabase } from '@/lib/supabase';
 import { CLIENT_PROJECTS } from '@/lib/client-leads';
 import { daysUntil } from '@/lib/domains';
+import { commandCenterVisible } from '@/lib/command-center/visible';
 import { resendClient } from '@/lib/send-email';
 import { SITE } from '@/lib/seo';
 
@@ -43,6 +44,11 @@ export async function GET(req: Request) {
 
   for (const p of Object.values(CLIENT_PROJECTS)) {
     const email = p.clientEmail;
+    // A client who has not been shown their Command Center is not sent its report.
+    if (!(await commandCenterVisible(sb, email))) {
+      report[p.key] = 'command center not shown yet';
+      continue;
+    }
     const [leads, visits, campaigns, mail, posts, photos, asks, domains] = await Promise.all([
       sb.from('client_leads').select('source, sources, campaign, priority, handled_at').eq('client_email', email).gte('created_at', s).lt('created_at', e),
       sb.from('client_visits').select('campaign_code').eq('client_email', email).gte('created_at', s).lt('created_at', e),

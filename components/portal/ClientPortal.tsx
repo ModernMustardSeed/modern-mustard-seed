@@ -44,6 +44,8 @@ type PortalData = {
   isDemoClient?: boolean;
   /** True when this client is on Daily Posting; the calendar is at /portal/posting. */
   posting?: boolean;
+  /** True once Sarah has shown this client their Command Center. Built first, shown when bought. */
+  commandCenter?: boolean;
   billing: {
     oneTime: number;
     deposit: number;
@@ -268,17 +270,17 @@ export default function ClientPortal() {
               </div>
             )}
 
-            {(data.audience === 'client' || data.audience === 'both') && <TodayCard />}
+            {data.commandCenter && <TodayCard />}
             {data.posting && <PostingTile />}
             {(data.audience === 'client' || data.audience === 'both') && <LeadsCard />}
-            {(data.audience === 'client' || data.audience === 'both') && <MailCard />}
-            {(data.audience === 'client' || data.audience === 'both') && <ConversationsCard />}
-            {(data.audience === 'client' || data.audience === 'both') && <CampaignsCard />}
-            {(data.audience === 'client' || data.audience === 'both') && <ReviewsCard />}
-            {(data.audience === 'client' || data.audience === 'both') && <ProjectPhotosCard />}
+            {data.commandCenter && <MailCard />}
+            {data.commandCenter && <ConversationsCard />}
+            {data.commandCenter && <CampaignsCard />}
+            {data.commandCenter && <ReviewsCard />}
+            {data.commandCenter && <ProjectPhotosCard />}
             {(data.audience === 'client' || data.audience === 'both') && <ArticlesCard />}
-            {(data.audience === 'client' || data.audience === 'both') && <DomainsCard />}
-            {(data.audience === 'client' || data.audience === 'both') && <AccountsCard />}
+            {data.commandCenter && <DomainsCard />}
+            {data.commandCenter && <AccountsCard />}
 
             <div className="grid lg:grid-cols-3 gap-6">
               {/* Main column */}

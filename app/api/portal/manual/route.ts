@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getClientSession } from '@/lib/client-auth';
-import { projectForEmail } from '@/lib/client-leads';
+import { getSupabase } from '@/lib/supabase';
+import { visibleProject } from '@/lib/command-center/visible';
 import { clientGuide } from '@/lib/command-center/guide';
 import { SITE } from '@/lib/seo';
 
@@ -18,7 +19,8 @@ const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replac
 export async function GET() {
   const session = await getClientSession();
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  const project = projectForEmail(session.email);
+  const sb = getSupabase();
+  const project = sb ? await visibleProject(sb, session.email) : null;
   if (!project) return NextResponse.json({ error: 'Not on a project.' }, { status: 404 });
   const guide = clientGuide(project);
   const today = new Date().toLocaleDateString('en-US', { timeZone: 'America/Denver', month: 'long', day: 'numeric', year: 'numeric' });

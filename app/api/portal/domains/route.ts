@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getClientSession } from '@/lib/client-auth';
 import { getSupabase } from '@/lib/supabase';
-import { projectForEmail } from '@/lib/client-leads';
+import { visibleProject } from '@/lib/command-center/visible';
 import { daysUntil, mailProvider, readMx, readNs, refreshDomains, type DomainRow } from '@/lib/domains';
 
 export const runtime = 'nodejs';
@@ -18,7 +18,7 @@ export async function GET() {
   const session = await getClientSession();
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const sb = getSupabase();
-  const project = projectForEmail(session.email);
+  const project = sb ? await visibleProject(sb, session.email) : null;
   if (!sb || !project) return NextResponse.json({ domains: [], email: null });
 
   let rows: DomainRow[] = [];

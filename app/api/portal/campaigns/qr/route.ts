@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getClientSession } from '@/lib/client-auth';
 import { getSupabase } from '@/lib/supabase';
-import { projectForEmail } from '@/lib/client-leads';
+import { visibleProject } from '@/lib/command-center/visible';
 import { campaignUrl, isCode, qrPng, qrSvg } from '@/lib/campaigns';
 
 export const runtime = 'nodejs';
@@ -16,7 +16,7 @@ export async function GET(req: Request) {
   const session = await getClientSession();
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const sb = getSupabase();
-  const project = projectForEmail(session.email);
+  const project = sb ? await visibleProject(sb, session.email) : null;
   if (!sb || !project) return NextResponse.json({ error: 'Not on a project.' }, { status: 404 });
   const u = new URL(req.url);
   const code = u.searchParams.get('code') ?? '';
