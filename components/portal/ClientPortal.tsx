@@ -11,6 +11,7 @@ import { PostingTile, LeadsCard, ArticlesCard } from '@/components/portal/Portal
 import { ConversationsCard, DomainsCard, AccountsCard } from '@/components/portal/CommandCenter';
 import { TodayCard, CampaignsCard, MailCard } from '@/components/portal/CommandCenterMore';
 import { ProjectPhotosCard, ReviewsCard } from '@/components/portal/CommandCenterOps';
+import Appointments from '@/components/portal/Appointments';
 import { CLIENT_HELP } from '@/lib/help-content';
 import { OnboardingChecklist, OnboardingIntake } from '@/components/portal/Onboarding';
 import LaunchChecklist from '@/components/portal/LaunchChecklist';
@@ -271,6 +272,7 @@ export default function ClientPortal() {
             )}
 
             {data.commandCenter && <TodayCard />}
+            {data.commandCenter && <Appointments />}
             {data.posting && <PostingTile />}
             {(data.audience === 'client' || data.audience === 'both') && <LeadsCard />}
             {data.commandCenter && <MailCard />}
