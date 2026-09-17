@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getSupabase } from '@/lib/supabase';
 import { CLIENT_PROJECTS } from '@/lib/client-leads';
-import { KINDS, openDays, zoneLabel, HORIZON_DAYS, LEAD_HOURS, type SlotKind } from '@/lib/client-booking';
+import { KINDS, openDays, bookingReady, zoneLabel, HORIZON_DAYS, LEAD_HOURS, type SlotKind } from '@/lib/client-booking';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -54,11 +54,15 @@ export async function GET(req: Request) {
   const sb = getSupabase();
   if (!sb) return cors(NextResponse.json({ ok: false, error: 'booking is not available right now' }, { status: 503 }), origin);
 
-  const days = await openDays(sb, { project: projectKey, clientEmail: project.clientEmail, kind });
+  // The page needs to know the difference between a full week and a diary we
+  // cannot read, because the honest answer to the second one is the phone.
+  const ready = await bookingReady(sb);
+  const days = ready ? await openDays(sb, { project: projectKey, clientEmail: project.clientEmail, kind }) : [];
   const rule = KINDS[kind];
   return cors(
     NextResponse.json({
       ok: true,
+      ready,
       zone: zoneLabel(new Date()),
       leadHours: LEAD_HOURS,
       horizonDays: HORIZON_DAYS,
