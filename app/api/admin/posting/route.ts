@@ -14,6 +14,7 @@ import { projectForEmail } from '@/lib/client-leads';
 import { commandCenterVisible, setCommandCenterVisible } from '@/lib/command-center/visible';
 import { connectBuildertrend, buildertrendStatus } from '@/lib/buildertrend';
 import { connectMailbox, mailStatus, syncMailbox } from '@/lib/mail-desk';
+import { listVault, revealSecret, markRotated } from '@/lib/command-center/vault';
 import { mountainDate, addDays, mountainToUtc } from '@/lib/posting/time';
 import { PLATFORMS, type Platform, type PostRow, type MaterialRow, type SettingsRow } from '@/lib/posting/types';
 
@@ -73,7 +74,7 @@ export async function GET(req: Request) {
       clientGuide: clientGuide(settings),
       // The Command Center words for the same client, when they are on a project.
       commandCenter: projectForEmail(client)
-        ? { guide: ccDeskGuide(projectForEmail(client)!), clientGuide: ccClientGuide(projectForEmail(client)!), visible: await commandCenterVisible(db, client), buildertrend: await buildertrendStatus(db, client), mailbox: await mailStatus(db, client) }
+        ? { guide: ccDeskGuide(projectForEmail(client)!), clientGuide: ccClientGuide(projectForEmail(client)!), visible: await commandCenterVisible(db, client), buildertrend: await buildertrendStatus(db, client), mailbox: await mailStatus(db, client), vault: await listVault(db, client) }
         : null,
       env: {
         x: Boolean(process.env.X_OAUTH2_CLIENT_ID),
@@ -125,6 +126,19 @@ export async function POST(req: Request) {
       const project = projectForEmail(client);
       const s = project ? await syncMailbox(db, project) : null;
       return NextResponse.json({ ok: true, fetched: s?.fetched ?? 0 });
+    }
+    case 'vault-reveal': {
+      // A credential the client mailed us, opened for one screen. Never logged, never emailed.
+      if (!client) return bad('Client is needed.');
+      const r = await revealSecret(db, client, String(body.id ?? ''));
+      if (!r.ok) return bad(r.error);
+      return NextResponse.json({ ok: true, label: r.label, value: r.value });
+    }
+    case 'vault-rotated': {
+      if (!client) return bad('Client is needed.');
+      const ok = await markRotated(db, client, String(body.id ?? ''), by);
+      if (!ok) return bad('No such credential for this client.');
+      return NextResponse.json({ ok: true });
     }
     case 'command-center': {
       // Built before it is bought. This is the one switch that lets the client see it.
