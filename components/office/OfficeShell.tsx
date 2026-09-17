@@ -5,6 +5,7 @@ import { PostingTile, LeadsCard, ArticlesCard } from '@/components/portal/Portal
 import { ConversationsCard, DomainsCard, AccountsCard } from '@/components/portal/CommandCenter';
 import { TodayCard, CampaignsCard, MailCard } from '@/components/portal/CommandCenterMore';
 import { ProjectPhotosCard, ReviewsCard } from '@/components/portal/CommandCenterOps';
+import Appointments from '@/components/portal/Appointments';
 import { PortalAssistant } from '@/components/portal/ClientPortal';
 
 /**
@@ -134,6 +135,7 @@ export default function OfficeShell() {
             {state === 'ready' && (
               <>
                 <TodayCard />
+                <Appointments />
                 {data?.posting && <PostingTile />}
                 <LeadsCard />
                 <MailCard />
