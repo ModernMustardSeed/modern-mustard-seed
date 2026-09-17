@@ -122,6 +122,10 @@ export async function POST(req: Request) {
   // The sign they scanned, if the site remembered one. Only a code we issued counts.
   const campaignRaw = String(body.campaign ?? body.src ?? '').trim().toLowerCase();
   const campaign = isCode(campaignRaw) ? campaignRaw : null;
+  // "Contact Carmen" addresses the note to Carmen; the office still sees it.
+  const attentionKey = String(body.attention ?? '').trim().toLowerCase();
+  const attention = project.people?.[attentionKey] ?? null;
+  if (attention) lead.message = `${lead.message ? `${lead.message}\n\n` : ''}[For ${attention.name}]`;
   const elapsed = Number(body.elapsed_ms);
   const elapsedMs = Number.isFinite(elapsed) && elapsed >= 0 ? Math.min(Math.round(elapsed), 86_400_000) : null;
   // Bots: the honeypot, or a filled message inside three seconds of the page loading. Say nothing, keep nothing.
@@ -239,10 +243,10 @@ export async function POST(req: Request) {
     </div>`;
     const sent = await resend.emails.send({
       from: `${project.business} website <sarah@modernmustardseed.com>`,
-      to: project.notify.emails,
+      to: attention ? [attention.email, ...project.notify.emails.filter((e) => e !== attention.email)] : project.notify.emails,
       cc: ['sarah@modernmustardseed.com'],
       replyTo: lead.email ? [lead.email] : ['sarah@modernmustardseed.com'],
-      subject: `${merged ? 'Back again' : 'New lead'}${effectivePriority ? `, priority ${effectivePriority}` : ''}: ${who}${lead.town ? `, ${lead.town}` : ''}${lead.project_type ? `, ${lead.project_type}` : ''}${source === 'questionnaire' ? ' (questionnaire)' : ''}`,
+      subject: `${attention ? `For ${attention.name}: ` : ''}${merged ? 'Back again' : 'New lead'}${effectivePriority ? `, priority ${effectivePriority}` : ''}: ${who}${lead.town ? `, ${lead.town}` : ''}${lead.project_type ? `, ${lead.project_type}` : ''}${source === 'questionnaire' ? ' (questionnaire)' : ''}`,
       html,
       text: [...lines, ...(answerLines.length ? ['', 'Their questionnaire:', ...answerLines] : [])].join('\n'),
     });
