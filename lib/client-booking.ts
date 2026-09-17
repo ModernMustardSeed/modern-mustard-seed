@@ -182,6 +182,20 @@ export async function clientBusy(sb: SupabaseClient, clientEmail: string, now = 
   return intervals;
 }
 
+/**
+ * Can we see the diary at all? A missing table comes back as an error object,
+ * not an exception, so without this check an unreadable diary reads as an empty
+ * one and every slot looks free. Availability we cannot verify is not offered.
+ */
+export async function bookingReady(sb: SupabaseClient): Promise<boolean> {
+  try {
+    const { error } = await sb.from('client_appointments').select('id').limit(1);
+    return !error;
+  } catch {
+    return false;
+  }
+}
+
 export type OpenSlot = { at: string; label: string };
 export type OpenDay = { date: string; label: string; slots: OpenSlot[] };
 
@@ -195,6 +209,7 @@ export async function openDays(
   opts: { project: string; clientEmail: string; kind: SlotKind; now?: Date }
 ): Promise<OpenDay[]> {
   const now = opts.now ?? new Date();
+  if (!(await bookingReady(sb))) return [];
   const rule = KINDS[opts.kind];
   const from = new Date(now.getTime() + LEAD_HOURS * 3_600_000);
   const to = new Date(now.getTime() + HORIZON_DAYS * 86_400_000);

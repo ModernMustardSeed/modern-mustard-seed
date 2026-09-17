@@ -6,7 +6,7 @@ import { sendSms, toE164, smsConfigured } from '@/lib/sms';
 import { CLIENT_PROJECTS } from '@/lib/client-leads';
 import { checkAnswer } from '@/lib/human-check';
 import { creditLead, isCode } from '@/lib/campaigns';
-import { KINDS, slotIsOpen, describeSlot, zoneLabel, icsFor, type SlotKind } from '@/lib/client-booking';
+import { KINDS, slotIsOpen, bookingReady, describeSlot, zoneLabel, icsFor, type SlotKind } from '@/lib/client-booking';
 import { SITE } from '@/lib/seo';
 
 export const runtime = 'nodejs';
@@ -98,6 +98,7 @@ export async function POST(req: Request) {
   const sb = getSupabase();
   if (!sb) return reply({ ok: false, error: 'Booking is not available right now. Call us and we will put it in the diary.' }, 503);
 
+  if (!(await bookingReady(sb))) return reply({ ok: false, error: `Booking is not switched on yet. Call ${project.phone} and we will put it in the diary ourselves.`, notReady: true }, 503);
   const open = await slotIsOpen(sb, { project: projectKey, clientEmail: project.clientEmail, kind, at });
   if (!open.ok) return reply({ ok: false, error: open.why, taken: true }, 409);
 
