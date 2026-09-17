@@ -12,6 +12,8 @@ import { deskGuide, clientGuide } from '@/lib/posting/guide';
 import { deskGuide as ccDeskGuide, clientGuide as ccClientGuide } from '@/lib/command-center/guide';
 import { projectForEmail } from '@/lib/client-leads';
 import { commandCenterVisible, setCommandCenterVisible } from '@/lib/command-center/visible';
+import { connectBuildertrend, buildertrendStatus } from '@/lib/buildertrend';
+import { connectMailbox, mailStatus, syncMailbox } from '@/lib/mail-desk';
 import { mountainDate, addDays, mountainToUtc } from '@/lib/posting/time';
 import { PLATFORMS, type Platform, type PostRow, type MaterialRow, type SettingsRow } from '@/lib/posting/types';
 
@@ -70,7 +72,9 @@ export async function GET(req: Request) {
       guide: deskGuide(settings),
       clientGuide: clientGuide(settings),
       // The Command Center words for the same client, when they are on a project.
-      commandCenter: projectForEmail(client) ? { guide: ccDeskGuide(projectForEmail(client)!), clientGuide: ccClientGuide(projectForEmail(client)!), visible: await commandCenterVisible(db, client) } : null,
+      commandCenter: projectForEmail(client)
+        ? { guide: ccDeskGuide(projectForEmail(client)!), clientGuide: ccClientGuide(projectForEmail(client)!), visible: await commandCenterVisible(db, client), buildertrend: await buildertrendStatus(db, client), mailbox: await mailStatus(db, client) }
+        : null,
       env: {
         x: Boolean(process.env.X_OAUTH2_CLIENT_ID),
         linkedin: Boolean(process.env.LINKEDIN_CLIENT_ID),
@@ -103,6 +107,24 @@ export async function POST(req: Request) {
       if (!client || !body.business_name) return bad('Client email and business name are needed.');
       const r = await saveSettings(db, client, { business_name: String(body.business_name), site_url: (body.site_url as string) ?? null, phone: (body.phone as string) ?? null, towns: (body.towns as string[]) ?? [], services: (body.services as string[]) ?? [] });
       return r.ok ? NextResponse.json({ ok: true }) : bad(r.error);
+    }
+    case 'buildertrend-embed': {
+      // Sarah, signed into the client's Buildertrend with their blessing, pastes
+      // the Lead Contact Form embed here instead of asking them to.
+      if (!client) return bad('Client is needed.');
+      const r = await connectBuildertrend(db, client, String(body.embed ?? ''), 'admin');
+      if (!r.ok) return bad(r.error);
+      return NextResponse.json({ ok: true, builderId: r.builderId, captcha: r.captcha });
+    }
+    case 'mailbox': {
+      // Same for the mail desk: the Google app password, made by Sarah in the
+      // client's Google account, pasted once from the desk.
+      if (!client) return bad('Client is needed.');
+      const r = await connectMailbox(db, client, String(body.address ?? ''), String(body.appPassword ?? ''));
+      if (!r.ok) return bad(r.error);
+      const project = projectForEmail(client);
+      const s = project ? await syncMailbox(db, project) : null;
+      return NextResponse.json({ ok: true, fetched: s?.fetched ?? 0 });
     }
     case 'command-center': {
       // Built before it is bought. This is the one switch that lets the client see it.
