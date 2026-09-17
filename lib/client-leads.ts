@@ -20,6 +20,8 @@ export type ClientProject = {
   publicUrl: string;
   origins: string[];
   notify: { phone: string | null; emails: string[] };
+  /** Named people a form can be addressed to; the note goes to them first. */
+  people?: Record<string, { name: string; email: string }>;
   /** Who answers the phone, by first name, for the visitor's confirmation. */
   answers: string;
   phone: string;
@@ -73,7 +75,16 @@ export const CLIENT_PROJECTS: Record<string, ClientProject> = {
     siteUrl: 'https://built-right-montana-demo.vercel.app',
     publicUrl: 'https://builtrightinmontana.com',
     origins: ['https://built-right-montana-demo.vercel.app', 'https://builtrightinmontana.com', 'https://www.builtrightinmontana.com', 'https://built-right-prep.vercel.app'],
-    notify: { phone: '(406) 471-5613', emails: ['builtbyshan@gmail.com'] },
+    // Carmen runs the office, so every lead reaches her inbox as well as Shan's.
+    notify: { phone: '(406) 471-5613', emails: ['builtbyshan@gmail.com', 'builtrightinmontana@gmail.com'] },
+    // "Contact Shan", "Contact Carmen", "Contact Zayne" on the team page: the
+    // named person gets the note first. Zayne's address is as Carmen typed it
+    // on 2026-09-16 with the obvious typo corrected; confirm with her.
+    people: {
+      shan: { name: 'Shan', email: 'builtbyshan@gmail.com' },
+      carmen: { name: 'Carmen', email: 'builtrightinmontana@gmail.com' },
+      zayne: { name: 'Zayne', email: 'homesbysazayne@gmail.com' },
+    },
     answers: 'Carmen',
     phone: '(406) 471-5613',
     assistantId: '5269bb2d-360f-4bf6-a07b-509ae488b482',
