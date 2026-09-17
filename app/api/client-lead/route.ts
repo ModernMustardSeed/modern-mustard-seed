@@ -232,13 +232,24 @@ export async function POST(req: Request) {
       .filter(Boolean)
       .join(' ');
     const sms = await sendSms(project.notify.phone, short);
-    notified.sms = sms.ok ? { ok: true, sid: sms.sid } : { ok: false, error: sms.error };
+    notified.sms = sms.ok ? { ok: true, sid: sms.sid } : { ok: false, error: sms.error, configured: sms.configured };
   }
+  // A notification nobody is told about is the same as no notification. When the
+  // text could not go, the email that did go says so, and says which of the two
+  // reasons it was, because 'not set up yet' and 'it failed' need different acts.
+  const smsNote = !project.notify.phone
+    ? null
+    : (notified.sms as { ok?: boolean } | undefined)?.ok
+      ? null
+      : (notified.sms as { configured?: boolean } | undefined)?.configured === false
+        ? 'Texting is not switched on yet, so this email is the only notice that went out.'
+        : 'The text did not go through, so this email is the only notice that went out.';
   try {
     const resend = resendClient();
     const html = `<div style="font:400 16px/1.55 -apple-system,Segoe UI,sans-serif;color:#161616;max-width:560px;">
       ${lines.map((l) => `<p style="margin:0 0 10px;">${esc(l)}</p>`).join('')}
       ${answerLines.length ? `<p style="margin:16px 0 6px;font-weight:700;">Their questionnaire</p>${(answers ?? []).map((a) => `<p style="margin:0 0 8px;"><span style="opacity:.6;">${esc(a.q)}</span><br>${esc(a.a || '(blank)')}</p>`).join('')}` : ''}
+      ${smsNote ? `<p style="margin:16px 0 0;padding:10px 12px;border-left:4px solid #6d3418;background:#f7efe9;color:#6d3418;">${esc(smsNote)}</p>` : ''}
       <p style="margin:16px 0 0;color:#161616;opacity:.6;font-size:13px;">Every lead is kept in your portal at ${SITE.url}/portal. Mark it called there and it leaves the Monday list.</p>
     </div>`;
     const sent = await resend.emails.send({
@@ -248,7 +259,7 @@ export async function POST(req: Request) {
       replyTo: lead.email ? [lead.email] : ['sarah@modernmustardseed.com'],
       subject: `${attention ? `For ${attention.name}: ` : ''}${merged ? 'Back again' : 'New lead'}${effectivePriority ? `, priority ${effectivePriority}` : ''}: ${who}${lead.town ? `, ${lead.town}` : ''}${lead.project_type ? `, ${lead.project_type}` : ''}${source === 'questionnaire' ? ' (questionnaire)' : ''}`,
       html,
-      text: [...lines, ...(answerLines.length ? ['', 'Their questionnaire:', ...answerLines] : [])].join('\n'),
+      text: [...lines, ...(answerLines.length ? ['', 'Their questionnaire:', ...answerLines] : []), ...(smsNote ? ['', smsNote] : [])].join('\n'),
     });
     notified.email = { ok: !sent.error, id: sent.data?.id ?? null, error: sent.error?.message ?? null };
   } catch (err) {
