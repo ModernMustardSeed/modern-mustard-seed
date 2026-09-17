@@ -20,7 +20,7 @@ import { prettyDate, prettyHour } from '@/lib/posting/time';
  */
 type Overview = { settings: SettingsRow; today: { id: string; status: string; headline: string | null } | null; nextPlanned: string | null; queued: number; graphicsWaiting: number; approvalsWaiting: number; connected: Platform[] };
 type Lead = { id: string; source: string; sources: string[]; name: string | null; phone: string | null; email: string | null; town: string | null; project_type: string | null; land: string | null; page: string | null; priority: number | null; handled_at: string | null; created_at: string };
-type Detail = { settings: SettingsRow; today: string; posts: PostRow[]; materials: MaterialRow[]; accounts: AccountView[]; leads: Lead[]; guide: GuideSection[]; clientGuide: GuideSection[]; commandCenter: { guide: GuideSection[]; clientGuide: GuideSection[]; visible: boolean; buildertrend: { connected: boolean; builderId: number | null; captcha: boolean } | null; mailbox: { connected: boolean; address: string | null; lastSyncAt: string | null } | null } | null; env: { x: boolean; linkedin: boolean; google: boolean; facebookApp: boolean } };
+type Detail = { settings: SettingsRow; today: string; posts: PostRow[]; materials: MaterialRow[]; accounts: AccountView[]; leads: Lead[]; guide: GuideSection[]; clientGuide: GuideSection[]; commandCenter: { guide: GuideSection[]; clientGuide: GuideSection[]; visible: boolean; buildertrend: { connected: boolean; builderId: number | null; captcha: boolean } | null; mailbox: { connected: boolean; address: string | null; lastSyncAt: string | null } | null; vault: { id: string; label: string; createdAt: string; rotatedAt: string | null; rotatedBy: string | null; submittedBy: string | null }[] } | null; env: { x: boolean; linkedin: boolean; google: boolean; facebookApp: boolean } };
 
 const CARD = 'rounded-2xl border-2 border-[#161616] bg-white p-5 shadow-[5px_5px_0_0_#161616]';
 const BTN = 'rounded-lg border-2 border-[#161616] bg-white px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-[#161616] disabled:opacity-50 hover:-translate-y-0.5 transition-transform';
@@ -129,6 +129,7 @@ function ClientDetail({ d, act, busy, onNotice, client }: { d: Detail; act: Act;
   const [btEmbed, setBtEmbed] = useState('');
   const [mbAddress, setMbAddress] = useState('');
   const [mbPass, setMbPass] = useState('');
+  const [revealed, setRevealed] = useState<Record<string, string>>({});
   const [gbpLocations, setGbpLocations] = useState<Array<{ name: string; title: string }> | null>(null);
   const [theirText, setTheirText] = useState('');
   const [theirImage, setTheirImage] = useState<Uploaded | null>(null);
@@ -307,6 +308,33 @@ function ClientDetail({ d, act, busy, onNotice, client }: { d: Detail; act: Act;
                     <input value={mbPass} onChange={(e) => setMbPass(e.target.value)} type="password" placeholder="app password" className={`${INPUT} mt-2`} />
                     <button type="button" className={`${BTN_GOLD} mt-2`} disabled={!mbAddress.trim() || mbPass.replace(/\s/g, '').length < 12 || !!busy} onClick={async () => { const j = (await act({ action: 'mailbox', address: mbAddress, appPassword: mbPass }, 'mb')) as { ok?: boolean; fetched?: number }; if (j.ok) { setMbAddress(''); setMbPass(''); onNotice(`Mailbox connected. First read: ${j.fetched ?? 0} messages; sorting takes a few minutes.`); } }}>Validate and connect</button>
                   </div>
+                  {d.commandCenter.vault.length > 0 && (
+                    <div className="mt-5 border-t-2 border-[#161616]/10 pt-4">
+                      <p className="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-[#161616]/60 mb-1">Their logins, from the handover</p>
+                      <p className="text-[12px] text-[#161616]/65 mb-2">What they mailed us, held encrypted. Open one, sign in yourself in a normal browser tab, then change the password and mark it rotated. Nothing here is ever emailed or logged.</p>
+                      <ul className="space-y-2">
+                        {d.commandCenter.vault.map((v) => (
+                          <li key={v.id} className="border-2 border-[#161616]/15 p-2">
+                            <div className="flex flex-wrap items-center gap-2">
+                              <span className="text-[13px] font-bold flex-1 min-w-[160px]">{v.label}</span>
+                              {v.rotatedAt ? <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-[#161616]/55">rotated {new Date(v.rotatedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span> : null}
+                              {revealed[v.id] === undefined ? (
+                                <button type="button" className={BTN_GOLD} disabled={!!busy} onClick={async () => { const j = (await act({ action: 'vault-reveal', id: v.id }, `vault-${v.id}`)) as { ok?: boolean; value?: string }; if (j.ok && typeof j.value === 'string') setRevealed((r) => ({ ...r, [v.id]: j.value as string })); }}>Open</button>
+                              ) : (
+                                <button type="button" className={BTN_GOLD} onClick={() => setRevealed((r) => { const n = { ...r }; delete n[v.id]; return n; })}>Close</button>
+                              )}
+                              {!v.rotatedAt && (
+                                <button type="button" className={BTN_GOLD} disabled={!!busy} onClick={async () => { const j = (await act({ action: 'vault-rotated', id: v.id }, `rot-${v.id}`)) as { ok?: boolean }; if (j.ok) onNotice('Marked rotated.'); }}>Mark rotated</button>
+                              )}
+                            </div>
+                            {revealed[v.id] !== undefined && (
+                              <pre className="mt-2 whitespace-pre-wrap break-all bg-[#161616] text-[#F5B700] p-2 font-mono text-[12px] select-all">{revealed[v.id]}</pre>
+                            )}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                 </>
               )}
             </section>
