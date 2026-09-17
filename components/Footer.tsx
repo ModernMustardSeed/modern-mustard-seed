@@ -68,7 +68,8 @@ export default function Footer() {
     {
       title: 'Company',
       links: [
-        { label: 'The Free Audit', href: '/audit' },
+        { label: 'The Presence Audit', href: '/presence-audit' },
+        { label: 'The Bottleneck Breaker', href: '/audit' },
         { label: 'Book A Call', href: '/book' },
         { label: 'Or Write Instead', href: '/inquire' },
         { label: 'The Mustard Seed World', href: '/world' },
@@ -106,10 +107,10 @@ export default function Footer() {
               Book a Call
             </Link>
             <Link
-              href="/audit"
+              href="/presence-audit"
               className="rounded-full border-2 border-[#161616] bg-white text-[#161616] px-8 py-4 font-sans font-extrabold text-[12px] uppercase tracking-[0.16em] shadow-[5px_5px_0_0_#161616] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#161616]"
             >
-              Run the Free Audit
+              Run the Audit
             </Link>
           </div>
         </div>

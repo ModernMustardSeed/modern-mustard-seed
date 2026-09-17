@@ -24,6 +24,7 @@ import { MONTANA_CITIES } from '@/data/montana-cities';
 const STATIC_PATHS = [
   '',
   '/book',
+  '/presence-audit',
   '/audit',
   '/inquire',
   '/work',
@@ -69,7 +70,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     url: `${SITE.url}${path}`,
     changeFrequency: (path === '' ? 'weekly' : 'monthly') as 'weekly' | 'monthly',
     priority:
-      path === '' || path === '/book' || path === '/audit' || path === '/inquire'
+      path === '' || path === '/book' || path === '/presence-audit' || path === '/audit' || path === '/inquire'
         ? 1.0
         : path === '/work' || path === '/services' || path === '/advisory' || path === '/talking-website' || path === '/websites' || path === '/voice-agents' || path === '/brand'
           ? 0.95

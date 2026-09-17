@@ -237,7 +237,7 @@ export default function WorkWithUsPage() {
               there, because it is easier to decide what to build once you can see what is leaking.
             </p>
             <Link
-              href="/audit"
+              href="/presence-audit"
               className="mt-7 inline-block rounded-full border-2 border-[#161616] bg-[#161616] px-7 py-3.5 font-sans text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#F5B700] shadow-[4px_4px_0_0_#FBF6EA] transition-transform hover:-translate-y-0.5"
             >
               Run the free audit
