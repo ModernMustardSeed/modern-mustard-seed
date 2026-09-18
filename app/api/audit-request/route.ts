@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { getSupabase } from '@/lib/supabase';
 import { recordEvent } from '@/lib/acq/events';
-import { sendViaResend } from '@/lib/send-email';
+import { resendClient } from '@/lib/send-email';
 import { leadNotification } from '@/lib/email';
 import { OWNER_NOTIFY_TO } from '@/lib/owner';
 import { SITE } from '@/lib/seo';
@@ -114,7 +114,7 @@ async function askFromRequest(
   await sb.from('audit_requests').update({ wants: want, wants_at: new Date().toISOString() }).eq('id', request.id);
 
   const asked = want.map((w) => WANTS[w]).join(', ');
-  await sendViaResend({
+  await resendClient().emails.send({
     from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
     to: OWNER_NOTIFY_TO,
     replyTo: request.email,
