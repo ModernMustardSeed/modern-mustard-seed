@@ -171,6 +171,7 @@ function ClientDetail({ d, act, busy, onNotice, client }: { d: Detail; act: Act;
         <div className="flex gap-2">
           <button type="button" className={`${BTN} flex-none`} onClick={() => setTab(tab === 'desk' ? 'words' : 'desk')}>{tab === 'desk' ? 'The words for them' : 'Back to the desk'}</button>
           <button type="button" className={`${s.visible ? BTN_RED : BTN_INK} flex-none`} disabled={!!busy} onClick={() => void act({ action: 'settings', visible: !s.visible }, 'visible')}>{s.visible ? 'Hide from the client' : 'Show to the client'}</button>
+          {d.commandCenter && <a className={`${BTN} flex-none`} href={`/api/admin/look?client=${encodeURIComponent(client)}`}>Open their portal</a>}
           {d.commandCenter && (
             <button type="button" className={`${d.commandCenter.visible ? BTN_RED : BTN_INK} flex-none`} disabled={!!busy} onClick={() => void act({ action: 'command-center', visible: !d.commandCenter!.visible }, 'command-center')}>
               {d.commandCenter.visible ? 'Hide the Command Center' : 'Show the Command Center'}

@@ -180,6 +180,9 @@ export async function verifyToken(token: string): Promise<Session | null> {
     // tokens were signed with this same secret, so keep rejecting that prefix:
     // any link still sitting in an inbox can never be replayed as a session.
     if (payload.startsWith('magic:')) return null;
+    // Client portal tokens carry a kind prefix. Should the two secrets ever match,
+    // a client's session or a look pass must still never read as an admin session.
+    if (/^(sess|look):/.test(payload)) return null;
     const expected = await hmacSign(payload);
     if (!timingSafeEqualStr(sig, expected)) return null;
     const idx = payload.lastIndexOf(':');

@@ -48,6 +48,8 @@ type PortalData = {
   posting?: boolean;
   /** True once Sarah has shown this client their Command Center. Built first, shown when bought. */
   commandCenter?: boolean;
+  /** Set when Sarah is looking at this portal as the client, from her admin session. */
+  preview?: { email: string; commandCenterShownToClient: boolean } | null;
   billing: {
     oneTime: number;
     deposit: number;
@@ -181,7 +183,23 @@ export default function ClientPortal() {
 
   return (
     <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
-      {data && data.audience !== 'guest' && (
+      {data?.preview && (
+        <div className="fixed inset-x-0 bottom-0 z-50 bg-[#161616] text-white border-t-2 border-[#F5B700]" style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }} role="status">
+          <div className="max-w-6xl mx-auto px-6 py-3 flex flex-wrap items-center justify-between gap-3">
+            <p className="font-body text-sm">
+              <strong className="font-sans font-bold">You are looking as {data.preview.email}.</strong>{' '}
+              {data.preview.commandCenterShownToClient
+                ? 'They see everything here, their Command Center included.'
+                : 'Their Command Center is showing for you only. They see this portal without it until you switch it on from the desk.'}{' '}
+              Anything you do here is real.
+            </p>
+            <a href={`/api/admin/look?end=1&back=${encodeURIComponent(`/admin/posting?client=${data.preview.email}`)}`} className="flex-none px-3 py-2 text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] border-2 border-[#F5B700] rounded-lg">
+              Stop looking
+            </a>
+          </div>
+        </div>
+      )}
+      {data && data.audience !== 'guest' && !data.preview && (
         <>
           <MustardDeskCall endpoint="/api/portal/desk-call" sublabel="Your concierge, live" />
           <DeskWelcome surface="client" name={data.client?.name} email={data.email} />
@@ -199,12 +217,12 @@ export default function ClientPortal() {
           <nav className="flex items-center gap-2">
             <HelpGuide guide={CLIENT_HELP} nudge={{ storageKey: 'mms_portal_tour_v1', text: 'New here? Take the 1-minute tour.' }} />
             <Link href="/?book=1" className="text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-[#1E50C8] hover:text-[#161616] px-4 py-2">Book a call</Link>
-            <button onClick={logout} className="text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-[#161616]/55 hover:text-[#161616] px-4 py-2">Sign out</button>
+            {data?.preview ? null : <button onClick={logout} className="text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-[#161616]/55 hover:text-[#161616] px-4 py-2">Sign out</button>}
           </nav>
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-6 py-8">
+      <main className={`max-w-6xl mx-auto px-6 py-8 ${data?.preview ? "pb-40" : ""}`}>
         {loading ? (
           <p className="text-center text-[#161616]/50 py-20 font-body italic">Opening your workspace...</p>
         ) : error ? (
@@ -260,7 +278,7 @@ export default function ClientPortal() {
                         )}
                       </>
                     );
-                    const cardCls = 'group block bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0_0_#161616] transition-all';
+                    const cardCls = 'group block min-w-0 bg-white border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] p-5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0_0_#161616] transition-all';
                     if (!p.homeUrl) return <div key={p.id} className={cardCls.replace('hover:-translate-y-0.5 hover:shadow-[6px_6px_0_0_#161616] ', '')}>{inner}</div>;
                     return internal ? (
                       <Link key={p.id} href={p.homeUrl} className={cardCls}>{inner}</Link>
@@ -1490,7 +1508,12 @@ export function PortalAssistant({ firstName, audience, onNoteSent, intro }: { fi
   const [sending, setSending] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => { endRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages, sending]);
+  // Scroll the message list, never the page: scrollIntoView moved the whole portal
+  // down to the guide on first load, so clients landed halfway down.
+  useEffect(() => {
+    const box = endRef.current?.parentElement;
+    if (box) box.scrollTo({ top: box.scrollHeight, behavior: 'smooth' });
+  }, [messages, sending]);
 
   const send = async (text: string) => {
     const trimmed = text.trim();

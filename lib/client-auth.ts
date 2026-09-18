@@ -1,4 +1,5 @@
 import { cookies } from 'next/headers';
+import { getSession as getAdminSession } from '@/lib/admin-auth';
 
 /**
  * Client portal auth. Passwordless: a visitor enters their email, we email a
@@ -13,6 +14,11 @@ import { cookies } from 'next/headers';
 const COOKIE_NAME = 'mms_client';
 const SESSION_DAYS = 30;
 const MAGIC_MINUTES = 20;
+
+// Sarah looking at a client's portal as they see it. Honoured only while her own
+// admin session is valid too, so a look pass copied off her machine opens nothing.
+const LOOK_COOKIE = 'mms_client_look';
+const LOOK_HOURS = 8;
 
 function getSecret(): string {
   const s = process.env.CLIENT_SESSION_SECRET || process.env.ADMIN_SESSION_SECRET;
@@ -60,13 +66,13 @@ function normalizeEmail(email: string): string {
 
 // ── Token core. `kind` ('sess' | 'magic') keeps the two non-interchangeable ──
 
-async function makeToken(kind: 'sess' | 'magic', email: string, expires: number): Promise<string> {
+async function makeToken(kind: 'sess' | 'magic' | 'look', email: string, expires: number): Promise<string> {
   const payload = `${kind}:${normalizeEmail(email)}:${expires}`;
   const sig = await hmacSign(payload);
   return `${stringToBase64Url(payload)}.${sig}`;
 }
 
-async function readToken(kind: 'sess' | 'magic', token: string): Promise<{ email: string; expires: number } | null> {
+async function readToken(kind: 'sess' | 'magic' | 'look', token: string): Promise<{ email: string; expires: number } | null> {
   try {
     const [payloadB64, sig] = token.split('.');
     if (!payloadB64 || !sig) return null;
@@ -86,7 +92,8 @@ async function readToken(kind: 'sess' | 'magic', token: string): Promise<{ email
 
 // ── Public API ─────────────────
 
-export type ClientSession = { email: string; expires: number };
+/** preview: true when Sarah is looking as this client from her admin session. */
+export type ClientSession = { email: string; expires: number; preview?: boolean };
 
 export async function createMagicToken(email: string): Promise<string> {
   return makeToken('magic', email, Date.now() + MAGIC_MINUTES * 60 * 1000);
@@ -116,9 +123,32 @@ export async function clearClientSessionCookie(): Promise<void> {
 
 export async function getClientSession(): Promise<ClientSession | null> {
   const c = await cookies();
+  const look = c.get(LOOK_COOKIE)?.value;
+  if (look) {
+    const as = await readToken('look', look);
+    if (as && (await getAdminSession())) return { ...as, preview: true };
+  }
   const token = c.get(COOKIE_NAME)?.value;
   if (!token) return null;
   return readToken('sess', token);
+}
+
+/** Start looking at a client's portal as them. Admin routes only. */
+export async function setLookCookie(email: string): Promise<void> {
+  const expires = Date.now() + LOOK_HOURS * 60 * 60 * 1000;
+  const token = await makeToken('look', email, expires);
+  const c = await cookies();
+  c.set(LOOK_COOKIE, token, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'lax', path: '/', maxAge: LOOK_HOURS * 60 * 60 });
+}
+
+export async function clearLookCookie(): Promise<void> {
+  const c = await cookies();
+  c.delete(LOOK_COOKIE);
+}
+
+/** For middleware: verify a raw look token (edge runtime). The caller checks the admin cookie as well. */
+export async function verifyLookToken(token: string): Promise<ClientSession | null> {
+  return readToken('look', token);
 }
 
 /** For middleware: verify a raw session token string (edge runtime). */
@@ -126,4 +156,4 @@ export async function verifyClientToken(token: string): Promise<ClientSession | 
   return readToken('sess', token);
 }
 
-export { COOKIE_NAME as CLIENT_COOKIE_NAME, normalizeEmail };
+export { COOKIE_NAME as CLIENT_COOKIE_NAME, LOOK_COOKIE as CLIENT_LOOK_COOKIE_NAME, normalizeEmail };
