@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { resendClient } from '@/lib/send-email';
+import { outreachOnly } from '@/lib/outreach-domain';
 import { getSupabase } from '@/lib/supabase';
 import { SITE } from '@/lib/seo';
 import { CADENCE_WAIT_DAYS, personalizeTouch } from '@/lib/outreach';
@@ -93,7 +94,16 @@ export async function GET(req: Request) {
       const html = `${body.replace(/\n/g, '<br>')}<br><br><span style="font-size:12px;color:#888"><a href="${unsub}">Unsubscribe</a> and I will never contact you again.</span>`;
 
       try {
-        const { error } = await resend.emails.send({ from, to: p.contact as string, replyTo: 'sarah@modernmustardseed.com', subject, html });
+        // outreachOnly throws if OUTREACH_FROM ever points at the root domain;
+        // the header makes Gmail and Yahoo show their own unsubscribe button.
+        const { error } = await resend.emails.send({
+          from: outreachOnly(from),
+          to: p.contact as string,
+          replyTo: 'sarah@modernmustardseed.com',
+          subject,
+          html,
+          headers: { 'List-Unsubscribe': `<${unsub}>`, 'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click' },
+        });
         if (error) {
           console.error('cadence send failed for', p.id, error);
           continue;
