@@ -1,5 +1,7 @@
 import { SAMPLE } from '@/data/presence-audit-page';
 import { NEWSLETTER_AUDIT_URL } from '@/lib/presence-audit-links';
+import { postalAddress } from '@/lib/outbound-email';
+import { escape } from '@/lib/email';
 
 /**
  * THE TUESDAY NEWSLETTER, AS HTML.
@@ -108,6 +110,8 @@ export type NewsletterPlaybook = { slug: string; title: string; description: str
 
 /** One issue: the playbook of the week, then every block in NEWSLETTER_FEATURES. */
 export function renderNewsletter(playbook: NewsletterPlaybook, features = NEWSLETTER_FEATURES): string {
+  // A broadcast is commercial mail and owes the reader a postal address.
+  const postal = postalAddress();
   const playbookUrl = `https://modernmustardseed.com/playbooks/${playbook.slug}`;
   return `
 <!DOCTYPE html>
@@ -128,6 +132,7 @@ export function renderNewsletter(playbook: NewsletterPlaybook, features = NEWSLE
   Reply to this email to talk to Sarah directly.</p>
   <p style="font-size:11px;color:#aaa">You are getting this because you subscribed at modernmustardseed.com.
   <a href="{{{RESEND_UNSUBSCRIBE_URL}}}" style="color:#aaa">Unsubscribe</a>.</p>
+  ${postal ? `<p style="font-size:11px;color:#aaa">${escape(postal)}</p>` : ''}
 </body></html>
   `;
 }

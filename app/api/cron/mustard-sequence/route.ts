@@ -13,7 +13,9 @@
  */
 
 import { NextResponse } from 'next/server';
-import { resendClient } from '@/lib/send-email';
+import { sendViaResend } from '@/lib/send-email';
+import { OUTREACH_FROM, OUTREACH_REPLY_TO, outreachOnly } from '@/lib/outreach-domain';
+import { complianceFooter, unsubscribeUrlFor } from '@/lib/outbound-email';
 import { getSupabase } from '@/lib/supabase';
 import { sequenceDay2Email, sequenceDay5Email } from '@/lib/email';
 
@@ -25,7 +27,7 @@ type SequenceStep = 'd2' | 'd5';
 async function processStep(step: SequenceStep): Promise<{ sent: number; errors: number; skipped: number }> {
   const client = getSupabase();
   if (!client) return { sent: 0, errors: 0, skipped: 0 };
-  const resend = process.env.RESEND_API_KEY ? resendClient() : null;
+  const canSend = Boolean(process.env.RESEND_API_KEY);
 
   // Day 2 window: 36h to 60h ago. Day 5 window: 96h to 144h ago.
   const now = Date.now();
@@ -69,20 +71,27 @@ async function processStep(step: SequenceStep): Promise<{ sent: number; errors: 
     const firstName = (lead.name as string | null)?.split(' ')[0] || 'there';
 
     try {
-      if (resend) {
+      if (canSend) {
         const html = step === 'd2' ? sequenceDay2Email(firstName) : sequenceDay5Email(firstName);
         const subject =
           step === 'd2'
             ? `${firstName}, one move you can make today.`
             : `${firstName}, here is what I would actually build.`;
-        const { error: sendError } = await resend.emails.send({
-          from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
+        // A nurture sequence is bulk mail, and until 2026-09-18 this one went
+        // from sarah@ on the root domain with no unsubscribe header, to chat
+        // leads and to cold-call Tracker leads alike. It sends from the
+        // outreach subdomain now, carries the one-click unsubscribe header and
+        // the footer (opt-out plus postal address), and replies still land in
+        // Sarah's real mailbox.
+        const sent = await sendViaResend({
+          from: outreachOnly(OUTREACH_FROM),
           to: lead.email,
-          replyTo: 'sarah@modernmustardseed.com',
+          replyTo: OUTREACH_REPLY_TO,
           subject,
-          html,
+          html: html + complianceFooter(lead.email),
+          unsubscribeUrl: unsubscribeUrlFor(lead.email),
         });
-        if (sendError) throw sendError;
+        if (!sent.ok) throw new Error(sent.error);
       }
       await client
         .from('leads')

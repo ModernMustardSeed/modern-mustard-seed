@@ -35,7 +35,6 @@ export async function POST(req: Request, { params }: { params: Params }) {
       .split(/\n{2,}/)
       .map((par) => `<p>${escape(par).replace(/\n/g, '<br>')}</p>`)
       .join(''),
-    trackId: opp.id,
   });
 
   try {

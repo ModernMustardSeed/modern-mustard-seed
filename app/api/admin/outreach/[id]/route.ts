@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { resendClient } from '@/lib/send-email';
+import { outreachOnly } from '@/lib/outreach-domain';
 import { getSession } from '@/lib/admin-auth';
 import { getSupabase } from '@/lib/supabase';
 import { SITE } from '@/lib/seo';
@@ -50,12 +51,15 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
           const resend = resendClient();
           const unsub = `${SITE.url}/api/outreach/unsubscribe?c=${encodeURIComponent(prospect.contact as string)}`;
           const html = `${(message.body as string).replace(/\n/g, '<br>')}<br><br><span style="font-size:12px;color:#888">You are receiving this because of your public work. <a href="${unsub}">Unsubscribe</a> and I will never contact you again.</span>`;
+          // outreachOnly throws if OUTREACH_FROM ever points at the root
+          // domain; the header gives Gmail and Yahoo their unsubscribe button.
           const { error: sendError } = await resend.emails.send({
-            from,
+            from: outreachOnly(from),
             to: prospect.contact as string,
             replyTo: 'sarah@modernmustardseed.com',
             subject: (message.subject as string) || 'A partner idea',
             html,
+            headers: { 'List-Unsubscribe': `<${unsub}>`, 'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click' },
           });
           if (sendError) {
             console.error('outreach send failed', sendError);
