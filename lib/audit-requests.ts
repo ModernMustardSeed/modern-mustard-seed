@@ -29,8 +29,10 @@ import { buildPresenceReport, type PresenceAuditReport, type PresenceInput } fro
 import { auditPreferringWorker } from '@/lib/audit-queue';
 import { fetchSiteFacts, type SiteFacts } from '@/lib/site-facts';
 import type { WebsiteAuditReport } from '@/lib/website-audit';
-import { sendViaResend } from '@/lib/send-email';
-import { clientEmail, escape, p } from '@/lib/email';
+import { resendClient, sendViaResend } from '@/lib/send-email';
+import { clientEmail, escape, leadNotification, p } from '@/lib/email';
+import { insertLead } from '@/lib/supabase';
+import { OWNER_NOTIFY_TO } from '@/lib/owner';
 import { SITE } from '@/lib/seo';
 import { PRESENCE } from '@/data/presence-audit-page';
 
@@ -155,6 +157,214 @@ export function hostOf(url: string | null | undefined): string {
   } catch {
     return String(url);
   }
+}
+
+/* ─────────────────────────── filing a request ─────────────────────────── */
+
+/**
+ * ONE WAY IN, WHOEVER TAKES THE REQUEST.
+ *
+ * The form on /presence-audit and Mr. Mustard on the phone both file here, so a
+ * request taken by voice is the same row, the same Audit Desk entry, the same
+ * notice to Sarah and the same receipt as one typed into the page. The only
+ * thing each door owns is how it talks back: the form answers with an HTTP
+ * status, the phone answers with a sentence. That is why a refusal carries a
+ * `code` as well as the form's wording.
+ */
+export type AuditRequestIntake = {
+  email: string;
+  business: string;
+  name?: string | null;
+  website?: string | null;
+  town?: string | null;
+  googleUrl?: string | null;
+  note?: string | null;
+  /** `presence-audit:<where it came from>`, e.g. `presence-audit:mr-mustard`. */
+  source?: string | null;
+  referrer?: string | null;
+  /**
+   * The rate-limit key. The form hashes the visitor's IP; the phone hashes the
+   * caller's number. Five requests an hour from one key is the ceiling either way.
+   */
+  ipHash: string;
+};
+
+export type FiledAuditRequest = {
+  id: string;
+  /** The same person asked for the same business inside a day: no second row. */
+  duplicate: boolean;
+  email: string;
+  name: string | null;
+  business: string;
+  website: string | null;
+  town: string | null;
+  google: string | null;
+  note: string | null;
+  source: string;
+  /** The part of the source after the colon, e.g. `mr-mustard`. Empty when there is none. */
+  via: string;
+};
+
+export type FileAuditOutcome =
+  | { ok: true; request: FiledAuditRequest }
+  | {
+      ok: false;
+      code: 'bad-email' | 'no-business' | 'bad-website' | 'rate-limited' | 'insert-failed';
+      status: number;
+      error: string;
+    };
+
+const clipTo = (v: unknown, n: number) => String(v ?? '').trim().slice(0, n);
+
+/** Validate, rate-limit, de-duplicate and write one row to `audit_requests`. */
+export async function fileAuditRequest(sb: SupabaseClient, intake: AuditRequestIntake): Promise<FileAuditOutcome> {
+  const email = clipTo(intake.email, 200).toLowerCase();
+  const name = clipTo(intake.name, 120);
+  const business = clipTo(intake.business, 160);
+  const websiteRaw = clipTo(intake.website, 300);
+  const town = clipTo(intake.town, 120);
+  const googleUrl = clipTo(intake.googleUrl, 600);
+  const note = clipTo(intake.note, 1500);
+  const source = clipTo(intake.source, 80) || 'presence-audit';
+
+  if (!EMAIL_RE.test(email)) {
+    return { ok: false, code: 'bad-email', status: 400, error: 'That email does not look right. Check it and try again.' };
+  }
+  if (!business) {
+    return { ok: false, code: 'no-business', status: 400, error: 'Tell us the business name so we grade the right one.' };
+  }
+  const website = websiteRaw ? normalizeWebsite(websiteRaw) : null;
+  if (websiteRaw && !website) {
+    return { ok: false, code: 'bad-website', status: 400, error: 'That website address does not look right. Try it as yourbusiness.com.' };
+  }
+  const google = /^https?:\/\//i.test(googleUrl) ? googleUrl : null;
+
+  const hourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+  const dayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+
+  const { count: recent } = await sb
+    .from('audit_requests')
+    .select('id', { count: 'exact', head: true })
+    .eq('ip_hash', intake.ipHash)
+    .gte('created_at', hourAgo);
+  if ((recent ?? 0) >= 5) {
+    return { ok: false, code: 'rate-limited', status: 429, error: 'That is a lot of audits in an hour. Email sarah@modernmustardseed.com and we will sort it out.' };
+  }
+
+  const via = (source.split(':')[1] || '').trim();
+  const filed = (id: string, duplicate: boolean): FileAuditOutcome => ({
+    ok: true,
+    request: {
+      id,
+      duplicate,
+      email,
+      name: name || null,
+      business,
+      website,
+      town: town || null,
+      google,
+      note: note || null,
+      source,
+      via,
+    },
+  });
+
+  const { data: dupe } = await sb
+    .from('audit_requests')
+    .select('id')
+    .eq('email', email)
+    .ilike('business_name', business.replace(/[%_\\]/g, '\\$&'))
+    .gte('created_at', dayAgo)
+    .limit(1)
+    .maybeSingle();
+  if (dupe) return filed(dupe.id as string, true);
+
+  const { data: row, error } = await sb
+    .from('audit_requests')
+    .insert({
+      email,
+      name: name || null,
+      business_name: business,
+      website,
+      town: town || null,
+      google_url: google,
+      note: note || null,
+      source,
+      referrer: clipTo(intake.referrer, 300) || null,
+      ip_hash: intake.ipHash,
+    })
+    .select('id')
+    .single();
+  if (error || !row) {
+    console.error('presence-audit request insert failed:', error?.message);
+    return { ok: false, code: 'insert-failed', status: 500, error: 'We could not take that just now. Try again, or email sarah@modernmustardseed.com.' };
+  }
+  return filed(row.id as string, false);
+}
+
+/**
+ * Everything that follows a new request: the lead in the pipeline, the notice to
+ * Sarah, and the receipt to the requester. Best effort by design, because the row
+ * is the record that matters, so the caller runs this behind `after()` and none
+ * of it holds a visitor or a caller up.
+ *
+ * `extra` lets a door add what only it knows: the phone door adds the caller's
+ * number to the lead, and lines on the notice saying whether the link was texted.
+ */
+export async function announceAuditRequest(
+  r: FiledAuditRequest,
+  extra: { phone?: string | null; fields?: { label: string; value: string; isLink?: boolean }[] } = {},
+): Promise<void> {
+  const extraFields = extra.fields ?? [];
+  await insertLead({
+    type: 'audit',
+    name: r.name,
+    email: r.email,
+    phone: extra.phone || null,
+    business_name: r.business,
+    audit_url: r.website,
+    message: r.note,
+    source: r.via ? `presence-audit:${r.via}` : 'presence-audit',
+    notes: `Online Presence Audit requested. Run it at ${SITE.url}/admin/audit`,
+  });
+
+  const fields = [
+    { label: 'Business', value: r.business },
+    ...(r.website ? [{ label: 'Website', value: r.website, isLink: true }] : [{ label: 'Website', value: 'None given' }]),
+    ...(r.town ? [{ label: 'Town', value: r.town }] : []),
+    ...(r.google ? [{ label: 'Google listing', value: r.google, isLink: true }] : []),
+    ...(r.via ? [{ label: 'Came from', value: r.via }] : []),
+    ...extraFields,
+    { label: 'Run it', value: `${SITE.url}/admin/audit`, isLink: true },
+  ];
+  // resendClient(), not sendViaResend: it is the client that hands the
+  // @modernmustardseed.com copy to Zoho, so Sarah's own mailbox gets the
+  // heads-up even when Resend is suppressing that address. Same path the
+  // contact form's notice takes.
+  await resendClient()
+    .emails.send({
+      from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
+      to: OWNER_NOTIFY_TO,
+      replyTo: r.email,
+      subject: `Audit requested: ${r.business}${r.website ? ` (${hostOf(r.website)})` : ''}`,
+      html: leadNotification({
+        type: 'AI Audit',
+        name: r.name || r.business,
+        email: r.email,
+        fields,
+        message: r.note || undefined,
+        suggestedAction: 'Open their Google listing, fill the listing facts on the Audit Desk, and press Run. The report emails itself.',
+      }),
+    })
+    .catch((e) => console.error('presence-audit owner notice failed:', e));
+
+  await sendViaResend({
+    from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
+    to: r.email,
+    replyTo: 'sarah@modernmustardseed.com',
+    subject: `Your audit is in, ${r.business}`,
+    html: presenceAuditReceivedEmail({ name: r.name, business_name: r.business, website: r.website }),
+  }).catch((e) => console.error('presence-audit receipt failed:', e));
 }
 
 /**
