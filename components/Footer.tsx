@@ -68,7 +68,7 @@ export default function Footer() {
     {
       title: 'Company',
       links: [
-        { label: 'The Presence Audit', href: '/presence-audit' },
+        { label: 'The Free Presence Audit', href: '/presence-audit' },
         { label: 'The Bottleneck Breaker', href: '/audit' },
         { label: 'Book A Call', href: '/book' },
         { label: 'Or Write Instead', href: '/inquire' },
@@ -110,7 +110,7 @@ export default function Footer() {
               href="/presence-audit"
               className="rounded-full border-2 border-[#161616] bg-white text-[#161616] px-8 py-4 font-sans font-extrabold text-[12px] uppercase tracking-[0.16em] shadow-[5px_5px_0_0_#161616] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#161616]"
             >
-              Run the Audit
+              Get the Free Audit
             </Link>
           </div>
         </div>

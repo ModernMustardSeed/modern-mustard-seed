@@ -4,26 +4,92 @@
  * Why this exists (Sarah, 2026-09-16): every "audit" link on the site pointed at
  * /audit, which is the Bottleneck Breaker. That is a different tool answering a
  * different question, so a visitor who came for an audit of their presence got a
- * sixty-second bottleneck scan instead and nothing tied the tools together.
+ * sixty-second bottleneck scan instead.
+ *
+ * How it works (Sarah, 2026-09-18): "I want them to have to put email in and then
+ * I will run audit for them in my mms admin and it will email them back once I
+ * run it." So nothing is graded on this page. The visitor leaves an email, the
+ * request lands on the Audit Desk (/admin/audit), Sarah reads their listing and
+ * presses Run, and the report is emailed. See lib/audit-requests.ts.
  *
  * The argument below is not marketing invention. It is the reasoning already
  * written into lib/presence-audit.ts, which grades three pillars and deliberately
- * keeps two of them out of the hands of a model, because a rubric a contractor
- * can re-run himself is a rubric he believes.
- *
- * What is honest about the split on this page:
- *   - The WEBSITE pillar runs instantly and self-serve. It is the existing
- *     public engine and it needs nothing but a URL.
- *   - The PROFILE and REVIEWS pillars are read off their real Google listing,
- *     so the full three-pillar report is requested rather than generated on the
- *     spot. The page says that rather than pretending otherwise.
+ * keeps two of them out of the hands of a model, because a rubric an owner can
+ * re-run himself is a rubric he believes.
  */
 
 export const PRESENCE = {
-  metaTitle: 'The Online Presence Audit',
+  metaTitle: 'The Free Online Presence Audit',
   metaDescription:
-    'A free audit of your whole online presence, not just your website: the site itself, your Google Business Profile, and your reviews, each scored against a rubric you can check yourself. Sixty seconds for the website grade, the full report by email.',
+    'A free audit of your whole online presence, run by a person: your website graded on seven categories, your Google Business Profile on eight checks, and your reviews against your trade. Leave your email and the full report arrives in your inbox.',
+  /** The promise on the page, the receipt email and the FAQ. Change it in all three. */
+  turnaround: 'within one business day',
 };
+
+/* ─────────────────────────── the ticker ─────────────────────────── */
+
+export const TICKER = [
+  'Your website, graded',
+  'Your Google profile, checked',
+  'Your reviews, measured',
+  'Run by a person',
+  'Yours to keep',
+  'No card',
+  'No call unless you ask',
+];
+
+/* ─────────────────────────── the sample report ─────────────────────────── */
+
+/**
+ * A SAMPLE, and labelled as one everywhere it renders. The business is invented
+ * and the page says so, so no real owner is ever graded in public. The numbers
+ * are internally honest: the overall is the printed weights applied to the
+ * three pillar scores (0.45 x 41 + 0.30 x 88 + 0.25 x 75 = 63.6), each pillar is
+ * what lib/presence-audit.ts actually returns for those inputs (58 reviews at
+ * 4.8 scores 43 + 45 = 88; the four profile checks shown failing two of eight
+ * leaves 75), and every letter is letterFor() of its number.
+ */
+export const SAMPLE = {
+  business: 'Sample Roofing Co.',
+  overall: 64,
+  letter: 'D',
+  headline: 'Your reviews are outrunning your website.',
+  pillars: [
+    { label: 'Website', score: 41, letter: 'F', weight: 45, note: 'The reviews send people to a page that never mentions them.' },
+    { label: 'Reviews', score: 88, letter: 'B+', weight: 30, note: '58 reviews at 4.8. Strangers believe this, and the website never shows it.' },
+    { label: 'Google profile', score: 75, letter: 'C', weight: 25, note: 'Two free fixes away from a complete listing.' },
+  ],
+  checks: [
+    { label: 'Phone number on the listing', passed: true, pts: '10/10' },
+    { label: 'Website linked from the listing', passed: true, pts: '15/15' },
+    { label: 'Hours published', passed: false, pts: '0/15' },
+    { label: 'Emergency or after-hours service stated', passed: false, pts: '0/10' },
+  ],
+  fix: {
+    title: 'Publish your hours on Google',
+    why: '"Hours not available" is the most common reason a business gets skipped at six in the evening. It is free and it takes five minutes.',
+  },
+};
+
+/* ─────────────────────────── how it works ─────────────────────────── */
+
+export const STEPS = [
+  {
+    n: '01',
+    h: 'You ask',
+    d: 'Your email, your business name and your website. Thirty seconds, and nothing gets graded until a person looks.',
+  },
+  {
+    n: '02',
+    h: 'We go and look',
+    d: 'We open your Google listing, read your reviews, and grade your website against seven categories. Not a scanner guessing from the outside.',
+  },
+  {
+    n: '03',
+    h: 'It lands in your inbox',
+    d: 'Your score, every check with what it is worth, and the fixes ranked cheapest first. A private report page that is yours to keep.',
+  },
+];
 
 /* ─────────────────────────── the argument ─────────────────────────── */
 
@@ -41,7 +107,7 @@ export const WHY = [
   {
     k: 'What you do with it',
     h: 'An argument, not an opinion',
-    d: '"Your website is weak" is something a stranger can wave away. "You have 312 reviews at 4.9, which is the best asset you own, and the website they land on after reading them scores 41" is an argument, because you can verify every number in it in about ninety seconds.',
+    d: '"Your website is weak" is something a stranger can wave away. "You have 58 reviews at 4.8, which is the best asset you own, and the website they land on after reading them scores 41" is an argument, because you can verify every number in it in about ninety seconds.',
   },
 ];
 
@@ -51,23 +117,23 @@ export const PILLARS = [
   {
     n: 'One',
     name: 'The website',
-    how: 'Read, not scanned',
-    d: 'Seven categories graded against your real HTML: what it says, how fast it is, whether it works on a phone, whether it can be found, and whether anybody who lands on it knows what to do next. This is the part you can run right now, on this page.',
-    instant: true,
+    weight: 45,
+    how: 'Seven categories, read not scanned',
+    d: 'What it says, how fast it is, whether it works on a phone, whether it can be found by Google and by AI answers, and whether anybody who lands on it knows what to do next. Graded against your real pages.',
   },
   {
     n: 'Two',
     name: 'The Google profile',
+    weight: 25,
     how: 'Eight checks, pass or fail',
-    d: 'Claimed or not. Categories set correctly, because categories decide which searches you are even eligible for. Hours, address and phone matching the site exactly, because matching is the part Google checks. Photos, services, and whether anybody answers a review.',
-    instant: false,
+    d: 'Phone, website, address and hours on the listing. Whether it is active enough to carry a rating and has enough reviews to rank locally. Whether it says you take urgent work, the search with the least price shopping in it.',
   },
   {
     n: 'Three',
     name: 'The reviews',
+    weight: 30,
     how: 'Measured against your trade',
-    d: 'Volume and rating, scored against a benchmark for businesses like yours rather than against perfection. Plenty of good operators are one honest ask away from the number that changes how they rank, and plenty of others are sitting on the best asset they own without using it.',
-    instant: false,
+    d: 'Volume and rating, scored against a benchmark for businesses like yours rather than against perfection. Plenty of good operators are one honest ask away from the number that changes how they rank.',
   },
 ];
 
@@ -77,7 +143,7 @@ export const DESK = [
   {
     name: 'The Bottleneck Breaker',
     href: '/audit',
-    line: 'One question answered in sixty seconds: of everything in your business, what is quietly costing you the most right now. Start here if you already know the site is fine.',
+    line: 'A different question: of everything in your business, what is quietly costing you the most right now. Sixty seconds, on screen, no email. Start there if you already know your presence is fine.',
     cta: 'Find the bottleneck',
   },
   {
@@ -99,26 +165,30 @@ export const DESK = [
 export const PRESENCE_FAQ = [
   {
     q: 'Is it actually free?',
-    a: 'Yes, and there is no card and no meeting. The website grade runs on this page and you keep it whether or not we ever speak. The full three-pillar report is emailed to you and you keep that too.',
+    a: 'Yes. No card, no meeting, and the report is yours to keep whether or not we ever speak. Plenty of people take the ranked fixes and do the work themselves, and that is a fine outcome.',
   },
   {
-    q: 'Why can I run the website grade now but not the whole thing?',
-    a: 'Because the other two pillars are read off your real Google listing rather than generated. Your profile checks and your review numbers are facts about your business, and we would rather go and look at them than guess. That takes a little longer than a page load, so the full report comes by email.',
+    q: 'Why do you need my email?',
+    a: 'Because a person runs your audit rather than a page generating it on the spot. We open your real Google listing, read your reviews and grade your site, and the email is how the finished report reaches you. It is not added to a newsletter or a sequence.',
+  },
+  {
+    q: 'How long does it take?',
+    a: `The report arrives ${PRESENCE.turnaround}. You get a note the moment you ask so you know it is in, then the full report when it is done.`,
   },
   {
     q: 'What makes this different from the free audits everybody offers?',
-    a: 'Two of the three pillars are not AI at all. Every profile check passes or fails on something you can verify yourself in a minute, every review number prints the benchmark it was measured against, and the pillar weights are printed on the report so you can see exactly how the score was reached. Nothing in it asks you to take our word.',
+    a: 'Two of the three pillars are not AI at all. Every profile check passes or fails on something you can verify yourself in a minute, every review number prints the benchmark it was measured against, and the pillar weights are printed on the report. Anything we could not see is left out of the score rather than counted as a zero.',
+  },
+  {
+    q: 'How is this different from the Bottleneck Breaker?',
+    a: 'They answer different questions. The Bottleneck Breaker reads your website and names the one thing in your business costing you the most, on screen in sixty seconds. The Presence Audit grades how you look to a stranger deciding whether to call you: your site, your Google profile and your reviews, checked by a person.',
   },
   {
     q: 'Will you call me?',
-    a: 'Only if you ask. The report lands in your inbox with the fixes ranked, and plenty of people take that and do the work themselves. That is a fine outcome and it is the honest reason the audit exists.',
-  },
-  {
-    q: 'What do I need to hand over?',
-    a: 'Your website and your business name for the grade. For the full report it helps to have the town you operate in, so the right Google listing gets matched to the right business.',
+    a: 'Only if you ask. The report lands in your inbox with the fixes ranked. If you want to talk it through, reply to the email.',
   },
   {
     q: 'What if I do not have a website yet?',
-    a: 'Then the audit is the wrong tool and the profile is the right place to start. Say so when you write and we will tell you what to do first, which is usually free and usually not us.',
+    a: 'Ask anyway and leave the website blank. The profile and reviews still get graded, and the report will tell you plainly what to do first, which is usually free.',
   },
 ];

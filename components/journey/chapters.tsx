@@ -319,7 +319,7 @@ const SIGNS = [
   { href: '/pictures', label: 'Mustard Pictures', line: 'Commercials, brand films, and social cuts, built from the real product rather than stock.', cta: 'Visit The Studio' },
   { href: '/ai-native', label: 'AI Native', line: 'Your company running on AI, with your own team operating it. Advisory and build, engaged together.', cta: 'Read The Sign' },
   { href: '/about', label: 'The Studio', line: 'A boutique design and AI studio in Kalispell, Montana, practising four disciplines and shipping all of them.', cta: 'Meet The Studio' },
-  { href: '/presence-audit', label: 'The Presence Audit', line: 'Most people decide about you before they reach your website. This grades all three: the site, the Google profile and the reviews. Yours to keep.', cta: 'Run My Audit' },
+  { href: '/presence-audit', label: 'The Free Presence Audit', line: 'Most people decide about you before they reach your website. We grade all three, the site, the Google profile and the reviews, and email you the report.', cta: 'Get My Free Audit' },
 ];
 
 /**
@@ -627,9 +627,9 @@ export function JourneyTree() {
 const DOORS = [
   {
     key: 'audit',
-    label: 'The Presence Audit',
-    line: 'Your website, your Google profile and your reviews, each graded against a rubric you can check yourself. No card, and the report is yours to keep whether or not we ever work together.',
-    cta: 'Run My Audit',
+    label: 'The Free Presence Audit',
+    line: 'Your website, your Google profile and your reviews, each graded against a rubric you can check yourself and emailed to you. No card, and the report is yours to keep whether or not we ever work together.',
+    cta: 'Get My Free Audit',
     href: '/presence-audit',
   },
   {
