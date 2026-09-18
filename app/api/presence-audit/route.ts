@@ -1,7 +1,7 @@
 import { NextResponse, after } from 'next/server';
 import { createHash } from 'node:crypto';
 import { getSupabase, insertLead } from '@/lib/supabase';
-import { sendViaResend } from '@/lib/send-email';
+import { resendClient, sendViaResend } from '@/lib/send-email';
 import { leadNotification } from '@/lib/email';
 import { trackServerConversion } from '@/lib/meta-capi';
 import { OWNER_NOTIFY_TO } from '@/lib/owner';
@@ -136,7 +136,11 @@ export async function POST(req: Request) {
       ...(google ? [{ label: 'Google listing', value: google, isLink: true }] : []),
       { label: 'Run it', value: `${SITE.url}/admin/audit`, isLink: true },
     ];
-    await sendViaResend({
+    // resendClient(), not sendViaResend: it is the client that hands the
+    // @modernmustardseed.com copy to Zoho, so Sarah's own mailbox gets the
+    // heads-up even when Resend is suppressing that address. Same path the
+    // contact form's notice takes.
+    await resendClient().emails.send({
       from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
       to: OWNER_NOTIFY_TO,
       replyTo: email,

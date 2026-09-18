@@ -88,7 +88,6 @@ const GROUPS: { name: string; items: Item[] }[] = [
       { key: 'campaigns', label: 'Campaigns', href: '/admin/campaigns' },
       { key: 'gleaner', label: 'Gleaner', href: '/admin/gleaner' },
       { key: 'outreach', label: 'Outreach', href: '/admin/outreach' },
-      { key: 'audit', label: 'Audit Desk', href: '/admin/audit' },
       { key: 'roadmaps', label: 'Roadmap Desk', href: '/admin/roadmaps' },
     ],
   },
@@ -97,6 +96,7 @@ const GROUPS: { name: string; items: Item[] }[] = [
     items: [
       { key: 'opps', label: 'Opps Desk', href: '/admin/opps' },
       { key: 'inbox', label: 'Inbox', href: '/admin/inbox' },
+      { key: 'audit', label: 'Audit Desk', href: '/admin/audit' },
       { key: 'calendar', label: 'Calendar', href: '/admin/calendar' },
       { key: 'approvals', label: 'Approvals', href: '/admin/approvals' },
       { key: 'team', label: 'Team', href: '/admin/team' },
@@ -112,6 +112,7 @@ const GROUPS: { name: string; items: Item[] }[] = [
 export default function AdminHeader({ active, title, onRefresh }: { active: Tab; title: string; onRefresh?: () => void }) {
   const [openGroup, setOpenGroup] = useState<string | null>(null);
   const [unread, setUnread] = useState(0);
+  const [audits, setAudits] = useState(0);
   const navRef = useRef<HTMLElement>(null);
 
   // Unread lead-reply count, for the Inbox alert dot (bubbles to the Desk group).
@@ -120,6 +121,18 @@ export default function AdminHeader({ active, title, onRefresh }: { active: Tab;
     fetch('/api/admin/messages?unread=1')
       .then((r) => (r.ok ? r.json() : { unread: 0 }))
       .then((j) => { if (alive) setUnread(j.unread ?? 0); })
+      .catch(() => {});
+    return () => { alive = false; };
+  }, []);
+
+  // Free presence audits somebody asked for on the site and nobody has run
+  // yet. Shown as a badge on the Desk group and a strip under this header on
+  // every admin page, so a request is seen wherever Sarah happens to be.
+  useEffect(() => {
+    let alive = true;
+    fetch('/api/admin/audit/requests?count=1', { cache: 'no-store' })
+      .then((r) => (r.ok ? r.json() : { open: 0 }))
+      .then((j) => { if (alive) setAudits(Number(j.open) || 0); })
       .catch(() => {});
     return () => { alive = false; };
   }, []);
@@ -182,7 +195,8 @@ export default function AdminHeader({ active, title, onRefresh }: { active: Tab;
             {GROUPS.map((group) => {
               const holdsActive = group.items.some((i) => i.key === active);
               const isOpen = openGroup === group.name;
-              const showDot = group.name === 'Desk' && unread > 0;
+              const deskCount = group.name === 'Desk' ? unread + audits : 0;
+              const showDot = deskCount > 0;
               return (
                 <div key={group.name} className="md:relative">
                   <button
@@ -194,7 +208,7 @@ export default function AdminHeader({ active, title, onRefresh }: { active: Tab;
                   >
                     {group.name}
                     {showDot && (
-                      <span className="ml-1.5 inline-flex items-center justify-center min-w-[16px] h-4 px-1 text-[9px] font-mono font-bold text-white bg-[#E0301E] rounded-full align-middle">{unread}</span>
+                      <span className="ml-1.5 inline-flex items-center justify-center min-w-[16px] h-4 px-1 text-[9px] font-mono font-bold text-white bg-[#E0301E] rounded-full align-middle">{deskCount}</span>
                     )}
                     <span aria-hidden="true" className={`ml-1 inline-block text-[9px] transition-transform ${isOpen ? 'rotate-180' : ''}`}>▾</span>
                   </button>
@@ -228,6 +242,9 @@ export default function AdminHeader({ active, title, onRefresh }: { active: Tab;
                           {item.key === 'inbox' && unread > 0 && (
                             <span className="inline-flex items-center justify-center min-w-[16px] h-4 px-1 text-[9px] font-mono font-bold text-white bg-[#E0301E] rounded-full">{unread}</span>
                           )}
+                          {item.key === 'audit' && audits > 0 && (
+                            <span className="inline-flex items-center justify-center min-w-[16px] h-4 px-1 text-[9px] font-mono font-bold text-white bg-[#E0301E] rounded-full">{audits}</span>
+                          )}
                         </Link>
                       ))}
                     </div>
@@ -249,6 +266,23 @@ export default function AdminHeader({ active, title, onRefresh }: { active: Tab;
           </div>
         </div>
       </div>
+
+      {audits > 0 && active !== 'audit' && (
+        <Link
+          href="/admin/audit"
+          className="group block border-t-2 border-[#161616] bg-[#F5B700] hover:bg-[#FFD23F] transition-colors"
+        >
+          <div className="max-w-7xl mx-auto px-5 md:px-6 py-2 flex items-center gap-3 text-[#161616]">
+            <span className="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 text-[10px] font-mono font-bold text-white bg-[#E0301E] rounded-full border-2 border-[#161616]">{audits}</span>
+            <span className="font-sans text-[13px] font-bold">
+              {audits === 1 ? 'A free presence audit is waiting on you.' : `${audits} free presence audits are waiting on you.`}
+            </span>
+            <span className="ml-auto font-mono text-[10px] font-bold uppercase tracking-[0.2em] group-hover:translate-x-0.5 transition-transform">
+              Open the Audit Desk →
+            </span>
+          </div>
+        </Link>
+      )}
     </header>
   );
 }

@@ -18,7 +18,18 @@ export async function GET(req: Request) {
   const guard = await requireOutboundAdmin();
   if ('error' in guard) return guard.error;
 
-  const view = new URL(req.url).searchParams.get('view') === 'done' ? 'done' : 'open';
+  const params = new URL(req.url).searchParams;
+
+  // Count only, for the alert strip and badge on every admin page.
+  if (params.get('count') === '1') {
+    const { count } = await guard.supabase
+      .from('audit_requests')
+      .select('id', { count: 'exact', head: true })
+      .in('status', OPEN);
+    return NextResponse.json({ open: count ?? 0 });
+  }
+
+  const view = params.get('view') === 'done' ? 'done' : 'open';
 
   const { data, error } = await guard.supabase
     .from('audit_requests')
