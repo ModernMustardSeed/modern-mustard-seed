@@ -1,7 +1,5 @@
 import Link from '@/components/AttributionLink';
 import WebsiteAuditEngine from '@/components/WebsiteAuditEngine';
-import GeoDesk from '@/components/geo/GeoDesk';
-import { geoFaqAdditions } from '@/data/geo';
 import { JsonLd, breadcrumbJsonLd, faqJsonLd, serviceJsonLd } from '@/lib/jsonld';
 import { buildMetadata, SITE } from '@/lib/seo';
 
@@ -57,11 +55,6 @@ const auditServiceJsonLd = {
   provider: { '@id': `${SITE.url}/#organization` },
   serviceType: 'Website audit',
   areaServed: 'Worldwide',
-  offers: {
-    '@type': 'Offer',
-    price: '0',
-    priceCurrency: 'USD',
-  },
 };
 
 export default function WebsiteAuditPage() {
@@ -75,7 +68,7 @@ export default function WebsiteAuditPage() {
             description:
               'Free AI-graded website audit. Score 0-100, letter grade, per-category breakdown, prioritized to-do list to get to an A.',
           }),
-          faqJsonLd([...FAQS, ...geoFaqAdditions]),
+          faqJsonLd(FAQS),
           breadcrumbJsonLd([
             { name: 'Home', url: '/' },
             { name: 'Website Audit', url: '/website-audit' },
@@ -109,8 +102,9 @@ export default function WebsiteAuditPage() {
           <WebsiteAuditEngine />
         </section>
 
-        {/* GEO DESK: the conversion module on the graded report */}
-        <GeoDesk />
+        {/* No live pricing on an audit page (Sarah, 2026-09-18). The GEO Desk's
+            priced tiers and checkout live on /geo, and prices reach a buyer in a
+            proposal. */}
         <section className="max-w-5xl mx-auto px-6 py-10 mb-12">
           <h2 className="font-display text-3xl font-bold">Know what the grade is telling you.</h2>
           <p className="mt-4 leading-relaxed">Read our <Link href="/resources" className="text-[#1E50C8] underline font-bold">AI Search Field Notes</Link> for the technical checks and measurement behind this work. <Link href="/blog/geo-vs-seo-montana" className="text-[#1E50C8] underline font-bold">GEO and SEO share a foundation</Link>: accessible pages, useful information and evidence. Modern Mustard Seed builds that foundation from Kalispell for businesses nationwide.</p>
