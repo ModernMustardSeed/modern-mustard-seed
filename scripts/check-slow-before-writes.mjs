@@ -66,6 +66,10 @@ const ALLOWED = new Map([
     'app/api/scaling-roadmap/route.ts:POST',
     'The order is enqueued BEFORE the wait, which is the whole design: if the wait expires the visitor gets an honest 202 and the worker owns delivery and the email. The enqueue after the wait is the separate 503 fallback branch, and enqueueRoadmap is idempotent. 250s is set deliberately under the 300s budget so the response still gets out.',
   ],
+  [
+    'lib/audit-requests.ts:runRequestedAudit',
+    'The request is stamped running with run_at BEFORE the wait, and the grade job carries source audit_requests/<id>, so a killed run loses nothing: the Audit Desk re-allows Run four minutes after run_at, and the re-run collects the finished grade from audit_jobs (by source) or llm_jobs (collectWithinMs) instead of grading twice. Nothing is emailed until every write before the send has landed. The 170s wait sits under the route maxDuration of 300.',
+  ],
 ]);
 
 function walk(dir, out = []) {

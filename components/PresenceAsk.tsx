@@ -85,10 +85,13 @@ const WANTS = [
 export default function PresenceAsk({
   business,
   leadId,
+  auditId = '',
   score,
 }: {
   business: string;
   leadId: string;
+  /** Set for an audit somebody requested on /presence-audit, which has no lead. */
+  auditId?: string;
   score: number;
 }) {
   const router = useRouter();
@@ -115,7 +118,7 @@ export default function PresenceAsk({
       await fetch('/api/audit-request', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ leadId, want: picked, business }),
+        body: JSON.stringify({ leadId, auditId, want: picked, business }),
       });
     } catch {
       /* The booking is the product. A failed log never blocks it. */

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import AdminHeader from './AdminHeader';
+import AuditRequests from './AuditRequests';
 
 type Category = { score: number; letter: string; notes: string };
 type Fix = { title: string; why: string; how: string };
@@ -222,12 +223,17 @@ export default function AuditAdmin() {
 
   return (
     <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
-      <AdminHeader active="audit" title="Website Audit" />
+      <AdminHeader active="audit" title="Audit Desk" />
       <main className="max-w-5xl mx-auto px-6 py-8">
+        <AuditRequests />
+
+        <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold block mb-1">
+          Or grade any website by hand
+        </span>
         <p className="text-[#3A3733] text-sm font-body mb-6 max-w-2xl">
-          Run the same audit visitors get, then email it to a lead as a personal, one-off offer.
-          This does not enter anyone into a drip. It is a single email with the audit, the to-do
-          list, and your booking link.
+          The seven-category website grade on its own, then email it to a lead as a personal,
+          one-off offer. This does not enter anyone into a drip. It is a single email with the
+          audit, the to-do list, and your booking link.
         </p>
 
         {/* Run */}

@@ -96,10 +96,10 @@ export default async function PresenceAuditPage({ params }: { params: Params }) 
       <div className="pop-card p-10 text-center max-w-md">
         <h1 className="font-display text-3xl font-black text-[#161616]">We could not find that audit</h1>
         <p className="font-body text-[#3A3733] mt-3">
-          The link may have expired. Want one run on your business? That is free and it takes about a minute.
+          The link may have expired. Want one run on your business? It is free, and we email it to you.
         </p>
         <a
-          href="https://modernmustardseed.com/demos"
+          href="https://modernmustardseed.com/presence-audit"
           className="inline-block mt-6 bg-[#F5B700] text-[#161616] border-2 border-[#161616] rounded-xl px-6 py-3 font-sans font-bold uppercase tracking-[0.1em] text-sm shadow-[3px_3px_0_0_#161616]"
         >
           Get your free audit
@@ -259,7 +259,7 @@ export default async function PresenceAuditPage({ params }: { params: Params }) 
         )}
 
         {/* ── the ask, after the receipts and never instead of them ── */}
-        <PresenceAsk business={business} leadId={String(row.lead_id ?? '')} score={r.overall_score} />
+        <PresenceAsk business={business} leadId={String(row.lead_id ?? '')} auditId={auditId} score={r.overall_score} />
 
         {/* ── the receipts ── */}
         {r.provenance?.length > 0 && (
