@@ -74,7 +74,9 @@ export const CLIENT_PROJECTS: Record<string, ClientProject> = {
     business: 'Built Right in Montana',
     siteUrl: 'https://built-right-montana-demo.vercel.app',
     publicUrl: 'https://builtrightinmontana.com',
-    origins: ['https://built-right-montana-demo.vercel.app', 'https://builtrightinmontana.com', 'https://www.builtrightinmontana.com', 'https://built-right-prep.vercel.app'],
+    // brimhomes.com was bought on 2026-09-18 and serves this same site. Without it
+    // here every form, the booking page and the chat would be refused by origin there.
+    origins: ['https://built-right-montana-demo.vercel.app', 'https://builtrightinmontana.com', 'https://www.builtrightinmontana.com', 'https://brimhomes.com', 'https://www.brimhomes.com', 'https://built-right-prep.vercel.app'],
     // Carmen runs the office, so every lead reaches her inbox as well as Shan's.
     notify: { phone: '(406) 471-5613', emails: ['builtbyshan@gmail.com', 'builtrightinmontana@gmail.com'] },
     // "Contact Shan", "Contact Carmen", "Contact Zayne" on the team page: the
