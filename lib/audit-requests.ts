@@ -232,6 +232,31 @@ export async function runRequestedAudit(
     }
     if (prior?.status === 'done' && prior.report) report = prior.report as WebsiteAuditReport;
 
+    // The same, on the model queue the grade usually runs on when the audit
+    // worker is asleep. Keyed on the request id rather than on the fifteen
+    // minute collect window in lib/llm.ts, so a grade that finished while
+    // Sarah was away is still collected when she comes back and presses Run.
+    // Measured 2026-09-18: a press 15.5 minutes after the grade landed missed
+    // that window and paid for a second grade of the same site.
+    if (!report) {
+      const { data: job } = await sb
+        .from('llm_jobs')
+        .select('status, result_json')
+        .eq('source_table', 'audit_requests')
+        .eq('source_id', request.id)
+        .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (job?.status === 'queued' || job?.status === 'running') {
+        const message = 'The website grade is still being written. Press Run again in a few minutes and it will pick the finished grade up and send.';
+        await sb.from('audit_requests').update({ status: 'grading', error: message }).eq('id', request.id);
+        return { ok: true, state: 'grading', message };
+      }
+      const graded = job?.status === 'done' ? (job.result_json as WebsiteAuditReport | null) : null;
+      if (graded && typeof graded.overall_score === 'number') report = graded;
+    }
+
     facts = await fetchSiteFacts(request.website, { timeoutMs: 8000, maxPages: 3 }).catch(() => null);
   }
 
