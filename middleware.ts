@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { verifyToken, COOKIE_NAME } from '@/lib/admin-auth';
-import { verifyClientToken, CLIENT_COOKIE_NAME } from '@/lib/client-auth';
+import { verifyClientToken, verifyLookToken, CLIENT_COOKIE_NAME, CLIENT_LOOK_COOKIE_NAME } from '@/lib/client-auth';
 
 export const config = {
   matcher: ['/admin/:path*', '/portal/:path*', '/Mustard', '/MUSTARD'],
@@ -27,7 +27,13 @@ export async function middleware(req: NextRequest) {
   if (path.startsWith('/portal')) {
     if (path === '/portal/login') return NextResponse.next();
     const token = req.cookies.get(CLIENT_COOKIE_NAME)?.value;
-    const session = token ? await verifyClientToken(token) : null;
+    let session = token ? await verifyClientToken(token) : null;
+    // Sarah looking as a client: the look pass and her own admin session, both valid.
+    if (!session) {
+      const look = req.cookies.get(CLIENT_LOOK_COOKIE_NAME)?.value;
+      const admin = req.cookies.get(COOKIE_NAME)?.value;
+      if (look && admin && (await verifyToken(admin))) session = await verifyLookToken(look);
+    }
     if (!session) {
       const url = new URL('/portal/login', req.url);
       return NextResponse.redirect(url);

@@ -146,6 +146,7 @@ export default function ClientCommandView() {
               <div className="mt-4 flex flex-wrap items-center gap-3">
                 <DripButton email={data.email} businessName={c?.company ?? displayName} />
                 <Link href={`/admin/calls?client=${encodeURIComponent(data.email)}`} className="text-[11px] uppercase tracking-[0.2em] font-mono font-bold text-[#1E50C8] hover:text-[#161616]">Their calls &rarr;</Link>
+                <a href={`/api/admin/look?client=${encodeURIComponent(data.email)}`} className="text-[11px] uppercase tracking-[0.2em] font-mono font-bold text-[#1E50C8] hover:text-[#161616]" title="Their portal exactly as they see it, with their Command Center shown to you even while it is hidden from them.">Open their portal &rarr;</a>
               </div>
             </div>
 

@@ -221,10 +221,14 @@ export async function GET() {
     /* posting_settings not migrated */
   }
 
-  // The Command Center is built before it is bought; the client sees it only once Sarah shows it.
-  const commandCenter = await commandCenterVisible(supabase, email);
   // Their own front, when they have one: name, marks and colours for the office shell.
   const proj = projectForEmail(email);
+  // The Command Center is built before it is bought: the client sees it once Sarah
+  // switches it on. Sarah, looking as them from the admin, always sees it, and is
+  // told whether they can.
+  const shownToClient = await commandCenterVisible(supabase, email);
+  const commandCenter = shownToClient || Boolean(session.preview && proj);
+  const preview = session.preview ? { email, commandCenterShownToClient: shownToClient } : null;
   const office = proj ? { name: proj.office.name, business: proj.business, host: proj.office.host, logo: proj.office.logo, logoOnDark: proj.office.logoOnDark, colors: proj.office.colors, guideName: proj.office.guideName, siteUrl: proj.siteUrl, publicUrl: proj.publicUrl } : null;
-  return NextResponse.json({ email, client, projects, files, orders, products, bookings, audience, isDemoClient, billing, audit, googleReviewUrl, updates, posting, commandCenter, office });
+  return NextResponse.json({ email, client, projects, files, orders, products, bookings, audience, isDemoClient, billing, audit, googleReviewUrl, updates, posting, commandCenter, office, preview });
 }
