@@ -20,7 +20,7 @@ import { prettyDate, prettyHour } from '@/lib/posting/time';
  */
 type Overview = { settings: SettingsRow; today: { id: string; status: string; headline: string | null } | null; nextPlanned: string | null; queued: number; graphicsWaiting: number; approvalsWaiting: number; connected: Platform[] };
 type Lead = { id: string; source: string; sources: string[]; name: string | null; phone: string | null; email: string | null; town: string | null; project_type: string | null; land: string | null; page: string | null; priority: number | null; handled_at: string | null; created_at: string };
-type Detail = { settings: SettingsRow; today: string; posts: PostRow[]; materials: MaterialRow[]; accounts: AccountView[]; leads: Lead[]; guide: GuideSection[]; clientGuide: GuideSection[]; commandCenter: { guide: GuideSection[]; clientGuide: GuideSection[]; visible: boolean; buildertrend: { connected: boolean; builderId: number | null; captcha: boolean } | null; mailbox: { connected: boolean; address: string | null; lastSyncAt: string | null } | null; vault: { id: string; label: string; createdAt: string; rotatedAt: string | null; rotatedBy: string | null; submittedBy: string | null }[] } | null; env: { x: boolean; linkedin: boolean; google: boolean; facebookApp: boolean } };
+type Detail = { settings: SettingsRow; today: string; posts: PostRow[]; materials: MaterialRow[]; accounts: AccountView[]; leads: Lead[]; guide: GuideSection[]; clientGuide: GuideSection[]; commandCenter: { guide: GuideSection[]; clientGuide: GuideSection[]; visible: boolean; buildertrend: { connected: boolean; builderId: number | null; captcha: boolean } | null; mailbox: { connected: boolean; address: string | null; lastSyncAt: string | null } | null; calendar: { connected: boolean; events: number | null } | null; vault: { id: string; label: string; createdAt: string; rotatedAt: string | null; rotatedBy: string | null; submittedBy: string | null }[] } | null; env: { x: boolean; linkedin: boolean; google: boolean; facebookApp: boolean } };
 
 const CARD = 'rounded-2xl border-2 border-[#161616] bg-white p-5 shadow-[5px_5px_0_0_#161616]';
 const BTN = 'rounded-lg border-2 border-[#161616] bg-white px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-[#161616] disabled:opacity-50 hover:-translate-y-0.5 transition-transform';
@@ -129,6 +129,7 @@ function ClientDetail({ d, act, busy, onNotice, client }: { d: Detail; act: Act;
   const [btEmbed, setBtEmbed] = useState('');
   const [mbAddress, setMbAddress] = useState('');
   const [mbPass, setMbPass] = useState('');
+  const [calUrl, setCalUrl] = useState('');
   const [revealed, setRevealed] = useState<Record<string, string>>({});
   const [gbpLocations, setGbpLocations] = useState<Array<{ name: string; title: string }> | null>(null);
   const [theirText, setTheirText] = useState('');
@@ -307,6 +308,44 @@ function ClientDetail({ d, act, busy, onNotice, client }: { d: Detail; act: Act;
                     <input value={mbAddress} onChange={(e) => setMbAddress(e.target.value)} placeholder="builtrightinmontana@gmail.com" className={INPUT} />
                     <input value={mbPass} onChange={(e) => setMbPass(e.target.value)} type="password" placeholder="app password" className={`${INPUT} mt-2`} />
                     <button type="button" className={`${BTN_GOLD} mt-2`} disabled={!mbAddress.trim() || mbPass.replace(/\s/g, '').length < 12 || !!busy} onClick={async () => { const j = (await act({ action: 'mailbox', address: mbAddress, appPassword: mbPass }, 'mb')) as { ok?: boolean; fetched?: number }; if (j.ok) { setMbAddress(''); setMbPass(''); onNotice(`Mailbox connected. First read: ${j.fetched ?? 0} messages; sorting takes a few minutes.`); } }}>Validate and connect</button>
+                  </div>
+                  <div className="mt-5 border-t-2 border-[#161616]/10 pt-4">
+                    <p className="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-[#161616]/60 mb-1">Their calendar, from the desk</p>
+                    <p className="text-[12px] text-[#161616]/65 mb-2">
+                      {d.commandCenter.calendar?.connected
+                        ? `Connected, ${d.commandCenter.calendar.events ?? 0} events read. The booking page stops offering times they are already busy in.`
+                        : "In their Google Calendar: open that calendar's Settings, scroll to Secret address in iCal format, copy the whole thing. Read-only, revocable by them in one click, and no password changes hands."}
+                    </p>
+                    <input value={calUrl} onChange={(e) => setCalUrl(e.target.value)} placeholder="https://calendar.google.com/calendar/ical/.../basic.ics" className={INPUT} />
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      <button
+                        type="button"
+                        className={BTN_GOLD}
+                        disabled={!calUrl.trim() || !!busy}
+                        onClick={async () => {
+                          const j = (await act({ action: 'calendar-ics', url: calUrl }, 'cal')) as { ok?: boolean; events?: number };
+                          if (j.ok) {
+                            setCalUrl('');
+                            onNotice(`Calendar connected, ${j.events ?? 0} events read.`);
+                          }
+                        }}
+                      >
+                        Validate and connect
+                      </button>
+                      {d.commandCenter.calendar?.connected ? (
+                        <button
+                          type="button"
+                          className={BTN}
+                          disabled={!!busy}
+                          onClick={async () => {
+                            await act({ action: 'calendar-ics-off' }, 'cal');
+                            onNotice('Calendar disconnected. Booking now goes by the diary here alone.');
+                          }}
+                        >
+                          Disconnect
+                        </button>
+                      ) : null}
+                    </div>
                   </div>
                   {d.commandCenter.vault.length > 0 && (
                     <div className="mt-5 border-t-2 border-[#161616]/10 pt-4">
