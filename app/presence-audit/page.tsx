@@ -55,7 +55,7 @@ export default function PresenceAuditPage() {
           <div className="min-w-0">
             <span className="inline-flex items-center gap-2 whitespace-nowrap rounded-full border-2 border-[#161616] bg-white px-3.5 py-1.5 font-mono text-[9px] font-bold uppercase tracking-[0.14em] text-[#C4160B] shadow-[3px_3px_0_0_#161616] sm:px-4 sm:text-[10px] sm:tracking-[0.22em]">
               <span className="h-2 w-2 rounded-full bg-[#E0301E]" aria-hidden />
-              Free · Run by a person · Yours to keep
+              Free · Three pillars · Yours to keep
             </span>
             <h1 className="mt-7 font-display text-[2.65rem] font-extrabold leading-[0.98] tracking-tight sm:text-6xl lg:text-[4.3rem]">
               Most people decide about you{' '}
@@ -146,7 +146,7 @@ export default function PresenceAuditPage() {
           <div className="max-w-2xl">
             <p className="font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-[#C4160B]">How it works // Three steps, one of them yours</p>
             <h2 className="mt-3 font-display text-4xl font-extrabold italic leading-[1.02] md:text-5xl">
-              You ask. We look. It lands.
+              You ask. We grade. It lands.
             </h2>
           </div>
           <ol className="relative mt-12 grid gap-6 md:grid-cols-3">

@@ -428,6 +428,13 @@ export default function AuditRequests() {
             get it by email. No drip, no follow-up.
           </p>
         </div>
+        <div className="flex flex-wrap items-center gap-3">
+        <a
+          href="/admin/ads?campaign=presence"
+          className="rounded-lg border-2 border-[#161616] bg-white px-4 py-2 font-sans text-[11px] font-bold uppercase tracking-[0.16em] text-[#161616] hover:bg-[#FFF8E6]"
+        >
+          Bring traffic: the campaign kit →
+        </a>
         <div className="flex overflow-hidden rounded-lg border-2 border-[#161616]">
           {(['open', 'done'] as const).map((v) => (
             <button
@@ -445,6 +452,7 @@ export default function AuditRequests() {
               {v === 'open' ? 'Waiting' : 'Sent'}
             </button>
           ))}
+        </div>
         </div>
       </div>
 

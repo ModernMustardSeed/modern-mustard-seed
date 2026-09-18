@@ -21,7 +21,7 @@
 export const PRESENCE = {
   metaTitle: 'The Free Online Presence Audit',
   metaDescription:
-    'A free audit of your whole online presence, run by a person: your website graded on seven categories, your Google Business Profile on eight checks, and your reviews against your trade. Leave your email and the full report arrives in your inbox.',
+    'A free audit of your whole online presence: your website graded on seven categories, your Google Business Profile on eight checks, and your reviews against your trade. Leave your email and the full report arrives in your inbox.',
   /** The promise on the page, the receipt email and the FAQ. Change it in all three. */
   turnaround: 'within one business day',
 };
@@ -32,7 +32,7 @@ export const TICKER = [
   'Your website, graded',
   'Your Google profile, checked',
   'Your reviews, measured',
-  'Run by a person',
+  'Every check verifiable',
   'Yours to keep',
   'No card',
   'No call unless you ask',
@@ -77,12 +77,12 @@ export const STEPS = [
   {
     n: '01',
     h: 'You ask',
-    d: 'Your email, your business name and your website. Thirty seconds, and nothing gets graded until a person looks.',
+    d: 'Your email, your business name and your website. Thirty seconds.',
   },
   {
     n: '02',
-    h: 'We go and look',
-    d: 'We open your Google listing, read your reviews, and grade your website against seven categories. Not a scanner guessing from the outside.',
+    h: 'We grade all three',
+    d: 'Your Google listing on eight checks, your reviews against your trade, and your website against seven categories.',
   },
   {
     n: '03',
@@ -169,7 +169,7 @@ export const PRESENCE_FAQ = [
   },
   {
     q: 'Why do you need my email?',
-    a: 'Because a person runs your audit rather than a page generating it on the spot. We open your real Google listing, read your reviews and grade your site, and the email is how the finished report reaches you. It is not added to a newsletter or a sequence.',
+    a: 'Because the full report is emailed to you. We read your real Google listing and reviews and grade your site, and the email is how the finished report reaches you. It is not added to a newsletter or a sequence.',
   },
   {
     q: 'How long does it take?',
@@ -181,7 +181,7 @@ export const PRESENCE_FAQ = [
   },
   {
     q: 'How is this different from the Bottleneck Breaker?',
-    a: 'They answer different questions. The Bottleneck Breaker reads your website and names the one thing in your business costing you the most, on screen in sixty seconds. The Presence Audit grades how you look to a stranger deciding whether to call you: your site, your Google profile and your reviews, checked by a person.',
+    a: 'They answer different questions. The Bottleneck Breaker reads your website and names the one thing in your business costing you the most, on screen in sixty seconds. The Presence Audit grades how you look to a stranger deciding whether to call you: your site, your Google profile and your reviews, delivered as a full report by email.',
   },
   {
     q: 'Will you call me?',
