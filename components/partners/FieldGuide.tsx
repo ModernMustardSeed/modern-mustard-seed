@@ -1,11 +1,17 @@
 import type { PartnerGuide } from '@/lib/partner-guide';
+import { withAuditSection } from '@/lib/presence-audit-links';
 
 /**
  * Renders a partner's field guide. No hooks and no server-only imports, so the
  * same markup serves the partner's page (a server component) and the admin
  * panel under their row (a client component).
+ *
+ * Every guide renders with "The free audit to hand out" after its opening
+ * section, carrying the partner's own audit link. It is added here rather than
+ * stored, so every partner has it without a re-seed of app_state.
  */
-export default function FieldGuide({ guide, compact = false }: { guide: PartnerGuide; compact?: boolean }) {
+export default function FieldGuide({ guide: stored, compact = false }: { guide: PartnerGuide; compact?: boolean }) {
+  const guide = withAuditSection(stored);
   const updated = new Date(guide.updatedAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
   return (
     <div className="text-[#161616]">
@@ -36,7 +42,7 @@ export default function FieldGuide({ guide, compact = false }: { guide: PartnerG
                     {it.when && <span className="inline-block bg-[#F5B700] border border-[#161616] rounded-full px-2 py-0.5 text-[10px] uppercase tracking-[0.14em] font-mono font-bold whitespace-nowrap">{it.when}</span>}
                     {it.where && <span className="text-[11px] uppercase tracking-[0.14em] font-mono text-[#161616]/55">{it.where}</span>}
                   </div>
-                  <p className={`font-body text-[#161616]/85 leading-relaxed mt-1 ${compact ? 'text-[13px]' : 'text-[15px]'}`}>{it.detail}</p>
+                  <p className={`font-body text-[#161616]/85 leading-relaxed mt-1 [overflow-wrap:anywhere] ${compact ? 'text-[13px]' : 'text-[15px]'}`}>{it.detail}</p>
                 </li>
               ))}
             </ol>

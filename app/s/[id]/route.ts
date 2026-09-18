@@ -3,6 +3,7 @@ import { getSupabase } from '@/lib/supabase';
 import { recordEventOnce } from '@/lib/acq/events';
 import { classifyAgent } from '@/lib/acq/bots';
 import { SITE } from '@/lib/seo';
+import { DOORDROP_AUDIT_PATH } from '@/lib/presence-audit-links';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -54,14 +55,27 @@ function send(target: URL) {
 export async function GET(req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
   const { id } = await ctx.params;
 
-  // A bad code goes to the free-audit door rather than a 404. Somebody is
-  // holding paper with our name on it; the worst answer is a dead end.
-  if (!UUID.test(id)) return send(new URL('/website-audit', SITE.url));
+  /**
+   * A code with no report behind it goes to the Free Online Presence Audit
+   * rather than a 404. Somebody is holding paper with our name on it and the
+   * paper sells a free audit; the worst answer is a dead end, and the next best
+   * is the page that gets them theirs. Tagged utm_source=doordrop so the request
+   * is counted on the Audit Desk and the Campaign 28 scoreboard as the flyer's.
+   * The partner code, when the flyer carried one, rides along (see below).
+   */
+  const noReport = () => {
+    const target = new URL(DOORDROP_AUDIT_PATH, SITE.url);
+    const ref = req.nextUrl.searchParams.get('ref');
+    if (ref && /^[A-Za-z0-9]{3,24}$/.test(ref)) target.searchParams.set('ref', ref);
+    return send(target);
+  };
+
+  if (!UUID.test(id)) return noReport();
 
   const sb = getSupabase();
   if (!sb) return send(new URL(`/audit/${id}`, SITE.url));
 
-type ScanLead = {
+  type ScanLead = {
     id: string;
     business_name: string;
     city: string | null;
@@ -71,16 +85,23 @@ type ScanLead = {
     presence_audit_score: number | null;
   };
   let lead: ScanLead | null = null;
+  let looked = false;
   try {
-    const { data } = await sb
+    const { data, error } = await sb
       .from('outbound_leads')
       .select('id, business_name, city, audit_score, website, presence_audit_id, presence_audit_score')
       .eq('id', id)
       .maybeSingle();
     lead = (data ?? null) as ScanLead | null;
+    looked = !error;
   } catch {
     /* fall through to the report, which handles a missing row on its own */
   }
+
+  // The book answered and this code is not in it, so there is no report to
+  // open: /audit/<id> would 404 on them. A failed lookup is different; it still
+  // goes to the report, which may well exist and will say so itself.
+  if (!lead && looked) return noReport();
 
   /**
    * WHERE A SCAN LANDS, best page first.
@@ -101,7 +122,13 @@ type ScanLead = {
    * campaign could do, and it would land on exactly the people whose flyer
    * already told them the honest, useful version: you have no website, here is
    * what we would build. They keep going to the free-build door their flyer
-   * offered.
+   * offered: its QR panel reads "See One Built", so /demos IS the promise on
+   * that paper, and it does not move to the audit request page.
+   *
+   * 4. The Free Online Presence Audit (noReport above), for a code with no lead
+   *    behind it. Before 2026-09-18 a malformed code went to /website-audit and
+   *    a well-formed code for a lead not in the book went to /audit/<id>, which
+   *    404s on a missing row.
    */
   const target =
     lead?.presence_audit_id && lead.presence_audit_score != null && lead.website

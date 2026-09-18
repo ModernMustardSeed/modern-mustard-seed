@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { listContent } from '@/lib/content';
 import { resendClient } from '@/lib/send-email';
 import { OUTREACH_FROM } from '@/lib/outreach-domain';
+import { renderNewsletter } from '@/lib/newsletter';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -19,6 +20,9 @@ export const maxDuration = 60;
 // The only other thing standing between this route and a real send is an unset
 // RESEND_AUDIENCE_ID, which is an accident, not a guard. Adding that env var
 // while a schedule exists is enough to mail the entire audience.
+//
+// Preview without sending: GET /api/cron/newsletter?preview=1 with the same
+// Bearer CRON_SECRET returns the rendered issue as HTML and stops there.
 //
 // Required env:
 //   RESEND_API_KEY
@@ -45,16 +49,6 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const apiKey = process.env.RESEND_API_KEY;
-  const audienceId = process.env.RESEND_AUDIENCE_ID;
-  if (!apiKey || !audienceId) {
-    return NextResponse.json(
-      { error: 'Missing RESEND_API_KEY or RESEND_AUDIENCE_ID' },
-      { status: 500 }
-    );
-  }
-  const resend = resendClient();
-
   const playbooks = listContent('playbooks');
   if (playbooks.length === 0) {
     return NextResponse.json({ error: 'No playbooks available' }, { status: 500 });
@@ -64,29 +58,26 @@ export async function GET(req: Request) {
   const week = isoWeek(new Date());
   const playbook = playbooks[week % playbooks.length];
 
-  const playbookUrl = `https://modernmustardseed.com/playbooks/${playbook.slug}`;
   const subject = `${playbook.title}`;
+  // The issue itself, the playbook plus every block in NEWSLETTER_FEATURES
+  // (lib/newsletter.ts). Featured now: the Free Online Presence Audit.
+  const html = renderNewsletter(playbook);
 
-  const html = `
-<!DOCTYPE html>
-<html><body style="font-family:Arial,sans-serif;line-height:1.65;color:#333;max-width:600px;margin:0 auto;padding:20px">
-  <p style="font-size:11px;letter-spacing:3px;color:#C8964E;text-transform:uppercase;font-weight:700">
-    Playbook of the Week
-  </p>
-  <h1 style="font-size:28px;margin:8px 0 16px;color:#080c16">${playbook.title}</h1>
-  <p style="font-size:16px;color:#555;margin-bottom:24px">${playbook.description}</p>
-  <p style="margin:24px 0">
-    <a href="${playbookUrl}" style="display:inline-block;padding:14px 28px;background:linear-gradient(135deg,#F0D090,#C8964E);color:#ffffff;text-decoration:none;font-weight:700;border-radius:999px;font-size:12px;letter-spacing:2px;text-transform:uppercase">Read the playbook</a>
-  </p>
-  <p style="font-size:14px;color:#777">Free to read. Free to run yourself. The whole point.</p>
-  <p style="font-size:14px;color:#777">If you would rather have us ship the thing for you, a <a href="https://modernmustardseed.com/book" style="color:#C8964E">free call</a> is the fastest way in, and we are booking new builds.</p>
-  <hr style="border:0;border-top:1px solid #eee;margin:32px 0">
-  <p style="font-size:12px;color:#888">Modern Mustard Seed. Apps, sites, and specialty AI tools.<br>
-  Reply to this email to talk to Sarah directly.</p>
-  <p style="font-size:11px;color:#aaa">You are getting this because you subscribed at modernmustardseed.com.
-  <a href="{{{RESEND_UNSUBSCRIBE_URL}}}" style="color:#aaa">Unsubscribe</a>.</p>
-</body></html>
-  `;
+  // ?preview=1 returns this week's issue as a page and stops there. It never
+  // reaches Resend, so the issue can be read before anybody schedules it.
+  if (new URL(req.url).searchParams.get('preview') === '1') {
+    return new NextResponse(html, { headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' } });
+  }
+
+  const apiKey = process.env.RESEND_API_KEY;
+  const audienceId = process.env.RESEND_AUDIENCE_ID;
+  if (!apiKey || !audienceId) {
+    return NextResponse.json(
+      { error: 'Missing RESEND_API_KEY or RESEND_AUDIENCE_ID' },
+      { status: 500 }
+    );
+  }
+  const resend = resendClient();
 
   // Create the broadcast tied to the audience
   let broadcastId: string | undefined;
