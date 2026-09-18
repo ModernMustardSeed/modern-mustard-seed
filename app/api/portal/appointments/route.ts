@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getClientSession } from '@/lib/client-auth';
 import { getSupabase } from '@/lib/supabase';
-import { visibleProject } from '@/lib/command-center/visible';
+import { projectForEmail } from '@/lib/client-leads';
 import { describeSlot, zoneLabel, KINDS, type SlotKind } from '@/lib/client-booking';
 
 export const runtime = 'nodejs';
@@ -48,7 +48,7 @@ export async function GET() {
   const session = await getClientSession();
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const sb = getSupabase();
-  const project = sb ? await visibleProject(sb, session.email) : null;
+  const project = projectForEmail(session.email);
   if (!sb || !project) return NextResponse.json({ appointments: null });
 
   let rows: Row[] = [];
@@ -81,7 +81,7 @@ export async function POST(req: Request) {
   const session = await getClientSession();
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const sb = getSupabase();
-  const project = sb ? await visibleProject(sb, session.email) : null;
+  const project = projectForEmail(session.email);
   if (!sb || !project) return NextResponse.json({ error: 'Not on a project.' }, { status: 404 });
 
   let body: { id?: string; status?: string };
