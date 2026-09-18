@@ -196,6 +196,7 @@ function RequestCard({ initial, onChange }: { initial: AuditRequest; onChange: (
           </p>
           <p className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.16em] text-[#161616]/45">
             Asked {ago(r.created_at)}
+            {r.source && r.source.includes(':') ? ` · via ${r.source.split(':')[1]}` : ''}
             {r.sent_at ? ` · sent ${ago(r.sent_at)}${r.send_count > 1 ? ` (${r.send_count} times)` : ''}` : ''}
           </p>
         </div>

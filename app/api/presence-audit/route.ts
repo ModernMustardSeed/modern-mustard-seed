@@ -105,6 +105,7 @@ export async function POST(req: Request) {
   }
 
   const request = { name: name || null, business_name: business, website };
+  const via = (clip(body.source, 80).split(':')[1] || '').trim();
 
   // Everything below is the heads-up, not the request. The row above is the
   // record that matters, so none of it is allowed to hold the visitor up.
@@ -116,7 +117,7 @@ export async function POST(req: Request) {
       business_name: business,
       audit_url: website,
       message: note || null,
-      source: 'presence-audit',
+      source: via ? `presence-audit:${via}` : 'presence-audit',
       notes: `Online Presence Audit requested. Run it at ${SITE.url}/admin/audit`,
     });
 
@@ -134,6 +135,7 @@ export async function POST(req: Request) {
       ...(website ? [{ label: 'Website', value: website, isLink: true }] : [{ label: 'Website', value: 'None given' }]),
       ...(town ? [{ label: 'Town', value: town }] : []),
       ...(google ? [{ label: 'Google listing', value: google, isLink: true }] : []),
+      ...(via ? [{ label: 'Came from', value: via }] : []),
       { label: 'Run it', value: `${SITE.url}/admin/audit`, isLink: true },
     ];
     // resendClient(), not sendViaResend: it is the client that hands the

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { trackLead, metaDedup } from '@/lib/analytics';
+import { readAttribution } from '@/lib/ai-attribution';
 
 /**
  * ASK FOR THE AUDIT.
@@ -52,10 +53,19 @@ export default function PresenceRequestForm({ id = 'get' }: { id?: string }) {
     setError('');
     try {
       const dedup = metaDedup();
+      // Which post sent them: the utm_source on the link they tapped, kept by
+      // the site-wide attribution capture, or on this URL if they landed here.
+      let via = '';
+      try {
+        via = readAttribution()?.campaign.utm_source || new URLSearchParams(window.location.search).get('utm_source') || '';
+      } catch {
+        /* storage blocked; the request still goes through untagged */
+      }
+      const source = via ? `presence-audit:${via.toLowerCase().replace(/[^a-z0-9_.-]/g, '').slice(0, 40)}` : 'presence-audit';
       const res = await fetch('/api/presence-audit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, source: 'presence-audit', ...dedup }),
+        body: JSON.stringify({ ...form, source, ...dedup }),
       });
       const data = await res.json().catch(() => null);
       if (res.ok && data?.ok) {
