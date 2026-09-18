@@ -16,6 +16,7 @@ import { connectBuildertrend, buildertrendStatus } from '@/lib/buildertrend';
 import { connectMailbox, mailStatus, syncMailbox } from '@/lib/mail-desk';
 import { listVault, revealSecret, markRotated } from '@/lib/command-center/vault';
 import { connectCalendar, disconnectCalendar, calendarStatus } from '@/lib/client-calendar';
+import { listContacts, listArchivePosts, tagCounts, contactsCsv } from '@/lib/client-contacts';
 import { mountainDate, addDays, mountainToUtc } from '@/lib/posting/time';
 import { PLATFORMS, type Platform, type PostRow, type MaterialRow, type SettingsRow } from '@/lib/posting/types';
 
@@ -35,6 +36,16 @@ export async function GET(req: Request) {
   const { db } = gate;
   const url = new URL(req.url);
   const client = url.searchParams.get('client')?.toLowerCase().trim() ?? null;
+
+  // The client's whole contact book as a spreadsheet, whether or not their Command Center is showing.
+  if (client && url.searchParams.get('format') === 'contacts-csv') {
+    const people = await listContacts(db, client);
+    if (!people) return NextResponse.json({ error: 'The contact book is not migrated yet.' }, { status: 503 });
+    const stamp = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Denver' });
+    return new NextResponse(contactsCsv(people), {
+      headers: { 'content-type': 'text/csv; charset=utf-8', 'content-disposition': `attachment; filename="contacts-${client.replace(/[^a-z0-9]+/g, '-')}-${stamp}.csv"`, 'cache-control': 'no-store' },
+    });
+  }
 
   const clients = await listSettings(db);
   const today = mountainDate();
@@ -56,11 +67,13 @@ export async function GET(req: Request) {
 
   const settings = clients.find((s) => s.client_email === client) ?? null;
   if (!settings) return NextResponse.json({ clients: overview, detail: null, error: 'No posting settings for that client.' });
-  const [posts, materials, accounts, leads] = await Promise.all([
+  const [posts, materials, accounts, leads, people, archive] = await Promise.all([
     db.from('posting_posts').select('*').eq('client_email', client).gte('scheduled_for', addDays(today, -21)).lte('scheduled_for', addDays(today, 30)).order('scheduled_for', { ascending: false }),
     db.from('posting_materials').select('*').eq('client_email', client).eq('kind', 'post').neq('status', 'archived').order('created_at', { ascending: false }).limit(120),
     accountViews(db, client),
     db.from('client_leads').select('id, source, sources, name, phone, email, town, project_type, land, page, priority, handled_at, created_at').eq('client_email', client).order('created_at', { ascending: false }).limit(30),
+    listContacts(db, client),
+    listArchivePosts(db, client),
   ]);
   return NextResponse.json({
     clients: overview,
@@ -71,6 +84,17 @@ export async function GET(req: Request) {
       materials: (materials.data ?? []) as MaterialRow[],
       accounts,
       leads: leads.data ?? [],
+      // Carried over from the provider they left: counts only, the card and the CSV hold the rest.
+      contactBook: people
+        ? {
+            people: people.length,
+            tags: tagCounts(people).slice(0, 8),
+            origins: [...new Set(people.map((p) => p.origin))],
+            posts: (archive ?? []).length,
+            failedPosts: (archive ?? []).filter((p) => p.status === 'failed').length,
+            queuedPosts: (archive ?? []).filter((p) => p.status === 'scheduled').length,
+          }
+        : null,
       guide: deskGuide(settings),
       clientGuide: clientGuide(settings),
       // The Command Center words for the same client, when they are on a project.

@@ -6,6 +6,7 @@ import { ConversationsCard, DomainsCard, AccountsCard } from '@/components/porta
 import { TodayCard, CampaignsCard, MailCard } from '@/components/portal/CommandCenterMore';
 import { ProjectPhotosCard, ReviewsCard } from '@/components/portal/CommandCenterOps';
 import Appointments from '@/components/portal/Appointments';
+import ContactsCard from '@/components/portal/ContactsCard';
 import { PortalAssistant } from '@/components/portal/ClientPortal';
 
 /**
@@ -138,6 +139,7 @@ export default function OfficeShell() {
                 <Appointments />
                 {data?.posting && <PostingTile />}
                 <LeadsCard />
+                <ContactsCard />
                 <MailCard />
                 <ConversationsCard />
                 <CampaignsCard />
