@@ -8,6 +8,7 @@ import { INTERNAL_TENANT_SLUG } from './tenant';
 import type { FactoryRow, FactoryTenant } from './types';
 import { audit } from './audit-log';
 import { autoConnectPlatform } from './connectors';
+import { OUTREACH_DOMAIN, OUTREACH_FROM } from '@/lib/outreach-domain';
 
 /**
  * BOOTSTRAP. Push the code-defined registries into the database and make sure
@@ -270,8 +271,10 @@ function internalOverlay() {
     },
     crm: { owner_email: 'sarah@modernmustardseed.com' },
     compliance: {
-      sender_from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
-      sender_domain: 'modernmustardseed.com',
+      // Campaign mail, so it sends from the outreach subdomain, never the root
+      // domain Sarah's own mail depends on (lib/outreach-domain.ts).
+      sender_from: OUTREACH_FROM,
+      sender_domain: OUTREACH_DOMAIN,
       unsubscribe_url: 'https://modernmustardseed.com/api/outreach/unsubscribe',
       postal_address: process.env.MMS_POSTAL_ADDRESS?.trim() || null,
       consent: { email: 'legitimate_interest' as const, ai_call: 'opt_in_only' as const, sms: 'forbidden' as const },

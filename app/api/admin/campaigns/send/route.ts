@@ -1,18 +1,24 @@
 import { NextResponse } from 'next/server';
 import { resendClient } from '@/lib/send-email';
 import { getSession } from '@/lib/admin-auth';
+import { outreachAddressFor, outreachOnly } from '@/lib/outreach-domain';
+import { postalAddress, unsubscribeUrlFor } from '@/lib/outbound-email';
 
 export const runtime = 'nodejs';
 export const maxDuration = 20;
 
 /**
- * Send a campaign outreach email straight from the rep's studio (Zoho) mailbox
- * identity via Resend. From = the rep's own address (sarah@ or polly.thompson@),
- * reply-to that same address so replies land back in their Zoho inbox (and get
- * ingested by the Zoho sync), and bcc that address so a copy is filed in their
- * mailbox for the record. The From identity is allowlisted so only the two known
- * studio mailboxes can be used. Admin-gated. The rep reviews and confirms in the
- * UI before this is called.
+ * Send a campaign outreach email as the rep, via Resend. The From identity is
+ * allowlisted so only the two known studio mailboxes can be used. Admin-gated.
+ * The rep reviews and confirms in the UI before this is called.
+ *
+ * These are cold emails, so since 2026-09-18 they leave from the rep's twin on
+ * the outreach subdomain (sarah@outreach.modernmustardseed.com), never the root
+ * mailbox itself: cold volume on sarah@modernmustardseed.com is what put her own
+ * mail in spam on 2026-09-08. Reply-to is still the rep's real Zoho address, so
+ * replies land in their inbox and get ingested by the Zoho sync, and a bcc to
+ * that address files a copy for the record. Every send carries the one-click
+ * List-Unsubscribe header and a plain opt-out line with the postal address.
  */
 const ALLOWED_FROM: Record<string, string> = {
   'sarah@modernmustardseed.com': 'Sarah at Modern Mustard Seed',
@@ -46,15 +52,26 @@ export async function POST(req: Request) {
   if (!subject) return NextResponse.json({ error: 'The subject is empty.' }, { status: 400 });
   if (!body) return NextResponse.json({ error: 'The body is empty.' }, { status: 400 });
 
+  const sendAs = outreachOnly(`${fromName} <${outreachAddressFor(fromEmail)}>`);
+  const unsub = unsubscribeUrlFor(to);
+  const postal = postalAddress();
+  const footer =
+    `\n\n--\nNot useful? Reply "no thanks", or unsubscribe here and you will not hear from us again: ${unsub}` +
+    (postal ? `\n${postal}` : '');
+
   try {
     const resend = resendClient();
     const { data, error } = await resend.emails.send({
-      from: `${fromName} <${fromEmail}>`,
+      from: sendAs,
       to,
       replyTo: fromEmail,
       bcc: fromEmail,
       subject,
-      text: body,
+      text: body + footer,
+      headers: {
+        'List-Unsubscribe': `<${unsub}>`,
+        'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+      },
     });
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
@@ -80,7 +97,7 @@ export async function POST(req: Request) {
           : `the address ${status} it. Check that ${to} is correct.`;
       return NextResponse.json({ ok: false, status, error: `Not delivered: ${why}` });
     }
-    return NextResponse.json({ ok: true, id, status: status ?? 'queued' });
+    return NextResponse.json({ ok: true, id, status: status ?? 'queued', from: outreachAddressFor(fromEmail) });
   } catch (e) {
     return NextResponse.json({ error: e instanceof Error ? e.message : 'Send failed' }, { status: 500 });
   }

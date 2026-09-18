@@ -30,7 +30,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   if (!apiKey) return NextResponse.json({ error: 'Email is not configured.' }, { status: 500 });
 
   const subject = (payload.subject ?? '').trim() || `Re: Modern Mustard Seed${prospect.business ? ` and ${prospect.business}` : ''}`;
-  const html = clientEmail({ body: p(body.replace(/\n/g, '<br>')), trackId: id });
+  const html = clientEmail({ body: p(body.replace(/\n/g, '<br>')) });
   const resend = resendClient();
   const { error: sendErr } = await resend.emails.send({
     from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
