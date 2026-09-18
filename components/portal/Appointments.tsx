@@ -61,15 +61,10 @@ export default function Appointments() {
 
   if (loading || !data) return null;
 
-  if (!data.ready) {
-    return (
-      <section className={`${CARD} p-6 mb-8`}>
-        <span className={EYEBROW}>Appointments</span>
-        <h3 className="font-display text-xl font-semibold text-[#161616] mb-1">Booking is nearly on</h3>
-        <p className="text-[#161616]/65 font-body text-sm">The booking page is built and the diary is ready. It starts filling the moment the last piece is switched on.</p>
-      </section>
-    );
-  }
+  // Silent until there is an appointment to show. Booking can be switched off on a
+  // client's site (Built Right, 2026-09-18), and an empty diary card would then promise
+  // something the site no longer offers.
+  if (!data.ready || (!data.upcoming.length && !data.past.length)) return null;
 
   const list = (rows: Appt[]) =>
     rows.map((a) => (
