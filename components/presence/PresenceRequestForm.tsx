@@ -88,14 +88,14 @@ export default function PresenceRequestForm({ id = 'get' }: { id?: string }) {
           You are on the desk
         </span>
         <h3 className="mt-3 font-display text-3xl font-extrabold italic leading-[1.05] text-[#161616] md:text-4xl">
-          We are going to go and look.
+          Your audit is on the desk.
         </h3>
         <p className="mt-4 font-body text-[15px] leading-relaxed text-[#161616]/80">
           The audit for <strong>{sent.business}</strong> is in the queue. We will read your listing, your reviews and your
           site, then email the full report to <strong className="break-all">{sent.email}</strong>.
         </p>
         <ol className="mt-6 space-y-2.5">
-          {['A note is on its way now, so you know it landed.', 'We run the audit ourselves, all three pillars.', 'The full report arrives in your inbox, yours to keep.'].map(
+          {['A note is on its way now, so you know it landed.', 'Your site, your Google profile and your reviews get graded.', 'The full report arrives in your inbox, yours to keep.'].map(
             (t, i) => (
               <li key={t} className="flex items-start gap-3 font-body text-[14px] text-[#161616]">
                 <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full border-2 border-[#161616] bg-white font-mono text-[11px] font-bold">

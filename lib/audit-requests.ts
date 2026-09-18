@@ -412,12 +412,12 @@ export function presenceAuditReceivedEmail(request: Pick<AuditRequest, 'name' | 
   const first = (request.name ?? '').trim().split(/\s+/)[0] || '';
   const site = hostOf(request.website);
   return clientEmail({
-    preheader: 'Your audit is in the queue. I run each one myself and email it when it is done.',
+    preheader: 'Your audit is in the queue. The full report is emailed to you when it is done.',
     eyebrow: 'The Online Presence Audit',
     greeting: first ? `Hi ${escape(first)},` : 'Hi there,',
     body:
       p(`Your audit request for <strong>${escape(request.business_name)}</strong>${site ? ` (${escape(site)})` : ''} is in.`) +
-      p('I run each one myself rather than letting a machine guess at it. I open your Google listing, read your reviews, and grade your website against seven categories, then email you the whole report with the fixes ranked.') +
+      p('Your website gets graded against seven categories, your Google listing on eight checks, and your reviews against businesses like yours. Then the whole report comes to you with the fixes ranked.') +
       p(`Expect it ${PRESENCE.turnaround}. If there is something specific you want me to look at, reply to this email and tell me.`),
   });
 }

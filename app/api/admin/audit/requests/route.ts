@@ -29,6 +29,25 @@ export async function GET(req: Request) {
     return NextResponse.json({ open: count ?? 0 });
   }
 
+  // Requests per platform, for the campaign tab. Read from the source tag the
+  // form writes ("presence-audit:linkedin"); anything untagged is "direct".
+  if (params.get('by') === 'source') {
+    const { data, error } = await guard.supabase
+      .from('audit_requests')
+      .select('source, status')
+      .like('source', 'presence-audit%')
+      .limit(5000);
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    const tally: Record<string, { requests: number; sent: number }> = {};
+    for (const row of data ?? []) {
+      const key = String(row.source ?? '').split(':')[1] || 'direct';
+      tally[key] ??= { requests: 0, sent: 0 };
+      tally[key].requests += 1;
+      if (row.status === 'sent') tally[key].sent += 1;
+    }
+    return NextResponse.json({ tally, total: data?.length ?? 0 });
+  }
+
   const view = params.get('view') === 'done' ? 'done' : 'open';
 
   const { data, error } = await guard.supabase

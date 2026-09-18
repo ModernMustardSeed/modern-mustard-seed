@@ -341,7 +341,7 @@ export default function Navbar() {
               className="group block rounded-2xl border-2 border-[#161616] bg-[#F5B700] shadow-[5px_5px_0_0_#161616] p-5 md:p-6 mb-5 hover:-translate-y-0.5 transition-transform"
             >
               <span className="block text-[10px] uppercase tracking-[0.32em] text-[#161616]/70 font-mono font-bold mb-1.5">
-                Free · Run By A Person · No Card
+                Free · Three Pillars · No Card
               </span>
               <span className="block font-display font-black text-2xl md:text-3xl tracking-tight text-[#161616] leading-snug">
                 The free presence audit <span className="inline-block group-hover:translate-x-1 transition-transform">→</span>
