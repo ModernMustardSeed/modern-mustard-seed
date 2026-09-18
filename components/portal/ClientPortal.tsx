@@ -272,7 +272,7 @@ export default function ClientPortal() {
             )}
 
             {data.commandCenter && <TodayCard />}
-            {data.commandCenter && <Appointments />}
+            <Appointments />
             {data.posting && <PostingTile />}
             {(data.audience === 'client' || data.audience === 'both') && <LeadsCard />}
             {data.commandCenter && <MailCard />}

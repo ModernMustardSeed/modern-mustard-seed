@@ -104,6 +104,10 @@
     {
       "path": "/api/cron/client-monthly-report",
       "schedule": "23 14 * * *"
+    },
+    {
+      "path": "/api/cron/client-appointment-reminders",
+      "schedule": "1 15 * * *"
     }
   ]
 }
