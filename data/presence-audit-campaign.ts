@@ -27,6 +27,19 @@ export const PA_LINKS: Record<PaPlatform, { label: string; where: string; url: s
   tiktok: { label: 'TikTok', where: 'Bio link', url: link('tiktok') },
 };
 
+/**
+ * The owned channels that also send people to the audit (2026-09-18), each on
+ * its own utm_source so the scoreboard counts them apart from the social posts:
+ * the Tuesday newsletter block (lib/newsletter.ts), every partner's personal
+ * link (filed as partner-<code>, totalled here as one tile), and the door-drop
+ * scan route's no-report fallback (app/s/[id]/route.ts). Links: lib/presence-audit-links.ts.
+ */
+export const PA_CHANNELS = [
+  { key: 'newsletter', label: 'Newsletter' },
+  { key: 'partner', label: 'Partners' },
+  { key: 'doordrop', label: 'Door drop' },
+] as const;
+
 export const PA_CAROUSEL = [
   { file: '01-hook', label: 'The hook', alt: 'Most people decide about you before they reach your website. A sample Google listing: Sample Roofing Co., 4.8 stars from 58 reviews.' },
   { file: '02-a-third', label: 'A third of the problem', alt: 'A website audit grades a third of the problem. The website 45 percent, the reviews 30 percent, the Google profile 25 percent.' },

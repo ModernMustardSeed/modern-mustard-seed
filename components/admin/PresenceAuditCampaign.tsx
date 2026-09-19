@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { PA_BASE, PA_CAROUSEL, PA_LINKS, PA_PLATFORMS, PA_POSTS } from '@/data/presence-audit-campaign';
+import { PA_BASE, PA_CAROUSEL, PA_CHANNELS, PA_LINKS, PA_PLATFORMS, PA_POSTS } from '@/data/presence-audit-campaign';
 
 /**
  * CAMPAIGN 28 / THE FREE PRESENCE AUDIT, on the Ads Playbook.
@@ -88,13 +88,30 @@ function Scoreboard() {
     return () => { alive = false; };
   }, []);
 
-  const rows = [...PA_PLATFORMS, 'direct'] as const;
+  // Every tile, social first, then the owned channels. A partner request is
+  // filed as partner-<code>, so the Partners tile totals every such key and
+  // names who sent them.
+  const tiles: { key: string; label: string; t: { requests: number; sent: number }; note?: string }[] = [
+    ...PA_PLATFORMS.map((k) => ({ key: k, label: PA_LINKS[k].label, t: tally?.[k] ?? { requests: 0, sent: 0 } })),
+    ...PA_CHANNELS.map((c) => {
+      if (c.key !== 'partner') return { key: c.key, label: c.label, t: tally?.[c.key] ?? { requests: 0, sent: 0 } };
+      const mine = Object.entries(tally ?? {}).filter(([k]) => k === 'partner' || k.startsWith('partner-'));
+      const t = mine.reduce((a, [, v]) => ({ requests: a.requests + v.requests, sent: a.sent + v.sent }), { requests: 0, sent: 0 });
+      const who = mine
+        .filter(([k]) => k.startsWith('partner-'))
+        .sort((a, b) => b[1].requests - a[1].requests)
+        .map(([k, v]) => `${k.slice('partner-'.length).toUpperCase()} ${v.requests}`)
+        .join(', ');
+      return { key: c.key, label: c.label, t, note: who || undefined };
+    }),
+    { key: 'direct', label: 'Direct', t: tally?.direct ?? { requests: 0, sent: 0 } },
+  ];
   return (
     <section className={card} aria-label="Requests by platform">
       <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
         <div>
           <p className="font-mono text-xs font-bold uppercase tracking-[0.2em] text-[#E0301E]">The scoreboard</p>
-          <h3 className="font-display text-2xl font-bold text-[#161616]">Audit requests by platform</h3>
+          <h3 className="font-display text-2xl font-bold text-[#161616]">Audit requests by channel</h3>
           <p className="text-sm text-[#161616]/65">Real requests from the form, counted by the tracked link they came in on. Direct is anyone who arrived without one.</p>
         </div>
         <Link href="/admin/audit" className={ghost}>Open the Audit Desk →</Link>
@@ -102,19 +119,15 @@ function Scoreboard() {
       {error ? (
         <p className="text-sm text-[#8a1c10]">Could not load the tally ({error}).</p>
       ) : (
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
-          {rows.map((k) => {
-            const t = tally?.[k] ?? { requests: 0, sent: 0 };
-            return (
-              <div key={k} className="border-2 border-[#161616] bg-[#FBF6EA] p-4">
-                <p className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-[#161616]/60">
-                  {k === 'direct' ? 'Direct' : PA_LINKS[k].label}
-                </p>
-                <p className="mt-1 font-display text-4xl font-black tabular-nums text-[#161616]">{tally ? t.requests : '·'}</p>
-                <p className="text-xs text-[#161616]/60">{tally ? `${t.sent} sent` : 'loading'}</p>
-              </div>
-            );
-          })}
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          {tiles.map(({ key, label, t, note }) => (
+            <div key={key} className="min-w-0 border-2 border-[#161616] bg-[#FBF6EA] p-4">
+              <p className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-[#161616]/60">{label}</p>
+              <p className="mt-1 font-display text-4xl font-black tabular-nums text-[#161616]">{tally ? t.requests : '·'}</p>
+              <p className="text-xs text-[#161616]/60">{tally ? `${t.sent} sent` : 'loading'}</p>
+              {note && <p className="mt-1 break-words text-[11px] text-[#161616]/60">{note}</p>}
+            </div>
+          ))}
         </div>
       )}
     </section>

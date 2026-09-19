@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { trackLead, metaDedup } from '@/lib/analytics';
 import { readAttribution } from '@/lib/ai-attribution';
 
@@ -26,7 +26,17 @@ import { readAttribution } from '@/lib/ai-attribution';
 const inputCls =
   'w-full min-w-0 rounded-xl border-2 border-[#161616] bg-[#FBF6EA] px-4 py-3.5 font-body text-[16px] text-[#161616] placeholder:text-[#161616]/35 outline-none transition-shadow focus:bg-white focus:shadow-[4px_4px_0_0_#F5B700]';
 
-const labelCls = 'mb-1.5 block font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-[#5c554a]';
+/** A partner code from ?ref= on this URL, else the mms_ref cookie RefCapture set. */
+function readRefCode(): string {
+  try {
+    const cookieRef = document.cookie.match(/(?:^|;\s*)mms_ref=([^;]+)/)?.[1];
+    return (new URLSearchParams(window.location.search).get('ref') || (cookieRef ? decodeURIComponent(cookieRef) : '')).trim().slice(0, 64);
+  } catch {
+    return ''; // a mangled cookie is no cookie
+  }
+}
+
+const labelCls ='mb-1.5 block font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-[#5c554a]';
 
 export default function PresenceRequestForm({ id = 'get' }: { id?: string }) {
   const [form, setForm] = useState({
@@ -42,8 +52,27 @@ export default function PresenceRequestForm({ id = 'get' }: { id?: string }) {
   const [sent, setSent] = useState<null | { email: string; business: string }>(null);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState('');
+  // The partner who handed them the link, if one did: the ?ref= on this URL, or
+  // the mms_ref cookie RefCapture set from an earlier one. The route re-checks
+  // the code against approved partners, so this only ever adds credit.
+  const [referrer, setReferrer] = useState('');
 
-  const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
+  useEffect(() => {
+    const code = readRefCode();
+    if (!code) return;
+    let alive = true;
+    fetch(`/api/partners/who?code=${encodeURIComponent(code)}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((j: { firstName?: string | null } | null) => {
+        if (alive && j?.firstName) setReferrer(j.firstName);
+      })
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  const set =(k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
     setForm((f) => ({ ...f, [k]: e.target.value }));
 
   const submit = async (e: React.FormEvent) => {
@@ -65,7 +94,7 @@ export default function PresenceRequestForm({ id = 'get' }: { id?: string }) {
       const res = await fetch('/api/presence-audit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, source, ...dedup }),
+        body: JSON.stringify({ ...form, source, ref: readRefCode(), ...dedup }),
       });
       const data = await res.json().catch(() => null);
       if (res.ok && data?.ok) {
@@ -122,6 +151,14 @@ export default function PresenceRequestForm({ id = 'get' }: { id?: string }) {
       <span className="absolute -top-4 right-6 rotate-[3deg] rounded-full border-2 border-[#161616] bg-[#E0301E] px-4 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-white shadow-[3px_3px_0_0_#161616]">
         Free
       </span>
+      {referrer && (
+        <div className="mb-5 flex flex-wrap items-center gap-x-4 gap-y-2">
+          <span className="inline-block -rotate-2 rounded-md border-2 border-[#161616] bg-[#E0301E] px-3 py-1.5 font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-[#FBF6EA] shadow-[3px_3px_0_0_#161616]">
+            {referrer} sent you
+          </span>
+          <p className="min-w-0 font-body text-[14px] text-[#3a3733]">The audit is free and the report is yours to keep.</p>
+        </div>
+      )}
       <p className="font-mono text-[10px] font-bold uppercase tracking-[0.26em] text-[#C4160B]">Get your audit</p>
       <h2 className="mt-2 font-display text-[1.75rem] font-extrabold leading-[1.05] text-[#161616] md:text-3xl">
         Where should we send it?

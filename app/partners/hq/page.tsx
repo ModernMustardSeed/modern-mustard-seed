@@ -14,6 +14,7 @@ import MustardDeskCall from '@/components/MustardDeskCall';
 import DeskWelcome from '@/components/DeskWelcome';
 import { PARTNER_HELP } from '@/lib/help-content';
 import { getPartnerGuide } from '@/lib/partner-guide';
+import { partnerAuditUrl } from '@/lib/presence-audit-links';
 
 export const metadata = buildMetadata({ title: 'Partner Dashboard', path: '/partners/hq', noindex: true });
 export const dynamic = 'force-dynamic';
@@ -64,7 +65,9 @@ export default async function PartnerHQ() {
     }
   }
 
+  const auditUrl = partnerAuditUrl(code);
   const links = [
+    { label: 'The Free Online Presence Audit (hand it to anyone)', url: auditUrl },
     { label: 'The Playbook Store (50% on every sale)', url: `${SITE.url}/store?ref=${code}` },
     { label: 'Hire a voice agent (recurring)', url: `${SITE.url}/voice-agents?ref=${code}` },
     { label: 'Book a build with Sarah', url: `${SITE.url}/book?ref=${code}` },
@@ -129,6 +132,29 @@ export default async function PartnerHQ() {
             </div>
           </Link>
         )}
+
+        {/* The free audit: the thing a partner can hand to anyone, pitch or no pitch */}
+        <section aria-label="The free audit to hand out" className="bg-[#F5B700] border-2 border-[#161616] rounded-2xl shadow-[6px_6px_0_0_#161616] p-6 mb-8">
+          <div className="md:flex md:items-start md:justify-between md:gap-6">
+            <div className="min-w-0">
+              <span className="text-[10px] uppercase tracking-[0.4em] text-[#C4160B] font-mono font-bold block mb-2">Hand it to anyone</span>
+              <h3 className="font-display text-2xl font-semibold text-[#161616]">The Free Online Presence Audit</h3>
+              <p className="text-[#161616]/80 font-body text-sm mt-1 max-w-xl">
+                Their website on seven categories, their Google profile on eight checks, and their reviews against their trade. They leave an email, the full report lands in their inbox, and the request is filed under your name.
+              </p>
+            </div>
+            {/* The bare page, not their link: a partner previewing it should not count as their own click. */}
+            <a href="/presence-audit" target="_blank" rel="noopener noreferrer" className="inline-block mt-4 md:mt-0 shrink-0 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] border-b-2 border-[#161616] whitespace-nowrap">
+              See what they see ↗
+            </a>
+          </div>
+          <div className="mt-5">
+            <AffiliateLinks links={[{ label: 'Your personal audit link', url: auditUrl }]} />
+          </div>
+          <p className="text-[#161616]/75 font-body text-[13px] mt-3">
+            Say it this way: have you ever seen how your business looks to somebody searching for it? Then text them the link.
+          </p>
+        </section>
 
         {/* The build: the strongest play a partner has */}
         <Link href="/partners/hq/build" className="block group mb-8">
