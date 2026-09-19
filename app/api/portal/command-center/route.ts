@@ -4,6 +4,7 @@ import { getSupabase } from '@/lib/supabase';
 import { visibleProject } from '@/lib/command-center/visible';
 import { accountViews } from '@/lib/posting/accounts';
 import { buildertrendStatus } from '@/lib/buildertrend';
+import { googleConfig } from '@/lib/oauth-google';
 import { clientGuide } from '@/lib/command-center/guide';
 import { PLATFORM_LABEL } from '@/lib/posting/types';
 
@@ -55,6 +56,10 @@ export async function GET() {
   }
 
   const { data: google } = await sb.from('client_integrations').select('status, account_email').eq('client_email', session.email).eq('provider', 'google').maybeSingle();
+  // Sign in with Google beats an invite: one consent screen from the account that
+  // already manages the profile, and a key they can revoke whenever they like. The
+  // manager invite is the fallback for when we have no Google app configured.
+  const canConnectGoogle = Boolean(googleConfig());
   lines.push({
     key: 'gbp',
     label: 'Google Business Profile',
@@ -62,9 +67,11 @@ export async function GET() {
     detail:
       google?.status === 'connected'
         ? `Connected as ${google.account_email ?? 'your Google account'}. Reviews, hours and posts are handled from here.`
-        : 'Add sarah@modernmustardseed.com as a manager on the profile (Google Business Profile, People and access). Reviews, hours and posts follow.',
-    action: google?.status === 'connected' ? null : 'Add Sarah as manager',
-    href: 'https://business.google.com/',
+        : canConnectGoogle
+          ? 'Sign in with the Google account that manages your profile. We hold a key you can revoke any time, never your password. Reviews, hours and posts follow.'
+          : 'Add sarah@modernmustardseed.com as a manager on the profile (Google Business Profile, People and access). Reviews, hours and posts follow.',
+    action: google?.status === 'connected' ? null : canConnectGoogle ? 'Connect Google' : 'Add Sarah as manager',
+    href: google?.status === 'connected' ? 'https://business.google.com/' : canConnectGoogle ? '/api/oauth/google/start' : 'https://business.google.com/',
   });
 
   if (project.crm === 'buildertrend') {
@@ -75,7 +82,7 @@ export async function GET() {
       state: bt.connected ? (bt.captcha ? 'error' : 'connected') : 'waiting',
       detail: bt.connected
         ? bt.captcha
-          ? `Connected (builder ${bt.builderId}), but the Lead Contact Form has a captcha on, so Buildertrend may refuse the hand-off. Ask Buildertrend support to turn it off; we screen every lead already.`
+          ? `Connected (builder ${bt.builderId}), but Buildertrend runs a hidden captcha on every contact form, and it refuses a lead sent from anywhere but their own page. Ask Buildertrend support to exempt your Lead Contact Form; we screen every lead already. Until then every lead is here and in your inbox.`
           : `Connected (builder ${bt.builderId}). Every website lead becomes a Lead Opportunity.`
         : 'Paste your Lead Contact Form embed below and every website lead lands in your pipeline.',
       action: null,
