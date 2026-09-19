@@ -119,14 +119,14 @@ export const PILLARS = [
     name: 'The website',
     weight: 45,
     how: 'Seven categories, read not scanned',
-    d: 'What it says, how fast it is, whether it works on a phone, whether it can be found by Google and by AI answers, and whether anybody who lands on it knows what to do next. Graded against your real pages.',
+    d: 'What it says, whether it is built for a phone, whether it can be found by Google and by AI answers, and whether anybody who lands on it knows what to do next. Graded against your real pages, and every claim is something we saw on them.',
   },
   {
     n: 'Two',
     name: 'The Google profile',
     weight: 25,
     how: 'Eight checks, pass or fail',
-    d: 'Phone, website, address and hours on the listing. Whether it is active enough to carry a rating and has enough reviews to rank locally. Whether it says you take urgent work, the search with the least price shopping in it.',
+    d: 'Phone, website, address and hours on the listing. Whether it is active enough to carry a rating and has enough reviews to rank locally. For the trades, whether it says you take urgent work, the search with the least price shopping in it.',
   },
   {
     n: 'Three',

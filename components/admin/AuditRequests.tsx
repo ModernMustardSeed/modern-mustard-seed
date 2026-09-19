@@ -69,7 +69,29 @@ type Draft = {
   hours_published: boolean;
   open_24_7: boolean;
   emergency_service: boolean;
+  trade: string;
 };
+
+/**
+ * The trade decides one check: "emergency or after-hours work stated" is only
+ * graded for work that cannot wait (lib/presence-audit.ts, URGENT_TRADES). A
+ * restaurant or a shop is never marked down for not advertising it.
+ */
+const TRADE_OPTIONS: [string, string][] = [
+  ['', 'Not a trade (restaurant, shop, office)'],
+  ['plumbing', 'Plumbing'],
+  ['hvac', 'Heating and air'],
+  ['roofing', 'Roofing'],
+  ['electrical', 'Electrical'],
+  ['garage_door', 'Garage doors'],
+  ['appliance_repair', 'Appliance repair'],
+  ['restoration', 'Water and fire restoration'],
+  ['tree_service', 'Tree service'],
+  ['septic', 'Septic'],
+  ['well_water', 'Well and water'],
+  ['veterinary', 'Veterinary'],
+  ['other', 'Another trade'],
+];
 
 function draftOf(r: AuditRequest): Draft {
   return {
@@ -84,6 +106,7 @@ function draftOf(r: AuditRequest): Draft {
     hours_published: r.hours_published,
     open_24_7: r.open_24_7,
     emergency_service: r.emergency_service,
+    trade: r.trade ?? '',
   };
 }
 
@@ -274,7 +297,7 @@ function RequestCard({ initial, onChange }: { initial: AuditRequest; onChange: (
           <p className="mt-1 font-body text-[12px] text-[#161616]/55">
             {listingOff
               ? 'Unticked, the profile and review pillars are left out of the score, never counted as zero.'
-              : 'Type what the listing shows. Each fact is one of the eight profile checks.'}
+              : 'Type what the listing shows. Each fact is one of the profile checks; the emergency check only runs for the trades in the list.'}
           </p>
 
           <fieldset disabled={listingOff} className="mt-3 grid gap-3 sm:grid-cols-4">
@@ -297,6 +320,14 @@ function RequestCard({ initial, onChange }: { initial: AuditRequest; onChange: (
             <label className="block min-w-0 sm:col-span-2">
               <span className={lbl}>Address on the listing</span>
               <input className={inp} value={d.listing_address} onChange={(e) => set('listing_address', e.target.value)} placeholder="Blank if hidden or missing" />
+            </label>
+            <label className="block min-w-0 sm:col-span-2">
+              <span className={lbl}>Trade</span>
+              <select className={inp} value={d.trade} onChange={(e) => set('trade', e.target.value)}>
+                {TRADE_OPTIONS.map(([v, label]) => (
+                  <option key={v || 'none'} value={v}>{label}</option>
+                ))}
+              </select>
             </label>
             <div className="flex flex-wrap gap-x-6 gap-y-2 sm:col-span-4">
               {(

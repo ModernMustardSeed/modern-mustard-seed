@@ -52,6 +52,18 @@ You grade websites across 7 categories, returning a 0-100 score and a letter gra
 
 7. **Design**. Typography. Color hierarchy. Whitespace. Mobile responsiveness implied by viewport meta and CSS. Visual rhythm. Modern feel.
 
+# Ground rules. Breaking one makes the whole report worthless.
+
+This report goes to the owner of the business, unasked. One wrong claim and they stop reading and never trust us again. So:
+
+- Every factual statement about the site comes from the extracted signals or the verified facts in the message. If it is not in them, do not say it.
+- Never use outside knowledge about the business: its history, decor, menu, reputation, founding year, owners, or anything you happen to know about it. Only what the page itself says.
+- Never guess when the site was built, how old it looks in years, or what platform era it is from. No year appears in the report unless that year is printed on the page.
+- Security is a measured fact: \`served_over_https\` and \`final_url\`. If served_over_https is true, never say the site is not secure, served over plain http, or needs to move to https. Only if it is false may you say the site loads without https.
+- body_text_snippet is the first 5,000 characters of the homepage only. Something missing from it is not missing from the site. Say "not on the homepage" or "we did not see it on the homepage", never "the site has no" or "zero", unless a signal field (json_ld_count, has_analytics, aux, canonical and so on) proves the absence.
+- Quote a typo only if the exact misspelled text appears in the signals, and quote it exactly as it appears.
+- Never invent numbers: visitors, revenue, calls, conversion rates, rankings.
+
 # Voice and tone for the output
 
 - No em dashes. Periods, commas, parentheses only.
@@ -167,6 +179,10 @@ const REPORT_SCHEMA = {
 
 type Signals = {
   url: string;
+  /** Where the page actually landed after redirects. The URL we were handed is often an old http:// one. */
+  final_url: string;
+  /** Measured, not inferred: the page that answered was served over https. */
+  served_over_https: boolean;
   status: number;
   title: string | null;
   meta_description: string | null;
@@ -323,6 +339,8 @@ function extractSignals(url: URL, html: string, status: number): Signals {
 
   return {
     url: url.toString(),
+    final_url: url.toString(),
+    served_over_https: url.protocol === 'https:',
     status,
     title: headOf('title')?.text?.trim()?.slice(0, 300) ?? null,
     meta_description: headOf('meta[name="description"]')?.getAttribute('content')?.slice(0, 500) ?? null,
@@ -424,7 +442,19 @@ export async function runWebsiteAudit(
         ])
       : [false, false, false, false];
 
+  // WHERE THE PAGE ACTUALLY LANDED. Leads carry whatever URL the listing had,
+  // often an old http:// one, and the grader used to read the scheme off that
+  // and tell 31 owners whose sites redirect to https that they were "Not
+  // Secure" (2026-09-19). fetch followed the redirects; this records the end.
+  let landed = target;
+  try {
+    if (pageResp.url) landed = new URL(pageResp.url);
+  } catch {
+    /* keep the target */
+  }
   const signals = extractSignals(target, html, pageResp.status);
+  signals.final_url = landed.toString();
+  signals.served_over_https = landed.protocol === 'https:';
   signals.aux = { llms_txt: llmsTxt, ai_txt: aiTxt, robots_txt: robotsTxt, sitemap_xml: sitemapXml };
 
   // Built once and handed to whichever engine grades this run, so the two paths
@@ -446,9 +476,10 @@ export async function runWebsiteAudit(
       ].join('\n')
     : '';
 
-  const userMessage = `Audit this website. Use the extracted signals to inform every category score. Be specific. Reference what you actually see.
+  const userMessage = `Audit this website. Use the extracted signals to inform every category score. Be specific. Reference what you actually see, and nothing you did not.
 
-URL: ${target.toString()}
+URL: ${signals.final_url}
+Served over https: ${signals.served_over_https ? 'yes (measured)' : 'no (measured)'}
 
 Extracted signals (truncated):
 ${JSON.stringify(signals, null, 2)}

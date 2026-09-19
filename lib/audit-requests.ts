@@ -362,7 +362,9 @@ export async function announceAuditRequest(
     from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
     to: r.email,
     replyTo: 'sarah@modernmustardseed.com',
-    subject: `Your audit is in, ${r.business}`,
+    // Not "your audit is in": this goes out the second they ask, and that
+    // subject reads like the finished report, so the real one looks like a repeat.
+    subject: `We got your audit request, ${r.business}`,
     html: presenceAuditReceivedEmail({ name: r.name, business_name: r.business, website: r.website }),
   }).catch((e) => console.error('presence-audit receipt failed:', e));
 }
@@ -391,6 +393,10 @@ export function inputFromRequest(r: AuditRequest, facts: SiteFacts | null): Pres
     trade: r.trade,
     source_urls: r.google_url ? [r.google_url] : null,
     listing_seen: r.listing_seen,
+    // Sarah reads the listing before she runs it, so what she saw is what was
+    // read. With no listing found, nothing about it (a website link included)
+    // is asserted.
+    details_read: r.listing_seen,
     site_facts: facts,
   };
 }
@@ -627,7 +633,7 @@ export function presenceAuditReceivedEmail(request: Pick<AuditRequest, 'name' | 
     greeting: first ? `Hi ${escape(first)},` : 'Hi there,',
     body:
       p(`Your audit request for <strong>${escape(request.business_name)}</strong>${site ? ` (${escape(site)})` : ''} is in.`) +
-      p('Your website gets graded against seven categories, your Google listing on eight checks, and your reviews against businesses like yours. Then the whole report comes to you with the fixes ranked.') +
+      p('Your website gets graded across seven categories, your Google listing check by check, and your reviews against businesses like yours. Then the whole report comes to you with the fixes ranked.') +
       p(`Expect it ${PRESENCE.turnaround}. If there is something specific you want me to look at, reply to this email and tell me.`),
   });
 }
