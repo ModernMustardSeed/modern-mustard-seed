@@ -36,6 +36,25 @@ export type Film = {
 };
 
 export const FILMS = {
+  roomToGrow: {
+    mp4: '/ads/room-to-grow/room-to-grow-16x9.mp4',
+    poster: '/ads/room-to-grow/preview/poster-16x9-800.webp',
+    shipped: true,
+    runtime: '64 sec',
+  },
+  roomToGrowTall: {
+    mp4: '/ads/room-to-grow/room-to-grow-9x16.mp4',
+    poster: '/ads/room-to-grow/preview/poster-9x16-800.webp',
+    shipped: true,
+    runtime: '64 sec',
+  },
+  roomToGrowSquare: {
+    mp4: '/ads/room-to-grow/room-to-grow-1x1.mp4',
+    poster: '/ads/room-to-grow/preview/poster-1x1-800.webp',
+    shipped: true,
+    runtime: '64 sec',
+  },
+
   ecommerce: {
     mp4: '/ads/ecommerce/build-your-store-16x9.mp4',
     poster: '/ads/ecommerce/preview/poster-16x9-800.webp',
