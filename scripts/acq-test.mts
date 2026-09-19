@@ -2033,6 +2033,41 @@ test('audit: a lead row reads into the scorer without inventing anything', () =>
   assert.equal(input.business_name, 'Ross Plumbing');
 });
 
+test('audit: a listing detail nobody read is left off the report, never failed', () => {
+  // A Maps sweep reads rating and review count from the results list and never
+  // opens the listing, so the row has no hours. On 2026-09-19, 269 of 278 lead
+  // audits told the owner their hours were missing because of exactly that.
+  const lead = {
+    business_name: "Moose's Saloon",
+    rating: 4.5,
+    review_count: 2905,
+    trade: 'other',
+    phone: '(406) 555-0100',
+    address: '173 N Main St, Kalispell, MT',
+    website: 'https://moose.example',
+    emergency_service: false,
+  };
+  const input = inputFromLead(lead);
+  assert.equal(input.details_read, false, 'no hours and a default false flag prove nobody opened the listing');
+  const blind = scoreProfile(input);
+  assert.ok(!blind.checks.some((c) => /hours published/i.test(c.label)), 'unread hours are not a check');
+  assert.ok(!blind.checks.some((c) => /emergency/i.test(c.label)), 'a saloon is never graded on emergency work');
+  assert.equal(blind.score, 100, 'everything that was graded passed');
+  assert.match(blind.verdict, /did not read your hours/);
+  assert.ok(!buildPresenceReport(input, null).top_fixes.some((f) => /hours/i.test(f.title)), 'no fix for a gap nobody saw');
+
+  // The same plumber with hours on file is graded on both, and fails the one it misses.
+  const read = scoreProfile(inputFromLead({ ...lead, trade: 'plumbing', hours: { mon: '8-5', tue: '8-5', wed: '8-5', thu: '8-5', fri: '8-5' } }));
+  assert.ok(read.checks.some((c) => /hours published/i.test(c.label) && c.passed));
+  assert.ok(read.checks.some((c) => /emergency/i.test(c.label) && !c.passed));
+  assert.equal(read.score, read.checks.reduce((s, c) => s + c.earned, 0), 'all eight graded, so the points are the score');
+
+  // A restaurant with its week on file still never sees the emergency check.
+  const diner = scoreProfile(inputFromLead({ ...lead, hours: { mon: '7-2', tue: '7-2', wed: '7-2', thu: '7-2', fri: '7-2' } }));
+  assert.ok(diner.checks.some((c) => /hours published/i.test(c.label) && c.passed));
+  assert.ok(!diner.checks.some((c) => /emergency/i.test(c.label)));
+});
+
 /* ----------------------------- the /mustard door -------------------------- */
 
 test('mustard: attribution is read off the URL and never invented', () => {

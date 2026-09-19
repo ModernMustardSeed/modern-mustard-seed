@@ -146,9 +146,37 @@ export type PresenceInput = {
    * about a profile nobody opened is not a finding. It is a lie with a score.
    */
   listing_seen: boolean;
+  /**
+   * Did anyone read the listing's DETAILS: the week of hours and whether it
+   * says it takes urgent work? A Maps sweep reads the rating and the review
+   * count from the results list and often never opens the listing, so a lead
+   * can have `listing_seen` true and `hours` null without the business having
+   * any gap at all. When this is false the hours and urgent-work checks are
+   * left off the report and out of the score. Leaving it out means "read".
+   */
+  details_read?: boolean;
   /** Their own website, read live: address, hours, email, phone, booking. */
   site_facts: SiteFacts | null;
 };
+
+/**
+ * The trades where "we take emergency calls" is a real listing signal: the
+ * work that cannot wait until Monday. A diner or a boutique is never graded on
+ * it, because nobody searches for an after-hours sandwich.
+ */
+const URGENT_TRADES = new Set([
+  'hvac',
+  'plumbing',
+  'roofing',
+  'electrical',
+  'garage_door',
+  'appliance_repair',
+  'restoration',
+  'tree_service',
+  'septic',
+  'well_water',
+  'veterinary',
+]);
 
 /* ──────────────────────────── the reviews pillar ────────────────────────── */
 
@@ -267,7 +295,11 @@ export function scoreProfile(input: PresenceInput): Pillar {
   }
   const hoursCount = input.hours ? Object.keys(input.hours).length : 0;
   const alwaysOpen = Boolean(input.open_24_7);
-  const checks: Check[] = [
+  // A check we never had the facts for is left off, not failed. See details_read.
+  const detailsRead = input.details_read !== false;
+  const gradeHours = detailsRead || alwaysOpen;
+  const gradeUrgent = URGENT_TRADES.has(input.trade ?? '') && (detailsRead || alwaysOpen || Boolean(input.emergency_service));
+  const all: (Check | null)[] = [
     {
       label: 'You have a listing we could find',
       passed: true,
@@ -302,7 +334,7 @@ export function scoreProfile(input: PresenceInput): Pillar {
       points: 10,
       earned: input.address ? 10 : 0,
     },
-    {
+    gradeHours ? {
       label: 'Hours published',
       passed: alwaysOpen || hoursCount >= 5,
       detail:
@@ -313,7 +345,7 @@ export function scoreProfile(input: PresenceInput): Pillar {
             : 'Your hours are missing or incomplete. "Hours not available" is the most common reason a business gets skipped at six in the evening.',
       points: 15,
       earned: alwaysOpen || hoursCount >= 5 ? 15 : 0,
-    },
+    } : null,
     {
       label: 'Profile is active enough to carry a rating',
       passed: input.rating !== null,
@@ -334,7 +366,7 @@ export function scoreProfile(input: PresenceInput): Pillar {
       points: 10,
       earned: (input.review_count ?? 0) >= 10 ? 10 : 0,
     },
-    {
+    gradeUrgent ? {
       label: 'Emergency or after-hours service stated',
       passed: alwaysOpen || Boolean(input.emergency_service),
       detail:
@@ -343,22 +375,30 @@ export function scoreProfile(input: PresenceInput): Pillar {
           : 'Nothing on your profile says you take urgent or after-hours work. That is the search with the least price shopping in it.',
       points: 10,
       earned: alwaysOpen || input.emergency_service ? 10 : 0,
-    },
+    } : null,
   ];
 
-  const score = checks.reduce((sum, c) => sum + c.earned, 0);
+  // Out of 100 either way: with every check graded the points already add to
+  // 100, and with one left off the score is the share of what was graded.
+  const checks = all.filter((c): c is Check => c !== null);
+  const possible = checks.reduce((sum, c) => sum + c.points, 0);
+  const earned = checks.reduce((sum, c) => sum + c.earned, 0);
+  const score = possible === 100 ? earned : Math.round((earned / possible) * 100);
   const failed = checks.filter((c) => !c.passed).length;
+  const unread = gradeHours ? '' : ' We did not read your hours for this audit, so they are not graded here.';
   return {
     key: 'profile',
     label: PILLAR_LABELS.profile,
     score,
     letter: letterFor(score),
     verdict:
-      failed === 0
+      (failed === 0 && possible === 100
         ? 'Your profile is complete. That is rarer than it sounds and it is worth protecting.'
+        : failed === 0
+        ? 'Everything we checked on your profile is in place. That is rarer than it sounds and it is worth protecting.'
         : failed === 1
           ? 'One thing is missing from your profile, and it is free to fix this afternoon.'
-          : `${failed} things are missing from your profile. Every one of them is free to fix and none of them takes an hour.`,
+          : `${failed} things are missing from your profile. Every one of them is free to fix and none of them takes an hour.`) + unread,
     checks,
     unknown: false,
     weight: PILLAR_WEIGHTS.profile,
@@ -614,8 +654,22 @@ export function inputFromLead(lead: Record<string, unknown>): PresenceInput {
     trade: (lead.trade as string | null) ?? null,
     source_urls: (lead.source_urls as string[] | null) ?? null,
     listing_seen: listingSeen(lead),
+    details_read: detailsRead(lead),
     site_facts: parseSiteFacts(lead.notes as string | null),
   };
+}
+
+/**
+ * Were the listing's details ever stored on this lead? Only a week of hours
+ * or a positive 24/7 or emergency flag proves somebody opened the listing.
+ * `emergency_service` is false by default on a harvested row, so false alone
+ * proves nothing. 269 of the first 278 lead audits (2026-09-19) had no hours
+ * on the row and told the owner their hours were missing; this is the fix.
+ */
+export function detailsRead(lead: Record<string, unknown>): boolean {
+  const hours = lead.hours as Record<string, string> | null | undefined;
+  if (hours && Object.keys(hours).length > 0) return true;
+  return lead.open_24_7 === true || lead.emergency_service === true;
 }
 
 /**
