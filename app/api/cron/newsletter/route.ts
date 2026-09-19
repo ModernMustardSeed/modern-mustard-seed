@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { listContent } from '@/lib/content';
 import { resendClient } from '@/lib/send-email';
 import { OUTREACH_FROM } from '@/lib/outreach-domain';
+import { postalAddress } from '@/lib/outbound-email';
+import { escape } from '@/lib/email';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -66,6 +68,8 @@ export async function GET(req: Request) {
 
   const playbookUrl = `https://modernmustardseed.com/playbooks/${playbook.slug}`;
   const subject = `${playbook.title}`;
+  // A broadcast is commercial mail and owes the reader a postal address.
+  const postal = postalAddress();
 
   const html = `
 <!DOCTYPE html>
@@ -85,6 +89,7 @@ export async function GET(req: Request) {
   Reply to this email to talk to Sarah directly.</p>
   <p style="font-size:11px;color:#aaa">You are getting this because you subscribed at modernmustardseed.com.
   <a href="{{{RESEND_UNSUBSCRIBE_URL}}}" style="color:#aaa">Unsubscribe</a>.</p>
+  ${postal ? `<p style="font-size:11px;color:#aaa">${escape(postal)}</p>` : ''}
 </body></html>
   `;
 

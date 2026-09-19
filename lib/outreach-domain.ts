@@ -38,6 +38,18 @@ export function isRootDomainAddress(from: string): boolean {
 }
 
 /**
+ * The outreach twin of a studio mailbox: sarah@modernmustardseed.com becomes
+ * sarah@outreach.modernmustardseed.com. A rep's cold send keeps their own name
+ * and local part but leaves from the subdomain, so it never spends the root
+ * domain's reputation. An address that is not on the root domain comes back
+ * unchanged.
+ */
+export function outreachAddressFor(address: string): string {
+  const bare = bareAddress(address);
+  return isRootDomainAddress(bare) ? bare.replace(`@${ROOT_DOMAIN}`, `@${OUTREACH_DOMAIN}`) : bare;
+}
+
+/**
  * The guard every marketing send passes. Throws before anything leaves if the
  * From address is on the root domain, so a campaign row or a constant that
  * drifts back to sarah@modernmustardseed.com fails loudly instead of quietly

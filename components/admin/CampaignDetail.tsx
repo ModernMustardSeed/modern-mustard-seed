@@ -5,6 +5,7 @@ import Link from 'next/link';
 import AdminHeader from './AdminHeader';
 import type { Campaign, Contact } from '@/data/campaigns';
 import { personalize, primaryContact } from '@/data/campaigns';
+import { outreachAddressFor } from '@/lib/outreach-domain';
 
 /**
  * One account, fully loaded so anyone on the team can run it today: a one-click
@@ -172,7 +173,7 @@ function RunSheet({ campaign, rep, onJump }: { campaign: Campaign; rep: Rep; onJ
     {
       id: 'emails', done: sentCount >= total && total > 0,
       title: 'Send the intro emails',
-      detail: `${sentCount} of ${total} marked sent. Send each straight from ${rep.fromEmail}, or open it in your mail app. Every one is prefilled and signed as ${rep.name}.`,
+      detail: `${sentCount} of ${total} marked sent. Send each from ${outreachAddressFor(rep.fromEmail)} (replies land in ${rep.fromEmail}), or open it in your mail app. Every one is prefilled and signed as ${rep.name}.`,
       node: actBtn('Go to emails', onJump),
     },
     {
@@ -317,7 +318,7 @@ function ContactCard({ c, slug, rep, product, brand }: { c: Contact; slug: strin
         setConfirmSend(false);
         setStatus('sent');
         persist('sent', note);
-        setMsg({ kind: 'ok', text: `Sent from ${rep.fromEmail}. Delivering now.` });
+        setMsg({ kind: 'ok', text: `Sent from ${j.from || outreachAddressFor(rep.fromEmail)}. Replies land in ${rep.fromEmail}.` });
       }
     } catch {
       setMsg({ kind: 'err', text: 'Send failed.' });
@@ -372,8 +373,8 @@ function ContactCard({ c, slug, rep, product, brand }: { c: Contact; slug: strin
 
         <div className="flex items-center gap-2 flex-wrap mt-1.5">
           <span className="text-[9px] uppercase tracking-[0.18em] text-[#161616]/45 font-mono">From:</span>
-          <span className="font-mono text-xs text-[#161616]">{rep.fromEmail}</span>
-          <span className="text-[8px] uppercase tracking-[0.12em] font-mono text-[#161616]/40">your Zoho mailbox</span>
+          <span className="font-mono text-xs text-[#161616]">{outreachAddressFor(rep.fromEmail)}</span>
+          <span className="text-[8px] uppercase tracking-[0.12em] font-mono text-[#161616]/40">replies land in {rep.fromEmail}</span>
         </div>
 
         {c.phone && (
@@ -452,7 +453,7 @@ function ContactCard({ c, slug, rep, product, brand }: { c: Contact; slug: strin
             {confirmSend && (
               <div className="mt-3 rounded-lg border-2 border-[#161616] bg-white p-3">
                 <p className="font-body text-[13px] text-[#161616] leading-snug">
-                  Send this now to <strong>{c.name}</strong> ({toEmail || 'no address'}) as <strong>{rep.fromEmail}</strong>? A copy goes to your inbox.
+                  Send this now to <strong>{c.name}</strong> ({toEmail || 'no address'}) from <strong>{outreachAddressFor(rep.fromEmail)}</strong>? Replies and a copy go to {rep.fromEmail}.
                 </p>
                 {c.emailStatus !== 'verified' && (
                   <p className="font-body text-[12px] text-amber-800 mt-1">Heads up: this address is not verified, so it may bounce. Confirm it on LinkedIn first if you are unsure.</p>
@@ -575,7 +576,7 @@ export default function CampaignDetail({ campaign }: { campaign: Campaign }) {
               </button>
             ))}
           </div>
-          <span className="text-[10px] font-mono text-[#161616]/45 truncate hidden sm:inline">sends from {rep.fromEmail} · books to {rep.book.replace('https://', '')}</span>
+          <span className="text-[10px] font-mono text-[#161616]/45 truncate hidden sm:inline">sends from {outreachAddressFor(rep.fromEmail)} · books to {rep.book.replace('https://', '')}</span>
         </div>
 
         {/* Run sheet */}

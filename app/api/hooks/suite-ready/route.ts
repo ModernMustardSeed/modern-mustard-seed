@@ -3,6 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 import { sendViaResend } from '@/lib/send-email';
 import { publishBlockerError } from '@/lib/site-asset-refs.mjs';
 import { outreachOnly } from '@/lib/outreach-domain';
+import { complianceFooterText, unsubscribeUrlFor } from '@/lib/outbound-email';
 import { authorize, recordRefusal, recordSend } from '@/lib/acq/governor';
 import { recordEvent, recordEventOnce } from '@/lib/acq/events';
 import { startPostDemoSequence } from '@/lib/acq/post-demo';
@@ -199,13 +200,18 @@ export async function POST(req: Request) {
   const fromEmail = campaignLead && campaign ? campaign.from_email : 'sarah@modernmustardseed.com';
   const replyTo = campaignLead && campaign ? campaign.reply_to : 'sarah@modernmustardseed.com';
   const from = campaignLead ? outreachOnly(`${fromName} <${fromEmail}>`) : `${fromName} <${fromEmail}>`;
+  // A campaign prospect never asked for this, so it is commercial bulk mail:
+  // it carries the one-click List-Unsubscribe header and the opt-out plus
+  // postal footer, same as every drip (added 2026-09-18). A walk-in's copy is a
+  // reply to their own request and stays a plain personal note.
   const sent = await sendViaResend({
     from,
     to: lead.email,
     replyTo,
     subject,
-    text,
+    text: campaignLead ? text + complianceFooterText(lead.email) : text,
     leadId: lead.id,
+    unsubscribeUrl: campaignLead ? unsubscribeUrlFor(lead.email) : undefined,
   });
   if (!sent.ok) return NextResponse.json({ ok: false, error: sent.error });
 

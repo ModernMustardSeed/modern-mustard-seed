@@ -19,6 +19,8 @@
 import { Resend } from 'resend';
 import { activeSuppressions, normEmail, recordSentEmail } from '@/lib/email-log';
 import { sendViaZoho, zohoConfigured } from '@/lib/zoho-send';
+import { stripTrackingPixels } from '@/lib/email';
+import { ROOT_DOMAIN, isRootDomainAddress } from '@/lib/outreach-domain';
 
 export type TrackedSend = {
   from: string; // "Display Name <addr@domain>" or "addr@domain"
@@ -89,6 +91,87 @@ function cleanKey(k?: string): string {
   return (k || '').replace(/[\r\n]/g, '').trim();
 }
 
+/**
+ * REPLY ROUTING. We send as addresses we cannot receive at.
+ *
+ * Confirmed by live probe on 2026-08-22: mail to hello@, notifications@ and
+ * outbound@modernmustardseed.com hard-bounces with `550 5.1.1 User does not
+ * exist`. The Zoho org has two mailboxes, sarah@ and polly.thompson@, and
+ * nothing else. Roughly forty send sites use "Modern Mustard Seed <hello@...>"
+ * as their From (store receipts, demo orders, intake nudges, press proofs, the
+ * hatchery, the portal coach) and only a handful set a Reply-To, so a customer
+ * who hit reply got a bounce and we never learned they had answered. The
+ * outreach subdomain has no mailbox at all, so the same rule covers it.
+ *
+ * The gate: any From on our domain, or a subdomain of it, that is not a real
+ * mailbox gets a Reply-To that is. REPLY_TO_FALLBACK changes where those land;
+ * add to RECEIVING_MAILBOXES the moment a new mailbox or alias exists.
+ * Addresses on any other domain (a client's, a Factory tenant's) are left
+ * exactly as the caller wrote them.
+ *
+ * First written as PR #63 (never merged); carried here with the subdomain case.
+ */
+const RECEIVING_MAILBOXES = new Set(
+  (process.env.RECEIVING_MAILBOXES || `sarah@${ROOT_DOMAIN},polly.thompson@${ROOT_DOMAIN}`)
+    .split(',')
+    .map((s) => normEmail(s))
+    .filter(Boolean),
+);
+
+function replyFallback(): string {
+  return normEmail(process.env.REPLY_TO_FALLBACK || `sarah@${ROOT_DOMAIN}`);
+}
+
+/** True for an address on our domain (or a subdomain of it) that no mailbox answers. */
+function unroutable(addr: string): boolean {
+  const a = normEmail(addr);
+  const domain = a.split('@')[1] || '';
+  const ours = domain === ROOT_DOMAIN || domain.endsWith(`.${ROOT_DOMAIN}`);
+  // A plus tag still lands in the base mailbox, so sarah+forge@ is routable.
+  const base = a.replace(/\+[^@]*@/, '@');
+  return ours && !RECEIVING_MAILBOXES.has(base);
+}
+
+/**
+ * The Reply-To this message should actually carry. Keeps whatever the caller
+ * set unless that address is itself a dead one on our domain.
+ */
+export function routableReplyTo(from: string, replyTo?: string): string | undefined {
+  if (replyTo) return unroutable(bareAddr(replyTo)) ? replyFallback() : replyTo;
+  return unroutable(bareAddr(from)) ? replyFallback() : undefined;
+}
+
+/**
+ * THE ROOT DOMAIN CARRIES ONE-TO-ONE MAIL ONLY (2026-09-18).
+ *
+ * modernmustardseed.com is Sarah's own address. Its reputation is what decides
+ * whether her replies, proposals and receipts reach an inbox, and it already
+ * paid once for cold volume (spam placement on 2026-09-08, cold email stopped
+ * 2026-09-10). Two rules hold that line at the one choke point every send
+ * passes, so no future call site has to remember them:
+ *
+ *  1. No open pixel on root-domain mail. A 1x1 remote image on a personal
+ *     reply is a bulk-mail fingerprint, and the opens it records are mostly
+ *     security scanners anyway (see lib/acq/bots.ts). Pixels stay legal on the
+ *     outreach subdomain, where the drips live.
+ *  2. Nothing carrying List-Unsubscribe leaves from the root domain. An
+ *     unsubscribe header means bulk, and bulk sends from
+ *     outreach.modernmustardseed.com (lib/outreach-domain.ts). A send that
+ *     breaks this is refused with the reason, not quietly sent.
+ */
+export function oneToOneHtml(from: string, html?: string): string | undefined {
+  if (!html || !isRootDomainAddress(bareAddr(from))) return html;
+  return stripTrackingPixels(html);
+}
+
+export function bulkOnRootRefusal(from: string, hasUnsubscribe: boolean): string | null {
+  if (!hasUnsubscribe || !isRootDomainAddress(bareAddr(from))) return null;
+  return (
+    `Refusing to send bulk mail from ${bareAddr(from)}: anything with an unsubscribe link sends from ` +
+    `outreach.${ROOT_DOMAIN}, never the root domain (lib/send-email.ts).`
+  );
+}
+
 export async function sendViaResend(msg: TrackedSend): Promise<TrackedResult> {
   const apiKey = cleanKey(process.env.RESEND_API_KEY);
   if (!apiKey) return { ok: false, error: 'Email is not configured (RESEND_API_KEY missing).' };
@@ -155,19 +238,24 @@ export async function sendViaResend(msg: TrackedSend): Promise<TrackedResult> {
 
   if (!msg.html && !msg.text) return { ok: false, error: 'No email body (html or text).' };
 
+  const bulkRefusal = bulkOnRootRefusal(msg.from, Boolean(msg.unsubscribeUrl));
+  if (bulkRefusal) return { ok: false, error: bulkRefusal };
+  const html = oneToOneHtml(msg.from, msg.html);
+
   const common = {
     from: msg.from,
     to,
     cc: cc.length ? cc : undefined,
     bcc: keptBcc.length ? keptBcc : undefined,
-    replyTo: msg.replyTo,
+    replyTo: routableReplyTo(msg.from, msg.replyTo),
     subject: msg.subject,
     headers: unsubHeaders(msg.unsubscribeUrl),
   };
   // Resend's CreateEmailOptions is a union that needs a definite html OR text;
-  // build the variant explicitly so the type resolves.
-  const payload = msg.html
-    ? { ...common, html: msg.html, text: msg.text }
+  // build the variant explicitly so the type resolves. With html and no text,
+  // Resend generates the plain-text part itself, so every send is multipart.
+  const payload = html
+    ? { ...common, html, text: msg.text }
     : { ...common, text: msg.text as string };
 
   let id: string;
@@ -193,7 +281,7 @@ export async function sendViaResend(msg: TrackedSend): Promise<TrackedResult> {
     bcc: keptBcc.join(', ') || null,
     subject: msg.subject,
     text: msg.text ?? null,
-    html: msg.html ?? null,
+    html: html ?? null,
     status: 'sent',
     prospectId: msg.prospectId ?? null,
     leadId: msg.leadId ?? null,
@@ -231,6 +319,7 @@ export function resendClient(): Resend {
       html?: string;
       text?: string;
       replyTo?: string;
+      headers?: Record<string, string>;
     };
     let to = arr(p.to);
     let cc = arr(p.cc);
@@ -265,6 +354,18 @@ export function resendClient(): Resend {
       }
     }
 
+    // Root domain is one-to-one only: no bulk, no pixel, a reply path that works.
+    const hasUnsub = Object.keys(p.headers ?? {}).some((h) => h.toLowerCase() === 'list-unsubscribe');
+    const bulkRefusal = bulkOnRootRefusal(from, hasUnsub);
+    if (bulkRefusal) {
+      return {
+        data: null,
+        error: { name: 'validation_error', message: bulkRefusal },
+      } as Awaited<ReturnType<typeof real.emails.send>>;
+    }
+    const html = oneToOneHtml(from, p.html);
+    const replyTo = routableReplyTo(from, p.replyTo);
+
     // Internal notifications (to a @modernmustardseed.com mailbox) go through
     // Zoho so they land reliably and are never caught by Resend's suppression
     // list. External recipients keep going via Resend below. A purely-external
@@ -278,10 +379,10 @@ export function resendClient(): Resend {
       const z = await sendViaZoho({
         to: internalTo,
         subject: p.subject || '(no subject)',
-        html: p.html,
+        html,
         text: p.text,
         fromName: fromName || undefined,
-        replyTo: p.replyTo,
+        replyTo,
       });
       await recordSentEmail({
         mailbox: z.from || mailbox,
@@ -292,7 +393,7 @@ export function resendClient(): Resend {
         to: internalTo.join(', '),
         subject: p.subject || '(no subject)',
         text: p.text ?? null,
-        html: p.html ?? null,
+        html: html ?? null,
         status: z.ok ? 'sent' : 'failed',
         statusDetail: z.ok ? null : z.error || 'zoho send failed',
       });
@@ -332,7 +433,7 @@ export function resendClient(): Resend {
         cc: cc.join(', ') || null,
         subject: p.subject || '(no subject)',
         text: p.text ?? null,
-        html: p.html ?? null,
+        html: html ?? null,
         status: 'suppressed',
         statusDetail: `blocked before send: ${why}`,
       });
@@ -345,7 +446,14 @@ export function resendClient(): Resend {
     // Strip a suppressed bcc so it can't drop the whole message. cc/bcc are
     // set explicitly so the mute-filtered lists win over the originals in p.
     const keptBcc = bcc.filter((a) => !supp.has(normEmail(a)));
-    const outPayload = { ...p, to: resendTo, cc: cc.length ? cc : undefined, bcc: keptBcc.length ? keptBcc : undefined };
+    const outPayload = {
+      ...p,
+      to: resendTo,
+      cc: cc.length ? cc : undefined,
+      bcc: keptBcc.length ? keptBcc : undefined,
+      replyTo,
+      ...(html !== undefined ? { html } : {}),
+    };
 
     const res = await real.emails.send(
       outPayload as Parameters<typeof real.emails.send>[0],
@@ -363,7 +471,7 @@ export function resendClient(): Resend {
         bcc: keptBcc.join(', ') || null,
         subject: p.subject || '(no subject)',
         text: p.text ?? null,
-        html: p.html ?? null,
+        html: html ?? null,
         status: 'sent',
       });
     }

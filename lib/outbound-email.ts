@@ -27,15 +27,33 @@ export const OUTBOUND_REPLY_TO = OUTREACH_REPLY_TO;
  * The drip paths (lib/demo-agent-drip.ts, lib/demo-drip.ts) already did this
  * correctly. This just brings the cockpit path in line.
  *
- * ⚠️ MMS_POSTAL_ADDRESS is NOT SET. CAN-SPAM wants a street address or a
- * registered PO box, which cannot be invented, so the footer degrades to the
- * opt-out line alone until Sarah sets the env var. Set it before any batch send.
+ * MMS_POSTAL_ADDRESS carries the street address CAN-SPAM wants (set in Vercel
+ * production since 2026-08-13). If it is ever unset the footer degrades to the
+ * opt-out line alone, because an address cannot be invented.
  */
 export const unsubscribeUrlFor = (email: string) =>
   `https://modernmustardseed.com/api/outreach/unsubscribe?c=${encodeURIComponent(email)}`;
 
+/** The studio's postal address for commercial-mail footers, or null when unset. */
+export function postalAddress(): string | null {
+  return process.env.MMS_POSTAL_ADDRESS?.replace(/^﻿/, '').trim() || null;
+}
+
+/**
+ * The plain-text twin of complianceFooter, for bulk mail that is sent as text
+ * only (the demo-suite announcement). Same opt-out link, same postal address.
+ */
+export function complianceFooterText(email: string): string {
+  const postal = postalAddress();
+  return (
+    `\n\n--\nYou got this because Modern Mustard Seed works with local businesses in your area. ` +
+    `If it is not useful, unsubscribe here and I will not email you again: ${unsubscribeUrlFor(email)}` +
+    (postal ? `\n${postal}` : '')
+  );
+}
+
 export function complianceFooter(email: string): string {
-  const postal = process.env.MMS_POSTAL_ADDRESS?.trim();
+  const postal = postalAddress();
   const unsub = unsubscribeUrlFor(email);
   return (
     `<div style="margin-top:28px;padding-top:14px;border-top:1px solid #e5e0d5;font-size:12px;line-height:1.5;color:#8a8375">` +
