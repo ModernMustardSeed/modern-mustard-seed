@@ -17,7 +17,7 @@ export const BRAND = {
   tagline: 'A logo file is not a brand.',
   promise:
     'A brand is what a customer sees, hears, and reads in the first ninety seconds, and it either all says one thing or it says nothing. We design the identity once, then put it on the site, the phone, the print, and the plan in the same three weeks. You own every file on launch day.',
-  metaTitle: 'Brand and Rebrand Package. Logo, Website, Voice Agent, Business Plan',
+  metaTitle: 'Brand Identity and Website Design',
   metaDescription:
     'One set-price package for a new brand or a rebrand: naming, logo system, moodboards, mascot, brand book, a new website, a voice agent that answers in your voice, and the business plan behind it. Built in three weeks by Modern Mustard Seed in Kalispell, Montana. You own everything.',
 } as const;

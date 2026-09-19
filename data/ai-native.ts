@@ -24,7 +24,7 @@ export const AI_NATIVE = {
   tagline: 'Your company, running on AI. Your team, running it.',
   promise:
     'We map every workflow in your business, put AI into the ones that pay first, build it inside accounts you own, and coach your team on their real work until they run it without us. Set prices, a fixed timeline, and no dependency on the studio when it is done.',
-  metaTitle: 'AI Consulting for Small Business. Become AI Native, With Your Team Trained to Run It',
+  metaTitle: 'AI Consulting for Small Business',
   metaDescription:
     'AI integration consulting for small and mid-sized companies: every workflow mapped, AI put into the five that pay first, built in accounts you own, and your team coached on their real work. Set prices, delivered in eight weeks, by Modern Mustard Seed in Kalispell, Montana.',
   mapDelivery: 'delivered within two weeks',

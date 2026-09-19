@@ -3,11 +3,24 @@ import { verifyToken, COOKIE_NAME } from '@/lib/admin-auth';
 import { verifyClientToken, verifyLookToken, CLIENT_COOKIE_NAME, CLIENT_LOOK_COOKIE_NAME } from '@/lib/client-auth';
 
 export const config = {
-  matcher: ['/admin/:path*', '/portal/:path*', '/Mustard', '/MUSTARD'],
+  matcher: ['/admin/:path*', '/portal/:path*', '/Mustard', '/MUSTARD', '/Contact', '/Terms', '/Privacy'],
 };
 
 export async function middleware(req: NextRequest) {
   const path = req.nextUrl.pathname;
+
+  // Exact path checks prevent redirect loops on canonical lowercase pages.
+  // Cloning preserves campaign and referral query parameters.
+  const legacyPages: Record<string, string> = {
+    '/Contact': '/contact',
+    '/Terms': '/terms',
+    '/Privacy': '/privacy',
+  };
+  if (Object.hasOwn(legacyPages, path)) {
+    const url = req.nextUrl.clone();
+    url.pathname = legacyPages[path];
+    return NextResponse.redirect(url, 308);
+  }
 
   // ── /Mustard, as Sarah says it out loud ──
   // This lives here rather than in next.config because config redirects match

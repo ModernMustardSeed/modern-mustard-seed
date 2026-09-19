@@ -9,7 +9,7 @@ import StackCalculator from '@/components/command-center/StackCalculator';
 // page. It still lives in lib/demo-order.ts and reaches a buyer in a proposal.
 
 export const metadata = buildMetadata({
-  title: 'Business Command Center: the AI back office for your whole business',
+  title: 'Business Command Center: AI Back Office',
   description:
     'One board that runs the whole business: every call transcribed, your website traffic, customers, reviews, invoices, and reports, wired together. Built by hand around the software you already run, and scoped with you first.',
   path: '/command-center',

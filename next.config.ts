@@ -222,6 +222,9 @@ const config: NextConfig = {
   },
   async redirects() {
     return [
+      // Retired navigation URLs still appear in Search Console and old links.
+      { source: '/home', destination: '/', permanent: true },
+      { source: '/notes', destination: '/blog', permanent: true },
       // /sarahscarano is a real page again (2026-09-08): her portfolio in the
       // studio's grammar, sourced from data/sarah-portfolio.ts. The full gallery,
       // the plain resume PDF and the OG cover stay on her own domain, so every
