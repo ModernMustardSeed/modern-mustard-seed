@@ -36,6 +36,25 @@ export type Film = {
 };
 
 export const FILMS = {
+  ecommerce: {
+    mp4: '/ads/ecommerce/build-your-store-16x9.mp4',
+    poster: '/ads/ecommerce/preview/poster-16x9-800.webp',
+    shipped: true,
+    runtime: '38 sec',
+  },
+  ecommerceTall: {
+    mp4: '/ads/ecommerce/build-your-store-9x16.mp4',
+    poster: '/ads/ecommerce/preview/poster-9x16-800.webp',
+    shipped: true,
+    runtime: '38 sec',
+  },
+  ecommerceSquare: {
+    mp4: '/ads/ecommerce/build-your-store-1x1.mp4',
+    poster: '/ads/ecommerce/preview/poster-1x1-800.webp',
+    shipped: true,
+    runtime: '38 sec',
+  },
+
   makeItReal: {
     mp4: '/ads/make-it-real/make-it-real-16x9.mp4',
     poster: '/ads/make-it-real/preview/poster-16x9-800.webp',
