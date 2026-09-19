@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: { params: Promise<{ trade: st
   const page = getTradePage(trade);
   if (!page) return buildMetadata({ noindex: true });
   return buildMetadata({
-    title: `Voice Agent For ${page.forWord}. Hear It Answer Live`,
+    title: `AI Voice Agents for ${page.forWord}`,
     description: `An always-on voice agent built for ${page.forWord.toLowerCase()}: ${page.services.toLowerCase()}. Trained on your services, your hours, and the questions your callers actually ask.`,
     path: `/voice-agents/${page.slug}`,
   });

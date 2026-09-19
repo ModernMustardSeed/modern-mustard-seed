@@ -16,7 +16,7 @@ import { JsonLd, breadcrumbJsonLd, faqJsonLd, serviceJsonLd } from '@/lib/jsonld
 import { buildMetadata } from '@/lib/seo';
 
 export const metadata = buildMetadata({
-  title: 'Voice Agents That Answer Every Call, in Any Language',
+  title: 'AI Voice Agents for Business Calls',
   description:
     'Call (406) 312-1223 and hear a real AI voice agent answer. A voice agent that picks up every call in a natural human voice, books appointments, answers questions, and routes the urgent ones to you. Multilingual: it greets and serves callers in 100+ languages and detects the caller automatically. Designed and built per engagement by a boutique studio in Kalispell, Montana.',
   path: '/voice-agents',

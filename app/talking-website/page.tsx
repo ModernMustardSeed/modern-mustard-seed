@@ -14,7 +14,7 @@ import CommercialPlayer from '@/components/talking-website/CommercialPlayer';
 const RUNGS = SITE_RUNG_KEYS.map((k) => SITE_RUNGS[k]);
 
 export const metadata = buildMetadata({
-  title: 'The Talking Website: a website that answers its own phone',
+  title: 'The Talking Website: Site and Voice Agent',
   description:
     'Your website and your voice agent built as one thing, off one brain, so the answer a visitor reads is the exact answer a caller hears at midnight. Designed and built per engagement by a boutique studio in Kalispell, Montana.',
   path: '/talking-website',

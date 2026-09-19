@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: { params: Promise<{ city: str
   const city = getCity(slug);
   if (!city) return buildMetadata({ noindex: true });
   return buildMetadata({
-    title: `AI Website Design and Voice Agents in ${city.name}, Montana`,
+    title: `Website Design in ${city.name}, MT`,
     description: `Design-led websites, voice agents, and custom software for ${city.name} businesses. Built in Kalispell, Montana, by a boutique design and AI studio.`,
     path: `/montana/${city.slug}`,
   });

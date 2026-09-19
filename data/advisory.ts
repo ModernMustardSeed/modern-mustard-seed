@@ -17,7 +17,7 @@
 
 export const ADVISORY = {
   name: 'Advisory',
-  metaTitle: 'Advisory: retained counsel for operators putting AI into a business',
+  metaTitle: 'AI Advisory for Business Operators',
   metaDescription:
     'Retained counsel for operators putting AI into a business that already works. What to build, what to refuse, what to automate, and in what order. Engaged by the quarter, by inquiry.',
 };

@@ -5,7 +5,7 @@ import { buildMetadata, SITE } from '@/lib/seo';
 import { JsonLd, breadcrumbJsonLd, collectionPageJsonLd } from '@/lib/jsonld';
 
 const description = 'Field notes from a Kalispell AI product studio: AI websites, ChatGPT search visibility, GEO, technical SEO and measuring real enquiries.';
-export const metadata = buildMetadata({ title: 'AI Search and Website Resources for Montana Businesses', description, path: '/resources' });
+export const metadata = buildMetadata({ title: 'AI Search and Website Resources', description, path: '/resources' });
 
 export default function ResourcesPage() {
   const posts = listContent('blog');

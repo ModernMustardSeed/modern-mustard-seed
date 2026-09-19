@@ -5,9 +5,9 @@ import { DEPARTMENTS, BESPOKE } from '@/data/services-hub';
 import PathFinder from '@/components/services/PathFinder';
 
 export const metadata = buildMetadata({
-  title: 'Services: everything the studio builds',
+  title: 'Websites, Software and AI Services',
   description:
-    'Websites and brand, voice agents, custom software, command centers, commercials, ads, and print, plus specialty AI tools, stores, agentic systems, and retained advisory. Designed and built end to end by the studio. Scoped and quoted privately.',
+    'Custom websites, software, AI voice agents, and brand design. Built in Kalispell, Montana, for businesses nationwide. Set package pricing. You own the work.',
   path: '/services',
 });
 

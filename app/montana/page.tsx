@@ -10,7 +10,7 @@ import { MONTANA_CITIES } from '@/data/montana-cities';
  */
 
 export const metadata = buildMetadata({
-  title: 'AI Websites and Automation in Montana, Built in Kalispell',
+  title: 'Montana Website Design and AI Automation',
   description: 'A Kalispell-based boutique design and AI studio: websites and brand, custom software, voice agents, and advisory for Northwest Montana and clients nationwide.',
   path: '/montana',
 });
