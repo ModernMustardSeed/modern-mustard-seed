@@ -39,6 +39,7 @@ import { recordEvent } from '@/lib/acq/events';
 import { env } from '@/lib/env';
 import { checkSpokenEmail, spokenEmailInstruction } from '@/lib/spoken-email';
 import { noDashes, noDashesTitle } from '@/lib/no-dashes';
+import { PRESENCE_AUDIT_TOOL, requestAuditFromCall } from '@/lib/voice-audit-request';
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -89,7 +90,8 @@ async function sendLoud(
  * ICS invites, and the shared leads inbox. One calendar, one source of truth.
  *
  * Handles:
- *  - tool-calls            → recall_caller / get_available_slots / book_discovery_call / capture_lead
+ *  - tool-calls            → recall_caller / get_available_slots / book_discovery_call / capture_lead /
+ *                            request_presence_audit (lib/voice-audit-request.ts)
  *  - end-of-call-report    → emails Sarah the call summary + transcript, saves caller memory
  *
  * Persistent memory: a returning caller is recognized by phone (inbound) or
@@ -1243,6 +1245,14 @@ export async function POST(req: Request) {
           });
         } else if (fnName === 'reach_sarah') {
           result = await reachSarah(args as Parameters<typeof reachSarah>[0], callerNumber, line);
+        } else if (fnName === PRESENCE_AUDIT_TOOL) {
+          // The free Online Presence Audit, filed through the same code as the
+          // /presence-audit form, and the page link texted when a text can go.
+          result = await requestAuditFromCall(args as Parameters<typeof requestAuditFromCall>[0], {
+            callerNumber,
+            callId: typeof callObj.id === 'string' ? callObj.id : null,
+            extraFields: creditField(line),
+          });
         } else if (fnName === 'forge_demo_suite') {
           result = await buildSuiteFromCall(
             args as Parameters<typeof buildSuiteFromCall>[0],
