@@ -2068,6 +2068,23 @@ test('audit: a listing detail nobody read is left off the report, never failed',
   assert.ok(!diner.checks.some((c) => /emergency/i.test(c.label)));
 });
 
+test('audit: no website on file is a finding only when somebody read the listing', () => {
+  // Hop's Downtown Grill has hopsmontana.com; the Maps sweep never stored it,
+  // and the report told them they had no website (2026-09-19).
+  const hops = inputFromLead({ business_name: "Hop's Downtown Grill", rating: 4.5, review_count: 895, phone: '(406) 755-7687', address: '121 S Main St' });
+  const web = scoreWebsite(hops, null);
+  assert.equal(web.unknown, true, 'unread, so it is dropped from the total');
+  assert.doesNotMatch(web.verdict, /do not have a website|does not link a website/i);
+  assert.ok(!scoreProfile(hops).checks.some((c) => /website linked/i.test(c.label)), 'no website check on an unopened listing');
+  assert.ok(!buildPresenceReport(hops, null).top_fixes.some((f) => /get a website/i.test(f.title)));
+
+  // With the listing read (a week of hours on file), a missing website is real.
+  const read = inputFromLead({ business_name: 'Thai Palace', rating: 4.3, review_count: 300, hours: { mon: 'x', tue: 'x', wed: 'x', thu: 'x', fri: 'x' } });
+  const readWeb = scoreWebsite(read, null);
+  assert.equal(readWeb.unknown, false);
+  assert.match(readWeb.verdict, /listing does not link a website/i);
+});
+
 /* ----------------------------- the /mustard door -------------------------- */
 
 test('mustard: attribution is read off the URL and never invented', () => {

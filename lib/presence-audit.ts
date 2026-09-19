@@ -316,7 +316,7 @@ export function scoreProfile(input: PresenceInput): Pillar {
       points: 10,
       earned: input.phone ? 10 : 0,
     },
-    {
+    input.website || detailsRead ? {
       label: 'Website linked from the listing',
       passed: Boolean(input.website),
       detail: input.website
@@ -324,7 +324,7 @@ export function scoreProfile(input: PresenceInput): Pillar {
         : 'There is no website on your profile, so everyone who wants to check you out first has nowhere to land, and the ones who want proof go find somebody who has it.',
       points: 15,
       earned: input.website ? 15 : 0,
-    },
+    } : null,
     {
       label: 'Street address published',
       passed: Boolean(input.address),
@@ -385,7 +385,11 @@ export function scoreProfile(input: PresenceInput): Pillar {
   const earned = checks.reduce((sum, c) => sum + c.earned, 0);
   const score = possible === 100 ? earned : Math.round((earned / possible) * 100);
   const failed = checks.filter((c) => !c.passed).length;
-  const unread = gradeHours ? '' : ' We did not read your hours for this audit, so they are not graded here.';
+  const unread = gradeHours
+    ? ''
+    : input.website || detailsRead
+      ? ' We did not read your hours for this audit, so they are not graded here.'
+      : ' We did not read your hours or a website link for this audit, so they are not graded here.';
   return {
     key: 'profile',
     label: PILLAR_LABELS.profile,
@@ -410,13 +414,28 @@ export function scoreProfile(input: PresenceInput): Pillar {
 /** Roll the seven-category website report into one pillar. */
 export function scoreWebsite(input: PresenceInput, report: WebsiteAuditReport | null): Pillar {
   if (!input.website) {
+    // No website on file is only a finding when somebody read the listing's
+    // details. A Maps sweep that never opened the listing has no website field
+    // either, and Hop's Downtown Grill (hopsmontana.com) was told it had none.
+    if (input.details_read === false) {
+      return {
+        key: 'website',
+        label: PILLAR_LABELS.website,
+        score: 0,
+        letter: 'F',
+        verdict: 'We did not find a website for you to grade, so this part is not scored and nothing here counts against you. If you have one, reply with the address and we will add it to this report.',
+        checks: [],
+        unknown: true,
+        weight: PILLAR_WEIGHTS.website,
+      };
+    }
     return {
       key: 'website',
       label: PILLAR_LABELS.website,
       score: 0,
       letter: 'F',
       verdict:
-        'You do not have a website on your listing. Every person who looks you up lands on a page Google owns, next to three competitors who each have one.',
+        'Your Google listing does not link a website. Every person who looks you up lands on a page Google owns, next to competitors who each have one.',
       checks: [],
       unknown: false,
       weight: PILLAR_WEIGHTS.website,
@@ -428,7 +447,9 @@ export function scoreWebsite(input: PresenceInput, report: WebsiteAuditReport | 
       label: PILLAR_LABELS.website,
       score: 0,
       letter: 'F',
-      verdict: 'We could not load your website to grade it. A page our reader cannot open is a page some of your customers cannot open either.',
+      // Our reader failing is not their site failing: firewalls block bots
+      // that let every customer through. So no claim about their customers.
+      verdict: 'We could not load your website to grade it this time, so it is not scored and nothing here counts against you.',
       checks: [],
       unknown: true,
       weight: PILLAR_WEIGHTS.website,
@@ -510,7 +531,7 @@ export function headlineFor(pillars: Pillar[], business: string): { headline: st
   if (web.unknown && rev.unknown && gbp.unknown) {
     return {
       headline: 'We could not read enough to score you yet.',
-      summary: `${business} has not been graded: the website could not be opened and the Google listing was not read. Nothing below is a verdict. Call and we will do it by hand.`,
+      summary: `${business} has not been graded: the website could not be opened and the Google listing was not read. Nothing below is a verdict. Reply with your website address and we will run it again.`,
     };
   }
   if (rev.unknown && gbp.unknown) {
