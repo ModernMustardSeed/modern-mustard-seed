@@ -143,7 +143,7 @@ export type AuditOutcome =
  */
 export async function auditPreferringWorker(
   sb: SupabaseClient,
-  opts: { url: string; sourceTable?: string; sourceId?: string; waitMs?: number; facts?: SiteFacts | null },
+  opts: { url: string; sourceTable?: string; sourceId?: string; waitMs?: number; facts?: SiteFacts | null; business?: string | null; town?: string | null },
 ): Promise<AuditOutcome> {
   const viaApi = async (): Promise<AuditOutcome> => {
     // The owner has been passed into this function since the day it was written
@@ -152,7 +152,7 @@ export async function auditPreferringWorker(
     // on now, did not. That gap is why four finished audits were never filed.
     const source =
       opts.sourceTable && opts.sourceId ? { table: opts.sourceTable, id: opts.sourceId } : null;
-    const result = await runWebsiteAudit(opts.url, { facts: opts.facts, source });
+    const result = await runWebsiteAudit(opts.url, { facts: opts.facts, source, business: opts.business, town: opts.town });
     return result.ok
       ? { kind: 'report', url: result.url, report: result.report, via: 'api' }
       : { kind: 'error', status: result.status, error: result.error };

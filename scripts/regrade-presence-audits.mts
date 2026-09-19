@@ -81,7 +81,12 @@ async function regradeWebsite(lead: Record<string, unknown>): Promise<WebsiteAud
   }
   if (site) {
     for (let attempt = 0; attempt < 2 && !report; attempt += 1) {
-      const r = await runWebsiteAudit(site, { facts: parseSiteFacts(lead.notes as string | null) ?? undefined, source: { table: 'outbound_leads', id } });
+      const r = await runWebsiteAudit(site, {
+        facts: parseSiteFacts(lead.notes as string | null) ?? undefined,
+        source: { table: 'outbound_leads', id },
+        business: (lead.business_name as string | null) ?? null,
+        town: (lead.city as string | null) ?? null,
+      });
       if (r.ok) {
         report = r.report;
         await sb.from('outbound_leads').update({ audit_score: r.report.overall_score, audit_url: r.url, audit_json: r.report, audit_at: new Date().toISOString() }).eq('id', id);

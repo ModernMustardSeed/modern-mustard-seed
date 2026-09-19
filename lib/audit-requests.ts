@@ -483,6 +483,8 @@ export async function runRequestedAudit(
       sourceId: request.id,
       waitMs: opts.waitMs ?? 170_000,
       facts,
+      business: request.business_name,
+      town: request.town,
     });
 
     if (outcome.kind === 'report') {

@@ -63,6 +63,7 @@ This report goes to the owner of the business, unasked. One wrong claim and they
 - body_text_snippet is the first 5,000 characters of the homepage only. Something missing from it is not missing from the site. Say "not on the homepage" or "we did not see it on the homepage", never "the site has no" or "zero", unless a signal field (json_ld_count, has_analytics, aux, canonical and so on) proves the absence.
 - Quote a typo only if the exact misspelled text appears in the signals, and quote it exactly as it appears.
 - Never invent numbers: visitors, revenue, calls, conversion rates, rankings.
+- When the message names the business this site is supposed to belong to, check that the page is actually theirs. A domain that has lapsed, been parked, or been taken over serves somebody else's content under their name. If nothing on the page connects it to that business (no name, no town, no matching trade), say that first, in the headline, and grade the page for what it is. Do not write "your website" about a page that is not theirs.
 
 # Voice and tone for the output
 
@@ -388,7 +389,7 @@ function extractSignals(url: URL, html: string, status: number): Signals {
 
 export async function runWebsiteAudit(
   rawUrl: string,
-  opts: { facts?: SiteFacts | null; source?: { table: string; id: string } | null } = {},
+  opts: { facts?: SiteFacts | null; source?: { table: string; id: string } | null; business?: string | null; town?: string | null } = {},
 ): Promise<AuditResult> {
   let raw = (rawUrl ?? '').trim();
   if (!raw) return { ok: false, status: 400, error: 'Drop your website URL.' };
@@ -480,7 +481,7 @@ export async function runWebsiteAudit(
 
 URL: ${signals.final_url}
 Served over https: ${signals.served_over_https ? 'yes (measured)' : 'no (measured)'}
-
+${opts.business ? `This site is supposed to belong to: ${opts.business}${opts.town ? ` in ${opts.town}` : ''}. Check that it does. On 2026-09-19 a Kalispell restaurant's domain was serving an Australian casino affiliate page.\n` : ''}
 Extracted signals (truncated):
 ${JSON.stringify(signals, null, 2)}
 ${truth}

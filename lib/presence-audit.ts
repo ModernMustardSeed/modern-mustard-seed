@@ -740,6 +740,8 @@ export async function runPresenceAudit(
       sourceId: leadId,
       waitMs: opts.waitMs ?? 85_000,
       facts,
+      business: input.business_name,
+      town: input.city,
     });
     if (outcome.kind === 'report') {
       report = outcome.report;
