@@ -1,9 +1,9 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { verifyToken, COOKIE_NAME } from '@/lib/admin-auth';
-import { verifyClientToken, verifyLookToken, CLIENT_COOKIE_NAME, CLIENT_LOOK_COOKIE_NAME } from '@/lib/client-auth';
+import { verifyClientToken, verifyLookToken, verifyCcToken, CLIENT_COOKIE_NAME, CLIENT_LOOK_COOKIE_NAME, CC_COOKIE_NAME } from '@/lib/client-auth';
 
 export const config = {
-  matcher: ['/admin/:path*', '/portal/:path*', '/Mustard', '/MUSTARD', '/Contact', '/Terms', '/Privacy'],
+  matcher: ['/admin/:path*', '/portal/:path*', '/cc/:path*', '/Mustard', '/MUSTARD', '/Contact', '/Terms', '/Privacy'],
 };
 
 export async function middleware(req: NextRequest) {
@@ -33,6 +33,23 @@ export async function middleware(req: NextRequest) {
     const url = req.nextUrl.clone();
     url.pathname = '/mustard';
     return NextResponse.redirect(url);
+  }
+
+  // ── Command Center ──
+  // Its own door, its own key. A portal session is deliberately not enough:
+  // the two are sold apart and entered apart. Sarah's look pass opens it so a
+  // Command Center can be perfected before the client is ever handed a code.
+  if (path.startsWith('/cc')) {
+    if (path === '/cc/login') return NextResponse.next();
+    const token = req.cookies.get(CC_COOKIE_NAME)?.value;
+    let session = token ? await verifyCcToken(token) : null;
+    if (!session) {
+      const look = req.cookies.get(CLIENT_LOOK_COOKIE_NAME)?.value;
+      const admin = req.cookies.get(COOKIE_NAME)?.value;
+      if (look && admin && (await verifyToken(admin))) session = await verifyLookToken(look);
+    }
+    if (!session) return NextResponse.redirect(new URL('/cc/login', req.url));
+    return NextResponse.next();
   }
 
   // ── Client portal ──

@@ -21,6 +21,7 @@ export default function HideOnAppShell({
     alsoOn.includes(p) ||
     p.startsWith('/admin') ||
     p.startsWith('/portal') ||
+    p.startsWith('/cc') ||
     p.startsWith('/office') ||
     p.endsWith('/hq') ||
     p.startsWith('/demo/') ||

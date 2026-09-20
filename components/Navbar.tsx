@@ -169,6 +169,7 @@ export default function Navbar() {
   const isAppShell =
     pathname.startsWith('/admin') ||
     pathname.startsWith('/portal') ||
+    pathname.startsWith('/cc') ||
     pathname.startsWith('/office') ||
     pathname.endsWith('/hq') ||
     pathname === '/partners/playbook' ||
