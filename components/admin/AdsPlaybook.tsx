@@ -5,6 +5,7 @@ import AdminHeader from '@/components/admin/AdminHeader';
 import SocialPosts from '@/components/admin/SocialPosts';
 import FreeAuditCampaign from '@/components/admin/FreeAuditCampaign';
 import PresenceAuditCampaign from '@/components/admin/PresenceAuditCampaign';
+import LittleYesCampaign from '@/components/admin/LittleYesCampaign';
 import RoomToGrowCampaign from '@/components/admin/RoomToGrowCampaign';
 import EcommerceCampaign from '@/components/admin/EcommerceCampaign';
 import MakeItRealCampaign from '@/components/admin/MakeItRealCampaign';
@@ -1147,7 +1148,7 @@ function CopyBlock({ title, text }: { title: string; text: string }) {
   );
 }
 
-type AdsTab = 'roomtogrow' | 'ecommerce' | 'presence' | 'makeitreal' | 'flathead' | 'freeaudit' | 'callme' | 'tw' | 'mm' | 'fm' | 'sk' | 'px' | 'pr' | 'geo' | 'gn' | 'py' | 'rest' | 'unv' | 'unvr' | 'unvf' | 'brg' | 'stone' | 'chief' | 'ans' | 'scenic' | 'cxc' | 'ah' | 'whaa' | 'debate' | 'lf' | 'social' | 'results';
+type AdsTab = 'littleyes' | 'roomtogrow' | 'ecommerce' | 'presence' | 'makeitreal' | 'flathead' | 'freeaudit' | 'callme' | 'tw' | 'mm' | 'fm' | 'sk' | 'px' | 'pr' | 'geo' | 'gn' | 'py' | 'rest' | 'unv' | 'unvr' | 'unvf' | 'brg' | 'stone' | 'chief' | 'ans' | 'scenic' | 'cxc' | 'ah' | 'whaa' | 'debate' | 'lf' | 'social' | 'results';
 
 const TABS: { key: AdsTab; num: string; label: string; blurb: string }[] = [
   { key: 'callme', num: '01', label: 'Call Me', blurb: 'Voice agents · call objective · $25/day' },
@@ -1174,6 +1175,7 @@ const TABS: { key: AdsTab; num: string; label: string; blurb: string }[] = [
   { key: 'whaa', num: '22', label: 'Say Whaaa', blurb: 'The build · the agent that builds · $10/day' },
   { key: 'debate', num: '23', label: 'While You Were Debating', blurb: 'Idea to Product · the studio proof · $15/day' },
   { key: 'lf', num: '24', label: 'The Launch Film', blurb: 'Launch films · fifteen seconds of IRL · $20/day' },
+  { key: 'littleyes', num: '31', label: 'A Little Yes', blurb: 'The Mustard family musical, original song, full film, and chorus cut' },
   { key: 'roomtogrow', num: '30', label: 'Room to Grow', blurb: 'Business operating systems, design systems, admin, and automations' },
   { key: 'ecommerce', num: '29', label: 'Ecommerce', blurb: 'Headless Shopify, CXC storefront proof, three commercial cuts' },
   { key: 'presence', num: '28', label: 'Free Presence Audit', blurb: 'Carousel, 20s film, story and copy for LinkedIn, FB, IG, TikTok' },
@@ -1196,7 +1198,7 @@ const TABS: { key: AdsTab; num: string; label: string; blurb: string }[] = [
 const CAMPAIGN_GROUPS: { name: string; keys: AdsTab[] }[] = [
   { name: 'Demo Funnel', keys: ['unv', 'unvr', 'unvf', 'brg', 'stone', 'ans'] },
   { name: 'Product Offers', keys: ['mm', 'sk', 'chief', 'px', 'pr', 'geo', 'lf'] },
-  { name: 'Brand + Verticals', keys: ['roomtogrow', 'ecommerce', 'makeitreal', 'callme', 'ah', 'tw', 'gn', 'rest', 'scenic', 'whaa', 'cxc', 'debate'] },
+  { name: 'Brand + Verticals', keys: ['littleyes', 'roomtogrow', 'ecommerce', 'makeitreal', 'callme', 'ah', 'tw', 'gn', 'rest', 'scenic', 'whaa', 'cxc', 'debate'] },
   { name: 'Audit', keys: ['presence', 'freeaudit', 'flathead'] },
   { name: 'Partners + Magnets', keys: ['fm', 'py'] },
   { name: 'Organic', keys: ['social'] },
@@ -3469,6 +3471,7 @@ export default function AdsPlaybook() {
         </section>
         </>)}
 
+        {tab === 'littleyes' && <LittleYesCampaign />}
         {tab === 'roomtogrow' && <RoomToGrowCampaign />}
         {tab === 'ecommerce' && <EcommerceCampaign />}
         {tab === 'makeitreal' && <MakeItRealCampaign />}
