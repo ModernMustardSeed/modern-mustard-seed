@@ -63,7 +63,7 @@ const PROCESS = [
 
 export default function InquirePage() {
   return (
-    <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
+    <div data-studio-page="inquire" className="min-h-screen bg-[#FBF6EA] text-[#161616]">
       <JsonLd
         data={[
           breadcrumbJsonLd([

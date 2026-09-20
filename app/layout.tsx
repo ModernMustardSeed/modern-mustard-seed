@@ -16,8 +16,9 @@ import AppNavDock from '@/components/AppNavDock';
 import { JsonLd, siteGraphJsonLd } from '@/lib/jsonld';
 import { buildMetadata, SITE } from '@/lib/seo';
 import './globals.css';
+import './studio-chrome.css';
 
-const bodyFont = DM_Sans({ subsets: ['latin'], style: ['normal', 'italic'], display: 'swap', variable: '--font-body' });
+const bodyFont = DM_Sans({ subsets: ['latin'], style: ['normal'], display: 'swap', variable: '--font-body' });
 const displayFont = Playfair_Display({ subsets: ['latin'], style: ['normal', 'italic'], display: 'swap', variable: '--font-display' });
 const serifFont = Cormorant_Garamond({ subsets: ['latin'], weight: ['300', '400', '500', '600'], style: ['normal', 'italic'], display: 'swap', preload: false, variable: '--font-serif' });
 const monoFont = JetBrains_Mono({ subsets: ['latin'], weight: ['400', '500', '700'], display: 'swap', preload: false, variable: '--font-mono' });
@@ -33,7 +34,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${bodyFont.variable} ${displayFont.variable} ${serifFont.variable} ${monoFont.variable} ${condensedFont.variable}`}>
+    <html lang="en" suppressHydrationWarning className={`${bodyFont.variable} ${displayFont.variable} ${serifFont.variable} ${monoFont.variable} ${condensedFont.variable}`}>
       <head>
         <link rel="manifest" href="/site.webmanifest" />
         <JsonLd data={siteGraphJsonLd} />

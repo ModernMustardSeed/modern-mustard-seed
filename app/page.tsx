@@ -1,19 +1,4 @@
-import ProofBand from '@/components/home/ProofBand';
-import JourneyRig from '@/components/journey/JourneyRig';
-// Parked 2026-08-08 at Sarah's request: hide the review band until there is
-// more than one review to show. Uncomment this and the <GoogleReviews /> tag
-// below to bring it back.
-// import GoogleReviews from '@/components/home/GoogleReviews';
-import {
-  JourneyHero,
-  JourneyOrchard,
-  JourneySigns,
-  JourneySquare,
-  JourneyGate,
-  JourneyPlanting,
-  JourneyTree,
-  JourneyDoors,
-} from '@/components/journey/chapters';
+import StudioHome from '@/components/home/StudioHome';
 import { JsonLd, breadcrumbJsonLd, faqJsonLd, parableJsonLd } from '@/lib/jsonld';
 import { buildMetadata, SITE } from '@/lib/seo';
 
@@ -100,99 +85,13 @@ const HOME_FAQ = [
   },
   {
     q: 'Why is it called Modern Mustard Seed?',
-    a: 'The name comes from the mustard seed parable in Matthew 13: the smallest seed in the field grows into a tree the birds perch in. Every build here starts seed sized, and that is the plan. The homepage is a drive around Flathead Lake that ends at that exact tree.',
+    a: 'The name comes from the mustard seed parable in Matthew 13: the smallest seed in the field grows into a tree the birds perch in. Every build here starts seed sized, and that is the plan. The studio builds enduring digital assets from a single, carefully developed idea.',
   },
 ];
 
 const homeFaq = faqJsonLd(HOME_FAQ);
 
-/**
- * Homepage: THE FLATHEAD JOURNEY. One scrolling drive around the lake: pickup,
- * orchards, the work, roadside signs, the square, the gate, proof, the
- * planting, the tree, the doors.
- *
- * Sarah 2026-09-11, the boutique pass. Three things came off this page and the
- * reasoning belongs here so nobody puts them back by accident:
- *
- * - Ava's audio narration. An opt-in hostess reading the page out loud is a
- *   gimmick, and it undercuts everything else the page is trying to say. Her
- *   components (JourneyTour, HomeTour) and her script (data/journey-tour.ts)
- *   were deleted on 2026-09-12 so nobody mounts her again by accident. The
- *   recorded clips still sit in public/tour/journey and public/tour/mms, unused;
- *   delete those and scripts/site-tour/build-journey.mjs and build-mms.mjs to
- *   finish the job. SiteTour itself stays: the demo client sites narrate, and
- *   that is a product, not this page.
- * - The missed-revenue calculator, which closed on a free demo build.
- * - Every price, and every use of the word free.
- *
- * RecentWork took the calculator's slot and then came off again on 2026-09-12,
- * because the portfolio deserves a better treatment than a row of browser
- * windows. The slot is empty on purpose until that treatment exists.
- */
+
 export default function HomePage() {
-  return (
-    <>
-      <JsonLd
-        data={[
-          homeJsonLd,
-          offerJsonLd,
-          parableJsonLd,
-          homeFaq,
-          breadcrumbJsonLd([{ name: 'Home', url: '/' }]),
-        ]}
-      />
-      <div className="relative bg-[#FBF6EA] text-[#161616]">
-        <JourneyRig />
-        <JourneyHero />
-        {/* MI 4. The turnout held the "drop your number and Mr. Mustard calls
-            you right now" band. Sarah 2026-09-11: a phone capture one screen
-            into a studio homepage reads as a lead magnet, not as craft. The
-            same widget still lives on /voice-agents, where somebody who is
-            already interested can ask for the call themselves. JourneyRing is
-            kept in chapters.tsx, unmounted, if it is ever wanted back. */}
-        <JourneyOrchard />
-        {/* MI 19 is empty for now. The missed-revenue calculator held this slot
-            until 2026-09-11, then RecentWork did. Sarah 2026-09-12: the work
-            reel comes off while we work out how the portfolio should really be
-            shown. RecentWork is untouched in components/home/, still pointing at
-            five live sites, so bringing it back is one line. The Roadside still
-            carries The Work as a sign, and /work is still in the nav. */}
-        <JourneySigns />
-        {/* MI 47. How a business gets found and gets chosen: the Google profile,
-            the reviews, the AI answers, the conversion path, the follow up. */}
-        <JourneySquare />
-        <JourneyGate />
-        <div className="border-b-2 border-[#161616]">
-          <ProofBand />
-        </div>
-        <JourneyPlanting />
-        <JourneyTree />
-        {/* Real Google reviews sit directly in front of the ask. Parked until
-            there is more than one; see the note on the import above. */}
-        {/* <GoogleReviews /> */}
-        <JourneyDoors />
-        <section className="relative bg-[#F5F0E8] border-t-2 border-[#161616] py-20 md:py-28">
-          <div className="relative max-w-3xl mx-auto px-6">
-            <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#C4160B] uppercase text-center">
-              Straight answers // No sales call required
-            </p>
-            <h2 className="font-display italic font-extrabold text-4xl md:text-5xl text-[#161616] mt-3 leading-[1.02] text-center">
-              Questions, answered plainly.
-            </h2>
-            <div className="mt-10 space-y-4">
-              {HOME_FAQ.map((f) => (
-                <details key={f.q} className="group rounded-xl border-2 border-[#161616] bg-white p-5 open:shadow-[4px_4px_0_0_#F5B700] transition-shadow">
-                  <summary className="font-display text-lg font-bold text-[#161616] cursor-pointer list-none flex items-center justify-between gap-4">
-                    {f.q}
-                    <span className="flex-shrink-0 text-[#C4160B] transition-transform group-open:rotate-45" aria-hidden="true">+</span>
-                  </summary>
-                  <p className="mt-3 text-[#5c554a] leading-relaxed font-body">{f.a}</p>
-                </details>
-              ))}
-            </div>
-          </div>
-        </section>
-      </div>
-    </>
-  );
+  return <><JsonLd data={[homeJsonLd, offerJsonLd, parableJsonLd, homeFaq, breadcrumbJsonLd([{ name: 'Home', url: '/' }])]} /><StudioHome faq={HOME_FAQ} /></>;
 }

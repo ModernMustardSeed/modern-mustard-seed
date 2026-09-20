@@ -152,6 +152,14 @@ export default function Navbar() {
     closeBtnRef.current?.focus();
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') setMenuOpen(false);
+      if (e.key === 'Tab') {
+        const panel = document.getElementById('site-mega-menu');
+        const items = Array.from(panel?.querySelectorAll<HTMLElement>('a[href], button:not([disabled]), input, select, textarea, [tabindex="0"]') ?? []).filter(el => el.getClientRects().length > 0);
+        const first = items[0];
+        const last = items[items.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last?.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first?.focus(); }
+      }
     };
     window.addEventListener('keydown', onKey);
     return () => {
@@ -187,6 +195,7 @@ export default function Navbar() {
   return (
     <>
       <nav
+        data-studio-nav="true"
         className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 bg-[#FBF6EA]/95 backdrop-blur-md border-b-2 border-[#161616] ${
           scrolled ? 'shadow-[0_3px_0_0_rgba(22,22,22,0.12)]' : ''
         }`}
@@ -195,7 +204,7 @@ export default function Navbar() {
           <Link href="/" className="flex items-center gap-2.5 hover:opacity-90 transition-opacity">
             <Image
               src="/brand/mascot.png"
-              alt=""
+              alt="Mr. Mustard"
               width={885}
               height={1180}
               sizes="40px"
@@ -287,6 +296,9 @@ export default function Navbar() {
       {mounted && createPortal(
       <div
         id="site-mega-menu"
+        inert={!menuOpen}
+        hidden={!menuOpen}
+        aria-hidden={!menuOpen}
         role="dialog"
         aria-modal="true"
         aria-label="Site menu"

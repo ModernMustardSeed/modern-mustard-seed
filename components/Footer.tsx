@@ -5,14 +5,7 @@ import { socials } from '@/data/socials';
 import { PARABLE_REFERENCE, PARABLE_SEGMENTS } from '@/data/parable';
 import CookiePreferencesLink from '@/components/CookiePreferencesLink';
 
-/**
- * The warm sign-off. Bright pop-art cabin footer that ends every page:
- * a gold CTA band, then a cream body carrying the mascot, the stamped
- * scripture card, and the link columns. Replaces the old midnight slab
- * (Sarah, 2026-07-17) so the page resolves warm after the dark ship close
- * instead of fading to black twice. Dark is now reserved for the terminal
- * panes and the client proposal header only.
- */
+/** Editorial studio footer with the full public directory and original parable. */
 export default function Footer() {
   const linkSections = [
     // PARKED 2026-08-07 (Sarah): The Mustard Tree, Mustard Press, and Mustard
@@ -85,147 +78,14 @@ export default function Footer() {
 
 
   return (
-    <footer className="relative w-full bg-[#FBF6EA] text-[#161616] border-t-2 border-[#161616]">
-      {/* ── Gold CTA band: the last ask ── */}
-      <div className="max-w-6xl mx-auto px-6 py-8 font-body text-sm leading-relaxed">
-        <p>{SITE.description}</p>
-        <p className="mt-2"><Link href="/about" className="font-bold underline">Founded by {SITE.founder}</Link>. <a href={`tel:${SITE.phoneE164}`} className="underline">{SITE.phone}</a> &middot; <a href={`mailto:${SITE.email}`} className="underline">{SITE.email}</a></p>
+    <footer className="studio-footer">
+      <div className="studio-footer-top">
+        <Link href="/" className="studio-footer-brand">Modern<br /><em>Mustard Seed.</em></Link>
+        <div><p>{SITE.description}</p><Link href="/inquire" className="studio-footer-inquire">Begin A Conversation <span aria-hidden="true">↗</span></Link><a href={'mailto:' + SITE.email}>{SITE.email}</a><a href={'tel:' + SITE.phoneE164}>{SITE.phone}</a></div>
       </div>
-      <div className="relative halftone-bg border-b-2 border-[#161616] bg-[#F5B700]">
-        <div className="relative z-[2] max-w-4xl mx-auto px-6 py-14 md:py-16 text-center">
-          <p className="font-mono text-[10px] uppercase tracking-[0.3em] font-bold text-[#161616]/70">
-            A boutique design and AI studio in Kalispell, Montana.
-          </p>
-          <h2 className="mt-3 font-display italic text-3xl md:text-5xl font-extrabold leading-[1.02] text-[#161616]">
-            Let&rsquo;s build the tree.
-          </h2>
-          <div className="mt-7 flex flex-col sm:flex-row gap-3 justify-center">
-            <Link
-              href="/book"
-              className="rounded-full border-2 border-[#161616] bg-[#161616] text-[#F5B700] px-8 py-4 font-sans font-extrabold text-[12px] uppercase tracking-[0.16em] shadow-[5px_5px_0_0_rgba(22,22,22,.3)] transition-all hover:-translate-y-0.5"
-            >
-              Book a Call
-            </Link>
-            <Link
-              href="/presence-audit"
-              className="rounded-full border-2 border-[#161616] bg-white text-[#161616] px-8 py-4 font-sans font-extrabold text-[12px] uppercase tracking-[0.16em] shadow-[5px_5px_0_0_#161616] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#161616]"
-            >
-              Get the Free Audit
-            </Link>
-          </div>
-        </div>
-      </div>
-
-      {/* ── Cream body ── */}
-      <div className="relative px-6 md:px-16 lg:px-24 xl:px-32 pt-16 pb-10">
-        {/* Scripture, stamped with the mascot */}
-        <div className="relative max-w-2xl mx-auto mb-16 -rotate-[0.6deg] rounded-2xl border-2 border-[#161616] bg-white px-7 py-6 shadow-[6px_6px_0_0_#161616]">
-          <div className="absolute -top-4 right-6 grid h-12 w-11 place-items-center rounded-[4px] border-2 border-[#161616] bg-[#F5B700]">
-            <span className="relative h-7 w-7">
-              <Image src="/brand/mascot.png" alt="" fill sizes="28px" className="object-contain" />
-            </span>
-          </div>
-          {/* Same verse as the hero slab, same source (data/parable.ts). */}
-          <p className="font-display italic text-lg md:text-xl leading-relaxed text-[#161616] text-center">
-            &ldquo;
-            {PARABLE_SEGMENTS.map((seg, i) =>
-              seg.stamp ? (
-                <span key={i} className="not-italic font-bold text-[#8f6600]">
-                  {seg.t}
-                </span>
-              ) : (
-                <span key={i}>{seg.t}</span>
-              )
-            )}
-            &rdquo;
-          </p>
-          <p className="mt-3 text-center font-mono text-[9px] uppercase tracking-[0.4em] font-bold text-[#8f6600]">
-            {PARABLE_REFERENCE}
-          </p>
-          <p className="mt-3 text-center font-body text-[13px] text-[#5c554a]">
-            Every build here starts seed-sized. That is the plan.
-          </p>
-        </div>
-
-        {/* Link columns */}
-        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-7 gap-8 max-w-6xl mx-auto mb-12 pb-12 border-b-2 border-dashed border-[#161616]/25">
-          <div className="col-span-2 md:col-span-3 xl:col-span-1">
-            <div className="flex items-center gap-2.5 mb-4">
-              <span className="relative h-8 w-8 flex-shrink-0 overflow-hidden rounded-full border-2 border-[#161616] bg-[#F5B700]">
-                <Image src="/brand/mascot.png" alt="" fill sizes="32px" className="object-contain p-0.5" />
-              </span>
-              <span className="font-display text-sm font-extrabold tracking-tight text-[#161616]">
-                Modern Mustard Seed
-              </span>
-            </div>
-            <p className="text-[#5c554a] text-sm font-body leading-relaxed">
-              Built with faith. Powered by AI. Engineered to scale.
-            </p>
-          </div>
-          {linkSections.map((section) => (
-            <div key={section.title}>
-              <span className="text-[10px] uppercase tracking-[0.3em] text-[#8f6600] font-mono font-bold block mb-4">
-                {section.title}
-              </span>
-              <ul className="space-y-2">
-                {section.links.map((l) => (
-                  <li key={l.label}>
-                    <Link
-                      href={l.href}
-                      className="text-sm text-[#161616] hover:text-[#1E50C8] transition-colors font-body"
-                    >
-                      {l.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6 max-w-6xl mx-auto">
-          <div className="flex flex-wrap items-center gap-2.5">
-            {socials.map((social) => (
-              <a
-                key={social.name}
-                href={social.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="rounded-full border-2 border-[#161616] bg-white px-3.5 py-1.5 text-[10px] uppercase tracking-[0.15em] text-[#161616] hover:bg-[#F5B700] hover:-translate-y-0.5 hover:shadow-[2px_2px_0_0_#161616] transition-all font-mono font-bold"
-              >
-                {social.name}
-              </a>
-            ))}
-            <Link
-              href="/portal"
-              className="rounded-full border-2 border-[#161616] bg-white px-3.5 py-1.5 text-[10px] uppercase tracking-[0.15em] text-[#161616] hover:bg-[#F5B700] hover:-translate-y-0.5 hover:shadow-[2px_2px_0_0_#161616] transition-all font-mono font-bold"
-            >
-              Client Portal
-            </Link>
-            <Link
-              href="/partners/hq"
-              className="rounded-full border-2 border-[#161616] bg-white px-3.5 py-1.5 text-[10px] uppercase tracking-[0.15em] text-[#161616] hover:bg-[#F5B700] hover:-translate-y-0.5 hover:shadow-[2px_2px_0_0_#161616] transition-all font-mono font-bold"
-            >
-              Partner Login
-            </Link>
-            <a
-              href="/review"
-              className="rounded-full border-2 border-[#161616] bg-white px-3.5 py-1.5 text-[10px] uppercase tracking-[0.15em] text-[#161616] hover:bg-[#F5B700] hover:-translate-y-0.5 hover:shadow-[2px_2px_0_0_#161616] transition-all font-mono font-bold"
-            >
-              Review on Google
-            </a>
-            <CookiePreferencesLink />
-          </div>
-
-          <p className="text-[10px] text-[#5c554a] font-mono tracking-wider text-center md:text-right">
-            &copy; {new Date().getFullYear()}{' '}
-            <Link href="/" className="font-bold hover:text-[#1E50C8] transition-colors">
-              Modern Mustard Seed
-            </Link>
-            . Kalispell, Montana. All rights reserved.
-          </p>
-        </div>
-      </div>
+      <div className="studio-footer-links">{linkSections.map(section => <div key={section.title}><h2>{section.title}</h2><ul>{section.links.map(l => <li key={l.label}><Link href={l.href}>{l.label}</Link></li>)}</ul></div>)}</div>
+      <div className="studio-footer-seed"><Image src="/images/editorial/mascot-160.webp" alt="Mr. Mustard, the studio mascot" width={44} height={59} /><div><p>&ldquo;{PARABLE_SEGMENTS.map(s => s.t).join('')}&rdquo;</p><span>{PARABLE_REFERENCE} · Every build starts seed-sized.</span></div></div>
+      <div className="studio-footer-bottom"><div>{socials.map(s => <a key={s.name} href={s.url} target="_blank" rel="noopener noreferrer">{s.name}</a>)}<Link href="/portal">Client Portal</Link><Link href="/partners/hq">Partner Login</Link><Link href="/review">Review On Google</Link><CookiePreferencesLink /></div><p>&copy; {new Date().getFullYear()} Modern Mustard Seed. Kalispell, Montana.</p></div>
     </footer>
   );
 }

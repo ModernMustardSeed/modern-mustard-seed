@@ -376,6 +376,7 @@ export default function MustardSeedChat() {
       <button
         type="button"
         onClick={toggleOpen}
+        data-studio-launcher="true"
         aria-expanded={open}
         aria-label={open ? 'Close Mr. Mustard' : 'Talk to Mr. Mustard now'}
         className="fixed bottom-6 right-6 z-[80] group"
@@ -384,7 +385,7 @@ export default function MustardSeedChat() {
             of a phone viewport and sit on the hero terminal's email capture. */}
         <div className="relative flex items-center gap-2 p-1.5 sm:pl-2 sm:pr-4 sm:py-2 rounded-full bg-[#F5B700] border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] group-hover:shadow-[6px_6px_0_0_#161616] group-hover:-translate-y-0.5 transition-all">
           <span className="relative flex h-11 w-11 items-center justify-center rounded-full bg-white border-2 border-[#161616] overflow-hidden">
-            <Image src="/brand/mascot.png" alt="" width={885} height={1180} className="h-9 w-auto" />
+            <Image src="/brand/mascot.png" alt="" width={885} height={1180} sizes="48px" className="h-9 w-auto" />
           </span>
           <span className="hidden sm:inline font-sans text-sm md:text-base text-[#161616] font-extrabold tracking-tight">
             Talk to Mr. Mustard now
@@ -412,7 +413,7 @@ export default function MustardSeedChat() {
             <div className="relative flex items-start justify-between">
               <div className="flex items-center gap-3">
                 <span className="flex h-12 w-12 items-center justify-center rounded-full bg-white border-2 border-[#161616] overflow-hidden shrink-0">
-                  <Image src="/brand/mascot.png" alt="" width={885} height={1180} className="h-9 w-auto" />
+                  <Image src="/brand/mascot.png" alt="" width={885} height={1180} sizes="48px" className="h-9 w-auto" />
                 </span>
                 <div>
                   <span className="block text-[8px] uppercase tracking-[0.35em] text-[#C4160B] font-mono font-bold mb-0.5">
@@ -543,7 +544,7 @@ export default function MustardSeedChat() {
                 />
               )}
               <span className="relative flex h-16 w-16 items-center justify-center rounded-full bg-[#FBF6EA] border-2 border-[#161616] overflow-hidden mx-auto">
-                <Image src="/brand/mascot.png" alt="" width={885} height={1180} className="h-12 w-auto" />
+                <Image src="/brand/mascot.png" alt="" width={885} height={1180} sizes="48px" className="h-12 w-auto" />
               </span>
             </div>
 
@@ -640,7 +641,7 @@ export default function MustardSeedChat() {
             <div className="relative flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white border-2 border-[#161616] overflow-hidden shrink-0">
-                  <Image src="/brand/mascot.png" alt="" width={885} height={1180} className="h-8 w-auto" />
+                  <Image src="/brand/mascot.png" alt="" width={885} height={1180} sizes="48px" className="h-8 w-auto" />
                 </span>
                 <div>
                   <span className="block text-[8px] uppercase tracking-[0.35em] text-[#C4160B] font-mono font-bold">
