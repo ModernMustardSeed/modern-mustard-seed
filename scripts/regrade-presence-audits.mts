@@ -42,6 +42,8 @@ const flag = (n: string) => {
 };
 const LIMIT = Number(flag('limit') ?? 0);
 const ONLY = flag('only');
+/** Only the leads whose website grade is missing: the ones a failed pass cleared. */
+const MISSING_ONLY = argv.includes('--missing-only');
 const CONCURRENCY = 3;
 const RECENT_HOURS = Number(flag('recent-hours') ?? 6);
 
@@ -55,6 +57,16 @@ if (ONLY) q = q.eq('lead_id', ONLY);
 const { data: rows, error } = await q.range(0, 9999);
 if (error) throw new Error(error.message);
 let audits = rows ?? [];
+if (MISSING_ONLY) {
+  const ids = [...new Set(audits.map((a) => a.lead_id))];
+  const missing = new Set<string>();
+  for (let i = 0; i < ids.length; i += 200) {
+    const { data: leads } = await sb.from('outbound_leads').select('id,website,audit_json').in('id', ids.slice(i, i + 200));
+    for (const l of leads ?? []) if (l.website && !l.audit_json) missing.add(l.id as string);
+  }
+  audits = audits.filter((a) => missing.has(a.lead_id as string));
+  console.log(`${audits.length} audits whose website grade is missing.`);
+}
 if (LIMIT) audits = audits.slice(0, LIMIT);
 
 // One website grade per lead, even when a lead has several audit rows.
