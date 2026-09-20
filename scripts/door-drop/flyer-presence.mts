@@ -154,7 +154,9 @@ export function presencePageInner(
    * generated rather than written. Same instruction, one card, both titles.
    */
   const merged: { title: string; why: string; how: string }[] = [];
-  for (const f of report.top_fixes ?? []) {
+  // A fix with no instruction never reaches paper: a stored report written
+  // before lib/website-audit.ts filtered the shape can carry one (2026-09-20).
+  for (const f of (report.top_fixes ?? []).filter((f) => f && typeof f.how === 'string' && f.how.trim() && typeof f.title === 'string')) {
     const same = merged.find((m) => m.how.trim() === f.how.trim());
     if (same) same.title = `${same.title}, and ${f.title.charAt(0).toLowerCase()}${f.title.slice(1)}`;
     else merged.push({ ...f });

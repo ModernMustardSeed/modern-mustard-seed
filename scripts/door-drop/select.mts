@@ -156,6 +156,25 @@ const CHAINS = [
   // plural spellings a scrape actually produces need their own entries.
   'wendys', 'arbys', 'dominos', 'lowes', 'mcdonalds', 'papa johns', 'jimmy johns',
   'applebees', 'dennys', 'papa murphys', 'taco johns', 'mcdonald’s',
+  // All four printed in the 2026-09-20 Kalispell run before anyone noticed.
+  // A franchisee cannot buy a website and the brand's marketing is not ours.
+  'buffalo wild wings', 'chick-fil-a', 'chick fil a', 'dickey', 'bojangles',
+  "4b's", '4bs restaurant', 'jersey mike', 'firehouse subs', 'smashburger',
+  'quiznos', 'blaze pizza', 'mountain mike', 'round table pizza', 'culver',
+  'in-n-out', 'whataburger', 'zaxby', 'raising cane', 'chuck e cheese',
+  'olive garden', 'outback steakhouse', 'red robin', 'texas roadhouse',
+  'ihop', 'perkins restaurant', 'village inn', 'golden corral', 'sizzler',
+];
+
+/**
+ * Regional systems that are not "chains" by name but are never a walk-in
+ * prospect: their marketing runs through a corporate department in another
+ * building. Logan Health printed in the 2026-09-20 Kalispell run.
+ */
+const INSTITUTIONS = [
+  'logan health', 'kalispell regional', 'providence health', 'billings clinic',
+  'glacier bank', 'first interstate bank', 'whitefish credit union', 'park side credit',
+  'flathead county', 'city of kalispell', 'school district', 'united states postal',
 ];
 
 /** Only when the whole name is the brand. See the note above. */
@@ -469,6 +488,8 @@ export function gate(
 
     const chain = CHAINS.find((c) => chainRe(c).test(lowerName)) ?? isExactChain(name);
     if (chain) { drop(l, 'local', `national chain by name (${chain})`); continue; }
+    const institution = INSTITUTIONS.find((c) => lowerName.includes(c));
+    if (institution) { drop(l, 'local', `regional institution, marketing runs elsewhere (${institution})`); continue; }
     const sharedBy = l.domain_key ? (shared.get(l.domain_key) ?? 0) : 0;
     if (sharedBy >= 3) {
       drop(l, 'local', `domain shared by ${sharedBy} leads, so it is a corporate site`);
@@ -499,5 +520,34 @@ export function gate(
     }
     keep.push(l);
   }
-  return { keep, nosite, stale, dropped };
+  /**
+   * ONE PIECE PER BUSINESS, PER DOOR.
+   *
+   * The lead list holds the same business more than once: a Maps sweep and a
+   * hand import of the same street produce two rows with the same name at the
+   * same address. The 2026-09-20 Kalispell run printed six businesses twice,
+   * which is two sheets handed to one owner and a run that looks careless.
+   * The row with a real grade wins, then the fresher audit.
+   */
+  const key = (l: Lead) =>
+    `${(l.business_name || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim()}|${(l.address || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim()}`;
+  const dedupe = (list: Lead[], label: string) => {
+    const best = new Map<string, Lead>();
+    for (const l of list) {
+      const k = key(l);
+      const had = best.get(k);
+      if (!had) { best.set(k, l); continue; }
+      const score = (x: Lead) => (x.audit_json ? 2 : 0) + (x.presence_audit_id ? 1 : 0);
+      const at = (x: Lead) => (x.audit_at ? Date.parse(x.audit_at) : 0);
+      const better = score(l) > score(had) || (score(l) === score(had) && at(l) > at(had));
+      if (better) {
+        best.set(k, l);
+        drop(had, 'once', `same business at the same address as ${l.id}, printed once${label}`);
+      } else {
+        drop(l, 'once', `same business at the same address as ${had.id}, printed once${label}`);
+      }
+    }
+    return [...best.values()];
+  };
+  return { keep: dedupe(keep, ''), nosite: dedupe(nosite, ' (no website)'), stale, dropped };
 }

@@ -571,7 +571,11 @@ export function fixesFor(pillars: Pillar[], report: WebsiteAuditReport | null): 
     });
   }
 
-  for (const f of report?.top_three_fixes ?? []) out.push(f);
+  // Only whole fixes. A stored grade from before the shape filter can carry one
+  // with no `how`, and half an instruction is worse than one fewer fix.
+  for (const f of report?.top_three_fixes ?? []) {
+    if (f && typeof f.title === 'string' && typeof f.why === 'string' && typeof f.how === 'string' && f.how.trim()) out.push(f);
+  }
 
   if (!by.website.unknown && by.website.score === 0 && !report) {
     out.push({
