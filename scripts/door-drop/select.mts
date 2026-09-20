@@ -467,6 +467,20 @@ export function gate(
     if (l.duplicate_of) { drop(l, 'reachable', 'duplicate of another lead'); continue; }
     if (l.unsubscribed_at || l.suppression_reason) { drop(l, 'reachable', 'unsubscribed or suppressed'); continue; }
     if (opts.skipNames.has(lowerName)) { drop(l, 'reachable', 'on the hand skip list'); continue; }
+
+    /**
+     * WHO THEY ARE IS DECIDED BEFORE WHETHER THEY HAVE A SITE.
+     *
+     * These two ran after the no-website branch below, which `continue`s, so a
+     * chain with no website of its own skipped the chain gate completely and
+     * 4B's Restaurant went into the 2026-09-20 Kalispell box. A franchise with
+     * no website is still a franchise.
+     */
+    const chainName = CHAINS.find((c) => chainRe(c).test(lowerName)) ?? isExactChain(name);
+    if (chainName) { drop(l, 'local', `national chain by name (${chainName})`); continue; }
+    const institutionName = INSTITUTIONS.find((c) => lowerName.includes(c));
+    if (institutionName) { drop(l, 'local', `regional institution, marketing runs elsewhere (${institutionName})`); continue; }
+
     /**
      * No website is not a rejection, it is the other campaign. It only counts
      * when somebody opened the listing and saw that: the marker carries the date
@@ -486,10 +500,6 @@ export function gate(
       continue;
     }
 
-    const chain = CHAINS.find((c) => chainRe(c).test(lowerName)) ?? isExactChain(name);
-    if (chain) { drop(l, 'local', `national chain by name (${chain})`); continue; }
-    const institution = INSTITUTIONS.find((c) => lowerName.includes(c));
-    if (institution) { drop(l, 'local', `regional institution, marketing runs elsewhere (${institution})`); continue; }
     const sharedBy = l.domain_key ? (shared.get(l.domain_key) ?? 0) : 0;
     if (sharedBy >= 3) {
       drop(l, 'local', `domain shared by ${sharedBy} leads, so it is a corporate site`);
@@ -529,8 +539,19 @@ export function gate(
    * which is two sheets handed to one owner and a run that looks careless.
    * The row with a real grade wins, then the fresher audit.
    */
+  const norm = (s: string | null) => (s || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+  const digits = (s: string | null) => {
+    const d = String(s ?? '').replace(/\D/g, '');
+    return d.length === 11 && d.startsWith('1') ? d.slice(1) : d;
+  };
+  /**
+   * Same phone at the same door is the same business whatever the two rows call
+   * it: "Chinatown" and "Chinatown Restaurant" at 1031 U.S. Hwy 2 W share a
+   * phone and a website and would have been two pieces (2026-09-20). Name plus
+   * address is the fallback for a row with no phone.
+   */
   const key = (l: Lead) =>
-    `${(l.business_name || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim()}|${(l.address || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim()}`;
+    (digits(l.phone) && l.address ? `tel ${digits(l.phone)}|${norm(l.address)}` : `${norm(l.business_name)}|${norm(l.address)}`);
   const dedupe = (list: Lead[], label: string) => {
     const best = new Map<string, Lead>();
     for (const l of list) {

@@ -43,6 +43,7 @@ import {
 } from './flyer.mts';
 import { noSiteFrontInner, noSiteBackInner, NOSITE_CSS } from './flyer-nosite.mts';
 import { presencePageInner, PRESENCE_CSS, type PresenceReport } from './flyer-presence.mts';
+import { GeoCache, orderTown } from './drive-order.mts';
 import {
   auditPageInner, noSitePageInner, pageCss, pageCropMarks,
   PAGE_W, PAGE_H, PAGE_BLEED, type Cohort,
@@ -292,7 +293,7 @@ async function main() {
       townRank(a.lead.city) - townRank(b.lead.city) ||
       a.lead.business_name.localeCompare(b.lead.business_name),
   );
-  const chosen = all.slice(0, LIMIT);
+  let chosen = all.slice(0, LIMIT);
   if (!chosen.length) {
     console.error('Nothing passed the gates. Run with --refresh, or widen --max-age-days.');
     writeReports(dropped, []);
@@ -300,6 +301,38 @@ async function main() {
   }
   const nAudit = chosen.filter((p) => p.kind === 'audit').length;
   console.log(`Printing ${chosen.length} businesses: ${nAudit} graded, ${chosen.length - nAudit} with no website. Format: ${IS_PAGE ? 'full page, one side' : 'half page, two sides'}.`);
+
+  /**
+   * ONE ORDER FOR THE WHOLE BOX: page 7 is stop 7.
+   *
+   * Everything below renders from `chosen` in sequence, so the driving order is
+   * settled here, before a single page exists. Sorting the pages one way and
+   * the route sheet another means hunting the stack at every door, which is the
+   * shape this had on 2026-09-20 when the pages were alphabetical.
+   */
+  {
+    const cache = new GeoCache(path.join(OUT, '..', '.geocache.json'));
+    const byTown = new Map<string, Piece[]>();
+    for (const p of chosen) {
+      const t = (p.lead.city ?? 'Unknown').trim();
+      if (!byTown.has(t)) byTown.set(t, []);
+      byTown.get(t)!.push(p);
+    }
+    const inOrder: Piece[] = [];
+    for (const town of [...byTown.keys()].sort((a, b) => townRank(a) - townRank(b))) {
+      const stops = byTown.get(town)!.map((p) => ({
+        piece: p,
+        business_name: p.lead.business_name,
+        city: p.lead.city,
+        address: p.lead.address,
+      }));
+      process.stdout.write(`  ${town}: placing ${stops.length} `);
+      const { ordered, unplaced, miles } = await orderTown(town, stops, cache, REGION.state, (c) => process.stdout.write(c));
+      console.log(` ${ordered.length} placed, ${unplaced.length} not, ${miles.toFixed(0)} mi`);
+      inOrder.push(...ordered.map((s) => s.piece), ...unplaced.map((s) => s.piece));
+    }
+    chosen = inOrder;
+  }
 
   mkdirSync(path.join(OUT, 'press'), { recursive: true });
   mkdirSync(path.join(OUT, 'office'), { recursive: true });
@@ -650,12 +683,20 @@ async function renderRoute(browser: Browser, pieces: Piece[]) {
     byTown.get(t)!.push(p);
   }
 
-  const rows: unknown[][] = [['Town', 'Business', 'Flyer', 'Grade', 'Score', 'Phone', 'Address', 'Website', 'Scan link', 'Status']];
+  // The stop number IS the page number: the pieces render from this same
+  // sequence, so #7 on the sheet is the seventh page off the printer.
+  const numberOf = new Map<string, number>();
+  pieces.forEach((p, i) => numberOf.set(p.lead.id, i + 1));
+
+  const rows: unknown[][] = [['#', 'Town', 'Business', 'Flyer', 'Grade', 'Score', 'Phone', 'Address', 'Website', 'Scan link', 'Status']];
   for (const [t, list] of byTown) {
-    for (const { lead: l, kind } of list) {
+    for (const { lead: l, kind, presence } of list) {
       rows.push([
+        numberOf.get(l.id) ?? '',
         t, l.business_name, kind === 'nosite' ? 'no website' : 'audit',
-        l.audit_json?.letter_grade ?? '', l.audit_score ?? '',
+        // Same number as the piece she hands over. See the manifest note.
+        presence?.letter_grade ?? l.audit_json?.letter_grade ?? '',
+        presence ? Math.round(presence.overall_score) : (l.audit_score ?? ''),
         l.phone ?? '', l.address ?? '', host(l.website) ?? '', scanUrl(l.id), l.status ?? '',
       ]);
     }
@@ -666,13 +707,14 @@ async function renderRoute(browser: Browser, pieces: Piece[]) {
     <section class="town">
       <h2>${t} <span class="count">${list.length} ${list.length === 1 ? 'stop' : 'stops'}</span></h2>
       <table>
-        <thead><tr><th class="tick"></th><th>Business</th><th class="g">Grade</th><th>Phone</th><th>Address</th></tr></thead>
-        <tbody>${list.map(({ lead: l, kind }) => `<tr>
+        <thead><tr><th class="tick"></th><th class="g">Page</th><th>Business</th><th class="g">Grade</th><th>Phone</th><th>Address</th></tr></thead>
+        <tbody>${list.map(({ lead: l, kind, presence }) => `<tr>
           <td class="tick"><span class="box"></span></td>
+          <td class="mono">${numberOf.get(l.id) ?? ''}</td>
           <td class="biz">${clean(l.business_name)}<span class="dom">${kind === 'nosite' ? 'no website' : host(l.website) ?? ''}</span></td>
           <td class="g">${kind === 'nosite'
             ? '<span class="chip none">No site</span>'
-            : `<span class="chip">${l.audit_json?.letter_grade ?? ''}</span>`}</td>
+            : `<span class="chip">${presence?.letter_grade ?? l.audit_json?.letter_grade ?? ''}</span>`}</td>
           <td class="mono">${l.phone ?? ''}</td>
           <td class="addr">${l.address ? clean(l.address) : '<span class="need">address not on file</span>'}</td>
         </tr>`).join('')}</tbody>
@@ -782,14 +824,18 @@ function writeReports(
       towns: CITIES,
       max_age_days: MAX_AGE_DAYS,
       copies_per_business: COPIES,
-      printed: chosen.map(({ lead: l, kind }) => ({
+      printed: chosen.map(({ lead: l, kind, presence }) => ({
         id: l.id,
         business_name: l.business_name,
         city: l.city,
         flyer: kind,
         website: host(l.website),
-        grade: kind === 'nosite' ? null : (l.audit_json?.letter_grade ?? null),
-        score: kind === 'nosite' ? null : (l.audit_score ?? null),
+        // THE NUMBER ON HER SHEET IS THE NUMBER ON THEIR PAPER. The piece
+        // prints the presence score (website, reviews and profile); printing
+        // the website-only score here put Agave Cantina at 11 on the route
+        // sheet and 55 on the flyer in her hand (2026-09-20).
+        grade: kind === 'nosite' ? null : (presence?.letter_grade ?? l.audit_json?.letter_grade ?? null),
+        score: kind === 'nosite' ? null : (presence ? Math.round(presence.overall_score) : (l.audit_score ?? null)),
         audited_at: kind === 'nosite' ? null : l.audit_at,
         phone: l.phone,
         address: l.address,
