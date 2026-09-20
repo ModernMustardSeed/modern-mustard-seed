@@ -15,6 +15,13 @@ const COOKIE_NAME = 'mms_client';
 const SESSION_DAYS = 30;
 const MAGIC_MINUTES = 20;
 
+// The Command Center is its own product with its own door. A client signs into
+// it separately, with a code, and that sign-in is what opens /cc. A portal
+// session does not open the Command Center, and this one is enough for the
+// data routes both apps share.
+const CC_COOKIE = 'mms_cc';
+const CC_DAYS = 30;
+
 // Sarah looking at a client's portal as they see it. Honoured only while her own
 // admin session is valid too, so a look pass copied off her machine opens nothing.
 const LOOK_COOKIE = 'mms_client_look';
@@ -64,15 +71,17 @@ function normalizeEmail(email: string): string {
   return email.toLowerCase().trim();
 }
 
-// ── Token core. `kind` ('sess' | 'magic') keeps the two non-interchangeable ──
+// ── Token core. `kind` keeps the four non-interchangeable ──
 
-async function makeToken(kind: 'sess' | 'magic' | 'look', email: string, expires: number): Promise<string> {
+type TokenKind = 'sess' | 'magic' | 'look' | 'cc';
+
+async function makeToken(kind: TokenKind, email: string, expires: number): Promise<string> {
   const payload = `${kind}:${normalizeEmail(email)}:${expires}`;
   const sig = await hmacSign(payload);
   return `${stringToBase64Url(payload)}.${sig}`;
 }
 
-async function readToken(kind: 'sess' | 'magic' | 'look', token: string): Promise<{ email: string; expires: number } | null> {
+async function readToken(kind: TokenKind, token: string): Promise<{ email: string; expires: number } | null> {
   try {
     const [payloadB64, sig] = token.split('.');
     if (!payloadB64 || !sig) return null;
@@ -129,8 +138,50 @@ export async function getClientSession(): Promise<ClientSession | null> {
     if (as && (await getAdminSession())) return { ...as, preview: true };
   }
   const token = c.get(COOKIE_NAME)?.value;
+  if (token) {
+    const sess = await readToken('sess', token);
+    if (sess) return sess;
+  }
+  // Signed into the Command Center and nowhere else: the same person, so the
+  // data routes both apps share answer for them too.
+  const cc = c.get(CC_COOKIE)?.value;
+  if (!cc) return null;
+  return readToken('cc', cc);
+}
+
+// ── The Command Center's own session ──────────────────────────────
+// Set only by /api/cc/verify-code, after a code we emailed came back. The
+// portal's own cookie deliberately does NOT open the Command Center: they are
+// two products, sold apart, entered apart.
+
+export async function setCcSessionCookie(email: string): Promise<void> {
+  const expires = Date.now() + CC_DAYS * 24 * 60 * 60 * 1000;
+  const token = await makeToken('cc', email, expires);
+  const c = await cookies();
+  c.set(CC_COOKIE, token, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'lax', path: '/', maxAge: CC_DAYS * 24 * 60 * 60 });
+}
+
+export async function clearCcSessionCookie(): Promise<void> {
+  const c = await cookies();
+  c.delete(CC_COOKIE);
+}
+
+/** Who is in the Command Center: their own sign-in, or Sarah looking as them. */
+export async function getCcSession(): Promise<ClientSession | null> {
+  const c = await cookies();
+  const look = c.get(LOOK_COOKIE)?.value;
+  if (look) {
+    const as = await readToken('look', look);
+    if (as && (await getAdminSession())) return { ...as, preview: true };
+  }
+  const token = c.get(CC_COOKIE)?.value;
   if (!token) return null;
-  return readToken('sess', token);
+  return readToken('cc', token);
+}
+
+/** For middleware: verify a raw Command Center token (edge runtime). */
+export async function verifyCcToken(token: string): Promise<ClientSession | null> {
+  return readToken('cc', token);
 }
 
 /** Start looking at a client's portal as them. Admin routes only. */
@@ -156,4 +207,4 @@ export async function verifyClientToken(token: string): Promise<ClientSession | 
   return readToken('sess', token);
 }
 
-export { COOKIE_NAME as CLIENT_COOKIE_NAME, LOOK_COOKIE as CLIENT_LOOK_COOKIE_NAME, normalizeEmail };
+export { COOKIE_NAME as CLIENT_COOKIE_NAME, LOOK_COOKIE as CLIENT_LOOK_COOKIE_NAME, CC_COOKIE as CC_COOKIE_NAME, normalizeEmail };

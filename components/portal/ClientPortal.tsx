@@ -8,11 +8,8 @@ import HelpGuide from '@/components/HelpGuide';
 import MustardDeskCall from '@/components/MustardDeskCall';
 import DeskWelcome from '@/components/DeskWelcome';
 import { PostingTile, LeadsCard, ArticlesCard } from '@/components/portal/PortalExtras';
-import { ConversationsCard, DomainsCard, AccountsCard } from '@/components/portal/CommandCenter';
-import { TodayCard, CampaignsCard, MailCard } from '@/components/portal/CommandCenterMore';
-import { ProjectPhotosCard, ReviewsCard } from '@/components/portal/CommandCenterOps';
+import CommandCenterDoor from '@/components/portal/CommandCenterDoor';
 import Appointments from '@/components/portal/Appointments';
-import ContactsCard from '@/components/portal/ContactsCard';
 import { CLIENT_HELP } from '@/lib/help-content';
 import { OnboardingChecklist, OnboardingIntake } from '@/components/portal/Onboarding';
 import LaunchChecklist from '@/components/portal/LaunchChecklist';
@@ -290,19 +287,14 @@ export default function ClientPortal() {
               </div>
             )}
 
-            {data.commandCenter && <TodayCard />}
+            {/* The Command Center moved out of the portal on 2026-09-20 and became
+                its own app at /cc, with its own sign-in. What stands here is the
+                door. A client without one sees the portal exactly as before. */}
+            {data.commandCenter && <CommandCenterDoor business={data.client?.company ?? null} preview={Boolean(data.preview)} />}
             <Appointments />
             {data.posting && <PostingTile />}
             {(data.audience === 'client' || data.audience === 'both') && <LeadsCard />}
-            {data.commandCenter && <ContactsCard />}
-            {data.commandCenter && <MailCard />}
-            {data.commandCenter && <ConversationsCard />}
-            {data.commandCenter && <CampaignsCard />}
-            {data.commandCenter && <ReviewsCard />}
-            {data.commandCenter && <ProjectPhotosCard />}
             {(data.audience === 'client' || data.audience === 'both') && <ArticlesCard />}
-            {data.commandCenter && <DomainsCard />}
-            {data.commandCenter && <AccountsCard />}
 
             <div className="grid lg:grid-cols-3 gap-6">
               {/* Main column */}
