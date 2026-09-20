@@ -44,6 +44,11 @@ const LIMIT = Number(flag('limit') ?? 0);
 const ONLY = flag('only');
 /** Only the leads whose website grade is missing: the ones a failed pass cleared. */
 const MISSING_ONLY = argv.includes('--missing-only');
+/**
+ * Only the reports whose stored text matches this pattern. A pass fixes them
+ * and they drop out of the filter, so re-running resumes instead of redoing.
+ */
+const MATCHING = flag('matching');
 const CONCURRENCY = 3;
 const RECENT_HOURS = Number(flag('recent-hours') ?? 6);
 
@@ -66,6 +71,11 @@ if (MISSING_ONLY) {
   }
   audits = audits.filter((a) => missing.has(a.lead_id as string));
   console.log(`${audits.length} audits whose website grade is missing.`);
+}
+if (MATCHING) {
+  const rx = new RegExp(MATCHING);
+  audits = audits.filter((a) => rx.test(JSON.stringify(a.report ?? '')));
+  console.log(`${audits.length} audits matching /${MATCHING}/.`);
 }
 if (LIMIT) audits = audits.slice(0, LIMIT);
 
