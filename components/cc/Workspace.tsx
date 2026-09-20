@@ -12,6 +12,7 @@ import Reviews from '@/components/cc/modules/Reviews';
 import Marketing from '@/components/cc/modules/Marketing';
 import Website from '@/components/cc/modules/Website';
 import Accounts from '@/components/cc/modules/Accounts';
+import Domains from '@/components/cc/modules/Domains';
 import Operator from '@/components/cc/Operator';
 import Palette from '@/components/cc/Palette';
 
@@ -46,7 +47,7 @@ export type Pulse = {
   contacts: { total: number };
 };
 
-type ModuleKey = 'overview' | 'leads' | 'contacts' | 'conversations' | 'inbox' | 'reviews' | 'marketing' | 'website' | 'accounts';
+type ModuleKey = 'overview' | 'leads' | 'contacts' | 'conversations' | 'inbox' | 'reviews' | 'marketing' | 'website' | 'domains' | 'accounts';
 
 const MODULES: Array<{ key: ModuleKey; label: string; icon: IconName; group: string; title: string; blurb: string }> = [
   { key: 'overview', label: 'Overview', icon: 'overview', group: 'Today', title: 'Overview', blurb: 'What is waiting, what came in, what goes out.' },
@@ -57,6 +58,7 @@ const MODULES: Array<{ key: ModuleKey; label: string; icon: IconName; group: str
   { key: 'reviews', label: 'Reviews', icon: 'reviews', group: 'Growth', title: 'Reviews', blurb: 'Ask when a job closes. Nobody gets asked twice.' },
   { key: 'marketing', label: 'Marketing', icon: 'marketing', group: 'Growth', title: 'Marketing', blurb: 'What goes out this week, and what is waiting on your word.' },
   { key: 'website', label: 'Website', icon: 'website', group: 'Growth', title: 'Website', blurb: 'Your pages, your project photos, your articles.' },
+  { key: 'domains', label: 'Domains', icon: 'out', group: 'System', title: 'Domains', blurb: 'Every name you own, who holds it, and when it renews.' },
   { key: 'accounts', label: 'Accounts', icon: 'accounts', group: 'System', title: 'Accounts', blurb: 'What this runs on, and the one thing to do where it is not connected.' },
 ];
 
@@ -324,6 +326,8 @@ export default function Workspace() {
                 <Marketing refreshPulse={loadPulse} />
               ) : allowed === 'website' ? (
                 <Website session={session} />
+              ) : allowed === 'domains' ? (
+                <Domains />
               ) : (
                 <Accounts session={session} />
               )}
