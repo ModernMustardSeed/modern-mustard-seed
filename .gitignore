@@ -95,3 +95,4 @@ artifacts/
 /qa/*.json
 /qa/*.html
 /public/images/editorial/seed-sculpture.png
+/qa/discovery-local/

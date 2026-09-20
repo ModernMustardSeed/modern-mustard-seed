@@ -18,8 +18,8 @@ import { buildMetadata, SITE } from '@/lib/seo';
 import './globals.css';
 import './studio-chrome.css';
 
-const bodyFont = DM_Sans({ subsets: ['latin'], style: ['normal'], display: 'swap', variable: '--font-body' });
-const displayFont = Playfair_Display({ subsets: ['latin'], style: ['normal', 'italic'], display: 'swap', variable: '--font-display' });
+const bodyFont = DM_Sans({ subsets: ['latin'], style: ['normal'], display: 'optional', variable: '--font-body' });
+const displayFont = Playfair_Display({ subsets: ['latin'], style: ['normal', 'italic'], display: 'optional', variable: '--font-display' });
 const serifFont = Cormorant_Garamond({ subsets: ['latin'], weight: ['300', '400', '500', '600'], style: ['normal', 'italic'], display: 'swap', preload: false, variable: '--font-serif' });
 const monoFont = JetBrains_Mono({ subsets: ['latin'], weight: ['400', '500', '700'], display: 'swap', preload: false, variable: '--font-mono' });
 const condensedFont = Oswald({ subsets: ['latin'], weight: ['400', '500', '600', '700'], display: 'swap', preload: false, variable: '--font-oswald' });

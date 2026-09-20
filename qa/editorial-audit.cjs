@@ -4,6 +4,16 @@ const fs=require('node:fs/promises');
  const base=process.argv[2]||'http://localhost:3049';
  const browser=await chromium.launch({headless:true,args:['--remote-debugging-port=9345']});
  try{
+  if(process.argv[3]==='contrast'){
+   const context=await browser.newContext({viewport:{width:390,height:844}});
+   const page=await context.newPage();
+   await page.goto(base+'/inquire',{waitUntil:'networkidle'});
+   const AxeBuilder=require('C:/Users/SMSca/dev/mms/products/site-discovery/node_modules/@axe-core/playwright').default;
+   const result=await new AxeBuilder({page}).analyze();
+   console.log(JSON.stringify(result.violations.map(v=>({id:v.id,nodes:v.nodes.map(n=>({html:n.html,summary:n.failureSummary}))})),null,2));
+   return;
+  }
+
   const lighthouse=(await import('lighthouse')).default;
   const result=await lighthouse(base,{port:9345,output:'json',logLevel:'error',onlyCategories:['performance','accessibility','best-practices','seo']});
   await fs.writeFile('qa/lighthouse.json',result.report);
