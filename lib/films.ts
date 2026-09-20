@@ -36,6 +36,31 @@ export type Film = {
 };
 
 export const FILMS = {
+  littleYesHook: {
+    mp4: '/ads/little-yes/little-yes-hook-9x16.mp4',
+    poster: '/ads/little-yes/preview/poster-9x16-800.webp',
+    shipped: true,
+    runtime: '18 sec',
+  },
+  littleYes: {
+    mp4: '/ads/little-yes/little-yes-16x9.mp4',
+    poster: '/ads/little-yes/preview/poster-16x9-800.webp',
+    shipped: true,
+    runtime: '64 sec',
+  },
+  littleYesTall: {
+    mp4: '/ads/little-yes/little-yes-9x16.mp4',
+    poster: '/ads/little-yes/preview/poster-9x16-800.webp',
+    shipped: true,
+    runtime: '64 sec',
+  },
+  littleYesSquare: {
+    mp4: '/ads/little-yes/little-yes-1x1.mp4',
+    poster: '/ads/little-yes/preview/poster-1x1-800.webp',
+    shipped: true,
+    runtime: '64 sec',
+  },
+
   roomToGrow: {
     mp4: '/ads/room-to-grow/room-to-grow-16x9.mp4',
     poster: '/ads/room-to-grow/preview/poster-16x9-800.webp',
