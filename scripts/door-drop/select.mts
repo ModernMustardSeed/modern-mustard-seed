@@ -156,6 +156,25 @@ const CHAINS = [
   // plural spellings a scrape actually produces need their own entries.
   'wendys', 'arbys', 'dominos', 'lowes', 'mcdonalds', 'papa johns', 'jimmy johns',
   'applebees', 'dennys', 'papa murphys', 'taco johns', 'mcdonald’s',
+  // All four printed in the 2026-09-20 Kalispell run before anyone noticed.
+  // A franchisee cannot buy a website and the brand's marketing is not ours.
+  'buffalo wild wings', 'chick-fil-a', 'chick fil a', 'dickey', 'bojangles',
+  "4b's", '4bs restaurant', 'jersey mike', 'firehouse subs', 'smashburger',
+  'quiznos', 'blaze pizza', 'mountain mike', 'round table pizza', 'culver',
+  'in-n-out', 'whataburger', 'zaxby', 'raising cane', 'chuck e cheese',
+  'olive garden', 'outback steakhouse', 'red robin', 'texas roadhouse',
+  'ihop', 'perkins restaurant', 'village inn', 'golden corral', 'sizzler',
+];
+
+/**
+ * Regional systems that are not "chains" by name but are never a walk-in
+ * prospect: their marketing runs through a corporate department in another
+ * building. Logan Health printed in the 2026-09-20 Kalispell run.
+ */
+const INSTITUTIONS = [
+  'logan health', 'kalispell regional', 'providence health', 'billings clinic',
+  'glacier bank', 'first interstate bank', 'whitefish credit union', 'park side credit',
+  'flathead county', 'city of kalispell', 'school district', 'united states postal',
 ];
 
 /** Only when the whole name is the brand. See the note above. */
@@ -448,6 +467,20 @@ export function gate(
     if (l.duplicate_of) { drop(l, 'reachable', 'duplicate of another lead'); continue; }
     if (l.unsubscribed_at || l.suppression_reason) { drop(l, 'reachable', 'unsubscribed or suppressed'); continue; }
     if (opts.skipNames.has(lowerName)) { drop(l, 'reachable', 'on the hand skip list'); continue; }
+
+    /**
+     * WHO THEY ARE IS DECIDED BEFORE WHETHER THEY HAVE A SITE.
+     *
+     * These two ran after the no-website branch below, which `continue`s, so a
+     * chain with no website of its own skipped the chain gate completely and
+     * 4B's Restaurant went into the 2026-09-20 Kalispell box. A franchise with
+     * no website is still a franchise.
+     */
+    const chainName = CHAINS.find((c) => chainRe(c).test(lowerName)) ?? isExactChain(name);
+    if (chainName) { drop(l, 'local', `national chain by name (${chainName})`); continue; }
+    const institutionName = INSTITUTIONS.find((c) => lowerName.includes(c));
+    if (institutionName) { drop(l, 'local', `regional institution, marketing runs elsewhere (${institutionName})`); continue; }
+
     /**
      * No website is not a rejection, it is the other campaign. It only counts
      * when somebody opened the listing and saw that: the marker carries the date
@@ -467,8 +500,6 @@ export function gate(
       continue;
     }
 
-    const chain = CHAINS.find((c) => chainRe(c).test(lowerName)) ?? isExactChain(name);
-    if (chain) { drop(l, 'local', `national chain by name (${chain})`); continue; }
     const sharedBy = l.domain_key ? (shared.get(l.domain_key) ?? 0) : 0;
     if (sharedBy >= 3) {
       drop(l, 'local', `domain shared by ${sharedBy} leads, so it is a corporate site`);
@@ -499,5 +530,45 @@ export function gate(
     }
     keep.push(l);
   }
-  return { keep, nosite, stale, dropped };
+  /**
+   * ONE PIECE PER BUSINESS, PER DOOR.
+   *
+   * The lead list holds the same business more than once: a Maps sweep and a
+   * hand import of the same street produce two rows with the same name at the
+   * same address. The 2026-09-20 Kalispell run printed six businesses twice,
+   * which is two sheets handed to one owner and a run that looks careless.
+   * The row with a real grade wins, then the fresher audit.
+   */
+  const norm = (s: string | null) => (s || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+  const digits = (s: string | null) => {
+    const d = String(s ?? '').replace(/\D/g, '');
+    return d.length === 11 && d.startsWith('1') ? d.slice(1) : d;
+  };
+  /**
+   * Same phone at the same door is the same business whatever the two rows call
+   * it: "Chinatown" and "Chinatown Restaurant" at 1031 U.S. Hwy 2 W share a
+   * phone and a website and would have been two pieces (2026-09-20). Name plus
+   * address is the fallback for a row with no phone.
+   */
+  const key = (l: Lead) =>
+    (digits(l.phone) && l.address ? `tel ${digits(l.phone)}|${norm(l.address)}` : `${norm(l.business_name)}|${norm(l.address)}`);
+  const dedupe = (list: Lead[], label: string) => {
+    const best = new Map<string, Lead>();
+    for (const l of list) {
+      const k = key(l);
+      const had = best.get(k);
+      if (!had) { best.set(k, l); continue; }
+      const score = (x: Lead) => (x.audit_json ? 2 : 0) + (x.presence_audit_id ? 1 : 0);
+      const at = (x: Lead) => (x.audit_at ? Date.parse(x.audit_at) : 0);
+      const better = score(l) > score(had) || (score(l) === score(had) && at(l) > at(had));
+      if (better) {
+        best.set(k, l);
+        drop(had, 'once', `same business at the same address as ${l.id}, printed once${label}`);
+      } else {
+        drop(l, 'once', `same business at the same address as ${had.id}, printed once${label}`);
+      }
+    }
+    return [...best.values()];
+  };
+  return { keep: dedupe(keep, ''), nosite: dedupe(nosite, ' (no website)'), stale, dropped };
 }

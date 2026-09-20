@@ -505,8 +505,28 @@ Return the JSON report.`;
    * CLI engine has no schema enforcement at all and needs it more.
    */
   const trimToShape = (report: WebsiteAuditReport & { top_three_fixes?: unknown[]; full_todo?: unknown[] }) => {
-    if (Array.isArray(report.top_three_fixes)) report.top_three_fixes = report.top_three_fixes.slice(0, 3);
-    if (Array.isArray(report.full_todo)) report.full_todo = report.full_todo.slice(0, 15);
+    // A half-written fix must never leave this function. The CLI sometimes
+    // returns a truncated document, and the repair in claude-code-json.ts
+    // closes the JSON without restoring the field that was cut off, so a fix
+    // can arrive with no `how`. That crashed the door-drop printer on
+    // 2026-09-20 and would have printed a blank instruction if it had not.
+    const str = (v: unknown) => typeof v === 'string' && v.trim().length > 0;
+    if (Array.isArray(report.top_three_fixes)) {
+      report.top_three_fixes = report.top_three_fixes
+        .filter((f): f is { title: string; why: string; how: string } => {
+          const o = f as Record<string, unknown> | null;
+          return Boolean(o) && str(o!.title) && str(o!.why) && str(o!.how);
+        })
+        .slice(0, 3);
+    }
+    if (Array.isArray(report.full_todo)) {
+      report.full_todo = report.full_todo
+        .filter((t) => {
+          const o = t as Record<string, unknown> | null;
+          return Boolean(o) && str(o!.task) && str(o!.category) && str(o!.priority);
+        })
+        .slice(0, 15);
+    }
     return report;
   };
 
