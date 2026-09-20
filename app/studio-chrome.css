@@ -1,0 +1,66 @@
+/* Editorial studio chrome, scoped to public navigation and footer. */
+nav[data-studio-nav]{background:#fbf6eaf5;border-bottom:1px solid #080c1620;box-shadow:none!important}
+nav[data-studio-nav]>div{max-width:none;padding:19px 6vw}
+nav[data-studio-nav] a,nav[data-studio-nav] button{box-shadow:none!important}
+nav[data-studio-nav] a{border-width:1px}
+nav[data-studio-nav] button{border-width:1px;width:44px;height:44px}
+nav[data-studio-nav]>div>a>span{font-size:13px;font-weight:600;letter-spacing:.01em;text-transform:none}
+nav[data-studio-nav]>div>a>img{height:34px}
+nav[data-studio-nav] a[href='/book']{border-radius:2px;padding:12px 20px;font-weight:600;font-size:10px}
+nav[data-studio-nav] a[href='/portal']{border:0;background:transparent}
+nav[data-studio-nav] a[aria-label='Modern Mustard Seed on Facebook']{border:0;background:transparent}
+.studio-footer{padding:75px 6vw 28px;background:#080c16;color:#fbf6ea}
+.studio-footer a:focus-visible,.studio-footer button:focus-visible{outline:2px solid #f5b700;outline-offset:5px}
+.studio-footer-top{display:grid;grid-template-columns:1.2fr 1fr;gap:12%;padding-bottom:60px;border-bottom:1px solid #fbf6ea25}
+.studio-footer-brand{font-size:clamp(36px,5.5vw,80px);line-height:1.05;letter-spacing:-.045em;font-family:var(--font-display),serif}
+.studio-footer-brand em{color:#f5b700;font-weight:400}
+.studio-footer-top>div>p{font-size:13px;line-height:1.85;color:#bdbfc4;max-width:420px;margin-bottom:25px}
+.studio-footer-top>div>a{display:block;width:fit-content;font-size:13px;line-height:2.1;color:#fbf6ea}
+.studio-footer-top>div>.studio-footer-inquire{display:flex;align-items:center;gap:50px;color:#f5b700;border-bottom:1px solid #f5b70060;padding-bottom:8px;margin-bottom:20px;font-size:13px}
+.studio-footer-inquire>span{font-size:24px}
+.studio-footer-links{display:grid;grid-template-columns:repeat(4,1fr);gap:35px;padding:50px 0}
+.studio-footer-links h2{font-size:9px;text-transform:uppercase;letter-spacing:.18em;color:#f5b700;margin:0 0 22px;font-family:var(--font-body),sans-serif;font-weight:500}
+.studio-footer-links li{margin:0}.studio-footer-links a{display:block;width:fit-content;padding:6px 0;font-size:12px;line-height:1.45;color:#c6c8cc;transition:color .2s}.studio-footer-links a:hover{color:#f5b700}
+.studio-footer-seed{display:flex;align-items:center;gap:24px;max-width:770px;margin:12px 0 48px;padding:26px 0;border-top:1px solid #fbf6ea25}
+.studio-footer-seed img{width:44px;height:auto;flex-shrink:0}.studio-footer-seed p{font-family:var(--font-display),serif;font-size:15px;line-height:1.7;font-style:italic;color:#c6c8cc}.studio-footer-seed span{display:block;margin-top:12px;font-size:9px;letter-spacing:.08em;color:#c6c8cc}
+.studio-footer-bottom{border-top:1px solid #fbf6ea25;padding-top:24px}.studio-footer-bottom>div{display:flex;flex-wrap:wrap;gap:8px 22px;align-items:center}.studio-footer-bottom a,.studio-footer-bottom button{font-family:var(--font-body),sans-serif;font-weight:400;font-size:10px;letter-spacing:0;color:#c6c8cc;border:0;border-radius:0;box-shadow:none;background:transparent;text-transform:none;min-height:44px;display:inline-flex;align-items:center;padding:0}.studio-footer-bottom>p{font-size:10px;color:#9c9fa6;margin-top:20px}
+@media(max-width:760px){nav[data-studio-nav]>div{padding:14px 5vw;gap:10px}nav[data-studio-nav]>div>a{gap:7px}nav[data-studio-nav]>div>a>span{font-size:11px;max-width:130px;line-height:1.3}nav[data-studio-nav]>div>a>img{height:29px}nav[data-studio-nav] a[aria-label='Modern Mustard Seed on Facebook']{display:none}.studio-footer{padding:55px 6vw 25px}.studio-footer-top{grid-template-columns:1fr;gap:30px;padding-bottom:35px}.studio-footer-brand{font-size:46px}.studio-footer-links{grid-template-columns:1fr 1fr;gap:30px 20px;padding:38px 0}.studio-footer-links a{font-size:11px;min-height:44px;display:flex;align-items:center;padding:8px 0}.studio-footer-links h2{font-size:8px;margin-bottom:12px}.studio-footer-seed{gap:16px;margin-bottom:25px}.studio-footer-seed p{font-size:13px}.studio-footer-bottom>div{gap:0 18px}}
+
+[data-studio-page] .halftone-bg{display:none}
+[data-studio-page] .pop-card,[data-studio-page] .pop-card-yellow,[data-studio-page] [class*='shadow-']{box-shadow:none!important;border-width:1px;border-color:#080c1630;border-radius:3px}
+[data-studio-page] h1,[data-studio-page] h2,[data-studio-page] h3{font-weight:400;letter-spacing:-.035em}
+[data-studio-page] h1{letter-spacing:-.055em;line-height:1.05}
+[data-studio-page] [style*='text-stroke']{-webkit-text-stroke:0!important;color:#080c16;font-style:italic}
+[data-studio-page] input,[data-studio-page] textarea,[data-studio-page] select{border-width:1px;border-radius:3px}
+[data-studio-page] [class*='border-2']{border-width:1px}
+[data-studio-page] [class*='border-t-2']{border-top-width:1px}
+[data-studio-page] [class*='border-b-2']{border-bottom-width:1px}
+[data-studio-consent]>div{border-width:1px;border-color:#080c1630;border-radius:4px;box-shadow:0 12px 50px #080c1620}
+[data-studio-consent] button{border-width:1px;box-shadow:none;min-height:44px;border-radius:2px;font-weight:500;font-size:10px}
+[data-studio-consent] p:first-child{font-weight:500}
+[data-studio-launcher]>div{border:1px solid #080c1630;box-shadow:0 6px 25px #080c1630;border-radius:40px;padding:6px 14px 6px 6px;background:#fbf6ea}
+[data-studio-launcher]>div>span:first-child{border:0;background:#f5b700}
+[data-studio-launcher]>div>span:nth-child(2){font-size:12px;font-weight:500}
+@media(max-width:639px){[data-studio-launcher]>div{padding:5px}}
+
+.studio-footer-seed img{width:44px;height:59px;object-fit:contain}
+
+nav[data-studio-nav] a{border-width:0}
+nav[data-studio-nav] a[href='/book']{border:1px solid #080c16}
+@media(prefers-reduced-motion:no-preference){[data-design='mms-editorial-2026']>section:first-child picture{animation:studio-art-enter 1.2s cubic-bezier(.2,.7,.2,1) both}}
+@keyframes studio-art-enter{from{opacity:.4;transform:scale(1.04)}to{opacity:1;transform:scale(1)}}
+
+[data-studio-page] :is(a,button,input,textarea,select):focus-visible{outline:2px solid #1e50c8;outline-offset:4px}
+[data-studio-page] form button{min-height:44px}
+
+#site-mega-menu [class*='shadow-']{box-shadow:none!important}
+#site-mega-menu [class*='border-2']{border-width:1px;border-color:#080c1630;border-radius:3px}
+#site-mega-menu [style*='radial-gradient']{display:none}
+#site-mega-menu .font-display{font-weight:400;letter-spacing:-.03em}
+#site-mega-menu button{min-width:44px;min-height:44px}
+#site-mega-menu a:focus-visible,#site-mega-menu button:focus-visible{outline:2px solid #1e50c8;outline-offset:4px}
+[role='dialog'][aria-label*='Mr. Mustard']{border-width:1px;box-shadow:0 15px 60px #080c1630;border-radius:6px}
+[role='dialog'][aria-label*='Mr. Mustard'] [class*='shadow-']{box-shadow:none}
+[role='dialog'][aria-label*='Mr. Mustard'] [style*='radial-gradient']{display:none}
+[role='dialog'][aria-label*='Mr. Mustard'] .font-display{font-weight:400}
+[role='dialog'][aria-label*='Mr. Mustard'] button{border-width:1px}

@@ -32,7 +32,7 @@ export default function CookieConsent() {
   };
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-[120] p-3 sm:p-5 print:hidden">
+    <div data-studio-consent="true" className="fixed inset-x-0 bottom-0 z-[120] p-3 sm:p-5 print:hidden">
       <div className="max-w-3xl mx-auto rounded-2xl border-[3px] border-[#161616] bg-[#FBF6EA] shadow-[6px_6px_0_0_#161616] p-5 sm:p-6">
         <div className="sm:flex sm:items-center sm:gap-6">
           <div className="flex-1 mb-4 sm:mb-0">

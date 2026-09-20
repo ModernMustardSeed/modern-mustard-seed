@@ -63,7 +63,7 @@ const PROCESS = [
 
 export default function InquirePage() {
   return (
-    <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
+    <div data-studio-page="inquire" className="min-h-screen bg-[#FBF6EA] text-[#161616]">
       <JsonLd
         data={[
           breadcrumbJsonLd([
@@ -96,7 +96,7 @@ export default function InquirePage() {
         />
         <div className="relative mx-auto max-w-6xl px-6 pt-32 pb-16 md:pt-44 md:pb-24">
           <div className="max-w-3xl">
-            <span className="inline-flex items-center gap-2 rounded-full border-2 border-[#161616] bg-white px-4 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-[#E0301E] shadow-[3px_3px_0_0_#161616]">
+            <span className="inline-flex items-center gap-2 rounded-full border-2 border-[#161616] bg-white px-4 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-[#B92417] shadow-[3px_3px_0_0_#161616]">
               By inquiry
             </span>
             <h1 className="mt-7 font-display text-5xl font-extrabold leading-[0.98] tracking-tight text-[#161616] md:text-6xl lg:text-[4.5rem]">
@@ -121,7 +121,7 @@ export default function InquirePage() {
           <InquiryForm />
 
           <div className="lg:pt-4">
-            <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-[#E0301E]">
+            <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-[#B92417]">
               What we are engaged for
             </p>
             <div className="mt-6 space-y-6">
@@ -167,7 +167,7 @@ export default function InquirePage() {
       <section className="border-y-2 border-[#161616] bg-[#F5F0E8] py-16 md:py-24">
         <div className="mx-auto max-w-6xl px-6">
           <div className="max-w-2xl">
-            <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-[#E0301E]">
+            <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-[#B92417]">
               How it runs
             </p>
             <h2 className="mt-4 font-display text-4xl font-extrabold leading-[1.02] tracking-tight text-[#161616] md:text-5xl">
@@ -210,7 +210,7 @@ export default function InquirePage() {
             <br className="hidden sm:block" />{' '}
             <a
               href={`mailto:${SITE.email}`}
-              className="font-bold text-[#1E50C8] underline decoration-2 underline-offset-2 hover:text-[#E0301E]"
+              className="font-bold text-[#1E50C8] underline decoration-2 underline-offset-2 hover:text-[#B92417]"
             >
               {SITE.email}
             </a>

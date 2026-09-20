@@ -21,7 +21,7 @@ export default function WorkIndex() {
           { name: 'Work', url: '/work' },
         ])}
       />
-      <div className="relative min-h-screen bg-[#FBF6EA] text-[#161616] pt-36 md:pt-44 pb-28">
+      <div data-studio-page="work" className="relative min-h-screen bg-[#FBF6EA] text-[#161616] pt-36 md:pt-44 pb-28">
         <div aria-hidden="true" className="absolute inset-0 halftone-bg opacity-50 pointer-events-none" />
         <div className="relative max-w-6xl mx-auto px-6 md:px-8">
           <div className="text-center mb-12">

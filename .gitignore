@@ -89,3 +89,10 @@ artifacts/
 .door-drop-enrich.mjs
 .revert-lib.mjs
 .door-drop-source.mjs
+
+# Editorial redesign visual verification and original artwork
+/qa/*.png
+/qa/*.json
+/qa/*.html
+/public/images/editorial/seed-sculpture.png
+/qa/discovery-local/
