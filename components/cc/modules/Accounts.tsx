@@ -136,29 +136,6 @@ export default function Accounts({ session }: { session: Session }) {
 
       <div className="grid lg:grid-cols-2 gap-5">
         <Card>
-          <CardHead title="Domains" hint="Every name you own, re-read from the registry every week. We carry the renewals." />
-          {!domains ? (
-            <Skeleton rows={3} />
-          ) : domains.length === 0 ? (
-            <Empty title="No domains on file" />
-          ) : (
-            <ul className="divide-y divide-[var(--cc-line)]">
-              {domains.slice(0, 10).map((d) => (
-                <li key={d.domain} className="flex items-center justify-between gap-3 py-2.5 first:pt-0">
-                  <div className="min-w-0">
-                    <p className="truncate text-[14px] font-semibold">{d.domain}</p>
-                    <p className="truncate text-[12.5px] text-[var(--cc-muted)]">{d.registrar ?? d.role ?? d.status}</p>
-                  </div>
-                  <span className="flex-none text-[12.5px] text-[var(--cc-muted)]">
-                    {d.expires_on ? new Date(d.expires_on).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : '—'}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          )}
-        </Card>
-
-        <Card>
           <CardHead title="Ask for a change" hint="It goes straight to Sarah. Changes to what we built are included, always." />
           {sent ? (
             <div className="rounded-lg border border-[#ABEFC6] bg-[#ECFDF3] px-4 py-3 text-[13.5px] text-[#067647]">

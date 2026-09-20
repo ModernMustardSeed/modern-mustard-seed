@@ -42,6 +42,7 @@ export async function GET() {
       reviews: account.project.reviews.length > 0,
       marketing: Boolean(posting?.visible),
       website: account.project.projects.length > 0,
+      domains: true,
       accounts: true,
     },
     state: {
