@@ -14,6 +14,13 @@ import { Badge, Button, Card, CardHead, Empty, ErrorNote, Label, Skeleton, Stat,
  * marketing company's registrar, they control it. Once it is with us it is
  * held for the client, transferable to them on a day's notice, and the
  * renewal is ours to carry.
+ *
+ * Sarah 2026-09-20: nothing has been transferred yet. All 21 names are
+ * unlocked and their auth codes are in hand, and the move is on hold by her
+ * decision, so this screen tells the truth by saying Namecheap, through Web
+ * Express. Two dates decide when that stops being free to ignore:
+ * innovativedesignbuild.us renews 2026-10-20, and five .com names renew
+ * 2026-12-31.
  */
 
 type Domain = {
