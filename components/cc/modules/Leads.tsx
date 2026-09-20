@@ -151,7 +151,39 @@ export default function Leads({ session, refreshPulse }: { session: Session; ref
             />
           </div>
         ) : (
-          <div className="overflow-x-auto">
+          <>
+            {/* On a phone a five column table clips the one button that matters,
+                so the same rows are cards down there and a table from md up. */}
+            <ul className="md:hidden divide-y divide-[var(--cc-line)]">
+              {rows.map((l) => (
+                <li key={l.id} className="px-4 py-3.5">
+                  <button onClick={() => setOpen(l)} className="block w-full text-left">
+                    <span className="block font-semibold">{l.name ?? 'Someone'}</span>
+                    <span className="block text-[12.5px] text-[var(--cc-muted)]">
+                      {[l.town, l.project_type].filter(Boolean).join(' · ') || l.phone || l.email || ''}
+                    </span>
+                    <span className="mt-0.5 block text-[12px] text-[var(--cc-muted)]">
+                      {(l.sources?.length ? l.sources.join(', ') : l.source) ?? 'Website'} · {when(l.created_at)}
+                    </span>
+                  </button>
+                  <div className="mt-2.5 flex flex-wrap items-center gap-2">
+                    {l.phone && (
+                      <Button href={`tel:${l.phone.replace(/[^\d+]/g, '')}`}>
+                        <Icon name="phone" size={15} /> Call
+                      </Button>
+                    )}
+                    {l.handled_at ? (
+                      <Badge tone="good">Called</Badge>
+                    ) : (
+                      <Button kind="primary" onClick={() => mark(l, true)} disabled={busy === l.id}>
+                        <Icon name="check" size={15} /> {busy === l.id ? 'Saving' : 'Called'}
+                      </Button>
+                    )}
+                  </div>
+                </li>
+              ))}
+            </ul>
+            <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-left text-[14px]">
               <thead>
                 <tr className="border-b border-[var(--cc-line)] bg-[#FAFBFC]">
@@ -190,7 +222,8 @@ export default function Leads({ session, refreshPulse }: { session: Session; ref
                 ))}
               </tbody>
             </table>
-          </div>
+            </div>
+          </>
         )}
       </Card>
 
