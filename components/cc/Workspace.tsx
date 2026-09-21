@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Icon, type IconName } from '@/components/cc/icons';
-import { Badge, Button, cx } from '@/components/cc/ui';
+import { Badge, Button, Who, cx, waited } from '@/components/cc/ui';
 import Overview from '@/components/cc/modules/Overview';
 import Leads from '@/components/cc/modules/Leads';
 import Contacts from '@/components/cc/modules/Contacts';
@@ -13,6 +13,7 @@ import Marketing from '@/components/cc/modules/Marketing';
 import Website from '@/components/cc/modules/Website';
 import Accounts from '@/components/cc/modules/Accounts';
 import Domains from '@/components/cc/modules/Domains';
+import Week from '@/components/cc/modules/Week';
 import Operator from '@/components/cc/Operator';
 import Palette from '@/components/cc/Palette';
 
@@ -31,6 +32,9 @@ import Palette from '@/components/cc/Palette';
 export type Session = {
   email: string;
   person: string | null;
+  /** The named person at the desk, when they have said who they are. */
+  who: { key: string; name: string } | null;
+  people: Array<{ key: string; name: string }>;
   preview: boolean;
   brand: { business: string; name: string; logo: string; logoOnDark: string; colors: { ink: string; paper: string; accent: string; accent2: string }; siteUrl: string; guideName: string };
   modules: Record<string, boolean>;
@@ -38,7 +42,7 @@ export type Session = {
 };
 
 export type Pulse = {
-  leads: { waiting: number; today: number; month: number; days: Array<{ day: string; count: number }> };
+  leads: { waiting: number; oldestWaitingAt: string | null; mine: number; unowned: number; today: number; month: number; days: Array<{ day: string; count: number }> };
   inbox: { unread: number; needsReply: number };
   reviews: { asked30: number };
   marketing: { scheduled: number; awaitingApproval: number };
@@ -47,13 +51,14 @@ export type Pulse = {
   contacts: { total: number };
 };
 
-type ModuleKey = 'overview' | 'leads' | 'contacts' | 'conversations' | 'inbox' | 'reviews' | 'marketing' | 'website' | 'domains' | 'accounts';
+type ModuleKey = 'overview' | 'week' | 'leads' | 'contacts' | 'conversations' | 'inbox' | 'reviews' | 'marketing' | 'website' | 'domains' | 'accounts';
 
 const MODULES: Array<{ key: ModuleKey; label: string; icon: IconName; group: string; title: string; blurb: string }> = [
-  { key: 'overview', label: 'Overview', icon: 'overview', group: 'Today', title: 'Overview', blurb: 'What is waiting, what came in, what goes out.' },
+  { key: 'overview', label: 'Now', icon: 'overview', group: 'Today', title: 'Now', blurb: 'What needs you, and nothing else.' },
   { key: 'leads', label: 'Leads', icon: 'leads', group: 'Today', title: 'Leads', blurb: 'Everyone who reached out, and the door they used.' },
   { key: 'inbox', label: 'Inbox', icon: 'inbox', group: 'Today', title: 'Inbox', blurb: 'Your mail, sorted, with a reply drafted where one is needed.' },
   { key: 'conversations', label: 'Conversations', icon: 'chat', group: 'Today', title: 'Conversations', blurb: 'Every chat on your website, in their words.' },
+  { key: 'week', label: 'This week', icon: 'week', group: 'Today', title: 'This week', blurb: 'What the website and the desk did, counted. Made to be forwarded.' },
   { key: 'contacts', label: 'Contacts', icon: 'contacts', group: 'Book', title: 'Contacts', blurb: 'Your whole book: customers, subs, suppliers, realtors.' },
   { key: 'reviews', label: 'Reviews', icon: 'reviews', group: 'Growth', title: 'Reviews', blurb: 'Ask when a job closes. Nobody gets asked twice.' },
   { key: 'marketing', label: 'Marketing', icon: 'marketing', group: 'Growth', title: 'Marketing', blurb: 'What goes out this week, and what is waiting on your word.' },
@@ -78,6 +83,11 @@ export default function Workspace() {
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [operatorOpen, setOperatorOpen] = useState(false);
   const [failed, setFailed] = useState(false);
+  // What the Operator opens with. send is true only when a person typed the
+  // words themselves; a suggestion fills the box and waits for their press.
+  const [seed, setSeed] = useState<{ text: string; send: boolean; n: number } | null>(null);
+  const [askText, setAskText] = useState('');
+  const [deskOpen, setDeskOpen] = useState(false);
 
   const loadPulse = useCallback(async () => {
     try {
@@ -93,7 +103,9 @@ export default function Workspace() {
     (async () => {
       try {
         const r = await fetch('/api/cc/session', { cache: 'no-store' });
-        if (r.status === 401) {
+        // 403 is a signed-in account whose Command Center is switched off. That
+        // is not a fault, so it lands on sign-in, not on the failure screen.
+        if (r.status === 401 || r.status === 403) {
           window.location.href = '/cc/login';
           return;
         }
@@ -148,6 +160,26 @@ export default function Workspace() {
     setPaletteOpen(false);
   }, []);
 
+  const ask = useCallback((text?: string, send = false) => {
+    if (text) setSeed((prev) => ({ text, send, n: (prev?.n ?? 0) + 1 }));
+    setOperatorOpen(true);
+    setRailOpen(false);
+  }, []);
+
+  const sitDown = useCallback(async (key: string) => {
+    setDeskOpen(false);
+    try {
+      const r = await fetch('/api/cc/who', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ key }) });
+      const j = (await r.json()) as { ok?: boolean; who?: { key: string; name: string } };
+      if (r.ok && j.who) {
+        setSession((prev) => (prev ? { ...prev, who: j.who ?? null, person: j.who?.name ?? null } : prev));
+        void loadPulse();
+      }
+    } catch {
+      /* the picker stays where it was; nothing was signed under a wrong name */
+    }
+  }, [loadPulse]);
+
   const visible = useMemo(() => MODULES.filter((m) => session?.modules?.[m.key] !== false), [session]);
   // A hash for a room this account does not own lands on the Overview rather
   // than on a door that opens on nothing.
@@ -165,7 +197,9 @@ export default function Workspace() {
 
   if (failed) {
     return (
-      <main className="min-h-screen grid place-items-center bg-[#F6F7F9] px-6">
+      // The brand never loaded on this screen, so the tokens the buttons read
+      // are set here. Without them the primary button is white on nothing.
+      <main className="min-h-screen grid place-items-center bg-[#F6F7F9] px-6" style={{ '--cc-accent': '#12151b', '--cc-ink': '#12151b', '--cc-line': '#E4E7EC', '--cc-muted': '#5B6472' } as React.CSSProperties}>
         <div className="max-w-md text-center text-[#12151b]">
           <h1 className="font-display text-2xl">The Command Center could not load</h1>
           <p className="mt-2 text-[14px] text-[#5b6472]">It is us, not you. Try again in a moment, or email sarah@modernmustardseed.com and it gets looked at today.</p>
@@ -197,7 +231,7 @@ export default function Workspace() {
         {/* rail */}
         <aside
           className={cx(
-            'fixed lg:static inset-y-0 left-0 z-40 w-[248px] flex-none bg-[#0F1218] text-white flex flex-col transition-transform',
+            'fixed lg:sticky lg:top-0 lg:h-screen inset-y-0 left-0 z-40 w-[248px] print:hidden flex-none bg-[#0F1218] text-white flex flex-col transition-transform',
             railOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
           )}
         >
@@ -225,6 +259,7 @@ export default function Workspace() {
                   <p className="px-2 py-2 font-mono text-[9px] uppercase tracking-[0.2em] text-white/35">{group}</p>
                   {items.map((m) => {
                     const n = badge(m.key);
+                    const cold = m.key === 'leads' && pulse?.leads.oldestWaitingAt ? waited(pulse.leads.oldestWaitingAt).tone : null;
                     return (
                       <button
                         key={m.key}
@@ -239,7 +274,7 @@ export default function Workspace() {
                           <Icon name={m.icon} />
                         </span>
                         <span className="flex-1 truncate font-medium">{m.label}</span>
-                        {n > 0 && <span className="flex-none rounded-full bg-[var(--cc-accent)] px-1.5 py-0.5 text-[10px] font-bold tabular-nums text-white">{n}</span>}
+                        {n > 0 && <span className={cx('flex-none rounded-full px-1.5 py-0.5 text-[10px] font-bold tabular-nums text-white', cold === 'cold' ? 'bg-[#D92D20]' : cold === 'late' ? 'bg-[#DC6803]' : 'bg-[var(--cc-accent)]')}>{n}</span>}
                       </button>
                     );
                   })}
@@ -248,10 +283,31 @@ export default function Workspace() {
             })}
           </nav>
           <div className="flex-none border-t border-white/10 px-4 py-3">
-            <button onClick={() => setOperatorOpen(true)} className="w-full flex items-center gap-2 rounded-lg bg-white/[0.07] px-3 py-2.5 text-left text-[13px] font-semibold text-white hover:bg-white/[0.12] transition">
+            <button onClick={() => ask()} className="w-full flex items-center gap-2 rounded-lg bg-white/[0.07] px-3 py-2.5 text-left text-[13px] font-semibold text-white hover:bg-white/[0.12] transition">
               <span className="text-[var(--cc-accent)]"><Icon name="operator" /></span>
               Ask the Operator
             </button>
+            {/* Who is at the desk. One office screen serves three people, so the
+                name is one tap to change. Sarah looking as the client is never
+                offered a client's name to sign with. */}
+            {session && !session.preview && session.people.length > 0 && (
+              <div className="relative mt-2">
+                <button onClick={() => setDeskOpen((v) => !v)} aria-haspopup="menu" aria-expanded={deskOpen} className="flex w-full items-center justify-between gap-2 rounded-lg border border-white/10 px-3 py-2 text-left text-[12.5px] text-white/75 hover:border-white/25 hover:text-white">
+                  <span className="min-w-0 truncate">{session.who ? `${session.who.name} at the desk` : 'Who is at the desk?'}</span>
+                  <svg width="10" height="10" viewBox="0 0 20 20" aria-hidden className="flex-none"><path d="m5 12 5-5 5 5" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                </button>
+                {deskOpen && (
+                  <div role="menu" className="absolute bottom-full left-0 right-0 z-10 mb-1 rounded-xl border border-white/10 bg-[#1A1F29] p-1 shadow-[0_-12px_32px_-12px_rgba(0,0,0,.6)]">
+                    {session.people.map((p) => (
+                      <button key={p.key} role="menuitem" onClick={() => sitDown(p.key)} className="flex w-full items-center justify-between rounded-lg px-2.5 py-2 text-left text-[13px] text-white/80 hover:bg-white/[0.07] hover:text-white">
+                        {p.name}
+                        {session.who?.key === p.key && <span className="text-[var(--cc-accent)]"><Icon name="check" size={14} /></span>}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
             <a href="/portal" className="mt-3 block font-mono text-[9px] uppercase tracking-[0.16em] text-white/45 hover:text-white">
               Your project portal
             </a>
@@ -274,11 +330,8 @@ export default function Workspace() {
 
         {/* canvas */}
         <div className="flex-1 min-w-0 flex flex-col">
-          <header className="sticky top-0 z-20 flex-none border-b border-[var(--cc-line)] bg-[var(--cc-paper)]/85 backdrop-blur">
+          <header className="sticky top-0 z-20 flex-none print:hidden border-b border-[var(--cc-line)] bg-[var(--cc-paper)]/85 backdrop-blur">
             <div className="flex items-center gap-3 px-4 sm:px-6 py-3">
-              <button className="lg:hidden rounded-lg border border-[var(--cc-line)] bg-white p-2" onClick={() => setRailOpen(true)} aria-label="Open menu">
-                <svg width="18" height="18" viewBox="0 0 20 20" aria-hidden><path d="M3 6h14M3 10h14M3 14h14" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>
-              </button>
               <div className="min-w-0 flex-1">
                 <h1 className="font-display text-[22px] leading-tight truncate">{current.title}</h1>
                 <p className="hidden sm:block text-[12.5px] text-[var(--cc-muted)] truncate">{current.blurb}</p>
@@ -291,10 +344,10 @@ export default function Workspace() {
                 Search or jump
                 <span className="ml-1 rounded border border-[var(--cc-line)] px-1.5 py-0.5 font-mono text-[10px]">⌘K</span>
               </button>
-              <Button kind="primary" onClick={() => setOperatorOpen(true)}>
-                <Icon name="operator" size={16} />
-                Operator
-              </Button>
+              {/* No Operator button up here any more: it is the bar along the
+                  bottom of every room on a desk, and a tab under the thumb on
+                  a phone. */}
+              {session?.who && <Who name={session.who.name} size="md" />}
             </div>
             {session?.preview && (
               <div className="px-4 sm:px-6 pb-2">
@@ -304,14 +357,31 @@ export default function Workspace() {
           </header>
 
           <main className="flex-1 px-4 sm:px-6 py-5 sm:py-6">
-            <div className="mx-auto w-full max-w-[1320px]">
+            <div className="mx-auto w-full max-w-[1320px]" key={session?.who?.key ?? 'desk'}>
+              {/* Asked once, on a session that does not know its person yet.
+                  Without a name, notes are signed with the business. */}
+              {session && !session.preview && !session.who && session.people.length > 0 && (
+                <div className="mb-5 flex flex-wrap items-center gap-x-4 gap-y-3 rounded-xl border border-[var(--cc-line)] bg-white px-5 py-4">
+                  <div className="min-w-0 flex-1 basis-[240px]">
+                    <p className="text-[14.5px] font-semibold">Who is at the desk?</p>
+                    <p className="text-[13px] text-[var(--cc-muted)]">So your notes carry your name, and a lead can be yours.</p>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {session.people.map((p) => (
+                      <Button key={p.key} onClick={() => sitDown(p.key)}>{p.name}</Button>
+                    ))}
+                  </div>
+                </div>
+              )}
               {!session ? (
                 <div className="space-y-3">
                   <div className="h-24 rounded-xl bg-[#EEF0F3] animate-pulse" />
                   <div className="h-64 rounded-xl bg-[#EEF0F3] animate-pulse" />
                 </div>
               ) : allowed === 'overview' ? (
-                <Overview session={session} pulse={pulse} go={(k) => go(k as ModuleKey)} refreshPulse={loadPulse} />
+                <Overview session={session} pulse={pulse} go={(k) => go(k as ModuleKey)} refreshPulse={loadPulse} ask={ask} />
+              ) : allowed === 'week' ? (
+                <Week session={session} go={(k) => go(k as ModuleKey)} />
               ) : allowed === 'leads' ? (
                 <Leads session={session} refreshPulse={loadPulse} />
               ) : allowed === 'contacts' ? (
@@ -334,7 +404,36 @@ export default function Workspace() {
             </div>
           </main>
 
-          <footer className="flex-none px-4 sm:px-6 py-4 text-[11px] text-[var(--cc-muted)] border-t border-[var(--cc-line)]">
+          {/* THE OPERATOR, IN THE ROOM. On a desk it is a line along the bottom
+              of every room: type, press enter, and the drawer opens already
+              working. It offers nothing and does nothing until a person
+              types. */}
+          {session && (
+            <div className="sticky bottom-0 z-20 hidden lg:block flex-none border-t border-[var(--cc-line)] bg-[var(--cc-paper)]/90 backdrop-blur print:hidden">
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  const text = askText.trim();
+                  if (!text) return ask();
+                  setAskText('');
+                  ask(text, true);
+                }}
+                className="mx-auto flex w-full max-w-[1320px] items-center gap-3 px-6 py-3"
+              >
+                <span className="flex-none text-[var(--cc-accent)]"><Icon name="operator" /></span>
+                <input
+                  value={askText}
+                  onChange={(e) => setAskText(e.target.value)}
+                  placeholder={pulse?.leads.waiting ? 'Ask the Operator. "Who is waiting, and what do we know about them?"' : 'Ask the Operator. "What came in this week?"'}
+                  aria-label="Ask the Operator"
+                  className="min-w-0 flex-1 bg-transparent text-[14px] text-[var(--cc-ink)] placeholder:text-[#98a2b3] outline-none"
+                />
+                <Button type="submit" kind={askText.trim() ? 'primary' : 'quiet'}>{askText.trim() ? 'Ask' : 'Open'}</Button>
+              </form>
+            </div>
+          )}
+
+          <footer className="flex-none px-4 sm:px-6 py-4 max-lg:pb-[calc(1rem+64px+env(safe-area-inset-bottom))] text-[11px] text-[var(--cc-muted)] border-t border-[var(--cc-line)] print:hidden">
             {brand?.business} Command Center. Built and run by{' '}
             <a href="https://modernmustardseed.com" target="_blank" rel="noopener noreferrer" className="font-semibold text-[#F5B700] hover:underline">
               Modern Mustard Seed
@@ -344,8 +443,46 @@ export default function Workspace() {
         </div>
       </div>
 
-      <Palette open={paletteOpen} onClose={() => setPaletteOpen(false)} modules={visible.map((m) => ({ key: m.key, label: m.label, blurb: m.blurb }))} go={(k) => go(k as ModuleKey)} onOperator={() => { setPaletteOpen(false); setOperatorOpen(true); }} />
-      <Operator open={operatorOpen} onClose={() => setOperatorOpen(false)} session={session} go={(k) => go(k as ModuleKey)} onDidAct={loadPulse} />
+      {/* THE THUMB BAR. Half of this gets read one handed in a truck, so the
+          four places that matter sit under a thumb and the rest is one tap
+          behind More. */}
+      {session && (
+        <nav aria-label="Rooms" className="fixed inset-x-0 bottom-0 z-30 lg:hidden border-t border-[var(--cc-line)] bg-white/95 backdrop-blur pb-[env(safe-area-inset-bottom)] print:hidden">
+          <div className="mx-auto grid max-w-[560px] grid-cols-5">
+            {(
+              [
+                { key: 'overview', label: 'Now', icon: 'overview' },
+                { key: 'leads', label: 'Leads', icon: 'leads' },
+                { key: 'operator', label: 'Operator', icon: 'operator' },
+                { key: 'week', label: 'Week', icon: 'week' },
+                { key: 'more', label: 'More', icon: 'more' },
+              ] as Array<{ key: string; label: string; icon: IconName }>
+            ).map((t) => {
+              const on = t.key === allowed;
+              const n = t.key === 'leads' ? badge('leads') : 0;
+              const tone = n && pulse?.leads.oldestWaitingAt ? waited(pulse.leads.oldestWaitingAt).tone : null;
+              return (
+                <button
+                  key={t.key}
+                  onClick={() => (t.key === 'operator' ? ask() : t.key === 'more' ? setRailOpen(true) : go(t.key as ModuleKey))}
+                  aria-current={on ? 'page' : undefined}
+                  className={cx('relative flex h-[60px] flex-col items-center justify-center gap-1 text-[10.5px] font-semibold', on ? 'text-[var(--cc-accent)]' : 'text-[var(--cc-muted)]')}
+                >
+                  {on && <span className="absolute top-0 h-[2px] w-8 rounded-full bg-[var(--cc-accent)]" aria-hidden />}
+                  <span className="relative">
+                    <Icon name={t.icon} size={21} />
+                    {n > 0 && <span className={cx('absolute -right-2.5 -top-1.5 min-w-[16px] rounded-full px-1 text-center text-[9.5px] font-bold leading-[16px] tabular-nums text-white', tone === 'cold' ? 'bg-[#D92D20]' : tone === 'late' ? 'bg-[#DC6803]' : 'bg-[var(--cc-accent)]')}>{n}</span>}
+                  </span>
+                  {t.label}
+                </button>
+              );
+            })}
+          </div>
+        </nav>
+      )}
+
+      <Palette open={paletteOpen} onClose={() => setPaletteOpen(false)} modules={visible.map((m) => ({ key: m.key, label: m.label, blurb: m.blurb }))} go={(k) => go(k as ModuleKey)} onOperator={() => { setPaletteOpen(false); ask(); }} />
+      <Operator open={operatorOpen} onClose={() => setOperatorOpen(false)} seed={seed} session={session} go={(k) => go(k as ModuleKey)} onDidAct={loadPulse} />
     </div>
   );
 }

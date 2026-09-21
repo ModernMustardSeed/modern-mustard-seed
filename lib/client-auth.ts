@@ -21,6 +21,7 @@ const MAGIC_MINUTES = 20;
 // data routes both apps share.
 const CC_COOKIE = 'mms_cc';
 const CC_DAYS = 30;
+const WHO_COOKIE = 'mms_cc_who';
 
 // Sarah looking at a client's portal as they see it. Honoured only while her own
 // admin session is valid too, so a look pass copied off her machine opens nothing.
@@ -73,7 +74,7 @@ function normalizeEmail(email: string): string {
 
 // ── Token core. `kind` keeps the four non-interchangeable ──
 
-type TokenKind = 'sess' | 'magic' | 'look' | 'cc';
+type TokenKind = 'sess' | 'magic' | 'look' | 'cc' | 'who';
 
 async function makeToken(kind: TokenKind, email: string, expires: number): Promise<string> {
   const payload = `${kind}:${normalizeEmail(email)}:${expires}`;
@@ -164,6 +165,28 @@ export async function setCcSessionCookie(email: string): Promise<void> {
 export async function clearCcSessionCookie(): Promise<void> {
   const c = await cookies();
   c.delete(CC_COOKIE);
+  c.delete(WHO_COOKIE);
+}
+
+// ── Which person is at the desk ───────────────────────────────────
+// The session is keyed to the account's one address so every row lines up,
+// which loses who actually signed in. This second cookie keeps that: the
+// address the code was mailed to, or the person picked on a shared screen. It
+// opens nothing on its own. It only signs the notes and marks a person makes.
+
+export async function setCcWhoCookie(personEmail: string): Promise<void> {
+  const expires = Date.now() + CC_DAYS * 24 * 60 * 60 * 1000;
+  const token = await makeToken('who', personEmail, expires);
+  const c = await cookies();
+  c.set(WHO_COOKIE, token, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'lax', path: '/', maxAge: CC_DAYS * 24 * 60 * 60 });
+}
+
+/** The address of the person at the desk, or null when nobody has said. */
+export async function getCcWho(): Promise<string | null> {
+  const c = await cookies();
+  const token = c.get(WHO_COOKIE)?.value;
+  if (!token) return null;
+  return (await readToken('who', token))?.email ?? null;
 }
 
 /** Who is in the Command Center: their own sign-in, or Sarah looking as them. */

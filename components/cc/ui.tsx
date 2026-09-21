@@ -82,7 +82,8 @@ export function Bars({ data, label }: { data: Array<{ day: string; count: number
 /* ── controls ─────────────────────────────────────────────── */
 
 export function Button({ children, onClick, kind = 'quiet', type = 'button', disabled, href, title, full }: { children: ReactNode; onClick?: () => void; kind?: 'primary' | 'quiet' | 'ghost'; type?: 'button' | 'submit'; disabled?: boolean; href?: string; title?: string; full?: boolean }) {
-  const base = 'inline-flex items-center justify-center gap-2 rounded-lg px-3.5 py-2 text-[13px] font-semibold transition disabled:opacity-40 disabled:cursor-not-allowed';
+  // A thumb in a truck needs 44px; a mouse at a desk does not.
+  const base = 'inline-flex items-center justify-center gap-2 rounded-lg px-3.5 py-2 max-sm:min-h-[44px] text-[13px] font-semibold transition disabled:opacity-40 disabled:cursor-not-allowed';
   const look =
     kind === 'primary'
       ? 'bg-[var(--cc-accent)] text-white hover:brightness-95'
@@ -166,10 +167,12 @@ export function ErrorNote({ children, onRetry }: { children: ReactNode; onRetry?
 
 /* ── drawer ───────────────────────────────────────────────── */
 
+// !m-0 on both overlays: they are rendered inside space-y stacks, and that
+// sibling margin would otherwise drop a fixed overlay 20px below the top.
 export function Drawer({ open, onClose, title, children, footer }: { open: boolean; onClose: () => void; title: string; children: ReactNode; footer?: ReactNode }) {
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-50 flex justify-end" role="dialog" aria-modal="true" aria-label={title}>
+    <div className="fixed inset-0 z-50 !m-0 flex justify-end" role="dialog" aria-modal="true" aria-label={title}>
       <button className="absolute inset-0 bg-[#0c111d]/40 backdrop-blur-[1px]" aria-label="Close" onClick={onClose} />
       <div className="relative w-full max-w-[520px] h-full bg-white border-l border-[var(--cc-line)] flex flex-col shadow-[-24px_0_60px_-30px_rgba(16,24,40,.45)]">
         <header className="flex-none flex items-center justify-between gap-4 px-5 py-4 border-b border-[var(--cc-line)]">
@@ -206,4 +209,84 @@ export function dayLabel(iso: string | null | undefined): string {
   const t = Date.parse(iso);
   if (Number.isNaN(t)) return '';
   return new Date(t).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'America/Denver' });
+}
+
+/* ── waiting ──────────────────────────────────────────────── */
+
+/**
+ * How long someone has waited, in whole units counted down from the row's own
+ * timestamp, and how loudly to say it. The tone is the only judgment here:
+ * inside the hour is fresh, inside the day is normal, past a day is late, past
+ * three days is cold. The number itself is never rounded up.
+ */
+export type WaitTone = 'fresh' | 'today' | 'late' | 'cold';
+
+export function waited(iso: string | null | undefined, now = Date.now()): { text: string; tone: WaitTone } {
+  const t = iso ? Date.parse(iso) : NaN;
+  if (Number.isNaN(t)) return { text: '', tone: 'today' };
+  const mins = Math.max(0, Math.floor((now - t) / 60000));
+  if (mins < 60) return { text: mins < 1 ? 'just now' : `${mins} min`, tone: 'fresh' };
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return { text: `${hours} ${hours === 1 ? 'hour' : 'hours'}`, tone: 'today' };
+  const days = Math.floor(hours / 24);
+  return { text: `${days} ${days === 1 ? 'day' : 'days'}`, tone: days >= 3 ? 'cold' : 'late' };
+}
+
+const WAIT_LOOK: Record<WaitTone, string> = {
+  fresh: 'bg-[var(--cc-accent)]/10 text-[var(--cc-accent)] border-[var(--cc-accent)]/25',
+  today: 'bg-[#F7F8FA] text-[var(--cc-ink)] border-[var(--cc-line)]',
+  late: 'bg-[#FFFAEB] text-[#B54708] border-[#FEDF89]',
+  cold: 'bg-[#FEF3F2] text-[#B42318] border-[#FDA29B]',
+};
+
+export const WAIT_INK: Record<WaitTone, string> = { fresh: 'text-[var(--cc-accent)]', today: 'text-[var(--cc-ink)]', late: 'text-[#B54708]', cold: 'text-[#B42318]' };
+export const WAIT_BAR: Record<WaitTone, string> = { fresh: 'bg-[var(--cc-accent)]', today: 'bg-[#98A2B3]', late: 'bg-[#F79009]', cold: 'bg-[#D92D20]' };
+
+export function Wait({ since, prefix = 'Waiting' }: { since: string; prefix?: string }) {
+  const w = waited(since);
+  if (!w.text) return null;
+  return (
+    <span className={cx('inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-[11.5px] font-semibold tabular-nums whitespace-nowrap', WAIT_LOOK[w.tone])} title={new Date(since).toLocaleString('en-US', { timeZone: 'America/Denver', dateStyle: 'medium', timeStyle: 'short' })}>
+      <svg width="11" height="11" viewBox="0 0 20 20" fill="none" aria-hidden><circle cx="10" cy="10" r="7.5" stroke="currentColor" strokeWidth="1.8" /><path d="M10 5.8V10l2.8 1.8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+      {w.tone === 'fresh' && w.text === 'just now' ? 'Just came in' : `${prefix} ${w.text}`}
+    </span>
+  );
+}
+
+/* ── people ───────────────────────────────────────────────── */
+
+export function Who({ name, mine, size = 'sm' }: { name: string; mine?: boolean; size?: 'sm' | 'md' }) {
+  const initial = name.trim().charAt(0).toUpperCase() || '?';
+  const dot = size === 'md' ? 'h-6 w-6 text-[11px]' : 'h-[18px] w-[18px] text-[9.5px]';
+  return (
+    <span className={cx('inline-flex items-center gap-1.5 whitespace-nowrap font-medium', size === 'md' ? 'text-[13px]' : 'text-[12px]', mine ? 'text-[var(--cc-accent)]' : 'text-[var(--cc-ink)]')}>
+      <span className={cx('grid flex-none place-items-center rounded-full font-bold text-white', dot, mine ? 'bg-[var(--cc-accent)]' : 'bg-[#475467]')}>{initial}</span>
+      {mine ? `${name} (you)` : name}
+    </span>
+  );
+}
+
+/* ── sheet ────────────────────────────────────────────────── */
+
+/**
+ * A short question asked in the middle of a job. Rises from the bottom on a
+ * phone so the buttons sit under a thumb, centres on a desk. Height capped
+ * with the header pinned, so a short screen never clips its top.
+ */
+export function Sheet({ open, onClose, title, hint, children, footer }: { open: boolean; onClose: () => void; title: string; hint?: string; children: ReactNode; footer?: ReactNode }) {
+  if (!open) return null;
+  return (
+    <div className="fixed inset-0 z-[60] !m-0 flex items-end sm:items-center justify-center sm:p-4" role="dialog" aria-modal="true" aria-label={title}>
+      <button className="absolute inset-0 bg-[#0c111d]/45 backdrop-blur-[1px]" aria-label="Close" onClick={onClose} />
+      <div className="relative flex max-h-[90vh] w-full sm:max-w-[460px] flex-col rounded-t-2xl sm:rounded-2xl border border-[var(--cc-line)] bg-white text-[var(--cc-ink)] shadow-[0_-12px_60px_-20px_rgba(16,24,40,.5)]">
+        <header className="flex-none px-5 pt-5 pb-3">
+          <span className="mx-auto mb-3 block h-1 w-9 rounded-full bg-[var(--cc-line)] sm:hidden" aria-hidden />
+          <h3 className="font-display text-[20px] leading-tight">{title}</h3>
+          {hint && <p className="mt-1 text-[13px] leading-snug text-[var(--cc-muted)]">{hint}</p>}
+        </header>
+        <div className="flex-1 overflow-y-auto px-5 pb-4">{children}</div>
+        {footer && <footer className="flex-none border-t border-[var(--cc-line)] bg-[#FAFBFC] px-5 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] rounded-b-none sm:rounded-b-2xl">{footer}</footer>}
+      </div>
+    </div>
+  );
 }

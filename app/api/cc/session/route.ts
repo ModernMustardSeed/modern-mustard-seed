@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
-import { getCcSession } from '@/lib/client-auth';
-import { getSupabase } from '@/lib/supabase';
-import { accountForSession, brandFor } from '@/lib/cc-access';
+import { brandFor } from '@/lib/cc-access';
+import { getDesk } from '@/lib/cc-desk';
 import { getSettings } from '@/lib/posting/settings';
 import { mailStatus } from '@/lib/mail-desk';
 import { buildertrendStatus } from '@/lib/buildertrend';
@@ -15,13 +14,9 @@ export const dynamic = 'force-dynamic';
  * the rail never offers a door that opens on nothing.
  */
 export async function GET() {
-  const session = await getCcSession();
-  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  const sb = getSupabase();
-  if (!sb) return NextResponse.json({ error: 'Database not configured' }, { status: 500 });
-
-  const account = await accountForSession(sb, session.email, session.preview);
-  if (!account) return NextResponse.json({ error: 'No Command Center on this account.' }, { status: 403 });
+  const got = await getDesk();
+  if (!got.ok) return NextResponse.json({ error: got.error }, { status: got.status });
+  const { sb, account, preview, people, who } = got.desk;
 
   const [posting, mail, bt] = await Promise.all([
     getSettings(sb, account.clientEmail).catch(() => null),
@@ -31,8 +26,10 @@ export async function GET() {
 
   return NextResponse.json({
     email: account.clientEmail,
-    person: account.person,
-    preview: Boolean(session.preview),
+    person: who?.name ?? null,
+    who,
+    people,
+    preview,
     brand: brandFor(account.project),
     modules: {
       leads: true,
