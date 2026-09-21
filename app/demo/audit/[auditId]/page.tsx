@@ -217,7 +217,17 @@ export default async function PresenceAuditPage({ params }: { params: Params }) 
               {(r.website || 'Your site').replace(/^https?:\/\//i, '').replace(/\/+$/, '')}
             </h2>
             <div className="grid gap-4 sm:grid-cols-2">
-              {Object.entries(r.website_categories).map(([key, cat]) => (
+              {/*
+                A stored report can carry a junk category key whose value is
+                null (trust_note, design_note, "_"), and reading .score off it
+                took this page to a 500 for the five businesses whose flyers
+                already point a QR code here. The generator filters these now;
+                this keeps every older report readable.
+              */}
+              {Object.entries(r.website_categories)
+                .filter((e): e is [string, { score: number; letter: string; notes: string }] =>
+                  Boolean(e[1]) && typeof (e[1] as { score?: unknown }).score === 'number')
+                .map(([key, cat]) => (
                 <div key={key} className="border-2 border-[#161616]/15 rounded-xl p-4">
                   <div className="flex items-center justify-between gap-3">
                     <span className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-[#161616]/60">

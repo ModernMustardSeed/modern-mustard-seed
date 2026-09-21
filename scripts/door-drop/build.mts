@@ -145,6 +145,8 @@ const MAX_AGE_DAYS = Number(flag('max-age-days', '21'));
 const REFRESH = has('refresh');
 const ALLOW_STALE = has('allow-stale');
 const COPIES = Math.max(1, Number(flag('copies', '1')));
+/** An earlier run's manifest.json. Everything in it is held back from this box. */
+const EXCLUDE = flag('exclude', '');
 /** Off only for a proof run: a flyer with no address is a flyer she cannot deliver. */
 const ANY_ADDRESS = has('any-address');
 const BASE = flag('base', 'https://modernmustardseed.com')!;
@@ -285,7 +287,7 @@ async function main() {
    * the same order. Sorting them into separate piles would mean driving
    * Whitefish twice.
    */
-  const all: Piece[] = [
+  let all: Piece[] = [
     ...(NOSITE_ONLY ? [] : keep.map((lead): Piece => ({ lead, kind: 'audit' }))),
     ...(AUDIT_ONLY ? [] : nosite.map((lead): Piece => ({ lead, kind: 'nosite' }))),
   ].sort(
@@ -293,6 +295,21 @@ async function main() {
       townRank(a.lead.city) - townRank(b.lead.city) ||
       a.lead.business_name.localeCompare(b.lead.business_name),
   );
+  /**
+   * A SECOND BATCH MUST NOT REPRINT THE FIRST.
+   *
+   * --exclude <manifest.json> drops every business already printed in an
+   * earlier run, so a top-up box is only the new ones and nothing she has
+   * already carried gets printed twice.
+   */
+  if (EXCLUDE) {
+    const before = JSON.parse(readFileSync(EXCLUDE, 'utf8')) as { printed: { id: string }[] };
+    const done = new Set(before.printed.map((p) => p.id));
+    const held = all.filter((p) => done.has(p.lead.id));
+    for (const p of held) dropped.push({ id: p.lead.id, business_name: p.lead.business_name, city: p.lead.city, gate: 'already printed', reason: `in ${path.basename(path.dirname(EXCLUDE))}` });
+    all = all.filter((p) => !done.has(p.lead.id));
+    console.log(`Excluding ${held.length} already printed in ${EXCLUDE}.`);
+  }
   let chosen = all.slice(0, LIMIT);
   if (!chosen.length) {
     console.error('Nothing passed the gates. Run with --refresh, or widen --max-age-days.');

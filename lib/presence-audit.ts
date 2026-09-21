@@ -31,7 +31,7 @@ import { possessive } from '@/lib/business-name';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { parseSiteFacts, type SiteFacts } from '@/lib/site-facts';
 import { ensureSiteFacts } from '@/lib/site-facts-store';
-import type { WebsiteAuditReport } from '@/lib/website-audit';
+import { CATEGORY_KEYS, type WebsiteAuditReport } from '@/lib/website-audit';
 import { auditPreferringWorker } from '@/lib/audit-queue';
 import { SITE } from '@/lib/seo';
 
@@ -650,10 +650,32 @@ export function buildPresenceReport(input: PresenceInput, report: WebsiteAuditRe
     summary,
     pillars,
     top_fixes: fixesFor(pillars, report),
-    website_todo: report?.full_todo ?? [],
-    website_categories: report?.categories ?? null,
+    website_todo: (report?.full_todo ?? []).filter((t) => t && typeof t.task === 'string'),
+    // Only the seven real categories. A stored grade from before the shape
+    // filter can carry junk keys (trust_note, "_") whose value is null, and
+    // the report page reads .score off every entry. See website-audit.ts.
+    website_categories: report?.categories ? keptCategories(report.categories) : null,
     provenance: provenanceFor(input),
   };
+}
+
+/**
+ * The seven categories, and only the ones that are really there.
+ *
+ * A model hands back extra keys sometimes (trust_note, design_note, "_") whose
+ * value is null or a bare string, and the report page reads `.score` off every
+ * entry it finds. That was a 500 on five businesses' own reports, the ones
+ * their printed QR code points at (2026-09-20).
+ */
+function keptCategories(
+  cats: Record<string, { score: number; letter: string; notes: string } | undefined>,
+): Record<string, { score: number; letter: string; notes: string }> {
+  const out: Record<string, { score: number; letter: string; notes: string }> = {};
+  for (const k of CATEGORY_KEYS) {
+    const c = cats[k];
+    if (c && typeof c.score === 'number' && typeof c.letter === 'string') out[k] = c;
+  }
+  return out;
 }
 
 /* ─────────────────────────── running and storing ────────────────────────── */
