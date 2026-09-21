@@ -37,7 +37,7 @@ export default function StudioHome({ faq }: { faq: { q: string; a: string }[] })
       </div>
       <div className={styles.heroCopy}>
         <p className={styles.eyebrow}><span className={styles.dot} /> Design & technology, with character.</p>
-        <h1 id="studio-heading">Good ideas.<br /><em>Great</em><br />execution.</h1>
+        <h1 id="studio-heading">Your vision.<br /><em>Beautifully</em><br />built.</h1>
         <div className={styles.heroIntro}><p>Websites, custom software, and AI systems. Designed and built by Sarah Scarano in Montana, for people with something of their own to build.</p><Link href="/inquire" className={styles.primary}>Tell Us What You Have In Mind <Arrow /></Link></div>
       </div>
       <div className={styles.heroBottom}><a href="#selected-work">Explore The Work <span aria-hidden="true">↓</span></a><span>Strategy, design & engineering. One studio.</span><span className={styles.edition}>MMS / 01</span></div>
