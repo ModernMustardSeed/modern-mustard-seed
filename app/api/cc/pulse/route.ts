@@ -1,7 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getCcSession } from '@/lib/client-auth';
-import { getSupabase } from '@/lib/supabase';
-import { accountForSession } from '@/lib/cc-access';
+import { getDesk } from '@/lib/cc-desk';
 import { listContacts } from '@/lib/client-contacts';
 import { daysUntil } from '@/lib/domains';
 
@@ -15,12 +13,9 @@ export const dynamic = 'force-dynamic';
  * time zone, oldest first.
  */
 export async function GET() {
-  const session = await getCcSession();
-  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  const sb = getSupabase();
-  if (!sb) return NextResponse.json({ error: 'Database not configured' }, { status: 500 });
-  const account = await accountForSession(sb, session.email, session.preview);
-  if (!account) return NextResponse.json({ error: 'No Command Center on this account.' }, { status: 403 });
+  const got = await getDesk();
+  if (!got.ok) return NextResponse.json({ error: got.error }, { status: got.status });
+  const { sb, account, who } = got.desk;
   const email = account.clientEmail;
 
   const now = Date.now();
@@ -30,8 +25,10 @@ export async function GET() {
   const fortnightAgo = new Date(now - 13 * 86_400_000).toISOString();
   const today = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Denver' });
 
-  const [waiting, fresh, month, series, mailNew, mailReply, asks, posts, approvals, visits, domains, contacts] = await Promise.all([
-    sb.from('client_leads').select('id', { count: 'exact', head: true }).eq('client_email', email).is('handled_at', null),
+  const [waitingRows, fresh, month, series, mailNew, mailReply, asks, posts, approvals, visits, domains, contacts] = await Promise.all([
+    // The waiting rows themselves, not just their count: the board needs the
+    // oldest one's age and who holds what, and both come from these rows.
+    sb.from('client_leads').select('created_at, owner_key').eq('client_email', email).is('handled_at', null).order('created_at', { ascending: true }).limit(500),
     sb.from('client_leads').select('id', { count: 'exact', head: true }).eq('client_email', email).gte('created_at', dayAgo),
     sb.from('client_leads').select('id', { count: 'exact', head: true }).eq('client_email', email).gte('created_at', monthAgo),
     sb.from('client_leads').select('created_at').eq('client_email', email).gte('created_at', fortnightAgo),
@@ -63,8 +60,18 @@ export async function GET() {
     .filter((d) => d.status === 'active' && d.days != null && d.days <= 45)
     .sort((a, b) => (a.days ?? 0) - (b.days ?? 0));
 
+  const waitingList = waitingRows.data ?? [];
+
   return NextResponse.json({
-    leads: { waiting: waiting.count ?? 0, today: fresh.count ?? 0, month: month.count ?? 0, days },
+    leads: {
+      waiting: waitingList.length,
+      oldestWaitingAt: (waitingList[0]?.created_at as string | undefined) ?? null,
+      mine: who ? waitingList.filter((l) => l.owner_key === who.key).length : 0,
+      unowned: waitingList.filter((l) => !l.owner_key).length,
+      today: fresh.count ?? 0,
+      month: month.count ?? 0,
+      days,
+    },
     inbox: { unread: mailNew.count ?? 0, needsReply: mailReply.count ?? 0 },
     reviews: { asked30: asks.count ?? 0 },
     marketing: { scheduled: posts.count ?? 0, awaitingApproval: approvals.count ?? 0 },

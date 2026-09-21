@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getSupabase } from '@/lib/supabase';
-import { normalizeEmail, setCcSessionCookie } from '@/lib/client-auth';
+import { normalizeEmail, setCcSessionCookie, setCcWhoCookie } from '@/lib/client-auth';
 import { accountForSession } from '@/lib/cc-access';
 import { checkChallenge } from '@/lib/cc-code';
 
@@ -28,5 +28,8 @@ export async function POST(req: Request) {
   if (!account) return NextResponse.json({ error: 'That account does not have a Command Center yet.' }, { status: 403 });
 
   await setCcSessionCookie(account.clientEmail);
+  // The board is shared, the person is not. Keep who this code was mailed to,
+  // so what they write is signed with their name.
+  if (account.person) await setCcWhoCookie(account.typed);
   return NextResponse.json({ ok: true });
 }

@@ -110,7 +110,7 @@ export default function Reviews() {
           ) : !loaded ? (
             <Skeleton rows={3} />
           ) : !data?.asks.length ? (
-            <Empty title="Nobody asked yet" />
+            <Empty title="Nobody asked yet" note="The first ask you send shows here with the day it went and how it was delivered. The best moment is the day a job closes, while they are still standing in it." />
           ) : (
             <ul className="divide-y divide-[var(--cc-line)]">
               {data.asks.map((a) => (

@@ -14,7 +14,7 @@ export async function commandCenterContext(sb: SupabaseClient, email: string): P
   const weekAgo = new Date(Date.now() - 7 * 86_400_000).toISOString();
   const monthAgo = new Date(Date.now() - 30 * 86_400_000).toISOString();
   const [waiting, month, mailNeed, domains, campaigns, visits, posts, bt, mail] = await Promise.all([
-    sb.from('client_leads').select('name, town, priority, source, campaign, created_at').eq('client_email', email).is('handled_at', null).order('priority', { ascending: true, nullsFirst: false }).order('created_at', { ascending: false }).limit(8),
+    sb.from('client_leads').select('id, name, town, priority, source, campaign, created_at, owner_name').eq('client_email', email).is('handled_at', null).order('priority', { ascending: true, nullsFirst: false }).order('created_at', { ascending: false }).limit(8),
     sb.from('client_leads').select('source, sources, campaign').eq('client_email', email).gte('created_at', monthAgo),
     sb.from('client_mail').select('from_name, from_addr, subject, summary').eq('client_email', email).eq('status', 'new').eq('needs_reply', true).order('received_at', { ascending: false }).limit(6),
     sb.from('client_domains').select('domain, role, expires_on, status').eq('client_email', email),
@@ -26,7 +26,24 @@ export async function commandCenterContext(sb: SupabaseClient, email: string): P
   ]);
 
   const w = waiting.data ?? [];
-  out.push(w.length ? `Leads waiting on a call (${w.length}): ${w.map((l) => `${l.name ?? 'no name'}${l.town ? `, ${l.town}` : ''}${l.priority ? `, priority ${l.priority}` : ''}${l.campaign ? `, scanned "${l.campaign}"` : ''}`).join('; ')}.` : 'No leads are waiting on a call.');
+  // What the desk already knows about each waiting lead: how long they have
+  // waited, who has it, and the last thing anyone wrote. Without this the
+  // Operator starts as blind as the next person would.
+  const lastTouch = new Map<string, string>();
+  if (w.length) {
+    const { data: ev } = await sb.from('client_lead_events').select('lead_id, kind, body, author_name, created_at').eq('client_email', email).in('lead_id', w.map((l) => l.id as string)).order('created_at', { ascending: false }).limit(60);
+    for (const e of ev ?? []) {
+      if (lastTouch.has(e.lead_id as string)) continue;
+      const what = e.kind === 'tried' ? 'tried and got no answer' : e.kind === 'note' ? 'left a note' : e.kind === 'taken' ? 'took it' : e.kind === 'handed' ? 'handed it over' : String(e.kind);
+      const on = new Date(String(e.created_at)).toLocaleDateString('en-US', { timeZone: 'America/Denver', month: 'short', day: 'numeric' });
+      lastTouch.set(e.lead_id as string, `last touch: ${e.author_name} ${what} on ${on}${e.body ? ` ("${String(e.body).slice(0, 200)}")` : ''}`);
+    }
+  }
+  const desk = (l: { id: unknown; created_at: unknown; owner_name: unknown }) => {
+    const days = Math.floor((Date.now() - Date.parse(String(l.created_at))) / 86_400_000);
+    return `, ${days >= 1 ? `waiting ${days} ${days === 1 ? 'day' : 'days'}` : 'came in today'}, ${l.owner_name ? `${l.owner_name} has it` : 'nobody has taken it'}${lastTouch.has(l.id as string) ? `, ${lastTouch.get(l.id as string)}` : ''}`;
+  };
+  out.push(w.length ? `Leads waiting on a call (${w.length}): ${w.map((l) => `${l.name ?? 'no name'}${desk(l)}${l.town ? `, ${l.town}` : ''}${l.priority ? `, priority ${l.priority}` : ''}${l.campaign ? `, scanned "${l.campaign}"` : ''}`).join('; ')}.` : 'No leads are waiting on a call.');
   const m = month.data ?? [];
   if (m.length) {
     const by = new Map<string, number>();

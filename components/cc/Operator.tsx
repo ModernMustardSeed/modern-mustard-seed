@@ -22,16 +22,17 @@ type Msg = { role: 'user' | 'assistant'; content: string; receipts?: string[]; n
 const STARTERS = [
   'Who is waiting on a call?',
   'What came in this week?',
-  'Ask Carrie Ranger for a review',
+  'Who have we already asked for a review?',
   'Draft a reply to the last email',
   'Make a QR code for a jobsite sign',
 ];
 
-export default function Operator({ open, onClose, session, go, onDidAct }: { open: boolean; onClose: () => void; session: Session | null; go: (k: string) => void; onDidAct: () => void }) {
+export default function Operator({ open, onClose, seed, session, go, onDidAct }: { open: boolean; onClose: () => void; seed: { text: string; send: boolean; n: number } | null; session: Session | null; go: (k: string) => void; onDidAct: () => void }) {
   const [msgs, setMsgs] = useState<Msg[]>([]);
   const [input, setInput] = useState('');
   const [busy, setBusy] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
+  const seenSeed = useRef(0);
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -60,6 +61,17 @@ export default function Operator({ open, onClose, session, go, onDidAct }: { ope
     }
   };
 
+  // A seed arrives from the rest of the app. Words a person typed into the
+  // bar are sent as typed. A suggestion they tapped only fills the box, so
+  // the press that sends it is still theirs.
+  useEffect(() => {
+    if (!seed || seed.n === seenSeed.current) return;
+    seenSeed.current = seed.n;
+    if (seed.send) void send(seed.text);
+    else setInput(seed.text);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [seed]);
+
   const guide = session?.brand.guideName ?? 'your guide';
 
   return (
@@ -75,7 +87,7 @@ export default function Operator({ open, onClose, session, go, onDidAct }: { ope
           }}
           className="flex gap-2"
         >
-          <input className={cx(inputCls, 'flex-1')} value={input} onChange={(e) => setInput(e.target.value)} placeholder="Ask, or tell it what to do" disabled={busy} />
+          <input className={cx(inputCls, 'flex-1 max-sm:text-[16px]')} value={input} onChange={(e) => setInput(e.target.value)} placeholder="Ask, or tell it what to do" disabled={busy} />
           <Button kind="primary" type="submit" disabled={busy || !input.trim()}>
             {busy ? 'Working' : 'Send'}
           </Button>
@@ -110,14 +122,21 @@ export default function Operator({ open, onClose, session, go, onDidAct }: { ope
           {msgs.map((m, i) => (
             <div key={i} className={cx('rounded-xl px-4 py-3 text-[14px] leading-relaxed whitespace-pre-wrap', m.role === 'user' ? 'ml-auto max-w-[88%] bg-[var(--cc-ink)] text-white' : 'max-w-[92%] border border-[var(--cc-line)] bg-white')}>
               {m.content}
-              {m.role === 'assistant' && (m.receipts?.length || m.noteSent) ? (
+              {m.role === 'assistant' && m.receipts?.length ? (
+                // The receipt is the server's own sentence, written after the
+                // work ran. It is printed whole so "done" always says what.
+                <ul className="mt-2.5 space-y-1.5 border-t border-[var(--cc-line)] pt-2.5">
+                  {m.receipts.map((r, k) => (
+                    <li key={k} className="flex gap-2 text-[13px] leading-snug">
+                      <span className="mt-0.5 flex-none text-[#067647]"><Icon name="check" size={14} /></span>
+                      <span>{r}</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+              {m.role === 'assistant' && m.noteSent ? (
                 <div className="mt-2.5 flex flex-wrap gap-1.5">
                   {m.noteSent && <Badge tone="good">Passed to Sarah</Badge>}
-                  {(m.receipts ?? []).map((r, k) => (
-                    <Badge key={k} tone="good">
-                      Done
-                    </Badge>
-                  ))}
                 </div>
               ) : null}
             </div>

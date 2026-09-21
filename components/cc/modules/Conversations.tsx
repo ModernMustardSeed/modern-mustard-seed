@@ -17,13 +17,15 @@ export default function Conversations() {
   const [items, setItems] = useState<Conversation[] | null>(null);
   const [open, setOpen] = useState<string | null>(null);
   const [error, setError] = useState(false);
+  const [read, setRead] = useState(true);
 
   const load = useCallback(async () => {
     setError(false);
     try {
       const r = await fetch('/api/portal/conversations', { cache: 'no-store' });
-      const j = (await r.json()) as { conversations: Conversation[] };
+      const j = (await r.json()) as { conversations: Conversation[]; read?: boolean };
       setItems(j.conversations ?? []);
+      setRead(j.read !== false);
     } catch {
       setError(true);
     }
@@ -39,7 +41,7 @@ export default function Conversations() {
         <div className="flex items-center justify-between gap-3 px-5 py-4 border-b border-[var(--cc-line)]">
           <div>
             <Label>Last 30 days</Label>
-            <p className="mt-1 text-[15px] font-semibold">{items ? `${items.length} ${items.length === 1 ? 'conversation' : 'conversations'}` : 'Reading'}</p>
+            <p className="mt-1 text-[15px] font-semibold">{items && read ? `${items.length} ${items.length === 1 ? 'conversation' : 'conversations'}` : 'Reading'}</p>
           </div>
           <Button onClick={load} kind="ghost">Refresh</Button>
         </div>
@@ -48,6 +50,8 @@ export default function Conversations() {
           <div className="p-5"><ErrorNote onRetry={load}>The conversations did not load.</ErrorNote></div>
         ) : !items ? (
           <div className="p-5"><Skeleton rows={5} /></div>
+        ) : !read ? (
+          <div className="p-5"><ErrorNote onRetry={load}>The chat record could not be read just now. Nothing is lost: it is kept by the chat service and shows here as soon as it answers.</ErrorNote></div>
         ) : items.length === 0 ? (
           <div className="p-5"><Empty title="No chats in the last 30 days" note="Every conversation on your website lands here, with the page the visitor was on." /></div>
         ) : (

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { llmJson, renderTranscript } from '@/lib/llm';
-import { getClientSession } from '@/lib/client-auth';
+import { getClientSession, getCcWho, normalizeEmail } from '@/lib/client-auth';
 import { getSupabase } from '@/lib/supabase';
 import { displayForIso } from '@/lib/booking';
 import { createClientRequest } from '@/lib/client-requests';
@@ -184,6 +184,11 @@ export async function POST(req: Request) {
             const { data: lead } = await supabase.from('client_leads').select('id, name').eq('client_email', email).is('handled_at', null).ilike('name', `%${a.name.replace(/[%_]/g, '')}%`).order('created_at', { ascending: false }).limit(1).maybeSingle();
             if (lead) {
               await supabase.from('client_leads').update({ handled_at: new Date().toISOString(), handled_by: email }).eq('id', lead.id);
+              // The desk log says who asked for it, so the next person reading
+              // the lead does not find a called mark with no name on it.
+              const whoEmail = await getCcWho();
+              const asker = Object.values(project?.people ?? {}).find((p) => normalizeEmail(p.email) === whoEmail)?.name ?? project?.business ?? 'The office';
+              await supabase.from('client_lead_events').insert({ client_email: email, lead_id: lead.id, kind: 'called', author_key: null, author_name: `${asker}, through the Operator` });
               done.push(`${lead.name ?? a.name} is marked called and off the Monday list.`);
             } else done.push(`I did not find a waiting lead named ${a.name}.`);
           } else if (a.type === 'make_code' && a.label) {
