@@ -44,11 +44,6 @@ export default function StudioHome({ faq }: { faq: { q: string; a: string }[] })
       <div className={styles.heroBottom}><a href="#selected-work">Explore The Work <span aria-hidden="true">↓</span></a><span>Strategy, design & engineering. One studio.</span><span className={styles.edition}>MMS / 01</span></div>
     </section>
     <div className={styles.colorBand}><span>Bespoke by design.</span><span aria-hidden="true">✳</span><span>Built with character.</span><span aria-hidden="true">✳</span><span>Made to work.</span></div>
-    <section className={styles.proofStrip} aria-label="Studio proof points">
-      <a href={GOOGLE_PROFILE.profileUrl} target="_blank" rel="noopener noreferrer"><span className={styles.proofStars} aria-hidden="true">★★★★★</span><span><strong>{GOOGLE_PROFILE.rating} on Google</strong><small>Five-star studio</small></span></a>
-      <span className={styles.proofDivider} aria-hidden="true">✳</span>
-      <span><strong>ChatGPT-ready studio</strong><small>Built to be found in AI search</small></span>
-    </section>
     <section id="selected-work" className={styles.work} aria-labelledby="work-heading">
       <div className={styles.sectionTop}><p className={styles.eyebrow}>01 / Selected Work</p><span>Made here. Out in the world.</span></div>
       <div className={styles.workIntro}><h2 id="work-heading">The work<br />speaks <em>first.</em></h2><div><p>A landscaper in Tallahassee. A homebuilder in Montana. A brand with something to say. Real client work, our own ventures, and studio builds.</p><Link href="/work" className={styles.textLink}>Explore The Portfolio <Arrow /></Link></div></div>
@@ -64,5 +59,12 @@ export default function StudioHome({ faq }: { faq: { q: string; a: string }[] })
     <section className={styles.concierge} aria-labelledby="mustard-heading"><div className={styles.mascotFrame}><span className={styles.mascotOrbit} aria-hidden="true" /><Image src="/images/editorial/mascot-480.webp" alt="Mr. Mustard, the smiling mustard-seed mascot and studio AI concierge" width={440} height={590} sizes="(max-width: 760px) 160px, 220px" className={styles.mascot} /><span className={styles.mascotLabel}>A Small Seed With A Real Job.</span></div><div><p className={styles.eyebrow}>A Little Character. A Lot Of Capability.</p><h2 id="mustard-heading">Still Mr. Mustard.<br /><em>Always at your service.</em></h2><p>The name has a story. The little guy has a job. Meet the studio’s AI concierge, here to answer questions and help you find your next step.</p><Link href="/mustard" className={styles.primary}>Meet Mr. Mustard <Arrow /></Link><a href="tel:+14063121223" className={styles.phone}>Or Call The Studio · (406) 312-1223</a></div></section>
     <section className={styles.faq} aria-labelledby="faq-heading"><div><p className={styles.eyebrow}>Before We Begin</p><h2 id="faq-heading">Good questions.<br /><em>Straight answers.</em></h2></div><div className={styles.faqList}>{faq.map(f => <details key={f.q}><summary>{f.q}<span aria-hidden="true">+</span></summary><p>{f.a}</p></details>)}</div></section>
     <section className={styles.close} aria-labelledby="close-heading"><p className={styles.eyebrow}>The Next Remarkable Thing Starts Somewhere.</p><h2 id="close-heading">Let’s make<br /><em>your mark.</em></h2><Link href="/inquire" className={styles.closeLink}>Begin A Conversation <Arrow /></Link><p>A considered scope. A set package price. Your vision, built.</p></section>
+    <section className={styles.proofStrip} aria-label="Studio proof points">
+      <div className={styles.proofIntro}><p className={styles.eyebrow}>Proof, in plain sight</p><h2>Worth finding.<br /><em>Easy to trust.</em></h2></div>
+      <div className={styles.proofCards}>
+        <a className={styles.proofCard + " " + styles.googleCard} href={GOOGLE_PROFILE.profileUrl} target="_blank" rel="noopener noreferrer"><span className={styles.proofStars} aria-hidden="true">★★★★★</span><strong>{GOOGLE_PROFILE.rating} on Google</strong><small>Five-star studio</small><span className={styles.proofArrow} aria-hidden="true">↗</span></a>
+        <div className={styles.proofCard + " " + styles.aiCard}><span className={styles.aiMark}>AI SEARCH</span><strong>ChatGPT-ready studio</strong><small>Built to be found in AI search</small><span className={styles.aiBurst} aria-hidden="true">✳</span></div>
+      </div>
+    </section>
   </div>;
 }
