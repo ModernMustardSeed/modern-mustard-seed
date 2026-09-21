@@ -59,7 +59,7 @@ So I built an audit that grades what they actually see:
 → Your reviews, volume and rating against businesses like yours. 30%.
 → Your Google Business Profile, on eight checks that each pass or fail. 25%.
 
-Two of those three pillars have no AI in them, on purpose. Every check prints what it is worth and where the number came from, so you can verify the whole report in about ninety seconds. An audit nobody can check is a horoscope with a logo.
+Two of those three pillars have no AI in them, on purpose. Every check prints what it is worth and where the number came from, so you can verify the whole report in about ninety seconds. Every score comes with evidence you can check.
 
 Leave your email and the full report lands in your inbox with the fixes ranked. The free fixes come first.
 

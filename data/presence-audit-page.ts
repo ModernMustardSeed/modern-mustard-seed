@@ -102,7 +102,7 @@ export const WHY = [
   {
     k: 'Why the score is checkable',
     h: 'Two of the three pillars are not AI',
-    d: 'Every profile check passes or fails on a fact, and prints what failing it costs you. Every review number prints the benchmark it was measured against. The weights are printed on the report. An audit nobody can check is a horoscope with a logo.',
+    d: 'Every profile check passes or fails on a fact, and prints what failing it costs you. Every review number prints the benchmark it was measured against. The weights are printed on the report. Every score comes with evidence you can check.',
   },
   {
     k: 'What you do with it',
