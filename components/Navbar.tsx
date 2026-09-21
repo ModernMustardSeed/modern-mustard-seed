@@ -5,16 +5,8 @@ import Image from 'next/image';
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { usePathname } from 'next/navigation';
-import { navLinks, socials, facebookUrl } from '@/data/socials';
+import { navLinks, socials } from '@/data/socials';
 import { DEMO_LINE } from '@/data/trade-pages';
-
-function FacebookMark() {
-  return (
-    <svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor" aria-hidden="true">
-      <path d="M14.02 22v-8.94h3l.45-3.48h-3.45V7.36c0-1.01.28-1.69 1.72-1.69h1.85V2.56A24.6 24.6 0 0 0 15.9 2.4c-2.67 0-4.5 1.63-4.5 4.63v2.55H8.4v3.48h3v8.94h2.62Z" />
-    </svg>
-  );
-}
 
 // Curated site map for the hamburger menu: fewer, clearer doors. Everything
 // dropped here (Idea to Spec, AI-Proof, industries, legal) stays reachable
@@ -252,18 +244,6 @@ export default function Navbar() {
               Book a Call
             </Link>
 
-            {/* Facebook: the company page, one tap from every screen. */}
-            <a
-              href={facebookUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Modern Mustard Seed on Facebook"
-              title="Modern Mustard Seed on Facebook"
-              className="flex items-center justify-center w-10 h-10 rounded-full border-2 border-[#161616] bg-white text-[#1E50C8] shadow-[2px_2px_0_0_#161616] hover:shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 hover:bg-[#FFF8E6] transition-all"
-            >
-              <FacebookMark />
-            </a>
-
             {/* Hamburger: top right, ALL breakpoints, opens the full menu. */}
             <button
               className="flex flex-col justify-center items-center w-10 h-10 gap-1.5 rounded-full border-2 border-[#161616] bg-white shadow-[2px_2px_0_0_#161616] hover:shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-all"
@@ -487,7 +467,7 @@ export default function Navbar() {
                 Follow
               </span>
               <div className="flex flex-wrap gap-2.5">
-                {socials.map((s) => (
+                {socials.filter((s) => s.name !== 'Facebook').map((s) => (
                   <a
                     key={s.name}
                     href={s.url}
