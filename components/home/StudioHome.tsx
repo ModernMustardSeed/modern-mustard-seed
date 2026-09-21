@@ -3,9 +3,11 @@ import Image from 'next/image';
 import styles from './StudioHome.module.css';
 
 const projects = [
-  { name: 'Wild Hope', type: 'Hospitality / Brand experience', image: 'wild-hope', url: 'https://wildhopehq.com', description: 'A place worth believing in.', detail: 'A Flathead Lake retreat, brought to life through seventeen original oil paintings and an immersive digital experience.' },
-  { name: 'Cross + Covenant', type: 'Commerce / Identity / Engineering', image: 'cross-covenant', url: 'https://crossandcovenant.co', description: 'Conviction, made tangible.', detail: 'A direct-to-consumer apparel house, taken from first sketch to a working storefront and live collection.' },
-  { name: 'Lago Society', type: 'Fashion / Commerce / AI', image: 'lago-society', url: 'https://lagosociety.com', description: 'A different pace of luxury.', detail: 'A lakeside fashion house with an editorial storefront and an AI personal stylist behind the experience.' },
+  { name: 'D & D Landscaping', type: 'Landscaping / Client website', image: 'dd-landscaping', url: 'https://ddlandscapingfl.com', description: 'A local business, unmistakable.', detail: 'A Tallahassee landscaping site with service selection, walkthrough booking, and a voice concierge.' },
+  { name: 'Cross + Covenant', type: 'Commerce / Studio brand', image: 'cross-covenant-current', url: 'https://crossandcovenant.co', description: 'Wear the Gospel.', detail: 'An apparel storefront with original collections, a free Bible, daily devotionals, and a prayer wall.' },
+  { name: 'Built Right in Montana', type: 'Custom homes / Client website', image: 'brim-homes', url: 'https://brimhomes.com', description: 'Built for the way Montana lives.', detail: 'A Flathead Valley homebuilder’s website, with a project showcase and a direct path to a build conversation.' },
+  { name: 'Bare Earth', type: 'Landscape & construction / Concept', image: 'bare-earth', url: 'https://bare-earth.vercel.app', description: 'Grounds worthy of the valley.', detail: 'A landscape and construction concept for the Flathead Valley, with service pages and an instant-quote experience.' },
+  { name: 'Wildmere Honey Co.', type: 'Brand experience / Studio concept', image: 'wildmere', url: 'https://wildmere.vercel.app', description: 'Montana honey, in full character.', detail: 'An original honey-brand concept with a scroll-led product story, audio tour, and voice concierge.' },
 ];
 const disciplines = [
   { title: 'Websites & Brand', href: '/websites', text: 'A presence that makes the right people stop. Art direction, identity, and a beautifully engineered website, with search and conversion built in.', tags: 'Strategy · Identity · Digital experiences' },
@@ -16,32 +18,35 @@ const disciplines = [
 function Arrow() { return <span aria-hidden="true">↗</span>; }
 function ProjectImage({ name, alt, sizes }: { name: string; alt: string; sizes: string }) {
   return <picture>
-    <source type="image/avif" srcSet={'/images/editorial/' + name + '-640.avif 640w, /images/editorial/' + name + '-1280.avif 1280w'} sizes={sizes} />
-    <source type="image/webp" srcSet={'/images/editorial/' + name + '-640.webp 640w, /images/editorial/' + name + '-1280.webp 1280w'} sizes={sizes} />
-    <img src={'/images/editorial/' + name + '-1280.jpg'} alt={alt} width={1280} height={800} loading="lazy" decoding="async" />
+    <source type="image/avif" srcSet={'/images/editorial/' + name + '-640.avif 640w, /images/editorial/' + name + '-960.avif 960w, /images/editorial/' + name + '-1440.avif 1440w'} sizes={sizes} />
+    <source type="image/webp" srcSet={'/images/editorial/' + name + '-640.webp 640w, /images/editorial/' + name + '-960.webp 960w, /images/editorial/' + name + '-1440.webp 1440w'} sizes={sizes} />
+    <img src={'/images/editorial/' + name + '-1440.jpg'} alt={alt} width={1440} height={900} loading="lazy" decoding="async" />
   </picture>;
 }
 export default function StudioHome({ faq }: { faq: { q: string; a: string }[] }) {
-  return <div className={styles.studio} data-design="mms-editorial-2026">
+  return <div className={styles.studio} data-design="mms-editorial-2026" data-edition="pop-art-studio">
     <section className={styles.hero} aria-labelledby="studio-heading">
       <div className={styles.heroTop}><span>Independent Design & AI Studio</span><span>Kalispell, Montana · Working Everywhere</span></div>
-      <div className={styles.heroArt}>
-        <picture>
-          <source type="image/avif" srcSet="/images/editorial/seed-sculpture-640.avif 640w, /images/editorial/seed-sculpture-1280.avif 1280w" sizes="(max-width: 760px) 240px, 45vw" />
-          <source type="image/webp" srcSet="/images/editorial/seed-sculpture-640.webp 640w, /images/editorial/seed-sculpture-1280.webp 1280w" sizes="(max-width: 760px) 240px, 45vw" />
-          <img src="/images/editorial/seed-sculpture-1280.jpg" alt="A luminous mustard-yellow seed sculpture encircled by a polished silver ribbon" width={1024} height={1536} fetchPriority="high" />
-        </picture>
+      <div className={styles.heroArt} role="group" aria-label="A collage of websites built by Modern Mustard Seed">
+        <div className={styles.printField} aria-hidden="true" />
+        <span className={styles.printIndex}>The studio / In full color</span>
+        <div className={styles.workPrint + ' ' + styles.printOne}><span>01 / D & D Landscaping</span><Image unoptimized src="/images/editorial/dd-landscaping-640.webp" alt="D & D Landscaping’s current website, with a bold green identity and a sunlit lawn beneath oak trees" width={640} height={400} fetchPriority="high" /></div>
+        <div className={styles.workPrint + ' ' + styles.printTwo}><span>02 / Cross + Covenant</span><Image unoptimized src="/images/editorial/cross-covenant-current-640.webp" alt="The current Cross + Covenant storefront, featuring the Wear the Gospel collection" width={640} height={400} /></div>
+        <div className={styles.mascotSeal}><Image src="/images/editorial/mascot-160.webp" alt="Mr. Mustard, the studio’s mustard-seed mascot" width={120} height={161} sizes="100px" /><span>Mr.<br />Mustard.</span></div>
+        <span className={styles.artNote}>A little<br /><em>mustard.</em></span>
+        <span className={styles.registration} aria-hidden="true">+</span>
       </div>
       <div className={styles.heroCopy}>
-        <p className={styles.eyebrow}><span className={styles.dot} /> Small beginnings. Remarkable outcomes.</p>
-        <h1 id="studio-heading">Exceptional<br />by <em>design.</em><br /><span>Intelligent</span><br />by nature.</h1>
-        <div className={styles.heroIntro}><p>Distinctive websites. Custom software. AI with purpose. For people building something worth owning.</p><Link href="/inquire" className={styles.primary}>Tell Us What You Have In Mind <Arrow /></Link></div>
+        <p className={styles.eyebrow}><span className={styles.dot} /> Design & technology, with character.</p>
+        <h1 id="studio-heading">Good ideas.<br /><em>Great</em><br />execution.</h1>
+        <div className={styles.heroIntro}><p>Websites, custom software, and AI systems. Designed and built by Sarah Scarano in Montana, for people with something of their own to build.</p><Link href="/inquire" className={styles.primary}>Tell Us What You Have In Mind <Arrow /></Link></div>
       </div>
       <div className={styles.heroBottom}><a href="#selected-work">Explore The Work <span aria-hidden="true">↓</span></a><span>Strategy, design & engineering. One studio.</span><span className={styles.edition}>MMS / 01</span></div>
     </section>
+    <div className={styles.colorBand}><span>Independent by design.</span><span aria-hidden="true">✳</span><span>Built with character.</span><span aria-hidden="true">✳</span><span>Made to work.</span></div>
     <section id="selected-work" className={styles.work} aria-labelledby="work-heading">
       <div className={styles.sectionTop}><p className={styles.eyebrow}>01 / Selected Work</p><span>Made here. Out in the world.</span></div>
-      <div className={styles.workIntro}><h2 id="work-heading">The work<br />speaks <em>first.</em></h2><div><p>A retreat that feels like arriving. A brand with something to say. A business with intelligence built in. Each one, its own world.</p><Link href="/work" className={styles.textLink}>Explore The Portfolio <Arrow /></Link></div></div>
+      <div className={styles.workIntro}><h2 id="work-heading">The work<br />speaks <em>first.</em></h2><div><p>A landscaper in Tallahassee. A homebuilder in Montana. A brand with something to say. Real client work, our own ventures, and original studio concepts.</p><Link href="/work" className={styles.textLink}>Explore The Portfolio <Arrow /></Link></div></div>
       <div className={styles.projectGrid}>{projects.map((project, i) => <a key={project.name} href={project.url} target="_blank" rel="noopener noreferrer" className={styles.project}>
         <div className={styles.projectImage}><ProjectImage name={project.image} alt={project.name + ' website, designed and built by Modern Mustard Seed'} sizes={i === 0 ? '(max-width: 760px) 92vw, 88vw' : '(max-width: 760px) 92vw, 43vw'} /><span className={styles.visit}>Visit Live Site <Arrow /></span></div>
         <div className={styles.projectCaption}><div><p className={styles.eyebrow}>{project.type}</p><h3>{project.name}</h3></div><span className={styles.projectNumber}>0{i + 1}</span></div>

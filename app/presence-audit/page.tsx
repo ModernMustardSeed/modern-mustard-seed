@@ -211,7 +211,7 @@ export default function PresenceAuditPage() {
           <div className="relative max-w-2xl">
             <p className="font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-[#F5B700]">Why you can trust the number // Check it yourself</p>
             <h2 className="mt-3 font-display text-4xl font-extrabold italic leading-[1.02] text-[#FBF6EA] md:text-5xl">
-              An audit nobody can check is a horoscope with a logo.
+              Every score comes with evidence you can check.
             </h2>
           </div>
           <div className="relative mt-10 grid gap-6 md:grid-cols-3">

@@ -46,3 +46,66 @@
 @media(max-width:760px){.heroIntro{margin-top:26px;max-width:100%}.hero{min-height:1100px}.heroArt{top:655px;height:360px;right:0;width:100%}.heroArt img{object-fit:contain}.heroIntro .primary{margin-top:20px}.hero h1{margin-bottom:26px}}
 
 .heroArt{mix-blend-mode:lighten}
+
+/* Pop-art studio: print composition, original work, and the house mascot. */
+.hero{background:var(--cream);color:var(--ink);height:auto;min-height:890px;max-height:none;padding-top:116px}
+.heroTop{color:#45484e;border-color:var(--ink)}
+.heroCopy{max-width:700px;margin-top:56px}
+.heroCopy>.eyebrow{color:#b92417;font-weight:600}
+.dot{background:#b92417}
+.hero h1{font-family:var(--font-display),serif;font-weight:600;font-size:clamp(78px,7.5vw,118px);line-height:1.02;letter-spacing:-.06em;margin:25px 0 32px}
+.hero h1 em{display:inline-block;color:var(--ink);position:relative;isolation:isolate}
+.hero h1 em:after{content:'';position:absolute;left:-6%;right:-9%;bottom:7%;height:42%;background:var(--mustard);z-index:-1;transform:rotate(-3deg)}
+.heroIntro{max-width:390px}.heroIntro p{color:#42454a;font-size:15px}
+.primary{border:2px solid var(--ink);box-shadow:4px 4px 0 var(--ink);font-weight:600}
+.primary:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--ink)}
+.heroBottom{color:#45484e;border-color:var(--ink);bottom:26px}
+.heroBottom a{color:var(--ink);font-weight:600}.heroBottom a span{color:#b92417}
+.heroArt{width:43%;height:580px;top:190px;right:5%;mix-blend-mode:normal;pointer-events:auto}
+.heroArt:after{display:none}.heroArt img{object-fit:cover}
+.printField{position:absolute;inset:10px 0 25px 12px;background:var(--mustard);border:2px solid var(--ink);box-shadow:12px 12px 0 var(--ink);transform:rotate(3deg);overflow:hidden}
+.printField:before{content:'';position:absolute;width:100%;height:75%;right:-30%;top:0;background-image:radial-gradient(var(--ink) 1.2px,transparent 1.3px);background-size:8px 8px;transform:rotate(-15deg)}
+.printField:after{content:'';position:absolute;width:260px;height:260px;left:-110px;bottom:-80px;border:45px solid #1e50c8;border-radius:50%}
+.printIndex{position:absolute;left:42px;top:39px;font-size:9px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;transform:rotate(3deg)}
+.workPrint{position:absolute;width:88%;padding:0 10px 10px;background:var(--cream);border:2px solid var(--ink);box-shadow:7px 7px 0 var(--ink);transition:transform .35s}
+.workPrint>span{display:block;padding:10px 0;font-size:9px;font-weight:600;letter-spacing:.12em;text-transform:uppercase}
+.heroArt .workPrint img{width:100%;height:auto;aspect-ratio:1.6;display:block;object-fit:cover;border:1px solid var(--ink)}
+.printOne{top:78px;left:-18px;transform:rotate(-8deg)}
+.printTwo{top:260px;left:62px;transform:rotate(7deg)}
+.heroArt:hover .printOne{transform:rotate(-10deg) translateY(-5px)}
+.heroArt:hover .printTwo{transform:rotate(5deg) translateY(4px)}
+.mascotSeal{position:absolute;z-index:3;left:15px;bottom:-15px;width:163px;height:163px;border-radius:50%;border:2px solid var(--ink);background:var(--cream);display:flex;align-items:center;justify-content:center;transform:rotate(-9deg);box-shadow:4px 4px 0 var(--ink)}
+.heroArt .mascotSeal img{position:absolute;left:6px;bottom:20px;width:85px;height:114px;object-fit:contain}
+.mascotSeal>span{font-family:var(--font-display),serif;font-size:20px;line-height:1.1;position:absolute;right:8px;top:52px;width:73px;font-style:italic}
+.artNote{position:absolute;right:11px;top:-48px;background:#e0301e;color:var(--cream);width:139px;height:139px;display:flex;align-items:center;justify-content:center;flex-direction:column;border-radius:50%;font-family:var(--font-display),serif;font-size:25px;line-height:1;transform:rotate(11deg);border:2px solid var(--ink);z-index:4;box-shadow:3px 3px 0 var(--ink)}
+.artNote em{font-size:29px;color:var(--cream)}
+.registration{position:absolute;right:-21px;bottom:-13px;font-size:55px;font-weight:300;line-height:1;color:#b92417}
+.colorBand{background:#1e50c8;color:var(--cream);display:flex;align-items:center;justify-content:space-between;gap:25px;padding:23px 6vw;border-top:2px solid var(--ink);border-bottom:2px solid var(--ink);font-size:clamp(15px,2vw,28px);font-weight:500;letter-spacing:-.02em}
+.colorBand>span[aria-hidden]{font-size:40px;color:var(--mustard);line-height:1}
+.sectionTop{border-bottom:2px solid var(--ink)}.sectionTop .eyebrow{color:#b92417;font-weight:600}
+.workIntro h2 em{color:#b92417}
+.projectImage{border:2px solid var(--ink);box-shadow:7px 7px 0 var(--ink)}
+.visit{background:var(--mustard);border:1px solid var(--ink);font-weight:600}
+.projectNumber{background:var(--mustard);color:var(--ink);border:1px solid var(--ink);min-width:40px;height:40px;display:grid;place-items:center;transform:rotate(5deg)}
+.statement{position:relative;overflow:hidden;border-top:2px solid var(--ink);border-bottom:2px solid var(--ink)}
+.statement:before{content:'';position:absolute;width:200px;top:0;bottom:0;left:0;background-image:radial-gradient(#080c16 1px,transparent 1.2px);background-size:7px 7px;mask-image:linear-gradient(90deg,#000,transparent);opacity:.5;pointer-events:none}
+.statement>p{position:relative}.statement>p>em{display:inline-block;background:var(--cream);border:2px solid var(--ink);padding:0 16px 7px;transform:rotate(-3deg);box-shadow:5px 5px 0 var(--ink)}
+.discipline{border-top:2px solid var(--ink)}.discipline:last-child{border-bottom:2px solid var(--ink)}
+.disciplineIndex{color:#b92417;font-weight:700}.discipline>span:last-child{color:#1e50c8}
+.founder{border-top:10px solid #1e50c8}.founderInitial{color:#f5b700;font-size:82px;text-shadow:3px 3px 0 #e0301e}
+.concierge{background:var(--cream);border-bottom:2px solid var(--ink)}
+.mascotOrbit{border:2px solid var(--ink);background:var(--mustard);box-shadow:8px 8px 0 #1e50c8;transform:rotate(-8deg);border-radius:45% 55% 50% 45%}
+.mascotLabel{background:var(--cream);border:1px solid var(--ink);padding:8px 12px;transform:rotate(3deg)}
+.close{position:relative;overflow:hidden;border-top:2px solid var(--ink);border-bottom:2px solid var(--ink)}
+.close:before{content:'';position:absolute;width:260px;height:100%;right:-70px;top:0;background-image:radial-gradient(#080c16 1px,transparent 1.3px);background-size:9px 9px;transform:rotate(-12deg);opacity:.35;pointer-events:none}
+.close h2{position:relative}.closeLink{background:var(--cream);border:2px solid var(--ink);padding:14px 24px;box-shadow:4px 4px 0 var(--ink)}
+@media(min-width:761px) and (max-width:1150px){.hero{min-height:830px}.hero h1{font-size:82px}.heroCopy{max-width:55%;margin-top:50px}.heroArt{width:40%;right:5%;top:210px;height:470px}.printTwo{top:220px;left:35px}.printOne{left:-10px}.mascotSeal{width:130px;height:130px;left:-5px;bottom:-15px}.heroArt .mascotSeal img{width:65px;height:87px;left:3px;bottom:15px}.mascotSeal>span{font-size:17px;right:1px;top:40px;width:62px}.artNote{width:115px;height:115px;font-size:21px;right:-10px}.artNote em{font-size:25px}.heroIntro{max-width:340px}}
+@media(max-width:760px){.hero{min-height:0;padding:100px 6vw 88px;display:flex;flex-direction:column}.heroTop{order:0}.heroCopy{order:1;max-width:100%;margin-top:32px}.hero h1{font-size:clamp(53px,12vw,88px);line-height:1.04;margin:24px 0 30px}.heroIntro{margin-top:0;max-width:420px}.heroIntro p{font-size:14px}.heroArt{order:2;position:relative;top:auto;right:auto;left:auto;width:calc(100% - 24px);height:clamp(350px,100vw,540px);margin:78px auto 35px;flex-shrink:0}.printField{inset:0 0 15px}.printIndex{left:27px;top:22px;font-size:7px}.workPrint{padding:0 6px 6px;box-shadow:4px 4px 0 var(--ink)}.workPrint>span{font-size:7px;padding:7px 0}.printOne{top:57px;left:-15px}.printTwo{top:44%;left:30px}.artNote{right:-15px;top:-43px;width:100px;height:100px;font-size:19px}.artNote em{font-size:23px}.mascotSeal{width:119px;height:119px;left:-9px;bottom:-16px}.heroArt .mascotSeal img{width:60px;height:80px;left:3px;bottom:13px}.mascotSeal>span{font-size:16px;right:0;top:34px;width:58px}.registration{right:-17px;bottom:-18px;font-size:42px}.heroBottom{left:6vw;right:6vw;bottom:18px}.colorBand{padding:19px 6vw;gap:10px;font-size:13px}.colorBand>span[aria-hidden]{font-size:27px}.colorBand>span:last-child{display:none}.statement>p>em{padding:0 8px 4px;box-shadow:3px 3px 0 var(--ink)}.statement:before{width:80px}.projectImage{box-shadow:4px 4px 0 var(--ink)}.projectNumber{min-width:32px;height:32px}.close:before{width:120px;right:-50px}}
+@media(prefers-reduced-motion:reduce){.heroArt:hover .printOne{transform:rotate(-8deg)}.heroArt:hover .printTwo{transform:rotate(7deg)}}
+
+/* Keep the print collage clear of the hero rule and its mascot label legible. */
+@media(min-width:1151px){.hero{min-height:960px}}
+.mascotSeal>span{font-size:16px;line-height:1.15;width:77px;right:5px;top:54px}
+.heroArt .mascotSeal img{width:72px;height:97px;left:7px;bottom:27px}
+@media(min-width:761px) and (max-width:1150px){.hero{min-height:900px}.hero h1{font-size:clamp(64px,7.5vw,82px)}.mascotSeal>span{font-size:14px;width:60px;right:4px;top:43px}.heroArt .mascotSeal img{width:59px;height:79px;left:3px;bottom:19px}}
+@media(max-width:760px){.mascotSeal>span{font-size:13px;width:56px;right:3px;top:37px}.heroArt .mascotSeal img{width:55px;height:74px;left:3px;bottom:17px}}

@@ -64,3 +64,11 @@ nav[data-studio-nav] a[href='/book']{border:1px solid #080c16}
 [role='dialog'][aria-label*='Mr. Mustard'] [style*='radial-gradient']{display:none}
 [role='dialog'][aria-label*='Mr. Mustard'] .font-display{font-weight:400}
 [role='dialog'][aria-label*='Mr. Mustard'] button{border-width:1px}
+
+/* Carry the pop-art identity through the shared studio surfaces. */
+nav[data-studio-nav]{border-bottom:2px solid #080c16}
+nav[data-studio-nav] a[href='/book']{border:2px solid #080c16;box-shadow:3px 3px 0 #080c16!important}
+[data-studio-page] .halftone-bg{display:block}
+[data-studio-page] .pop-card,[data-studio-page] .pop-card-yellow{border:2px solid #080c16;box-shadow:4px 4px 0 #080c16!important;border-radius:6px}
+.studio-footer{border-top:8px solid #1e50c8}
+[data-studio-launcher]>div{border:2px solid #080c16;box-shadow:3px 3px 0 #080c16}

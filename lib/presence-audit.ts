@@ -18,8 +18,8 @@ import { possessive } from '@/lib/business-name';
  * TWO OF THE THREE ARE DELIBERATELY NOT AI. A rubric that a contractor can run
  * himself is a rubric he believes. Every profile check prints as pass or fail
  * with the consequence of failing it, every review number prints the benchmark
- * it was measured against, and the pillar weights are printed on the page. An
- * audit nobody can check is a horoscope with a logo.
+ * it was measured against, and the pillar weights are printed on the page. Every
+ * score comes with evidence the reader can check.
  *
  * WHERE THE FACTS COME FROM. Rating, review count, hours, address and the
  * website link are read off their own Google listing when we source the lead
