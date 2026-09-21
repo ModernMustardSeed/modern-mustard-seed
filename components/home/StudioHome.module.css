@@ -77,7 +77,7 @@
 .mascotSeal{position:absolute;z-index:3;left:15px;bottom:-15px;width:163px;height:163px;border-radius:50%;border:2px solid var(--ink);background:var(--cream);display:flex;align-items:center;justify-content:center;transform:rotate(-9deg);box-shadow:4px 4px 0 var(--ink)}
 .heroArt .mascotSeal img{position:absolute;left:6px;bottom:20px;width:85px;height:114px;object-fit:contain}
 .mascotSeal>span{font-family:var(--font-display),serif;font-size:20px;line-height:1.1;position:absolute;right:8px;top:52px;width:73px;font-style:italic}
-.artNote{position:absolute;right:11px;top:-48px;background:#e0301e;color:var(--cream);width:139px;height:139px;display:flex;align-items:center;justify-content:center;flex-direction:column;border-radius:50%;font-family:var(--font-display),serif;font-size:25px;line-height:1;transform:rotate(11deg);border:2px solid var(--ink);z-index:4;box-shadow:3px 3px 0 var(--ink)}
+.artNote{position:absolute;right:11px;top:-48px;background:#c4160b;color:var(--cream);width:139px;height:139px;display:flex;align-items:center;justify-content:center;flex-direction:column;border-radius:50%;font-family:var(--font-display),serif;font-size:25px;line-height:1;transform:rotate(11deg);border:2px solid var(--ink);z-index:4;box-shadow:3px 3px 0 var(--ink)}
 .artNote em{font-size:29px;color:var(--cream)}
 .registration{position:absolute;right:-21px;bottom:-13px;font-size:55px;font-weight:300;line-height:1;color:#b92417}
 .colorBand{background:#1e50c8;color:var(--cream);display:flex;align-items:center;justify-content:space-between;gap:25px;padding:23px 6vw;border-top:2px solid var(--ink);border-bottom:2px solid var(--ink);font-size:clamp(15px,2vw,28px);font-weight:500;letter-spacing:-.02em}
