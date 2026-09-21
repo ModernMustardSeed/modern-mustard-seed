@@ -92,11 +92,12 @@ export const CLIENT_PROJECTS: Record<string, ClientProject> = {
     assistantId: '5269bb2d-360f-4bf6-a07b-509ae488b482',
     crm: 'buildertrend',
     emailDomain: 'brimhomes.com',
-    // The listing: Built Right In Montana LLC, 5.0 from 10 reviews (CID 6813119055619579142). A short review
-    // link needs manager access; until Carmen adds Sarah, the listing itself is the door.
-    googleProfile: { reviewUrl: 'https://maps.google.com/?cid=6813119055619579142', mapsUrl: 'https://maps.google.com/?cid=6813119055619579142' },
+    // Two profiles, two offices, decided 2026-09-21 (Google will not merge two addresses). Every NEW review
+    // ask goes to Kalispell (150 Shady Ln, CID 8946601095687912218, one review, being built up). Eureka
+    // (CID 6813119055619579142) keeps the eleven it earned and stays the listing the website links to.
+    googleProfile: { reviewUrl: 'https://maps.google.com/?cid=8946601095687912218', mapsUrl: 'https://maps.google.com/?cid=6813119055619579142' },
     reviews: [
-      { key: 'google', label: 'Google', url: 'https://maps.google.com/?cid=6813119055619579142' },
+      { key: 'google', label: 'Google', url: 'https://maps.google.com/?cid=8946601095687912218' },
       { key: 'houzz', label: 'Houzz', url: 'https://www.houzz.com/professionals/home-builders/built-right-in-montana-llc-pfvwus-pf~1763541567' },
       { key: 'facebook', label: 'Facebook', url: 'https://www.facebook.com/BuiltRightInMontana/reviews' },
     ],
