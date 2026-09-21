@@ -1,13 +1,14 @@
 import Link from '@/components/AttributionLink';
 import Image from 'next/image';
 import styles from './StudioHome.module.css';
+import { GOOGLE_PROFILE } from '@/data/google-reviews';
 
 const projects = [
   { name: 'D & D Landscaping', type: 'Landscaping / Client website', image: 'dd-landscaping', url: 'https://ddlandscapingfl.com', description: 'A local business, unmistakable.', detail: 'A Tallahassee landscaping site with service selection, walkthrough booking, and a voice concierge.' },
   { name: 'Cross + Covenant', type: 'Commerce / Studio brand', image: 'cross-covenant-current', url: 'https://crossandcovenant.co', description: 'Wear the Gospel.', detail: 'An apparel storefront with original collections, a free Bible, daily devotionals, and a prayer wall.' },
   { name: 'Built Right in Montana', type: 'Custom homes / Client website', image: 'brim-homes', url: 'https://brimhomes.com', description: 'Built for the way Montana lives.', detail: 'A Flathead Valley homebuilder’s website, with a project showcase and a direct path to a build conversation.' },
-  { name: 'Bare Earth', type: 'Landscape & construction / Concept', image: 'bare-earth', url: 'https://bare-earth.vercel.app', description: 'Grounds worthy of the valley.', detail: 'A landscape and construction concept for the Flathead Valley, with service pages and an instant-quote experience.' },
-  { name: 'Wildmere Honey Co.', type: 'Brand experience / Studio concept', image: 'wildmere', url: 'https://wildmere.vercel.app', description: 'Montana honey, in full character.', detail: 'An original honey-brand concept with a scroll-led product story, audio tour, and voice concierge.' },
+  { name: 'Bare Earth', type: 'Landscape & construction / Studio build', image: 'bare-earth', url: 'https://bare-earth.vercel.app', description: 'Grounds worthy of the valley.', detail: 'A landscape and construction build for the Flathead Valley, with service pages and an instant-quote experience.' },
+  { name: 'Wildmere Honey Co.', type: 'Brand experience / Studio build', image: 'wildmere', url: 'https://wildmere.vercel.app', description: 'Montana honey, in full character.', detail: 'An original honey-brand build with a scroll-led product story, audio tour, and voice concierge.' },
 ];
 const disciplines = [
   { title: 'Websites & Brand', href: '/websites', text: 'A presence that makes the right people stop. Art direction, identity, and a beautifully engineered website, with search and conversion built in.', tags: 'Strategy · Identity · Digital experiences' },
@@ -43,9 +44,14 @@ export default function StudioHome({ faq }: { faq: { q: string; a: string }[] })
       <div className={styles.heroBottom}><a href="#selected-work">Explore The Work <span aria-hidden="true">↓</span></a><span>Strategy, design & engineering. One studio.</span><span className={styles.edition}>MMS / 01</span></div>
     </section>
     <div className={styles.colorBand}><span>Bespoke by design.</span><span aria-hidden="true">✳</span><span>Built with character.</span><span aria-hidden="true">✳</span><span>Made to work.</span></div>
+    <section className={styles.proofStrip} aria-label="Studio proof points">
+      <a href={GOOGLE_PROFILE.profileUrl} target="_blank" rel="noopener noreferrer"><span className={styles.proofStars} aria-hidden="true">★★★★★</span><span><strong>{GOOGLE_PROFILE.rating} on Google</strong><small>Five-star studio</small></span></a>
+      <span className={styles.proofDivider} aria-hidden="true">✳</span>
+      <span><strong>ChatGPT-ready studio</strong><small>Built to be found in AI search</small></span>
+    </section>
     <section id="selected-work" className={styles.work} aria-labelledby="work-heading">
       <div className={styles.sectionTop}><p className={styles.eyebrow}>01 / Selected Work</p><span>Made here. Out in the world.</span></div>
-      <div className={styles.workIntro}><h2 id="work-heading">The work<br />speaks <em>first.</em></h2><div><p>A landscaper in Tallahassee. A homebuilder in Montana. A brand with something to say. Real client work, our own ventures, and original studio concepts.</p><Link href="/work" className={styles.textLink}>Explore The Portfolio <Arrow /></Link></div></div>
+      <div className={styles.workIntro}><h2 id="work-heading">The work<br />speaks <em>first.</em></h2><div><p>A landscaper in Tallahassee. A homebuilder in Montana. A brand with something to say. Real client work, our own ventures, and studio builds.</p><Link href="/work" className={styles.textLink}>Explore The Portfolio <Arrow /></Link></div></div>
       <div className={styles.projectGrid}>{projects.map((project, i) => <a key={project.name} href={project.url} target="_blank" rel="noopener noreferrer" className={styles.project}>
         <div className={styles.projectImage}><ProjectImage name={project.image} alt={project.name + ' website, designed and built by Modern Mustard Seed'} sizes={i === 0 ? '(max-width: 760px) 92vw, 88vw' : '(max-width: 760px) 92vw, 43vw'} /><span className={styles.visit}>Visit Live Site <Arrow /></span></div>
         <div className={styles.projectCaption}><div><p className={styles.eyebrow}>{project.type}</p><h3>{project.name}</h3></div><span className={styles.projectNumber}>0{i + 1}</span></div>
