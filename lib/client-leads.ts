@@ -35,6 +35,14 @@ export type ClientProject = {
   googleProfile: { reviewUrl: string | null; mapsUrl: string | null } | null;
   /** Where a happy customer leaves a review. Google first, Houzz for a builder. */
   reviews: Array<{ key: 'google' | 'houzz' | 'facebook'; label: string; url: string }>;
+  /**
+   * The address a campaign to their own contact book leaves from, on a domain
+   * of THEIRS that is verified with the mail provider. Never ours. While it is
+   * unset they can write, preview and test a campaign, and cannot send one.
+   */
+  campaignFrom?: string | null;
+  /** Their postal address, printed at the foot of every campaign as the law asks. */
+  postal?: string | null;
   /** The project pages on their site, for jobsite signs and photo drops. */
   projects: Array<{ slug: string; title: string }>;
   /**
@@ -92,6 +100,9 @@ export const CLIENT_PROJECTS: Record<string, ClientProject> = {
     assistantId: '5269bb2d-360f-4bf6-a07b-509ae488b482',
     crm: 'buildertrend',
     emailDomain: 'brimhomes.com',
+    // Campaigns wait on a sending address of their own on brimhomes.com, verified with Resend.
+    campaignFrom: null,
+    postal: '150 Shady Ln Spc 405, Kalispell, MT 59901',
     // Two profiles, two offices, decided 2026-09-21 (Google will not merge two addresses). Every NEW review
     // ask goes to Kalispell (150 Shady Ln, CID 8946601095687912218, one review, being built up). Eureka
     // (CID 6813119055619579142) keeps the eleven it earned and stays the listing the website links to.
