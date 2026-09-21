@@ -15,6 +15,7 @@ import Accounts from '@/components/cc/modules/Accounts';
 import Domains from '@/components/cc/modules/Domains';
 import Week from '@/components/cc/modules/Week';
 import Traffic from '@/components/cc/modules/Traffic';
+import Campaigns from '@/components/cc/modules/Campaigns';
 import Operator from '@/components/cc/Operator';
 import Palette from '@/components/cc/Palette';
 
@@ -52,7 +53,7 @@ export type Pulse = {
   contacts: { total: number };
 };
 
-type ModuleKey = 'overview' | 'week' | 'traffic' | 'leads' | 'contacts' | 'conversations' | 'inbox' | 'reviews' | 'marketing' | 'website' | 'domains' | 'accounts';
+type ModuleKey = 'overview' | 'week' | 'traffic' | 'campaigns' | 'leads' | 'contacts' | 'conversations' | 'inbox' | 'reviews' | 'marketing' | 'website' | 'domains' | 'accounts';
 
 const MODULES: Array<{ key: ModuleKey; label: string; icon: IconName; group: string; title: string; blurb: string }> = [
   { key: 'overview', label: 'Now', icon: 'overview', group: 'Today', title: 'Now', blurb: 'What needs you, and nothing else.' },
@@ -64,6 +65,7 @@ const MODULES: Array<{ key: ModuleKey; label: string; icon: IconName; group: str
   { key: 'reviews', label: 'Reviews', icon: 'reviews', group: 'Growth', title: 'Reviews', blurb: 'Ask when a job closes. Nobody gets asked twice.' },
   { key: 'marketing', label: 'Marketing', icon: 'marketing', group: 'Growth', title: 'Marketing', blurb: 'What goes out this week, and what is waiting on your word.' },
   { key: 'website', label: 'Website', icon: 'website', group: 'Growth', title: 'Website', blurb: 'Your pages, your project photos, your articles.' },
+  { key: 'campaigns', label: 'Campaigns', icon: 'send', group: 'Growth', title: 'Campaigns', blurb: 'One message, in your words, to the people in your book.' },
   { key: 'traffic', label: 'Traffic', icon: 'spark', group: 'Growth', title: 'Traffic', blurb: 'Who came to your website, what they read, and how many reached out.' },
   { key: 'domains', label: 'Domains', icon: 'out', group: 'System', title: 'Domains', blurb: 'Every name you own, who holds it, and when it renews.' },
   { key: 'accounts', label: 'Accounts', icon: 'accounts', group: 'System', title: 'Accounts', blurb: 'What this runs on, and the one thing to do where it is not connected.' },
@@ -398,6 +400,8 @@ export default function Workspace() {
                 <Marketing refreshPulse={loadPulse} />
               ) : allowed === 'website' ? (
                 <Website session={session} />
+              ) : allowed === 'campaigns' ? (
+                <Campaigns />
               ) : allowed === 'traffic' ? (
                 <Traffic />
               ) : allowed === 'domains' ? (
