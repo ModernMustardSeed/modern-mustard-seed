@@ -258,6 +258,21 @@ export default function Leads({ session, refreshPulse }: { session: Session; ref
               </div>
             )}
 
+            {open.trail && open.trail.length > 0 && (
+              <div>
+                <Label>What they read before reaching out</Label>
+                <ol className="mt-2 space-y-1.5 rounded-lg border border-[var(--cc-line)] bg-[#FAFBFC] px-4 py-3">
+                  {open.trail.map((t, i) => (
+                    <li key={`${t.at}-${i}`} className="flex items-baseline justify-between gap-3 text-[13px]">
+                      <span className="min-w-0 truncate text-[var(--cc-ink)]">{t.page}</span>
+                      <span className="shrink-0 tabular-nums text-[12px] text-[var(--cc-muted)]">{t.time}</span>
+                    </li>
+                  ))}
+                </ol>
+                <p className="mt-1.5 text-[12px] text-[var(--cc-muted)]">The pages this person opened that day, in order. Worth a glance before you call.</p>
+              </div>
+            )}
+
             <div>
               <Label>What has happened</Label>
               <div className="mt-2.5"><Timeline lead={open} /></div>

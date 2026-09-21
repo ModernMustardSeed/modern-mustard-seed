@@ -39,6 +39,8 @@ export type Lead = {
   owner_at: string | null;
   created_at: string;
   events: LeadEvent[];
+  /** The pages this person opened before reaching out, oldest first. Absent when it cannot be known. */
+  trail?: Array<{ page: string; time: string; at: string }>;
 };
 
 export type LeadSummary = { days: number; total: number; waiting: number; bySource: Array<{ key: string; count: number }>; byTown: Array<{ key: string; count: number }> };

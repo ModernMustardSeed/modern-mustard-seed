@@ -85,7 +85,7 @@ function place(v: Visit): string {
 }
 
 /** A path as a person reads it. */
-function pageName(path: string, titles: Map<string, string>): string {
+export function pageName(path: string, titles: Map<string, string>): string {
   const p = path.replace(/\/$/, '') || '/';
   if (p === '/') return 'Home page';
   const project = /^\/projects\/([^/]+)$/.exec(p);
