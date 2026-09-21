@@ -22,7 +22,7 @@ export const dynamic = 'force-dynamic';
 const LEAD_COLUMNS =
   'id, source, sources, name, phone, email, town, project_type, land, message, page, referrer_name, referrer_phone, answers, priority, campaign, handled_at, handled_by, owner_key, owner_name, owner_at, created_at, visit_hashes';
 
-type LeadRow = Record<string, unknown> & { id: string; created_at: string; handled_at: string | null; priority: number | null };
+type LeadRow = Record<string, unknown> & { id: string; created_at: string; handled_at: string | null; priority: number | null; visit_hashes?: string[] | null };
 
 export async function GET() {
   const got = await getDesk();
