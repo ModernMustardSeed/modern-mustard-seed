@@ -40,6 +40,13 @@ type Visit = { path: string | null; referrer: string | null; region: string | nu
 const ROBOT = /bot|crawl|spider|slurp|headless|lighthouse|pagespeed|preview|monitor|curl|wget|python|scrapy|facebookexternalhit|whatsapp/i;
 const TZ = 'America/Denver';
 
+/**
+ * Towns that are server farms. A browser that says it is Chrome on Windows and
+ * sits in one of these is a machine reading the page, not a family planning a
+ * house, so the whole visit is left out.
+ */
+const SERVER_TOWNS = new Set(['boardman', 'ashburn', 'council bluffs', 'the dalles', 'prineville', 'quincy', 'santa clara', 'san jose', 'moncks corner', 'new albany', 'papillion', 'altoona', 'forest city']);
+
 const dayOf = (iso: string) => new Date(iso).toLocaleDateString('en-CA', { timeZone: TZ });
 const hourOf = (iso: string) => Number(new Date(iso).toLocaleString('en-US', { timeZone: TZ, hour: 'numeric', hour12: false })) % 24;
 
@@ -66,6 +73,8 @@ function source(referrer: string | null, ownHosts: string[]): string {
   if (/houzz\./.test(host)) return 'Houzz';
   if (/chatgpt\.|openai\.|perplexity\.|claude\.|copilot\.|gemini\./.test(host)) return 'AI assistants';
   if (/mail\.|outlook\.|gmail\./.test(host)) return 'Email';
+  // Our own build and preview tooling is not a way a customer finds anybody.
+  if (/vercel\.(com|app)$/.test(host)) return 'Typed in, or a saved link';
   return host;
 }
 
@@ -112,7 +121,15 @@ export async function buildTraffic(sb: SupabaseClient, account: CcAccount, days:
     .limit(20000);
   if (read.error || !read.data) return null;
 
-  const people = (read.data as Visit[]).filter((v) => !ROBOT.test(v.ua ?? '') && v.ip_hash);
+  const named = (read.data as Visit[]).filter((v) => !ROBOT.test(v.ua ?? '') && v.ip_hash);
+  // Pages opened per visit, so a one-page glance from abroad can be told from a reader.
+  const depth = new Map<string, number>();
+  for (const v of named) depth.set(v.ip_hash as string, (depth.get(v.ip_hash as string) ?? 0) + 1);
+  const people = named.filter((v) => {
+    if (SERVER_TOWNS.has((v.city ?? '').toLowerCase())) return false;
+    const abroad = Boolean(v.country) && v.country !== 'US' && v.country !== 'CA';
+    return !(abroad && (depth.get(v.ip_hash as string) ?? 0) < 2);
+  });
   const current = people.filter((v) => v.created_at >= start);
   const before = people.filter((v) => v.created_at < start);
 
@@ -163,7 +180,7 @@ export async function buildTraffic(sb: SupabaseClient, account: CcAccount, days:
   }
 
   const [leads, scans] = await Promise.all([
-    sb.from('client_leads').select('id', { count: 'exact', head: true }).eq('project', account.project.key).gte('created_at', start),
+    sb.from('client_leads').select('id', { count: 'exact', head: true }).eq('project', account.project.key).gte('created_at', start).not('name', 'ilike', '%(test)%'),
     sb.from('client_visits').select('id', { count: 'exact', head: true }).eq('client_email', account.clientEmail).gte('created_at', start),
   ]);
 

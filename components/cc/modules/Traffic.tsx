@@ -22,6 +22,8 @@ const SPANS: Array<{ days: number; label: string }> = [
 function change(now: number, before: number | undefined): string | undefined {
   if (before === undefined) return undefined;
   if (!before) return now ? 'None in the period before' : undefined;
+  // A percentage off a handful is noise. Say so instead of printing Up 700%.
+  if (before < 20) return 'Too few before this to compare';
   const pct = Math.round(((now - before) / before) * 100);
   if (pct === 0) return 'Level with the period before';
   return `${pct > 0 ? 'Up' : 'Down'} ${Math.abs(pct)}% on the period before`;
