@@ -41,7 +41,7 @@ const STATIC_PATHS = [
   '/command-center',
   '/chief',
   '/ai-native',
-  '/ads',
+  '/pictures',
   '/launch-film',
   '/mustard',
   '/playbook',
@@ -74,7 +74,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
         ? 1.0
         : path === '/work' || path === '/services' || path === '/advisory' || path === '/talking-website' || path === '/websites' || path === '/voice-agents' || path === '/brand'
           ? 0.95
-          : path === '/work-with-us' || path === '/the-system' || path === '/command-center' || path === '/chief' || path === '/ai-native' || path === '/ads' || path === '/launch-film' || path === '/about'
+          : path === '/work-with-us' || path === '/the-system' || path === '/command-center' || path === '/chief' || path === '/ai-native' || path === '/pictures' || path === '/launch-film' || path === '/about'
             ? 0.9
             : 0.7,
   }));

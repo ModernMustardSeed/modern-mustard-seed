@@ -22,7 +22,7 @@ const DEPARTMENTS: Record<string, string> = {
   'Voice Agents': '/voice-agents',
   'Command Center': '/command-center',
   'Mustard Pictures': '/pictures',
-  'Mustard Broadcast': '/ads',
+  'Mustard Broadcast': '/pictures',
   'GEO Desk': '/website-audit',
   Websites: '/websites',
   'The Chief': '/chief',

@@ -526,20 +526,16 @@ export default function MustardLifeComic() {
                 </Bubble>
               </div>
               <p className="mlc-pop font-body text-[15px] leading-relaxed text-[#3a3733] max-w-2xl">
-                Mustard Pictures makes your business a cinematic commercial, starting with a free Screen Test
-                you can watch before paying a cent. Mustard Broadcast then puts it on the air: campaigns built
-                and managed in your own ad account, budgets watched weekly, reports in plain English.
+                Mustard Pictures brings commercial production and managed advertising together.
+                One studio makes the film, builds the campaign in your own ad account, and keeps you informed.
               </p>
             </div>
 
             <div className="space-y-4">
-              <PriceTag name={`Pictures · ${P.spot.name}`} price={`$${P.spot.priceUsd}`} note="One cinematic 30-second spot, three cuts, full rights." />
-              <PriceTag name={`Pictures · ${P.premiere.name}`} price={`$${P.premiere.priceUsd}`} note="The full premiere treatment." delay={90} />
-              <PriceTag name={`Broadcast · ${P.onAir.name}`} price={`${usd(P.onAir.setupCents)} + ${usd(P.onAir.monthlyCents)}/mo`} note={P.onAir.pitch} delay={180} />
-              <PriceTag name={`Broadcast · ${P.primeTime.name}`} price={`${usd(P.primeTime.setupCents)} + ${usd(P.primeTime.monthlyCents)}/mo`} note={P.primeTime.pitch} featured delay={270} />
-              <div className="mlc-pop flex flex-wrap gap-3 pt-2" style={{ transitionDelay: '340ms' }}>
-                <Cta href="/pictures">Free Screen Test</Cta>
-                <Cta href="/ads" solid>Go On Air</Cta>
+              <div className="mlc-pop rounded-2xl border-2 border-[#161616] bg-[#F5B700] p-7"><h3 className="font-display text-3xl font-bold">Your story. Its audience.</h3><p className="mt-4 font-body text-base leading-relaxed">Tell us what you want to put into the world. We will shape the film and the campaign around it.</p></div>
+              <div className="mlc-pop flex flex-wrap gap-3 pt-2">
+                <Cta href="/pictures">Explore Mustard Pictures</Cta>
+                <Cta href="/inquire" solid>Reach Out</Cta>
               </div>
             </div>
           </div>

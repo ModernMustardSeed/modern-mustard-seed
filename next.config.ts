@@ -222,6 +222,7 @@ const config: NextConfig = {
   },
   async redirects() {
     return [
+      { source: '/ads', destination: '/pictures', permanent: true },
       // Retired navigation URLs still appear in Search Console and old links.
       { source: '/home', destination: '/', permanent: true },
       { source: '/notes', destination: '/blog', permanent: true },

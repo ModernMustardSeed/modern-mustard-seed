@@ -93,7 +93,6 @@ export const QUOTABLE_PROGRAMS = [
   { name: 'Mustard Mode', page: '/mustard-mode' },
   { name: 'The Chief', page: '/chief' },
   { name: 'Mustard Pictures', page: '/pictures' },
-  { name: 'Mustard Broadcast', page: '/ads' },
   // Mustard Press parked 2026-08-07 (Sarah). Unlisted everywhere, so the agent
   // never points a visitor at it. See the note in Navbar.tsx.
   { name: 'Switchboard', page: '/switchboard' },

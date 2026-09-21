@@ -103,9 +103,8 @@ const DEPARTMENTS = [
   { name: 'AI Native', tag: 'YOUR COMPANY ON AI, YOUR TEAM RUNNING IT', href: '/ai-native' },
   { name: 'The Chief', tag: 'YOUR AI CHIEF OF STAFF', href: '/chief' },
   { name: 'Command Center', tag: 'THE AI BACK OFFICE', href: '/command-center' },
-  { name: 'Mustard Pictures', tag: 'COMMERCIALS AND BRAND FILMS', href: '/pictures' },
+  { name: 'Mustard Pictures', tag: 'FILMS AND ADVERTISING', href: '/pictures' },
   { name: 'The Launch Film', tag: 'A FILM BUILT FROM YOUR REAL PRODUCT', href: '/launch-film' },
-  { name: 'Mustard Broadcast', tag: 'WE RUN YOUR ADS', href: '/ads' },
   { name: 'Meet Mr. Mustard', tag: 'THE STUDIO ANSWERS, DAY AND NIGHT', href: '/mustard' },
 ];
 
