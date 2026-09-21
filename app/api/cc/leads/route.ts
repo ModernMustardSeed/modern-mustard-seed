@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getDesk, logLeadEvent } from '@/lib/cc-desk';
 import { EVENT_COLUMNS, type LeadEvent } from '@/lib/cc-lead-log';
+import { pageName } from '@/lib/cc-traffic';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -19,7 +20,7 @@ export const dynamic = 'force-dynamic';
  */
 
 const LEAD_COLUMNS =
-  'id, source, sources, name, phone, email, town, project_type, land, message, page, referrer_name, referrer_phone, answers, priority, campaign, handled_at, handled_by, owner_key, owner_name, owner_at, created_at';
+  'id, source, sources, name, phone, email, town, project_type, land, message, page, referrer_name, referrer_phone, answers, priority, campaign, handled_at, handled_by, owner_key, owner_name, owner_at, created_at, visit_hashes';
 
 type LeadRow = Record<string, unknown> & { id: string; created_at: string; handled_at: string | null; priority: number | null };
 
@@ -50,6 +51,29 @@ export async function GET() {
       if (pa !== pb) return pa - pb;
       return String(a.created_at).localeCompare(String(b.created_at));
     });
+
+  // THE TRAIL: the pages each person opened before they reached out, matched by
+  // the visit hashes the lead was stored with. Read once for every lead on the
+  // list. A lead with no hashes, or a read that fails, simply has no trail.
+  const hashes = [...new Set(leads.flatMap((l) => ((l.visit_hashes as string[] | null) ?? [])))];
+  if (hashes.length) {
+    const seen = await sb.from('prep_visits').select('ip_hash, path, created_at').eq('project', account.project.key).eq('surface', 'site').in('ip_hash', hashes).order('created_at', { ascending: true }).limit(3000);
+    if (!seen.error && seen.data) {
+      const titles = new Map(account.project.projects.map((p) => [p.slug, p.title]));
+      const time = (iso: string) => new Date(iso).toLocaleTimeString('en-US', { timeZone: 'America/Denver', hour: 'numeric', minute: '2-digit' });
+      for (const l of leads) {
+        const mine = new Set((l.visit_hashes as string[] | null) ?? []);
+        if (!mine.size) continue;
+        // Up to a minute after the form, so the page it was sent from is included.
+        const until = Date.parse(l.created_at) + 60_000;
+        const trail = (seen.data as Array<{ ip_hash: string; path: string | null; created_at: string }>)
+          .filter((v) => mine.has(v.ip_hash) && Date.parse(v.created_at) <= until)
+          .slice(-25)
+          .map((v) => ({ page: pageName(v.path ?? '/', titles), time: time(v.created_at), at: v.created_at }));
+        if (trail.length) (l as LeadRow & { trail?: unknown }).trail = trail;
+      }
+    }
+  }
 
   const since = Date.now() - 30 * 86_400_000;
   const recent = leads.filter((l) => Date.parse(l.created_at) >= since);

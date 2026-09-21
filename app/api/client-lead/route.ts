@@ -165,6 +165,10 @@ export async function POST(req: Request) {
   const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? '';
   const ipHash = ip ? createHash('sha256').update(ip).digest('hex').slice(0, 24) : null;
   const ua = (req.headers.get('user-agent') ?? '').slice(0, 300);
+  // The visit beacon hashes the same address with the day and a salt (app/api/prep-visit).
+  // Keeping today's and yesterday's version lets the desk show what this person read first.
+  const visitHash = (d: Date) => createHash('sha256').update(`${ip}|${d.toISOString().slice(0, 10)}|prep-visit`).digest('hex').slice(0, 24);
+  const visitHashes = ip ? [visitHash(new Date()), visitHash(new Date(Date.now() - 86_400_000))] : null;
 
   // Same person in the last thirty days? Attach, do not duplicate.
   const since = new Date(Date.now() - 30 * 86_400_000).toISOString();
@@ -197,7 +201,7 @@ export async function POST(req: Request) {
     id = existing.id as string;
     merged = true;
   } else {
-    const row = { client_email: project.clientEmail, project: project.key, source, sources: [source], ...lead, campaign, answers, priority, sms_consent: smsConsent, sms_promo: smsPromo, elapsed_ms: elapsedMs, ip_hash: ipHash, ua };
+    const row = { client_email: project.clientEmail, project: project.key, source, sources: [source], ...lead, campaign, answers, priority, sms_consent: smsConsent, sms_promo: smsPromo, elapsed_ms: elapsedMs, ip_hash: ipHash, ua, visit_hashes: visitHashes };
     const { data, error } = await sb.from('client_leads').insert(row).select('id').single();
     if (error || !data) return reply({ ok: false, error: 'could not save' }, 500);
     id = data.id as string;
