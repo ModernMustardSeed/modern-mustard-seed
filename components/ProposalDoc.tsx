@@ -25,7 +25,8 @@ export type ProposalDocProps = {
   siteUrl?: string | null;
   /** Live demo/site links built for this prospect. Rendered as the clickable showcase. */
   demoLinks?: ProposalDemoLink[] | null;
-  prose: { intro?: string; situation?: string; recommendation?: string; close?: string };
+  /** `showcase` replaces the line under "Already built for you" when a proposal sets it. */
+  prose: { intro?: string; situation?: string; recommendation?: string; showcase?: string; close?: string };
   situationFallback?: string | null;
   lines: ProposalLine[];
   oneTime: number;
@@ -222,8 +223,7 @@ export default function ProposalDoc({
           <div className="mb-8">
             <Eyebrow>Already built for you</Eyebrow>
             <p className="mt-2 text-[14px] text-[#3a3733] font-body leading-relaxed">
-              We do not pitch with promises. Before this proposal was written, we built. Everything below
-              is live right now.
+              {prose.showcase || 'Everything below is live right now. Open any of it.'}
             </p>
             {embeds.length > 0 && (
               <div className="space-y-4 mt-4">
