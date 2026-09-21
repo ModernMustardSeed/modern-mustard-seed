@@ -3,6 +3,7 @@ import type { CcAccount } from '@/lib/cc-access';
 import { listConversations } from '@/lib/command-center/chats';
 import { daysUntil } from '@/lib/domains';
 import { escape } from '@/lib/email';
+import { buildTraffic } from '@/lib/cc-traffic';
 
 /**
  * THE WEEK. Seven days of what the website and the desk actually did, counted
@@ -16,7 +17,7 @@ import { escape } from '@/lib/email';
  */
 
 export type WeekLine = {
-  key: 'leads' | 'called' | 'touches' | 'chats' | 'scans' | 'asks' | 'posts' | 'mail' | 'contacts';
+  key: 'visits' | 'views' | 'leads' | 'called' | 'touches' | 'chats' | 'scans' | 'asks' | 'posts' | 'mail' | 'contacts';
   label: string;
   /** Where in the Command Center these rows can be opened. */
   room: string;
@@ -76,10 +77,17 @@ export async function buildWeek(sb: SupabaseClient, account: CcAccount, opts: { 
     account.project.assistantId ? listConversations(account.project.assistantId, 14) : Promise.resolve(undefined),
   ]);
 
+  // The website's own visit count, the same one the Traffic room shows. When it
+  // cannot be read both lines say Not read; when nothing came before, before is
+  // a counted zero.
+  const traffic = await buildTraffic(sb, account, 7).catch(() => null);
+
   const n = (r: { count: number | null; error: unknown } | null): number | null => (!r || r.error ? null : (r.count ?? 0));
   const leadsIn = leadRows.error ? null : (leadRows.data ?? []).length;
 
   const lines: WeekLine[] = [
+    { key: 'visits', label: 'Visits to your website', room: 'traffic', value: traffic ? traffic.visits : null, before: traffic ? (traffic.previous?.visits ?? 0) : null, note: traffic ? 'One person on one day counts once.' : 'The visit count could not be read just now.' },
+    { key: 'views', label: 'Pages they opened', room: 'traffic', value: traffic ? traffic.views : null, before: traffic ? (traffic.previous?.views ?? 0) : null },
     { key: 'leads', label: 'People who reached out', room: 'leads', value: leadsIn, before: n(leadsBefore) },
     { key: 'called', label: 'Leads marked called', room: 'leads', value: n(called), before: n(calledBefore) },
     { key: 'touches', label: 'Notes and call attempts written down', room: 'leads', value: n(touches), before: n(touchesBefore) },
