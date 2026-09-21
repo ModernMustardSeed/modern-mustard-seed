@@ -31,6 +31,7 @@ const ENGAGEMENTS = [
   { id: 'software', label: 'Custom software' },
   { id: 'voice', label: 'Voice agent' },
   { id: 'advisory', label: 'Advisory' },
+  { id: 'pictures', label: 'Films and advertising' },
   { id: 'other', label: 'Something else' },
 ];
 

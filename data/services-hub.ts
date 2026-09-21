@@ -34,8 +34,7 @@ export const DEPARTMENTS: Dept[] = [
   { key: 'advisory', name: 'Advisory', tag: 'Retained counsel, by the quarter', blurb: 'What to build, what to refuse, what to automate, and in what order. No build attached.', href: '/advisory', icon: '🧭' },
   { key: 'brand', name: 'Brand / Rebrand', tag: 'A new mark on every surface', blurb: 'Logo, look, mascot, site, voice agent, and the plan behind it. Designed once, live on every surface in three weeks.', href: '/brand', icon: '🎨' },
   { key: 'chief', name: 'The Chief', tag: 'Your AI chief of staff', blurb: 'Mr. Mustard runs your day: calendar, email, calls, research, and sales coaching, in voice, text, and chat.', href: '/chief', icon: '🧑‍✈️' },
-  { key: 'ads', name: 'Mustard Broadcast', tag: 'We run your ads', blurb: 'We make the cinematic commercial and run the Meta and Google ads in your own account.', href: '/ads', icon: '📺' },
-  { key: 'pictures', name: 'Mustard Pictures', tag: 'Commercials and brand films', blurb: 'Your business as a real cinematic commercial, directed in house.', href: '/pictures', icon: '🎬' },
+  { key: 'pictures', name: 'Mustard Pictures', tag: 'Films and advertising', blurb: 'Commercials, brand films, and managed Meta and Google campaigns, from one studio.', href: '/pictures', icon: '🎬' },
   { key: 'launch-film', name: 'The Launch Film', tag: 'Cut from your real product', blurb: 'A launch film for your app or product, built from the real screens, scored from scratch, finished in three formats.', href: '/launch-film', icon: '🎞' },
   { key: 'ai-native', name: 'AI Native', tag: 'Your company on AI', blurb: 'Every workflow mapped, the first five moved onto AI in accounts you own, and your team coached to run it. Eight weeks.', href: '/ai-native', icon: '🧭' },
   { key: 'geo', name: 'GEO Desk', tag: 'Found and cited by AI search', blurb: 'Get found and cited by ChatGPT, Perplexity, and Google AI. Graded, then fixed.', href: '/website-audit', icon: '🔎' },
@@ -49,7 +48,7 @@ export type Goal = { label: string; emoji: string; deptKeys: string[]; note: str
 
 /** The goal router. Each goal surfaces the right doors. */
 export const GOALS: Goal[] = [
-  { label: 'Get more customers', emoji: '📈', deptKeys: ['ads', 'websites', 'geo'], note: 'A site that converts, ads that run in your account, and findability on Google and AI search.' },
+  { label: 'Get more customers', emoji: '📈', deptKeys: ['pictures', 'websites', 'geo'], note: 'A site that converts, ads that run in your account, and findability on Google and AI search.' },
   { label: 'Stop missing calls', emoji: '📞', deptKeys: ['demo-agent', 'advisory'], note: 'A voice agent answering day or night, on the number you already have.' },
   { label: 'Run the whole business', emoji: '🧭', deptKeys: ['command-center', 'demo-agent', 'websites'], note: 'One command center wired to your calls, your site, and your customers.' },
   { label: 'Get my hours back', emoji: '⏳', deptKeys: ['chief', 'command-center'], note: 'An AI chief of staff who runs your calendar, email, and follow-up, with the back office behind it.' },

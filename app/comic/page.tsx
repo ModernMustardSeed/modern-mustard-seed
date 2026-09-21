@@ -34,7 +34,6 @@ const offerIndexJsonLd = {
     { name: 'Voice Agents (24/7 AI phone answering)', url: `${SITE.url}/voice-agents` },
     { name: 'The Demo Station (websites and command centers)', url: `${SITE.url}/demos` },
     { name: 'Mustard Pictures (commercials)', url: `${SITE.url}/pictures` },
-    { name: 'Mustard Broadcast (managed ads)', url: `${SITE.url}/ads` },
     { name: 'Mustard Launch (AI launch coach)', url: `${SITE.url}/mustard-launch` },
     { name: 'GEO Desk (AI findability)', url: `${SITE.url}/website-audit` },
     { name: 'The Switchboard (franchise concierge)', url: `${SITE.url}/switchboard` },

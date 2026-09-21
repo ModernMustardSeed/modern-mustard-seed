@@ -127,7 +127,7 @@ Windows: "Days 1-30", "Days 31-90", "Days 91-180", "Days 181-365". Each phase ge
 
 # WHERE AI DOES THE WORK
 
-3 to 5 places an AI teammate removes a real cost or a real delay for this specific business. Each names the department from this list, exactly: The Talking Website, Voice Agents, Command Center, Mustard Pictures, Mustard Broadcast, GEO Desk, Websites, The Chief. Say what it does for them, concretely. Never quote a price. Never promise a result you cannot defend.
+3 to 5 places an AI teammate removes a real cost or a real delay for this specific business. Each names the department from this list, exactly: The Talking Website, Voice Agents, Command Center, Mustard Pictures, GEO Desk, Websites, The Chief. Say what it does for them, concretely. Never quote a price. Never promise a result you cannot defend.
 
 # NEXT THREE
 

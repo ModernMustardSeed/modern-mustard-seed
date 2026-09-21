@@ -5,7 +5,7 @@ import { join } from 'node:path';
 // The MUSTARD PICTURES share card: the marquee with the director.
 export const runtime = 'nodejs';
 
-export const alt = 'MUSTARD PICTURES. A commercial for your business, directed by Mr. Mustard. Free screen test.';
+export const alt = 'MUSTARD PICTURES. Films and advertising from one studio. Reach out to Modern Mustard Seed.';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
@@ -70,7 +70,7 @@ export default async function OpengraphImage() {
             </span>
           </div>
           <span style={{ fontSize: 28, color: `${CREAM}CC`, marginTop: 30, lineHeight: 1.4 }}>
-            Free screen test: storyboard, taglines, and your hero frame.
+            Film production and managed advertising. One studio.
           </span>
           <span style={{ fontSize: 22, color: MUSTARD, fontWeight: 700, marginTop: 22, letterSpacing: 1 }}>
             modernmustardseed.com/pictures
@@ -90,7 +90,7 @@ export default async function OpengraphImage() {
             }}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={mascotSrc} alt="" width={280} height={280} style={{ borderRadius: 16 }} />
+            <img src={mascotSrc} alt="Mr. Mustard, the studio mascot" width={280} height={280} style={{ borderRadius: 16 }} />
           </div>
           <div
             style={{

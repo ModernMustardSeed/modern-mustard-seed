@@ -32,7 +32,6 @@ export default function Footer() {
         { label: 'Command Center', href: '/command-center' },
         { label: 'Mustard Pictures', href: '/pictures' },
         { label: 'The Launch Film', href: '/launch-film' },
-        { label: 'Mustard Broadcast', href: '/ads' },
         { label: 'Meet Mr. Mustard', href: '/mustard' },
       ],
     },
