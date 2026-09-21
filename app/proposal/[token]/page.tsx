@@ -28,7 +28,7 @@ export default async function PublicProposalPage({ params }: { params: Promise<{
   }
 
   const lines: Line[] = Array.isArray(p.lines) ? p.lines : [];
-  const prose = (p.prose || {}) as { intro?: string; situation?: string; recommendation?: string; close?: string };
+  const prose = (p.prose || {}) as { intro?: string; situation?: string; recommendation?: string; showcase?: string; close?: string };
   const oneTime = Number(p.one_time_total) || 0;
   const monthly = Number(p.monthly_total) || 0;
   const depositDue = Math.round(Number(p.deposit_amount) || Math.round(oneTime * 0.5));
