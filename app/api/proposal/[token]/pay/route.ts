@@ -34,7 +34,7 @@ export async function POST(_req: Request, { params }: { params: Promise<{ token:
         {
           price_data: {
             currency: 'usd',
-            product_data: { name: fullPayment ? `Payment in full — ${label}` : `Deposit to begin — ${label}` },
+            product_data: { name: fullPayment ? `Payment in full: ${label}` : `Deposit to begin: ${label}` },
             unit_amount: amount * 100,
           },
           quantity: 1,
@@ -46,7 +46,7 @@ export async function POST(_req: Request, { params }: { params: Promise<{ token:
       metadata: {
         kind: 'deposit',
         proposal_id: p.id as string,
-        item_name: fullPayment ? `Payment in full — ${label}` : `Deposit — ${label}`,
+        item_name: fullPayment ? `Payment in full: ${label}` : `Deposit: ${label}`,
       },
       payment_intent_data: { metadata: { kind: 'deposit', proposal_id: p.id as string } },
     });
