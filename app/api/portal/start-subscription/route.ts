@@ -26,6 +26,8 @@ export async function POST() {
   const amount = Math.round(Number(p?.monthly_total) || 0);
   if (!p || amount < 1) return NextResponse.json({ error: 'No monthly plan on your engagement.' }, { status: 400 });
   if (p.subscription_status === 'active') return NextResponse.json({ error: 'Your plan is already active.' }, { status: 400 });
+  // Already a monthly client: this line rides the subscription they have. Never open a second one.
+  if (p.subscription_status === 'on_existing_bill') return NextResponse.json({ error: 'This joins the monthly bill you already have. Nothing to set up here.' }, { status: 400 });
 
   const stripe = getStripe();
   if (!stripe) return NextResponse.json({ error: 'Stripe is not configured.' }, { status: 503 });
@@ -39,7 +41,7 @@ export async function POST() {
         {
           price_data: {
             currency: 'usd',
-            product_data: { name: `Monthly plan — ${label}` },
+            product_data: { name: `Monthly plan: ${label}` },
             unit_amount: amount * 100,
             recurring: { interval: 'month' },
           },
@@ -49,7 +51,7 @@ export async function POST() {
       success_url: `${SITE.url}/portal?plan=started`,
       cancel_url: `${SITE.url}/portal?plan=cancelled`,
       customer_email: session.email,
-      metadata: { kind: 'subscription', proposal_id: p.id as string, item_name: `Monthly plan — ${label}` },
+      metadata: { kind: 'subscription', proposal_id: p.id as string, item_name: `Monthly plan: ${label}` },
       subscription_data: { metadata: { kind: 'subscription', proposal_id: p.id as string } },
     });
     if (!checkout.url) return NextResponse.json({ error: 'Stripe returned no URL.' }, { status: 502 });

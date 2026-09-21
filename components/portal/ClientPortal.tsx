@@ -384,6 +384,13 @@ export default function ClientPortal() {
                               Manage plan (card, cancel) ↗
                             </button>
                           </div>
+                        ) : data.billing.subscriptionStatus === 'on_existing_bill' ? (
+                          // A client who already pays us monthly gets this line added to the
+                          // subscription they have. A second checkout would mean two bills.
+                          <p className="mt-2 text-[#3A3733] font-body text-xs leading-relaxed">
+                            This joins the monthly bill you already have, on its next regular date. Nothing to set up and
+                            nothing to pay here.
+                          </p>
                         ) : (
                           <button
                             onClick={startPlan}
