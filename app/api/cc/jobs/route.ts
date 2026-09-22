@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getDesk } from '@/lib/cc-desk';
+import { summariseSources } from '@/lib/cc-sources';
 import {
   createJob,
   getJob,
@@ -39,7 +40,9 @@ export async function GET(req: Request) {
   }
 
   const jobs = await listJobs(sb, account.clientEmail);
-  return NextResponse.json({ jobs, summary: summarise(jobs), people });
+  // Where the work comes from rides along with the board: it is the same rows
+  // grouped a second way, so a second request would only be a second cost.
+  return NextResponse.json({ jobs, summary: summarise(jobs), sources: summariseSources(jobs), people });
 }
 
 export async function POST(req: Request) {

@@ -17,6 +17,7 @@ import Week from '@/components/cc/modules/Week';
 import Traffic from '@/components/cc/modules/Traffic';
 import Campaigns from '@/components/cc/modules/Campaigns';
 import Jobs from '@/components/cc/modules/Jobs';
+import Field from '@/components/cc/modules/Field';
 import Operator from '@/components/cc/Operator';
 import Tray from '@/components/cc/Tray';
 import Palette from '@/components/cc/Palette';
@@ -58,13 +59,14 @@ export type Pulse = {
   contacts: { total: number };
 };
 
-type ModuleKey = 'overview' | 'week' | 'traffic' | 'campaigns' | 'jobs' | 'leads' | 'contacts' | 'conversations' | 'inbox' | 'reviews' | 'marketing' | 'website' | 'domains' | 'accounts';
+type ModuleKey = 'overview' | 'week' | 'traffic' | 'campaigns' | 'jobs' | 'field' | 'leads' | 'contacts' | 'conversations' | 'inbox' | 'reviews' | 'marketing' | 'website' | 'domains' | 'accounts';
 
 const MODULES: Array<{ key: ModuleKey; label: string; icon: IconName; group: string; title: string; blurb: string }> = [
   { key: 'overview', label: 'Now', icon: 'overview', group: 'Today', title: 'Now', blurb: 'What needs you, and nothing else.' },
   { key: 'leads', label: 'Leads', icon: 'leads', group: 'Today', title: 'Leads', blurb: 'Everyone who reached out, and the door they used.' },
   { key: 'inbox', label: 'Inbox', icon: 'inbox', group: 'Today', title: 'Inbox', blurb: 'Your mail, sorted, with a reply drafted where one is needed.' },
   { key: 'jobs', label: 'The Board', icon: 'board', group: 'Today', title: 'The Board', blurb: 'Every job from the first call to the contract. Buildertrend takes it from there.' },
+  { key: 'field', label: 'From the site', icon: 'tray', group: 'Today', title: 'From the site', blurb: 'Photos from the job become the record, a note to the homeowner, and a post.' },
   { key: 'conversations', label: 'Conversations', icon: 'chat', group: 'Today', title: 'Conversations', blurb: 'Every chat on your website, in their words.' },
   { key: 'week', label: 'This week', icon: 'week', group: 'Today', title: 'This week', blurb: 'What the website and the desk did, counted. Made to be forwarded.' },
   { key: 'contacts', label: 'Contacts', icon: 'contacts', group: 'Book', title: 'Contacts', blurb: 'Your whole book: customers, subs, suppliers, realtors.' },
@@ -405,6 +407,8 @@ export default function Workspace() {
                 <Week session={session} go={(k) => go(k as ModuleKey)} />
               ) : allowed === 'jobs' ? (
                 <Jobs session={session} />
+              ) : allowed === 'field' ? (
+                <Field />
               ) : allowed === 'leads' ? (
                 <Leads session={session} refreshPulse={loadPulse} />
               ) : allowed === 'contacts' ? (

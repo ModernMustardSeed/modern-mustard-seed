@@ -1,10 +1,11 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Badge, Button, Card, Drawer, Empty, ErrorNote, Field, Label, Skeleton, cx, dayLabel, inputCls, when } from '@/components/cc/ui';
+import { Badge, Button, Card, CardHead, Drawer, Empty, ErrorNote, Field, Label, Skeleton, cx, dayLabel, inputCls, when } from '@/components/cc/ui';
 import { Icon } from '@/components/cc/icons';
 import type { Session } from '@/components/cc/Workspace';
 import { handoffFields, handoffText } from '@/lib/cc-handoff';
+import BuildWeek from '@/components/cc/BuildWeek';
 
 /**
  * THE BOARD: every job between "somebody asked" and "Buildertrend has it".
@@ -48,6 +49,21 @@ type Job = {
 };
 
 type JobEvent = { id: string; kind: string; body: string | null; from_stage: string | null; to_stage: string | null; author_name: string | null; created_at: string };
+
+type SourceRow = {
+  name: string;
+  kind: 'website' | 'referral' | 'repeat' | 'other';
+  jobs: number;
+  won: number;
+  lost: number;
+  open: number;
+  wonValueCents: number;
+  openValueCents: number;
+  lastAt: string | null;
+  lastName: string | null;
+};
+
+type Sources = { rows: SourceRow[]; people: SourceRow[]; quiet: SourceRow[]; fromPeopleCents: number; fromWebsiteCents: number };
 
 type Summary = {
   open: number;
@@ -115,6 +131,7 @@ const RISK_INK: Record<string, string> = { ok: 'text-[var(--cc-muted)]', due: 't
 export default function Jobs({ session }: { session: Session }) {
   const [jobs, setJobs] = useState<Job[] | null>(null);
   const [summary, setSummary] = useState<Summary | null>(null);
+  const [sources, setSources] = useState<Sources | null>(null);
   const [error, setError] = useState(false);
   const [open, setOpen] = useState<Job | null>(null);
   const [events, setEvents] = useState<JobEvent[]>([]);
@@ -133,13 +150,14 @@ export default function Jobs({ session }: { session: Session }) {
     setError(false);
     try {
       const r = await fetch('/api/cc/jobs', { cache: 'no-store' });
-      const j = (await r.json()) as { jobs?: Job[]; summary?: Summary; error?: string };
+      const j = (await r.json()) as { jobs?: Job[]; summary?: Summary; sources?: Sources; error?: string };
       if (j.error) {
         setError(true);
         return;
       }
       setJobs(j.jobs ?? []);
       setSummary(j.summary ?? null);
+      setSources(j.sources ?? null);
     } catch {
       setError(true);
     }
@@ -283,9 +301,26 @@ export default function Jobs({ session }: { session: Session }) {
         ) : rows.length === 0 ? (
           <div className="p-5">
             <Empty
-              title={filter === 'needs' ? 'Nothing is overdue' : 'Nothing on the board yet'}
-              note={filter === 'needs' ? 'Every job in play has been touched inside its window.' : 'Put the jobs you are chasing on here, or turn a website inquiry into one from Leads. Buildertrend runs a job once it is signed; this is the months before that.'}
-              action={filter !== 'needs' ? <Button kind="primary" onClick={() => setAdding(true)}>Add the first one</Button> : undefined}
+              title={
+                filter === 'needs'
+                  ? 'Nothing is overdue'
+                  : (jobs?.length ?? 0) > 0
+                    ? 'Nothing in play right now'
+                    : 'Nothing on the board yet'
+              }
+              note={
+                filter === 'needs'
+                  ? 'Every job in play has been touched inside its window.'
+                  : (jobs?.length ?? 0) > 0
+                    ? // A board can be empty of selling and full of building. Saying
+                      // "nothing on the board" to somebody with a signed job on it is
+                      // the sort of small lie that makes a person stop trusting a screen.
+                      `${jobs!.length} ${jobs!.length === 1 ? 'job is' : 'jobs are'} signed, building or closed. Press Everything to see them.`
+                    : 'Put the jobs you are chasing on here, or turn a website inquiry into one from Leads. Buildertrend runs a job once it is signed; this is the months before that.'
+              }
+              action={
+                filter === 'needs' ? undefined : (jobs?.length ?? 0) > 0 ? <Button onClick={() => setFilter('all')}>Show everything</Button> : <Button kind="primary" onClick={() => setAdding(true)}>Add the first one</Button>
+              }
             />
           </div>
         ) : (
@@ -339,6 +374,53 @@ export default function Jobs({ session }: { session: Session }) {
           </div>
         </Card>
       )}
+
+      {sources && sources.rows.length > 0 && (
+        <Card>
+          <CardHead
+            title="Where the work comes from"
+            hint="Every job on this board, grouped by who sent it. Ranked by what has actually been signed."
+            right={sources.fromPeopleCents > 0 ? <Badge tone="good">{money(sources.fromPeopleCents)} from people, not ads</Badge> : undefined}
+          />
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[620px] border-collapse text-[13.5px]">
+              <thead className="bg-[#FAFBFC]">
+                <tr className="border-b border-[var(--cc-line)]">
+                  <th scope="col" className="px-3 py-2.5 pl-4 text-left"><Label>Who sent it</Label></th>
+                  <th scope="col" className="px-3 py-2.5 text-right"><Label>Signed</Label></th>
+                  <th scope="col" className="px-3 py-2.5 text-right"><Label>In play</Label></th>
+                  <th scope="col" className="px-3 py-2.5 text-right"><Label>Jobs</Label></th>
+                  <th scope="col" className="px-3 py-2.5 pr-4 text-left"><Label>Last one</Label></th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[var(--cc-line)]">
+                {sources.rows.map((r) => (
+                  <tr key={r.name}>
+                    <td className="px-3 py-2.5 pl-4 font-semibold">
+                      {r.name}
+                      {r.kind === 'website' && <span className="ml-2 font-normal text-[12px] text-[var(--cc-muted)]">your website</span>}
+                    </td>
+                    <td className="px-3 py-2.5 text-right tabular-nums">{r.won ? `${r.won}${r.wonValueCents ? `, ${money(r.wonValueCents)}` : ''}` : ''}</td>
+                    <td className="px-3 py-2.5 text-right tabular-nums text-[var(--cc-muted)]">{r.open ? `${r.open}${r.openValueCents ? `, ${money(r.openValueCents)}` : ''}` : ''}</td>
+                    <td className="px-3 py-2.5 text-right tabular-nums text-[var(--cc-muted)]">{r.jobs}</td>
+                    <td className="px-3 py-2.5 pr-4 text-[12.5px] text-[var(--cc-muted)]">{r.lastName ?? ''}{r.lastAt ? `, ${dayLabel(r.lastAt)}` : ''}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          {sources.quiet.length > 0 && (
+            <div className="mt-4 rounded-lg border border-[#FEDF89] bg-[#FFFAEB] px-4 py-3">
+              <p className="text-[13.5px] font-semibold text-[#B54708]">Sent you work before, and has gone quiet</p>
+              <p className="mt-1 text-[13px] text-[#B54708]">
+                {sources.quiet.map((r) => r.name).join(', ')}. Worth a call or a lunch before somebody else buys it.
+              </p>
+            </div>
+          )}
+        </Card>
+      )}
+
+      <BuildWeek />
 
       <Drawer
         open={Boolean(open)}
