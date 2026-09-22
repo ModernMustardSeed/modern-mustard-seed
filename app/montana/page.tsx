@@ -87,6 +87,7 @@ export default function MontanaPage() {
       <nav aria-label="Explore the studio" className="max-w-6xl mx-auto px-6 py-8 flex flex-wrap gap-6 font-bold text-[#1E50C8] underline underline-offset-4">
         <Link href="/ai-websites">AI websites, explained</Link>
         <Link href="/montana/kalispell">Our home in Kalispell</Link>
+        <Link href="/nationwide">Working with us from outside Montana</Link>
         <Link href="/resources">The AI search field notes</Link>
         <Link href="/work">What we have built</Link>
         <Link href="/about">Meet Sarah Scarano</Link>

@@ -29,7 +29,7 @@ export const orgJsonLd = {
   '@context': 'https://schema.org', '@type': ['Organization', 'LocalBusiness'], '@id': ORG_ID,
   name: SITE.name, alternateName: 'MMS', url: SITE.url,
   description: SITE.description,
-  disambiguatingDescription: 'Boutique design and AI studio in Kalispell, Montana, founded by Sarah Scarano. Websites and brand, custom software, voice agents, and retained advisory, by written inquiry.',
+  disambiguatingDescription: 'Boutique design and AI studio in Kalispell, Montana, founded by Sarah Scarano. Websites and brand, custom software, voice agents, and retained advisory for clients throughout the United States, by written inquiry.',
   logo: `${SITE.url}/brand/logo-lockup.png`,
   founder: { '@id': PERSON_ID },
   telephone: SITE.phoneE164, email: SITE.email,

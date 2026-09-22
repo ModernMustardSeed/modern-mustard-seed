@@ -6,7 +6,7 @@ import s from './PosterHero.module.css';
 export default function PosterHero() {
   return <section className={s.poster} aria-labelledby="studio-heading">
     <div className={s.posterDots} aria-hidden="true" />
-    <div className={s.posterTop}><span>Bespoke Design &amp; Technology Studio</span><span>Kalispell, Montana · Working Everywhere</span></div>
+    <div className={s.posterTop}><span>Bespoke Design &amp; Technology Studio</span><span>Kalispell, Montana · Nationwide Reach</span></div>
     <div className={s.posterGrid}>
       <div className={s.posterCopy}>
         <p className={s.posterEyebrow}>Design &amp; technology, with character.</p>
