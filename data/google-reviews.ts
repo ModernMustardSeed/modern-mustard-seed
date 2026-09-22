@@ -34,21 +34,33 @@ export type GoogleReview = {
 
 export const GOOGLE_PROFILE = {
   rating: '5.0',
-  count: 1,
+  count: 3,
   /** The public listing. Opens the profile with its reviews. */
   profileUrl: googleProfileUrl,
   /** One tap straight into the review box, not the listing. */
   writeUrl: googleReviewUrl,
   /**
-   * Re-read on the live profile 2026-09-14: still 5.0 across exactly ONE public
-   * review. If a surface anywhere claims two, it is not this file and it is not
-   * Google's public count; check which Google account that surface is signed in
-   * to before changing the number here.
+   * Re-read on the live profile 2026-09-22: 5.0 across three public reviews,
+   * all five stars. Surfaces show the rating and the reviews, never the count.
    */
-  readAt: '2026-09-14',
+  readAt: '2026-09-22',
 };
 
 export const GOOGLE_REVIEWS: GoogleReview[] = [
+  {
+    name: 'Easton Parker',
+    stars: 5,
+    when: 'September 2026',
+    text:
+      'Modern mustard seed has the best customer service and thoroughness of any company I’ve used for my websites and AI agents. They are Very professional, quick and reliable. I waited to make this because I wanted to see how they handled everything over time and I’ve been using them for 2 months now, last week I wanted to add in an extra automated quote feature to my website along with the AI agent being able to walk my clients through the project process and answer any questions they may have.  I reached out to them on a Tuesday morning, and by the time I went to sleep that night, my AI agent and website were already updated and running smoothly.',
+  },
+  {
+    name: 'Jaxson Smitty',
+    stars: 5,
+    when: 'September 2026',
+    text:
+      'Sarah’s team worked with us several months ago on a project for my company integrating AI into 3 aspects of my business.  Since then I have closed 80% more deals and the best part is I havre more time to grow the business. We will be implementing more soon. Thank you Modern Mustard Seed!!',
+  },
   {
     name: 'Beverly P.',
     stars: 5,
