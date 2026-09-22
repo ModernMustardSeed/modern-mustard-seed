@@ -258,12 +258,18 @@ export default function Workspace() {
             <p className="font-mono text-[9px] uppercase tracking-[0.22em] text-white/45">Command Center</p>
             <div className="mt-2 flex items-center gap-2.5">
               {brand?.logoOnDark && (
-                // Their mark, on their board, on a light chip so a dark logo and a
-                // light one both read. A plain img: the logo is served from their
-                // own site and the optimiser has no business in the middle.
-                <span className="flex-none rounded-md bg-white/90 px-1.5 py-1">
+                // Their mark, on their board, straight onto the dark rail.
+                //
+                // It used to sit on a white chip, on the theory that a chip
+                // makes any logo readable. It does the opposite here: a
+                // logoOnDark asset is a WHITE logo, and a white logo on a
+                // white chip is a blank square. The right rule is simpler and
+                // it is in the field name: the dark logo belongs on the dark
+                // rail. A plain img, because the file is served from their own
+                // site and the optimiser has no business in the middle.
+                <span className="flex-none">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={brand.logoOnDark} alt="" className="h-6 w-auto max-w-[64px] object-contain" />
+                  <img src={brand.logoOnDark} alt="" className="h-9 w-auto max-w-[84px] object-contain" />
                 </span>
               )}
               <p className="font-display text-[18px] leading-tight text-white">{brand?.business ?? 'Loading'}</p>

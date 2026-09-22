@@ -5,6 +5,8 @@ import { getSupabase } from '@/lib/supabase';
 import { displayForIso } from '@/lib/booking';
 import { createClientRequest } from '@/lib/client-requests';
 import { visibleProject } from '@/lib/command-center/visible';
+import { getCcSession } from '@/lib/client-auth';
+import { projectForEmail } from '@/lib/client-leads';
 import { commandCenterContext } from '@/lib/command-center/context';
 import { draftNewMail } from '@/lib/mail-desk';
 import { sendReviewAsk } from '@/lib/reviews';
@@ -137,6 +139,23 @@ export async function POST(req: Request) {
     // A client whose Command Center is on has it read to the guide too, so
     // "who is waiting on me" and "which sign is working" get real answers.
     project = await visibleProject(supabase, email);
+    // THE GATE THAT SILENTLY ATE EVERY ACTION.
+    //
+    // `visibleProject` answers "may this client see their Command Center",
+    // which needs a row in client_command_center that is deliberately absent
+    // until Sarah hands the desk over. Anyone working inside /cc before that
+    // (Sarah building it, or a client whose desk is switched on) got a
+    // confident "making that QR code now" and no QR code, because the action
+    // block below was skipped entirely.
+    //
+    // So: holding a Command Center key IS the permission, which is the same
+    // rule the middleware on /cc already applies. The key is only ever minted
+    // by a sign-in that checked the account, so this widens who may act
+    // without widening who may get in.
+    if (!project) {
+      const cc = await getCcSession();
+      if (cc && normalizeEmail(cc.email) === email) project = projectForEmail(email);
+    }
     if (project) {
       try {
         const cc = await commandCenterContext(supabase, email);
@@ -208,6 +227,25 @@ export async function POST(req: Request) {
 
     const reply = (decision.reply ?? '').trim();
     const base = reply || (noteSent ? 'Done. I passed that along to Sarah and she will follow up.' : 'Tell me a little more and I will help.');
+
+    // NEVER LET A CONFIDENT SENTENCE STAND ON ITS OWN.
+    //
+    // The reply is written before the actions run, so it says "making that QR
+    // code now" whether or not anything happened. When the model asked for
+    // work and none of it ran, the last word must be that nothing ran, not
+    // the promise.
+    const asked = Array.isArray(decision.actions) ? decision.actions.slice(0, 3).length : 0;
+    const nothingRan = asked > 0 && done.length === 0;
+    if (nothingRan) {
+      done.push('That did not actually happen: this account cannot run that action yet. Sarah has been told.');
+      if (!noteSent) {
+        try {
+          await createClientRequest({ email, body: `The Operator tried to do something and could not: ${JSON.stringify(decision.actions).slice(0, 800)}`, source: 'chatbot' });
+        } catch {
+          /* the sentence above is still the honest answer */
+        }
+      }
+    }
     return NextResponse.json({
       reply: done.length ? `${base}\n\n${done.join(' ')}` : base,
       // Only true when the note actually landed. There is no second turn here,
