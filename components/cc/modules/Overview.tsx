@@ -5,6 +5,7 @@ import type { Pulse, Session } from '@/components/cc/Workspace';
 import { Bars, Button, Card, CardHead, ErrorNote, Label, Skeleton, Stat, WAIT_BAR, WAIT_INK, Wait, cx, waited, when } from '@/components/cc/ui';
 import type { Traffic } from '@/lib/cc-traffic';
 import { Icon, type IconName } from '@/components/cc/icons';
+import Setup from '@/components/cc/Setup';
 import { CalledSheet, OwnerControl, doorOf, lastTouch, tel, useLeadDesk, type Lead } from '@/components/cc/lead-desk';
 import { eventSentence } from '@/lib/cc-lead-log';
 import type { WeekReport } from '@/lib/cc-week';
@@ -112,6 +113,9 @@ export default function Overview({ session, pulse, go, refreshPulse, ask }: { se
 
   return (
     <div className="space-y-5">
+      {/* The first week's setup, measured from the account rather than ticked
+          off by hand. It removes itself when the last step is done. */}
+      <Setup session={session} go={go} />
       {/* the glance: four numbers that answer how it is going, and what is wired */}
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <Stat value={desk.leads ? waiting.length : 'Not read'} label="Waiting on a call" tone={waiting.length ? 'warn' : 'plain'} onClick={() => go('leads')} hint={oldestWait ? `Longest ${oldestWait.text}` : undefined} />
