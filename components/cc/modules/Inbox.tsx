@@ -28,7 +28,7 @@ type MailItem = {
   draft: string | null;
   status: string;
 };
-type Mailbox = { address: string; host: 'gmail' | 'porkbun'; connected: boolean; lastSyncAt: string | null; error: string | null };
+type Mailbox = { address: string; host: 'gmail' | 'porkbun' | 'zoho'; connected: boolean; lastSyncAt: string | null; error: string | null };
 type Status = { connected: boolean; address: string | null; lastSyncAt: string | null; error: string | null; mailboxes?: Mailbox[] };
 type Payload = { mail: { status: Status; items: MailItem[]; counts: Record<string, number>; categories?: string[] } | null };
 
@@ -107,7 +107,7 @@ export default function Inbox({ refreshPulse }: { refreshPulse: () => void }) {
         hint="Every mailbox is read twice an hour, sorted into piles, with a reply drafted in the voice of the person it was sent to. Nothing is ever sent without your click."
       />
       <ul className="mb-4 space-y-1.5 text-[13.5px] text-[var(--cc-muted)] list-disc pl-5">
-        <li>A mailbox on your own domain: its address and the password set for that mailbox.</li>
+        <li>A mailbox on your own domain: its address and the password set for that mailbox. On Zoho, first tick IMAP Access in Settings, Mail Accounts.</li>
         <li>A Gmail address: turn on 2-Step Verification, open Security, then App passwords, name it &quot;Mail&quot;, and paste the 16 letters Google shows you.</li>
         <li>Connect each person&apos;s mailbox once. They all land in this one list.</li>
       </ul>

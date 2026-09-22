@@ -169,15 +169,17 @@ export function DomainsCard() {
           <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#161616]/55 font-bold mb-1">Your business email</p>
           <p className="font-sans font-bold text-[#161616] text-sm">
             shan@{email.domain}
-            <span className={`ml-2 inline-block rounded-md border-2 px-2 py-0.5 font-mono text-[10px] font-bold ${email.provider === 'google' ? 'bg-[#F5B700] border-[#161616] text-[#161616]' : 'bg-white border-[#161616]/30 text-[#161616]/70'}`}>
-              {email.provider === 'google' ? 'Mail flowing to Google' : email.registered ? 'Domain is yours, mail not set up yet' : 'Domain not registered yet'}
+            <span className={`ml-2 inline-block rounded-md border-2 px-2 py-0.5 font-mono text-[10px] font-bold ${email.provider === 'google' || email.provider === 'zoho' ? 'bg-[#F5B700] border-[#161616] text-[#161616]' : 'bg-white border-[#161616]/30 text-[#161616]/70'}`}>
+              {email.provider === 'google' || email.provider === 'zoho' ? `Mail flowing to ${MAIL_WORD[email.provider]}` : email.registered ? 'Domain is yours, mail not set up yet' : 'Domain not registered yet'}
             </span>
           </p>
           <p className="font-body text-xs text-[#161616]/65 mt-1">
-            {email.provider === 'google'
-              ? 'Google Workspace is receiving mail for this domain. Sign in at mail.google.com with your new address.'
-              : email.registered
-                ? 'Next: create the Google Workspace account at workspace.google.com with this domain. Sarah then adds the records and verifies it, and mail starts flowing.'
+            {email.provider === 'zoho'
+              ? 'Zoho Mail is receiving mail for this domain. Sign in at mail.zoho.com with your new address, or use the Zoho Mail app on your phone.'
+              : email.provider === 'google'
+                ? 'Google Workspace is receiving mail for this domain. Sign in at mail.google.com with your new address.'
+                : email.registered
+                ? 'Next: Sarah sets up your mailboxes on Zoho Mail and points the domain at them, and mail starts flowing. Nothing for you to buy.'
                 : 'Sarah is registering it. The moment it is yours, this line changes.'}
           </p>
         </div>

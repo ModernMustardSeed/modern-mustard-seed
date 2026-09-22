@@ -258,7 +258,7 @@ export function MailCard() {
         </p>
         <div className="rounded-xl border-2 border-[#161616]/15 bg-[#FBF6EA] px-4 py-3">
           <p className="font-body text-sm text-[#161616]/80 mb-2">
-            A mailbox on your own domain: its address and the password set for that mailbox. A Gmail address: turn on 2-Step Verification, then open Security, App passwords, name it &quot;Mail&quot;, and paste the 16 letters Google shows you. More mailboxes are added in the Command Center.
+            A mailbox on your own domain: its address and the password set for that mailbox (on Zoho, tick IMAP Access in Settings, Mail Accounts first). A Gmail address: turn on 2-Step Verification, then open Security, App passwords, name it &quot;Mail&quot;, and paste the 16 letters Google shows you. More mailboxes are added in the Command Center.
           </p>
           <div className="grid sm:grid-cols-2 gap-2">
             <input value={address} onChange={(e) => setAddress(e.target.value)} placeholder="you@yourdomain.com" type="email" autoComplete="off" className={INPUT} />

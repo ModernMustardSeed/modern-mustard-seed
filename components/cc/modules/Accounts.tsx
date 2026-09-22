@@ -267,7 +267,7 @@ export default function Accounts({ session }: { session: Session }) {
           label={session.state.mailConnected ? 'Add a mailbox' : 'Connect a mailbox'}
           fields={[
             { key: 'address', label: 'Email address' },
-            { key: 'appPassword', label: 'Password', secret: true, hint: 'Your own domain: the mailbox password. Gmail: Security, App passwords, sixteen letters.' },
+            { key: 'appPassword', label: 'Password', secret: true, hint: 'Your own domain: the mailbox password (Zoho: tick IMAP Access first). Gmail: Security, App passwords, sixteen letters.' },
           ]}
           submit={(v) => (preview ? desk('mailbox', v) : own('/api/portal/mail', { action: 'connect', ...v }))}
         />
