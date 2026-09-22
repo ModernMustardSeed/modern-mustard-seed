@@ -27,18 +27,23 @@ function ProjectImage({ name, alt, sizes }: { name: string; alt: string; sizes: 
 export default function StudioHome({ faq }: { faq: { q: string; a: string }[] }) {
   return <div className={styles.studio} data-design="mms-editorial-2026" data-edition="pop-art-studio">
     <section className={styles.hero} aria-labelledby="studio-heading">
+      <div className={styles.halftone} aria-hidden="true" />
       <div className={styles.heroTop}><span>Bespoke Design &amp; Technology Studio</span><span>Kalispell, Montana · Working Everywhere</span></div>
       <div className={styles.heroArt} role="group" aria-label="A collage of websites built by Modern Mustard Seed">
+        <div className={styles.burst} aria-hidden="true" />
         <div className={styles.printField} aria-hidden="true" />
         <span className={styles.printIndex}>The studio / In full color</span>
         <div className={styles.workPrint + ' ' + styles.printOne}><span>01 / D & D Landscaping</span><Image unoptimized src="/images/editorial/dd-landscaping-640.webp" alt="D & D Landscaping’s current website, with a bold green identity and a sunlit lawn beneath oak trees" width={640} height={400} fetchPriority="high" /></div>
+        <div className={styles.workPrint + ' ' + styles.printThree}><span>03 / Brim Homes</span><Image unoptimized src="/images/editorial/brim-homes-640.webp" alt="The Brim Homes website for Built Right in Montana, a Flathead Valley custom homebuilder" width={640} height={400} /></div>
         <div className={styles.workPrint + ' ' + styles.printTwo}><span>02 / Cross + Covenant</span><Image unoptimized src="/images/editorial/cross-covenant-current-640.webp" alt="The current Cross + Covenant storefront, featuring the Wear the Gospel collection" width={640} height={400} /></div>
         <div className={styles.mascotSeal}><Image src="/images/editorial/mascot-160.webp" alt="Mr. Mustard, the studio’s mustard-seed mascot" width={120} height={161} sizes="100px" /><span>Mr.<br />Mustard.</span></div>
+        <p className={styles.bubble}>Psst. <b>Your turn.</b></p>
+        <svg className={styles.seal} viewBox="0 0 120 120" aria-hidden="true"><defs><path id="hero-seal-ring" d="M60 60m-45 0a45 45 0 1 1 90 0a45 45 0 1 1-90 0" /></defs><circle cx="60" cy="60" r="57" /><text><textPath href="#hero-seal-ring" textLength="281" lengthAdjust="spacing">BESPOKE ✳ BUILT IN MONTANA ✳ MADE TO WORK ✳ </textPath></text><g><text x="60" y="71" textAnchor="middle" className={styles.sealStar}>✳</text></g></svg>
         <span className={styles.registration} aria-hidden="true">+</span>
       </div>
       <div className={styles.heroCopy}>
         <p className={styles.eyebrow}><span className={styles.dot} /> Design & technology, with character.</p>
-        <h1 id="studio-heading">Your vision.<br /><em>Beautifully</em><br />built.</h1>
+        <h1 id="studio-heading"><span className={styles.line}>Your vision.</span> <span className={styles.line}><em>Beautifully</em></span> <span className={styles.line}>built.<svg className={styles.swoosh} viewBox="0 0 300 40" preserveAspectRatio="none" aria-hidden="true"><path d="M4 28 C 60 10, 150 6, 296 18 M 40 34 C 110 24, 200 22, 270 30" /></svg></span></h1>
         <div className={styles.heroIntro}><p>Websites, custom software, and AI systems. Designed and built by Sarah Scarano in Montana, for people with something of their own to build.</p><Link href="/inquire" className={styles.primary}>Tell Us What You Have In Mind <Arrow /></Link></div>
       </div>
       <div className={styles.heroBottom}><a href="#selected-work">Explore The Work <span aria-hidden="true">↓</span></a><span>Strategy, design & engineering. One studio.</span><span className={styles.edition}>MMS / 01</span></div>
@@ -48,7 +53,7 @@ export default function StudioHome({ faq }: { faq: { q: string; a: string }[] })
       <div className={styles.sectionTop}><p className={styles.eyebrow}>01 / Selected Work</p><span>Made here. Out in the world.</span></div>
       <div className={styles.workIntro}><h2 id="work-heading">The work<br />speaks <em>first.</em></h2><div><p>A landscaper in Tallahassee. A homebuilder in Montana. A brand with something to say. Real client work, our own ventures, and studio builds.</p><Link href="/work" className={styles.textLink}>Explore The Portfolio <Arrow /></Link></div></div>
       <div className={styles.projectGrid}>{projects.map((project, i) => <a key={project.name} href={project.url} target="_blank" rel="noopener noreferrer" className={styles.project}>
-        <div className={styles.projectImage}><ProjectImage name={project.image} alt={project.name + ' website, designed and built by Modern Mustard Seed'} sizes={i === 0 ? '(max-width: 760px) 92vw, 88vw' : '(max-width: 760px) 92vw, 43vw'} /><span className={styles.visit}>Visit Live Site <Arrow /></span></div>
+        <div className={styles.projectImage}><ProjectImage name={project.image} alt={project.name + ' website, designed and built by Modern Mustard Seed'} sizes={i === 0 ? '(max-width: 760px) 92vw, 88vw' : '(max-width: 760px) 92vw, 43vw'} /><span className={styles.visit}><span className={styles.visitLabel}>Visit Live Site</span><Arrow /></span></div>
         <div className={styles.projectCaption}><div><p className={styles.eyebrow}>{project.type}</p><h3>{project.name}</h3></div><span className={styles.projectNumber}>0{i + 1}</span></div>
         <p className={styles.projectStatement}>{project.description}</p><p className={styles.projectDetail}>{project.detail}</p>
       </a>)}</div>
