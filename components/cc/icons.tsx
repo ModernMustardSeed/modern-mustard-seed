@@ -132,4 +132,11 @@ const PATHS = {
       <P d="M12.5 5H16v3.5" />
     </>
   ),
+  // An open tray with something dropping into it.
+  tray: (
+    <>
+      <P d="M3.5 12.5v2.6c0 .8.6 1.4 1.4 1.4h10.2c.8 0 1.4-.6 1.4-1.4v-2.6h-3.4l-1 1.8h-4.2l-1-1.8z" />
+      <P d="M10 3.2v6.6M7.4 7.4 10 10l2.6-2.6" />
+    </>
+  ),
 } as const;

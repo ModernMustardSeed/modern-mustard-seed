@@ -4,6 +4,8 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Badge, Button, Card, CardHead, Drawer, Empty, ErrorNote, Field, Label, Skeleton, cx, inputCls } from '@/components/cc/ui';
 import { Icon } from '@/components/cc/icons';
 
+type ClientList = { id: string; name: string; tags: string[]; note: string | null; people: number; reachable: number };
+
 /**
  * THE BOOK. Everyone the business knows, carried over name for name with the
  * tags they were filed under.
@@ -48,6 +50,15 @@ export default function Contacts() {
   const [limit, setLimit] = useState(100);
   const [sort, setSort] = useState<{ key: SortKey; dir: 1 | -1 }>({ key: 'name', dir: 1 });
   const [open, setOpen] = useState<Contact | null>(null);
+  // Selection, bulk tagging and the named lists they build. A list is a name
+  // over a set of tags, so tagging eight people IS how the realtor list comes
+  // to exist. See lib/client-lists.ts.
+  const [picked, setPicked] = useState<Set<string>>(new Set());
+  const [lists, setLists] = useState<ClientList[]>([]);
+  const [listName, setListName] = useState('');
+  const [bulkTag, setBulkTag] = useState('');
+  const [bulkBusy, setBulkBusy] = useState(false);
+  const [bulkNote, setBulkNote] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     setError(false);
@@ -66,9 +77,20 @@ export default function Contacts() {
     }
   }, []);
 
+  const loadLists = useCallback(async () => {
+    try {
+      const r = await fetch('/api/cc/lists', { cache: 'no-store' });
+      const j = (await r.json()) as { lists?: ClientList[] };
+      setLists(j.lists ?? []);
+    } catch {
+      /* the book still reads without its lists */
+    }
+  }, []);
+
   useEffect(() => {
     void load();
-  }, [load]);
+    void loadLists();
+  }, [load, loadLists]);
 
   const rows = useMemo(() => {
     const term = q.trim().toLowerCase();
@@ -118,6 +140,65 @@ export default function Contacts() {
     }
   };
 
+  const pick = (id: string, on: boolean) =>
+    setPicked((prev) => {
+      const next = new Set(prev);
+      if (on) next.add(id);
+      else next.delete(id);
+      return next;
+    });
+
+  const bulk = async (add: string[], remove: string[]) => {
+    setBulkBusy(true);
+    setBulkNote(null);
+    try {
+      const r = await fetch('/api/cc/lists', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ action: 'tag', ids: [...picked], add, remove }),
+      });
+      const j = (await r.json()) as { ok?: boolean; changed?: number; error?: string };
+      setBulkNote(j.ok ? `${j.changed ?? 0} ${j.changed === 1 ? 'person' : 'people'} tagged.` : (j.error ?? 'That did not take.'));
+      if (j.ok) {
+        setBulkTag('');
+        void load();
+        void loadLists();
+      }
+    } catch {
+      setBulkNote('That did not take.');
+    } finally {
+      setBulkBusy(false);
+    }
+  };
+
+  /** Save the tag being filtered on, or the one just typed, as a named list. */
+  const saveList = async () => {
+    const name = listName.trim();
+    const tagsFor = bulkTag.trim() ? [bulkTag.trim()] : tag ? [tag] : [];
+    if (!name || !tagsFor.length) return;
+    setBulkBusy(true);
+    setBulkNote(null);
+    try {
+      const r = await fetch('/api/cc/lists', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ action: 'save', name, tags: tagsFor }),
+      });
+      const j = (await r.json()) as { ok?: boolean; lists?: ClientList[]; error?: string };
+      if (j.ok) {
+        setLists(j.lists ?? []);
+        setListName('');
+        setBulkNote(`Saved as the ${name} list. Campaigns can send to it.`);
+      } else {
+        setBulkNote(j.error ?? 'That did not save.');
+      }
+    } catch {
+      setBulkNote('That did not save.');
+    } finally {
+      setBulkBusy(false);
+    }
+  };
+
   const Head = ({ k, label, className }: { k: SortKey; label: string; className?: string }) => (
     <th scope="col" className={cx('px-3 py-2.5 text-left first:pl-5', className)}>
       <button type="button" onClick={() => toggleSort(k)} className="group inline-flex items-center gap-1" aria-sort={sort.key === k ? (sort.dir === 1 ? 'ascending' : 'descending') : undefined}>
@@ -160,6 +241,49 @@ export default function Contacts() {
           </div>
         )}
 
+        {lists.length > 0 && (
+          <div className="flex flex-wrap items-center gap-2 border-b border-[var(--cc-line)] bg-[#FAFBFC] px-5 py-3">
+            <Label>Your lists</Label>
+            {lists.map((l) => (
+              <button
+                key={l.id}
+                onClick={() => setTag(l.tags[0] ?? null)}
+                title={`${l.people} in this list, ${l.reachable} with an email`}
+                className={cx(
+                  'rounded-full border px-3 py-1 text-[12.5px] font-semibold transition',
+                  l.tags[0] && tag === l.tags[0] ? 'border-[var(--cc-accent)] bg-[var(--cc-accent)]/10 text-[var(--cc-accent)]' : 'border-[var(--cc-line)] bg-white text-[var(--cc-ink)] hover:border-[var(--cc-ink)]',
+                )}
+              >
+                {l.name} <span className="font-mono text-[11px] tabular-nums text-[var(--cc-muted)]">{l.people}</span>
+              </button>
+            ))}
+            <span className="ml-auto text-[12px] text-[var(--cc-muted)]">A list is a name over a tag. Tag people and they join it.</span>
+          </div>
+        )}
+
+        {picked.size > 0 && (
+          <div className="flex flex-wrap items-end gap-3 border-b border-[var(--cc-line)] bg-[var(--cc-accent)]/5 px-5 py-4">
+            <span className="text-[14px] font-semibold">{picked.size} selected</span>
+            <Field label="Tag them">
+              <input className={cx(inputCls, 'min-w-[200px]')} value={bulkTag} onChange={(e) => setBulkTag(e.target.value)} placeholder="Realtor" />
+            </Field>
+            <Button kind="primary" disabled={bulkBusy || !bulkTag.trim()} onClick={() => bulk([bulkTag.trim()], [])}>
+              {bulkBusy ? 'Working' : `Tag ${picked.size}`}
+            </Button>
+            <Button disabled={bulkBusy || !bulkTag.trim()} onClick={() => bulk([], [bulkTag.trim()])}>Take that tag off</Button>
+            <Button kind="ghost" onClick={() => setPicked(new Set())}>Clear</Button>
+            {(tag || bulkTag.trim()) && (
+              <div className="flex items-end gap-2">
+                <Field label="Save as a list" hint={`Everyone tagged ${bulkTag.trim() || tag}`}>
+                  <input className={cx(inputCls, 'min-w-[180px]')} value={listName} onChange={(e) => setListName(e.target.value)} placeholder="The realtor list" />
+                </Field>
+                <Button disabled={bulkBusy || listName.trim().length < 2} onClick={saveList}>Save the list</Button>
+              </div>
+            )}
+            {bulkNote && <p className="w-full text-[13px] text-[var(--cc-ink)]">{bulkNote}</p>}
+          </div>
+        )}
+
         {tags.length > 0 && (
           <div className="flex flex-wrap items-center gap-1.5 border-b border-[var(--cc-line)] px-5 py-3">
             <button onClick={() => setTag(null)} className={cx('rounded-full border px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em]', !tag ? 'border-[var(--cc-ink)] bg-[var(--cc-ink)] text-white' : 'border-[var(--cc-line)] text-[var(--cc-muted)] hover:border-[var(--cc-ink)] hover:text-[var(--cc-ink)]')}>
@@ -195,6 +319,22 @@ export default function Contacts() {
               <table className="w-full min-w-[820px] border-collapse text-[13.5px]">
                 <thead className="bg-[#FAFBFC]">
                   <tr className="border-b border-[var(--cc-line)]">
+                    <th scope="col" className="w-10 pl-5 pr-0 py-2.5">
+                      <input
+                        type="checkbox"
+                        className="h-4 w-4 accent-[var(--cc-accent)]"
+                        aria-label="Select everyone shown"
+                        checked={rows.length > 0 && rows.slice(0, limit).every((p) => picked.has(p.id))}
+                        onChange={(e) => {
+                          const shown = rows.slice(0, limit).map((p) => p.id);
+                          setPicked((prev) => {
+                            const next = new Set(prev);
+                            for (const id of shown) if (e.target.checked) next.add(id); else next.delete(id);
+                            return next;
+                          });
+                        }}
+                      />
+                    </th>
                     <Head k="name" label="Name" />
                     <Head k="company" label="Company" />
                     <Head k="phone" label="Phone" />
@@ -217,7 +357,18 @@ export default function Contacts() {
                       tabIndex={0}
                       className="cursor-pointer transition hover:bg-[#F7F8FA] focus-visible:bg-[#F7F8FA] focus-visible:outline-none"
                     >
-                      <td className="px-3 py-2.5 pl-5 font-semibold text-[var(--cc-ink)]">
+                      {/* The checkbox swallows the click so picking someone
+                          does not also open their card. */}
+                      <td className="w-10 pl-5 pr-0 py-2.5" onClick={(e) => e.stopPropagation()}>
+                        <input
+                          type="checkbox"
+                          className="h-4 w-4 accent-[var(--cc-accent)]"
+                          checked={picked.has(p.id)}
+                          onChange={(e) => pick(p.id, e.target.checked)}
+                          aria-label={`Select ${p.name ?? 'this person'}`}
+                        />
+                      </td>
+                      <td className="px-3 py-2.5 font-semibold text-[var(--cc-ink)]">
                         <span className="block max-w-[220px] truncate">{p.name ?? <span className="font-normal text-[var(--cc-muted)]">No name</span>}</span>
                       </td>
                       <td className="px-3 py-2.5 text-[var(--cc-ink)]"><span className="block max-w-[220px] truncate">{p.company ?? ''}</span></td>

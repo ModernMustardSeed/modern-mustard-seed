@@ -27,6 +27,7 @@
  */
 import { createClient } from '@supabase/supabase-js';
 import { deliverFinishedAudits } from '../lib/audit-delivery.mjs';
+import { materialiseAttachments, cleanupAttachments } from '../lib/llm-files.mjs';
 import { readFileSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -123,11 +124,21 @@ async function runOne() {
   const t0 = Date.now();
   log(`claimed ${job.label} (${job.id}) model=${job.model ?? 'sonnet'} attempt=${job.attempts}`);
 
+  // A job can carry files (a photograph of a napkin, a supplier list as a
+  // PDF). They live as URLs on the row; the CLI reads them off this machine's
+  // disk, so they come down first and the folder goes back afterwards.
+  let attached = { dir: null, promptNote: '' };
   try {
+    if (job.attachments) {
+      attached = await materialiseAttachments(job.attachments, job.label);
+      if (attached.files?.length) log(`  with ${attached.files.length} file(s)`);
+    }
+    const user = attached.promptNote ? `${job.user_prompt}
+${attached.promptNote}` : job.user_prompt;
     if (job.schema) {
       const result = await runClaudeCodeJson({
         system: job.system_prompt,
-        user: job.user_prompt,
+        user,
         schema: job.schema,
         model: job.model ?? 'sonnet',
         label: job.label,
@@ -136,7 +147,7 @@ async function runOne() {
     } else {
       const text = await runClaudeCodeText({
         system: job.system_prompt,
-        user: job.user_prompt,
+        user,
         model: job.model ?? 'sonnet',
         label: job.label,
       });
@@ -160,6 +171,8 @@ async function runOne() {
       await sb.from('llm_jobs').update({ status: 'queued', worker: null, claimed_at: null }).eq('id', job.id);
       log(`retrying ${job.label}: ${msg.slice(0, 200)}`);
     }
+  } finally {
+    await cleanupAttachments(attached.dir);
   }
 
   return true;

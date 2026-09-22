@@ -117,6 +117,16 @@ export type LlmRequest = {
    * waiting, and that is a real answer rather than missing data.
    */
   source?: { table: string; id: string } | null;
+  /**
+   * FILES THE PROMPT NEEDS TO SEE.
+   *
+   * Public URLs. Whichever machine runs the job downloads them to its own disk
+   * first and tells the prompt where they landed, because the CLI reads an
+   * image from a path and cannot read one from a string. See
+   * `lib/llm-files.mjs` for the download, and read its warning before wiring a
+   * caller that writes without a person in between.
+   */
+  attachments?: Array<{ url: string; name?: string; type?: string }> | null;
 };
 
 /** How often to check the queue while waiting. */
@@ -145,6 +155,7 @@ async function enqueue(req: LlmRequest, schema: unknown | null): Promise<string>
       model: req.model ?? 'sonnet',
       source_table: req.source?.table ?? null,
       source_id: req.source?.id ?? null,
+      attachments: req.attachments?.length ? req.attachments : null,
     })
     .select('id')
     .single();
@@ -259,6 +270,21 @@ async function viaQueue(req: LlmRequest, schema: unknown | null): Promise<JobRow
   return job;
 }
 
+/**
+ * Put any attached files on this machine's disk and point the prompt at them.
+ *
+ * Only the local path needs this; a queued job carries the URLs and the
+ * drainer does the same thing with the same module. Returns the prompt to
+ * actually send and the cleanup to run when the call is over.
+ */
+async function withAttachments(req: LlmRequest): Promise<{ user: string; done: () => Promise<void> }> {
+  if (!req.attachments?.length) return { user: req.user, done: async () => {} };
+  const { materialiseAttachments, cleanupAttachments } = await import('./llm-files.mjs');
+  const got = await materialiseAttachments(req.attachments, req.label);
+  return { user: got.promptNote ? `${req.user}
+${got.promptNote}` : req.user, done: () => cleanupAttachments(got.dir) };
+}
+
 /* ───────────────────────── the public surface ───────────────────────── */
 
 /**
@@ -270,12 +296,17 @@ async function viaQueue(req: LlmRequest, schema: unknown | null): Promise<JobRow
  */
 export async function llmText(req: LlmRequest): Promise<string> {
   if (claudeCodeAvailable()) {
-    return runClaudeCodeText({
-      system: req.system,
-      user: req.user,
-      model: req.model ?? 'sonnet',
-      label: req.label,
-    });
+    const { user, done } = await withAttachments(req);
+    try {
+      return await runClaudeCodeText({
+        system: req.system,
+        user,
+        model: req.model ?? 'sonnet',
+        label: req.label,
+      });
+    } finally {
+      await done();
+    }
   }
 
   const job = await viaQueue(req, null);
@@ -295,13 +326,18 @@ export async function llmText(req: LlmRequest): Promise<string> {
  */
 export async function llmJson<T = unknown>(req: LlmRequest & { schema: unknown }): Promise<T> {
   if (claudeCodeAvailable()) {
-    return (await runClaudeCodeJson({
-      system: req.system,
-      user: req.user,
-      schema: req.schema,
-      model: req.model ?? 'sonnet',
-      label: req.label,
-    })) as T;
+    const { user, done } = await withAttachments(req);
+    try {
+      return (await runClaudeCodeJson({
+        system: req.system,
+        user,
+        schema: req.schema,
+        model: req.model ?? 'sonnet',
+        label: req.label,
+      })) as T;
+    } finally {
+      await done();
+    }
   }
 
   const job = await viaQueue(req, req.schema);
