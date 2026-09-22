@@ -2,6 +2,7 @@ import Link from '@/components/AttributionLink';
 import Image from 'next/image';
 import styles from './StudioHome.module.css';
 import { GOOGLE_PROFILE } from '@/data/google-reviews';
+import PosterHero from './PosterHero';
 
 const projects = [
   { name: 'D & D Landscaping', type: 'Landscaping / Client website', image: 'dd-landscaping', url: 'https://ddlandscapingfl.com', description: 'A local business, unmistakable.', detail: 'A Tallahassee landscaping site with service selection, walkthrough booking, and a voice concierge.' },
@@ -26,24 +27,7 @@ function ProjectImage({ name, alt, sizes }: { name: string; alt: string; sizes: 
 }
 export default function StudioHome({ faq }: { faq: { q: string; a: string }[] }) {
   return <div className={styles.studio} data-design="mms-editorial-2026" data-edition="pop-art-studio">
-    <section className={styles.hero} aria-labelledby="studio-heading">
-      <div className={styles.heroTop}><span>Bespoke Design &amp; Technology Studio</span><span>Kalispell, Montana · Working Everywhere</span></div>
-      <div className={styles.heroArt} role="group" aria-label="A collage of websites built by Modern Mustard Seed">
-        <div className={styles.printField} aria-hidden="true" />
-        <span className={styles.printIndex}>The studio / In full color</span>
-        <div className={styles.workPrint + ' ' + styles.printOne}><span>01 / D & D Landscaping</span><Image unoptimized src="/images/editorial/dd-landscaping-640.webp" alt="D & D Landscaping’s current website, with a bold green identity and a sunlit lawn beneath oak trees" width={640} height={400} fetchPriority="high" /></div>
-        <div className={styles.workPrint + ' ' + styles.printTwo}><span>02 / Cross + Covenant</span><Image unoptimized src="/images/editorial/cross-covenant-current-640.webp" alt="The current Cross + Covenant storefront, featuring the Wear the Gospel collection" width={640} height={400} /></div>
-        <div className={styles.mascotSeal}><Image src="/images/editorial/mascot-160.webp" alt="Mr. Mustard, the studio’s mustard-seed mascot" width={120} height={161} sizes="100px" /><span>Mr.<br />Mustard.</span></div>
-        <span className={styles.registration} aria-hidden="true">+</span>
-      </div>
-      <div className={styles.heroCopy}>
-        <p className={styles.eyebrow}><span className={styles.dot} /> Design & technology, with character.</p>
-        <h1 id="studio-heading">Your vision.<br /><em>Beautifully</em><br />built.</h1>
-        <div className={styles.heroIntro}><p>Websites, custom software, and AI systems. Designed and built by Sarah Scarano in Montana, for people with something of their own to build.</p><Link href="/inquire" className={styles.primary}>Tell Us What You Have In Mind <Arrow /></Link></div>
-      </div>
-      <div className={styles.heroBottom}><a href="#selected-work">Explore The Work <span aria-hidden="true">↓</span></a><span>Strategy, design & engineering. One studio.</span><span className={styles.edition}>MMS / 01</span></div>
-    </section>
-    <div className={styles.colorBand}><span>Bespoke by design.</span><span aria-hidden="true">✳</span><span>Built with character.</span><span aria-hidden="true">✳</span><span>Made to work.</span></div>
+    <PosterHero />
     <section id="selected-work" className={styles.work} aria-labelledby="work-heading">
       <div className={styles.sectionTop}><p className={styles.eyebrow}>01 / Selected Work</p><span>Made here. Out in the world.</span></div>
       <div className={styles.workIntro}><h2 id="work-heading">The work<br />speaks <em>first.</em></h2><div><p>A landscaper in Tallahassee. A homebuilder in Montana. A brand with something to say. Real client work, our own ventures, and studio builds.</p><Link href="/work" className={styles.textLink}>Explore The Portfolio <Arrow /></Link></div></div>
