@@ -1,0 +1,32 @@
+.poster{--ink:#080c16;--cream:#fbf6ea;--mustard:#f5b700;--red:#e0301e;position:relative;overflow:hidden;font-family:var(--font-body),sans-serif}
+.poster h1,.poster p{margin:0}
+/* A. Poster */
+.poster{background:var(--mustard);color:var(--ink);padding:112px 6vw 0;border-bottom:3px solid var(--ink)}
+.posterDots{position:absolute;inset:0;background-image:radial-gradient(var(--ink) 1.3px,transparent 1.5px);background-size:11px 11px;opacity:.16;mask-image:linear-gradient(115deg,transparent 38%,#000 75%);-webkit-mask-image:linear-gradient(115deg,transparent 38%,#000 75%);pointer-events:none}
+.posterTop{position:relative;display:flex;justify-content:space-between;gap:20px;padding-bottom:20px;border-bottom:2px solid var(--ink);font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase}
+.posterGrid{position:relative;display:grid;grid-template-columns:1.1fr .9fr;align-items:center;gap:3vw;min-height:680px;padding:40px 0 64px}
+.posterEyebrow{display:inline-block;background:var(--ink);color:var(--mustard);padding:7px 12px;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;transform:rotate(-1.5deg)}
+.poster h1{display:flex;flex-direction:column;align-items:flex-start;margin:30px 0 34px;font-weight:800;font-size:clamp(64px,8.2vw,132px);line-height:.9;letter-spacing:-.055em}
+.plate{display:inline-block;margin:.1em 0 .12em -.04em;padding:.02em .22em .1em .16em;background:var(--cream);border:3px solid var(--ink);box-shadow:8px 8px 0 var(--red);transform:rotate(-2.5deg)}
+.plate em{font-family:var(--font-display),serif;font-style:italic;font-weight:500;letter-spacing:-.03em;color:var(--ink)}
+.posterIntro{max-width:470px;font-size:17px;line-height:1.65;font-weight:500}
+.posterCta{display:inline-flex;align-items:center;gap:26px;margin-top:30px;min-height:58px;padding:0 26px;background:var(--ink);color:var(--cream);font-size:14px;font-weight:700;border:2px solid var(--ink);box-shadow:6px 6px 0 var(--cream);transition:transform .2s,box-shadow .2s}
+.posterCta span{color:var(--mustard);font-size:22px}
+.posterCta:hover{transform:translate(-3px,-3px);box-shadow:9px 9px 0 var(--cream)}
+.posterArt{position:relative;display:flex;justify-content:center;align-items:flex-end;height:620px}
+.burst{position:absolute;left:50%;top:50%;width:112%;aspect-ratio:1;translate:-50% -50%;background:var(--cream);clip-path:polygon(50% 0,58% 17%,75% 7%,74% 26%,93% 25%,83% 41%,100% 50%,83% 59%,93% 75%,74% 74%,75% 93%,58% 83%,50% 100%,42% 83%,25% 93%,26% 74%,7% 75%,17% 59%,0 50%,17% 41%,7% 25%,26% 26%,25% 7%,42% 17%);filter:drop-shadow(0 0 0 var(--ink));animation:burstTurn 60s linear infinite}
+.burst:after{content:'';position:absolute;inset:0;background-image:radial-gradient(var(--mustard) 2px,transparent 2.3px);background-size:12px 12px;opacity:.55;mask-image:radial-gradient(circle,transparent 30%,#000 70%);-webkit-mask-image:radial-gradient(circle,transparent 30%,#000 70%)}
+.posterMascot{position:relative;width:auto;height:92%;filter:drop-shadow(10px 10px 0 rgba(8,12,22,.9));animation:wave 3.2s ease-in-out infinite;transform-origin:50% 100%}
+.posterBubble{position:absolute;top:6%;right:-2%;padding:14px 20px;background:var(--cream);border:3px solid var(--ink);border-radius:26px;box-shadow:5px 5px 0 var(--ink);font-weight:800;font-size:19px;letter-spacing:-.02em;transform:rotate(5deg)}
+.posterBubble:after{content:'';position:absolute;left:22px;bottom:-20px;border-style:solid;border-width:20px 0 0 20px;border-color:var(--ink) transparent transparent transparent}
+.spark{position:absolute;font-size:44px;line-height:1;color:var(--ink)}
+.sparkOne{left:2%;top:18%;color:var(--red);font-size:56px}.sparkTwo{right:6%;bottom:22%}.sparkThree{left:10%;bottom:10%;font-size:30px;color:var(--cream);text-shadow:2px 2px 0 var(--ink)}
+.marquee{position:relative;margin:0 -6vw;background:var(--ink);color:var(--mustard);border-top:3px solid var(--ink);overflow:hidden;white-space:nowrap}
+.marquee>div{display:inline-flex;animation:slide 32s linear infinite}
+.marquee span{padding:16px 0;font-size:15px;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+@keyframes slide{to{transform:translateX(-50%)}}
+@keyframes wave{0%,100%{rotate:0deg}50%{rotate:-3deg}}
+@keyframes burstTurn{to{rotate:360deg}}
+@media(max-width:1100px){.posterGrid{min-height:560px}.posterArt{height:520px}}
+@media(max-width:760px){.poster{padding-top:96px}.posterTop{font-size:8px}.posterGrid{grid-template-columns:1fr;padding:30px 0 40px;min-height:0}.poster h1{font-size:clamp(52px,15vw,76px)}.posterIntro{font-size:15px}.posterArt{height:420px;margin-top:20px}.posterBubble{font-size:15px;padding:10px 14px;right:0}}
+@media(prefers-reduced-motion:reduce){.burst,.posterMascot,.marquee>div{animation:none}}
