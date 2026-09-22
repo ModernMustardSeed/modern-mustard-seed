@@ -1,5 +1,8 @@
 import { NextResponse } from 'next/server';
-import { verifyMagicToken, setClientSessionCookie } from '@/lib/client-auth';
+import { verifyMagicToken, setClientSessionCookie, setCcSessionCookie, setCcWhoCookie } from '@/lib/client-auth';
+import { getSupabase } from '@/lib/supabase';
+import { accountForEmail } from '@/lib/cc-access';
+import { commandCenterVisible } from '@/lib/command-center/visible';
 
 export const runtime = 'nodejs';
 
@@ -31,6 +34,15 @@ export async function GET(req: Request) {
   }
 
   await setClientSessionCookie(session.email);
+  // ONE SIGN-IN. A client with a Command Center gets both cookies from either
+  // door and lands on the desk, so nobody is ever asked to sign in twice.
+  const account = accountForEmail(session.email);
+  const sb = getSupabase();
+  if (account && sb && (await commandCenterVisible(sb, account.clientEmail))) {
+    await setCcSessionCookie(account.clientEmail);
+    if (account.person) await setCcWhoCookie(account.typed);
+    if (next === '/portal') return NextResponse.redirect(`${origin}/cc`);
+  }
   // A client's own Command Center is reached through its own address, which
   // hands the request to us. A relative Location keeps the browser on that
   // address; an absolute one would drag them back to ours.

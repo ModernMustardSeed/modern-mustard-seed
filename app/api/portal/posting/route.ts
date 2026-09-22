@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { projectForEmail } from '@/lib/client-leads';
 import { getClientSession } from '@/lib/client-auth';
 import { getSupabase } from '@/lib/supabase';
 import { getSettings, saveSettings } from '@/lib/posting/settings';
@@ -96,7 +97,10 @@ export async function POST(req: Request) {
       const text = String(body.text ?? '').trim().slice(0, 4000);
       if (text.length < 3) return NextResponse.json({ error: 'Type what you want said first.' }, { status: 400 });
       const url = body.url ? String(body.url) : null;
-      if (url && !UPLOAD_RE.test(url)) return NextResponse.json({ error: 'That is not one of your uploads.' }, { status: 400 });
+      // Their uploads, or a photograph already on their own website.
+      const own = projectForEmail(email);
+      const ownSite = (u: string) => [own?.siteUrl, own?.publicUrl].filter(Boolean).some((o) => u.startsWith(`${o}/images/`));
+      if (url && !UPLOAD_RE.test(url) && !ownSite(url)) return NextResponse.json({ error: 'That is not one of your uploads.' }, { status: 400 });
       const wantsGraphic = Boolean(body.wants_graphic) && !url;
       const row = {
         client_email: email,

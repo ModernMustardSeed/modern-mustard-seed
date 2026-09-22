@@ -40,6 +40,9 @@ export type Session = {
   preview: boolean;
   brand: { business: string; name: string; logo: string; logoOnDark: string; colors: { ink: string; paper: string; accent: string; accent2: string }; siteUrl: string; guideName: string };
   modules: Record<string, boolean>;
+  /** Their project pages, each with the opening of its story and its cover. */
+  projects: Array<{ slug: string; title: string; story?: string; image?: string }>;
+  publicUrl: string;
   state: { mailConnected: boolean; crm: string | null; crmConnected: boolean; crmCaptcha: boolean };
 };
 
@@ -397,7 +400,7 @@ export default function Workspace() {
               ) : allowed === 'reviews' ? (
                 <Reviews />
               ) : allowed === 'marketing' ? (
-                <Marketing refreshPulse={loadPulse} />
+                <Marketing session={session} refreshPulse={loadPulse} />
               ) : allowed === 'website' ? (
                 <Website session={session} />
               ) : allowed === 'campaigns' ? (

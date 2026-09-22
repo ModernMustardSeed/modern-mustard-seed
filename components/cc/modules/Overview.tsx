@@ -2,7 +2,8 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import type { Pulse, Session } from '@/components/cc/Workspace';
-import { Bars, Button, Card, CardHead, ErrorNote, Label, Skeleton, WAIT_BAR, WAIT_INK, Wait, cx, waited, when } from '@/components/cc/ui';
+import { Bars, Button, Card, CardHead, ErrorNote, Label, Skeleton, Stat, WAIT_BAR, WAIT_INK, Wait, cx, waited, when } from '@/components/cc/ui';
+import type { Traffic } from '@/lib/cc-traffic';
 import { Icon, type IconName } from '@/components/cc/icons';
 import { CalledSheet, OwnerControl, doorOf, lastTouch, tel, useLeadDesk, type Lead } from '@/components/cc/lead-desk';
 import { eventSentence } from '@/lib/cc-lead-log';
@@ -27,6 +28,34 @@ export default function Overview({ session, pulse, go, refreshPulse, ask }: { se
   const [calling, setCalling] = useState<Lead | null>(null);
   const [week, setWeek] = useState<WeekReport | null>(null);
   const [weekFailed, setWeekFailed] = useState(false);
+  const [traffic, setTraffic] = useState<Traffic | null | undefined>(undefined);
+  const [feeds, setFeeds] = useState<Array<{ provider: string; connected: boolean; manualOnly: boolean }> | null>(null);
+  const [google, setGoogle] = useState<boolean | null>(null);
+
+  // The glance strip reads three more sources. Each one that fails prints
+  // Not read on its own tile and leaves the rest alone.
+  useEffect(() => {
+    void (async () => {
+      try {
+        const r = await fetch('/api/cc/traffic?days=7', { cache: 'no-store' });
+        setTraffic(r.ok ? ((await r.json()) as { traffic: Traffic | null }).traffic : null);
+      } catch {
+        setTraffic(null);
+      }
+    })();
+    void (async () => {
+      try {
+        const [p, i] = await Promise.all([fetch('/api/portal/posting', { cache: 'no-store' }), fetch('/api/portal/integrations', { cache: 'no-store' })]);
+        const pj = (await p.json()) as { accounts?: Array<{ provider: string; connected: boolean; manualOnly: boolean }> };
+        const ij = (await i.json()) as { integrations?: Array<{ provider: string; status: string }> };
+        setFeeds(pj.accounts ?? []);
+        setGoogle(Boolean((ij.integrations ?? []).find((x) => x.provider === 'google' && x.status === 'connected')));
+      } catch {
+        setFeeds(null);
+        setGoogle(null);
+      }
+    })();
+  }, []);
 
   const loadWeek = useCallback(async () => {
     setWeekFailed(false);
@@ -52,6 +81,16 @@ export default function Overview({ session, pulse, go, refreshPulse, ask }: { se
 
   const today = new Date().toLocaleDateString('en-US', { timeZone: 'America/Denver', weekday: 'long', month: 'long', day: 'numeric' });
 
+  // What is wired, in one row. A dot per account, so a missing connection is
+  // seen on the first screen and not found a month later.
+  const apiFeeds = (feeds ?? []).filter((f) => !f.manualOnly && f.provider !== 'gbp');
+  const wires: Array<{ label: string; on: boolean | null; warn?: boolean; room: string }> = [
+    { label: 'Mailbox', on: session.state.mailConnected, room: 'accounts' },
+    ...(session.state.crm === 'buildertrend' ? [{ label: 'Buildertrend', on: session.state.crmConnected, warn: session.state.crmCaptcha, room: 'accounts' }] : []),
+    { label: 'Google profile', on: google, room: 'accounts' },
+    ...(session.modules.marketing !== false ? [{ label: `Feeds ${feeds ? `${apiFeeds.filter((f) => f.connected).length} of ${apiFeeds.length}` : ''}`.trim(), on: feeds ? apiFeeds.length > 0 && apiFeeds.every((f) => f.connected) : null, warn: feeds ? apiFeeds.some((f) => f.connected) && !apiFeeds.every((f) => f.connected) : false, room: 'marketing' }] : []),
+  ];
+
   // Only what is theirs to do. A row appears when its count is above zero and
   // is otherwise absent, so the list is never padded to look busy.
   const plate: Array<{ icon: IconName; text: string; action: string; room: string }> = [];
@@ -73,6 +112,26 @@ export default function Overview({ session, pulse, go, refreshPulse, ask }: { se
 
   return (
     <div className="space-y-5">
+      {/* the glance: four numbers that answer how it is going, and what is wired */}
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <Stat value={desk.leads ? waiting.length : 'Not read'} label="Waiting on a call" tone={waiting.length ? 'warn' : 'plain'} onClick={() => go('leads')} hint={oldestWait ? `Longest ${oldestWait.text}` : undefined} />
+        <Stat value={traffic === undefined ? '…' : traffic ? traffic.visits : 'Not read'} label="Website visits, 7 days" tone="live" onClick={() => go('traffic')} hint={traffic ? `${traffic.views} pages opened` : undefined} />
+        <Stat value={pulse ? pulse.leads.month : 'Not read'} label="Leads, 30 days" onClick={() => go('leads')} hint={pulse?.scans.week ? `${pulse.scans.week} sign scans this week` : undefined} />
+        <Stat value={pulse ? pulse.contacts.total : 'Not read'} label="People in your book" onClick={() => go('contacts')} />
+      </div>
+      <div className="flex flex-wrap items-center gap-x-5 gap-y-2 rounded-xl border border-[var(--cc-line)] bg-[var(--cc-card)] px-4 py-2.5">
+        <Label>Wired</Label>
+        {wires.map((w) => (
+          <button key={w.label} type="button" onClick={() => go(w.room)} className="flex items-center gap-2 text-[13px] text-[var(--cc-ink)] hover:underline">
+            <span className={cx('h-2.5 w-2.5 rounded-full', w.on === null ? 'bg-[var(--cc-line)]' : w.warn ? 'bg-[#F79009]' : w.on ? 'bg-[#12B76A]' : 'bg-[#D0D5DD]')} aria-hidden="true" />
+            {w.label}
+            {w.on === false && <span className="text-[var(--cc-muted)]">, not yet</span>}
+            {w.on && w.warn && <span className="text-[#B54708]">, needs a look</span>}
+          </button>
+        ))}
+        <button type="button" onClick={() => go('accounts')} className="ml-auto text-[12.5px] font-semibold text-[var(--cc-accent)] hover:underline">All connections</button>
+      </div>
+
       {/* the sentence, and the people behind it */}
       <Card pad={false} className="overflow-hidden">
         <div className="px-5 sm:px-7 pt-6 pb-5">

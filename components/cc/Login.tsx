@@ -5,8 +5,8 @@ import { Button, cx, inputCls } from '@/components/cc/ui';
 
 /**
  * THE DOOR. Email, then a six digit code. No password to forget, nothing to
- * share, and it is deliberately not the portal's link: this is a different
- * product and it opens with a different key.
+ * share. One sign-in: it opens the Command Center and the project portal both,
+ * and a portal link opens this too, so nobody is asked twice.
  */
 
 export default function Login() {

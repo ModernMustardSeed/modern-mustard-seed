@@ -44,7 +44,8 @@ export type ClientProject = {
   /** Their postal address, printed at the foot of every campaign as the law asks. */
   postal?: string | null;
   /** The project pages on their site, for jobsite signs and photo drops. */
-  projects: Array<{ slug: string; title: string }>;
+  /** Each carries the opening of its story and its cover, so a post can start from the page itself. */
+  projects: Array<{ slug: string; title: string; story?: string; image?: string }>;
   /**
    * Their Command Center's own front: their name, their address, their
    * marks and colours. The same app answers there; only the door is theirs.
@@ -62,17 +63,18 @@ export type ClientProject = {
 };
 
 /** Built Right's project pages, as built. Keep in step with the site's build.mjs. */
+const BR_IMG = 'https://built-right-montana-demo.vercel.app/images/';
 const BUILT_RIGHT_PROJECTS = [
-  { slug: 'kalispell-montana-mountain-views', title: 'Kalispell Montana Mountain Views' },
-  { slug: 'mountain-modern-living-flathead-montana', title: 'Mountain Modern Living Flathead Montana' },
-  { slug: 'montana-lakefront-luxury-retreat', title: 'Montana Lakefront Luxury Retreat' },
-  { slug: 'secluded-flathead-montana-luxury', title: 'Secluded Flathead Montana Luxury' },
-  { slug: 'barndominium-flathead-montana', title: 'Barndominium Flathead Montana Style' },
-  { slug: 'river-frontage-montana-style', title: 'River Frontage Montana Style' },
-  { slug: 'montana-luxury-log-cabin', title: 'Montana Luxury Log Cabin' },
-  { slug: 'modern-living-montana-built', title: 'Modern Living Montana Built' },
-  { slug: 'glacier-park-retreat', title: 'Glacier Park Retreat' },
-  { slug: 'flathead-lake-luxury-remodel', title: 'Flathead Lake Luxury Remodel' },
+  { slug: 'river-frontage-montana-style', title: 'River Frontage Montana Style', image: BR_IMG + 'p-river-13-hero-1600.webp', story: 'This home started with the water. The lot runs down to the river, so we turned the whole living space toward it and built a window wall that puts the current in the room with you. Outside, cedar and metal siding give the house a look that belongs on a Montana riverbank, and a riverview patio carries the living room out into the open air.' },
+  { slug: 'kalispell-montana-mountain-views', title: 'Kalispell Montana Mountain Views', image: BR_IMG + 'p-kalispell-11-1600.webp', story: 'This custom timber-frame home sits above Kalispell for one reason, and you see it from every window: the Flathead Valley, laid out below the deck. We designed the house around that view, then built a structure worthy of it.' },
+  { slug: 'modern-living-montana-built', title: 'Modern Living Montana Built', image: BR_IMG + 'p-modern-12-1600.webp', story: 'This modern mountain home proves that clean lines and Montana warmth belong together. It starts at a grand entry with accent lighting, and the welcome keeps going from there: steel beams over a warm fire, a coffered ceiling with rustic accents, and a kitchen of hickory and granite that looks straight out at the view.' },
+  { slug: 'montana-lakefront-luxury-retreat', title: 'Montana Lakefront Luxury Retreat', image: BR_IMG + 'p-lakefront-12-1600.webp', story: 'Some homes are built for quiet. This one was built for company. It is a lakefront retreat with five bedrooms, three bathrooms and room to sleep a crowd, from the bunkroom we call the Montana slumber party to the bear room and a guest getaway of its own.' },
+  { slug: 'mountain-modern-living-flathead-montana', title: 'Mountain Modern Living Flathead Montana', image: BR_IMG + 'p-mmodern-18-1600.webp', story: 'High on a Montana mountainside, with no neighbors in sight, this home is mountain modern living at its most complete. A large glass wall opens the living space to the view, a custom built fireplace anchors the room, and a huge skylight pours daylight across epoxy floors.' },
+  { slug: 'montana-luxury-log-cabin', title: 'Montana Luxury Log Cabin', image: BR_IMG + 'p-logcabin-10-1600.webp', story: 'There is nothing quite like a real log home, and this one was handcrafted for a mountainside, with beautiful meadow views. Vaulted ceilings lift the living room, a loft looks down over it, and crafted log railings tie the two together the old way, by hand.' },
+  { slug: 'glacier-park-retreat', title: 'Glacier Park Retreat', image: BR_IMG + 'p-glacier-13-1600.webp', story: 'Near Glacier National Park, this retreat was designed to feel like the park itself: open, honest and full of natural material. The open concept gathers the kitchen, dining and living space under Montana pine ceilings, all of it centered on a custom stone fireplace with a faux concrete mantle.' },
+  { slug: 'secluded-flathead-montana-luxury', title: 'Secluded Flathead Montana Luxury', image: BR_IMG + 'p-secluded-16-1600.webp', story: 'Deep in the Yaak, in the Purcell Mountains, the nearest neighbor is a long way off, and that is the point. This modern home brings real luxury to real seclusion, with stone and cedar accents, Louisiana Pacific siding in three styles, a matte black garage door and a glass front door that says welcome home.' },
+  { slug: 'barndominium-flathead-montana', title: 'Barndominium Flathead Montana Style', image: BR_IMG + 'p-barndo-00-1600.webp', story: 'A barndominium puts the garage and the good life under one roof, and this timber-frame build in the Flathead does both with style. Wood and metal give the exterior its elegance, and directional soffit lights bring you up the drive and home after dark.' },
+  { slug: 'flathead-lake-luxury-remodel', title: 'Flathead Lake Luxury Remodel', image: BR_IMG + 'p-flathead-05-1600.webp', story: 'Some homes do not need replacing. They need reimagining. This whole-home remodel on Flathead Lake kept a well-loved property and made it new, beginning with the biggest change of all: a second story luxury addition built over an expanded garage, with a wall of windows that faces the grounds.' },
 ];
 
 export const CLIENT_PROJECTS: Record<string, ClientProject> = {
