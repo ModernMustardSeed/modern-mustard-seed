@@ -19,7 +19,7 @@ const LADDER = [
     rate: `${m.pct}%`,
     accent: '#F5B700',
     label: `Every month, for ${m.months} months`,
-    detail: `Send a business. If they keep the ${m.talkingWebsite.name} you earn ${$(m.talkingWebsite.perMonth)} a month, ${$(m.talkingWebsite.year)} over the year, per business. A ${m.voice.name} alone pays ${$(m.voice.perMonth)} a month. Ten kept Talking Websites is ${$(m.tenTalkingWebsites.perMonth)} a month to you.`,
+    detail: `Send a business. If they keep ${m.talkingWebsite.name} you earn ${$(m.talkingWebsite.perMonth)} a month, ${$(m.talkingWebsite.year)} over the year, per business. A ${m.voice.name} alone pays ${$(m.voice.perMonth)} a month. Ten kept Talking Websites is ${$(m.tenTalkingWebsites.perMonth)} a month to you.`,
     tag: 'The part that compounds',
   },
   {
