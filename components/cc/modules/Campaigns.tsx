@@ -14,6 +14,7 @@ import type { Audience, Mailing } from '@/lib/client-mailings';
  */
 
 type Loaded = { audience: Audience | null; mailings: Mailing[] | null; canSend: boolean; sendsFrom: string | null; testTo: string; cap: number };
+type ClientList = { id: string; name: string; tags: string[]; note: string | null; people: number; reachable: number };
 
 const STARTERS: Array<{ label: string; subject: string; body: string }> = [
   {
@@ -39,6 +40,8 @@ export default function Campaigns() {
   const [data, setData] = useState<Loaded | null>(null);
   const [state, setState] = useState<'loading' | 'ready' | 'error'>('loading');
   const [tags, setTags] = useState<string[]>([]);
+  // The owner's own named lists. They pick "the realtor list", not a tag.
+  const [lists, setLists] = useState<ClientList[]>([]);
   const [subject, setSubject] = useState('');
   const [body, setBody] = useState('');
   const [busy, setBusy] = useState<'test' | 'send' | null>(null);
@@ -54,6 +57,18 @@ export default function Campaigns() {
     } catch {
       setState('error');
     }
+  }, []);
+
+  useEffect(() => {
+    void (async () => {
+      try {
+        const r = await fetch('/api/cc/lists', { cache: 'no-store' });
+        const j = (await r.json()) as { lists?: ClientList[] };
+        setLists(j.lists ?? []);
+      } catch {
+        /* the tag chips below still work without saved lists */
+      }
+    })();
   }, []);
 
   useEffect(() => {
@@ -166,6 +181,29 @@ export default function Campaigns() {
                 <p className="mt-2 text-[13px] text-[var(--cc-muted)]">Not read</p>
               ) : (
                 <>
+                  {lists.length > 0 && (
+                    <div className="mt-2 flex flex-wrap items-center gap-2 rounded-lg border border-[var(--cc-line)] bg-[#FAFBFC] px-3 py-2.5">
+                      <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--cc-muted)]">Your lists</span>
+                      {lists.map((l) => {
+                        const on = l.tags.length > 0 && l.tags.every((t) => tags.includes(t)) && tags.length === l.tags.length;
+                        return (
+                          <button
+                            key={l.id}
+                            type="button"
+                            aria-pressed={on}
+                            onClick={() => setTags(on ? [] : l.tags)}
+                            title={`${l.people} in this list, ${l.reachable} with an email`}
+                            className={cx(
+                              'rounded-full border px-3 py-1.5 text-[12.5px] font-semibold transition',
+                              on ? 'border-[var(--cc-accent)] bg-[var(--cc-accent)] text-white' : 'border-[var(--cc-line)] bg-white text-[var(--cc-ink)] hover:border-[var(--cc-ink)]',
+                            )}
+                          >
+                            {l.name} · {l.reachable}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
                   <div className="mt-2 flex flex-wrap gap-2">
                     <button
                       type="button"

@@ -20,9 +20,74 @@ import { Badge, Button, Card, CardHead, Field, Label, Skeleton, cx, inputCls } f
 type Integration = { provider: string; account_email: string | null; account_name: string | null; status: string; error: string | null; scopes: string[] };
 type Feed = { provider: string; connected: boolean; status: string; accountName: string | null; error: string | null; manualOnly: boolean; needs: string | null };
 type State = 'on' | 'off' | 'warn' | 'manual';
+type Check = { platform: string; ok: boolean; account: string | null; error: string | null; fix: string | null; at: string };
 
 const FEED_LABEL: Record<string, string> = { facebook: 'Facebook', instagram: 'Instagram', linkedin: 'LinkedIn', x: 'X', gbp: 'Google Business Profile', houzz: 'Houzz' };
 const FEED_OPEN: Record<string, string> = { facebook: 'https://www.facebook.com/', instagram: 'https://www.instagram.com/', linkedin: 'https://www.linkedin.com/', x: 'https://x.com/', gbp: 'https://business.google.com/', houzz: 'https://pro.houzz.com/' };
+
+/**
+ * THE EXACT CLICKS. Written down because the alternative is remembering them
+ * at 9pm on the day a client asks why nothing posted, and because a step that
+ * lives only in somebody's head is a step that gets skipped. These are the
+ * studio's own steps: they appear when Sarah is looking as the client, and the
+ * owner never sees them, because none of this is the owner's job.
+ */
+const STEPS: Record<string, { title: string; steps: string[]; where?: { label: string; href: string } }> = {
+  facebook: {
+    title: 'Getting a Page token',
+    where: { label: 'Graph API Explorer', href: 'https://developers.facebook.com/tools/explorer/' },
+    steps: [
+      'Sign in to Facebook as someone with a Page role on their Page.',
+      'Open the Graph API Explorer and pick the Meta app at the top.',
+      'Change "User or Page" to Page access token, then pick their Page.',
+      'In Permissions tick pages_manage_posts, pages_read_engagement and pages_show_list.',
+      'Press Generate Access Token and approve the prompt.',
+      'Paste the token below. The Page, and any Instagram account linked to it, both connect from that one paste.',
+    ],
+  },
+  instagram: {
+    title: 'Instagram rides on the Page',
+    steps: [
+      'Instagram has no separate connection. It must be a Business or Creator account and it must be linked to their Facebook Page.',
+      'Check the link in Meta Business Suite, Settings, Accounts, Instagram accounts.',
+      'Connect the Facebook Page here and Instagram connects with it.',
+    ],
+  },
+  x: {
+    title: 'Getting X tokens',
+    where: { label: 'X developer portal', href: 'https://developer.x.com/en/portal/dashboard' },
+    steps: [
+      'The Connect button works as soon as X_OAUTH2_CLIENT_ID and X_OAUTH2_CLIENT_SECRET are on the production environment.',
+      'Until then: in the developer portal open the app, User authentication settings, and generate OAuth 2.0 tokens for their account.',
+      'Scopes needed: tweet.read, tweet.write, users.read, media.write and offline.access.',
+      'offline.access is what gives a refresh token. Without it the connection dies two hours after it is made.',
+      'Paste both tokens below.',
+    ],
+  },
+  linkedin: {
+    title: 'Getting a company page token',
+    where: { label: 'LinkedIn developers', href: 'https://www.linkedin.com/developers/apps' },
+    steps: [
+      'The Connect button works as soon as LINKEDIN_CLIENT_ID and LINKEDIN_CLIENT_SECRET are on the production environment and Community Management access is granted.',
+      'Community Management takes weeks to be granted, so until then a page admin can generate a token in the developer console.',
+      'Products needed: Share on LinkedIn and Community Management API. Scopes: w_organization_social and r_organization_social.',
+      'The company page id is the number in the page admin URL, for example linkedin.com/company/12345678/admin.',
+      'Paste the token and that number below.',
+    ],
+  },
+  gbp: {
+    title: 'Google Business Profile',
+    steps: [
+      'Connect the Google account that manages the profile with the Connect Google button.',
+      'Then pick which profile posts go to, if they have more than one.',
+      'Posting by API waits on Google approving Business Profile API access for our project. Until then every Google post goes on the hand-post sheet and is posted from inside the profile.',
+    ],
+  },
+  houzz: {
+    title: 'Houzz',
+    steps: ['Houzz has no posting API at all. Every Houzz post goes on the sheet and takes a minute by hand. There is nothing to connect and nothing that will change that.'],
+  },
+};
 
 function Dot({ state }: { state: State }) {
   const cls = state === 'on' ? 'bg-[#12B76A]' : state === 'warn' ? 'bg-[#F79009]' : state === 'manual' ? 'bg-[#98A2B3]' : 'bg-[var(--cc-line)]';
@@ -80,6 +145,9 @@ export default function Accounts({ session }: { session: Session }) {
   const [message, setMessage] = useState('');
   const [sent, setSent] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [checks, setChecks] = useState<Record<string, Check>>({});
+  const [checking, setChecking] = useState<string | null>(null);
+  const [steps, setSteps] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     setError(false);
@@ -99,19 +167,62 @@ export default function Accounts({ session }: { session: Session }) {
     void load();
   }, [load]);
 
+  /**
+   * Ask the platform itself, right now. A stored green check only means a
+   * token was accepted once; this is the only thing that answers "will it
+   * post at nine tomorrow". It reads and never posts.
+   */
+  const check = useCallback(async (platform?: string) => {
+    setChecking(platform ?? 'all');
+    try {
+      const r = await fetch('/api/cc/connections', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ action: 'check', platform: platform ?? null }),
+      });
+      const j = (await r.json()) as { checks?: Check[] };
+      if (j.checks?.length) {
+        setChecks((prev) => {
+          const next = { ...prev };
+          for (const c of j.checks ?? []) next[c.platform] = c;
+          return next;
+        });
+      }
+      void load();
+    } catch {
+      /* the row keeps the state it had; nothing is claimed that was not proved */
+    } finally {
+      setChecking(null);
+    }
+  }, [load]);
+
   const google = (integrations ?? []).find((i) => i.provider === 'google' && i.status === 'connected');
   const preview = session.preview;
   const client = session.email;
 
-  // Studio-side connections are made through the desk route, which only an
-  // admin session can reach. The owner never sees these forms.
+  // Studio-side connections. The feed pastes go through the Command Center's
+  // own route, which gates them on the look pass; the mailbox and Buildertrend
+  // still go through the admin desk route that owns those connections. The
+  // owner never sees any of these forms.
   const desk = async (action: string, body: Record<string, string>): Promise<string> => {
-    const r = await fetch(`/api/admin/posting?client=${encodeURIComponent(client)}`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ action, ...body }) });
-    const j = (await r.json().catch(() => ({}))) as { ok?: boolean; error?: string; page?: { name: string }; instagram?: { username: string | null } | null; username?: string; fetched?: number; captcha?: boolean };
+    const feed = ['facebook-token', 'x-tokens', 'linkedin-token'].includes(action);
+    const url = feed ? '/api/cc/connections' : `/api/admin/posting?client=${encodeURIComponent(client)}`;
+    const r = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ action, ...body }) });
+    const j = (await r.json().catch(() => ({}))) as { ok?: boolean; error?: string; page?: { name: string }; instagram?: { username: string | null } | null; username?: string; organization?: string; fetched?: number; captcha?: boolean };
     if (!r.ok || j.error) return j.error ?? 'That did not take.';
     void load();
-    if (action === 'facebook-token') return `Connected ${j.page?.name ?? 'the Page'}${j.instagram ? ` and Instagram @${j.instagram.username ?? ''}` : ''}.`;
-    if (action === 'x-tokens') return `Connected @${j.username ?? ''}.`;
+    if (action === 'facebook-token') {
+      void check('facebook');
+      return `Connected ${j.page?.name ?? 'the Page'}${j.instagram ? ` and Instagram @${j.instagram.username ?? ''}` : ''}.`;
+    }
+    if (action === 'x-tokens') {
+      void check('x');
+      return `Connected @${j.username ?? ''}.`;
+    }
+    if (action === 'linkedin-token') {
+      void check('linkedin');
+      return `Connected ${j.organization ?? 'the company page'}.`;
+    }
     if (action === 'mailbox') return `Connected. ${j.fetched ?? 0} messages read on the first pass.`;
     if (action === 'buildertrend-embed') return j.captcha ? 'Connected, but the form has a captcha on. Leads will be refused until Buildertrend turns it off.' : 'Connected.';
     return 'Done.';
@@ -138,7 +249,7 @@ export default function Accounts({ session }: { session: Session }) {
     }
   };
 
-  type Row = { key: string; name: string; state: State; detail: string; open?: string; action?: { label: string; href: string } | null; paste?: React.ReactNode; disconnect?: () => Promise<void> };
+  type Row = { key: string; name: string; state: State; detail: string; open?: string; action?: { label: string; href: string } | null; paste?: React.ReactNode; disconnect?: () => Promise<void>; feed?: boolean };
 
   const feed = (p: string) => (feeds ?? []).find((f) => f.provider === p);
   const feedState = (f: Feed | undefined): State => (!f ? 'off' : f.manualOnly ? 'manual' : f.status === 'error' ? 'warn' : f.connected ? 'on' : 'off');
@@ -186,8 +297,9 @@ export default function Accounts({ session }: { session: Session }) {
         ]
       : []),
     {
-      key: 'google',
+      key: 'gbp',
       name: 'Google Business Profile',
+      feed: true,
       state: google ? 'on' : 'off',
       detail: google
         ? `Connected as ${google.account_email ?? 'your Google account'}. Reviews, hours, photos and posts run from here.`
@@ -211,6 +323,7 @@ export default function Accounts({ session }: { session: Session }) {
       return {
         key: p,
         name: FEED_LABEL[p],
+        feed: true,
         state: st,
         detail: f?.manualOnly
           ? 'Houzz has no door for software. Each post goes on the sheet we send, and you post it by hand in a minute.'
@@ -237,6 +350,15 @@ export default function Accounts({ session }: { session: Session }) {
               ]}
               submit={(v) => desk('x-tokens', v)}
             />
+          ) : preview && st !== 'on' && p === 'linkedin' && !canOauth ? (
+            <Paste
+              label="Connect the company page"
+              fields={[
+                { key: 'access', label: 'Access token', secret: true },
+                { key: 'organization', label: 'Company page id', hint: 'The number in linkedin.com/company/NUMBER/admin.' },
+              ]}
+              submit={(v) => desk('linkedin-token', v)}
+            />
           ) : undefined,
         disconnect:
           st === 'on' && !f?.manualOnly
@@ -260,9 +382,15 @@ export default function Accounts({ session }: { session: Session }) {
             <h3 className="font-display text-[19px]">Connections</h3>
             <p className="mt-1 text-[13px] text-[var(--cc-muted)]">A key we hold, never a password. Revoke any of them whenever you like.</p>
           </div>
-          <Badge tone={connected === countable ? 'good' : 'plain'}>
-            {connected} of {countable} connected
-          </Badge>
+          <div className="flex flex-wrap items-center gap-2">
+            <Badge tone={connected === countable ? 'good' : 'plain'}>
+              {connected} of {countable} connected
+            </Badge>
+            {/* A stored green check only says a key was accepted once. This
+                asks every platform whether it still works, today, without
+                posting anything to a real feed. */}
+            <Button onClick={() => check()} disabled={checking !== null}>{checking === 'all' ? 'Checking' : 'Check them all'}</Button>
+          </div>
         </div>
         {error ? (
           <div className="p-5 text-[13.5px] text-[var(--cc-muted)]">
@@ -285,10 +413,44 @@ export default function Accounts({ session }: { session: Session }) {
                   </div>
                   <div className="flex flex-none flex-wrap items-center gap-2">
                     {r.action && <Button kind="primary" href={r.action.href}>{r.action.label}</Button>}
+                    {r.feed && r.state !== 'manual' && (
+                      <Button onClick={() => check(r.key)} disabled={checking !== null} title="Ask the platform whether this connection still works. Nothing is posted.">
+                        {checking === r.key ? 'Checking' : 'Check it'}
+                      </Button>
+                    )}
                     {r.open && <Button href={r.open}>Open {r.name.replace(/^Your /, '')}</Button>}
                     {r.disconnect && <Button kind="ghost" onClick={r.disconnect}>Disconnect</Button>}
                   </div>
                 </div>
+                {checks[r.key] && (
+                  <div className={cx('mt-2 ml-5 rounded-lg border px-3 py-2 text-[13px]', checks[r.key].ok ? 'border-[#ABEFC6] bg-[#ECFDF3] text-[#067647]' : 'border-[#FDA29B] bg-[#FFFBFA] text-[#B42318]')}>
+                    {checks[r.key].ok
+                      ? `Checked just now: posting as ${checks[r.key].account ?? 'this account'}.`
+                      : `Checked just now: ${checks[r.key].error}`}
+                    {checks[r.key].fix && !checks[r.key].ok && <span className="mt-1 block text-[var(--cc-muted)]">{checks[r.key].fix}</span>}
+                  </div>
+                )}
+                {preview && STEPS[r.key] && (
+                  <div className="mt-2 ml-5">
+                    <button onClick={() => setSteps(steps === r.key ? null : r.key)} className="font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--cc-muted)] underline hover:text-[var(--cc-ink)]">
+                      {steps === r.key ? 'Hide the steps' : STEPS[r.key].title}
+                    </button>
+                    {steps === r.key && (
+                      <div className="mt-2 rounded-lg border border-[var(--cc-line)] bg-[#FAFBFC] px-4 py-3">
+                        <ol className="list-decimal space-y-1.5 pl-4 text-[13px] leading-relaxed text-[var(--cc-ink)]">
+                          {STEPS[r.key].steps.map((s) => (
+                            <li key={s}>{s}</li>
+                          ))}
+                        </ol>
+                        {STEPS[r.key].where && (
+                          <div className="mt-3">
+                            <Button href={STEPS[r.key].where!.href}>Open the {STEPS[r.key].where!.label}</Button>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )}
                 {r.paste && <div className="pl-5">{r.paste}</div>}
               </li>
             ))}

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getSupabase } from '@/lib/supabase';
-import { normalizeEmail, setCcSessionCookie, setCcWhoCookie } from '@/lib/client-auth';
+import { normalizeEmail, setCcSessionCookie, setCcWhoCookie, setClientSessionCookie } from '@/lib/client-auth';
 import { accountForSession } from '@/lib/cc-access';
 import { checkChallenge } from '@/lib/cc-code';
 
@@ -28,6 +28,12 @@ export async function POST(req: Request) {
   if (!account) return NextResponse.json({ error: 'That account does not have a Command Center yet.' }, { status: 403 });
 
   await setCcSessionCookie(account.clientEmail);
+  // ONE SIGN-IN, BOTH DIRECTIONS. The portal door already mints the Command
+  // Center cookie; this is the return leg. Without it the rail's own link to
+  // the project portal asked for a second sign-in, which is the two-door
+  // problem from the client's side of the desk. The portal session is keyed
+  // to the address they typed, because the portal is per person.
+  await setClientSessionCookie(account.typed);
   // The board is shared, the person is not. Keep who this code was mailed to,
   // so what they write is signed with their name.
   if (account.person) await setCcWhoCookie(account.typed);

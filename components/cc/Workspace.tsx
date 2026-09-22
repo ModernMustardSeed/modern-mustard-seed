@@ -17,6 +17,7 @@ import Week from '@/components/cc/modules/Week';
 import Traffic from '@/components/cc/modules/Traffic';
 import Campaigns from '@/components/cc/modules/Campaigns';
 import Operator from '@/components/cc/Operator';
+import Tray from '@/components/cc/Tray';
 import Palette from '@/components/cc/Palette';
 
 /**
@@ -95,6 +96,9 @@ export default function Workspace() {
   const [seed, setSeed] = useState<{ text: string; send: boolean; n: number } | null>(null);
   const [askText, setAskText] = useState('');
   const [deskOpen, setDeskOpen] = useState(false);
+  // The tray is reachable from every room on purpose: the moment somebody has
+  // a napkin in their hand is not the moment to go looking for the right screen.
+  const [trayOpen, setTrayOpen] = useState(false);
 
   const loadPulse = useCallback(async () => {
     try {
@@ -344,6 +348,14 @@ export default function Workspace() {
                 <p className="hidden sm:block text-[12.5px] text-[var(--cc-muted)] truncate">{current.blurb}</p>
               </div>
               <button
+                onClick={() => setTrayOpen(true)}
+                className="flex items-center gap-2 rounded-lg border border-[var(--cc-line)] bg-white px-3 py-2 text-[13px] font-semibold text-[var(--cc-ink)] hover:border-[var(--cc-accent)] hover:text-[var(--cc-accent)]"
+                title="A photo of a napkin, a screenshot, a spreadsheet. It gets read and you check it before anything is saved."
+              >
+                <Icon name="tray" size={16} />
+                <span className="hidden sm:inline">Drop anything</span>
+              </button>
+              <button
                 onClick={() => setPaletteOpen(true)}
                 className="hidden md:flex items-center gap-2 rounded-lg border border-[var(--cc-line)] bg-white px-3 py-2 text-[13px] text-[var(--cc-muted)] hover:border-[var(--cc-ink)]"
               >
@@ -493,6 +505,7 @@ export default function Workspace() {
       )}
 
       <Palette open={paletteOpen} onClose={() => setPaletteOpen(false)} modules={visible.map((m) => ({ key: m.key, label: m.label, blurb: m.blurb }))} go={(k) => go(k as ModuleKey)} onOperator={() => { setPaletteOpen(false); ask(); }} />
+      <Tray open={trayOpen} onClose={() => setTrayOpen(false)} onFiled={loadPulse} />
       <Operator open={operatorOpen} onClose={() => setOperatorOpen(false)} seed={seed} session={session} go={(k) => go(k as ModuleKey)} onDidAct={loadPulse} />
     </div>
   );
