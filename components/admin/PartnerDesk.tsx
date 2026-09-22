@@ -550,7 +550,7 @@ function Card({ p, onChange, onRemoved, onNotice, onError, emailReady }: { p: Pr
             <input value={subject} onChange={(e) => setSubject(e.target.value)} className={input} aria-label="Subject" />
             <textarea value={body} onChange={(e) => setBody(e.target.value)} rows={16} className={`${input} font-body leading-relaxed`} aria-label="Letter" />
             <div className="flex flex-wrap items-center gap-2">
-              <button onClick={send} disabled={!!busy || closed || !p.email || !emailReady} className={btnGold}>{busy === 'send' ? 'Sending' : `Send to ${p.email || 'no email'}`}</button>
+              <button onClick={send} disabled={!!busy || closed || !p.email || !emailReady} className={btnGold}>{busy === 'send' ? 'Sending' : p.email ? `Send to ${p.email}` : 'Send (needs an email)'}</button>
               <button onClick={loadLetter} className={btnGhost} disabled={!!busy}>Reset to the template</button>
               {!emailReady && <span className="font-body text-xs text-[#E0301E]">RESEND_API_KEY is not set, so mail cannot leave from here.</span>}
               {!p.email && <span className="font-body text-xs text-[#3A3733]">No email on file. Add one on the right, or copy a DM.</span>}
