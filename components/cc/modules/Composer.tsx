@@ -84,9 +84,9 @@ export default function Composer({
   // replaces the box and drops any shaping already on screen, because those
   // versions belong to the words that were there before.
   const seedKey = `${seedText ?? ''}|${seedPhoto ?? ''}|${seedLink ?? ''}`;
-  const lastSeed = useRef(seedKey);
-  if (seedKey !== lastSeed.current) {
-    lastSeed.current = seedKey;
+  const [lastSeed, setLastSeed] = useState(seedKey);
+  if (seedKey !== lastSeed) {
+    setLastSeed(seedKey);
     setText(seedText ?? '');
     setLink(seedLink ?? '');
     setPhoto(seedPhoto ?? null);
