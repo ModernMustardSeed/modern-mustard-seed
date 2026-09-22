@@ -4,16 +4,22 @@ import { useState, useEffect, useRef } from 'react';
 
 /**
  * The signature moment on /partners: makes the commission ladder tangible.
- * Three honest levers (products at 50%, referred voice agents at 25%/mo,
- * builds at 10%) roll up into a live monthly number, with the recurring piece
- * called out because that is the part that keeps paying. Blended averages, no
- * hype: a partner sees a real, defensible number, not a fantasy.
+ * The levers are the real products at the real commission rates, passed in
+ * from the server so the page and the calculator can never disagree. Builds
+ * and playbooks use a stated blended average and say so on the card.
  */
 
-// Blended partner earnings per unit (conservative, stated on the page).
-const PRODUCT_CUT = 45; // ~50% of a blended ~$90 playbook/bundle order
-const SUB_CUT_MO = 60; //  ~25% of a blended ~$240/mo voice agent
-const BUILD_CUT = 600; //  ~10% of a blended ~$6,000 build
+type Props = {
+  pct: number;
+  months: number;
+  talkingWebsiteCents: number;
+  voiceCents: number;
+  buildPct: number;
+  productPct: number;
+};
+
+const BUILD_BLEND = 6000; // a typical custom build, stated on the card
+const PRODUCT_BLEND = 90; // a typical playbook or bundle order, stated on the card
 
 function useCountUp(target: number, ms = 500) {
   const [n, setN] = useState(target);
@@ -41,21 +47,10 @@ function useCountUp(target: number, ms = 500) {
   return n;
 }
 
-const money = (n: number) => `$${n.toLocaleString('en-US')}`;
+const money = (n: number) => `$${Math.round(n).toLocaleString('en-US')}`;
+const cents = (c: number) => `$${(c / 100).toLocaleString('en-US', { minimumFractionDigits: c % 100 ? 2 : 0, maximumFractionDigits: 2 })}`;
 
-function Stepper({
-  label,
-  hint,
-  value,
-  onChange,
-  accent,
-}: {
-  label: string;
-  hint: string;
-  value: number;
-  onChange: (n: number) => void;
-  accent: string;
-}) {
+function Stepper({ label, hint, value, onChange, accent }: { label: string; hint: string; value: number; onChange: (n: number) => void; accent: string }) {
   return (
     <div className="bg-[#FBF6EA] border-2 border-[#161616] rounded-2xl p-4 sm:p-5">
       <div className="flex items-start justify-between gap-3 mb-4">
@@ -88,13 +83,20 @@ function Stepper({
   );
 }
 
-export default function PartnerEarningsCalculator() {
-  const [products, setProducts] = useState(4);
-  const [subs, setSubs] = useState(2);
-  const [builds, setBuilds] = useState(1);
+export default function PartnerEarningsCalculator({ pct, months, talkingWebsiteCents, voiceCents, buildPct, productPct }: Props) {
+  const [sites, setSites] = useState(3);
+  const [voices, setVoices] = useState(1);
+  const [builds, setBuilds] = useState(0);
+  const [products, setProducts] = useState(2);
 
-  const monthly = products * PRODUCT_CUT + subs * SUB_CUT_MO + builds * BUILD_CUT;
-  const recurringYear = subs * SUB_CUT_MO * 12;
+  const twCut = talkingWebsiteCents / 100;
+  const voiceCut = voiceCents / 100;
+  const buildCut = (BUILD_BLEND * buildPct) / 100;
+  const productCut = (PRODUCT_BLEND * productPct) / 100;
+
+  const recurringMonthly = sites * twCut + voices * voiceCut;
+  const monthly = recurringMonthly + builds * buildCut + products * productCut;
+  const recurringYear = recurringMonthly * months;
   const shownMonthly = useCountUp(monthly);
   const shownRecurring = useCountUp(recurringYear);
 
@@ -106,27 +108,10 @@ export default function PartnerEarningsCalculator() {
           <span className="text-[10px] uppercase tracking-[0.35em] text-[#E0301E] font-mono font-bold block mb-2">Run your numbers</span>
           <h3 className="font-display text-2xl font-semibold text-[#161616] mb-5">What could a month look like?</h3>
           <div className="space-y-3">
-            <Stepper
-              label="Playbooks you sell"
-              hint="50% of every sale, paid the moment they buy"
-              value={products}
-              onChange={setProducts}
-              accent="#1E50C8"
-            />
-            <Stepper
-              label="Businesses you put on a voice agent"
-              hint="25% of what they pay, every month, for a year"
-              value={subs}
-              onChange={setSubs}
-              accent="#F5B700"
-            />
-            <Stepper
-              label="Builds you send our way"
-              hint="10% of the project, up to 20% once you are a Producer"
-              value={builds}
-              onChange={setBuilds}
-              accent="#E0301E"
-            />
+            <Stepper label="Talking Websites kept" hint={`${cents(talkingWebsiteCents)} a month each, for ${months} months`} value={sites} onChange={setSites} accent="#F5B700" />
+            <Stepper label="Voice Agents kept" hint={`${cents(voiceCents)} a month each, for ${months} months`} value={voices} onChange={setVoices} accent="#1E50C8" />
+            <Stepper label="Builds you send our way" hint={`${buildPct}% of the project. A ${money(BUILD_BLEND)} build pays ${money(buildCut)}`} value={builds} onChange={setBuilds} accent="#E0301E" />
+            <Stepper label="Playbooks you sell" hint={`${productPct}% of every sale, paid the moment they buy. About ${money(productCut)} each`} value={products} onChange={setProducts} accent="#161616" />
           </div>
         </div>
 
@@ -134,7 +119,7 @@ export default function PartnerEarningsCalculator() {
         <div className="p-6 sm:p-8 bg-[#161616] flex flex-col justify-center relative overflow-hidden">
           <div className="absolute inset-0 opacity-[0.06]" style={{ backgroundImage: 'radial-gradient(#F5B700 1.4px, transparent 1.4px)', backgroundSize: '14px 14px' }} aria-hidden />
           <div className="relative">
-            <span className="text-[10px] uppercase tracking-[0.35em] text-[#F5B700] font-mono font-bold block mb-3">You earn, roughly</span>
+            <span className="text-[10px] uppercase tracking-[0.35em] text-[#F5B700] font-mono font-bold block mb-3">You earn</span>
             <div className="font-display text-6xl sm:text-7xl font-bold text-[#FBF6EA] leading-none tabular-nums">
               {money(shownMonthly)}
               <span className="font-sans text-lg font-medium text-[#FBF6EA]/50 tracking-tight">/mo</span>
@@ -142,11 +127,11 @@ export default function PartnerEarningsCalculator() {
             <div className="mt-5 flex items-start gap-3 bg-[#F5B700] border-2 border-[#161616] rounded-xl p-4">
               <span className="text-lg leading-none" aria-hidden>↻</span>
               <p className="font-body text-sm text-[#161616] leading-snug">
-                <span className="font-bold">{money(shownRecurring)} of that is locked in for the year</span> from the voice agents alone. Recurring keeps paying while you go find the next one.
+                <span className="font-bold">{money(shownRecurring)} of that is locked in for the year</span> from the sites and voice agents alone. {pct}% of every monthly invoice keeps paying while you go find the next one.
               </p>
             </div>
             <p className="text-[#FBF6EA]/45 font-body text-[11px] mt-4 leading-relaxed">
-              Estimates on blended averages (playbook ~$45 to you, voice agent ~$60/mo, build ~$600). Your link, your real numbers, no cap on any of it.
+              Sites and voice agents are the real rates on the real prices. Builds and playbooks use the blended averages stated on the levers. Your link, your real numbers, no cap on any of it.
             </p>
           </div>
         </div>

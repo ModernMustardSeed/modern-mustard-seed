@@ -3,7 +3,7 @@
 import { useState, FormEvent } from 'react';
 
 export default function PartnersApply() {
-  const [form, setForm] = useState({ name: '', email: '', promoteWhere: '', audience: '', why: '' });
+  const [form, setForm] = useState({ name: '', email: '', link: '', promoteWhere: '', audience: '', why: '' });
   const [sent, setSent] = useState(false);
   const [already, setAlready] = useState(false);
   const [sending, setSending] = useState(false);
@@ -75,7 +75,8 @@ export default function PartnersApply() {
         <Field label="Your name"><input required value={form.name} onChange={set('name')} className={inputCls} placeholder="Jane Builder" /></Field>
         <Field label="Email"><input required type="email" value={form.email} onChange={set('email')} className={inputCls} placeholder="you@example.com" /></Field>
       </div>
-      <Field label="Where will you promote?"><input value={form.promoteWhere} onChange={set('promoteWhere')} className={inputCls} placeholder="YouTube, a newsletter, X, a community..." /></Field>
+      <Field label="Your main link"><input value={form.link} onChange={set('link')} className={inputCls} placeholder="Your channel, profile, newsletter or website" /></Field>
+      <Field label="Where will you promote?"><input value={form.promoteWhere} onChange={set('promoteWhere')} className={inputCls} placeholder="YouTube, a newsletter, a chamber, your client list..." /></Field>
       <Field label="Your audience (size and shape)"><input value={form.audience} onChange={set('audience')} className={inputCls} placeholder="e.g. 8k builders on X, mostly non-technical founders" /></Field>
       <Field label="Why do you want in?"><textarea value={form.why} onChange={set('why')} rows={3} className={inputCls} placeholder="What draws you to sharing these tools?" /></Field>
       {error && <p className="text-[#E0301E] text-xs font-body">{error}</p>}

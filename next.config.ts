@@ -236,6 +236,13 @@ const config: NextConfig = {
       // `/mustard` and redirects the real page to itself in an infinite loop.
       { source: '/dashboard', destination: '/', permanent: false },
       { source: '/case-studies', destination: '/work', permanent: true },
+      // The partner program answers to every name people search it by.
+      { source: '/ambassadors', destination: '/partners', permanent: true },
+      { source: '/ambassador', destination: '/partners', permanent: true },
+      { source: '/affiliates', destination: '/partners', permanent: true },
+      { source: '/affiliate', destination: '/partners', permanent: true },
+      { source: '/referral-program', destination: '/partners', permanent: true },
+      { source: '/referrals', destination: '/partners', permanent: true },
       { source: '/case-studies/:slug', destination: '/work/:slug', permanent: true },
       // The Build Queue page was retired in favor of Book a Call. Any query
       // (e.g. the ?idea= carried from the home terminal) passes through to
