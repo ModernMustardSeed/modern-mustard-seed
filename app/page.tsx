@@ -21,7 +21,7 @@ const homeJsonLd = {
   hasPart: { '@id': 'https://modernmustardseed.com/#parable' },
   primaryImageOfPage: {
     '@type': 'ImageObject',
-    url: 'https://modernmustardseed.com/opengraph-image',
+    url: `${SITE.url}${SITE.ogImage}`,
     width: 1200,
     height: 630,
   },

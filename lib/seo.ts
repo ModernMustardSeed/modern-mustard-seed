@@ -9,7 +9,7 @@ export const SITE = {
   twitter: '@modmustardseed',
   founder: 'Sarah Scarano',
   email: 'sarah@modernmustardseed.com',
-  ogImage: '/opengraph-image',
+  ogImage: '/brand/mr-mustard-social-20260921.jpg',
   /**
    * Local identity. SINGLE SOURCE for every NAP (name, address, phone) signal.
    * Local search and AI answers both key off a consistent NAP, so never retype
@@ -57,7 +57,7 @@ export function buildMetadata({ title, description, path = '/', image, noindex, 
       description: desc,
       url,
       siteName: SITE.name,
-      images: [{ url: ogImage, width: 1200, height: 630, alt: SITE.name, type: 'image/png' }],
+      images: [{ url: ogImage, width: 1200, height: 630, alt: image ? SITE.name : 'Mr. Mustard and the Modern Mustard Seed pop-art business name', type: /\.jpe?g(?:\?|$)/i.test(ogImage) ? 'image/jpeg' : 'image/png' }],
       locale: 'en_US',
       type: article ? 'article' : 'website',
       ...(article ? { publishedTime: article.published, modifiedTime: article.modified ?? article.published, authors: [article.author ?? `${SITE.url}/about`] } : {}),
