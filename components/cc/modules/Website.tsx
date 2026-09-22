@@ -5,6 +5,7 @@ import type { Session } from '@/components/cc/Workspace';
 import PhotoDrop from '@/components/portal/PhotoDrop';
 import { Badge, Button, Card, CardHead, Empty, ErrorNote, Field, Label, Skeleton, cx, dayLabel, inputCls } from '@/components/cc/ui';
 import { Icon } from '@/components/cc/icons';
+import SiteWorkbench from '@/components/cc/SiteWorkbench';
 
 /**
  * THE SITE, FROM THE INSIDE. Put new photographs on a project page, make a
@@ -117,6 +118,11 @@ export default function Website({ session }: { session: Session }) {
 
   return (
     <div className="space-y-5">
+      {/* The three doors that did not exist: a new project page, a piece for
+          their own blog, and anything else at all. Everything below this was
+          already here: photos onto a page, signs that count their scans, and
+          the articles somebody else publishes. */}
+      <SiteWorkbench publicUrl={session.publicUrl} />
       {note && <p className={cx('text-[13px]', note.ok ? 'text-[#067647]' : 'text-[#B42318]')}>{note.text}</p>}
       {error && <ErrorNote onRetry={load}>Some of this screen did not load.</ErrorNote>}
 
