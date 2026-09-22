@@ -143,8 +143,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ ok: true, builderId: r.builderId, captcha: r.captcha });
     }
     case 'mailbox': {
-      // Same for the mail desk: the Google app password, made by Sarah in the
-      // client's Google account, pasted once from the desk.
+      // Same for the mail desk, one mailbox per paste: a Porkbun mailbox password,
+      // or a Google app password made by Sarah in the client's Google account.
       if (!client) return bad('Client is needed.');
       const r = await connectMailbox(db, client, String(body.address ?? ''), String(body.appPassword ?? ''));
       if (!r.ok) return bad(r.error);

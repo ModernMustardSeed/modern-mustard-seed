@@ -236,8 +236,8 @@ export function MailCard() {
         return false;
       }
       if (action === 'connect') setNote(`Connected. ${j.fetched ?? 0} messages read; sorting takes a few minutes.`);
-      if (action === 'send') setNote('Sent from your address.');
-      if (action === 'draft') setNote('Saved to your Gmail drafts.');
+      if (action === 'send') setNote('Sent from the mailbox it came to.');
+      if (action === 'draft') setNote('Saved to your drafts.');
       await load();
       return true;
     } finally {
@@ -254,19 +254,19 @@ export function MailCard() {
         <span className={EYEBROW}>Your mail</span>
         <h3 className="font-display text-xl font-semibold text-[#161616] mb-1">Sorted, with a reply waiting</h3>
         <p className="text-[#161616]/65 font-body text-sm mb-4">
-          Connect your inbox once and it is read twice an hour: new inquiries, customers, subs and suppliers, money, newsletters, notifications. Anything that needs an answer gets a draft in your voice. Nothing is sent, moved or deleted without your click.
+          Connect each mailbox once and every one is read twice an hour: new inquiries, customers, subs and suppliers, money, newsletters, notifications. Anything that needs an answer gets a draft in your voice. Nothing is sent, moved or deleted without your click.
         </p>
         <div className="rounded-xl border-2 border-[#161616]/15 bg-[#FBF6EA] px-4 py-3">
           <p className="font-body text-sm text-[#161616]/80 mb-2">
-            In your Google account: turn on 2-Step Verification, then open Security, App passwords, name it &quot;Mail&quot;, and copy the 16 letters Google shows you. Paste them here with the address. This is not your normal password and you can revoke it any time.
+            A mailbox on your own domain: its address and the password set for that mailbox. A Gmail address: turn on 2-Step Verification, then open Security, App passwords, name it &quot;Mail&quot;, and paste the 16 letters Google shows you. More mailboxes are added in the Command Center.
           </p>
           <div className="grid sm:grid-cols-2 gap-2">
-            <input value={address} onChange={(e) => setAddress(e.target.value)} placeholder="builtbyshan@gmail.com" type="email" autoComplete="off" className={INPUT} />
-            <input value={appPassword} onChange={(e) => setAppPassword(e.target.value)} placeholder="abcd efgh ijkl mnop" type="password" autoComplete="off" className={INPUT} />
+            <input value={address} onChange={(e) => setAddress(e.target.value)} placeholder="you@yourdomain.com" type="email" autoComplete="off" className={INPUT} />
+            <input value={appPassword} onChange={(e) => setAppPassword(e.target.value)} placeholder="password" type="password" autoComplete="off" className={INPUT} />
           </div>
           <div className="mt-2 flex items-center gap-3">
-            <button type="button" disabled={busy === 'connect' || !address || appPassword.replace(/\s/g, '').length < 12} onClick={() => void act('connect', { address, appPassword })} className={`${BTN} bg-[#F5B700]`}>
-              {busy === 'connect' ? 'Checking with Google' : 'Connect my mailbox'}
+            <button type="button" disabled={busy === 'connect' || !address || !appPassword.trim()} onClick={() => void act('connect', { address, appPassword })} className={`${BTN} bg-[#F5B700]`}>
+              {busy === 'connect' ? 'Checking the mailbox' : 'Connect my mailbox'}
             </button>
             {err && <span className="font-body text-xs text-[#C4160B]">{err}</span>}
           </div>
@@ -355,7 +355,7 @@ export function MailCard() {
       )}
       <div className="mt-3 flex items-center gap-4">
         <button type="button" onClick={() => setShowDone((v) => !v)} className={LINK}>{showDone ? 'Hide handled' : 'Show handled'}</button>
-        <button type="button" disabled={busy !== null} onClick={() => void act('disconnect')} className={`${LINK} text-[#161616]/50`}>Disconnect mailbox</button>
+        <button type="button" disabled={busy !== null} onClick={() => void act('disconnect')} className={`${LINK} text-[#161616]/50`}>Disconnect every mailbox</button>
       </div>
     </section>
   );
