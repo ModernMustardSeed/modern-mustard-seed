@@ -52,6 +52,7 @@ const MENU_GROUPS = [
       { label: 'Journal', href: '/blog' },
       { label: 'Sarah Scarano', href: '/sarahscarano' },
       { label: 'Contact', href: '/contact' },
+      { label: 'Partner Program', href: '/partners' },
       { label: 'Client Portal', href: '/portal' },
     ],
   },
