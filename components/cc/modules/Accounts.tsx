@@ -257,18 +257,17 @@ export default function Accounts({ session }: { session: Session }) {
   const rows: Row[] = [
     {
       key: 'mail',
-      name: 'Your mailbox',
+      name: 'Your mailboxes',
       state: session.state.mailConnected ? 'on' : 'off',
       detail: session.state.mailConnected
-        ? 'Read twice an hour and sorted, with a reply drafted where one is needed. Replies send from this mailbox, as you. Nothing sends without your click.'
-        : 'Connect it once with an app password from your Google account and every email is read, sorted and answered in draft from here.',
-      open: 'https://mail.google.com/',
-      paste: session.state.mailConnected ? undefined : (
+        ? 'Every connected mailbox is read twice an hour and sorted, with a reply drafted where one is needed. A reply leaves from the mailbox the message came to. Nothing sends without your click. Add the next mailbox below.'
+        : 'Connect each mailbox once and every email is read, sorted and answered in draft from here. A mailbox on your own domain takes its own password; a Gmail address takes an app password from Google.',
+      paste: (
         <Paste
-          label="Connect the mailbox"
+          label={session.state.mailConnected ? 'Add a mailbox' : 'Connect a mailbox'}
           fields={[
-            { key: 'address', label: 'Gmail address' },
-            { key: 'appPassword', label: 'App password', secret: true, hint: 'Google account, Security, App passwords. Sixteen letters.' },
+            { key: 'address', label: 'Email address' },
+            { key: 'appPassword', label: 'Password', secret: true, hint: 'Your own domain: the mailbox password. Gmail: Security, App passwords, sixteen letters.' },
           ]}
           submit={(v) => (preview ? desk('mailbox', v) : own('/api/portal/mail', { action: 'connect', ...v }))}
         />

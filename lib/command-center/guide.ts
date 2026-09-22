@@ -51,7 +51,7 @@ export function clientGuide(p: ClientProject): GuideSection[] {
       lines: [
         'The box at the top is what matters right now, in order: who is waiting on a call, which email needs a reply, what renews soon, what goes out today, which sign got scanned. Every line is read from your own records the moment you open the page. Nothing in it is written by a model.',
         'The guide in the corner reads the same records. Ask it who is waiting, which sign is working, or what came in this week, and it answers with the numbers.',
-        'It also does four things when you ask: writes an email to anyone and puts it in your own Gmail drafts (it never sends), sends a review ask, marks a lead as called, and makes a QR code. Say "email Bob Miller at bob@example.com about the Thursday walkthrough" and the draft is waiting in Gmail before you finish your coffee.',
+        'It also does four things when you ask: writes an email to anyone and puts it in your own drafts (it never sends), sends a review ask, marks a lead as called, and makes a QR code. Say "email Bob Miller at bob@example.com about the Thursday walkthrough" and the draft is waiting in your mailbox before you finish your coffee.',
       ],
     },
     {
@@ -85,8 +85,8 @@ export function clientGuide(p: ClientProject): GuideSection[] {
     {
       title: 'Your mail',
       lines: [
-        'Connect your mailbox once with an app password from Google (2-Step Verification on, then Security, App passwords, "Mail"). We read your inbox twice an hour and sort it: new inquiries, customers, subs and suppliers, money, newsletters, notifications, everything else.',
-        'Anything that needs an answer gets a draft written in your voice, waiting under the message. Read it, change what you like, press Send and it goes from your own address, threaded under theirs. Or save it to your Gmail drafts and finish on your phone.',
+        'Connect each mailbox once: Shan, Carmen and Zayne each have their own, and all of them land here. A mailbox on your own domain takes its own password; a Gmail address takes an app password from Google (2-Step Verification on, then Security, App passwords, "Mail"). We read every inbox twice an hour and sort it: new inquiries, customers, subs and suppliers, money, newsletters, notifications, everything else.',
+        'Anything that needs an answer gets a draft written in your voice, waiting under the message. Read it, change what you like, press Send and it goes from the mailbox it arrived in, threaded under theirs. Or save it to the drafts of that mailbox and finish on your phone.',
         'Nothing is ever sent, moved or deleted without your click. The drafts never quote a price, a timeline or financing; those are yours to say in person.',
       ],
     },
@@ -94,7 +94,7 @@ export function clientGuide(p: ClientProject): GuideSection[] {
       title: 'Your accounts',
       lines: [
         'The accounts everything runs on, and whether each one is connected: Facebook, Instagram, LinkedIn, Houzz, Google Business Profile, Buildertrend, Google Workspace.',
-        'Connecting an account is always your own click on your own login. We hold a revocable key, never a password, and you can disconnect any of them here.',
+        'Connecting an account is always your own click on your own login. We hold a revocable key wherever the account offers one; a mailbox holds its mail password, kept encrypted, and changing that password cuts us off at once. You can disconnect any of them here.',
         'The Google Business Profile outranks the website for a local builder. It is the one thing we cannot create for you, because Google verifies the owner. Once it exists, add sarah@modernmustardseed.com as a manager and reviews, posts and hours are handled from here.',
       ],
     },

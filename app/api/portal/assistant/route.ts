@@ -20,7 +20,7 @@ export const maxDuration = 60;
  * never see another client's account.
  *
  * For a client whose Command Center is on, it also acts, within four walls:
- * draft an email into their own Gmail Drafts (never send), send a review ask,
+ * draft an email into their own Drafts (never send), send a review ask,
  * mark a lead as called, make a QR code. Each action is reported back only
  * after it actually happened.
  */
@@ -53,7 +53,7 @@ Actions, only when the context says the Command Center is on, and only when the 
 - {"type":"review_ask","name":"<homeowner name>","email":"<address or empty>","phone":"<mobile or empty>","project":"<which build or empty>","note":"<a personal line or empty>"}: when they ask you to ask someone for a review.
 - {"type":"mark_called","name":"<lead name as it appears in the context>"}: when they say they called or reached a lead who is waiting.
 - {"type":"make_code","label":"<what the sign is>","medium":"sign|jobsite|truck|card|print|ad|mail|other","path":"</page or /projects/<slug> or />"}: when they ask for a QR code.
-Never put an action in the list for something they only asked about. Never say an action happened; the reply is written before the action runs, so say what you are doing ("I am putting a draft to Bob in your Gmail drafts now") and the system confirms the result after.
+Never put an action in the list for something they only asked about. Never say an action happened; the reply is written before the action runs, so say what you are doing ("I am putting a draft to Bob in your drafts now") and the system confirms the result after.
 
 Keep "reply" in your normal voice either way. Do not tell the client you are sending a note unless sendNote is true.`;
 
@@ -176,7 +176,7 @@ export async function POST(req: Request) {
         try {
           if (a.type === 'draft_email' && a.to && a.body) {
             const r = await draftNewMail(supabase, email, a.to, a.subject ?? '(no subject)', a.body);
-            done.push(r.ok ? `The draft to ${a.to} is in your Gmail drafts, from ${r.address}. Nothing was sent.` : `I could not save the draft to ${a.to}: ${r.error}`);
+            done.push(r.ok ? `The draft to ${a.to} is in the drafts of ${r.address}. Nothing was sent.` : `I could not save the draft to ${a.to}: ${r.error}`);
           } else if (a.type === 'review_ask' && a.name) {
             const r = await sendReviewAsk(supabase, project, email, { name: a.name, email: a.email, phone: a.phone, project: a.project, note: a.note });
             done.push(r.ok ? `The review ask went to ${a.name}${r.sent_email && r.sent_sms ? ' by email and text' : r.sent_sms ? ' by text' : ' by email'}.` : `The review ask to ${a.name} did not go out: ${r.error}`);

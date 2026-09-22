@@ -31,7 +31,7 @@ export async function GET() {
   const since = new Date(Date.now() - 30 * 86_400_000).toISOString();
   const { data } = await sb
     .from('client_mail')
-    .select('id, from_addr, from_name, subject, snippet, body_text, received_at, category, summary, needs_reply, draft, status, replied_at')
+    .select('id, mailbox, from_addr, from_name, subject, snippet, body_text, received_at, category, summary, needs_reply, draft, status, replied_at')
     .eq('client_email', session.email)
     .gte('received_at', since)
     .neq('category', 'spam')
@@ -70,14 +70,15 @@ export async function POST(req: Request) {
     const s = await syncMailbox(sb, project);
     try {
       const resend = resendClient();
-      await resend.emails.send({ from: 'Modern Mustard Seed <sarah@modernmustardseed.com>', to: ['sarah@modernmustardseed.com'], subject: `${project.business} connected their mailbox`, text: `${session.email} connected ${String(body.address).toLowerCase()} for the mail desk. First read: ${s.fetched} messages, ${s.queued} queued for sorting.` });
+      await resend.emails.send({ from: 'Modern Mustard Seed <sarah@modernmustardseed.com>', to: ['sarah@modernmustardseed.com'], subject: `${project.business} connected their mailbox`, text: `${session.email} connected ${r.address} for the mail desk. First read: ${s.fetched} messages, ${s.queued} queued for sorting.` });
     } catch {
       /* connected either way */
     }
     return NextResponse.json({ ok: true, fetched: s.fetched });
   }
   if (action === 'disconnect') {
-    await disconnectMailbox(sb, session.email);
+    // An address takes off that one mailbox; no address takes them all off.
+    await disconnectMailbox(sb, session.email, body.address ? String(body.address) : null);
     return NextResponse.json({ ok: true });
   }
   if (action === 'sync') {
