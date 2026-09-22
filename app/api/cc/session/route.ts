@@ -31,6 +31,8 @@ export async function GET() {
     people,
     preview,
     brand: brandFor(account.project),
+    projects: account.project.projects,
+    publicUrl: account.project.publicUrl,
     modules: {
       leads: true,
       contacts: true,

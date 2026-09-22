@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Badge, Button, Card, CardHead, Empty, ErrorNote, Field, Label, Skeleton, cx, dayLabel, inputCls } from '@/components/cc/ui';
 import { Icon } from '@/components/cc/icons';
+import type { Session } from '@/components/cc/Workspace';
 
 /**
  * WHAT GOES OUT. The week ahead, what is waiting on a word, and one box to
@@ -22,7 +23,7 @@ type Payload = {
 
 const LABEL: Record<string, string> = { facebook: 'Facebook', instagram: 'Instagram', linkedin: 'LinkedIn', x: 'X', gbp: 'Google', houzz: 'Houzz' };
 
-export default function Marketing({ refreshPulse }: { refreshPulse: () => void }) {
+export default function Marketing({ session, refreshPulse }: { session: Session; refreshPulse: () => void }) {
   const [data, setData] = useState<Payload | null>(null);
   const [error, setError] = useState(false);
   const [text, setText] = useState('');
@@ -30,6 +31,41 @@ export default function Marketing({ refreshPulse }: { refreshPulse: () => void }
   const [graphic, setGraphic] = useState(false);
   const [busy, setBusy] = useState(false);
   const [note, setNote] = useState<{ ok: boolean; text: string } | null>(null);
+  const [photo, setPhoto] = useState<string | null>(null);
+  const [filling, setFilling] = useState(false);
+
+  // A post that starts from a project page: its story in their voice, its
+  // cover, and a link to the page. Their words, edited on the way out.
+  const pages = session.projects.filter((p) => p.story && p.image);
+  const startFrom = (p: (typeof pages)[number]) => {
+    setText(p.story ?? '');
+    setLink(`${session.publicUrl}/projects/${p.slug}`);
+    setPhoto(p.image ?? null);
+    setGraphic(false);
+    setNote(null);
+  };
+
+  // Five posts, one project page each, oldest-posted first. Each one lands in
+  // the queue the same way a typed post does, editable until the hour it goes.
+  const fillWeek = async () => {
+    setFilling(true);
+    setNote(null);
+    const said = new Set((data?.posts ?? []).map((x) => x.link ?? ''));
+    const pick = pages.filter((p) => !said.has(`${session.publicUrl}/projects/${p.slug}`)).slice(0, 5);
+    let n = 0;
+    for (const p of pick) {
+      const r = await fetch('/api/portal/posting', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ action: 'post', text: p.story, url: p.image, link: `${session.publicUrl}/projects/${p.slug}` }),
+      }).catch(() => null);
+      if (r?.ok) n += 1;
+    }
+    setNote({ ok: n > 0, text: n ? `${n} posts from your website are in the queue, one a day. Each can be edited until the hour it goes out.` : 'Nothing was added. Every project page is already in the queue.' });
+    setFilling(false);
+    void load();
+    refreshPulse();
+  };
 
   const load = useCallback(async () => {
     setError(false);
@@ -77,9 +113,36 @@ export default function Marketing({ refreshPulse }: { refreshPulse: () => void }
 
   return (
     <div className="space-y-5">
+      {pages.length > 0 && (
+        <Card>
+          <CardHead
+            title="From your website"
+            hint="Pick a home and its story, its photograph and a link to the page fill the box below. Or fill the week and five go into the queue, one a day."
+            right={<Button kind="primary" onClick={fillWeek} disabled={filling || busy}>{filling ? 'Filling the week' : 'Fill next week from the site'}</Button>}
+          />
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
+            {pages.map((p) => (
+              <button key={p.slug} type="button" onClick={() => startFrom(p)} className="group overflow-hidden rounded-lg border border-[var(--cc-line)] text-left transition hover:border-[var(--cc-accent)]">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={p.image} alt="" className="aspect-[4/3] w-full object-cover" loading="lazy" />
+                <span className="block px-2.5 py-2 text-[12.5px] font-semibold leading-snug text-[var(--cc-ink)] group-hover:text-[var(--cc-accent)]">{p.title}</span>
+              </button>
+            ))}
+          </div>
+        </Card>
+      )}
+
       <div className="grid lg:grid-cols-5 gap-5">
         <Card className="lg:col-span-3">
           <CardHead title="Say something" hint="Your words. We shape it for each feed and put it out at the hour that feed rewards." />
+          {photo && (
+            <div className="mb-3 flex items-center gap-3 rounded-lg border border-[var(--cc-line)] p-2">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={photo} alt="" className="h-14 w-20 rounded object-cover" />
+              <span className="flex-1 text-[13px] text-[var(--cc-muted)]">This photograph goes with it.</span>
+              <Button kind="ghost" onClick={() => setPhoto(null)}>Remove</Button>
+            </div>
+          )}
           <textarea className={cx(inputCls, 'min-h-[130px] resize-y leading-relaxed')} value={text} onChange={(e) => setText(e.target.value)} placeholder="Poured the footings on the lake house this morning, in the rain, and they are dead level." />
           <div className="mt-3 grid sm:grid-cols-2 gap-3">
             <Field label="A link" hint="Optional."><input className={inputCls} value={link} onChange={(e) => setLink(e.target.value)} placeholder="https://" /></Field>
@@ -90,7 +153,7 @@ export default function Marketing({ refreshPulse }: { refreshPulse: () => void }
           </div>
           {note && <p className={cx('mt-3 text-[13px]', note.ok ? 'text-[#067647]' : 'text-[#B42318]')}>{note.text}</p>}
           <div className="mt-4">
-            <Button kind="primary" disabled={busy || text.trim().length < 3} onClick={() => act({ action: 'post', text, url: link || null, wants_graphic: graphic }, 'In the queue. You will see it on the calendar.').then(() => { setText(''); setLink(''); setGraphic(false); })}>
+            <Button kind="primary" disabled={busy || text.trim().length < 3} onClick={() => act({ action: 'post', text, url: photo, link: link || null, wants_graphic: graphic && !photo }, 'In the queue. You will see it on the calendar.').then(() => { setText(''); setLink(''); setGraphic(false); })}>
               {busy ? 'Sending' : 'Put it in the queue'}
             </Button>
           </div>
