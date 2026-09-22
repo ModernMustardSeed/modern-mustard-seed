@@ -43,7 +43,7 @@ export function clientGuide(p: ClientProject): GuideSection[] {
       lines: [
         'Every domain you own, what it is for, where it is registered and the day it renews. We carry the renewals. The registry is re-read every Monday and Sarah is warned 45 days before anything expires.',
         'The building names forward to the website so a customer who types any of them lands on you. The sauna, rustic and other names are held for their own day.',
-        `Your email runs on Google Workspace at ${p.emailDomain ?? 'your own domain'}, billed by Google to your own card, so the account is yours outright. The email box on this page shows whether the domain is registered and whether mail is flowing to Google yet.`,
+        `Your email runs on Zoho Mail at ${p.emailDomain ?? 'your own domain'}, one mailbox for each of you, and we carry the bill. The email box on this page shows whether the domain is registered and whether mail is flowing to Zoho yet.`,
       ],
     },
     {
@@ -85,7 +85,7 @@ export function clientGuide(p: ClientProject): GuideSection[] {
     {
       title: 'Your mail',
       lines: [
-        'Connect each mailbox once: Shan, Carmen and Zayne each have their own, and all of them land here. A mailbox on your own domain takes its own password; a Gmail address takes an app password from Google (2-Step Verification on, then Security, App passwords, "Mail"). We read every inbox twice an hour and sort it: new inquiries, customers, subs and suppliers, money, newsletters, notifications, everything else.',
+        'Connect each mailbox once: Shan, Carmen and Zayne each have their own, and all of them land here. A mailbox on your own domain takes its own password (on Zoho, tick IMAP Access in Settings, Mail Accounts first); a Gmail address takes an app password from Google (2-Step Verification on, then Security, App passwords, "Mail"). We read every inbox twice an hour and sort it: new inquiries, customers, subs and suppliers, money, newsletters, notifications, everything else.',
         'Anything that needs an answer gets a draft written in your voice, waiting under the message. Read it, change what you like, press Send and it goes from the mailbox it arrived in, threaded under theirs. Or save it to the drafts of that mailbox and finish on your phone.',
         'Nothing is ever sent, moved or deleted without your click. The drafts never quote a price, a timeline or financing; those are yours to say in person.',
       ],
@@ -93,7 +93,7 @@ export function clientGuide(p: ClientProject): GuideSection[] {
     {
       title: 'Your accounts',
       lines: [
-        'The accounts everything runs on, and whether each one is connected: Facebook, Instagram, LinkedIn, Houzz, Google Business Profile, Buildertrend, Google Workspace.',
+        'The accounts everything runs on, and whether each one is connected: Facebook, Instagram, LinkedIn, Houzz, Google Business Profile, Buildertrend, and your mailboxes.',
         'Connecting an account is always your own click on your own login. We hold a revocable key wherever the account offers one; a mailbox holds its mail password, kept encrypted, and changing that password cuts us off at once. You can disconnect any of them here.',
         'The Google Business Profile outranks the website for a local builder. It is the one thing we cannot create for you, because Google verifies the owner. Once it exists, add sarah@modernmustardseed.com as a manager and reviews, posts and hours are handled from here.',
       ],
@@ -133,7 +133,7 @@ export function deskGuide(p: ClientProject): GuideSection[] {
         '"Can it talk to Buildertrend?" Yes, one way: every website lead becomes a Lead Opportunity in their pipeline. Reading their jobs back out needs Buildertrend\'s partner API, which they do not sell to a single builder, and we do not pretend otherwise.',
         '"Where are my old posts and customers from Web Express?" In the Web Express Marketing App until October 1, 2026, then deleted. Shan exports contacts from accounts.webexpress.com or adds you as a user before then.',
         '"Who owns the domains?" They do. Registered to Built Right in Montana LLC at their email; we hold the account and carry renewals under Domain Stewardship, $497 a year for the whole set.',
-        '"What about email?" Google Workspace on brimhomes.com, $7 a person a month, on their card. You do DNS and verification the day the domain lands.',
+        '"What about email?" Zoho Mail Lite on brimhomes.com, shan@, carmen@ and zayne@, $1 a mailbox a month billed yearly, on the MMS bill. Tick IMAP Access on each mailbox, then connect each one on the desk so the Command Center reads it.',
       ],
     },
     {
