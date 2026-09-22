@@ -1,0 +1,177 @@
+import { NextResponse } from 'next/server';
+import { getSupabase } from '@/lib/supabase';
+import { CLIENT_PROJECTS, type ClientProject } from '@/lib/client-leads';
+import { commandCenterVisible } from '@/lib/command-center/visible';
+import { mondayBoard, qualifyLead, quietJob } from '@/lib/cc-briefs';
+import { OPEN_STAGES, QUIET_AFTER_DAYS, daysSince, listJobs, type JobRow } from '@/lib/cc-jobs';
+
+export const runtime = 'nodejs';
+export const maxDuration = 300;
+export const dynamic = 'force-dynamic';
+
+/**
+ * THE STANDING WORK, hourly.
+ *
+ * This is the part that makes the Command Center agentic rather than
+ * interactive: it runs whether or not anybody opened the app, and it arrives
+ * having already done the reading.
+ *
+ *   QUALIFY  a website inquiry that nobody has briefed yet, read and drafted
+ *            inside the hour. A custom home buyer phones three builders in an
+ *            afternoon, and the one who calls back first wins an unfair share.
+ *   QUIET    an open job nobody has touched past what its stage allows, with
+ *            the check-in already written.
+ *   MONDAY   the board, read and ranked, once a week.
+ *
+ * Every one of them writes a brief and stops. Nothing here emails a homeowner,
+ * moves a job, or marks anything as done. A person presses the button.
+ *
+ * WORK BUDGET. Each pass does a small, fixed amount: the queue is a table and
+ * rows wait, and a cron that tries to clear everything in one run is a cron
+ * that times out and clears nothing. Briefs also deduplicate on a unique
+ * index, so a slow pass costs a few minutes, never a double.
+ */
+
+/** Per pass, per client. Enough to keep up, small enough to always finish. */
+const MAX_QUALIFY = 3;
+const MAX_QUIET = 2;
+
+/** An inquiry older than this is history, not something to brief at 2am. */
+const FRESH_HOURS = 72;
+
+/**
+ * Who this runs for.
+ *
+ * The obvious rule is "every client whose Command Center is switched on", and
+ * it is half right: work nobody can see is subscription time spent on nothing.
+ * But a board is built before it is handed over, and an empty board on the day
+ * a client first signs in teaches them that the thing does not do anything.
+ *
+ * So the work follows the board, not the switch. A job row only exists because
+ * somebody at that desk put it there, which is a better signal of "this is in
+ * use" than a flag Sarah flips on a different screen.
+ */
+async function clientsWithBoard(sb: ReturnType<typeof getSupabase>): Promise<ClientProject[]> {
+  if (!sb) return [];
+  const out: ClientProject[] = [];
+  for (const project of Object.values(CLIENT_PROJECTS)) {
+    if (await commandCenterVisible(sb, project.clientEmail)) {
+      out.push(project);
+      continue;
+    }
+    const { count } = await sb.from('client_jobs').select('id', { count: 'exact', head: true }).eq('client_email', project.clientEmail);
+    if ((count ?? 0) > 0) out.push(project);
+  }
+  return out;
+}
+
+export async function GET(req: Request) {
+  const secret = process.env.CRON_SECRET;
+  if (secret && !/^\[SENSITIVE\]$/i.test(secret)) {
+    const auth = req.headers.get('authorization') ?? '';
+    if (auth !== `Bearer ${secret}`) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+  }
+  const sb = getSupabase();
+  if (!sb) return NextResponse.json({ error: 'no database' }, { status: 500 });
+
+  const url = new URL(req.url);
+  const only = url.searchParams.get('client');
+  const force = url.searchParams.get('force') === '1';
+
+  const projects = (await clientsWithBoard(sb)).filter((p) => !only || p.clientEmail === only.toLowerCase());
+  const report: Array<Record<string, unknown>> = [];
+
+  // Monday, in Mountain time, is when the board gets read. `force` runs it now.
+  const weekday = new Date().toLocaleDateString('en-US', { weekday: 'short', timeZone: 'America/Denver' });
+  const hourMt = Number(new Date().toLocaleString('en-US', { hour: 'numeric', hour12: false, timeZone: 'America/Denver' }));
+  const isMondayMorning = weekday === 'Mon' && hourMt >= 7 && hourMt < 9;
+
+  for (const project of projects) {
+    const line: Record<string, unknown> = { client: project.clientEmail, qualified: 0, quiet: 0, monday: 'no' };
+
+    /* ── new inquiries nobody has briefed ── */
+    try {
+      const since = new Date(Date.now() - FRESH_HOURS * 3600_000).toISOString();
+      const { data: leads } = await sb
+        .from('client_leads')
+        .select('id, name, phone, email, town, project_type, land, message, source, created_at')
+        .eq('client_email', project.clientEmail)
+        .gte('created_at', since)
+        .order('created_at', { ascending: false })
+        .limit(20);
+
+      const fresh = (leads ?? []) as Array<Parameters<typeof qualifyLead>[2]>;
+      if (fresh.length) {
+        // One query for every brief already written about these leads, rather
+        // than one query per lead.
+        const { data: had } = await sb
+          .from('client_briefs')
+          .select('subject_id')
+          .eq('client_email', project.clientEmail)
+          .eq('kind', 'qualify')
+          .in('subject_id', fresh.map((l) => l.id));
+        const seen = new Set((had ?? []).map((r) => String(r.subject_id)));
+
+        for (const lead of fresh.filter((l) => !seen.has(l.id)).slice(0, MAX_QUALIFY)) {
+          try {
+            const r = await qualifyLead(sb, project, lead);
+            if (r === 'written') line.qualified = (line.qualified as number) + 1;
+          } catch (err) {
+            console.error('cc-agents qualify failed', lead.id, err instanceof Error ? err.message : err);
+          }
+        }
+      }
+    } catch (err) {
+      line.qualifyError = err instanceof Error ? err.message : 'failed';
+    }
+
+    /* ── jobs that have gone quiet ── */
+    try {
+      const jobs = await listJobs(sb, project.clientEmail);
+      const open = jobs.filter((j: JobRow) => OPEN_STAGES.includes(j.stage));
+      const overdue = open
+        .filter((j) => {
+          const limit = QUIET_AFTER_DAYS[j.stage];
+          const silent = daysSince(j.last_touch_at);
+          return limit !== null && silent !== null && silent > limit;
+        })
+        // Loudest first: the longest silence on the biggest number.
+        .sort((a, b) => (daysSince(b.last_touch_at) ?? 0) - (daysSince(a.last_touch_at) ?? 0) || (b.value_cents ?? 0) - (a.value_cents ?? 0));
+
+      if (overdue.length) {
+        const { data: had } = await sb
+          .from('client_briefs')
+          .select('subject_id')
+          .eq('client_email', project.clientEmail)
+          .eq('kind', 'quiet')
+          .eq('status', 'new')
+          .in('subject_id', overdue.map((j) => j.id));
+        const openAlready = new Set((had ?? []).map((r) => String(r.subject_id)));
+
+        for (const job of overdue.filter((j) => !openAlready.has(j.id)).slice(0, MAX_QUIET)) {
+          try {
+            const r = await quietJob(sb, project, job);
+            if (r === 'written') line.quiet = (line.quiet as number) + 1;
+          } catch (err) {
+            console.error('cc-agents quiet failed', job.id, err instanceof Error ? err.message : err);
+          }
+        }
+      }
+    } catch (err) {
+      line.quietError = err instanceof Error ? err.message : 'failed';
+    }
+
+    /* ── Monday ── */
+    if (isMondayMorning || force) {
+      try {
+        line.monday = await mondayBoard(sb, project);
+      } catch (err) {
+        line.mondayError = err instanceof Error ? err.message : 'failed';
+      }
+    }
+
+    report.push(line);
+  }
+
+  return NextResponse.json({ ok: true, at: new Date().toISOString(), clients: report });
+}
