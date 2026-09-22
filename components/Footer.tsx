@@ -50,6 +50,7 @@ export default function Footer() {
     {
       title: 'Where We Work',
       links: [
+        { label: 'Nationwide Reach', href: '/nationwide' },
         { label: 'Northwest Montana', href: '/montana' },
         { label: 'Kalispell', href: '/montana/kalispell' },
         { label: 'Industries We Build For', href: '/for' },
@@ -84,7 +85,7 @@ export default function Footer() {
       </div>
       <div className="studio-footer-links">{linkSections.map(section => <div key={section.title}><h2>{section.title}</h2><ul>{section.links.map(l => <li key={l.label}><Link href={l.href}>{l.label}</Link></li>)}</ul></div>)}</div>
       <div className="studio-footer-seed"><Image src="/images/editorial/mascot-160.webp" alt="Mr. Mustard, the studio mascot" width={44} height={59} /><div><p>&ldquo;{PARABLE_SEGMENTS.map(s => s.t).join('')}&rdquo;</p><span>{PARABLE_REFERENCE} · Every build starts seed-sized.</span></div></div>
-      <div className="studio-footer-bottom"><div>{socials.map(s => <a key={s.name} href={s.url} target="_blank" rel="noopener noreferrer">{s.name}</a>)}<Link href="/portal">Client Portal</Link><Link href="/partners/hq">Partner Login</Link><Link href="/review">Review On Google</Link><CookiePreferencesLink /></div><p>&copy; {new Date().getFullYear()} Modern Mustard Seed. Kalispell, Montana.</p></div>
+      <div className="studio-footer-bottom"><div>{socials.map(s => <a key={s.name} href={s.url} target="_blank" rel="noopener noreferrer">{s.name}</a>)}<Link href="/portal">Client Portal</Link><Link href="/partners/hq">Partner Login</Link><Link href="/review">Review On Google</Link><CookiePreferencesLink /></div><p>&copy; {new Date().getFullYear()} Modern Mustard Seed. Kalispell, Montana. Nationwide Reach.</p></div>
     </footer>
   );
 }
