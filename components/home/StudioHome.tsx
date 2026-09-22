@@ -32,6 +32,7 @@ export default function StudioHome({ faq }: { faq: { q: string; a: string }[] })
         <span className={styles.printIndex}>The studio / In full color</span>
         <div className={styles.workPrint + ' ' + styles.printOne}><span>01 / D & D Landscaping</span><Image unoptimized src="/images/editorial/dd-landscaping-640.webp" alt="D & D Landscaping’s current website, with a bold green identity and a sunlit lawn beneath oak trees" width={640} height={400} fetchPriority="high" /></div>
         <div className={styles.workPrint + ' ' + styles.printTwo}><span>02 / Cross + Covenant</span><Image unoptimized src="/images/editorial/cross-covenant-current-640.webp" alt="The current Cross + Covenant storefront, featuring the Wear the Gospel collection" width={640} height={400} /></div>
+        <div className={styles.workPrint + ' ' + styles.printThree}><span>03 / Brim Homes</span><Image unoptimized src="/images/editorial/brim-homes-640.webp" alt="Brim Homes website, with its custom homebuilding identity and Montana residential imagery" width={640} height={400} /></div>
         <div className={styles.mascotSeal}><Image src="/images/editorial/mascot-160.webp" alt="Mr. Mustard, the studio’s mustard-seed mascot" width={120} height={161} sizes="100px" /><span>Mr.<br />Mustard.</span></div>
         <span className={styles.registration} aria-hidden="true">+</span>
       </div>
