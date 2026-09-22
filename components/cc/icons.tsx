@@ -132,6 +132,12 @@ const PATHS = {
       <P d="M12.5 5H16v3.5" />
     </>
   ),
+  // Three columns with a card in each: a board.
+  board: (
+    <>
+      <P d="M3.5 4.5h4v11h-4zM8.5 4.5h4v7h-4zM13.5 4.5h3v9h-3z" />
+    </>
+  ),
   // An open tray with something dropping into it.
   tray: (
     <>

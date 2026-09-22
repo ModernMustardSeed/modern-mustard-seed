@@ -35,6 +35,12 @@ export async function GET() {
     publicUrl: account.project.publicUrl,
     modules: {
       leads: true,
+      // The pre-construction board. On for every account: the months between
+      // an inquiry and a contract exist for every business that sells work,
+      // and an empty board teaches what it is for.
+      jobs: true,
+      // From the site is the superintendent's screen. It needs a board to land on.
+      field: true,
       contacts: true,
       conversations: Boolean(account.project.assistantId),
       inbox: true,

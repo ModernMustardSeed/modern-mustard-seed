@@ -108,6 +108,10 @@
     {
       "path": "/api/cron/client-appointment-reminders",
       "schedule": "1 15 * * *"
+    },
+    {
+      "path": "/api/cron/cc-agents",
+      "schedule": "18 * * * *"
     }
   ]
 }

@@ -412,6 +412,27 @@ export default function Accounts({ session }: { session: Session }) {
                   </div>
                   <div className="flex flex-none flex-wrap items-center gap-2">
                     {r.action && <Button kind="primary" href={r.action.href}>{r.action.label}</Button>}
+                    {/* Their own history, brought home. Only offered where a
+                        connection can actually read it back. */}
+                    {r.feed && r.state === 'on' && (r.key === 'facebook' || r.key === 'instagram') && (
+                      <Button
+                        onClick={async () => {
+                          setChecking(r.key);
+                          try {
+                            const res = await fetch('/api/cc/connections', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ action: 'import-history', platform: r.key }) });
+                            const j = (await res.json()) as { ok?: boolean; said?: string; error?: string };
+                            setChecks((prev) => ({ ...prev, [r.key]: { platform: r.key, ok: Boolean(j.ok), account: null, error: j.error ?? null, fix: null, at: new Date().toISOString() } }));
+                            if (j.said) setChecks((prev) => ({ ...prev, [r.key]: { ...prev[r.key], ok: true, account: j.said ?? null } }));
+                          } finally {
+                            setChecking(null);
+                          }
+                        }}
+                        disabled={checking !== null}
+                        title="Pull everything this account has ever posted into your own archive. Nothing is posted or changed."
+                      >
+                        {checking === r.key ? 'Bringing it in' : 'Bring the history in'}
+                      </Button>
+                    )}
                     {r.feed && r.state !== 'manual' && (
                       <Button onClick={() => check(r.key)} disabled={checking !== null} title="Ask the platform whether this connection still works. Nothing is posted.">
                         {checking === r.key ? 'Checking' : 'Check it'}

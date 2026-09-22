@@ -16,8 +16,11 @@ import Domains from '@/components/cc/modules/Domains';
 import Week from '@/components/cc/modules/Week';
 import Traffic from '@/components/cc/modules/Traffic';
 import Campaigns from '@/components/cc/modules/Campaigns';
+import Jobs from '@/components/cc/modules/Jobs';
+import Field from '@/components/cc/modules/Field';
 import Operator from '@/components/cc/Operator';
 import Tray from '@/components/cc/Tray';
+import Person, { type Who as PersonWho } from '@/components/cc/Person';
 import Palette from '@/components/cc/Palette';
 
 /**
@@ -57,12 +60,14 @@ export type Pulse = {
   contacts: { total: number };
 };
 
-type ModuleKey = 'overview' | 'week' | 'traffic' | 'campaigns' | 'leads' | 'contacts' | 'conversations' | 'inbox' | 'reviews' | 'marketing' | 'website' | 'domains' | 'accounts';
+type ModuleKey = 'overview' | 'week' | 'traffic' | 'campaigns' | 'jobs' | 'field' | 'leads' | 'contacts' | 'conversations' | 'inbox' | 'reviews' | 'marketing' | 'website' | 'domains' | 'accounts';
 
 const MODULES: Array<{ key: ModuleKey; label: string; icon: IconName; group: string; title: string; blurb: string }> = [
   { key: 'overview', label: 'Now', icon: 'overview', group: 'Today', title: 'Now', blurb: 'What needs you, and nothing else.' },
   { key: 'leads', label: 'Leads', icon: 'leads', group: 'Today', title: 'Leads', blurb: 'Everyone who reached out, and the door they used.' },
   { key: 'inbox', label: 'Inbox', icon: 'inbox', group: 'Today', title: 'Inbox', blurb: 'Your mail, sorted, with a reply drafted where one is needed.' },
+  { key: 'jobs', label: 'The Board', icon: 'board', group: 'Today', title: 'The Board', blurb: 'Every job from the first call to the contract. Buildertrend takes it from there.' },
+  { key: 'field', label: 'From the site', icon: 'tray', group: 'Today', title: 'From the site', blurb: 'Photos from the job become the record, a note to the homeowner, and a post.' },
   { key: 'conversations', label: 'Conversations', icon: 'chat', group: 'Today', title: 'Conversations', blurb: 'Every chat on your website, in their words.' },
   { key: 'week', label: 'This week', icon: 'week', group: 'Today', title: 'This week', blurb: 'What the website and the desk did, counted. Made to be forwarded.' },
   { key: 'contacts', label: 'Contacts', icon: 'contacts', group: 'Book', title: 'Contacts', blurb: 'Your whole book: customers, subs, suppliers, realtors.' },
@@ -99,6 +104,9 @@ export default function Workspace() {
   // The tray is reachable from every room on purpose: the moment somebody has
   // a napkin in their hand is not the moment to go looking for the right screen.
   const [trayOpen, setTrayOpen] = useState(false);
+  // Who the search was really asking about. A name typed at speed almost
+  // always means "who is this and what do we know".
+  const [person, setPerson] = useState<PersonWho | null>(null);
 
   const loadPulse = useCallback(async () => {
     try {
@@ -250,12 +258,18 @@ export default function Workspace() {
             <p className="font-mono text-[9px] uppercase tracking-[0.22em] text-white/45">Command Center</p>
             <div className="mt-2 flex items-center gap-2.5">
               {brand?.logoOnDark && (
-                // Their mark, on their board, on a light chip so a dark logo and a
-                // light one both read. A plain img: the logo is served from their
-                // own site and the optimiser has no business in the middle.
-                <span className="flex-none rounded-md bg-white/90 px-1.5 py-1">
+                // Their mark, on their board, straight onto the dark rail.
+                //
+                // It used to sit on a white chip, on the theory that a chip
+                // makes any logo readable. It does the opposite here: a
+                // logoOnDark asset is a WHITE logo, and a white logo on a
+                // white chip is a blank square. The right rule is simpler and
+                // it is in the field name: the dark logo belongs on the dark
+                // rail. A plain img, because the file is served from their own
+                // site and the optimiser has no business in the middle.
+                <span className="flex-none">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={brand.logoOnDark} alt="" className="h-6 w-auto max-w-[64px] object-contain" />
+                  <img src={brand.logoOnDark} alt="" className="h-9 w-auto max-w-[84px] object-contain" />
                 </span>
               )}
               <p className="font-display text-[18px] leading-tight text-white">{brand?.business ?? 'Loading'}</p>
@@ -401,6 +415,10 @@ export default function Workspace() {
                 <Overview session={session} pulse={pulse} go={(k) => go(k as ModuleKey)} refreshPulse={loadPulse} ask={ask} />
               ) : allowed === 'week' ? (
                 <Week session={session} go={(k) => go(k as ModuleKey)} />
+              ) : allowed === 'jobs' ? (
+                <Jobs session={session} />
+              ) : allowed === 'field' ? (
+                <Field />
               ) : allowed === 'leads' ? (
                 <Leads session={session} refreshPulse={loadPulse} />
               ) : allowed === 'contacts' ? (
@@ -504,7 +522,18 @@ export default function Workspace() {
         </nav>
       )}
 
-      <Palette open={paletteOpen} onClose={() => setPaletteOpen(false)} modules={visible.map((m) => ({ key: m.key, label: m.label, blurb: m.blurb }))} go={(k) => go(k as ModuleKey)} onOperator={() => { setPaletteOpen(false); ask(); }} />
+      <Palette
+        open={paletteOpen}
+        onClose={() => setPaletteOpen(false)}
+        modules={visible.map((m) => ({ key: m.key, label: m.label, blurb: m.blurb }))}
+        go={(k) => go(k as ModuleKey)}
+        onOperator={() => {
+          setPaletteOpen(false);
+          ask();
+        }}
+        onPerson={setPerson}
+      />
+      <Person who={person} onClose={() => setPerson(null)} go={(k) => go(k as ModuleKey)} />
       <Tray open={trayOpen} onClose={() => setTrayOpen(false)} onFiled={loadPulse} />
       <Operator open={operatorOpen} onClose={() => setOperatorOpen(false)} seed={seed} session={session} go={(k) => go(k as ModuleKey)} onDidAct={loadPulse} />
     </div>

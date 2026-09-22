@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getDesk } from '@/lib/cc-desk';
 import { accountViews, connectFacebookByToken, connectXByTokens, disconnectAccount, saveAccount } from '@/lib/posting/accounts';
 import { checkAll, checkOne } from '@/lib/posting/verify';
+import { importFacebookHistory, importInstagramHistory } from '@/lib/posting/import-history';
 import { getSettings } from '@/lib/posting/settings';
 import { PLATFORMS, type Platform } from '@/lib/posting/types';
 
@@ -53,6 +54,23 @@ export async function POST(req: Request) {
     const settings = await getSettings(sb, email).catch(() => null);
     const platforms = settings?.platforms?.length ? settings.platforms : (PLATFORMS as readonly Platform[]).filter((p) => p !== 'houzz');
     return NextResponse.json({ ok: true, checks: await checkAll(sb, email, [...platforms]) });
+  }
+
+  if (action === 'import-history') {
+    // Their own posting history, brought home. Read only, and idempotent on
+    // the platform's post id, so a second run catches up rather than doubles.
+    const which = String(body.platform ?? 'facebook');
+    const r = which === 'instagram' ? await importInstagramHistory(sb, email) : await importFacebookHistory(sb, email);
+    if (!r.ok) return NextResponse.json({ error: r.error }, { status: 400 });
+    const since = r.oldest ? new Date(r.oldest).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : null;
+    return NextResponse.json({
+      ok: true,
+      added: r.added,
+      seen: r.seen,
+      said: r.added
+        ? `${r.added} ${r.added === 1 ? 'post' : 'posts'} brought into your archive${since ? `, back to ${since}` : ''}.`
+        : `Nothing new. Your archive already holds ${r.seen} of them.`,
+    });
   }
 
   if (action === 'disconnect') {

@@ -72,13 +72,17 @@ export default function Operator({ open, onClose, seed, session, go, onDidAct }:
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [seed]);
 
-  const guide = session?.brand.guideName ?? 'your guide';
+  // Their name, capitalised, at the top of their own desk. "your Built Right
+  // guide" reads like a tooltip; "Your Built Right in Montana Command Center"
+  // reads like something that belongs to them.
+  const business = session?.brand.business ?? null;
+  const heading = business ? `Your ${business} Command Center` : 'Your Command Center';
 
   return (
     <Drawer
       open={open}
       onClose={onClose}
-      title="Operator"
+      title="The Operator"
       footer={
         <form
           onSubmit={(e) => {
@@ -98,7 +102,7 @@ export default function Operator({ open, onClose, seed, session, go, onDidAct }:
         <div className="rounded-xl border border-[var(--cc-line)] bg-[#FAFBFC] p-4">
           <p className="flex items-center gap-2 text-[14px] font-semibold">
             <span className="text-[var(--cc-accent)]"><Icon name="operator" size={16} /></span>
-            {guide}
+            {heading}
           </p>
           <p className="mt-1.5 text-[13.5px] leading-relaxed text-[var(--cc-muted)]">
             It reads your leads, your mail, your calendar and your codes. It can draft an email into your drafts, ask a customer for a review, mark a lead called, and make a QR code. Anything else, it passes to Sarah.

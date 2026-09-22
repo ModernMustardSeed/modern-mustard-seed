@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Badge, Button, Card, CardHead, Empty, ErrorNote, Label, Skeleton, cx, dayLabel } from '@/components/cc/ui';
 import { Icon } from '@/components/cc/icons';
 import Composer from '@/components/cc/modules/Composer';
+import Handover from '@/components/cc/Handover';
 import type { Session } from '@/components/cc/Workspace';
 
 /**
@@ -117,6 +118,9 @@ export default function Marketing({ session, refreshPulse }: { session: Session;
 
   return (
     <div className="space-y-5">
+      {/* When the old provider's posting ends and ours has not started, that
+          is the only thing on this screen that matters. */}
+      <Handover go={(room) => { window.location.hash = room; }} />
       {pages.length > 0 && (
         <Card>
           <CardHead
