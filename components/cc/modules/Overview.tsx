@@ -7,6 +7,7 @@ import type { Traffic } from '@/lib/cc-traffic';
 import { Icon, type IconName } from '@/components/cc/icons';
 import Setup from '@/components/cc/Setup';
 import Briefs from '@/components/cc/Briefs';
+import Today from '@/components/cc/Today';
 import { CalledSheet, OwnerControl, doorOf, lastTouch, tel, useLeadDesk, type Lead } from '@/components/cc/lead-desk';
 import { eventSentence } from '@/lib/cc-lead-log';
 import type { WeekReport } from '@/lib/cc-week';
@@ -114,6 +115,9 @@ export default function Overview({ session, pulse, go, refreshPulse, ask }: { se
 
   return (
     <div className="space-y-5">
+      {/* The day itself, in the order a day runs: who is coming, what they
+          said they would do, who is waiting, what goes out without them. */}
+      <Today go={go} />
       {/* What the standing work did while they were out: a new inquiry read
           and drafted, a job that has gone quiet, Monday's board. Each one
           waits on a press. This sits first because it is the only thing on

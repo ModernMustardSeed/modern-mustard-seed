@@ -20,6 +20,7 @@ import Jobs from '@/components/cc/modules/Jobs';
 import Field from '@/components/cc/modules/Field';
 import Operator from '@/components/cc/Operator';
 import Tray from '@/components/cc/Tray';
+import Person, { type Who as PersonWho } from '@/components/cc/Person';
 import Palette from '@/components/cc/Palette';
 
 /**
@@ -103,6 +104,9 @@ export default function Workspace() {
   // The tray is reachable from every room on purpose: the moment somebody has
   // a napkin in their hand is not the moment to go looking for the right screen.
   const [trayOpen, setTrayOpen] = useState(false);
+  // Who the search was really asking about. A name typed at speed almost
+  // always means "who is this and what do we know".
+  const [person, setPerson] = useState<PersonWho | null>(null);
 
   const loadPulse = useCallback(async () => {
     try {
@@ -512,7 +516,18 @@ export default function Workspace() {
         </nav>
       )}
 
-      <Palette open={paletteOpen} onClose={() => setPaletteOpen(false)} modules={visible.map((m) => ({ key: m.key, label: m.label, blurb: m.blurb }))} go={(k) => go(k as ModuleKey)} onOperator={() => { setPaletteOpen(false); ask(); }} />
+      <Palette
+        open={paletteOpen}
+        onClose={() => setPaletteOpen(false)}
+        modules={visible.map((m) => ({ key: m.key, label: m.label, blurb: m.blurb }))}
+        go={(k) => go(k as ModuleKey)}
+        onOperator={() => {
+          setPaletteOpen(false);
+          ask();
+        }}
+        onPerson={setPerson}
+      />
+      <Person who={person} onClose={() => setPerson(null)} go={(k) => go(k as ModuleKey)} />
       <Tray open={trayOpen} onClose={() => setTrayOpen(false)} onFiled={loadPulse} />
       <Operator open={operatorOpen} onClose={() => setOperatorOpen(false)} seed={seed} session={session} go={(k) => go(k as ModuleKey)} onDidAct={loadPulse} />
     </div>
