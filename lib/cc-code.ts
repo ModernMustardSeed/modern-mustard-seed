@@ -132,9 +132,15 @@ export async function checkChallenge(email: string, code: string): Promise<Check
 }
 
 /** The sign-in email. Plain, big code, no marketing. */
-export function ccCodeEmail({ code, business, brand }: { code: string; business: string; brand?: { ink?: string; accent?: string } }): string {
+export function ccCodeEmail({ code, link, business, brand }: { code: string; link?: string | null; business: string; brand?: { ink?: string; accent?: string } }): string {
   const ink = brand?.ink ?? '#161616';
   const accent = brand?.accent ?? '#1E50C8';
+  const tap = link
+    ? `<tr><td style="padding:4px 32px 0" align="center">
+          <a href="${link}" style="display:inline-block;background:${accent};color:#ffffff;text-decoration:none;font:700 15px/1 -apple-system,Segoe UI,Helvetica,Arial,sans-serif;padding:15px 26px;border-radius:10px">Open it on this device</a>
+          <div style="font:400 13px/1.6 -apple-system,Segoe UI,Helvetica,Arial,sans-serif;color:#8b949e;padding-top:10px">Reading this on your phone? Tap the button and skip the code.</div>
+        </td></tr>`
+    : '';
   return `<!doctype html><html><body style="margin:0;padding:0;background:#f4f5f7">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f5f7;padding:32px 12px">
     <tr><td align="center">
@@ -144,6 +150,7 @@ export function ccCodeEmail({ code, business, brand }: { code: string; business:
         <tr><td style="padding:16px 32px 8px">
           <div style="font:700 40px/1.1 -apple-system,Segoe UI,Helvetica,Arial,sans-serif;letter-spacing:.22em;color:${ink};background:#f7f8fa;border:1px solid #e6e8ec;border-radius:12px;padding:18px 12px;text-align:center">${code}</div>
         </td></tr>
+        ${tap}
         <tr><td style="padding:12px 32px 32px;font:400 14px/1.6 -apple-system,Segoe UI,Helvetica,Arial,sans-serif;color:#57606a">
           Type it into the sign-in screen. It works once and expires in 15 minutes.
           <br><br>If you did not ask for it, nothing happened and you can ignore this.
