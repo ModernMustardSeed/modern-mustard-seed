@@ -6,7 +6,6 @@ import { GOOGLE_PROFILE } from '@/data/google-reviews';
 const projects = [
   { name: 'D & D Landscaping', type: 'Landscaping / Client website', image: 'dd-landscaping', url: 'https://ddlandscapingfl.com', description: 'A local business, unmistakable.', detail: 'A Tallahassee landscaping site with service selection, walkthrough booking, and a voice concierge.' },
   { name: 'Cross + Covenant', type: 'Commerce / Studio brand', image: 'cross-covenant-current', url: 'https://crossandcovenant.co', description: 'Wear the Gospel.', detail: 'An apparel storefront with original collections, a free Bible, daily devotionals, and a prayer wall.' },
-  { name: 'Built Right in Montana', type: 'Custom homes / Client website', image: 'brim-homes', url: 'https://brimhomes.com', description: 'Built for the way Montana lives.', detail: 'A Flathead Valley homebuilder’s website, with a project showcase and a direct path to a build conversation.' },
   { name: 'Bare Earth', type: 'Landscape & construction / Studio build', image: 'bare-earth', url: 'https://bare-earth.vercel.app', description: 'Grounds worthy of the valley.', detail: 'A landscape and construction build for the Flathead Valley, with service pages and an instant-quote experience.' },
   { name: 'Wildmere Honey Co.', type: 'Brand experience / Studio build', image: 'wildmere', url: 'https://wildmere.vercel.app', description: 'Montana honey, in full character.', detail: 'An original honey-brand build with a scroll-led product story, audio tour, and voice concierge.' },
 ];
