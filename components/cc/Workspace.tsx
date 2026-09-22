@@ -17,6 +17,7 @@ import Week from '@/components/cc/modules/Week';
 import Traffic from '@/components/cc/modules/Traffic';
 import Campaigns from '@/components/cc/modules/Campaigns';
 import Jobs from '@/components/cc/modules/Jobs';
+import Trades from '@/components/cc/modules/Trades';
 import Field from '@/components/cc/modules/Field';
 import Operator from '@/components/cc/Operator';
 import Tray from '@/components/cc/Tray';
@@ -60,7 +61,7 @@ export type Pulse = {
   contacts: { total: number };
 };
 
-type ModuleKey = 'overview' | 'week' | 'traffic' | 'campaigns' | 'jobs' | 'field' | 'leads' | 'contacts' | 'conversations' | 'inbox' | 'reviews' | 'marketing' | 'website' | 'domains' | 'accounts';
+type ModuleKey = 'overview' | 'week' | 'traffic' | 'campaigns' | 'jobs' | 'field' | 'trades' | 'leads' | 'contacts' | 'conversations' | 'inbox' | 'reviews' | 'marketing' | 'website' | 'domains' | 'accounts';
 
 const MODULES: Array<{ key: ModuleKey; label: string; icon: IconName; group: string; title: string; blurb: string }> = [
   { key: 'overview', label: 'Now', icon: 'overview', group: 'Today', title: 'Now', blurb: 'What needs you, and nothing else.' },
@@ -71,6 +72,7 @@ const MODULES: Array<{ key: ModuleKey; label: string; icon: IconName; group: str
   { key: 'conversations', label: 'Conversations', icon: 'chat', group: 'Today', title: 'Conversations', blurb: 'Every chat on your website, in their words.' },
   { key: 'week', label: 'This week', icon: 'week', group: 'Today', title: 'This week', blurb: 'What the website and the desk did, counted. Made to be forwarded.' },
   { key: 'contacts', label: 'Contacts', icon: 'contacts', group: 'Book', title: 'Contacts', blurb: 'Your whole book: customers, subs, suppliers, realtors.' },
+  { key: 'trades', label: 'The Bench', icon: 'hand', group: 'Book', title: 'The Bench', blurb: 'The trades you build with, and the insurance certificate that lapses quietly.' },
   { key: 'reviews', label: 'Reviews', icon: 'reviews', group: 'Growth', title: 'Reviews', blurb: 'Ask when a job closes. Nobody gets asked twice.' },
   { key: 'marketing', label: 'Marketing', icon: 'marketing', group: 'Growth', title: 'Marketing', blurb: 'What goes out this week, and what is waiting on your word.' },
   { key: 'website', label: 'Website', icon: 'website', group: 'Growth', title: 'Website', blurb: 'Your pages, your project photos, your articles.' },
@@ -419,6 +421,8 @@ export default function Workspace() {
                 <Jobs session={session} />
               ) : allowed === 'field' ? (
                 <Field />
+              ) : allowed === 'trades' ? (
+                <Trades />
               ) : allowed === 'leads' ? (
                 <Leads session={session} refreshPulse={loadPulse} />
               ) : allowed === 'contacts' ? (

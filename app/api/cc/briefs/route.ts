@@ -1,7 +1,10 @@
 import { NextResponse } from 'next/server';
 import { getDesk } from '@/lib/cc-desk';
 import { decideBrief, listBriefs, type BriefAction } from '@/lib/cc-briefs';
-import { jobFromLead, logJobEvent, updateJob } from '@/lib/cc-jobs';
+import { getJob, jobFromLead, logJobEvent, updateJob } from '@/lib/cc-jobs';
+import { jobPhotos } from '@/lib/cc-handover';
+import { askForSite } from '@/lib/cc-site';
+import { sendReviewAsk } from '@/lib/reviews';
 import { draftNewMail } from '@/lib/mail-desk';
 import { addDays, mountainDate } from '@/lib/posting/time';
 
@@ -104,6 +107,48 @@ export async function POST(req: Request) {
       case 'note': {
         await logJobEvent(sb, account.clientEmail, act.jobId, { kind: 'note', body: act.body }, author);
         return NextResponse.json({ ok: true, said: 'Noted.' });
+      }
+
+      case 'review_ask': {
+        const job = await getJob(sb, account.clientEmail, act.jobId);
+        if (!job) return NextResponse.json({ error: 'No such job.' }, { status: 404 });
+        if (!job.contact_email && !job.contact_phone) return NextResponse.json({ error: 'There is no email or mobile on that job to ask.' }, { status: 400 });
+        const r = await sendReviewAsk(sb, account.project, account.clientEmail, {
+          name: job.contact_name ?? job.name,
+          email: job.contact_email,
+          phone: job.contact_phone,
+          project: job.name,
+        });
+        if (!r.ok) return NextResponse.json({ error: r.error ?? 'The review ask did not go.' }, { status: 400 });
+        await logJobEvent(sb, account.clientEmail, job.id, { kind: 'note', body: 'Asked them for a review.' }, author);
+        return NextResponse.json({ ok: true, said: `The review ask went to ${job.contact_name ?? 'them'}${r.sent_email && r.sent_sms ? ' by email and text' : r.sent_sms ? ' by text' : ' by email'}.` });
+      }
+
+      case 'project_page': {
+        const job = await getJob(sb, account.clientEmail, act.jobId);
+        if (!job) return NextResponse.json({ error: 'No such job.' }, { status: 404 });
+        const photos = await jobPhotos(sb, job.id);
+        // The request carries the job's own history, so nobody retypes what
+        // the board already knows, and the photographs ride with it.
+        const body = [
+          `${job.name}, finished${job.town ? ` in ${job.town}` : ''}.`,
+          job.kind ? `A ${job.kind.replace('-', ' ')}.` : '',
+          job.notes?.trim() ? `\nFrom the job:\n${job.notes.trim()}` : '',
+          photos.length ? `\n${photos.length} photograph${photos.length === 1 ? '' : 's'} from the build are attached.` : '\nNo photographs are on the job yet.',
+        ]
+          .filter(Boolean)
+          .join('\n');
+        const r = await askForSite(sb, account.project, {
+          kind: 'project',
+          title: `${job.name}, for the website`,
+          body,
+          details: { town: job.town, kind: job.kind, jobId: job.id },
+          photos,
+          by: author.email,
+        });
+        if (!r.ok) return NextResponse.json({ error: r.error }, { status: 400 });
+        await logJobEvent(sb, account.clientEmail, job.id, { kind: 'note', body: 'Sent to Sarah for a project page.' }, author);
+        return NextResponse.json({ ok: true, said: photos.length ? `Sent to Sarah with ${photos.length} photo${photos.length === 1 ? '' : 's'}. You will see it move under Website.` : 'Sent to Sarah. Add photographs on the job and they will follow.' });
       }
 
       case 'open':

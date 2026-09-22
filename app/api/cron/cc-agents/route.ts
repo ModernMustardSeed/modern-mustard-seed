@@ -2,7 +2,8 @@ import { NextResponse } from 'next/server';
 import { getSupabase } from '@/lib/supabase';
 import { CLIENT_PROJECTS, type ClientProject } from '@/lib/client-leads';
 import { commandCenterVisible } from '@/lib/command-center/visible';
-import { mondayBoard, qualifyLead, quietJob } from '@/lib/cc-briefs';
+import { mondayBoard, put, qualifyLead, quietJob } from '@/lib/cc-briefs';
+import { certBody, certsNeedingAttention } from '@/lib/cc-handover';
 import { OPEN_STAGES, QUIET_AFTER_DAYS, daysSince, listJobs, type JobRow } from '@/lib/cc-jobs';
 
 export const runtime = 'nodejs';
@@ -59,8 +60,14 @@ async function clientsWithBoard(sb: ReturnType<typeof getSupabase>): Promise<Cli
       out.push(project);
       continue;
     }
-    const { count } = await sb.from('client_jobs').select('id', { count: 'exact', head: true }).eq('client_email', project.clientEmail);
-    if ((count ?? 0) > 0) out.push(project);
+    // Any desk that is in use, not only one with a pipeline on it. A business
+    // can have five subcontractors on the bench and no job on the board yet,
+    // and a certificate still lapses on the same day either way.
+    const [jobs, trades] = await Promise.all([
+      sb.from('client_jobs').select('id', { count: 'exact', head: true }).eq('client_email', project.clientEmail),
+      sb.from('client_trades').select('id', { count: 'exact', head: true }).eq('client_email', project.clientEmail),
+    ]);
+    if ((jobs.count ?? 0) > 0 || (trades.count ?? 0) > 0) out.push(project);
   }
   return out;
 }
@@ -159,6 +166,33 @@ export async function GET(req: Request) {
       }
     } catch (err) {
       line.quietError = err instanceof Error ? err.message : 'failed';
+    }
+
+    /* ── certificates about to lapse ── */
+    try {
+      const certs = await certsNeedingAttention(sb, project);
+      if (certs.length) {
+        const worst = certs[0];
+        // One brief for all of them rather than one each: a builder wants the
+        // list, and six cards about insurance is how a person learns to close
+        // cards about insurance.
+        const r = await put(sb, project.clientEmail, {
+          kind: 'cert',
+          subject_type: 'trade',
+          subject_id: worst.id,
+          title: certs.some((c) => c.cert.level === 'lapsed')
+            ? `${certs.filter((c) => c.cert.level === 'lapsed').length} insurance certificate${certs.filter((c) => c.cert.level === 'lapsed').length === 1 ? ' has' : 's have'} lapsed`
+            : `${certs.length} insurance certificate${certs.length === 1 ? '' : 's'} running out`,
+          body: certBody(certs),
+          actions: [
+            ...(worst.phone ? [{ kind: 'call' as const, label: `Call ${worst.company}`, phone: worst.phone }] : []),
+            { kind: 'open' as const, label: 'Open the bench', room: 'trades' },
+          ],
+        });
+        line.certs = r;
+      }
+    } catch (err) {
+      line.certError = err instanceof Error ? err.message : 'failed';
     }
 
     /* ── Monday ── */
