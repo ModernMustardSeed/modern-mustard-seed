@@ -1,0 +1,56 @@
+name: Mr. Mustard push
+
+# Pushes Mr. Mustard's generated config to his live line using the VAPI_API_KEY
+# repo secret, so no key ever has to sit on a laptop. Run it with apply=false
+# first: it renders the assistant from scripts/setup-vapi-mustard.mjs and prints
+# exactly what would change on the live line. Run it again with apply=true to
+# push, and the last step confirms live now matches the render.
+#
+#   gh workflow run vapi-mustard.yml -f apply=false
+#   gh workflow run vapi-mustard.yml -f apply=true
+on:
+  workflow_dispatch:
+    inputs:
+      apply:
+        description: 'Push to the live line (false shows the diff only)'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: vapi-mustard
+  cancel-in-progress: false
+
+jobs:
+  mustard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # No network: renders the full assistant, prices derived from the repo.
+      - name: Render Mr. Mustard
+        run: node scripts/setup-vapi-mustard.mjs --emit rendered.json
+
+      - name: What a push would change
+        env:
+          VAPI_API_KEY: ${{ secrets.VAPI_API_KEY }}
+        run: node scripts/vapi-mustard-diff.mjs rendered.json
+
+      # No VAPI_WEBHOOK_SECRET here on purpose: the script reads the live agent
+      # and leaves its server block (and its secret) untouched.
+      - name: Push to the live line
+        if: ${{ inputs.apply }}
+        env:
+          VAPI_API_KEY: ${{ secrets.VAPI_API_KEY }}
+        run: node scripts/setup-vapi-mustard.mjs --update faf7f2c4-9cfd-4fcd-9c1a-73b7c9a38eee
+
+      - name: Confirm live matches the render
+        if: ${{ inputs.apply }}
+        env:
+          VAPI_API_KEY: ${{ secrets.VAPI_API_KEY }}
+        run: node scripts/vapi-mustard-diff.mjs rendered.json --expect-same
