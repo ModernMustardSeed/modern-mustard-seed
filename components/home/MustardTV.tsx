@@ -18,13 +18,13 @@ import s from './MustardTV.module.css';
 const CHANNELS = [
   { key: 'little-yes', title: 'Look What a Little Yes Can Do', line: 'The Mustard family musical. An original song.', runtime: '64 sec' },
   { key: 'make-it-real', title: 'Make It Real', line: 'An original song. Something you can call your own.', runtime: '38 sec' },
-  { key: 'get-found', title: 'Get Found', line: 'An original song. Good at what you do, and found for it.', runtime: '28 sec' },
+  { key: 'dinner-rush', title: 'The Dinner Rush', line: 'Friday night, full house. You cook. He books. Buonissimo.', runtime: '36 sec' },
   { key: 'find-your-horizon', title: 'Find Your Horizon', line: 'How does a little seed end up on a yacht?', runtime: '36 sec' },
-  { key: 'build-the-tree', title: 'Let’s Build the Tree', line: 'One desk. Your idea. Then watch it grow.', runtime: '24 sec' },
+  { key: 'unveiling', title: 'The Unveiling', line: 'Tonight, an unveiling. Built for one guest. You.', runtime: '36 sec' },
   { key: 'wonderful-time', title: 'A Wonderful Time To Be Alive', line: 'The studio film. Consume less. Create.', runtime: '96 sec' },
-  { key: 'debating', title: 'While You Were Debating', line: 'One person. Idea to market, one pass.', runtime: '44 sec' },
+  { key: 'nine-forty-seven', title: '9:47 PM', line: 'A real call, booked while nobody was working.', runtime: '33 sec' },
   { key: 'scenic-route', title: 'The Scenic Route', line: 'Down the road to Mustard Seed Ranch.', runtime: '30 sec' },
-  { key: 'night-shift', title: 'The Night Shift', line: 'There is only one of you. Now there are two.', runtime: '29 sec' },
+  { key: 'take-the-bridge', title: 'Take the Bridge', line: 'Somewhere, a business phone rings. Not on this ship.', runtime: '36 sec' },
   { key: 'good-news', title: 'Good News', line: 'Your business thrives. You get your life back.', runtime: '36 sec' },
 ] as const;
 
