@@ -258,24 +258,37 @@ export default function Workspace() {
         >
           <div className="px-5 pt-5 pb-4 border-b border-white/10">
             <p className="font-mono text-[9px] uppercase tracking-[0.22em] text-white/45">Command Center</p>
-            <div className="mt-2 flex items-center gap-2.5">
-              {brand?.logoOnDark && (
-                // Their mark, on their board, straight onto the dark rail.
-                //
-                // It used to sit on a white chip, on the theory that a chip
-                // makes any logo readable. It does the opposite here: a
-                // logoOnDark asset is a WHITE logo, and a white logo on a
-                // white chip is a blank square. The right rule is simpler and
-                // it is in the field name: the dark logo belongs on the dark
-                // rail. A plain img, because the file is served from their own
-                // site and the optimiser has no business in the middle.
-                <span className="flex-none">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={brand.logoOnDark} alt="" className="h-9 w-auto max-w-[84px] object-contain" />
-                </span>
-              )}
-              <p className="font-display text-[18px] leading-tight text-white">{brand?.business ?? 'Loading'}</p>
-            </div>
+            {brand?.logoOnDark ? (
+              // Their mark, on their board, at a size a person can actually read.
+              //
+              // This has now been wrong twice, in two different ways, and both
+              // are worth writing down because the second one hid behind the
+              // first. It began on a white chip, which is a blank square: a
+              // logoOnDark asset is the WHITE cut of the logo. Taking the chip
+              // away fixed the contrast and it was STILL illegible, because
+              // contrast was never the only problem. At h-9 this mark renders
+              // 52px wide. Its wordmark lives in the bottom third of a 607x418
+              // viewBox, so 52px wide puts "BUILT RIGHT" at about 40px and "in
+              // montana" below the threshold of being a word at all. It was a
+              // smudge that happened to be the right colour.
+              //
+              // So it gets the rail's width instead of a thumbnail's, and the
+              // business name beside it is gone: the logo already says "BUILT
+              // RIGHT in montana", and setting that name twice is what forced
+              // the mark into 84px in the first place. The name survives as the
+              // fallback for a client whose logo we do not have.
+              //
+              // A plain img, because the file is served from their own site and
+              // the optimiser has no business in the middle.
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={brand.logoOnDark}
+                alt={brand.business}
+                className="mt-3 h-auto w-full max-w-[184px]"
+              />
+            ) : (
+              <p className="mt-2 font-display text-[18px] leading-tight text-white">{brand?.business ?? 'Loading'}</p>
+            )}
           </div>
           <nav className="flex-1 overflow-y-auto py-3">
             {GROUPS.map((group) => {
