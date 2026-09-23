@@ -1,6 +1,8 @@
 import Link from '@/components/AttributionLink';
 import Image from 'next/image';
 import s from './PosterHero.module.css';
+import HeroTalk from './HeroTalk';
+import { MascotLean, Marquee } from './HeroMotion';
 
 /* The homepage hero: the pop-art social card, blown up to a full poster. */
 export default function PosterHero() {
@@ -16,13 +18,13 @@ export default function PosterHero() {
       </div>
       <div className={s.posterArt}>
         <div className={s.burst} aria-hidden="true" />
-        <Image src="/brand/mascot-full.png" alt="Mr. Mustard, the studio mascot, waving hello" width={876} height={1190} className={s.posterMascot} sizes="(max-width: 760px) 70vw, 34vw" priority />
-        <p className={s.posterBubble}>Let’s build yours.</p>
+        <MascotLean className={s.lean}><Image src="/brand/mascot-full.png" alt="Mr. Mustard, the studio mascot, waving hello" width={876} height={1190} className={s.posterMascot} sizes="(max-width: 760px) 70vw, 34vw" priority /></MascotLean>
+        <HeroTalk bubbleClass={s.posterBubble} panelClass={s.talkPanel} />
         <span className={s.spark + ' ' + s.sparkOne} aria-hidden="true">✦</span>
         <span className={s.spark + ' ' + s.sparkTwo} aria-hidden="true">✦</span>
         <span className={s.spark + ' ' + s.sparkThree} aria-hidden="true">✦</span>
       </div>
     </div>
-    <div className={s.marquee} aria-hidden="true"><div>{[0, 1].map(k => <span key={k}>Websites ✦ Custom Software ✦ AI Systems ✦ Voice Agents ✦ Brand &amp; Identity ✦ Advisory ✦&nbsp;</span>)}</div></div>
+    <Marquee className={s.marquee}><div>{[0, 1].map(k => <span key={k}>Websites ✦ Custom Software ✦ AI Systems ✦ Voice Agents ✦ Brand &amp; Identity ✦ Advisory ✦&nbsp;</span>)}</div></Marquee>
   </section>;
 }

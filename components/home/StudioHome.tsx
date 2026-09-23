@@ -3,6 +3,9 @@ import Image from 'next/image';
 import styles from './StudioHome.module.css';
 import { GOOGLE_PROFILE, GOOGLE_REVIEWS } from '@/data/google-reviews';
 import PosterHero from './PosterHero';
+import ShowMeMine from './ShowMeMine';
+import WorkVideo from './WorkVideo';
+import { SproutSeed } from './HeroMotion';
 
 const projects = [
   { name: 'D & D Landscaping', type: 'Landscaping / Client website', image: 'dd-landscaping', url: 'https://ddlandscapingfl.com', description: 'A local business, unmistakable.', detail: 'A Tallahassee landscaping site with service selection, walkthrough booking, and a voice concierge.' },
@@ -10,6 +13,13 @@ const projects = [
   { name: 'Built Right in Montana', type: 'Custom homes / Client website', image: 'brim-homes', url: 'https://brimhomes.com', description: 'Built for the way Montana lives.', detail: 'A Flathead Valley homebuilder’s website, with a project showcase and a direct path to a build conversation.' },
   { name: 'Bare Earth', type: 'Landscape & construction / Studio build', image: 'bare-earth', url: 'https://bare-earth.vercel.app', description: 'Grounds worthy of the valley.', detail: 'A landscape and construction build for the Flathead Valley, with service pages and an instant-quote experience.' },
   { name: 'Wildmere Honey Co.', type: 'Brand experience / Studio build', image: 'wildmere', url: 'https://wildmere.vercel.app', description: 'Montana honey, in full character.', detail: 'An original honey-brand build with a scroll-led product story, audio tour, and voice concierge.' },
+];
+// Word for word from the Google reviews in data/google-reviews.ts. Excerpts only,
+// never reworded; an ellipsis marks where a sentence was cut.
+const results = [
+  { stat: '30 min', label: 'Down from days of work', quote: 'Our new back office saved my team from drowning, and now days of work is literally only thirty minutes.', name: 'Beverly P.' },
+  { stat: '80%', label: 'More deals closed', quote: 'Since then I have closed 80% more deals…', name: 'Jaxson Smitty' },
+  { stat: 'Same day', label: 'Asked Tuesday morning, live that night', quote: 'I reached out to them on a Tuesday morning, and by the time I went to sleep that night, my AI agent and website were already updated and running smoothly.', name: 'Easton Parker' },
 ];
 const disciplines = [
   { title: 'Websites & Brand', href: '/websites', text: 'A presence that makes the right people stop. Art direction, identity, and a beautifully engineered website, with search and conversion built in.', tags: 'Strategy · Identity · Digital experiences' },
@@ -29,15 +39,27 @@ function ProjectImage({ name, alt, sizes }: { name: string; alt: string; sizes: 
 export default function StudioHome({ faq }: { faq: { q: string; a: string }[] }) {
   return <div className={styles.studio} data-design="mms-editorial-2026" data-edition="pop-art-studio">
     <PosterHero />
-    <figure className={styles.verse}><blockquote><span className={styles.seed} aria-hidden="true" /><p>“If you have faith as small as a mustard seed, nothing will be impossible for you.”</p></blockquote><figcaption>Matthew 17:20</figcaption></figure>
+    <figure className={styles.verse}><blockquote><SproutSeed className={styles.sprout} grownClass={styles.grown} /><p>“If you have faith as small as a mustard seed, nothing will be impossible for you.”</p></blockquote><figcaption>Matthew 17:20</figcaption></figure>
+    <section className={styles.showMine} aria-labelledby="show-mine-heading">
+      <div><p className={styles.eyebrow}>Show me mine</p><h2 id="show-mine-heading">Paste your website. <em>We’ll build you a new one.</em></h2><p>Free. Add a few details on the next page, and we design your new site and send you the link.</p></div>
+      <ShowMeMine className={styles.showForm} />
+    </section>
     <section id="selected-work" className={styles.work} aria-labelledby="work-heading">
       <div className={styles.sectionTop}><p className={styles.eyebrow}>01 / Selected Work</p><span>Made here. Out in the world.</span></div>
       <div className={styles.workIntro}><h2 id="work-heading">The work<br />speaks <em>first.</em></h2><div><p>A landscaper in Tallahassee. A homebuilder in Montana. A brand with something to say. Real client work, our own ventures, and studio builds.</p><Link href="/work" className={styles.textLink}>Explore The Portfolio <Arrow /></Link></div></div>
       <div className={styles.projectGrid}>{projects.map((project, i) => <a key={project.name} href={project.url} target="_blank" rel="noopener noreferrer" className={styles.project}>
-        <div className={styles.projectImage}><ProjectImage name={project.image} alt={project.name + ' website, designed and built by Modern Mustard Seed'} sizes={i === 0 ? '(max-width: 760px) 92vw, 88vw' : '(max-width: 760px) 92vw, 43vw'} /><span className={styles.visit}><span className={styles.visitLabel}>Visit Live Site</span><Arrow /></span></div>
+        <div className={styles.projectImage}><ProjectImage name={project.image} alt={project.name + ' website, designed and built by Modern Mustard Seed'} sizes={i === 0 ? '(max-width: 760px) 92vw, 88vw' : '(max-width: 760px) 92vw, 43vw'} /><WorkVideo src={'/video/work/' + project.image + '.mp4'} className={styles.workVideo} /><span className={styles.visit}><span className={styles.visitLabel}>Visit Live Site</span><Arrow /></span></div>
         <div className={styles.projectCaption}><div><p className={styles.eyebrow}>{project.type}</p><h3>{project.name}</h3></div><span className={styles.projectNumber}>0{i + 1}</span></div>
         <p className={styles.projectStatement}>{project.description}</p><p className={styles.projectDetail}>{project.detail}</p>
       </a>)}</div>
+    </section>
+    <section className={styles.results} aria-labelledby="results-heading">
+      <div className={styles.resultsTop}><p className={styles.eyebrow}>In their words</p><h2 id="results-heading">What changed <em>after.</em></h2></div>
+      <div className={styles.resultGrid}>{results.map(r => <figure key={r.name} className={styles.result}>
+        <strong>{r.stat}</strong><span className={styles.resultLabel}>{r.label}</span>
+        <blockquote>“{r.quote}”</blockquote>
+        <figcaption>{r.name} <span>· Google review · ★★★★★</span></figcaption>
+      </figure>)}</div>
     </section>
     <section className={styles.statement} aria-label="Studio philosophy"><span className={styles.eyebrow}>Good looks are only the beginning.</span><p>Make it <em>beautiful.</em><br />Make it work <span>beautifully.</span></p><div>Design earns the attention. The engineering earns the trust.<br />We build the whole thing.</div></section>
     <section className={styles.disciplines} aria-labelledby="disciplines-heading"><div className={styles.disciplineIntro}><p className={styles.eyebrow}>02 / The Practice</p><h2 id="disciplines-heading">Considered<br />from every<br /><em>angle.</em></h2><p>Five disciplines. One person holding the vision from the first conversation to the final detail.</p><Link href="/work-with-us" className={styles.textLink}>How We Work <Arrow /></Link></div><div className={styles.disciplineList}>{disciplines.map((d, i) => <Link href={d.href} className={styles.discipline} key={d.title}><span className={styles.disciplineIndex}>0{i + 1}</span><div><h3>{d.title}</h3><p>{d.text}</p><span className={styles.tags}>{d.tags}</span></div><Arrow /></Link>)}</div></section>

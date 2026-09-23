@@ -55,6 +55,9 @@ export default function DemoStation() {
 
   useEffect(() => {
     const q = new URLSearchParams(window.location.search);
+    // The homepage's Show me mine field hands the visitor's website over as ?site=.
+    const site = (q.get('site') || '').trim().slice(0, 200);
+    if (site) setValues((v) => ({ ...v, website: v.website || site }));
     const st = (q.get('st') || CAMPAIGN_STATE[(q.get('utm_campaign') || '').toLowerCase()] || '').toUpperCase().slice(0, 2);
     if (/^[A-Z]{2}$/.test(st)) {
       const city = (q.get('city') || '').trim().slice(0, 60);
