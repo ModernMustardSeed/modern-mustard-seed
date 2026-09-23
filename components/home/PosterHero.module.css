@@ -1,7 +1,7 @@
 .poster{--ink:#080c16;--cream:#fbf6ea;--mustard:#f5b700;--red:#e0301e;position:relative;overflow:hidden;font-family:var(--font-body),sans-serif}
 .poster h1,.poster p{margin:0}
 /* A. Poster */
-.poster{background:var(--mustard);color:var(--ink);padding:112px 6vw 0;border-bottom:3px solid var(--ink)}
+.poster{background:#f7dc8a;color:var(--ink);padding:112px 6vw 0;border-bottom:3px solid var(--ink)}
 .posterDots{position:absolute;inset:0;background-image:radial-gradient(var(--ink) 1.3px,transparent 1.5px);background-size:11px 11px;opacity:.16;mask-image:linear-gradient(115deg,transparent 38%,#000 75%);-webkit-mask-image:linear-gradient(115deg,transparent 38%,#000 75%);pointer-events:none}
 .posterTop{position:relative;display:flex;justify-content:space-between;gap:20px;padding-bottom:20px;border-bottom:2px solid var(--ink);font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase}
 .posterGrid{position:relative;display:grid;grid-template-columns:1.1fr .9fr;align-items:center;gap:3vw;min-height:680px;padding:40px 0 64px}
