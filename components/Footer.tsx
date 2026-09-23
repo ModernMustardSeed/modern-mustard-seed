@@ -27,6 +27,7 @@ export default function Footer() {
         { label: 'Voice Agents', href: '/voice-agents' },
         { label: 'Custom Software', href: '/services' },
         { label: 'Marketing', href: '/marketing' },
+        { label: 'For the Kingdom', href: '/kingdom' },
         { label: 'Advisory', href: '/advisory' },
         { label: 'AI Native', href: '/ai-native' },
         { label: 'The Chief', href: '/chief' },

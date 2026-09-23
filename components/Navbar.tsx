@@ -33,6 +33,7 @@ const MENU_GROUPS = [
       { label: 'Brand / Rebrand', href: '/brand' },
       { label: 'Voice Agents', href: '/voice-agents' },
       { label: 'Marketing', href: '/marketing' },
+      { label: 'For the Kingdom', href: '/kingdom' },
       { label: 'Advisory', href: '/advisory' },
       { label: 'AI Native', href: '/ai-native' },
       { label: 'Mustard Pictures', href: '/pictures' },
