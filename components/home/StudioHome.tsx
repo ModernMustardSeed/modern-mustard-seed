@@ -5,7 +5,7 @@ import { GOOGLE_PROFILE, GOOGLE_REVIEWS } from '@/data/google-reviews';
 import PosterHero from './PosterHero';
 import ShowMeMine from './ShowMeMine';
 import WorkVideo from './WorkVideo';
-import { SproutSeed } from './HeroMotion';
+import { SproutSeed, Vine, BirdBranch } from './HeroMotion';
 
 const projects = [
   { name: 'D & D Landscaping', type: 'Landscaping / Client website', image: 'dd-landscaping', url: 'https://ddlandscapingfl.com', description: 'A local business, unmistakable.', detail: 'A Tallahassee landscaping site with service selection, walkthrough booking, and a voice concierge.' },
@@ -38,9 +38,10 @@ function ProjectImage({ name, alt, sizes }: { name: string; alt: string; sizes: 
 }
 export default function StudioHome({ faq }: { faq: { q: string; a: string }[] }) {
   return <div className={styles.studio} data-design="mms-editorial-2026" data-edition="pop-art-studio">
+    <Vine className={styles.vine} />
     <PosterHero />
     <figure className={styles.verse}><blockquote><SproutSeed className={styles.sprout} grownClass={styles.grown} /><p>“If you have faith as small as a mustard seed, nothing will be impossible for you.”</p></blockquote><figcaption>Matthew 17:20</figcaption></figure>
-    <section className={styles.showMine} aria-labelledby="show-mine-heading">
+    <section id="show-me-mine" className={styles.showMine} aria-labelledby="show-mine-heading">
       <div><p className={styles.eyebrow}>Show me mine</p><h2 id="show-mine-heading">Paste your website. <em>We’ll build you a new one.</em></h2><p>Free, and built custom to your business and what you want it to do. Your new site lands within 24 hours, with a free audit of the site, Google profile and reviews you have now.</p></div>
       <div><ShowMeMine className={styles.showForm} /><Link href="/presence-audit" className={styles.auditOnly}>Just want the audit? Get it free <Arrow /></Link></div>
     </section>
@@ -53,7 +54,7 @@ export default function StudioHome({ faq }: { faq: { q: string; a: string }[] })
         <p className={styles.projectStatement}>{project.description}</p><p className={styles.projectDetail}>{project.detail}</p>
       </a>)}</div>
     </section>
-    <section className={styles.results} aria-labelledby="results-heading">
+    <section id="results" className={styles.results} aria-labelledby="results-heading">
       <div className={styles.resultsTop}><p className={styles.eyebrow}>In their words</p><h2 id="results-heading">What changed <em>after.</em></h2></div>
       <div className={styles.resultGrid}>{results.map(r => <figure key={r.name} className={styles.result}>
         <strong>{r.stat}</strong><span className={styles.resultLabel}>{r.label}</span>
@@ -62,7 +63,7 @@ export default function StudioHome({ faq }: { faq: { q: string; a: string }[] })
       </figure>)}</div>
     </section>
     <section className={styles.statement} aria-label="Studio philosophy"><span className={styles.eyebrow}>Good looks are only the beginning.</span><p>Make it <em>beautiful.</em><br />Make it work <span>beautifully.</span></p><div>Design earns the attention. The engineering earns the trust.<br />We build the whole thing.</div></section>
-    <section className={styles.disciplines} aria-labelledby="disciplines-heading"><div className={styles.disciplineIntro}><p className={styles.eyebrow}>02 / The Practice</p><h2 id="disciplines-heading">Considered<br />from every<br /><em>angle.</em></h2><p>Five disciplines. One person holding the vision from the first conversation to the final detail.</p><Link href="/work-with-us" className={styles.textLink}>How We Work <Arrow /></Link></div><div className={styles.disciplineList}>{disciplines.map((d, i) => <Link href={d.href} className={styles.discipline} key={d.title}><span className={styles.disciplineIndex}>0{i + 1}</span><div><h3>{d.title}</h3><p>{d.text}</p><span className={styles.tags}>{d.tags}</span></div><Arrow /></Link>)}</div></section>
+    <section id="practice" className={styles.disciplines} aria-labelledby="disciplines-heading"><div className={styles.disciplineIntro}><p className={styles.eyebrow}>02 / The Practice</p><h2 id="disciplines-heading">Considered<br />from every<br /><em>angle.</em></h2><p>Five disciplines. One person holding the vision from the first conversation to the final detail.</p><Link href="/work-with-us" className={styles.textLink}>How We Work <Arrow /></Link></div><div className={styles.disciplineList}>{disciplines.map((d, i) => <Link href={d.href} className={styles.discipline} key={d.title}><span className={styles.disciplineIndex}>0{i + 1}</span><div><h3>{d.title}</h3><p>{d.text}</p><span className={styles.tags}>{d.tags}</span></div><Arrow /></Link>)}</div></section>
     <section className={styles.founder} aria-labelledby="founder-heading"><div className={styles.founderHeading}><p className={styles.eyebrow}>03 / Personally Built</p><h2 id="founder-heading">A bespoke<br />studio. An<br /><em>invested founder.</em></h2></div><div className={styles.founderBody}><span className={styles.founderInitial}>S.</span><p className={styles.founderLead}>You work directly with the person who designs it. And the person who builds it.</p><p>I’m Sarah Scarano, founder, designer, and engineer. I bring the creative direction and the technical work together, so the thing we imagined is the thing that ships.</p><p>Based in Kalispell, Montana. Building for businesses with ambition, wherever they call home.</p><Link href="/about" className={styles.textLink}>Meet Sarah <Arrow /></Link><div className={styles.ownership}><span>Your idea. Your asset.</span><p>You own the code, the accounts, and the finished work. Changes to what we build are included.</p></div></div></section>
     <section className={styles.concierge} aria-labelledby="mustard-heading"><div className={styles.mascotFrame}><span className={styles.mascotOrbit} aria-hidden="true" /><Image src="/images/editorial/mascot-480.webp" alt="Mr. Mustard, the smiling mustard-seed mascot and studio AI concierge" width={440} height={590} sizes="(max-width: 760px) 160px, 220px" className={styles.mascot} /><span className={styles.mascotLabel}>A Small Seed With A Real Job.</span></div><div><p className={styles.eyebrow}>A Little Character. A Lot Of Capability.</p><h2 id="mustard-heading">Still Mr. Mustard.<br /><em>Always at your service.</em></h2><p>The name has a story. The little guy has a job. Meet the studio’s AI concierge, here to answer questions and help you find your next step.</p><Link href="/mustard" className={styles.primary}>Meet Mr. Mustard <Arrow /></Link><a href="tel:+14063121223" className={styles.phone}>Or Call The Studio · (406) 312-1223</a></div></section>
     <section className={styles.faq} aria-labelledby="faq-heading"><div><p className={styles.eyebrow}>Before We Begin</p><h2 id="faq-heading">Good questions.<br /><em>Straight answers.</em></h2></div><div className={styles.faqList}>{faq.map(f => <details key={f.q}><summary>{f.q}<span aria-hidden="true">+</span></summary><p>{f.a}</p></details>)}</div></section>
@@ -73,6 +74,7 @@ export default function StudioHome({ faq }: { faq: { q: string; a: string }[] })
         <a className={styles.proofCard + " " + styles.googleCard} href={GOOGLE_PROFILE.profileUrl} target="_blank" rel="noopener noreferrer"><span className={styles.proofStars} aria-hidden="true">★★★★★</span><strong>{GOOGLE_PROFILE.rating} on Google</strong><small>Five-star studio</small><span className={styles.proofArrow} aria-hidden="true">↗</span></a>
         <div className={styles.proofCard + " " + styles.aiCard}><span className={styles.aiMark}>AI SEARCH</span><strong>ChatGPT-ready studio</strong><small>Built to be found in AI search</small><span className={styles.aiBurst} aria-hidden="true">✳</span></div>
       </div>
+      <BirdBranch className={styles.branch} landedClass={styles.landed} />
       <div className={styles.reviewRow}>{GOOGLE_REVIEWS.map(r => <figure key={r.name + r.when} className={styles.review}>
         <span className={styles.reviewStars} role="img" aria-label={r.stars + ' out of 5 stars'}>{'★'.repeat(r.stars)}</span>
         <blockquote>“{r.text}”</blockquote>
