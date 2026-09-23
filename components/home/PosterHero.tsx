@@ -2,13 +2,13 @@ import Link from '@/components/AttributionLink';
 import Image from 'next/image';
 import s from './PosterHero.module.css';
 import HeroTalk from './HeroTalk';
-import { MascotLean, Marquee, HelloCity } from './HeroMotion';
+import { MascotLean, Marquee } from './HeroMotion';
 
 /* The homepage hero: the pop-art social card, blown up to a full poster. */
 export default function PosterHero() {
   return <section className={s.poster} aria-labelledby="studio-heading">
     <div className={s.posterDots} aria-hidden="true" />
-    <div className={s.posterTop}><span>Bespoke Design &amp; Technology Studio</span><HelloCity fallback="Kalispell, Montana · Nationwide Reach" /></div>
+    <div className={s.posterTop}><span>Bespoke Design &amp; Technology Studio</span><span>Nationwide Reach · Hometown: Kalispell, Montana</span></div>
     <div className={s.posterGrid}>
       <div className={s.posterCopy}>
         <p className={s.posterEyebrow}>Design &amp; technology, with character.</p>
