@@ -32,6 +32,7 @@ const MENU_GROUPS = [
       { label: 'Websites And Brand', href: '/websites' },
       { label: 'Brand / Rebrand', href: '/brand' },
       { label: 'Voice Agents', href: '/voice-agents' },
+      { label: 'Marketing', href: '/marketing' },
       { label: 'Advisory', href: '/advisory' },
       { label: 'AI Native', href: '/ai-native' },
       { label: 'Mustard Pictures', href: '/pictures' },
@@ -351,7 +352,7 @@ export default function Navbar() {
                 {MENU_GROUPS[0].heading}
               </span>
               <p className="font-display italic font-bold text-[#161616] text-base md:text-lg leading-snug mb-5">
-                A boutique design and AI studio. Four disciplines, one standard.
+                A boutique design and AI studio. Five disciplines, one standard.
               </p>
               <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
                 {MENU_GROUPS[0].links.map((link) => {

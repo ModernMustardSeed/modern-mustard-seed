@@ -32,7 +32,7 @@ const offerJsonLd = {
   '@type': 'Service',
   name: 'Design and AI Studio Engagements',
   description:
-    'Design-led websites and brand, custom software, voice agents, and retained AI advisory. Every engagement is scoped and quoted privately, with a set package price agreed before work starts.',
+    'Design-led websites and brand, custom software, voice agents, marketing, and retained AI advisory. Every engagement is scoped and quoted privately, with a set package price agreed before work starts.',
   provider: { '@id': 'https://modernmustardseed.com/#organization' },
   serviceType: 'Design and custom software development',
   areaServed: { '@type': 'Country', name: 'United States' },
@@ -41,7 +41,7 @@ const offerJsonLd = {
 const HOME_FAQ = [
   {
     q: 'What does Modern Mustard Seed do?',
-    a: 'Modern Mustard Seed is a boutique design and AI studio in Kalispell, Montana, founded by Sarah Scarano. Four disciplines: design-led websites and brand, custom software, voice agents, and retained advisory for operators putting AI into a business that already works. We work with clients across Northwest Montana and throughout the United States.',
+    a: 'Modern Mustard Seed is a boutique design and AI studio in Kalispell, Montana, founded by Sarah Scarano. Five disciplines: design-led websites and brand, custom software, voice agents, marketing (social posting, blog writing, commercials, and ads), and retained advisory for operators putting AI into a business that already works. We work with clients across Northwest Montana and throughout the United States.',
   },
   {
     q: 'Who is Sarah Scarano?',
