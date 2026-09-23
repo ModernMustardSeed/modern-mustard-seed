@@ -182,7 +182,7 @@ export default function HeroTalk({ bubbleClass, panelClass }: { bubbleClass: str
           )}
           {ringError && <p data-error role="alert">{ringError}</p>}
           {/* ⚠️ Consent. See the header comment. */}
-          <p data-consent>One call, placed by our AI to the number you typed, because you asked for it. No list, no spam, and I will not ring you twice.</p>
+          <p data-consent>One call, placed by Mr. Mustard to the number you typed, because you asked for it. No list, no spam, and I will not ring you twice.</p>
         </div>
       )}
     </>

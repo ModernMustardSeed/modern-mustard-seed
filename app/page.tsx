@@ -3,9 +3,9 @@ import { JsonLd, breadcrumbJsonLd, faqJsonLd, parableJsonLd } from '@/lib/jsonld
 import { buildMetadata, SITE } from '@/lib/seo';
 
 export const metadata = buildMetadata({
-  title: 'A Design and AI Studio in Kalispell, Montana',
+  title: 'A Design and Agentic Systems Studio in Kalispell, Montana',
   description:
-    'Modern Mustard Seed is a boutique design and AI studio in Montana with nationwide reach. Websites and brand, custom software, voice agents, and advisory for operators building something worth owning. By inquiry.',
+    'Modern Mustard Seed is a boutique design and agentic systems studio in Montana with nationwide reach. Websites and brand, custom software, voice agents, and advisory for operators building something worth owning. By inquiry.',
 });
 
 const homeJsonLd = {
@@ -13,7 +13,7 @@ const homeJsonLd = {
   '@type': 'WebPage',
   '@id': 'https://modernmustardseed.com/#webpage',
   url: 'https://modernmustardseed.com',
-  name: 'Modern Mustard Seed | A Design and AI Studio in Kalispell, Montana',
+  name: 'Modern Mustard Seed | A Design and Agentic Systems Studio in Kalispell, Montana',
   description: SITE.description,
   isPartOf: { '@id': 'https://modernmustardseed.com/#website' },
   about: { '@id': 'https://modernmustardseed.com/#organization' },
@@ -30,9 +30,9 @@ const homeJsonLd = {
 const offerJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Service',
-  name: 'Design and AI Studio Engagements',
+  name: 'Design and Agentic Systems Studio Engagements',
   description:
-    'Design-led websites and brand, custom software, voice agents, marketing, and retained AI advisory. Every engagement is scoped and quoted privately, with a set package price agreed before work starts.',
+    'Design-led websites and brand, custom software, voice agents, marketing, and retained agentic systems advisory. Every engagement is scoped and quoted privately, with a set package price agreed before work starts.',
   provider: { '@id': 'https://modernmustardseed.com/#organization' },
   serviceType: 'Design and custom software development',
   areaServed: { '@type': 'Country', name: 'United States' },
@@ -41,11 +41,11 @@ const offerJsonLd = {
 const HOME_FAQ = [
   {
     q: 'What does Modern Mustard Seed do?',
-    a: 'Modern Mustard Seed is a boutique design and AI studio in Kalispell, Montana, founded by Sarah Scarano. Five disciplines: design-led websites and brand, custom software, voice agents, marketing (social posting, blog writing, commercials, and ads), and retained advisory for operators putting AI into a business that already works. We work with clients across Northwest Montana and throughout the United States.',
+    a: 'Modern Mustard Seed is a boutique design and agentic systems studio in Kalispell, Montana, founded by Sarah Scarano. Five disciplines: design-led websites and brand, custom software, voice agents, marketing (social posting, blog writing, commercials, and ads), and retained advisory for operators putting agentic systems into a business that already works. We work with clients across Northwest Montana and throughout the United States.',
   },
   {
     q: 'Who is Sarah Scarano?',
-    a: 'Sarah Scarano is the founder, designer, and engineer behind Modern Mustard Seed. She is a full-stack engineer and AI systems architect who has shipped products across AI, e-commerce, real estate, hospitality and SaaS. She sets the direction on every engagement and stays on it from the first note to the handoff.',
+    a: 'Sarah Scarano is the founder, designer, and engineer behind Modern Mustard Seed. She is a full-stack engineer and agentic systems architect who has shipped products across agentic systems, e-commerce, real estate, hospitality and SaaS. She sets the direction on every engagement and stays on it from the first note to the handoff.',
   },
   {
     q: 'How do engagements begin?',
@@ -65,11 +65,11 @@ const HOME_FAQ = [
   },
   {
     q: 'What is the advisory work?',
-    a: 'Retained counsel for operators putting AI into a business that already works. What to build, what to refuse, what to automate, and in what order. It is engaged by the quarter and it is often the right first step when the answer is not yet a specific build.',
+    a: 'Retained counsel for operators putting agentic systems into a business that already works. What to build, what to refuse, what to automate, and in what order. It is engaged by the quarter and it is often the right first step when the answer is not yet a specific build.',
   },
   {
     q: 'What tech stack do you use?',
-    a: 'React 19, Next.js 16, TypeScript, Tailwind CSS, Supabase, Stripe, Vercel, Trigger.dev, Expo and React Native for mobile, plus Anthropic Claude, OpenAI, and Google Gemini for AI. Vapi for voice agents. The same stack across every engagement, refined in production.',
+    a: 'React 19, Next.js 16, TypeScript, Tailwind CSS, Supabase, Stripe, Vercel, Trigger.dev, Expo and React Native for mobile, plus Anthropic Claude, OpenAI, and Google Gemini for the models. Vapi for voice agents. The same stack across every engagement, refined in production.',
   },
   {
     q: 'Do I own the work when it is finished?',
@@ -77,10 +77,10 @@ const HOME_FAQ = [
   },
   {
     q: 'What has the studio built?',
-    a: 'Recent work includes Wild Hope, a Flathead Lake retreat village told through seventeen original oil paintings; Cross + Covenant, a direct-to-consumer apparel brand taken from sketch to live storefront in sixty days; Lago Society, a lakeside fashion house with an AI personal stylist; Fiat Lux Design, an AI staging studio for real estate; and D&D Landscaping, a design-build landscaper with a full back office behind it.',
+    a: 'Recent work includes Wild Hope, a Flathead Lake retreat village told through seventeen original oil paintings; Cross + Covenant, a direct-to-consumer apparel brand taken from sketch to live storefront in sixty days; Lago Society, a lakeside fashion house with an agentic personal stylist; Fiat Lux Design, an agentic staging studio for real estate; and D&D Landscaping, a design-build landscaper with a full back office behind it.',
   },
   {
-    q: 'Do I need to know AI to work with the studio?',
+    q: 'Do I need to know agentic systems to work with the studio?',
     a: 'No. Most clients run a business that already works and want a product built without hiring a team. The first conversation translates the goal into a scoped build, in plain language.',
   },
   {

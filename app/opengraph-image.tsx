@@ -70,7 +70,7 @@ export default async function OpengraphImage() {
             textAlign: 'center',
           }}
         >
-          Websites, custom software, and AI systems.
+          Websites, custom software, and agentic systems.
         </div>
 
         {/* URL footer */}
