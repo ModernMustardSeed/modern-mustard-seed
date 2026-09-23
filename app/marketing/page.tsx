@@ -13,6 +13,7 @@ export const metadata = buildMetadata({
   title: 'Marketing: Social Posting, Blog Writing, Commercials and Ads',
   description: 'Marketing from the studio that built the site. Social media posting, blog and article writing, commercials, managed ad campaigns, email newsletters, and Google Business Profile upkeep, written in your voice. Nationwide.',
   path: '/marketing',
+  image: '/marketing/opengraph-image',
 });
 
 const SERVICES = [

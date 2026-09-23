@@ -12,6 +12,7 @@ export const metadata = buildMetadata({
   title: 'Nationwide Reach: A Design and AI Studio for Businesses Across the US',
   description: 'Modern Mustard Seed works with businesses throughout the United States. Websites and brand, custom software, voice agents, and advisory, designed and built from Kalispell, Montana, delivered nationwide.',
   path: '/nationwide',
+  image: '/nationwide/opengraph-image',
 });
 
 const WORK = [
