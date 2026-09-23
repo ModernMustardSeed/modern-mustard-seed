@@ -658,22 +658,24 @@ export type ClaudeCodeJsonOptions = {
 };
 
 /**
- * Run a JSON-returning prompt on the local subscription. Throws on failure so
- * the caller can decide between retry, API fallback, and giving up.
+ * THE JSON QUESTION, BUILT ONCE.
+ *
+ * Exported because the subscription is no longer the only thing that asks it.
+ * `lib/llm-paid.ts` runs the same prompts through the metered API when no
+ * drainer answered in time, and the two paths have to ask the IDENTICAL
+ * question or the fallback becomes a second product with its own failure modes.
+ * Every line below was tuned against thousands of real audits; rewriting it for
+ * the API would throw that away and drift the moment either copy was touched.
+ *
+ * Note this instructs the schema rather than enforcing it. The API does have a
+ * real structured-output mode, and it is deliberately not used here: the
+ * schemas in this codebase were written for instruction, not for the strict
+ * dialect, and a schema the strict validator rejects is a 400 at the exact
+ * moment the subscription has already failed. Instruct, then repair with
+ * `extractJson`, which is the parser that has actually been in production.
  */
-export async function runClaudeCodeJson({
-  system,
-  user,
-  schema,
-  model,
-  retries = 2,
-  label = 'claude-code',
-}: ClaudeCodeJsonOptions): Promise<unknown> {
-  if (!claudeCodeAvailable()) {
-    throw new ClaudeCodeError('Claude Code engine is not available in this runtime (no local CLI).');
-  }
-
-  const prompt = [
+export function jsonPrompt({ system, user, schema }: { system: string; user: string; schema: unknown }): string {
+  return [
     system,
     '',
     '---',
@@ -693,6 +695,25 @@ export async function runClaudeCodeJson({
     // source what repairStructure() would otherwise have to fix after the fact.
     rootKeyReminder(schema),
   ].filter(Boolean).join('\n');
+}
+
+/**
+ * Run a JSON-returning prompt on the local subscription. Throws on failure so
+ * the caller can decide between retry, API fallback, and giving up.
+ */
+export async function runClaudeCodeJson({
+  system,
+  user,
+  schema,
+  model,
+  retries = 2,
+  label = 'claude-code',
+}: ClaudeCodeJsonOptions): Promise<unknown> {
+  if (!claudeCodeAvailable()) {
+    throw new ClaudeCodeError('Claude Code engine is not available in this runtime (no local CLI).');
+  }
+
+  const prompt = jsonPrompt({ system, user, schema });
 
   const release = await acquire();
   try {

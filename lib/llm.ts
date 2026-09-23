@@ -1,11 +1,18 @@
 /**
  * THE ONLY WAY THIS APP TALKS TO A MODEL.
  *
- * There is no Anthropic API key in this codebase any more, and there is no code
- * path that would use one if there were. Every prompt in the product goes
- * through `llmText` or `llmJson`, and both of them end at the Claude Code CLI
- * running on Sarah's Max subscription. Flat cost, no wallet, no balance to
- * empty, nothing that fails at 2am because a credit card expired.
+ * Every prompt in the product goes through `llmText` or `llmJson`, and both of
+ * them start at the Claude Code CLI running on Sarah's Max subscription. Flat
+ * cost, no wallet, no balance to empty, nothing that fails at 2am because a
+ * card expired. That is the default on every call but the few marked
+ * `preferPaid`, and it is where the vast majority of the work still happens.
+ *
+ * Behind it sits a second lane, `lib/llm-paid.ts`, dormant unless somebody
+ * configures it. It exists because "the subscription is the only path" had a
+ * cost this file used to describe as a schedule and a client experiences as a
+ * failure: when no drainer answers in time, an honest `LlmUnavailable` is no
+ * use to somebody standing in front of the Operator waiting for an answer.
+ * Read that module before touching this one; its rules are the design.
  *
  * WHY A BROKER AND NOT JUST A FUNCTION CALL.
  *
@@ -42,6 +49,7 @@ import {
   runClaudeCodeJson,
   runClaudeCodeText,
 } from '@/lib/claude-code-json';
+import { paidLaneConfigured } from '@/lib/llm-paid';
 
 /**
  * The work is queued but the request could not wait for it.
@@ -127,6 +135,23 @@ export type LlmRequest = {
    * caller that writes without a person in between.
    */
   attachments?: Array<{ url: string; name?: string; type?: string }> | null;
+  /**
+   * SPEND MONEY TO SAVE THE WAIT, FOR THE FEW PLACES A PERSON IS WATCHING.
+   *
+   * The queue is the right default for everything with somewhere to land: a
+   * draft, a nightly brief, an audit. It is the wrong default for the Operator,
+   * where a client asks for a QR code and the honest queued answer is "about
+   * forty seconds", almost all of it the hop to a drainer rather than the model
+   * thinking.
+   *
+   * Set this and the paid lane goes first, answering in a few seconds. It costs
+   * roughly four cents a turn, it does nothing at all unless a paid key is
+   * configured, and if the lane is closed or fails the call falls straight back
+   * to the queue. Do not set it on anything that runs on a schedule: a cron
+   * that prefers the paid lane is a cron that bills every single night for work
+   * nobody is waiting on.
+   */
+  preferPaid?: boolean;
 };
 
 /** How often to check the queue while waiting. */
@@ -251,12 +276,31 @@ async function alreadyAnswered(req: LlmRequest, wantsJson: boolean): Promise<Job
   return null;
 }
 
+/**
+ * How much of the request's budget to hold back for the paid lane.
+ *
+ * Without this the fallback cannot work. The queue wait consumes the entire
+ * timeout, so by the time it gives up there is no time left to call anything,
+ * and a 45s wait plus an 8s API call is a route that gets killed at 60s and
+ * hands the caller NOTHING instead of an honest "still working". So when the
+ * paid lane is open, the queue gets a shorter turn and the remainder is real
+ * headroom rather than a hope.
+ */
+const PAID_RESERVE_MS = 20_000;
+
+/** Never squeeze the drainers below this: they deserve a genuine chance first. */
+const MIN_QUEUE_MS = 12_000;
+
 async function viaQueue(req: LlmRequest, schema: unknown | null): Promise<JobRow> {
   const collected = await alreadyAnswered(req, schema != null);
   if (collected) return collected;
 
+  const budget = req.timeoutMs ?? DEFAULT_TIMEOUT_MS;
+  const paidOpen = paidLaneConfigured();
+  const queueMs = paidOpen ? Math.max(MIN_QUEUE_MS, budget - PAID_RESERVE_MS) : budget;
+
   const jobId = await enqueue(req, schema);
-  const job = await waitFor(jobId, req.timeoutMs ?? DEFAULT_TIMEOUT_MS);
+  const job = await waitFor(jobId, queueMs);
 
   if (!job) {
     throw new LlmUnavailable(
@@ -268,6 +312,37 @@ async function viaQueue(req: LlmRequest, schema: unknown | null): Promise<JobRow
     throw new LlmUnavailable(job.error || 'The work failed.', jobId);
   }
   return job;
+}
+
+/**
+ * Try the paid lane, and say nothing if there isn't one.
+ *
+ * Returns null for every reason that is not "the model answered": no key, a
+ * closed ceiling, a refusal, a network failure. Null means the caller falls
+ * back to the behaviour it had before this lane existed, which is the queued
+ * answer arriving late. A paid lane that can turn a working "still queued" into
+ * a hard failure is worse than no paid lane.
+ */
+async function viaPaid(req: LlmRequest, schema: unknown | null): Promise<{ text: string; json: unknown } | null> {
+  if (!paidLaneConfigured()) return null;
+  const sb = getSupabase();
+  try {
+    const { paidText, paidJson } = await import('./llm-paid');
+    if (schema != null) {
+      return { text: '', json: await paidJson(sb, { ...req, schema }) };
+    }
+    return { text: await paidText(sb, req), json: null };
+  } catch (err) {
+    // Deliberately quiet on PaidLaneClosed: no key and a spent ceiling are
+    // both normal states, and the ceiling alerts for itself. A real failure is
+    // worth one line in the log and nothing more, because the queued answer is
+    // still coming.
+    const name = (err as Error)?.name;
+    if (name !== 'PaidLaneClosed') {
+      console.warn(`[llm] paid lane could not answer ${req.label}: ${(err as Error)?.message ?? err}`);
+    }
+    return null;
+  }
 }
 
 /**
@@ -309,10 +384,23 @@ export async function llmText(req: LlmRequest): Promise<string> {
     }
   }
 
-  const job = await viaQueue(req, null);
-  const text = (job.result_text ?? '').trim();
-  if (!text) throw new LlmUnavailable('The drainer returned an empty answer.');
-  return text;
+  // A person is watching a spinner: skip the queue and pay for the seconds.
+  if (req.preferPaid) {
+    const fast = await viaPaid(req, null);
+    if (fast) return fast.text;
+  }
+
+  try {
+    const job = await viaQueue(req, null);
+    const text = (job.result_text ?? '').trim();
+    if (!text) throw new LlmUnavailable('The drainer returned an empty answer.');
+    return text;
+  } catch (err) {
+    if (!(err instanceof LlmUnavailable)) throw err;
+    const paid = await viaPaid(req, null);
+    if (paid) return paid.text;
+    throw err;
+  }
 }
 
 /**
@@ -340,9 +428,21 @@ export async function llmJson<T = unknown>(req: LlmRequest & { schema: unknown }
     }
   }
 
-  const job = await viaQueue(req, req.schema);
-  if (job.result_json == null) throw new LlmUnavailable('The drainer returned no document.');
-  return job.result_json as T;
+  if (req.preferPaid) {
+    const fast = await viaPaid(req, req.schema);
+    if (fast) return fast.json as T;
+  }
+
+  try {
+    const job = await viaQueue(req, req.schema);
+    if (job.result_json == null) throw new LlmUnavailable('The drainer returned no document.');
+    return job.result_json as T;
+  } catch (err) {
+    if (!(err instanceof LlmUnavailable)) throw err;
+    const paid = await viaPaid(req, req.schema);
+    if (paid) return paid.json as T;
+    throw err;
+  }
 }
 
 /** The key `scripts/llm-worker.mjs` heartbeats into `app_state` while resident. */
