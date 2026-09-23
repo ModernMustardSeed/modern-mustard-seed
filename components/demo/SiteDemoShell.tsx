@@ -97,7 +97,8 @@ export default function SiteDemoShell({
             <p className="font-sans font-bold uppercase tracking-[0.14em] text-[10px] text-[#F5B700]">Your demo, {business}</p>
             <p className="font-body text-[13px] leading-relaxed text-[#FBF6EA]/90 mt-1.5">
               This is a first sketch of your website, made to show you what yours could become. The real one is made
-              bespoke. One more thing: it answers its own phone. Tap the call button and pretend you are a customer calling in.
+              bespoke.
+              {call ? ' One more thing: it answers its own phone. Tap the call button and pretend you are a customer calling in.' : ' Look around, then make it yours from your hub.'}
             </p>
             <button
               onClick={dismissIntro}
