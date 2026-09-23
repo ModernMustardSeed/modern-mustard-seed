@@ -96,11 +96,11 @@ export default function KingdomPage() {
             Design, technology and marketing for ministries, churches, charities and organizations that serve the Kingdom, at ministry pricing. Modern Mustard Seed and Cross + Covenant work side by side: curated merch collections, stores, the systems to run it all, and the launch that shares it with the world.
           </p>
           <div className="mt-9 flex flex-wrap gap-4">
-            <Link href="/inquire" className="inline-flex items-center gap-5 border-2 border-[#161616] bg-[#161616] px-7 py-4 font-sans font-bold text-sm text-[#FBF6EA] shadow-[5px_5px_0_0_#FBF6EA] transition-transform hover:-translate-x-0.5 hover:-translate-y-0.5">
+            <Link href="/inquire?kind=kingdom" className="inline-flex items-center gap-5 border-2 border-[#161616] bg-[#161616] px-7 py-4 font-sans font-bold text-sm text-[#FBF6EA] shadow-[5px_5px_0_0_#FBF6EA] transition-transform hover:-translate-x-0.5 hover:-translate-y-0.5">
               Tell Us About Your Ministry <span aria-hidden="true" className="text-[#F5B700] text-lg">↗</span>
             </Link>
-            <a href="https://crossandcovenant.co" target="_blank" rel="noopener noreferrer" className="inline-flex items-center border-2 border-[#161616] bg-[#FBF6EA] px-7 py-4 font-sans font-bold text-sm shadow-[5px_5px_0_0_#161616] transition-transform hover:-translate-y-0.5">
-              Visit Cross + Covenant
+            <a href="https://crossandcovenant.co/kingdom" target="_blank" rel="noopener noreferrer" className="inline-flex items-center border-2 border-[#161616] bg-[#FBF6EA] px-7 py-4 font-sans font-bold text-sm shadow-[5px_5px_0_0_#161616] transition-transform hover:-translate-y-0.5">
+              See it on Cross + Covenant
             </a>
           </div>
         </div>
@@ -154,7 +154,7 @@ export default function KingdomPage() {
           <p className="mt-5 max-w-2xl mx-auto font-body text-[16px] leading-relaxed">
             Scoped in one conversation, quoted as a set package price in writing before work starts, and it does not move. Changes to what we build are included. You own all of it.
           </p>
-          <Link href="/inquire" className="mt-8 inline-flex items-center gap-5 border-2 border-[#161616] bg-[#161616] px-7 py-4 font-sans font-bold text-sm text-[#FBF6EA] shadow-[5px_5px_0_0_#FBF6EA]">
+          <Link href="/inquire?kind=kingdom" className="mt-8 inline-flex items-center gap-5 border-2 border-[#161616] bg-[#161616] px-7 py-4 font-sans font-bold text-sm text-[#FBF6EA] shadow-[5px_5px_0_0_#FBF6EA]">
             Start the conversation <span aria-hidden="true" className="text-[#F5B700] text-lg">↗</span>
           </Link>
         </div>

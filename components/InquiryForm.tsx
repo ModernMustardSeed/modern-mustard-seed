@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { trackLead, metaDedup } from '@/lib/analytics';
 
 /**
@@ -32,6 +32,8 @@ const ENGAGEMENTS = [
   { id: 'voice', label: 'Voice agent' },
   { id: 'advisory', label: 'Advisory' },
   { id: 'pictures', label: 'Films and advertising' },
+  { id: 'marketing', label: 'Marketing' },
+  { id: 'kingdom', label: 'Ministry or charity (For the Kingdom)' },
   { id: 'other', label: 'Something else' },
 ];
 
@@ -51,6 +53,12 @@ export default function InquiryForm() {
     timeline: '',
   });
   const [kind, setKind] = useState<string | null>(null);
+
+  // A page can send people here with the engagement already chosen: /inquire?kind=kingdom.
+  useEffect(() => {
+    const k = new URLSearchParams(window.location.search).get('kind');
+    if (k && ENGAGEMENTS.some((x) => x.id === k)) setKind(k);
+  }, []);
   const [submitted, setSubmitted] = useState(false);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState('');
