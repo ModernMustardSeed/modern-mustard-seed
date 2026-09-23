@@ -3,6 +3,7 @@ import { alert, recovered } from '@/lib/cc-alert';
 import { LLM_WORKER_HEALTH_KEY } from '@/lib/llm';
 import { SITE } from '@/lib/seo';
 import { lastRan } from '@/lib/cc-ran';
+import { possessive } from '@/lib/business-name';
 
 /**
  * THE THINGS THAT BREAK WITHOUT TELLING ANYBODY.
@@ -121,7 +122,7 @@ export async function watchdog(sb: SupabaseClient): Promise<WatchResult> {
  */
 export async function alertDeadConnections(sb: SupabaseClient, clientEmail: string, business: string, failing: string[]): Promise<void> {
   if (!failing.length) {
-    await recovered(sb, `conn:${clientEmail}`, `${business}'s connections`);
+    await recovered(sb, `conn:${clientEmail}`, `${possessive(business)} connections`);
     return;
   }
   await alert(sb, {

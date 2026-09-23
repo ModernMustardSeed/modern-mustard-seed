@@ -46,9 +46,17 @@ export default function HeroTalk({ bubbleClass, panelClass }: { bubbleClass: str
   const [ringError, setRingError] = useState('');
   const vapiRef = useRef<Vapi | null>(null);
   const panelRef = useRef<HTMLDivElement | null>(null);
+  const bubbleRef = useRef<HTMLButtonElement | null>(null);
+  const wasOpen = useRef(false);
   const canCall = Boolean(PUBLIC_KEY && ASSISTANT_ID);
 
   useEffect(() => () => { vapiRef.current?.stop(); }, []);
+
+  // Closing the card hands focus back to the bubble that opened it.
+  useEffect(() => {
+    if (open) { wasOpen.current = true; return; }
+    if (wasOpen.current) bubbleRef.current?.focus();
+  }, [open]);
 
   useEffect(() => {
     if (!open) return;
@@ -124,7 +132,7 @@ export default function HeroTalk({ bubbleClass, panelClass }: { bubbleClass: str
 
   return (
     <>
-      <button type="button" className={bubbleClass} onClick={toggle} aria-expanded={open} aria-controls="hero-talk-panel">
+      <button ref={bubbleRef} type="button" className={bubbleClass} onClick={toggle} aria-expanded={open} aria-controls="hero-talk-panel">
         <span>Let’s build yours.</span>
         <small><i aria-hidden="true" />Tap to talk to me</small>
       </button>
