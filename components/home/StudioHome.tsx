@@ -1,7 +1,7 @@
 import Link from '@/components/AttributionLink';
 import Image from 'next/image';
 import styles from './StudioHome.module.css';
-import { GOOGLE_PROFILE } from '@/data/google-reviews';
+import { GOOGLE_PROFILE, GOOGLE_REVIEWS } from '@/data/google-reviews';
 import PosterHero from './PosterHero';
 
 const projects = [
@@ -50,6 +50,11 @@ export default function StudioHome({ faq }: { faq: { q: string; a: string }[] })
         <a className={styles.proofCard + " " + styles.googleCard} href={GOOGLE_PROFILE.profileUrl} target="_blank" rel="noopener noreferrer"><span className={styles.proofStars} aria-hidden="true">★★★★★</span><strong>{GOOGLE_PROFILE.rating} on Google</strong><small>Five-star studio</small><span className={styles.proofArrow} aria-hidden="true">↗</span></a>
         <div className={styles.proofCard + " " + styles.aiCard}><span className={styles.aiMark}>AI SEARCH</span><strong>ChatGPT-ready studio</strong><small>Built to be found in AI search</small><span className={styles.aiBurst} aria-hidden="true">✳</span></div>
       </div>
+      <div className={styles.reviewRow}>{GOOGLE_REVIEWS.map(r => <figure key={r.name + r.when} className={styles.review}>
+        <span className={styles.reviewStars} role="img" aria-label={r.stars + ' out of 5 stars'}>{'★'.repeat(r.stars)}</span>
+        <blockquote>“{r.text}”</blockquote>
+        <figcaption><strong>{r.name}</strong><span>Google review · {r.when}</span></figcaption>
+      </figure>)}</div>
     </section>
   </div>;
 }

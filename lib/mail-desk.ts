@@ -14,8 +14,10 @@ import type { ClientProject } from '@/lib/client-leads';
  * zayne@brimhomes.com. Each one is connected once and read on its own. Gmail
  * and Google Workspace take an app password (2-Step Verification, Security,
  * App passwords, "Mail"), because Gmail's own API needs an OAuth app Google
- * reviews for months. Porkbun hosted mail takes the mailbox's own password.
- * Which of the two is decided from the address and its MX, never asked.
+ * reviews for months. Zoho Mail takes the mailbox password once IMAP Access
+ * is ticked in its settings (an application-specific password when two-factor
+ * is on). Porkbun hosted mail takes the mailbox's own password. Which host is
+ * decided from the address and its MX, never asked.
  *
  * We read each inbox over IMAP, sort each message into a plain category, and
  * for anything that needs an answer we draft one in the voice of the person
@@ -30,21 +32,45 @@ const LEGACY = 'gmail';
 const providerFor = (address: string) => `mail:${address}`;
 const isMailbox = (provider: string) => provider === LEGACY || provider.startsWith('mail:');
 
-type HostKey = 'gmail' | 'porkbun';
-const HOSTS: Record<HostKey, { imap: string; smtp: string; name: string; drafts: string }> = {
-  gmail: { imap: 'imap.gmail.com', smtp: 'smtp.gmail.com', name: 'Google', drafts: '[Gmail]/Drafts' },
-  // Porkbun offers 465 with implicit TLS beside 587, so one transport serves both.
-  porkbun: { imap: 'imap.porkbun.com', smtp: 'smtp.porkbun.com', name: 'Porkbun', drafts: 'Drafts' },
-};
+type HostKey = 'gmail' | 'porkbun' | 'zoho';
+/** Where a mailbox lives. `zone` is Zoho's data centre suffix (com, eu, in, com.au, jp, ca, sa). */
+type Host = { key: HostKey; zone?: string };
+type Servers = { imap: string; smtp: string; name: string; drafts: string };
+
+const ZOHO_ZONES = ['com', 'eu', 'in', 'com.au', 'jp', 'ca', 'sa', 'com.cn'];
+
+function servers(h: Host): Servers {
+  if (h.key === 'porkbun') {
+    // Porkbun offers 465 with implicit TLS beside 587, so one transport serves every host.
+    return { imap: 'imap.porkbun.com', smtp: 'smtp.porkbun.com', name: 'Porkbun', drafts: 'Drafts' };
+  }
+  if (h.key === 'zoho') {
+    // A mailbox on the business's own domain is an organization account: the "pro" servers, in its data centre.
+    const zone = h.zone && ZOHO_ZONES.includes(h.zone) ? h.zone : 'com';
+    return { imap: `imappro.zoho.${zone}`, smtp: `smtppro.zoho.${zone}`, name: 'Zoho', drafts: 'Drafts' };
+  }
+  return { imap: 'imap.gmail.com', smtp: 'smtp.gmail.com', name: 'Google', drafts: '[Gmail]/Drafts' };
+}
+
+function hostFromMeta(meta: Record<string, unknown>): Host {
+  if (meta.host === 'porkbun') return { key: 'porkbun' };
+  if (meta.host === 'zoho') return { key: 'zoho', zone: typeof meta.zone === 'string' ? meta.zone : 'com' };
+  return { key: 'gmail' };
+}
 
 /** Where an address's mail lives, from its domain and MX. Null when we do not read that host. */
-export async function hostFor(address: string): Promise<HostKey | null> {
+export async function hostFor(address: string): Promise<Host | null> {
   const domain = address.split('@')[1]?.toLowerCase() ?? '';
-  if (domain === 'gmail.com' || domain === 'googlemail.com') return 'gmail';
+  if (domain === 'gmail.com' || domain === 'googlemail.com') return { key: 'gmail' };
   try {
     const mx = (await dns.resolveMx(domain)).map((m) => m.exchange.toLowerCase().replace(/\.$/, ''));
-    if (mx.some((h) => h === 'porkbun.com' || h.endsWith('.porkbun.com'))) return 'porkbun';
-    if (mx.some((h) => h.endsWith('google.com') || h.endsWith('googlemail.com'))) return 'gmail';
+    if (mx.some((h) => h === 'porkbun.com' || h.endsWith('.porkbun.com'))) return { key: 'porkbun' };
+    // mx.zoho.com, mx2.zoho.eu, mx3.zoho.com.au: the suffix after "zoho." is the data centre.
+    for (const h of mx) {
+      const zone = h.match(/(?:^|\.)zoho\.([a-z.]+)$/)?.[1];
+      if (zone && ZOHO_ZONES.includes(zone)) return { key: 'zoho', zone };
+    }
+    if (mx.some((h) => h.endsWith('google.com') || h.endsWith('googlemail.com'))) return { key: 'gmail' };
   } catch {
     /* no MX answer: not a host we can read */
   }
@@ -98,7 +124,7 @@ type IntegrationRow = {
   created_at: string;
 };
 
-type Creds = { provider: string; address: string; pass: string; host: HostKey; imap: string; smtp: string; drafts: string; lastUid: number };
+type Creds = { provider: string; address: string; pass: string; host: Host; imap: string; smtp: string; drafts: string; lastUid: number };
 
 /** Every mailbox row for a client, oldest first, so the first one connected stays the default. */
 async function mailboxRows(sb: SupabaseClient, clientEmail: string): Promise<IntegrationRow[]> {
@@ -115,8 +141,8 @@ function toCreds(r: IntegrationRow): Creds | null {
   try {
     const pass = decryptSecret(r.access_ciphertext, r.access_iv as string, r.access_tag as string);
     const meta = r.meta ?? {};
-    const host: HostKey = meta.host === 'porkbun' ? 'porkbun' : 'gmail';
-    const h = HOSTS[host];
+    const host = hostFromMeta(meta);
+    const h = servers(host);
     return { provider: r.provider, address: r.account_email, pass, host, imap: h.imap, smtp: h.smtp, drafts: h.drafts, lastUid: Number(meta.lastUid ?? 0) };
   } catch {
     return null;
@@ -145,7 +171,7 @@ export async function mailStatus(sb: SupabaseClient, clientEmail: string): Promi
   const rows = await mailboxRows(sb, clientEmail);
   const mailboxes: MailboxStatus[] = rows.map((r) => {
     const meta = r.meta ?? {};
-    return { address: r.account_email as string, host: meta.host === 'porkbun' ? 'porkbun' : 'gmail', connected: r.status === 'connected', lastSyncAt: (meta.lastSyncAt as string) ?? null, error: r.error ?? null };
+    return { address: r.account_email as string, host: hostFromMeta(meta).key, connected: r.status === 'connected', lastSyncAt: (meta.lastSyncAt as string) ?? null, error: r.error ?? null };
   });
   if (!mailboxes.length) return { connected: false, address: null, lastSyncAt: null, error: null, mailboxes };
   const live = mailboxes.filter((m) => m.connected);
@@ -165,12 +191,12 @@ export async function connectMailbox(sb: SupabaseClient, clientEmail: string, ad
   const addr = address.trim().toLowerCase();
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(addr)) return { ok: false, error: 'That does not look like an email address.' };
   const host = await hostFor(addr);
-  if (!host) return { ok: false, error: `We read Gmail, Google Workspace and Porkbun mailboxes, and ${addr.split('@')[1]} is none of those yet.` };
+  if (!host) return { ok: false, error: `We read Gmail, Google Workspace, Zoho and Porkbun mailboxes, and ${addr.split('@')[1]} is none of those yet.` };
   // Google shows an app password in four groups of four; a Porkbun password is kept exactly as typed.
-  const pass = host === 'gmail' ? password.replace(/\s+/g, '') : password.trim();
-  if (host === 'gmail' && pass.length < 12) return { ok: false, error: 'A Google app password is 16 letters. Copy it exactly as Google showed it.' };
+  const pass = host.key === 'gmail' ? password.replace(/\s+/g, '') : password.trim();
+  if (host.key === 'gmail' && pass.length < 12) return { ok: false, error: 'A Google app password is 16 letters. Copy it exactly as Google showed it.' };
   if (!pass) return { ok: false, error: 'The mailbox password is needed.' };
-  const h = HOSTS[host];
+  const h = servers(host);
   const client = new ImapFlow({ host: h.imap, port: 993, secure: true, auth: { user: addr, pass }, logger: false });
   try {
     await client.connect();
@@ -179,13 +205,14 @@ export async function connectMailbox(sb: SupabaseClient, clientEmail: string, ad
     const m = err instanceof Error ? err.message : String(err);
     // Porkbun answers a wrong password with a bare "Command failed"; imapflow flags it.
     const refused = Boolean((err as { authenticationFailed?: boolean })?.authenticationFailed) || /auth|credentials|invalid|login/i.test(m);
-    if (refused && host === 'gmail') return { ok: false, error: 'Google did not accept that. Make sure 2-Step Verification is on and this is an app password, not your normal password.' };
+    if (refused && host.key === 'gmail') return { ok: false, error: 'Google did not accept that. Make sure 2-Step Verification is on and this is an app password, not your normal password.' };
+    if (refused && host.key === 'zoho') return { ok: false, error: `Zoho did not accept that for ${addr}. In Zoho Mail, open Settings, Mail Accounts, and tick IMAP Access for this mailbox. If two-factor sign-in is on, use an application-specific password from Zoho Accounts, Security, App Passwords.` };
     if (refused) return { ok: false, error: `Porkbun did not accept that password for ${addr}. Use the password set for this mailbox on Porkbun, not the Porkbun account password.` };
     return { ok: false, error: `Could not reach the mailbox: ${m}` };
   }
   const enc = encryptSecret(pass);
   const { error } = await sb.from('client_integrations').upsert(
-    { client_email: clientEmail, provider: providerFor(addr), account_email: addr, access_ciphertext: enc.ciphertext, access_iv: enc.iv, access_tag: enc.tag, status: 'connected', error: null, meta: { host, lastUid: 0 }, updated_at: new Date().toISOString() },
+    { client_email: clientEmail, provider: providerFor(addr), account_email: addr, access_ciphertext: enc.ciphertext, access_iv: enc.iv, access_tag: enc.tag, status: 'connected', error: null, meta: { host: host.key, ...(host.zone ? { zone: host.zone } : {}), lastUid: 0 }, updated_at: new Date().toISOString() },
     { onConflict: 'client_email,provider' }
   );
   if (error) return { ok: false, error: error.message };
@@ -313,7 +340,7 @@ async function syncOne(sb: SupabaseClient, p: ClientProject, creds: Creds): Prom
   }
   await sb
     .from('client_integrations')
-    .update({ error: null, meta: { host: creds.host, lastUid: maxUid, lastSyncAt: new Date().toISOString() }, updated_at: new Date().toISOString() })
+    .update({ error: null, meta: { host: creds.host.key, ...(creds.host.zone ? { zone: creds.host.zone } : {}), lastUid: maxUid, lastSyncAt: new Date().toISOString() }, updated_at: new Date().toISOString() })
     .eq('client_email', p.clientEmail)
     .eq('provider', creds.provider);
   return { ok: true, fetched, queued };
@@ -376,7 +403,7 @@ export async function sendReply(sb: SupabaseClient, clientEmail: string, mailId:
       references: [m.in_reply_to, m.message_id].filter(Boolean).join(' '),
     });
   } catch (err) {
-    return { ok: false, error: `${HOSTS[creds.host].name} did not send it: ${err instanceof Error ? err.message : String(err)}` };
+    return { ok: false, error: `${servers(creds.host).name} did not send it: ${err instanceof Error ? err.message : String(err)}` };
   }
   await sb.from('client_mail').update({ status: 'replied', replied_at: new Date().toISOString(), draft: body, updated_at: new Date().toISOString() }).eq('id', mailId);
   return { ok: true };
