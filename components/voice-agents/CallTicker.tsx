@@ -19,9 +19,9 @@ const NIGHT = [
 ];
 
 const TAG_COLOR: Record<string, string> = {
-  Booked: '#1E50C8',
-  Reserved: '#1E50C8',
-  Fired: '#1E50C8',
+  Booked: '#161616',
+  Reserved: '#161616',
+  Fired: '#161616',
   Escalated: '#E0301E',
   Answered: '#8f6600',
   Qualified: '#8f6600',

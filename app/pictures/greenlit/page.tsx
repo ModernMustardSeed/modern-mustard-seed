@@ -71,7 +71,7 @@ export default function GreenlitPage() {
         </div>
 
         <p className="text-center mt-10">
-          <Link href="/" className="font-sans font-extrabold text-xs uppercase tracking-[0.18em] text-[#1E50C8] underline underline-offset-4">
+          <Link href="/" className="font-sans font-extrabold text-xs uppercase tracking-[0.18em] text-[#B92417] underline underline-offset-4">
             Back to Modern Mustard Seed →
           </Link>
         </p>

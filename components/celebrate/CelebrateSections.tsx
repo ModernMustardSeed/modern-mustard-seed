@@ -9,7 +9,7 @@ import {
 
 /** Deterministic confetti sprinkle so server and client render identically. */
 export function confettiPieces(count: number, seed: number) {
-  const colors = ['#F5B700', '#FFDD55', '#E0301E', '#1E50C8', '#FFFFFF'];
+  const colors = ['#F5B700', '#FFDD55', '#E0301E', '#161616', '#FFFFFF'];
   let s = seed * 9301 + 49297;
   const rnd = () => {
     s = (s * 9301 + 49297) % 233280;
@@ -154,7 +154,7 @@ export function LocalMakers() {
           </p>
           <p className="font-body text-base text-[#161616]/70 mt-3 leading-relaxed">
             Own a bakery, flower shop, or board studio on the route?{' '}
-            <Link href="/contact" className="font-bold text-[#1E50C8] underline underline-offset-4">
+            <Link href="/contact" className="font-bold text-[#B92417] underline underline-offset-4">
               Join as a founding maker
             </Link>{' '}
             and we bring you steady weekday orders with zero marketing spend.
@@ -185,7 +185,7 @@ export function PricingStubs() {
               key={t.slug}
               className={`bg-white border-2 border-[#161616] rounded-2xl p-6 shadow-[5px_5px_0_0_#161616] ${i % 2 ? 'rotate-1' : '-rotate-1'}`}
             >
-              <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-[#1E50C8] font-bold">{t.chip}</p>
+              <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-[#B92417] font-bold">{t.chip}</p>
               <div className="flex items-baseline justify-between mt-2">
                 <h3 className="font-display font-black text-2xl">{t.name}</h3>
                 <p className="font-display font-black text-3xl text-[#C4160B]">

@@ -5,7 +5,7 @@ import { SITE_RUNGS, DEMO_PRODUCTS, formatUsd } from '@/lib/demo-order';
 
 const description = 'AI-native website design from Kalispell, Montana. Custom websites, shared-brain voice agents and AI search foundations for businesses nationwide.';
 export const metadata = buildMetadata({ title: 'AI Website Design in Montana, Built in Kalispell', description, path: '/ai-websites' });
-const linkStyle = 'font-bold text-[#1E50C8] underline decoration-2 underline-offset-4';
+const linkStyle = 'font-bold text-[#B92417] underline decoration-2 underline-offset-4';
 
 export default function AIWebsitesPage() {
   return (

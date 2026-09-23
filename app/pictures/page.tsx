@@ -15,7 +15,7 @@ const faq = [
   { q: 'Who owns the work and the ad accounts?', a: 'You do. Your finished creative belongs to your business, and campaigns run in accounts you own. You keep access to the work, the audience, and the reporting.' },
   { q: 'How do we get started?', a: 'Reach out with a little about your business, the audience you want to reach, and the idea or launch you have in mind. Sarah will reply personally to talk through the project.' },
 ];
-const cta = 'inline-flex items-center justify-center gap-8 border-2 border-[#161616] bg-[#F5B700] px-7 py-4 font-sans text-sm font-bold text-[#161616] shadow-[5px_5px_0_0_#161616] transition-transform hover:-translate-y-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-8 focus-visible:outline-[#1E50C8]';
+const cta = 'inline-flex items-center justify-center gap-8 border-2 border-[#161616] bg-[#F5B700] px-7 py-4 font-sans text-sm font-bold text-[#161616] shadow-[5px_5px_0_0_#161616] transition-transform hover:-translate-y-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-8 focus-visible:outline-[#E0301E]';
 export default function PicturesPage() {
   const jsonLd = { '@context': 'https://schema.org', '@graph': [
     { '@type': 'Service', name: 'Mustard Pictures', serviceType: 'Commercial and brand film production with managed advertising', description, url: SITE.url + '/pictures', provider: { '@type': 'Organization', name: SITE.name, url: SITE.url }, areaServed: 'US' },
@@ -32,7 +32,7 @@ export default function PicturesPage() {
         </div>
       </div>
     </section>
-    <div className="border-b-2 border-[#161616] bg-[#1E50C8] px-6 py-5 text-center font-mono text-xs uppercase tracking-[.16em] leading-7 text-[#FBF6EA]">Creative direction <span aria-hidden="true"> / </span> Film production <span aria-hidden="true"> / </span> Campaign management</div>
+    <div className="border-b-2 border-[#161616] bg-[#161616] px-6 py-5 text-center font-mono text-xs uppercase tracking-[.16em] leading-7 text-[#FBF6EA]">Creative direction <span aria-hidden="true"> / </span> Film production <span aria-hidden="true"> / </span> Campaign management</div>
     <section className="mx-auto max-w-7xl px-6 py-20 md:px-[6vw] md:py-28" aria-labelledby="one-studio"><div className="grid gap-8 md:grid-cols-2 md:gap-16"><h2 id="one-studio" className="font-display text-4xl font-bold leading-[1.08] tracking-tight md:text-5xl">From first frame<br />to the right audience.</h2><div className="font-body text-base leading-relaxed"><p>Mustard Pictures and Broadcast are now one offer. The same studio shapes the story, makes the commercial, and manages the campaign that puts it in front of people.</p><p className="mt-4">Brand films, commercial spots, and social cuts. Meta and Google campaigns, with ongoing refinement and reporting you can read. Everything begins with a conversation about your business.</p></div></div>
       <div className="mt-14 grid gap-6 md:grid-cols-3">{steps.map((step, i) => <article key={step.title} className="border-2 border-[#161616] bg-white p-7 shadow-[5px_5px_0_0_#161616]"><span className="font-mono text-xs font-bold text-[#C4160B]">0{i + 1}</span><h3 className="mt-5 font-display text-3xl font-bold">{step.title}</h3><p className="mt-4 font-body text-sm leading-relaxed text-[#45484e]">{step.text}</p></article>)}</div>
     </section>

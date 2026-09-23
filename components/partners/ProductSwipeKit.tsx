@@ -57,7 +57,7 @@ function OfferCard({ offer, link }: { offer: SwipeOffer; link: string }) {
       <div className="p-5 sm:p-6">
         {/* Their tracked link for this offer */}
         <div className="flex items-center gap-2 mb-5">
-          <code className="flex-1 min-w-0 truncate font-mono text-xs text-[#1E50C8] bg-[#161616]/[0.04] border border-[#161616]/15 rounded-lg px-3 py-2.5">{link}</code>
+          <code className="flex-1 min-w-0 truncate font-mono text-xs text-[#B92417] bg-[#161616]/[0.04] border border-[#161616]/15 rounded-lg px-3 py-2.5">{link}</code>
           <CopyButton text={link} label="Copy link" />
         </div>
 

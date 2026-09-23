@@ -113,7 +113,7 @@ export default function OfferGrid() {
           <a
             href="#top"
             onClick={() => track('mustard_freeplay_scroll')}
-            className="font-mono font-bold text-[12px] text-[#1E50C8] underline underline-offset-4 shrink-0"
+            className="font-mono font-bold text-[12px] text-[#B92417] underline underline-offset-4 shrink-0"
           >
             PLAY YOUR FREE CREDIT ↑
           </a>

@@ -259,7 +259,7 @@ export default function WorkWithUsPage() {
           </div>
           <div className="mt-12 grid gap-6 md:grid-cols-2">
             <div className="min-w-0 rounded-2xl border-2 border-[#161616] bg-white p-7 shadow-[6px_6px_0_0_#161616] md:p-8">
-              <span className="font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-[#1E50C8]">
+              <span className="font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-[#B92417]">
                 We are probably a fit
               </span>
               <ul className="mt-5 space-y-3.5">
@@ -268,7 +268,7 @@ export default function WorkWithUsPage() {
                     key={f}
                     className="flex min-w-0 items-start gap-3 font-body text-[14.5px] leading-relaxed text-[#161616]/80"
                   >
-                    <span aria-hidden className="mt-[9px] h-1.5 w-1.5 shrink-0 rounded-full bg-[#1E50C8]" />
+                    <span aria-hidden className="mt-[9px] h-1.5 w-1.5 shrink-0 rounded-full bg-[#161616]" />
                     {f}
                   </li>
                 ))}

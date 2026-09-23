@@ -87,7 +87,7 @@ export default async function ChiefHqPage() {
             <p className="font-body text-[13px] text-[#161616]/70 mt-1.5 leading-relaxed flex-1">
               Start a live voice call with him in your browser. Look for the pill in the corner.
             </p>
-            <span className="font-mono font-bold text-[12px] mt-3 text-[#1E50C8]">Bottom-right ↘</span>
+            <span className="font-mono font-bold text-[12px] mt-3 text-[#B92417]">Bottom-right ↘</span>
           </div>
         </section>
 

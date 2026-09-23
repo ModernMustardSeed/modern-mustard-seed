@@ -86,7 +86,7 @@ export default function BookPage() {
               </div>
               <p className="mt-6 font-body text-[15px] text-[#5c554a]">
                 Not ready to talk?{' '}
-                <Link href="/contact" className="font-bold text-[#1E50C8] underline decoration-2 underline-offset-2 hover:text-[#E0301E]">
+                <Link href="/contact" className="font-bold text-[#B92417] underline decoration-2 underline-offset-2 hover:text-[#E0301E]">
                   Send a note instead
                 </Link>{' '}
                 and Sarah answers inside a day.
@@ -198,7 +198,7 @@ export default function BookPage() {
           </div>
           <p className="mt-10 text-center font-body text-[15px] text-[#5c554a]">
             Would rather write it out?{' '}
-            <Link href="/contact" className="font-bold text-[#1E50C8] underline decoration-2 underline-offset-2 hover:text-[#E0301E]">
+            <Link href="/contact" className="font-bold text-[#B92417] underline decoration-2 underline-offset-2 hover:text-[#E0301E]">
               Send a note instead
             </Link>
             .

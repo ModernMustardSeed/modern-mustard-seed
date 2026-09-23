@@ -6,7 +6,7 @@
  */
 export function fireConfetti(): void {
   if (typeof window === 'undefined') return;
-  const colors = ['#F5B700', '#E0301E', '#1E50C8', '#161616', '#FFD23F', '#FFFDF6'];
+  const colors = ['#F5B700', '#E0301E', '#FBF6EA', '#161616', '#FFD23F', '#FFFDF6'];
   const canvas = document.createElement('canvas');
   canvas.style.cssText = 'position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:9999;';
   canvas.width = window.innerWidth;

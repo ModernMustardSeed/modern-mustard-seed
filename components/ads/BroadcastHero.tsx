@@ -81,7 +81,7 @@ export default function BroadcastHero() {
                 <div className="flex items-center gap-1.5" aria-hidden="true">
                   <span className="w-2.5 h-2.5 rounded-full bg-[#E0301E] inline-block" />
                   <span className="w-2.5 h-2.5 rounded-full bg-[#F5B700] inline-block" />
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#1E50C8] inline-block" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#161616] inline-block" />
                 </div>
                 <p className="font-mono text-[10px] md:text-[11px] uppercase tracking-[0.3em] text-[#FBF6EA]/80">Mustard Network · CH 01 · Ironwood Roofing Co.</p>
                 <p className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.2em] text-[#E0301E] font-bold">

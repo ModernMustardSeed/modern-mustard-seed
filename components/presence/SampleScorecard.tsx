@@ -102,7 +102,7 @@ export default function SampleScorecard() {
 
   return (
     <div ref={ref} className="relative">
-      <span className="absolute -top-4 left-6 z-10 rotate-[-4deg] rounded-full border-2 border-[#161616] bg-[#1E50C8] px-4 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-white shadow-[3px_3px_0_0_#161616]">
+      <span className="absolute -top-4 left-6 z-10 rotate-[-4deg] rounded-full border-2 border-[#161616] bg-[#161616] px-4 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-white shadow-[3px_3px_0_0_#161616]">
         Sample report
       </span>
       <div className="rounded-3xl border-2 border-[#161616] bg-[#FFFDF6] p-5 shadow-[8px_8px_0_0_#161616] md:p-7">

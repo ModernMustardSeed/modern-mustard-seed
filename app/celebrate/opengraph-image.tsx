@@ -14,7 +14,7 @@ const INK = '#161616';
 const CREAM = '#FBF6EA';
 const MUSTARD = '#F5B700';
 const RED = '#E0301E';
-const BLUE = '#1E50C8';
+const BLUE = '#161616';
 const CONFETTI = [MUSTARD, '#FFDD55', RED, BLUE, '#FFFFFF'];
 
 export default async function OpengraphImage() {

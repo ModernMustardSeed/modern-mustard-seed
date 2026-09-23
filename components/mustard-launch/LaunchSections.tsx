@@ -30,7 +30,7 @@ export function HowItWorks() {
       <div className="grid md:grid-cols-3 gap-5 mt-10">
         {steps.map((s) => (
           <div key={s.n} className="pop-card p-6">
-            <span className="font-mono font-bold text-[#1E50C8] text-sm tracking-[0.15em]">{s.n}</span>
+            <span className="font-mono font-bold text-[#B92417] text-sm tracking-[0.15em]">{s.n}</span>
             <h3 className="font-display font-bold text-2xl text-[#161616] mt-2">{s.t}</h3>
             <p className="font-sans text-[#161616]/70 mt-2 text-[15px]">{s.d}</p>
           </div>
@@ -133,7 +133,7 @@ export function ProofSection() {
   return (
     <section className="max-w-5xl mx-auto px-5 sm:px-8 py-16">
       <div className="pop-card-cream p-8 sm:p-12 text-center">
-        <Eyebrow color="#1E50C8">Built on a battle-tested launch</Eyebrow>
+        <Eyebrow color="#B92417">Built on a battle-tested launch</Eyebrow>
         <h2 className="font-display font-extrabold text-3xl sm:text-4xl text-[#161616] mt-3 max-w-3xl mx-auto">
           The same launch playbook Modern Mustard Seed uses to open real businesses.
         </h2>
@@ -141,10 +141,10 @@ export function ProofSection() {
           Mustard Launch is built on our New Business Launch Checklist, refined across trades, food and retail, wellness, creative, and software. Mr. Mustard just makes it personal, and does the heavy lifting with you.
         </p>
         <div className="flex flex-wrap justify-center gap-3 mt-6">
-          <Link href="/launch-checklist" className="font-mono text-sm font-bold text-[#1E50C8] underline underline-offset-4">
+          <Link href="/launch-checklist" className="font-mono text-sm font-bold text-[#B92417] underline underline-offset-4">
             See the free checklist →
           </Link>
-          <Link href="/work-with-us" className="font-mono text-sm font-bold text-[#1E50C8] underline underline-offset-4">
+          <Link href="/work-with-us" className="font-mono text-sm font-bold text-[#B92417] underline underline-offset-4">
             Rather have us build it? →
           </Link>
         </div>

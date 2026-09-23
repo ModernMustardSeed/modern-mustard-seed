@@ -56,13 +56,13 @@ html:not(.mm-js) .mm-r {
     --ember: #ff8a00;
     --rust: #e0301e;
     --rust-glow: #ff5a45;
-    --lake: #1e50c8;
+    --lake: #161616;
     --sage: #8fa98f;
     --cream: #fbf6ea;
     /* Pop palette tokens */
     --pop-yellow: #f5b700;
     --pop-red: #e0301e;
-    --pop-blue: #1e50c8;
+    --pop-blue: #b92417;
     --pop-cream: #fbf6ea;
     --pop-ink: #161616;
   }

@@ -125,7 +125,7 @@ export default function InquiryForm() {
             Anything urgent goes to{' '}
             <a
               href="mailto:sarah@modernmustardseed.com"
-              className="font-bold text-[#1E50C8] underline decoration-2 underline-offset-2 hover:text-[#E0301E]"
+              className="font-bold text-[#B92417] underline decoration-2 underline-offset-2 hover:text-[#E0301E]"
             >
               sarah@modernmustardseed.com
             </a>
@@ -287,7 +287,7 @@ export default function InquiryForm() {
             the plan is to lead with value rather than qualify at the door. */}
         <p className="rounded-lg border-2 border-dashed border-[#161616]/30 bg-[#FBF6EA] px-4 py-3 font-body text-[13px] leading-relaxed text-[#5c554a]">
           Would rather just pick a time?{' '}
-          <a href="/book" className="font-bold text-[#1E50C8] underline decoration-2 underline-offset-2 hover:text-[#E0301E]">
+          <a href="/book" className="font-bold text-[#B92417] underline decoration-2 underline-offset-2 hover:text-[#E0301E]">
             Book a call
           </a>{' '}
           and put yourself straight on the calendar. This form is for when writing it out is easier.

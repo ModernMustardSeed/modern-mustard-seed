@@ -149,7 +149,7 @@ export default function LaunchChecklistTool() {
                             type="button"
                             onClick={() => setExpanded((x) => ({ ...x, [item.id]: !isExp }))}
                             aria-label={isExp ? 'Hide details' : 'Show how-to'}
-                            className="text-[10px] uppercase tracking-[0.15em] font-mono font-bold text-[#1E50C8] hover:text-[#161616] shrink-0 mt-0.5"
+                            className="text-[10px] uppercase tracking-[0.15em] font-mono font-bold text-[#B92417] hover:text-[#161616] shrink-0 mt-0.5"
                           >
                             {isExp ? 'Hide' : 'How to'}
                           </button>
@@ -196,7 +196,7 @@ export default function LaunchChecklistTool() {
                                     href={l.url}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-[12px] font-sans font-semibold text-[#1E50C8] hover:text-[#161616] underline decoration-[#1E50C8]/30 underline-offset-2"
+                                    className="text-[12px] font-sans font-semibold text-[#B92417] hover:text-[#161616] underline decoration-[#B92417]/30 underline-offset-2"
                                   >
                                     {l.label} ↗
                                   </a>

@@ -242,7 +242,7 @@ export function IntegritySection() {
           {principles.map((p, i) => (
             <Reveal key={p.t} variant="rise" delay={260 + i * 120}>
               <div className="pop-card rounded-none p-6 h-full">
-                <span className="font-mono font-bold text-[10px] tracking-wider text-[#1E50C8]">[ 0{i + 1} ]</span>
+                <span className="font-mono font-bold text-[10px] tracking-wider text-[#B92417]">[ 0{i + 1} ]</span>
                 <h3 className="font-display font-extrabold text-lg text-[#161616] mt-2">{p.t}</h3>
                 <p className="font-sans text-[13px] text-[#161616]/75 mt-2 leading-relaxed">{p.d}</p>
               </div>

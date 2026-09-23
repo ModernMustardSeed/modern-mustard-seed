@@ -73,7 +73,7 @@ function LiveFrame({ label, url }: { label: string; url: string }) {
       <div className="flex items-center gap-1.5 bg-[#161616] px-3 py-2">
         <span aria-hidden="true" className="h-2 w-2 rounded-full bg-[#E0301E]" />
         <span aria-hidden="true" className="h-2 w-2 rounded-full bg-[#F5B700]" />
-        <span aria-hidden="true" className="h-2 w-2 rounded-full bg-[#1E50C8]" />
+        <span aria-hidden="true" className="h-2 w-2 rounded-full bg-[#161616]" />
         <span className="ml-2 flex-1 truncate rounded bg-white/10 px-2 py-0.5 font-mono text-[9.5px] text-white/70">
           {bareUrl(url)}
         </span>
@@ -198,7 +198,7 @@ export default function ProposalDoc({
               href={withProtocol(siteUrl)}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-baseline gap-1.5 text-[13px] font-mono text-[#1E50C8] hover:text-[#161616] underline decoration-[#1E50C8]/30 underline-offset-4 break-all transition-colors"
+              className="inline-flex items-baseline gap-1.5 text-[13px] font-mono text-[#B92417] hover:text-[#161616] underline decoration-[#B92417]/30 underline-offset-4 break-all transition-colors"
             >
               {bareUrl(siteUrl)} <span aria-hidden="true">↗</span>
             </a>
@@ -277,7 +277,7 @@ export default function ProposalDoc({
               <div
                 key={i}
                 className="border-2 border-[#161616] rounded-xl p-5"
-                style={{ boxShadow: `inset 6px 0 0 0 ${s.variable ? '#1E50C8' : '#F5B700'}` }}
+                style={{ boxShadow: `inset 6px 0 0 0 ${s.variable ? '#E0301E' : '#F5B700'}` }}
               >
                 <div className="flex items-baseline justify-between gap-3 mb-1.5">
                   <span className="flex items-baseline gap-2.5 min-w-0">

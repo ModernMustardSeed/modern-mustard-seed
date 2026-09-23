@@ -84,7 +84,7 @@ export default function MontanaPage() {
         </div>
       </section>
 
-      <nav aria-label="Explore the studio" className="max-w-6xl mx-auto px-6 py-8 flex flex-wrap gap-6 font-bold text-[#1E50C8] underline underline-offset-4">
+      <nav aria-label="Explore the studio" className="max-w-6xl mx-auto px-6 py-8 flex flex-wrap gap-6 font-bold text-[#B92417] underline underline-offset-4">
         <Link href="/ai-websites">AI websites, explained</Link>
         <Link href="/montana/kalispell">Our home in Kalispell</Link>
         <Link href="/nationwide">Working with us from outside Montana</Link>
@@ -114,7 +114,7 @@ export default function MontanaPage() {
                   {c.alsoServes.slice(0, 3).join(' · ')}
                 </p>
                 <p className="mt-3 font-body text-sm text-[#3d382e] leading-relaxed">{c.locale}.</p>
-                <span className="mt-auto pt-5 font-sans font-bold text-sm text-[#1E50C8]">
+                <span className="mt-auto pt-5 font-sans font-bold text-sm text-[#B92417]">
                   {c.name} businesses →
                 </span>
               </Link>

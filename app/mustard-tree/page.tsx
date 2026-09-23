@@ -104,7 +104,7 @@ export default function MustardTreePage() {
             >
               Claim Your Planting Number
             </a>
-            <a href="#how" className="font-bold text-[#1E50C8] underline underline-offset-4">
+            <a href="#how" className="font-bold text-[#B92417] underline underline-offset-4">
               or see how it grows
             </a>
           </div>
@@ -215,11 +215,11 @@ export default function MustardTreePage() {
         </div>
         <p className="font-body text-sm text-[#161616]/70 text-center mt-10">
           The Mustard Tree is a{' '}
-          <Link href="/" className="font-bold text-[#1E50C8] underline underline-offset-4">
+          <Link href="/" className="font-bold text-[#B92417] underline underline-offset-4">
             Modern Mustard Seed
           </Link>{' '}
           product, from the studio behind{' '}
-          <Link href="/demos" className="font-bold text-[#1E50C8] underline underline-offset-4">
+          <Link href="/demos" className="font-bold text-[#B92417] underline underline-offset-4">
             The Talking Website
           </Link>
           .

@@ -167,7 +167,7 @@ export default function RoadmapDocument({
                     href={url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="hover:text-[#1E50C8] transition-colors"
+                    className="hover:text-[#B92417] transition-colors"
                   >
                     {host}
                   </a>
@@ -440,7 +440,7 @@ export default function RoadmapDocument({
           title="Your lead engine"
           lede="Four ways to get customers, and you only need one of them working. Pick the one your situation already favors, run it past the point of boredom, then add the next."
         />
-        <div className="border-2 border-[#161616] rounded-2xl bg-[#1E50C8] shadow-[7px_7px_0_0_#161616] p-7 md:p-10 text-white print:bg-white print:text-[#161616] print:shadow-none">
+        <div className="border-2 border-[#161616] rounded-2xl bg-[#161616] shadow-[7px_7px_0_0_#161616] p-7 md:p-10 text-white print:bg-white print:text-[#161616] print:shadow-none">
           <span className="block text-[9px] uppercase tracking-[0.4em] font-mono font-bold text-white/70 mb-3 print:text-[#8f6600]">
             Run this one first
           </span>
@@ -617,7 +617,7 @@ export default function RoadmapDocument({
                 {href ? (
                   <Link
                     href={href}
-                    className="mt-5 inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.25em] font-mono font-bold text-[#1E50C8] hover:text-[#161616] transition-colors"
+                    className="mt-5 inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.25em] font-mono font-bold text-[#B92417] hover:text-[#161616] transition-colors"
                   >
                     {item.department} &rarr;
                   </Link>

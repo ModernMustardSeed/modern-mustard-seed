@@ -215,7 +215,7 @@ export default function RecoveryMachine({
         </div>
         <div className="flex items-center gap-1 rounded-md border-2 border-[#161616] bg-[#080C16] px-1.5 py-0.5" aria-hidden>
           {[0, 1, 2].map((i) => (
-            <span key={i} className="block h-3 w-2.5 rounded-[2px] bg-[#1E50C8]/70" />
+            <span key={i} className="block h-3 w-2.5 rounded-[2px] bg-[#161616]/70" />
           ))}
         </div>
       </div>
@@ -335,7 +335,7 @@ export default function RecoveryMachine({
               {d}
             </PopKey>
           ))}
-          <PopKey label="Delete last digit" onClick={backspace} className="bg-[#1E50C8] py-2.5 text-sm text-[#FBF6EA]">
+          <PopKey label="Delete last digit" onClick={backspace} className="bg-[#161616] py-2.5 text-sm text-[#FBF6EA]">
             <span aria-hidden>⌫</span>
           </PopKey>
           {['1', '2', '3'].map((d) => (
@@ -343,7 +343,7 @@ export default function RecoveryMachine({
               {d}
             </PopKey>
           ))}
-          <PopKey label="Next field" onClick={nextField} className="bg-[#1E50C8] py-2.5 text-[8px] uppercase tracking-[0.08em] text-[#FBF6EA]">
+          <PopKey label="Next field" onClick={nextField} className="bg-[#161616] py-2.5 text-[8px] uppercase tracking-[0.08em] text-[#FBF6EA]">
             Next
           </PopKey>
           <PopKey label="Digit 0" onClick={() => digit('0')} className="col-span-2 bg-white py-2.5 text-base text-[#161616]">

@@ -33,7 +33,7 @@ const LADDER = [
   {
     rung: '03',
     rate: `${m.productPct}%`,
-    accent: '#1E50C8',
+    accent: '#E0301E',
     label: 'On every playbook',
     detail: `Share a playbook or bundle and earn half the moment someone buys. Every one of them is yours free, so you only ever recommend what you have used.`,
     tag: 'The easy front door',

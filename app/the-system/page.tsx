@@ -292,7 +292,7 @@ Sarah Scarano, self-taught full-stack engineer and AI systems architect, Kalispe
 
             {/* Blueprint card */}
             <div className="relative">
-              <span className="absolute -top-4 left-6 z-10 inline-block bg-[#1E50C8] text-[#FBF6EA] font-mono font-bold text-[10px] uppercase tracking-[0.25em] px-3 py-1.5 rounded-full border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] -rotate-2">
+              <span className="absolute -top-4 left-6 z-10 inline-block bg-[#161616] text-[#FBF6EA] font-mono font-bold text-[10px] uppercase tracking-[0.25em] px-3 py-1.5 rounded-full border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] -rotate-2">
                 Blueprint // Standard stack
               </span>
               <div className="pop-card-cream p-7 md:p-8">

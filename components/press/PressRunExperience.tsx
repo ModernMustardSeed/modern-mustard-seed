@@ -350,7 +350,7 @@ export default function PressRunExperience() {
                           onClick={() => setDraft((d) => { if (!d) return d; const n = structuredClone(d); n.sections[si].items.splice(ii, 1); return n; })}>✕</button>
                       </div>
                     ))}
-                    <button type="button" className="font-mono text-[11px] font-bold text-[#1E50C8] underline underline-offset-2"
+                    <button type="button" className="font-mono text-[11px] font-bold text-[#B92417] underline underline-offset-2"
                       onClick={() => setDraft((d) => { if (!d) return d; const n = structuredClone(d); n.sections[si].items.push({ name: '', detail: null, price: '', note: null }); return n; })}>
                       + add an item
                     </button>
@@ -390,7 +390,7 @@ export default function PressRunExperience() {
         </div>
         <p className="text-center mt-6 font-body text-sm text-[#161616]/60">
           Prices change every season? The real fix is a website that updates itself.{' '}
-          <a href="/work-with-us" className="text-[#1E50C8] font-semibold underline underline-offset-2">Talk to the studio</a>.
+          <a href="/work-with-us" className="text-[#B92417] font-semibold underline underline-offset-2">Talk to the studio</a>.
         </p>
       </div>
     </div>

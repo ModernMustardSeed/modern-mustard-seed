@@ -18,7 +18,7 @@ const FLOAT_STYLES = [
   { bg: '#FBF6EA', ink: '#161616', sub: '#161616' },
   { bg: '#E0301E', ink: '#FFFFFF', sub: '#FFFFFF' },
 ];
-const CONFETTI_COLORS = ['#F5B700', '#FFDD55', '#E0301E', '#1E50C8', '#FFFFFF'];
+const CONFETTI_COLORS = ['#F5B700', '#FFDD55', '#E0301E', '#161616', '#FFFFFF'];
 const MAX_PARTICLES = 150;
 
 function occasionProp(id: CelebrateOccasionId): 'cake' | 'bouquet' | 'board' | 'card' {
@@ -33,7 +33,7 @@ function FloatProp({ kind, dark }: { kind: 'cake' | 'bouquet' | 'board' | 'card'
       <div className="relative h-16 mb-2" aria-hidden>
         <span className="absolute left-1/2 -translate-x-1/2 bottom-0 w-4/5 h-6 rounded-lg border-2 bg-white" style={{ borderColor: ink }} />
         <span className="absolute left-1/2 -translate-x-1/2 bottom-5 w-3/5 h-5 rounded-lg border-2" style={{ borderColor: ink, background: '#E0301E' }} />
-        <span className="absolute left-1/2 -translate-x-1/2 bottom-9 w-2/5 h-4 rounded-lg border-2" style={{ borderColor: ink, background: '#1E50C8' }} />
+        <span className="absolute left-1/2 -translate-x-1/2 bottom-9 w-2/5 h-4 rounded-lg border-2" style={{ borderColor: ink, background: '#161616' }} />
         <span className="absolute left-1/2 -translate-x-1/2 bottom-[52px] w-1 h-3 rounded-sm" style={{ background: ink }} />
         <span className="absolute left-1/2 -translate-x-1/2 bottom-[63px] w-2 h-2 rounded-full border-2" style={{ borderColor: ink, background: '#FFDD55' }} />
       </div>
@@ -44,7 +44,7 @@ function FloatProp({ kind, dark }: { kind: 'cake' | 'bouquet' | 'board' | 'card'
       <div className="relative h-16 mb-2" aria-hidden>
         <span className="absolute left-[22%] top-1 w-5 h-5 rounded-full border-2" style={{ borderColor: ink, background: '#F5B700' }} />
         <span className="absolute left-[43%] top-0 w-5 h-5 rounded-full border-2" style={{ borderColor: ink, background: '#E0301E' }} />
-        <span className="absolute left-[62%] top-2 w-5 h-5 rounded-full border-2" style={{ borderColor: ink, background: '#1E50C8' }} />
+        <span className="absolute left-[62%] top-2 w-5 h-5 rounded-full border-2" style={{ borderColor: ink, background: '#161616' }} />
         <span className="absolute left-[33%] top-5 w-5 h-5 rounded-full border-2" style={{ borderColor: ink, background: '#FFDD55' }} />
         <span className="absolute left-[52%] top-6 w-5 h-5 rounded-full border-2 bg-white" style={{ borderColor: ink }} />
         <span className="absolute left-1/2 -translate-x-1/2 bottom-0 w-5 h-6 rounded-b-lg border-2" style={{ borderColor: ink, background: '#8FA98F' }} />
@@ -57,7 +57,7 @@ function FloatProp({ kind, dark }: { kind: 'cake' | 'bouquet' | 'board' | 'card'
         <span className="absolute left-1/2 -translate-x-1/2 bottom-2 w-11/12 h-7 rounded-xl border-2" style={{ borderColor: ink, background: '#E8B04B' }} />
         <span className="absolute left-[24%] bottom-5 w-4 h-4 rounded-full border-2" style={{ borderColor: ink, background: '#E0301E' }} />
         <span className="absolute left-[44%] bottom-4 w-5 h-5 rounded-full border-2 bg-white" style={{ borderColor: ink }} />
-        <span className="absolute left-[64%] bottom-5 w-3.5 h-3.5 rounded-full border-2" style={{ borderColor: ink, background: '#1E50C8' }} />
+        <span className="absolute left-[64%] bottom-5 w-3.5 h-3.5 rounded-full border-2" style={{ borderColor: ink, background: '#161616' }} />
       </div>
     );
   }
@@ -65,7 +65,7 @@ function FloatProp({ kind, dark }: { kind: 'cake' | 'bouquet' | 'board' | 'card'
     <div className="relative h-16 mb-2" aria-hidden>
       <span
         className="absolute left-1/2 -translate-x-1/2 bottom-1 w-4/5 h-11 rounded-lg border-2 bg-white flex items-center justify-center font-serif italic text-sm"
-        style={{ borderColor: ink, color: '#1E50C8' }}
+        style={{ borderColor: ink, color: '#161616' }}
       >
         For you!
       </span>
@@ -194,13 +194,13 @@ export default function ParadeBuilder() {
             onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addPerson())}
             placeholder="Their name"
             aria-label="Name"
-            className="border-2 border-[#161616] rounded-full px-4 py-2.5 font-body text-sm focus:outline-none focus:ring-2 focus:ring-[#1E50C8]"
+            className="border-2 border-[#161616] rounded-full px-4 py-2.5 font-body text-sm focus:outline-none focus:ring-2 focus:ring-[#161616]"
           />
           <select
             value={month}
             onChange={(e) => setMonth(Number(e.target.value))}
             aria-label="Month"
-            className="border-2 border-[#161616] rounded-full px-3 py-2.5 font-mono text-xs bg-white focus:outline-none focus:ring-2 focus:ring-[#1E50C8]"
+            className="border-2 border-[#161616] rounded-full px-3 py-2.5 font-mono text-xs bg-white focus:outline-none focus:ring-2 focus:ring-[#161616]"
           >
             {MONTHS.map((m, i) => (
               <option key={m} value={i}>{m}</option>
@@ -210,7 +210,7 @@ export default function ParadeBuilder() {
             value={day}
             onChange={(e) => setDay(Number(e.target.value))}
             aria-label="Day"
-            className="border-2 border-[#161616] rounded-full px-3 py-2.5 font-mono text-xs bg-white focus:outline-none focus:ring-2 focus:ring-[#1E50C8]"
+            className="border-2 border-[#161616] rounded-full px-3 py-2.5 font-mono text-xs bg-white focus:outline-none focus:ring-2 focus:ring-[#161616]"
           >
             {Array.from({ length: 31 }, (_, i) => i + 1).map((d) => (
               <option key={d} value={d}>{d}</option>
@@ -220,7 +220,7 @@ export default function ParadeBuilder() {
             value={occasion}
             onChange={(e) => setOccasion(e.target.value as CelebrateOccasionId)}
             aria-label="Occasion"
-            className="border-2 border-[#161616] rounded-full px-3 py-2.5 font-body text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#1E50C8]"
+            className="border-2 border-[#161616] rounded-full px-3 py-2.5 font-body text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#161616]"
           >
             {celebrateOccasions.map((o) => (
               <option key={o.id} value={o.id}>{o.label}</option>
@@ -230,7 +230,7 @@ export default function ParadeBuilder() {
             type="button"
             onClick={addPerson}
             disabled={!name.trim() || people.length >= 12}
-            className="bg-[#1E50C8] text-white font-bold rounded-full px-6 py-2.5 border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] disabled:opacity-40 hover:translate-y-[1px] hover:shadow-[2px_2px_0_0_#161616] transition"
+            className="bg-[#161616] text-white font-bold rounded-full px-6 py-2.5 border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] disabled:opacity-40 hover:translate-y-[1px] hover:shadow-[2px_2px_0_0_#161616] transition"
           >
             Add
           </button>
@@ -258,7 +258,7 @@ export default function ParadeBuilder() {
             <button
               type="button"
               onClick={() => setPeople(celebrateSamplePeople.map((s) => ({ ...s })))}
-              className="font-bold text-[#1E50C8] underline underline-offset-4"
+              className="font-bold text-[#B92417] underline underline-offset-4"
             >
               Try a sample parade
             </button>
@@ -282,7 +282,7 @@ export default function ParadeBuilder() {
 
       {/* ── Step 2: the parade ── */}
       {rolled && (
-        <div ref={paradeRef} className="relative mt-6 bg-[#1E50C8] border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] overflow-hidden">
+        <div ref={paradeRef} className="relative mt-6 bg-[#161616] border-2 border-[#161616] rounded-2xl shadow-[4px_4px_0_0_#161616] overflow-hidden">
           <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none" aria-hidden />
           <div className="relative p-5 md:p-7">
             <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#FFDD55] font-bold">
@@ -335,7 +335,7 @@ export default function ParadeBuilder() {
                   <p className="font-body text-sm text-[#161616]/70 mt-1 max-w-md">
                     Your parade is saved and your dates are loaded for opening day. We open routes city by city, and
                     pilots in the Flathead Valley start now.{' '}
-                    <Link href="/book" className="font-bold text-[#1E50C8] underline underline-offset-4">
+                    <Link href="/book" className="font-bold text-[#B92417] underline underline-offset-4">
                       Book a corporate pilot
                     </Link>{' '}
                     and your next 60 days of celebrations are handled before the public doors open.
@@ -367,7 +367,7 @@ export default function ParadeBuilder() {
                           onClick={() => w.setAudience(o.id)}
                           className={`font-bold text-sm rounded-full px-5 py-2.5 border-2 border-[#161616] transition ${
                             w.audience === o.id
-                              ? 'bg-[#1E50C8] text-white shadow-[3px_3px_0_0_#161616]'
+                              ? 'bg-[#161616] text-white shadow-[3px_3px_0_0_#161616]'
                               : 'bg-white text-[#161616] shadow-[2px_2px_0_0_#161616] hover:translate-y-[1px]'
                           }`}
                         >
@@ -385,14 +385,14 @@ export default function ParadeBuilder() {
                       onChange={(e) => w.setEmail(e.target.value)}
                       placeholder={w.audience === 'family' ? 'you@email.com' : 'you@company.com'}
                       aria-label="Email"
-                      className="border-2 border-[#161616] rounded-full px-4 py-3 font-body text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#1E50C8]"
+                      className="border-2 border-[#161616] rounded-full px-4 py-3 font-body text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#161616]"
                     />
                     <input
                       value={w.city}
                       onChange={(e) => w.setCity(e.target.value)}
                       placeholder="Your city"
                       aria-label="Your city"
-                      className="border-2 border-[#161616] rounded-full px-4 py-3 font-body text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#1E50C8]"
+                      className="border-2 border-[#161616] rounded-full px-4 py-3 font-body text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#161616]"
                     />
                     <input
                       tabIndex={-1}
@@ -415,7 +415,7 @@ export default function ParadeBuilder() {
                       onChange={(e) => w.setBusiness(e.target.value)}
                       placeholder={w.audience === 'family' ? 'Family name (optional)' : 'Business name (optional)'}
                       aria-label={w.audience === 'family' ? 'Family name' : 'Business name'}
-                      className="md:col-span-3 border-2 border-[#161616] rounded-full px-4 py-3 font-body text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#1E50C8]"
+                      className="md:col-span-3 border-2 border-[#161616] rounded-full px-4 py-3 font-body text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#161616]"
                     />
                     {w.status === 'error' && (
                       <p className="md:col-span-3 font-body text-sm text-[#C4160B]">

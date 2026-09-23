@@ -148,7 +148,7 @@ export default function ChiefPage() {
               An inbound AI front desk. It picks up your phone when the world calls in, books appointments, and takes
               clean messages 24/7.
             </p>
-            <Link href="/voice-agents" className="mt-4 font-sans font-bold text-[12px] uppercase tracking-[0.14em] text-[#1E50C8] hover:underline underline-offset-4">
+            <Link href="/voice-agents" className="mt-4 font-sans font-bold text-[12px] uppercase tracking-[0.14em] text-[#B92417] hover:underline underline-offset-4">
               Meet the Voice Agent →
             </Link>
           </div>

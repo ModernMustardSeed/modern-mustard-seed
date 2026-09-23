@@ -189,7 +189,7 @@ export function MeetTheTrainer() {
           <p className="font-body text-[#161616]/70 leading-relaxed mt-4">
             He answers Modern Mustard Seed&apos;s own phones, books Sarah&apos;s calendar, and has taken more curveballs than any receptionist in Montana.
             Don&apos;t take our word for it. Interview the trainer himself, day or night, at{' '}
-            <a href="tel:+14063121223" className="font-bold text-[#1E50C8] underline underline-offset-2 whitespace-nowrap">{DEMO_AGENT.phoneLine}</a>.
+            <a href="tel:+14063121223" className="font-bold text-[#B92417] underline underline-offset-2 whitespace-nowrap">{DEMO_AGENT.phoneLine}</a>.
           </p>
           <p className="font-body text-sm text-[#161616]/70 mt-3">
             Yes, that is a real number. Yes, he answers. Ask him anything, including what his trainees can do for you.
@@ -232,7 +232,7 @@ export function CrossSell() {
           <p className="font-body text-sm text-[#161616]/70 mt-2 leading-relaxed">
             Franchises and high-volume lines get a fully custom build: your voice, your systems, your integrations. This is the big-league version of what you just met.
           </p>
-          <Link href="/voice-agents" className="inline-block mt-4 font-sans font-extrabold text-xs uppercase tracking-[0.18em] text-[#1E50C8] underline underline-offset-4">
+          <Link href="/voice-agents" className="inline-block mt-4 font-sans font-extrabold text-xs uppercase tracking-[0.18em] text-[#B92417] underline underline-offset-4">
             Explore voice agents →
           </Link>
         </div>
@@ -242,7 +242,7 @@ export function CrossSell() {
           <p className="font-body text-sm text-[#161616]/70 mt-2 leading-relaxed">
             Mr. Mustard also coaches humans. Learn Claude and ship your own tools with the same trainer who built your Voice Agent.
           </p>
-          <Link href="/mustard-mode" className="inline-block mt-4 font-sans font-extrabold text-xs uppercase tracking-[0.18em] text-[#1E50C8] underline underline-offset-4">
+          <Link href="/mustard-mode" className="inline-block mt-4 font-sans font-extrabold text-xs uppercase tracking-[0.18em] text-[#B92417] underline underline-offset-4">
             [ MUSTARD MODE: ON ] →
           </Link>
         </div>

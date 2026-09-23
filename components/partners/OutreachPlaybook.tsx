@@ -79,7 +79,7 @@ export default function OutreachPlaybook({
       <header className="border-b-2 border-[#161616] sticky top-0 z-40 bg-[#FBF6EA]/95 backdrop-blur-md">
         <div className="max-w-5xl mx-auto px-6 py-4 flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <Link href={backHref} className="text-[10px] uppercase tracking-[0.25em] font-mono font-bold text-[#1E50C8] hover:text-[#161616] transition-colors">{backLabel}</Link>
+            <Link href={backHref} className="text-[10px] uppercase tracking-[0.25em] font-mono font-bold text-[#B92417] hover:text-[#161616] transition-colors">{backLabel}</Link>
             <span className="hidden sm:block h-4 w-px bg-[#161616]/20" />
             <h1 className="font-sans text-base sm:text-lg font-bold tracking-tight">The Outreach Playbook</h1>
           </div>
@@ -373,7 +373,7 @@ export default function OutreachPlaybook({
               <span className="text-[10px] uppercase tracking-[0.2em] text-[#E0301E] font-mono font-bold block mb-3">The DM funnel</span>
               <ol className="space-y-2">
                 {SOCIAL_STRATEGY.dmFunnel.map((d, i) => (
-                  <li key={d} className="text-[#3A3733] font-body text-sm flex gap-2.5 leading-relaxed"><span className="font-mono font-bold text-[#1E50C8]">{i + 1}</span>{d}</li>
+                  <li key={d} className="text-[#3A3733] font-body text-sm flex gap-2.5 leading-relaxed"><span className="font-mono font-bold text-[#B92417]">{i + 1}</span>{d}</li>
                 ))}
               </ol>
             </div>

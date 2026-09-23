@@ -97,7 +97,7 @@ export default function LaunchCountdown({ serverNow }: { serverNow: number }) {
               <p className="font-body text-sm text-[#161616]/70 mt-1.5 max-w-md">
                 Check your inbox for confirmation. Between now and opening day you will hear from us a handful of
                 times, never more than once every three days.{' '}
-                <a href="#parade" className="font-bold text-[#1E50C8] underline underline-offset-4">
+                <a href="#parade" className="font-bold text-[#B92417] underline underline-offset-4">
                   Build your parade
                 </a>{' '}
                 and your dates are loaded before the doors open.
@@ -136,7 +136,7 @@ export default function LaunchCountdown({ serverNow }: { serverNow: number }) {
                       onClick={() => w.setAudience(o.id)}
                       className={`font-bold text-sm rounded-full px-5 py-2.5 border-2 border-[#161616] transition ${
                         w.audience === o.id
-                          ? 'bg-[#1E50C8] text-white shadow-[3px_3px_0_0_#161616]'
+                          ? 'bg-[#161616] text-white shadow-[3px_3px_0_0_#161616]'
                           : 'bg-white text-[#161616] shadow-[2px_2px_0_0_#161616] hover:translate-y-[1px]'
                       }`}
                     >
@@ -154,21 +154,21 @@ export default function LaunchCountdown({ serverNow }: { serverNow: number }) {
                   onChange={(e) => w.setEmail(e.target.value)}
                   placeholder={w.audience === 'family' ? 'you@email.com' : 'you@company.com'}
                   aria-label="Email"
-                  className="border-2 border-[#161616] rounded-full px-4 py-3 font-body text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#1E50C8]"
+                  className="border-2 border-[#161616] rounded-full px-4 py-3 font-body text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#161616]"
                 />
                 <input
                   value={w.city}
                   onChange={(e) => w.setCity(e.target.value)}
                   placeholder="Your city"
                   aria-label="Your city"
-                  className="border-2 border-[#161616] rounded-full px-4 py-3 font-body text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#1E50C8]"
+                  className="border-2 border-[#161616] rounded-full px-4 py-3 font-body text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#161616]"
                 />
                 <input
                   value={w.business}
                   onChange={(e) => w.setBusiness(e.target.value)}
                   placeholder={w.audience === 'family' ? 'Family name (optional)' : 'Business name (optional)'}
                   aria-label={w.audience === 'family' ? 'Family name' : 'Business name'}
-                  className="sm:col-span-2 border-2 border-[#161616] rounded-full px-4 py-3 font-body text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#1E50C8]"
+                  className="sm:col-span-2 border-2 border-[#161616] rounded-full px-4 py-3 font-body text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#161616]"
                 />
                 <input
                   tabIndex={-1}
@@ -200,7 +200,7 @@ export default function LaunchCountdown({ serverNow }: { serverNow: number }) {
                 {w.audience === 'team' && (
                   <>
                     Running a team and want it handled before launch?{' '}
-                    <Link href="/book" className="font-bold text-[#1E50C8] underline underline-offset-4">
+                    <Link href="/book" className="font-bold text-[#B92417] underline underline-offset-4">
                       Book a corporate pilot
                     </Link>
                     .

@@ -61,7 +61,7 @@ export default function NewsletterSignup({
           {status === 'sending' ? 'Sending...' : 'Subscribe'}
         </button>
         {message && (
-          <p className={`text-sm font-body font-bold ${status === 'success' ? 'text-[#1E50C8]' : 'text-[#E0301E]'}`}>
+          <p className={`text-sm font-body font-bold ${status === 'success' ? 'text-[#B92417]' : 'text-[#E0301E]'}`}>
             {message}
           </p>
         )}
@@ -96,7 +96,7 @@ export default function NewsletterSignup({
       {message && (
         <p
           className={`text-sm font-body font-bold text-center mt-4 ${
-            status === 'success' ? 'text-[#1E50C8]' : 'text-[#E0301E]'
+            status === 'success' ? 'text-[#B92417]' : 'text-[#E0301E]'
           }`}
         >
           {message}

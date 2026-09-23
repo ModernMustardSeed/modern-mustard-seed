@@ -117,7 +117,7 @@ export default function BookCall() {
         </p>
         <p className="mt-5 font-mono text-[11px] uppercase tracking-[0.2em] text-[#5c554a]">
           Something come up?{' '}
-          <a href="mailto:sarah@modernmustardseed.com" className="font-bold text-[#1E50C8] underline decoration-2 underline-offset-2 hover:text-[#E0301E]">
+          <a href="mailto:sarah@modernmustardseed.com" className="font-bold text-[#B92417] underline decoration-2 underline-offset-2 hover:text-[#E0301E]">
             Email Sarah
           </a>
         </p>
@@ -182,7 +182,7 @@ export default function BookCall() {
                 ) : (
                   <>
                     Nothing open right now. Email{' '}
-                    <a href="mailto:sarah@modernmustardseed.com" className="font-bold text-[#1E50C8] underline decoration-2 underline-offset-2 hover:text-[#E0301E]">
+                    <a href="mailto:sarah@modernmustardseed.com" className="font-bold text-[#B92417] underline decoration-2 underline-offset-2 hover:text-[#E0301E]">
                       sarah@modernmustardseed.com
                     </a>{' '}
                     and we will find a time that works.
@@ -192,7 +192,7 @@ export default function BookCall() {
             ) : (
               <div className="space-y-5">
                 {from && (
-                  <p className="font-mono text-[10px] uppercase tracking-[0.2em] font-bold text-[#1E50C8]" aria-live="polite">
+                  <p className="font-mono text-[10px] uppercase tracking-[0.2em] font-bold text-[#B92417]" aria-live="polite">
                     Showing times from {prettyDate(from)}
                   </p>
                 )}
@@ -331,10 +331,10 @@ function AppointmentCard({
           key={stamp}
           aria-hidden="true"
           className={`bc-stamp absolute bottom-3 right-4 sm:-bottom-3 sm:-right-2 rotate-[-13deg] rounded-lg border-[3px] bg-[#FBF6EA]/85 px-3 py-1 ${
-            stamp === 'booked' ? 'border-[#E0301E]' : 'border-[#1E50C8]'
+            stamp === 'booked' ? 'border-[#E0301E]' : 'border-[#161616]'
           }`}
         >
-          <p className={`font-mono text-[17px] font-bold tracking-[0.14em] ${stamp === 'booked' ? 'text-[#E0301E]' : 'text-[#1E50C8]'}`}>
+          <p className={`font-mono text-[17px] font-bold tracking-[0.14em] ${stamp === 'booked' ? 'text-[#E0301E]' : 'text-[#B92417]'}`}>
             {stamp === 'booked' ? 'BOOKED' : 'HELD'}
           </p>
         </div>

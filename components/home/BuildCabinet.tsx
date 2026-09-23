@@ -39,7 +39,7 @@ const CABINETS = [
   {
     key: 'command',
     name: 'Command Centers',
-    color: '#1E50C8',
+    color: '#E0301E',
     pitch:
       'Your whole operation on one screen: leads, jobs, follow-ups, and the AI agents that work them while you sleep. Built around how you actually run the day.',
     chips: ['Ops on one screen', 'AI agents built in', 'Replaces the spreadsheet'],

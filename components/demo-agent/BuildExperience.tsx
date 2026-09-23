@@ -529,7 +529,7 @@ export default function BuildExperience() {
         <p className="text-center mt-6 font-body text-sm text-[#161616]/60">
           Phones ring more than {demoAgentTiers[demoAgentTiers.length - 1].minutesCap.toLocaleString()}{' '}
           minutes a month? You want the full custom concierge.{' '}
-          <Link href="/voice-agents" className="text-[#1E50C8] font-semibold underline underline-offset-2">Start here</Link> or book Sarah from the demo call.
+          <Link href="/voice-agents" className="text-[#B92417] font-semibold underline underline-offset-2">Start here</Link> or book Sarah from the demo call.
         </p>
       </div>
     </div>

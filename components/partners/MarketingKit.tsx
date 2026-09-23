@@ -110,7 +110,7 @@ export default function MarketingKit({
         <div className="flex flex-col items-center gap-2">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={qr} alt="QR code for your referral link" width={120} height={120} className="rounded-lg bg-white border border-[#161616]/15 p-1.5" />
-          <a href={qr} download="modern-mustard-seed-qr.png" target="_blank" rel="noopener noreferrer" className="text-[9px] uppercase tracking-[0.2em] text-[#1E50C8] font-mono hover:text-[#161616]">QR code ↓</a>
+          <a href={qr} download="modern-mustard-seed-qr.png" target="_blank" rel="noopener noreferrer" className="text-[9px] uppercase tracking-[0.2em] text-[#B92417] font-mono hover:text-[#161616]">QR code ↓</a>
         </div>
       </div>
     </div>

@@ -116,7 +116,7 @@ export default function ProposalSignPay({
       ) : (
         <>
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-[#1E50C8] text-lg">✓</span>
+            <span className="text-[#B92417] text-lg">✓</span>
             <h2 className="font-display text-xl font-black text-[#161616]">Signed by {signed}</h2>
           </div>
           <p className="text-[#3a3733] text-sm font-body mb-5">

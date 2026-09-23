@@ -252,7 +252,7 @@ function KitPane({ tier, hasKit, savedIdea }: { tier: LaunchTier; hasKit: boolea
       <div className="flex items-center justify-between">
         <h2 className="font-display font-extrabold text-2xl text-[#161616]">Your Launch Kit</h2>
         {tier === 'room' && (
-          <button onClick={() => generate(true)} disabled={loading} className="font-mono text-xs text-[#1E50C8] underline underline-offset-4 disabled:opacity-50">
+          <button onClick={() => generate(true)} disabled={loading} className="font-mono text-xs text-[#B92417] underline underline-offset-4 disabled:opacity-50">
             {loading ? 'regenerating…' : 'regenerate'}
           </button>
         )}
@@ -295,7 +295,7 @@ function KitPane({ tier, hasKit, savedIdea }: { tier: LaunchTier; hasKit: boolea
           <div className="grid sm:grid-cols-3 gap-3">
             {kit.plan.map((p, i) => (
               <div key={i} className="rounded-lg border-2 border-[#161616] bg-white p-3">
-                <p className="font-mono text-[10px] font-bold tracking-[0.12em] text-[#1E50C8] uppercase">{p.window}</p>
+                <p className="font-mono text-[10px] font-bold tracking-[0.12em] text-[#B92417] uppercase">{p.window}</p>
                 <p className="font-sans font-bold text-sm mt-1">{p.focus}</p>
                 <ul className="mt-2 space-y-1">
                   {p.moves.map((m, j) => (
@@ -338,7 +338,7 @@ function CopyBlock({ label, text }: { label: string; text: string }) {
         <p className="font-sans font-bold text-sm text-[#161616]">{label}</p>
         <button
           onClick={() => { navigator.clipboard?.writeText(text); setCopied(true); setTimeout(() => setCopied(false), 1500); }}
-          className="font-mono text-[10px] uppercase tracking-wider text-[#1E50C8] hover:underline"
+          className="font-mono text-[10px] uppercase tracking-wider text-[#B92417] hover:underline"
         >
           {copied ? 'copied ✓' : 'copy'}
         </button>

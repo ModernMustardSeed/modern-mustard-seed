@@ -204,13 +204,13 @@ export default function AdvisoryPage() {
           </h2>
           <div className="mt-10 grid gap-6 md:grid-cols-2">
             <div className="min-w-0 rounded-2xl border-2 border-[#161616] bg-white p-7 shadow-[6px_6px_0_0_#161616]">
-              <span className="font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-[#1E50C8]">
+              <span className="font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-[#B92417]">
                 A fit
               </span>
               <ul className="mt-4 space-y-3">
                 {FOR.map((f) => (
                   <li key={f} className="flex min-w-0 items-start gap-2.5 font-body text-[14px] leading-relaxed text-[#161616]/80">
-                    <span aria-hidden className="mt-[8px] h-1.5 w-1.5 shrink-0 rounded-full bg-[#1E50C8]" />
+                    <span aria-hidden className="mt-[8px] h-1.5 w-1.5 shrink-0 rounded-full bg-[#161616]" />
                     {f}
                   </li>
                 ))}

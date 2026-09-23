@@ -52,7 +52,7 @@ export default function EmailPlaybookCTA({ slug, title }: { slug: string; title:
         </div>
 
         {status === 'success' ? (
-          <p className="md:flex-1 text-[#1E50C8] font-body font-bold text-sm md:text-right">{message}</p>
+          <p className="md:flex-1 text-[#B92417] font-body font-bold text-sm md:text-right">{message}</p>
         ) : (
           <form onSubmit={send} className="md:flex-1 flex flex-col sm:flex-row gap-3">
             <input

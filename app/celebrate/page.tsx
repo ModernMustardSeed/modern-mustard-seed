@@ -134,7 +134,7 @@ export default function CelebratePage() {
                 >
                   {days > 0 ? `Hold your spot (${days} days)` : 'Open your account'}
                 </a>
-                <Link href="/book" className="font-bold text-[#1E50C8] underline underline-offset-4">
+                <Link href="/book" className="font-bold text-[#B92417] underline underline-offset-4">
                   or book a corporate pilot
                 </Link>
               </div>

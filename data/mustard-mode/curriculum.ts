@@ -28,7 +28,7 @@ export const tracks: Track[] = [
     slug: 'code',
     name: 'CODE',
     tagline: 'Ship real software',
-    color: '#1E50C8',
+    color: '#E0301E',
     bossMission:
       'Take one idea of your own from empty folder to a working web app that anyone can open on a live URL.',
     missions: [
