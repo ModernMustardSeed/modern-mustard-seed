@@ -4,6 +4,7 @@ import styles from './StudioHome.module.css';
 import { GOOGLE_PROFILE, GOOGLE_REVIEWS } from '@/data/google-reviews';
 import PosterHero from './PosterHero';
 import ShowMeMine from './ShowMeMine';
+import MustardTV from './MustardTV';
 import WorkVideo from './WorkVideo';
 import { SproutSeed, Vine, BirdBranch } from './HeroMotion';
 import { PREVIEW } from '@/data/preview-promise';
@@ -62,6 +63,10 @@ export default function StudioHome({ faq }: { faq: { q: string; a: string }[] })
         <blockquote>“{r.quote}”</blockquote>
         <figcaption>{r.name} <span>· Google review · ★★★★★</span></figcaption>
       </figure>)}</div>
+    </section>
+    <section id="mustard-tv" className={styles.tvSection} aria-labelledby="tv-heading">
+      <div className={styles.tvHead}><p className={styles.eyebrow}>Mustard TV</p><h2 id="tv-heading">Tune in. <em>Get inspired.</em></h2><p>Short films from the studio. Turn the dial.</p></div>
+      <MustardTV />
     </section>
     <section className={styles.statement} aria-label="Studio philosophy"><span className={styles.eyebrow}>Good looks are only the beginning.</span><p>Make it <em>beautiful.</em><br />Make it work <span>beautifully.</span></p><div>Design earns the attention. The engineering earns the trust.<br />We build the whole thing.</div></section>
     <section id="practice" className={styles.disciplines} aria-labelledby="disciplines-heading"><div className={styles.disciplineIntro}><p className={styles.eyebrow}>02 / The Practice</p><h2 id="disciplines-heading">Considered<br />from every<br /><em>angle.</em></h2><p>Five disciplines. One person holding the vision from the first conversation to the final detail.</p><Link href="/work-with-us" className={styles.textLink}>How We Work <Arrow /></Link></div><div className={styles.disciplineList}>{disciplines.map((d, i) => <Link href={d.href} className={styles.discipline} key={d.title}><span className={styles.disciplineIndex}>0{i + 1}</span><div><h3>{d.title}</h3><p>{d.text}</p><span className={styles.tags}>{d.tags}</span></div><Arrow /></Link>)}</div></section>
