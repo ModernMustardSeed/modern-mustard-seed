@@ -138,3 +138,49 @@
 .review figcaption span{font-size:9px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#5b5d61}
 @media(max-width:1050px){.reviewRow{grid-template-columns:1fr 1fr}.review:nth-child(3){grid-column:1/-1}}
 @media(max-width:760px){.proofStrip:before{height:250px}.reviewRow{grid-template-columns:1fr;gap:18px;margin-top:30px}.review:nth-child(3){grid-column:auto}.review{padding:20px}.review blockquote{font-size:14px}}
+
+/* The seed over the verse sprouts when it scrolls into view (HeroMotion.SproutSeed). */
+.sprout{display:block;width:40px;height:46px}
+.sprout svg{display:block;overflow:visible}
+.sprout [data-seed]{fill:var(--mustard);stroke:var(--ink);stroke-width:2.2}
+.sprout [data-stem]{fill:none;stroke:#3f7a2a;stroke-width:2.6;stroke-linecap:round;stroke-dasharray:18;stroke-dashoffset:18;transition:stroke-dashoffset .7s .1s ease-out}
+.sprout [data-leaf-l],.sprout [data-leaf-r]{fill:#6fae3a;stroke:var(--ink);stroke-width:1.6;transform:scale(0);transition:transform .55s cubic-bezier(.3,1.6,.5,1)}
+.sprout [data-leaf-l]{transform-origin:20px 18px;transition-delay:.6s}.sprout [data-leaf-r]{transform-origin:20px 15px;transition-delay:.8s}
+.grown [data-stem]{stroke-dashoffset:0}.grown [data-leaf-l],.grown [data-leaf-r]{transform:scale(1)}
+@media(prefers-reduced-motion:reduce){.sprout [data-stem]{stroke-dashoffset:0;transition:none}.sprout [data-leaf-l],.sprout [data-leaf-r]{transform:scale(1);transition:none}}
+
+/* Show me mine: paste a website, land on the Demo Station with it filled in. */
+.showMine{display:grid;grid-template-columns:1.1fr 1fr;align-items:center;gap:5vw;padding:56px 6vw;background:var(--mustard);border-bottom:2px solid var(--ink)}
+.showMine .eyebrow{display:inline-block;background:var(--ink);color:var(--mustard);padding:6px 10px;font-weight:700;transform:rotate(-1.5deg)}
+.showMine h2{margin-top:18px;font-family:var(--font-body),sans-serif;font-weight:800;font-size:clamp(32px,3.6vw,54px);line-height:1;letter-spacing:-.045em}
+.showMine h2 em{display:block;margin-top:.12em;font-family:var(--font-display),serif;font-weight:500;letter-spacing:-.03em}
+.showMine>div>p:last-child{margin-top:16px;max-width:460px;font-size:15px;line-height:1.65;font-weight:500}
+.showForm{display:flex;gap:12px}
+.showForm label{flex:1;min-width:0}
+.showForm input{width:100%;height:62px;padding:0 18px;background:var(--cream);border:3px solid var(--ink);box-shadow:6px 6px 0 var(--ink);font-size:18px;font-weight:600;color:var(--ink)}
+.showForm input:focus{outline:none;box-shadow:6px 6px 0 #e0301e}
+.showForm button{flex-shrink:0;height:62px;padding:0 24px;display:flex;align-items:center;gap:14px;background:var(--ink);color:var(--cream);border:3px solid var(--ink);box-shadow:6px 6px 0 var(--cream);font-size:14px;font-weight:800;cursor:pointer;transition:transform .2s}
+.showForm button span{color:var(--mustard);font-size:20px}
+.showForm button:hover:not(:disabled){transform:translate(-2px,-2px)}
+.showForm button:disabled{opacity:.55;cursor:not-allowed}
+@media(max-width:900px){.showMine{grid-template-columns:1fr;gap:26px;padding:44px 6vw}.showForm{flex-direction:column}.showForm button{justify-content:center}}
+
+/* The work plays: a six-second scroll through the live site over the still. */
+.workVideo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top;opacity:0;transition:opacity .35s;pointer-events:none}
+.workVideo[data-playing]{opacity:1}
+
+/* Results band: the reviewers' own numbers, big. */
+.results{padding:90px 6vw 100px;background:var(--ink);color:var(--cream);border-top:2px solid var(--ink)}
+.resultsTop{display:flex;justify-content:space-between;align-items:flex-end;gap:30px;padding-bottom:26px;border-bottom:1px solid #fbf6ea33}
+.resultsTop .eyebrow{color:var(--mustard)}
+.resultsTop h2{font-size:clamp(40px,5vw,76px)}
+.resultsTop h2 em{color:var(--mustard)}
+.resultGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px;margin-top:46px}
+.result{margin:0;display:flex;flex-direction:column;padding:28px 26px;border:2px solid var(--cream);box-shadow:8px 8px 0 var(--mustard)}
+.result>strong{font-family:var(--font-body),sans-serif;font-weight:800;font-size:clamp(44px,4.6vw,72px);line-height:.95;letter-spacing:-.05em;color:var(--mustard)}
+.resultLabel{margin-top:10px;font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#d9d7cc}
+.result blockquote{flex:1;margin:22px 0 0;font-family:var(--font-display),serif;font-style:italic;font-size:18px;line-height:1.5;color:var(--cream)}
+.result figcaption{margin-top:22px;padding-top:14px;border-top:1px dashed #fbf6ea44;font-size:14px;font-weight:700}
+.result figcaption span{font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#bdbfc4}
+@media(max-width:1000px){.resultGrid{grid-template-columns:1fr;gap:22px}}
+@media(max-width:760px){.results{padding:60px 6vw 70px}.resultsTop{flex-direction:column;align-items:flex-start;gap:14px}.result{padding:22px 20px;box-shadow:5px 5px 0 var(--mustard)}.result blockquote{font-size:16px}}
