@@ -6,7 +6,7 @@ import PosterHero from './PosterHero';
 import ShowMeMine from './ShowMeMine';
 import MustardTV from './MustardTV';
 import WorkVideo from './WorkVideo';
-import { SproutSeed, Vine, BirdBranch } from './HeroMotion';
+import { SproutSeed, BirdBranch } from './HeroMotion';
 import { PREVIEW } from '@/data/preview-promise';
 
 const projects = [
@@ -40,7 +40,6 @@ function ProjectImage({ name, alt, sizes }: { name: string; alt: string; sizes: 
 }
 export default function StudioHome({ faq }: { faq: { q: string; a: string }[] }) {
   return <div className={styles.studio} data-design="mms-editorial-2026" data-edition="pop-art-studio">
-    <Vine className={styles.vine} />
     <PosterHero />
     <figure className={styles.verse}><blockquote><SproutSeed className={styles.sprout} grownClass={styles.grown} /><p>“If you have faith as small as a mustard seed, nothing will be impossible for you.”</p></blockquote><figcaption>Matthew 17:20</figcaption><Link href="/kingdom" className={styles.kingdomLink}>Serving a ministry? We build for the Kingdom, at ministry pricing <Arrow /></Link></figure>
     <section id="show-me-mine" className={styles.showMine} aria-labelledby="show-mine-heading">

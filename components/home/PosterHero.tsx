@@ -17,12 +17,11 @@ export default function PosterHero() {
         <Link href="/inquire" className={s.posterCta}>Tell Us What You Have In Mind <span aria-hidden="true">↗</span></Link>
       </div>
       <div className={s.posterArt}>
-        <div className={s.burst} aria-hidden="true" />
+        <div className={s.medallion} aria-hidden="true"><i /><b /></div>
         <MascotLean className={s.lean} danceClass={s.dance} confettiClass={s.confetti}><Image src="/brand/mascot-full.png" alt="Mr. Mustard, the studio mascot, waving hello" width={876} height={1190} className={s.posterMascot} sizes="(max-width: 760px) 70vw, 34vw" priority /></MascotLean>
         <HeroTalk bubbleClass={s.posterBubble} panelClass={s.talkPanel} />
         <span className={s.spark + ' ' + s.sparkOne} aria-hidden="true">✦</span>
         <span className={s.spark + ' ' + s.sparkTwo} aria-hidden="true">✦</span>
-        <span className={s.spark + ' ' + s.sparkThree} aria-hidden="true">✦</span>
       </div>
     </div>
     <Marquee className={s.marquee}><div>{[0, 1].map(k => <span key={k}>Websites ✦ Custom Software ✦ AI Systems ✦ Voice Agents ✦ Brand &amp; Identity ✦ Advisory ✦&nbsp;</span>)}</div></Marquee>
