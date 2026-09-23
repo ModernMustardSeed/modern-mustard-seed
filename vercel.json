@@ -116,6 +116,10 @@
     {
       "path": "/api/cron/demo-promise",
       "schedule": "42 * * * *"
+    },
+    {
+      "path": "/api/cron/chat-sync",
+      "schedule": "28 * * * *"
     }
   ]
 }
