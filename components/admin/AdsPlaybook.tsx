@@ -928,18 +928,18 @@ const SW_COPY_A = `Our website narrates itself out loud. That is the least inter
 
 Because at the end of the drive you meet Mr. Mustard, our AI. Tell him your trade and your email, and he fires the build while you are still talking: your own voice agent and your own website.
 
-Free demos, in your inbox within the hour. Love them? Order right from the page.
+Free demos, in your inbox within 24 hours. Love them? Order right from the page.
 
 The site talks. The agent builds. Say whaaa.`;
 
 const SW_COPY_B = `Most AI assistants answer questions.
 
-Ours takes your details on the phone and BUILDS: a voice agent that answers as your business and a website designed from scratch, both with your name on them. Free, in your inbox within the hour, yours to keep or toss.
+Ours takes your details on the phone and BUILDS: a voice agent that answers as your business and a website designed from scratch, both with your name on them. Free, in your inbox within 24 hours, yours to keep or toss.
 
 Watch the film, then go say hi. He picks up every time.`;
 
 const SW_HEADLINE = 'The site talks. The agent builds.';
-const SW_DESCRIPTION = 'Tell our AI your trade. Your voice agent and your website land in your inbox within the hour. Free.';
+const SW_DESCRIPTION = 'Tell our AI your trade. Your voice agent and your website land in your inbox within 24 hours. Free.';
 
 const SW_CUTS = [
   { file: '/ads/say-whaa-16x9.mp4', label: '16:9 — In-stream + site', note: 'The full film: Ava drives, Mr. Mustard builds. Two voices, real product.' },
@@ -947,7 +947,7 @@ const SW_CUTS = [
 ];
 
 const SW_CHECKLIST = [
-  { id: 'ear', label: 'EAR CHECK before anything: two voices in one film (Ava + the staged Mr. Mustard). Confirm the handoff at ~21s reads clearly as two speakers, and "within the hour" is clean.' },
+  { id: 'ear', label: 'EAR CHECK before anything: two voices in one film (Ava + the staged Mr. Mustard). Confirm the handoff at ~21s reads clearly as two speakers, and "within 24 hours" is clean.' },
   { id: 'eye', label: 'EYE CHECK: this is the RECUT (2026-08-07). Take 1 whip-panned a whole chapter in 2.6s and made Sarah motion-sick. The recut is eight held shots that creep 21-50px/s, cut on the beat, 25fps to match the capture. Watch for any move that still feels like it is chasing you.' },
   { id: 'cell', label: 'Cell A (Meta): objective Traffic. Budget $10/day. Learn More button → the /demos UTM link above. Paste Copy Variant 1 (say whaaa).' },
   { id: 'honest', label: 'COPY LAW: the DEMOS are free, going live is setup + monthly from day one. Never write "free trial" in any edit. The film voice for Mr. Mustard is STILL a staged studio read: the rig is wired for his real ElevenLabs voice (Will) and swaps automatically once a real sk_ key exists. The file in OneDrive is the key ID, not the key.' },
@@ -959,7 +959,7 @@ const SW_CHECKLIST = [
 
 const SW_POST_FB = `Our website reads itself to you out loud while you scroll. And that is the least interesting thing about it.
 
-Because at the end of the drive, you meet Mr. Mustard, our AI. Tell him your trade and your email, and he fires the build while you are still on the line: your own voice agent and your own website. Free, in your inbox within the hour.
+Because at the end of the drive, you meet Mr. Mustard, our AI. Tell him your trade and your email, and he fires the build while you are still on the line: your own voice agent and your own website. Free, in your inbox within 24 hours.
 
 The site talks. The agent builds. Say whaaa.
 
@@ -967,7 +967,7 @@ Take the drive → modernmustardseed.com`;
 
 const SW_POST_IG = `The site talks. The agent builds.
 
-Tell our AI your trade. Your own voice agent and your own website land in your inbox within the hour. Free.
+Tell our AI your trade. Your own voice agent and your own website land in your inbox within 24 hours. Free.
 
 Turn your sound on for this one. Link in bio.
 
@@ -3233,7 +3233,7 @@ export default function AdsPlaybook() {
               A screen film of the real thing: Ava drives the journey out loud, hands the visitor to Mr.
               Mustard at the four doors, and he makes the offer that ends the ad market: tell me your trade
               and your email, and I fire the build while we talk. Voice agent and website, in
-              your inbox within the hour, order right from the page. One cell at $10/day into /demos.
+              your inbox within 24 hours, order right from the page. One cell at $10/day into /demos.
             </p>
             <div className="flex flex-wrap gap-3 mt-5">
               <a href="https://adsmanager.facebook.com" target="_blank" rel="noopener noreferrer" className="text-[12px] uppercase tracking-[0.18em] font-sans font-bold px-4 py-2.5 border-2 border-[#161616] bg-[#F5B700] shadow-[3px_3px_0_0_#FFDD55] hover:-translate-y-0.5 transition-transform text-[#161616]">Open Ads Manager</a>

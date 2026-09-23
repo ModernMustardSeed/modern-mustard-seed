@@ -20,7 +20,7 @@
  *      builds is a wallet with a public number, so the ceiling is not optional
  *      (never-leak-revenue).
  *
- * The "within the hour" promise is honest because the worker's own contract is
+ * The "within 24 hours" promise is honest because the worker's own contract is
  * ~20-40 minutes per build and the suite-ready email is armed; if the worker
  * floor is down the lead still lands on the dial floor flagged for follow-up.
  */
@@ -366,7 +366,7 @@ export async function buildSuiteFromCall(
         const queued = pieces.filter((p) => !INSTANT[p]);
         const one = pieces.length === 1;
         const timing = queued.length
-          ? `${instant.length ? `Your ${listPieces(instant)} ${instant.length > 1 ? 'are' : 'is'} <strong>ready right now</strong>. Your website is the slow one, because it gets designed from scratch rather than poured into a template, and then we record you a short walkthrough film of it. That lands at the same hub <strong>within the hour</strong>.` : `Your website gets designed from scratch rather than poured into a template, and then we record you a short walkthrough film of it. It lands at your hub <strong>within the hour</strong>, usually much sooner.`}`
+          ? `${instant.length ? `Your ${listPieces(instant)} ${instant.length > 1 ? 'are' : 'is'} <strong>ready right now</strong>. Your website is the slow one, because it gets designed from scratch rather than poured into a template, and then we record you a short walkthrough film of it. That lands at the same hub <strong>within 24 hours</strong>.` : `Your website gets designed from scratch rather than poured into a template, and then we record you a short walkthrough film of it. It lands at your hub <strong>within 24 hours</strong>, usually much sooner.`}`
           : `Your ${built} ${one ? 'is' : 'are'} <strong>ready right now</strong>. Nothing to wait for.`;
 
         try {
@@ -379,7 +379,7 @@ export async function buildSuiteFromCall(
               : `${first}, ${possessive(business)} demos are being built right now`,
             html: clientEmail({
               preheader: queued.length
-                ? `The ${listPieces(instant)} ${instant.length > 1 ? 'are' : 'is'} ready now; the website lands within the hour.`
+                ? `The ${listPieces(instant)} ${instant.length > 1 ? 'are' : 'is'} ready now; the website lands within 24 hours.`
                 : `Your ${built} is live and waiting at your private hub.`,
               eyebrow: one ? `YOUR ${PIECE_LABEL[pieces[0]].toUpperCase()}` : 'YOUR DEMOS',
               greeting: `${first}, Mr. Mustard kept his word.`,
@@ -462,7 +462,7 @@ export async function buildSuiteFromCall(
   const hasSite = pieces.includes('site');
   const instantPieces = pieces.filter((p) => INSTANT[p]);
   const timingLine = hasSite
-    ? `${instantPieces.length ? `their ${listPieces(instantPieces)} ${instantPieces.length > 1 ? 'are' : 'is'} being built right now, and ` : ''}the custom website plus a short walkthrough film follow, with everything in their inbox at ${email} within the hour, usually much sooner`
+    ? `${instantPieces.length ? `their ${listPieces(instantPieces)} ${instantPieces.length > 1 ? 'are' : 'is'} being built right now, and ` : ''}the custom website plus a short walkthrough film follow, with everything in their inbox at ${email} within 24 hours, usually much sooner`
     : `their ${built} ${pieces.length > 1 ? 'are' : 'is'} being built right now and lands in their inbox at ${email} in the next few minutes`;
 
   return JSON.stringify({

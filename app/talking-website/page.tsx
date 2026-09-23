@@ -86,7 +86,7 @@ const FAQ = [
   },
   {
     q: 'How fast does it go live?',
-    a: 'About a week from kickoff. You can tour a real working demo built for your business, in your hands within the hour, before you decide anything. No card and no meeting to see it.',
+    a: 'About a week from kickoff. You can tour a real working demo built for your business, in your hands within 24 hours, before you decide anything. No card and no meeting to see it.',
   },
   {
     q: 'Do I own it?',

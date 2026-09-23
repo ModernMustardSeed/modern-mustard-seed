@@ -41,8 +41,8 @@ export default function StudioHome({ faq }: { faq: { q: string; a: string }[] })
     <PosterHero />
     <figure className={styles.verse}><blockquote><SproutSeed className={styles.sprout} grownClass={styles.grown} /><p>“If you have faith as small as a mustard seed, nothing will be impossible for you.”</p></blockquote><figcaption>Matthew 17:20</figcaption></figure>
     <section className={styles.showMine} aria-labelledby="show-mine-heading">
-      <div><p className={styles.eyebrow}>Show me mine</p><h2 id="show-mine-heading">Paste your website. <em>We’ll build you a new one.</em></h2><p>Free. Add a few details on the next page, and we design your new site and send you the link.</p></div>
-      <ShowMeMine className={styles.showForm} />
+      <div><p className={styles.eyebrow}>Show me mine</p><h2 id="show-mine-heading">Paste your website. <em>We’ll build you a new one.</em></h2><p>Free, and built custom to your business and what you want it to do. Your new site lands within 24 hours, with a free audit of the site, Google profile and reviews you have now.</p></div>
+      <div><ShowMeMine className={styles.showForm} /><Link href="/presence-audit" className={styles.auditOnly}>Just want the audit? Get it free <Arrow /></Link></div>
     </section>
     <section id="selected-work" className={styles.work} aria-labelledby="work-heading">
       <div className={styles.sectionTop}><p className={styles.eyebrow}>01 / Selected Work</p><span>Made here. Out in the world.</span></div>

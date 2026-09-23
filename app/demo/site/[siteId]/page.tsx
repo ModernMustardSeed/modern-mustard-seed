@@ -118,7 +118,7 @@ export default async function SiteDemoPage({ params }: { params: Promise<{ siteI
   // No html at all (first build failed): the snag card. If an OLD site exists,
   // serve it no matter what state a newer build is in.
   if (!site.html) {
-    return <Card title="This demo needs a rebuild" body="The build hit a snag. Ask us to build it again and we will have it back to you within the hour." cta />;
+    return <Card title="This demo needs a rebuild" body="The build hit a snag. Ask us to build it again and we will have it back to you within 24 hours." cta />;
   }
 
   // Resurrect the lead's voice demo for the overlay widget.
