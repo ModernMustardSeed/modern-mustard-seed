@@ -126,12 +126,19 @@ export async function POST(req: Request) {
   const state = clean(body.state, 30).toUpperCase().slice(0, 2);
   const website = clean(body.website, 200);
   const notes = clean(body.notes, 600);
+  // Up to two sites the owner loves the look of. Each must read as a plain web
+  // address; anything else is dropped rather than passed to the builder.
+  const styleRefs = clean(body.style_refs, 300)
+    .split(/[\s,]+/)
+    .map((u) => u.replace(/^https?:\/\//i, '').replace(/\/$/, ''))
+    .filter((u) => /^[a-z0-9-]+(\.[a-z0-9-]+)+(\/[\w\-./]*)?$/i.test(u))
+    .slice(0, 2);
   const niche = (NICHES.includes(body.niche as Niche) ? body.niche : 'other') as Niche;
 
   if (!business || !name || !/.+@.+\..+/.test(email) || digits.length < 10) {
     return NextResponse.json({ error: 'missing_fields', message: 'Business, your name, a real email, and a real phone number are required (the voice agent demo answers as your business).' }, { status: 400 });
   }
-  if (hostile(business, name, city, website)) {
+  if (hostile(business, name, city, website, ...styleRefs)) {
     return NextResponse.json(
       { error: 'bad_input', message: 'That does not look like a real business name. Type it the way it appears on your sign, or call us at (406) 312-1223.' },
       { status: 400 }
@@ -215,6 +222,7 @@ export async function POST(req: Request) {
         `SELF-SERVE: built their own demo suite from ${SITE.url}/demos.`,
         partner ? `PARTNER: ${partner.code}. They arrived through this partner's link or card, so the lead is theirs.` : null,
         website ? null : 'WEBSITE: none, they came without one.',
+        styleRefs.length ? `STYLE MATCH: ${styleRefs.join(', ')}` : null,
         notes ? `OWNER NOTES: ${notes}` : null,
       ]
         .filter(Boolean)
@@ -289,11 +297,11 @@ export async function POST(req: Request) {
         replyTo: 'sarah@modernmustardseed.com',
         subject: `${first}, ${possessive(business)} demos are being built right now`,
         html: clientEmail({
-          preheader: 'Your voice agent is ready now; your website is with you within the hour.',
+          preheader: 'Your voice agent is ready now; your website is with you within 24 hours.',
           eyebrow: 'YOUR DEMO SUITE',
           greeting: `${first}, it is happening.`,
           body:
-            `<p>Your voice agent is <strong>ready right now</strong>. Your website is the slow one, because it gets designed from scratch rather than poured into a template, and then we record you a short walkthrough of the finished suite. We are working on it and will have it to you <strong>within the hour</strong>, at the same hub, on its own.</p>` +
+            `<p>Your voice agent is <strong>ready right now</strong>. Your website is the slow one, because it gets designed from scratch rather than poured into a template, and then we record you a short walkthrough of the finished suite. We are working on it and will have it to you <strong>within 24 hours</strong>, at the same hub, on its own.</p>` +
             demoFilmCard({
               film: 'demo-welcome',
               href: lead.hub_demo_url,

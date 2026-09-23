@@ -514,6 +514,7 @@ export function buildSiteBrief(lead: OutboundLead, voiceDemoUrl: string | null, 
   const business = briefField(lead.business_name, 90);
   const website = briefField(lead.website, 200);
   const owner = ownerNotes(lead);
+  const styleMatch = briefField((lead.notes ?? '').match(/^STYLE MATCH:\s*(.+)$/m)?.[1] ?? '', 300);
 
   return [
     `# Demo website brief: ${business}`,
@@ -536,6 +537,7 @@ export function buildSiteBrief(lead: OutboundLead, voiceDemoUrl: string | null, 
     `- Phone (real, use it for every call CTA): ${briefField(lead.phone, 30)}`,
     lead.city || lead.state ? `- Location: ${briefField([lead.city, lead.state].filter(Boolean).join(', '), 70)}` : null,
     website ? `- Existing website (may be weak or broken, that is why we are pitching): ${website}` : '- Existing website: NONE. This demo is their first real website.',
+    styleMatch ? `- Sites the owner loves and wants the style matched to: ${styleMatch}. Study their feel (layout rhythm, type, mood, colour temperature) and bring that feel to this business. Never copy their words, images, logos or brand.` : null,
     audit && lead.audit_score != null
       ? `- Our audit of their current site: ${lead.audit_score}/100. ${audit.headline ?? ''} Top fixes: ${(audit.top_three_fixes ?? [])
           .map((f) => f.title)

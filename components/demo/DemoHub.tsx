@@ -147,7 +147,7 @@ export default function DemoHub({
   suiteFilmPoster?: string | null;
   /** queued | filming | ready | failed | null. Never used to pick a stand-in
    *  video: no status maps to playing a house film. Only queued/filming earns
-   *  the "within the hour" promise; failed/null get the same honest waiting
+   *  the "within 24 hours" promise; failed/null get the same honest waiting
    *  card with no ETA (Sarah, 2026-08-11: a captioned wrong-business video is
    *  still a wrong-business video). */
   suiteFilmStatus?: 'queued' | 'filming' | 'ready' | 'failed' | null;
@@ -427,7 +427,7 @@ export default function DemoHub({
                   </p>
                   <p className="font-body text-[14px] text-[#FBF6EA]/65 mt-2 max-w-sm mx-auto">
                     {suiteFilmPending
-                      ? 'A short film of your own site and a real call with your own agent. We are working on it and will have it to you within the hour. Everything below is open now.'
+                      ? 'A short film of your own site and a real call with your own agent. We are working on it and will have it to you within 24 hours. Everything below is open now.'
                       : 'A short film of your own site and a real call with your own agent. It is not cut yet, so nothing plays here until it is. Everything below is open now, and reaching out gets it made today.'}
                   </p>
                 </div>

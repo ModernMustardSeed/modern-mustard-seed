@@ -23,7 +23,7 @@ export const PRESENCE = {
   metaDescription:
     'A free audit of your whole online presence: your website graded on seven categories, your Google Business Profile on eight checks, and your reviews against your trade. Leave your email and the full report arrives in your inbox.',
   /** The promise on the page, the receipt email and the FAQ. Change it in all three. */
-  turnaround: 'within one business day',
+  turnaround: 'within 24 hours',
 };
 
 /* ─────────────────────────── the ticker ─────────────────────────── */

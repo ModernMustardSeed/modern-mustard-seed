@@ -16,7 +16,7 @@ import { DEMO_PRODUCTS, DEMO_BUNDLE, formatUsd } from '@/lib/demo-order';
 export const metadata = buildMetadata({
   title: 'Free Voice Agent and Website Demo for Your Business',
   description:
-    'Get two working AI demos free, no card and no sales call: a voice agent that answers as your business, and a custom website built from scratch. Both are with you within the hour. Keep what you love from $147/mo.',
+    'Get two working AI demos free, no card and no sales call: a voice agent that answers as your business, and a custom website built from scratch. Both are with you within 24 hours. Keep what you love from $147/mo.',
   path: '/demos',
 });
 
@@ -31,7 +31,7 @@ const FAQ = [
   },
   {
     q: 'How fast?',
-    a: 'Your voice agent opens right away. The website is different, because it is designed from scratch rather than filled into a template, and then we record you a walkthrough of the finished suite. We have the whole thing to you within the hour. It appears at your hub on its own and we email you the moment it lands, so you can close the tab.',
+    a: 'Your voice agent opens right away. The website is different, because it is designed from scratch rather than filled into a template, and then we record you a walkthrough of the finished suite. We have the whole thing to you within 24 hours. It appears at your hub on its own and we email you the moment it lands, so you can close the tab.',
   },
   {
     q: 'What happens if I want to keep something?',
@@ -152,7 +152,7 @@ function demosJsonLd() {
           {
             '@type': 'HowToStep',
             name: 'Your website lands',
-            text: 'Designed from scratch rather than filled into a template, then we record you a walkthrough of the finished suite. We have it to you within the hour, at the same hub, and we email you when it is ready.',
+            text: 'Designed from scratch rather than filled into a template, then we record you a walkthrough of the finished suite. We have it to you within 24 hours, at the same hub, and we email you when it is ready.',
           },
         ],
       },
@@ -235,7 +235,7 @@ export default async function DemosPage({
               <ul className="mt-6 space-y-2.5">
                 {[
                   'No card. No meeting. No sales call to sit through.',
-                  'Your agent opens right away. The website is with you within the hour.',
+                  'Your agent opens right away. The website is with you within 24 hours.',
                   `Keep what you love from ${formatUsd(DEMO_PRODUCTS.site.monthlyCents)}/mo. Or keep nothing.`,
                 ].map((t) => (
                   <li key={t} className="flex items-start gap-2.5 font-body text-[15px] text-[#161616]/80">
@@ -304,7 +304,7 @@ export default async function DemosPage({
               <ul className="mt-3 space-y-2">
                 {[
                   ['Right away', 'Your voice agent, live at your private hub.'],
-                  ['Within the hour', 'Your website, designed from scratch (not a template), plus a recorded walkthrough of the finished suite, landing at the same hub.'],
+                  ['Within 24 hours', 'Your website, designed from scratch (not a template), plus a recorded walkthrough of the finished suite, landing at the same hub.'],
                 ].map(([when, what]) => (
                   <li key={when} className="font-body text-[14px] text-[#FBF6EA]/80 leading-relaxed">
                     <span className="font-sans font-bold uppercase tracking-[0.08em] text-[11px] text-[#F5B700] block">{when}</span>
@@ -400,7 +400,7 @@ export default async function DemosPage({
           <div className="grid sm:grid-cols-3 gap-8 sm:gap-6 mt-6">
             {[
               { n: '1', t: 'You tell us who you are', d: 'One short form, the one above. No card, no meeting.' },
-              { n: '2', t: 'The build runs', d: 'Your Voice Agent opens right away. Your website is designed from scratch, then we record you a walkthrough of the finished suite. The whole thing is with you within the hour, at the same hub, on its own.' },
+              { n: '2', t: 'The build runs', d: 'Your Voice Agent opens right away. Your website is designed from scratch, then we record you a walkthrough of the finished suite. The whole thing is with you within 24 hours, at the same hub, on its own.' },
               {
                 n: '3',
                 t: 'Keep what you love',

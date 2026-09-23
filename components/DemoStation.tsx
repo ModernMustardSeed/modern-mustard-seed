@@ -127,7 +127,7 @@ export default function DemoStation() {
         </div>
         <p className="font-body text-[13px] text-[#FBF6EA]/55 mt-5">
           The first two are open now. Your website keeps building after this, then we record you a walkthrough of the
-          finished suite. We will have it all to you within the hour, at your hub, on its own.
+          finished suite. We will have it all to you within 24 hours, at your hub, on its own.
         </p>
       </div>
     );
@@ -220,6 +220,20 @@ export default function DemoStation() {
           value={values.website || ''}
           onChange={set('website')}
           placeholder="ricoroofing.com (or leave blank)"
+          className={inputCls}
+        />
+      </label>
+
+      <label className="block mt-4">
+        <span className={labelCls}>
+          A site or two you love the look of
+          <span className="ml-2 normal-case tracking-normal font-body font-normal text-[#161616]/70">Optional. We match the style, never copy it</span>
+        </span>
+        <input
+          type="text"
+          value={values.style_refs || ''}
+          onChange={set('style_refs')}
+          placeholder="favoritesite.com, anotherone.com"
           className={inputCls}
         />
       </label>
