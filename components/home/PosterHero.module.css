@@ -71,3 +71,21 @@ button.posterBubble:focus-visible{outline:3px solid var(--red);outline-offset:4p
 .talkPanel [data-consent]{margin:10px 0 0;font-size:11px;line-height:1.5;color:#5b5d61}
 @media(max-width:760px){.talkPanel{top:calc(6% + 84px);right:0;left:0;width:auto;margin:0 auto;max-width:360px}.posterBubble small{font-size:9px}}
 @media(prefers-reduced-motion:reduce){.lean{transition:none;transform:none}.posterBubble small i,.talkPanel [data-pulse]{animation:none}}
+
+/* Tap Mr. Mustard five times: he dances in a burst of confetti. */
+.lean{cursor:default}
+.dance .posterMascot{animation:mustardDance .6s ease-in-out 4}
+@keyframes mustardDance{0%,100%{rotate:0deg;translate:0 0}25%{rotate:-10deg;translate:-10px -18px}50%{rotate:0deg;translate:0 -4px}75%{rotate:10deg;translate:10px -18px}}
+.confetti{position:absolute;left:50%;top:40%;width:0;height:0;pointer-events:none;z-index:5}
+.confetti i{position:absolute;width:10px;height:14px;border:1.5px solid var(--ink);animation:confettiPop 1.5s cubic-bezier(.15,.8,.3,1) forwards}
+@keyframes confettiPop{0%{transform:translate(0,0) rotate(0);opacity:1}80%{opacity:1}100%{transform:translate(var(--dx),calc(var(--dy) + 120px)) rotate(var(--rot));opacity:0}}
+
+/* The tour: a quiet second door under the call to action, and a pill while it runs. */
+.tour{display:inline-flex;align-items:center;gap:10px;margin-top:22px;margin-left:4px;min-height:44px;padding:0;background:none;border:0;border-bottom:2px solid var(--ink);font-family:inherit;font-size:14px;font-weight:700;color:var(--ink);cursor:pointer}
+.tour span{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--ink);color:var(--mustard);font-size:10px}
+.tour:disabled{opacity:.6;cursor:wait}
+.poster .posterCopy{display:flex;flex-direction:column;align-items:flex-start}
+.tourPill{position:fixed;z-index:70;left:50%;bottom:22px;translate:-50% 0;display:flex;align-items:center;gap:12px;padding:10px 12px 10px 16px;background:var(--ink);color:var(--cream);border:2px solid var(--cream);box-shadow:5px 5px 0 var(--mustard);font-size:13px;font-weight:700;white-space:nowrap}
+.tourPill i{width:10px;height:10px;border-radius:50%;background:var(--red);animation:talkPing 1.4s ease-out infinite}
+.tourPill button{padding:6px 12px;background:var(--red);color:#fff;border:2px solid var(--cream);font-size:11px;font-weight:800;cursor:pointer}
+@media(prefers-reduced-motion:reduce){.dance .posterMascot{animation:none}.tourPill i{animation:none}}

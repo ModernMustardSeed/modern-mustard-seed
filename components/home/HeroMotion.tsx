@@ -1,15 +1,41 @@
 'use client';
 
-import { useEffect, useRef, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { trackEvent } from '@/lib/analytics';
 
 /**
  * Small personality for the poster hero. Everything here is decoration, so all
  * of it stands still under prefers-reduced-motion and none of it holds content.
  */
 
-/** Mr. Mustard leans and turns a few degrees toward the cursor. */
-export function MascotLean({ className, children }: { className: string; children: ReactNode }) {
+const CONFETTI = ['#F5B700', '#E0301E', '#FBF6EA', '#080c16'];
+
+/**
+ * Mr. Mustard leans and turns a few degrees toward the cursor. Tap him five
+ * times in a row and he dances in a burst of confetti (the one easter egg).
+ */
+export function MascotLean({ className, danceClass, confettiClass, children }: { className: string; danceClass: string; confettiClass: string; children: ReactNode }) {
   const ref = useRef<HTMLDivElement | null>(null);
+  const taps = useRef<number[]>([]);
+  const [party, setParty] = useState(0);
+
+  const tap = () => {
+    const now = Date.now();
+    taps.current = [...taps.current.filter((t) => now - t < 2500), now];
+    if (taps.current.length < 5 || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    taps.current = [];
+    trackEvent('mustard_dance', { location: 'home-hero' });
+    setParty((p) => p + 1);
+  };
+
+  useEffect(() => {
+    if (!party) return;
+    const el = ref.current;
+    el?.classList.add(danceClass);
+    const t = window.setTimeout(() => el?.classList.remove(danceClass), 2400);
+    return () => window.clearTimeout(t);
+  }, [party, danceClass]);
+
   useEffect(() => {
     const el = ref.current;
     if (!el || window.matchMedia('(prefers-reduced-motion: reduce)').matches || !window.matchMedia('(pointer: fine)').matches) return;
@@ -28,7 +54,91 @@ export function MascotLean({ className, children }: { className: string; childre
     window.addEventListener('pointermove', onMove, { passive: true });
     return () => { window.removeEventListener('pointermove', onMove); cancelAnimationFrame(frame); };
   }, []);
-  return <div ref={ref} className={className}>{children}</div>;
+  return (
+    <div ref={ref} className={className} onClick={tap}>
+      {children}
+      {party > 0 && (
+        <span key={party} className={confettiClass} aria-hidden="true">
+          {Array.from({ length: 28 }, (_, i) => {
+            const angle = (i / 28) * Math.PI * 2;
+            const dist = 140 + ((i * 53) % 120);
+            return <i key={i} style={{ background: CONFETTI[i % 4], ['--dx' as string]: `${Math.cos(angle) * dist}px`, ['--dy' as string]: `${Math.sin(angle) * dist - 60}px`, ['--rot' as string]: `${(i * 67) % 360}deg`, animationDelay: `${(i % 5) * 30}ms` }} />;
+          })}
+        </span>
+      )}
+    </div>
+  );
+}
+
+/** "Hello, Tallahassee." The top line of the hero greets the visitor's city, or keeps its own words. */
+export function HelloCity({ fallback }: { fallback: string }) {
+  const [city, setCity] = useState('');
+  useEffect(() => {
+    let live = true;
+    fetch('/api/hello').then((r) => (r.ok ? r.json() : null)).then((j: { city?: string } | null) => { if (live && j?.city) setCity(j.city); }).catch(() => {});
+    return () => { live = false; };
+  }, []);
+  return <span>{city ? `Hello, ${city}` : fallback}</span>;
+}
+
+/**
+ * The parable, drawn. A vine runs down the left edge and grows with the scroll,
+ * from the seed over the verse to the tree at the bottom where the birds land.
+ * Hidden on narrow screens, where the left edge belongs to the content.
+ */
+export function Vine({ className }: { className: string }) {
+  const ref = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { el.style.setProperty('--grow', '1'); return; }
+    let frame = 0;
+    const update = () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const start = window.innerHeight * 0.6;
+      const p = max > start ? Math.min(1, Math.max(0, (window.scrollY - start) / (max - start))) : 1;
+      el.style.setProperty('--grow', p.toFixed(3));
+      el.querySelectorAll<HTMLElement>('[data-at]').forEach((leaf) => leaf.toggleAttribute('data-on', p >= Number(leaf.dataset.at)));
+    };
+    const onScroll = () => { cancelAnimationFrame(frame); frame = requestAnimationFrame(update); };
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    return () => { window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', onScroll); cancelAnimationFrame(frame); };
+  }, []);
+  const leaves = [0.08, 0.2, 0.33, 0.46, 0.58, 0.7, 0.82, 0.93];
+  return (
+    <div ref={ref} className={className} aria-hidden="true">
+      <svg viewBox="0 0 40 1000" preserveAspectRatio="none">
+        <path pathLength={1} d="M20 0 C 34 60, 6 120, 20 180 S 34 300, 20 360 S 6 480, 20 540 S 34 660, 20 720 S 6 840, 20 900 S 30 970, 20 1000" />
+      </svg>
+      {leaves.map((at, i) => <span key={at} data-at={at} data-side={i % 2 ? 'r' : 'l'} style={{ top: `${at * 100}%` }} />)}
+    </div>
+  );
+}
+
+/** A branch across the reviews; three birds fly in and perch on it when it is seen. */
+export function BirdBranch({ className, landedClass }: { className: string; landedClass: string }) {
+  const ref = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { el.classList.add(landedClass); io.disconnect(); } }, { threshold: 0.6 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [landedClass]);
+  const bird = (
+    <svg viewBox="0 0 48 34"><path data-body d="M6 22 C 10 12, 22 8, 30 12 C 36 6, 44 6, 46 10 C 42 11, 40 13, 39 16 C 38 24, 30 30, 18 29 C 12 29, 8 26, 6 22 Z" /><path data-wing d="M16 18 C 20 12, 28 12, 31 17 C 26 20, 21 21, 16 18 Z" /><circle data-eye cx="40" cy="11" r="1.6" /><path data-beak d="M46 10 L 48 11.5 L 45.5 12.5 Z" /><path data-legs d="M22 29 L 21 33 M 27 29 L 27 33" /></svg>
+  );
+  return (
+    <div ref={ref} className={className} aria-hidden="true">
+      <svg viewBox="0 0 1200 60" preserveAspectRatio="none" data-branch>
+        <path pathLength={1} d="M0 40 C 200 30, 380 48, 600 38 S 1000 30, 1200 36" />
+      </svg>
+      {['16%', '50%', '84%'].map((left, i) => <span key={left} data-bird style={{ left, transitionDelay: `${0.5 + i * 0.25}s` }}>{bird}</span>)}
+      {['4%', '30%', '66%', '96%'].map((left) => <span key={left} data-leaf style={{ left }} />)}
+    </div>
+  );
 }
 
 /** The services strip eases down to a stroll while a pointer rests on it. */
