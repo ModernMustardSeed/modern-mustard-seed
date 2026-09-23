@@ -281,7 +281,7 @@ function blankMachineFor(lead: AcqProspect, business: string): string {
     // The live machine on the demo page, never /mustard (Sarah, 2026-08-25:
     // "not ever send to mustard page"). The keys land on the calculator, and
     // the build form is one scroll above it.
-    liveUrl: `${SITE.url}/demos?source=cold-email-calculator&p=${encodeURIComponent(lead.id)}#calculator`,
+    liveUrl: `${SITE.url}/mustard?source=cold-email-calculator&p=${encodeURIComponent(lead.id)}#calculator`,
     escape,
   });
 }
@@ -294,7 +294,7 @@ function machineFor(lead: AcqProspect, est: Estimate, business: string, personal
     // The live machine on the demo page, never /mustard (Sarah, 2026-08-25:
     // "not ever send to mustard page"). The keys land on the calculator, and
     // the build form is one scroll above it.
-    liveUrl: `${SITE.url}/demos?source=cold-email-calculator&p=${encodeURIComponent(lead.id)}#calculator`,
+    liveUrl: `${SITE.url}/mustard?source=cold-email-calculator&p=${encodeURIComponent(lead.id)}#calculator`,
     escape,
   });
 }
