@@ -72,6 +72,40 @@ const flag = (n: string, d: string) => {
 const has = (n: string) => argv.includes(`--${n}`);
 
 const REGION: Region = REGIONS[(flag('region', 'florida') || 'florida').toLowerCase()] ?? REGIONS.florida;
+/**
+ * One town, when that is the trip. A run for a single Main Street should not
+ * walk the whole region's queries to find forty businesses in Bigfork.
+ * Unmatched names are reported rather than silently ignored.
+ */
+const ONLY_TOWNS = (flag('towns', '') || '')
+  .split(',')
+  .map((t) => t.trim().toLowerCase())
+  .filter(Boolean);
+const TOWNS = ONLY_TOWNS.length
+  ? REGION.towns.filter((t) => ONLY_TOWNS.includes(t.toLowerCase()))
+  : REGION.towns;
+if (ONLY_TOWNS.length && !TOWNS.length) {
+  console.error(`No town in ${REGION.key} matches --towns. Known: ${REGION.towns.join(', ')}`);
+  process.exit(1);
+}
+/**
+ * Which searches to run, when the trip needs a particular kind of business.
+ * The round robin walks categories outermost, so a one-town run fills its
+ * target on restaurants and salons long before it reaches the contractors:
+ * Bigfork's first pass wrote 51 businesses and never searched a plumber
+ * (2026-09-20). Matched as substrings, so "contractor" takes all five trades.
+ */
+const ONLY_CATS = (flag('categories', '') || '')
+  .split(',')
+  .map((c) => c.trim().toLowerCase())
+  .filter(Boolean);
+const SEARCHES = ONLY_CATS.length
+  ? CATEGORIES.filter((c) => ONLY_CATS.some((want) => c.includes(want)))
+  : CATEGORIES;
+if (ONLY_CATS.length && !SEARCHES.length) {
+  console.error(`No category matches --categories. Known: ${CATEGORIES.join(', ')}`);
+  process.exit(1);
+}
 const TARGET = Number(flag('target', '100'));
 const APPLY = has('apply');
 const HEADED = has('headed');
@@ -198,7 +232,7 @@ type Found = {
 };
 
 async function main() {
-  console.log(`Region ${REGION.key}: ${REGION.towns.join(', ')}`);
+  console.log(`Region ${REGION.key}: ${TOWNS.join(', ')}`);
   console.log(`Target ${TARGET} new businesses${APPLY ? '' : '   (DRY RUN, nothing will be written)'}\n`);
 
   const have = await existing();
@@ -227,8 +261,8 @@ async function main() {
    * feed cannot own the run.
    */
   const PER_QUERY = 12;
-  outer: for (const category of CATEGORIES) {
-    for (const town of REGION.towns) {
+  outer: for (const category of SEARCHES) {
+    for (const town of TOWNS) {
       if (found.length + pending.length >= TARGET) break outer;
       // "Saint Marks" and "St. Marks" are the same place; only search one.
       if (town === 'Saint Marks') continue;

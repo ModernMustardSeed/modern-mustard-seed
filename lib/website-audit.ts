@@ -220,6 +220,8 @@ type Signals = {
 };
 
 export type AuditCategory = { score: number; letter: string; notes: string };
+/** The seven, and nothing else, whatever extra keys a model hands back. */
+export const CATEGORY_KEYS = ['brand', 'trust', 'seo', 'geo', 'ai_features', 'conversion', 'design'] as const;
 export type WebsiteAuditReport = {
   overall_score: number;
   letter_grade: string;
@@ -518,6 +520,25 @@ Return the JSON report.`;
           return Boolean(o) && str(o!.title) && str(o!.why) && str(o!.how);
         })
         .slice(0, 3);
+    }
+    /**
+     * ONLY THE SEVEN CATEGORIES, AND ONLY REAL ONES.
+     *
+     * The model sometimes hangs extra keys off `categories`: trust_note,
+     * design_note, seo_placeholder, even "_" and a stray top_three_fixes,
+     * whose values are null or a bare string. The report page maps over every
+     * key and reads .score, so one junk key is a 500 on that business's own
+     * report, which is where the QR code on their flyer points (2026-09-20:
+     * 11 of 564 reports, 5 of them already printed for Bigfork).
+     */
+    const cats = (report as { categories?: Record<string, unknown> }).categories;
+    if (cats && typeof cats === 'object') {
+      const keep: Record<string, AuditCategory> = {};
+      for (const k of CATEGORY_KEYS) {
+        const c = cats[k] as AuditCategory | undefined;
+        if (c && typeof c.score === 'number' && typeof c.letter === 'string' && typeof c.notes === 'string') keep[k] = c;
+      }
+      (report as { categories?: Record<string, AuditCategory> }).categories = keep;
     }
     if (Array.isArray(report.full_todo)) {
       report.full_todo = report.full_todo
