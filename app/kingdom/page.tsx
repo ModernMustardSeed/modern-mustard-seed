@@ -25,7 +25,7 @@ const PILLARS = [
   {
     mark: '01',
     name: 'Curated merch collections',
-    text: 'Three to six designs under your name with Cross + Covenant, on their store or your own. Made to order, so no inventory, no setup fee and no minimum. Your organization earns 40% of the profit on every piece, and event orders of 12 or more of a design are 30% off.',
+    text: 'Three to six designs under your name with Cross + Covenant, on their store or your own. Made to order, so no inventory, no setup fee and no minimum. When supporters buy from your collection, your organization earns 40% of the profit on every piece. When you order 12 or more of one design yourself, for an event or a team, you pay 30% off retail.',
     link: { href: 'https://crossandcovenant.co/your-collection', label: 'See Your Own Collection' },
   },
   {
@@ -57,7 +57,7 @@ const FAQ = [
   },
   {
     q: 'Do we have to buy inventory for a merch collection?',
-    a: 'No. Collections are made to order through Cross + Covenant, so there is no inventory, no setup fee and no minimum. Your organization earns 40% of the profit on every piece sold, and orders of 12 or more of one design for an event or team are 30% off.',
+    a: 'No. Collections are made to order through Cross + Covenant, so there is no inventory, no setup fee and no minimum. Two numbers do two different jobs. When supporters buy from your collection, your organization earns 40% of the profit on every piece: the profit is what is left after the garment cost and the 10% of profit that goes to our Charity of the Month, which works out to $8.77 on a $40 tee. When you buy for your own event or team, 12 or more of one design to one address, you pay 30% off retail, so a $40 tee is $28.',
   },
   {
     q: 'How do Modern Mustard Seed and Cross + Covenant work together?',
