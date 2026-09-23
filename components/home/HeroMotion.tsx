@@ -70,17 +70,6 @@ export function MascotLean({ className, danceClass, confettiClass, children }: {
   );
 }
 
-/** "Hello, Tallahassee." The top line of the hero greets the visitor's city, or keeps its own words. */
-export function HelloCity({ fallback }: { fallback: string }) {
-  const [city, setCity] = useState('');
-  useEffect(() => {
-    let live = true;
-    fetch('/api/hello').then((r) => (r.ok ? r.json() : null)).then((j: { city?: string } | null) => { if (live && j?.city) setCity(j.city); }).catch(() => {});
-    return () => { live = false; };
-  }, []);
-  return <span>{city ? `Hello, ${city}` : fallback}</span>;
-}
-
 /**
  * The parable, drawn. A vine runs down the left edge and grows with the scroll,
  * from the seed over the verse to the tree at the bottom where the birds land.
