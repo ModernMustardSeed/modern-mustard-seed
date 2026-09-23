@@ -69,8 +69,14 @@ const GOOGLE_FONTS = ['https://fonts.googleapis.com', 'https://fonts.gstatic.com
  * ENFORCED. Every directive here is one that cannot break a page that already
  * works, and between them they close what the audit flagged.
  *
- * frame-ancestors 'none' is the frame protection. Nothing embeds this site, so
- * denying it outright costs nothing and stops clickjacking.
+ * frame-ancestors 'self' is the frame protection: no other site may frame
+ * ours, which stops clickjacking.
+ *
+ * ⚠️ NOT 'none' (2026-09-23). This shipped as 'none' on the belief that
+ * nothing embeds this site, but the site embeds ITSELF: every demo website is
+ * served at /demo/site/<id>/raw inside the /demo/site/<id> shell, and the admin
+ * previews sites in frames too. 'none' made every demo site read "refused to
+ * connect" for a week. Same-origin framing is the whole requirement.
  */
 const ENFORCED_CSP = [
   // ⚠️ NO default-src HERE, ON PURPOSE.
@@ -85,7 +91,7 @@ const ENFORCED_CSP = [
   // None of the directives below fall back to default-src, so leaving it out
   // means this policy restricts exactly what it names and nothing else. The
   // full lockdown lives in REPORT_ONLY_CSP until its allow-list is proven.
-  "frame-ancestors 'none'",
+  "frame-ancestors 'self'",
   "base-uri 'self'",
   "object-src 'none'",
   // Every form on the site posts to our own API via fetch. Stripe is reached by
@@ -113,7 +119,7 @@ const REPORT_ONLY_CSP = [
   `connect-src ${[SELF, ...GOOGLE_ANALYTICS, ...META_PIXEL, ...VOICE].join(' ')}`,
   `frame-src ${[SELF, 'https://www.youtube.com', 'https://www.youtube-nocookie.com', 'https://*.daily.co'].join(' ')}`,
   `worker-src ${[SELF, 'blob:'].join(' ')}`,
-  "frame-ancestors 'none'",
+  "frame-ancestors 'self'",
   "base-uri 'self'",
   "object-src 'none'",
   "form-action 'self'",
@@ -123,7 +129,7 @@ const SECURITY_HEADERS = [
   { key: 'Content-Security-Policy', value: ENFORCED_CSP },
   { key: 'Content-Security-Policy-Report-Only', value: REPORT_ONLY_CSP },
   // Belt and braces with frame-ancestors, for anything that still reads this.
-  { key: 'X-Frame-Options', value: 'DENY' },
+  { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
   { key: 'X-Content-Type-Options', value: 'nosniff' },
   { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
   // The microphone stays open to our own origin or the voice agent dies.
