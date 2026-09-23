@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { ran } from '@/lib/cc-ran';
 import { getSupabase } from '@/lib/supabase';
 import { listSettings } from '@/lib/posting/settings';
 import { publishDue, retryFailed, upgradeWords } from '@/lib/posting/publish';
@@ -32,6 +33,9 @@ export async function GET(req: Request) {
   }
   const sb = getSupabase();
   if (!sb) return NextResponse.json({ error: 'no database' }, { status: 500 });
+  // Say plainly that this ran, so a quiet week and a stopped cron stop
+  // looking alike to the watchdog. See lib/cc-ran.ts.
+  await ran(sb, 'posting-publish');
 
   const now = new Date();
   const today = mountainDate(now);

@@ -42,7 +42,21 @@ export async function getDesk(): Promise<DeskResult> {
   if (!session) return { ok: false, status: 401, error: 'Unauthorized' };
   const sb = getSupabase();
   if (!sb) return { ok: false, status: 500, error: 'Database not configured' };
-  const account = await accountForSession(sb, session.email, session.preview);
+  // HOLDING THE KEY IS THE PERMISSION, which is the rule the middleware on
+  // /cc already applies and the rule every room must therefore apply too.
+  //
+  // It used to ask `commandCenterVisible` here, a flag that is deliberately
+  // off until a desk is handed over. That produced the worst shape a gate can
+  // have: the door let a valid session in and then every room inside refused
+  // it, so the board bounced to sign-in forever and the Operator answered
+  // "making that QR code now" while doing nothing.
+  //
+  // The gate that matters is upstream, where keys are MINTED: verify-code and
+  // the portal's verify both check that the Command Center is on before they
+  // hand one out. A key in a cookie therefore means an account that was
+  // switched on when it signed in, and Sarah's look pass is checked against
+  // her admin session as before.
+  const account = await accountForSession(sb, session.email, true);
   if (!account) return { ok: false, status: 403, error: 'No Command Center on this account.' };
 
   const people = peopleOf(account);

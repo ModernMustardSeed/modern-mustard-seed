@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { getDesk } from '@/lib/cc-desk';
 import { summariseSources } from '@/lib/cc-sources';
+import { handoverActions, handoverBody, jobPhotos } from '@/lib/cc-handover';
+import { put } from '@/lib/cc-briefs';
 import {
   createJob,
   getJob,
@@ -83,8 +85,29 @@ export async function POST(req: Request) {
   if (action === 'update') {
     const id = String(body.id ?? '');
     if (!id) return NextResponse.json({ error: 'Which job?' }, { status: 400 });
+    const before = await getJob(sb, account.clientEmail, id);
     const r = await updateJob(sb, account.clientEmail, id, body as Record<string, unknown>, author);
     if (!r.ok) return NextResponse.json({ error: r.error }, { status: 400 });
+
+    // THE DAY A HOUSE IS FINISHED. The review is warmest the week they move
+    // in, and the photographs of the best work this business did all year are
+    // sitting on this job. Both are one press, and neither fires on its own.
+    if (r.job.stage === 'complete' && before?.stage !== 'complete') {
+      try {
+        const photos = await jobPhotos(sb, id);
+        await put(sb, account.clientEmail, {
+          kind: 'handover',
+          subject_type: 'job',
+          subject_id: id,
+          title: `${r.job.name} is finished`,
+          body: handoverBody(r.job, photos),
+          actions: handoverActions(r.job, photos),
+        });
+      } catch {
+        /* the stage change is the point; the brief is the courtesy */
+      }
+    }
+
     return NextResponse.json({ ok: true, job: r.job, events: await jobEvents(sb, id) });
   }
 

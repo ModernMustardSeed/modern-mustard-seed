@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Badge, Button, Card, CardHead, Drawer, Empty, ErrorNote, Field, Label, Skeleton, cx, inputCls } from '@/components/cc/ui';
 import { Icon } from '@/components/cc/icons';
+import Knows from '@/components/cc/Knows';
 
 type ClientList = { id: string; name: string; tags: string[]; note: string | null; people: number; reachable: number };
 
@@ -214,6 +215,9 @@ export default function Contacts() {
 
   return (
     <div className="space-y-5">
+      {/* What the desk knows about the business, and the questions it wants
+          answered before it treats a guess as a fact. */}
+      <Knows />
       <Card pad={false}>
         <div className="flex flex-wrap items-center gap-3 border-b border-[var(--cc-line)] px-5 py-4">
           <input id="cc-contacts-search" className={cx(inputCls, 'min-w-[220px] flex-1')} placeholder="Search a name, a town, a company, part of a number" value={q} onChange={(e) => setQ(e.target.value)} />

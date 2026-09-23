@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import type { Session } from '@/components/cc/Workspace';
 import { Badge, Button, Card, CardHead, Field, Label, Skeleton, cx, inputCls } from '@/components/cc/ui';
+import Systems from '@/components/cc/Systems';
 
 /**
  * EVERYTHING THIS RUNS ON, in one place. Every account the desk reaches into,
@@ -477,6 +478,9 @@ export default function Accounts({ session }: { session: Session }) {
           </ul>
         )}
       </Card>
+
+      {/* Plumbing, at the bottom, where plumbing belongs. */}
+      <Systems />
 
       <div className="grid gap-5 lg:grid-cols-2">
         <Card>

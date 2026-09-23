@@ -24,11 +24,13 @@ type Action =
   | { kind: 'next_step'; label: string; jobId: string; step: string; inDays: number }
   | { kind: 'add_job'; label: string; leadId: string }
   | { kind: 'open'; label: string; room: string; jobId?: string }
+  | { kind: 'review_ask'; label: string; jobId: string }
+  | { kind: 'project_page'; label: string; jobId: string }
   | { kind: 'note'; label: string; jobId: string; body: string };
 
 type Brief = {
   id: string;
-  kind: 'qualify' | 'quiet' | 'monday' | 'risk';
+  kind: 'qualify' | 'quiet' | 'monday' | 'risk' | 'cert' | 'handover' | 'noticed';
   subject_type: string;
   subject_id: string | null;
   title: string;
@@ -37,7 +39,7 @@ type Brief = {
   created_at: string;
 };
 
-const KIND_LABEL: Record<Brief['kind'], string> = { qualify: 'New inquiry', quiet: 'Gone quiet', monday: 'The board', risk: 'Needs you' };
+const KIND_LABEL: Record<Brief['kind'], string> = { qualify: 'New inquiry', quiet: 'Gone quiet', monday: 'The board', risk: 'Needs you', cert: 'Insurance', handover: 'Finished', noticed: 'I noticed' };
 
 export default function Briefs({ go }: { go: (room: string) => void }) {
   const [briefs, setBriefs] = useState<Brief[] | null>(null);

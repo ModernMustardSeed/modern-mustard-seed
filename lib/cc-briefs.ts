@@ -31,7 +31,7 @@ import type { ClientProject } from '@/lib/client-leads';
  *      feels like knowledge.
  */
 
-export type BriefKind = 'qualify' | 'quiet' | 'monday' | 'risk';
+export type BriefKind = 'qualify' | 'quiet' | 'monday' | 'risk' | 'cert' | 'handover' | 'noticed';
 
 export type BriefAction =
   | { kind: 'draft_email'; label: string; to: string; subject: string; body: string }
@@ -40,12 +40,16 @@ export type BriefAction =
   | { kind: 'next_step'; label: string; jobId: string; step: string; inDays: number }
   | { kind: 'add_job'; label: string; leadId: string }
   | { kind: 'open'; label: string; room: string; jobId?: string }
+  /** Ask the homeowner of a finished job for a review. Sends when pressed, never before. */
+  | { kind: 'review_ask'; label: string; jobId: string }
+  /** Turn a finished job, and the photographs already on it, into a project page request. */
+  | { kind: 'project_page'; label: string; jobId: string }
   | { kind: 'note'; label: string; jobId: string; body: string };
 
 export type Brief = {
   id: string;
   kind: BriefKind;
-  subject_type: 'lead' | 'job' | 'board';
+  subject_type: 'lead' | 'job' | 'board' | 'trade';
   subject_id: string | null;
   title: string;
   body: string;
@@ -70,10 +74,10 @@ export async function listBriefs(sb: SupabaseClient, clientEmail: string, status
  * work: a second Monday does not stack a second card, and a job that is still
  * quiet next week is still the same one card.
  */
-async function put(
+export async function put(
   sb: SupabaseClient,
   clientEmail: string,
-  brief: { kind: BriefKind; subject_type: 'lead' | 'job' | 'board'; subject_id: string | null; title: string; body: string; actions: BriefAction[] },
+  brief: { kind: BriefKind; subject_type: 'lead' | 'job' | 'board' | 'trade'; subject_id: string | null; title: string; body: string; actions: BriefAction[] },
 ): Promise<'written' | 'already'> {
   const { error } = await sb.from('client_briefs').insert({
     client_email: clientEmail.toLowerCase().trim(),

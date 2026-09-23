@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { ran } from '@/lib/cc-ran';
 import { getSupabase } from '@/lib/supabase';
 import { CLIENT_PROJECTS } from '@/lib/client-leads';
 import { collectSorted, syncMailbox } from '@/lib/mail-desk';
@@ -20,6 +21,9 @@ export async function GET(req: Request) {
   }
   const sb = getSupabase();
   if (!sb) return NextResponse.json({ error: 'no database' }, { status: 500 });
+  // Say plainly that this ran, so a quiet week and a stopped cron stop
+  // looking alike to the watchdog. See lib/cc-ran.ts.
+  await ran(sb, 'client-mail-sync');
   const report: Record<string, string> = {};
   for (const p of Object.values(CLIENT_PROJECTS)) {
     const r = await syncMailbox(sb, p);

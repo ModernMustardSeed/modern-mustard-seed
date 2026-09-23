@@ -41,6 +41,9 @@ export async function GET() {
       jobs: true,
       // From the site is the superintendent's screen. It needs a board to land on.
       field: true,
+      // The bench. On for everyone: every business that hires anybody has
+      // somebody whose insurance can lapse.
+      trades: true,
       contacts: true,
       conversations: Boolean(account.project.assistantId),
       inbox: true,
