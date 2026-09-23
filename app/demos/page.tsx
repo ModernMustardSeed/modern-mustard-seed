@@ -15,20 +15,20 @@ import { PREVIEW } from '@/data/preview-promise';
  * says Demo Station), it just no longer leads. (Retitled 2026-07-25.)
  */
 export const metadata = buildMetadata({
-  title: 'Free Voice Agent and Website Demo for Your Business',
+  title: 'Free Website Preview and Audit for Your Business',
   description:
-    'Get two working AI demos free, no card and no sales call: a voice agent that answers as your business, and a custom website built from scratch. Both are with you within 24 hours. Keep what you love from $147/mo.',
+    'A free website preview sketched from scratch for your business, plus a free audit of your site, Google profile and reviews. No card and no sales call. Both are with you within 24 hours.',
   path: '/demos',
 });
 
 const FAQ = [
   {
     q: 'Is it really free?',
-    a: 'Yes. Both demos cost you nothing and there is no card and no meeting. We build them because the demos sell themselves; keep what you love from $147 a month, or walk away.',
+    a: 'Yes. The preview and the audit cost you nothing, and there is no card and no meeting. We build them because the work sells itself; keep the website from $147 a month, or walk away.',
   },
   {
     q: 'What exactly do I get?',
-    a: 'Two working demos personalized to your business: a voice agent you can call and try to stump, and a website preview sketched from scratch, with the agent answering on it. Both live at your private hub link, and taking them together builds them as one thing for less than the two apart.',
+    a: 'Two things, personalized to your business: a website preview sketched from scratch in your look, and a free audit that grades your current site, your Google profile and your reviews, with every check printed. Both live at your private hub link.',
   },
   {
     q: 'Is the website the finished product?',
@@ -36,7 +36,7 @@ const FAQ = [
   },
   {
     q: 'How fast?',
-    a: 'Your voice agent opens right away. The website is different, because it is designed from scratch rather than filled into a template, and then we record you a walkthrough of the finished suite. We have the whole thing to you within 24 hours. It appears at your hub on its own and we email you the moment it lands, so you can close the tab.',
+    a: 'Within 24 hours. The website is designed from scratch rather than filled into a template, and then we record you a walkthrough of it. The audit lands alongside it. Both appear at your hub on their own and we email you the moment they land, so you can close the tab.',
   },
   {
     q: 'What happens if I want to keep something?',
@@ -46,18 +46,18 @@ const FAQ = [
 
 const PIECES = [
   {
-    icon: '🎙',
-    title: 'Voice Agent',
-    desc: 'Call it. Pretend you are a customer. Try to stump it. It answers as YOUR business, day or night, and books the job.',
-    price: DEMO_PRODUCTS.voice,
-    tone: 'ink' as const,
+    icon: '🌐',
+    title: 'Your Website Preview',
+    desc: 'Sketched from scratch for your trade, your town, your phone number. A working preview of what yours could become. The real one is made bespoke.',
+    pill: `Free · keep from ${formatUsd(DEMO_PRODUCTS.site.monthlyCents)}/mo`,
+    tone: 'gold' as const,
   },
   {
-    icon: '🌐',
-    title: 'Your New Website',
-    desc: 'Sketched from scratch for your trade, your town, your phone number. A working preview of what yours could become. The real one is made bespoke.',
-    price: DEMO_PRODUCTS.site,
-    tone: 'gold' as const,
+    icon: '🔍',
+    title: 'Your Free Audit',
+    desc: 'Your current site, your Google profile and your reviews, graded, with every check printed and the fixes in order. Yours to keep either way.',
+    pill: 'Free · yours to keep',
+    tone: 'ink' as const,
   },
 ];
 
@@ -84,7 +84,7 @@ const PIECES = [
 function demosJsonLd() {
   // Two, not three: the command center is not one of the demos we build, so it
   // is not one of the offers this page advertises (Sarah, 2026-08-25).
-  const products = [DEMO_PRODUCTS.voice, DEMO_PRODUCTS.site];
+  const products = [DEMO_PRODUCTS.site];
   const offer = (name: string, monthlyCents: number, setupCents: number, desc: string) => ({
     '@type': 'Offer' as const,
     name,
@@ -117,9 +117,9 @@ function demosJsonLd() {
       {
         '@type': 'Service',
         name: 'The Demo Station by Modern Mustard Seed',
-        serviceType: 'Free AI business demos: voice agent and website',
+        serviceType: 'Free website preview and presence audit',
         description:
-          'A free self-serve build. Enter your business once and receive two working demos: a voice agent trained on your company, and a custom website designed from scratch. No account and no credit card.',
+          'A free self-serve build. Enter your business once and receive a website preview designed from scratch and a free audit of your site, Google profile and reviews. No account and no credit card.',
         provider: { '@type': 'Organization', name: 'Modern Mustard Seed', url: SITE.url },
         areaServed: 'US',
         offers: [
@@ -131,17 +131,11 @@ function demosJsonLd() {
               p.blurb,
             ),
           ),
-          offer(
-            DEMO_BUNDLE.name,
-            DEMO_BUNDLE.monthlyCents,
-            DEMO_BUNDLE.setupCents,
-            'The voice agent and the website made real together, built as one thing, for less than the two apart.',
-          ),
         ],
       },
       {
         '@type': 'HowTo',
-        name: 'Get three free AI demos built for your business',
+        name: 'Get a free website preview and audit for your business',
         totalTime: 'PT1H',
         step: [
           {
@@ -151,13 +145,8 @@ function demosJsonLd() {
           },
           {
             '@type': 'HowToStep',
-            name: 'Meet your voice agent',
-            text: 'It opens right away at your private hub. Talk to it in your browser and try to stump it.',
-          },
-          {
-            '@type': 'HowToStep',
-            name: 'Your website lands',
-            text: 'Designed from scratch rather than filled into a template, then we record you a walkthrough of the finished suite. We have it to you within 24 hours, at the same hub, and we email you when it is ready.',
+            name: 'Your preview and audit land',
+            text: 'The website is designed from scratch rather than filled into a template, then we record you a walkthrough of it. It lands within 24 hours with your free audit, at your private hub, and we email you when it is ready.',
           },
         ],
       },
@@ -229,18 +218,18 @@ export default async function DemosPage({
                 The Demo Station
               </span>
               <h1 className="font-display text-[2.6rem] sm:text-5xl xl:text-6xl font-bold mt-4 leading-[1.02] tracking-tight">
-                We build your business{' '}
-                <em className="italic text-[#C4160B]">two free demos.</em> Right now.
+                We sketch your{' '}
+                <em className="italic text-[#C4160B]">new website.</em> Free.
               </h1>
               <p className="font-body text-[17px] text-[#161616]/70 mt-5 leading-relaxed">
-                A voice agent that answers as your business, and a brand-new website with your name on the door. Real
-                and working, personalized to you, not a slideshow.
+                A website preview with your name on the door, sketched from scratch in your look, plus a free audit
+                of the site, Google profile and reviews you have now. {PREVIEW.short}
               </p>
 
               <ul className="mt-6 space-y-2.5">
                 {[
                   'No card. No meeting. No sales call to sit through.',
-                  'Your agent opens right away. The website is with you within 24 hours.',
+                  'Your preview and your audit are with you within 24 hours.',
                   `Keep what you love from ${formatUsd(DEMO_PRODUCTS.site.monthlyCents)}/mo. Or keep nothing.`,
                 ].map((t) => (
                   <li key={t} className="flex items-start gap-2.5 font-body text-[15px] text-[#161616]/80">
@@ -259,7 +248,7 @@ export default async function DemosPage({
                 href="#build"
                 className="mt-8 inline-flex items-center gap-2 bg-[#161616] text-[#FBF6EA] border-2 border-[#161616] rounded-xl px-7 py-4 font-sans font-bold uppercase tracking-[0.1em] text-sm shadow-[5px_5px_0_0_#F5B700] hover:-translate-y-0.5 transition-transform lg:hidden"
               >
-                Build my demos →
+                Build my preview →
               </a>
             </div>
 
@@ -274,15 +263,15 @@ export default async function DemosPage({
                 <video
                   controls
                   preload="metadata"
-                  poster="/video/demos-landing-poster.jpg"
-                  src="/video/demos-landing-web.mp4"
+                  poster="/video/tv/make-it-real.webp"
+                  src="/video/tv/make-it-real.mp4"
                   className="w-full aspect-video bg-[#161616]"
                 />
                 <div className="flex items-center gap-3 px-4 py-3 border-t-2 border-[#161616]">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src="/brand/mascot.png" alt="" width={34} height={34} className="shrink-0" />
                   <p className="font-body text-[13px] text-[#161616]/70 leading-snug">
-                    Thirty seconds at the build: what we build you, and why it costs nothing.
+                    Make It Real: forty seconds on what we build, and who it is for.
                   </p>
                 </div>
               </div>
@@ -300,16 +289,15 @@ export default async function DemosPage({
               One short form from you. Then the build does the rest.
             </h2>
             <p className="font-body text-[15px] text-[#161616]/70 mt-4 leading-relaxed">
-              Your voice agent demo answers as your business, and you talk to it right in your browser. The phone
-              number is how we reach you about the build, nothing more. Nothing is charged and nobody calls you unless
-              you ask.
+              Your phone number goes on your preview site and is how we reach you about the build, nothing more.
+              Nothing is charged and nobody calls you unless you ask.
             </p>
             <div className="mt-6 bg-[#161616] rounded-2xl border-2 border-[#161616] shadow-[6px_6px_0_0_#F5B700] p-5">
               <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#F5B700] font-bold">What lands, and when</p>
               <ul className="mt-3 space-y-2">
                 {[
-                  ['Right away', 'Your voice agent, live at your private hub.'],
-                  ['Within 24 hours', 'Your website, designed from scratch (not a template), plus a recorded walkthrough of the finished suite, landing at the same hub.'],
+                  ['Within 24 hours', 'Your website preview, designed from scratch (not a template), with a recorded walkthrough of it.'],
+                  ['Alongside it', 'Your free audit: your site, your Google profile and your reviews, graded, with the fixes in order.'],
                 ].map(([when, what]) => (
                   <li key={when} className="font-body text-[14px] text-[#FBF6EA]/80 leading-relaxed">
                     <span className="font-sans font-bold uppercase tracking-[0.08em] text-[11px] text-[#F5B700] block">{when}</span>
@@ -344,11 +332,11 @@ export default async function DemosPage({
             </h3>
             <p className="mt-4 font-body text-[15px] leading-relaxed text-[#161616]/75">
               Calls you miss in a week, how many of the people you do talk to hire you, and what one job is worth. The
-              display is what walks out the door every month while the phone rings out. The demo above is what stops it,
-              and it is free to look at.
+              display is what walks out the door every month while the phone rings out. A voice agent is what stops it:
+              ask us about one when you build your preview.
             </p>
             <a href="#build" className="inline-flex mt-6 items-center gap-2 bg-[#F5B700] text-[#161616] border-2 border-[#161616] rounded-xl px-5 py-3 font-sans font-extrabold uppercase tracking-[0.12em] text-[12px] shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-all">
-              Build my demo ↑
+              Build my preview ↑
             </a>
           </div>
         </section>
@@ -357,9 +345,9 @@ export default async function DemosPage({
         <section>
           <h2 className="font-display text-3xl sm:text-4xl font-bold">What actually shows up</h2>
           <p className="font-body text-[15px] text-[#161616]/70 mt-2 max-w-2xl">
-            Two working things with your name on them. Play with both, keep either, or keep neither.
+            Two things with your name on them. Keep the website, keep the audit either way.
           </p>
-          <div className="grid sm:grid-cols-3 gap-5 mt-7">
+          <div className="grid sm:grid-cols-2 gap-5 mt-7">
             {PIECES.map((c) => (
               <div
                 key={c.title}
@@ -386,17 +374,11 @@ export default async function DemosPage({
                     c.tone === 'gold' ? 'text-[#161616]' : c.tone === 'ink' ? 'text-[#F5B700]' : 'text-[#161616]'
                   }`}
                 >
-                  Free demo
-                  <span className={c.tone === 'ink' ? 'text-[#FBF6EA]/40' : 'text-[#161616]/70'}> · </span>
-                  keep for {formatUsd(c.price.monthlyCents)}/mo
+                  {c.pill}
                 </p>
               </div>
             ))}
           </div>
-          <p className="font-body text-[14px] text-[#161616]/60 mt-5">
-            Take the voice agent and the website together and they are built as one thing: The Talking Website,
-            from {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo, month to month, and you order it right from your hub.
-          </p>
         </section>
 
         {/* ── How it works ── */}
@@ -405,11 +387,11 @@ export default async function DemosPage({
           <div className="grid sm:grid-cols-3 gap-8 sm:gap-6 mt-6">
             {[
               { n: '1', t: 'You tell us who you are', d: 'One short form, the one above. No card, no meeting.' },
-              { n: '2', t: 'The build runs', d: 'Your Voice Agent opens right away. Your website is designed from scratch, then we record you a walkthrough of the finished suite. The whole thing is with you within 24 hours, at the same hub, on its own.' },
+              { n: '2', t: 'The build runs', d: 'Your website is designed from scratch, then we record you a walkthrough of it, and your free audit is graded alongside. Both are with you within 24 hours, at your hub, on their own.' },
               {
                 n: '3',
                 t: 'Keep what you love',
-                d: `Order at your hub: from ${formatUsd(DEMO_PRODUCTS.site.monthlyCents)}/mo per piece, ${formatUsd(DEMO_BUNDLE.monthlyCents)}/mo for The Talking Website (both pieces, built as one). Live within 7 days.`,
+                d: `Keep the website at your hub from ${formatUsd(DEMO_PRODUCTS.site.monthlyCents)}/mo, live within 7 days, or work with us on the bespoke one.`,
               },
             ].map((s) => (
               <div key={s.n} className="flex gap-4 sm:block">

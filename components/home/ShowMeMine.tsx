@@ -139,7 +139,7 @@ export default function ShowMeMine({ className }: { className: string }) {
               {phase === 'done' ? (
                 <div aria-live="polite">
                   <p className="text-[16px] leading-relaxed">
-                    Your voice agent is <strong>ready right now</strong>. Your website preview is being sketched from scratch, and it lands at your private hub <strong>within 24 hours</strong>, with a free audit of your current site, Google profile and reviews. We email you the moment it is ready.</p>
+                    Your website preview is being sketched from scratch, and it lands at your private hub <strong>within 24 hours</strong>, with a free audit of your current site, Google profile and reviews. We email you the moment it is ready.</p>
                   <p className="mt-4 border-l-4 border-[#F5B700] pl-4 text-[14px] leading-relaxed text-[#42454a]"><strong className="text-[#161616]">{PREVIEW.eyebrow}.</strong> {PREVIEW.body}
                   </p>
                   <a href={hub} className="mt-6 flex min-h-[54px] items-center justify-center gap-3 border-2 border-[#161616] bg-[#161616] px-6 text-[15px] font-bold text-[#FBF6EA] shadow-[5px_5px_0_0_#F5B700]">
@@ -174,7 +174,7 @@ export default function ShowMeMine({ className }: { className: string }) {
                   <label className="mt-5 block"><span className={label}>What should it do for you?</span>
                     <textarea rows={3} maxLength={600} value={v.notes || ''} onChange={set('notes')} placeholder="The jobs you want more of, what you want to be known for, anything you hate about your current site." className={`${field} resize-y leading-relaxed`} /></label>
                   <input type="text" tabIndex={-1} autoComplete="off" value={v.company_url || ''} onChange={set('company_url')} className="hidden" aria-hidden />
-                  <p className="mt-4 text-[12px] leading-relaxed text-[#5b5d61]">The voice agent demo answers as your business, which is why we ask for its phone number.</p>
+                  <p className="mt-4 text-[12px] leading-relaxed text-[#5b5d61]">Your phone number goes on your preview site, and it is how we reach you about the build. Nobody calls unless you ask.</p>
                   <button type="submit" disabled={phase === 'sending'} className="mt-5 flex min-h-[56px] w-full items-center justify-center gap-3 border-2 border-[#161616] bg-[#F5B700] text-[15px] font-extrabold shadow-[5px_5px_0_0_#161616] disabled:opacity-60">
                     {phase === 'sending' ? 'Starting your build…' : <>Build mine, free <span aria-hidden="true">↗</span></>}
                   </button>

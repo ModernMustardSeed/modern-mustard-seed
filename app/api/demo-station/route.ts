@@ -1,8 +1,8 @@
 /**
  * THE DEMO STATION: self-serve version of the cockpit build. A business owner
- * lands from an ad, gives us their details, and we build their whole suite:
- * voice agent (instant) + business OS (instant) + website (queued to
- * the worker), fronted by their Demo Suite hub. Every signup is a lead on the
+ * lands from an ad, gives us their details, and we build a website preview
+ * (queued to the worker) and a free presence audit, fronted by their hub.
+ * No voice agent since 2026-09-23 (Sarah). Every signup is a lead on the
  * dial floor (source 'demo-station'), so the funnel is: ad -> station -> hub
  * -> order card, with the team following up on anyone who stalls.
  *
@@ -24,7 +24,7 @@
 
 import { NextResponse, after } from 'next/server';
 import { getSupabase } from '@/lib/supabase';
-import { buildLeadVoiceDemo, buildSiteBrief, ensureDemoHub } from '@/lib/outbound-demo';
+import { buildSiteBrief, ensureDemoHub } from '@/lib/outbound-demo';
 import { ensurePresenceAudit } from '@/lib/presence-audit';
 import { syncLeadToPipeline } from '@/lib/outbound-pipeline';
 import type { OutboundLead, Niche } from '@/lib/outbound';
@@ -137,7 +137,7 @@ export async function POST(req: Request) {
   const niche = (NICHES.includes(body.niche as Niche) ? body.niche : 'other') as Niche;
 
   if (!business || !name || !/.+@.+\..+/.test(email) || digits.length < 10) {
-    return NextResponse.json({ error: 'missing_fields', message: 'Business, your name, a real email, and a real phone number are required (the voice agent demo answers as your business).' }, { status: 400 });
+    return NextResponse.json({ error: 'missing_fields', message: 'Business, your name, a real email, and a real phone number are required (your phone number goes on your preview site).' }, { status: 400 });
   }
   if (hostile(business, name, city, website, ...styleRefs)) {
     return NextResponse.json(
@@ -238,9 +238,9 @@ export async function POST(req: Request) {
   }
   let lead = leadRow as OutboundLead;
 
-  // Voice is instant; the website is queued to the worker below.
-  const voice = await buildLeadVoiceDemo(supabase, lead);
-  if (voice.ok) lead = voice.lead;
+  // WEBSITE AND AUDIT ONLY (Sarah, 2026-09-23): the public build ask no longer
+  // makes a voice agent. The hub, the emails and the demo site already show the
+  // voice demo only when one exists, so nothing downstream needs to know.
 
   // THE COMMAND CENTER IS NOT BUILT ANY MORE (Sarah, 2026-08-22). It is sold
   // on its own, built by hand, and scoped with the client first. A build that
@@ -250,7 +250,7 @@ export async function POST(req: Request) {
   // Queue the website build for the worker.
   const { data: siteRow } = await supabase
     .from('outbound_demo_sites')
-    .insert({ lead_id: lead.id, business_name: lead.business_name, brief: buildSiteBrief(lead, lead.demo_url), status: 'queued' })
+    .insert({ lead_id: lead.id, business_name: lead.business_name, brief: buildSiteBrief(lead, null), status: 'queued' })
     .select('id')
     .single();
   if (siteRow) {
@@ -296,13 +296,13 @@ export async function POST(req: Request) {
         from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
         to: email,
         replyTo: 'sarah@modernmustardseed.com',
-        subject: `${first}, ${possessive(business)} demos are being built right now`,
+        subject: `${first}, ${possessive(business)} website preview is being built`,
         html: clientEmail({
-          preheader: 'Your voice agent is ready now; your website is with you within 24 hours.',
-          eyebrow: 'YOUR DEMO SUITE',
+          preheader: 'Your website preview and your free audit are with you within 24 hours.',
+          eyebrow: 'YOUR WEBSITE PREVIEW',
           greeting: `${first}, it is happening.`,
           body:
-            `<p>Your voice agent is <strong>ready right now</strong>. Your website is the slow one, because it gets designed from scratch rather than poured into a template, and then we record you a short walkthrough of the finished suite. We are working on it and will have it to you <strong>within 24 hours</strong>, at the same hub, on its own.</p>` +
+            `<p>Your website preview is being designed from scratch rather than poured into a template, and then we record you a short walkthrough of it. Alongside it comes a free audit of the site, Google profile and reviews you have now. Both land <strong>within 24 hours</strong>, at your private hub, on their own.</p>` +
             demoFilmCard({
               film: 'demo-welcome',
               href: lead.hub_demo_url,
@@ -310,7 +310,7 @@ export async function POST(req: Request) {
             }) +
             `<p>Everything lives at your private hub. Bookmark it; the website appears there on its own when it is done.</p>` +
             `<p><strong>A note on the website:</strong> ${PREVIEW.short}</p>`,
-          cta: { label: 'Open your Demo Suite', url: lead.hub_demo_url },
+          cta: { label: 'Open your hub', url: lead.hub_demo_url },
           signature: 'Sarah',
         }),
       });
