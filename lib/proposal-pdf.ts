@@ -1,7 +1,7 @@
 import { PDFDocument, PDFArray, PDFName, PDFString, rgb, type PDFPage, type PDFFont } from 'pdf-lib';
 import fontkit from '@pdf-lib/fontkit';
 import { PLAYFAIR_700_B64, DMSANS_400_B64, DMSANS_700_B64 } from './proposal-fonts';
-import { byId, isRecurring, isHourly, formatMoney as money, TERMS, type Service } from '@/data/proposal-menu';
+import { byId, isRecurring, formatMoney as money, TERMS, type Service } from '@/data/proposal-menu';
 
 type Line = { id: string; price: number; qty: number; scope?: string[]; framing?: string };
 export type ProposalRecord = {
@@ -33,7 +33,6 @@ const withProtocol = (url: string): string => (/^https?:\/\//i.test(url) ? url :
 
 function linePriceLabel(s: Service, l: Line): string {
   if (s.unit === 'free') return 'Included';
-  if (isHourly(s.unit)) return `${money(l.price)}/hr x ${l.qty} = ${money(l.price * l.qty)}`;
   if (isRecurring(s.unit)) return `${money(l.price)}/mo`;
   const base = money(l.price * (l.qty || 1));
   return s.unit === 'fixed_from' ? `from ${base}` : base;

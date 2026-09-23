@@ -53,7 +53,7 @@ const PRODUCT_FAQS = (productName: string, priceUsd: number) => [
   },
   {
     q: 'Who wrote this playbook?',
-    a: `Sarah Scarano, founder of Modern Mustard Seed. The playbook is built from the same systems we ship to paid consulting clients at $225 per hour. Every framework has been used on real production engagements.`,
+    a: `Sarah Scarano, founder of Modern Mustard Seed. The playbook is built from the same systems we ship to clients on set package engagements. Every framework has been used on real production engagements.`,
   },
   {
     q: 'Is there a refund policy?',

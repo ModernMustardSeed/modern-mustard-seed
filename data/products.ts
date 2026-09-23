@@ -80,7 +80,7 @@ export const products: Product[] = [
     pdfFileName: 'MMS_AI-Ready_Business_Blueprint_FINAL.pdf',
     idealBuyer:
       'Second-business operators, service business owners exploring AI, solo operators who want to build an AI product but do not know where to start.',
-    funnelRole: 'Entry point. Builds trust. Qualifies leads for $225/hr consulting.',
+    funnelRole: 'Entry point. Builds trust. Qualifies leads for Scope and Sequence.',
     accentColor: '#C8964E',
     recommendFor: ['ai-curious', 'scoping', 'first-build', 'audit-fail-ai-features'],
   },

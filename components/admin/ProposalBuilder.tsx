@@ -13,7 +13,6 @@ import {
   listPrice,
   formatMoney as money,
   isRecurring,
-  isHourly,
   TERMS,
   type Service,
 } from '@/data/proposal-menu';
@@ -66,7 +65,6 @@ function lineToService(l: Line): Service | undefined {
 
 function linePriceLabel(s: Service, l: Line): string {
   if (s.unit === 'free') return 'Included';
-  if (isHourly(s.unit)) return `${money(l.price)}/hr × ${l.qty} = ${money(l.price * l.qty)}`;
   if (isRecurring(s.unit)) return `${money(l.price)}/mo`;
   const base = money(l.price * l.qty);
   return s.unit === 'fixed_from' ? `from ${base}` : base;
@@ -124,7 +122,7 @@ export default function ProposalBuilder() {
     if (!s || lines.some((l) => l.id === id)) return;
     setLines((prev) => [
       ...prev,
-      { id, price: defaultPrice(s), qty: isHourly(s.unit) ? 4 : 1, scope: [...s.scope], framing: '' },
+      { id, price: defaultPrice(s), qty: 1, scope: [...s.scope], framing: '' },
     ]);
   };
   const remove = (id: string) => setLines((prev) => prev.filter((l) => l.id !== id));
@@ -141,7 +139,7 @@ export default function ProposalBuilder() {
         .map((s) => ({
           id: s!.id,
           price: defaultPrice(s!),
-          qty: isHourly(s!.unit) ? 4 : 1,
+          qty: 1,
           scope: [...s!.scope],
           framing: '',
         }))
@@ -995,7 +993,7 @@ export default function ProposalBuilder() {
                         </div>
                         <div className="flex items-center gap-2 mb-2">
                           <span className="text-[10px] uppercase tracking-[0.15em] text-[#161616]/50 font-mono">
-                            {isRecurring(s.unit) ? '$/mo' : isHourly(s.unit) ? '$/hr' : '$'}
+                            {isRecurring(s.unit) ? '$/mo' : '$'}
                           </span>
                           <input
                             type="number"
@@ -1003,17 +1001,6 @@ export default function ProposalBuilder() {
                             onChange={(e) => patch(l.id, { price: Number(e.target.value) || 0 })}
                             className={`${inp} max-w-[140px]`}
                           />
-                          {isHourly(s.unit) && (
-                            <>
-                              <span className="text-[10px] uppercase tracking-[0.15em] text-[#161616]/50 font-mono">hrs</span>
-                              <input
-                                type="number"
-                                value={l.qty}
-                                onChange={(e) => patch(l.id, { qty: Number(e.target.value) || 1 })}
-                                className={`${inp} max-w-[80px]`}
-                              />
-                            </>
-                          )}
                           <span className="text-xs text-[#161616] font-mono ml-auto">{linePriceLabel(s, l)}</span>
                         </div>
                         <input
