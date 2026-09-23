@@ -6,6 +6,7 @@ import PosterHero from './PosterHero';
 import ShowMeMine from './ShowMeMine';
 import WorkVideo from './WorkVideo';
 import { SproutSeed, Vine, BirdBranch } from './HeroMotion';
+import { PREVIEW } from '@/data/preview-promise';
 
 const projects = [
   { name: 'D & D Landscaping', type: 'Landscaping / Client website', image: 'dd-landscaping', url: 'https://ddlandscapingfl.com', description: 'A local business, unmistakable.', detail: 'A Tallahassee landscaping site with service selection, walkthrough booking, and a voice concierge.' },
@@ -42,7 +43,7 @@ export default function StudioHome({ faq }: { faq: { q: string; a: string }[] })
     <PosterHero />
     <figure className={styles.verse}><blockquote><SproutSeed className={styles.sprout} grownClass={styles.grown} /><p>“If you have faith as small as a mustard seed, nothing will be impossible for you.”</p></blockquote><figcaption>Matthew 17:20</figcaption></figure>
     <section id="show-me-mine" className={styles.showMine} aria-labelledby="show-mine-heading">
-      <div><p className={styles.eyebrow}>Show me mine</p><h2 id="show-mine-heading">Paste your website. <em>We’ll build you a new one.</em></h2><p>Free, and built custom to your business and what you want it to do. Your new site lands within 24 hours, with a free audit of the site, Google profile and reviews you have now.</p></div>
+      <div><p className={styles.eyebrow}>Show me mine</p><h2 id="show-mine-heading">Paste your website. <em>We’ll sketch you a new one.</em></h2><p>Free, in your look, within 24 hours, with a free audit of the site, Google profile and reviews you have now. {PREVIEW.short}</p></div>
       <div><ShowMeMine className={styles.showForm} /><Link href="/presence-audit" className={styles.auditOnly}>Just want the audit? Get it free <Arrow /></Link></div>
     </section>
     <section id="selected-work" className={styles.work} aria-labelledby="work-heading">

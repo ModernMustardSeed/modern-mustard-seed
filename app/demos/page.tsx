@@ -2,6 +2,7 @@ import { buildMetadata, SITE } from '@/lib/seo';
 import DemoStation from '@/components/DemoStation';
 import MissedMoney from '@/components/mustard/MissedMoney';
 import { DEMO_PRODUCTS, DEMO_BUNDLE, formatUsd } from '@/lib/demo-order';
+import { PREVIEW } from '@/data/preview-promise';
 
 /**
  * The title leads with the SEARCHED thing, not the internal product name.
@@ -27,7 +28,11 @@ const FAQ = [
   },
   {
     q: 'What exactly do I get?',
-    a: 'Two working demos personalized to your business: a voice agent you can call and try to stump, and a complete demo website designed from scratch, with the agent answering on it. Both live at your private hub link, and taking them together builds them as one thing for less than the two apart.',
+    a: 'Two working demos personalized to your business: a voice agent you can call and try to stump, and a website preview sketched from scratch, with the agent answering on it. Both live at your private hub link, and taking them together builds them as one thing for less than the two apart.',
+  },
+  {
+    q: 'Is the website the finished product?',
+    a: 'No, and that is the point. ' + PREVIEW.body,
   },
   {
     q: 'How fast?',
@@ -50,7 +55,7 @@ const PIECES = [
   {
     icon: '🌐',
     title: 'Your New Website',
-    desc: 'Designed from scratch for your trade, your town, your phone number. A real working draft, not a template tour.',
+    desc: 'Sketched from scratch for your trade, your town, your phone number. A working preview of what yours could become. The real one is made bespoke.',
     price: DEMO_PRODUCTS.site,
     tone: 'gold' as const,
   },

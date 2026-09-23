@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { trackEvent } from '@/lib/analytics';
+import { PREVIEW } from '@/data/preview-promise';
 
 /**
  * "Show me mine." Paste a website on the homepage and the intake opens right
@@ -138,7 +139,8 @@ export default function ShowMeMine({ className }: { className: string }) {
               {phase === 'done' ? (
                 <div aria-live="polite">
                   <p className="text-[16px] leading-relaxed">
-                    Your voice agent is <strong>ready right now</strong>. Your new website is being designed from scratch, custom to your business, and it lands at your private hub <strong>within 24 hours</strong>, with a free audit of your current site, Google profile and reviews. We email you the moment it is ready.
+                    Your voice agent is <strong>ready right now</strong>. Your website preview is being sketched from scratch, and it lands at your private hub <strong>within 24 hours</strong>, with a free audit of your current site, Google profile and reviews. We email you the moment it is ready.</p>
+                  <p className="mt-4 border-l-4 border-[#F5B700] pl-4 text-[14px] leading-relaxed text-[#42454a]"><strong className="text-[#161616]">{PREVIEW.eyebrow}.</strong> {PREVIEW.body}
                   </p>
                   <a href={hub} className="mt-6 flex min-h-[54px] items-center justify-center gap-3 border-2 border-[#161616] bg-[#161616] px-6 text-[15px] font-bold text-[#FBF6EA] shadow-[5px_5px_0_0_#F5B700]">
                     Open my demo hub <span aria-hidden="true" className="text-[#F5B700]">↗</span>
@@ -147,7 +149,7 @@ export default function ShowMeMine({ className }: { className: string }) {
               ) : (
                 <form onSubmit={submit}>
                   <p className="text-[14px] leading-relaxed text-[#42454a]">
-                    Free, custom to your business and what you want it to do. Your new site lands within 24 hours, with a free audit of what you have now. No card, no meeting.
+                    Free, in your look, within 24 hours, with a free audit of what you have now. No card, no meeting. {PREVIEW.short}
                   </p>
                   <label className="mt-5 block"><span className={label}>Business name <span className="text-[#b92417]">*</span></span>
                     <input ref={first} required value={v.business || ''} onChange={set('business')} placeholder="Rico Roofing" className={field} /></label>

@@ -37,6 +37,7 @@ import { SITE } from '@/lib/seo';
 import { OWNER_NOTIFY_TO } from '@/lib/owner';
 import { possessive } from '@/lib/business-name';
 import { BUILD_PIECES, PIECE_LABEL, INSTANT, piecesFrom, listPieces, type BuildPiece } from '@/lib/build-pieces';
+import { PREVIEW } from '@/data/preview-promise';
 
 const DAILY_CAP = 12;
 
@@ -386,6 +387,7 @@ export async function buildSuiteFromCall(
               body:
                 `<p>You just talked to our AI, and he fired the build while you were still on the line. You asked for ${one ? 'one thing' : 'these'}, so ${one ? 'that is what we built' : 'that is all we built'}: <strong>${built}</strong>, made for ${business} and nobody else.</p>` +
                 `<p>${timing}</p>` +
+                (queued.length ? `<p><strong>A note on the website:</strong> ${PREVIEW.short}</p>` : '') +
                 demoFilmCard({
                   film: 'demo-welcome',
                   href: lead.hub_demo_url,

@@ -34,6 +34,7 @@ import { SITE } from '@/lib/seo';
 import { OWNER_NOTIFY_TO } from '@/lib/owner';
 import { possessive } from '@/lib/business-name';
 import { getAffiliateByCode } from '@/lib/affiliate';
+import { PREVIEW } from '@/data/preview-promise';
 
 /**
  * THE REFERRING PARTNER, IF THERE IS ONE.
@@ -307,7 +308,8 @@ export async function POST(req: Request) {
               href: lead.hub_demo_url,
               caption: `A first look while we finish ${possessive(business)} own walkthrough film.`,
             }) +
-            `<p>Everything lives at your private hub. Bookmark it; the website appears there on its own when it is done.</p>`,
+            `<p>Everything lives at your private hub. Bookmark it; the website appears there on its own when it is done.</p>` +
+            `<p><strong>A note on the website:</strong> ${PREVIEW.short}</p>`,
           cta: { label: 'Open your Demo Suite', url: lead.hub_demo_url },
           signature: 'Sarah',
         }),

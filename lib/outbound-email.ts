@@ -6,6 +6,7 @@ import type { OutboundLead } from '@/lib/outbound';
 import { possessive } from '@/lib/business-name';
 
 import { OUTREACH_FROM, OUTREACH_REPLY_TO } from '@/lib/outreach-domain';
+import { PREVIEW } from '@/data/preview-promise';
 
 // Cold outreach and drips send from the outreach subdomain, never the root.
 // See lib/outreach-domain.ts for why.
@@ -147,7 +148,7 @@ export async function buildOutboundEmail(
     withDemo &&
       demoRow('🎙', 'Your voice agent', `It answers as ${escape(lead.business_name)}, right now, in your browser. Pretend you are a customer and try to stump it.`, lead.demo_url!),
     withSite &&
-      demoRow('🌐', 'Your new website', `A real working draft designed for your business${withDemo ? '. The gold button in the corner is your voice agent riding along so you can hear it on the page, it is its own add-on' : ''}.`, lead.site_demo_url!),
+      demoRow('🌐', 'Your new website', `A working preview, sketched for your business: a first look at what yours could become, and the real one is made bespoke${withDemo ? '. The gold button in the corner is your voice agent riding along so you can hear it on the page, it is its own add-on' : ''}.`, lead.site_demo_url!),
     withOs &&
       // Unreachable: withOs is pinned false above. Left as the one place that
       // would have to change if the command center ever rejoins the offer.
