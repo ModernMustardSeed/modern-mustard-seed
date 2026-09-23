@@ -61,7 +61,11 @@ async function referringPartner(req: Request): Promise<{ id: string; code: strin
 }
 
 export const runtime = 'nodejs';
-export const maxDuration = 60;
+// The reply goes back as soon as the lead is saved and the website is queued;
+// everything after runs in after(), inside this budget. 60 was the old ceiling,
+// and on 2026-09-23 a slow build ran into it and killed the Leads sync and both
+// emails, which ran last.
+export const maxDuration = 300;
 
 const DAILY_CAP = 40;
 const NICHES: Niche[] = ['restaurant', 'home_service', 'dental_medspa', 'real_estate', 'other'];
@@ -268,72 +272,73 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'forge_failed' }, { status: 500 });
   }
 
-  // The fifth door, built AFTER the response. A person is watching a spinner
-  // on the other end of this request and the website grade can take ninety
-  // seconds; the hub renders the audit door on its own as soon as it lands.
-  {
-    const forAudit = lead as unknown as Record<string, unknown>;
-    after(() => ensurePresenceAudit(supabase, forAudit));
-  }
-
-  // Into the CRM pipeline too, or the command center never sees them: /admin
-  // counts, charts, and its needs-attention rail all read public.leads, not the
-  // dial floor. Fail-soft, because a pipeline hiccup must never cost the owner
-  // the demos they just built.
-  try {
-    const synced = await syncLeadToPipeline(supabase, lead, { source: 'demo-station' });
-    if (!synced.ok) console.error('demo-station pipeline sync failed:', synced.error);
-  } catch (err) {
-    console.error('demo-station pipeline sync threw', err);
-  }
-
-  // Their return path + our heads-up.
-  if (process.env.RESEND_API_KEY) {
-    const resend = resendClient();
-    const first = name.split(' ')[0];
+  // EVERYTHING BELOW RUNS AFTER THE REPLY (2026-09-23). The person gets their
+  // hub the moment the lead is saved and the website is queued. Then, most
+  // important first: the lead goes into the Leads list, Sarah hears about it,
+  // they get their welcome email, and last the audit, which can take ninety
+  // seconds. A slow step can no longer strand the ones that matter.
+  const built = lead;
+  after(async () => {
     try {
-      await resend.emails.send({
-        from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
-        to: email,
-        replyTo: 'sarah@modernmustardseed.com',
-        subject: `${first}, ${possessive(business)} website preview is being built`,
-        html: clientEmail({
-          preheader: 'Your website preview and your free audit are with you within 24 hours.',
-          eyebrow: 'YOUR WEBSITE PREVIEW',
-          greeting: `${first}, it is happening.`,
-          body:
-            `<p>Your website preview is being designed from scratch rather than poured into a template, and then we record you a short walkthrough of it. Alongside it comes a free audit of the site, Google profile and reviews you have now. Both land <strong>within 24 hours</strong>, at your private hub, on their own.</p>` +
-            demoFilmCard({
-              film: 'demo-welcome',
-              href: lead.hub_demo_url,
-              caption: `A first look while we finish ${possessive(business)} own walkthrough film.`,
-            }) +
-            `<p>Everything lives at your private hub. Bookmark it; the website appears there on its own when it is done.</p>` +
-            `<p><strong>A note on the website:</strong> ${PREVIEW.short}</p>`,
-          cta: { label: 'Open your hub', url: lead.hub_demo_url },
-          signature: 'Sarah',
-        }),
-      });
+      const synced = await syncLeadToPipeline(supabase, built, { source: 'demo-station' });
+      if (!synced.ok) console.error('demo-station pipeline sync failed:', synced.error);
     } catch (err) {
-      console.error('demo-station welcome email failed', err);
+      console.error('demo-station pipeline sync threw', err);
     }
+
+    if (process.env.RESEND_API_KEY) {
+      const resend = resendClient();
+      const first = name.split(' ')[0];
+      try {
+        await resend.emails.send({
+          from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
+          to: OWNER_NOTIFY_TO,
+          subject: `NEW BUILD REQUEST: ${business} (${city || state || 'unknown'})`,
+          html: clientEmail({
+            preheader: 'Someone asked for a website preview. The build is queued.',
+            eyebrow: 'DEMO STATION',
+            greeting: 'The station caught one.',
+            body: `<p><strong>${business}</strong> (${name}, ${email}, ${phone}) asked for a website preview${website ? ` for <a href="https://${website.replace(/^https?:\/\//, '')}">${website}</a>` : ''}. The website is queued on the build floor and the audit is running.</p>${styleRefs.length ? `<p>Style match: ${styleRefs.join(', ')}</p>` : ''}${notes ? `<p>What they said: ${notes}</p>` : ''}<p>They are in Leads and on the dial floor, source demo-station. Hub: <a href="${built.hub_demo_url}">${built.hub_demo_url}</a></p>`,
+            signature: 'The Demo Station',
+          }),
+        });
+      } catch (err) {
+        console.error('demo-station notify failed', err);
+      }
+      try {
+        await resend.emails.send({
+          from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
+          to: email,
+          replyTo: 'sarah@modernmustardseed.com',
+          subject: `${first}, ${possessive(business)} website preview is being built`,
+          html: clientEmail({
+            preheader: 'Your website preview and your free audit are with you within 24 hours.',
+            eyebrow: 'YOUR WEBSITE PREVIEW',
+            greeting: `${first}, it is happening.`,
+            body:
+              `<p>Your website preview is being designed from scratch rather than poured into a template, and then we record you a short walkthrough of it. Alongside it comes a free audit of the site, Google profile and reviews you have now. Both land <strong>within 24 hours</strong>, at your private hub, on their own.</p>` +
+              demoFilmCard({
+                film: 'demo-welcome',
+                href: built.hub_demo_url!,
+                caption: `A first look while we finish ${possessive(business)} own walkthrough film.`,
+              }) +
+              `<p>Everything lives at your private hub. Bookmark it; the website appears there on its own when it is done.</p>` +
+              `<p><strong>A note on the website:</strong> ${PREVIEW.short}</p>`,
+            cta: { label: 'Open your hub', url: built.hub_demo_url! },
+            signature: 'Sarah',
+          }),
+        });
+      } catch (err) {
+        console.error('demo-station welcome email failed', err);
+      }
+    }
+
     try {
-      await resend.emails.send({
-        from: 'Modern Mustard Seed <hello@modernmustardseed.com>',
-        to: OWNER_NOTIFY_TO,
-        subject: `SELF-SERVE BUILD: ${business} (${city || state || 'unknown'})`,
-        html: clientEmail({
-          preheader: 'Someone built their own suite from an ad.',
-          eyebrow: 'DEMO STATION',
-          greeting: 'The station caught one.',
-          body: `<p><strong>${business}</strong> (${name}, ${email}, ${phone}) built their own suite from /demos.</p><p>They are on the dial floor unassigned, source demo-station, with "call while the demos are hot" as the next action. Hub: <a href="${lead.hub_demo_url}">${lead.hub_demo_url}</a></p>`,
-          signature: 'The Demo Station',
-        }),
-      });
+      await ensurePresenceAudit(supabase, built as unknown as Record<string, unknown>);
     } catch (err) {
-      console.error('demo-station notify failed', err);
+      console.error('demo-station audit failed', err);
     }
-  }
+  });
 
   return NextResponse.json({ ok: true, url: lead.hub_demo_url });
 }
