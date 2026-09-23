@@ -35,6 +35,7 @@ export const DEPARTMENTS: Dept[] = [
   { key: 'brand', name: 'Brand / Rebrand', tag: 'A new mark on every surface', blurb: 'Logo, look, mascot, site, voice agent, and the plan behind it. Designed once, live on every surface in three weeks.', href: '/brand', icon: '🎨' },
   { key: 'chief', name: 'The Chief', tag: 'Your AI chief of staff', blurb: 'Mr. Mustard runs your day: calendar, email, calls, research, and sales coaching, in voice, text, and chat.', href: '/chief', icon: '🧑‍✈️' },
   { key: 'marketing', name: 'Marketing', tag: 'Social, blog, commercials, ads, email', blurb: 'Social posting, blog writing, commercials, ad campaigns, newsletters, and your Google profile, written in your voice on a steady schedule.', href: '/marketing', icon: '📣' },
+  { key: 'kingdom', name: 'For the Kingdom', tag: 'Ministry pricing', blurb: 'Curated merch collections with Cross + Covenant, stores, the systems to run it all, and the launch, for ministries and kingdom organizations.', href: '/kingdom', icon: '✝' },
   { key: 'pictures', name: 'Mustard Pictures', tag: 'Films and advertising', blurb: 'Commercials, brand films, and managed Meta and Google campaigns, from one studio.', href: '/pictures', icon: '🎬' },
   { key: 'launch-film', name: 'The Launch Film', tag: 'Cut from your real product', blurb: 'A launch film for your app or product, built from the real screens, scored from scratch, finished in three formats.', href: '/launch-film', icon: '🎞' },
   { key: 'ai-native', name: 'AI Native', tag: 'Your company on AI', blurb: 'Every workflow mapped, the first five moved onto AI in accounts you own, and your team coached to run it. Eight weeks.', href: '/ai-native', icon: '🧭' },
@@ -57,6 +58,7 @@ export const GOALS: Goal[] = [
   { label: 'Get found by AI & Google', emoji: '🔎', deptKeys: ['geo', 'websites'], note: 'Your findability graded honestly, then the signals installed that get you cited.' },
   { label: 'Launch something new', emoji: '🚀', deptKeys: ['brand', 'websites', 'demo-agent'], note: 'A launch plan, then the site and the phone line to open the doors.' },
   { label: 'Sell products online', emoji: '🛍', deptKeys: ['websites'], note: 'A custom storefront designed around your catalog, scoped as its own engagement.' },
+  { label: 'Serve a ministry or charity', emoji: '✝', deptKeys: ['kingdom', 'marketing', 'websites'], note: 'Merch collections, stores, systems and a launch, at ministry pricing, with Cross + Covenant.' },
   { label: 'Learn to build it myself', emoji: '🎓', deptKeys: ['mode', 'advisory'], note: 'A coach that teaches you to run Claude and build the thing yourself.' },
   { label: 'Put AI in my whole company', emoji: '🧭', deptKeys: ['ai-native', 'chief', 'demo-agent'], note: 'The workflows mapped and moved onto AI, your team coached to run it, and the front desk answered while they learn.' },
   // 'Keep my people happy' goal re-parked with Celebrate 2026-08-20 (Sarah):

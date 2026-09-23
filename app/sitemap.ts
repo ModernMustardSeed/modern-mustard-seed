@@ -51,6 +51,7 @@ const STATIC_PATHS = [
   '/montana',
   '/nationwide',
   '/marketing',
+  '/kingdom',
   '/resources',
   '/blog',
   '/about',
