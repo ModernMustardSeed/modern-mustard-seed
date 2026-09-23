@@ -17,7 +17,7 @@ const rest = DEPARTMENTS.filter((d) => !d.flagship);
 const FAQ = [
   {
     q: 'What does Modern Mustard Seed build?',
-    a: 'Four disciplines: design-led websites and brand, custom software, voice agents, and retained advisory. Inside those sit the departments the studio has built over time: command centers, commercials and brand films, ads, print, launch, specialty AI tools, stores, and agentic systems. Every engagement is designed and shipped end to end by Sarah Scarano at a set package price, and you own the result outright.',
+    a: 'Five disciplines: design-led websites and brand, custom software, voice agents, marketing, and retained advisory. Marketing covers social posting, blog writing, commercials, ad campaigns, email newsletters, and Google Business Profile upkeep. Inside those sit the departments the studio has built over time: command centers, commercials and brand films, ads, print, launch, specialty AI tools, stores, and agentic systems. Every engagement is designed and shipped end to end by Sarah Scarano at a set package price, and you own the result outright.',
   },
   {
     q: 'How fast can you ship?',
@@ -63,13 +63,13 @@ export default function ServicesPage() {
       <header className="halftone-bg border-b-2 border-[#161616]">
         <div className="max-w-5xl mx-auto px-6 pt-32 pb-16 md:pt-40 lg:pb-20 text-center">
           <span className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#C4160B] font-bold">
-            The studio // Four disciplines, one standard
+            The studio // Five disciplines, one standard
           </span>
           <h1 className="font-display text-[2.7rem] sm:text-6xl xl:text-7xl font-bold mt-4 leading-[1.0] tracking-tight">
             Everything we build.<br /><em className="italic text-[#C4160B]">One standard.</em>
           </h1>
           <p className="font-body text-[17px] text-[#161616]/75 mt-6 leading-relaxed max-w-2xl mx-auto">
-            Not a list of services on a slide. Four disciplines practiced deliberately, and the
+            Not a list of services on a slide. Five disciplines practiced deliberately, and the
             departments underneath them that a working engagement actually reaches for. Designed and
             shipped end to end by the studio, and you own everything on launch day.
           </p>
