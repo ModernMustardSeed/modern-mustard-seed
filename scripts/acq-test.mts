@@ -1925,13 +1925,27 @@ const presence = (over: Partial<PresenceInput> = {}): PresenceInput => ({
   ...over,
 });
 
-test('audit: reviews reward volume more than a perfect rating on nothing', () => {
+test('audit: a big review count still beats a perfect rating on a small one', () => {
   const many = scoreReviews(presence({ review_count: 400, rating: 4.6 }));
   const perfectFew = scoreReviews(presence({ review_count: 9, rating: 5.0 }));
   assert.ok(many.score > perfectFew.score, 'four hundred at 4.6 beats nine at 5.0');
   // The claim has to be checkable: the count itself is printed, not paraphrased.
   assert.match(many.checks[0].detail, /400 reviews/);
   assert.match(perfectFew.checks[0].detail, /9 reviews/);
+});
+
+test('audit: a handful of perfect reviews is a good grade, not a failing one', () => {
+  // Sarah, 2026-09-22: all five stars on eight reviews used to score a 68, a D.
+  const eightPerfect = scoreReviews(presence({ review_count: 8, rating: 5.0 }));
+  assert.ok(eightPerfect.score >= 80, `eight at 5.0 grades B- or better, got ${eightPerfect.score}`);
+  assert.match(eightPerfect.checks[0].detail, /8 reviews, and they are all glowing/);
+  // The rating is the grade: at the same count, a lower rating always scores lower.
+  const eightMixed = scoreReviews(presence({ review_count: 8, rating: 4.2 }));
+  assert.ok(eightPerfect.score > eightMixed.score);
+  // Both checks still sum to exactly 100 points.
+  assert.equal(eightPerfect.checks.reduce((s, c) => s + c.points, 0), 100);
+  // And the top of the scale is still reachable only with both.
+  assert.equal(scoreReviews(presence({ review_count: 313, rating: 5.0 })).score, 100);
 });
 
 test('audit: no reviews at all is withheld, never scored as a zero', () => {
