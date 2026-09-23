@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { track } from '@vercel/analytics';
 import { trackLead } from '@/lib/analytics';
-import { DEMO_PRODUCTS, DEMO_BUNDLE, formatUsd } from '@/lib/demo-order';
+import { DEMO_PRODUCTS, formatUsd } from '@/lib/demo-order';
 
 /**
  * The self-serve Demo Station form + the build sequence. Signature moment:
@@ -37,10 +37,9 @@ const REGION: Record<string, { city: string; phone: string }> = {
 const CAMPAIGN_STATE: Record<string, string> = { florida: 'FL', montana: 'MT' };
 
 const BUILD_LINES = [
-  'Hiring your voice agent...',
-  'Teaching her your business...',
-  'Wiring your command center...',
+  'Reading your business...',
   'Briefing the designer on your website...',
+  'Lining up your free audit...',
   'Opening your hub...',
 ];
 
@@ -126,8 +125,8 @@ export default function DemoStation() {
           ))}
         </div>
         <p className="font-body text-[13px] text-[#FBF6EA]/55 mt-5">
-          The first two are open now. Your website keeps building after this, then we record you a walkthrough of the
-          finished suite. We will have it all to you within 24 hours, at your hub, on its own.
+          Your website keeps building after this, then we record you a walkthrough of it. Your preview and your free
+          audit land within 24 hours, at your hub, on their own.
         </p>
       </div>
     );
@@ -144,7 +143,7 @@ export default function DemoStation() {
           <span className="inline-block -rotate-2 bg-[#E0301E] text-[#FBF6EA] border-2 border-[#161616] rounded-md px-3 py-1.5 text-[11px] uppercase tracking-[0.2em] font-mono font-bold shadow-[3px_3px_0_0_#161616]">
             {referrer} sent you
           </span>
-          <p className="font-body text-[14px] text-[#3a3733]">Your demos are on us. Nothing to pay, nothing to schedule.</p>
+          <p className="font-body text-[14px] text-[#3a3733]">Your preview is on us. Nothing to pay, nothing to schedule.</p>
         </div>
       )}
       {/* The business name is the star (everything gets built against it), so it
@@ -244,7 +243,7 @@ export default function DemoStation() {
         <span className={labelCls}>
           Anything we should know?
           <span className="ml-2 normal-case tracking-normal font-body font-normal text-[#161616]/70">
-            We build all three from this
+            We build your preview from this
           </span>
         </span>
         <textarea
@@ -267,13 +266,12 @@ export default function DemoStation() {
         type="submit"
         className="mt-7 w-full bg-[#F5B700] text-[#161616] border-2 border-[#161616] rounded-xl px-7 py-4 font-sans font-bold uppercase tracking-[0.1em] text-[15px] shadow-[5px_5px_0_0_#161616] hover:-translate-y-0.5 transition-transform"
       >
-        Build my demos, free →
+        Build my website preview, free →
       </button>
       {phase === 'error' && error ? <p className="font-body text-[13px] text-[#C4160B] text-center mt-3">{error}</p> : null}
       <p className="font-body text-[12px] text-[#161616]/70 text-center mt-3.5 leading-relaxed">
-        No card, no meeting, no strings. If you love them:{' '}
-        the website or the voice agent from {formatUsd(DEMO_PRODUCTS.site.monthlyCents)}/mo, or both together as The
-        Talking Website from {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo, which is less than the two apart. Month to month.
+        No card, no meeting, no strings. If you love it, keep the website from{' '}
+        {formatUsd(DEMO_PRODUCTS.site.monthlyCents)}/mo, month to month, or work with us on the bespoke one.
       </p>
     </form>
   );
