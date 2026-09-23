@@ -19,7 +19,7 @@ export const SERVICE_AREAS = [
 export const personJsonLd = {
   '@context': 'https://schema.org', '@type': 'Person', '@id': PERSON_ID,
   name: SITE.founder, url: `${SITE.url}/about`,
-  jobTitle: 'Founder, Engineer, and AI Systems Architect',
+  jobTitle: 'Founder, Engineer, and Agentic Systems Architect',
   worksFor: { '@id': ORG_ID },
   sameAs: socials.filter((s) => s.name === 'LinkedIn').map((s) => s.url),
 };
@@ -29,7 +29,7 @@ export const orgJsonLd = {
   '@context': 'https://schema.org', '@type': ['Organization', 'LocalBusiness'], '@id': ORG_ID,
   name: SITE.name, alternateName: 'MMS', url: SITE.url,
   description: SITE.description,
-  disambiguatingDescription: 'Boutique design and AI studio in Kalispell, Montana, founded by Sarah Scarano. Websites and brand, custom software, voice agents, and retained advisory for clients throughout the United States, by written inquiry.',
+  disambiguatingDescription: 'Boutique design and agentic systems studio in Kalispell, Montana, founded by Sarah Scarano. Websites and brand, custom software, voice agents, and retained advisory for clients throughout the United States, by written inquiry.',
   logo: `${SITE.url}/brand/logo-lockup.png`,
   founder: { '@id': PERSON_ID },
   telephone: SITE.phoneE164, email: SITE.email,
@@ -59,11 +59,11 @@ export const orgJsonLd = {
   sameAs: [googleProfileUrl, ...socials.filter((s) => s.name !== 'LinkedIn').map((s) => s.url)],
   hasMap: googleProfileUrl,
   knowsAbout: ['Brand identity and art direction', 'Custom website design and development',
-    'AI-native websites', 'AI voice agents', 'Custom software and applications',
+    'Agentic websites', 'Voice agents', 'Custom software and applications',
     'Agentic systems', 'Business automation', 'CRM and workflow systems',
-    'AI strategy advisory', 'AI search optimization'],
+    'Agentic systems advisory', 'Answer engine optimization'],
   contactPoint: {
-    '@type': 'ContactPoint', contactType: 'Enquiries answered by an AI voice agent',
+    '@type': 'ContactPoint', contactType: 'Enquiries answered by Mr. Mustard, the studio voice agent',
     telephone: SITE.phoneE164, email: SITE.email, availableLanguage: 'English',
     hoursAvailable: {
       '@type': 'OpeningHoursSpecification',
