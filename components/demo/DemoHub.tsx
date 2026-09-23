@@ -9,6 +9,7 @@ import RecoveryMachine, { type RecoveryValues } from '@/components/RecoveryMachi
 import SuiteMoreForm from '@/components/demo/SuiteMoreForm';
 import BookedOnTheCall from '@/components/demo/BookedOnTheCall';
 import type { DemoProductKey } from '@/lib/demo-order';
+import { PREVIEW } from '@/data/preview-promise';
 
 /**
  * The Demo Suite hub, prospect-facing and unapologetically adorable: Mr.
@@ -277,7 +278,7 @@ export default function DemoHub({
           icon: '🌐',
           title: 'Your new website',
           desc: siteUrl
-            ? 'A real, working draft designed for your business. The gold button is your voice agent riding along so you can try it, and it is its own add-on.'
+            ? `A working preview, sketched for your business. ${PREVIEW.short} The gold button is your voice agent riding along so you can try it, and it is its own add-on.`
             : 'Being built right now. The page refreshes itself until it is ready.',
           tone: 'gold' as const,
           cta: siteUrl ? 'See it live' : 'Watch it build',

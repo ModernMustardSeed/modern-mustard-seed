@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { BuiltCall } from '@/lib/demo-agent';
 import DemoVoiceWidget, { type VoiceState } from '@/components/demo/DemoVoiceWidget';
 import SiteTour from '@/components/demo/SiteTour';
+import { PREVIEW } from '@/data/preview-promise';
 
 /**
  * Serves a built demo website full-screen with the lead's voice agent
@@ -95,8 +96,8 @@ export default function SiteDemoShell({
           <div className="bg-[#161616] border-2 border-[#F5B700] rounded-2xl shadow-[5px_5px_0_0_rgba(0,0,0,0.5)] p-4 animate-[demoIntro_.45s_ease-out]">
             <p className="font-sans font-bold uppercase tracking-[0.14em] text-[10px] text-[#F5B700]">Your demo, {business}</p>
             <p className="font-body text-[13px] leading-relaxed text-[#FBF6EA]/90 mt-1.5">
-              This whole website is a working draft we built for you. One more thing: it answers its own phone.
-              Tap the call button and pretend you are a customer calling in.
+              This is a first sketch of your website, made to show you what yours could become. The real one is made
+              bespoke. One more thing: it answers its own phone. Tap the call button and pretend you are a customer calling in.
             </p>
             <button
               onClick={dismissIntro}
@@ -123,7 +124,7 @@ export default function SiteDemoShell({
             {...(orderUrl ? {} : { target: '_blank', rel: 'noopener noreferrer' })}
             className="bg-white/95 text-[#161616] border-2 border-[#161616] rounded-full px-3.5 py-1.5 font-sans font-bold uppercase tracking-[0.08em] text-[10px] shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-transform"
           >
-            {orderUrl ? 'Want it real? Order it here →' : 'Demo by Modern Mustard Seed · Want it real?'}
+            {orderUrl ? `${PREVIEW.line} Make it real →` : `${PREVIEW.line} By Modern Mustard Seed`}
           </a>
         )}
       </div>
