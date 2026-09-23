@@ -70,42 +70,6 @@ export function MascotLean({ className, danceClass, confettiClass, children }: {
   );
 }
 
-/**
- * The parable, drawn. A vine runs down the left edge and grows with the scroll,
- * from the seed over the verse to the tree at the bottom where the birds land.
- * Hidden on narrow screens, where the left edge belongs to the content.
- */
-export function Vine({ className }: { className: string }) {
-  const ref = useRef<HTMLDivElement | null>(null);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { el.style.setProperty('--grow', '1'); return; }
-    let frame = 0;
-    const update = () => {
-      const max = document.documentElement.scrollHeight - window.innerHeight;
-      const start = window.innerHeight * 0.6;
-      const p = max > start ? Math.min(1, Math.max(0, (window.scrollY - start) / (max - start))) : 1;
-      el.style.setProperty('--grow', p.toFixed(3));
-      el.querySelectorAll<HTMLElement>('[data-at]').forEach((leaf) => leaf.toggleAttribute('data-on', p >= Number(leaf.dataset.at)));
-    };
-    const onScroll = () => { cancelAnimationFrame(frame); frame = requestAnimationFrame(update); };
-    update();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll);
-    return () => { window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', onScroll); cancelAnimationFrame(frame); };
-  }, []);
-  const leaves = [0.08, 0.2, 0.33, 0.46, 0.58, 0.7, 0.82, 0.93];
-  return (
-    <div ref={ref} className={className} aria-hidden="true">
-      <svg viewBox="0 0 40 1000" preserveAspectRatio="none">
-        <path pathLength={1} d="M20 0 C 34 60, 6 120, 20 180 S 34 300, 20 360 S 6 480, 20 540 S 34 660, 20 720 S 6 840, 20 900 S 30 970, 20 1000" />
-      </svg>
-      {leaves.map((at, i) => <span key={at} data-at={at} data-side={i % 2 ? 'r' : 'l'} style={{ top: `${at * 100}%` }} />)}
-    </div>
-  );
-}
-
 /** A branch across the reviews; three birds fly in and perch on it when it is seen. */
 export function BirdBranch({ className, landedClass }: { className: string; landedClass: string }) {
   const ref = useRef<HTMLDivElement | null>(null);
