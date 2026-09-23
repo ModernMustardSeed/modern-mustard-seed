@@ -13,7 +13,7 @@ import { trackLead, metaDedup } from '@/lib/analytics';
 const INK = '#161616';
 const YELLOW = '#F5B700';
 const RED = '#E0301E';
-const BLUE = '#1E50C8';
+const BLUE = '#161616';
 
 type AuditResult = {
   error?: boolean;
@@ -130,7 +130,7 @@ export default function BottleneckBreaker() {
           <span className="text-[10px] uppercase tracking-[0.4em] text-[#E0301E] font-mono font-bold block mb-4">Free · 60 seconds · No fluff</span>
           <h1 className="font-display text-5xl md:text-7xl font-black tracking-tight leading-[0.95]">
             Bottleneck{' '}
-            <span className="inline-block -rotate-[5deg] rounded-[10px] border-[3px] border-[#161616] bg-[#F5B700] px-3 py-1 text-[0.8em] leading-none uppercase tracking-tight shadow-[4px_4px_0_0_#161616,7px_7px_0_0_#1E50C8]">
+            <span className="inline-block -rotate-[5deg] rounded-[10px] border-[3px] border-[#161616] bg-[#F5B700] px-3 py-1 text-[0.8em] leading-none uppercase tracking-tight shadow-[4px_4px_0_0_#161616,7px_7px_0_0_#F5B700]">
               Breaker
             </span>
           </h1>

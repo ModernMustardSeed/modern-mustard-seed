@@ -32,7 +32,7 @@ const ASKS = [
  */
 function Plate({ text }: { text: string }) {
   return (
-    <span className="text-[#F5B700] transition-all duration-500 ease-out [text-shadow:-0.03em_-0.024em_0_#E0301E,0.03em_0.024em_0_#1E50C8] group-hover:[text-shadow:-0.062em_-0.05em_0_#E0301E,0.062em_0.05em_0_#1E50C8]">
+    <span className="text-[#F5B700] transition-all duration-500 ease-out [text-shadow:-0.03em_-0.024em_0_#E0301E,0.03em_0.024em_0_#161616] group-hover:[text-shadow:-0.062em_-0.05em_0_#E0301E,0.062em_0.05em_0_#161616]">
       {text}
     </span>
   );

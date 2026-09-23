@@ -92,7 +92,7 @@ export default function SwitchboardPage() {
                   </div>
                   <p className="mt-6 font-body text-[15px] text-[#5c554a]">
                     Or hear it right now:{' '}
-                    <a href={`tel:${SWITCHBOARD.demoLine.number}`} className="font-bold text-[#1E50C8] underline decoration-2 underline-offset-2 hover:text-[#E0301E]">
+                    <a href={`tel:${SWITCHBOARD.demoLine.number}`} className="font-bold text-[#B92417] underline decoration-2 underline-offset-2 hover:text-[#E0301E]">
                       call {SWITCHBOARD.demoLine.display}
                     </a>{' '}
                     and a live AI concierge answers as a location would.
@@ -231,7 +231,7 @@ export default function SwitchboardPage() {
                 return (
                   <div key={ex.loc} className="rounded-2xl border-2 border-dashed border-[#161616]/40 bg-white/60 p-5 text-center">
                     <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#5c554a]">{ex.loc} locations · {ex.note}</p>
-                    <p className="mt-2 font-display text-2xl font-extrabold text-[#1E50C8]">{usd(q.monthlyUsd)}<span className="text-sm text-[#5c554a] font-body">/mo</span></p>
+                    <p className="mt-2 font-display text-2xl font-extrabold text-[#B92417]">{usd(q.monthlyUsd)}<span className="text-sm text-[#5c554a] font-body">/mo</span></p>
                     <p className="text-xs text-[#5c554a] font-mono">{usd(q.annualUsd)}/yr</p>
                   </div>
                 );

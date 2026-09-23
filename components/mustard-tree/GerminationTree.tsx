@@ -37,7 +37,7 @@ function buildDots(): Dot[] {
       const d = rnd() * spread;
       const r = 5 + rnd() * 13;
       const roll = rnd();
-      const fill = roll > 0.93 ? '#E0301E' : roll > 0.86 ? '#1E50C8' : '#F5B700';
+      const fill = roll > 0.93 ? '#E0301E' : roll > 0.86 ? '#161616' : '#F5B700';
       dots.push({
         cx: Math.round((tx + Math.cos(a) * d * 1.25) * 10) / 10,
         cy: Math.round((ty + Math.sin(a) * d) * 10) / 10,

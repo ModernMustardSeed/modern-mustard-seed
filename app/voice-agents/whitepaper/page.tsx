@@ -66,7 +66,7 @@ export default function WhitepaperPage() {
               <WhitepaperGate />
               <p className="text-center mt-3 text-sm font-body text-[#161616]/60">
                 or{' '}
-                <Link href="/book" className="text-[#1E50C8] font-bold underline underline-offset-2">
+                <Link href="/book" className="text-[#B92417] font-bold underline underline-offset-2">
                   book a call
                 </Link>{' '}
                 and we will walk you through it.

@@ -90,7 +90,7 @@ export function TimberlineConfession() {
                     <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-[#161616]/55">timberlinelawn.co</p>
                     <p className="font-sans font-bold text-sm text-[#161616]">First mow free when you book the season</p>
                   </div>
-                  <span className="shrink-0 rounded-lg bg-[#1E50C8] px-4 py-2 font-sans font-bold text-xs text-white">Get Quote</span>
+                  <span className="shrink-0 rounded-lg bg-[#161616] px-4 py-2 font-sans font-bold text-xs text-white">Get Quote</span>
                 </div>
               </div>
               <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#161616]/50 text-center mt-3">How a spot looks in the feed</p>

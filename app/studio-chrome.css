@@ -50,7 +50,7 @@ nav[data-studio-nav] a[href='/book']{border:1px solid #080c16}
 @media(prefers-reduced-motion:no-preference){[data-design='mms-editorial-2026']>section:first-child picture{animation:studio-art-enter 1.2s cubic-bezier(.2,.7,.2,1) both}}
 @keyframes studio-art-enter{from{opacity:.4;transform:scale(1.04)}to{opacity:1;transform:scale(1)}}
 
-[data-studio-page] :is(a,button,input,textarea,select):focus-visible{outline:2px solid #1e50c8;outline-offset:4px}
+[data-studio-page] :is(a,button,input,textarea,select):focus-visible{outline:2px solid #e0301e;outline-offset:4px}
 [data-studio-page] form button{min-height:44px}
 
 #site-mega-menu [class*='shadow-']{box-shadow:none!important}
@@ -58,7 +58,7 @@ nav[data-studio-nav] a[href='/book']{border:1px solid #080c16}
 #site-mega-menu [style*='radial-gradient']{display:none}
 #site-mega-menu .font-display{font-weight:400;letter-spacing:-.03em}
 #site-mega-menu button{min-width:44px;min-height:44px}
-#site-mega-menu a:focus-visible,#site-mega-menu button:focus-visible{outline:2px solid #1e50c8;outline-offset:4px}
+#site-mega-menu a:focus-visible,#site-mega-menu button:focus-visible{outline:2px solid #e0301e;outline-offset:4px}
 [role='dialog'][aria-label*='Mr. Mustard']{border-width:1px;box-shadow:0 15px 60px #080c1630;border-radius:6px}
 [role='dialog'][aria-label*='Mr. Mustard'] [class*='shadow-']{box-shadow:none}
 [role='dialog'][aria-label*='Mr. Mustard'] [style*='radial-gradient']{display:none}
@@ -70,5 +70,5 @@ nav[data-studio-nav]{border-bottom:2px solid #080c16}
 nav[data-studio-nav] a[href='/book']{border:2px solid #080c16;box-shadow:3px 3px 0 #080c16!important}
 [data-studio-page] .halftone-bg{display:block}
 [data-studio-page] .pop-card,[data-studio-page] .pop-card-yellow{border:2px solid #080c16;box-shadow:4px 4px 0 #080c16!important;border-radius:6px}
-.studio-footer{border-top:8px solid #1e50c8}
+.studio-footer{border-top:8px solid #f5b700}
 [data-studio-launcher]>div{border:2px solid #080c16;box-shadow:3px 3px 0 #080c16}

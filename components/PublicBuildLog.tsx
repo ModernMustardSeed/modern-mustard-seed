@@ -12,7 +12,7 @@ import type { BuildLogSnapshot, Category } from '@/lib/build-log';
 
 const CAT_META: Record<Category, { label: string; fg: string }> = {
   new: { label: 'New', fg: '#2E7D4F' },
-  fix: { label: 'Fix', fg: '#1E50C8' },
+  fix: { label: 'Fix', fg: '#B92417' },
   perf: { label: 'Perf', fg: '#B4501F' },
   polish: { label: 'Polish', fg: '#4F6272' },
   docs: { label: 'Docs', fg: '#2E6274' },

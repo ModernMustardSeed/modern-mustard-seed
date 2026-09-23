@@ -424,7 +424,7 @@ export default async function DemosPage({
             <h2 className="font-display text-3xl font-bold">Fair questions</h2>
             <p className="font-body text-[14px] text-[#161616]/60 mt-3">
               Still stuck? Call us at{' '}
-              <a href="tel:+14063121223" className="font-bold text-[#1E50C8] underline underline-offset-2">
+              <a href="tel:+14063121223" className="font-bold text-[#B92417] underline underline-offset-2">
                 (406) 312-1223
               </a>
               . Yes, an AI answers our phone too. Try to stump it.

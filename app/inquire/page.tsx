@@ -210,7 +210,7 @@ export default function InquirePage() {
             <br className="hidden sm:block" />{' '}
             <a
               href={`mailto:${SITE.email}`}
-              className="font-bold text-[#1E50C8] underline decoration-2 underline-offset-2 hover:text-[#B92417]"
+              className="font-bold text-[#B92417] underline decoration-2 underline-offset-2 hover:text-[#B92417]"
             >
               {SITE.email}
             </a>

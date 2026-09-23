@@ -44,10 +44,10 @@ export default async function ContactPage({ searchParams }: { searchParams: Sear
               <p className="mt-6 max-w-xl text-lg md:text-xl text-[#3d382e] font-body leading-relaxed">
                 A build, a partnership, a question, or just hello. Tear off the card, fill it in, and mail it. It lands in Sarah&rsquo;s inbox and a human answers inside a day.
               </p>
-              <p className="mt-5 font-body leading-relaxed">Based in {SITE.city}, {SITE.regionName}. Serving Northwest Montana and clients nationwide. <a href={`tel:${SITE.phoneE164}`} className="font-bold text-[#1E50C8] underline">{SITE.phone}</a> &middot; <a href={`mailto:${SITE.email}`} className="text-[#1E50C8] underline">{SITE.email}</a></p>
+              <p className="mt-5 font-body leading-relaxed">Based in {SITE.city}, {SITE.regionName}. Serving Northwest Montana and clients nationwide. <a href={`tel:${SITE.phoneE164}`} className="font-bold text-[#B92417] underline">{SITE.phone}</a> &middot; <a href={`mailto:${SITE.email}`} className="text-[#B92417] underline">{SITE.email}</a></p>
               <p className="mt-6 font-body text-[15px] text-[#5c554a]">
                 Here to build something?{' '}
-                <Link href="/inquire" className="font-bold text-[#1E50C8] underline decoration-2 underline-offset-2 hover:text-[#E0301E]">
+                <Link href="/inquire" className="font-bold text-[#B92417] underline decoration-2 underline-offset-2 hover:text-[#E0301E]">
                   Start an inquiry
                 </Link>{' '}
                 and Sarah answers inside one business day.
@@ -55,7 +55,7 @@ export default async function ContactPage({ searchParams }: { searchParams: Sear
             </div>
 
             <div className="lg:col-span-6">
-              <figure className="relative rotate-[1.5deg] rounded-2xl border-[3px] border-[#161616] bg-white p-2.5 shadow-[9px_9px_0_0_#1E50C8]">
+              <figure className="relative rotate-[1.5deg] rounded-2xl border-[3px] border-[#161616] bg-white p-2.5 shadow-[9px_9px_0_0_#F5B700]">
                 <Image
                   src="/contact/mailbox-hero.jpg"
                   alt="Pop-art screenprint: a hand drops a mustard-gold reply card into a black mailbox as more cards fly past"

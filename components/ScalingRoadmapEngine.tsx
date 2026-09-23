@@ -334,7 +334,7 @@ export default function ScalingRoadmapEngine() {
                   key={s}
                   className={`flex items-center gap-3 text-sm md:text-base font-body font-medium transition-all ${
                     i < loadStep
-                      ? 'text-[#1E50C8]'
+                      ? 'text-[#B92417]'
                       : i === loadStep
                         ? 'text-[#161616] animate-pulse'
                         : 'text-[#161616]/30'

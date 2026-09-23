@@ -96,7 +96,7 @@ function Pill({ children, tone = 'plain' }: { children: React.ReactNode; tone?: 
       : tone === 'red'
         ? 'bg-[#E0301E] text-white border-[#161616]'
         : tone === 'blue'
-          ? 'bg-[#1E50C8]/10 text-[#1E50C8] border-[#1E50C8]/30'
+          ? 'bg-[#161616]/10 text-[#B92417] border-[#161616]/30'
           : 'bg-[#161616]/5 text-[#161616]/65 border-[#161616]/15';
   return (
     <span className={`text-[10px] uppercase tracking-[0.15em] font-sans font-bold px-2.5 py-1 rounded-md border-2 whitespace-nowrap ${cls}`}>

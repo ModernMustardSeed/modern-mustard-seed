@@ -254,7 +254,7 @@ export default async function ScalingRoadmapPage() {
                     <p className="text-[#3a3733] text-sm font-body italic leading-relaxed">
                       &ldquo;{r.headline}&rdquo;
                     </p>
-                    <span className="mt-5 block text-[10px] uppercase tracking-[0.25em] font-mono font-bold text-[#1E50C8]">
+                    <span className="mt-5 block text-[10px] uppercase tracking-[0.25em] font-mono font-bold text-[#B92417]">
                       Read the roadmap &rarr;
                     </span>
                   </Link>

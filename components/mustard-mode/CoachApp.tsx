@@ -338,7 +338,7 @@ function HudTab({
           </div>
           <p className="font-mono text-[11px] text-[#161616]/60 mt-3">
             {completedCount}/{totalMissions} MISSIONS SHIPPED · {totalXp} XP IN THE GAME
-            {tier !== 'player' && <span className="text-[#1E50C8]"> · FOUNDING {tier.toUpperCase()}</span>}
+            {tier !== 'player' && <span className="text-[#B92417]"> · FOUNDING {tier.toUpperCase()}</span>}
           </p>
         </div>
 
@@ -539,7 +539,7 @@ function TracksTab({
       <div className="max-w-3xl">
         <button
           onClick={() => setActiveMission(null)}
-          className="font-mono font-bold text-[11px] text-[#1E50C8] uppercase tracking-wider"
+          className="font-mono font-bold text-[11px] text-[#B92417] uppercase tracking-wider"
         >
           ← {activeTrack.name} missions
         </button>
@@ -615,7 +615,7 @@ function TracksTab({
   if (activeTrack) {
     return (
       <div className="max-w-3xl">
-        <button onClick={() => setActiveTrack(null)} className="font-mono font-bold text-[11px] text-[#1E50C8] uppercase tracking-wider">
+        <button onClick={() => setActiveTrack(null)} className="font-mono font-bold text-[11px] text-[#B92417] uppercase tracking-wider">
           ← All tracks
         </button>
         <h2 className="font-display italic font-extrabold text-4xl text-[#161616] mt-3">{activeTrack.name}</h2>
@@ -727,7 +727,7 @@ function PromptsTab() {
             </div>
             <p className="font-sans text-[12px] text-[#161616]/60 mt-1">{c.whenToUse}</p>
             <pre className="mt-3 font-mono text-[11.5px] text-[#161616]/85 whitespace-pre-wrap leading-relaxed bg-[#FBF6EA] border border-[#161616]/25 p-3 max-h-44 overflow-y-auto flex-1">{c.text}</pre>
-            {c.proTip && <p className="font-mono text-[10px] font-bold text-[#1E50C8] mt-2">PRO TIP: {c.proTip}</p>}
+            {c.proTip && <p className="font-mono text-[10px] font-bold text-[#B92417] mt-2">PRO TIP: {c.proTip}</p>}
           </div>
         ))}
       </div>
@@ -787,7 +787,7 @@ function VaultTab({ tier }: { tier: Tier }) {
   if (open) {
     return (
       <div className="max-w-3xl">
-        <button onClick={() => setOpen(null)} className="font-mono font-bold text-[11px] text-[#1E50C8] uppercase tracking-wider">
+        <button onClick={() => setOpen(null)} className="font-mono font-bold text-[11px] text-[#B92417] uppercase tracking-wider">
           ← Vault
         </button>
         <div className="pop-card rounded-none p-7 mt-4">

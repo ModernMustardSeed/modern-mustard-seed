@@ -112,7 +112,7 @@ export function PressCrossSell() {
           <p className="font-body text-sm text-[#161616]/70 mt-2 leading-relaxed">
             MUSTARD PICTURES storyboards a commercial for your business on the spot, free, and films it for $197.
           </p>
-          <Link href="/pictures" className="inline-block mt-4 font-sans font-extrabold text-xs uppercase tracking-[0.18em] text-[#1E50C8] underline underline-offset-4">
+          <Link href="/pictures" className="inline-block mt-4 font-sans font-extrabold text-xs uppercase tracking-[0.18em] text-[#B92417] underline underline-offset-4">
             Take the free Screen Test →
           </Link>
         </div>
@@ -122,7 +122,7 @@ export function PressCrossSell() {
           <p className="font-body text-sm text-[#161616]/70 mt-2 leading-relaxed">
             Mr. Mustard trains a voice agent on your business, free, then it answers your real line 24/7.
           </p>
-          <Link href="/demos" className="inline-block mt-4 font-sans font-extrabold text-xs uppercase tracking-[0.18em] text-[#1E50C8] underline underline-offset-4">
+          <Link href="/demos" className="inline-block mt-4 font-sans font-extrabold text-xs uppercase tracking-[0.18em] text-[#B92417] underline underline-offset-4">
             Build yours, free →
           </Link>
         </div>

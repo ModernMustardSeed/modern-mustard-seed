@@ -593,7 +593,7 @@ function Thumb({ item, onRemove }: { item: Uploaded; onRemove: () => void }) {
         <p className="text-xs font-body font-bold text-[#161616] truncate">{item.name}</p>
         <p className="text-[11px] font-mono">
           {item.uploading ? (
-            <span className="text-[#1E50C8]">Uploading...</span>
+            <span className="text-[#B92417]">Uploading...</span>
           ) : item.error ? (
             <span className="text-[#E0301E]">{item.error}</span>
           ) : (
@@ -618,7 +618,7 @@ function PhotoTile({ item, onRemove }: { item: Uploaded; onRemove: () => void })
         <div className="w-full h-full flex items-center justify-center text-2xl">🖼️</div>
       )}
       {item.uploading && (
-        <div className="absolute inset-0 bg-white/70 flex items-center justify-center text-[10px] font-mono font-bold text-[#1E50C8]">
+        <div className="absolute inset-0 bg-white/70 flex items-center justify-center text-[10px] font-mono font-bold text-[#B92417]">
           Uploading...
         </div>
       )}

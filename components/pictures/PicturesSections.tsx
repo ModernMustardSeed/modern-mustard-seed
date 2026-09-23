@@ -113,7 +113,7 @@ export function StudioCrossSell() {
           <p className="font-body text-sm text-[#161616]/70 mt-2 leading-relaxed">
             Mr. Mustard also trains voice agents. Build one for your business free, hear it answer as YOUR front desk, and never miss the customers your new commercial sends.
           </p>
-          <Link href="/demos" className="inline-block mt-4 font-sans font-extrabold text-xs uppercase tracking-[0.18em] text-[#1E50C8] underline underline-offset-4">
+          <Link href="/demos" className="inline-block mt-4 font-sans font-extrabold text-xs uppercase tracking-[0.18em] text-[#B92417] underline underline-offset-4">
             Build A Voice Agent →
           </Link>
         </div>
@@ -123,7 +123,7 @@ export function StudioCrossSell() {
           <p className="font-body text-sm text-[#161616]/70 mt-2 leading-relaxed">
             Sites, stores, funnels, and AI systems, shipped in weeks by the studio that makes its own commercials. Fixed quote before work starts.
           </p>
-          <Link href="/work-with-us" className="inline-block mt-4 font-sans font-extrabold text-xs uppercase tracking-[0.18em] text-[#1E50C8] underline underline-offset-4">
+          <Link href="/work-with-us" className="inline-block mt-4 font-sans font-extrabold text-xs uppercase tracking-[0.18em] text-[#B92417] underline underline-offset-4">
             Work with the studio →
           </Link>
         </div>

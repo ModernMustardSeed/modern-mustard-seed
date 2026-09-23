@@ -344,7 +344,7 @@ export default function MustardLifeComic() {
                     <li key={row.p}>
                       <a href={row.href} className="group flex items-baseline gap-3 py-3">
                         <span className="font-mono text-[11px] font-bold text-[#E0301E]">{row.p}</span>
-                        <span className="font-display text-base md:text-lg font-extrabold group-hover:text-[#1E50C8] transition-colors">
+                        <span className="font-display text-base md:text-lg font-extrabold group-hover:text-[#B92417] transition-colors">
                           {row.label}
                         </span>
                         <span aria-hidden className="mx-1 flex-1 border-b-2 border-dotted border-[#161616]/25 translate-y-[-4px]" />
@@ -410,7 +410,7 @@ export default function MustardLifeComic() {
               <div className="mlc-pop flex flex-col gap-3 pt-2" style={{ transitionDelay: '220ms' }}>
                 <Cta href="/demos" solid>Build Yours Free</Cta>
                 <p className="font-mono text-[11px] text-[#5c554a] leading-relaxed">
-                  Or call Mr. Mustard himself: <a className="font-bold text-[#1E50C8]" href="tel:+14063121223">{DEMO_AGENT.phoneLine}</a>. He loves visitors.
+                  Or call Mr. Mustard himself: <a className="font-bold text-[#B92417]" href="tel:+14063121223">{DEMO_AGENT.phoneLine}</a>. He loves visitors.
                 </p>
               </div>
             </div>
@@ -738,7 +738,7 @@ export default function MustardLifeComic() {
                 style={{ transitionDelay: `${(i % 4) * 70}ms` }}
               >
                 <p className="font-mono text-[9px] font-bold uppercase tracking-[0.25em] text-[#E0301E] mb-1.5">Free · No Card</p>
-                <p className="font-display text-lg font-extrabold leading-tight group-hover:text-[#1E50C8] transition-colors">{c.label}</p>
+                <p className="font-display text-lg font-extrabold leading-tight group-hover:text-[#B92417] transition-colors">{c.label}</p>
                 <p className="font-body text-[12px] leading-snug text-[#5c554a] mt-1.5">{c.note}</p>
               </Link>
             ))}

@@ -136,7 +136,7 @@ export default function ContactForm({ defaultPackage, defaultMessage }: Props) {
                 </p>
                 <p className="mt-5 font-body text-sm text-[#5c554a]">
                   In a hurry?{' '}
-                  <Link href="/inquire" className="font-bold text-[#1E50C8] underline decoration-2 underline-offset-2 hover:text-[#E0301E]">
+                  <Link href="/inquire" className="font-bold text-[#B92417] underline decoration-2 underline-offset-2 hover:text-[#E0301E]">
                     Start an inquiry instead
                   </Link>
                   .
@@ -277,7 +277,7 @@ export default function ContactForm({ defaultPackage, defaultMessage }: Props) {
             <span className="mb-3 block font-mono text-[9px] font-bold uppercase tracking-[0.3em] text-[#E0301E]">Direct</span>
             <a
               href="mailto:sarah@modernmustardseed.com"
-              className="font-body text-sm font-bold text-[#1E50C8] transition-colors hover:text-[#E0301E]"
+              className="font-body text-sm font-bold text-[#B92417] transition-colors hover:text-[#E0301E]"
             >
               sarah@modernmustardseed.com
             </a>

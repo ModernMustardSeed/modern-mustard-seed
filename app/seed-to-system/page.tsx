@@ -133,7 +133,7 @@ export default function SeedToSystemPage() {
               </p>
             </div>
             <div>
-              <Sparkles className="h-6 w-6 text-[#1E50C8]" aria-hidden="true" />
+              <Sparkles className="h-6 w-6 text-[#B92417]" aria-hidden="true" />
               <h3 className="mt-4 font-display text-xl font-black">AI in its proper place</h3>
               <p className="mt-2 font-body text-sm leading-relaxed text-[#5C554A]">
                 The machine carries the repeatable middle. Your judgment, taste, and relationships stay human.

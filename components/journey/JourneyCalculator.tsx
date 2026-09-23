@@ -318,7 +318,7 @@ export default function JourneyCalculator() {
                   ? 'bg-[#C4160B] text-[#FBF6EA]'
                   : p.tone === 'ink'
                     ? 'bg-[#161616] text-[#FBF6EA]'
-                    : 'bg-[#1E50C8] text-[#FBF6EA]';
+                    : 'bg-[#161616] text-[#FBF6EA]';
             return (
               <div
                 key={p.stat}
@@ -392,7 +392,7 @@ export default function JourneyCalculator() {
                   aria-hidden
                 >
                   {[0, 1, 2, 3].map((i) => (
-                    <span key={i} className="block h-4 w-3 rounded-[2px] bg-[#1E50C8]/70" />
+                    <span key={i} className="block h-4 w-3 rounded-[2px] bg-[#161616]/70" />
                   ))}
                 </div>
               </div>
@@ -539,7 +539,7 @@ export default function JourneyCalculator() {
                       {d}
                     </PopKey>
                   ))}
-                  <PopKey label="Delete last digit" onClick={backspace} className="bg-[#1E50C8] py-3 text-base text-[#FBF6EA] sm:py-3.5">
+                  <PopKey label="Delete last digit" onClick={backspace} className="bg-[#161616] py-3 text-base text-[#FBF6EA] sm:py-3.5">
                     <span aria-hidden>⌫</span>
                   </PopKey>
 
@@ -548,7 +548,7 @@ export default function JourneyCalculator() {
                       {d}
                     </PopKey>
                   ))}
-                  <PopKey label="Next field" onClick={nextField} className="bg-[#1E50C8] py-3 text-[10px] uppercase tracking-[0.1em] text-[#FBF6EA] sm:py-3.5">
+                  <PopKey label="Next field" onClick={nextField} className="bg-[#161616] py-3 text-[10px] uppercase tracking-[0.1em] text-[#FBF6EA] sm:py-3.5">
                     Next
                   </PopKey>
 

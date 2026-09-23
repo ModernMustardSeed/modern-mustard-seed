@@ -148,7 +148,7 @@ export default function SystemLoop() {
               onClick={() => setActive(i)}
               aria-pressed={isActive}
               aria-label={`Station ${s.code}, ${s.verb}`}
-              className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-[#161616] font-mono font-extrabold text-[11px] uppercase tracking-[0.12em] transition-all duration-300 focus:outline-none focus-visible:ring-4 focus-visible:ring-[#1E50C8]/50"
+              className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-[#161616] font-mono font-extrabold text-[11px] uppercase tracking-[0.12em] transition-all duration-300 focus:outline-none focus-visible:ring-4 focus-visible:ring-[#161616]/50"
               style={{
                 left: `${(p.x / SIZE) * 100}%`,
                 top: `${(p.y / SIZE) * 100}%`,

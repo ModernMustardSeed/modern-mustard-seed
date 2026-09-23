@@ -57,7 +57,7 @@ const CATEGORY_LABELS = {
 const PRIORITY_STYLES = {
   high: 'text-[#E0301E] border-[#E0301E]/50 bg-[#E0301E]/10',
   medium: 'text-[#161616] border-[#161616]/30 bg-[#F5B700]/30',
-  low: 'text-[#1E50C8] border-[#1E50C8]/50 bg-[#1E50C8]/10',
+  low: 'text-[#B92417] border-[#161616]/50 bg-[#161616]/10',
 };
 
 const GRADE_GLOW = (grade: string): string => {
@@ -198,7 +198,7 @@ export default function WebsiteAuditEngine() {
                 key={s}
                 className={`flex items-center gap-3 text-sm md:text-base font-body font-medium transition-all ${
                   i < loadStep
-                    ? 'text-[#1E50C8]'
+                    ? 'text-[#B92417]'
                     : i === loadStep
                       ? 'text-[#161616] animate-pulse'
                       : 'text-[#161616]/30'

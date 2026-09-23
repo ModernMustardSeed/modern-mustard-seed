@@ -271,7 +271,7 @@ export default function BuildMintForm({ endpoint, variant }: { endpoint: string;
               <input type="checkbox" checked={agree} onChange={(e) => setAgree(e.target.checked)} className="mt-0.5 w-4 h-4 accent-[#F5B700]" />
               <span className="font-body text-sm text-[#3A3733]">
                 I have read the{' '}
-                <a href="/downloads/mms-partner-build-agreement.pdf" target="_blank" rel="noopener noreferrer" className="text-[#1E50C8] underline underline-offset-2">
+                <a href="/downloads/mms-partner-build-agreement.pdf" target="_blank" rel="noopener noreferrer" className="text-[#B92417] underline underline-offset-2">
                   Partner Demo Agreement
                 </a>{' '}
                 (one page): demos carry the Modern Mustard Seed mark, commissions follow the posted schedule, and either of us can end this anytime.
@@ -316,7 +316,7 @@ export default function BuildMintForm({ endpoint, variant }: { endpoint: string;
                   {m.mintedBy ? ` · by ${m.mintedBy}` : ''}
                 </p>
                 {m.hubUrl && (
-                  <a href={m.hubUrl} target="_blank" rel="noopener noreferrer" className="inline-block mt-2 text-[10px] font-sans font-bold uppercase tracking-[0.15em] text-[#1E50C8] underline underline-offset-4 decoration-2">
+                  <a href={m.hubUrl} target="_blank" rel="noopener noreferrer" className="inline-block mt-2 text-[10px] font-sans font-bold uppercase tracking-[0.15em] text-[#B92417] underline underline-offset-4 decoration-2">
                     Open suite
                   </a>
                 )}

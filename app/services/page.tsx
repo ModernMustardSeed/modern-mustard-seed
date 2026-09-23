@@ -225,7 +225,7 @@ export default function ServicesPage() {
           </div>
           <p className="font-body text-[13px] text-[#161616]/70 mt-6">
             The full engagement model lives on{' '}
-            <Link href="/work-with-us" className="font-bold text-[#1E50C8] underline underline-offset-4 hover:text-[#161616]">How It Works</Link>.
+            <Link href="/work-with-us" className="font-bold text-[#B92417] underline underline-offset-4 hover:text-[#161616]">How It Works</Link>.
           </p>
         </section>
 

@@ -159,7 +159,7 @@ export default function RestaurantsPage() {
               Trained on your menu, your hours, and the questions your callers actually ask.{' '}
               <Link
                 href="/book"
-                className="text-[#1E50C8] font-semibold underline underline-offset-2 hover:text-[#E0301E] transition-colors"
+                className="text-[#B92417] font-semibold underline underline-offset-2 hover:text-[#E0301E] transition-colors"
               >
                 Tell us about your restaurant.
               </Link>
@@ -437,7 +437,7 @@ export default function RestaurantsPage() {
             <p className="text-center mt-6">
               <Link
                 href="/voice-agents"
-                className="text-[11px] uppercase tracking-[0.2em] font-mono font-bold text-[#1E50C8] hover:text-[#E0301E] transition-colors"
+                className="text-[11px] uppercase tracking-[0.2em] font-mono font-bold text-[#B92417] hover:text-[#E0301E] transition-colors"
               >
                 See how the voice agent works →
               </Link>

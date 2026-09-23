@@ -111,7 +111,7 @@ export default function RecentWork() {
                 <div className="flex items-center gap-1.5 shrink-0" aria-hidden="true">
                   <span className="h-2.5 w-2.5 rounded-full bg-[#E0301E] border border-[#161616]" />
                   <span className="h-2.5 w-2.5 rounded-full bg-[#F5B700] border border-[#161616]" />
-                  <span className="h-2.5 w-2.5 rounded-full bg-[#1E50C8] border border-[#161616]" />
+                  <span className="h-2.5 w-2.5 rounded-full bg-[#161616] border border-[#161616]" />
                 </div>
                 <span className="flex-1 min-w-0 truncate rounded-full bg-white border-2 border-[#161616] px-3 py-1 font-mono text-[11px] text-[#161616]/70 text-center">
                   {w.domain}
@@ -136,7 +136,7 @@ export default function RecentWork() {
                 </p>
                 <h3 className="font-display font-black text-2xl text-[#161616] mt-1.5">{w.name}</h3>
                 <p className="font-body text-sm text-[#161616]/70 leading-relaxed mt-2">{w.desc}</p>
-                <span className="inline-flex items-center gap-1.5 mt-4 font-sans font-extrabold text-[11px] uppercase tracking-[0.16em] text-[#1E50C8] group-hover:text-[#C4160B] transition-colors">
+                <span className="inline-flex items-center gap-1.5 mt-4 font-sans font-extrabold text-[11px] uppercase tracking-[0.16em] text-[#B92417] group-hover:text-[#C4160B] transition-colors">
                   Visit the live site
                   <svg className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                     <path d="M7 17 17 7" />

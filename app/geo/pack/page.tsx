@@ -23,7 +23,7 @@ export default async function GeoPackPage({ searchParams }: { searchParams: Prom
         <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-bold mb-3">[ GEO DESK ]</p>
         <h1 className="font-display text-2xl font-black">{title}</h1>
         <p className="font-body text-sm text-[#161616]/70 mt-3 leading-relaxed">{body}</p>
-        <Link href="/website-audit" className="inline-block mt-5 font-sans font-extrabold text-xs uppercase tracking-[0.18em] text-[#1E50C8] underline underline-offset-4">
+        <Link href="/website-audit" className="inline-block mt-5 font-sans font-extrabold text-xs uppercase tracking-[0.18em] text-[#B92417] underline underline-offset-4">
           Back to the audit →
         </Link>
       </div>

@@ -107,7 +107,7 @@ type Tab = 'coach' | 'week' | 'plan' | 'offer' | 'build';
 
 const SYSTEM_STYLE: Record<string, string> = {
   proposed: 'bg-white text-[#161616]/60 border-[#161616]/30',
-  queued: 'bg-[#1E50C8]/10 text-[#1E50C8] border-[#1E50C8]/40',
+  queued: 'bg-[#161616]/10 text-[#B92417] border-[#161616]/40',
   building: 'bg-[#F5B700]/30 text-[#8f6600] border-[#8f6600]/45',
   live: 'bg-[#2F7D32]/12 text-[#2F7D32] border-[#2F7D32]/45',
   retired: 'bg-[#161616]/5 text-[#161616]/40 border-[#161616]/20',
@@ -640,7 +640,7 @@ export default function HundredfoldCommandCenter() {
                           <button
                             type="button"
                             onClick={() => setEditing(s.id)}
-                            className="text-[10px] uppercase tracking-[0.2em] font-mono font-bold text-[#1E50C8] hover:text-[#161616]"
+                            className="text-[10px] uppercase tracking-[0.2em] font-mono font-bold text-[#B92417] hover:text-[#161616]"
                           >
                             Change something →
                           </button>
@@ -649,7 +649,7 @@ export default function HundredfoldCommandCenter() {
                               type="button"
                               onClick={() => void act(s.id, 'restyle')}
                               disabled={working}
-                              className="text-[10px] uppercase tracking-[0.2em] font-mono font-bold text-[#1E50C8] hover:text-[#161616] disabled:opacity-50"
+                              className="text-[10px] uppercase tracking-[0.2em] font-mono font-bold text-[#B92417] hover:text-[#161616] disabled:opacity-50"
                             >
                               Match my brand →
                             </button>
@@ -699,7 +699,7 @@ export default function HundredfoldCommandCenter() {
                               <button
                                 type="button"
                                 onClick={() => void copy(`${s.id}-${i}`, a.text!)}
-                                className="mt-1.5 text-[10px] uppercase tracking-[0.2em] font-mono font-bold text-[#1E50C8] hover:text-[#161616]"
+                                className="mt-1.5 text-[10px] uppercase tracking-[0.2em] font-mono font-bold text-[#B92417] hover:text-[#161616]"
                               >
                                 {copied === `${s.id}-${i}` ? 'Copied' : 'Copy it'}
                               </button>
@@ -712,7 +712,7 @@ export default function HundredfoldCommandCenter() {
                                 href={a.url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="inline-block text-[10px] uppercase tracking-[0.2em] font-mono font-bold text-[#1E50C8] hover:text-[#161616]"
+                                className="inline-block text-[10px] uppercase tracking-[0.2em] font-mono font-bold text-[#B92417] hover:text-[#161616]"
                               >
                                 {a.kind === 'file' ? 'Download it →' : 'Open it live →'}
                               </a>
@@ -727,7 +727,7 @@ export default function HundredfoldCommandCenter() {
                                   <button
                                     type="button"
                                     onClick={() => void copy(`${s.id}-embed-${i}`, a.embed!)}
-                                    className="mt-1.5 text-[10px] uppercase tracking-[0.2em] font-mono font-bold text-[#1E50C8] hover:text-[#161616]"
+                                    className="mt-1.5 text-[10px] uppercase tracking-[0.2em] font-mono font-bold text-[#B92417] hover:text-[#161616]"
                                   >
                                     {copied === `${s.id}-embed-${i}` ? 'Copied' : 'Copy the embed'}
                                   </button>

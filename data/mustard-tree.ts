@@ -59,7 +59,7 @@ export const treeStaff = [
   },
   {
     role: 'The Designer',
-    color: '#1E50C8',
+    color: '#161616',
     job: 'Logo, brand system, product art, site design. Nothing generic survives.',
   },
   {
@@ -74,7 +74,7 @@ export const treeStaff = [
   },
   {
     role: 'The Clerk',
-    color: '#1E50C8',
+    color: '#161616',
     job: 'Opens the books, watches every dollar, and closes the month without being asked.',
   },
 ] as const;

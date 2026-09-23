@@ -22,7 +22,7 @@ const SHOWCASE = 'https://modernmustardseed.com/demo/hub/6cda89d9-1803-4247-9d00
 const STEPS = [
   {
     n: '1',
-    accent: '#1E50C8',
+    accent: '#E0301E',
     t: 'Type in a business you know',
     d: 'Their name, a phone number, and their website or Facebook page. The build works only from their real, public information, so you never invent a thing.',
   },
@@ -41,7 +41,7 @@ const STEPS = [
 ];
 
 const EARN = [
-  { rate: '50%', accent: '#1E50C8', label: 'On every product', detail: 'Every playbook and bundle, paid the moment they buy.' },
+  { rate: '50%', accent: '#E0301E', label: 'On every product', detail: 'Every playbook and bundle, paid the moment they buy.' },
   { rate: '25%', accent: '#F5B700', label: 'Recurring, monthly', detail: 'A quarter of each voice agent invoice, for a full year.' },
   { rate: '10-20%', accent: '#E0301E', label: 'On custom builds', detail: '10% of the project, up to 20% once you are a Producer.' },
 ];

@@ -109,7 +109,7 @@ export default function PartnerEarningsCalculator({ pct, months, talkingWebsiteC
           <h3 className="font-display text-2xl font-semibold text-[#161616] mb-5">What could a month look like?</h3>
           <div className="space-y-3">
             <Stepper label="Talking Websites kept" hint={`${cents(talkingWebsiteCents)} a month each, for ${months} months`} value={sites} onChange={setSites} accent="#F5B700" />
-            <Stepper label="Voice Agents kept" hint={`${cents(voiceCents)} a month each, for ${months} months`} value={voices} onChange={setVoices} accent="#1E50C8" />
+            <Stepper label="Voice Agents kept" hint={`${cents(voiceCents)} a month each, for ${months} months`} value={voices} onChange={setVoices} accent="#E0301E" />
             <Stepper label="Builds you send our way" hint={`${buildPct}% of the project. A ${money(BUILD_BLEND)} build pays ${money(buildCut)}`} value={builds} onChange={setBuilds} accent="#E0301E" />
             <Stepper label="Playbooks you sell" hint={`${productPct}% of every sale, paid the moment they buy. About ${money(productCut)} each`} value={products} onChange={setProducts} accent="#161616" />
           </div>
