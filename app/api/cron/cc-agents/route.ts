@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server';
 import { getSupabase } from '@/lib/supabase';
 import { CLIENT_PROJECTS, type ClientProject } from '@/lib/client-leads';
-import { commandCenterVisible } from '@/lib/command-center/visible';
 import { mondayBoard, put, qualifyLead, quietJob } from '@/lib/cc-briefs';
 import { certBody, certsNeedingAttention } from '@/lib/cc-handover';
 import { noticeThings } from '@/lib/cc-noticing';
+import { selfCheck } from '@/lib/cc-selfcheck';
+import { proposeTuning } from '@/lib/cc-tuning';
 import { OPEN_STAGES, QUIET_AFTER_DAYS, daysSince, listJobs, type JobRow } from '@/lib/cc-jobs';
 
 export const runtime = 'nodejs';
@@ -42,35 +43,24 @@ const MAX_QUIET = 2;
 const FRESH_HOURS = 72;
 
 /**
- * Who this runs for.
+ * Who this runs for: every client, every hour.
  *
- * The obvious rule is "every client whose Command Center is switched on", and
- * it is half right: work nobody can see is subscription time spent on nothing.
- * But a board is built before it is handed over, and an empty board on the day
- * a client first signs in teaches them that the thing does not do anything.
+ * This used to be clever. It ran for a desk whose Command Center was switched
+ * on, and then, when that proved too narrow, for a desk with a job on the
+ * board, and then for one with a job OR a trade. Every version of that
+ * cleverness had the same bug in it: a client with something genuinely wrong
+ * was silently skipped because they did not match the shape the rule expected.
+ * A self healing loop that decides on its own not to look at somebody is the
+ * exact failure it was built to prevent.
  *
- * So the work follows the board, not the switch. A job row only exists because
- * somebody at that desk put it there, which is a better signal of "this is in
- * use" than a flag Sarah flips on a different screen.
+ * So it looks at everyone, and each check decides for itself whether there is
+ * anything to do. The checks are all cheap and all guarded: fresh leads only,
+ * a handful of jobs per pass, one brief per thing per week. A client with an
+ * empty desk costs a few reads and produces nothing, which is the correct
+ * amount of work to do about an empty desk.
  */
-async function clientsWithBoard(sb: ReturnType<typeof getSupabase>): Promise<ClientProject[]> {
-  if (!sb) return [];
-  const out: ClientProject[] = [];
-  for (const project of Object.values(CLIENT_PROJECTS)) {
-    if (await commandCenterVisible(sb, project.clientEmail)) {
-      out.push(project);
-      continue;
-    }
-    // Any desk that is in use, not only one with a pipeline on it. A business
-    // can have five subcontractors on the bench and no job on the board yet,
-    // and a certificate still lapses on the same day either way.
-    const [jobs, trades] = await Promise.all([
-      sb.from('client_jobs').select('id', { count: 'exact', head: true }).eq('client_email', project.clientEmail),
-      sb.from('client_trades').select('id', { count: 'exact', head: true }).eq('client_email', project.clientEmail),
-    ]);
-    if ((jobs.count ?? 0) > 0 || (trades.count ?? 0) > 0) out.push(project);
-  }
-  return out;
+function everyClient(): ClientProject[] {
+  return Object.values(CLIENT_PROJECTS);
 }
 
 export async function GET(req: Request) {
@@ -86,7 +76,7 @@ export async function GET(req: Request) {
   const only = url.searchParams.get('client');
   const force = url.searchParams.get('force') === '1';
 
-  const projects = (await clientsWithBoard(sb)).filter((p) => !only || p.clientEmail === only.toLowerCase());
+  const projects = everyClient().filter((p) => !only || p.clientEmail === only.toLowerCase());
   const report: Array<Record<string, unknown>> = [];
 
   // Monday, in Mountain time, is when the board gets read. `force` runs it now.
@@ -169,6 +159,20 @@ export async function GET(req: Request) {
       line.quietError = err instanceof Error ? err.message : 'failed';
     }
 
+    /* ── the desk checks itself ── */
+    //
+    // First, every pass, before anything else: a claim left by a dead process
+    // or a brief about a row that no longer exists should be tidied before
+    // the rest of the work reads the same tables.
+    try {
+      const report = await selfCheck(sb, project);
+      if (report.healed.length) line.healed = report.healed.map((h) => `${h.n} ${h.what}`);
+      if (report.raised.length) line.raisedBySelfCheck = report.raised;
+      if (report.failing.length) line.failingConnections = report.failing;
+    } catch (err) {
+      line.selfCheckError = err instanceof Error ? err.message : 'failed';
+    }
+
     /* ── certificates about to lapse ── */
     try {
       const certs = await certsNeedingAttention(sb, project);
@@ -209,6 +213,13 @@ export async function GET(req: Request) {
         line.noticed = await noticeThings(sb, project);
       } catch (err) {
         line.noticedError = err instanceof Error ? err.message : 'failed';
+      }
+      // And the numbers this product guessed at, re-argued from their own
+      // results. Silent until there is enough of them to mean anything.
+      try {
+        line.tuning = await proposeTuning(sb, project);
+      } catch (err) {
+        line.tuningError = err instanceof Error ? err.message : 'failed';
       }
     }
 

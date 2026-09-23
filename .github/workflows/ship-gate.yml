@@ -91,6 +91,12 @@ jobs:
       - name: Every named import a worker makes resolves
         run: node scripts/check-worker-imports.mjs
 
+      # A Command Center route renamed in one commit, with a fetch left
+      # pointing at the old path, type checks and builds and deploys and then
+      # answers 404 to one button nobody presses until a client does.
+      - name: Every Command Center endpoint the browser calls exists
+        run: node scripts/cc-routes-check.mjs
+
       - name: Install Claude Code (the action's installer once reported success with no binary)
         shell: bash
         run: |
