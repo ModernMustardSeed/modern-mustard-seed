@@ -87,7 +87,7 @@ export function recoveryMachineBlock(args: {
       est ? { m: String(est.missedPerWeek), c: String(est.closeRatePct), t: String(Math.round(est.avgJobValue)) } : { blank: '1' },
     );
     if (typed) q.set('k', typed);
-    // The live machine may sit behind an anchor (/demos#calculator); the query
+    // The live machine may sit behind an anchor (/mustard#calculator); the query
     // goes before the hash or the browser treats it as part of the fragment.
     const [base, hash] = liveUrl.split('#');
     return base + (base.includes('?') ? '&' : '?') + q.toString() + (hash ? '#' + hash : '');

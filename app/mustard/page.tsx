@@ -593,7 +593,7 @@ export default async function MustardPage({
             because nobody can trace them. Quote from there or do not quote.
             Every bubble carries its source under the figure for that reason.
           */}
-          <div className="mt-14 grid gap-6 lg:grid-cols-[1fr_1.05fr] lg:items-start">
+          <div id="calculator" className="mt-14 grid scroll-mt-24 gap-6 lg:grid-cols-[1fr_1.05fr] lg:items-start">
             <MissedMoney
               monthlyPrice={formatUsd(DEMO_BUNDLE.monthlyCents)}
               missedPreset={machine.missed}

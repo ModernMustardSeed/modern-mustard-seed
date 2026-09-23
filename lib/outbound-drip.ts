@@ -136,7 +136,7 @@ export function dripEmail(lead: OutboundLead, step: number): DripEmail {
           p(`${hub ? 'The suite page' : 'The demo page'} has a calculator that does this with your own numbers. Nothing on it is guessed. Thirty seconds.`),
         // Their suite hub when one exists, else the calculator on the demo page.
         // Never a page that asks for their phone number.
-        cta: { label: 'Run your own numbers', url: hub ?? `https://modernmustardseed.com/demos?source=outbound-drip&p=${encodeURIComponent(lead.id)}#calculator` },
+        cta: { label: 'Run your own numbers', url: hub ?? `https://modernmustardseed.com/mustard?source=outbound-drip&p=${encodeURIComponent(lead.id)}#calculator` },
         secondary: { label: 'Book 10 minutes with Sarah', url: BOOK },
         trackId: lead.id,
       }),

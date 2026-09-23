@@ -1,7 +1,6 @@
 import { buildMetadata, SITE } from '@/lib/seo';
 import DemoStation from '@/components/DemoStation';
-import MissedMoney from '@/components/mustard/MissedMoney';
-import { DEMO_PRODUCTS, DEMO_BUNDLE, formatUsd } from '@/lib/demo-order';
+import { DEMO_PRODUCTS, formatUsd } from '@/lib/demo-order';
 import { PREVIEW } from '@/data/preview-promise';
 
 /**
@@ -78,7 +77,7 @@ const PIECES = [
  * so AI crawlers could read the questions but had no idea what the Demo Station
  * offers or costs (added 2026-07-20 to match the /voice-agents/build graph).
  *
- * Every price is DERIVED from DEMO_PRODUCTS and DEMO_BUNDLE. Never type one
+ * Every price is DERIVED from DEMO_PRODUCTS. Never type one
  * here: see the $197/$297 split that leaked into the trade FAQ schema.
  */
 function demosJsonLd() {
@@ -169,34 +168,7 @@ function demosJsonLd() {
   };
 }
 
-export default async function DemosPage({
-  searchParams,
-}: {
-  searchParams?: Promise<Record<string, string | string[] | undefined>>;
-}) {
-  /**
-   * THE KEYPAD IN THE COLD EMAIL FINISHES HERE (2026-08-25). The email's
-   * Model RR-1 is drawn in tables with no JavaScript, so its keys are links to
-   * this page's live machine, carrying only the digit pressed (the email
-   * guesses no numbers). Clamped, because these arrive off a link a stranger
-   * can edit. /mustard used to be the landing; it is never linked from an
-   * email any more.
-   */
-  const params = (await searchParams) ?? {};
-  const one = (k: string): string => {
-    const v = params[k];
-    return (Array.isArray(v) ? v[0] : v) ?? '';
-  };
-  const num = (k: string, max: number): number | null => {
-    const v = Number(one(k));
-    return Number.isFinite(v) && v > 0 ? Math.min(max, Math.round(v)) : null;
-  };
-  const machine = {
-    missed: num('m', 200),
-    close: num('c', 100),
-    ticket: num('t', 500000),
-    typed: /^([0-9]|C)$/.test(one('k')) ? one('k') : null,
-  };
+export default function DemosPage() {
   return (
     <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
       <script
@@ -312,32 +284,6 @@ export default async function DemosPage({
           </div>
           <div className="lg:col-span-7">
             <DemoStation />
-          </div>
-        </section>
-
-        {/* ── The calculator. The cold email's keypad lands here, and it lands
-             blank on purpose: the numbers are theirs to type. ── */}
-        <section id="calculator" className="grid grid-cols-1 [&>*]:min-w-0 gap-6 lg:grid-cols-[1fr_1.05fr] lg:items-start scroll-mt-8">
-          <MissedMoney
-            monthlyPrice={formatUsd(DEMO_BUNDLE.monthlyCents)}
-            missedPreset={machine.missed}
-            closePreset={machine.close}
-            ticketPreset={machine.ticket}
-            typedKey={machine.typed}
-          />
-          <div className="lg:pt-10">
-            <p className="font-mono text-[10px] font-bold uppercase tracking-[0.28em] text-[#C4160B]">What the display means</p>
-            <h3 className="mt-3 font-display text-[1.7rem] sm:text-[2.1rem] font-extrabold leading-tight tracking-tight">
-              Three numbers you already know. Nothing we guessed.
-            </h3>
-            <p className="mt-4 font-body text-[15px] leading-relaxed text-[#161616]/75">
-              Calls you miss in a week, how many of the people you do talk to hire you, and what one job is worth. The
-              display is what walks out the door every month while the phone rings out. A voice agent is what stops it:
-              ask us about one when you build your preview.
-            </p>
-            <a href="#build" className="inline-flex mt-6 items-center gap-2 bg-[#F5B700] text-[#161616] border-2 border-[#161616] rounded-xl px-5 py-3 font-sans font-extrabold uppercase tracking-[0.12em] text-[12px] shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-all">
-              Build my preview ↑
-            </a>
           </div>
         </section>
 
