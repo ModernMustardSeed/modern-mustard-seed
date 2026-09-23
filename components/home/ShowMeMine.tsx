@@ -35,23 +35,42 @@ export default function ShowMeMine({ className }: { className: string }) {
   const [error, setError] = useState('');
   const [hub, setHub] = useState('');
   const first = useRef<HTMLInputElement | null>(null);
+  const dialog = useRef<HTMLDivElement | null>(null);
+  const opener = useRef<HTMLElement | null>(null);
 
   const siteOk = SITE_RE.test(tidy(site));
 
   useEffect(() => {
     if (!open) return;
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape' && phase !== 'sending') setOpen(false); };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && phase !== 'sending') { setOpen(false); return; }
+      // Keep Tab inside the dialog while it is open.
+      if (e.key !== 'Tab' || !dialog.current) return;
+      const items = [...dialog.current.querySelectorAll<HTMLElement>('a[href], button:not([disabled]), input:not([type=hidden]):not([tabindex="-1"]), select, textarea')].filter((el) => el.offsetParent !== null);
+      if (!items.length) return;
+      const firstEl = items[0], lastEl = items[items.length - 1];
+      if (e.shiftKey && document.activeElement === firstEl) { e.preventDefault(); lastEl.focus(); }
+      else if (!e.shiftKey && document.activeElement === lastEl) { e.preventDefault(); firstEl.focus(); }
+    };
     window.addEventListener('keydown', onKey);
     const prev = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
-    first.current?.focus();
+    if (phase === 'form') first.current?.focus();
     return () => { window.removeEventListener('keydown', onKey); document.body.style.overflow = prev; };
   }, [open, phase]);
+
+  // Focus goes back to whatever opened the dialog when it closes.
+  useEffect(() => {
+    if (open) return;
+    opener.current?.focus();
+    opener.current = null;
+  }, [open]);
 
   const start = (e: React.FormEvent) => {
     e.preventDefault();
     if (!siteOk) return;
     trackEvent('show_me_mine', { location: 'home' });
+    opener.current = document.activeElement as HTMLElement | null;
     setPhase('form');
     setError('');
     setOpen(true);
@@ -104,7 +123,7 @@ export default function ShowMeMine({ className }: { className: string }) {
 
       {open && createPortal(
         <div className="fixed inset-0 z-[80] flex items-center justify-center bg-[#080c16]/70 p-4" onClick={(e) => { if (e.target === e.currentTarget && phase !== 'sending') setOpen(false); }}>
-          <div role="dialog" aria-modal="true" aria-labelledby="smm-title" className="flex max-h-[90vh] w-full max-w-[560px] flex-col border-[3px] border-[#161616] bg-white text-[#161616] shadow-[10px_10px_0_0_#F5B700]">
+          <div ref={dialog} role="dialog" aria-modal="true" aria-labelledby="smm-title" className="flex max-h-[90vh] w-full max-w-[560px] flex-col border-[3px] border-[#161616] bg-white text-[#161616] shadow-[10px_10px_0_0_#F5B700]">
             <div className="flex shrink-0 items-start justify-between gap-4 border-b-2 border-[#161616] bg-[#F5B700] px-6 py-5">
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-[0.18em]">Show me mine · {tidy(site)}</p>

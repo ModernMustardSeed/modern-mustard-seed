@@ -6,6 +6,7 @@ import nodemailer from 'nodemailer';
 import { decryptSecret, encryptSecret } from '@/lib/crypto';
 import { llmEnqueue } from '@/lib/llm';
 import type { ClientProject } from '@/lib/client-leads';
+import { possessive } from '@/lib/business-name';
 
 /**
  * EVERY MAILBOX THE BUSINESS RUNS, SORTED, WITH A REPLY WAITING.
@@ -239,7 +240,7 @@ function personFor(p: ClientProject, address: string): string {
 
 const SORT_SYSTEM = (p: ClientProject, mailbox: string, signer: string) => `You sort and answer email for ${p.business}, a luxury custom home builder in Northwest Montana. The owner is Shan; Carmen runs the office; Zayne runs the job sites. You are not any of them and you never claim to be.
 
-This message arrived in ${mailbox}, ${signer}'s mailbox.
+This message arrived in ${mailbox}, ${possessive(signer)} mailbox.
 
 Sort each message into exactly one category:
 - lead: a person asking about building, remodeling, land, plans, a quote, a visit, or availability.
@@ -253,7 +254,7 @@ Sort each message into exactly one category:
 
 needs_reply is true only when a real person is waiting for an answer. A newsletter, a receipt, an automated notice, or a message that closes the loop needs no reply.
 
-When needs_reply is true, write a draft reply in ${signer}'s voice: warm, short, plain, first person as the company (we, us). Never quote a price, a price per square foot, a timeline, or financing terms; say Shan will talk those through in person. Never promise a date. Never invent a fact about a project. End with a plain next step (a call, a site visit, a time that works). No em dashes. Sign off as ${signer}.
+When needs_reply is true, write a draft reply in ${possessive(signer)} voice: warm, short, plain, first person as the company (we, us). Never quote a price, a price per square foot, a timeline, or financing terms; say Shan will talk those through in person. Never promise a date. Never invent a fact about a project. End with a plain next step (a call, a site visit, a time that works). No em dashes. Sign off as ${signer}.
 
 summary is one sentence, under 25 words, saying what the message is and what it wants.`;
 

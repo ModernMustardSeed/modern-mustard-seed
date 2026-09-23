@@ -3,7 +3,6 @@ import Image from 'next/image';
 import s from './PosterHero.module.css';
 import HeroTalk from './HeroTalk';
 import { MascotLean, Marquee, HelloCity } from './HeroMotion';
-import MustardTour from './MustardTour';
 
 /* The homepage hero: the pop-art social card, blown up to a full poster. */
 export default function PosterHero() {
@@ -16,7 +15,6 @@ export default function PosterHero() {
         <h1 id="studio-heading"><span>Your vision.</span><span className={s.plate}><em>Beautifully</em></span><span>built.</span></h1>
         <p className={s.posterIntro}>Websites, custom software, and AI systems. Designed and built by Sarah Scarano in Montana, for people with something of their own to build.</p>
         <Link href="/inquire" className={s.posterCta}>Tell Us What You Have In Mind <span aria-hidden="true">↗</span></Link>
-        <MustardTour className={s.tour} pillClass={s.tourPill} />
       </div>
       <div className={s.posterArt}>
         <div className={s.burst} aria-hidden="true" />
