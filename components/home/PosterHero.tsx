@@ -13,7 +13,7 @@ export default function PosterHero() {
       <div className={s.posterCopy}>
         <p className={s.posterEyebrow}>Design &amp; technology, with character.</p>
         <h1 id="studio-heading"><span>Your vision.</span><span className={s.plate}><em>Beautifully</em></span><span>built.</span></h1>
-        <p className={s.posterIntro}>Websites, custom software, and AI systems. Designed and built by Sarah Scarano in Montana, for people with something of their own to build.</p>
+        <p className={s.posterIntro}>Websites, custom software, and agentic systems. Designed and built by Sarah Scarano in Montana, for people with something of their own to build.</p>
         <Link href="/inquire" className={s.posterCta}>Tell Us What You Have In Mind <span aria-hidden="true">↗</span></Link>
       </div>
       <div className={s.posterArt}>
@@ -24,6 +24,6 @@ export default function PosterHero() {
         <span className={s.spark + ' ' + s.sparkTwo} aria-hidden="true">✦</span>
       </div>
     </div>
-    <Marquee className={s.marquee}><div>{[0, 1].map(k => <span key={k}>Websites ✦ Custom Software ✦ AI Systems ✦ Voice Agents ✦ Brand &amp; Identity ✦ Advisory ✦&nbsp;</span>)}</div></Marquee>
+    <Marquee className={s.marquee}><div>{[0, 1].map(k => <span key={k}>Websites ✦ Custom Software ✦ Agentic Systems ✦ Voice Agents ✦ Brand &amp; Identity ✦ Advisory ✦&nbsp;</span>)}</div></Marquee>
   </section>;
 }
