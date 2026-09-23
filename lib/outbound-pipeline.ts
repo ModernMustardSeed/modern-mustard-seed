@@ -62,6 +62,10 @@ export async function syncLeadToPipeline(
     owner: ownerEmail,
     notes: lead.notes,
     follow_up_at: ['won', 'lost', 'archived'].includes(status) ? null : new Date(Date.now() + 2 * 86400000).toISOString(),
+    // Nothing on this table stamps updated_at, so a returning person merged into
+    // their old row stayed buried under its original date (2026-09-23). Stamp it
+    // here; the Leads list sorts by it.
+    updated_at: new Date().toISOString(),
   };
 
   // Already linked: update that pipeline row in place.

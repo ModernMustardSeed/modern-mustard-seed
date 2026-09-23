@@ -19,7 +19,9 @@ export async function GET(req: Request) {
   const search = url.searchParams.get('search');
   const limit = Number(url.searchParams.get('limit') ?? 100);
 
-  let q = supabase.from('leads').select('*').order('created_at', { ascending: false }).limit(limit);
+  // Most recent activity first: a returning person's new request is merged into
+  // their old row, and sorting by created_at buried it (2026-09-23).
+  let q = supabase.from('leads').select('*').order('updated_at', { ascending: false }).limit(limit);
   if (type) q = q.eq('type', type);
   if (status) q = q.eq('status', status);
   if (search) {
