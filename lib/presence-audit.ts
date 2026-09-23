@@ -181,15 +181,20 @@ const URGENT_TRADES = new Set([
 /* ──────────────────────────── the reviews pillar ────────────────────────── */
 
 /**
- * Reviews, out of 100. Volume is worth more than rating on purpose.
+ * Reviews, out of 100. The rating carries the grade; the count is how sure we are.
  *
- * A 5.0 from nine people is not evidence, and every owner knows it. A 4.6 from
- * four hundred is the most valuable marketing asset a local trades business
- * will ever own, and most of them have never been told that in a sentence.
+ * Sarah, 2026-09-22: "they cant get such a bad grade on reviews just bc they dont
+ * have many - if they are all 5 stars, it should be a higher grade than that."
+ * Under the old split (count 55, stars 45) eight perfect reviews scored a 68, a D,
+ * which told a one-person cleaner that every customer loving her was a failing
+ * grade. Now stars are worth 60 and count 40, so eight at 5.0 is an 82 (B-) and
+ * the count note still tells her the number is what to grow.
  *
- * The volume curve is deliberately generous early (getting from 0 to 25 is the
- * hardest stretch there is) and flattens after 300, where more reviews stop
- * changing whether a stranger calls you.
+ * Volume still matters: four hundred at 4.6 still beats nine at 5.0, because a
+ * big number is proof a small one cannot be. The count curve is generous early
+ * and flat by about fifty, where more reviews stop changing whether a stranger
+ * calls you. Stars run in a straight line from 3.0 (nothing) to 5.0 (all 60), so
+ * every tenth of a star is worth the same three points and anyone can check it.
  */
 export function scoreReviews(input: PresenceInput): Pillar {
   const count = input.review_count ?? null;
@@ -212,34 +217,25 @@ export function scoreReviews(input: PresenceInput): Pillar {
   }
 
   const n = count ?? 0;
-  // 0 → 0, 25 → 28, 50 → 37, 100 → 46, 200 → 53, 300 → 55, flat after.
-  const volume = n <= 0 ? 0 : Math.min(55, Math.round(18 * Math.log10(n + 1) * 1.35));
+  // 1 → 7, 5 → 18, 8 → 22, 10 → 24, 25 → 33, 50 → 40, flat after.
+  const volume = n <= 0 ? 0 : Math.min(40, Math.round((40 * Math.log10(n + 1)) / Math.log10(51)));
+  const perfect = rating !== null && rating >= 4.8;
   const volumeNote =
     n === 0
       ? 'Nobody has reviewed you yet, so a stranger comparing three names has nothing of yours to read.'
       : n < 25
-        ? `${n} reviews. Under about 25 most people read you as new, whatever the star rating says.`
+        ? perfect
+          ? `${n} reviews, and they are all glowing. The quality is settled. Under about 25, most people still read a business as new, so the number is the thing to grow.`
+          : `${n} reviews. Under about 25 most people read you as new, whatever the star rating says.`
         : n < 100
           ? `${n} reviews. Past 25 you are credible. Past 100 you are the obvious call.`
           : n < 300
             ? `${n} reviews. This is real proof, and it is worth more than any ad you could buy.`
             : `${n} reviews. This is the best asset you own, and it is doing more work than your website is.`;
-  checks.push({ label: 'Review volume', passed: n >= 25, detail: volumeNote, points: 55, earned: volume });
+  checks.push({ label: 'Review volume', passed: n >= 25, detail: volumeNote, points: 40, earned: volume });
 
-  const stars =
-    rating === null
-      ? 0
-      : rating >= 4.8
-        ? 45
-        : rating >= 4.5
-          ? 38
-          : rating >= 4.2
-            ? 30
-            : rating >= 4.0
-              ? 22
-              : rating >= 3.5
-                ? 12
-                : 4;
+  // A straight line from 3.0 (0) to 5.0 (60): three points per tenth of a star.
+  const stars = rating === null ? 0 : Math.round(60 * Math.max(0, Math.min(1, (rating - 3) / 2)));
   const starNote =
     rating === null
       ? 'No star rating found on your listing.'
@@ -250,7 +246,7 @@ export function scoreReviews(input: PresenceInput): Pillar {
           : rating >= 4.0
             ? `${rating} stars. Solid, but a lot of people filter searches at 4.5 and never see you.`
             : `${rating} stars. This is costing you calls before the phone ever rings.`;
-  checks.push({ label: 'Star rating', passed: rating !== null && rating >= 4.5, detail: starNote, points: 45, earned: stars });
+  checks.push({ label: 'Star rating', passed: rating !== null && rating >= 4.5, detail: starNote, points: 60, earned: stars });
 
   const score = Math.max(0, Math.min(100, volume + stars));
   return {
@@ -263,7 +259,9 @@ export function scoreReviews(input: PresenceInput): Pillar {
         ? 'Your reviews are excellent, and they are the strongest thing you have. The question is whether anything you own is using them.'
         : n >= 25
           ? 'You have enough reviews to be believed. There is room to make them work harder than they currently do.'
-          : 'Reviews are the cheapest trust you can buy and you are leaving them on the table.',
+          : perfect
+            ? 'Every review you have is a great one. What is missing is more of them, and that is the easiest part of this report to fix.'
+            : 'Reviews are the cheapest trust you can buy and you are leaving them on the table.',
     checks,
     unknown: false,
     weight: PILLAR_WEIGHTS.reviews,
