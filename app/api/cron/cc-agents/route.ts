@@ -6,6 +6,8 @@ import { certBody, certsNeedingAttention } from '@/lib/cc-handover';
 import { noticeThings } from '@/lib/cc-noticing';
 import { selfCheck } from '@/lib/cc-selfcheck';
 import { proposeTuning } from '@/lib/cc-tuning';
+import { watchdog } from '@/lib/cc-watchdog';
+import { ran } from '@/lib/cc-ran';
 import { OPEN_STAGES, QUIET_AFTER_DAYS, daysSince, listJobs, type JobRow } from '@/lib/cc-jobs';
 
 export const runtime = 'nodejs';
@@ -78,6 +80,16 @@ export async function GET(req: Request) {
 
   const projects = everyClient().filter((p) => !only || p.clientEmail === only.toLowerCase());
   const report: Array<Record<string, unknown>> = [];
+
+  // The machinery everything else stands on: the queue that writes, and the
+  // crons that run. Once per pass, not once per client, because a stalled
+  // drainer is one problem however many desks it touches.
+  let watching: Awaited<ReturnType<typeof watchdog>> | { checked: string[]; alerted: string[] } = { checked: [], alerted: [] };
+  try {
+    watching = await watchdog(sb);
+  } catch (err) {
+    console.error('cc-agents watchdog failed', err instanceof Error ? err.message : err);
+  }
 
   // Monday, in Mountain time, is when the board gets read. `force` runs it now.
   const weekday = new Date().toLocaleDateString('en-US', { weekday: 'short', timeZone: 'America/Denver' });
@@ -226,5 +238,8 @@ export async function GET(req: Request) {
     report.push(line);
   }
 
-  return NextResponse.json({ ok: true, at: new Date().toISOString(), clients: report });
+  // This one stamps itself too, so the watchdog can notice when the watchdog
+  // stops.
+  await ran(sb, 'cc-agents', { clients: report.length });
+  return NextResponse.json({ ok: true, at: new Date().toISOString(), watching, clients: report });
 }

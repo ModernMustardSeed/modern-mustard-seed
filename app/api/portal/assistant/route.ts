@@ -11,6 +11,7 @@ import { commandCenterContext } from '@/lib/command-center/context';
 import { draftNewMail } from '@/lib/mail-desk';
 import { sendReviewAsk } from '@/lib/reviews';
 import { mintCode } from '@/lib/campaigns';
+import { alertOperatorFailure } from '@/lib/cc-watchdog';
 import { STAGES, createJob, listJobs, logJobEvent, updateJob, type Stage } from '@/lib/cc-jobs';
 import { saveTrade } from '@/lib/cc-trades';
 import { remember } from '@/lib/cc-facts';
@@ -351,6 +352,14 @@ export async function POST(req: Request) {
     });
   } catch (err) {
     console.error('portal assistant error', err);
+    // A client asking a question and getting an apology is invisible to us
+    // unless they mention it, which they mostly will not. Tell Sarah while
+    // they are still sitting there.
+    try {
+      await alertOperatorFailure(getSupabase(), email, project?.business ?? email, err instanceof Error ? `${err.name}: ${err.message}` : String(err));
+    } catch {
+      /* the client's answer matters more than the alert */
+    }
     return NextResponse.json({ reply: 'I hit a snag. Try again, or email sarah@modernmustardseed.com.' });
   }
 }

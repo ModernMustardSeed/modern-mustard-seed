@@ -5,6 +5,7 @@ import { checkAll } from '@/lib/posting/verify';
 import { getSettings } from '@/lib/posting/settings';
 import { put } from '@/lib/cc-briefs';
 import { mountainDate } from '@/lib/posting/time';
+import { alertDeadConnections } from '@/lib/cc-watchdog';
 
 /**
  * THE DESK CHECKS ITSELF.
@@ -125,6 +126,16 @@ export async function selfCheck(sb: SupabaseClient, project: ClientProject): Pro
   }
 
   /* ── raise: a connection that has died ── */
+  // The client is told what it means for them. Sarah is told what to fix, on
+  // the same finding, because a client cannot reconnect a Page token and
+  // should not have to notice.
+  if (checked > 0) {
+    try {
+      await alertDeadConnections(sb, email, project.business, failing);
+    } catch {
+      /* the brief below still reaches the client */
+    }
+  }
   if (failing.length) {
     try {
       const r = await put(sb, email, {
