@@ -11,6 +11,10 @@ import { commandCenterContext } from '@/lib/command-center/context';
 import { draftNewMail } from '@/lib/mail-desk';
 import { sendReviewAsk } from '@/lib/reviews';
 import { mintCode } from '@/lib/campaigns';
+import { STAGES, createJob, listJobs, logJobEvent, updateJob, type Stage } from '@/lib/cc-jobs';
+import { saveTrade } from '@/lib/cc-trades';
+import { remember } from '@/lib/cc-facts';
+import { addDays, mountainDate } from '@/lib/posting/time';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -55,6 +59,12 @@ Actions, only when the context says the Command Center is on, and only when the 
 - {"type":"review_ask","name":"<homeowner name>","email":"<address or empty>","phone":"<mobile or empty>","project":"<which build or empty>","note":"<a personal line or empty>"}: when they ask you to ask someone for a review.
 - {"type":"mark_called","name":"<lead name as it appears in the context>"}: when they say they called or reached a lead who is waiting.
 - {"type":"make_code","label":"<what the sign is>","medium":"sign|jobsite|truck|card|print|ad|mail|other","path":"</page or /projects/<slug> or />"}: when they ask for a QR code.
+- {"type":"add_job","name":"<what to call it>","contactName":"<homeowner or empty>","phone":"<or empty>","email":"<or empty>","town":"<or empty>","value":"<1.4m, 875k, or empty>","stage":"inquiry|talking|visit|design|estimate|contract|building|complete|hold|lost","source":"<how it came in, or empty>"}: when they want a job put on the board. Never guess a value; leave it empty unless they said a number.
+- {"type":"move_job","job":"<the job name as it appears in the context>","stage":"<one of the stages above>"}: when they say a job has moved.
+- {"type":"next_step","job":"<job name>","step":"<the one next thing>","inDays":<0 to 60>}: when they say what they will do next and roughly when.
+- {"type":"log_job","job":"<job name>","kind":"note|call|meeting","body":"<what happened, in their words>"}: when they tell you something happened on a job.
+- {"type":"add_trade","company":"<company>","trade":"<what they do, or empty>","phone":"<or empty>","insuranceExpires":"<YYYY-MM-DD or empty>"}: when they want a sub or supplier on the bench.
+- {"type":"remember","fact":"<one sentence, in their words>","factKind":"rule|preference|about|person","subject":"<who or what it is about, or empty>"}: when they tell you something true about how their business works that you should know next time. Only for a fact they stated. Never for something you inferred, and never for a passing detail about one job.
 Never put an action in the list for something they only asked about. Never say an action happened; the reply is written before the action runs, so say what you are doing ("I am putting a draft to Bob in your drafts now") and the system confirms the result after.
 
 Keep "reply" in your normal voice either way. Do not tell the client you are sending a note unless sendNote is true.`;
@@ -82,6 +92,22 @@ const DECISION_SCHEMA = {
           label: { type: 'string' },
           medium: { type: 'string' },
           path: { type: 'string' },
+          job: { type: 'string' },
+          stage: { type: 'string' },
+          step: { type: 'string' },
+          inDays: { type: 'number' },
+          kind: { type: 'string' },
+          company: { type: 'string' },
+          trade: { type: 'string' },
+          insuranceExpires: { type: 'string' },
+          contactName: { type: 'string' },
+          town: { type: 'string' },
+          value: { type: 'string' },
+          source: { type: 'string' },
+          fact: { type: 'string' },
+          factKind: { type: 'string' },
+          // `subject` is already declared above, for a drafted email's subject
+          // line. A remembered fact reuses it for who the fact is about.
         },
         required: ['type'],
       },
@@ -91,7 +117,34 @@ const DECISION_SCHEMA = {
 };
 
 type ChatMessage = { role: 'user' | 'assistant'; content: string };
-type Action = { type: string; to?: string; subject?: string; body?: string; name?: string; email?: string; phone?: string; project?: string; note?: string; label?: string; medium?: string; path?: string };
+type Action = {
+  type: string;
+  to?: string;
+  subject?: string;
+  body?: string;
+  name?: string;
+  email?: string;
+  phone?: string;
+  project?: string;
+  note?: string;
+  label?: string;
+  medium?: string;
+  path?: string;
+  job?: string;
+  stage?: string;
+  step?: string;
+  inDays?: number;
+  kind?: string;
+  company?: string;
+  trade?: string;
+  insuranceExpires?: string;
+  contactName?: string;
+  town?: string;
+  value?: string;
+  source?: string;
+  fact?: string;
+  factKind?: string;
+};
 
 export async function POST(req: Request) {
   const session = await getClientSession();
@@ -210,6 +263,48 @@ export async function POST(req: Request) {
               await supabase.from('client_lead_events').insert({ client_email: email, lead_id: lead.id, kind: 'called', author_key: null, author_name: `${asker}, through the Operator` });
               done.push(`${lead.name ?? a.name} is marked called and off the Monday list.`);
             } else done.push(`I did not find a waiting lead named ${a.name}.`);
+          } else if (a.type === 'add_job' && a.name) {
+            const r = await createJob(
+              supabase,
+              email,
+              { name: a.name, contact_name: a.contactName, contact_phone: a.phone, contact_email: a.email, town: a.town, value: a.value, stage: a.stage, source: a.source },
+              { key: null, name: `${project.business}, through the Operator` },
+            );
+            done.push(r.ok ? `"${r.job.name}" is on the board at ${r.job.stage}.` : `I could not put that on the board: ${r.error}`);
+          } else if ((a.type === 'move_job' || a.type === 'next_step' || a.type === 'log_job') && a.job) {
+            // The model names a job the way a person does. Match it against
+            // what is actually on the board rather than trusting an id it
+            // never saw.
+            const jobs = await listJobs(supabase, email);
+            const needle = a.job.toLowerCase();
+            const job = jobs.find((j) => j.name.toLowerCase() === needle) ?? jobs.find((j) => j.name.toLowerCase().includes(needle)) ?? jobs.find((j) => (j.contact_name ?? '').toLowerCase().includes(needle));
+            if (!job) {
+              done.push(`I could not find a job called "${a.job}" on the board.`);
+            } else if (a.type === 'move_job') {
+              const stage = (STAGES as readonly string[]).includes(String(a.stage)) ? (a.stage as Stage) : null;
+              if (!stage) done.push(`"${a.stage}" is not a stage on the board.`);
+              else {
+                const r = await updateJob(supabase, email, job.id, { stage }, { key: null, name: `${project.business}, through the Operator` });
+                done.push(r.ok ? `"${job.name}" is at ${stage} now.` : `I could not move "${job.name}": ${r.error}`);
+              }
+            } else if (a.type === 'next_step' && a.step) {
+              const on = addDays(mountainDate(), Math.max(0, Math.min(60, Number(a.inDays ?? 3))));
+              const r = await updateJob(supabase, email, job.id, { next_step: a.step, next_step_on: on }, { key: null, name: `${project.business}, through the Operator` });
+              done.push(r.ok ? `On "${job.name}": ${a.step}, by ${on}.` : `I could not set that on "${job.name}".`);
+            } else if (a.type === 'log_job' && a.body) {
+              const kind = ['note', 'call', 'meeting'].includes(String(a.kind)) ? (a.kind as 'note' | 'call' | 'meeting') : 'note';
+              await logJobEvent(supabase, email, job.id, { kind, body: a.body }, { key: null, name: `${project.business}, through the Operator` });
+              await supabase.from('client_jobs').update({ last_touch_at: new Date().toISOString() }).eq('id', job.id).eq('client_email', email);
+              done.push(`Noted on "${job.name}".`);
+            }
+          } else if (a.type === 'add_trade' && a.company) {
+            const r = await saveTrade(supabase, email, { company: a.company, trade: a.trade, phone: a.phone, insurance_expires: a.insuranceExpires });
+            done.push(r.ok ? `${r.trade.company} is on the bench${r.trade.insurance_expires ? `, insured to ${r.trade.insurance_expires}` : ', with no certificate on file yet'}.` : `I could not add them: ${r.error}`);
+          } else if (a.type === 'remember' && a.fact) {
+            // Only ever a fact they stated. A noticed one is a question, and
+            // questions are raised as briefs, not written into memory here.
+            const r = await remember(supabase, email, { fact: a.fact, kind: a.factKind, subject: a.subject, source: 'said', by: email });
+            done.push(r.ok ? `Remembered: ${r.fact.fact}` : `I could not keep that: ${r.error}`);
           } else if (a.type === 'make_code' && a.label) {
             const medium = ['sign', 'jobsite', 'truck', 'card', 'print', 'ad', 'mail', 'other'].includes(String(a.medium)) ? String(a.medium) : 'sign';
             let path = String(a.path ?? '/').trim() || '/';

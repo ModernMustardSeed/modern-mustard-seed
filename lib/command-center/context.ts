@@ -1,5 +1,8 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { daysUntil } from '@/lib/domains';
+import { OPEN_STAGES, STAGE_LABEL, listJobs, money, riskOf } from '@/lib/cc-jobs';
+import { certState, listTrades } from '@/lib/cc-trades';
+import { factLines, knownFacts } from '@/lib/cc-facts';
 import { buildertrendStatus } from '@/lib/buildertrend';
 import { mailStatus } from '@/lib/mail-desk';
 
@@ -64,5 +67,58 @@ export async function commandCenterContext(sb: SupabaseClient, email: string): P
   const ps = posts.data ?? [];
   if (ps.length) out.push(`Next posts: ${ps.map((p) => `${p.scheduled_for} "${p.headline ?? 'untitled'}" (${p.status})`).join('; ')}.`);
   out.push(bt.connected ? `Buildertrend is connected (builder ${bt.builderId}); website leads are handed to it.` : 'Buildertrend is not connected yet; they paste their Lead Contact Form embed in the Command Center to connect it.');
+
+  // THE BOARD, THE BENCH, AND WHAT THE DESK HAS BEEN TOLD.
+  //
+  // Without these the Operator can answer "who is waiting" and not "what is
+  // in play", which is the difference between a receptionist and somebody who
+  // works here. Each one fails quietly on its own: a room that is not
+  // migrated yet simply says nothing rather than taking the answer down.
+  try {
+    const jobs = await listJobs(sb, email);
+    const open = jobs.filter((j) => OPEN_STAGES.includes(j.stage));
+    if (open.length) {
+      const worth = open.reduce((n, j) => n + (j.value_cents ?? 0), 0);
+      const needing = open.map((j) => ({ j, r: riskOf(j) })).filter((x) => x.r.level !== 'ok');
+      out.push(
+        `On the board: ${open.length} ${open.length === 1 ? 'job' : 'jobs'} in play${worth ? `, about ${money(worth)}` : ''}. ` +
+          open
+            .slice(0, 8)
+            .map((j) => `"${j.name}" at ${STAGE_LABEL[j.stage]}${j.value_cents ? `, ${money(j.value_cents)}` : ''}${j.next_step ? `, next: ${j.next_step}${j.next_step_on ? ` by ${j.next_step_on}` : ''}` : ', no next step'}`)
+            .join('; ') +
+          '.',
+      );
+      if (needing.length) out.push(`Needing a person: ${needing.slice(0, 6).map((x) => `"${x.j.name}" (${x.r.why})`).join('; ')}.`);
+    } else if (jobs.length) {
+      out.push(`On the board: nothing in play. ${jobs.length} ${jobs.length === 1 ? 'job is' : 'jobs are'} signed, building or closed.`);
+    } else {
+      out.push('The board is empty. Jobs go on it from Leads or by hand.');
+    }
+  } catch {
+    /* the board is not migrated here */
+  }
+
+  try {
+    const trades = await listTrades(sb, email);
+    if (trades.length) {
+      const bad = trades.filter((t) => t.active && ['lapsed', 'urgent', 'soon'].includes(certState(t.insurance_expires).level));
+      const none = trades.filter((t) => t.active && !t.insurance_expires).length;
+      out.push(
+        `On the bench: ${trades.length} ${trades.length === 1 ? 'trade' : 'trades'}. ` +
+          (bad.length ? `Certificates needing attention: ${bad.map((t) => `${t.company} (${certState(t.insurance_expires).say.toLowerCase()})`).join('; ')}. ` : 'Every certificate on file is in date. ') +
+          (none ? `${none} have no certificate on file.` : ''),
+      );
+    }
+  } catch {
+    /* the bench is not migrated here */
+  }
+
+  try {
+    const lines = factLines(await knownFacts(sb, email));
+    if (lines.length) out.push(`What this business has told you about itself: ${lines.join('; ')}.`);
+  } catch {
+    /* no memory yet */
+  }
+
   return out;
 }

@@ -4,6 +4,7 @@ import { CLIENT_PROJECTS, type ClientProject } from '@/lib/client-leads';
 import { commandCenterVisible } from '@/lib/command-center/visible';
 import { mondayBoard, put, qualifyLead, quietJob } from '@/lib/cc-briefs';
 import { certBody, certsNeedingAttention } from '@/lib/cc-handover';
+import { noticeThings } from '@/lib/cc-noticing';
 import { OPEN_STAGES, QUIET_AFTER_DAYS, daysSince, listJobs, type JobRow } from '@/lib/cc-jobs';
 
 export const runtime = 'nodejs';
@@ -201,6 +202,13 @@ export async function GET(req: Request) {
         line.monday = await mondayBoard(sb, project);
       } catch (err) {
         line.mondayError = err instanceof Error ? err.message : 'failed';
+      }
+      // And the thing no rule would have found. Weekly, beside the board read,
+      // because a pattern that changes on a Tuesday was never a pattern.
+      try {
+        line.noticed = await noticeThings(sb, project);
+      } catch (err) {
+        line.noticedError = err instanceof Error ? err.message : 'failed';
       }
     }
 

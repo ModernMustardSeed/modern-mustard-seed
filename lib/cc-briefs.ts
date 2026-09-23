@@ -31,7 +31,7 @@ import type { ClientProject } from '@/lib/client-leads';
  *      feels like knowledge.
  */
 
-export type BriefKind = 'qualify' | 'quiet' | 'monday' | 'risk' | 'cert' | 'handover';
+export type BriefKind = 'qualify' | 'quiet' | 'monday' | 'risk' | 'cert' | 'handover' | 'noticed';
 
 export type BriefAction =
   | { kind: 'draft_email'; label: string; to: string; subject: string; body: string }
