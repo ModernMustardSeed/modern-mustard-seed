@@ -166,7 +166,7 @@ export default function SarahScaranoPage() {
           <div className="grid md:grid-cols-[auto_1fr] gap-8 md:gap-12 items-center max-w-4xl mx-auto">
             <div className="justify-self-center md:justify-self-start">
               <div className="relative w-36 h-36 md:w-44 md:h-44 rounded-full overflow-hidden border-2 border-[#161616] shadow-[6px_6px_0_0_#F5B700] bg-[#F5B700]">
-                <Image src="/brand/sarah-avatar.jpg" alt="Sarah Scarano" fill sizes="176px" className="object-cover" priority />
+                <Image src="/brand/sarah-natural.jpg" alt="Sarah Scarano, smiling" fill sizes="176px" className="object-cover" priority />
               </div>
             </div>
             <div className="text-center md:text-left">
