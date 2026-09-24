@@ -7,6 +7,7 @@ import { getSupabase } from '@/lib/supabase';
 import { bookingConfirmationEmail, leadNotification } from '@/lib/email';
 import { randomUUID } from 'node:crypto';
 import { OWNER_NOTIFY_TO } from '@/lib/owner';
+import { noteRepBooking } from '@/lib/rep/booking';
 
 export const runtime = 'nodejs';
 export const maxDuration = 30;
@@ -22,6 +23,7 @@ type Body = {
   current?: string;     // where they are now
   success?: string;     // what success looks like
   timeline?: string;
+  ref?: string;         // outbound_leads.id when the booking link came from the Rep
 };
 
 /**
@@ -71,7 +73,7 @@ export async function POST(req: Request) {
         name,
         email,
         message: summaryLines,
-        notes: `Discovery call (questionnaire) . ${display}${business ? ` . ${business}` : ''}`,
+        notes: `Discovery call (questionnaire) . ${display}${business ? ` . ${business}` : ''}${body.ref ? ` . rep ${String(body.ref).slice(0, 36)}` : ''}`,
         timeline: startIso,
         status: 'booked',
         source: 'mustard-seed-booking',
@@ -81,6 +83,9 @@ export async function POST(req: Request) {
   } catch (err) {
     console.error('book insert failed', err);
   }
+
+  // A booking from a Rep link lands on the prospect's row and stops the chase.
+  const rep = await noteRepBooking(body.ref, { startIso, name, email, business });
 
   // Calendar invites + emails.
   const apiKey = process.env.RESEND_API_KEY;
@@ -119,7 +124,9 @@ export async function POST(req: Request) {
             ...(body.timeline ? [{ label: 'Timeline', value: body.timeline }] : []),
           ],
           message: focus,
-          suggestedAction: 'Calendar invite sent to both of you. Prep notes above.',
+          suggestedAction: rep
+            ? `Booked by the Rep from ${rep.channel}. Prospect: ${rep.business}. Calendar invite sent to both of you.`
+            : 'Calendar invite sent to both of you. Prep notes above.',
         }),
         attachments: [icsAttachment],
       });

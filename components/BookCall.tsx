@@ -18,7 +18,22 @@ export default function BookCall() {
   const [from, setFrom] = useState('');
   const [lastDate, setLastDate] = useState('');
   const [lastDateLabel, setLastDateLabel] = useState('');
-  const [form, setForm] = useState({ name: '', email: '', business: '', focus: '', current: '', success: '', timeline: '', startIso: '' });
+  const [form, setForm] = useState({ name: '', email: '', business: '', focus: '', current: '', success: '', timeline: '', startIso: '', ref: '' });
+
+  // Slots are Mountain Time. A visitor anywhere else also sees their own clock
+  // under each button, so a Tampa roofer never books 9am thinking it is his 9am.
+  const [localZone, setLocalZone] = useState('');
+  useEffect(() => {
+    try {
+      const zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const probe = new Date();
+      const mt = probe.toLocaleString('en-US', { timeZone: 'America/Denver' });
+      const here = probe.toLocaleString('en-US', { timeZone: zone });
+      if (zone && mt !== here) setLocalZone(zone);
+    } catch {
+      /* Mountain labels alone are still correct */
+    }
+  }, []);
 
   /**
    * PREFILL FROM WHEREVER THEY CAME FROM.
@@ -52,8 +67,12 @@ export default function BookCall() {
   // type it twice. Read from location, not useSearchParams, so this page stays
   // prerendered (no Suspense boundary needed).
   useEffect(() => {
-    const idea = new URLSearchParams(window.location.search).get('idea');
+    const q = new URLSearchParams(window.location.search);
+    const idea = q.get('idea');
     if (idea) setForm((f) => (f.focus ? f : { ...f, focus: idea.slice(0, 300) }));
+    // The Rep's links carry the prospect's id so the booking lands on their row.
+    const ref = q.get('r') ?? '';
+    if (/^[0-9a-f-]{36}$/i.test(ref)) setForm((f) => ({ ...f, ref }));
   }, []);
 
   const loadSlots = async (fromDate?: string) => {
@@ -215,6 +234,11 @@ export default function BookCall() {
                             }`}
                           >
                             {s.timeLabel}
+                            {localZone && (
+                              <span className="block mt-0.5 font-mono text-[10px] font-bold text-[#5c554a]">
+                                {new Date(s.startIso).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: localZone, timeZoneName: 'short' })} yours
+                              </span>
+                            )}
                           </button>
                         );
                       })}
