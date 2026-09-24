@@ -91,7 +91,12 @@ export default function OfficeShell() {
           <header className="sticky top-0 z-30 border-b border-[rgba(22,22,22,.12)]" style={{ background: 'rgba(246,243,238,.94)', backdropFilter: 'blur(10px)' }}>
             <div className="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between gap-4">
               <a href="/office" className="flex items-center gap-4 min-w-0">
-                <img src={office.logo} alt={office.business} className="h-12 w-auto" />
+                {/* h-16, not h-12: this mark carries its wordmark in the bottom
+                    third of its viewBox, so 48px tall renders "in montana" as a
+                    smudge. See the note on the rail logo in components/cc/Workspace.tsx.
+                    The light cut belongs here, on the cream header; the white
+                    cut would be invisible. */}
+                <img src={office.logo} alt={office.business} className="h-16 w-auto" />
                 <span className="hidden sm:block">
                   <span className="block text-[10px] uppercase tracking-[0.3em] font-medium" style={{ color: c.accent2 }}>{office.business}</span>
                   <span className="block text-2xl font-semibold leading-none" style={{ fontFamily: '"Cormorant Garamond",Georgia,serif' }}>Command Center</span>
