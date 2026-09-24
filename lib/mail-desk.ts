@@ -4,7 +4,7 @@ import { ImapFlow } from 'imapflow';
 import { simpleParser } from 'mailparser';
 import nodemailer from 'nodemailer';
 import { decryptSecret, encryptSecret } from '@/lib/crypto';
-import { llmEnqueue } from '@/lib/llm';
+import { LlmUnavailable, llmEnqueue, llmText } from '@/lib/llm';
 import type { ClientProject } from '@/lib/client-leads';
 import { possessive } from '@/lib/business-name';
 import { googleAccountEmail, refreshGoogleToken, revokeGoogleToken, type TokenResponse } from '@/lib/oauth-google';
@@ -590,4 +590,59 @@ export async function saveDraft(sb: SupabaseClient, clientEmail: string, mailId:
   }
   await sb.from('client_mail').update({ draft: text.trim(), updated_at: new Date().toISOString() }).eq('id', mailId);
   return { ok: true };
+}
+
+/**
+ * THE REPLY WRITER, on the owner's press.
+ *
+ * `suggest` writes a whole reply to the message. The first press hands back
+ * the draft the sorter already wrote, so it is instant; every press after that
+ * (`again`) writes a new one. `polish` takes whatever the owner typed, rough
+ * notes or a finished paragraph, and turns it into the email: every fact they
+ * wrote stays, nothing is added. Both follow the same rules as the sorter's
+ * drafts: no price, no timeline, no financing, no promised date.
+ *
+ * `attempt` names one press. When the model outlasts the request, the same
+ * attempt pressed again collects the answer that finished in the meantime
+ * instead of starting over.
+ */
+export type WriteMode = 'suggest' | 'polish';
+
+export async function writeReply(
+  sb: SupabaseClient,
+  p: ClientProject,
+  clientEmail: string,
+  mailId: string,
+  mode: WriteMode,
+  opts: { text?: string; again?: boolean; attempt?: string },
+): Promise<{ ok: true; text: string } | { ok: false; pending?: boolean; error: string }> {
+  const { data: m } = await sb.from('client_mail').select('*').eq('id', mailId).eq('client_email', clientEmail).maybeSingle();
+  if (!m) return { ok: false, error: 'That message is gone.' };
+  const typed = (opts.text ?? '').trim();
+  if (mode === 'polish' && !typed) return { ok: false, error: 'Write a line or two first, even rough notes, and this turns it into the email.' };
+  if (mode === 'suggest' && !opts.again && m.draft) return { ok: true, text: String(m.draft) };
+
+  const mailbox = String(m.mailbox ?? clientEmail);
+  const signer = personFor(p, mailbox);
+  const system = `You write email replies for ${p.business}, a luxury custom home builder in Northwest Montana. The owner is Shan; Carmen runs the office; Zayne runs the job sites. This reply leaves from ${mailbox}, ${possessive(signer)} mailbox, in ${possessive(signer)} voice.
+
+Warm, short, plain, first person as the company (we, us). Never quote a price, a price per square foot, a timeline, or financing terms; say Shan will talk those through in person. Never promise a date. Never invent a fact about a project, a person or a schedule. No em dashes. Sign off as ${signer}.
+
+Answer with the reply body only: no subject line, no preamble, no notes to the writer.`;
+  const original = `From: ${m.from_name ?? ''} <${m.from_addr ?? ''}>\nSubject: ${m.subject ?? ''}\nReceived: ${m.received_at}\n\n${String(m.body_text ?? m.snippet ?? '').slice(0, 6000)}`;
+  const user =
+    mode === 'polish'
+      ? `The message they are answering:\n\n${original}\n\n---\n\nWhat ${signer} wants to say, in their own words:\n\n${typed.slice(0, 4000)}\n\nTurn that into the reply. Keep every fact, name, day and time they wrote exactly as they wrote it, and their meaning and tone. Add no fact they did not write. If their words already read well, change little.`
+      : `Write a reply to this message.${typed ? ` ${signer} has started with this; use it as the direction and keep what it says:\n\n${typed.slice(0, 2000)}\n` : ''}\n\n${original}\n\nEnd with a plain next step (a call, a site visit, a time that works).`;
+  const attempt = /^[a-z0-9-]{6,40}$/i.test(opts.attempt ?? '') ? opts.attempt : Date.now().toString(36);
+  try {
+    const out = await llmText({ system, user, label: `mail-write:${mailId}:${mode}:${attempt}`, model: 'sonnet', timeoutMs: 45_000, collectWithinMs: 10 * 60_000 });
+    const text = out.replace(/—/g, ',').replace(/^\s*subject:.*\n+/i, '').trim().slice(0, 4000);
+    if (!text) return { ok: false, error: 'Nothing came back. Press it once more.' };
+    if (mode === 'suggest') await sb.from('client_mail').update({ draft: text, updated_at: new Date().toISOString() }).eq('id', mailId);
+    return { ok: true, text };
+  } catch (err) {
+    if (err instanceof LlmUnavailable) return { ok: false, pending: true, error: 'Still writing. Press it again in a moment and it will be there.' };
+    return { ok: false, error: 'The writer is not answering right now. Your own words are untouched.' };
+  }
 }

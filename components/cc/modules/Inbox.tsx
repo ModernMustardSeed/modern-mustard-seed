@@ -70,6 +70,14 @@ export default function Inbox({ refreshPulse }: { refreshPulse: () => void }) {
   const [connect, setConnect] = useState({ address: '', appPassword: '' });
   const [who, setWho] = useState<string>('all');
   const [adding, setAdding] = useState(false);
+  // The reply writer: which button is working, what the box held before the
+  // writer replaced it (so it can be put back), and one id per press so a
+  // slow answer is collected rather than written twice.
+  const [writing, setWriting] = useState<'suggest' | 'polish' | null>(null);
+  const [prior, setPrior] = useState<string | null>(null);
+  const [suggested, setSuggested] = useState(false);
+  const [attempt, setAttempt] = useState<{ mode: string; id: string } | null>(null);
+  const [writeNote, setWriteNote] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     setError(false);
@@ -125,6 +133,36 @@ export default function Inbox({ refreshPulse }: { refreshPulse: () => void }) {
       setNote('That did not go through.');
     } finally {
       setBusy(false);
+    }
+  };
+
+  const write = async (mode: 'suggest' | 'polish') => {
+    if (!open) return;
+    // Same press again after "still writing" collects that answer; anything else starts a new one.
+    const id = attempt && attempt.mode === mode ? attempt.id : `${mode}-${Date.now().toString(36)}`;
+    setAttempt({ mode, id });
+    setWriting(mode);
+    setWriteNote(null);
+    try {
+      const r = await fetch('/api/portal/mail', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ action: 'write', id: open.id, mode, text: draft, again: mode === 'suggest' && suggested, attempt: id }),
+      });
+      const j = (await r.json()) as { ok?: boolean; text?: string; error?: string; pending?: boolean };
+      if (!r.ok || !j.text) {
+        setWriteNote(j.error ?? 'The writer did not answer. Your words are untouched.');
+        if (!j.pending) setAttempt(null);
+        return;
+      }
+      if (draft.trim()) setPrior(draft);
+      setDraft(j.text);
+      setAttempt(null);
+      if (mode === 'suggest') setSuggested(true);
+    } catch {
+      setWriteNote('The writer did not answer. Your words are untouched.');
+    } finally {
+      setWriting(null);
     }
   };
 
@@ -263,8 +301,13 @@ export default function Inbox({ refreshPulse }: { refreshPulse: () => void }) {
                 <button
                   onClick={() => {
                     setOpen(m);
-                    setDraft(m.draft ?? '');
+                    // A clear box to write in. What was sent stays visible on a replied message.
+                    setDraft(m.status === 'replied' ? (m.draft ?? '') : '');
                     setNote(null);
+                    setPrior(null);
+                    setSuggested(false);
+                    setAttempt(null);
+                    setWriteNote(null);
                   }}
                   className="w-full text-left px-5 py-3.5 hover:bg-[#FAFBFC]"
                 >
@@ -322,8 +365,33 @@ export default function Inbox({ refreshPulse }: { refreshPulse: () => void }) {
             </div>
             <div>
               <Label>Your reply</Label>
-              <textarea className={cx(inputCls, 'mt-1.5 min-h-[180px] resize-y leading-relaxed')} value={draft} onChange={(e) => setDraft(e.target.value)} placeholder="Write, or edit the draft. Nothing sends until you press send." />
-              <p className="mt-1 text-[12px] text-[var(--cc-muted)]">{open.mailbox ? `Sent from ${open.mailbox}, threaded under theirs.` : 'Sent from your own mailbox, as you.'}</p>
+              <div className="mt-1.5 rounded-xl border border-[var(--cc-line)] bg-white focus-within:border-[var(--cc-ink)] transition">
+                <textarea
+                  aria-label="Your reply"
+                  className="block w-full min-h-[240px] resize-y rounded-t-xl bg-transparent px-4 py-3.5 text-[14.5px] leading-relaxed text-[var(--cc-ink)] placeholder:text-[var(--cc-muted)] focus:outline-none"
+                  value={draft}
+                  onChange={(e) => setDraft(e.target.value)}
+                  disabled={Boolean(writing)}
+                  placeholder={'Write your reply here, in your own words.\n\nOr press Suggest a reply and one is written for you to change. Rough notes work too: jot what you want to say, then press Polish what I wrote.'}
+                />
+                <div className="flex flex-wrap items-center gap-2 border-t border-[var(--cc-line)] px-3 py-2.5">
+                  <Button disabled={Boolean(writing) || busy} onClick={() => void write('suggest')}>
+                    <Icon name="spark" /> {writing === 'suggest' ? 'Writing' : suggested ? 'Suggest another' : 'Suggest a reply'}
+                  </Button>
+                  <Button disabled={Boolean(writing) || busy || !draft.trim()} onClick={() => void write('polish')} title={draft.trim() ? undefined : 'Write a line or two first'}>
+                    {writing === 'polish' ? 'Polishing' : 'Polish what I wrote'}
+                  </Button>
+                  {prior !== null && !writing && (
+                    <Button kind="ghost" onClick={() => { setDraft(prior); setPrior(null); }}>Put back what I wrote</Button>
+                  )}
+                  <span className="ml-auto text-[12px] text-[var(--cc-muted)] tabular-nums">{draft.trim() ? `${draft.trim().split(/\s+/).length} words` : ''}</span>
+                </div>
+              </div>
+              {writeNote && <p className="mt-2 text-[13px] text-[var(--cc-muted)]">{writeNote}</p>}
+              {!draft && open.draft && open.status !== 'replied' && !writing && (
+                <p className="mt-2 text-[13px] text-[var(--cc-muted)]">A reply is already written for this one. Press Suggest a reply to see it.</p>
+              )}
+              <p className="mt-2 text-[12px] text-[var(--cc-muted)]">{open.mailbox ? `Sent from ${open.mailbox}, threaded under theirs.` : 'Sent from your own mailbox, as you.'} Nothing sends until you press send.</p>
             </div>
             {note && <p className="text-[13px] text-[#B42318]">{note}</p>}
           </div>
