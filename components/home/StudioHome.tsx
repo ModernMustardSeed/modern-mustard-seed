@@ -38,6 +38,10 @@ function ProjectImage({ name, alt, sizes }: { name: string; alt: string; sizes: 
     <img src={'/images/editorial/' + name + '-1440.jpg'} alt={alt} width={1440} height={900} loading="lazy" decoding="async" />
   </picture>;
 }
+/* A printer's mark between chapters of the page. Decoration only. */
+function PressRule() {
+  return <div className={styles.pressRule} aria-hidden="true"><i /><b /><span /><b /><i /></div>;
+}
 export default function StudioHome({ faq }: { faq: { q: string; a: string }[] }) {
   return <div className={styles.studio} data-design="mms-editorial-2026" data-edition="pop-art-studio">
     <PosterHero />
@@ -46,6 +50,7 @@ export default function StudioHome({ faq }: { faq: { q: string; a: string }[] })
       <div><p className={styles.eyebrow}>Show me mine</p><h2 id="show-mine-heading">Paste your website. <em>We’ll sketch you a new one.</em></h2><p>Free, in your look, within 24 hours, with a free audit of the site, Google profile and reviews you have now. {PREVIEW.short}</p></div>
       <div><ShowMeMine className={styles.showForm} /><Link href="/presence-audit" className={styles.auditOnly}>Just want the audit? Get it free <Arrow /></Link></div>
     </section>
+    <PressRule />
     <section id="selected-work" className={styles.work} aria-labelledby="work-heading">
       <div className={styles.sectionTop}><p className={styles.eyebrow}>01 / Selected Work</p><span>Made here. Out in the world.</span></div>
       <div className={styles.workIntro}><h2 id="work-heading">The work<br />speaks <em>first.</em></h2><div><p>A landscaper in Tallahassee. A homebuilder in Montana. A brand with something to say. Real client work, our own ventures, and studio builds.</p><Link href="/work" className={styles.textLink}>Explore The Portfolio <Arrow /></Link></div></div>
@@ -63,15 +68,18 @@ export default function StudioHome({ faq }: { faq: { q: string; a: string }[] })
         <figcaption>{r.name} <span>· Google review · ★★★★★</span></figcaption>
       </figure>)}</div>
     </section>
+    <PressRule />
     <section id="mustard-tv" className={styles.tvSection} aria-labelledby="tv-heading">
       <div className={styles.tvHead}><p className={styles.eyebrow}>Mustard TV</p><h2 id="tv-heading">Tune in. <em>Get inspired.</em></h2><p>Short films from the studio. Turn the dial.</p></div>
       <MustardTV />
     </section>
     <section className={styles.statement} aria-label="Studio philosophy"><span className={styles.eyebrow}>Good looks are only the beginning.</span><p>Make it <em>beautiful.</em><br />Make it work <span>beautifully.</span></p><div>Design earns the attention. The engineering earns the trust.<br />We build the whole thing.</div></section>
+    <PressRule />
     <section id="practice" className={styles.disciplines} aria-labelledby="disciplines-heading"><div className={styles.disciplineIntro}><p className={styles.eyebrow}>02 / The Practice</p><h2 id="disciplines-heading">Considered<br />from every<br /><em>angle.</em></h2><p>Five disciplines. One person holding the vision from the first conversation to the final detail.</p><Link href="/work-with-us" className={styles.textLink}>How We Work <Arrow /></Link></div><div className={styles.disciplineList}>{disciplines.map((d, i) => <Link href={d.href} className={styles.discipline} key={d.title}><span className={styles.disciplineIndex}>0{i + 1}</span><div><h3>{d.title}</h3><p>{d.text}</p><span className={styles.tags}>{d.tags}</span></div><Arrow /></Link>)}</div></section>
     <section className={styles.founder} aria-labelledby="founder-heading"><div className={styles.founderHeading}><p className={styles.eyebrow}>03 / Personally Built</p><h2 id="founder-heading">A bespoke<br />studio. An<br /><em>invested founder.</em></h2></div><div className={styles.founderBody}><span className={styles.founderInitial}>S.</span><p className={styles.founderLead}>You work directly with the person who designs it. And the person who builds it.</p><p>I’m Sarah Scarano, founder, designer, and engineer. I bring the creative direction and the technical work together, so the thing we imagined is the thing that ships.</p><p>Based in Kalispell, Montana. Building for businesses with ambition, wherever they call home.</p><Link href="/about" className={styles.textLink}>Meet Sarah <Arrow /></Link><div className={styles.ownership}><span>Your idea. Your asset.</span><p>You own the code, the accounts, and the finished work. Changes to what we build are included.</p></div></div></section>
     <section className={styles.concierge} aria-labelledby="mustard-heading"><div className={styles.mascotFrame}><span className={styles.mascotOrbit} aria-hidden="true" /><Image src="/images/editorial/mascot-480.webp" alt="Mr. Mustard, the smiling mustard-seed mascot and studio concierge" width={440} height={590} sizes="(max-width: 760px) 160px, 220px" className={styles.mascot} /><span className={styles.mascotLabel}>A Small Seed With A Real Job.</span></div><div><p className={styles.eyebrow}>A Little Character. A Lot Of Capability.</p><h2 id="mustard-heading">Still Mr. Mustard.<br /><em>Always at your service.</em></h2><p>The name has a story. The little guy has a job. Meet the studio’s agentic concierge, here to answer questions and help you find your next step.</p><Link href="/mustard" className={styles.primary}>Meet Mr. Mustard <Arrow /></Link><a href="tel:+14063121223" className={styles.phone}>Or Call The Studio · (406) 312-1223</a></div></section>
     <section className={styles.faq} aria-labelledby="faq-heading"><div><p className={styles.eyebrow}>Before We Begin</p><h2 id="faq-heading">Good questions.<br /><em>Straight answers.</em></h2></div><div className={styles.faqList}>{faq.map(f => <details key={f.q}><summary>{f.q}<span aria-hidden="true">+</span></summary><p>{f.a}</p></details>)}</div></section>
+    <PressRule />
     <section className={styles.close} aria-labelledby="close-heading"><p className={styles.eyebrow}>The Next Remarkable Thing Starts Somewhere.</p><h2 id="close-heading">Let’s make<br /><em>your mark.</em></h2><Link href="/inquire" className={styles.closeLink}>Begin A Conversation <Arrow /></Link><p>A considered scope. A set package price. Your vision, built.</p></section>
     <section className={styles.proofStrip} aria-label="Studio proof points">
       <div className={styles.proofIntro}><p className={styles.eyebrow}>Proof, in plain sight</p><h2>Worth finding.<br /><em>Easy to trust.</em></h2></div>

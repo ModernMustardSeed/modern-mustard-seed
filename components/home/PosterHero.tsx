@@ -17,7 +17,7 @@ export default function PosterHero() {
       </div>
       <div className={s.posterArt}>
         <div className={s.medallion} aria-hidden="true"><i /><b /></div>
-        <MascotLean className={s.lean} danceClass={s.dance} confettiClass={s.confetti}>{/* eslint-disable-next-line @next/next/no-img-element */}<img src="/brand/mascot-hero-480.webp" srcSet="/brand/mascot-hero-480.webp 480w, /brand/mascot-hero-720.webp 720w" sizes="(max-width: 760px) 320px, 440px" alt="Mr. Mustard, the studio mascot, waving hello" width={720} height={978} className={s.posterMascot} fetchPriority="high" decoding="async" /></MascotLean>
+        <MascotLean className={s.lean} danceClass={s.dance} confettiClass={s.confetti}>{/* eslint-disable-next-line @next/next/no-img-element */}<img src="/brand/mascot-hero-480.avif" srcSet="/brand/mascot-hero-480.avif 480w, /brand/mascot-hero-720.avif 720w" sizes="(max-width: 760px) 320px, 440px" alt="Mr. Mustard, the studio mascot, waving hello" width={720} height={978} className={s.posterMascot} fetchPriority="high" decoding="async" /></MascotLean>
         <HeroTalk bubbleClass={s.posterBubble} panelClass={s.talkPanel} />
         <span className={s.spark + ' ' + s.sparkOne} aria-hidden="true">✦</span>
         <span className={s.spark + ' ' + s.sparkTwo} aria-hidden="true">✦</span>

@@ -1,4 +1,5 @@
 import Link from '@/components/AttributionLink';
+import PressMedallion from '@/components/PressMedallion';
 import { buildMetadata, SITE } from '@/lib/seo';
 import { JsonLd, faqJsonLd, breadcrumbJsonLd, serviceJsonLd } from '@/lib/jsonld';
 
@@ -80,9 +81,10 @@ export default function KingdomPage() {
         ]}
       />
 
-      <section className="relative overflow-hidden border-b-2 border-[#161616] bg-[#F5B700]">
+      <section className="relative overflow-hidden border-b-2 border-[#161616] bg-[#F7DC8A]">
+        <PressMedallion />
         <div aria-hidden="true" className="absolute inset-0 opacity-[0.14] [background-image:radial-gradient(#161616_1.3px,transparent_1.5px)] [background-size:11px_11px] [mask-image:linear-gradient(115deg,transparent_35%,#000_80%)]" />
-        <div className="relative max-w-5xl mx-auto px-6 pt-28 md:pt-36 pb-14 md:pb-20">
+        <div className="relative max-w-6xl mx-auto px-6 pt-28 md:pt-36 pb-14 md:pb-20 xl:pr-[460px]">
           <span className="inline-block -rotate-1 bg-[#161616] text-[#F5B700] px-3 py-1.5 font-sans text-[11px] font-bold uppercase tracking-[0.16em]">
             For the Kingdom · Ministry pricing
           </span>
