@@ -57,4 +57,35 @@ for (const m of missing) {
 if (unused.length) console.log(`note: ${unused.length} route(s) nothing in the browser calls: ${unused.join(', ')}`);
 
 console.log(`${called.size - missing.length} of ${called.size} Command Center endpoints resolve.`);
-process.exit(missing.length ? 1 : 0);
+
+/* ── every cron must be shut to the public ──────────────────
+ *
+ * Added after /api/cron/chat-sync shipped without the guard every other cron
+ * carries. Unauthenticated it answered 200 to anyone: it spends the provider's
+ * rate limit on demand and reports per-client counts to whoever asks. It was a
+ * missing paragraph, not a missing idea, which is exactly the kind of omission
+ * review does not catch and a grep does.
+ *
+ * The rule is the presence of the CRON_SECRET check, not its correctness. A
+ * route that reads the secret and compares it wrong is a different bug; a route
+ * that never looks is this one, and it is the one that keeps happening.
+ */
+const CRON_DIR = path.join(process.cwd(), 'app', 'api', 'cron');
+const unguarded = [];
+if (fs.existsSync(CRON_DIR)) {
+  for (const dir of fs.readdirSync(CRON_DIR)) {
+    const route = path.join(CRON_DIR, dir, 'route.ts');
+    if (!fs.existsSync(route)) continue;
+    const src = fs.readFileSync(route, 'utf8');
+    if (!src.includes('CRON_SECRET')) unguarded.push(dir);
+  }
+}
+for (const d of unguarded) {
+  console.error(`OPEN CRON  /api/cron/${d} does not check CRON_SECRET. Anyone on the internet can run it.`);
+}
+if (!unguarded.length) {
+  const n = fs.existsSync(CRON_DIR) ? fs.readdirSync(CRON_DIR).filter((d) => fs.existsSync(path.join(CRON_DIR, d, 'route.ts'))).length : 0;
+  console.log(`All ${n} cron endpoints check CRON_SECRET.`);
+}
+
+process.exit(missing.length || unguarded.length ? 1 : 0);
