@@ -4,6 +4,7 @@ import { getSupabase } from '@/lib/supabase';
 import { visibleProject } from '@/lib/command-center/visible';
 import { CATEGORIES, collectSorted, connectMailbox, disconnectMailbox, mailStatus, saveDraft, sendReply, syncMailbox, writeReply, type MailRow } from '@/lib/mail-desk';
 import { resendClient } from '@/lib/send-email';
+import { hiddenMailboxes, mailboxFilter, mailboxVisible } from '@/lib/mail-scope';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -21,7 +22,10 @@ export async function GET() {
   const sb = getSupabase();
   const project = sb ? await visibleProject(sb, session.email) : null;
   if (!sb || !project) return NextResponse.json({ mail: null });
-  const status = await mailStatus(sb, session.email);
+  const hidden = await hiddenMailboxes(project);
+  const full = await mailStatus(sb, session.email);
+  // A colleague's own inbox is not listed, not counted, and not offered as a filter.
+  const status = hidden && full.mailboxes ? { ...full, mailboxes: full.mailboxes.filter((b) => mailboxVisible(hidden, b.address)) } : full;
   if (!status.connected) return NextResponse.json({ mail: { status, items: [], counts: {} } });
   try {
     await collectSorted(sb, session.email);
@@ -29,14 +33,15 @@ export async function GET() {
     /* the list still renders */
   }
   const since = new Date(Date.now() - 30 * 86_400_000).toISOString();
-  const { data } = await sb
+  let q = sb
     .from('client_mail')
     .select('id, mailbox, from_addr, from_name, subject, snippet, body_text, received_at, category, summary, needs_reply, draft, status, replied_at')
     .eq('client_email', session.email)
     .gte('received_at', since)
-    .neq('category', 'spam')
-    .order('received_at', { ascending: false })
-    .limit(200);
+    .neq('category', 'spam');
+  const only = mailboxFilter(hidden);
+  if (only) q = q.or(only);
+  const { data } = await q.order('received_at', { ascending: false }).limit(200);
   const items = ((data ?? []) as MailRow[]).map((m) => ({ ...m, body_text: (m.body_text ?? '').slice(0, 4000) }));
   items.sort((a, b) => {
     const ra = a.status === 'new' && a.needs_reply ? 0 : a.status === 'new' ? 1 : 2;
@@ -78,6 +83,9 @@ export async function POST(req: Request) {
   }
   if (action === 'disconnect') {
     // An address takes off that one mailbox; no address takes them all off.
+    // A named person may take off their own or a shared one, never a colleague's, and never all at once.
+    const guard = await hiddenMailboxes(project);
+    if (guard && (!body.address || !mailboxVisible(guard, String(body.address)))) return NextResponse.json({ error: 'Pick the mailbox to take off.' }, { status: 400 });
     await disconnectMailbox(sb, session.email, body.address ? String(body.address) : null);
     return NextResponse.json({ ok: true });
   }
@@ -89,6 +97,12 @@ export async function POST(req: Request) {
 
   const id = String(body.id ?? '');
   if (!/^[0-9a-f-]{36}$/i.test(id)) return NextResponse.json({ error: 'Which message?' }, { status: 400 });
+  // Every act on one message is refused when it sits in a colleague's own inbox.
+  const hidden = await hiddenMailboxes(project);
+  if (hidden) {
+    const { data: row } = await sb.from('client_mail').select('mailbox').eq('id', id).eq('client_email', session.email).maybeSingle();
+    if (!row || !mailboxVisible(hidden, (row as { mailbox: string | null }).mailbox)) return NextResponse.json({ error: 'Which message?' }, { status: 404 });
+  }
   if (action === 'send') {
     const r = await sendReply(sb, session.email, id, String(body.text ?? ''));
     return r.ok ? NextResponse.json({ ok: true }) : NextResponse.json({ error: r.error }, { status: 400 });

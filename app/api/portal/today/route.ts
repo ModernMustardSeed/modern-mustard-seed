@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getClientSession } from '@/lib/client-auth';
 import { getSupabase } from '@/lib/supabase';
 import { visibleProject } from '@/lib/command-center/visible';
+import { hiddenMailboxes, mailboxFilter } from '@/lib/mail-scope';
 import { daysUntil } from '@/lib/domains';
 import { buildertrendStatus } from '@/lib/buildertrend';
 import { mailStatus } from '@/lib/mail-desk';
@@ -30,11 +31,13 @@ export async function GET() {
   const dayAgo = new Date(Date.now() - 86_400_000).toISOString();
   const weekAgo = new Date(Date.now() - 7 * 86_400_000).toISOString();
   const todayIso = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Denver' });
+  const onlyMail = mailboxFilter(await hiddenMailboxes(project));
+  const mailQ = sb.from('client_mail').select('id, from_name, from_addr, subject').eq('client_email', email).eq('status', 'new').eq('needs_reply', true);
 
   const [waiting, newLeads, mailNeed, domains, posts, visits, bt, mail] = await Promise.all([
     sb.from('client_leads').select('name, town, priority, created_at').eq('client_email', email).is('handled_at', null).order('priority', { ascending: true, nullsFirst: false }).order('created_at', { ascending: false }).limit(5),
     sb.from('client_leads').select('id', { count: 'exact', head: true }).eq('client_email', email).gte('created_at', dayAgo),
-    sb.from('client_mail').select('id, from_name, from_addr, subject').eq('client_email', email).eq('status', 'new').eq('needs_reply', true).order('received_at', { ascending: false }).limit(5),
+    (onlyMail ? mailQ.or(onlyMail) : mailQ).order('received_at', { ascending: false }).limit(5),
     sb.from('client_domains').select('domain, expires_on, status').eq('client_email', email),
     sb.from('posting_posts').select('id, scheduled_for, status, headline').eq('client_email', email).eq('scheduled_for', todayIso),
     sb.from('client_visits').select('campaign_code').eq('client_email', email).gte('created_at', weekAgo),
