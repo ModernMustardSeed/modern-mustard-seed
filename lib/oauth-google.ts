@@ -125,9 +125,102 @@ export function authUrl(email: string): string | null {
   return u.toString();
 }
 
+/* ── a mailbox, signed in with Google ───────────────────────────────────── */
+
+/**
+ * The mail desk reads Gmail and Google Workspace over IMAP and sends over SMTP,
+ * exactly as it does every other host. Signing in with Google swaps the app
+ * password for an OAuth token on the same wire (XOAUTH2), so the owner never
+ * makes an app password and every line of the reader stays the one we already
+ * trust. https://mail.google.com/ is the one scope IMAP and SMTP accept.
+ *
+ * Kept apart from GOOGLE_SCOPES on purpose: a mailbox is one person's, the
+ * Business Profile is the company's, and each consent screen asks for one
+ * thing. Its state carries a different shape and a different MAC domain, so a
+ * mailbox state can never pass verifyState and bolt a Business Profile grant
+ * onto an account, or the other way round.
+ */
+export const MAIL_SCOPES = ['openid', 'email', 'https://mail.google.com/'];
+
+/** Where the owner goes back to when Google is done. Two surfaces, nothing else. */
+export type MailBack = 'cc' | 'portal';
+
+function mailMac(payload: string): string {
+  return crypto.createHmac('sha256', stateSecret()).update(`mailbox|${payload}`).digest('base64url');
+}
+
+export function signMailState(email: string, back: MailBack): string {
+  const payload = JSON.stringify({ e: email, b: back, x: Date.now() + 15 * 60 * 1000 });
+  return `m.${Buffer.from(payload).toString('base64url')}.${mailMac(payload)}`;
+}
+
+export function isMailState(state: string | null): boolean {
+  return Boolean(state && state.startsWith('m.'));
+}
+
+export function verifyMailState(state: string): { email: string; back: MailBack } | null {
+  const [tag, body, mac] = (state || '').split('.');
+  if (tag !== 'm' || !body || !mac) return null;
+  let payload: string;
+  try {
+    payload = Buffer.from(body, 'base64url').toString('utf8');
+  } catch {
+    return null;
+  }
+  const a = Buffer.from(mac);
+  const b = Buffer.from(mailMac(payload));
+  if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) return null;
+  try {
+    const v = JSON.parse(payload) as { e?: string; b?: string; x?: number };
+    if (!v.e || !Number.isFinite(v.x) || Date.now() > Number(v.x)) return null;
+    return { email: v.e, back: v.b === 'portal' ? 'portal' : 'cc' };
+  } catch {
+    return null;
+  }
+}
+
+/** Google's consent screen for one mailbox. `hint` preselects the account when the owner typed it. */
+export function mailAuthUrl(email: string, back: MailBack, hint?: string | null): string | null {
+  const cfg = googleConfig();
+  if (!cfg) return null;
+  const u = new URL(AUTH_URL);
+  u.searchParams.set('client_id', cfg.clientId);
+  u.searchParams.set('redirect_uri', redirectUri());
+  u.searchParams.set('response_type', 'code');
+  u.searchParams.set('scope', MAIL_SCOPES.join(' '));
+  u.searchParams.set('access_type', 'offline');
+  // consent every time, for the refresh token; select_account so a person with
+  // a personal and a business Google login picks the right one on purpose.
+  u.searchParams.set('prompt', 'consent select_account');
+  if (hint && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(hint)) u.searchParams.set('login_hint', hint.trim().toLowerCase());
+  u.searchParams.set('state', signMailState(email, back));
+  return u.toString();
+}
+
+/** The address a token belongs to. Null when Google will not say. */
+export async function googleAccountEmail(accessToken: string): Promise<string | null> {
+  try {
+    const res = await fetch(USERINFO_URL, { headers: { Authorization: `Bearer ${accessToken}` }, signal: AbortSignal.timeout(15_000) });
+    if (!res.ok) return null;
+    const info = (await res.json()) as { email?: string };
+    return info.email?.toLowerCase().trim() || null;
+  } catch {
+    return null;
+  }
+}
+
+/** Tell Google a grant is over. Best effort: the caller removes its own row either way. */
+export async function revokeGoogleToken(token: string): Promise<void> {
+  try {
+    await fetch(REVOKE_URL, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams({ token }), signal: AbortSignal.timeout(15_000) });
+  } catch {
+    /* best effort */
+  }
+}
+
 /* ── token exchange ───────────────────────────────────────────────────────── */
 
-type TokenResponse = {
+export type TokenResponse = {
   access_token: string;
   refresh_token?: string;
   expires_in?: number;
@@ -164,7 +257,7 @@ export async function exchangeCode(code: string): Promise<TokenResponse | { erro
   });
 }
 
-async function refresh(refreshToken: string): Promise<TokenResponse | { error: string }> {
+export async function refreshGoogleToken(refreshToken: string): Promise<TokenResponse | { error: string }> {
   const cfg = googleConfig();
   if (!cfg) return { error: 'Google is not configured.' };
   return postToken({
@@ -301,7 +394,7 @@ export async function getGoogleAccessToken(sb: SupabaseClient, clientEmail: stri
     return null;
   }
 
-  const next = await refresh(refreshToken);
+  const next = await refreshGoogleToken(refreshToken);
   if ('error' in next) {
     // Google says no. Almost always: the client revoked access. Record it honestly so
     // the portal shows "reconnect" instead of a green check that lies.

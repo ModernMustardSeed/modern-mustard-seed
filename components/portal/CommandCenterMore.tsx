@@ -256,9 +256,17 @@ export function MailCard() {
         <p className="text-[#161616]/65 font-body text-sm mb-4">
           Connect each mailbox once and every one is read twice an hour: new inquiries, customers, subs and suppliers, money, newsletters, notifications. Anything that needs an answer gets a draft in your voice. Nothing is sent, moved or deleted without your click.
         </p>
+        <div className="rounded-xl border-2 border-[#161616]/15 bg-[#FBF6EA] px-4 py-3 mb-3">
+          <p className="font-body text-sm text-[#161616]/80 mb-2">
+            Gmail or Google Workspace: sign in on Google&apos;s own screen and pick the mailbox. No password ever reaches us, and you can cut us off from your Google account at any time.
+          </p>
+          <a href="/api/portal/mail/google?back=portal" className={`${BTN} bg-[#F5B700] inline-flex`}>
+            Sign in with Google
+          </a>
+        </div>
         <div className="rounded-xl border-2 border-[#161616]/15 bg-[#FBF6EA] px-4 py-3">
           <p className="font-body text-sm text-[#161616]/80 mb-2">
-            A mailbox on your own domain: its address and the password set for that mailbox (on Zoho, tick IMAP Access in Settings, Mail Accounts first). A Gmail address: turn on 2-Step Verification, then open Security, App passwords, name it &quot;Mail&quot;, and paste the 16 letters Google shows you. More mailboxes are added in the Command Center.
+            A mailbox on your own domain, hosted on Zoho or Porkbun: its address and the password set for that mailbox (on Zoho, tick IMAP Access in Settings, Mail Accounts first). More mailboxes are added in the Command Center.
           </p>
           <div className="grid sm:grid-cols-2 gap-2">
             <input value={address} onChange={(e) => setAddress(e.target.value)} placeholder="you@yourdomain.com" type="email" autoComplete="off" className={INPUT} />

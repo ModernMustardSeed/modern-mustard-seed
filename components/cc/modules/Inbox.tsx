@@ -28,7 +28,33 @@ type MailItem = {
   draft: string | null;
   status: string;
 };
-type Mailbox = { address: string; host: 'gmail' | 'porkbun' | 'zoho'; connected: boolean; lastSyncAt: string | null; error: string | null };
+type Mailbox = { address: string; host: 'gmail' | 'porkbun' | 'zoho'; google?: boolean; connected: boolean; lastSyncAt: string | null; error: string | null };
+
+/** Google's four-colour G, drawn, so the button reads as Google's at a glance. */
+function GoogleMark() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 48 48" aria-hidden="true" className="shrink-0 rounded-full bg-white p-[1px]">
+      <path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.6 5.4 2.7 13.3l7.9 6.1C12.5 13.6 17.8 9.5 24 9.5z" />
+      <path fill="#4285F4" d="M46.1 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.4c-.5 2.9-2.2 5.3-4.6 7l7.5 5.8c4.4-4 6.8-10 6.8-17.3z" />
+      <path fill="#FBBC05" d="M10.6 28.6c-.5-1.4-.8-3-.8-4.6s.3-3.2.8-4.6l-7.9-6.1C1 16.6 0 20.2 0 24s1 7.4 2.7 10.7l7.9-6.1z" />
+      <path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.8-5.8l-7.5-5.8c-2.1 1.4-4.9 2.3-8.3 2.3-6.2 0-11.5-4.1-13.4-9.9l-7.9 6.1C6.6 42.6 14.6 48 24 48z" />
+    </svg>
+  );
+}
+
+/** A Google mailbox whose grant ended: one press puts it back, on the same account. */
+function SignInAgain({ address }: { address: string }) {
+  return (
+    <Card>
+      <div className="flex flex-wrap items-center gap-3">
+        <p className="min-w-0 flex-1 text-[14px]"><span className="font-semibold">{address}</span> stopped letting us read it. Google needs you to sign in again; nothing waiting in it is lost.</p>
+        <Button kind="primary" href={`/api/portal/mail/google?back=cc&hint=${encodeURIComponent(address)}`}>
+          <GoogleMark /> Sign in again
+        </Button>
+      </div>
+    </Card>
+  );
+}
 type Status = { connected: boolean; address: string | null; lastSyncAt: string | null; error: string | null; mailboxes?: Mailbox[] };
 type Payload = { mail: { status: Status; items: MailItem[]; counts: Record<string, number>; categories?: string[] } | null };
 
@@ -61,6 +87,26 @@ export default function Inbox({ refreshPulse }: { refreshPulse: () => void }) {
   useEffect(() => {
     void load();
   }, [load]);
+
+  // Google hands the owner back with ?mail=...; say what happened once, then tidy the address bar.
+  const [arrived, setArrived] = useState<{ ok: boolean; text: string } | null>(null);
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search);
+    const mail = q.get('mail');
+    if (!mail) return;
+    const address = q.get('address');
+    const why = q.get('why');
+    setArrived(
+      mail === 'connected'
+        ? { ok: true, text: `${address ?? 'The mailbox'} is connected. The first read is sorting now.` }
+        : mail === 'declined'
+          ? { ok: false, text: 'Google was not given the go-ahead, so nothing was connected.' }
+          : mail === 'unconfigured'
+            ? { ok: false, text: 'Google sign-in is not switched on for this desk yet. Use the mailbox password form below for now.' }
+            : { ok: false, text: why ?? 'Google did not finish the sign-in. Try once more.' },
+    );
+    window.history.replaceState(null, '', `${window.location.pathname}${window.location.hash}`);
+  }, []);
 
   const act = async (body: Record<string, unknown>, after?: () => void) => {
     setBusy(true);
@@ -100,44 +146,75 @@ export default function Inbox({ refreshPulse }: { refreshPulse: () => void }) {
     pile === 'needs' ? m.status === 'new' && m.needs_reply : pile === 'new' ? m.status === 'new' : pile === 'done' ? m.status === 'done' : m.status === 'new' && (m.category ?? 'other') === pile.replace('cat:', ''),
   );
 
+  // A Gmail address typed into the password form belongs on the Google button.
+  const typedGoogle = /@(gmail|googlemail)\.com$/i.test(connect.address.trim());
+
   const connectForm = (first: boolean) => (
     <Card>
       <CardHead
         title={first ? 'Connect your mailboxes' : 'Add a mailbox'}
         hint="Every mailbox is read twice an hour, sorted into piles, with a reply drafted in the voice of the person it was sent to. Nothing is ever sent without your click."
       />
-      <ul className="mb-4 space-y-1.5 text-[13.5px] text-[var(--cc-muted)] list-disc pl-5">
-        <li>A mailbox on your own domain: its address and the password set for that mailbox. On Zoho, first tick IMAP Access in Settings, Mail Accounts.</li>
-        <li>A Gmail address: turn on 2-Step Verification, open Security, then App passwords, name it &quot;Mail&quot;, and paste the 16 letters Google shows you.</li>
-        <li>Connect each person&apos;s mailbox once. They all land in this one list.</li>
-      </ul>
-      <div className="grid sm:grid-cols-2 gap-3">
-        <Field label="Address"><input className={inputCls} value={connect.address} onChange={(e) => setConnect({ ...connect, address: e.target.value })} placeholder="you@yourdomain.com" autoComplete="off" /></Field>
-        <Field label="Password" hint="Kept encrypted. Change it and we are cut off at once."><input className={inputCls} type="password" value={connect.appPassword} onChange={(e) => setConnect({ ...connect, appPassword: e.target.value })} autoComplete="new-password" /></Field>
+      {note && <p className="mb-4 text-[13px] text-[#B42318]">{note}</p>}
+      <div className="rounded-xl border border-[var(--cc-line)] p-4">
+        <p className="text-[14.5px] font-semibold">Gmail or Google Workspace</p>
+        <p className="mt-1 text-[13.5px] text-[var(--cc-muted)]">Sign in on Google&apos;s own screen and pick the mailbox. No password ever reaches us, and you can cut us off from your Google account at any time.</p>
+        <div className="mt-3">
+          <Button kind="primary" href={`/api/portal/mail/google?back=cc${typedGoogle ? `&hint=${encodeURIComponent(connect.address.trim())}` : ''}`}>
+            <GoogleMark /> Sign in with Google
+          </Button>
+        </div>
       </div>
-      {note && <p className="mt-3 text-[13px] text-[#B42318]">{note}</p>}
-      <div className="mt-4 flex flex-wrap gap-2">
-        <Button
-          kind="primary"
-          disabled={busy || !connect.address || !connect.appPassword}
-          onClick={() =>
-            act({ action: 'connect', ...connect }, () => {
-              setConnect({ address: '', appPassword: '' });
-              setAdding(false);
-            })
-          }
-        >
-          {busy ? 'Connecting' : 'Connect the mailbox'}
-        </Button>
-        {!first && <Button kind="ghost" disabled={busy} onClick={() => setAdding(false)}>Not now</Button>}
+      <div className="mt-4 rounded-xl border border-[var(--cc-line)] p-4">
+        <p className="text-[14.5px] font-semibold">A mailbox on your own domain, hosted on Zoho or Porkbun</p>
+        <p className="mt-1 mb-3 text-[13.5px] text-[var(--cc-muted)]">Its address and the password set for that mailbox. On Zoho, first tick IMAP Access in Settings, Mail Accounts.</p>
+        <div className="grid sm:grid-cols-2 gap-3">
+          <Field label="Address"><input className={inputCls} value={connect.address} onChange={(e) => setConnect({ ...connect, address: e.target.value })} placeholder="you@yourdomain.com" autoComplete="off" /></Field>
+          <Field label="Password" hint="Kept encrypted. Change it and we are cut off at once."><input className={inputCls} type="password" value={connect.appPassword} onChange={(e) => setConnect({ ...connect, appPassword: e.target.value })} autoComplete="new-password" /></Field>
+        </div>
+        {typedGoogle && <p className="mt-3 text-[13px] text-[var(--cc-muted)]">That is a Gmail address. Use Sign in with Google above; it opens on {connect.address.trim()}.</p>}
+        <div className="mt-4 flex flex-wrap gap-2">
+          <Button
+            disabled={busy || typedGoogle || !connect.address || !connect.appPassword}
+            onClick={() =>
+              act({ action: 'connect', ...connect }, () => {
+                setConnect({ address: '', appPassword: '' });
+                setAdding(false);
+              })
+            }
+          >
+            {busy ? 'Connecting' : 'Connect the mailbox'}
+          </Button>
+        </div>
       </div>
+      <p className="mt-4 text-[13px] text-[var(--cc-muted)]">Connect each person&apos;s mailbox once. They all land in this one list.</p>
+      {!first && <div className="mt-3"><Button kind="ghost" disabled={busy} onClick={() => setAdding(false)}>Not now</Button></div>}
     </Card>
   );
 
-  if (loaded && data && !data.status.connected) return connectForm(true);
+  const signedOut = mailboxes.filter((b) => b.google && !b.connected);
+  const heard = arrived && (
+    <p className={cx('text-[13px]', arrived.ok ? 'text-[#067647]' : 'text-[#B42318]')}>{arrived.text}</p>
+  );
+
+  if (loaded && data && !data.status.connected) {
+    return (
+      <div className="space-y-4">
+        {heard}
+        {signedOut.map((b) => (
+          <SignInAgain key={b.address} address={b.address} />
+        ))}
+        {connectForm(true)}
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-5">
+      {heard}
+      {signedOut.map((b) => (
+        <SignInAgain key={b.address} address={b.address} />
+      ))}
       {adding && connectForm(false)}
       {many && (
         <div className="flex flex-wrap items-center gap-2">
@@ -152,7 +229,7 @@ export default function Inbox({ refreshPulse }: { refreshPulse: () => void }) {
           ))}
         </div>
       )}
-      {mailboxes.filter((b) => b.error).map((b) => (
+      {mailboxes.filter((b) => b.error && b.connected).map((b) => (
         <p key={b.address} className="text-[13px] text-[#B42318]">{b.address} could not be read on the last pass: {b.error}</p>
       ))}
       <Card pad={false}>
