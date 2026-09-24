@@ -1,5 +1,4 @@
 import Link from '@/components/AttributionLink';
-import Image from 'next/image';
 import s from './PosterHero.module.css';
 import HeroTalk from './HeroTalk';
 import { MascotLean, Marquee } from './HeroMotion';
@@ -18,7 +17,7 @@ export default function PosterHero() {
       </div>
       <div className={s.posterArt}>
         <div className={s.medallion} aria-hidden="true"><i /><b /></div>
-        <MascotLean className={s.lean} danceClass={s.dance} confettiClass={s.confetti}><Image src="/brand/mascot-full.png" alt="Mr. Mustard, the studio mascot, waving hello" width={876} height={1190} className={s.posterMascot} sizes="(max-width: 760px) 70vw, 34vw" priority /></MascotLean>
+        <MascotLean className={s.lean} danceClass={s.dance} confettiClass={s.confetti}>{/* eslint-disable-next-line @next/next/no-img-element */}<img src="/brand/mascot-hero-480.webp" srcSet="/brand/mascot-hero-480.webp 480w, /brand/mascot-hero-720.webp 720w" sizes="(max-width: 760px) 320px, 440px" alt="Mr. Mustard, the studio mascot, waving hello" width={720} height={978} className={s.posterMascot} fetchPriority="high" decoding="async" /></MascotLean>
         <HeroTalk bubbleClass={s.posterBubble} panelClass={s.talkPanel} />
         <span className={s.spark + ' ' + s.sparkOne} aria-hidden="true">✦</span>
         <span className={s.spark + ' ' + s.sparkTwo} aria-hidden="true">✦</span>
