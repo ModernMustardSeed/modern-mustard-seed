@@ -18,12 +18,90 @@ export const metadata = buildMetadata({
 });
 
 const SERVICES = [
-  { mark: '01', name: 'Social Posting', text: 'Designed posts written in your voice, planned on a calendar, and published to Facebook, Instagram, LinkedIn, and your Google Business Profile.' },
+  { mark: '01', name: 'Social Posting & Video', text: 'Designed posts and short vertical video in your voice, planned on a calendar, and published daily to Facebook, Instagram, TikTok, LinkedIn, and your Google Business Profile. Comments and messages answered.' },
   { mark: '02', name: 'Blog & Article Writing', text: 'Articles that answer the questions your customers are already asking, written to be found on Google and cited by answer engines, and published on your own site.' },
   { mark: '03', name: 'Commercials & Brand Films', text: 'Concept, script, production, and finished cuts for every place it runs, from Mustard Pictures.', href: '/pictures' },
-  { mark: '04', name: 'Ad Campaigns', text: 'Meta and Google campaigns built and managed in your own ad accounts, with the creative and the results in the same conversation.', href: '/pictures' },
+  { mark: '04', name: 'Managed Ads', text: 'Meta and Google campaigns built in your own ad accounts and managed every week. Your spend stays on your card, never marked up, and one report a month tells you what came in.', href: '/pictures' },
   { mark: '05', name: 'Email Newsletters', text: 'A regular letter to your customer list, written, designed, and sent, so the people who already know you keep hearing from you.' },
   { mark: '06', name: 'Google Profile & Reviews', text: 'Posts on your Google Business Profile and a reply to every review, so the first place people look stays current.' },
+];
+
+/**
+ * The ladder, named without numbers. The visible site sells by inquiry since
+ * 2026-09-11 (#251), so the prices live in data/proposal-menu.ts (group
+ * 'Marketing') and reach a buyer in a proposal, never on this page or in its
+ * structured data.
+ */
+const PACKAGES: { chip: string; name: string; fit: string; points: string[]; featured?: boolean }[] = [
+  {
+    chip: 'Social',
+    name: 'Daily Posting',
+    fit: 'You take good photos of the work and want them seen every day.',
+    points: [
+      'A post every day on Facebook, Instagram, Google, and Houzz',
+      'Written for each platform, never one caption pasted four times',
+      'You drop photos and a few words in your portal. That is your whole job',
+      'One blog post a month from the same material',
+    ],
+  },
+  {
+    chip: 'Social',
+    name: 'Social Studio',
+    fit: 'You want the content made for you, and the comments answered.',
+    points: [
+      'Designed posts and short vertical video, made from your photos and clips',
+      'Up to five platforms, TikTok and LinkedIn included',
+      'Comments and messages answered in your voice every business day',
+      'Anyone asking for a quote handed straight to you',
+    ],
+  },
+  {
+    chip: 'Ads',
+    name: 'On Air',
+    fit: 'You want the phone to ring from people who have never heard of you.',
+    points: [
+      'A 30-second commercial produced for your business',
+      'Facebook and Instagram campaigns in your own ad account',
+      'Managed every week: budgets, audiences, tired creative swapped',
+      'Your ad spend stays on your card, never marked up',
+    ],
+  },
+  {
+    chip: 'Ads',
+    name: 'Prime Time',
+    fit: 'You want to be there when someone searches for exactly what you do.',
+    points: [
+      'Everything in On Air, plus Google Search ads',
+      'A landing page with every call and form tracked',
+      'A new commercial every quarter',
+      'Fresh hooks and copy every month',
+    ],
+  },
+  {
+    chip: 'Everything',
+    name: 'The Marketing Department',
+    fit: 'Marketing handled the way a full-time hire would, without the hire.',
+    points: [
+      'Social Studio and Prime Time, run together',
+      'A newsletter to your customers twice a month',
+      'Your Google profile current and every review answered',
+      'Articles on your site, one report across every channel, one strategy call a month',
+    ],
+    featured: true,
+  },
+];
+
+const MONTH = [
+  { n: '30', label: 'posts, one a day, on every platform you are on' },
+  { n: '8', label: 'short vertical videos cut from your own photos and clips' },
+  { n: '1', label: 'calendar you approve before anything goes out' },
+  { n: '1', label: 'plain-English report: what went out and what came in' },
+];
+
+const NEED = [
+  { title: 'Photos and clips', text: 'Shot on your phone on the job. Drop them in your portal as they happen and we handle the edit.' },
+  { title: 'Twenty minutes a month', text: 'One call to plan promos, seasons, and anything new. Everything else runs without you.' },
+  { title: 'Access, in your name', text: 'You add us to your pages and ad accounts as a partner. You stay the owner of every one.' },
 ];
 
 const STEPS = [
@@ -46,8 +124,32 @@ const FAQ = [
     a: 'Yes. Posting, ads, and email all run in accounts you own. We never hold your pages, your ad account, or your customer list.',
   },
   {
+    q: 'Do I approve posts before they go out?',
+    a: 'You approve the month. The calendar lands before the month starts, you mark anything you want changed, and we change it. After that it runs every day without waiting on you.',
+  },
+  {
+    q: 'Do you answer comments and messages?',
+    a: 'On Social Studio and The Marketing Department, yes. Comments and messages are answered in your voice every business day, and anyone asking for a quote or a booking is handed straight to you.',
+  },
+  {
+    q: 'Where does my ad spend go?',
+    a: 'Straight from your card to Meta and Google, inside your own ad account. We never touch it and never mark it up. Our fee is a set monthly package, never a percentage of what you spend.',
+  },
+  {
+    q: 'How much should I spend on ads?',
+    a: 'Most local businesses start at $10 to $20 a day. We set the starting number with you in week one from your average job value, then move it with what the results say.',
+  },
+  {
+    q: 'Can you promise leads?',
+    a: 'No one honest can. We promise the work: real creative made for your business, a person watching the account every week, and a report every month that tells you the truth. When something underperforms, we change the creative.',
+  },
+  {
+    q: 'Is there a contract?',
+    a: 'No. Every marketing package runs month to month. Stop whenever you like and everything we made stays yours.',
+  },
+  {
     q: 'How is marketing priced?',
-    a: 'Every engagement is scoped in one conversation and quoted as a set package price, agreed in writing before work starts. Changes to what we produce are included.',
+    a: 'Every package is a set monthly price, with a one-time setup on the packages that start with a commercial or a template kit. You see the number in writing before anything starts. Changes to what we produce are included.',
   },
 ];
 
@@ -76,15 +178,15 @@ export default function MarketingPage() {
             </span>
           </h1>
           <p className="mt-8 max-w-2xl text-lg md:text-xl font-body font-medium leading-relaxed">
-            Marketing from the same studio that built the site. Social posts, blog articles, commercials, ad campaigns, and email, written in your voice and published on a steady schedule, so the right people keep hearing from you.
+            Marketing from the same studio that built the site. Social posts and short video, managed ads, articles, and email, written in your voice and published on a steady schedule, so the right people keep hearing from you.
           </p>
           <div className="mt-9 flex flex-wrap gap-4">
             <Link href="/inquire" className="inline-flex items-center gap-5 border-2 border-[#161616] bg-[#161616] px-7 py-4 font-sans font-bold text-sm text-[#FBF6EA] shadow-[5px_5px_0_0_#FBF6EA] transition-transform hover:-translate-x-0.5 hover:-translate-y-0.5">
               Tell Us What You Have In Mind <span aria-hidden="true" className="text-[#F5B700] text-lg">↗</span>
             </Link>
-            <Link href="/pictures" className="inline-flex items-center border-2 border-[#161616] bg-[#FBF6EA] px-7 py-4 font-sans font-bold text-sm shadow-[5px_5px_0_0_#161616] transition-transform hover:-translate-y-0.5">
-              See Mustard Pictures
-            </Link>
+            <a href="#packages" className="inline-flex items-center border-2 border-[#161616] bg-[#FBF6EA] px-7 py-4 font-sans font-bold text-sm shadow-[5px_5px_0_0_#161616] transition-transform hover:-translate-y-0.5">
+              See The Packages
+            </a>
           </div>
         </div>
       </section>
@@ -108,6 +210,80 @@ export default function MarketingPage() {
                 ? <Link key={s.name} href={s.href} className={cls + ' transition-transform hover:-translate-y-1'}>{card}</Link>
                 : <div key={s.name} className={cls}>{card}</div>;
             })}
+          </div>
+        </div>
+      </section>
+
+      <section id="packages" className="scroll-mt-20 border-b-2 border-[#161616] bg-[#F3EBD6]">
+        <div className="max-w-6xl mx-auto px-6 py-16 md:py-24">
+          <p className="font-sans text-[11px] uppercase tracking-[0.22em] font-bold text-[#B92417]">The packages</p>
+          <h2 className="mt-3 font-display text-4xl md:text-5xl leading-[1.02] tracking-[-0.03em]">
+            Start with one channel. <em>Grow into all of them.</em>
+          </h2>
+          <p className="mt-5 max-w-2xl font-body text-base text-[#3d382e] leading-relaxed">
+            Every package is a set monthly price, month to month. Tell us where you are and we will name the one that fits in the first conversation.
+          </p>
+          <div className="mt-11 grid gap-7 md:grid-cols-2 lg:grid-cols-3">
+            {PACKAGES.map((p) => (
+              <div
+                key={p.name}
+                className={
+                  'flex flex-col border-2 border-[#161616] p-6 ' +
+                  (p.featured
+                    ? 'bg-[#161616] text-[#FBF6EA] shadow-[6px_6px_0_0_#E0301E] md:col-span-2'
+                    : 'bg-white shadow-[6px_6px_0_0_#161616]')
+                }
+              >
+                <span className={'self-start border px-2 py-1 font-sans text-[10px] font-bold uppercase tracking-[0.16em] ' + (p.featured ? 'border-[#F5B700] text-[#F5B700]' : 'border-[#161616] bg-[#F5B700]')}>
+                  {p.chip}
+                </span>
+                <h3 className="mt-4 font-display text-2xl tracking-[-0.02em]">{p.name}</h3>
+                <p className={'mt-2 font-body text-sm italic leading-relaxed ' + (p.featured ? 'text-[#F7DC8A]' : 'text-[#3d382e]')}>{p.fit}</p>
+                <ul className="mt-5 mb-6 space-y-2.5">
+                  {p.points.map((pt) => (
+                    <li key={pt} className={'flex gap-3 font-body text-sm leading-relaxed ' + (p.featured ? 'text-[#d9d7cc]' : 'text-[#3d382e]')}>
+                      <span aria-hidden="true" className={p.featured ? 'text-[#F5B700]' : 'text-[#B92417]'}>+</span>
+                      <span>{pt}</span>
+                    </li>
+                  ))}
+                </ul>
+                <Link href="/inquire" className={'mt-auto font-sans text-sm font-bold ' + (p.featured ? 'text-[#F5B700]' : 'text-[#B92417]')}>
+                  Ask About {p.name} <span aria-hidden="true">↗</span>
+                </Link>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="border-b-2 border-[#161616]">
+        <div className="max-w-6xl mx-auto px-6 py-16 md:py-24 grid gap-14 lg:grid-cols-2">
+          <div>
+            <p className="font-sans text-[11px] uppercase tracking-[0.22em] font-bold text-[#B92417]">A month on Social Studio</p>
+            <h2 className="mt-3 font-display text-4xl leading-[1.02] tracking-[-0.03em]">What actually goes out.</h2>
+            <dl className="mt-9 grid grid-cols-2 gap-5">
+              {MONTH.map((m) => (
+                <div key={m.label} className="border-2 border-[#161616] bg-white p-5 shadow-[4px_4px_0_0_#161616]">
+                  <dt className="font-display text-5xl leading-none tracking-[-0.04em]">{m.n}</dt>
+                  <dd className="mt-3 font-body text-sm text-[#3d382e] leading-snug">{m.label}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+          <div>
+            <p className="font-sans text-[11px] uppercase tracking-[0.22em] font-bold text-[#B92417]">What we need from you</p>
+            <h2 className="mt-3 font-display text-4xl leading-[1.02] tracking-[-0.03em]">Less than you think.</h2>
+            <ol className="mt-9 space-y-5">
+              {NEED.map((n, i) => (
+                <li key={n.title} className="flex gap-5 border-b-2 border-[#161616]/15 pb-5">
+                  <span className="shrink-0 grid h-9 w-9 place-items-center bg-[#161616] font-sans text-xs font-bold text-[#F5B700]">0{i + 1}</span>
+                  <div>
+                    <h3 className="font-sans text-lg font-bold">{n.title}</h3>
+                    <p className="mt-1 font-body text-sm text-[#3d382e] leading-relaxed">{n.text}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
           </div>
         </div>
       </section>
