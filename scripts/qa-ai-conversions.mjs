@@ -21,14 +21,14 @@ await context.route('**/api/**', async (route) => {
   await route.fulfill({ status: (pathname === '/api/contact' && failContact) || (pathname === '/api/demo-station' && failDemo) ? 500 : 200, contentType: 'application/json', body: JSON.stringify(response) });
 });
 try {
-  await page.goto(`${base}/ai-websites?utm_source=chatgpt&utm_campaign=field-notes`, { referer: 'https://chatgpt.com/', waitUntil: 'networkidle' });
+  await page.goto(`${base}/agentic-websites?utm_source=chatgpt&utm_campaign=field-notes`, { referer: 'https://chatgpt.com/', waitUntil: 'networkidle' });
   assert.equal(await page.evaluate(() => sessionStorage.getItem('mms_acquisition')), null);
   await page.getByRole('button', { name: 'Accept all', exact: true }).click();
   await page.waitForFunction(() => sessionStorage.getItem('mms_acquisition'));
   const source = await page.evaluate(() => JSON.parse(sessionStorage.getItem('mms_acquisition')));
   assert.equal(source.ai_source, 'chatgpt');
   assert.equal(source.ai_source_evidence, 'referrer');
-  assert.equal(source.ai_landing_page, '/ai-websites');
+  assert.equal(source.ai_landing_page, '/agentic-websites');
   const demoLink = page.getByRole('link', { name: 'Build My Free Demo', exact: true }).first();
   assert.ok((await demoLink.getAttribute('href')).includes('utm_source=chatgpt'));
 
@@ -41,7 +41,7 @@ try {
   await page.waitForFunction(() => window.__events.some((e) => e[1] === 'generate_lead'));
   const lead = await page.evaluate(() => window.__events.find((e) => e[1] === 'generate_lead'));
   assert.equal(lead[2].ai_source, 'chatgpt');
-  assert.equal(lead[2].ai_landing_page, '/ai-websites');
+  assert.equal(lead[2].ai_landing_page, '/agentic-websites');
   assert.equal(lead[2].landing_utm_campaign, 'field-notes');
 
   failContact = true;

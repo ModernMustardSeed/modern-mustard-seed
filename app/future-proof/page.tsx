@@ -8,7 +8,7 @@ export const metadata = buildMetadata({
   title: 'AI-Proof Your Business',
   description:
     'Audit, harden, and re-equip an existing business so the next decade is one you own. Defensive AI work for owners with revenue to protect.',
-  path: '/ai-proof',
+  path: '/future-proof',
 });
 
 const phases = [
@@ -58,7 +58,7 @@ export default function AiProofPage() {
         data={[
           breadcrumbJsonLd([
             { name: 'Home', url: '/' },
-            { name: 'AI-Proof Your Business', url: '/ai-proof' },
+            { name: 'AI-Proof Your Business', url: '/future-proof' },
           ]),
           faqJsonLd(faq),
         ]}

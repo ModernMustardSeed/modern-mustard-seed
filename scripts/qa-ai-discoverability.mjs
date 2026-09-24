@@ -33,11 +33,11 @@ await Promise.all(Array.from({ length: 5 }, async () => {
   }
 }));
 for (const agent of ['OAI-SearchBot', 'Googlebot', 'Bingbot', 'Applebot', 'PerplexityBot']) {
-  const response = await fetch(`${base}/ai-websites`, { headers: { 'user-agent': agent } });
+  const response = await fetch(`${base}/agentic-websites`, { headers: { 'user-agent': agent } });
   const body = await response.text();
   report.crawlers.push({ agent, status: response.status, readable: body.includes('AI-native product studio in Kalispell') });
 }
-for (const route of ['/ai-websites/?utm_source=chatgpt', '/ai-websites?utm_source=chatgpt', '/case-studies', '/does-not-exist-ai-qa']) {
+for (const route of ['/agentic-websites/?utm_source=chatgpt', '/agentic-websites?utm_source=chatgpt', '/case-studies', '/does-not-exist-ai-qa']) {
   const response = await fetch(`${base}${route}`, { redirect: 'manual' });
   report.pages.push({ route, status: response.status, redirect: response.headers.get('location') });
 }
@@ -46,7 +46,7 @@ await fs.writeFile(path.join(output, 'http-report.json'), JSON.stringify(report,
 const browser = await chromium.launch({ headless: true });
 const axePackage = (await fs.readdir('node_modules/.pnpm')).find((name) => name.startsWith('axe-core@'));
 const axe = path.resolve(`node_modules/.pnpm/${axePackage}/node_modules/axe-core/axe.min.js`);
-const routes = ['/ai-websites', '/resources', '/blog/ai-readable-website-checklist', '/montana/kalispell', '/about', '/', '/websites', '/talking-website', '/voice-agents', '/contact', '/book', '/demos', '/website-audit'];
+const routes = ['/agentic-websites', '/resources', '/blog/ai-readable-website-checklist', '/montana/kalispell', '/about', '/', '/websites', '/talking-website', '/voice-agents', '/contact', '/book', '/demos', '/website-audit'];
 try {
   for (const width of [320, 390, 1440]) {
     const context = await browser.newContext({ viewport: { width, height: width === 1440 ? 1000 : 844 } });
@@ -72,14 +72,14 @@ try {
       const item = { route, width, overflow, mainCount, h1Count, a11y, errors: errors.splice(0) };
       report.browser.push(item);
       if (overflow || mainCount !== 1 || h1Count !== 1 || item.errors.length) report.issues.push(item);
-      if (['/ai-websites', '/resources', '/blog/ai-readable-website-checklist'].includes(route) && (overflow || mainCount !== 1 || h1Count !== 1 || a11y.length || item.errors.length)) report.issues.push(item);
-      if (['/ai-websites', '/resources', '/montana/kalispell', '/'].includes(route)) await page.screenshot({ path: path.join(output, `${route.replace(/\//g, '-') || 'home'}-${width}.png`), fullPage: route !== '/' });
+      if (['/agentic-websites', '/resources', '/blog/ai-readable-website-checklist'].includes(route) && (overflow || mainCount !== 1 || h1Count !== 1 || a11y.length || item.errors.length)) report.issues.push(item);
+      if (['/agentic-websites', '/resources', '/montana/kalispell', '/'].includes(route)) await page.screenshot({ path: path.join(output, `${route.replace(/\//g, '-') || 'home'}-${width}.png`), fullPage: route !== '/' });
     }
     await context.close();
   }
   const noJS = await browser.newContext({ javaScriptEnabled: false });
   const page = await noJS.newPage();
-  for (const route of ['/', '/ai-websites', '/resources', '/montana/kalispell', '/blog/ai-readable-website-checklist']) {
+  for (const route of ['/', '/agentic-websites', '/resources', '/montana/kalispell', '/blog/ai-readable-website-checklist']) {
     await page.goto(`${base}${route}`);
     assert.ok((await page.locator('main').innerText()).length > 500, `No-JS content: ${route}`);
     assert.ok(await page.getByRole('heading', { level: 1 }).isVisible(), `No-JS H1: ${route}`);

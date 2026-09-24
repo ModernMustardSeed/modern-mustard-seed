@@ -107,7 +107,7 @@ export const packages: Engagement[] = [
     timeline: '8 to 12 weeks',
     priceRange: 'Quoted after a free discovery call',
     cta: 'AI-proof your business',
-    ctaHref: '/ai-proof',
+    ctaHref: '/future-proof',
     ideal: 'Existing operators. Service businesses. Owners ready to lead the shift, not get hit by it.',
   },
   {

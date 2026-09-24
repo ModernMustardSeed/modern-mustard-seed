@@ -317,7 +317,7 @@ const SIGNS = [
   { href: '/work', label: 'The Work', line: 'Case studies with the problem, the build, the stack, and what it does now. Real businesses, running on the web right now.', cta: 'See The Work' },
   { href: '/brand', label: 'Brand And Rebrand', line: 'A mark, a palette, a voice, and every surface it has to live on. Built to be recognised before it is read.', cta: 'See The Studio' },
   { href: '/pictures', label: 'Mustard Pictures', line: 'Commercials, brand films, and social cuts, built from the real product rather than stock.', cta: 'Visit The Studio' },
-  { href: '/ai-native', label: 'AI Native', line: 'Your company running on AI, with your own team operating it. Advisory and build, engaged together.', cta: 'Read The Sign' },
+  { href: '/agentic-native', label: 'AI Native', line: 'Your company running on AI, with your own team operating it. Advisory and build, engaged together.', cta: 'Read The Sign' },
   { href: '/about', label: 'The Studio', line: 'A boutique design and AI studio in Kalispell, Montana, practising four disciplines and shipping all of them.', cta: 'Meet The Studio' },
   { href: '/presence-audit', label: 'The Free Presence Audit', line: 'Most people decide about you before they reach your website. We grade all three, the site, the Google profile and the reviews, and email you the report.', cta: 'Get My Free Audit' },
 ];

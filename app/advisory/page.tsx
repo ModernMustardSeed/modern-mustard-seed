@@ -251,7 +251,7 @@ export default function AdvisoryPage() {
               {
                 h: 'AI Native',
                 d: 'A program with a finish line: every workflow mapped, the first five moved onto AI in accounts you own, your team coached to run it.',
-                href: '/ai-native',
+                href: '/agentic-native',
               },
               {
                 h: 'A build',

@@ -189,7 +189,7 @@ export default function AboutPage() {
 
           {/* ─── CTAs ─── */}
           <p className="mt-12 font-body leading-relaxed text-center">
-            <Link href="/sarahscarano" className="text-[#B92417] underline">Explore Sarah&apos;s portfolio</Link>, read our <Link href="/resources" className="text-[#B92417] underline">technical field notes</Link>, or see how we build <Link href="/ai-websites" className="text-[#B92417] underline">AI-native websites</Link> from our <Link href="/montana/kalispell" className="text-[#B92417] underline">Kalispell studio</Link>.
+            <Link href="/sarahscarano" className="text-[#B92417] underline">Explore Sarah&apos;s portfolio</Link>, read our <Link href="/resources" className="text-[#B92417] underline">technical field notes</Link>, or see how we build <Link href="/agentic-websites" className="text-[#B92417] underline">AI-native websites</Link> from our <Link href="/montana/kalispell" className="text-[#B92417] underline">Kalispell studio</Link>.
           </p>
           <div className="mt-16 grid grid-cols-1 sm:grid-cols-3 gap-4">
             <Link href="/work" className="pop-card p-6 hover:-translate-y-1 transition-transform text-center">

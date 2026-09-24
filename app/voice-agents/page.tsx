@@ -202,7 +202,7 @@ export default function VoiceAgentsPage() {
               <br />
               <span className="text-[#F5B700]">Somebody picks up.</span>
             </h1>
-            <p className="mt-5 font-body text-base leading-relaxed">Designed and built by Modern Mustard Seed, a boutique design and AI studio in Kalispell, Montana, working with clients nationwide. <Link href="/ai-websites" className="underline font-bold">See how our AI websites connect the page and the business.</Link></p>
+            <p className="mt-5 font-body text-base leading-relaxed">Designed and built by Modern Mustard Seed, a boutique design and AI studio in Kalispell, Montana, working with clients nationwide. <Link href="/agentic-websites" className="underline font-bold">See how our AI websites connect the page and the business.</Link></p>
 
             <div className="mt-10 grid lg:grid-cols-12 gap-10 lg:gap-12 items-center pb-4">
               <div className="lg:col-span-6">

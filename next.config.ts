@@ -229,6 +229,11 @@ const config: NextConfig = {
   async redirects() {
     return [
       { source: '/ads', destination: '/pictures', permanent: true },
+      // Agentic, not AI (Sarah, 2026-09-23): the three AI-named pages moved.
+      { source: '/ai-websites', destination: '/agentic-websites', permanent: true },
+      { source: '/ai-native', destination: '/agentic-native', permanent: true },
+      { source: '/ai-native/:path*', destination: '/agentic-native/:path*', permanent: true },
+      { source: '/ai-proof', destination: '/future-proof', permanent: true },
       // Retired navigation URLs still appear in Search Console and old links.
       { source: '/home', destination: '/', permanent: true },
       { source: '/notes', destination: '/blog', permanent: true },

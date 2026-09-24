@@ -3,7 +3,7 @@ import Link from 'next/link';
 /**
  * ThreeDoors. Beat 05: the ways to engage the studio, plus the free Website
  * Audit strip as the no-risk first step. Down to two doors (Sarah, 2026-07-19:
- * the AI-Proof "defend" door came off the homepage; /ai-proof still exists via
+ * the AI-Proof "defend" door came off the homepage; /future-proof still exists via
  * the footer). Gives MUSTARD MODE its homepage billing.
  */
 

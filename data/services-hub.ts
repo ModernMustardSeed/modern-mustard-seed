@@ -38,7 +38,7 @@ export const DEPARTMENTS: Dept[] = [
   { key: 'kingdom', name: 'For the Kingdom', tag: 'Ministry pricing', blurb: 'Curated merch collections with Cross + Covenant, stores, the systems to run it all, and the launch, for ministries and kingdom organizations.', href: '/kingdom', icon: '✝' },
   { key: 'pictures', name: 'Mustard Pictures', tag: 'Films and advertising', blurb: 'Commercials, brand films, and managed Meta and Google campaigns, from one studio.', href: '/pictures', icon: '🎬' },
   { key: 'launch-film', name: 'The Launch Film', tag: 'Cut from your real product', blurb: 'A launch film for your app or product, built from the real screens, scored from scratch, finished in three formats.', href: '/launch-film', icon: '🎞' },
-  { key: 'ai-native', name: 'AI Native', tag: 'Your company on AI', blurb: 'Every workflow mapped, the first five moved onto AI in accounts you own, and your team coached to run it. Eight weeks.', href: '/ai-native', icon: '🧭' },
+  { key: 'ai-native', name: 'AI Native', tag: 'Your company on AI', blurb: 'Every workflow mapped, the first five moved onto AI in accounts you own, and your team coached to run it. Eight weeks.', href: '/agentic-native', icon: '🧭' },
   { key: 'geo', name: 'GEO Desk', tag: 'Found and cited by AI search', blurb: 'Get found and cited by ChatGPT, Perplexity, and Google AI. Graded, then fixed.', href: '/website-audit', icon: '🔎' },
   { key: 'mode', name: 'Mustard Mode', tag: 'Learn with a coach', blurb: 'Learn to run Claude like the studio does. A live AI coach across four tracks.', href: '/mustard-mode', icon: '🎓' },
   // Celebrate re-parked 2026-08-20 (Sarah): see the note in Navbar.tsx.

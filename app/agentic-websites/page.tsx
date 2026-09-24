@@ -4,16 +4,16 @@ import { JsonLd, breadcrumbJsonLd, serviceJsonLd, webPageJsonLd } from '@/lib/js
 import { SITE_RUNGS, DEMO_PRODUCTS, formatUsd } from '@/lib/demo-order';
 
 const description = 'AI-native website design from Kalispell, Montana. Custom websites, shared-brain voice agents and AI search foundations for businesses nationwide.';
-export const metadata = buildMetadata({ title: 'AI Website Design in Montana, Built in Kalispell', description, path: '/ai-websites' });
+export const metadata = buildMetadata({ title: 'AI Website Design in Montana, Built in Kalispell', description, path: '/agentic-websites' });
 const linkStyle = 'font-bold text-[#B92417] underline decoration-2 underline-offset-4';
 
 export default function AIWebsitesPage() {
   return (
     <article className="bg-[#FBF6EA] text-[#161616] pt-28 md:pt-40 pb-20">
       <JsonLd data={[
-        webPageJsonLd({ path: '/ai-websites', name: 'AI Website Design in Montana', description }),
-        serviceJsonLd({ path: '/ai-websites', name: 'AI-native website design and development', description }),
-        breadcrumbJsonLd([{ name: 'Home', url: '/' }, { name: 'AI Websites', url: '/ai-websites' }]),
+        webPageJsonLd({ path: '/agentic-websites', name: 'AI Website Design in Montana', description }),
+        serviceJsonLd({ path: '/agentic-websites', name: 'AI-native website design and development', description }),
+        breadcrumbJsonLd([{ name: 'Home', url: '/' }, { name: 'AI Websites', url: '/agentic-websites' }]),
       ]} />
       <header className="max-w-6xl mx-auto px-6 pb-16">
         <p className="font-mono text-xs tracking-widest uppercase font-bold text-[#C4160B]">Built in Kalispell · Working nationwide</p>

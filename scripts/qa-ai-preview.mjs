@@ -11,7 +11,7 @@ const headers=bypass?{'x-vercel-protection-bypass':bypass}:{};
 const output=process.env.AI_QA_OUT || 'C:/Users/SMSca/artifacts/mms-ai-discoverability';
 await fs.mkdir(output,{recursive:true});
 const checks=[];
-for(const [path,marker] of [['/ai-websites','carry its share.'],['/resources','Field notes for'],['/blog/ai-readable-website-checklist','Sarah Scarano'],['/montana/kalispell','AI website'],['/about','Sarah Scarano'],['/demos','Demo Station'],['/robots.txt','OAI-SearchBot'],['/sitemap.xml','/ai-websites'],['/llms.txt','AI-native product studio']]){
+for(const [path,marker] of [['/agentic-websites','carry its share.'],['/resources','Field notes for'],['/blog/ai-readable-website-checklist','Sarah Scarano'],['/montana/kalispell','AI website'],['/about','Sarah Scarano'],['/demos','Demo Station'],['/robots.txt','OAI-SearchBot'],['/sitemap.xml','/agentic-websites'],['/llms.txt','AI-native product studio']]){
  const response=await fetch(base+path,{headers,redirect:'manual'});
  const html=await response.text();
  assert.equal(response.status,200,path);
@@ -36,7 +36,7 @@ try{
   if(bypass)await page.route('**/*',route=>new URL(route.request().url()).origin===origin
    ?route.continue({headers:{...route.request().headers(),...headers}}):route.continue());
   const errors=[];page.on('pageerror',e=>errors.push(e.message));
-  for(const path of ['/ai-websites','/resources','/talking-website']){
+  for(const path of ['/agentic-websites','/resources','/talking-website']){
    errors.length=0;
    await page.goto(base+path,{waitUntil:'networkidle'});
    const consent=page.getByRole('button',{name:'Essential only',exact:true});if(await consent.isVisible())await consent.click();

@@ -107,7 +107,7 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
             ? 'A Kalispell contractor needs more than a gallery of finished jobs. The website should explain the work, qualify a request by service area and job type, and put the enquiry where the crew can act on it. That is a concrete brief for an AI website and a connected workflow.'
             : `For ${city.name} businesses, we scope the system around the enquiries you actually receive. Booking rules, service boundaries and human follow-up come before adding an AI feature.`}</p>
           <nav aria-label="Website and AI services" className="mt-6 flex flex-wrap gap-x-6 gap-y-3 font-bold underline underline-offset-4">
-            <Link href="/ai-websites">How our AI websites work</Link>
+            <Link href="/agentic-websites">How our AI websites work</Link>
             <Link href="/talking-website">The Talking Website</Link>
             <Link href="/voice-agents">AI voice agents</Link>
             <Link href="/services">Automation and custom software</Link>

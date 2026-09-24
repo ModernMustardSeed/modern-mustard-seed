@@ -7,10 +7,10 @@ import ReadForm from '@/components/ai-native/ReadForm';
 export const metadata = buildMetadata({
   title: AI_NATIVE.metaTitle,
   description: AI_NATIVE.metaDescription,
-  path: '/ai-native',
+  path: '/agentic-native',
   // Route-level card. buildMetadata sets openGraph.images, which overrides
   // the file-based opengraph-image convention, so it must be named here.
-  image: '/ai-native/opengraph-image',
+  image: '/agentic-native/opengraph-image',
 });
 
 const PORTFOLIO_PATH = '/sarahscarano';
@@ -52,7 +52,7 @@ export default function AiNativePage() {
         offers: aiNativeTiers.map((t) => ({
           '@type': 'Offer',
           name: `${AI_NATIVE.name} ${t.name}`,
-          url: `${SITE.url}/ai-native#book`,
+          url: `${SITE.url}/agentic-native#book`,
           availability: 'https://schema.org/InStock',
         })),
       },
@@ -240,7 +240,7 @@ export default function AiNativePage() {
                   Idea to Product
                 </Link>
                 {' · '}
-                <Link href="/ai-proof" className="font-bold text-[#161616] underline underline-offset-4">
+                <Link href="/future-proof" className="font-bold text-[#161616] underline underline-offset-4">
                   AI-Proof Your Business
                 </Link>
               </p>

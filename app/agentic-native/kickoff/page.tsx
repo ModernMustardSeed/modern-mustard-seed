@@ -6,7 +6,7 @@ import { AI_NATIVE } from '@/data/ai-native';
 export const metadata = buildMetadata({
   title: 'Booked. The map starts now',
   description: 'Order confirmed. Here is exactly what happens between now and your team running it.',
-  path: '/ai-native/kickoff',
+  path: '/agentic-native/kickoff',
   noindex: true,
 });
 

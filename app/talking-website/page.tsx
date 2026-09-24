@@ -151,7 +151,7 @@ export default function TalkingWebsitePage() {
               <h1 className="font-display text-[2.6rem] sm:text-5xl xl:text-6xl font-bold mt-4 leading-[1.02] tracking-tight">
                 A website that answers its <em className="italic text-[#C4160B]">own phone.</em>
               </h1>
-            <p className="mt-5 font-body text-base leading-relaxed">Designed and built by Modern Mustard Seed, a boutique design and AI studio in Kalispell, Montana, working with clients nationwide. <Link href="/ai-websites" className="underline font-bold">See how our AI websites connect the page and the business.</Link></p>
+            <p className="mt-5 font-body text-base leading-relaxed">Designed and built by Modern Mustard Seed, a boutique design and AI studio in Kalispell, Montana, working with clients nationwide. <Link href="/agentic-websites" className="underline font-bold">See how our AI websites connect the page and the business.</Link></p>
               <p className="font-body text-[17px] text-[#161616]/75 mt-5 leading-relaxed">
                 Not a site with a chat bubble bolted on. Your website and your voice agent, built as one thing off one
                 brain, so the answer a visitor reads at noon is the exact answer a caller hears at midnight. The
