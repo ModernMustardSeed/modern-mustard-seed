@@ -5,6 +5,7 @@ import { displayForIso } from '@/lib/booking';
 import { commandCenterVisible } from '@/lib/command-center/visible';
 import { projectForEmail } from '@/lib/client-leads';
 import { googleReviewUrl as GOOGLE_REVIEW_FALLBACK } from '@/data/socials';
+import { hydrateDesks } from '@/lib/client-desks';
 
 export const runtime = 'nodejs';
 
@@ -15,6 +16,7 @@ export const runtime = 'nodejs';
  * yields an empty section instead of failing the whole portal.
  */
 export async function GET() {
+  await hydrateDesks();
   const session = await getClientSession();
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 

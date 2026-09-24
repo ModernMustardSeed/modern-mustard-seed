@@ -31,6 +31,7 @@ export async function lookingAs(email: string): Promise<boolean> {
 
 /** The project, only when the client may see their Command Center, or Sarah is looking as them. */
 export async function visibleProject(sb: SupabaseClient, email: string): Promise<ClientProject | null> {
+  await (await import('@/lib/client-desks')).hydrateDesks();
   const project = projectForEmail(email);
   if (!project) return null;
   if (await lookingAs(email)) return project;

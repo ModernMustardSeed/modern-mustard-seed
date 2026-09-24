@@ -3,6 +3,7 @@ import { getSupabase } from '@/lib/supabase';
 import { CLIENT_PROJECTS } from '@/lib/client-leads';
 import { daysUntil, refreshDomains } from '@/lib/domains';
 import { resendClient } from '@/lib/send-email';
+import { hydrateDesks } from '@/lib/client-desks';
 
 export const runtime = 'nodejs';
 export const maxDuration = 120;
@@ -15,6 +16,7 @@ export const dynamic = 'force-dynamic';
  * surprise. Quiet weeks send nothing.
  */
 export async function GET(req: Request) {
+  await hydrateDesks();
   const secret = process.env.CRON_SECRET;
   if (secret && !/^\[SENSITIVE\]$/i.test(secret)) {
     const auth = req.headers.get('authorization') ?? '';

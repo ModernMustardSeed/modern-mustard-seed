@@ -19,6 +19,7 @@ import { connectCalendar, disconnectCalendar, calendarStatus } from '@/lib/clien
 import { listContacts, listArchivePosts, tagCounts, contactsCsv } from '@/lib/client-contacts';
 import { mountainDate, addDays, mountainToUtc } from '@/lib/posting/time';
 import { PLATFORMS, type Platform, type PostRow, type MaterialRow, type SettingsRow } from '@/lib/posting/types';
+import { hydrateDesks } from '@/lib/client-desks';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -31,6 +32,7 @@ export const maxDuration = 120;
  * hold, skip, move, attach a graphic, say it again, mark the hand-posts done.
  */
 export async function GET(req: Request) {
+  await hydrateDesks();
   const gate = await requireAcqAdmin();
   if ('error' in gate) return gate.error;
   const { db } = gate;
@@ -114,6 +116,7 @@ export async function GET(req: Request) {
 type Body = { action: string; client?: string } & Record<string, unknown>;
 
 export async function POST(req: Request) {
+  await hydrateDesks();
   const gate = await requireAcqAdmin();
   if ('error' in gate) return gate.error;
   const { db } = gate;

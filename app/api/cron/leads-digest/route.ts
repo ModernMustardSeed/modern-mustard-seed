@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getSupabase } from '@/lib/supabase';
 import { CLIENT_PROJECTS, sendLeadsDigest, type DigestLead } from '@/lib/client-leads';
+import { hydrateDesks } from '@/lib/client-desks';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -13,6 +14,7 @@ export const dynamic = 'force-dynamic';
  * waiting gets nothing, because an empty digest is noise.
  */
 export async function GET(req: Request) {
+  await hydrateDesks();
   const secret = process.env.CRON_SECRET;
   if (secret && !/^\[SENSITIVE\]$/i.test(secret)) {
     const auth = req.headers.get('authorization') ?? '';

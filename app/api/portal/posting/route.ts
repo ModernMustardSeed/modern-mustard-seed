@@ -10,6 +10,7 @@ import { scrub } from '@/lib/posting/captions';
 import { clientGuide } from '@/lib/posting/guide';
 import { mountainDate, addDays } from '@/lib/posting/time';
 import { PLATFORMS, type MaterialRow, type Platform, type PostRow } from '@/lib/posting/types';
+import { hydrateDesks } from '@/lib/client-desks';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -47,6 +48,7 @@ function cleanLink(v: unknown): string | null {
 }
 
 export async function GET() {
+  await hydrateDesks();
   const session = await getClientSession();
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const sb = getSupabase();
@@ -78,6 +80,7 @@ type Body =
   | { action: 'disconnect'; platform: Platform };
 
 export async function POST(req: Request) {
+  await hydrateDesks();
   const session = await getClientSession();
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const sb = getSupabase();

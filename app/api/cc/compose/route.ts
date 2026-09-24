@@ -6,6 +6,7 @@ import { accountViews } from '@/lib/posting/accounts';
 import { projectForEmail } from '@/lib/client-leads';
 import { PLATFORMS, type Captions, type Notes, type Platform } from '@/lib/posting/types';
 import { mountainDate } from '@/lib/posting/time';
+import { hydrateDesks } from '@/lib/client-desks';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -63,6 +64,7 @@ function pickDate(raw: unknown): string | null {
 }
 
 export async function POST(req: Request) {
+  await hydrateDesks();
   const got = await getDesk();
   if (!got.ok) return NextResponse.json({ error: got.error }, { status: got.status });
   const { sb, account, author } = got.desk;

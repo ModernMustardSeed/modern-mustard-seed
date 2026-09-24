@@ -3,6 +3,7 @@ import { getSession } from '@/lib/admin-auth';
 import { getSupabase } from '@/lib/supabase';
 import { CLIENT_PROJECTS } from '@/lib/client-leads';
 import { syncChats } from '@/lib/command-center/chat-store';
+import { hydrateDesks } from '@/lib/client-desks';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -33,6 +34,7 @@ type Row = {
 };
 
 export async function GET(req: Request) {
+  await hydrateDesks();
   const session = await getSession();
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
@@ -101,6 +103,7 @@ export async function GET(req: Request) {
  * predates this record.
  */
 export async function POST(req: Request) {
+  await hydrateDesks();
   const session = await getSession();
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 

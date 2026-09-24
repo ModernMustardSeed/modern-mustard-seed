@@ -5,6 +5,7 @@ import { sendSms, toE164 } from '@/lib/sms';
 import { CLIENT_PROJECTS } from '@/lib/client-leads';
 import { describeSlot, zoneLabel, KINDS, type SlotKind } from '@/lib/client-booking';
 import { SITE } from '@/lib/seo';
+import { hydrateDesks } from '@/lib/client-desks';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -36,6 +37,7 @@ type Row = {
 };
 
 export async function GET(req: Request) {
+  await hydrateDesks();
   const secret = process.env.CRON_SECRET;
   if (secret) {
     const auth = req.headers.get('authorization') ?? '';

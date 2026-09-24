@@ -1,6 +1,7 @@
 import { getSupabase } from '@/lib/supabase';
 import { unsubscribe } from '@/lib/client-mailings';
 import { CLIENT_PROJECTS } from '@/lib/client-leads';
+import { hydrateDesks } from '@/lib/client-desks';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -32,12 +33,14 @@ const businessFor = (clientEmail: string | null) =>
   Object.values(CLIENT_PROJECTS).find((p) => p.clientEmail.toLowerCase() === (clientEmail ?? '').toLowerCase())?.business ?? 'this business';
 
 export async function GET(req: Request) {
+  await hydrateDesks();
   const token = new URL(req.url).searchParams.get('t') ?? '';
   if (!/^[a-f0-9]{32}$/i.test(token)) return page('That link is not complete', 'Open the unsubscribe link from the email again.', null);
   return page('Stop these emails?', 'Press the button and we will not write to this address again.', token);
 }
 
 export async function POST(req: Request) {
+  await hydrateDesks();
   const token = new URL(req.url).searchParams.get('t') ?? '';
   const sb = getSupabase();
   if (!sb) return page('Something went wrong on our side', 'Nothing was changed. Try the link again in a minute.', null);

@@ -9,6 +9,7 @@ import { proposeTuning } from '@/lib/cc-tuning';
 import { watchdog } from '@/lib/cc-watchdog';
 import { ran } from '@/lib/cc-ran';
 import { OPEN_STAGES, QUIET_AFTER_DAYS, daysSince, listJobs, type JobRow } from '@/lib/cc-jobs';
+import { hydrateDesks } from '@/lib/client-desks';
 
 export const runtime = 'nodejs';
 export const maxDuration = 300;
@@ -66,6 +67,7 @@ function everyClient(): ClientProject[] {
 }
 
 export async function GET(req: Request) {
+  await hydrateDesks();
   const secret = process.env.CRON_SECRET;
   if (secret && !/^\[SENSITIVE\]$/i.test(secret)) {
     const auth = req.headers.get('authorization') ?? '';

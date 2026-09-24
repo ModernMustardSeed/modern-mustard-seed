@@ -9,6 +9,7 @@ import { pushLeadToBuildertrend } from '@/lib/buildertrend';
 import { creditLead, isCode } from '@/lib/campaigns';
 import { checkAnswer } from '@/lib/human-check';
 import { chatIdFromToolCall, linkChatToLead } from '@/lib/command-center/chat-store';
+import { hydrateDesks } from '@/lib/client-desks';
 
 export const runtime = 'nodejs';
 export const maxDuration = 30;
@@ -54,6 +55,7 @@ function allowedOrigin(req: Request): string | null {
 }
 
 export async function OPTIONS(req: Request) {
+  await hydrateDesks();
   const origin = allowedOrigin(req);
   if (!origin) return new NextResponse(null, { status: 403 });
   return cors(new NextResponse(null, { status: 204 }), origin);
@@ -78,6 +80,7 @@ function digits(s: string | null): string | null {
 }
 
 export async function POST(req: Request) {
+  await hydrateDesks();
   const origin = allowedOrigin(req);
   let body: Record<string, unknown> = {};
   try {
