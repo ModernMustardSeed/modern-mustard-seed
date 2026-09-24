@@ -27,7 +27,20 @@ export const dynamic = 'force-dynamic';
  * not stop the next client's conversations being written, which is why the loop
  * catches per project rather than around the whole thing.
  */
-export async function GET() {
+export async function GET(req: Request) {
+  // The same guard every other cron in this app carries, and it was missing
+  // here for one deploy. Unauthenticated, this route answered 200 to anyone:
+  // it spends the Vapi rate limit on demand and reports per-client
+  // conversation counts to whoever asked. The placeholder test matters because
+  // a Sensitive var pulled into .env.local arrives as the literal string
+  // "[SENSITIVE]", and treating that as a real secret locks the cron out of
+  // its own endpoint.
+  const secret = process.env.CRON_SECRET;
+  if (secret && !/^\[SENSITIVE\]$/i.test(secret)) {
+    const auth = req.headers.get('authorization') ?? '';
+    if (auth !== `Bearer ${secret}`) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+  }
+
   const sb = getSupabase();
   if (!sb) return NextResponse.json({ ok: false, error: 'no database' }, { status: 503 });
 
