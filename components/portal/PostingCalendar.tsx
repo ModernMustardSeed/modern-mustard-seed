@@ -166,7 +166,7 @@ export default function PostingCalendar() {
                 return <AccountRow key={p} platform={p} account={a} onDisconnect={() => void act({ action: 'disconnect', platform: p })} />;
               })}
             </ul>
-            <p className="font-body text-xs text-[#161616]/50 mt-4">We never get a password. Facebook and Instagram come through the admin access you gave us; Houzz is posted by hand every day.</p>
+            <p className="font-body text-xs text-[#161616]/50 mt-4">We never get a password. Facebook and Instagram come through the admin access you gave us{s.platforms.includes('houzz') ? '; Houzz is posted by hand every day' : ''}.</p>
           </section>
 
           <section className={`${CARD} p-6`}>

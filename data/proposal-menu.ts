@@ -427,9 +427,9 @@ export const SERVICES: Service[] = [
     group: 'Marketing',
     name: 'Daily Posting',
     description:
-      'They drop photos and a few words in their portal. We post every day on Facebook, Instagram, Google Business Profile and Houzz. No setup fee. Sold on its own, never bundled. Pay link: /pay/posting.',
+      'They drop photos and a few words in their portal. We post every day on Facebook, Instagram and Google Business Profile. No setup fee. Sold on its own, never bundled. Pay link: /pay/posting.',
     scope: [
-      'A post every day on Facebook, Instagram, Google Business Profile and Houzz',
+      'A post every day on Facebook, Instagram and Google Business Profile',
       'Written for each platform, not one caption pasted four times',
       'The calendar and every post, live in their portal',
       'One blog post a month from the same material',

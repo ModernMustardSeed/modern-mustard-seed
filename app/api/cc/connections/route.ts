@@ -4,7 +4,7 @@ import { accountViews, connectFacebookByToken, connectXByTokens, disconnectAccou
 import { checkAll, checkOne } from '@/lib/posting/verify';
 import { importFacebookHistory, importInstagramHistory } from '@/lib/posting/import-history';
 import { getSettings } from '@/lib/posting/settings';
-import { PLATFORMS, type Platform } from '@/lib/posting/types';
+import { DEFAULT_PLATFORMS, PLATFORMS, type Platform } from '@/lib/posting/types';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -52,7 +52,7 @@ export async function POST(req: Request) {
     const one = body.platform;
     if (isPlatform(one)) return NextResponse.json({ ok: true, checks: [await checkOne(sb, email, one)] });
     const settings = await getSettings(sb, email).catch(() => null);
-    const platforms = settings?.platforms?.length ? settings.platforms : (PLATFORMS as readonly Platform[]).filter((p) => p !== 'houzz');
+    const platforms = settings?.platforms?.length ? settings.platforms : DEFAULT_PLATFORMS;
     return NextResponse.json({ ok: true, checks: await checkAll(sb, email, [...platforms]) });
   }
 
