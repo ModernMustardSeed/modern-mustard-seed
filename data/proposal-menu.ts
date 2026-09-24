@@ -405,6 +405,263 @@ export const SERVICES: Service[] = [
     unit: 'fixed_from',
     status: 'set',
   },
+  /*
+   * MARKETING. Social posting and ads, the ladder set 2026-09-24. Daily
+   * Posting mirrors data/posting.ts and the two Broadcast tiers mirror
+   * data/ads.ts; those three are live prices and stay 'set'. Social Studio,
+   * the three add-ons, and The Marketing Department are Claude's recommended
+   * rungs until Sarah locks them.
+   *
+   * Ladder check, same rule as lib/demo-order.ts: The Marketing Department
+   * monthly ($1,497) sits above the priciest single (Social Studio, $797) and
+   * below the sum of the paid pieces it replaces ($797 + $597 + $297 + $197 =
+   * $1,888, before the two articles), and its setup ($1,497) sits below the pieces' setups
+   * ($497 + $997 + $297 = $1,791). No path buys more for less. Re-run this
+   * whenever one of these numbers moves.
+   *
+   * Ad spend is never ours: it stays in the client's ad account on the
+   * client's card, never marked up. Daily Posting is never bundled.
+   */
+  {
+    id: 'daily_posting',
+    group: 'Marketing',
+    name: 'Daily Posting',
+    description:
+      'They drop photos and a few words in their portal. We post every day on Facebook, Instagram, Google Business Profile and Houzz. No setup fee. Sold on its own, never bundled. Pay link: /pay/posting.',
+    scope: [
+      'A post every day on Facebook, Instagram, Google Business Profile and Houzz',
+      'Written for each platform, not one caption pasted four times',
+      'The calendar and every post, live in their portal',
+      'One blog post a month from the same material',
+      'Month to month, no setup fee',
+    ],
+    priceMin: 297,
+    priceMax: 297,
+    unit: 'monthly',
+    status: 'set',
+  },
+  {
+    id: 'social_studio_setup',
+    group: 'Marketing',
+    name: 'Social Studio Setup',
+    description: 'The first month of Social Studio: their voice, their look, and their accounts put in order before anything posts.',
+    scope: [
+      'A written voice guide from their site, reviews, and how they talk about the work',
+      'A branded template kit for posts, stories, and video covers',
+      'Every profile audited and cleaned up: bios, links, hours, highlights, cover images',
+      'The first 30-day calendar, approved before it runs',
+    ],
+    priceMin: 497,
+    priceMax: 497,
+    unit: 'fixed',
+    status: 'recommended',
+    requires: 'Sold with the Social Studio monthly',
+  },
+  {
+    id: 'social_studio',
+    group: 'Marketing',
+    name: 'Social Studio',
+    description:
+      'We make the content, not just post it. Designed posts, short vertical video, and the comments and messages answered in their voice.',
+    scope: [
+      'A post every day across up to five platforms: Facebook, Instagram, TikTok, LinkedIn, Google Business Profile',
+      '12 designed posts and 8 short vertical videos a month, cut from their photos and clips',
+      'Comments and messages answered in their voice every business day, hot leads handed straight to them',
+      'A monthly calendar they approve, and a one-page report of what went out and what came in',
+      'A 20-minute planning call each month for promos, seasons, and what is working',
+      'Month to month',
+    ],
+    priceMin: 797,
+    priceMax: 797,
+    unit: 'monthly',
+    status: 'recommended',
+  },
+  {
+    id: 'broadcast_onair_setup',
+    group: 'Marketing',
+    name: 'ON AIR Launch Production',
+    description: 'Their 30-second commercial produced and their Meta campaign built in week one. They approve every frame.',
+    scope: [
+      '30-second cinematic commercial in three cuts: widescreen, Reels, feed',
+      'Facebook and Instagram campaign built in their own ad account',
+      'Pixel, lead forms, and call tracking wired before launch',
+    ],
+    priceMin: 497,
+    priceMax: 497,
+    unit: 'fixed',
+    status: 'set',
+    requires: 'Sold with the ON AIR monthly',
+  },
+  {
+    id: 'broadcast_onair',
+    group: 'Marketing',
+    name: 'Managed Ads: ON AIR',
+    description:
+      'Facebook and Instagram ads managed every week, up to $3,000 a month of spend. Spend stays on their card in their account, never marked up. Checkout: /api/ads/checkout tier ads-onair.',
+    scope: [
+      'Weekly management: budgets, audiences, placements, tired creative swapped',
+      'A monthly plain-English report: what ran, what it cost, what came in',
+      'Manages up to $3,000 a month of ad spend',
+      'Month to month',
+    ],
+    priceMin: 297,
+    priceMax: 297,
+    unit: 'monthly',
+    status: 'set',
+  },
+  {
+    id: 'broadcast_primetime_setup',
+    group: 'Marketing',
+    name: 'PRIME TIME Launch Production',
+    description: 'Commercial, Meta and Google campaigns, and a landing page with call and form tracking, built in the first two weeks.',
+    scope: [
+      '30-second cinematic commercial in three cuts',
+      'Meta and Google Search campaigns built in their own accounts',
+      'A landing page built to convert, with call and form tracking on every lead',
+    ],
+    priceMin: 997,
+    priceMax: 997,
+    unit: 'fixed',
+    status: 'set',
+    requires: 'Sold with the PRIME TIME monthly',
+  },
+  {
+    id: 'broadcast_primetime',
+    group: 'Marketing',
+    name: 'Managed Ads: PRIME TIME',
+    description:
+      'Meta and Google managed every week, up to $10,000 a month of spend, with a new commercial every quarter. Checkout: /api/ads/checkout tier ads-primetime.',
+    scope: [
+      'Everything in ON AIR, plus Google Search ads',
+      'A brand-new commercial every quarter, four a year',
+      'Monthly creative refresh: new hooks, new copy',
+      'Manages up to $10,000 a month of ad spend',
+      'Month to month',
+    ],
+    priceMin: 597,
+    priceMax: 597,
+    unit: 'monthly',
+    status: 'set',
+  },
+  {
+    id: 'ads_custom_engine',
+    group: 'Marketing',
+    name: 'Managed Ads: Custom Engine',
+    description:
+      'For accounts past $10,000 a month of spend, or running more than Meta and Google. A set monthly package quoted to the scope, never a percentage of spend.',
+    scope: [
+      'Every network the scope calls for: Meta, Google, YouTube, TikTok, Nextdoor',
+      'Creative produced every month, not every quarter',
+      'Landing pages and tracking per offer',
+      'A weekly report and a monthly strategy call',
+    ],
+    priceMin: 1497,
+    priceMax: null,
+    unit: 'monthly_from',
+    status: 'recommended',
+  },
+  {
+    id: 'email_newsletter_setup',
+    group: 'Marketing',
+    name: 'Email Newsletter Setup',
+    description: 'Their list imported and cleaned, a branded template, and the sending account set up in their name.',
+    scope: [
+      'Customer list imported, deduplicated, and cleaned',
+      'A branded letter template',
+      'Sending account and domain authentication in their name',
+      'A sign-up form on their site',
+    ],
+    priceMin: 297,
+    priceMax: 297,
+    unit: 'fixed',
+    status: 'recommended',
+    requires: 'Sold with the Email Newsletter monthly',
+  },
+  {
+    id: 'email_newsletter',
+    group: 'Marketing',
+    name: 'Email Newsletter',
+    description: 'Two letters a month to their customer list, written in their voice, designed, and sent.',
+    scope: [
+      'Two letters a month, written, designed, and sent',
+      'Seasonal and promo sends folded into the same two',
+      'Opens, clicks, and replies in the monthly report',
+      'The list stays in their account',
+    ],
+    priceMin: 297,
+    priceMax: 297,
+    unit: 'monthly',
+    status: 'recommended',
+  },
+  {
+    id: 'gbp_reviews',
+    group: 'Marketing',
+    name: 'Google Profile and Reviews',
+    description: 'Their Google Business Profile kept current and every review answered. No setup fee.',
+    scope: [
+      'A Google post every week',
+      'A reply to every review within two business days, in their voice',
+      'Photos, hours, services, and Q&A kept current',
+      'A review request link and card for their crew',
+    ],
+    priceMin: 197,
+    priceMax: 197,
+    unit: 'monthly',
+    status: 'recommended',
+  },
+  {
+    id: 'articles_monthly',
+    group: 'Marketing',
+    name: 'Articles',
+    description:
+      'Four articles a month that answer what their customers already ask, built to rank on Google and be cited by answer engines, published on their own site.',
+    scope: [
+      'Four articles a month, researched and written in their voice',
+      'Structured for Google and answer engines: schema, FAQs, internal links',
+      'Published on their site, cut down into social posts',
+    ],
+    priceMin: 597,
+    priceMax: 597,
+    unit: 'monthly',
+    status: 'recommended',
+  },
+  {
+    id: 'marketing_department_setup',
+    group: 'Marketing',
+    name: 'The Marketing Department Setup',
+    description: 'Every channel set up in the first two weeks: voice, template kit, commercial, campaigns, landing page, list, and profile.',
+    scope: [
+      'Voice guide and branded template kit',
+      '30-second commercial in three cuts',
+      'Meta and Google campaigns and a tracked landing page',
+      'Email list, template, and sending account',
+      'Google profile audited and brought current',
+    ],
+    priceMin: 1497,
+    priceMax: 1497,
+    unit: 'fixed',
+    status: 'recommended',
+    requires: 'Sold with The Marketing Department monthly',
+  },
+  {
+    id: 'marketing_department',
+    group: 'Marketing',
+    name: 'The Marketing Department',
+    description:
+      'Social, ads, email, Google, and articles, run as one department in one voice. Priced below the pieces it replaces.',
+    scope: [
+      'Everything in Social Studio',
+      'Everything in Managed Ads: PRIME TIME, up to $10,000 a month of spend',
+      'Email Newsletter: two letters a month',
+      'Google Profile and Reviews',
+      'Two articles a month on their site',
+      'One monthly report across every channel, and a monthly strategy call',
+    ],
+    priceMin: 1497,
+    priceMax: 1497,
+    unit: 'monthly',
+    status: 'recommended',
+  },
   {
     id: 'funnel_build',
     group: 'Marketing Funnels',
