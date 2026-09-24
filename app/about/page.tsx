@@ -3,9 +3,9 @@ import { JsonLd, aboutPageJsonLd, breadcrumbJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
 
 export const metadata = buildMetadata({
-  title: 'Sarah Scarano and the AI Studio in Kalispell',
+  title: 'Sarah Scarano and the Agentic Studio in Kalispell',
   description:
-    'Meet Sarah Scarano, founder of Modern Mustard Seed, a boutique design and AI studio in Kalispell building websites and brand, custom software, and voice agents for clients nationwide.',
+    'Meet Sarah Scarano, founder of Modern Mustard Seed, a boutique design and agentic systems studio in Kalispell building websites and brand, custom software, and voice agents for clients nationwide.',
   path: '/about',
 });
 
@@ -22,11 +22,11 @@ const STACK = ['Next.js', 'React', 'TypeScript', 'Tailwind', 'Supabase', 'Stripe
 
 // What we make for the businesses we work with.
 const OFFERINGS: { t: string; d: string }[] = [
-  { t: 'AI voice + chat agents', d: 'A 24/7 voice agent that answers the phone and books the job, plus a helper that never lets a lead go cold.' },
+  { t: 'Voice + chat agents', d: 'A 24/7 voice agent that answers the phone and books the job, plus a helper that never lets a lead go cold.' },
   { t: 'Websites that sell', d: 'Not a brochure. A clear offer, real proof, and an obvious next step, live in weeks and yours to keep.' },
-  { t: 'Custom apps + AI tools', d: 'The one clean tool built for exactly how a business runs, instead of five apps held together by a spreadsheet.' },
+  { t: 'Custom apps + agentic tools', d: 'The one clean tool built for exactly how a business runs, instead of five apps held together by a spreadsheet.' },
   { t: 'The Studio', d: 'The departments a working engagement reaches for: Voice Agents, Pictures, the Launch Film, and the GEO Desk.' },
-  { t: 'Mustard Mode', d: 'Rather build it yourself? We coach you to ship with AI, in your own hands, one mission at a time.' },
+  { t: 'Mustard Mode', d: 'Rather build it yourself? We coach you to ship with agentic systems, in your own hands, one mission at a time.' },
 ];
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
@@ -62,17 +62,17 @@ export default function AboutPage() {
               </span>
             </h1>
             <p className="font-body text-lg md:text-xl text-[#3A3733] leading-relaxed max-w-2xl mx-auto">
-              Modern Mustard Seed is a boutique design and AI studio in Kalispell, Montana. We design and build websites and brand, custom software, and voice agents for Northwest Montana and clients nationwide, and we advise operators putting AI into a business that already works.
+              Modern Mustard Seed is a boutique design and agentic systems studio in Kalispell, Montana. We design and build websites and brand, custom software, and voice agents for Northwest Montana and clients nationwide, and we advise operators putting agentic systems to work in a business that already works.
             </p>
           </div>
 
           {/* ─── Who we are ─── */}
           <div className="space-y-5 text-[#3A3733] font-body text-[17px] leading-relaxed max-w-2xl mx-auto">
             <p>
-              Sarah Scarano founded Modern Mustard Seed. She is the engineer and AI systems architect behind the studio, and the person you meet on a discovery call. We design, build and ship products businesses can own and operate.
+              Sarah Scarano founded Modern Mustard Seed. She is the engineer and agentic systems architect behind the studio, and the person you meet on a discovery call. We design, build and ship products businesses can own and operate.
             </p>
             <p>
-              We build the way AI finally made possible. A focused team with a strong stack and a clear point of view can now deliver what used to take a room of ten. That leverage is the entire point. Our clients do not want a strategy deck. They want the thing built, shipped, and working, and they want it to look and feel like it cost far more than it did.
+              We build the way agentic systems finally made possible. A focused team with a strong stack and a clear point of view can now deliver what used to take a room of ten. That leverage is the entire point. Our clients do not want a strategy deck. They want the thing built, shipped, and working, and they want it to look and feel like it cost far more than it did.
             </p>
           </div>
 
@@ -189,7 +189,7 @@ export default function AboutPage() {
 
           {/* ─── CTAs ─── */}
           <p className="mt-12 font-body leading-relaxed text-center">
-            <Link href="/sarahscarano" className="text-[#B92417] underline">Explore Sarah&apos;s portfolio</Link>, read our <Link href="/resources" className="text-[#B92417] underline">technical field notes</Link>, or see how we build <Link href="/ai-websites" className="text-[#B92417] underline">AI-native websites</Link> from our <Link href="/montana/kalispell" className="text-[#B92417] underline">Kalispell studio</Link>.
+            <Link href="/sarahscarano" className="text-[#B92417] underline">Explore Sarah&apos;s portfolio</Link>, read our <Link href="/resources" className="text-[#B92417] underline">technical field notes</Link>, or see how we build <Link href="/agentic-websites" className="text-[#B92417] underline">agentic websites</Link> from our <Link href="/montana/kalispell" className="text-[#B92417] underline">Kalispell studio</Link>.
           </p>
           <div className="mt-16 grid grid-cols-1 sm:grid-cols-3 gap-4">
             <Link href="/work" className="pop-card p-6 hover:-translate-y-1 transition-transform text-center">

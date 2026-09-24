@@ -90,7 +90,7 @@ export async function buildPromptPlaybookPdf(nicheId: NicheId): Promise<Uint8Arr
   const drawFooter = () => {
     const fy = M - 18;
     page.drawRectangle({ x: M, y: fy + 16, width: contentW, height: 1, color: HAIR });
-    const foot = 'modernmustardseed.com  ·  AI agents, sites, and automations shipped in weeks, not months  ·  Book a free call';
+    const foot = 'modernmustardseed.com  ·  Agentic systems, sites, and automations shipped in weeks, not months  ·  Book a free call';
     page.drawText(clean(foot), { x: M, y: fy, size: 8, font: reg, color: MUTED });
     const num = `${pageNo}`;
     const nw = bold.widthOfTextAtSize(num, 8);
@@ -234,10 +234,10 @@ export async function buildPromptPlaybookPdf(nicheId: NicheId): Promise<Uint8Arr
   y -= 6;
   page.drawRectangle({ x: M, y: y - 1, width: contentW, height: 2, color: INK });
   y -= 16;
-  page.drawText('Want AI that works while you sleep?', { x: M, y: y - 13, size: 13, font: bold, color: INK });
+  page.drawText('Want agents that work while you sleep?', { x: M, y: y - 13, size: 13, font: bold, color: INK });
   y -= 26;
   para(
-    'Prompts are step one. Modern Mustard Seed builds the AI voice and chat agents, the automations, and the systems ' +
+    'Prompts are step one. Modern Mustard Seed builds the voice and chat agents, the automations, and the systems ' +
       'that answer, book, and follow up for your business around the clock, shipped in weeks, not months. Book a free call at modernmustardseed.com.',
     { size: 10, color: BODY, gap: 6 },
   );

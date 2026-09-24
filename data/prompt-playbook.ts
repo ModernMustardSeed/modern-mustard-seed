@@ -53,7 +53,7 @@ export const NICHES: Niche[] = [
     id: 'general',
     label: 'Anything / Just curious',
     emoji: '🌱',
-    blurb: 'Never used AI and not sure where it fits yet? Start here. A smart default for any kind of work.',
+    blurb: 'Never used ChatGPT or Claude and not sure where it fits yet? Start here. A smart default for any kind of work.',
     examples: 'Any business, side project, or personal use.',
     vars: {
       role: 'I run a small business',
@@ -67,7 +67,7 @@ export const NICHES: Niche[] = [
     id: 'solopreneur',
     label: 'Solopreneur & Small Business',
     emoji: '💼',
-    blurb: 'One person wearing every hat. AI becomes the teammate you cannot afford to hire yet.',
+    blurb: 'One person wearing every hat. The assistant becomes the teammate you cannot afford to hire yet.',
     examples: 'Freelancers, one-person shops, small local businesses.',
     vars: {
       role: 'I am a solopreneur running my own business',
@@ -187,7 +187,7 @@ export type Category = {
 };
 
 export const CATEGORIES: Category[] = [
-  { id: 'start', title: 'Start here', eyebrow: 'Warm up', blurb: 'Two minutes to go from never having used AI to knowing exactly what to type.' },
+  { id: 'start', title: 'Start here', eyebrow: 'Warm up', blurb: 'Two minutes to go from never having used ChatGPT or Claude to knowing exactly what to type.' },
   { id: 'write', title: 'Write anything, fast', eyebrow: 'Category 1', blurb: 'The emails, replies, and messages you keep putting off, done in a single paste.' },
   { id: 'market', title: 'Marketing and content', eyebrow: 'Category 2', blurb: 'A week of posts, a newsletter, a caption that sells. Your content problem, solved.' },
   { id: 'sell', title: 'Win the customer', eyebrow: 'Category 3', blurb: 'Proposals, objections, and outreach that turn interest into paying work.' },
@@ -213,10 +213,10 @@ export const PROMPTS: PromptItem[] = [
     id: 'first-message',
     category: 'start',
     title: 'Your very first message',
-    what: 'Paste this first. It teaches the AI who you are so every answer after it is written for your business.',
+    what: 'Paste this first. It teaches the assistant who you are so every answer after it is written for your business.',
     build: (v) =>
       `You are my helpful assistant for the day. Here is context to remember for everything I ask: ${v.role}. ${cap(v.business)} mostly serves ${v.audience}, and what we offer is ${v.offer}. When I ask for something, keep it practical, specific, and written in plain, warm language with no jargon and no hype. If you need one more detail to do a great job, ask me before you guess. Ready? Say yes and I will give you my first task.`,
-    tip: 'This gives the AI a memory for the whole chat. You only paste it once, then everything you ask afterward comes back tailored to you.',
+    tip: 'This gives the assistant a memory for the whole chat. You only paste it once, then everything you ask afterward comes back tailored to you.',
   },
 
   // ───────────────────────── Write anything, fast ─────────────────────────
@@ -236,7 +236,7 @@ export const PROMPTS: PromptItem[] = [
     what: 'Paste what they sent, get a calm, professional reply that protects the relationship.',
     build: (v) =>
       `Help me reply to this message. Context: ${v.role}, and this is from ${v.audience}. Here is what they wrote:\n\n"[PASTE THEIR MESSAGE]"\n\nI want to [WHAT YOU WANT: keep them happy / politely say no / fix the problem]. Write a calm, kind, professional reply. Give me a short version and a longer version so I can pick.`,
-    tip: 'Great for refunds, complaints, and awkward asks. You stay in control of the tone, the AI just gets you started.',
+    tip: 'Great for refunds, complaints, and awkward asks. You stay in control of the tone, the assistant just gets you started.',
   },
   {
     id: 'notes-to-polished',

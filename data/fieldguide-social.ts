@@ -143,36 +143,36 @@ Full guide, free: modernmustardseed.com/fieldguide`,
     file: '03-six-words',
     headline: 'The six most useful words you can type.',
     alt: 'Mr. and Mrs. Mustard planting a glowing seed above the lake. Headline: the six most useful words you can type.',
-    fb: `The six most useful words you can type at an AI that writes code:
+    fb: `The six most useful words you can type at an agent that writes code:
 
 "do not write any code yet"
 
 Add them to the end of any request and it stops, reads what you already have, and hands you a plan instead of a pile of files. You read the plan. You say what is wrong with it. Then it builds.
 
-Most bad AI code is not a bad model. It is an approved bad plan, approved by someone who never read the plan.
+Most bad agent-written code is not a bad model. It is an approved bad plan, approved by someone who never read the plan.
 
 Thirty seconds of reading there is the highest-return time in the whole process, and it is the one habit that separates people who like these tools from people who fight them.
 
 Sixteen more prompts like this, free: ${FB_LINK}`,
-    ig: `The six most useful words you can type at an AI that writes code:
+    ig: `The six most useful words you can type at an agent that writes code:
 
 "do not write any code yet"
 
 Put them at the end of any request. It stops, reads what you already have, and hands you a plan instead of a pile of files. You read the plan, you say what is wrong, then it builds.
 
-Most bad AI code is not a bad model. It is an approved bad plan, approved by someone who never read the plan.
+Most bad agent-written code is not a bad model. It is an approved bad plan, approved by someone who never read the plan.
 
 16 more prompts like this, free: modernmustardseed.com/fieldguide
 (link in bio)
 
 #claudecode #aitools #promptengineering #buildinpublic #developer`,
-    x: `The six most useful words you can type at an AI that writes code:
+    x: `The six most useful words you can type at an agent that writes code:
 
 "do not write any code yet"
 
 It stops, reads what exists, and hands you a plan instead of a pile of files.
 
-Most bad AI code is an approved bad plan, approved by someone who never read it.`,
+Most bad agent-written code is an approved bad plan, approved by someone who never read it.`,
   },
   {
     id: 'fg-done',
@@ -185,7 +185,7 @@ Most bad AI code is an approved bad plan, approved by someone who never read it.
 
 Done is not evidence.
 
-An AI will tell you the feature works because it reasoned that it should work, not because it ran it. A green terminal is a claim. So is a confident summary. Neither one is a fact.
+A coding agent will tell you the feature works because it reasoned that it should work, not because it ran it. A green terminal is a claim. So is a confident summary. Neither one is a fact.
 
 The fix is one sentence, every time: "run it and show me the real output."
 
@@ -196,7 +196,7 @@ We keep twelve rules like this one. All twelve, free: ${FB_LINK}`,
 
 Done is not evidence.
 
-An AI will tell you it works because it reasoned that it should work, not because it ran it. A green terminal is a claim. A confident summary is a claim. Neither is a fact.
+A coding agent will tell you it works because it reasoned that it should work, not because it ran it. A green terminal is a claim. A confident summary is a claim. Neither is a fact.
 
 The fix is one sentence: "run it and show me the real output."
 
@@ -210,18 +210,18 @@ All twelve rules, free: modernmustardseed.com/fieldguide
 
 Done is not evidence.
 
-An AI says it works because it reasoned it should, not because it ran it. A green terminal is a claim, not a fact.
+A coding agent says it works because it reasoned it should, not because it ran it. A green terminal is a claim, not a fact.
 
 The fix is one sentence: "run it and show me the real output."`,
   },
   {
     id: 'fg-loop',
     angle: 'The loop',
-    use: 'The method post. Use this one when somebody says they tried an AI coding tool and it made a mess.',
+    use: 'The method post. Use this one when somebody says they tried a coding agent and it made a mess.',
     file: '05-the-loop',
     headline: 'The loop that actually works.',
     alt: 'Flathead Lake from the air with the shore road curving around it. Headline: the loop that actually works.',
-    fb: `If you tried an AI coding tool and it made a mess, you were probably missing the loop. Five steps, in this order:
+    fb: `If you tried a coding agent and it made a mess, you were probably missing the loop. Five steps, in this order:
 
 1. Explore. Have it read the relevant code and explain it back to you first.
 2. Plan. It can think without touching a single file. Read the plan before you approve it.
@@ -232,7 +232,7 @@ The fix is one sentence: "run it and show me the real output."`,
 Almost every bad result comes from jumping straight to three. The loop is not overhead. It is the difference between a tool that ships features and a tool that generates confident wreckage.
 
 The whole thing written out, free: ${FB_LINK}`,
-    ig: `Tried an AI coding tool and it made a mess? You were probably missing the loop.
+    ig: `Tried a coding agent and it made a mess? You were probably missing the loop.
 
 1. Explore. Have it read the code and explain it back first.
 2. Plan. It can think without touching a file. Read the plan before approving it.
@@ -246,7 +246,7 @@ Written out in full, free: modernmustardseed.com/fieldguide
 (link in bio)
 
 #claudecode #ai #buildinpublic #developer #softwaredevelopment`,
-    x: `If an AI coding tool made a mess, you were missing the loop:
+    x: `If a coding agent made a mess, you were missing the loop:
 
 1 Explore. It reads and explains first
 2 Plan. It thinks, touches nothing
@@ -278,7 +278,7 @@ No signup. No email. There is a printable card too, made to be pinned above a de
 
 ${FB_LINK}
 
-And if you read it and decide you would rather someone just built the thing, that is what we do. Call the ranch line at ${PHONE} and Mr. Mustard, our own AI agent, picks up at any hour. Or book thirty minutes and bring nothing but the idea.`,
+And if you read it and decide you would rather someone just built the thing, that is what we do. Call the ranch line at ${PHONE} and Mr. Mustard, our own voice agent, picks up at any hour. Or book thirty minutes and bring nothing but the idea.`,
     ig: `We wrote the guide we wish we had. It is free.
 
 The Claude Code Field Guide, for anyone who wants to build software and has never written any:

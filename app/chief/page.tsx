@@ -33,10 +33,10 @@ function chiefJsonLd() {
     '@graph': [
       {
         '@type': 'Service',
-        name: 'The Chief, a personal AI chief of staff by Modern Mustard Seed',
-        serviceType: 'Personal AI assistant and chief of staff (voice, text, and chat; calendar, email, calls, research, sales coaching, lead generation)',
+        name: 'The Chief, a personal agentic chief of staff by Modern Mustard Seed',
+        serviceType: 'Personal agentic assistant and chief of staff (voice, text, and chat; calendar, email, calls, research, sales coaching, lead generation)',
         description:
-          'A proactive AI chief of staff you call, text, or type to any hour. Trained on your business and your life, he runs your calendar, drafts and sends email, makes calls and books things, researches anything, runs sales role-play, builds your lead list, and delivers a morning briefing with scripture.',
+          'A proactive agentic chief of staff you call, text, or type to any hour. Trained on your business and your life, he runs your calendar, drafts and sends email, makes calls and books things, researches anything, runs sales role-play, builds your lead list, and delivers a morning briefing with scripture.',
         provider: { '@type': 'Organization', name: SITE.name, url: SITE.url },
         areaServed: 'US',
         url: `${SITE.url}/chief`,
@@ -145,7 +145,7 @@ export default function ChiefPage() {
             <span className="font-mono font-bold text-[10px] uppercase tracking-[0.2em] text-[#161616]/55">The Voice Agent</span>
             <h3 className="font-display italic font-extrabold text-2xl mt-2">Answers your customers.</h3>
             <p className="font-body text-[14px] text-[#161616]/70 mt-2.5 leading-relaxed flex-1">
-              An inbound AI front desk. It picks up your phone when the world calls in, books appointments, and takes
+              An inbound agentic front desk. It picks up your phone when the world calls in, books appointments, and takes
               clean messages 24/7.
             </p>
             <Link href="/voice-agents" className="mt-4 font-sans font-bold text-[12px] uppercase tracking-[0.14em] text-[#B92417] hover:underline underline-offset-4">

@@ -5,7 +5,7 @@ import { join } from 'node:path';
 // The MUSTARD LAUNCH share card: the launch console, mission-control themed.
 export const runtime = 'nodejs';
 
-export const alt = 'Mustard Launch. Your AI launch coach, from idea to open. Type your idea and get a personalized launch plan free.';
+export const alt = 'Mustard Launch. Your agentic launch coach, from idea to open. Type your idea and get a personalized launch plan free.';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 

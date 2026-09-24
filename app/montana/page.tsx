@@ -10,8 +10,8 @@ import { MONTANA_CITIES } from '@/data/montana-cities';
  */
 
 export const metadata = buildMetadata({
-  title: 'Montana Website Design and AI Automation',
-  description: 'A Kalispell-based boutique design and AI studio: websites and brand, custom software, voice agents, and advisory for Northwest Montana and clients nationwide.',
+  title: 'Montana Website Design and Agentic Systems',
+  description: 'A Kalispell-based boutique design and agentic systems studio: websites and brand, custom software, voice agents, and advisory for Northwest Montana and clients nationwide.',
   path: '/montana',
 });
 
@@ -62,10 +62,10 @@ export default function MontanaPage() {
             ▲ The Flathead Valley
           </span>
           <h1 className="mt-6 font-display font-extrabold leading-[0.98] tracking-tight text-4xl md:text-5xl lg:text-[3.9rem]">
-            The AI studio in your valley, not in your inbox from three time zones away.
+            The agentic studio in your valley, not in your inbox from three time zones away.
           </h1>
           <p className="mt-6 max-w-2xl text-lg md:text-xl text-[#3d382e] font-body leading-relaxed">
-            Modern Mustard Seed is a boutique design and AI studio based in Kalispell. We design and build websites and brand, custom software, and voice agents for Northwest Montana and clients nationwide. You own everything we build.
+            Modern Mustard Seed is a boutique design and agentic systems studio based in Kalispell. We design and build websites and brand, custom software, and voice agents for Northwest Montana and clients nationwide. You own everything we build.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
@@ -85,10 +85,10 @@ export default function MontanaPage() {
       </section>
 
       <nav aria-label="Explore the studio" className="max-w-6xl mx-auto px-6 py-8 flex flex-wrap gap-6 font-bold text-[#B92417] underline underline-offset-4">
-        <Link href="/ai-websites">AI websites, explained</Link>
+        <Link href="/agentic-websites">Agentic websites, explained</Link>
         <Link href="/montana/kalispell">Our home in Kalispell</Link>
         <Link href="/nationwide">Working with us from outside Montana</Link>
-        <Link href="/resources">The AI search field notes</Link>
+        <Link href="/resources">The answer engine field notes</Link>
         <Link href="/work">What we have built</Link>
         <Link href="/about">Meet Sarah Scarano</Link>
       </nav>

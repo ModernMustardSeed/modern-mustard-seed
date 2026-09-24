@@ -49,7 +49,7 @@ export default function ComicRack() {
           </h2>
           <p className="mt-5 max-w-xl font-body text-base leading-relaxed text-[#3a3733] md:text-lg">
             Our whole catalog, told as a glossy magazine comic: the family yachts, brunches, and premieres
-            while the AI staff answer the phones, build the websites, and run the ads. Every product, every
+            while the agentic staff answer the phones, build the websites, and run the ads. Every product, every
             price, printed in ink. Free to read, dangerously easy to quote.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-4">

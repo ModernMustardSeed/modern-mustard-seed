@@ -24,7 +24,7 @@ const breakerFaq = [
   },
   {
     q: 'What kinds of businesses does it work for?',
-    a: 'Any business with a public website. It is most useful for service businesses, professional firms, retail operators, regional brands, and SaaS or product companies, anyone with operations that AI and good software can compress.',
+    a: 'Any business with a public website. It is most useful for service businesses, professional firms, retail operators, regional brands, and SaaS or product companies, anyone with operations that agentic systems and good software can compress.',
   },
   {
     q: 'What happens after I run it?',

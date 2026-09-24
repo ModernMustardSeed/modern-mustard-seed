@@ -385,7 +385,7 @@ export async function buildSuiteFromCall(
               eyebrow: one ? `YOUR ${PIECE_LABEL[pieces[0]].toUpperCase()}` : 'YOUR DEMOS',
               greeting: `${first}, Mr. Mustard kept his word.`,
               body:
-                `<p>You just talked to our AI, and he fired the build while you were still on the line. You asked for ${one ? 'one thing' : 'these'}, so ${one ? 'that is what we built' : 'that is all we built'}: <strong>${built}</strong>, made for ${business} and nobody else.</p>` +
+                `<p>You just talked to our voice agent, and he fired the build while you were still on the line. You asked for ${one ? 'one thing' : 'these'}, so ${one ? 'that is what we built' : 'that is all we built'}: <strong>${built}</strong>, made for ${business} and nobody else.</p>` +
                 `<p>${timing}</p>` +
                 (queued.length ? `<p><strong>A note on the website:</strong> ${PREVIEW.short}</p>` : '') +
                 demoFilmCard({

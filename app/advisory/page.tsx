@@ -60,12 +60,12 @@ export default function AdvisoryPage() {
               The fourth discipline · Retained by the quarter
             </span>
             <h1 className="mt-7 font-display text-5xl font-extrabold leading-[0.98] tracking-tight md:text-6xl lg:text-[4.4rem]">
-              Almost nobody loses money on AI by picking the{' '}
+              Almost nobody loses money on agentic systems by picking the{' '}
               <em className="italic text-[#B48600]">wrong tool</em>.
             </h1>
             <p className="mt-7 max-w-2xl font-body text-lg leading-relaxed text-[#3d382e] md:text-xl">
               They lose it by building the wrong thing well. Advisory is the seat you hire so that
-              does not happen: retained counsel for operators putting AI into a business that already
+              does not happen: retained counsel for operators putting agentic systems into a business that already
               works. What to build, what to refuse, what to automate, and in what order.
             </p>
             <div className="mt-9 flex flex-wrap gap-3">
@@ -249,9 +249,9 @@ export default function AdvisoryPage() {
                 here: true,
               },
               {
-                h: 'AI Native',
-                d: 'A program with a finish line: every workflow mapped, the first five moved onto AI in accounts you own, your team coached to run it.',
-                href: '/ai-native',
+                h: 'Agentic Native',
+                d: 'A program with a finish line: every workflow mapped, the first five moved onto agentic systems in accounts you own, your team coached to run it.',
+                href: '/agentic-native',
               },
               {
                 h: 'A build',

@@ -143,7 +143,7 @@ export function draftIntro(opp: Pick<Opp, 'company' | 'title' | 'why_fit' | 'gro
     greeting,
     '',
     isPartner
-      ? `I run Modern Mustard Seed, an AI product studio, and we already ship on ${opp.company} for real clients. I would like to be in the ${opp.company} partner program properly.`
+      ? `I run Modern Mustard Seed, a design and agentic systems studio, and we already ship on ${opp.company} for real clients. I would like to be in the ${opp.company} partner program properly.`
       : isExpert
         ? `I saw the ${opp.title} program at ${opp.company} and I would like to be part of it.`
         : `I saw the ${opp.title} seat at ${opp.company} and I want it.`,

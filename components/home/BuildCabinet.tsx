@@ -21,8 +21,8 @@ const CABINETS = [
     name: 'Websites',
     color: '#E0301E',
     pitch:
-      'Not a brochure, a working engine. Elite design, funnels and a lead magnet live on day one, an AI concierge trained on your business, SEO and GEO baked in.',
-    chips: ['Funnels day one', 'AI concierge', 'SEO + GEO'],
+      'Not a brochure, a working engine. Elite design, funnels and a lead magnet live on day one, an agentic concierge trained on your business, SEO and GEO baked in.',
+    chips: ['Funnels day one', 'Agentic concierge', 'SEO + GEO'],
     receiptSlug: 'cross-and-covenant',
     href: '/websites',
   },
@@ -41,8 +41,8 @@ const CABINETS = [
     name: 'Command Centers',
     color: '#E0301E',
     pitch:
-      'Your whole operation on one screen: leads, jobs, follow-ups, and the AI agents that work them while you sleep. Built around how you actually run the day.',
-    chips: ['Ops on one screen', 'AI agents built in', 'Replaces the spreadsheet'],
+      'Your whole operation on one screen: leads, jobs, follow-ups, and the agents that work them while you sleep. Built around how you actually run the day.',
+    chips: ['Ops on one screen', 'Agents built in', 'Replaces the spreadsheet'],
     receiptSlug: 'wild-daisy-command-center',
     href: '/command-center',
   },
@@ -61,7 +61,7 @@ export default function BuildCabinet() {
           </h2>
           <p className="font-sans text-base text-[#161616]/75 mt-5 max-w-xl">
             Websites, voice agents, and command centers go live in about a week. Fixed scope, fixed
-            quote, no surprises. You do not need to know AI. You do not need a technical co-founder.
+            quote, no surprises. You do not need to know agentic systems. You do not need a technical co-founder.
           </p>
         </div>
 

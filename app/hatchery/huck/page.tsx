@@ -118,7 +118,7 @@ export default function HuckRevealPage() {
         {/* honesty + the pitch */}
         <footer className="mt-14 text-center border-t border-[#FBF6EA]/15 pt-8 pb-4">
           <p className="text-sm text-[#FBF6EA]/55 max-w-xl mx-auto">
-            The Huckleberry Scoop is a fictional shop, and Huck is an AI mascot character (he will tell you so himself, cheerfully). He was hatched as the pilot for the Mustard Hatchery, where real businesses get their official mascot born.
+            The Huckleberry Scoop is a fictional shop, and Huck is an agentic mascot character (he will tell you so himself, cheerfully). He was hatched as the pilot for the Mustard Hatchery, where real businesses get their official mascot born.
           </p>
           <p className="mt-4 text-[10px] uppercase tracking-[0.35em] font-mono text-[#F5B700]/80">
             Hatched by Modern Mustard Seed · Kalispell, Montana

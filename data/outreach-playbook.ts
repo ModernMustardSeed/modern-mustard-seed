@@ -44,7 +44,7 @@ export const LANES: Lane[] = [
   },
   {
     key: 'assistants',
-    name: 'AI Assistants',
+    name: 'Agentic Assistants',
     blurb: 'A helper that answers messages, books appointments, and follows up with leads around the clock, so nothing slips.',
     soundLike: ['"Same questions all day."', '"Buried in DMs."', '"Leads go cold on me."', '"Can\'t keep up."'],
   },
@@ -63,7 +63,7 @@ export const LANES: Lane[] = [
 ];
 
 export const JARGON_RULE =
-  'Never say "agent" or any tech jargon out loud. Say what it does. "A helper that answers your messages" lands. "An AI agent" does not.';
+  'Never say "agent" or any tech jargon out loud. Say what it does. "A helper that answers your messages" lands. "An agentic system" does not.';
 
 /** Five rules that keep a partner\'s social account alive. */
 export const SAFETY_RULES: { n: number; title: string; detail: string }[] = [
@@ -83,7 +83,7 @@ export const SEARCH_PHRASES: { lane: string; phrases: string[] }[] = [
     phrases: ['need a website', 'website recommendations', 'who builds websites', 'web designer', 'new website', 'my website is outdated', 'update my website', 'hate my website', 'Wix', 'Squarespace', 'GoDaddy website', 'no one finds my site'],
   },
   {
-    lane: 'For AI assistants',
+    lane: 'For agentic assistants',
     phrases: ['answering the same questions', 'too many DMs', 'can\'t keep up', 'missing leads', 'follow up with leads', 'need to automate', 'auto reply', 'booking system', 'online scheduling', 'drowning in admin', 'customer service help'],
   },
   {
@@ -130,7 +130,7 @@ export const HELPFUL_COMMENTS: { lane: string; cards: { context: string; text: s
     ],
   },
   {
-    lane: 'AI assistant & voice lane',
+    lane: 'Agentic assistant & voice lane',
     cards: [
       { context: 'Buried in messages', text: 'One thing that helps fast: set up saved replies for your three most-asked questions so you\'re not retyping the same answer all day. Buys you breathing room while you sort out a bigger fix.' },
       { context: 'Leads going cold', text: 'Speed beats everything with leads. Even a quick "got your message, here\'s a time to chat" in the first few minutes wins more than a perfect reply an hour later. Most leads are lost to slow, not price.' },
@@ -166,7 +166,7 @@ export const CALL_OFFER_COMMENTS: { lane: string; cards: string[] }[] = [
     ],
   },
   {
-    lane: 'AI assistant & voice lane',
+    lane: 'Agentic assistant & voice lane',
     cards: [
       'If you\'re answering the same questions all day, that\'s exactly the kind of thing we take off your plate. We build a helper that replies to customers and follows up with leads for you, around the clock. Want me to set up a quick call? Link below.',
       'Missing calls is missing money. We can set up a helper that answers the phone, books people in, and never sleeps. I can grab you a time to see if it fits. Link below.',
@@ -255,7 +255,7 @@ export const SOCIAL_STRATEGY = {
   intro: 'Groups are where you hunt. Your own profile is where trust compounds. Spend most of your time being genuinely helpful in groups, and let a light, steady presence on your own feed make you someone people want to refer to. Every path ends at the same place: your booking link.',
   oneRule: 'One rule above all: every profile, post, and bio points to your booking link. If someone wants to act, the next step is always one tap away.',
   setup: [
-    'Set your profile bio to one clear line: what you help with and a link to book. Example: "I help small businesses get websites, AI helpers, and custom tools that actually work. Book a quick call below."',
+    'Set your profile bio to one clear line: what you help with and a link to book. Example: "I help small businesses get websites, agentic helpers, and custom tools that actually work. Book a quick call below."',
     'Put your booking link in every bio that allows one: Facebook intro, Instagram link, LinkedIn featured, X bio.',
     'Use a real, friendly photo. People book calls with people, not logos.',
     'Pin one post that explains what you do and how to book.',

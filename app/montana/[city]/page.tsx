@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: { params: Promise<{ city: str
   if (!city) return buildMetadata({ noindex: true });
   return buildMetadata({
     title: `Website Design in ${city.name}, MT`,
-    description: `Design-led websites, voice agents, and custom software for ${city.name} businesses. Built in Kalispell, Montana, by a boutique design and AI studio.`,
+    description: `Design-led websites, voice agents, and custom software for ${city.name} businesses. Built in Kalispell, Montana, by a boutique design and agentic systems studio.`,
     path: `/montana/${city.slug}`,
   });
 }
@@ -32,9 +32,9 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
   const others = MONTANA_CITIES.filter((c) => c.slug !== city.slug);
 
   const path = `/montana/${city.slug}`;
-  const description = `AI website design, voice agents, automation and custom software for ${city.name} businesses, built by Modern Mustard Seed in Kalispell, Montana.`;
+  const description = `Agentic website design, voice agents, automation and custom software for ${city.name} businesses, built by Modern Mustard Seed in Kalispell, Montana.`;
   const localForCity = serviceJsonLd({
-    path, name: `AI websites and business systems for ${city.name}`, description,
+    path, name: `Agentic websites and business systems for ${city.name}`, description,
     areaServed: [{ '@type': 'City', name: city.name, containedInPlace: { '@type': 'State', name: 'Montana' } }],
   });
 
@@ -43,7 +43,7 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
       <JsonLd
         data={[
           localForCity,
-          webPageJsonLd({ path, name: `AI websites in ${city.name}`, description }),
+          webPageJsonLd({ path, name: `Agentic websites in ${city.name}`, description }),
           faqJsonLd(faqs),
           // breadcrumbJsonLd prepends SITE.url itself, so these are PATHS.
           breadcrumbJsonLd([
@@ -65,7 +65,7 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
                 Websites and a phone that always answers, for {city.name} businesses.
               </h1>
               <p className="mt-6 max-w-xl text-lg md:text-xl text-[#3d382e] font-body leading-relaxed">
-                Modern Mustard Seed is a boutique design and AI studio based in Kalispell, serving {city.name} and clients nationwide. We design and build websites and brand, custom software, and voice agents. You own the code and accounts.
+                Modern Mustard Seed is a boutique design and agentic systems studio based in Kalispell, serving {city.name} and clients nationwide. We design and build websites and brand, custom software, and voice agents. You own the code and accounts.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link
@@ -104,15 +104,15 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
         <div className="max-w-6xl mx-auto px-6 py-12">
           <h2 className="font-display text-3xl font-extrabold">A front door connected to the work behind it.</h2>
           <p className="mt-4 max-w-3xl leading-relaxed">{city.slug === 'kalispell'
-            ? 'A Kalispell contractor needs more than a gallery of finished jobs. The website should explain the work, qualify a request by service area and job type, and put the enquiry where the crew can act on it. That is a concrete brief for an AI website and a connected workflow.'
-            : `For ${city.name} businesses, we scope the system around the enquiries you actually receive. Booking rules, service boundaries and human follow-up come before adding an AI feature.`}</p>
-          <nav aria-label="Website and AI services" className="mt-6 flex flex-wrap gap-x-6 gap-y-3 font-bold underline underline-offset-4">
-            <Link href="/ai-websites">How our AI websites work</Link>
+            ? 'A Kalispell contractor needs more than a gallery of finished jobs. The website should explain the work, qualify a request by service area and job type, and put the enquiry where the crew can act on it. That is a concrete brief for an agentic website and a connected workflow.'
+            : `For ${city.name} businesses, we scope the system around the enquiries you actually receive. Booking rules, service boundaries and human follow-up come before adding an agentic feature.`}</p>
+          <nav aria-label="Website and agentic systems services" className="mt-6 flex flex-wrap gap-x-6 gap-y-3 font-bold underline underline-offset-4">
+            <Link href="/agentic-websites">How our agentic websites work</Link>
             <Link href="/talking-website">The Talking Website</Link>
-            <Link href="/voice-agents">AI voice agents</Link>
+            <Link href="/voice-agents">Voice agents</Link>
             <Link href="/services">Automation and custom software</Link>
             <Link href="/work">See the builds</Link>
-            <Link href="/resources">AI search field notes</Link>
+            <Link href="/resources">Answer engine field notes</Link>
           </nav>
         </div>
       </section>

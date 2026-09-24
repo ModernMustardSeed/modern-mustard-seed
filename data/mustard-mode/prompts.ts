@@ -33,7 +33,7 @@ Structure, in this order:
 7. FAQ, four questions.
 8. Final CTA band and a minimal footer.
 
-Design bar: it must not look like a generic AI template. Pick an opinionated type pairing, a restrained palette (one accent max), generous whitespace, and a clear visual rhythm. Add subtle scroll-triggered fade-ins.
+Design bar: it must not look like a generic generated template. Pick an opinionated type pairing, a restrained palette (one accent max), generous whitespace, and a clear visual rhythm. Add subtle scroll-triggered fade-ins.
 
 Deliver the full file, then give me a 3-line summary of the design choices you made and one thing I could A/B test.`,
     proTip: 'Paste your real brand colors and font names into the constraints and it will match your identity on the first try.',
@@ -160,11 +160,11 @@ Deliver the component code, a usage example with sample data, and a one-line not
   {
     id: 'non-generic-design-brief',
     category: 'design',
-    title: 'Kill The Generic AI Look',
+    title: 'Kill The Generic Generated Look',
     whenToUse: 'Before any build, when you want a design that looks intentional and human, not templated.',
     text: `Before you write any code, act as an art director and write me a design brief for [project], a [what it is] for [audience].
 
-The enemy is the generic AI look: purple-to-blue gradients, centered everything, Inter for all text, three identical rounded cards, emoji as icons, and no point of view. Avoid all of it.
+The enemy is the generic generated look: purple-to-blue gradients, centered everything, Inter for all text, three identical rounded cards, emoji as icons, and no point of view. Avoid all of it.
 
 Give me a brief with:
 1. A one-line design concept (the feeling in a sentence).
@@ -250,7 +250,7 @@ Deliver:
 5. A dark mode version of the whole system that keeps the same personality.
 6. The whole thing as CSS custom properties (design tokens) I can paste in.
 
-Avoid the default AI palette. Give me something with a point of view, and tell me the one combination you would use for the primary CTA.`,
+Avoid the default generated palette. Give me something with a point of view, and tell me the one combination you would use for the primary CTA.`,
     proTip: 'Ask it to name each color something memorable. Named tokens are easier to reason about than hex codes.',
   },
   {

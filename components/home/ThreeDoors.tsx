@@ -3,7 +3,7 @@ import Link from 'next/link';
 /**
  * ThreeDoors. Beat 05: the ways to engage the studio, plus the free Website
  * Audit strip as the no-risk first step. Down to two doors (Sarah, 2026-07-19:
- * the AI-Proof "defend" door came off the homepage; /ai-proof still exists via
+ * the AI-Proof "defend" door came off the homepage; /future-proof still exists via
  * the footer). Gives MUSTARD MODE its homepage billing.
  */
 
@@ -22,15 +22,15 @@ const DOORS = [
     chip: '[ DOOR 02 ]',
     name: 'MUSTARD MODE',
     pitch:
-      'Learn to run Claude like the studio does. A personal AI coach, four tracks, 28 missions, and the exact prompts. Your first coaching session is free, right on the page.',
-    points: ['Mr. Mustard, your live AI coach', 'Code, Design, Cowork, Ideate', 'From $197 once, lifetime access'],
+      'Learn to run Claude like the studio does. A personal agentic coach, four tracks, 28 missions, and the exact prompts. Your first coaching session is free, right on the page.',
+    points: ['Mr. Mustard, your live agentic coach', 'Code, Design, Cowork, Ideate', 'From $197 once, lifetime access'],
     cta: 'Try a free coaching session',
     href: '/mustard-mode',
     featured: false,
   },
 ];
 
-const AUDIT_DIMENSIONS = ['Brand', 'Trust', 'SEO', 'GEO', 'AI Features', 'Conversion', 'Design'];
+const AUDIT_DIMENSIONS = ['Brand', 'Trust', 'SEO', 'GEO', 'Agentic Features', 'Conversion', 'Design'];
 
 export default function ThreeDoors() {
   return (

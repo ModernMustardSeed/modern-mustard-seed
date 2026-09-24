@@ -12,7 +12,7 @@ const ASPECT: Record<string, number> = {
 
 type Landmark = { key: string; eyebrow: string; title: string; body: string; x: number; z: number; r: number };
 const LANDMARKS: Landmark[] = [
-  { key: 'hq', eyebrow: 'Headquarters', title: 'Where your app gets built.', body: 'Apps, websites, and specialty AI tools, shipped in weeks, not months.', x: -46, z: -40, r: 24 },
+  { key: 'hq', eyebrow: 'Headquarters', title: 'Where your app gets built.', body: 'Apps, websites, and specialty agentic tools, shipped in weeks, not months.', x: -46, z: -40, r: 24 },
   { key: 'gardens', eyebrow: 'The Gardens', title: 'We grow things that grow themselves.', body: 'Lead engines and automations that keep working after we leave.', x: 54, z: -34, r: 24 },
   { key: 'crew', eyebrow: 'The Crew', title: 'Run it all from your phone.', body: 'Systems so simple your business fits in your pocket. Even the dog gets a day off.', x: 0, z: -86, r: 26 },
 ];
@@ -478,7 +478,7 @@ export default function WorldExperience() {
         <div className="fb-hero" style={{ backgroundImage: 'url(/world/scene-hero.webp)' }}>
           <div className="text-center px-6" style={{ background: 'rgba(8,12,22,.4)', padding: '3rem 2rem', borderRadius: 20 }}>
             <h1 className="font-display font-extrabold text-white text-5xl md:text-7xl leading-none drop-shadow-[0_6px_30px_rgba(0,0,0,0.5)]">The Mustard Seed World</h1>
-            <p className="font-sans text-white/90 text-lg mt-5 max-w-lg mx-auto">A studio on the shore of Flathead Lake that builds apps, websites, and AI tools.</p>
+            <p className="font-sans text-white/90 text-lg mt-5 max-w-lg mx-auto">A studio on the shore of Flathead Lake that builds apps, websites, and agentic tools.</p>
             <Link href="/book" className="inline-block mt-7 font-mono font-bold uppercase tracking-wider text-[#161616] bg-gold-400 border-2 border-[#161616] rounded-lg px-6 py-3.5 shadow-[4px_4px_0_0_#161616]">Plant your seed 🌱</Link>
           </div>
         </div>

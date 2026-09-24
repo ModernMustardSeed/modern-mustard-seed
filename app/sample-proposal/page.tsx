@@ -21,14 +21,14 @@ const SAMPLE = {
     intro:
       'Hey Dave, thanks for the call. Here is exactly what we would build to get Rios Heating & Air found, answered, and booked, with no surprises on scope or price.',
     situation:
-      'You are on a Wix site that no AI assistant surfaces, so when a homeowner asks ChatGPT or Google for HVAC nearby, you are invisible. Your reviews are great, but new customers cannot find you, and after-hours calls go to voicemail.',
+      'You are on a Wix site that no answer engine surfaces, so when a homeowner asks ChatGPT or Google for HVAC nearby, you are invisible. Your reviews are great, but new customers cannot find you, and after-hours calls go to voicemail.',
     recommendation:
-      'Rebuild the site for AI discovery from the first line, then put an agent on the phones so no call is missed. The software line keeps the agent and tools running, billed at cost.',
+      'Rebuild the site for answer engine discovery from the first line, then put an agent on the phones so no call is missed. The software line keeps the agent and tools running, billed at cost.',
     close:
       'Sign below and we begin the moment the deposit clears. A few weeks later you have a site that gets found and an agent that never misses a call. All of it yours.',
   },
   lines: [
-    { id: 'website_build', price: 5750, qty: 1, framing: 'A fast, brand-aligned site built so AI assistants surface Rios Heating & Air when nearby homeowners ask.' },
+    { id: 'website_build', price: 5750, qty: 1, framing: 'A fast, brand-aligned site built so answer engines surface Rios Heating & Air when nearby homeowners ask.' },
     { id: 'ai_agent_build', price: 8500, qty: 1, framing: 'A voice agent that answers every call, books the job, and routes the urgent ones, day or night.' },
     { id: 'software_compute', price: 275, qty: 1, framing: 'Keeps the agent, voice minutes, and hosting running. Billed at cost.' },
   ] as Line[],

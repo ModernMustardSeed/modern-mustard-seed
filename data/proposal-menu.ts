@@ -81,7 +81,7 @@ export const SERVICES: Service[] = [
       'Discovery and scoping session, success criteria defined in writing',
       'Full UI and UX design system',
       'Full-stack build (Next.js, Supabase, Stripe, Vercel)',
-      'AI integration where it earns its place (Claude, OpenAI, Gemini, Vapi)',
+      'Model integration where it earns its place (Claude, OpenAI, Gemini, Vapi)',
       'Production deployment and monitoring',
       '30 days of post-launch support',
       'Repo, documentation, and every credential handed off. You own it all',
@@ -93,12 +93,12 @@ export const SERVICES: Service[] = [
   },
   {
     id: 'ai_visibility_audit',
-    group: 'AI Visibility and Web',
-    name: 'AI Visibility Audit',
+    group: 'Answer Engine Visibility and Web',
+    name: 'Answer Engine Visibility Audit',
     description:
-      'The free teardown. Whether AI assistants surface the business, what is working on the site, and what is costing them customers.',
+      'The free teardown. Whether ChatGPT, Perplexity and Google surface the business, what is working on the site, and what is costing them customers.',
     scope: [
-      'Representative AI-assistant discovery check for the category',
+      'Representative answer engine discovery check for the category',
       'On-site read: metadata, structured data, headings, content clarity',
       'Off-site read: Google Business Profile, name consistency, directories, reviews',
       'Prioritized fixes tagged do-it-yourself, needs implementation, or needs a rebuild',
@@ -112,8 +112,8 @@ export const SERVICES: Service[] = [
   },
   {
     id: 'ai_visibility_starter',
-    group: 'AI Visibility and Web',
-    name: 'AI Visibility Starter',
+    group: 'Answer Engine Visibility and Web',
+    name: 'Answer Engine Visibility Starter',
     description:
       'Off-site discovery work. Google Business Profile, schema handed off, directory and name consistency, review strategy. No code access needed.',
     scope: [
@@ -130,7 +130,7 @@ export const SERVICES: Service[] = [
   },
   {
     id: 'onsite_geo',
-    group: 'AI Visibility and Web',
+    group: 'Answer Engine Visibility and Web',
     name: 'On-Site GEO Implementation',
     description:
       'Direct fixes to a site with code or admin access. Schema, content structure, entity clarity, technical discovery layer.',
@@ -149,13 +149,13 @@ export const SERVICES: Service[] = [
   },
   {
     id: 'website_build',
-    group: 'AI Visibility and Web',
-    name: 'Website Build, AI-Optimized',
+    group: 'Answer Engine Visibility and Web',
+    name: 'Website Build, Answer-Engine Ready',
     description:
-      'A new site built for AI discovery from the first line. For no site, or a closed builder holding them back.',
+      'A new site built for answer engine discovery from the first line. For no site, or a closed builder holding them back.',
     scope: [
       'Brand-aligned, production-grade site (3 to 6 pages typical)',
-      'Built for AI discovery from the first line (schema, llms.txt, semantic structure)',
+      'Built for answer engine discovery from the first line (schema, llms.txt, semantic structure)',
       'Mobile-fast, Lighthouse 90 plus',
       'Real copy written for the business',
       'Booking or payment integration as needed',
@@ -169,7 +169,7 @@ export const SERVICES: Service[] = [
   },
   {
     id: 'domains_hosting',
-    group: 'AI Visibility and Web',
+    group: 'Answer Engine Visibility and Web',
     name: 'Domains and Hosting, Moved to Us',
     description:
       'Every web address the business owns, transferred off whoever is holding them now and into our account on their behalf, with the hosting and the renewals carried here.',
@@ -188,7 +188,7 @@ export const SERVICES: Service[] = [
   },
   {
     id: 'command_center',
-    group: 'AI Visibility and Web',
+    group: 'Answer Engine Visibility and Web',
     name: 'Business Command Center',
     description:
       'The back office as its own app, with its own sign-in: leads, inbox, conversations, contacts, reviews, marketing, website and domains on one board, with an operator that acts.',
@@ -209,7 +209,7 @@ export const SERVICES: Service[] = [
   },
   {
     id: 'command_center_care',
-    group: 'AI Visibility and Web',
+    group: 'Answer Engine Visibility and Web',
     name: 'Command Center, Running',
     description:
       'The Command Center kept running: the reading, the sorting, the drafting and the watching, month after month.',
@@ -227,8 +227,8 @@ export const SERVICES: Service[] = [
   },
   {
     id: 'ai_visibility_monitoring',
-    group: 'AI Visibility and Web',
-    name: 'AI Visibility Monitoring',
+    group: 'Answer Engine Visibility and Web',
+    name: 'Answer Engine Visibility Monitoring',
     description:
       'Ongoing re-checks and adjustments as models and sources shift. Sold after the first win, not before.',
     scope: [
@@ -243,7 +243,7 @@ export const SERVICES: Service[] = [
   },
   {
     id: 'single_automation',
-    group: 'AI Systems and Automation',
+    group: 'Agentic Systems and Automation',
     name: 'Single Automation',
     description: 'One workflow wired end to end. A repeating manual task removed.',
     scope: [
@@ -258,14 +258,14 @@ export const SERVICES: Service[] = [
   },
   {
     id: 'custom_ai_system',
-    group: 'AI Systems and Automation',
-    name: 'Custom AI System',
+    group: 'Agentic Systems and Automation',
+    name: 'Custom Agentic System',
     description:
       'A CRM, internal tool, or multi-step workflow built to their process. Larger systems fold into Idea to Product.',
     scope: [
       'Discovery of the process and the data behind it',
       'Custom CRM, internal tool, or multi-step workflow',
-      'AI where it earns its place',
+      'Agentic systems where they earn their place',
       'Deploy, documentation, and handoff',
     ],
     priceMin: 5000,
@@ -275,7 +275,7 @@ export const SERVICES: Service[] = [
   },
   {
     id: 'mcp_integration',
-    group: 'AI Systems and Automation',
+    group: 'Agentic Systems and Automation',
     name: 'MCP / Tool Integration',
     description: 'Connecting tools and data so an agent or app can act on them.',
     scope: [
@@ -290,8 +290,8 @@ export const SERVICES: Service[] = [
   },
   {
     id: 'ai_agent_build',
-    group: 'AI Agents',
-    name: 'AI Agent Build',
+    group: 'Agents',
+    name: 'Agent Build',
     description:
       'A working agent for a real job. Sales development, concierge, intake, or voice. The build and the logic.',
     scope: [
@@ -307,7 +307,7 @@ export const SERVICES: Service[] = [
   },
   {
     id: 'agent_operation',
-    group: 'AI Agents',
+    group: 'Agents',
     name: 'Agent Operation',
     description: 'Monthly run cost. Model and voice usage billed at cost or inside a managed retainer.',
     scope: [
@@ -326,9 +326,9 @@ export const SERVICES: Service[] = [
     group: 'Running Costs',
     name: 'Software & Compute',
     description:
-      'The monthly cost to run what we build. AI model usage, voice minutes, hosting, and any third-party tools. Billed at cost. It depends on how much compute the system uses each month, so the figure is an estimate that moves with real usage.',
+      'The monthly cost to run what we build. Model usage, voice minutes, hosting, and any third-party tools. Billed at cost. It depends on how much compute the system uses each month, so the figure is an estimate that moves with real usage.',
     scope: [
-      'AI model usage (Claude, OpenAI, Gemini) at cost',
+      'Model usage (Claude, OpenAI, Gemini) at cost',
       'Voice minutes and telephony where an agent is involved',
       'Hosting, database, email and SMS sending',
       'Any third-party software the build depends on',
@@ -471,8 +471,8 @@ export const PATHS: Path[] = [
   },
   {
     id: 'modern_invisible',
-    label: 'Modern site, invisible to AI',
-    when: 'Good site, accessible code, but AI assistants do not surface them.',
+    label: 'Modern site, invisible to answer engines',
+    when: 'Good site, accessible code, but ChatGPT, Perplexity and Google do not surface them.',
     serviceIds: ['onsite_geo', 'ai_visibility_monitoring'],
     rationale: 'Fix the site directly, then keep it surfaced as models and sources shift.',
   },

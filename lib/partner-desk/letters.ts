@@ -59,7 +59,7 @@ function nicheLine(p: Prospect): string {
   return '';
 }
 
-const ABOUT = `I'm Sarah, founder of Modern Mustard Seed, an AI product studio in Montana. We build websites that answer their own phone: a site and a voice agent off one brain, at a set price, with every edit included forever.`;
+const ABOUT = `I'm Sarah, founder of Modern Mustard Seed, a design and agentic systems studio in Montana. We build websites that answer their own phone: a site and a voice agent off one brain, at a set price, with every edit included forever.`;
 
 function offer(): string[] {
   const m = partnerMath();

@@ -23,13 +23,13 @@ export const services: Service[] = [
   {
     slug: 'specialty-ai-tools',
     icon: '🛠️',
-    title: 'Specialty AI Tools',
+    title: 'Specialty Agentic Tools',
     short:
-      'Industry-specific AI tools that replace expensive workflows. The $3K service line item becomes the $99 subscription.',
+      'Industry-specific agentic tools that replace expensive workflows. The $3K service line item becomes the $99 subscription.',
     description:
-      'Pick the friction in your industry. We build the AI tool that removes it. Listing description generators, deal analyzers, estimate builders, intake summarizers. Tailored to your industry, owned by you.',
-    outcomes: ['Industry-specific AI', 'Replace expensive workflows', 'Per-engagement pricing'],
-    ideal: 'Operators with a clear sense of where AI will pay back fastest.',
+      'Pick the friction in your industry. We build the agentic tool that removes it. Listing description generators, deal analyzers, estimate builders, intake summarizers. Tailored to your industry, owned by you.',
+    outcomes: ['Industry-specific agentic systems', 'Replace expensive workflows', 'Per-engagement pricing'],
+    ideal: 'Operators with a clear sense of where agentic systems will pay back fastest.',
   },
   {
     slug: 'brand-sites',

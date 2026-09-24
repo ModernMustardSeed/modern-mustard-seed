@@ -21,7 +21,7 @@ const STARTERS = [
   'I have an idea but no technical co-founder',
   'My website does not bring me business',
   'I need to automate my client onboarding',
-  'I want to add AI to my existing business',
+  'I want agentic systems in my existing business',
   'Help me figure out what to build',
 ];
 
@@ -417,7 +417,7 @@ export default function MustardSeedChat() {
                 </span>
                 <div>
                   <span className="block text-[8px] uppercase tracking-[0.35em] text-[#C4160B] font-mono font-bold mb-0.5">
-                    Your AI right hand
+                    Your agentic right hand
                   </span>
                   <p className="font-display font-black text-[#161616] text-lg leading-tight">
                     How do you want to talk?

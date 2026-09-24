@@ -257,7 +257,7 @@ export default function ClientFactoryDashboard() {
               ))}
             </ul>
           ) : (
-            <Empty title="Nothing waiting on you">Replies that need a person land here. Everything else your AI handles.</Empty>
+            <Empty title="Nothing waiting on you">Replies that need a person land here. Everything else your agent handles.</Empty>
           )}
         </Card>
       </div>
@@ -324,7 +324,7 @@ export default function ClientFactoryDashboard() {
           {[
             { key: 'sourcing', label: 'Finding prospects', paused: f.paused.sourcing },
             { key: 'outreach', label: 'Outreach', paused: f.paused.outreach },
-            { key: 'ai', label: 'The AI', paused: f.paused.ai },
+            { key: 'ai', label: 'The agent', paused: f.paused.ai },
             { key: 'followup', label: 'Follow-up', paused: f.paused.followup },
           ].map((s) => (
             <button

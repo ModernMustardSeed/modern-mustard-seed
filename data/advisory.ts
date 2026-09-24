@@ -17,9 +17,9 @@
 
 export const ADVISORY = {
   name: 'Advisory',
-  metaTitle: 'AI Advisory for Business Operators',
+  metaTitle: 'Agentic Systems Advisory for Business Operators',
   metaDescription:
-    'Retained counsel for operators putting AI into a business that already works. What to build, what to refuse, what to automate, and in what order. Engaged by the quarter, by inquiry.',
+    'Retained counsel for operators putting agentic systems into a business that already works. What to build, what to refuse, what to automate, and in what order. Engaged by the quarter, by inquiry.',
 };
 
 /** The argument. Why judgment is the scarce thing, not execution. */
@@ -27,7 +27,7 @@ export const THE_PROBLEM = [
   {
     k: 'The expensive mistake',
     h: 'Building the wrong thing, well',
-    d: 'Almost nobody loses money on AI by picking the wrong vendor. They lose it by building something competent that the business did not need, discovering that eight weeks in, and having nothing to show but a working tool nobody opens.',
+    d: 'Almost nobody loses money on agentic systems by picking the wrong vendor. They lose it by building something competent that the business did not need, discovering that eight weeks in, and having nothing to show but a working tool nobody opens.',
   },
   {
     k: 'The second mistake',
@@ -36,7 +36,7 @@ export const THE_PROBLEM = [
   },
   {
     k: 'Why it keeps happening',
-    h: 'Everyone selling you AI is selling you a build',
+    h: 'Everyone selling you agentic systems is selling you a build',
     d: 'Agencies are paid to build. Vendors are paid to onboard. Nobody in that room is paid to tell you the honest answer is a spreadsheet and one person changing a habit. That is the seat we are hired into.',
   },
 ];
@@ -69,7 +69,7 @@ export const THE_QUARTER = [
 export const WHAT_YOU_GET = [
   {
     h: 'A written read of the business',
-    d: 'Where AI earns its keep in your operation and where it does not. Specific to your trade, your team, and your numbers, not a maturity model.',
+    d: 'Where agentic systems earn their keep in your operation and where they do not. Specific to your trade, your team, and your numbers, not a maturity model.',
   },
   {
     h: 'A sequenced roadmap, with reasons',
@@ -100,7 +100,7 @@ export const WHAT_WE_REFUSE = [
 
 export const FOR = [
   'You already run something that works, with revenue and a team.',
-  'You are being pitched AI weekly and you cannot tell which pitches are real.',
+  'You are being pitched agentic systems weekly and you cannot tell which pitches are real.',
   'You would rather be told no early than discover it after a build.',
   'You want the reasoning, not just the answer, because you are the one who has to live with it.',
 ];
@@ -118,8 +118,8 @@ export const ADVISORY_FAQ = [
     a: 'Judgment, and access to it. A written read of the business in the first week, a working session every other week with the person who would build the thing, an open line for anything that needs a same-day answer, and a sequenced plan at the end of the quarter. You are not buying hours and you are not buying a build.',
   },
   {
-    q: 'How is this different from AI Native?',
-    a: 'AI Native is a fixed program with a finish line: every workflow mapped, the first five moved onto AI in accounts you own, and your team coached to run it. Advisory has no build attached. It is the seat you hire when the decision, not the execution, is the hard part. Plenty of engagements start here and become a build, and that is the intended path rather than an upsell.',
+    q: 'How is this different from Agentic Native?',
+    a: 'Agentic Native is a fixed program with a finish line: every workflow mapped, the first five moved onto agentic systems in accounts you own, and your team coached to run it. Advisory has no build attached. It is the seat you hire when the decision, not the execution, is the hard part. Plenty of engagements start here and become a build, and that is the intended path rather than an upsell.',
   },
   {
     q: 'What does it cost?',

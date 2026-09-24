@@ -101,7 +101,7 @@ export const WHY = [
   },
   {
     k: 'Why the score is checkable',
-    h: 'Two of the three pillars are not AI',
+    h: 'Two of the three pillars are plain facts',
     d: 'Every profile check passes or fails on a fact, and prints what failing it costs you. Every review number prints the benchmark it was measured against. The weights are printed on the report. Every score comes with evidence you can check.',
   },
   {
@@ -119,7 +119,7 @@ export const PILLARS = [
     name: 'The website',
     weight: 45,
     how: 'Seven categories, read not scanned',
-    d: 'What it says, whether it is built for a phone, whether it can be found by Google and by AI answers, and whether anybody who lands on it knows what to do next. Graded against your real pages, and every claim is something we saw on them.',
+    d: 'What it says, whether it is built for a phone, whether it can be found by Google and by answer engines, and whether anybody who lands on it knows what to do next. Graded against your real pages, and every claim is something we saw on them.',
   },
   {
     n: 'Two',
@@ -147,9 +147,9 @@ export const DESK = [
     cta: 'Find the bottleneck',
   },
   {
-    name: 'The AI findability grade',
+    name: 'The answer engine findability grade',
     href: '/website-audit',
-    line: 'How a business gets found and cited by Google and by AI answers, graded on the signals that decide it, with the to-do list that fixes them.',
+    line: 'How a business gets found and cited by Google and by answer engines, graded on the signals that decide it, with the to-do list that fixes them.',
     cta: 'Grade my findability',
   },
   {
@@ -177,7 +177,7 @@ export const PRESENCE_FAQ = [
   },
   {
     q: 'What makes this different from the free audits everybody offers?',
-    a: 'Two of the three pillars are not AI at all. Every profile check passes or fails on something you can verify yourself in a minute, every review number prints the benchmark it was measured against, and the pillar weights are printed on the report. Anything we could not see is left out of the score rather than counted as a zero.',
+    a: 'Two of the three pillars are plain facts, not model judgment. Every profile check passes or fails on something you can verify yourself in a minute, every review number prints the benchmark it was measured against, and the pillar weights are printed on the report. Anything we could not see is left out of the score rather than counted as a zero.',
   },
   {
     q: 'How is this different from the Bottleneck Breaker?',

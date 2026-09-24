@@ -18,7 +18,7 @@ export const dynamic = 'force-dynamic';
 export const metadata = buildMetadata({
   title: 'Meet Mr. Mustard',
   description:
-    'Give Mr. Mustard the number you want him to call. He will ring you and show you what an AI receptionist sounds like working for your business. Three minutes, no card.',
+    'Give Mr. Mustard the number you want him to call. He will ring you and show you what an agentic receptionist sounds like working for your business. Three minutes, no card.',
   path: '/mustard',
 });
 
@@ -192,7 +192,7 @@ export default async function MustardPage({
             </h1>
 
             <p className="mt-4 font-display text-[1.5rem] sm:text-[2.1rem] leading-[1.1] font-bold text-[#161616]">
-              Want my AI receptionist to call{' '}
+              Want my agentic receptionist to call{' '}
               <span className="italic underline decoration-[#161616] decoration-4 underline-offset-[6px]">you</span>?
             </p>
 
@@ -255,7 +255,7 @@ export default async function MustardPage({
                 >
                   <p className="font-display text-[19px] leading-snug font-bold text-[#161616]">
                     &ldquo;Thanks for calling Modern Mustard Seed. This is{' '}
-                    <span className="italic">Mr. Mustard</span>, the studio&apos;s AI assistant. What can I help you
+                    <span className="italic">Mr. Mustard</span>, the studio&apos;s agentic assistant. What can I help you
                     with today?&rdquo;
                   </p>
                   <p className="mt-2.5 font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-[#C4160B]">
@@ -321,7 +321,7 @@ export default async function MustardPage({
             <div className="space-y-3 text-[16.5px] leading-relaxed text-[#161616]/80">
               <p>Do not take our word for it.</p>
               <p>
-                Give him the number you want him to call. He rings you and shows you what an AI receptionist sounds like
+                Give him the number you want him to call. He rings you and shows you what an agentic receptionist sounds like
                 working for your business.
               </p>
               <p className="font-semibold text-[#161616]">
@@ -811,7 +811,7 @@ export default async function MustardPage({
             price over the phone. That is the real test, and it is the same test a front desk fails on a busy Tuesday.
           </p>
           <p className="mt-6 text-sm text-[#FBF6EA]/60">
-            He is an AI and he says so in his first breath. Prefer to skip the form? His own line is{' '}
+            He is a voice agent, not a person, and he says so in his first breath. Prefer to skip the form? His own line is{' '}
             <a className="font-bold text-[#F5B700] underline underline-offset-4" href="tel:+14063121223">
               (406) 312-1223
             </a>

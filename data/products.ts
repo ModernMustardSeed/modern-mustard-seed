@@ -56,21 +56,21 @@ export type Bundle = {
 export const products: Product[] = [
   {
     slug: 'ai-ready-business-blueprint',
-    name: 'The AI-Ready Business Blueprint',
+    name: 'The Agentic Business Blueprint',
     category: 'Business Foundations',
     pitch:
-      'The complete system for identifying, scoping, and building your first high-impact AI product in 30 days or less.',
+      'The complete system for identifying, scoping, and building your first high-impact agentic product in 30 days or less.',
     whatsInside:
-      'A fill-in-the-numbers workbook that walks you from business audit to build brief in five sessions. Includes a scoring matrix for ranking automation opportunities, a real ROI calculator, a 30-day implementation roadmap with daily milestones, and the Five-Gate decision framework you can reuse for every future AI initiative. This is the same pre-build assessment we run with every consulting client at Modern Mustard Seed.',
+      'A fill-in-the-numbers workbook that walks you from business audit to build brief in five sessions. Includes a scoring matrix for ranking automation opportunities, a real ROI calculator, a 30-day implementation roadmap with daily milestones, and the Five-Gate decision framework you can reuse for every future agentic initiative. This is the same pre-build assessment we run with every consulting client at Modern Mustard Seed.',
     toc: [
       'Business Landscape Audit. Map what you have, what works, and what drains you',
-      'The Automation Opportunity Score. Quantify where AI creates the most value',
-      'Your AI Product Canvas. Define the product. What it does, who it serves, what it replaces',
+      'The Automation Opportunity Score. Quantify where agentic systems create the most value',
+      'Your Agentic Product Canvas. Define the product. What it does, who it serves, what it replaces',
       'Technical Reality Check. Stack, integrations, data, and build-or-buy decisions',
       'The Build Brief. Scope, timeline, budget, success criteria, and risk map',
       'ROI Calculator and Kill Criteria. Run the real math. Know when to walk away',
       '30-Day Implementation Roadmap. Daily milestones from kickoff to launch',
-      'The Decision Framework. A reusable system for every future AI opportunity',
+      'The Decision Framework. A reusable system for every future agentic opportunity',
       'What Good Looks Like. Before-and-after examples of real product scoping',
       'Resource Library. Prompts, cost references, stack matrix, and next steps',
     ],
@@ -79,32 +79,32 @@ export const products: Product[] = [
     stripePriceId: 'price_1TcSTmJkPPLrDL9He25lKB07',
     pdfFileName: 'MMS_AI-Ready_Business_Blueprint_FINAL.pdf',
     idealBuyer:
-      'Second-business operators, service business owners exploring AI, solo operators who want to build an AI product but do not know where to start.',
+      'Second-business operators, service business owners exploring agentic systems, solo operators who want to build an agentic product but do not know where to start.',
     funnelRole: 'Entry point. Builds trust. Qualifies leads for Scope and Sequence.',
     accentColor: '#C8964E',
     recommendFor: ['ai-curious', 'scoping', 'first-build', 'audit-fail-ai-features'],
   },
   {
     slug: 'ai-native-business-playbook',
-    name: 'The AI-Native Business Playbook',
+    name: 'The Agentic Native Business Playbook',
     category: 'Business Foundations',
     pitch:
-      'The complete operating system for building, buying, and running service businesses that use AI as infrastructure, not accessory.',
+      'The complete operating system for building, buying, and running service businesses that use agentic systems as infrastructure, not accessory.',
     whatsInside:
-      'Three tracks in one playbook. BUILD an AI-native service business from scratch, BUY an existing business and automate it for 2-3x margin improvement, or RUN your current business with AI handling 60 to 80 percent of the repetitive work. Includes the AI-Native Business Model Canvas, a 7-dimension Acquisition Scorecard, a due diligence checklist built for automation readiness, a 90-day transformation plan, and the daily operating rhythm that runs a $500K business on 25 to 45 minutes of human time per day. Built from 40+ shipped production AI systems.',
+      'Three tracks in one playbook. BUILD an agentic service business from scratch, BUY an existing business and automate it for 2-3x margin improvement, or RUN your current business with agentic systems handling 60 to 80 percent of the repetitive work. Includes the Agentic Native Business Model Canvas, a 7-dimension Acquisition Scorecard, a due diligence checklist built for automation readiness, a 90-day transformation plan, and the daily operating rhythm that runs a $500K business on 25 to 45 minutes of human time per day. Built from 40+ shipped production agentic systems.',
     toc: [
-      'What AI-Native Actually Means. And why most businesses get it wrong',
-      'The Economics of AI Labor. Margins, pricing, and the math that changes everything',
-      'The AI-Native Business Model Canvas. Design a business built on AI infrastructure',
-      'Choosing Your Service Category. Where AI-native businesses win hardest',
+      'What Agentic Native Actually Means. And why most businesses get it wrong',
+      'The Economics of Agentic Labor. Margins, pricing, and the math that changes everything',
+      'The Agentic Native Business Model Canvas. Design a business built on agentic infrastructure',
+      'Choosing Your Service Category. Where agentic businesses win hardest',
       'Building the Machine. Stack, systems, and the first 90 days',
-      'Pricing for AI-Native. Charge for outcomes. Not hours. Not seats',
-      'The Acquisition Thesis. Why buying boring businesses is the smartest AI play',
-      'The AI Acquisition Scorecard. Evaluate any business for automation potential',
+      'Pricing for Agentic Native. Charge for outcomes. Not hours. Not seats',
+      'The Acquisition Thesis. Why buying boring businesses is the smartest agentic play',
+      'The Agentic Acquisition Scorecard. Evaluate any business for automation potential',
       'Due Diligence for Automation. What to check that traditional buyers miss',
-      'The 90-Day Transformation. From close to AI-native operations',
-      'The AI-Native Operating System. Daily, weekly, monthly rhythms for a lean team',
-      'Hiring for an AI-Native Company. Who you need, who you do not, and when',
+      'The 90-Day Transformation. From close to agentic operations',
+      'The Agentic Native Operating System. Daily, weekly, monthly rhythms for a lean team',
+      'Hiring for an Agentic Native Company. Who you need, who you do not, and when',
       'Client Delivery at Scale. Serve 50 clients with a team of 3',
       'The Playbook Library. Templates, checklists, scripts, and tools',
     ],
@@ -113,7 +113,7 @@ export const products: Product[] = [
     stripePriceId: 'price_1TcSTnJkPPLrDL9HyrCUyNDi',
     pdfFileName: 'MMS_AI-Native_Business_Playbook_FINAL.pdf',
     idealBuyer:
-      'Entrepreneurs starting AI-native service businesses, business buyers interested in automation arbitrage, existing service business owners rebuilding operations with AI.',
+      'Entrepreneurs starting agentic service businesses, business buyers interested in automation arbitrage, existing service business owners rebuilding operations with agentic systems.',
     funnelRole:
       'Pairs with Blueprint. Blueprint answers "what should I build?" Playbook answers "how do I build a whole business around it?"',
     accentColor: '#1B2838',
@@ -126,7 +126,7 @@ export const products: Product[] = [
     pitch:
       'The complete technical playbook for building a production Shopify store with Claude Code as your development partner.',
     whatsInside:
-      'From environment setup to production launch using AI-powered development. Covers the CLAUDE.md file that turns Claude Code into your permanent store developer, theme customization command patterns (build custom sections in 5 to 10 minutes each), bulk product creation from CSV with AI-generated descriptions, Storefront API integrations, complete SEO infrastructure, and a library of 50+ production-tested prompts for every Shopify task. Every command was tested on real production stores.',
+      'From environment setup to production launch using agentic development. Covers the CLAUDE.md file that turns Claude Code into your permanent store developer, theme customization command patterns (build custom sections in 5 to 10 minutes each), bulk product creation from CSV with model-generated descriptions, Storefront API integrations, complete SEO infrastructure, and a library of 50+ production-tested prompts for every Shopify task. Every command was tested on real production stores.',
     toc: [
       'Claude Code and Shopify. The setup. Environment, authentication, and your first command',
       'The CLAUDE.md File. Turn Claude Code into your permanent store developer',
@@ -157,7 +157,7 @@ export const products: Product[] = [
     name: 'The Claude Code Masterclass',
     category: 'Build with Claude',
     pitch:
-      'Everything you need to ship production apps from your terminal using Claude Code as your AI development partner.',
+      'Everything you need to ship production apps from your terminal using Claude Code as your agentic development partner.',
     whatsInside:
       'The complete Claude Code system. Installation, the CLAUDE.md memory file that makes Claude Code indispensable, the prompt framework that gets production-ready code on the first try, Skills and MCP server integrations, and two full project walkthroughs you can build along with. Includes 100+ production-tested prompts organized by category (web development, automation, content, debugging) and the daily development workflow that compounds results session over session. You do not need to be a developer. You need a terminal and this playbook.',
     toc: [
@@ -176,21 +176,21 @@ export const products: Product[] = [
     stripePriceId: 'price_1TcSTqJkPPLrDL9HdNKI4rGR',
     pdfFileName: 'MMS_Claude_Code_Masterclass_FINAL.pdf',
     idealBuyer:
-      'Anyone who wants to build software without being a developer, solo operators who want to ship their own tools, developers who want to 10x their speed with AI.',
+      'Anyone who wants to build software without being a developer, solo operators who want to ship their own tools, developers who want to 10x their speed with agentic tools.',
     funnelRole: 'Gateway product. Makes every other Build with Claude product more valuable.',
     accentColor: '#1A1A2E',
     recommendFor: ['developer', 'solo-builder', 'claude-curious', 'first-app'],
   },
   {
     slug: 'ai-sales-machine',
-    name: 'The AI Sales Machine',
+    name: 'The Agentic Sales Machine',
     category: 'Business Foundations',
     pitch:
       'Build an automated outreach, qualification, and proposal system that books calls while you sleep.',
     whatsInside:
-      'The complete AI-powered sales system. Ideal Client Profile scorecard, the research-first outreach engine that makes every cold email feel personal, three email frameworks that actually get responses, a proposal generator that turns a discovery call into a custom PDF in 4 minutes, and automated follow-up sequences. Includes pipeline management setup, a weekly review prompt, and a full sales prompt library organized by stage. Same amount of selling. 30 fewer hours of admin per week.',
+      'The complete agentic sales system. Ideal Client Profile scorecard, the research-first outreach engine that makes every cold email feel personal, three email frameworks that actually get responses, a proposal generator that turns a discovery call into a custom PDF in 4 minutes, and automated follow-up sequences. Includes pipeline management setup, a weekly review prompt, and a full sales prompt library organized by stage. Same amount of selling. 30 fewer hours of admin per week.',
     toc: [
-      'The AI Sales Advantage. Why a system beats a salesperson for 80 percent of the process',
+      'The Agentic Sales Advantage. Why a system beats a salesperson for 80 percent of the process',
       'Building Your Ideal Client Profile. The foundation that makes everything else work',
       'The Outreach Engine. Personalized messages at scale without sounding like a robot',
       'The Proposal Generator. From discovery call to custom proposal in 4 minutes',
@@ -212,13 +212,13 @@ export const products: Product[] = [
     name: 'The Brand Studio Playbook',
     category: 'Build with Claude',
     pitch:
-      'Build a complete brand system using AI as your creative director. Voice, visual identity, brand vault, and content production.',
+      'Build a complete brand system using agentic tools as your creative director. Voice, visual identity, brand vault, and content production.',
     whatsInside:
-      'What used to cost $15,000 to $50,000 from a branding agency now costs a weekend and this playbook. Build a complete brand system. Voice document that makes AI write in your exact tone, 5-color system with typography pairing, the Brand Vault master document, and a content production system that generates a month of on-brand content in one afternoon. Built from the same system used to create Cross + Covenant and Modern Mustard Seed.',
+      'What used to cost $15,000 to $50,000 from a branding agency now costs a weekend and this playbook. Build a complete brand system. Voice document that makes the model write in your exact tone, 5-color system with typography pairing, the Brand Vault master document, and a content production system that generates a month of on-brand content in one afternoon. Built from the same system used to create Cross + Covenant and Modern Mustard Seed.',
     toc: [
       'What a Brand System Actually Is. And why most businesses do not have one',
-      'Building Your Brand Voice. The document that makes AI sound like you',
-      'Visual Identity with AI. Colors, typography, and design systems built in an afternoon',
+      'Building Your Brand Voice. The document that makes the model sound like you',
+      'Visual Identity with Agentic Tools. Colors, typography, and design systems built in an afternoon',
       'The Brand Vault. The master document that holds everything together',
       'Content Production System. Create a month of on-brand content in one afternoon',
       'The Prompt Library. Every brand-building prompt you need',
@@ -235,24 +235,24 @@ export const products: Product[] = [
   },
   {
     slug: 'geo-ai-commerce-playbook',
-    name: 'The GEO and AI Commerce Playbook',
+    name: 'The GEO and Answer Engine Commerce Playbook',
     category: 'Build with Claude',
     pitch:
-      'Get found by AI. Get cited by AI. Get sold by AI. The new rules for search, discovery, and commerce in 2026.',
+      'Get found by answer engines. Get cited by ChatGPT. Get sold inside the chat. The new rules for search, discovery, and commerce in 2026.',
     whatsInside:
-      'SEO is not dead, but it is no longer enough. This playbook covers Generative Engine Optimization (how to get cited in ChatGPT, Perplexity, Google AI, and Gemini answers), AI commerce setup (connecting your store to every AI shopping channel for in-chat checkout), product data optimization for AI recommendations, the emerging AI advertising landscape, and measurement systems for tracking AI visibility. Includes the GEO content framework, platform-specific optimization tables, a 15-point launch checklist, and a full prompt library. Built on the latest data: 693% AI traffic growth, 57% higher order values from AI shoppers, and fewer than 12% of businesses with a strategy for any of it.',
+      'SEO is not dead, but it is no longer enough. This playbook covers Generative Engine Optimization (how to get cited in ChatGPT, Perplexity, Google AI Overviews, and Gemini answers), answer engine commerce setup (connecting your store to every in-chat shopping channel for checkout inside the chat), product data optimization for answer engine recommendations, the emerging answer engine advertising landscape, and measurement systems for tracking answer engine visibility. Includes the GEO content framework, platform-specific optimization tables, a 15-point launch checklist, and a full prompt library. Built on the latest data: 693% growth in answer engine traffic, 57% higher order values from answer engine shoppers, and fewer than 12% of businesses with a strategy for any of it.',
     toc: [
       'The Death of 10 Blue Links. What changed, what is coming, and why it matters',
       'GEO vs SEO vs AEO. What each one is, how they overlap, and what to prioritize',
-      'The AI Shopping Revolution. How people buy inside ChatGPT, Perplexity, Gemini, and Google AI Mode',
-      'How AI Decides What to Cite. The mechanics of AI retrieval and citation',
-      'The GEO Content Framework. Structure content so AI engines cite you by name',
-      'Platform-Specific Optimization. What works on each AI platform',
-      'AI Commerce Setup. Connect your store to every AI shopping channel',
-      'Product Data Optimization. Make your products the ones AI recommends',
-      'The AI Ads Landscape. What is coming and how to prepare now',
-      'Measuring AI Visibility. Track citations, mentions, and AI-referred traffic',
-      'The Monthly GEO Rhythm. The operating system for staying visible in AI search',
+      'The In-Chat Shopping Revolution. How people buy inside ChatGPT, Perplexity, Gemini, and Google AI Mode',
+      'How Answer Engines Decide What to Cite. The mechanics of model retrieval and citation',
+      'The GEO Content Framework. Structure content so answer engines cite you by name',
+      'Platform-Specific Optimization. What works on each answer engine',
+      'Answer Engine Commerce Setup. Connect your store to every in-chat shopping channel',
+      'Product Data Optimization. Make your products the ones answer engines recommend',
+      'The Answer Engine Ads Landscape. What is coming and how to prepare now',
+      'Measuring Answer Engine Visibility. Track citations, mentions, and answer-engine-referred traffic',
+      'The Monthly GEO Rhythm. The operating system for staying visible in answer engines',
       'The Prompt and Checklist Library. Everything you need to execute, ready to copy',
     ],
     pages: 30,
@@ -260,7 +260,7 @@ export const products: Product[] = [
     stripePriceId: 'price_1TcSTuJkPPLrDL9Hf9X6vGJV',
     pdfFileName: 'MMS_GEO_AI_Commerce_Playbook_FINAL.pdf',
     idealBuyer:
-      'E-commerce store owners, service businesses that depend on search traffic, anyone selling products online who wants to be visible in AI-generated answers and AI shopping channels.',
+      'E-commerce store owners, service businesses that depend on search traffic, anyone selling products online who wants to be visible in answer engine results and in-chat shopping channels.',
     funnelRole: 'Most timely product in catalog. Highest search demand. Strong standalone seller.',
     accentColor: '#0D1B2A',
     recommendFor: ['geo', 'seo', 'ecommerce', 'audit-fail-geo', 'audit-fail-seo'],
@@ -272,7 +272,7 @@ export const products: Product[] = [
     pitch:
       'Build and sell 24/7 voice agents to local businesses and franchises as a $500 to $2,500 a month recurring service. The exact system, tech, pricing, and sales scripts we use to ship these.',
     whatsInside:
-      'The complete business-in-a-box for the biggest unclaimed opportunity in local services: every plumber, painter, restaurant, and clinic is losing money to missed calls, and almost none of them have a voice AI yet. This is the system we use at Modern Mustard Seed to build and sell branded 24/7 voice concierges (the same approach behind our restaurant, home-services, and painting demos). You get the missed-call economics that make the sale obvious, the white-space map of who to target first, the full build runbook (one skeleton, every vertical), the Vapi setup appendix with the exact API calls and gotchas, a pricing and packaging model, the demo-is-the-pitch sales motion, objection handling, and a complete swipe file. It ships with an interactive HTML companion app: an ROI and pricing calculator that sizes any prospect in seconds, a build checklist that saves your progress, a vertical-remap worksheet, and every outreach template with one-tap copy. Built for operators who want a recurring-revenue AI business, not another course.',
+      'The complete business-in-a-box for the biggest unclaimed opportunity in local services: every plumber, painter, restaurant, and clinic is losing money to missed calls, and almost none of them have a voice agent yet. This is the system we use at Modern Mustard Seed to build and sell branded 24/7 voice concierges (the same approach behind our restaurant, home-services, and painting demos). You get the missed-call economics that make the sale obvious, the white-space map of who to target first, the full build runbook (one skeleton, every vertical), the Vapi setup appendix with the exact API calls and gotchas, a pricing and packaging model, the demo-is-the-pitch sales motion, objection handling, and a complete swipe file. It ships with an interactive HTML companion app: an ROI and pricing calculator that sizes any prospect in seconds, a build checklist that saves your progress, a vertical-remap worksheet, and every outreach template with one-tap copy. Built for operators who want a recurring-revenue agentic business, not another course.',
     toc: [
       'The Opportunity. Why a missed call is the most expensive, and cheapest to fix, problem in local business',
       'The White Space. Where the money is and who already took the easy seats',
@@ -293,8 +293,8 @@ export const products: Product[] = [
     stripePriceId: '',
     pdfFileName: 'MMS_Voice_Concierge_Business_Playbook.pdf',
     idealBuyer:
-      'Agencies, builders, and operators who want to launch a high-margin recurring-revenue AI business. People who can sell to local service businesses and franchises and want a proven, templated system instead of starting from scratch.',
-    funnelRole: 'Flagship high-ticket product. The build-a-business offer. Natural upsell from consulting, the AI-Ready Blueprint, and the Claude Code Masterclass.',
+      'Agencies, builders, and operators who want to launch a high-margin recurring-revenue agentic business. People who can sell to local service businesses and franchises and want a proven, templated system instead of starting from scratch.',
+    funnelRole: 'Flagship high-ticket product. The build-a-business offer. Natural upsell from consulting, the Agentic Business Blueprint, and the Claude Code Masterclass.',
     accentColor: '#1a2238',
     recommendFor: ['voice-ai', 'agency', 'build-a-business', 'recurring-revenue', 'home-services', 'high-ticket'],
     comingSoon: true,
@@ -317,7 +317,7 @@ export const bundles: Bundle[] = [
     slug: 'builder-bundle',
     name: 'The Builder Bundle',
     pitch:
-      'The complete technical builder stack. Claude Code mastery, Shopify builds, brand systems, and AI-powered discovery.',
+      'The complete technical builder stack. Claude Code mastery, Shopify builds, brand systems, and agentic discovery.',
     priceUsd: 197,
     savings: 71,
     individualTotal: 268,
@@ -333,7 +333,7 @@ export const bundles: Bundle[] = [
     slug: 'complete-library',
     name: 'The Complete Library',
     pitch:
-      'Everything Modern Mustard Seed knows about building, running, and growing AI-native businesses. Every playbook in the library. 240+ pages. One price.',
+      'Everything Modern Mustard Seed knows about building, running, and growing agentic businesses. Every playbook in the library. 240+ pages. One price.',
     priceUsd: 247,
     savings: 115,
     individualTotal: 362,

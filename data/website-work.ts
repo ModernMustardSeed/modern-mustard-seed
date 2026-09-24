@@ -17,10 +17,10 @@ export type WorkSite = {
 };
 
 export const WORK_SITES: WorkSite[] = [
-  { key: 'modern-mustard-seed', name: 'Modern Mustard Seed', trade: 'AI web studio', place: 'This very site', img: '/work-shots/modern-mustard-seed.jpg', url: 'https://modernmustardseed.com' },
+  { key: 'modern-mustard-seed', name: 'Modern Mustard Seed', trade: 'Agentic web studio', place: 'This very site', img: '/work-shots/modern-mustard-seed.jpg', url: 'https://modernmustardseed.com' },
   { key: 'linen-fresh', name: 'Linen Fresh', trade: 'Laundromat', place: 'Las Vegas, NV', img: '/work-shots/linen-fresh.jpg', url: 'https://modernmustardseed.com/demo/site/f1a7cacd-d7d9-4384-894f-8651a687be53' },
   { key: 'dd-landscaping', name: 'D&D Landscaping', trade: 'Landscaping', place: 'Tallahassee, FL', img: '/work-shots/dd-landscaping.jpg', url: 'https://ddlandscaping.pro' },
-  { key: 'fiat-lux', name: 'Fiat Lux Design', trade: 'AI staging studio', place: 'Real estate staging', img: '/work-shots/fiat-lux.jpg', url: 'https://fiatluxdesign.co' },
+  { key: 'fiat-lux', name: 'Fiat Lux Design', trade: 'Agentic staging studio', place: 'Real estate staging', img: '/work-shots/fiat-lux.jpg', url: 'https://fiatluxdesign.co' },
   { key: 'chinatown', name: 'Chinatown', trade: 'Restaurant', place: 'Kalispell, MT', img: '/work-shots/chinatown.jpg', url: 'https://chinatown-kalispell.vercel.app' },
   { key: 'wild-hope', name: 'Wild Hope', trade: 'Lake retreat', place: 'Flathead Lake, MT', img: '/work-shots/wild-hope.jpg', url: 'https://wildhopehq.com' },
   { key: 'cross-covenant', name: 'Cross + Covenant', trade: 'Faith apparel store', place: 'Cart to checkout', img: '/work-shots/cross-covenant.jpg', url: 'https://crossandcovenant.co/shop' },

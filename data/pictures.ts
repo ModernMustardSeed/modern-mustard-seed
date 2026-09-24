@@ -21,7 +21,7 @@ export const PICTURES = {
   tagline: 'Your business. His camera. One commercial.',
   promise:
     'Tell Mr. Mustard about your business and he directs your commercial on the spot: a full storyboard, your tagline options, and one cinematic frame of the film. Free. If you love it, roll film and the finished spot is yours within days.',
-  metaTitle: 'AI Commercial for Your Business. Free Screen Test',
+  metaTitle: 'A Studio-Made Commercial for Your Business. Free Screen Test',
   metaDescription:
     'Get a free Screen Test: Mr. Mustard storyboards a cinematic commercial for YOUR business in 60 seconds, tagline included. Love it? The finished spot ships within days, at a set package price. By Modern Mustard Seed, the studio behind The Graduate and Night Shift.',
   deliveryPromiseSpot: 'delivered within 2 business days',
@@ -155,7 +155,7 @@ export const picturesFaq = [
   },
   {
     q: 'Why is this so much cheaper than an agency?',
-    a: 'An agency shoot runs $1,500 to $10,000 because cameras, crews, and edit suites are expensive. Our studio is an AI pipeline we built and use for our own brand, so you pay for direction, taste, and hand review, not for equipment rental.',
+    a: 'An agency shoot runs $1,500 to $10,000 because cameras, crews, and edit suites are expensive. Our studio is an agentic production pipeline we built and use for our own brand, so you pay for direction, taste, and hand review, not for equipment rental.',
   },
 ] as const;
 

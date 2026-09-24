@@ -271,7 +271,7 @@ export default function MustardLifeComic() {
           {/* Cover lines */}
           <div className="mt-auto grid gap-3 pb-16 sm:pb-6 pr-16 sm:pr-0 sm:max-w-sm">
             {[
-              { t: 'EXCLUSIVE: They Put AI on the Phones and Sailed Away', p: 'p. 04', r: -1.5 },
+              { t: 'EXCLUSIVE: They Put Agents on the Phones and Sailed Away', p: 'p. 04', r: -1.5 },
               { t: 'At Home on the Water with Mr. and Mrs. Mustard', p: 'p. 02', r: 1 },
               { t: 'Inside: Every Price We Charge, Printed in Ink', p: 'p. 03', r: -0.75 },
             ].map((l, i) => (
@@ -557,7 +557,7 @@ export default function MustardLifeComic() {
                 art: '/comic/launch.webp',
                 alt: 'The Mustard family on a picnic blanket watching a small golden rocket lift off into a twilight sky.',
                 head: 'Every launch needs witnesses.',
-                sub: 'Mustard Launch is your AI launch coach. Type the idea, get the whole plan, count down to open. The Blueprint is free.',
+                sub: 'Mustard Launch is your agentic launch coach. Type the idea, get the whole plan, count down to open. The Blueprint is free.',
                 tags: [
                   { name: P.launchKit.name, price: `$${P.launchKit.priceUsd}` },
                   { name: P.launchRoom.name, price: `$${P.launchRoom.priceUsd}/mo` },
@@ -573,7 +573,7 @@ export default function MustardLifeComic() {
                   { name: P.fixPack.name, price: `$${P.fixPack.priceUsd}` },
                   { name: P.watch.name, price: `from $${P.watch.priceUsd}/mo` },
                 ],
-                cta: { label: 'Free AI Grade', href: '/website-audit' },
+                cta: { label: 'Free Answer Engine Grade', href: '/website-audit' },
               },
             ].map((f, i) => (
               <article key={f.head} className="flex flex-col gap-4">
@@ -722,8 +722,8 @@ export default function MustardLifeComic() {
 
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {[
-              { label: 'The Bottleneck Breaker', note: 'A 2-minute AI audit that names the one thing slowing your business down.', href: '/audit' },
-              { label: 'The Website Audit', note: 'Your AI-findability grade. Learn what ChatGPT says about you.', href: '/website-audit' },
+              { label: 'The Bottleneck Breaker', note: 'A 2-minute agentic audit that names the one thing slowing your business down.', href: '/audit' },
+              { label: 'The Website Audit', note: 'Your answer engine visibility grade. Learn what ChatGPT says about you.', href: '/website-audit' },
               { label: 'The New Business Checklist', note: 'Every step from idea to open, in order, none skipped.', href: '/launch-checklist' },
               { label: 'The Prompt Playbook', note: 'The prompts the studio actually uses, ready to steal.', href: '/prompt-playbook' },
               { label: 'Idea to Spec', note: 'Turn the napkin sketch into a build brief a developer can price.', href: '/idea-to-spec' },

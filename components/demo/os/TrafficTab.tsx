@@ -35,7 +35,7 @@ export default function TrafficTab() {
     const peak = Math.max(...series, 1);
 
     const sources = [
-      { name: 'Google & AI search', pct: 44 + (h % 8), icon: '🔎' },
+      { name: 'Google & answer engines', pct: 44 + (h % 8), icon: '🔎' },
       { name: 'Direct', pct: 20 + (h % 6), icon: '↗' },
       { name: 'Facebook & Instagram', pct: 16 + (h % 6), icon: '📣' },
       { name: 'Referral & Maps', pct: 8 + (h % 5), icon: '⭐' },
@@ -147,7 +147,7 @@ export default function TrafficTab() {
         <span className="min-w-0 flex-1">
           <span className="block text-[10px] uppercase tracking-[0.22em] font-bold" style={{ color: theme.accent }}>Your website and your phone, one board</span>
           <span className="block text-[13px] mt-1" style={{ color: theme.dim }}>
-            Every form on the site and every call to your number lands in the same place, with the AI already following up. See where they went.
+            Every form on the site and every call to your number lands in the same place, with the agent already following up. See where they went.
           </span>
         </span>
         <span className="shrink-0 text-right">

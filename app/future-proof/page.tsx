@@ -5,10 +5,10 @@ import { buildMetadata } from '@/lib/seo';
 import { bookingUrl } from '@/data/socials';
 
 export const metadata = buildMetadata({
-  title: 'AI-Proof Your Business',
+  title: 'Future-Proof Your Business',
   description:
-    'Audit, harden, and re-equip an existing business so the next decade is one you own. Defensive AI work for owners with revenue to protect.',
-  path: '/ai-proof',
+    'Audit, harden, and re-equip an existing business so the next decade is one you own. Defensive agentic systems work for owners with revenue to protect.',
+  path: '/future-proof',
 });
 
 const phases = [
@@ -16,30 +16,30 @@ const phases = [
     eyebrow: 'Phase 1',
     title: 'Audit the moat',
     body:
-      'We map every workflow in your business against the AI shift. We name the parts AI will eat first, the parts that compound when you own the AI layer, and the parts a competitor could automate around you. You leave with a written report and a prioritized risk list.',
+      'We map every workflow in your business against the agentic shift. We name the parts automation will eat first, the parts that compound when you own the agentic layer, and the parts a competitor could automate around you. You leave with a written report and a prioritized risk list.',
   },
   {
     eyebrow: 'Phase 2',
     title: 'Harden the operation',
     body:
-      'We deploy AI where it defends margin and protects customer relationships. Voice agents on the front line. Automation in the back office. Internal copilots for your team. The premise is simple: own your AI stack before a competitor uses theirs to take you out.',
+      'We deploy agentic systems where they defend margin and protects customer relationships. Voice agents on the front line. Automation in the back office. Internal copilots for your team. The premise is simple: own your agentic stack before a competitor uses theirs to take you out.',
   },
   {
     eyebrow: 'Phase 3',
     title: 'Re-equip the team',
     body:
-      'AI literacy is not a workshop. It is a working system your team uses daily. We train, document, and instrument the tools so your operators can run them long after we leave. The defensive work compounds because the team compounds.',
+      'Agentic literacy is not a workshop. It is a working system your team uses daily. We train, document, and instrument the tools so your operators can run them long after we leave. The defensive work compounds because the team compounds.',
   },
 ];
 
 const faq = [
   {
     q: 'How is this different from the Idea to Product offer?',
-    a: 'Idea to Product builds something new. AI-Proof defends something existing. If you already have customers, revenue, and a working operation, this is the right path. If you have an idea and no product yet, the Idea to Product offer is the right one.',
+    a: 'Idea to Product builds something new. Future-Proof defends something existing. If you already have customers, revenue, and a working operation, this is the right path. If you have an idea and no product yet, the Idea to Product offer is the right one.',
   },
   {
     q: 'What businesses is this for?',
-    a: 'Service businesses, professional firms, brick-and-mortar operators, regional brands, anyone with real revenue and real customers who can see the AI wave coming. Most clients are doing $500K to $10M in annual revenue when they engage.',
+    a: 'Service businesses, professional firms, brick-and-mortar operators, regional brands, anyone with real revenue and real customers who can see the agentic wave coming. Most clients are doing $500K to $10M in annual revenue when they engage.',
   },
   {
     q: 'How long does it take?',
@@ -58,7 +58,7 @@ export default function AiProofPage() {
         data={[
           breadcrumbJsonLd([
             { name: 'Home', url: '/' },
-            { name: 'AI-Proof Your Business', url: '/ai-proof' },
+            { name: 'Future-Proof Your Business', url: '/future-proof' },
           ]),
           faqJsonLd(faq),
         ]}
@@ -68,7 +68,7 @@ export default function AiProofPage() {
         <div className="relative max-w-5xl mx-auto px-6 md:px-8">
           <div className="text-center mb-16">
             <span className="text-[10px] uppercase tracking-[0.5em] text-[#E0301E] font-mono font-bold mb-6 block">
-              AI-Proof Your Business
+              Future-Proof Your Business
             </span>
             <h1 className="font-display text-5xl md:text-7xl font-black text-[#161616] tracking-tight mb-6 leading-[1.05]">
               Defend the{' '}
@@ -77,7 +77,7 @@ export default function AiProofPage() {
               </span>
             </h1>
             <p className="text-[#3a3733] text-lg font-body leading-relaxed max-w-2xl mx-auto">
-              For owners who already built something real. We audit your operation against the AI shift, harden the surfaces AI will hit first, and re-equip your team to run the new stack. Your business stays yours.
+              For owners who already built something real. We audit your operation against the agentic shift, harden the surfaces automation will hit first, and re-equip your team to run the new stack. Your business stays yours.
             </p>
           </div>
 
@@ -100,7 +100,7 @@ export default function AiProofPage() {
               The premise
             </span>
             <p className="text-[#161616] text-lg md:text-xl font-display font-bold leading-relaxed text-center max-w-3xl mx-auto italic">
-              &ldquo;If AI is going to reshape your industry, you have two choices. Build the AI-native version of your business before someone else does. Or stand still while a competitor does it to you.&rdquo;
+              &ldquo;If agentic systems are going to reshape your industry, you have two choices. Build the agentic version of your business before someone else does. Or stand still while a competitor does it to you.&rdquo;
             </p>
           </div>
 
@@ -158,8 +158,8 @@ export default function AiProofPage() {
           </div>
 
           <NewsletterSignup
-            headline="AI-proofing playbooks. Weekly."
-            subhead="Real plays for defending an existing business through the AI shift. One letter a week, from the desk."
+            headline="Future-proofing playbooks. Weekly."
+            subhead="Real plays for defending an existing business through the agentic shift. One letter a week, from the desk."
           />
         </div>
       </div>

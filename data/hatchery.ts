@@ -117,8 +117,8 @@ export function getHatcheryTier(slug: string): HatcheryTier | undefined {
 
 export const hatcheryFaq: { q: string; a: string }[] = [
   {
-    q: 'Is the mascot an AI?',
-    a: 'Yes, and it says so. Your mascot answers a real phone and talks like a character with a story, but it will happily tell any caller that it is an AI. We never pretend otherwise. It is the official mascot of your business, not a person.',
+    q: 'Is the mascot a voice agent?',
+    a: 'Yes, and it says so. Your mascot answers a real phone and talks like a character with a story, but it will happily tell any caller that it is a voice agent. We never pretend otherwise. It is the official mascot of your business, not a person.',
   },
   {
     q: 'What is a Birth Day?',

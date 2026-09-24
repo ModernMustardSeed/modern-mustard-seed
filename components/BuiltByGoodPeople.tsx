@@ -22,7 +22,7 @@ export default function BuiltByGoodPeople() {
         </p>
 
         <p className="text-white/55 text-base md:text-lg font-body font-light leading-relaxed mb-12">
-          And you do not need to know a single thing about AI. That is literally why you hire us. We translate, we build, you ship. The good stuff stays simple.
+          And you do not need to know a single thing about agentic systems. That is literally why you hire us. We translate, we build, you ship. The good stuff stays simple.
         </p>
 
         <div className="flex justify-center mb-8">

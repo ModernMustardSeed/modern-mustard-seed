@@ -23,7 +23,7 @@ export const DEMO_AGENT = {
   // "voice agent for small business" does. The brand name still owns the H1.
   metaTitle: 'Voice Agent for Small Business. Hear Yours Answer Live',
   metaDescription:
-    'Mr. Mustard trains an AI front desk for YOUR business while you watch, then it talks to you live and can even call your cell. Free demo, no card. Keep him and he answers your real phone 24/7. From Modern Mustard Seed.',
+    'Mr. Mustard trains an agentic front desk for YOUR business while you watch, then it talks to you live and can even call your cell. Free demo, no card. Keep him and he answers your real phone 24/7. From Modern Mustard Seed.',
   phoneLine: '(406) 312-1223',
   // Room to riff, not a stopwatch (Sarah's rule 2026-07-22). 30 min is far past
   // any real demo, so an engaged owner is never cut off mid-conversation; the
@@ -243,7 +243,7 @@ export const demoAgentFaq = [
   },
   {
     q: 'Who is Mr. Mustard?',
-    a: 'The AI who answers Modern Mustard Seed’s own phones at (406) 312-1223 and just trained your Voice Agent. Call him yourself, he loves visitors.',
+    a: 'The voice agent who answers Modern Mustard Seed’s own phones at (406) 312-1223 and just trained your Voice Agent. Call him yourself, he loves visitors.',
   },
 ] as const;
 

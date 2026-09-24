@@ -4,7 +4,7 @@ import WorldExperience from './WorldExperience';
 
 const TITLE = 'The Mustard Seed World';
 const DESC =
-  'Scroll through a handmade claymation world of Modern Mustard Seed: a studio on the shore of Flathead Lake that builds custom apps, websites, and specialty AI tools in weeks, not months. Plant your seed and tell us what you want to grow.';
+  'Scroll through a handmade claymation world of Modern Mustard Seed: a studio on the shore of Flathead Lake that builds custom apps, websites, and specialty agentic tools in weeks, not months. Plant your seed and tell us what you want to grow.';
 
 export const metadata = buildMetadata({
   title: TITLE,
@@ -38,7 +38,7 @@ export default function WorldPage() {
         description:
           'An interactive, scroll-driven claymation diorama of the Modern Mustard Seed studio on Flathead Lake in Kalispell, Montana. A brand experience that ends in a project intake.',
         keywords:
-          'Modern Mustard Seed, claymation, scroll experience, Flathead Lake, AI studio, custom apps, websites, AI tools, Kalispell Montana',
+          'Modern Mustard Seed, claymation, scroll experience, Flathead Lake, agentic systems studio, custom apps, websites, agentic tools, Kalispell Montana',
         genre: 'Interactive brand experience',
       },
       {

@@ -11,10 +11,10 @@
 
 export const SEO_PACKAGES = {
   name: 'Local Visibility Suite',
-  tagline: 'Get found by Google, Bing, and every AI assistant that answers "who does this near me."',
+  tagline: 'Get found by Google, Bing, and every answer engine people ask "who does this near me."',
   metaTitle: 'SEO + Google Business Profile Packages for Local Businesses',
   metaDescription:
-    'Done-for-you SEO setup and Google Business Profile optimization. Get found on Google, Bing, Yandex, and AI assistants like ChatGPT and Perplexity. From Modern Mustard Seed.',
+    'Done-for-you SEO setup and Google Business Profile optimization. Get found on Google, Bing, Yandex, and answer engines like ChatGPT and Perplexity. From Modern Mustard Seed.',
 } as const;
 
 export type SeoTier = {
@@ -197,8 +197,8 @@ export const seoFaq = [
     a: 'We set up the foundation that Google needs to understand your business. Ranking depends on many factors, but most local businesses see improvement within 30 to 90 days of proper setup.',
   },
   {
-    q: 'What about AI search like ChatGPT?',
-    a: 'AI assistants pull from the same sources Google does. A well-optimized GBP and proper schema markup help you show up when someone asks "who does [your service] near me."',
+    q: 'What about answer engines like ChatGPT?',
+    a: 'Answer engines pull from the same sources Google does. A well-optimized GBP and proper schema markup help you show up when someone asks "who does [your service] near me."',
   },
   {
     q: 'Can I cancel the monthly plan?',

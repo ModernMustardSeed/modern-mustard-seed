@@ -30,21 +30,21 @@ const TIGHT_CUTS: PrompterScript[] = [
     publish: 'Use anytime',
     pillar: 'BUILD',
     title: 'The Age of Agentic Building',
-    hook: 'Most people are still using AI like a smarter search bar. That is not where the world is anymore.',
+    hook: 'Most people are still using chat models like a smarter search bar. That is not where the world is anymore.',
     directorNote:
       'Calm authority. You are the person who already lives in this future, telling people what you see. Slow down on the one-line punches ("Now it is a Tuesday." "It is already here.") and let them land. Eyes to the lens. One clean take per section is plenty.',
     sections: [
       {
         heading: 'Cold Open',
         paragraphs: [
-          'Most people are still using AI like a smarter search bar. Ask a question, get an answer, move on.',
+          'Most people are still using chat models like a smarter search bar. Ask a question, get an answer, move on.',
           'That is not where the world is anymore. The real shift is quieter, and it is much bigger. Software has started building itself.',
         ],
       },
       {
         heading: 'The Shift, Named',
         paragraphs: [
-          'I run an AI studio called Modern Mustard Seed. We build agentic systems. Not chatbots. Agents that do the work.',
+          'I run an agentic systems studio called Modern Mustard Seed. We build agentic systems. Not chatbots. Agents that do the work.',
           'An agent can read a whole codebase, plan a change, write it, test it, fix its own mistakes, and ship it. It can run your operations overnight. It can take a vague idea in the morning and hand you a working product by dinner.',
           'A year ago that was a demo. Now it is a Tuesday.',
         ],
@@ -82,7 +82,7 @@ const TIGHT_CUTS: PrompterScript[] = [
     session: 'Shorts Bank',
     publish: 'Use anytime',
     pillar: 'STORY',
-    title: 'Why a Christian Founder Is Betting Everything on AI',
+    title: 'Why a Christian Founder Is Betting Everything on Agentic Systems',
     hook: 'I run four companies by myself. People assume that means I never rest. The truth is almost the opposite.',
     directorNote:
       'The cornerstone video, pinned to the channel. Warm, unhurried, personal. This one is testimony, not a pitch. Smile when you get to the ventures. Breathe between sections and let the verse sit for a beat before you move on.',
@@ -97,13 +97,13 @@ const TIGHT_CUTS: PrompterScript[] = [
         heading: 'The Thesis',
         paragraphs: [
           'Jesus said the kingdom of God is like a mustard seed. The smallest of seeds, that becomes a tree where the birds come and nest. I have built my whole working life around that picture. Small, faithful inputs. Real leverage. Work that ends up sheltering other people.',
-          'For most of history, a small input stayed small. One person could only do so much. That is not true anymore. AI did not make me ambitious. It made the seed grow faster than I could on my own.',
+          'For most of history, a small input stayed small. One person could only do so much. That is not true anymore. The models did not make me ambitious. It made the seed grow faster than I could on my own.',
         ],
       },
       {
         heading: 'The Turn',
         paragraphs: [
-          'So here is what I actually do. I am a Christian. I build companies with AI. A faith apparel house. An AI studio. Title and escrow work. A small resort up in the mountains. One person, four ventures, because the systems do the running, not me.',
+          'So here is what I actually do. I am a Christian. I build companies with agentic systems. A faith apparel house. An agentic systems studio. Title and escrow work. A small resort up in the mountains. One person, four ventures, because the systems do the running, not me.',
           'This channel is where I show the work. Honestly. The builds, the faith underneath them, the parts that go wrong.',
         ],
       },
@@ -111,7 +111,7 @@ const TIGHT_CUTS: PrompterScript[] = [
         heading: 'The Conviction',
         paragraphs: [
           'I am not here to sell you a hustle. I think a lot of what passes for entrepreneurship online is just anxiety with a logo. What I want to show you is different. You can build real things, with real tools, without making the building your god.',
-          'Stewardship, not striving. You were given gifts. AI is just a very large lever for them. The question is never whether the lever is powerful. It is whether you will pick it up faithfully.',
+          'Stewardship, not striving. You were given gifts. Machine intelligence is just a very large lever for them. The question is never whether the lever is powerful. It is whether you will pick it up faithfully.',
         ],
       },
       {
@@ -130,15 +130,15 @@ const TIGHT_CUTS: PrompterScript[] = [
     session: 'Shorts Bank',
     publish: 'Use anytime',
     pillar: 'STEWARD',
-    title: 'Is It a Sin to Use AI?',
-    hook: 'A believer asked me if using AI to build a business is cheating God. I sat with that question for a week.',
+    title: 'Is It a Sin to Let Machines Do the Work?',
+    hook: 'A believer asked me if letting machines help build a business is cheating God. I sat with that question for a week.',
     directorNote:
       'A trust piece, not a sales piece. Quiet, pastoral, zero hype. Take the tension seriously before you resolve it. The caution section is spoken gently, to yourself as much as the viewer. Land the last three sentences slowly.',
     sections: [
       {
         heading: 'Hook',
         paragraphs: [
-          'A believer messaged me last week and asked, very seriously, if using AI to build a business is cheating God. Like she was getting away with something. I sat with that question for a week before I answered. Here is what I told her.',
+          'A believer messaged me last week and asked, very seriously, if letting machines help build a business is cheating God. Like she was getting away with something. I sat with that question for a week before I answered. Here is what I told her.',
         ],
       },
       {
@@ -153,14 +153,14 @@ const TIGHT_CUTS: PrompterScript[] = [
         paragraphs: [
           'Scripture does not condemn tools. It condemns where you put your trust. A plow is a tool. A printing press is a tool. The loom, the calculator, the camera. Every one of them was once accused of cheating, of making people lazy or false. And every one of them, in faithful hands, multiplied good work.',
           'The parable of the talents is not gentle with the servant who buried what he was given to keep it safe. The sin there was not risk. It was fear that masqueraded as reverence. He was so afraid of using the gift wrong that he refused to use it at all.',
-          'AI is a lever. A large one. The question God asks is the same question He has always asked. Will you take what you have been given and put it to work, or will you bury it.',
+          'Machine intelligence is a lever. A large one. The question God asks is the same question He has always asked. Will you take what you have been given and put it to work, or will you bury it.',
         ],
       },
       {
         heading: 'The Honest Caution',
         paragraphs: [
           'Now, the warning. A lever this big makes it easy to build an idol fast. You can produce so much that you forget to ask whether you should. You can let the tool think for you until you stop thinking. You can make output your identity and call it diligence.',
-          'So the line is not whether you use AI. The line is whether you are still the one being faithful. Are you stewarding it, or worshiping what it can produce. Do you still rest. Do you still pray over the work. Does the speed make you more generous, or just more anxious.',
+          'So the line is not whether you use the machines. The line is whether you are still the one being faithful. Are you stewarding it, or worshiping what it can produce. Do you still rest. Do you still pray over the work. Does the speed make you more generous, or just more anxious.',
         ],
       },
       {
@@ -372,7 +372,7 @@ const SALES_DESK: PrompterScript[] = [
         paragraphs: [
           'I am Sarah Scarano. I run Modern Mustard Seed from Kalispell, Montana. I am a self-taught builder, I have shipped software for dozens of industries, contractors and restaurants and roofers and retailers, and I run this studio the way you probably run your shop. Personally. When you email, I read it. When something breaks, I fix it.',
           'The name comes from a parable about a mustard seed, the smallest of seeds that grows into a tree with room for others in its branches. That is the whole business plan, honestly. Small faithful work, real leverage, built to shelter the people it serves.',
-          'I use AI to do the heavy lifting, so a small studio can deliver like a big one. But the judgment, the taste, and the promise keeping are mine, and I do not delegate those.',
+          'I use agentic systems to do the heavy lifting, so a small studio can deliver like a big one. But the judgment, the taste, and the promise keeping are mine, and I do not delegate those.',
         ],
       },
       {
@@ -546,7 +546,7 @@ const META_ADS: PrompterScript[] = [
       {
         heading: 'The Fix + CTA',
         paragraphs: [
-          'I build a voice agent that runs on AI. It answers every call in your voice, knows your hours, books the job, and texts you the details before you are back down the ladder.',
+          'I build a voice agent that runs on its own. It answers every call in your voice, knows your hours, books the job, and texts you the details before you are back down the ladder.',
           '(Mr. Mustard clip: he catches a falling phone, taps it once, gives a thumbs up.)',
           'It never sleeps and it never takes a lunch. There is a number below you can call right now and try to stump. I am Sarah, from a little studio in Montana.',
         ],
@@ -607,7 +607,7 @@ const META_ADS: PrompterScript[] = [
       {
         heading: 'The Turn',
         paragraphs: [
-          'I do not have a big team. I have AI staff that I built. They answer the phones, run the follow up, build the demos, and handle the parts of the business I should not be touching by hand.',
+          'I do not have a big team. I have agentic staff that I built. They answer the phones, run the follow up, build the demos, and handle the parts of the business I should not be touching by hand.',
           '(Mr. Mustard clip: a tiny crew of Mr. Mustards works an assembly line, hats and clipboards, while Sarah sips coffee and watches.)',
         ],
       },
@@ -628,20 +628,20 @@ const META_ADS: PrompterScript[] = [
     publish: 'Cold · faith audience',
     pillar: 'ADS',
     title: 'Is It Cheating God?',
-    hook: 'A woman messaged me and asked, very seriously, if using AI to build her business was cheating God.',
+    hook: 'A woman messaged me and asked, very seriously, if letting machines help build her business was cheating God.',
     directorNote:
-      'Pastoral, quiet, zero hype. This is a trust piece that disarms the AI skeptic, not a sale. Take the tension seriously before you resolve it. Keep the faith beat reverent, and note the direction: NO Mr. Mustard in that section, it would break the tone. Land the last two lines slowly.',
+      'Pastoral, quiet, zero hype. This is a trust piece that disarms the automation skeptic, not a sale. Take the tension seriously before you resolve it. Keep the faith beat reverent, and note the direction: NO Mr. Mustard in that section, it would break the tone. Land the last two lines slowly.',
     sections: [
       {
         heading: 'Hook',
         paragraphs: [
-          'A woman messaged me and asked, very seriously, if using AI to build her business was cheating God. Like she was getting away with something. I sat with that for a week.',
+          'A woman messaged me and asked, very seriously, if letting machines help build her business was cheating God. Like she was getting away with something. I sat with that for a week.',
         ],
       },
       {
         heading: 'The Principle',
         paragraphs: [
-          'Here is what I told her. Scripture never condemned the tool. It condemned where you put your trust. A plow is a tool. A printing press is a tool. AI is a lever, a large one, and the parable of the talents is not kind to the man who buried what he was given out of fear.',
+          'Here is what I told her. Scripture never condemned the tool. It condemned where you put your trust. A plow is a tool. A printing press is a tool. Machine intelligence is a lever, a large one, and the parable of the talents is not kind to the man who buried what he was given out of fear.',
           '(Quiet graphic only: a single mustard seed, then a simple hand-drawn tree growing from it. Keep it reverent. No mascot here.)',
         ],
       },
@@ -681,7 +681,7 @@ const META_ADS: PrompterScript[] = [
       {
         heading: 'CTA',
         paragraphs: [
-          'I build the AI systems that take the ten dollar work off your plate, so you can go be the founder. Curious what that would free up in your week? The link is below.',
+          'I build the agentic systems that take the ten dollar work off your plate, so you can go be the founder. Curious what that would free up in your week? The link is below.',
         ],
       },
     ],
@@ -707,7 +707,7 @@ const META_ADS: PrompterScript[] = [
       {
         heading: 'Who You Get',
         paragraphs: [
-          'I am Sarah. I run Modern Mustard Seed out of Kalispell, Montana. When you email, I read it. When something breaks, I fix it. I use AI to do the heavy lifting so a small studio can deliver like a big one, but the judgment and the promises are mine, and I do not delegate those.',
+          'I am Sarah. I run Modern Mustard Seed out of Kalispell, Montana. When you email, I read it. When something breaks, I fix it. I use agentic systems to do the heavy lifting so a small studio can deliver like a big one, but the judgment and the promises are mine, and I do not delegate those.',
           '(Mr. Mustard clip: he tips a little hat and hands over a wrench. Homemade, warm, no gloss.)',
         ],
       },
@@ -727,14 +727,14 @@ const META_ADS: PrompterScript[] = [
     publish: 'Cold · objection',
     pillar: 'ADS',
     title: 'You Do Not Have to Be Techy',
-    hook: 'The number one reason owners tell me they are scared of AI is, I am not a tech person. Good news.',
+    hook: 'The number one reason owners tell me they are scared of automation is, I am not a tech person. Good news.',
     directorNote:
       'Reassuring and plain, like talking a nervous friend off a ledge. Smile on the EASY button beat. The goal is to remove one specific fear, so do not oversell, just relieve it.',
     sections: [
       {
         heading: 'Hook',
         paragraphs: [
-          'The number one reason business owners tell me they are scared of AI is, I am not a tech person. Good news. You do not have to be.',
+          'The number one reason business owners tell me they are scared of automation is, I am not a tech person. Good news. You do not have to be.',
         ],
       },
       {
@@ -806,7 +806,7 @@ const META_ADS: PrompterScript[] = [
       {
         heading: 'The Meaning',
         paragraphs: [
-          'That is the whole business, honestly. Small, faithful work. Real leverage. Systems that grow into shelter for the family your business carries. I just happen to build that with AI now.',
+          'That is the whole business, honestly. Small, faithful work. Real leverage. Systems that grow into shelter for the family your business carries. I just happen to build that with agentic systems now.',
           '(Gentle growth graphic: a seed becomes a full tree across the whole ad. Mr. Mustard waters it once, then sits and rests in its shade.)',
         ],
       },
@@ -952,7 +952,7 @@ const META_ADS: PrompterScript[] = [
       {
         heading: 'The New Math',
         paragraphs: [
-          'A small studio with the right AI can build you the same quality in a fraction of the time. And I run it personally, so when you email, you get me, not a junior three people removed from your project.',
+          'A small studio with the right agentic systems can build you the same quality in a fraction of the time. And I run it personally, so when you email, you get me, not a junior three people removed from your project.',
           '(Mr. Mustard, in a tiny hard hat, out-builds a whole cartoon office of suits single-handed, then tips his hat.)',
         ],
       },
@@ -1000,7 +1000,7 @@ const META_ADS: PrompterScript[] = [
       {
         heading: 'Let Us Handle the Rest',
         paragraphs: [
-          'So let us handle the rest. My studio builds the quiet AI systems that run the background of your business, so you get to run the part that matters.',
+          'So let us handle the rest. My studio builds the quiet agentic systems that run the background of your business, so you get to run the part that matters.',
           '(Mr. Mustard appears softly, tending the background like a lamplighter, then steps out of frame so the owner is centered.)',
         ],
       },
@@ -1030,14 +1030,14 @@ const ORIGIN: PrompterScript[] = [
     publish: 'Season One',
     pillar: 'STORY',
     title: 'I Built the Studio to Build the Mission',
-    hook: 'I did not build an AI studio because I love AI. I built it because I had a mission I could not make alone.',
+    hook: 'I did not build an agentic studio because I love machines. I built it because I had a mission I could not make alone.',
     directorNote:
       'This is the origin manifesto. Warm, unhurried, founder to founder. Sit closer to the lens than usual and let it feel like a story, not a lecture. Let the pauses breathe, especially after the cold open and before the mustard seed parable, where you should drop to an almost conversational register, quieter and slower, like you are telling one friend the truth. If you record it in sections, the natural cut points are the section breaks.',
     sections: [
       {
         heading: 'Cold Open',
         paragraphs: [
-          'Here is something that sounds backwards. I did not build an AI studio because I am fascinated by AI. I built it because there was a thing I had to make, and I could not make it alone. The studio was never the goal. It was the way I got to the goal.',
+          'Here is something that sounds backwards. I did not build an agentic studio because I am fascinated by machines. I built it because there was a thing I had to make, and I could not make it alone. The studio was never the goal. It was the way I got to the goal.',
           'I think once you see it in that order, a lot of what feels impossible about building something right now starts to feel possible instead. So let me tell you the whole story, because it is really a story about how one person gets to build like a company.',
         ],
       },
@@ -1058,7 +1058,7 @@ const ORIGIN: PrompterScript[] = [
       {
         heading: 'A Different Decision',
         paragraphs: [
-          'I stopped trying to hire a team, and I started building one. Not out of people. Out of AI.',
+          'I stopped trying to hire a team, and I started building one. Not out of people. Out of agents.',
           'I built a designer that never sleeps. A writer that can draft in my own voice. A marketer that ships something every day without being asked. A developer that can take an idea I have on a Tuesday and hand me back a working online store by the weekend. A voice agent that answers the phone and the messages at any hour, in the tone of my brand, and never takes a day off.',
           'Each of these is not a person. It is a system I built and taught. A worker made of instructions, and models, and a fair amount of care. And when you put enough of them together, and you give them a shared way of working, you do not have a pile of tools sitting on a shelf. You have a studio. A small company that happens to have one human in it.',
         ],
@@ -1066,7 +1066,7 @@ const ORIGIN: PrompterScript[] = [
       {
         heading: 'What a Studio Actually Is',
         paragraphs: [
-          'I want to be honest about what that actually looks like, because I think the word AI makes people picture something colder and more magical than the truth. It is not magic. It is a lot of careful work up front. You have to decide how each worker should think. What it is allowed to do on its own, and where it has to stop and hand off to you. Where it fails safe, so it never does the thing you would regret.',
+          'I want to be honest about what that actually looks like, because I think the word agent makes people picture something colder and more magical than the truth. It is not magic. It is a lot of careful work up front. You have to decide how each worker should think. What it is allowed to do on its own, and where it has to stop and hand off to you. Where it fails safe, so it never does the thing you would regret.',
           'You have to teach it your standards, the same way you would train a new hire, except you only have to teach it once and it never forgets, and it never has a bad morning. I am self taught. I did not come from a technical background. I learned all of this the way most of you would have to learn it, by building the thing in front of me, breaking it, and building it again until it held. So when I tell you this is possible, I am not saying it from a mountaintop. I am saying it from the same ground you are standing on right now.',
         ],
       },
@@ -1074,7 +1074,7 @@ const ORIGIN: PrompterScript[] = [
         heading: 'I Was the First Client',
         paragraphs: [
           'Now here is the part that matters most to me, and it is the reason I can look you in the eye about any of this. I did not build this studio for clients and then go looking for someone to test it on. I built it for my own mission, and I pointed the entire thing at my own company first.',
-          'Cross and Covenant was the first client the studio ever had. The store, the words on it, the launch, the daily presence, the growth engine, the little worker that answers customers while I am asleep. All of it built by one person and a staff of AI workers. And it worked. A real product. Real customers. A real brand out in the world with my name behind it.',
+          'Cross and Covenant was the first client the studio ever had. The store, the words on it, the launch, the daily presence, the growth engine, the little worker that answers customers while I am asleep. All of it built by one person and a staff of agentic workers. And it worked. A real product. Real customers. A real brand out in the world with my name behind it.',
           'So when someone asks me to prove that this approach actually works, I do not reach for a testimonial about a stranger. I point at my own company and I say, I built that this way. I am the proof. I did it to myself before I ever offered to do it for anyone else.',
         ],
       },
@@ -1082,7 +1082,7 @@ const ORIGIN: PrompterScript[] = [
         heading: 'The Part I Did Not Plan',
         paragraphs: [
           'That next part I did not plan for. Other founders saw what I had built, and they did not say, that is neat. They said, build mine. A woman with a beautiful product and no team behind it. A man running a service business who is drowning in the phone every single day. People with a real thing to offer and no company around them to offer it well.',
-          'So the studio I built to build my own mission became a studio that builds for other people\'s missions too. That is Modern Mustard Seed. It is an AI studio that builds businesses, and it exists in the first place because I needed it to exist for myself. The order matters, and I want to say it plainly. The mission came first. The studio was the answer to the mission. And the studio turned out to be useful to a whole lot of other people who are carrying missions of their own and hitting the same wall I hit.',
+          'So the studio I built to build my own mission became a studio that builds for other people\'s missions too. That is Modern Mustard Seed. It is an agentic studio that builds businesses, and it exists in the first place because I needed it to exist for myself. The order matters, and I want to say it plainly. The mission came first. The studio was the answer to the mission. And the studio turned out to be useful to a whole lot of other people who are carrying missions of their own and hitting the same wall I hit.',
         ],
       },
       {
@@ -1090,7 +1090,7 @@ const ORIGIN: PrompterScript[] = [
         paragraphs: [
           'I should tell you where the name comes from, because it is not decoration. There is a parable about a mustard seed. The smallest seed a person plants, and it grows into a tree large enough that the birds come and find shelter in its branches. That is the whole idea. Something small, planted in faith, that grows into something big enough to shelter other people.',
           'I think that is what a business is supposed to be. Not a machine for taking. A tree that shelters. Your family. The people you get to employ one day. The customers you serve. The person who puts on the shirt and feels a little less alone in what they believe.',
-          'I am a Christian, and I build like one. That does not mean I put a verse on everything I make. It means I believe I am a steward of what I have been given, not the owner of it. My job is to take the small thing that is in my hands and grow it into something that shelters. AI, to me, is just leverage. It is a way for one faithful person with a small seed to build something the size of a company. Small faith. Real leverage. Work that shelters.',
+          'I am a Christian, and I build like one. That does not mean I put a verse on everything I make. It means I believe I am a steward of what I have been given, not the owner of it. My job is to take the small thing that is in my hands and grow it into something that shelters. Agentic systems, to me, are just leverage. It is a way for one faithful person with a small seed to build something the size of a company. Small faith. Real leverage. Work that shelters.',
         ],
       },
       {
@@ -1104,7 +1104,7 @@ const ORIGIN: PrompterScript[] = [
         heading: 'Is That Cheating',
         paragraphs: [
           'Now, some of you are hearing all of this and a quiet objection is forming. Is that not cheating. Is there not something hollow about a company run by machines. I have sat with that question honestly, because I care about the answer.',
-          'Here is where I have landed. The machine never had a heart to begin with. It is not pretending to be a person, and it is not replacing the part of the work that actually needs a person. The vision is mine. The standards are mine. The care about the customer is mine. The reason the thing exists at all is mine. The AI carries the load. I carry the intent.',
+          'Here is where I have landed. The machine never had a heart to begin with. It is not pretending to be a person, and it is not replacing the part of the work that actually needs a person. The vision is mine. The standards are mine. The care about the customer is mine. The reason the thing exists at all is mine. The agents carry the load. I carry the intent.',
           'Every worker in my company is pointed at exactly what I would want, because I am the one who taught it. That is not less human. In a strange way it is more, because nothing in the company ever drifts away from why I started it.',
         ],
       },
@@ -1118,7 +1118,7 @@ const ORIGIN: PrompterScript[] = [
       {
         heading: 'Where to Start',
         paragraphs: [
-          'If you want somewhere to start, start here. First, get the mission clear enough to say in one sentence. Not the tools, the mission. The actual thing only you can make. Second, write down every job a company would need to bring that thing to life, the designer, the writer, the person on the phone, all of it. Third, build those jobs one at a time, out of AI, and do not move to the next one until the last one actually works.',
+          'If you want somewhere to start, start here. First, get the mission clear enough to say in one sentence. Not the tools, the mission. The actual thing only you can make. Second, write down every job a company would need to bring that thing to life, the designer, the writer, the person on the phone, all of it. Third, build those jobs one at a time, out of agents, and do not move to the next one until the last one actually works.',
           'That is it. That is how the studio got built. One taught worker at a time, in service of one clear mission. And do not wait for permission. Nobody handed me a company. I built one out of the only material I had, which was a clear picture of what I wanted to make and a willingness to learn how to make it. The picture is the rare part. The building is learnable. I am living proof of that, and I am not special. I just refused to let the wall be the end of the story.',
         ],
       },
@@ -1139,14 +1139,14 @@ const ORIGIN: PrompterScript[] = [
     publish: 'Use anytime',
     pillar: 'STORY',
     title: 'Why the Studio Exists',
-    hook: 'People think I started an AI studio because I am a tech person. I am not.',
+    hook: 'People think I started an agentic studio because I am a tech person. I am not.',
     directorNote:
       'Warm and grounded, like you are answering the question you get asked the most. This is the origin in about ninety seconds, so do not rush the first line, and let "I built the studio to build the mission" land clean near the end. Eyes to the lens the whole way.',
     sections: [
       {
         heading: 'Cold Open',
         paragraphs: [
-          'People think I started an AI studio because I am a tech person. I am not. I am self taught, and I started because I had a brand living in my head that I could not get out into the world by myself.',
+          'People think I started an agentic studio because I am a tech person. I am not. I am self taught, and I started because I had a brand living in my head that I could not get out into the world by myself.',
         ],
       },
       {
@@ -1158,8 +1158,8 @@ const ORIGIN: PrompterScript[] = [
       {
         heading: 'The Decision',
         paragraphs: [
-          'So I did the only thing that made sense. I stopped trying to hire a team and I started building one. Out of AI. A designer that never sleeps. A marketer that ships every day. A developer that turns an idea into a working store by the weekend.',
-          'That collection of AI workers became a studio. And the studio built the brand.',
+          'So I did the only thing that made sense. I stopped trying to hire a team and I started building one. Out of agents. A designer that never sleeps. A marketer that ships every day. A developer that turns an idea into a working store by the weekend.',
+          'That collection of agentic workers became a studio. And the studio built the brand.',
         ],
       },
       {
@@ -1193,7 +1193,7 @@ const ORIGIN: PrompterScript[] = [
       {
         heading: 'The Proof',
         paragraphs: [
-          'I had a brand I believed in and no team to make it real. So I built the team out of AI, and I pointed all of it at my own company first. The store, the words, the launch, the growth engine, the thing that answers customers when I am asleep. All of it, one person and a studio of AI staff.',
+          'I had a brand I believed in and no team to make it real. So I built the team out of agents, and I pointed all of it at my own company first. The store, the words, the launch, the growth engine, the thing that answers customers when I am asleep. All of it, one person and a studio of agentic staff.',
           'It worked. So I did not go write a case study about somebody else. I became the case study.',
         ],
       },
@@ -1214,22 +1214,22 @@ const ORIGIN: PrompterScript[] = [
     session: 'Meta · Origin 9:16',
     publish: 'Broad · founders',
     pillar: 'ADS',
-    title: 'I Built the Team Out of AI',
-    hook: 'I built an entire AI studio for one reason. I had a brand I had to bring into the world and could not afford a team.',
+    title: 'I Built the Team Out of Agents',
+    hook: 'I built an entire agentic studio for one reason. I had a brand I had to bring into the world and could not afford a team.',
     directorNote:
       'Fast, warm, straight to the lens. The hook has to win the first two seconds, so lead with it cold, no intro. Leave a half-beat of air before each Mr. Mustard cut so the edit breathes. End on the invitation, never a pitch.',
     sections: [
       {
         heading: 'Hook',
         paragraphs: [
-          'I built an entire AI studio for one reason. I had a brand I had to bring into the world, and I could not afford a team to do it.',
+          'I built an entire agentic studio for one reason. I had a brand I had to bring into the world, and I could not afford a team to do it.',
           '(Quick graphic: a single gold seed drops onto dark ground and a thin line of light draws outward from it.)',
         ],
       },
       {
         heading: 'The Move',
         paragraphs: [
-          'So I built the team out of AI instead. A designer, a writer, a marketer, somebody to answer the phone. All of it working while I sleep.',
+          'So I built the team out of agents instead. A designer, a writer, a marketer, somebody to answer the phone. All of it working while I sleep.',
           '(Mr. Mustard pops in beside her, tips his hat, and gestures at a little team of workers lighting up one by one.)',
           'I used it to build my own company first. Then other founders saw it and asked me to build theirs.',
         ],
@@ -1254,7 +1254,7 @@ const ORIGIN: PrompterScript[] = [
     title: 'If It Is Just You',
     hook: 'If it is just you running the whole thing, this one is for you.',
     directorNote:
-      'Speak it to one person, the solo founder watching late at night. Warm, direct, no hype. The multiply graphic is the visual payoff, so land "built one out of AI" right on it.',
+      'Speak it to one person, the solo founder watching late at night. Warm, direct, no hype. The multiply graphic is the visual payoff, so land "built one out of agents" right on it.',
     sections: [
       {
         heading: 'Hook',
@@ -1265,7 +1265,7 @@ const ORIGIN: PrompterScript[] = [
       {
         heading: 'The Move',
         paragraphs: [
-          'So I stopped trying to hire a team, and I built one out of AI. That is my whole studio. And I built my own brand with it before I ever touched a client\'s.',
+          'So I stopped trying to hire a team, and I built one out of agents. That is my whole studio. And I built my own brand with it before I ever touched a client\'s.',
           '(Graphic: one small figure standing alone, then it multiplies into a little team of mustard-seed workers around her.)',
           'Now I do it for other founders. One person, building like a company.',
         ],
@@ -1326,7 +1326,7 @@ const BEHIND_THE_BUILD: PrompterScript[] = [
       {
         heading: 'Step Two, Build the Three Pieces',
         paragraphs: [
-          'Then three things get built at once. First, the voice agent. An AI agent gets trained on their services, their hours, and the language of their trade, and it can answer the phone as their business in about a minute. It books the job, it speaks like a person who works there, and it is told to never quote a price it should not.',
+          'Then three things get built at once. First, the voice agent. An agent gets trained on their services, their hours, and the language of their trade, and it can answer the phone as their business in about a minute. It books the job, it speaks like a person who works there, and it is told to never quote a price it should not.',
           'Second, the website. While I am asleep, an agent reads the brief, researches what a business like theirs actually needs, writes the copy, designs the layout, builds the whole thing, tests it on a phone, finds its own broken pieces, fixes them, and publishes it to a live address. It runs on a flat monthly plan, not a meter, so building a hundred of these costs me the same as building one.',
           'Third, once those two are working, the back office. A simple dashboard where every call, every lead, and every message lands in one place. We build those by hand and scope them first, so it is a conversation rather than a checkbox. A website that just sits there is a brochure.',
           '(Split screen: the voice agent answering a live call, the website assembling itself, the dashboard lighting up. Mr. Mustard runs between all three like a stagehand.)',
@@ -1384,7 +1384,7 @@ const BEHIND_THE_BUILD: PrompterScript[] = [
       {
         heading: 'Two Real Ones',
         paragraphs: [
-          'Let me make it real. One of the companies is an AI interior staging studio. You give it a photo of an empty room and it stages it beautifully for a listing, while keeping the actual windows and doors pixel for pixel real. That went from an idea to a live product with its own engine and its own billing in a matter of days, not months.',
+          'Let me make it real. One of the companies is an agentic interior staging studio. You give it a photo of an empty room and it stages it beautifully for a listing, while keeping the actual windows and doors pixel for pixel real. That went from an idea to a live product with its own engine and its own billing in a matter of days, not months.',
           'Another is a faith apparel house. It has a storefront, an operations system, and a little engine that writes and posts a daily piece of art and encouragement on its own. The brand gets to stay about the meaning, because the machine handles the running. Same factory, completely different businesses.',
         ],
       },
@@ -1446,28 +1446,28 @@ const BEHIND_THE_BUILD: PrompterScript[] = [
     session: 'Shorts Bank · Real Sauce',
     publish: 'Use anytime',
     pillar: 'BUILD',
-    title: 'The Trick That Makes AI Staging Real',
-    hook: 'Most AI home staging looks fake for one reason. It melts the windows.',
+    title: 'The Trick That Makes Virtual Staging Real',
+    hook: 'Most machine-made home staging looks fake for one reason. It melts the windows.',
     directorNote:
       'Nerdy in the best way, the kind of specific that builds trust. Show a real before and after where the window stays perfect. This is a proof-of-craft short, not a sales pitch.',
     sections: [
       {
         heading: 'The Problem',
         paragraphs: [
-          'Most AI home staging looks fake for one very specific reason. It melts the windows. You ask it to furnish an empty room, and it happily invents new furniture, but it also quietly repaints the view outside, warps the door frame, and bends the trim. Your eye catches it in half a second, and the whole thing reads as a fake.',
+          'Most machine-made home staging looks fake for one very specific reason. It melts the windows. You ask it to furnish an empty room, and it happily invents new furniture, but it also quietly repaints the view outside, warps the door frame, and bends the trim. Your eye catches it in half a second, and the whole thing reads as a fake.',
         ],
       },
       {
         heading: 'The Fix',
         paragraphs: [
-          'So here is what we actually do. Before the AI touches the room, a second model traces the exact windows, doors, and glass in the original photo. The AI restages everything else, the furniture, the light, the styling. Then we composite the real windows and doors back on top, pixel for pixel.',
+          'So here is what we actually do. Before the staging model touches the room, a second model traces the exact windows, doors, and glass in the original photo. The staging model restages everything else, the furniture, the light, the styling. Then we composite the real windows and doors back on top, pixel for pixel.',
           '(Before and after: an empty room becomes beautifully staged, and a callout circles the window staying perfectly, identically real.)',
         ],
       },
       {
         heading: 'The Point',
         paragraphs: [
-          'The room gets gorgeous. The view stays honest. That one trick, protecting the parts that must not change, is the whole difference between a toy and a tool. And it is the same principle in every good AI system we build. Let the machine do the heavy lifting, but lock down the parts that have to stay true.',
+          'The room gets gorgeous. The view stays honest. That one trick, protecting the parts that must not change, is the whole difference between a toy and a tool. And it is the same principle in every good agentic system we build. Let the machine do the heavy lifting, but lock down the parts that have to stay true.',
         ],
       },
     ],
@@ -1479,15 +1479,15 @@ const BEHIND_THE_BUILD: PrompterScript[] = [
     session: 'Shorts Bank · Real Sauce',
     publish: 'Use anytime',
     pillar: 'STORY',
-    title: 'We Dressed a Fashion House in AI',
-    hook: 'We ran a whole faith apparel house on AI, and it still feels completely handmade. That tension is the entire point.',
+    title: 'We Ran a Fashion House on Agents',
+    hook: 'We ran a whole faith apparel house on agentic systems, and it still feels completely handmade. That tension is the entire point.',
     directorNote:
-      'Warm, a little reverent about the brand. This is proof that AI and soul are not opposites when you hold the tools right. Show the storefront and a piece of the daily art.',
+      'Warm, a little reverent about the brand. This is proof that machines and soul are not opposites when you hold the tools right. Show the storefront and a piece of the daily art.',
     sections: [
       {
         heading: 'Hook',
         paragraphs: [
-          'We run a whole faith apparel house on AI, and it still feels completely handmade. People think those two things fight each other. Held right, they do not.',
+          'We run a whole faith apparel house on agentic systems, and it still feels completely handmade. People think those two things fight each other. Held right, they do not.',
         ],
       },
       {
@@ -1500,7 +1500,7 @@ const BEHIND_THE_BUILD: PrompterScript[] = [
       {
         heading: 'The Point',
         paragraphs: [
-          'Here is why that matters. Every hour the machine takes off the founder is an hour she gets to spend on the meaning, the message, the actual craft of the thing. The AI does not replace the soul of the brand. It clears the busywork so there is room for the soul. That is the whole trick, in every business. Let the tools carry what does not need you, so you can carry what does.',
+          'Here is why that matters. Every hour the machine takes off the founder is an hour she gets to spend on the meaning, the message, the actual craft of the thing. The machine does not replace the soul of the brand. It clears the busywork so there is room for the soul. That is the whole trick, in every business. Let the tools carry what does not need you, so you can carry what does.',
         ],
       },
     ],
@@ -1637,7 +1637,7 @@ const MORE_SAUCE: PrompterScript[] = [
     session: 'Shorts Bank · Real Sauce',
     publish: 'Use anytime',
     pillar: 'SYSTEMS',
-    title: 'How One AI Answers for Fifty Locations',
+    title: 'How One Agent Answers for Fifty Locations',
     hook: 'A franchise with fifty locations has one nightmare. Fifty phones, and fifty different ways to drop the ball.',
     directorNote:
       'Show the command board lighting up with locations. This is a scale story, so let the "built once, runs everywhere" line land with a little awe.',
@@ -1651,7 +1651,7 @@ const MORE_SAUCE: PrompterScript[] = [
       {
         heading: 'The Switchboard',
         paragraphs: [
-          'So we built one AI concierge that answers for all of them. It knows each location hours and services, it books the job at the right one, and it routes the call like a front desk that never sleeps and never calls in sick.',
+          'So we built one agentic concierge that answers for all of them. It knows each location hours and services, it books the job at the right one, and it routes the call like a front desk that never sleeps and never calls in sick.',
           '(Show a command board of the whole chain, each location lighting up as calls land and get handled.)',
         ],
       },
@@ -1857,17 +1857,17 @@ const AUDIENCE_REQUESTS: PrompterScript[] = [
     session: 'By Request · Audience Research',
     publish: 'Anchor · answers the number-one fear',
     pillar: 'STEWARD',
-    title: 'How to Use AI Without Losing the Human Touch',
-    hook: 'Almost eight in ten people say they would rather deal with a real person than a bot. And most of them will walk away from a business that gives them no human at all. So here is the question nobody wants to say out loud. How do you use AI without turning your business cold.',
+    title: 'How to Use Agents Without Losing the Human Touch',
+    hook: 'Almost eight in ten people say they would rather deal with a real person than a bot. And most of them will walk away from a business that gives them no human at all. So here is the question nobody wants to say out loud. How do you use agents without turning your business cold.',
     directorNote:
       'This is the one people came for, so slow all the way down and mean it. Warm, level, a little protective of your customer. You are not selling automation here. You are telling a nervous owner they get to keep the part they love. Land hard on the one rule ("robots on the boring moments, you on the human ones") and let the faith beat at the end breathe. Eyes to the lens on every promise.',
     sections: [
       {
         heading: 'Cold Open',
         paragraphs: [
-          'Almost eight in ten people say they would rather deal with a real person than a bot. And close to three in four will leave a business entirely if the only thing on offer is AI with no human behind it.',
-          'So if you have been scared that adding AI will make your business feel cold and cheap, you are not being dramatic. You are reading the room correctly.',
-          'Here is the part they do not tell you. The fix is not to avoid AI. The fix is to know exactly where it belongs and where it never does.',
+          'Almost eight in ten people say they would rather deal with a real person than a bot. And close to three in four will leave a business entirely if the only thing on offer is a machine with no human behind it.',
+          'So if you have been scared that adding agents will make your business feel cold and cheap, you are not being dramatic. You are reading the room correctly.',
+          'Here is the part they do not tell you. The fix is not to avoid agents. The fix is to know exactly where it belongs and where it never does.',
         ],
       },
       {
@@ -1883,7 +1883,7 @@ const AUDIENCE_REQUESTS: PrompterScript[] = [
         heading: 'The One Rule',
         paragraphs: [
           'So here is the whole rule. Put the robots on the boring moments, and put yourself on the human ones. Never the other way around.',
-          'AI answers the phone so a lead never hits a dead line. AI sends the follow-up you were too busy to send. AI handles the paperwork nobody misses.',
+          'An agent answers the phone so a lead never hits a dead line. An agent sends the follow-up you were too busy to send. An agent handles the paperwork nobody misses.',
           'And that buys back the exact hours you were losing. Hours you now spend on the conversation, the handshake, the call where somebody actually needs you.',
         ],
       },
@@ -1892,7 +1892,7 @@ const AUDIENCE_REQUESTS: PrompterScript[] = [
         paragraphs: [
           'When I build a system for a business, this is baked in from the first line. The voice agent answers, books, and captures the lead. But the second something is delicate or high stakes, it does not fake its way through. It flags it and hands it to a human.',
           'It never pretends to be you on the things that should be you. It buys you time. It does not spend your name.',
-          'That is the difference between AI that makes a business feel bigger and AI that makes it feel hollow. It is entirely a choice about where you point it.',
+          'That is the difference between agents that make a business feel bigger and agents that make it feel hollow. It is entirely a choice about where you point it.',
         ],
       },
       {
@@ -1900,13 +1900,13 @@ const AUDIENCE_REQUESTS: PrompterScript[] = [
         paragraphs: [
           'I run a faith-driven studio, so let me say the quiet part plainly. The goal was never to remove people from your business. The goal is to remove the grind that was keeping you from people.',
           'A tool that answers the phone at midnight is not the point. The point is that you get to be fully present for the customer in front of you at noon, instead of drowning in the forty small things pulling at you.',
-          'Used right, AI does not make you less human at work. It gives you room to be more.',
+          'Used right, an agent does not make you less human at work. It gives you room to be more.',
         ],
       },
       {
         heading: 'Close',
         paragraphs: [
-          'So do not ask whether AI will make you cold. Ask where it belongs. Robots on the boring, you on the human. Get that line right and you keep everything people love about you, at twice the reach.',
+          'So do not ask whether agents will make you cold. Ask where it belongs. Robots on the boring, you on the human. Get that line right and you keep everything people love about you, at twice the reach.',
           '(On screen: Modern Mustard Seed. Small faith. Real leverage. Work that shelters.)',
           'I am Sarah with Modern Mustard Seed. If you want a system built on that exact line, that is the whole thing I do.',
         ],
@@ -1920,16 +1920,16 @@ const AUDIENCE_REQUESTS: PrompterScript[] = [
     session: 'By Request · Audience Research',
     publish: 'Anchor · for the overwhelmed beginner',
     pillar: 'SYSTEMS',
-    title: 'You Are Not Behind: The First AI Move to Make',
-    hook: 'If it feels like everyone on earth figured out AI except you, I have good news. You are not behind. Most people buying AI tools right now are spending money on problems they do not even have.',
+    title: 'You Are Not Behind: The First Agentic Move to Make',
+    hook: 'If it feels like everyone on earth figured out automation except you, I have good news. You are not behind. Most people buying agentic tools right now are spending money on problems they do not even have.',
     directorNote:
       'Talk to one specific person: a smart, busy owner who feels dumb about this and is embarrassed to admit it. Take the shame off the table in the first ten seconds. Reassuring, not hyped. You are the friend who has already done it telling them it is smaller than they think. Warm eyes, easy pace.',
     sections: [
       {
         heading: 'Cold Open',
         paragraphs: [
-          'If it feels like everyone figured out AI except you, take a breath, because that feeling is a lie.',
-          'You are not behind. Here is the truth almost nobody says. A huge number of business owners buying AI tools right now are spending real money on problems they do not even have. Busy does not mean ahead.',
+          'If it feels like everyone figured out automation except you, take a breath, because that feeling is a lie.',
+          'You are not behind. Here is the truth almost nobody says. A huge number of business owners buying agentic tools right now are spending real money on problems they do not even have. Busy does not mean ahead.',
           'You do not need to catch up on a hundred tools. You need to make one move. Let me give it to you.',
         ],
       },
@@ -1953,7 +1953,7 @@ const AUDIENCE_REQUESTS: PrompterScript[] = [
         paragraphs: [
           'So here is the whole first move, and it takes one afternoon. Look at your last two weeks and find the single thing that either stole the most hours or cost you the most money.',
           'Not ten things. One. The task you dread. The call you keep missing. The follow-up you never get to. The same three questions you answer every single day.',
-          'Then you point AI at that one thing, and only that thing, for thirty days. You measure it. If it works, you expand. If it does not, you have lost a month, not a fortune.',
+          'Then you point an agent at that one thing, and only that thing, for thirty days. You measure it. If it works, you expand. If it does not, you have lost a month, not a fortune.',
         ],
       },
       {
@@ -1966,7 +1966,7 @@ const AUDIENCE_REQUESTS: PrompterScript[] = [
       {
         heading: 'Close',
         paragraphs: [
-          'So stop trying to learn AI. That is too big and it is the wrong goal. Pick your worst bottleneck, aim one system at it, and give it a month. That is not behind. That is exactly on time.',
+          'So stop trying to learn agentic systems. That is too big and it is the wrong goal. Pick your worst bottleneck, aim one system at it, and give it a month. That is not behind. That is exactly on time.',
           '(On screen: Modern Mustard Seed. Small faith. Real leverage. Work that shelters.)',
           'I am Sarah with Modern Mustard Seed. If you want help naming the one thing and building the fix, come find me.',
         ],
@@ -1978,24 +1978,24 @@ const AUDIENCE_REQUESTS: PrompterScript[] = [
     kind: 'episode',
     episode: 'Episode 16',
     session: 'By Request · Audience Research',
-    publish: 'Anchor · the most-searched AI question',
+    publish: 'Anchor · the most-searched automation question',
     pillar: 'BUILD',
-    title: 'How to Actually Get More Customers With AI',
-    hook: 'The most searched AI question for a small business is not which chatbot to buy. It is how do I actually get more customers with this thing. So here is the plain version, with none of the hype.',
+    title: 'How to Actually Get More Customers With Agents',
+    hook: 'The most searched automation question for a small business is not which chatbot to buy. It is how do I actually get more customers with this thing. So here is the plain version, with none of the hype.',
     directorNote:
-      'Confident and useful, like you are handing someone a map. This is your lane, so speak from having done it, not from theory. The big reframe up top ("AI does not find you customers, it stops you from losing the ones you already had") should feel like a small record-scratch. Keep the three leaks crisp and countable.',
+      'Confident and useful, like you are handing someone a map. This is your lane, so speak from having done it, not from theory. The big reframe up top ("Agents do not find you customers, they stop you from losing the ones you already had") should feel like a small record-scratch. Keep the three leaks crisp and countable.',
     sections: [
       {
         heading: 'Cold Open',
         paragraphs: [
-          'The single most searched AI question for a local business is not which chatbot to buy. It is simpler and more honest than that. How do I actually get more customers with this.',
+          'The single most searched automation question for a local business is not which chatbot to buy. It is simpler and more honest than that. How do I actually get more customers with this.',
           'So let me answer it with no hype. And it starts with a reframe that changes everything.',
         ],
       },
       {
         heading: 'The Reframe',
         paragraphs: [
-          'AI does not go out and find you new customers. That is the fantasy people are being sold, and it is why so many owners feel let down.',
+          'Agents do not go out and find you new customers. That is the fantasy people are being sold, and it is why so many owners feel let down.',
           'Here is what it actually does. It stops you from losing the customers you were already getting. Most small businesses are not short on interest. They are leaking it. Every leak you seal shows up as growth.',
           'So forget magic. Let us go find your three leaks.',
         ],
@@ -2005,7 +2005,7 @@ const AUDIENCE_REQUESTS: PrompterScript[] = [
         paragraphs: [
           'The first leak is the front door. The calls that come in while you are on a job, at dinner, or asleep. For a lot of businesses, more than half of those calls never get answered, and it never shows up on any report.',
           'A caller who hits your voicemail does not leave a message. They call the next name on the list. That is a customer you paid to attract and then lost in silence.',
-          'AI answers every one of those calls, in your voice and your hours, and books them. That alone is often the biggest new-customer swing a business will ever make.',
+          'An agent answers every one of those calls, in your voice and your hours, and books them. That alone is often the biggest new-customer swing a business will ever make.',
         ],
       },
       {
@@ -2013,7 +2013,7 @@ const AUDIENCE_REQUESTS: PrompterScript[] = [
         paragraphs: [
           'The second leak is the follow-up. Most sales do not happen on the first touch. They happen on the third, the fourth, the gentle reminder a week later.',
           'And that is exactly the part a busy owner never gets to. The lead goes cold, not because they said no, but because nobody said anything.',
-          'AI sends the follow-up every time, on schedule, so no interested person ever falls through the cracks again.',
+          'An agent sends the follow-up every time, on schedule, so no interested person ever falls through the cracks again.',
         ],
       },
       {
@@ -2033,7 +2033,7 @@ const AUDIENCE_REQUESTS: PrompterScript[] = [
       {
         heading: 'Close',
         paragraphs: [
-          'So that is the honest answer. AI gets you more customers by sealing three leaks. Answer every call. Follow up every lead. Make the site actually work. Do those three and the growth was there the whole time.',
+          'So that is the honest answer. Agents get you more customers by sealing three leaks. Answer every call. Follow up every lead. Make the site actually work. Do those three and the growth was there the whole time.',
           '(On screen: Modern Mustard Seed. Small faith. Real leverage. Work that shelters.)',
           'I am Sarah with Modern Mustard Seed. Sealing those leaks is the work I do. If you want yours found, reach out.',
         ],
@@ -2092,22 +2092,22 @@ const AUDIENCE_REQUESTS: PrompterScript[] = [
     session: 'Shorts Bank',
     publish: 'Use anytime',
     pillar: 'STEWARD',
-    title: 'How to Trust AI With Your Business',
-    hook: 'Most small business owners do not trust AI with real work. And honestly, they are right not to trust it blindly.',
+    title: 'How to Trust Agents With Your Business',
+    hook: 'Most small business owners do not trust agents with real work. And honestly, they are right not to trust it blindly.',
     directorNote:
       'Straight talk, no defensiveness. You are agreeing with the skeptic, not arguing with them, and that is what earns the turn. Slow down on the new definition of trust at the end. It is the whole point of the video.',
     sections: [
       {
         heading: 'Cold Open',
         paragraphs: [
-          'Almost eight in ten business owners do not fully trust AI, even for small tasks. And I am not here to talk you out of that. Trusting it blindly would be a mistake.',
+          'Almost eight in ten business owners do not fully trust the machines, even for small tasks. And I am not here to talk you out of that. Trusting it blindly would be a mistake.',
         ],
       },
       {
         heading: 'The Real Fear',
         paragraphs: [
           'The real fear is simple. That it makes something up, with total confidence, on the one thing that actually mattered. Quotes a price it should not. Promises a date you cannot hit. Says the wrong thing to a real customer.',
-          'That fear is correct. An AI let loose with no rails will absolutely do that.',
+          'That fear is correct. An agent let loose with no rails will absolutely do that.',
         ],
       },
       {
@@ -2120,7 +2120,7 @@ const AUDIENCE_REQUESTS: PrompterScript[] = [
       {
         heading: 'The New Definition of Trust',
         paragraphs: [
-          'So here is how to actually trust AI in your business. Trust is not letting it run wild. Trust is this. It does the boring parts perfectly, and it asks before the important ones.',
+          'So here is how to actually trust agents in your business. Trust is not letting it run wild. Trust is this. It does the boring parts perfectly, and it asks before the important ones.',
           'Build it on a leash, with a human at the top, and it stops being a gamble. It becomes an employee you can actually count on.',
           '(On screen: Modern Mustard Seed. Small faith. Real leverage. Work that shelters.)',
         ],

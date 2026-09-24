@@ -21,7 +21,7 @@ export const packages: Engagement[] = [
     name: 'Seed Site',
     tagline: 'A beautiful site that gets you online for real, in about a week',
     description:
-      'For when you do not need an engine yet. You need a storefront. A clean, fast, brand-aligned site that loads in under two seconds, looks like a real business, and converts the visitors you already have. No AI agents, no SDR, no back office. Just the site you needed years ago, shipped in about a week. Step up to a Full-Service Business Build whenever you are ready.',
+      'For when you do not need an engine yet. You need a storefront. A clean, fast, brand-aligned site that loads in under two seconds, looks like a real business, and converts the visitors you already have. No agents, no SDR, no back office. Just the site you needed years ago, shipped in about a week. Step up to a Full-Service Business Build whenever you are ready.',
     deliverables: [
       'Brand identity (logo, colors, type, voice)',
       '3 to 5 page production-grade site',
@@ -37,25 +37,25 @@ export const packages: Engagement[] = [
     priceRange: 'Quoted after a free discovery call',
     cta: 'Plant my Seed Site',
     ctaHref: '/contact?package=seed-site',
-    ideal: 'Small businesses, creators, service pros, and faith-driven brands who need a clean, real online home right now. No AI bells. Just a beautiful site that works.',
+    ideal: 'Small businesses, creators, service pros, and faith-driven brands who need a clean, real online home right now. No agentic bells. Just a beautiful site that works.',
   },
   {
     id: 'online-presence',
     name: 'Full-Service Business Build',
     tagline: 'A site that runs your business, not just shows it off',
     description:
-      'Not a website. A working business system with the site as the front door. Brand, production-grade site, bespoke booking services with embedded CRM, personalized client-care software, an AI sales-development rep capturing every lead, built-in funnels and lead magnets, a back office that surfaces what matters, AI agents embedded in both your site and your back office, and the Mustard Seed chatbot answering for you when you cannot. Restaurants, shops, service pros, custom academies, courses, rendering studios, ad command centers, zero-to-one software: same engine, scoped to you.',
+      'Not a website. A working business system with the site as the front door. Brand, production-grade site, bespoke booking services with embedded CRM, personalized client-care software, an agentic sales-development rep capturing every lead, built-in funnels and lead magnets, a back office that surfaces what matters, agents embedded in both your site and your back office, and the Mustard Seed chatbot answering for you when you cannot. Restaurants, shops, service pros, custom academies, courses, rendering studios, ad command centers, zero-to-one software: same engine, scoped to you.',
     deliverables: [
       'Brand identity (logo, colors, type, voice)',
       'Production-grade marketing site',
       'Bespoke booking services with embedded CRM (Zoho, HubSpot, Acuity, or custom)',
       'Personalized client care software (intake, onboarding, status updates, retention)',
-      'Mustard Seed AI chatbot embedded on the site, trained on your business',
-      'AI SDR that captures and qualifies every lead 24/7',
+      'Mustard Seed agentic chatbot embedded on the site, trained on your business',
+      'Agentic SDR that captures and qualifies every lead 24/7',
       'Built-in funnels and lead magnets, tested and converting on day one',
       'Vertical app when it fits (ordering for restaurants, ecommerce shop, rendering studio, academy or course platform, ad command center, zero-to-one MVP)',
       'Back office dashboard: leads, revenue, content, ops in one view',
-      'AI agents embedded on the public site and inside the back office',
+      'Agents embedded on the public site and inside the back office',
       'Real copy, written for your business',
       'SEO + structured data foundation',
       'Launch assets (social, email, OG)',
@@ -70,14 +70,14 @@ export const packages: Engagement[] = [
   {
     id: 'idea-to-product',
     name: 'Idea to Product',
-    tagline: 'Your app, tool, or specialty AI product. Shipped in weeks, not months',
+    tagline: 'Your app, tool, or specialty agentic product. Shipped in weeks, not months',
     description:
       'A full-stack product build for founders with a vision. We design it, build it, brand it, and ship it to production end to end. The deliverable is a live product real customers can use. You own the code, the deploys, and the docs from day one.',
     deliverables: [
       'Discovery + scoping call',
       'Full UI/UX design system',
       'Full-stack engineering (Next.js, Supabase, Stripe, Vercel)',
-      'AI integration where it fits (Anthropic, OpenAI, Gemini, Vapi)',
+      'Model integration where it fits (Anthropic, OpenAI, Gemini, Vapi)',
       'Branded marketing site',
       'Deployment + monitoring',
       '30 days of post-launch support',
@@ -92,30 +92,30 @@ export const packages: Engagement[] = [
   },
   {
     id: 'ai-proof',
-    name: 'AI-Proof Your Business',
+    name: 'Future-Proof Your Business',
     tagline: 'For owners with revenue to protect',
     description:
-      'A three-phase engagement for existing operations. We audit your business against the AI shift, harden the surfaces AI will hit first, and re-equip your team to run the new stack. Your business stays yours. You become the AI-native version of your industry, not the casualty.',
+      'A three-phase engagement for existing operations. We audit your business against the agentic shift, harden the surfaces automation will hit first, and re-equip your team to run the new stack. Your business stays yours. You become the agentic version of your industry, not the casualty.',
     deliverables: [
       'Phase 1: workflow audit + risk matrix',
-      'Phase 2: AI deployment where it defends margin',
+      'Phase 2: Agentic deployment where it defends margin',
       'Phase 3: team enablement + documentation',
       'Internal copilots tuned to your operation',
       'Voice / chat / automation where it fits',
-      'Ongoing roadmap as the AI shift evolves',
+      'Ongoing roadmap as the agentic shift evolves',
     ],
     timeline: '8 to 12 weeks',
     priceRange: 'Quoted after a free discovery call',
-    cta: 'AI-proof your business',
-    ctaHref: '/ai-proof',
+    cta: 'Future-proof your business',
+    ctaHref: '/future-proof',
     ideal: 'Existing operators. Service businesses. Owners ready to lead the shift, not get hit by it.',
   },
   {
     id: 'fractional',
-    name: 'Fractional AI Partner',
+    name: 'Fractional Agentic Systems Partner',
     tagline: 'Embedded leadership, monthly',
     description:
-      'A monthly retainer for ongoing strategy and build work. Treat us as your fractional CTO and AI lead. Weekly sessions, hands-on building, and a continually evolving roadmap as your business grows. Most retainers begin after a shipped engagement, when the partnership has already proven itself.',
+      'A monthly retainer for ongoing strategy and build work. Treat us as your fractional CTO and agentic systems lead. Weekly sessions, hands-on building, and a continually evolving roadmap as your business grows. Most retainers begin after a shipped engagement, when the partnership has already proven itself.',
     deliverables: [
       'Weekly strategy sessions',
       'Generous monthly build allotment',
@@ -128,7 +128,7 @@ export const packages: Engagement[] = [
     priceRange: 'Quoted after a free discovery call',
     cta: 'Become a partner',
     ctaHref: '/contact?package=fractional',
-    ideal: 'Established operators wanting a long-term AI partner inside the business.',
+    ideal: 'Established operators wanting a long-term agentic systems partner inside the business.',
   },
 ];
 

@@ -32,9 +32,9 @@ export const LAUNCH = {
   tagline: 'Launch for real. Not someday. This week.',
   promise:
     'Tell Mr. Mustard what you are starting. He builds your whole launch (brand, offer, money, presence, first customers) and counts you down to open. The free Blueprint is your plan. The Kit is the whole package, generated. The Room is the coach who launches it with you.',
-  metaTitle: 'MUSTARD LAUNCH. Your AI Launch Coach, From Idea to Open',
+  metaTitle: 'MUSTARD LAUNCH. Your Agentic Launch Coach, From Idea to Open',
   metaDescription:
-    'Launch your business for real with Mr. Mustard as your AI launch coach. Type your idea, get an instant personalized launch plan free, then generate your whole launch package and get coached mission by mission to Launch Day. From Modern Mustard Seed.',
+    'Launch your business for real with Mr. Mustard as your agentic launch coach. Type your idea, get an instant personalized launch plan free, then generate your whole launch package and get coached mission by mission to Launch Day. From Modern Mustard Seed.',
   guarantee:
     'Work the launch for 14 days. If Mr. Mustard does not move you closer to open than you were, email Sarah for a full refund. No forms, handled by hand.',
   priceFraming:
@@ -155,7 +155,7 @@ export const LAUNCH_PHASES: LaunchPhase[] = [
     system: 'SYSTEMS',
     title: 'Wire what runs it while you work',
     eyebrow: 'Phase 5',
-    blurb: 'The CRM, booking, an AI agent on the front line, and the automations that answer and follow up.',
+    blurb: 'The CRM, booking, an agent on the front line, and the automations that answer and follow up.',
   },
   {
     id: 'launch',
@@ -186,7 +186,7 @@ export const launchFaq: { q: string; a: string }[] = [
   },
   {
     q: 'Will you build the actual website and systems for me?',
-    a: 'Mustard Launch coaches you to launch and generates everything you need to do it yourself. When you would rather have it built for you, Modern Mustard Seed does that too (sites, AI agents, the whole stack). The Room coach will tell you exactly when that is the smart move.',
+    a: 'Mustard Launch coaches you to launch and generates everything you need to do it yourself. When you would rather have it built for you, Modern Mustard Seed does that too (sites, agents, the whole stack). The Room coach will tell you exactly when that is the smart move.',
   },
   {
     q: 'What happens right after I buy?',

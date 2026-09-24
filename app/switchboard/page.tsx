@@ -26,7 +26,7 @@ export default function SwitchboardPage() {
       {
         '@type': 'Service',
         name: 'The Switchboard by Modern Mustard Seed',
-        serviceType: 'Multi-location AI voice concierge for franchises',
+        serviceType: 'Multi-location agentic voice concierge for franchises',
         description: SWITCHBOARD.metaDescription,
         provider: { '@type': 'Organization', name: 'Modern Mustard Seed', url: SITE.url },
         areaServed: 'US',
@@ -39,7 +39,7 @@ export default function SwitchboardPage() {
       },
       {
         '@type': 'HowTo',
-        name: 'How a franchise puts an AI concierge on every location',
+        name: 'How a franchise puts an agentic concierge on every location',
         step: howItWorks.map((s) => ({ '@type': 'HowToStep', name: s.step, text: s.body })),
       },
       {
@@ -80,7 +80,7 @@ export default function SwitchboardPage() {
                     One voice answers for <em className="italic text-[#B48600]">all</em> of them.
                   </h1>
                   <p className="mt-6 max-w-xl text-lg md:text-xl text-[#3d382e] font-body leading-relaxed">
-                    Give every location a 24/7 AI concierge in one on-brand voice, and watch the recovered revenue from all of them on a single Command Board.
+                    Give every location a 24/7 agentic concierge in one on-brand voice, and watch the recovered revenue from all of them on a single Command Board.
                   </p>
                   <div className="mt-8 flex flex-wrap gap-3">
                     <a href="#board" className="rounded-full border-2 border-[#161616] bg-[#F5B700] text-[#161616] px-8 py-4 font-sans font-extrabold text-sm uppercase tracking-[0.14em] shadow-[5px_5px_0_0_#161616] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#161616]">
@@ -95,7 +95,7 @@ export default function SwitchboardPage() {
                     <a href={`tel:${SWITCHBOARD.demoLine.number}`} className="font-bold text-[#B92417] underline decoration-2 underline-offset-2 hover:text-[#E0301E]">
                       call {SWITCHBOARD.demoLine.display}
                     </a>{' '}
-                    and a live AI concierge answers as a location would.
+                    and a live agentic concierge answers as a location would.
                   </p>
                 </div>
 
@@ -304,7 +304,7 @@ export default function SwitchboardPage() {
               </a>
             </p>
             <p className="mt-8 text-xs text-[#161616]/60 max-w-lg mx-auto">
-              Each location is answered by an AI concierge in your brand voice, and it says so. The Switchboard, by Modern Mustard Seed, Kalispell, Montana.
+              Each location is answered by an agentic concierge in your brand voice, and it says so. The Switchboard, by Modern Mustard Seed, Kalispell, Montana.
             </p>
           </div>
         </section>

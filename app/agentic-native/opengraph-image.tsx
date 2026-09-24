@@ -4,7 +4,7 @@ import { STUDIO_PROOF } from '@/data/ai-native';
 // The AI Native share card: the tagline, and the studio's own numbers as the proof.
 export const runtime = 'nodejs';
 
-export const alt = 'AI Native by Modern Mustard Seed. Your company, running on AI. Your team, running it.';
+export const alt = 'Agentic Native by Modern Mustard Seed. Your company, running on agentic systems. Your team, running it.';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
@@ -54,18 +54,18 @@ export default async function OpengraphImage() {
               letterSpacing: 4,
             }}
           >
-            AI NATIVE
+            AGENTIC NATIVE
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', color: INK, fontSize: 60, fontWeight: 900, lineHeight: 1.02, marginTop: 28, letterSpacing: -2 }}>
             <span>Your company,</span>
-            <span>running on AI.</span>
-            <span style={{ color: MUSTARD, WebkitTextStroke: `2px ${INK}` }}>Your team, running it.</span>
+            <span>running on agents.</span>
+            <span style={{ color: '#B23A2E' }}>Your team, running it.</span>
           </div>
           <div style={{ display: 'flex', color: INK, fontSize: 24, marginTop: 26, lineHeight: 1.3, opacity: 0.8 }}>
-            Every workflow mapped. The first five moved onto AI. Built in your accounts, and your people coached to run it.
+            Every workflow mapped. The first five moved onto agentic systems. Built in your accounts, and your people coached to run it.
           </div>
           <div style={{ display: 'flex', color: INK, fontSize: 20, marginTop: 30, letterSpacing: 3, fontWeight: 700, opacity: 0.7 }}>
-            MODERNMUSTARDSEED.COM/AI-NATIVE
+            MODERNMUSTARDSEED.COM/AGENTIC-NATIVE
           </div>
         </div>
 

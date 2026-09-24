@@ -18,7 +18,7 @@ export const metadata = buildMetadata({
 
 const SERVICES = [
   { mark: '01', name: 'Social Posting', text: 'Designed posts written in your voice, planned on a calendar, and published to Facebook, Instagram, LinkedIn, and your Google Business Profile.' },
-  { mark: '02', name: 'Blog & Article Writing', text: 'Articles that answer the questions your customers are already asking, written to be found on Google and cited by AI search, and published on your own site.' },
+  { mark: '02', name: 'Blog & Article Writing', text: 'Articles that answer the questions your customers are already asking, written to be found on Google and cited by answer engines, and published on your own site.' },
   { mark: '03', name: 'Commercials & Brand Films', text: 'Concept, script, production, and finished cuts for every place it runs, from Mustard Pictures.', href: '/pictures' },
   { mark: '04', name: 'Ad Campaigns', text: 'Meta and Google campaigns built and managed in your own ad accounts, with the creative and the results in the same conversation.', href: '/pictures' },
   { mark: '05', name: 'Email Newsletters', text: 'A regular letter to your customer list, written, designed, and sent, so the people who already know you keep hearing from you.' },

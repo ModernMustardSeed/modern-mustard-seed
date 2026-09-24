@@ -29,18 +29,18 @@ export const DEPARTMENTS: Dept[] = [
   { key: 'websites', name: 'Websites', tag: 'Design-led, built to be found', blurb: 'A site that captures the lead and follows up on its own. Not a brochure, an engine.', href: '/websites', icon: '🌐', flagship: true },
   // Build parked 2026-08-12 (Sarah); this row points at /voice-agents now. See Navbar.tsx.
   { key: 'demo-agent', name: 'Voice Agents', tag: 'It answers, it books, it texts you', blurb: 'Answers your calls 24/7 in a natural voice, books the job, texts you the details.', href: '/voice-agents', icon: '🎙', flagship: true },
-  { key: 'command-center', name: 'Command Center', tag: 'The AI back office', blurb: 'One board: calls transcribed, website traffic, customers, reviews, and money, wired together.', href: '/command-center', icon: '⚙', flagship: true },
+  { key: 'command-center', name: 'Command Center', tag: 'The agentic back office', blurb: 'One board: calls transcribed, website traffic, customers, reviews, and money, wired together.', href: '/command-center', icon: '⚙', flagship: true },
   { key: 'presence-audit', name: 'The Presence Audit', tag: 'Site, profile and reviews, graded', blurb: 'Most people decide about you before they reach your website. This grades all three: the site, the Google profile, and the reviews.', href: '/presence-audit', icon: '🔍' },
   { key: 'advisory', name: 'Advisory', tag: 'Retained counsel, by the quarter', blurb: 'What to build, what to refuse, what to automate, and in what order. No build attached.', href: '/advisory', icon: '🧭' },
   { key: 'brand', name: 'Brand / Rebrand', tag: 'A new mark on every surface', blurb: 'Logo, look, mascot, site, voice agent, and the plan behind it. Designed once, live on every surface in three weeks.', href: '/brand', icon: '🎨' },
-  { key: 'chief', name: 'The Chief', tag: 'Your AI chief of staff', blurb: 'Mr. Mustard runs your day: calendar, email, calls, research, and sales coaching, in voice, text, and chat.', href: '/chief', icon: '🧑‍✈️' },
+  { key: 'chief', name: 'The Chief', tag: 'Your agentic chief of staff', blurb: 'Mr. Mustard runs your day: calendar, email, calls, research, and sales coaching, in voice, text, and chat.', href: '/chief', icon: '🧑‍✈️' },
   { key: 'marketing', name: 'Marketing', tag: 'Social, blog, commercials, ads, email', blurb: 'Social posting, blog writing, commercials, ad campaigns, newsletters, and your Google profile, written in your voice on a steady schedule.', href: '/marketing', icon: '📣' },
   { key: 'kingdom', name: 'For the Kingdom', tag: 'Ministry pricing', blurb: 'Curated merch collections with Cross + Covenant, stores, the systems to run it all, and the launch, for ministries and kingdom organizations.', href: '/kingdom', icon: '✝' },
   { key: 'pictures', name: 'Mustard Pictures', tag: 'Films and advertising', blurb: 'Commercials, brand films, and managed Meta and Google campaigns, from one studio.', href: '/pictures', icon: '🎬' },
   { key: 'launch-film', name: 'The Launch Film', tag: 'Cut from your real product', blurb: 'A launch film for your app or product, built from the real screens, scored from scratch, finished in three formats.', href: '/launch-film', icon: '🎞' },
-  { key: 'ai-native', name: 'AI Native', tag: 'Your company on AI', blurb: 'Every workflow mapped, the first five moved onto AI in accounts you own, and your team coached to run it. Eight weeks.', href: '/ai-native', icon: '🧭' },
-  { key: 'geo', name: 'GEO Desk', tag: 'Found and cited by AI search', blurb: 'Get found and cited by ChatGPT, Perplexity, and Google AI. Graded, then fixed.', href: '/website-audit', icon: '🔎' },
-  { key: 'mode', name: 'Mustard Mode', tag: 'Learn with a coach', blurb: 'Learn to run Claude like the studio does. A live AI coach across four tracks.', href: '/mustard-mode', icon: '🎓' },
+  { key: 'ai-native', name: 'Agentic Native', tag: 'Your company on agentic systems', blurb: 'Every workflow mapped, the first five moved onto agentic systems in accounts you own, and your team coached to run it. Eight weeks.', href: '/agentic-native', icon: '🧭' },
+  { key: 'geo', name: 'GEO Desk', tag: 'Found and cited by answer engines', blurb: 'Get found and cited by ChatGPT, Perplexity, and Google AI Overviews. Graded, then fixed.', href: '/website-audit', icon: '🔎' },
+  { key: 'mode', name: 'Mustard Mode', tag: 'Learn with a coach', blurb: 'Learn to run Claude like the studio does. A live agentic coach across four tracks.', href: '/mustard-mode', icon: '🎓' },
   // Celebrate re-parked 2026-08-20 (Sarah): see the note in Navbar.tsx.
 ];
 
@@ -50,17 +50,17 @@ export type Goal = { label: string; emoji: string; deptKeys: string[]; note: str
 
 /** The goal router. Each goal surfaces the right doors. */
 export const GOALS: Goal[] = [
-  { label: 'Get more customers', emoji: '📈', deptKeys: ['marketing', 'pictures', 'websites', 'geo'], note: 'Steady marketing in your voice, ads that run in your account, a site that converts, and findability on Google and AI search.' },
+  { label: 'Get more customers', emoji: '📈', deptKeys: ['marketing', 'pictures', 'websites', 'geo'], note: 'Steady marketing in your voice, ads that run in your account, a site that converts, and findability on Google and answer engines.' },
   { label: 'Stop missing calls', emoji: '📞', deptKeys: ['demo-agent', 'advisory'], note: 'A voice agent answering day or night, on the number you already have.' },
   { label: 'Run the whole business', emoji: '🧭', deptKeys: ['command-center', 'demo-agent', 'websites'], note: 'One command center wired to your calls, your site, and your customers.' },
-  { label: 'Get my hours back', emoji: '⏳', deptKeys: ['chief', 'command-center'], note: 'An AI chief of staff who runs your calendar, email, and follow-up, with the back office behind it.' },
+  { label: 'Get my hours back', emoji: '⏳', deptKeys: ['chief', 'command-center'], note: 'An agentic chief of staff who runs your calendar, email, and follow-up, with the back office behind it.' },
   { label: 'Look professional online', emoji: '✨', deptKeys: ['brand', 'websites', 'pictures'], note: 'A brand designed once, then a website and a commercial that wear it.' },
-  { label: 'Get found by AI & Google', emoji: '🔎', deptKeys: ['geo', 'websites'], note: 'Your findability graded honestly, then the signals installed that get you cited.' },
+  { label: 'Get found by ChatGPT & Google', emoji: '🔎', deptKeys: ['geo', 'websites'], note: 'Your findability graded honestly, then the signals installed that get you cited.' },
   { label: 'Launch something new', emoji: '🚀', deptKeys: ['brand', 'websites', 'demo-agent'], note: 'A launch plan, then the site and the phone line to open the doors.' },
   { label: 'Sell products online', emoji: '🛍', deptKeys: ['websites'], note: 'A custom storefront designed around your catalog, scoped as its own engagement.' },
   { label: 'Serve a ministry or charity', emoji: '✝', deptKeys: ['kingdom', 'marketing', 'websites'], note: 'Merch collections, stores, systems and a launch, at ministry pricing, with Cross + Covenant.' },
   { label: 'Learn to build it myself', emoji: '🎓', deptKeys: ['mode', 'advisory'], note: 'A coach that teaches you to run Claude and build the thing yourself.' },
-  { label: 'Put AI in my whole company', emoji: '🧭', deptKeys: ['ai-native', 'chief', 'demo-agent'], note: 'The workflows mapped and moved onto AI, your team coached to run it, and the front desk answered while they learn.' },
+  { label: 'Put agentic systems in my whole company', emoji: '🧭', deptKeys: ['ai-native', 'chief', 'demo-agent'], note: 'The workflows mapped and moved onto agentic systems, your team coached to run it, and the front desk answered while they learn.' },
   // 'Keep my people happy' goal re-parked with Celebrate 2026-08-20 (Sarah):
   // the row existed to sell Celebrate, and pointing it at The Chief alone
   // would put a gifting pitch on a chief-of-staff door.
@@ -69,7 +69,7 @@ export const GOALS: Goal[] = [
 /** Bespoke work beyond the productized doors. Routes to a discovery call. */
 export const BESPOKE = [
   { icon: '📱', name: 'Custom apps & software', desc: 'Web and mobile apps built end to end. Frontend, backend, auth, billing, deploy. Real products that scale.' },
-  { icon: '🛠', name: 'Specialty AI tools', desc: 'An industry tool that replaces an expensive recurring workflow. The costliest repeated task in a trade becomes software the operator owns.' },
-  { icon: '🏪', name: 'Online stores', desc: 'Headless commerce with custom design, an AI concierge, and funnels that convert from day one.' },
+  { icon: '🛠', name: 'Specialty agentic tools', desc: 'An industry tool that replaces an expensive recurring workflow. The costliest repeated task in a trade becomes software the operator owns.' },
+  { icon: '🏪', name: 'Online stores', desc: 'Headless commerce with custom design, an agentic concierge, and funnels that convert from day one.' },
   { icon: '🤖', name: 'Agentic systems', desc: 'Multi-agent workflows and internal copilots that replace the human glue between your tools.' },
 ];

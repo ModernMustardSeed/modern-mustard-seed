@@ -238,7 +238,7 @@ export default function ClientPortal() {
               <p className="text-[#3A3733] font-body mt-2">
                 {data.client?.welcomeNote
                   || (data.audience === 'buyer'
-                    ? 'Your playbooks and a personal AI helper are below.'
+                    ? 'Your playbooks and a personal agentic helper are below.'
                     : data.audience === 'guest'
                       ? 'This is your home base with Modern Mustard Seed. The guide below can help with anything.'
                       : 'Here is where your build stands and everything you need in one place.')}
@@ -1274,7 +1274,7 @@ function ConnectionsCard() {
           <p className="text-[#161616]/65 font-body text-sm mb-1">
             {google?.status === 'revoked'
               ? 'Your Google connection was cut off. Reconnect and we will pick right back up.'
-              : 'Your Google Business Profile is the listing people see on Maps and in search, and it is what the AI assistants read when someone asks who does this near you. It matters more than the website.'}
+              : 'Your Google Business Profile is the listing people see on Maps and in search, and it is what the answer engines read when someone asks who does this near you. It matters more than the website.'}
           </p>
           <ul className="text-[#161616]/65 font-body text-sm mb-4 mt-2 space-y-1">
             <li>· Keep your hours, phone, and services correct everywhere at once</li>

@@ -9,13 +9,13 @@ import { programs } from '@/data/programs';
 export const metadata: Metadata = buildMetadata({
   title: 'The Store. Playbooks and courses for builders and operators',
   description:
-    'Production-tested playbooks and courses from Modern Mustard Seed. AI strategy, Claude Code, Shopify builds, brand systems, AI sales, and GEO. From $47. Instant delivery, growing library.',
+    'Production-tested playbooks and courses from Modern Mustard Seed. Agentic systems strategy, Claude Code, Shopify builds, brand systems, agentic sales, and GEO. From $47. Instant delivery, growing library.',
   path: '/store',
 });
 
 const CATEGORY_BLURBS: Record<string, string> = {
   'Business Foundations':
-    'Strategy, sales, and operations. Build the business that uses AI as infrastructure.',
+    'Strategy, sales, and operations. Build the business that runs agentic systems as infrastructure.',
   'Build with Claude':
     'Hands-on technical playbooks. Ship real software with Claude Code as your dev partner.',
 };
@@ -36,7 +36,7 @@ export default function StorePage() {
       url: `${SITE.url}/store`,
       name: 'The Modern Mustard Seed Playbook Store',
       description:
-        'Production-tested workbooks and playbooks from Modern Mustard Seed. AI strategy, build systems, brand, sales, GEO, and AI commerce.',
+        'Production-tested workbooks and playbooks from Modern Mustard Seed. Agentic systems strategy, build systems, brand, sales, GEO, and agentic commerce.',
       itemListElement: products.map((p) => ({
         url: `${SITE.url}/store/${p.slug}`,
         name: p.name,
@@ -64,7 +64,7 @@ export default function StorePage() {
             Playbooks and courses. From $47
           </p>
           <p className="text-[#3a3733] text-base md:text-lg font-body leading-relaxed max-w-2xl mx-auto mb-2">
-            Production-tested workbooks and courses built from 40+ shipped AI products. AI strategy. Claude Code. Shopify builds. Brand systems. AI sales. GEO and AI commerce. A growing library, with new drops added as we ship.
+            Production-tested workbooks and courses built from 40+ shipped agentic products. Agentic systems strategy. Claude Code. Shopify builds. Brand systems. Agentic sales. GEO and agentic commerce. A growing library, with new drops added as we ship.
           </p>
           <p className="text-[#161616]/45 text-xs font-mono uppercase tracking-[0.25em]">
             Authored by Sarah Scarano. Built by Modern Mustard Seed
@@ -97,7 +97,7 @@ export default function StorePage() {
                 Mustard Life: the whole catalog, as a comic.
               </span>
               <span className="block text-[#3a3733] font-body text-sm mt-1 leading-snug">
-                The family yachts while the AI staff work. Every product, every price, printed in ink.
+                The family yachts while the agentic staff work. Every product, every price, printed in ink.
               </span>
             </span>
             <span aria-hidden className="ml-auto hidden md:inline-flex items-center gap-2 px-5 py-2.5 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-[#161616] bg-[#F5B700] border-2 border-[#161616] group-hover:gap-3 transition-all flex-shrink-0">
@@ -127,7 +127,7 @@ export default function StorePage() {
                   Launch for real. This week.
                 </h2>
                 <p className="text-white/70 font-body text-sm md:text-base mt-3 leading-relaxed max-w-xl">
-                  Your AI launch coach. Type your idea and Mr. Mustard builds your whole launch (brand,
+                  Your agentic launch coach. Type your idea and Mr. Mustard builds your whole launch (brand,
                   offer, money, presence, first customers) and counts you down to open. Get your personalized
                   Blueprint free on the page.
                 </p>
@@ -160,7 +160,7 @@ export default function StorePage() {
                   One seed. 100x the output.
                 </h2>
                 <p className="text-white/70 font-body text-sm md:text-base mt-3 leading-relaxed max-w-xl">
-                  Your own AI coach. Mr. Mustard trains you through four tracks (Code, Design, Cowork,
+                  Your own agentic coach. Mr. Mustard trains you through four tracks (Code, Design, Cowork,
                   Ideate) with a live coach, 28 missions, and the exact prompts. Play your first coaching
                   session free on the page.
                 </p>

@@ -153,7 +153,7 @@ export function JourneyHero() {
             A Drive
           </h1>
           <p className={`mt-3 sm:mt-5 max-w-2xl lg:max-w-xl text-base sm:text-lg md:text-xl text-[#FBF6EA]/95 font-body ${revealBase}`} style={{ transitionDelay: '240ms' }}>
-            Modern Mustard Seed. A boutique design and AI studio in Kalispell,
+            Modern Mustard Seed. A boutique design and agentic systems studio in Kalispell,
             Montana.
             <span className="hidden sm:inline"> This is the scenic route.</span>
           </p>
@@ -229,7 +229,7 @@ const CROPS = [
   {
     href: '/websites',
     label: 'Websites And Brand',
-    line: 'Design-led sites for businesses that get judged on how they look before they get judged on anything else. Identity, art direction, and the build, held together as one piece of work. Then we wire the back end: SEO and AI answer optimization baked into the pages, automations behind the forms, and the follow up running itself. Built to get you found and to turn the people who find you into leads.',
+    line: 'Design-led sites for businesses that get judged on how they look before they get judged on anything else. Identity, art direction, and the build, held together as one piece of work. Then we wire the back end: SEO and answer engine optimization baked into the pages, automations behind the forms, and the follow up running itself. Built to get you found and to turn the people who find you into leads.',
   },
   {
     href: '/services',
@@ -244,7 +244,7 @@ const CROPS = [
   {
     href: '/advisory',
     label: 'Advisory',
-    line: 'Retained counsel for operators putting AI into a business that already works. What to build, what to refuse, what to automate, and in what order.',
+    line: 'Retained counsel for operators putting agentic systems into a business that already works. What to build, what to refuse, what to automate, and in what order.',
   },
 ];
 
@@ -317,8 +317,8 @@ const SIGNS = [
   { href: '/work', label: 'The Work', line: 'Case studies with the problem, the build, the stack, and what it does now. Real businesses, running on the web right now.', cta: 'See The Work' },
   { href: '/brand', label: 'Brand And Rebrand', line: 'A mark, a palette, a voice, and every surface it has to live on. Built to be recognised before it is read.', cta: 'See The Studio' },
   { href: '/pictures', label: 'Mustard Pictures', line: 'Commercials, brand films, and social cuts, built from the real product rather than stock.', cta: 'Visit The Studio' },
-  { href: '/ai-native', label: 'AI Native', line: 'Your company running on AI, with your own team operating it. Advisory and build, engaged together.', cta: 'Read The Sign' },
-  { href: '/about', label: 'The Studio', line: 'A boutique design and AI studio in Kalispell, Montana, practising four disciplines and shipping all of them.', cta: 'Meet The Studio' },
+  { href: '/agentic-native', label: 'Agentic Native', line: 'Your company running on agentic systems, with your own team operating it. Advisory and build, engaged together.', cta: 'Read The Sign' },
+  { href: '/about', label: 'The Studio', line: 'A boutique design and agentic systems studio in Kalispell, Montana, practising four disciplines and shipping all of them.', cta: 'Meet The Studio' },
   { href: '/presence-audit', label: 'The Free Presence Audit', line: 'Most people decide about you before they reach your website. We grade all three, the site, the Google profile and the reviews, and email you the report.', cta: 'Get My Free Audit' },
 ];
 
@@ -415,7 +415,7 @@ const SQUARE = [
     tag: 'The Square',
     label: 'Seen All Over The Square',
     line:
-      'One set of true facts about your business, published everywhere people look now: Google, Bing, Apple Maps, and the AI assistants they ask instead of searching. When every source agrees, you are easier to find and far easier to believe.',
+      'One set of true facts about your business, published everywhere people look now: Google, Bing, Apple Maps, and the answer engines they ask instead of searching. When every source agrees, you are easier to find and far easier to believe.',
   },
   {
     tag: 'CRO',
@@ -649,7 +649,7 @@ const DOORS = [
   {
     key: 'about',
     label: 'Meet Sarah',
-    line: 'A boutique design and AI studio in Kalispell, Montana. Four disciplines, one standard, and the founder on every engagement.',
+    line: 'A boutique design and agentic systems studio in Kalispell, Montana. Four disciplines, one standard, and the founder on every engagement.',
     cta: 'Read Her Story',
     href: '/about',
   },

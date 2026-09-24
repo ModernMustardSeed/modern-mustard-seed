@@ -116,7 +116,7 @@ export default function MrMustardHeroCTA({ location = 'hero' }: { location?: str
             <p className="text-[#3a3733] text-xs md:text-sm font-body leading-snug mt-0.5">
               {isLive
                 ? 'Ask anything. He can even book your call with Sarah.'
-                : 'Our AI right hand. Live voice or chat, your pick.'}
+                : 'Our agentic right hand. Live voice or chat, your pick.'}
             </p>
             {error && <p className="text-[#E0301E] text-[11px] font-mono mt-1">{error}</p>}
           </div>

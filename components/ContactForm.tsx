@@ -218,7 +218,7 @@ export default function ContactForm({ defaultPackage, defaultMessage }: Props) {
                         requested callback instead of a cold call, so no form
                         may post to /api/instant-callback without it. */}
                     <span className="mt-2 block font-body text-[12px] leading-relaxed text-[#5c554a]">
-                      Leave a number and our AI, Mr. Mustard, calls you back in about ten seconds. He can answer
+                      Leave a number and Mr. Mustard, our voice agent, calls you back in about ten seconds. He can answer
                       questions and book you straight onto Sarah&apos;s calendar. Leave it blank and we will just email.
                     </span>
                   </label>

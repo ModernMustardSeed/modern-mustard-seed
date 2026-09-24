@@ -22,7 +22,7 @@ export default function PrivacyPage() {
           <div className="mdx-prose space-y-5">
             <h2>Information we collect</h2>
             <p>
-              We collect information you provide directly: name, email, and message content when you fill out the contact form, subscribe to our newsletter, or run an AI audit. We collect anonymous analytics via Vercel Analytics (no personally identifying information).
+              We collect information you provide directly: name, email, and message content when you fill out the contact form, subscribe to our newsletter, or run an agentic audit. We collect anonymous analytics via Vercel Analytics (no personally identifying information).
             </p>
             <h2>How we use it</h2>
             <p>
@@ -50,7 +50,7 @@ export default function PrivacyPage() {
             <p>
               You can accept or decline non-essential cookies at any time. Declining keeps all analytics and advertising trackers off. If you are covered by privacy laws such as the EU/UK GDPR or the California CPRA, choosing &ldquo;Essential only&rdquo; in the cookie banner is also how you opt out of any sale or sharing of personal information for targeted advertising. You can also email us to make the request directly.
             </p>
-            <h2>Bottleneck Breaker (AI audit) data</h2>
+            <h2>Bottleneck Breaker (agentic audit) data</h2>
             <p>
               When you run the Bottleneck Breaker, the URL you submit is sent to Anthropic&rsquo;s Claude API for analysis and the result is returned to you. The URL and the details you provide may be logged so Sarah can follow up with you about it. You can ask us to delete this at any time.
             </p>

@@ -19,7 +19,7 @@ export default function BlogTeaser() {
           Thinking Out <span className="text-gradient-mustard">Loud</span>
         </h2>
         <p className="text-white/50 text-base md:text-lg font-body font-light leading-relaxed">
-          Lessons from the frontlines of building AI products, shipping fast, and businesses that move at the speed of faith.
+          Lessons from the frontlines of building agentic products, shipping fast, and businesses that move at the speed of faith.
         </p>
       </div>
 

@@ -26,7 +26,7 @@ export default function Hero() {
       </p>
 
       <p className="text-white/45 text-sm md:text-base font-body font-light tracking-wider max-w-xl mx-auto leading-relaxed mb-10 opacity-0 animate-fade-in-up-delay">
-        We build production apps, AI-powered products, and brand systems that grow businesses. Powered by innovation, grounded in faith.
+        We build production apps, agentic products, and brand systems that grow businesses. Powered by innovation, grounded in faith.
       </p>
 
       <div className="flex flex-col sm:flex-row gap-4 mb-14 opacity-0 animate-fade-in-up-delay-2">
@@ -34,7 +34,7 @@ export default function Hero() {
           href="/audit"
           className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-white bg-gradient-to-r from-mustard-600 via-mustard-500 to-mustard-400 rounded-full hover:shadow-[0_0_30px_rgba(255,107,53,0.2)] transition-all duration-300"
         >
-          Start a Free AI Audit
+          Start a Free Website Audit
         </Link>
         <Link
           href="/case-studies"

@@ -93,7 +93,7 @@ export function buildLeadText(
     body =
       `Hi, is this ${biz}? It's ${first} with Modern Mustard Seed here in ${city}. ` +
       `Quick one: when you're slammed, ${hook}. ` +
-      `We set up an AI that answers and books 24/7 in a real voice. ` +
+      `We set up a voice agent that answers and books 24/7 in a real voice. ` +
       `Worth a quick demo? ${bookUrl}${optOut}`;
   }
 

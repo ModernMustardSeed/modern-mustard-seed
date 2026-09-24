@@ -1,26 +1,26 @@
 ---
 title: "Cloudflare and the Agent Economy: The Web Is Being Rewired for Software That Buys, Builds, and Works"
-description: "In thirteen months Cloudflare shipped identity, payments, and persistent workspaces for AI agents: Web Bot Auth, x402 and the Monetization Gateway, Wallets, Sandboxes, and Project Think. Here is what the agent economy actually is, what an agentic workspace looks like in practice, and what a business owner should do about it this quarter."
+description: "In thirteen months Cloudflare shipped identity, payments, and persistent workspaces for software agents: Web Bot Auth, x402 and the Monetization Gateway, Wallets, Sandboxes, and Project Think. Here is what the agent economy actually is, what an agentic workspace looks like in practice, and what a business owner should do about it this quarter."
 date: "2026-08-10"
 dateModified: "2026-08-10"
 tag: "Agentic Systems"
 author: "Sarah Scarano"
 faq:
   - q: "What is the agent economy?"
-    a: "The agent economy is commerce where at least one side of the transaction is software acting on a human's behalf: an AI agent that finds a vendor, evaluates the offer, pays for the data or the service, and reports back. It requires three things the web never had natively: a way for an agent to prove who it is, a way for it to pay per request without an account, and a persistent place for it to do its work. Between July 2025 and August 2026, Cloudflare shipped infrastructure for all three."
+    a: "The agent economy is commerce where at least one side of the transaction is software acting on a human's behalf: an agent that finds a vendor, evaluates the offer, pays for the data or the service, and reports back. It requires three things the web never had natively: a way for an agent to prove who it is, a way for it to pay per request without an account, and a persistent place for it to do its work. Between July 2025 and August 2026, Cloudflare shipped infrastructure for all three."
   - q: "What is Cloudflare x402 and the Monetization Gateway?"
     a: "x402 is an open protocol built on the HTTP 402 status code. An agent requests a resource, gets back a 402 response with a price, pays in stablecoin, and resubmits the request with proof of payment. The payment itself is the credential, so no signup or account is needed. Cloudflare's Monetization Gateway, announced July 1, 2026, enforces this at the network edge: a site owner sets a price on any page, API endpoint, dataset, or MCP tool, and Cloudflare handles the challenge and the settlement."
   - q: "What is an agentic workspace?"
     a: "An agentic workspace is a persistent working environment that belongs to a software agent: its own filesystem and shell, its own database, its own memory across sessions, and versioned storage for what it produces. Cloudflare's version is Sandboxes plus Artifacts plus Agent Memory on Durable Objects. The shift it represents: an agent stops being a chat response that evaporates and becomes a coworker with a desk, files, and a record of its work."
-  - q: "Do AI agents really pay for content and APIs?"
-    a: "The rails now exist and the incentives point that way. Cloudflare began blocking AI crawlers by default in July 2025 and launched Pay Per Crawl so publishers charge for access instead of donating it. The Monetization Gateway extends that to any resource, and Cloudflare Wallets, announced August 4, 2026, gives agents a stablecoin wallet with spending guardrails and a permanent ID. The pieces are live or in waitlist today; the volume comes as buyers' agents become the default way people research and purchase."
-  - q: "How should a small business prepare for AI agents visiting its website?"
+  - q: "Do software agents really pay for content and APIs?"
+    a: "The rails now exist and the incentives point that way. Cloudflare began blocking model-training crawlers by default in July 2025 and launched Pay Per Crawl so publishers charge for access instead of donating it. The Monetization Gateway extends that to any resource, and Cloudflare Wallets, announced August 4, 2026, gives agents a stablecoin wallet with spending guardrails and a permanent ID. The pieces are live or in waitlist today; the volume comes as buyers' agents become the default way people research and purchase."
+  - q: "How should a small business prepare for software agents visiting its website?"
     a: "Treat agents as a second audience alongside humans. Concretely: make sure your site answers the questions an agent will ask (what you do, what it costs, how to book) in plain machine-readable text, not just in images and animations; publish structured data; and decide your access policy now, because default crawler blocking means silence is a decision too. A site an agent cannot read is a business an agent cannot recommend."
-  - q: "Should my business run its own AI agents or wait?"
+  - q: "Should my business run its own agents or wait?"
     a: "Run them now, on work you can verify. The infrastructure maturing at Cloudflare and elsewhere means agents that persist, remember, and act are no longer research projects; we run a seventeen-agent office on this pattern today. Start with one leaky loop, put hard approval gates on anything that touches a customer or a dollar, and own the system outright so the asset compounds for you rather than for a platform."
 ---
 
-Cloudflare sits in front of roughly a fifth of the web. When that company spends thirteen months shipping identity, payments, and offices for AI agents, that is not a product launch. That is the road system for the next economy being poured.
+Cloudflare sits in front of roughly a fifth of the web. When that company spends thirteen months shipping identity, payments, and offices for software agents, that is not a product launch. That is the road system for the next economy being poured.
 
 Here is what actually shipped, why it matters more than the individual announcements suggest, and what a business owner should do about it before the paving crews reach their street.
 
@@ -28,13 +28,13 @@ Here is what actually shipped, why it matters more than the individual announcem
 
 Every assumption underneath a website is a human assumption. A visitor reads with eyes, so we communicate in layouts and images. A buyer signs up with an email, so we gate value behind accounts. A customer pays with a card on file, so anything under a dollar is not worth charging for.
 
-AI agents break every one of those assumptions at once. An agent reads text and structure, not hero animations. An agent acting for a thousand different people cannot maintain a thousand accounts. And an agent doing real work needs to buy small things constantly: one API call, one dataset row, one page of a paywalled report. The web had no native way to identify an agent, charge an agent, or house an agent.
+Software agents break every one of those assumptions at once. An agent reads text and structure, not hero animations. An agent acting for a thousand different people cannot maintain a thousand accounts. And an agent doing real work needs to buy small things constantly: one API call, one dataset row, one page of a paywalled report. The web had no native way to identify an agent, charge an agent, or house an agent.
 
 That three-part gap is exactly the shape of what Cloudflare has been shipping.
 
 ## Identity: agents that can prove who they are
 
-The first move looked defensive. In July 2025 Cloudflare flipped the default and began blocking AI crawlers unless a site opts in, then launched Pay Per Crawl so publishers could charge for access instead of watching their content get scraped into training runs for free.
+The first move looked defensive. In July 2025 Cloudflare flipped the default and began blocking model-training crawlers unless a site opts in, then launched Pay Per Crawl so publishers could charge for access instead of watching their content get scraped into training runs for free.
 
 The durable part is what came with it: <a href="https://blog.cloudflare.com/monetization-gateway/" target="_blank" rel="noopener noreferrer">Web Bot Auth</a>, a standard where an agent signs its requests cryptographically. A signed agent is not an anonymous scraper. It is a known actor with a reputation, which means a site can say yes to the shopping agent, no to the bulk scraper, and send the training crawler an invoice. Verification is the precondition for every transaction that follows. Nobody sells to a customer who will not show ID.
 

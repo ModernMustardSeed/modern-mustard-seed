@@ -58,8 +58,8 @@ export async function POST(req: Request) {
             <li style="margin-bottom:10px"><strong style="color:#fff">No fluff.</strong> If I do not have something useful to say, I will not send.</li>
             <li><strong style="color:#fff">Subscriber-only PDFs</strong> on the playbooks we publish.</li>
           </ul>` +
-          p('Want to start with something concrete? Run the free AI audit and get a 60-second readout on the highest-leverage moves you could make in your business.'),
-        cta: { label: 'Run the free AI audit', url: 'https://modernmustardseed.com/audit' },
+          p('Want to start with something concrete? Run the free Bottleneck Breaker and get a 60-second readout on the highest-leverage moves you could make in your business.'),
+        cta: { label: 'Run the Bottleneck Breaker', url: 'https://modernmustardseed.com/audit' },
         secondary: { label: 'See recent work', url: 'https://modernmustardseed.com/work' },
       }),
     });

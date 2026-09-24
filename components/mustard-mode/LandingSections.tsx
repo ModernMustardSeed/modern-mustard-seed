@@ -24,7 +24,7 @@ function RotatingWord() {
 
 /** Diagonal mono marquee ticker between sections. */
 export function Ticker({ reverse = false }: { reverse?: boolean }) {
-  const line = 'SHIP MORE // DESIGN MORE // IDEATE MORE // COWORK WITH AI // ';
+  const line = 'SHIP MORE // DESIGN MORE // IDEATE MORE // COWORK WITH CLAUDE // ';
   return (
     <div className="relative overflow-hidden border-y-2 border-[#161616] bg-[#F5B700] py-2.5 select-none" aria-hidden>
       <style>{`
@@ -44,7 +44,7 @@ export function Ticker({ reverse = false }: { reverse?: boolean }) {
 /** How it works: the method in three beats. */
 export function MethodSection() {
   const beats = [
-    { n: '01', title: 'Mr. Mustard trains you', body: 'A live AI coach who knows your track, your mission, and the thing you said you want to build. He gives you the next rep, checks your work, and keeps score.' },
+    { n: '01', title: 'Mr. Mustard trains you', body: 'A live agentic coach who knows your track, your mission, and the thing you said you want to build. He gives you the next rep, checks your work, and keeps score.' },
     { n: '02', title: 'Claude does the reps', body: 'Every mission is built on your own Claude subscription. You learn by shipping real artifacts (apps, pages, specs, systems), never by watching videos.' },
     { n: '03', title: 'You keep the multiplier', body: 'XP and streaks are the game. The prize is the skill: after four tracks you run Claude like the studio does, on everything, forever.' },
   ];
@@ -212,8 +212,8 @@ export function IntegritySection() {
       d: 'Claude writes the code. You make the calls. Every mission ends with you understanding what you built well enough to explain it, not just paste it.',
     },
     {
-      t: 'Say when AI built it',
-      d: 'If a client, a boss, or a reader would care that AI was in the loop, tell them. Speed is not a reason to be quiet about how the work got made.',
+      t: 'Say when a model built it',
+      d: 'If a client, a boss, or a reader would care that a model was in the loop, tell them. Speed is not a reason to be quiet about how the work got made.',
     },
     {
       t: 'Amplify skill, never replace judgment',
@@ -228,7 +228,7 @@ export function IntegritySection() {
         </Reveal>
         <Reveal variant="slam" delay={100}>
           <h2 className="font-display italic font-extrabold text-4xl md:text-5xl text-[#161616] mt-3 max-w-2xl leading-[1.05]">
-            Integrity in AI is not a footnote here.
+            Integrity with agentic tools is not a footnote here.
           </h2>
         </Reveal>
         <Reveal variant="rise" delay={200}>

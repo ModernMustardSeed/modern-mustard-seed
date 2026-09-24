@@ -1365,7 +1365,7 @@ async function handleSwitchboardPurchase(
         preheader: 'One voice, every location. Here is what happens next.',
         eyebrow: 'THE SWITCHBOARD',
         greeting: firstName ? `${firstName}, every door is covered now.` : 'Every door is covered now.',
-        body: `<p>You just put one AI concierge on all ${locations} locations of <strong>${business || 'your brand'}</strong>. Here is what happens next:</p><p><strong>1.</strong> Within one business day I reach out to map your brand voice, hours, and booking rules.</p><p><strong>2.</strong> We build one concierge template and clone it to every location, with the master number routing.</p><p><strong>3.</strong> Your Command Board goes live, and you watch the recovered revenue climb across every location.</p>`,
+        body: `<p>You just put one agentic concierge on all ${locations} locations of <strong>${business || 'your brand'}</strong>. Here is what happens next:</p><p><strong>1.</strong> Within one business day I reach out to map your brand voice, hours, and booking rules.</p><p><strong>2.</strong> We build one concierge template and clone it to every location, with the master number routing.</p><p><strong>3.</strong> Your Command Board goes live, and you watch the recovered revenue climb across every location.</p>`,
         signature: 'Sarah',
       }),
     });
@@ -2752,7 +2752,7 @@ async function handleAiNativePurchase(
       stripe_session_id: session.id,
       stripe_payment_intent_id: typeof session.payment_intent === 'string' ? session.payment_intent : null,
       product_slug: slug,
-      product_name: `AI NATIVE ${tier?.name ?? slug}`,
+      product_name: `AGENTIC NATIVE ${tier?.name ?? slug}`,
       item_type: 'program',
       price_paid_cents: session.amount_total ?? tier?.priceCents ?? 0,
       currency: session.currency ?? 'usd',
@@ -2770,7 +2770,7 @@ async function handleAiNativePurchase(
       name: name ?? null,
       source: 'ai-native-buyer',
       status: 'new',
-      notes: `[bought:${slug}] KICK OFF AI NATIVE. Set the sixty-minute kickoff with the owner and whoever runs the day to day, then start the map.`,
+      notes: `[bought:${slug}] KICK OFF AGENTIC NATIVE. Set the sixty-minute kickoff with the owner and whoever runs the day to day, then start the map.`,
     });
   } catch (err) {
     console.error('ai-native lead insert failed', err);
@@ -2784,10 +2784,10 @@ async function handleAiNativePurchase(
     await resend.emails.send({
       from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
       to: OWNER_NOTIFY_TO,
-      subject: `KICK OFF ${tier?.name ?? 'AI NATIVE'}: ${name ?? email}`,
+      subject: `KICK OFF ${tier?.name ?? 'AGENTIC NATIVE'}: ${name ?? email}`,
       html: clientEmail({
-        preheader: 'An AI Native engagement was booked. Set the kickoff.',
-        eyebrow: 'AI NATIVE ORDER',
+        preheader: 'An Agentic Native engagement was booked. Set the kickoff.',
+        eyebrow: 'AGENTIC NATIVE ORDER',
         greeting: 'Set the kickoff.',
         body: `<p><strong>${escapeHtmlSafe(name ?? email)}</strong> booked <strong>${tier?.name ?? slug}</strong> (${price}).</p><p>Email: ${escapeHtmlSafe(email)}. Stripe session: ${session.id}.</p><p>Promise on the page: ${isSub ? 'two live team sessions a month and a same-day line between them' : promise}. First move: reply with two kickoff times and ask for the name of the person who runs their day to day. The map starts the moment the kickoff is on the calendar.</p>`,
         signature: 'The Studio',
@@ -2805,9 +2805,9 @@ async function handleAiNativePurchase(
       subject: `${firstName ? `${firstName}, ` : ''}your company is going native`,
       html: clientEmail({
         preheader: 'Booked. Here is what happens next.',
-        eyebrow: `AI NATIVE ${tier?.name ?? ''}`.trim(),
+        eyebrow: `AGENTIC NATIVE ${tier?.name ?? ''}`.trim(),
         greeting: firstName ? `${firstName}, the map starts now.` : 'The map starts now.',
-        body: `<p>Your ${isSub ? 'tending' : slug === 'ai-map' ? 'AI map' : 'AI Native build'} is booked. Here is how it goes:</p><p><strong>1.</strong> Reply to this email with two kickoff times that work and the name of the person who runs your day to day. The kickoff is sixty minutes, and you bring nothing. I come with the questions.</p><p><strong>2.</strong> ${isSub ? 'We set the two monthly session times and open the standing line for your team the same week.' : `You get the map first, ${AI_NATIVE.mapDelivery}: every workflow written down, scored and ranked, the first five named, and every tool priced. You read it before anything is built or bought.`}</p><p><strong>3.</strong> ${isSub ? 'Every month one more workflow moves onto AI and the playbook is kept current. Cancel the day your team stops needing it.' : slug === 'ai-map' ? 'The map ends with a working session on the first move, and it credits in full toward AI NATIVE within ninety days.' : `The first five go live across eight weeks with six working sessions on your team's real work, ${AI_NATIVE.buildDelivery}. On the last day every admin seat is in your name.`}</p><p>Changes to what we build are included. The accounts, the keys, the playbook and the habit are yours.</p>`,
+        body: `<p>Your ${isSub ? 'tending' : slug === 'ai-map' ? 'agentic map' : 'Agentic Native build'} is booked. Here is how it goes:</p><p><strong>1.</strong> Reply to this email with two kickoff times that work and the name of the person who runs your day to day. The kickoff is sixty minutes, and you bring nothing. I come with the questions.</p><p><strong>2.</strong> ${isSub ? 'We set the two monthly session times and open the standing line for your team the same week.' : `You get the map first, ${AI_NATIVE.mapDelivery}: every workflow written down, scored and ranked, the first five named, and every tool priced. You read it before anything is built or bought.`}</p><p><strong>3.</strong> ${isSub ? 'Every month one more workflow moves onto AI and the playbook is kept current. Cancel the day your team stops needing it.' : slug === 'ai-map' ? 'The map ends with a working session on the first move, and it credits in full toward AI NATIVE within ninety days.' : `The first five go live across eight weeks with six working sessions on your team's real work, ${AI_NATIVE.buildDelivery}. On the last day every admin seat is in your name.`}</p><p>Changes to what we build are included. The accounts, the keys, the playbook and the habit are yours.</p>`,
         cta: { label: 'Reply with two kickoff times', url: 'mailto:sarah@modernmustardseed.com' },
         signature: 'Sarah',
       }),
@@ -2829,7 +2829,7 @@ async function handleAiNativeSubscriptionDeleted(sub: Stripe.Subscription) {
       subject: `TENDING CANCELED: ${sub.id}`,
       html: clientEmail({
         preheader: 'A Tending ended.',
-        eyebrow: 'AI NATIVE OFFBOARD',
+        eyebrow: 'AGENTIC NATIVE OFFBOARD',
         greeting: 'A team graduated.',
         body: `<p>Subscription ${sub.id} was canceled. No more monthly sessions. Send the wrap note, confirm every account and the playbook stay theirs, and close the standing line.</p>`,
         signature: 'The Studio',

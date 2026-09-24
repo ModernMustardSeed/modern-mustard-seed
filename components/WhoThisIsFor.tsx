@@ -7,11 +7,11 @@ const archetypes = [
     outcome: 'Your second business ships before the first one’s quarterly review.',
   },
   {
-    eyebrow: 'Service businesses going AI-native',
-    title: 'Trades and service businesses going AI-native.',
+    eyebrow: 'Service businesses going agentic',
+    title: 'Trades and service businesses going agentic.',
     description:
-      'Existing operators who see the AI shift coming and want to own their stack before someone else automates the industry from underneath them.',
-    outcome: 'You become the AI-native version of your industry, not the casualty.',
+      'Existing operators who see the agentic shift coming and want to own their stack before someone else automates the industry from underneath them.',
+    outcome: 'You become the agentic version of your industry, not the casualty.',
   },
   {
     eyebrow: 'Capitalized founders with urgency',

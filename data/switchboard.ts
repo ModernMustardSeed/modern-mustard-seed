@@ -10,11 +10,11 @@
 export const SWITCHBOARD = {
   name: 'The Switchboard',
   by: 'by Modern Mustard Seed',
-  metaTitle: 'AI Phone Answering for Multi-Location and Franchise Brands',
+  metaTitle: 'Agentic Phone Answering for Multi-Location and Franchise Brands',
   metaDescription:
-    'Give every location of your franchise or multi-location brand a 24/7 AI voice concierge in one on-brand voice, and watch the recovered revenue from all of them on a single Command Board. Priced per location, discounted at volume.',
+    'Give every location of your franchise or multi-location brand a 24/7 agentic voice concierge in one on-brand voice, and watch the recovered revenue from all of them on a single Command Board. Priced per location, discounted at volume.',
   promise:
-    'Every location gets a 24/7 AI concierge in one on-brand voice. You get one board that shows the money it saved across all of them.',
+    'Every location gets a 24/7 agentic concierge in one on-brand voice. You get one board that shows the money it saved across all of them.',
   statement: 'One voice answers for all of them.',
   walkthroughPath: '/book',
   // A REAL, live AI concierge a prospect can call right now to hear how a location
@@ -24,7 +24,7 @@ export const SWITCHBOARD = {
     number: '+18044801564',
     display: '(804) 480-1564',
     label: 'Hear a location answer',
-    note: 'Call it. A live AI concierge answers as a home-services location would, around the clock. Be a customer and try to stump it.',
+    note: 'Call it. A live agentic concierge answers as a home-services location would, around the clock. Be a customer and try to stump it.',
   },
 } as const;
 
@@ -71,7 +71,7 @@ export function quoteFor(locationsRaw: number): Quote {
 export const usd = (n: number) => `$${Math.round(n).toLocaleString('en-US')}`;
 
 export const whatShips: { title: string; body: string }[] = [
-  { title: 'One brand voice, cloned to every door', body: 'We build one on-brand AI concierge template and deploy it to every location, so a caller in Tampa and a caller in Tempe hear the same brand.' },
+  { title: 'One brand voice, cloned to every door', body: 'We build one on-brand agentic concierge template and deploy it to every location, so a caller in Tampa and a caller in Tempe hear the same brand.' },
   { title: 'A master number that routes', body: 'One number the whole brand can advertise. Each caller is routed to the right location, answered, qualified, and booked, day or night.' },
   { title: 'The live Command Board', body: 'One login shows every location at a glance: calls answered after hours, appointments booked, and the recovered revenue rolled up across the whole chain.' },
   { title: 'A monthly rollup the owner forwards', body: 'A clean "recovered across all locations" report every month, built to be screenshotted and sent to the COO.' },
@@ -90,8 +90,8 @@ export const faq: { q: string; a: string }[] = [
     a: 'Per location, discounted the more locations you have: $349 each for 1 to 5, $299 for 6 to 20, $249 for 21 to 50, and $199 each at 51+. Plus a one-time $3,500 franchise build that covers the brand voice template, the master Command Board, and the rollout. You see your exact number before you commit.',
   },
   {
-    q: 'Is the concierge an AI?',
-    a: 'Yes, and it says so. Each location is answered by an AI concierge in your brand voice that qualifies callers and books appointments around the clock. It will happily tell any caller it is an AI. It is your brand answering, consistently, at every door.',
+    q: 'Is the concierge a person?',
+    a: 'No, it is a voice agent, and it says so. Each location is answered by an agentic concierge in your brand voice that qualifies callers and books appointments around the clock. It will happily tell any caller it is a voice agent, not a person. It is your brand answering, consistently, at every door.',
   },
   {
     q: 'Can it take orders or book through our systems?',

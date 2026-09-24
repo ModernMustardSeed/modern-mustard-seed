@@ -49,7 +49,7 @@ export default function MustardTreePage() {
       {
         '@type': 'Service',
         name: 'The Mustard Tree by Modern Mustard Seed',
-        serviceType: 'AI business generation and operation: plan, brand, store, site, books, and marketing grown from one prompt, run by an AI agent office',
+        serviceType: 'Agentic business generation and operation: plan, brand, store, site, books, and marketing grown from one prompt, run by an agentic office',
         description: MUSTARD_TREE.metaDescription,
         provider: { '@type': 'Organization', name: 'Modern Mustard Seed', url: SITE.url },
         areaServed: 'United States (waitlist)',

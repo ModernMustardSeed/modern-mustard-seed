@@ -144,7 +144,7 @@ export default function HuckVoiceWidget() {
           </p>
           <p className="text-[#161616]/65 text-sm leading-relaxed max-w-md" style={{ fontFamily: 'var(--font-serif, Cormorant Garamond, serif)', fontSize: '1.05rem' }}>
             {isLive
-              ? 'Ask him how he got his name. Tell him yours. He will cheerfully remind you he is an AI mascot.'
+              ? 'Ask him how he got his name. Tell him yours. He will cheerfully remind you he is an agentic mascot.'
               : `This is the same live line the whole town can dial at ${HUCK.phone}. Now it opens right here.`}
           </p>
           {error && <p className="text-[#B54423] text-xs font-mono mt-2">{error}</p>}

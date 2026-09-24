@@ -35,7 +35,7 @@ const MENU_GROUPS = [
       { label: 'Marketing', href: '/marketing' },
       { label: 'For the Kingdom', href: '/kingdom' },
       { label: 'Advisory', href: '/advisory' },
-      { label: 'AI Native', href: '/ai-native' },
+      { label: 'Agentic Native', href: '/agentic-native' },
       { label: 'Mustard Pictures', href: '/pictures' },
       { label: 'The Launch Film', href: '/launch-film' },
     ],
@@ -104,9 +104,9 @@ const DEPARTMENTS = [
   { name: 'Advisory', tag: 'RETAINED COUNSEL, BY THE QUARTER', href: '/advisory' },
   { name: 'The Presence Audit', tag: 'FREE: SITE, PROFILE AND REVIEWS, GRADED', href: '/presence-audit' },
   { name: 'The Bottleneck Breaker', tag: 'THE ONE THING COSTING YOU MOST, IN 60 SECONDS', href: '/audit' },
-  { name: 'AI Native', tag: 'YOUR COMPANY ON AI, YOUR TEAM RUNNING IT', href: '/ai-native' },
-  { name: 'The Chief', tag: 'YOUR AI CHIEF OF STAFF', href: '/chief' },
-  { name: 'Command Center', tag: 'THE AI BACK OFFICE', href: '/command-center' },
+  { name: 'Agentic Native', tag: 'YOUR COMPANY ON AGENTIC SYSTEMS, YOUR TEAM RUNNING IT', href: '/agentic-native' },
+  { name: 'The Chief', tag: 'YOUR AGENTIC CHIEF OF STAFF', href: '/chief' },
+  { name: 'Command Center', tag: 'THE AGENTIC BACK OFFICE', href: '/command-center' },
   { name: 'Mustard Pictures', tag: 'FILMS AND ADVERTISING', href: '/pictures' },
   { name: 'The Launch Film', tag: 'A FILM BUILT FROM YOUR REAL PRODUCT', href: '/launch-film' },
   { name: 'Meet Mr. Mustard', tag: 'THE STUDIO ANSWERS, DAY AND NIGHT', href: '/mustard' },
@@ -353,7 +353,7 @@ export default function Navbar() {
                 {MENU_GROUPS[0].heading}
               </span>
               <p className="font-display italic font-bold text-[#161616] text-base md:text-lg leading-snug mb-5">
-                A boutique design and AI studio. Five disciplines, one standard.
+                A boutique design and agentic systems studio. Five disciplines, one standard.
               </p>
               <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
                 {MENU_GROUPS[0].links.map((link) => {

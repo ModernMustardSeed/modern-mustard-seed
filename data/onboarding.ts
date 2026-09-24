@@ -130,7 +130,7 @@ export const OFFER_LADDER: LadderRung[] = [
     price: 'Free',
     title: 'Free tools and demos',
     detail: 'Every stranger meets us here. These are your weapons in the field. They cost nothing and they show value before we ask for a dime.',
-    examples: ['Voice Agent voice agent demo', 'Pictures Screen Test', 'Press proof', 'Website / AI audit'],
+    examples: ['Voice Agent voice agent demo', 'Pictures Screen Test', 'Press proof', 'Website / GEO audit'],
   },
   {
     rung: 2,
@@ -170,7 +170,7 @@ export const OFFER_LADDER: LadderRung[] = [
     price: 'Monthly, ongoing',
     title: 'Retainers and subscriptions',
     detail: 'The top of the ladder and the dream: income that repeats every month. A shipped project rolls into a plan that keeps paying.',
-    examples: ['Fractional AI Partner', 'Build & Operate retainer', 'Care Plans, plus every /mo plan above'],
+    examples: ['Fractional Agentic Partner', 'Build & Operate retainer', 'Care Plans, plus every /mo plan above'],
   },
 ];
 
@@ -198,11 +198,11 @@ export const PHASES: Phase[] = [
         blocks: [
           {
             heading: 'What Modern Mustard Seed is',
-            body: 'Modern Mustard Seed (MMS) is a small, high-end AI studio founded by Sarah Scarano. We build custom apps, websites, AI tools, and self-serve products for businesses, and we ship them fast. We take a handful of big builds at a time so quality never slips, and we sell a growing shelf of productized tools that anyone can buy in a click. We punch far above our size because we run the whole thing on AI, and because we hold a standard most studios do not.',
+            body: 'Modern Mustard Seed (MMS) is a small, high-end agentic systems studio founded by Sarah Scarano. We build custom apps, websites, agentic tools, and self-serve products for businesses, and we ship them fast. We take a handful of big builds at a time so quality never slips, and we sell a growing shelf of productized tools that anyone can buy in a click. We punch far above our size because we run the whole thing on agentic systems, and because we hold a standard most studios do not.',
           },
           {
             heading: 'Who Sarah is',
-            body: 'Sarah is the founder and lead builder. Self-taught full-stack developer and AI systems architect, and Christian first, which shapes how we treat people: honestly, generously, and with real care. She runs more than one venture, so a right hand who can take real weight off her is not a nice-to-have. It is the whole point of your role.',
+            body: 'Sarah is the founder and lead builder. Self-taught full-stack developer and agentic systems architect, and Christian first, which shapes how we treat people: honestly, generously, and with real care. She runs more than one venture, so a right hand who can take real weight off her is not a nice-to-have. It is the whole point of your role.',
           },
           {
             heading: 'The standard we hold, always',
@@ -224,13 +224,13 @@ export const PHASES: Phase[] = [
         id: 'the-shift',
         emoji: '🚀',
         eyebrow: 'The big idea',
-        title: 'The shift: AI staff for Main Street',
+        title: 'The shift: agentic staff for Main Street',
         summary: 'Where the business is pointed now, and why it changes everything for you.',
         minutes: 6,
         blocks: [
           {
             heading: 'The one sentence that runs the company',
-            body: 'Here is where we are pointed: we put AI staff to work for Main Street businesses, starting with the 24/7 voice agent you can hear answering your own phone sixty seconds from now. Read that again. That is the whole strategy in a line. Big agencies sell six-month projects to big companies. We give the corner salon, the roofer, and the med spa an AI team they can hear working, today, for the price of a slow week.',
+            body: 'Here is where we are pointed: we put agentic staff to work for Main Street businesses, starting with the 24/7 voice agent you can hear answering your own phone sixty seconds from now. Read that again. That is the whole strategy in a line. Big agencies sell six-month projects to big companies. We give the corner salon, the roofer, and the med spa an agentic team they can hear working, today, for the price of a slow week.',
           },
           {
             heading: 'Why this matters to your job',
@@ -243,7 +243,7 @@ export const PHASES: Phase[] = [
           },
           {
             callout:
-              'The old story was "we build custom software." The new story is "we put AI staff to work for you, and you can hear it right now." Same studio, sharper spear. You are joining at the exact moment it gets easy to sell.',
+              'The old story was "we build custom software." The new story is "we put agentic staff to work for you, and you can hear it right now." Same studio, sharper spear. You are joining at the exact moment it gets easy to sell.',
           },
         ],
         mission: { do: 'Go to /voice-agents/build, and let Mr. Mustard build a voice agent for a made-up business. Talk to it out loud.', why: 'This is the single most important thing we make right now. You cannot sell the wow until you have felt it yourself.' },
@@ -338,15 +338,15 @@ export const PHASES: Phase[] = [
             bullets: [
               'The free wow: it builds a personalized voice agent for their business in about 60 seconds, and they talk to it live.',
               'To keep him: $297 to set up plus $297 a month (500 answered minutes). The Pro is $597 plus $597 a month (1,200 minutes, caller memory, booking, a monthly tune-up with Sarah).',
-              'Say it like this: "An AI that answers your phone 24/7 in a natural voice and books appointments, even when you are closed or slammed."',
+              'Say it like this: "A voice agent that answers your phone 24/7 in a natural voice and books appointments, even when you are closed or slammed."',
             ],
           },
           {
-            heading: 'Mustard Pictures, an AI commercial  ·  /pictures',
+            heading: 'Mustard Pictures, a studio-made commercial  ·  /pictures',
             bullets: [
               'The free wow: a "Screen Test," a six-shot storyboard, three taglines, and one cinematic frame for their business, on the spot.',
               'To make it real: $197 for a finished 30-second commercial (The Spot). $497 for a voiced, talking version (The Premiere). $197 a month for a fresh spot every month (Season Pass).',
-              'Say it like this: "Your business as a real cinematic commercial, directed by our AI. Watch a preview of yours free."',
+              'Say it like this: "Your business as a real cinematic commercial, directed by our agentic studio. Watch a preview of yours free."',
             ],
           },
           {
@@ -358,16 +358,16 @@ export const PHASES: Phase[] = [
             ],
           },
           {
-            heading: 'GEO Desk, get found by AI  ·  /website-audit',
+            heading: 'GEO Desk, get found by answer engines  ·  /website-audit',
             bullets: [
-              'The free wow: it grades how findable their business is inside AI answers (ChatGPT, Perplexity, Google AI).',
+              'The free wow: it grades how findable their business is inside answer engines (ChatGPT, Perplexity, Google AI Overviews).',
               'To fix it: $297 for every missing signal written for their business, ready to paste (The Fix Pack). $497 with 90 days of proof. $97 a month to keep watch.',
-              'Say it like this: "When someone asks AI for a business like yours, are you the answer? We make sure you are." Never promise rankings, only that we install and monitor the signals.',
+              'Say it like this: "When someone asks ChatGPT for a business like yours, are you the answer? We make sure you are." Never promise rankings, only that we install and monitor the signals.',
             ],
           },
           {
             heading: 'And one more: Mustard Mode  ·  /mustard-mode',
-            body: 'Our coaching arcade. Mr. Mustard is a personal AI coach who teaches anyone to build with Claude, in levels, with missions and XP (a lot like this program). Free first session, then Player at $197 or Builder at $397. This is the "learn to build it yourself" door, and it is also how YOU will start becoming a builder later in this program.',
+            body: 'Our coaching arcade. Mr. Mustard is a personal agentic coach who teaches anyone to build with Claude, in levels, with missions and XP (a lot like this program). Free first session, then Player at $197 or Builder at $397. This is the "learn to build it yourself" door, and it is also how YOU will start becoming a builder later in this program.',
           },
         ],
         mission: { do: 'Visit all four free demos (/voice-agents/build, /pictures, /press, /website-audit) and run one of each on a real local business you can think of.', why: 'You will sell these every day. You should be able to run each one in your sleep before you show a stranger.' },
@@ -384,8 +384,8 @@ export const PHASES: Phase[] = [
             heading: 'What we build for people',
             bullets: [
               'Websites that actually sell: a clear offer, real proof, an obvious next step. Live in weeks, and they own it.',
-              'Full business systems: a site plus a CRM, an AI assistant, and the back office, all working together.',
-              'Custom apps and AI tools: the one clean tool built for exactly how their business runs.',
+              'Full business systems: a site plus a CRM, an agentic assistant, and the back office, all working together.',
+              'Custom apps and agentic tools: the one clean tool built for exactly how their business runs.',
               'Voice and chat agents: the voice agent and the website helper, built and tuned for their business.',
             ],
           },
@@ -577,7 +577,7 @@ export const PHASES: Phase[] = [
             heading: 'How it goes',
             bullets: [
               'Walk in friendly: "I know you are busy, I will be quick. Can I show you something kind of cool? Takes about 30 seconds."',
-              'Set it up: "This is an AI that answers your phone 24/7 and books appointments. Here, talk to it like you are a customer calling in."',
+              'Set it up: "This is a voice agent that answers your phone 24/7 and books appointments. Here, talk to it like you are a customer calling in."',
               'Hand them your phone. Let them have a real back-and-forth. Stay quiet. This is the moment that sells it.',
               'Bridge to them: "Imagine that answering YOUR phone, in your name, booking jobs while you are with a customer."',
               'Book the next step: "I would love to set you up a proper demo for your shop specifically. Mornings or afternoons?"',
@@ -647,7 +647,7 @@ export const PHASES: Phase[] = [
           {
             heading: 'See the business',
             bullets: [
-              'Overview: the dashboard. New leads, upcoming calls, and a daily AI brief.',
+              'Overview: the dashboard. New leads, upcoming calls, and a daily agentic brief.',
               'Calendar: your booked calls and demos, with join links.',
               'Pipeline: every lead and its stage, from new to won.',
               'Reviews: published client reviews. Great proof to point prospects to.',
@@ -713,13 +713,13 @@ export const PHASES: Phase[] = [
       {
         id: 'the-ai-stack',
         emoji: '🤖',
-        eyebrow: 'Our AI, and yours',
-        title: 'The AI stack, and how to use it well',
-        summary: 'The AI that works for us 24/7, and how to get great results from it yourself.',
+        eyebrow: 'Our agentic systems, and yours',
+        title: 'The agentic stack, and how to use it well',
+        summary: 'The agentic systems that work for us 24/7, and how to get great results from it yourself.',
         minutes: 7,
         blocks: [
           {
-            heading: 'The AI already working for us',
+            heading: 'The agents already working for us',
             bullets: [
               'Mr. Mustard on the phone: answers calls and books jobs 24/7. His conversations land in Callers and the Inbox.',
               'Mr. Mustard on the site: the chat helper and the free demos that amaze people before we ever talk.',
@@ -728,20 +728,20 @@ export const PHASES: Phase[] = [
             ],
           },
           {
-            heading: 'How to get a great result from AI',
+            heading: 'How to get a great result from the models',
             bullets: [
               'Give context: who it is for, what you want, and the tone. The more you tell it, the better the draft.',
               'Ask for options: "give me three subject lines" beats "write a subject line."',
-              'Always read it back as a human. AI is a strong first draft, never the final word.',
-              'Check any fact, price, name, or date before it goes out. AI can be confidently wrong.',
+              'Always read it back as a human. The model writes a strong first draft, never the final word.',
+              'Check any fact, price, name, or date before it goes out. The model can be confidently wrong.',
             ],
           },
           {
             callout:
-              'This whole company runs on AI, and you will get good at it fast. Anything outward-facing still gets a human okay first. AI drafts, people approve. That never changes.',
+              'This whole company runs on agentic systems, and you will get good at them fast. Anything outward-facing still gets a human okay first. Agents draft, people approve. That never changes.',
           },
         ],
-        mission: { do: 'Ask Mr. Mustard to draft a short, friendly follow-up text to a business you demoed. Then edit it to sound like you.', why: 'This is the exact loop you will run a hundred times: AI drafts, you make it human, you send. Practice it once here.' },
+        mission: { do: 'Ask Mr. Mustard to draft a short, friendly follow-up text to a business you demoed. Then edit it to sound like you.', why: 'This is the exact loop you will run a hundred times: the agent drafts, you make it human, you send. Practice it once here.' },
       },
     ],
   },
@@ -761,19 +761,19 @@ export const PHASES: Phase[] = [
         id: 'ai-basics',
         emoji: '💡',
         eyebrow: 'No tech background needed',
-        title: 'AI and building, in plain English',
+        title: 'Agentic systems and building, in plain English',
         summary: 'What building actually means here, and why it is closer than you think.',
         minutes: 6,
         blocks: [
           {
             heading: 'Building is not what you think it is',
-            body: 'When Sarah builds, she is not typing cryptic code alone in the dark. She is directing AI in plain English: telling it what to build, checking its work, and shipping. That is a skill, not a gift, and it is a skill you can learn. The gap between "I sell this" and "I can build a small version of this" is much smaller than it looks from the outside.',
+            body: 'When Sarah builds, she is not typing cryptic code alone in the dark. She is directing agentic systems in plain English: telling it what to build, checking its work, and shipping. That is a skill, not a gift, and it is a skill you can learn. The gap between "I sell this" and "I can build a small version of this" is much smaller than it looks from the outside.',
           },
           {
             heading: 'The three things every builder does',
             bullets: [
               'Describe clearly: say exactly what you want, for whom, and what "done" looks like. This is the same clarity that makes you good on a call.',
-              'Direct the AI: give it the task, review what it makes, and ask for changes. It is a conversation, not a command line.',
+              'Direct the agent: give it the task, review what it makes, and ask for changes. It is a conversation, not a command line.',
               'Ship and check: put it out, look at it like a stranger would, fix what is off. Nothing is precious, everything is fixable.',
             ],
           },
@@ -883,7 +883,7 @@ export const GLOSSARY: GlossaryTerm[] = [
   { term: 'Build', def: 'What the Voice Agent does: it builds a personalized voice agent for a business in about 60 seconds.' },
   { term: 'Screen Test', def: 'The free Mustard Pictures preview: a storyboard, taglines, and one cinematic frame for a business.' },
   { term: 'Proof', def: 'The free, watermarked version of a Mustard Press typeset page, before they pay to keep it.' },
-  { term: 'GEO', def: 'Getting your business cited inside AI answers (ChatGPT, Perplexity), where more people now search.' },
+  { term: 'GEO', def: 'Getting your business cited inside answer engines (ChatGPT, Perplexity), where more people now search.' },
   { term: 'SEO', def: 'Search Engine Optimization. Making pages show up on Google.' },
   { term: 'Productized offer', def: 'A finished thing sold at a set price (like the $197 commercial), instead of a custom quote.' },
   { term: 'Recurring / subscription', def: 'Income that repeats every month from an ongoing plan. The top of the ladder and the goal.' },
@@ -895,14 +895,14 @@ export const GLOSSARY: GlossaryTerm[] = [
   { term: 'Objection', def: 'A reason someone gives for not moving forward. Most have a simple, honest answer you can learn.' },
   { term: 'DNC', def: 'The Do Not Call registry. We never call numbers on it, and never personal cells.' },
   { term: 'CRM', def: 'Customer Relationship Manager. The system that tracks leads and clients. Our admin is our CRM.' },
-  { term: 'SDR', def: 'Sales Development Rep. The person (or AI agent) who does first outreach and qualifies leads.' },
+  { term: 'SDR', def: 'Sales Development Rep. The person (or agent) who does first outreach and qualifies leads.' },
   { term: 'Lead magnet', def: 'A free, useful thing (a demo, an audit, a checklist) we give away to attract leads and capture their email.' },
   { term: 'Funnel', def: 'The path a stranger takes from first seeing us to becoming a paying client.' },
   { term: 'Conversion', def: 'When someone takes the action we wanted, like booking a call or buying.' },
   { term: 'MRR', def: 'Monthly Recurring Revenue. Income that repeats every month from ongoing plans.' },
   { term: 'Portal', def: 'The private logged-in area where a client tracks their own project.' },
   { term: 'Deploy / ship', def: 'To put a website or change live on the internet. "We shipped it" means it is live.' },
-  { term: 'Prompt', def: 'The instructions you type to an AI to get what you want. Clear in, good out.' },
+  { term: 'Prompt', def: 'The instructions you type to a model to get what you want. Clear in, good out.' },
   { term: 'Spec', def: 'A clear written description of what to build. The first thing a builder writes.' },
 ];
 

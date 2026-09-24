@@ -5,7 +5,7 @@ import { JsonLd, breadcrumbJsonLd, faqJsonLd, serviceJsonLd } from '@/lib/jsonld
 import { buildMetadata, SITE } from '@/lib/seo';
 
 export const metadata = buildMetadata({
-  title: 'AI for Restaurants and Franchises. Phone Ordering and Missed-Call Revenue.',
+  title: 'Agentic Systems for Restaurants and Franchises. Phone Ordering and Missed-Call Revenue.',
   description:
     'An always-on voice agent for restaurants and multi-unit franchise operators that takes phone orders, books tables, captures catering, and saves the dinner rush from voicemail. Fires orders to Toast, Square, or Clover, and rolls out per location across your whole footprint.',
   path: '/for/restaurants',
@@ -44,7 +44,7 @@ const builds = [
 
 const faqs = [
   {
-    q: 'Can the AI take restaurant orders and send them to my POS?',
+    q: 'Can the voice agent take restaurant orders and send them to my POS?',
     a: 'Yes. It reads your menu, takes the full takeout or delivery order, repeats it back to the caller, and sends it to your kitchen or POS. Toast, Square, Clover, and Olo are the common integrations, and it can take payment up front with a pay link if you want it.',
   },
   {
@@ -69,11 +69,11 @@ const faqs = [
   },
   {
     q: 'Do you work with restaurant franchises and multi-unit operators?',
-    a: 'Yes, and multi-unit operators are the best fit for this. We train the AI host once on your brand and menu, then roll it out per location with one dashboard that shows the revenue it recovered at each store. Pricing is per location and discounts by volume, so whether you run three locations or forty it is one contract and one point of contact. Catering and large-party capture, the highest-ticket calls a busy store drops, is where multi-unit operators see the fastest return.',
+    a: 'Yes, and multi-unit operators are the best fit for this. We train the agentic host once on your brand and menu, then roll it out per location with one dashboard that shows the revenue it recovered at each store. Pricing is per location and discounts by volume, so whether you run three locations or forty it is one contract and one point of contact. Catering and large-party capture, the highest-ticket calls a busy store drops, is where multi-unit operators see the fastest return.',
   },
   {
     q: 'We are a franchisee. Can we add this ourselves, or do we need corporate approval?',
-    a: 'In almost every franchise system the individual operator owns their own phone line and local vendor decisions, so you can add an AI host at the store or group level without waiting on corporate. A few brands mandate a specific ordering stack from headquarters, so we confirm your exact situation on a short call before anything goes live. Most franchisees start with one store, hear it answer their own restaurant, and roll it out across their locations from there.',
+    a: 'In almost every franchise system the individual operator owns their own phone line and local vendor decisions, so you can add an agentic host at the store or group level without waiting on corporate. A few brands mandate a specific ordering stack from headquarters, so we confirm your exact situation on a short call before anything goes live. Most franchisees start with one store, hear it answer their own restaurant, and roll it out across their locations from there.',
   },
   {
     q: 'Can one voice agent cover all of my locations?',
@@ -127,7 +127,7 @@ export default function RestaurantsPage() {
               ← All industries
             </Link>
             <span className="text-[10px] uppercase tracking-[0.5em] text-[#E0301E] font-mono font-bold mb-6 block">
-              AI for Restaurants
+              Agentic Systems for Restaurants
             </span>
             <h1 className="font-display text-5xl md:text-7xl font-black text-[#161616] tracking-tight mb-6 leading-[1.05]">
               Stop losing the rush to{' '}

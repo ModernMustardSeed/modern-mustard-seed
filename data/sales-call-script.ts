@@ -110,7 +110,7 @@ export const LANE_CHEATSHEET: { lane: string; theySay: string; youSay: string }[
     youSay: 'A website that actually brings you business, live in weeks, not months, and you own it.',
   },
   {
-    lane: 'AI assistant',
+    lane: 'Agentic assistant',
     theySay: 'Same questions all day, buried in DMs, leads go cold, can\'t keep up.',
     youSay: 'A helper that answers your messages and follows up with leads around the clock.',
   },

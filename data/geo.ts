@@ -19,10 +19,10 @@
 export const GEO = {
   name: 'GEO DESK',
   wordmark: '[ THE EXAMINER’S DESK ]',
-  tagline: 'Be the answer AI gives.',
+  tagline: 'Be the answer ChatGPT gives.',
   promise:
     'Make your business easier to understand. The free audit checks the page. GEO Desk prepares business-specific content and structured data, with an installation guide and a re-scan to check the changes.',
-  metaAddon: 'AI Findability (GEO) grading and fixes',
+  metaAddon: 'Answer Engine Findability (GEO) grading and fixes',
   freeRerunsPerPack: 3,
 } as const;
 
@@ -56,7 +56,7 @@ export const geoTiers: GeoTier[] = [
       'Your llms.txt and .well-known/ai.txt, written from your actual site',
       'JSON-LD structured data: LocalBusiness + FAQ schema, personalized',
       'Meta title and description rewrites for your key pages',
-      'A citable FAQ content block AI engines can quote',
+      'A citable FAQ content block answer engines can quote',
       'Platform-aware install guide (WordPress, Wix, Squarespace, custom)',
       `${GEO.freeRerunsPerPack} re-scans included: fix, re-grade, watch the letter climb`,
       'Delivered the moment you pay, yours forever',
@@ -89,7 +89,7 @@ export const geoTiers: GeoTier[] = [
     cadence: 'monthly',
     stripePriceEnv: 'STRIPE_PRICE_GEO_WATCH',
     mode: 'subscription',
-    pitch: 'Your AI-findability, re-graded every month, drift caught early.',
+    pitch: 'Your answer engine findability, re-graded every month, drift caught early.',
     includes: [
       'One website, re-graded monthly',
       'Score delta email: what changed, what to fix, in plain words',

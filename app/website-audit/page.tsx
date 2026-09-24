@@ -6,14 +6,14 @@ import { buildMetadata, SITE } from '@/lib/seo';
 export const metadata = buildMetadata({
   title: 'Free Website Audit. Real Score. Real To-Do List.',
   description:
-    'Drop your website URL. Get a numeric score 0-100, letter grade A through F, and a prioritized to-do list across brand, trust, SEO, GEO, AI features, conversion, and design. Powered by Claude.',
+    'Drop your website URL. Get a numeric score 0-100, letter grade A through F, and a prioritized to-do list across brand, trust, SEO, GEO, agentic features, conversion, and design. Powered by Claude.',
   path: '/website-audit',
 });
 
 const FAQS = [
   {
     q: 'What is the free website audit?',
-    a: 'A real, multi-category website audit graded by Anthropic Claude. You drop your URL. We fetch the page, extract every signal that matters (metadata, structured data, headings, content, scripts, llms.txt, ai.txt, sitemap), and Claude judges the site across seven categories: brand, trust, SEO, GEO and AI-search readiness, AI features, conversion, and visual design. You get a numeric score 0 to 100, a letter grade, an honest one-sentence headline, a 2 to 3 paragraph analysis, the three highest-leverage fixes, and a full 10 to 15 item to-do list ranked by priority.',
+    a: 'A real, multi-category website audit graded by Anthropic Claude. You drop your URL. We fetch the page, extract every signal that matters (metadata, structured data, headings, content, scripts, llms.txt, ai.txt, sitemap), and Claude judges the site across seven categories: brand, trust, SEO, GEO and answer engine readiness, agentic features, conversion, and visual design. You get a numeric score 0 to 100, a letter grade, an honest one-sentence headline, a 2 to 3 paragraph analysis, the three highest-leverage fixes, and a full 10 to 15 item to-do list ranked by priority.',
   },
   {
     q: 'Is the audit really free?',
@@ -25,19 +25,19 @@ const FAQS = [
   },
   {
     q: 'What is GEO and why does it have its own category?',
-    a: 'GEO means generative engine optimization: making business information useful and understandable in AI search. We inspect crawl access, clear service descriptions, consistent business facts, visible answers and supporting evidence. The grade is our assessment of those signals, not a search ranking. Supplemental files such as llms.txt are optional documentation, not requirements for AI search.',
+    a: 'GEO means generative engine optimization: making business information useful and understandable in answer engines like ChatGPT, Perplexity and Google. We inspect crawl access, clear service descriptions, consistent business facts, visible answers and supporting evidence. The grade is our assessment of those signals, not a search ranking. Supplemental files such as llms.txt are optional documentation, not requirements for answer engines.',
   },
   {
     q: 'What does the score actually measure?',
-    a: 'Seven categories, each independently scored. Brand clarity, trust signals, SEO foundations, GEO and AI-search readiness, AI feature presence (chatbots, voice agents, embedded agents), conversion mechanics, and visual design quality. The overall score is the weighted aggregate, with the heaviest weighting on the categories that move revenue and the lightest on aesthetic-only signals.',
+    a: 'Seven categories, each independently scored. Brand clarity, trust signals, SEO foundations, GEO and answer engine readiness, agentic feature presence (chatbots, voice agents, embedded agents), conversion mechanics, and visual design quality. The overall score is the weighted aggregate, with the heaviest weighting on the categories that move revenue and the lightest on aesthetic-only signals.',
   },
   {
     q: 'How accurate is the grading?',
-    a: 'The audit reads the page and grades the signals it can retrieve. Treat the result as a prioritized inspection, then verify each finding against the site. The grade does not measure rankings, traffic, accessibility conformance or the frequency of AI recommendations.',
+    a: 'The audit reads the page and grades the signals it can retrieve. Treat the result as a prioritized inspection, then verify each finding against the site. The grade does not measure rankings, traffic, accessibility conformance or the frequency of answer engine recommendations.',
   },
   {
     q: 'Can you build the A version?',
-    a: 'Yes. The Seed Site engagement (about a week) ships a beautiful site that gets you to a strong baseline. The Full-Service Business Build (one to two weeks) ships the engine: site plus bespoke booking with embedded CRM, AI sales-development rep, funnels, back office, embedded AI agents. Both come with the SEO and GEO foundations we score on baked in from day one. Each is scoped and quoted after a free discovery call.',
+    a: 'Yes. The Seed Site engagement (about a week) ships a beautiful site that gets you to a strong baseline. The Full-Service Business Build (one to two weeks) ships the engine: site plus bespoke booking with embedded CRM, agentic sales-development rep, funnels, back office, embedded agents. Both come with the SEO and GEO foundations we score on baked in from day one. Each is scoped and quoted after a free discovery call.',
   },
   {
     q: 'What if my site fails the audit?',
@@ -49,9 +49,9 @@ const auditServiceJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Service',
   '@id': `${SITE.url}/website-audit#service`,
-  name: 'Free AI Website Audit',
+  name: 'Free Agentic Website Audit',
   description:
-    'AI-powered website grading across brand, trust, SEO, GEO, AI features, conversion, and design. Returns a 0 to 100 score, letter grade, and a prioritized to-do list. Powered by Anthropic Claude.',
+    'Agent-graded website audit across brand, trust, SEO, GEO, agentic features, conversion, and design. Returns a 0 to 100 score, letter grade, and a prioritized to-do list. Powered by Anthropic Claude.',
   provider: { '@id': `${SITE.url}/#organization` },
   serviceType: 'Website audit',
   areaServed: 'Worldwide',
@@ -64,9 +64,9 @@ export default function WebsiteAuditPage() {
         data={[
           auditServiceJsonLd,
           serviceJsonLd({
-            name: 'AI Website Audit',
+            name: 'Agentic Website Audit',
             description:
-              'Free AI-graded website audit. Score 0-100, letter grade, per-category breakdown, prioritized to-do list to get to an A.',
+              'Free agent-graded website audit. Score 0-100, letter grade, per-category breakdown, prioritized to-do list to get to an A.',
           }),
           faqJsonLd(FAQS),
           breadcrumbJsonLd([
@@ -93,7 +93,7 @@ export default function WebsiteAuditPage() {
             In 60 seconds
           </p>
           <p className="text-[#3a3733] text-base md:text-lg font-body leading-relaxed max-w-2xl mx-auto">
-            Drop your URL. Get a numeric score, a letter grade, an honest one-line headline, the three things to fix first, and a full to-do list to get to an A. Across brand, trust, SEO, GEO, AI features, conversion, and design.
+            Drop your URL. Get a numeric score, a letter grade, an honest one-line headline, the three things to fix first, and a full to-do list to get to an A. Across brand, trust, SEO, GEO, agentic features, conversion, and design.
           </p>
         </header>
 
@@ -107,7 +107,7 @@ export default function WebsiteAuditPage() {
             proposal. */}
         <section className="max-w-5xl mx-auto px-6 py-10 mb-12">
           <h2 className="font-display text-3xl font-bold">Know what the grade is telling you.</h2>
-          <p className="mt-4 leading-relaxed">Read our <Link href="/resources" className="text-[#B92417] underline font-bold">AI Search Field Notes</Link> for the technical checks and measurement behind this work. <Link href="/blog/geo-vs-seo-montana" className="text-[#B92417] underline font-bold">GEO and SEO share a foundation</Link>: accessible pages, useful information and evidence. Modern Mustard Seed builds that foundation from Kalispell for businesses nationwide.</p>
+          <p className="mt-4 leading-relaxed">Read our <Link href="/resources" className="text-[#B92417] underline font-bold">Answer Engine Field Notes</Link> for the technical checks and measurement behind this work. <Link href="/blog/geo-vs-seo-montana" className="text-[#B92417] underline font-bold">GEO and SEO share a foundation</Link>: accessible pages, useful information and evidence. Modern Mustard Seed builds that foundation from Kalispell for businesses nationwide.</p>
         </section>
 
         {/* What we score */}
@@ -138,12 +138,12 @@ export default function WebsiteAuditPage() {
                 d: 'Title tag, meta description, H1 hierarchy, JSON-LD structured data, canonical URLs, robots.txt, sitemap.xml, alt text, internal linking, content depth.',
               },
               {
-                t: 'GEO (AI search)',
-                d: 'Crawlable content, consistent business identity, useful visible answers and evidence. Optional AI text directories are documentation, not a search requirement.',
+                t: 'GEO (answer engines)',
+                d: 'Crawlable content, consistent business identity, useful visible answers and evidence. Optional machine-readable text files are documentation, not a search requirement.',
               },
               {
-                t: 'AI features',
-                d: 'Embedded chatbot, voice agent, personalization, dynamic content, AI-powered search, AI-augmented forms. Zero presence is the default.',
+                t: 'Agentic features',
+                d: 'Embedded chatbot, voice agent, personalization, dynamic content, agent-powered search, agent-assisted forms. Zero presence is the default.',
               },
               {
                 t: 'Conversion',
@@ -197,7 +197,7 @@ export default function WebsiteAuditPage() {
                   Full-Service Business Build
                 </p>
                 <p className="text-[#3a3733] text-sm font-body leading-relaxed mb-3">
-                  Site + bespoke booking with CRM + AI SDR + funnels + back office + embedded agents. The engine.
+                  Site + bespoke booking with CRM + agentic SDR + funnels + back office + embedded agents. The engine.
                 </p>
                 <p className="text-[#161616]/75 text-[11px] uppercase tracking-[0.25em] font-mono font-bold">
                   1 to 2 weeks · quoted after a free call

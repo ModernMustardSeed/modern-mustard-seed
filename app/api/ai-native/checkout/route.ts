@@ -54,7 +54,7 @@ export async function POST(req: Request) {
     tier.slug === 'tending'
       ? 'Two live team sessions a month, a standing line between them, month to month. Cancel the day your team stops needing it.'
       : tier.slug === 'ai-map'
-        ? `Hand-written and ${AI_NATIVE.mapDelivery}. Credits in full toward AI NATIVE within ninety days.`
+        ? `Hand-written and ${AI_NATIVE.mapDelivery}. Credits in full toward AGENTIC NATIVE within ninety days.`
         : `Changes included, ${AI_NATIVE.buildDelivery}. Every account, key and admin seat is handed over in your name on the last day.`;
 
   try {
@@ -62,8 +62,8 @@ export async function POST(req: Request) {
       mode: tier.mode,
       payment_method_types: ['card'],
       line_items: [{ price_data: priceData, quantity: 1 }],
-      success_url: `${SITE.url}/ai-native/kickoff?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${SITE.url}/ai-native#book`,
+      success_url: `${SITE.url}/agentic-native/kickoff?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${SITE.url}/agentic-native#book`,
       allow_promotion_codes: true,
       automatic_tax: { enabled: true },
       tax_id_collection: { enabled: true },

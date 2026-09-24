@@ -111,7 +111,7 @@ export const programs: Program[] = [
       { title: 'Lifetime updates', detail: 'As the tools evolve, the path evolves with them, and every update is yours, free.' },
     ],
     method: [
-      { label: 'One person, fullstack', detail: 'The premise: you, plus AI, can build what used to take a team.' },
+      { label: 'One person, fullstack', detail: 'The premise: you, plus agentic systems, can build what used to take a team.' },
       { label: 'Your taste is the gold', detail: 'The new division of labor. Your ideas and judgment lead, the machine does the typing.' },
       { label: 'Run the loop', detail: 'Describe, build, run, refine. The build loop you will run on every project.' },
       { label: 'Ship', detail: 'Get a real thing live, then do it again. Shipping is the only teacher that counts.' },

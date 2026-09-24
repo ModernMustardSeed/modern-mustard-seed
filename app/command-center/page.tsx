@@ -9,27 +9,27 @@ import StackCalculator from '@/components/command-center/StackCalculator';
 // page. It still lives in lib/demo-order.ts and reaches a buyer in a proposal.
 
 export const metadata = buildMetadata({
-  title: 'Business Command Center: AI Back Office',
+  title: 'Business Command Center: Agentic Back Office',
   description:
     'One board that runs the whole business: every call transcribed, your website traffic, customers, reviews, invoices, and reports, wired together. Built by hand around the software you already run, and scoped with you first.',
   path: '/command-center',
 });
 
 const MODULES = [
-  { icon: '📞', name: 'Calls', desc: 'Every call your AI answers, transcribed and searchable, the lead already filed.' },
+  { icon: '📞', name: 'Calls', desc: 'Every call your voice agent answers, transcribed and searchable, the lead already filed.' },
   { icon: '🌐', name: 'Website', desc: 'Live traffic, sources, top pages, and how many visitors became leads on the board.' },
   { icon: '👥', name: 'Customers', desc: 'One CRM. Every call, lead, and job, with the whole history a tap away.' },
   { icon: '📄', name: 'Quotes', desc: 'Branded quotes that get signed on the spot and book the job themselves.' },
   { icon: '💵', name: 'Money', desc: 'Every finished job becomes an invoice. Chase the late ones with one tap.' },
   { icon: '⭐', name: 'Reviews', desc: 'The 5-star chase runs on autopilot, and every review gets a warm reply.' },
   { icon: '⚡', name: 'Automations', desc: 'Missed-call rescue, follow-up, review requests, the busywork running itself.' },
-  { icon: '🤖', name: 'Assistant', desc: 'An AI that can see the whole board. Ask it anything, or hand it the writing.' },
+  { icon: '🤖', name: 'Assistant', desc: 'An agentic assistant that can see the whole board. Ask it anything, or hand it the writing.' },
 ];
 
 const FAQ = [
   {
     q: 'What is the Business Command Center?',
-    a: 'It is one back-office dashboard that runs your whole business: every call transcribed, your website traffic and leads, your customers and pipeline, reviews, invoices, and reports, all wired together on a single board with an AI assistant that can see all of it. It replaces the pile of separate tools most owners juggle.',
+    a: 'It is one back-office dashboard that runs your whole business: every call transcribed, your website traffic and leads, your customers and pipeline, reviews, invoices, and reports, all wired together on a single board with an agentic assistant that can see all of it. It replaces the pile of separate tools most owners juggle.',
   },
   {
     q: 'How much does it cost?',
@@ -37,7 +37,7 @@ const FAQ = [
   },
   {
     q: 'What does it replace?',
-    a: 'A separate CRM, a call-transcription or AI-notetaker tool, a paid website analytics tier, a review-management app, invoicing and payment-chasing software, a scheduling tool, and a reporting dashboard. Most owners pay a monthly for several of those. The command center does all of it on one board.',
+    a: 'A separate CRM, a call-transcription or notetaker tool, a paid website analytics tier, a review-management app, invoicing and payment-chasing software, a scheduling tool, and a reporting dashboard. Most owners pay a monthly for several of those. The command center does all of it on one board.',
   },
   {
     q: 'How does it get my real data?',
@@ -64,9 +64,9 @@ function commandCenterJsonLd() {
       {
         '@type': 'Service',
         name: 'Business Command Center by Modern Mustard Seed',
-        serviceType: 'AI business operations dashboard (CRM, call transcripts, website analytics, reviews, invoicing)',
+        serviceType: 'Agentic business operations dashboard (CRM, call transcripts, website analytics, reviews, invoicing)',
         description:
-          'One AI back-office board that runs the whole business: every call transcribed, website traffic and leads, customers, reviews, invoices, and reports, wired together. Sold on its own, built by hand.',
+          'One agentic back-office board that runs the whole business: every call transcribed, website traffic and leads, customers, reviews, invoices, and reports, wired together. Sold on its own, built by hand.',
         provider: { '@type': 'Organization', name: 'Modern Mustard Seed', url: SITE.url },
         areaServed: 'US',
         url: `${SITE.url}/command-center`,
@@ -100,14 +100,14 @@ export default function CommandCenterPage() {
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-12 items-center">
             <div className="lg:col-span-6 xl:col-span-5">
               <span className="font-mono text-[11px] uppercase tracking-[0.32em] text-[#C4160B] font-bold">
-                The AI back office // Sold on its own
+                The agentic back office // Sold on its own
               </span>
               <h1 className="font-display text-[2.6rem] sm:text-5xl xl:text-6xl font-bold mt-4 leading-[1.02] tracking-tight">
                 The command center that <em className="italic text-[#C4160B]">runs the whole business.</em>
               </h1>
               <p className="font-body text-[17px] text-[#161616]/75 mt-5 leading-relaxed">
                 Every call transcribed, your website traffic, customers, reviews, invoices, and reports, wired
-                together on one board with an AI that sees all of it. Built by hand around the
+                together on one board with an agentic assistant that sees all of it. Built by hand around the
                 software you already run.
                 hand around the software you already run.
               </p>
@@ -160,7 +160,7 @@ export default function CommandCenterPage() {
           </h2>
           <p className="font-body text-[15px] text-[#161616]/70 mt-4 max-w-2xl leading-relaxed">
             Your phone and your website stop being separate things. Every call and every form lands on the same board,
-            with the AI already following up.
+            with the agents already following up.
           </p>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-10">
             {MODULES.map((m) => (
@@ -237,7 +237,7 @@ export default function CommandCenterPage() {
             {[
               ['1', 'We scope it together', 'A short call about the software you already run, so this replaces tools instead of joining them.'],
               ['2', 'We wire it up', 'Order it and we connect your real calls, your website traffic, your customers, and your reviews, customized to your business by hand.'],
-              ['3', 'Run the whole thing', 'Live within a week. Every call, lead, review, and dollar on one board, with the AI following up while you work.'],
+              ['3', 'Run the whole thing', 'Live within a week. Every call, lead, review, and dollar on one board, with the agents following up while you work.'],
             ].map(([n, t, d]) => (
               <div key={n} className="flex gap-4 sm:block">
                 <span className="font-display text-5xl font-bold text-[#F5B700] leading-none shrink-0">{n}</span>

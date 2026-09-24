@@ -6,7 +6,7 @@ import { AI_NATIVE } from '@/data/ai-native';
 export const metadata = buildMetadata({
   title: 'Booked. The map starts now',
   description: 'Order confirmed. Here is exactly what happens between now and your team running it.',
-  path: '/ai-native/kickoff',
+  path: '/agentic-native/kickoff',
   noindex: true,
 });
 
@@ -20,12 +20,12 @@ export default function AiNativeKickoffPage() {
     {
       n: '2',
       title: 'The map, in two weeks',
-      body: `Every workflow written down, scored and ranked, with the first five named and the tools priced. THE AI MAP is ${AI_NATIVE.mapDelivery}. You read it before anything is built or bought.`,
+      body: `Every workflow written down, scored and ranked, with the first five named and the tools priced. THE AGENTIC MAP is ${AI_NATIVE.mapDelivery}. You read it before anything is built or bought.`,
     },
     {
       n: '3',
       title: 'The build and the sessions',
-      body: `On AI NATIVE the first five go live across eight weeks, with six working sessions on your team's real work, ${AI_NATIVE.buildDelivery}. On the last day every admin seat is in your name. THE TENDING keeps a coach in the room month to month.`,
+      body: `On AGENTIC NATIVE the first five go live across eight weeks, with six working sessions on your team's real work, ${AI_NATIVE.buildDelivery}. On the last day every admin seat is in your name. THE TENDING keeps a coach in the room month to month.`,
     },
   ];
 

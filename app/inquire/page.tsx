@@ -6,7 +6,7 @@ import { buildMetadata, SITE } from '@/lib/seo';
 export const metadata = buildMetadata({
   title: 'Inquire',
   description:
-    'Modern Mustard Seed is a boutique design and AI studio. Tell us what you are building and you will hear back personally inside one business day.',
+    'Modern Mustard Seed is a boutique design and agentic systems studio. Tell us what you are building and you will hear back personally inside one business day.',
   path: '/inquire',
 });
 
@@ -33,7 +33,7 @@ const DISCIPLINES = [
   },
   {
     name: 'Advisory',
-    line: 'Retained counsel for operators putting AI into a business that already works. What to build, what to refuse, what to automate, and in what order.',
+    line: 'Retained counsel for operators putting agentic systems into a business that already works. What to build, what to refuse, what to automate, and in what order.',
     href: '/advisory',
   },
 ];
@@ -75,7 +75,7 @@ export default function InquirePage() {
               path: '/inquire',
               name: 'Inquire · Modern Mustard Seed',
               description:
-                'Begin an engagement with Modern Mustard Seed. A small number of design and AI engagements are taken at a time.',
+                'Begin an engagement with Modern Mustard Seed. A small number of design and agentic systems engagements are taken at a time.',
               type: 'ContactPage',
             }),
             mainEntity: { '@id': `${SITE.url}/#organization` },
@@ -104,7 +104,7 @@ export default function InquirePage() {
               <em className="italic text-[#B48600]">building</em>.
             </h1>
             <p className="mt-7 max-w-2xl font-body text-lg leading-relaxed text-[#3d382e] md:text-xl">
-              Modern Mustard Seed is a boutique design and AI studio in Northwest Montana.
+              Modern Mustard Seed is a boutique design and agentic systems studio in Northwest Montana.
               There is no catalog to browse and no price list, because the right answer depends
               entirely on what you are trying to make happen.
             </p>

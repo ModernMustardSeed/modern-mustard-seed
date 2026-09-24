@@ -81,7 +81,7 @@ export const STATIONS: Station[] = [
     verb: 'Run',
     title: 'One board runs the whole business.',
     blurb:
-      'Calls, leads, deals, jobs, invoices, reviews, campaigns, and social, on one screen the AI can see. Ask it anything about the business. Hand it the writing. Approve with one tap.',
+      'Calls, leads, deals, jobs, invoices, reviews, campaigns, and social, on one screen the agentic assistant can see. Ask it anything about the business. Hand it the writing. Approve with one tap.',
     runsOn: 'The Command Center',
     proof: 'The brain the website, the agent, and every automation report to.',
   },
@@ -107,7 +107,7 @@ export type Capability = {
 export const CAPABILITIES: Capability[] = [
   { icon: '🌐', name: 'Website', what: 'Built to be found on Google and to greet whoever lands on it. Reads its own tour out loud.', replaces: 'The template site that never got updated' },
   { icon: '🎙', name: 'Voice Agent', what: 'Answers every call, books the job, takes the message, transfers when it matters.', replaces: 'Voicemail, and the six calls a week that went there' },
-  { icon: '🧠', name: 'Command Center', what: 'Every lead, call, deal, job, and dollar on one screen, with an AI that can see all of it.', replaces: 'Four tabs, two spreadsheets, and your memory' },
+  { icon: '🧠', name: 'Command Center', what: 'Every lead, call, deal, job, and dollar on one screen, with an agentic assistant that can see all of it.', replaces: 'Four tabs, two spreadsheets, and your memory' },
   { icon: '📈', name: 'Deal Tracking', what: 'Every opportunity moves quoted, won, built, live, paid. Nothing stalls unseen.', replaces: 'The CRM nobody logged into' },
   { icon: '🔎', name: 'Lead Finder', what: 'Finds and grades the businesses and people who fit your trade, then files them.', replaces: 'Buying a list and hoping' },
   { icon: '✉️', name: 'Campaign Builder', what: 'Multi-step sequences written in your voice, paced by a governor, tracked to the reply.', replaces: 'Mailchimp blasts and the spam folder' },
@@ -148,7 +148,7 @@ export const SYSTEM_FAQ = [
   },
   {
     q: 'Who builds it?',
-    a: 'Sarah Scarano, a self-taught full-stack engineer and AI systems architect in Kalispell, Montana, with 40 plus shipped products. The person who scopes it is the person who ships it.',
+    a: 'Sarah Scarano, a self-taught full-stack engineer and agentic systems architect in Kalispell, Montana, with 40 plus shipped products. The person who scopes it is the person who ships it.',
   },
   {
     q: 'Do I own it?',

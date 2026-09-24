@@ -27,9 +27,9 @@ const WIDTH = 360;
 
 const PATHS = args.length ? args : [
   '/', '/inquire', '/work', '/services', '/work-with-us', '/the-system',
-  '/talking-website', '/websites', '/ai-websites', '/brand', '/voice-agents',
-  '/voice-agents/whitepaper', '/command-center', '/chief', '/ai-native', '/ads',
-  '/launch-film', '/mustard', '/playbook', '/ai-proof', '/for',
+  '/talking-website', '/websites', '/agentic-websites', '/brand', '/voice-agents',
+  '/voice-agents/whitepaper', '/command-center', '/chief', '/agentic-native', '/ads',
+  '/launch-film', '/mustard', '/playbook', '/future-proof', '/for',
   '/for/restaurants', '/montana', '/montana/kalispell', '/resources', '/blog',
   '/about', '/sarahscarano', '/world', '/contact', '/sample-proposal', '/book',
   '/pictures', '/voice-agents/roofers',

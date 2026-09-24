@@ -101,7 +101,7 @@ Keeping this file honest is the highest-leverage five minutes in your whole setu
     description: 'The exact prompt sequence that takes you from an empty folder to a deployed landing page.',
     body: `# The Landing Page Build Script
 
-A copy-paste sequence of prompts. Run them in order in Claude Code. Do not skip the design step, that is what stops the result from looking like every other AI page. Fill the brackets before you start.
+A copy-paste sequence of prompts. Run them in order in Claude Code. Do not skip the design step, that is what stops the result from looking like every other machine-made page. Fill the brackets before you start.
 
 Your inputs:
 - Product: [what it is]
@@ -118,7 +118,7 @@ Your inputs:
 
 ## Step 1: Get the design direction first
 
-> "Before writing the page, act as an art director. Write me a short design brief for [product], a [what] for [audience], with the feeling [three adjectives]. Give me: a one-line concept, an opinionated font pairing, a palette of base + ink + one accent (hex), the layout principle, how we create depth without stock photos, and the one signature moment. Make choices, no menus. The enemy is the generic AI look, avoid purple gradients, centered everything, and Inter for all text."
+> "Before writing the page, act as an art director. Write me a short design brief for [product], a [what] for [audience], with the feeling [three adjectives]. Give me: a one-line concept, an opinionated font pairing, a palette of base + ink + one accent (hex), the layout principle, how we create depth without stock photos, and the one signature moment. Make choices, no menus. The enemy is the generic machine-made look, avoid purple gradients, centered everything, and Inter for all text."
 
 Read the brief. If it is not the vibe, push back in one line ("make it warmer" / "more editorial") and have it revise. Approve before building.
 
@@ -150,7 +150,7 @@ Read the brief. If it is not the vibe, push back in one line ("make it warmer" /
 
 ## The one rule
 
-Do not let it skip Step 1. Every forgettable AI page skips straight to building. The design brief is thirty seconds that changes everything downstream.`,
+Do not let it skip Step 1. Every forgettable machine-made page skips straight to building. The design brief is thirty seconds that changes everything downstream.`,
   },
 
   // 3 -----------------------------------------------------------------
@@ -306,7 +306,7 @@ Working with Claude is not "ask a question, get an answer." It is a rhythm. This
     description: 'A systematic way to debug with Claude that finds the real cause instead of shotgunning fixes.',
     body: `# The Debug Protocol
 
-Most debugging goes wrong the same way: you describe the symptom, the AI guesses a fix, it does not work, you try another, and an hour later you have changed ten things and understand nothing. This protocol replaces guessing with diagnosis. Run the steps in order. Do not let Claude skip ahead to a fix.
+Most debugging goes wrong the same way: you describe the symptom, the model guesses a fix, it does not work, you try another, and an hour later you have changed ten things and understand nothing. This protocol replaces guessing with diagnosis. Run the steps in order. Do not let Claude skip ahead to a fix.
 
 ---
 
@@ -370,7 +370,7 @@ When Claude jumps to a fix in Step 1, stop it: "Not yet. Cause first, then fix."
     id: 'design-direction-brief',
     name: 'The Design Direction Brief',
     kind: 'spec',
-    description: 'A fill-in brief that produces intentional, premium design instead of the generic AI look.',
+    description: 'A fill-in brief that produces intentional, premium design instead of the generic machine-made look.',
     body: `# The Design Direction Brief
 
 The difference between a page that looks templated and one that looks designed is a point of view, decided before the first line of code. This brief forces that decision. Fill it in (or have Claude propose and you react), then paste it at the top of every build prompt for the project so the whole thing stays coherent.
@@ -413,14 +413,14 @@ The difference between a page that looks templated and one that looks designed i
 ## The guardrails
 - Three adjectives this design IS: [___, ___, ___]
 - Three it is explicitly NOT: [___, ___, ___]
-- The generic-AI tells we are banning: purple gradients, everything centered, Inter everywhere, three identical rounded cards, emoji as icons, no point of view.
+- The generic machine-made tells we are banning: purple gradients, everything centered, Inter everywhere, three identical rounded cards, emoji as icons, no point of view.
 
 ---
 
 ## How to run it with Claude
 
 **To generate the brief:**
-> "Act as an art director. Fill in this design brief for [project], a [what] for [audience], feeling [adjectives]. Make real choices, no menus. The enemy is the generic AI look. Give me an opinionated point of view I can react to."
+> "Act as an art director. Fill in this design brief for [project], a [what] for [audience], feeling [adjectives]. Make real choices, no menus. The enemy is the generic machine-made look. Give me an opinionated point of view I can react to."
 
 **To explore before committing:**
 > "Give me three genuinely distinct directions filling this brief, truly different (editorial-restrained vs bold-expressive vs warm-human), one a little risky. Build a single HTML moodboard showing each one's hero, type specimen, palette, and one component so I can feel the difference. Do not pick for me."
@@ -541,7 +541,7 @@ Describe the exact form of the output. This is where most people leave value on 
 ### 4. The quality bar and constraints
 Tell it what good looks like and what to avoid. Name the failure mode you fear.
 - "No jargon, no hype words like 'seamless' or 'revolutionary'."
-- "Must not look like a generic AI template."
+- "Must not look like a generic machine-made template."
 - "Match my voice from this sample: [sample]."
 - "No em dashes."
 
@@ -571,7 +571,7 @@ Then [the iteration hook: what to improve, or the next move].
 ## Five upgrades that instantly improve any prompt
 
 1. **Add a number.** "Give me ideas" becomes "give me 8 ideas." Quantity forces range.
-2. **Name the enemy.** "Avoid the generic AI look" or "no corporate throat-clearing." Telling it what to avoid is as powerful as what to want.
+2. **Name the enemy.** "Avoid the generic machine-made look" or "no corporate throat-clearing." Telling it what to avoid is as powerful as what to want.
 3. **Show, do not tell, your voice.** Paste two real samples instead of describing your tone. It matches better than any adjective.
 4. **Ask it to choose.** "Then recommend one and say why" beats a menu you have to evaluate yourself.
 5. **Make it stop and think first.** For anything non-trivial: "Before you start, ask me the 3 questions where a wrong assumption would waste the most work. Then wait." This one line prevents most redos.

@@ -446,7 +446,7 @@ export const TRADE_PRESETS: Record<OsTradeKey, OsTradePreset> = {
       metricLabel: 'After-hours revenue this month',
       metricValue: '$6,240',
       rows: [
-        { title: '14 emergencies caught after 6 PM', sub: 'Every one answered by the AI, triaged, and booked or escalated', amount: 6240, tag: 'Captured', tone: 'won' },
+        { title: '14 emergencies caught after 6 PM', sub: 'Every one answered by the voice agent, triaged, and booked or escalated', amount: 6240, tag: 'Captured', tone: 'won' },
         { title: 'Water heater age list', sub: '23 past customers with heaters past 10 years, offers queued', amount: 42550, tag: 'Pipeline', tone: 'hot' },
         { title: 'Bright Path HOA repipe', sub: 'Walkthrough Thursday, 12 units, decision by the board Friday', amount: 5400, tag: 'Bid out', tone: 'wait' },
         { title: 'Membership drain checks', sub: '31 annual-plan members, 6 due this month', amount: '6 due', tag: 'Book them', tone: 'wait' },
@@ -454,7 +454,7 @@ export const TRADE_PRESETS: Record<OsTradeKey, OsTradePreset> = {
       footer: 'In the real build the voice agent triages every night call, texts you only the true emergencies, and books the rest for morning.',
     },
     extraAutomations: [
-      { icon: 'bolt', title: 'Shutoff coach', desc: 'Panicked night callers get walked to the water shutoff by the AI while the on-call text goes out. Less damage, calmer customer, easier job.', on: true },
+      { icon: 'bolt', title: 'Shutoff coach', desc: 'Panicked night callers get walked to the water shutoff by the voice agent while the on-call text goes out. Less damage, calmer customer, easier job.', on: true },
       { icon: 'chart', title: 'Water heater birthday list', desc: 'Every installed heater gets tracked by age; at year 9 the owner starts hearing from you before it floods the garage.', on: true },
     ],
   },

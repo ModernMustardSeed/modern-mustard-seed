@@ -63,7 +63,7 @@ export default async function OpengraphImage() {
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', marginTop: 34 }}>
             <span style={{ fontSize: 76, fontWeight: 800, fontStyle: 'italic', color: INK, lineHeight: 1.02 }}>
-              Hear YOUR AI
+              Hear YOUR agent
             </span>
             <span style={{ fontSize: 76, fontWeight: 800, fontStyle: 'italic', color: INK, lineHeight: 1.12 }}>
               voice agent

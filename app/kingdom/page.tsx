@@ -36,7 +36,7 @@ const PILLARS = [
   {
     mark: '03',
     name: 'Operating systems to run it all',
-    text: 'The back office a small team should not have to carry by hand: supporters and volunteers in one place, event sign-ups, follow-up that goes out on time, and an AI front desk that answers every call.',
+    text: 'The back office a small team should not have to carry by hand: supporters and volunteers in one place, event sign-ups, follow-up that goes out on time, and an agentic front desk that answers every call.',
   },
   {
     mark: '04',

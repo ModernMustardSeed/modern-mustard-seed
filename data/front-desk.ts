@@ -44,14 +44,14 @@ export const frontDeskIntents: FrontDeskIntent[] = [
     key: 'store',
     match: ['store', 'shop', 'ecommerce', 'e-commerce', 'sell', 'products', 'merch', 'boutique', 'apparel'],
     reply:
-      "Seed received. A storefront that sells: custom design, checkout, the product engine, plus an AI concierge trained on your catalog and funnels that run day one. We took a faith apparel brand from sketch to live storefront in 60 days, most stores go faster. Fixed scope, fixed quote. Build it for you, or teach you to build it?",
+      "Seed received. A storefront that sells: custom design, checkout, the product engine, plus an agentic concierge trained on your catalog and funnels that run day one. We took a faith apparel brand from sketch to live storefront in 60 days, most stores go faster. Fixed scope, fixed quote. Build it for you, or teach you to build it?",
     headline: 'Your {thing}, open for business in weeks.',
   },
   {
     key: 'site',
     match: ['website', 'site', 'landing', 'page', 'portfolio', 'blog', 'presence', 'seo'],
     reply:
-      "Seed received. Not a brochure, a working engine: elite design, funnels and a lead magnet live on day one, an AI concierge trained on your business, SEO and GEO baked in. Live in about a week and you own every line of it. Want us to build it, or want to learn to build it yourself?",
+      "Seed received. Not a brochure, a working engine: elite design, funnels and a lead magnet live on day one, an agentic concierge trained on your business, SEO and GEO baked in. Live in about a week and you own every line of it. Want us to build it, or want to learn to build it yourself?",
     headline: 'Your {thing}, live in about a week.',
   },
   {
@@ -65,14 +65,14 @@ export const frontDeskIntents: FrontDeskIntent[] = [
     key: 'ai-tool',
     match: ['ai', 'automate', 'automation', 'agent', 'tool', 'workflow', 'chatbot', 'gpt', 'claude', 'internal'],
     reply:
-      "Seed received. A specialty AI tool only your business has: it takes the repetitive work off your plate or becomes the thing you sell to your niche. Think DEED AI, a $30K commission turned into a $99 monthly tool. Fixed scope, live in weeks. Want it built for you, or want to learn the method yourself?",
+      "Seed received. A specialty agentic tool only your business has: it takes the repetitive work off your plate or becomes the thing you sell to your niche. Think DEED AI, a $30K commission turned into a $99 monthly tool. Fixed scope, live in weeks. Want it built for you, or want to learn the method yourself?",
     headline: 'Your {thing}, working for you in weeks.',
   },
   {
     key: 'business',
     match: ['business', 'startup', 'company', 'brand', 'side hustle', 'income', 'clients', 'leads', 'grow'],
     reply:
-      "Seed received. We start where every real business starts: one offer, one page, one way to pay, then the AI that keeps it running while you sleep. Live in weeks, fixed quote, yours forever. Want the studio to build it, or want to learn to run the machine yourself?",
+      "Seed received. We start where every real business starts: one offer, one page, one way to pay, then the agents that keep it running while you sleep. Live in weeks, fixed quote, yours forever. Want the studio to build it, or want to learn to run the machine yourself?",
     headline: 'Your {thing}, real in weeks.',
   },
 ];

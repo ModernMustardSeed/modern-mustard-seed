@@ -104,7 +104,7 @@ export default function PromptPlaybookTool() {
       {/* Never used AI? Two-minute primer */}
       <div className="pop-card-yellow p-6 md:p-8 mb-8">
         <span className="text-[10px] uppercase tracking-[0.3em] text-[#161616] font-mono font-bold block mb-3">
-          Never used AI before? Read this first
+          Never used ChatGPT or Claude before? Read this first
         </span>
         <div className="grid md:grid-cols-2 gap-6">
           <div>
@@ -223,7 +223,7 @@ export default function PromptPlaybookTool() {
               Check your email, and grab the PDF
             </h3>
             <p className="text-[#161616]/75 font-body mb-7 max-w-lg mx-auto">
-              We sent your AI Prompt Playbook to {email}, tailored for {active.label}. Download the PDF below, keep it next
+              We sent your Prompt Playbook to {email}, tailored for {active.label}. Download the PDF below, keep it next
               to your keyboard, and start pasting.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -239,7 +239,7 @@ export default function PromptPlaybookTool() {
                 href="/work-with-us"
                 className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-white bg-[#161616] rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_rgba(22,22,22,0.35)] hover:-translate-y-0.5 transition-all"
               >
-                Have us build AI into your business
+                Have us build agentic systems into your business
               </Link>
             </div>
           </div>
@@ -257,7 +257,7 @@ export default function PromptPlaybookTool() {
               </h3>
               <p className="text-[#3A3733] font-body text-sm mt-3 max-w-md mx-auto">
                 A branded PDF with all {total} prompts tailored to {active.label}, so you have them forever. Plus the
-                occasional AI play we use in real client builds. No spam.
+                occasional agentic play we use in real client builds. No spam.
               </p>
             </div>
 

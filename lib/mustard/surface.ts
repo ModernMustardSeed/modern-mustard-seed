@@ -44,7 +44,7 @@ const FALLBACK: MustardSurface = {
   vapi_assistant_id: null,
   vapi_phone_number_id: null,
   seller_name: 'Modern Mustard Seed',
-  headline: 'Want my AI receptionist to call you?',
+  headline: 'Want my voice agent to call you?',
   cta_label: 'CALL ME NOW',
   consent_version: CURRENT_CONSENT.id,
   cooldown_minutes: 20,

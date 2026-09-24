@@ -31,10 +31,10 @@ export const MUSTARD = {
   wordmark: '[ MUSTARD MODE: ON ]',
   tagline: 'One seed. 100x the output.',
   promise:
-    'A personal AI coach, a four-track curriculum, and the exact prompts to ship software, design, and ideas with nothing but your Claude subscription. Mr. Mustard trains you. Claude does the reps.',
-  metaTitle: 'MUSTARD MODE. Learn Claude With Your Own AI Coach',
+    'A personal agentic coach, a four-track curriculum, and the exact prompts to ship software, design, and ideas with nothing but your Claude subscription. Mr. Mustard trains you. Claude does the reps.',
+  metaTitle: 'MUSTARD MODE. Learn Claude With Your Own Agentic Coach',
   metaDescription:
-    'The coach-led way to master Claude and Claude Code. Mr. Mustard coaches you through four tracks (Code, Design, Cowork, Ideate) with a live AI coach, the prompt library, and a progress HUD. From Modern Mustard Seed.',
+    'The coach-led way to master Claude and Claude Code. Mr. Mustard coaches you through four tracks (Code, Design, Cowork, Ideate) with a live agentic coach, the prompt library, and a progress HUD. From Modern Mustard Seed.',
   guarantee:
     'Play the method for 14 days. If you do the missions and MUSTARD MODE does not change how much you ship, email Sarah for a full refund. No questions, handled by hand.',
   priceFraming:
@@ -66,7 +66,7 @@ export const mustardLevels: MustardLevel[] = [
     mode: 'payment',
     pitch: 'The full coach app. Learn the method, run the missions, ship.',
     includes: [
-      'Mr. Mustard, your live AI coach (chat, on the Claude API)',
+      'Mr. Mustard, your live agentic coach (chat, on the Claude API)',
       'All 4 tracks: Code, Design, Cowork, Ideate (28 missions)',
       'The full prompt library (42 battle-ready prompts)',
       'Progress HUD: XP, streaks, milestones',
@@ -114,7 +114,7 @@ export const mustardFaq: { q: string; a: string }[] = [
   },
   {
     q: 'How is this different from The Terminal?',
-    a: 'The Terminal is our self-study engineering program (a deep playbook plus ops dashboard, $497). MUSTARD MODE is the coach-led experience: a live AI coach, four tracks beyond just code, missions, XP, and a prompt library. Many people run both. If you want a coach on your shoulder, start here.',
+    a: 'The Terminal is our self-study engineering program (a deep playbook plus ops dashboard, $497). MUSTARD MODE is the coach-led experience: a live agentic coach, four tracks beyond just code, missions, XP, and a prompt library. Many people run both. If you want a coach on your shoulder, start here.',
   },
   {
     q: 'How long does it take?',
