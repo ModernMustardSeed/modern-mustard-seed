@@ -407,6 +407,11 @@ const SORT_SCHEMA = {
 
 type SyncResult = { ok: boolean; fetched: number; queued: number; error?: string };
 
+/** Messages read per mailbox per pass: about thirty seconds of work, well inside a request. */
+const PER_PASS = 40;
+/** A pass over several mailboxes stops starting new ones after this; the rest go next pass. */
+const PASS_BUDGET_MS = 70_000;
+
 /** Read one mailbox's new mail since its last uid, keep it, and queue the sorting. */
 async function syncOne(sb: SupabaseClient, p: ClientProject, creds: Creds): Promise<SyncResult> {
   const client = new ImapFlow({ host: creds.imap, port: 993, secure: true, auth: imapAuth(creds), logger: false });
@@ -418,10 +423,21 @@ async function syncOne(sb: SupabaseClient, p: ClientProject, creds: Creds): Prom
     await client.connect();
     const lock = await client.getMailboxLock('INBOX');
     try {
-      // First run: the last 14 days. After that: everything above the last uid we saw.
-      const range = creds.lastUid > 0 ? `${creds.lastUid + 1}:*` : { since: new Date(Date.now() - 14 * 86_400_000) };
-      for await (const msg of client.fetch(range, { uid: true, envelope: true, source: true })) {
-        if (creds.lastUid > 0 && msg.uid <= creds.lastUid) continue;
+      // Ask by UID, never by sequence number: "n:*" as a sequence range past the
+      // end of the box answers with only the newest message, which is how every
+      // pass after the first once read one email and skipped the rest.
+      const found = creds.lastUid > 0
+        ? await client.search({ uid: `${creds.lastUid + 1}:*` }, { uid: true })
+        : await client.search({ since: new Date(Date.now() - 14 * 86_400_000) }, { uid: true });
+      const uids = (found || []).filter((u) => u > creds.lastUid).sort((a, b) => a - b);
+      // A pass has to finish inside the request, or it never saves its place and
+      // starts over forever. First pass: the newest PER_PASS of the last 14 days,
+      // and our place is set at the top so the older ones are not chased. After
+      // that: oldest first, PER_PASS at a time, so nothing new is ever skipped.
+      const todo = creds.lastUid > 0 ? uids.slice(0, PER_PASS) : uids.slice(-PER_PASS);
+      if (creds.lastUid === 0 && uids.length) maxUid = uids[uids.length - 1];
+      for await (const msg of todo.length ? client.fetch(todo, { uid: true, envelope: true, source: true }, { uid: true }) : []) {
+        if (msg.uid <= creds.lastUid) continue;
         fetched++;
         maxUid = Math.max(maxUid, msg.uid);
         const env = msg.envelope;
@@ -490,7 +506,9 @@ export async function syncMailbox(sb: SupabaseClient, p: ClientProject): Promise
   let fetched = 0;
   let queued = 0;
   const errors: string[] = [];
+  const started = Date.now();
   for (const c of all) {
+    if (Date.now() - started > PASS_BUDGET_MS) break;
     const r = await syncOne(sb, p, c);
     fetched += r.fetched;
     queued += r.queued;
