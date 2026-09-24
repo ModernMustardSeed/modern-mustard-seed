@@ -7,15 +7,18 @@ import { decryptSecret, encryptSecret } from '@/lib/crypto';
 import { llmEnqueue } from '@/lib/llm';
 import type { ClientProject } from '@/lib/client-leads';
 import { possessive } from '@/lib/business-name';
+import { googleAccountEmail, refreshGoogleToken, revokeGoogleToken, type TokenResponse } from '@/lib/oauth-google';
 
 /**
  * EVERY MAILBOX THE BUSINESS RUNS, SORTED, WITH A REPLY WAITING.
  *
  * A business has more than one mailbox: Built Right runs shan@, carmen@ and
  * zayne@brimhomes.com. Each one is connected once and read on its own. Gmail
- * and Google Workspace take an app password (2-Step Verification, Security,
- * App passwords, "Mail"), because Gmail's own API needs an OAuth app Google
- * reviews for months. Zoho Mail takes the mailbox password once IMAP Access
+ * and Google Workspace sign in with Google: the owner presses one button, picks
+ * the account on Google's own screen, and we hold a refresh token that reads
+ * and sends over the same IMAP and SMTP wire (XOAUTH2) as every other host.
+ * They can cut us off from their Google account at any time. A Gmail row made
+ * with an app password before that still works and is never rewritten. Zoho Mail takes the mailbox password once IMAP Access
  * is ticked in its settings (an application-specific password when two-factor
  * is on). Porkbun hosted mail takes the mailbox's own password. Which host is
  * decided from the address and its MX, never asked.
@@ -119,39 +122,111 @@ type IntegrationRow = {
   access_ciphertext: string | null;
   access_iv: string | null;
   access_tag: string | null;
+  access_expires_at: string | null;
+  refresh_ciphertext: string | null;
+  refresh_iv: string | null;
+  refresh_tag: string | null;
   status: string;
   error: string | null;
   meta: Record<string, unknown> | null;
   created_at: string;
 };
 
-type Creds = { provider: string; address: string; pass: string; host: Host; imap: string; smtp: string; drafts: string; lastUid: number };
+/**
+ * How we log in: a mailbox password, or a Google access token minted from the
+ * refresh token a moment ago. `meta` is the row's own, carried so a sync that
+ * writes lastUid never drops how the mailbox was connected.
+ */
+type Creds = { provider: string; address: string; pass: string | null; accessToken: string | null; host: Host; imap: string; smtp: string; drafts: string; lastUid: number; meta: Record<string, unknown> };
+
+const viaGoogle = (meta: Record<string, unknown> | null | undefined) => meta?.auth === 'oauth';
+
+/** imapflow login for either kind of mailbox. */
+function imapAuth(c: Creds): { user: string; pass: string } | { user: string; accessToken: string } {
+  return c.accessToken ? { user: c.address, accessToken: c.accessToken } : { user: c.address, pass: c.pass ?? '' };
+}
+
+/** nodemailer login for either kind of mailbox. */
+function smtpAuth(c: Creds): { type: 'OAuth2'; user: string; accessToken: string } | { user: string; pass: string } {
+  return c.accessToken ? { type: 'OAuth2', user: c.address, accessToken: c.accessToken } : { user: c.address, pass: c.pass ?? '' };
+}
 
 /** Every mailbox row for a client, oldest first, so the first one connected stays the default. */
 async function mailboxRows(sb: SupabaseClient, clientEmail: string): Promise<IntegrationRow[]> {
   const { data } = await sb
     .from('client_integrations')
-    .select('provider, account_email, access_ciphertext, access_iv, access_tag, status, error, meta, created_at')
+    .select('provider, account_email, access_ciphertext, access_iv, access_tag, access_expires_at, refresh_ciphertext, refresh_iv, refresh_tag, status, error, meta, created_at')
     .eq('client_email', clientEmail)
     .order('created_at', { ascending: true });
   return ((data ?? []) as IntegrationRow[]).filter((r) => isMailbox(r.provider) && r.account_email);
 }
 
-function toCreds(r: IntegrationRow): Creds | null {
-  if (r.status !== 'connected' || !r.access_ciphertext || !r.account_email) return null;
+/**
+ * A Google mailbox's access token, fresh. The stored one when it has more than
+ * a minute left, otherwise a new one from the refresh token, kept for the next
+ * pass. A refused refresh means the owner took the grant back in their Google
+ * account (or changed the password): the row says so in plain words and the
+ * desk asks them to sign in again, rather than failing every half hour.
+ */
+async function googleMailToken(sb: SupabaseClient, clientEmail: string, r: IntegrationRow): Promise<string | null> {
+  const expires = Date.parse(String(r.access_expires_at ?? ''));
+  if (r.access_ciphertext && Number.isFinite(expires) && expires - Date.now() > 60_000) {
+    try {
+      return decryptSecret(r.access_ciphertext, r.access_iv as string, r.access_tag as string);
+    } catch {
+      /* mint a new one */
+    }
+  }
+  let refresh: string;
   try {
-    const pass = decryptSecret(r.access_ciphertext, r.access_iv as string, r.access_tag as string);
-    const meta = r.meta ?? {};
-    const host = hostFromMeta(meta);
-    const h = servers(host);
-    return { provider: r.provider, address: r.account_email, pass, host, imap: h.imap, smtp: h.smtp, drafts: h.drafts, lastUid: Number(meta.lastUid ?? 0) };
+    if (!r.refresh_ciphertext) throw new Error('no refresh token');
+    refresh = decryptSecret(r.refresh_ciphertext, r.refresh_iv as string, r.refresh_tag as string);
+  } catch {
+    await sb.from('client_integrations').update({ status: 'revoked', error: 'Google needs you to sign in again.', updated_at: new Date().toISOString() }).eq('client_email', clientEmail).eq('provider', r.provider);
+    return null;
+  }
+  const next = await refreshGoogleToken(refresh);
+  if ('error' in next) {
+    // invalid_grant is the owner taking access back. A network blip is not, so it stays connected and tries next pass.
+    const gone = /invalid_grant|revoked|expired/i.test(String(next.error));
+    await sb
+      .from('client_integrations')
+      .update({ ...(gone ? { status: 'revoked' } : {}), error: gone ? 'Google needs you to sign in again.' : `Google did not answer: ${next.error}`.slice(0, 300), updated_at: new Date().toISOString() })
+      .eq('client_email', clientEmail)
+      .eq('provider', r.provider);
+    return null;
+  }
+  const enc = encryptSecret(next.access_token);
+  await sb
+    .from('client_integrations')
+    .update({ access_ciphertext: enc.ciphertext, access_iv: enc.iv, access_tag: enc.tag, access_expires_at: new Date(Date.now() + (next.expires_in ?? 3600) * 1000).toISOString(), updated_at: new Date().toISOString() })
+    .eq('client_email', clientEmail)
+    .eq('provider', r.provider);
+  return next.access_token;
+}
+
+async function toCreds(sb: SupabaseClient, clientEmail: string, r: IntegrationRow): Promise<Creds | null> {
+  if (r.status !== 'connected' || !r.account_email) return null;
+  const meta = r.meta ?? {};
+  const host = hostFromMeta(meta);
+  const h = servers(host);
+  const base = { provider: r.provider, address: r.account_email, host, imap: h.imap, smtp: h.smtp, drafts: h.drafts, lastUid: Number(meta.lastUid ?? 0), meta };
+  if (viaGoogle(meta)) {
+    const accessToken = await googleMailToken(sb, clientEmail, r);
+    return accessToken ? { ...base, pass: null, accessToken } : null;
+  }
+  if (!r.access_ciphertext) return null;
+  try {
+    return { ...base, pass: decryptSecret(r.access_ciphertext, r.access_iv as string, r.access_tag as string), accessToken: null };
   } catch {
     return null;
   }
 }
 
 async function allCreds(sb: SupabaseClient, clientEmail: string): Promise<Creds[]> {
-  return (await mailboxRows(sb, clientEmail)).map(toCreds).filter((c): c is Creds => c !== null);
+  const rows = await mailboxRows(sb, clientEmail);
+  const creds = await Promise.all(rows.map((r) => toCreds(sb, clientEmail, r)));
+  return creds.filter((c): c is Creds => c !== null);
 }
 
 /** The mailbox a message arrived in, or the first connected one when that one is gone. */
@@ -161,7 +236,7 @@ async function credsFor(sb: SupabaseClient, clientEmail: string, address?: strin
   return (want && all.find((c) => c.address === want)) || all[0] || null;
 }
 
-export type MailboxStatus = { address: string; host: HostKey; connected: boolean; lastSyncAt: string | null; error: string | null };
+export type MailboxStatus = { address: string; host: HostKey; google: boolean; connected: boolean; lastSyncAt: string | null; error: string | null };
 /**
  * connected, address, lastSyncAt and error summarise every mailbox, so each
  * caller that knew one mailbox still reads true. `mailboxes` is the list.
@@ -172,7 +247,7 @@ export async function mailStatus(sb: SupabaseClient, clientEmail: string): Promi
   const rows = await mailboxRows(sb, clientEmail);
   const mailboxes: MailboxStatus[] = rows.map((r) => {
     const meta = r.meta ?? {};
-    return { address: r.account_email as string, host: hostFromMeta(meta).key, connected: r.status === 'connected', lastSyncAt: (meta.lastSyncAt as string) ?? null, error: r.error ?? null };
+    return { address: r.account_email as string, host: hostFromMeta(meta).key, google: viaGoogle(meta), connected: r.status === 'connected', lastSyncAt: (meta.lastSyncAt as string) ?? null, error: r.error ?? null };
   });
   if (!mailboxes.length) return { connected: false, address: null, lastSyncAt: null, error: null, mailboxes };
   const live = mailboxes.filter((m) => m.connected);
@@ -222,11 +297,72 @@ export async function connectMailbox(sb: SupabaseClient, clientEmail: string, ad
   return { ok: true, address: addr };
 }
 
-/** One mailbox when an address is given, every mailbox when it is not. */
+/**
+ * A mailbox signed in with Google. The address is whatever account the owner
+ * picked on Google's screen, read back from Google, never typed. We prove the
+ * token against Gmail's IMAP server before keeping anything, the same test a
+ * password gets, so a green row always means a mailbox we can read.
+ */
+export async function connectGoogleMailbox(sb: SupabaseClient, clientEmail: string, tokens: TokenResponse): Promise<{ ok: true; address: string } | { ok: false; error: string }> {
+  if (!/mail\.google\.com/.test(tokens.scope ?? '')) return { ok: false, error: 'Google did not grant mail access. Sign in again and leave the mail box ticked on the Google screen.' };
+  const addr = await googleAccountEmail(tokens.access_token);
+  if (!addr) return { ok: false, error: 'Google did not say which account that was. Try once more.' };
+  const client = new ImapFlow({ host: 'imap.gmail.com', port: 993, secure: true, auth: { user: addr, accessToken: tokens.access_token }, logger: false });
+  try {
+    await client.connect();
+    await client.logout();
+  } catch (err) {
+    const m = err instanceof Error ? err.message : String(err);
+    // A Workspace admin can switch IMAP off for the whole company.
+    return { ok: false, error: `Google signed you in, but ${addr} would not open for reading (${m.slice(0, 120)}). If this is a company Google account, its admin may have IMAP turned off.` };
+  }
+  const provider = providerFor(addr);
+  const { data: prior } = await sb.from('client_integrations').select('refresh_ciphertext, meta').eq('client_email', clientEmail).eq('provider', provider).maybeSingle();
+  const priorMeta = (prior?.meta ?? {}) as Record<string, unknown>;
+  const access = encryptSecret(tokens.access_token);
+  const row: Record<string, unknown> = {
+    client_email: clientEmail,
+    provider,
+    account_email: addr,
+    access_ciphertext: access.ciphertext,
+    access_iv: access.iv,
+    access_tag: access.tag,
+    access_expires_at: new Date(Date.now() + (tokens.expires_in ?? 3600) * 1000).toISOString(),
+    scopes: tokens.scope ?? null,
+    status: 'connected',
+    error: null,
+    // Signing in again keeps our place in the inbox, so nothing is read twice.
+    meta: { host: 'gmail', auth: 'oauth', lastUid: Number(priorMeta.lastUid ?? 0), ...(priorMeta.lastSyncAt ? { lastSyncAt: priorMeta.lastSyncAt } : {}) },
+    updated_at: new Date().toISOString(),
+  };
+  if (tokens.refresh_token) {
+    const r = encryptSecret(tokens.refresh_token);
+    row.refresh_ciphertext = r.ciphertext;
+    row.refresh_iv = r.iv;
+    row.refresh_tag = r.tag;
+  } else if (!prior?.refresh_ciphertext || !viaGoogle(priorMeta)) {
+    // Without a refresh token the mailbox goes dark in an hour. Say so now.
+    return { ok: false, error: 'Google did not hand over lasting access. Open your Google account, Security, Third-party connections, remove Modern Mustard Seed, and sign in here again.' };
+  }
+  const { error } = await sb.from('client_integrations').upsert(row, { onConflict: 'client_email,provider' });
+  if (error) return { ok: false, error: error.message };
+  await sb.from('client_integrations').delete().eq('client_email', clientEmail).eq('provider', LEGACY).eq('account_email', addr);
+  return { ok: true, address: addr };
+}
+
+/** One mailbox when an address is given, every mailbox when it is not. A Google grant is handed back to Google too. */
 export async function disconnectMailbox(sb: SupabaseClient, clientEmail: string, address?: string | null): Promise<void> {
   const want = address?.trim().toLowerCase();
-  const rows = await mailboxRows(sb, clientEmail);
-  const gone = rows.filter((r) => !want || r.account_email === want).map((r) => r.provider);
+  const rows = (await mailboxRows(sb, clientEmail)).filter((r) => !want || r.account_email === want);
+  for (const r of rows) {
+    if (!viaGoogle(r.meta) || !r.refresh_ciphertext) continue;
+    try {
+      await revokeGoogleToken(decryptSecret(r.refresh_ciphertext, r.refresh_iv as string, r.refresh_tag as string));
+    } catch {
+      /* the row still goes */
+    }
+  }
+  const gone = rows.map((r) => r.provider);
   if (gone.length) await sb.from('client_integrations').delete().eq('client_email', clientEmail).in('provider', gone);
 }
 
@@ -273,7 +409,7 @@ type SyncResult = { ok: boolean; fetched: number; queued: number; error?: string
 
 /** Read one mailbox's new mail since its last uid, keep it, and queue the sorting. */
 async function syncOne(sb: SupabaseClient, p: ClientProject, creds: Creds): Promise<SyncResult> {
-  const client = new ImapFlow({ host: creds.imap, port: 993, secure: true, auth: { user: creds.address, pass: creds.pass }, logger: false });
+  const client = new ImapFlow({ host: creds.imap, port: 993, secure: true, auth: imapAuth(creds), logger: false });
   const signer = personFor(p, creds.address);
   let fetched = 0;
   let queued = 0;
@@ -341,7 +477,7 @@ async function syncOne(sb: SupabaseClient, p: ClientProject, creds: Creds): Prom
   }
   await sb
     .from('client_integrations')
-    .update({ error: null, meta: { host: creds.host.key, ...(creds.host.zone ? { zone: creds.host.zone } : {}), lastUid: maxUid, lastSyncAt: new Date().toISOString() }, updated_at: new Date().toISOString() })
+    .update({ error: null, meta: { ...creds.meta, host: creds.host.key, ...(creds.host.zone ? { zone: creds.host.zone } : {}), lastUid: maxUid, lastSyncAt: new Date().toISOString() }, updated_at: new Date().toISOString() })
     .eq('client_email', p.clientEmail)
     .eq('provider', creds.provider);
   return { ok: true, fetched, queued };
@@ -393,7 +529,7 @@ export async function sendReply(sb: SupabaseClient, clientEmail: string, mailId:
   if (!creds) return { ok: false, error: 'The mailbox is not connected.' };
   const body = text.trim();
   if (!body) return { ok: false, error: 'Write something first.' };
-  const transport = nodemailer.createTransport({ host: creds.smtp, port: 465, secure: true, auth: { user: creds.address, pass: creds.pass } });
+  const transport = nodemailer.createTransport({ host: creds.smtp, port: 465, secure: true, auth: smtpAuth(creds) });
   try {
     await transport.sendMail({
       from: creds.address,
@@ -411,7 +547,7 @@ export async function sendReply(sb: SupabaseClient, clientEmail: string, mailId:
 }
 
 async function appendDraft(creds: Creds, raw: string): Promise<void> {
-  const client = new ImapFlow({ host: creds.imap, port: 993, secure: true, auth: { user: creds.address, pass: creds.pass }, logger: false });
+  const client = new ImapFlow({ host: creds.imap, port: 993, secure: true, auth: imapAuth(creds), logger: false });
   await client.connect();
   const boxes = await client.list();
   const drafts = boxes.find((b) => (b.specialUse ?? '').toLowerCase() === '\\drafts')?.path ?? creds.drafts;

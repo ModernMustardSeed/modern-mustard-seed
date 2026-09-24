@@ -85,7 +85,7 @@ export function clientGuide(p: ClientProject): GuideSection[] {
     {
       title: 'Your mail',
       lines: [
-        'Connect each mailbox once: Shan, Carmen and Zayne each have their own, and all of them land here. A mailbox on your own domain takes its own password (on Zoho, tick IMAP Access in Settings, Mail Accounts first); a Gmail address takes an app password from Google (2-Step Verification on, then Security, App passwords, "Mail"). We read every inbox twice an hour and sort it: new inquiries, customers, subs and suppliers, money, newsletters, notifications, everything else.',
+        'Connect each mailbox once: Shan, Carmen and Zayne each have their own, and all of them land here. A mailbox on your own domain takes its own password (on Zoho, tick IMAP Access in Settings, Mail Accounts first); a Gmail or Google Workspace address signs in with Google, one button, on a screen Google shows, and no password ever reaches us. We read every inbox twice an hour and sort it: new inquiries, customers, subs and suppliers, money, newsletters, notifications, everything else.',
         'Anything that needs an answer gets a draft written in your voice, waiting under the message. Read it, change what you like, press Send and it goes from the mailbox it arrived in, threaded under theirs. Or save it to the drafts of that mailbox and finish on your phone.',
         'Nothing is ever sent, moved or deleted without your click. The drafts never quote a price, a timeline or financing; those are yours to say in person.',
       ],
