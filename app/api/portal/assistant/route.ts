@@ -17,6 +17,7 @@ import { saveTrade } from '@/lib/cc-trades';
 import { remember } from '@/lib/cc-facts';
 import { addDays, mountainDate } from '@/lib/posting/time';
 import { addPost, archiveCode, clearPosts, deleteContact, deleteJob, deleteLead, deletePost, deleteTrade, editPost, fixContact, forgetFact, movePost, postLines, skipPost, unmarkCalled, upcomingPosts } from '@/lib/cc-operator-acts';
+import { hydrateDesks } from '@/lib/client-desks';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -180,6 +181,7 @@ type Action = {
 };
 
 export async function POST(req: Request) {
+  await hydrateDesks();
   const session = await getClientSession();
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 

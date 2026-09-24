@@ -5,6 +5,7 @@ import { daysUntil } from '@/lib/domains';
 import { commandCenterVisible } from '@/lib/command-center/visible';
 import { resendClient } from '@/lib/send-email';
 import { SITE } from '@/lib/seo';
+import { hydrateDesks } from '@/lib/client-desks';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -21,6 +22,7 @@ export const dynamic = 'force-dynamic';
 const DOOR: Record<string, string> = { contact: 'contact form', intake: 'project form', refer: 'refer-a-friend', chat: 'website chat', questionnaire: 'questionnaire' };
 
 export async function GET(req: Request) {
+  await hydrateDesks();
   const secret = process.env.CRON_SECRET;
   if (secret && !/^\[SENSITIVE\]$/i.test(secret)) {
     const auth = req.headers.get('authorization') ?? '';

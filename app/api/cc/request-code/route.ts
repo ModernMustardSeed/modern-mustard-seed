@@ -6,6 +6,7 @@ import { accountForEmail, accountForSession, brandFor } from '@/lib/cc-access';
 import { startChallenge, ccCodeEmail } from '@/lib/cc-code';
 import { magicLinkEmail } from '@/lib/email';
 import { SITE } from '@/lib/seo';
+import { hydrateDesks } from '@/lib/client-desks';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -25,6 +26,7 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
  * to sign in twice.
  */
 export async function POST(req: Request) {
+  await hydrateDesks();
   let body: { email?: string };
   try {
     body = (await req.json()) as { email?: string };

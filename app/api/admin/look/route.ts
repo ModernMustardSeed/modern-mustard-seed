@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { requireAcqAdmin } from '@/lib/acq/server';
 import { setLookCookie, clearLookCookie, normalizeEmail } from '@/lib/client-auth';
 import { projectForEmail } from '@/lib/client-leads';
+import { hydrateDesks } from '@/lib/client-desks';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -18,6 +19,7 @@ export const dynamic = 'force-dynamic';
  * Whatever she does inside is real: a lead marked called is marked called.
  */
 export async function GET(req: Request) {
+  await hydrateDesks();
   const url = new URL(req.url);
   const gate = await requireAcqAdmin();
   if ('error' in gate) return NextResponse.redirect(new URL('/admin/login', url));

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { makeChallenge } from '@/lib/human-check';
 import { CLIENT_PROJECTS } from '@/lib/client-leads';
+import { hydrateDesks } from '@/lib/client-desks';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -25,12 +26,14 @@ function cors(res: NextResponse, origin: string | null): NextResponse {
 }
 
 export async function OPTIONS(req: Request) {
+  await hydrateDesks();
   const origin = allowedOrigin(req);
   if (!origin) return new NextResponse(null, { status: 403 });
   return cors(new NextResponse(null, { status: 204 }), origin);
 }
 
 export async function GET(req: Request) {
+  await hydrateDesks();
   const origin = allowedOrigin(req);
   if (!origin) return NextResponse.json({ error: 'origin not allowed' }, { status: 403 });
   return cors(NextResponse.json(makeChallenge()), origin);

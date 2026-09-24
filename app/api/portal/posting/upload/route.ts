@@ -4,6 +4,7 @@ import { getSession as getAdminSession } from '@/lib/admin-auth';
 import { getSupabase } from '@/lib/supabase';
 import { getSettings } from '@/lib/posting/settings';
 import { projectForEmail } from '@/lib/client-leads';
+import { hydrateDesks } from '@/lib/client-desks';
 
 export const runtime = 'nodejs';
 
@@ -17,6 +18,7 @@ const BUCKET = 'client-intake';
 const MAX_BYTES = 12 * 1000 * 1000;
 
 export async function POST(req: Request) {
+  await hydrateDesks();
   let body: { name?: string; size?: number; type?: string; client?: string; folder?: string } = {};
   try {
     body = (await req.json()) as typeof body;

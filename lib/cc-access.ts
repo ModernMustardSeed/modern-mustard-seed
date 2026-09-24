@@ -36,6 +36,7 @@ export function accountForEmail(email: string): CcAccount | null {
 
 /** The account behind a live session. Null when their Command Center is off. */
 export async function accountForSession(sb: SupabaseClient, email: string, preview = false): Promise<CcAccount | null> {
+  await (await import('@/lib/client-desks')).hydrateDesks();
   const account = accountForEmail(email);
   if (!account) return null;
   if (preview) return account; // Sarah, looking as them, sees it before they do

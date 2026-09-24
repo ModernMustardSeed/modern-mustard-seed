@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getSupabase } from '@/lib/supabase';
 import { CLIENT_PROJECTS } from '@/lib/client-leads';
 import { KINDS, openDays, bookingReady, zoneLabel, HORIZON_DAYS, LEAD_HOURS, type SlotKind } from '@/lib/client-booking';
+import { hydrateDesks } from '@/lib/client-desks';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -33,12 +34,14 @@ function cors(res: NextResponse, origin: string | null): NextResponse {
 }
 
 export async function OPTIONS(req: Request) {
+  await hydrateDesks();
   const origin = allowedOrigin(req);
   if (!origin) return new NextResponse(null, { status: 403 });
   return cors(new NextResponse(null, { status: 204 }), origin);
 }
 
 export async function GET(req: Request) {
+  await hydrateDesks();
   const origin = allowedOrigin(req);
   if (!origin) return cors(NextResponse.json({ ok: false, error: 'origin not allowed' }, { status: 403 }), null);
 

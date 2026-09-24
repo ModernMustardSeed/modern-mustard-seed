@@ -3,6 +3,7 @@ import { ran } from '@/lib/cc-ran';
 import { getSupabase } from '@/lib/supabase';
 import { CLIENT_PROJECTS } from '@/lib/client-leads';
 import { collectSorted, syncMailbox } from '@/lib/mail-desk';
+import { hydrateDesks } from '@/lib/client-desks';
 
 export const runtime = 'nodejs';
 export const maxDuration = 120;
@@ -14,6 +15,7 @@ export const dynamic = 'force-dynamic';
  * the portal shows a reply waiting when they open it.
  */
 export async function GET(req: Request) {
+  await hydrateDesks();
   const secret = process.env.CRON_SECRET;
   if (secret && !/^\[SENSITIVE\]$/i.test(secret)) {
     const auth = req.headers.get('authorization') ?? '';

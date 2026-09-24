@@ -3,6 +3,7 @@ import { getClientSession } from '@/lib/client-auth';
 import { getSupabase } from '@/lib/supabase';
 import { projectForEmail } from '@/lib/client-leads';
 import { describeSlot, zoneLabel, KINDS, type SlotKind } from '@/lib/client-booking';
+import { hydrateDesks } from '@/lib/client-desks';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -45,6 +46,7 @@ const shape = (r: Row) => {
 };
 
 export async function GET() {
+  await hydrateDesks();
   const session = await getClientSession();
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const sb = getSupabase();
@@ -78,6 +80,7 @@ export async function GET() {
 
 /** Mark one done, a no-show, or cancel it. A person's mark, nothing automatic. */
 export async function POST(req: Request) {
+  await hydrateDesks();
   const session = await getClientSession();
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const sb = getSupabase();

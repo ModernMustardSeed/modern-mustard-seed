@@ -3,6 +3,7 @@ import { getClientSession } from '@/lib/client-auth';
 import { projectForEmail } from '@/lib/client-leads';
 import { clientGuide } from '@/lib/command-center/guide';
 import { SITE } from '@/lib/seo';
+import { hydrateDesks } from '@/lib/client-desks';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -16,6 +17,7 @@ export const dynamic = 'force-dynamic';
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
 export async function GET() {
+  await hydrateDesks();
   const session = await getClientSession();
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   // The manual is the proposal as much as the handbook: a client on a

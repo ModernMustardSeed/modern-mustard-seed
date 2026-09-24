@@ -3,6 +3,7 @@ import { createHash } from 'node:crypto';
 import { getSupabase } from '@/lib/supabase';
 import { CLIENT_PROJECTS } from '@/lib/client-leads';
 import { isCode, recordVisit } from '@/lib/campaigns';
+import { hydrateDesks } from '@/lib/client-desks';
 
 export const runtime = 'nodejs';
 
@@ -28,12 +29,14 @@ function allowedOrigin(req: Request): string | null {
 }
 
 export async function OPTIONS(req: Request) {
+  await hydrateDesks();
   const origin = allowedOrigin(req);
   if (!origin) return new NextResponse(null, { status: 403 });
   return cors(new NextResponse(null, { status: 204 }), origin);
 }
 
 export async function POST(req: Request) {
+  await hydrateDesks();
   const origin = allowedOrigin(req);
   if (!origin) return NextResponse.json({ ok: false }, { status: 403 });
   let body: Record<string, unknown> = {};

@@ -8,6 +8,7 @@ import { checkAnswer } from '@/lib/human-check';
 import { creditLead, isCode } from '@/lib/campaigns';
 import { KINDS, slotIsOpen, bookingReady, describeSlot, zoneLabel, icsFor, type SlotKind } from '@/lib/client-booking';
 import { SITE } from '@/lib/seo';
+import { hydrateDesks } from '@/lib/client-desks';
 
 export const runtime = 'nodejs';
 export const maxDuration = 30;
@@ -47,12 +48,14 @@ function allowedOrigin(req: Request): string | null {
 }
 
 export async function OPTIONS(req: Request) {
+  await hydrateDesks();
   const origin = allowedOrigin(req);
   if (!origin) return new NextResponse(null, { status: 403 });
   return cors(new NextResponse(null, { status: 204 }), origin);
 }
 
 export async function POST(req: Request) {
+  await hydrateDesks();
   const origin = allowedOrigin(req);
   if (!origin) return cors(NextResponse.json({ ok: false, error: 'origin not allowed' }, { status: 403 }), null);
   const reply = (body: Record<string, unknown>, status = 200) => cors(NextResponse.json(body, { status }), origin);

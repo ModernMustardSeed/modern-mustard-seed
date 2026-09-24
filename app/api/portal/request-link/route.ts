@@ -4,6 +4,7 @@ import { createMagicToken, normalizeEmail } from '@/lib/client-auth';
 import { magicLinkEmail } from '@/lib/email';
 import { getSupabase } from '@/lib/supabase';
 import { projectForOfficeOrigin } from '@/lib/client-leads';
+import { hydrateDesks } from '@/lib/client-desks';
 
 export const runtime = 'nodejs';
 
@@ -15,6 +16,7 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
  * carries a 20-minute signed token to /api/portal/verify.
  */
 export async function POST(req: Request) {
+  await hydrateDesks();
   let body: { email?: string; next?: string; origin?: string };
   try {
     body = await req.json();

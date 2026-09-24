@@ -3,6 +3,7 @@ import { verifyMagicToken, setClientSessionCookie, setCcSessionCookie, setCcWhoC
 import { getSupabase } from '@/lib/supabase';
 import { accountForEmail } from '@/lib/cc-access';
 import { commandCenterVisible } from '@/lib/command-center/visible';
+import { hydrateDesks } from '@/lib/client-desks';
 
 export const runtime = 'nodejs';
 
@@ -12,6 +13,7 @@ export const runtime = 'nodejs';
  * back to the sign-in page with an error flag.
  */
 export async function GET(req: Request) {
+  await hydrateDesks();
   const url = new URL(req.url);
   const token = url.searchParams.get('token');
   const origin = url.origin;

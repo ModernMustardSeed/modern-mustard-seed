@@ -4,6 +4,7 @@ import { resendClient } from '@/lib/send-email';
 import { sendSms, toE164 } from '@/lib/sms';
 import { CLIENT_PROJECTS } from '@/lib/client-leads';
 import { describeSlot, zoneLabel, KINDS, type SlotKind } from '@/lib/client-booking';
+import { hydrateDesks } from '@/lib/client-desks';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -64,6 +65,7 @@ async function load(token: string | null): Promise<Appt | null> {
 }
 
 export async function GET(req: Request) {
+  await hydrateDesks();
   const token = new URL(req.url).searchParams.get('t');
   const appt = await load(token);
   if (!appt) return page('Link not found', '<h1>We could not find that appointment</h1><p>The link may have expired, or the appointment may already be cancelled. Call us and we will sort it out.</p>');
@@ -92,6 +94,7 @@ export async function GET(req: Request) {
 }
 
 export async function POST(req: Request) {
+  await hydrateDesks();
   const url = new URL(req.url);
   let token = url.searchParams.get('t');
   if (!token) {

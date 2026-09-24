@@ -4,6 +4,7 @@ import { CLIENT_PROJECTS } from '@/lib/client-leads';
 import { chatKeyConfigured } from '@/lib/command-center/chats';
 import { syncChats } from '@/lib/command-center/chat-store';
 import { ran } from '@/lib/cc-ran';
+import { hydrateDesks } from '@/lib/client-desks';
 
 export const runtime = 'nodejs';
 export const maxDuration = 300;
@@ -28,6 +29,7 @@ export const dynamic = 'force-dynamic';
  * catches per project rather than around the whole thing.
  */
 export async function GET(req: Request) {
+  await hydrateDesks();
   // The same guard every other cron in this app carries, and it was missing
   // here for one deploy. Unauthenticated, this route answered 200 to anyone:
   // it spends the Vapi rate limit on demand and reports per-client
