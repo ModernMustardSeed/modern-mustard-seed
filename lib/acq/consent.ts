@@ -20,6 +20,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { getSupabase } from '@/lib/supabase';
 import { recordEvent } from '@/lib/acq/events';
+import { toE164 as nanpE164 } from '@/lib/phone-nanp';
 
 export type ConsentVersion = {
   id: string;
@@ -45,10 +46,7 @@ export function consentVersion(id: string): ConsentVersion | undefined {
 
 /** US 10-digit to E.164. A malformed number is a stranger's phone, so refuse it. */
 export function toE164(raw: string): string | null {
-  const digits = String(raw || '').replace(/\D/g, '');
-  if (digits.length === 10) return `+1${digits}`;
-  if (digits.length === 11 && digits.startsWith('1')) return `+${digits}`;
-  return null;
+  return nanpE164(raw);
 }
 
 export type ConsentInput = {

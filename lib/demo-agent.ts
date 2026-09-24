@@ -19,6 +19,7 @@ import { possessive } from '@/lib/business-name';
 import { env, envAny } from '@/lib/env';
 import { ensureReadbackStandard } from '@/lib/readback-standard';
 import { demoBookingTools } from '@/lib/demo-booking-tools';
+import { toE164 as nanpE164 } from '@/lib/phone-nanp';
 
 const MUSTARD_ASSISTANT_ID = 'faf7f2c4-9cfd-4fcd-9c1a-73b7c9a38eee';
 /** Mr. Mustard's own line, (406) 312-1223. Callbacks reach him, which is the point. */
@@ -357,10 +358,7 @@ export type RingResult =
 
 /** "(406) 250-6076" -> "+14062506076". US numbers only for the demo ring. */
 export function toE164(raw: string | null | undefined): string | null {
-  const d = (raw || '').replace(/[^\d]/g, '');
-  if (d.length === 10) return `+1${d}`;
-  if (d.length === 11 && d[0] === '1') return `+${d}`;
-  return null;
+  return nanpE164(raw);
 }
 
 /** The encore: their own Voice Agent calls their cell. User-initiated, consent on the page. */

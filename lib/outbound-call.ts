@@ -19,6 +19,7 @@
  */
 
 import { CALLBACK_NUMBER_ID } from '@/lib/vapi-lines';
+import { toE164 as nanpE164 } from '@/lib/phone-nanp';
 
 const VAPI_CALL_URL = 'https://api.vapi.ai/call';
 
@@ -65,10 +66,7 @@ function localHour(city: string | null): number | null {
 
 /** "(406) 202-1451" -> "+14062021451". Returns null if it cannot form an E.164 US number. */
 export function toE164(raw: string | null | undefined): string | null {
-  const d = (raw || '').replace(/[^\d]/g, '');
-  if (d.length === 10) return `+1${d}`;
-  if (d.length === 11 && d[0] === '1') return `+${d}`;
-  return null;
+  return nanpE164(raw);
 }
 
 /** The outbound cold-call persona, injected per call as a system override. */
