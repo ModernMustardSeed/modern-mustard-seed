@@ -21,6 +21,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { readiness, type OfficeReadiness } from '@/lib/front-office/readiness';
 import { recordOfficeEvent } from '@/lib/front-office/provision';
+import { toE164 } from '@/lib/phone-nanp';
 
 const VAPI_BASE = 'https://api.vapi.ai';
 const real = (v?: string | null) => (v && !/^\[SENSITIVE\]$/i.test(v) ? v : null);
@@ -167,9 +168,9 @@ export async function placeTestCall(db: SupabaseClient, officeId: string, toNumb
   const gate = readiness(office as OfficeReadiness);
   if (!gate.canTest.ok) return { ok: false, error: gate.canTest.blockers.join('; ') };
 
-  const digits = String(toNumber).replace(/\D/g, '');
-  if (digits.length < 10) return { ok: false, error: 'That is not a number we can call.' };
-  const e164 = digits.length === 10 ? `+1${digits}` : `+${digits}`;
+  // US and Canadian numbers only: premium +1 area codes are a toll-fraud target.
+  const e164 = toE164(toNumber);
+  if (!e164) return { ok: false, error: 'That is not a US or Canadian number we can call.' };
 
   const fromId = real(process.env.VAPI_CALLBACK_NUMBER_ID) || real(process.env.VAPI_PHONE_NUMBER_ID);
   if (!fromId) return { ok: false, error: 'No outbound number configured to place the test from.' };

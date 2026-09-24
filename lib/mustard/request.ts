@@ -32,6 +32,41 @@ import { activeSuppressions } from '@/lib/email-log';
 import type { AcqProspect, Trade } from '@/lib/acq/types';
 import { getSurface, type Attribution, type MustardSurface } from '@/lib/mustard/surface';
 import { markLinkUsed, resolveLink } from '@/lib/mustard/links';
+import { isBlockedPremiumNumber } from '@/lib/phone-nanp';
+import { resendClient } from '@/lib/send-email';
+import { OWNER_NOTIFY_TO } from '@/lib/owner';
+
+/**
+ * One alert per IP per hour when somebody types a premium +1 number, so a
+ * scripted run tells Sarah once instead of flooding her inbox. Per instance,
+ * which is plenty: the point is to know it happened, not to count it.
+ */
+const premiumAlerted = new Map<string, number>();
+async function alertPremiumAttempt(phone: string, ip: string | null, userAgent: string | null, attribution: Attribution) {
+  const key = ip || 'unknown';
+  const last = premiumAlerted.get(key) ?? 0;
+  if (Date.now() - last < 60 * 60 * 1000 || !process.env.RESEND_API_KEY) return;
+  premiumAlerted.set(key, Date.now());
+  try {
+    await resendClient().emails.send({
+      from: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
+      to: OWNER_NOTIFY_TO,
+      subject: `Blocked a toll-fraud callback to ${String(phone).slice(0, 20)}`,
+      text: [
+        'Somebody asked Mr. Mustard to call a premium-rate number. It was refused and nothing dialed.',
+        '',
+        `Number typed: ${String(phone).slice(0, 40)}`,
+        `IP: ${ip ?? 'unknown'}`,
+        `Browser: ${(userAgent ?? 'unknown').slice(0, 160)}`,
+        `Came from: ${JSON.stringify(attribution ?? {}).slice(0, 300)}`,
+        '',
+        'No action needed. If these keep coming from one IP, block it in the Vercel firewall.',
+      ].join('\n'),
+    });
+  } catch (err) {
+    console.error('premium callback alert failed', err);
+  }
+}
 
 export type DemoCallInput = {
   surfaceSlug?: string;
@@ -190,6 +225,7 @@ export async function requestMustardDemoCall(input: DemoCallInput): Promise<Demo
 
   const phoneE164 = toE164(input.phone);
   if (!phoneE164) {
+    if (isBlockedPremiumNumber(input.phone)) await alertPremiumAttempt(input.phone, input.ip, input.userAgent, input.attribution);
     return { ok: false, code: 'bad-phone', error: 'That does not look like a US phone number. Enter 10 digits.' };
   }
   if (!input.consent) {

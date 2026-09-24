@@ -1,6 +1,7 @@
 import { getSupabase } from '@/lib/supabase';
 import { CALLBACK_NUMBER_ID } from '@/lib/vapi-lines';
 import { phoneOverrides, pickLanguage } from '@/lib/call-language';
+import { toE164 as nanpE164 } from '@/lib/phone-nanp';
 
 /**
  * INSTANT CALLBACK. The form is submitted, the phone rings in ten seconds.
@@ -72,10 +73,7 @@ export type CallbackResult =
  * number, and a wrong number is a stranger's phone ringing for no reason.
  */
 export function toE164(raw: string): string | null {
-  const digits = String(raw || '').replace(/\D/g, '');
-  if (digits.length === 10) return `+1${digits}`;
-  if (digits.length === 11 && digits.startsWith('1')) return `+${digits}`;
-  return null;
+  return nanpE164(raw);
 }
 
 /** First name only, for the greeting. "Hi Dana" beats "Hi Dana Whitfield". */

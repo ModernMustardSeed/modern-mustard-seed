@@ -1,3 +1,4 @@
+import { toE164 as nanpE164 } from '@/lib/phone-nanp';
 /**
  * Tap-to-text: send a personalized text from Sarah's OWN phone, with the whole
  * message already written.
@@ -23,8 +24,7 @@
 export function toE164(phone: string | null | undefined): string | null {
   if (!phone) return null;
   const digits = phone.replace(/\D/g, '');
-  if (digits.length === 10) return `+1${digits}`;
-  if (digits.length === 11 && digits.startsWith('1')) return `+${digits}`;
+  if (digits.length === 10 || (digits.length === 11 && digits.startsWith('1'))) return nanpE164(digits);
   // Already international, or something we should not guess at.
   if (phone.trim().startsWith('+') && digits.length > 10) return `+${digits}`;
   return null;
