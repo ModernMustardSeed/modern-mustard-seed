@@ -16,6 +16,7 @@ import { STAGES, createJob, listJobs, logJobEvent, updateJob, type Stage } from 
 import { saveTrade } from '@/lib/cc-trades';
 import { remember } from '@/lib/cc-facts';
 import { addDays, mountainDate } from '@/lib/posting/time';
+import { addPost, archiveCode, clearPosts, deleteContact, deleteJob, deleteLead, deletePost, deleteTrade, editPost, fixContact, forgetFact, movePost, postLines, skipPost, unmarkCalled, upcomingPosts } from '@/lib/cc-operator-acts';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -66,6 +67,25 @@ Actions, only when the context says the Command Center is on, and only when the 
 - {"type":"log_job","job":"<job name>","kind":"note|call|meeting","body":"<what happened, in their words>"}: when they tell you something happened on a job.
 - {"type":"add_trade","company":"<company>","trade":"<what they do, or empty>","phone":"<or empty>","insuranceExpires":"<YYYY-MM-DD or empty>"}: when they want a sub or supplier on the bench.
 - {"type":"remember","fact":"<one sentence, in their words>","factKind":"rule|preference|about|person","subject":"<who or what it is about, or empty>"}: when they tell you something true about how their business works that you should know next time. Only for a fact they stated. Never for something you inferred, and never for a passing detail about one job.
+
+Marketing. The context lists their upcoming posts as [post <id>] <date>, <status>: <words>. Name a post by that id, or by its date (YYYY-MM-DD).
+- {"type":"add_post","text":"<what they want said, in their words>"}: when they ask you to post something. Use their words; never add a fact they did not say.
+- {"type":"delete_post","post":"<id or date>"}: when they want one post gone.
+- {"type":"clear_posts","from":"<YYYY-MM-DD or empty>","to":"<YYYY-MM-DD or empty>"}: when they want several or all upcoming posts gone ("delete my test posts", "clear next week"). Empty dates mean every upcoming post.
+- {"type":"move_post","post":"<id or date>","date":"<YYYY-MM-DD>"}: when they want a post on another day.
+- {"type":"skip_post","post":"<id or date>"}: when they want a post held back but kept.
+- {"type":"edit_post","post":"<id or date>","text":"<the new words>","platform":"<facebook|instagram|linkedin|x|gbp|houzz, or empty for all>"}: when they want a post to say something different.
+
+Fixing and undoing. Only the one thing they named, never a loose match.
+- {"type":"fix_contact","name":"<contact name or empty>","email":"<their email or empty>","phone":"<their phone or empty>","field":"name|email|phone|company|notes","value":"<the corrected value>"}: when a contact's details are wrong.
+- {"type":"delete_contact","name":"<name or empty>","email":"<or empty>","phone":"<or empty>"}: when they want a contact removed.
+- {"type":"unmark_called","name":"<lead name>"}: when a lead was marked called by mistake.
+- {"type":"delete_lead","name":"<the lead's exact name>"}: only when they say a lead is a test or junk and want it gone.
+- {"type":"delete_job","job":"<job name>"}: when they want a job off the board entirely (use move_job to lost for a job that simply did not happen).
+- {"type":"delete_trade","company":"<company>"}: when they want a sub or supplier off the bench.
+- {"type":"archive_code","label":"<the QR code's name>"}: when they want a QR code put away.
+- {"type":"forget","fact":"<what to forget, in their words>"}: when they say something you remember is wrong or no longer true.
+Anything already published on a feed cannot be taken back from here; say so if they ask.
 Never put an action in the list for something they only asked about. Never say an action happened; the reply is written before the action runs, so say what you are doing ("I am putting a draft to Bob in your drafts now") and the system confirms the result after.
 
 Keep "reply" in your normal voice either way. Do not tell the client you are sending a note unless sendNote is true.`;
@@ -107,6 +127,12 @@ const DECISION_SCHEMA = {
           source: { type: 'string' },
           fact: { type: 'string' },
           factKind: { type: 'string' },
+          post: { type: 'string' },
+          date: { type: 'string' },
+          from: { type: 'string' },
+          text: { type: 'string' },
+          platform: { type: 'string' },
+          field: { type: 'string' },
           // `subject` is already declared above, for a drafted email's subject
           // line. A remembered fact reuses it for who the fact is about.
         },
@@ -145,6 +171,12 @@ type Action = {
   source?: string;
   fact?: string;
   factKind?: string;
+  post?: string;
+  date?: string;
+  from?: string;
+  text?: string;
+  platform?: string;
+  field?: string;
 };
 
 export async function POST(req: Request) {
@@ -215,6 +247,10 @@ export async function POST(req: Request) {
         const cc = await commandCenterContext(supabase, email);
         if (cc.length) ctx.push('', 'The Command Center is on. Here it is right now:', ...cc);
       } catch {}
+      try {
+        const posts = await upcomingPosts(supabase, email);
+        ctx.push('', `Today is ${mountainDate()}.`, posts.length ? 'Upcoming posts, not yet out:' : 'No upcoming posts are scheduled.', ...postLines(posts));
+      } catch {}
     }
   }
   const contextBlock = ctx.join('\n');
@@ -250,7 +286,9 @@ export async function POST(req: Request) {
     // every outcome reported as it happened. A failure is said plainly.
     const done: string[] = [];
     if (project && supabase && Array.isArray(decision.actions)) {
-      for (const a of decision.actions.slice(0, 3)) {
+      const deskWho = await getCcWho();
+      const asker = Object.values(project.people ?? {}).find((p) => normalizeEmail(p.email) === deskWho)?.name ?? project.business;
+      for (const a of decision.actions.slice(0, 5)) {
         try {
           if (a.type === 'draft_email' && a.to && a.body) {
             const r = await draftNewMail(supabase, email, a.to, a.subject ?? '(no subject)', a.body);
@@ -311,6 +349,35 @@ export async function POST(req: Request) {
             // questions are raised as briefs, not written into memory here.
             const r = await remember(supabase, email, { fact: a.fact, kind: a.factKind, subject: a.subject, source: 'said', by: email });
             done.push(r.ok ? `Remembered: ${r.fact.fact}` : `I could not keep that: ${r.error}`);
+          } else if (a.type === 'add_post' && (a.text || a.body)) {
+            done.push(await addPost(supabase, email, String(a.text || a.body)));
+          } else if (a.type === 'delete_post' && a.post) {
+            done.push(await deletePost(supabase, email, a.post));
+          } else if (a.type === 'clear_posts') {
+            // "to" is shared with draft_email, where it is an address; here it is the end date.
+            done.push(await clearPosts(supabase, email, a.from || undefined, a.to || undefined));
+          } else if (a.type === 'move_post' && a.post && a.date) {
+            done.push(await movePost(supabase, email, a.post, a.date));
+          } else if (a.type === 'skip_post' && a.post) {
+            done.push(await skipPost(supabase, email, a.post));
+          } else if (a.type === 'edit_post' && a.post && (a.text || a.body)) {
+            done.push(await editPost(supabase, email, a.post, String(a.text || a.body), a.platform || undefined));
+          } else if (a.type === 'fix_contact' && a.field) {
+            done.push(await fixContact(supabase, email, { name: a.name, email: a.email, phone: a.phone }, a.field, String(a.value ?? a.text ?? '')));
+          } else if (a.type === 'delete_contact') {
+            done.push(await deleteContact(supabase, email, a.name, a.email, a.phone));
+          } else if (a.type === 'unmark_called' && a.name) {
+            done.push(await unmarkCalled(supabase, email, a.name, asker));
+          } else if (a.type === 'delete_lead' && a.name) {
+            done.push(await deleteLead(supabase, email, a.name));
+          } else if (a.type === 'delete_job' && a.job) {
+            done.push(await deleteJob(supabase, email, a.job));
+          } else if (a.type === 'delete_trade' && a.company) {
+            done.push(await deleteTrade(supabase, email, a.company));
+          } else if (a.type === 'archive_code' && a.label) {
+            done.push(await archiveCode(supabase, email, a.label));
+          } else if (a.type === 'forget' && a.fact) {
+            done.push(await forgetFact(supabase, email, a.fact, email));
           } else if (a.type === 'make_code' && a.label) {
             const medium = ['sign', 'jobsite', 'truck', 'card', 'print', 'ad', 'mail', 'other'].includes(String(a.medium)) ? String(a.medium) : 'sign';
             let path = String(a.path ?? '/').trim() || '/';
@@ -335,7 +402,7 @@ export async function POST(req: Request) {
     // code now" whether or not anything happened. When the model asked for
     // work and none of it ran, the last word must be that nothing ran, not
     // the promise.
-    const asked = Array.isArray(decision.actions) ? decision.actions.slice(0, 3).length : 0;
+    const asked = Array.isArray(decision.actions) ? decision.actions.slice(0, 5).length : 0;
     const nothingRan = asked > 0 && done.length === 0;
     if (nothingRan) {
       done.push('That did not actually happen: this account cannot run that action yet. Sarah has been told.');
