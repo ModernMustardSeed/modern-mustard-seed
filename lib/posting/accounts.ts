@@ -209,9 +209,11 @@ export async function connectFacebookByToken(
     }
   }
 
-  // Is this already a Page token? /me answers with the Page itself.
-  const me = await graph<{ id: string; name: string; instagram_business_account?: { id: string; username?: string }; error?: { message: string } }>(
-    `${GRAPH}/me?fields=id,name,instagram_business_account{id,username}`,
+  // Who is this token? Only id and name: a person has no instagram_business_account
+  // field, and asking for it refuses a person's token outright. The Page branch
+  // below reads Instagram off the Page itself.
+  const me = await graph<{ id: string; name: string; error?: { message: string } }>(
+    `${GRAPH}/me?fields=id,name`,
     userToken,
   );
   if (!me.ok) return { ok: false, error: `Facebook did not accept that token: ${me.error}` };
