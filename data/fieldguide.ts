@@ -479,7 +479,7 @@ export const FIRST_BUILDS: { title: string; who: string; prompt: string }[] = [
 export const FAQ: { q: string; a: string }[] = [
   {
     q: 'What is Claude Code?',
-    a: 'Claude Code is Anthropic’s AI coding tool that runs in your terminal instead of a browser tab. The difference matters: it can read your actual files, run your actual commands, install things, run tests, and fix what it finds. A chat window can only give you text to copy. Claude Code does the work in the real project.',
+    a: 'Claude Code is Anthropic’s agentic coding tool that runs in your terminal instead of a browser tab. The difference matters: it can read your actual files, run your actual commands, install things, run tests, and fix what it finds. A chat window can only give you text to copy. Claude Code does the work in the real project.',
   },
   {
     q: 'What does Claude Code cost, and do I need a subscription?',
@@ -507,7 +507,7 @@ export const FAQ: { q: string; a: string }[] = [
   },
   {
     q: 'Can Modern Mustard Seed build this for me instead?',
-    a: 'Yes. Plenty of people read a guide like this, get a taste of what is possible, and decide they would rather have the thing than the education. We are a product studio in Kalispell, Montana that builds custom apps, websites, and AI voice agents at set package prices, usually shipped in weeks. Call the ranch line and Mr. Mustard, our own AI agent, will take it from there, or book a call with Sarah directly.',
+    a: 'Yes. Plenty of people read a guide like this, get a taste of what is possible, and decide they would rather have the thing than the education. We are a product studio in Kalispell, Montana that builds custom apps, websites, and voice agents at set package prices, usually shipped in weeks. Call the ranch line and Mr. Mustard, our own voice agent, will take it from there, or book a call with Sarah directly.',
   },
 ];
 

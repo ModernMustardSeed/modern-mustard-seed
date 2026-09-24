@@ -687,7 +687,7 @@ export default function FieldGuidePage() {
                     Two ways to get unstuck, and neither one costs you anything to start.
                   </h2>
                   <p className="text-[#161616]/80 text-sm md:text-base font-body font-medium leading-7 max-w-2xl mb-8">
-                    Call the ranch line and Mr. Mustard picks up. He is our own AI voice agent, he is awake at 2am, and
+                    Call the ranch line and Mr. Mustard picks up. He is our own voice agent, he is awake at 2am, and
                     he will talk you through what you are stuck on or take down what you are trying to build. If you want
                     a person, book thirty minutes with Sarah and bring whatever you have, including nothing but an idea.
                   </p>
@@ -710,7 +710,7 @@ export default function FieldGuidePage() {
                   <div className="border-t-2 border-[#161616]/15 pt-7">
                     <p className="text-[#161616]/80 text-sm md:text-base font-body font-medium leading-7 max-w-2xl mb-5">
                       And if you read all of this and thought <em>I would rather someone just built it</em>, that is what
-                      we do. Modern Mustard Seed is a product studio in Kalispell, Montana. Custom apps, websites, and AI
+                      we do. Modern Mustard Seed is a product studio in Kalispell, Montana. Custom apps, websites, and
                       voice agents, at set package prices, shipped in weeks. You own the code, the repo, and the deploys
                       when we are done.
                     </p>

@@ -46,7 +46,7 @@ const FAQS = [
   },
   {
     q: 'Do I have to hire you afterward?',
-    a: 'No. The roadmap is complete and yours. It tells you what to do whether or not we ever speak. It also points out where an AI teammate would remove a real cost or delay for you specifically, because that is what we build, and if you want that part done for you we are right here.',
+    a: 'No. The roadmap is complete and yours. It tells you what to do whether or not we ever speak. It also points out where an agentic teammate would remove a real cost or delay for you specifically, because that is what we build, and if you want that part done for you we are right here.',
   },
   {
     q: 'Can I share the roadmap or send it to my team?',
@@ -134,7 +134,7 @@ export default async function ScalingRoadmapPage() {
           serviceJsonLd({
             name: 'Business Scaling Roadmap',
             description:
-              'Free AI-built scaling plan for your business: constraint, offer rebuild, money model, lead engine, and a twelve month phase plan with gates.',
+              'Free scaling plan for your business, built by our agentic system: constraint, offer rebuild, money model, lead engine, and a twelve month phase plan with gates.',
           }),
           {
             // The shared howToJsonLd helper is playbook-shaped (slug + dates, no

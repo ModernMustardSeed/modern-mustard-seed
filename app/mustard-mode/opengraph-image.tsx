@@ -5,7 +5,7 @@ import { join } from 'node:path';
 // The MUSTARD MODE share card: the 100x terminal frame with the mascot.
 export const runtime = 'nodejs';
 
-export const alt = 'MUSTARD MODE. One seed, 100x the output. Learn Claude with your own AI coach.';
+export const alt = 'MUSTARD MODE. One seed, 100x the output. Learn Claude with your own agentic coach.';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
@@ -79,7 +79,7 @@ export default async function OpengraphImage() {
             </span>
           </div>
           <span style={{ fontSize: 28, color: '#3a3733', marginTop: 30, lineHeight: 1.4 }}>
-            Your own AI coach. Four tracks. 28 missions. Nothing but your Claude subscription.
+            Your own agentic coach. Four tracks. 28 missions. Nothing but your Claude subscription.
           </span>
           <span style={{ fontSize: 22, color: '#E0301E', fontWeight: 700, marginTop: 26, letterSpacing: 3 }}>
             MODERNMUSTARDSEED.COM/MUSTARD-MODE

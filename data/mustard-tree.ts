@@ -9,11 +9,11 @@ export const MUSTARD_TREE = {
   name: 'The Mustard Tree',
   metaTitle: 'The Mustard Tree | One Seed In, A Whole Business Out',
   metaDescription:
-    'Type one sentence and wake up to a living company: plan, brand, store, site, books, and marketing, with an AI staff already running it. Claim your planting number.',
+    'Type one sentence and wake up to a living company: plan, brand, store, site, books, and marketing, with an agentic staff already running it. Claim your planting number.',
   eyebrow: 'The Mustard Tree · Planting Soon',
   headline: ['One seed in.', 'A whole business out.'],
   promise:
-    'Type one sentence about the business you want. The Mustard Tree interviews you like a sharp cofounder, then grows the whole thing overnight: the plan, the brand, the store, the site, the books, the marketing, with a staff of AI agents already working in the branches.',
+    'Type one sentence about the business you want. The Mustard Tree interviews you like a sharp cofounder, then grows the whole thing overnight: the plan, the brand, the store, the site, the books, the marketing, with a staff of agents already working in the branches.',
   seedExample: 'a candle company that smells like Montana',
   grove: {
     headline: 'Claim your planting number.',
@@ -91,7 +91,7 @@ export const treeOrgans = [
 export const treeFaq = [
   {
     q: 'What is The Mustard Tree?',
-    a: 'One sentence in, a whole business out. It interviews you, then grows the plan, brand, store, site, books, and marketing as one system, with an AI office of six agents that keeps running it after launch day.',
+    a: 'One sentence in, a whole business out. It interviews you, then grows the plan, brand, store, site, books, and marketing as one system, with an agentic office of six agents that keeps running it after launch day.',
   },
   {
     q: 'Is it only for brand-new businesses?',
@@ -103,7 +103,7 @@ export const treeFaq = [
   },
   {
     q: 'Who is building this?',
-    a: 'Modern Mustard Seed, the Montana studio behind The Talking Website and a working fleet of AI staff products. The Mustard Tree is grown from rails that already run real businesses today.',
+    a: 'Modern Mustard Seed, the Montana studio behind The Talking Website and a working fleet of agentic staff products. The Mustard Tree is grown from rails that already run real businesses today.',
   },
   {
     q: 'When do plantings open?',

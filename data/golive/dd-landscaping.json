@@ -50,7 +50,7 @@
         { "id": "pricing", "who": "Client", "what": "APPROVE THE BALLPARK PRICING. Highest-risk item on this list",
           "how": "The site quotes real numbers to real customers: lawn $45 + $60/acre, cleanup $280 + $120/acre, mulch $210 + $95/acre, and the FAQ says \"$50 to $75 a visit\" out loud. These are our assumptions until he blesses them." },
         { "id": "slas", "who": "Client", "what": "Confirm the SPEC tier SLAs are promises he will honor", "how": "48hr / 24hr / same-day storm response, monthly photo walk reports. These read as contractual." },
-        { "id": "photos", "who": "Client", "what": "Real job photos (every image today is AI-generated, labeled representative)" },
+        { "id": "photos", "who": "Client", "what": "Real job photos (every image today is machine-generated, labeled representative)" },
         { "id": "reviews", "who": "Client", "what": "Real reviews for the proof section (it holds the slot honestly for now)" },
         { "id": "gbp-social", "who": "Client", "what": "Google Business Profile access + any social links" },
         { "id": "address", "who": "Client", "what": "Street address + zip, so the map data stops being a downtown approximation" },

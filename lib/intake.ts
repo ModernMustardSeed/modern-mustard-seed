@@ -37,7 +37,7 @@ const BRAND_SITE: IntakeSection = {
 
 const AGENT: IntakeSection = {
   key: 'agent',
-  title: 'Voice / AI agent',
+  title: 'Voice / agentic system',
   fields: [
     { key: 'phone', label: 'Business phone number (or "need one")', type: 'text' },
     { key: 'hours', label: 'Hours it should cover', type: 'text' },
@@ -60,7 +60,7 @@ const AUTOMATION: IntakeSection = {
 
 const VISIBILITY: IntakeSection = {
   key: 'visibility',
-  title: 'Search and AI visibility',
+  title: 'Search and answer engine visibility',
   fields: [
     { key: 'gbp', label: 'Google Business Profile: do you have one? Who controls it?', type: 'text' },
     { key: 'locations', label: 'Locations / areas you serve', type: 'text' },

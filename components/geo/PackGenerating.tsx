@@ -12,7 +12,7 @@ const STAGES = [
   'Pulling your live site through the full audit...',
   'Detecting your platform...',
   'Writing your llms.txt from what your site actually says...',
-  'Structuring your business data (the part AI engines read)...',
+  'Structuring your business data (the part answer engines read)...',
   'Setting the meta rewrites and your citable FAQ...',
   'Matching the install guide to your platform...',
 ];

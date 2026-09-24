@@ -72,12 +72,12 @@ const WANTS = [
   },
   {
     key: 'advisory',
-    label: 'AI advisory',
-    detail: 'A standing seat at your table. Where AI is worth your money this year, where it is not, and what to do first.',
+    label: 'Agentic systems advisory',
+    detail: 'A standing seat at your table. Where agentic systems are worth your money this year, where it is not, and what to do first.',
   },
   {
     key: 'plan',
-    label: 'An AI integration plan',
+    label: 'An agentic integration plan',
     detail: 'Written for your business, step by step, honest enough that you could do it yourself. Free, and yours to keep.',
   },
 ];
@@ -204,7 +204,7 @@ export default function PresenceAsk({
       </div>
 
       <p className="font-body text-[13.5px] leading-relaxed text-[#FBF6EA]/60 mt-5">
-        Would rather talk now? Call Mr. Mustard, our own AI, on{' '}
+        Would rather talk now? Call Mr. Mustard, our own voice agent, on{' '}
         <a href="tel:+14063121223" className="font-mono font-bold text-[#F5B700] underline decoration-2 underline-offset-4">
           (406) 312-1223
         </a>{' '}

@@ -53,7 +53,7 @@ export default function LeadGenTab({ onLead }: { onLead?: (name: string) => void
     window.setTimeout(() => {
       setCaptures((c) => [{ name: who, channel: ch.name, icon: ch.icon, secs }, ...c].slice(0, 8));
       onLead?.(who);
-      say(`${who} came in through ${ch.name}. Your AI texted them back in ${secs} seconds.`);
+      say(`${who} came in through ${ch.name}. Your agent texted them back in ${secs} seconds.`);
       setBusy(false);
     }, 650);
   };
@@ -64,7 +64,7 @@ export default function LeadGenTab({ onLead }: { onLead?: (name: string) => void
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
         <StatCard label="New leads" value={String(weekTotal)} sub="this week, all channels" i={0} pulse />
-        <StatCard label="Answered by AI" value={String(byAi)} sub="in under a minute each" i={1} />
+        <StatCard label="Answered by the agent" value={String(byAi)} sub="in under a minute each" i={1} />
         <StatCard label="Avg response" value="38s" sub="before they leave your page" i={2} />
         <StatCard label="Booked from leads" value={String(bookedFromLeads)} sub="captured, then closed" i={3} />
       </div>
@@ -121,7 +121,7 @@ export default function LeadGenTab({ onLead }: { onLead?: (name: string) => void
                 <p className="text-[11.5px]" style={{ color: theme.dim }}>{c.channel}</p>
               </div>
               <span className="text-[10px] font-bold uppercase tracking-[0.08em] rounded-full px-2.5 py-0.5" style={{ background: theme.accent, color: theme.accentInk }}>
-                AI replied in {c.secs}s
+                Agent replied in {c.secs}s
               </span>
             </div>
           ))}
@@ -129,7 +129,7 @@ export default function LeadGenTab({ onLead }: { onLead?: (name: string) => void
       </div>
 
       <p className="text-[12px] mt-3" style={{ color: theme.dim }}>
-        Sample capture. In the real build every channel is wired to your number and pages, and each new lead lands in Customers with the AI already following up.
+        Sample capture. In the real build every channel is wired to your number and pages, and each new lead lands in Customers with the agent already following up.
       </p>
     </div>
   );

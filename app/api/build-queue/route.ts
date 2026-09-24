@@ -33,20 +33,20 @@ function pickPlaybook(desc: string): { slug: string; title: string; hook: string
     return {
       slug: 'byok-pricing',
       title: 'The BYOK Pricing Playbook',
-      hook: 'When subscription, metered, or BYOK pricing wins for AI products.',
+      hook: 'When subscription, metered, or BYOK pricing wins for agentic products.',
     };
   }
   if (t.includes('industry') || t.includes('real estate') || t.includes('tool') || t.includes('niche')) {
     return {
       slug: 'specialty-ai-tool',
-      title: 'The Specialty AI Tool Playbook',
+      title: 'The Specialty Agentic Tool Playbook',
       hook: 'Find the $3K friction in any industry and build the $99 alternative.',
     };
   }
   if (t.includes('scope') || t.includes('plan') || t.includes('roadmap')) {
     return {
       slug: 'scope-an-ai-project',
-      title: 'How to Scope an AI Project in 90 Minutes',
+      title: 'How to Scope an Agentic Systems Project in 90 Minutes',
       hook: 'The exact 90-minute scoping conversation we run before every build.',
     };
   }

@@ -84,7 +84,7 @@ export const WHITEPAPER = {
     {
       heading: 'It is honest by design',
       body: [
-        'The agent opens by saying it is an AI and notes when a call may be recorded. That honesty is a feature, not a weakness: callers are hearing the exact product you could deploy for them, and transparency keeps you on the right side of state calling and recording laws. It honors do-not-call requests on the spot.',
+        'The agent opens by saying it is a voice agent, not a person, and notes when a call may be recorded. That honesty is a feature, not a weakness: callers are hearing the exact product you could deploy for them, and transparency keeps you on the right side of state calling and recording laws. It honors do-not-call requests on the spot.',
       ],
     },
     {

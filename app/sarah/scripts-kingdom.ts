@@ -24,24 +24,24 @@ export const KINGDOM_LEVERAGE: PrompterScript[] = [
     session: 'Kingdom Leverage · Season Two',
     publish: 'Publishes Tue 8/25',
     pillar: 'KINGDOM',
-    title: 'AI Amplifies What You Already Know',
-    hook: 'AI is a multiplier. A multiplier applied to zero is still zero.',
+    title: 'Machine Intelligence Amplifies What You Already Know',
+    hook: 'Machine intelligence is a multiplier. A multiplier applied to zero is still zero.',
     directorNote:
       'This is the thesis episode for the whole season, so plant your feet and teach it. Say the multiplier line in the Cold Open slowly, then say it again at the end of block one with the same rhythm so it lands as a refrain and not a phrase. Warmth on the septic company story, real affection, he is not the punchline. Drop into a quieter register for Where Faith Sits and speak to one person. The last three sentences of the Close are three separate beats, with air between them.',
     sections: [
       {
         heading: 'Cold Open',
         paragraphs: [
-          'A man stopped me after a talk in Kalispell and asked what he should use AI for. I asked him one question back. What do you know how to do that most people cannot? He stood there and thought about it for a long time, and then he said, honestly, nothing.',
+          'A man stopped me after a talk in Kalispell and asked what he should hand to the machines. I asked him one question back. What do you know how to do that most people cannot? He stood there and thought about it for a long time, and then he said, honestly, nothing.',
           'He owns a septic company. Twenty-two years. He can stand in a driveway, listen to a pump cycle, and tell you whether the float switch is dying or the drain field is done. He can look at a county parcel and know what it will cost to get a system permitted before he opens a laptop. He knew all of that. He just did not think any of it counted.',
-          'That is the whole problem, and it is not a technology problem. He came looking for AI to give him something, and he was standing on top of the exact thing AI needs from him. So here is the sentence I want living in your head for the next twenty minutes. AI is a multiplier. A multiplier applied to zero is still zero. Applied to twenty-two years, it is a company.',
+          'That is the whole problem, and it is not a technology problem. He came looking for the machines to give him something, and he was standing on top of the exact thing the machines need from him. So here is the sentence I want living in your head for the next twenty minutes. Machine intelligence is a multiplier. A multiplier applied to zero is still zero. Applied to twenty-two years, it is a company.',
         ],
       },
       {
         heading: 'The Promise',
         paragraphs: [
-          'By the end of this episode you will have four things. You will understand why AI is arithmetic and not magic, which changes what you should ask of it. You will be able to name your own domain out loud, in a sentence, which most owners cannot do and which is worth more than any tool. You will know the three assets in your business that no model on earth can manufacture. And you will have one specific place to aim the multiplier first, this week, without hiring anyone.',
-          'I am not neutral here. I run four ventures out of a small town in Montana, mostly by myself, because AI systems carry the repetitive weight. But every one of those systems is built on something I knew before the systems existed. The tools did not make me useful. They made what I already knew reach further. That order matters, and getting it backward is the most expensive mistake I watch people make.',
+          'By the end of this episode you will have four things. You will understand why machine intelligence is arithmetic and not magic, which changes what you should ask of it. You will be able to name your own domain out loud, in a sentence, which most owners cannot do and which is worth more than any tool. You will know the three assets in your business that no model on earth can manufacture. And you will have one specific place to aim the multiplier first, this week, without hiring anyone.',
+          'I am not neutral here. I run four ventures out of a small town in Montana, mostly by myself, because agentic systems carry the repetitive weight. But every one of those systems is built on something I knew before the systems existed. The tools did not make me useful. They made what I already knew reach further. That order matters, and getting it backward is the most expensive mistake I watch people make.',
         ],
       },
       {
@@ -49,9 +49,9 @@ export const KINGDOM_LEVERAGE: PrompterScript[] = [
         paragraphs: [
           'Start with the arithmetic, because it is genuinely this simple. A multiplier does not create value. It scales value that already exists. Ten times four is forty. Ten times zero is zero. The ten did not change. The other number did all the work.',
           'This is why two business owners can buy the exact same tools, in the same week, and one of them gets a step change while the other gets nothing but a subscription. The tools were identical. The other number was not.',
-          'Watch what this does to the panic. People keep asking whether AI is going to replace them, and the honest answer is that AI replaces tasks, never judgment. It writes the proposal. It does not know that this particular customer needs the payment schedule spelled out because his last contractor burned him. It drafts the estimate. It does not know that you never bid that neighborhood in March because of frost depth. Everything I just described is domain knowledge, and domain knowledge is exactly what the multiplier is looking for.',
-          'Here is the harder half. If your business is genuinely undifferentiated, if you do the same thing in the same way as everyone else with no accumulated judgment, then AI will not save you, and it will not be the thing that hurt you either. It will just be a very fast competitor who arrived at the same nothing sooner. That is not a reason to avoid the tools. It is a reason to go get a domain.',
-          'So say it with me one more time, because this is the spine of the season. AI is a multiplier. A multiplier applied to zero is still zero. Your job is not to find a better multiplier. Your job is to be a bigger number.',
+          'Watch what this does to the panic. People keep asking whether the machines are going to replace them, and the honest answer is that the machines replace tasks, never judgment. It writes the proposal. It does not know that this particular customer needs the payment schedule spelled out because his last contractor burned him. It drafts the estimate. It does not know that you never bid that neighborhood in March because of frost depth. Everything I just described is domain knowledge, and domain knowledge is exactly what the multiplier is looking for.',
+          'Here is the harder half. If your business is genuinely undifferentiated, if you do the same thing in the same way as everyone else with no accumulated judgment, then machine intelligence will not save you, and it will not be the thing that hurt you either. It will just be a very fast competitor who arrived at the same nothing sooner. That is not a reason to avoid the tools. It is a reason to go get a domain.',
+          'So say it with me one more time, because this is the spine of the season. Machine intelligence is a multiplier. A multiplier applied to zero is still zero. Your job is not to find a better multiplier. Your job is to be a bigger number.',
           'Your next step from this block: write down one thing you know that a smart, motivated stranger could not learn from the internet in a weekend. If you cannot fill that line in yet, keep listening, because block two is about finding it.',
         ],
       },
@@ -71,16 +71,16 @@ export const KINGDOM_LEVERAGE: PrompterScript[] = [
         paragraphs: [
           'Once you have the domain, you can see what you actually own. There are three assets in a real business that no amount of compute can produce, and every one of them gets more valuable as the tools get better, not less.',
           'The first is proprietary knowledge. Not information, knowledge. Information is public: how a heat pump works, what a lien is, what the code says. Knowledge is what you learned by being wrong in front of a customer. What this specific soil does in a wet spring. Which supplier says yes and then misses. What the third question is that a nervous buyer never asks out loud but is definitely thinking. None of that is on the internet. It is in you, and right now most of it is only in you, which means it is trapped.',
-          'The second is your pattern library. After enough repetitions you stop reasoning and start recognizing. You walk onto a job and something is wrong before you can say what. A doctor calls it clinical judgment. A framer calls it a bad feeling about a wall. It is real, it took years, and it cannot be shortcut. AI has read more than you have. It has not seen what you have seen.',
+          'The second is your pattern library. After enough repetitions you stop reasoning and start recognizing. You walk onto a job and something is wrong before you can say what. A doctor calls it clinical judgment. A framer calls it a bad feeling about a wall. It is real, it took years, and it cannot be shortcut. The models have read more than you have. They have not seen what you have seen.',
           'The third is standing. Somebody in your town will pick up the phone because it is you. That trust was built one kept promise at a time, and it does not transfer to a tool, an ad, or a competitor with a better website. It is the slowest asset to build and the only one that compounds while you sleep.',
-          'Now here is why this matters for the multiplier. Every one of those three assets used to be capped by your calendar. Your knowledge helped exactly as many people as you could personally talk to. Your judgment covered exactly as many jobs as you could personally walk. That cap is what AI removes. Not the knowing. The reaching.',
+          'Now here is why this matters for the multiplier. Every one of those three assets used to be capped by your calendar. Your knowledge helped exactly as many people as you could personally talk to. Your judgment covered exactly as many jobs as you could personally walk. That cap is what agentic systems remove. Not the knowing. The reaching.',
           'Your next step: pick which of the three is strongest in your business, name it in one sentence, and notice how much of it currently exists only inside your own head.',
         ],
       },
       {
         heading: '4. Where to Aim the Multiplier First',
         paragraphs: [
-          'People aim wrong, and it is always the same wrong. They aim AI at the thing they do not understand, hoping it will cover for them. Aim it at the thing you understand best. That is where the multiple is largest, and it is also the only place you can tell whether the output is any good.',
+          'People aim wrong, and it is always the same wrong. They aim the machine at the thing they do not understand, hoping it will cover for them. Aim it at the thing you understand best. That is where the multiple is largest, and it is also the only place you can tell whether the output is any good.',
           'Concretely, there are four first doors, and I would take them in this order. Door one, the answer machine. Take the twenty questions you get asked every week and build the thing that answers them in your voice, with your standards, all day, whether or not you are on a ladder. That is your knowledge, unhooked from your calendar.',
           'Door two, the front door itself. The phone that gets missed, the form nobody follows up on, the quote that goes out two days late because you were working. A voice agent that answers, qualifies, and books straight into your calendar is not a novelty. It is the difference between the jobs you won and the jobs you never knew were offered.',
           'Door three, the drafting. Proposals, estimates, follow-ups, the write-up nobody wants to do at nine at night. You still make every judgment call. The machine does the typing between your decisions.',
@@ -93,7 +93,7 @@ export const KINGDOM_LEVERAGE: PrompterScript[] = [
         heading: 'The Unlearning',
         paragraphs: [
           'The thing you have to put down is the idea that the tool is the advantage. It is not, and it never was. The tool is available to everyone, which by definition means it is not an advantage. Advantage is what happens when a commodity tool meets a rare input.',
-          'And put down the other one too, the one that says you are behind. You are not behind on AI. Almost nobody is ahead. What most people have is a subscription and a vague feeling of guilt. What you have is twenty years of knowing things. That is the scarce side of this trade, and it always has been.',
+          'And put down the other one too, the one that says you are behind. You are not behind on agentic systems. Almost nobody is ahead. What most people have is a subscription and a vague feeling of guilt. What you have is twenty years of knowing things. That is the scarce side of this trade, and it always has been.',
         ],
       },
       {
@@ -146,8 +146,8 @@ export const KINGDOM_LEVERAGE: PrompterScript[] = [
       {
         heading: 'The Promise',
         paragraphs: [
-          'By the end of this episode you will have four things. A working definition of income that actually predicts what happens in the real world. The four numbers that determine every dollar your business will ever make, so you can stop guessing which lever to pull. An honest account of why a bigger problem pays better than a harder effort. And the one specific place AI enters that equation, which is one place, not everywhere.',
-          'This matters more now than it did five years ago for a simple reason. AI moves one of those four numbers a very long way, very fast, and it barely touches the other three. If you do not know which is which, you will spend a year automating the wrong thing and wonder why the bank balance did not move.',
+          'By the end of this episode you will have four things. A working definition of income that actually predicts what happens in the real world. The four numbers that determine every dollar your business will ever make, so you can stop guessing which lever to pull. An honest account of why a bigger problem pays better than a harder effort. And the one specific place machine intelligence enters that equation, which is one place, not everywhere.',
+          'This matters more now than it did five years ago for a simple reason. Machine intelligence moves one of those four numbers a very long way, very fast, and it barely touches the other three. If you do not know which is which, you will spend a year automating the wrong thing and wonder why the bank balance did not move.',
         ],
       },
       {
@@ -185,14 +185,14 @@ export const KINGDOM_LEVERAGE: PrompterScript[] = [
         ],
       },
       {
-        heading: '4. Where AI Actually Enters the Equation',
+        heading: '4. Where Machine Intelligence Actually Enters the Equation',
         paragraphs: [
-          'Now put AI against the four numbers, honestly, because the honest answer is more useful than the hype.',
-          'Volume. This is where AI hits hardest and it is not close. Everything that used to be capped by your hours comes off the cap. The phone gets answered every time. The follow-up happens on the day it should. The proposal goes out the same afternoon instead of Thursday. You serve more people without becoming more people.',
+          'Now put machine intelligence against the four numbers, honestly, because the honest answer is more useful than the hype.',
+          'Volume. This is where agentic systems hit hardest and it is not close. Everything that used to be capped by your hours comes off the cap. The phone gets answered every time. The follow-up happens on the day it should. The proposal goes out the same afternoon instead of Thursday. You serve more people without becoming more people.',
           'Frequency. Strong second. Most businesses lose repeat work to forgetting, not to competitors. A system that remembers every customer, what they bought, when they will need it again, and reaches out at the right moment turns one-time buyers into recurring ones. That is not clever marketing. It is refusing to forget.',
-          'Capture. Real, but indirect. When you can put a proposal in front of someone that shows the value at stake in numbers, on the day of the conversation instead of four days later, you get paid closer to what the work is worth. AI does not raise your price. It removes the friction that was making you afraid to.',
-          'Size. Almost none. This is the one I need you to hear. AI does not decide which problem is worth solving. It does not know that the real pain in your industry is the two week permit wait and not the thing everyone talks about at the trade show. That judgment is yours, and it is exactly what episode one called your domain.',
-          'So the shape is this. AI multiplies volume and frequency, assists with capture, and is silent on size. Which means the ceiling of your business is still set by the size of the problem you chose. The machine can carry a bigger load. It cannot pick a bigger load for you.',
+          'Capture. Real, but indirect. When you can put a proposal in front of someone that shows the value at stake in numbers, on the day of the conversation instead of four days later, you get paid closer to what the work is worth. Machine intelligence does not raise your price. It removes the friction that was making you afraid to.',
+          'Size. Almost none. This is the one I need you to hear. Machine intelligence does not decide which problem is worth solving. It does not know that the real pain in your industry is the two week permit wait and not the thing everyone talks about at the trade show. That judgment is yours, and it is exactly what episode one called your domain.',
+          'So the shape is this. Machine intelligence multiplies volume and frequency, assists with capture, and is silent on size. Which means the ceiling of your business is still set by the size of the problem you chose. The machine can carry a bigger load. It cannot pick a bigger load for you.',
           'Your next step: for the one door you chose in episode one, name which of the four numbers it moves. If the honest answer is none of them, it is a toy, not a system.',
         ],
       },
@@ -237,8 +237,8 @@ export const KINGDOM_LEVERAGE: PrompterScript[] = [
     session: 'Kingdom Leverage · Season Two',
     publish: 'Publishes Tue 9/8',
     pillar: 'KINGDOM',
-    title: 'The Four Levels of Value, and Which Two AI Just Took',
-    hook: 'There are four levels of value in every economy. AI just took the bottom two, and it is coming for the third.',
+    title: 'The Four Levels of Value, and Which Two the Machines Just Took',
+    hook: 'There are four levels of value in every economy. The machines just took the bottom two, and they are coming for the third.',
     directorNote:
       'This is the map episode. Use your hand on camera for the four levels, lowest to highest, and keep the gesture identical every time you name them so the viewer builds the picture with you. Slow way down on the Joseph section, that is the emotional center of the episode. The line about the ladder being a promotion and not a threat should be delivered warmly, straight to the lens.',
     sections: [
@@ -253,7 +253,7 @@ export const KINGDOM_LEVERAGE: PrompterScript[] = [
       {
         heading: 'The Promise',
         paragraphs: [
-          'By the end of this episode you will be able to name all four levels of value, place your own work on the ladder honestly, see exactly which rungs AI has already taken, and know the specific next rung to climb without abandoning your trade or going back to school.',
+          'By the end of this episode you will be able to name all four levels of value, place your own work on the ladder honestly, see exactly which rungs the machines have already taken, and know the specific next rung to climb without abandoning your trade or going back to school.',
           'And I want to say the important part up front, because this teaching gets abused. Climbing the ladder is not about becoming too good for the work. The plumber who moves up a rung is still a plumber. He is just no longer selling only the hours his own hands are in the wall.',
         ],
       },
@@ -263,7 +263,7 @@ export const KINGDOM_LEVERAGE: PrompterScript[] = [
           'Level one is implementation. Doing the thing with your own hands. Cutting the board, writing the code, entering the data, driving the truck, making the call. It is the most honest level and it is the lowest paid, and both of those things are true at once.',
           'Do not hear contempt in that. Implementation is where excellence starts and it is where character is formed. Bezalel in Exodus thirty-one was an implementer, and God calls his craftsmanship a filling of the Spirit. Jesus spent something like eighteen years of adult life in a carpentry shop. There is nothing lesser about level one.',
           'But understand the ceiling. Level one pays by the unit of output your body can produce, which means it is capped by a number that does not grow: hours in a day, years in a back. Two hands, one calendar. You can get faster and you can get better and the ceiling stays where it is.',
-          'Here is the hard news, delivered plainly. Level one is where AI landed first and hardest. Drafting, formatting, data entry, first-pass code, first-pass copy, transcription, summarizing, scheduling, routine research. Not all of it and not perfectly, but enough of it that selling implementation alone as your whole business is now a shrinking position.',
+          'Here is the hard news, delivered plainly. Level one is where machine intelligence landed first and hardest. Drafting, formatting, data entry, first-pass code, first-pass copy, transcription, summarizing, scheduling, routine research. Not all of it and not perfectly, but enough of it that selling implementation alone as your whole business is now a shrinking position.',
           'Your next step: list every task you did last week that was pure implementation, and put a star next to the ones a well-instructed machine could have done at ninety percent quality. Do not panic at the number. That number is your raw material for the rest of this episode.',
         ],
       },
@@ -273,7 +273,7 @@ export const KINGDOM_LEVERAGE: PrompterScript[] = [
           'Level two is unification. Getting other people and other parts to work together toward one outcome. The foreman. The office manager. The project lead. You are no longer producing the unit, you are making sure the units add up.',
           'This pays more than implementation for a reason that is easy to miss: one unifier multiplies many implementers. If four framers get twenty percent better because of how the foreman sequences the day, the foreman created more value than any one of them did.',
           'Nehemiah is the case study I keep coming back to. He never lays a stone in the whole book. What he does is survey the wall at night, divide it into sections, assign each family the section in front of their own house, arm half the workers while the other half builds, and answer the people trying to pull him off the project with one sentence: I am doing a great work and I cannot come down. The wall went up in fifty-two days. That is unification, and Scripture treats it as serious work.',
-          'Now the honest read on AI here. This rung is under real pressure, but partially, not wholly. Coordination, scheduling, status chasing, routing, reminding, keeping the record straight, all of that is exactly what agents are good at. What is not under pressure is the part of unification that is human: knowing which of your people is about to quit, which crew cannot be put on the same job, how to correct someone without losing them. Machines coordinate tasks. They do not lead people.',
+          'Now the honest read on the machines here. This rung is under real pressure, but partially, not wholly. Coordination, scheduling, status chasing, routing, reminding, keeping the record straight, all of that is exactly what agents are good at. What is not under pressure is the part of unification that is human: knowing which of your people is about to quit, which crew cannot be put on the same job, how to correct someone without losing them. Machines coordinate tasks. They do not lead people.',
           'Your next step: separate your coordination work into two lists, task coordination and people leadership. The first list is a system waiting to be built. The second list is your actual job.',
         ],
       },
@@ -283,8 +283,8 @@ export const KINGDOM_LEVERAGE: PrompterScript[] = [
           'Level three is communication. Persuasion. Sales, teaching, writing, speaking, negotiating. Moving someone from where they are to where they need to be using nothing but words.',
           'This is where income takes its first real jump, and the reason is not mysterious. Nothing in a business happens until somebody says yes. The best product in your county produces exactly zero dollars until a person is persuaded to buy it. So the person who can create that yes is attached to every dollar in the building.',
           'Scripture takes this level seriously in a way the modern church often does not. Paul reasoned in the synagogue and persuaded. Proverbs eighteen, twenty-one, says death and life are in the power of the tongue. The apostles were sent with words. Persuasion is not manipulation. Manipulation moves somebody toward what is good for you. Persuasion moves somebody toward what is good for them, and the difference is not tone, it is direction.',
-          'Where does AI sit here? It writes fluently and it can produce infinite words. What it cannot do is stand in front of a nervous customer and know that the objection they just said out loud is not the real one. It cannot read a room. It cannot decide that the right move is to tell someone not to buy today. Communication that persuades depends on knowing this human, in this moment, and that is a domain problem.',
-          'Which sets up the real opportunity. Most experts are terrible at level three, not because they lack the skill but because they lack the reps and the time. AI removes the drafting friction entirely. If you know what to say and have never had the hours to say it, the constraint that kept you quiet just disappeared.',
+          'Where does machine intelligence sit here? It writes fluently and it can produce infinite words. What it cannot do is stand in front of a nervous customer and know that the objection they just said out loud is not the real one. It cannot read a room. It cannot decide that the right move is to tell someone not to buy today. Communication that persuades depends on knowing this human, in this moment, and that is a domain problem.',
+          'Which sets up the real opportunity. Most experts are terrible at level three, not because they lack the skill but because they lack the reps and the time. Machine intelligence removes the drafting friction entirely. If you know what to say and have never had the hours to say it, the constraint that kept you quiet just disappeared.',
           'Your next step: take the twenty questions you dumped in episode one and turn one of them into something public this week. A post, a video, an email to your list. The knowledge already exists. This is distribution, not creation.',
         ],
       },
@@ -294,7 +294,7 @@ export const KINGDOM_LEVERAGE: PrompterScript[] = [
           'Level four is imagination. Seeing what does not exist yet and deciding it should. The offer nobody has made. The product the market has not asked for. The business model that changes what is possible. This is the highest paid level in every economy on earth and it always has been.',
           'Joseph is the whole lesson. He interprets a dream about seven good years and seven lean ones, and then he does something the text does not make a big deal of but should. He does not stop at the interpretation. He designs a system. Appoint overseers, take a fifth of the harvest during the seven good years, store the grain in the cities, hold it against the famine. He invents national grain storage on the spot. He goes from prisoner to second in command of Egypt in a single conversation, and the promotion is not for the dream. It is for the plan attached to the dream.',
           'That is level four. Same information everyone else had, in his case a warning nobody could act on, turned into a structure that made the information useful. He did not work harder than the men in that prison. He saw further.',
-          'Here is the thing about level four and AI. This rung is not under pressure at all. Not a little, not eventually. AI generates options, and options are not vision. It will happily give you a hundred business ideas and it has no way to know which one is worth your one life. It has no stake, no conviction, no calling, and no ability to bet.',
+          'Here is the thing about level four and the machines. This rung is not under pressure at all. Not a little, not eventually. Machine intelligence generates options, and options are not vision. It will happily give you a hundred business ideas and it has no way to know which one is worth your one life. It has no stake, no conviction, no calling, and no ability to bet.',
           'And there is a second thing, the one that should make you sit up. Level four used to require capital and a team to act on. You would see it, and then you would need six months and four hires to test it. Now the distance between seeing it and having a working version has collapsed to about a week. Imagination just became the only real bottleneck, and it happens to be the rung machines cannot touch.',
           'Your next step: write down the one thing you have thought your industry should have for years and assumed you could never build. That sentence is a level four asset and it has been sitting in a drawer.',
         ],
@@ -340,7 +340,7 @@ export const KINGDOM_LEVERAGE: PrompterScript[] = [
     session: 'Kingdom Leverage · Season Two',
     publish: 'Publishes Tue 9/15',
     pillar: 'KINGDOM',
-    title: 'AI Does Not Repeal Seedtime',
+    title: 'Machine Intelligence Does Not Repeal Seedtime',
     hook: 'Speed changes the harvest date. It does not change the law.',
     directorNote:
       'Gentler episode, more pastoral than the first three. The farming detail in block one should be delivered with real affection, you grew up around this. Slow to almost a stop for the section on the seed growing secretly. Do not rush the four seeds list in block three, each one gets its own beat. The Close is quiet, not triumphant.',
@@ -348,7 +348,7 @@ export const KINGDOM_LEVERAGE: PrompterScript[] = [
       {
         heading: 'Cold Open',
         paragraphs: [
-          'A man emailed me in March, furious. He had spent six weeks building an AI content system. Beautiful setup. It could produce a month of posts in an afternoon. He had been running it for five weeks and had made zero dollars, and he wanted to know what was broken.',
+          'A man emailed me in March, furious. He had spent six weeks building an automated content system. Beautiful setup. It could produce a month of posts in an afternoon. He had been running it for five weeks and had made zero dollars, and he wanted to know what was broken.',
           'Nothing was broken. He had planted five weeks ago and he was standing in the field in March demanding a harvest, and no tool ever built has changed what happens between those two events.',
           'Genesis eight, twenty-two. While the earth remains, seedtime and harvest, cold and heat, summer and winter, day and night shall not cease. That is God speaking after the flood about how the world will run until the end. Seedtime and harvest. Two separate seasons, in that order, with a gap in between. Every tool we have ever invented operates inside that sentence. None of them repeal it.',
         ],
@@ -356,20 +356,20 @@ export const KINGDOM_LEVERAGE: PrompterScript[] = [
       {
         heading: 'The Promise',
         paragraphs: [
-          'By the end of this episode you will know exactly which parts of the harvest cycle AI compresses and which parts it cannot touch, so you stop expecting the wrong thing. You will know the four seeds every business plants and which one you are neglecting. You will have a realistic timeline for the systems you are building, which will save you from quitting six weeks early. And you will understand why the gap between planting and harvest is not an inefficiency in the design.',
+          'By the end of this episode you will know exactly which parts of the harvest cycle machine intelligence compresses and which parts it cannot touch, so you stop expecting the wrong thing. You will know the four seeds every business plants and which one you are neglecting. You will have a realistic timeline for the systems you are building, which will save you from quitting six weeks early. And you will understand why the gap between planting and harvest is not an inefficiency in the design.',
           'This is the episode that keeps the rest of the season from lying to you. Everything I teach about leverage is true. It is also slower than it looks in the thumbnail, and I would rather you hear that from me than learn it in month three.',
         ],
       },
       {
         heading: '1. What the Machine Compresses, and What It Cannot',
         paragraphs: [
-          'Break the cycle into its actual parts, because they behave very differently. There is preparing ground. There is planting. There is waiting. There is tending. There is harvest. Five stages, and AI only touches three of them.',
+          'Break the cycle into its actual parts, because they behave very differently. There is preparing ground. There is planting. There is waiting. There is tending. There is harvest. Five stages, and machine intelligence only touches three of them.',
           'Preparing ground. Heavily compressed. What used to take a season of research, positioning, and building the thing now takes days. Real change, and it is the change everyone notices.',
           'Planting. Massively compressed, and this is the largest gain by far. You used to be able to plant a few seeds a week: a few calls, one article, three conversations. Now you can plant hundreds. The follow-up that never happened, the answer that never got written, the customer nobody circled back to. Volume of seed goes up by an order of magnitude.',
           'Waiting. Not compressed at all. Zero. A prospect who needs eleven months to be ready still needs eleven months. Trust still forms at the speed of repeated evidence. Search engines and buyers both take time to believe you exist. This is the stage that breaks people, because the two stages before it got so fast that this one feels like a malfunction.',
           'Tending. Partly compressed. Following up, nurturing, staying in front of people, remembering, that is exactly what systems do well.',
           'Harvest. Not compressed. A person still decides. A signature still happens on a human timeline.',
-          'So look at the shape of that honestly. AI is astonishing at the front of the cycle and irrelevant at the middle. Which produces the exact experience that man had in March. He got very good at planting and interpreted the ordinary waiting season as failure.',
+          'So look at the shape of that honestly. Machine intelligence is astonishing at the front of the cycle and irrelevant at the middle. Which produces the exact experience that man had in March. He got very good at planting and interpreted the ordinary waiting season as failure.',
           'Your next step: name which stage you are actually in right now. Most frustration in business is a stage error, expecting harvest behavior during a waiting season.',
         ],
       },
@@ -389,10 +389,10 @@ export const KINGDOM_LEVERAGE: PrompterScript[] = [
         paragraphs: [
           'Businesses plant four kinds of seed, and almost everyone over-plants one and neglects another.',
           'Seed one, attention. Content, referrals, presence, being findable. Slowest to sprout, longest to compound, and the most abandoned. Most people quit attention seed at week six, right before the blade.',
-          'Seed two, trust. Kept promises, delivered work, a phone call returned when you said it would be. This one only grows in real time and cannot be accelerated by any tool. AI can help you keep a promise you would otherwise forget. It cannot manufacture the history of having kept them.',
-          'Seed three, capability. What you learn, what you build, the systems that stay after you stop touching them. This is the one AI genuinely accelerates, and it is where I would put your first reclaimed hour.',
+          'Seed two, trust. Kept promises, delivered work, a phone call returned when you said it would be. This one only grows in real time and cannot be accelerated by any tool. Automation can help you keep a promise you would otherwise forget. It cannot manufacture the history of having kept them.',
+          'Seed three, capability. What you learn, what you build, the systems that stay after you stop touching them. This is the one machine intelligence genuinely accelerates, and it is where I would put your first reclaimed hour.',
           'Seed four, generosity. Value given with no invoice attached. The free answer. The referral you sent to someone who cannot pay you back. Second Corinthians nine calls it plainly: whoever sows sparingly will also reap sparingly, and whoever sows bountifully will also reap bountifully. In my own businesses the generosity seed has the longest lag and the highest yield, and I cannot draw you a line from any specific gift to any specific dollar. That is exactly the point of the seed growing secretly.',
-          'Notice that AI meaningfully accelerates one of the four. Trust and generosity run on relationship time. Attention runs on repetition over months. Capability is the one that scales, which is why a business built only on capability with no attention or trust seed produces a very impressive machine that nobody calls.',
+          'Notice that machine intelligence meaningfully accelerates one of the four. Trust and generosity run on relationship time. Attention runs on repetition over months. Capability is the one that scales, which is why a business built only on capability with no attention or trust seed produces a very impressive machine that nobody calls.',
           'Your next step: score yourself one to ten on all four seeds. The lowest score is your next ninety days, and it is almost never the one you were about to work on.',
         ],
       },
@@ -402,7 +402,7 @@ export const KINGDOM_LEVERAGE: PrompterScript[] = [
           'The last question is the one under all of this. If God can do anything, why did He build the world with a lag between planting and harvest?',
           'Because the gap is where the person gets made. James five says it out loud: be patient, therefore, brothers, until the coming of the Lord. See how the farmer waits for the precious fruit of the earth, being patient about it, until it receives the early and the late rains. The farmer is used as the picture of patience because farming makes patient people. You cannot rush a field, so a farmer either becomes patient or becomes miserable.',
           'The gap does three things. It builds character, because waiting well is a skill and there is no other way to acquire it. It filters, because most people quit in the gap, which is precisely why the harvest goes to the ones who did not. And it protects, because a harvest that arrives before you can handle it does not bless you, it buries you. I have watched businesses get an early harvest and get destroyed by it, because the systems were not built, the character was not formed, and the money arrived before the person did.',
-          'This is also the honest answer to the AI promise of instant everything. If the gap is where formation happens, then a tool that eliminated the gap entirely would not be a blessing. It would be a way to arrive somewhere as a person who was never prepared to be there.',
+          'This is also the honest answer to the tech industry’s promise of instant everything. If the gap is where formation happens, then a tool that eliminated the gap entirely would not be a blessing. It would be a way to arrive somewhere as a person who was never prepared to be there.',
           'Your next step: instead of asking how to make the harvest come faster, ask what the waiting season is trying to build in you. That is not a consolation prize. It is the actual assignment during the gap.',
         ],
       },
@@ -448,14 +448,14 @@ export const KINGDOM_LEVERAGE: PrompterScript[] = [
     publish: 'Publishes Tue 9/22',
     pillar: 'KINGDOM',
     title: 'The Third Servant Was Not Careful, He Was Afraid',
-    hook: 'Waiting for AI to settle down is not prudence. It is burying the talent and calling it wisdom.',
+    hook: 'Waiting for the machines to settle down is not prudence. It is burying the talent and calling it wisdom.',
     directorNote:
       'The most confrontational episode of the season, and it has to be delivered with love or it will just wound people. Say the wicked and slothful line quietly, not with force, and give it a long beat. Block three is where you name your own version of burying, so tell that story straight and do not perform humility about it. Warm all the way up in Where Faith Sits, the point there is that fear is understandable and still not obedience.',
     sections: [
       {
         heading: 'Cold Open',
         paragraphs: [
-          'I keep hearing the same sentence, and it is always said in a reasonable tone of voice. I am going to wait until this AI thing settles down.',
+          'I keep hearing the same sentence, and it is always said in a reasonable tone of voice. I am going to wait until this machine intelligence thing settles down.',
           'It sounds wise. It sounds measured. And every time I hear it I think about a man in a parable who used almost exactly that logic and got the harshest words in the story.',
           'Here is what I want to do in this episode. I want to take the parable of the talents seriously enough to let it be as severe as it actually is, because we have sanded it down into a nice lesson about using your gifts. It is not a nice lesson. It is a warning, and the warning is aimed precisely at the most careful person in the room.',
         ],
@@ -463,7 +463,7 @@ export const KINGDOM_LEVERAGE: PrompterScript[] = [
       {
         heading: 'The Promise',
         paragraphs: [
-          'By the end of this episode you will see what the third servant actually did and why the master called it what he called it. You will be able to tell the difference between real prudence and fear wearing prudence as a costume, which is harder than it sounds because they say identical sentences. You will know the four ways business owners bury talents in the age of AI. And you will have a small, specific, low-stakes way to stop burying yours this week.',
+          'By the end of this episode you will see what the third servant actually did and why the master called it what he called it. You will be able to tell the difference between real prudence and fear wearing prudence as a costume, which is harder than it sounds because they say identical sentences. You will know the four ways business owners bury talents in the age of machine intelligence. And you will have a small, specific, low-stakes way to stop burying yours this week.',
           'Fair warning. If you have been telling yourself you are being careful, some of this will land hard. I am not aiming at you. I have buried talents myself and I will tell you about one of them in block three.',
         ],
       },
@@ -571,7 +571,7 @@ export const KINGDOM_LEVERAGE: PrompterScript[] = [
       {
         heading: 'The Promise',
         paragraphs: [
-          'By the end of this episode you will have a definition of selling that a Christian can hold without flinching. You will see how much of the public ministry of Jesus was structured as an offer, which is uncomfortable and worth sitting with. You will have the four parts of an offer that actually converts, in order. And you will know exactly what AI can and cannot do in a sale, so you build the right machine.',
+          'By the end of this episode you will have a definition of selling that a Christian can hold without flinching. You will see how much of the public ministry of Jesus was structured as an offer, which is uncomfortable and worth sitting with. You will have the four parts of an offer that actually converts, in order. And you will know exactly what agentic systems can and cannot do in a sale, so you build the right machine.',
           'This is the episode where the money usually moves, and it is not because of a technique. It is because a belief comes off.',
         ],
       },
@@ -610,12 +610,12 @@ export const KINGDOM_LEVERAGE: PrompterScript[] = [
         ],
       },
       {
-        heading: '4. What AI Does in a Sale, and What It Never Will',
+        heading: '4. What the Machine Does in a Sale, and What It Never Will',
         paragraphs: [
           'Now the mechanics, because this is where people build the wrong machine.',
-          'What AI does extremely well in a sale is everything around the conversation. Speed to first response, and the data on that is brutal: leads contacted within five minutes convert at a multiple of leads contacted an hour later, and most small businesses answer in hours or days. Qualification, so the conversations you take are with people who can actually buy. Follow-up, which is where the majority of sales are actually lost, not to a competitor but to nobody following up a fifth time. Proposals that go out the same day instead of Thursday. Memory, so nothing about this customer gets forgotten between conversations.',
-          'What AI does not do is the moment. It cannot tell that the objection somebody just said out loud is not the real one. It cannot hear the pause before somebody says the number. It cannot decide that the right and honest move today is to tell this person not to buy, or to buy less, or to wait until spring. That is discernment, and it is the whole reason a person is talking to you and not a website.',
-          'So build the machine in the right shape. AI runs the perimeter: speed, qualification, follow-up, paperwork, memory. You hold the center: the conversation where a human being decides to trust you. Get that shape backward, put the machine in the middle and yourself on the paperwork, and you will have automated the only part that was ever really yours.',
+          'What the machine does extremely well in a sale is everything around the conversation. Speed to first response, and the data on that is brutal: leads contacted within five minutes convert at a multiple of leads contacted an hour later, and most small businesses answer in hours or days. Qualification, so the conversations you take are with people who can actually buy. Follow-up, which is where the majority of sales are actually lost, not to a competitor but to nobody following up a fifth time. Proposals that go out the same day instead of Thursday. Memory, so nothing about this customer gets forgotten between conversations.',
+          'What the machine does not do is the moment. It cannot tell that the objection somebody just said out loud is not the real one. It cannot hear the pause before somebody says the number. It cannot decide that the right and honest move today is to tell this person not to buy, or to buy less, or to wait until spring. That is discernment, and it is the whole reason a person is talking to you and not a website.',
+          'So build the machine in the right shape. Agentic systems run the perimeter: speed, qualification, follow-up, paperwork, memory. You hold the center: the conversation where a human being decides to trust you. Get that shape backward, put the machine in the middle and yourself on the paperwork, and you will have automated the only part that was ever really yours.',
           'One rule I would not break. Anything that touches price, promises, or a commitment gets a human approval before a customer sees it. Not because the tool is bad. Because a wrong number in a customer’s hands is not a bug, it is a broken promise.',
           'Your next step: measure your speed to first response this week. Actual minutes, not what you assume. If it is over an hour, that is the highest-return system in your entire business and it is not close.',
         ],
@@ -886,7 +886,7 @@ export const KINGDOM_LEVERAGE: PrompterScript[] = [
       {
         heading: 'Cold Open',
         paragraphs: [
-          'A friend of mine got a diagnosis last year and did what everyone does. He read everything. Studies, forums, the AI summaries, all of it, and he came out the other side knowing more about that condition than most people ever will.',
+          'A friend of mine got a diagnosis last year and did what everyone does. He read everything. Studies, forums, the chatbot summaries, all of it, and he came out the other side knowing more about that condition than most people ever will.',
           'Then he sat down with a doctor who has treated it for twenty-two years, and she said, based on your age and your history and this one number in your bloodwork, we are going to do the second option, not the first one, and here is why. He told me later that he had read that exact recommendation four times online and had no way to know it applied to him.',
           'That is the gap that defines this whole era. He had the knowledge. She had the judgment. Knowledge is now free and infinite. Judgment is neither, and the price of the two just went in opposite directions.',
         ],
@@ -895,7 +895,7 @@ export const KINGDOM_LEVERAGE: PrompterScript[] = [
         heading: 'The Promise',
         paragraphs: [
           'By the end of this episode you will be able to tell knowledge, understanding, and wisdom apart precisely, which sounds academic and is actually the most practical distinction in your business. You will know why the value of information collapsed and what got more valuable in the same motion. You will know the four things a machine structurally cannot do, not because it is early, but because of what it is. And you will know how to price and position the thing you actually sell now.',
-          'This is the payoff of everything in this season. Episode one said AI amplifies what you know. This episode is about what kind of knowing is worth amplifying.',
+          'This is the payoff of everything in this season. Episode one said machine intelligence amplifies what you know. This episode is about what kind of knowing is worth amplifying.',
         ],
       },
       {
@@ -905,7 +905,7 @@ export const KINGDOM_LEVERAGE: PrompterScript[] = [
           'Knowledge is information. The facts. What the code says, what the study found, what the price is. Proverbs one, seven, says the fear of the Lord is the beginning of knowledge, which puts even facts under something larger, but knowledge itself is the raw material.',
           'Understanding is seeing how the facts relate. Why this causes that. What happens if you change this one thing. It is the difference between knowing that a beam is undersized and knowing what that means for the wall in eight years.',
           'Wisdom is knowing what to do. It is applied. Proverbs four, seven, says wisdom is the principal thing, therefore get wisdom, and with all your getting, get understanding. The Hebrew word behind it is not abstract at all. It shows up in Exodus describing skilled craftsmen. Wisdom in Scripture is closer to skill than to philosophy. It is knowing the right move and being able to make it.',
-          'Now map that onto the tools. AI has essentially all recorded knowledge and is astonishingly good at it. It has a great deal of understanding, genuinely, and it can explain relationships better than most humans can. It has zero wisdom, and that is not a maturity issue that gets solved in the next release. Wisdom requires knowing this situation, these people, this moment, and carrying the consequences of being wrong. A model has none of those.',
+          'Now map that onto the tools. Machine intelligence has essentially all recorded knowledge and is astonishingly good at it. It has a great deal of understanding, genuinely, and it can explain relationships better than most humans can. It has zero wisdom, and that is not a maturity issue that gets solved in the next release. Wisdom requires knowing this situation, these people, this moment, and carrying the consequences of being wrong. A model has none of those.',
           'Your next step: take the last three real decisions you made in your business and ask which layer they required. Almost none of them were knowledge problems. You knew the facts. You were deciding.',
         ],
       },
@@ -923,7 +923,7 @@ export const KINGDOM_LEVERAGE: PrompterScript[] = [
       {
         heading: '3. Four Things a Machine Structurally Cannot Do',
         paragraphs: [
-          'I want to be careful to say why these are structural rather than temporary, because saying AI cannot do something has aged badly for a lot of people.',
+          'I want to be careful to say why these are structural rather than temporary, because saying the machines cannot do something has aged badly for a lot of people.',
           'One, it cannot know your context. Not because it is not smart. Because the information is not written down anywhere. That this customer is going through a divorce and that is why the timeline moved. That the county inspector retires in March. That your best crew lead is stretched thin right now and cannot take another job. Reality is mostly unrecorded, and a model can only work with what exists in text.',
           'Two, it cannot have skin in the game. It does not carry the loss. If the advice is wrong, nothing happens to it. It has no reputation in your town, no payroll to make, no relationship that gets damaged. And here is why that matters more than it sounds: risk changes what you recommend. A person with something at stake gives different advice than a person with nothing at stake, and the difference is not intelligence, it is consequence.',
           'Three, it cannot value. It can tell you the trade-offs between two options perfectly and it cannot tell you which one is right, because right depends on what matters, and what matters is a human question. Should you take the bigger contract that costs you your Saturdays? No model can answer that, because the answer is about who you are trying to be.',
@@ -939,7 +939,7 @@ export const KINGDOM_LEVERAGE: PrompterScript[] = [
           'Move one, give the information away. Genuinely. Answer every question publicly, in detail, for free. It used to be that giving away your knowledge cost you the sale. Now the knowledge is free anyway, so hoarding it buys you nothing and only makes you harder to find. Give it away and the giving becomes the proof that you know what you are talking about.',
           'Move two, charge for the decision. Reposition from doing the task to owning the outcome. Not I will build you a website, but I will make sure people who need you can find you and reach you, and here is what that looks like in ninety days. One is an activity. The other is a judgment you are standing behind.',
           'Move three, sell the filter. Your customers are not short on options. They are drowning in them. The most valuable sentence you can say to somebody right now is: of the fourteen things you could do, do these two, and do not do the other twelve. Elimination is worth more than addition when everyone has infinite options.',
-          'Move four, use AI to widen the reach of your judgment, not to replace it. Every system I have built runs on rules that came out of my own head. What we quote and what we refuse. What gets escalated to a person. What we will not say to a customer. The machine executes at a scale I could never reach personally, and every decision inside it is one I made. That is amplification. The moment the machine starts making judgment calls I did not define, it stopped amplifying me and started impersonating me.',
+          'Move four, use agentic systems to widen the reach of your judgment, not to replace it. Every system I have built runs on rules that came out of my own head. What we quote and what we refuse. What gets escalated to a person. What we will not say to a customer. The machine executes at a scale I could never reach personally, and every decision inside it is one I made. That is amplification. The moment the machine starts making judgment calls I did not define, it stopped amplifying me and started impersonating me.',
           'Your next step: write down five rules that govern how you make decisions in your business. Those five sentences are what any system of yours should be built on, and most people have never written them down.',
         ],
       },
@@ -947,7 +947,7 @@ export const KINGDOM_LEVERAGE: PrompterScript[] = [
         heading: 'The Unlearning',
         paragraphs: [
           'Put down the idea that knowing more is the path forward. You are already past the point where more information helps. What compounds now is better judgment about the information you already have, and judgment compounds through reps and consequences, not through reading.',
-          'And put down the fear that AI knowing more than you makes you less valuable. A library has always known more than any librarian. It never made the librarian less useful, because the job was never to be the biggest container.',
+          'And put down the fear that a machine knowing more than you makes you less valuable. A library has always known more than any librarian. It never made the librarian less useful, because the job was never to be the biggest container.',
         ],
       },
       {
@@ -1072,7 +1072,7 @@ export const KINGDOM_LEVERAGE: PrompterScript[] = [
         heading: 'The Season, In Two Minutes',
         paragraphs: [
           'Nine principles, and then we are done.',
-          'One. AI is a multiplier, and a multiplier applied to zero is still zero. What you already know is the number.',
+          'One. Machine intelligence is a multiplier, and a multiplier applied to zero is still zero. What you already know is the number.',
           'Two. Money is a receipt for a problem solved, so raise the size of the problem, not the number of hours.',
           'Three. There are four levels of value, and the machine took the bottom two. Climb toward imagination.',
           'Four. Nothing repeals seedtime. Plant a hundred times more, and then wait like a farmer.',
@@ -1102,22 +1102,22 @@ export const KINGDOM_LEVERAGE: PrompterScript[] = [
     session: 'Kingdom Leverage · Shorts',
     publish: 'Publishes Thu 8/27',
     pillar: 'KINGDOM',
-    title: 'AI Times Zero Is Still Zero',
-    hook: 'Everybody is asking what AI can do for them. Almost nobody can answer the question AI is actually asking them.',
+    title: 'A Multiplier Times Zero Is Still Zero',
+    hook: 'Everybody is asking what the machines can do for them. Almost nobody can answer the question the machines are actually asking them.',
     directorNote:
       'Straight to the lens, no warmup, first sentence carries the whole thing. Say the multiplier line twice with identical rhythm. Warm on the septic guy, he is the hero of this, not the joke. Land the last line flat and confident, then hold.',
     sections: [
       {
         heading: 'Hook',
         paragraphs: [
-          'A man asked me what he should use AI for. I asked him what he knows how to do that most people cannot. He said, honestly, nothing.',
+          'A man asked me what he should hand to the machines. I asked him what he knows how to do that most people cannot. He said, honestly, nothing.',
           'He has run a septic company for twenty-two years. He can hear a pump cycle and tell you what is failing. He just did not think that counted.',
         ],
       },
       {
         heading: 'The Idea',
         paragraphs: [
-          'Here is the thing nobody tells you about AI. It is a multiplier. It is not a source.',
+          'Here is the thing nobody tells you about machine intelligence. It is a multiplier. It is not a source.',
           'Ten times four is forty. Ten times zero is zero. The ten did not change. The other number did all the work.',
           'That is why two people can buy the same tools in the same week and one gets a step change and the other gets a subscription. The tools were identical. The other number was not.',
         ],
@@ -1125,7 +1125,7 @@ export const KINGDOM_LEVERAGE: PrompterScript[] = [
       {
         heading: 'The Turn',
         paragraphs: [
-          'So stop asking what AI can do. Ask what you know that a smart stranger could not learn from the internet in a weekend.',
+          'So stop asking what the machines can do. Ask what you know that a smart stranger could not learn from the internet in a weekend.',
           'That is your domain. Not what you enjoy. What you get right on instinct while everyone else is still gathering information.',
           'Twenty-two years of hearing pumps fail is not nothing. It is the whole asset. It was just trapped in one man, helping only whoever happened to be standing next to him.',
         ],
@@ -1215,7 +1215,7 @@ export const KINGDOM_LEVERAGE: PrompterScript[] = [
       {
         heading: 'The Turn',
         paragraphs: [
-          'AI is an ox for thought work. It drafts, it answers, it sorts, it follows up at nine on a Sunday night when you are asleep.',
+          'Machine intelligence is an ox for thought work. It drafts, it answers, it sorts, it follows up at nine on a Sunday night when you are asleep.',
           'It is messy. It needs guardrails and supervision and rules about what it is never allowed to say. That is the tending.',
           'And the posture of Scripture toward borrowed capacity is not suspicion. Refusing the ox does not make you more faithful. It makes your manger clean and your field small.',
         ],
@@ -1261,7 +1261,7 @@ export const KINGDOM_LEVERAGE: PrompterScript[] = [
       {
         heading: 'The Turn',
         paragraphs: [
-          'Here is what changed. AI landed on level one first and hardest, and it is working its way into the task side of level two right now.',
+          'Here is what changed. Machine intelligence landed on level one first and hardest, and it is working its way into the task side of level two right now.',
           'It cannot touch level four. It generates options, and options are not vision. It has no stake, no conviction, and no way to know which idea is worth your one life.',
           'And climbing does not mean leaving. The framer who moves up still sees three days of waste in a set of plans before anyone breaks ground. That judgment came from the hammer.',
         ],
@@ -1291,7 +1291,7 @@ export const KINGDOM_LEVERAGE: PrompterScript[] = [
       {
         heading: 'Hook',
         paragraphs: [
-          'A man emailed me furious. Six weeks building an AI content system, five weeks running it, zero dollars. What is broken?',
+          'A man emailed me furious. Six weeks building an automated content system, five weeks running it, zero dollars. What is broken?',
           'Nothing was broken. He planted in March and was standing in the field demanding a harvest.',
         ],
       },
@@ -1329,14 +1329,14 @@ export const KINGDOM_LEVERAGE: PrompterScript[] = [
     publish: 'Publishes Thu 10/1',
     pillar: 'KINGDOM',
     title: 'He Was Not Careful. He Was Afraid.',
-    hook: 'Waiting for AI to settle down sounds wise. A man in a parable used that exact logic and got the harshest words in the story.',
+    hook: 'Waiting for the machines to settle down sounds wise. A man in a parable used that exact logic and got the harshest words in the story.',
     directorNote:
       'The most confrontational short of the set, so keep your voice low and warm the whole way through. Say the wicked and slothful line quietly. The three tests should be crisp, almost clinical.',
     sections: [
       {
         heading: 'Hook',
         paragraphs: [
-          'I keep hearing the same sentence in a very reasonable tone of voice. I am going to wait until this AI thing settles down.',
+          'I keep hearing the same sentence in a very reasonable tone of voice. I am going to wait until this machine intelligence thing settles down.',
           'Matthew twenty-five. A servant is handed a talent, buries it in the ground, and hands it back perfectly preserved.',
         ],
       },
@@ -1517,7 +1517,7 @@ export const KINGDOM_LEVERAGE: PrompterScript[] = [
       {
         heading: 'Hook',
         paragraphs: [
-          'A friend got a diagnosis and read everything. Studies, forums, every AI summary. He knew more about that condition than most people ever will.',
+          'A friend got a diagnosis and read everything. Studies, forums, every chatbot summary. He knew more about that condition than most people ever will.',
           'Then a doctor who has treated it for twenty-two years said, based on your age and this one number in your bloodwork, we are doing the second option. He had read that recommendation four times and had no way to know it applied to him.',
         ],
       },

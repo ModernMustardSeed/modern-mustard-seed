@@ -601,7 +601,7 @@ export default function RoadmapDocument({
         <SectionTitle
           kicker="Where the machine does it"
           title="What you should stop doing by hand"
-          lede="Every one of these is a job an AI teammate already does well. None of them replaces you. They replace the parts of the week you resent."
+          lede="Every one of these is a job an agentic teammate already does well. None of them replaces you. They replace the parts of the week you resent."
         />
         <div className="grid md:grid-cols-2 gap-4">
           {report.ai_leverage.map((item, i) => {

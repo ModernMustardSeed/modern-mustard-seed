@@ -20,8 +20,8 @@ const CATEGORY_LABELS: Record<string, string> = {
   brand: 'Brand',
   trust: 'Trust',
   seo: 'SEO',
-  geo: 'GEO / AI search',
-  ai_features: 'AI features',
+  geo: 'GEO / answer engines',
+  ai_features: 'Agentic features',
   conversion: 'Conversion',
   design: 'Design',
 };

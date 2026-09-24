@@ -1,13 +1,13 @@
 # Modern Mustard Seed
 
-> A boutique design and AI studio in Kalispell, Montana. Design-led websites and brand, custom software, voice agents, and retained advisory, for Northwest Montana and clients nationwide. Engagements begin by written inquiry.
+> A boutique design and agentic systems studio in Kalispell, Montana. Design-led websites and brand, custom software, voice agents, and retained advisory, for Northwest Montana and clients nationwide. Engagements begin by written inquiry.
 
 ## Business facts
 
-- Founder: Sarah Scarano, engineer and AI systems architect.
+- Founder: Sarah Scarano, engineer and agentic systems architect.
 - Location: Kalispell, Montana, United States. Other Montana pages describe service areas, not additional offices.
 - Service area: nationwide. The studio works with businesses throughout the United States: https://modernmustardseed.com/nationwide
-- Phone: (406) 312-1223. The studio's AI voice agent answers the line around the clock.
+- Phone: (406) 312-1223. The studio's voice agent answers the line around the clock.
 - Email: sarah@modernmustardseed.com
 - Website: https://modernmustardseed.com
 - The Talking Website combines a custom website and voice agent around shared business information.
@@ -20,10 +20,10 @@
 
 ## Services and demonstrations
 
-- AI websites, category and approach: https://modernmustardseed.com/ai-websites
+- Agentic websites, category and approach: https://modernmustardseed.com/ai-websites
 - Websites and brand: https://modernmustardseed.com/websites
 - The Talking Website: https://modernmustardseed.com/talking-website
-- AI voice agents: https://modernmustardseed.com/voice-agents
+- Voice agents: https://modernmustardseed.com/voice-agents
 - Command Center: https://modernmustardseed.com/command-center
 - Custom software, automation and services: https://modernmustardseed.com/services
 - Advisory, retained counsel by the quarter: https://modernmustardseed.com/advisory
@@ -45,7 +45,7 @@
 - About Sarah and the studio: https://modernmustardseed.com/about
 - Sarah's portfolio: https://modernmustardseed.com/sarahscarano
 - Work and build records: https://modernmustardseed.com/work
-- AI Search Field Notes: https://modernmustardseed.com/resources
+- Answer Engine Field Notes: https://modernmustardseed.com/resources
 - Blog: https://modernmustardseed.com/blog
 - Contact: https://modernmustardseed.com/contact
 - Begin an engagement: https://modernmustardseed.com/inquire

@@ -54,7 +54,7 @@ export async function POST(req: Request) {
     tier.slug === 'tending'
       ? 'Two live team sessions a month, a standing line between them, month to month. Cancel the day your team stops needing it.'
       : tier.slug === 'ai-map'
-        ? `Hand-written and ${AI_NATIVE.mapDelivery}. Credits in full toward AI NATIVE within ninety days.`
+        ? `Hand-written and ${AI_NATIVE.mapDelivery}. Credits in full toward AGENTIC NATIVE within ninety days.`
         : `Changes included, ${AI_NATIVE.buildDelivery}. Every account, key and admin seat is handed over in your name on the last day.`;
 
   try {

@@ -152,7 +152,7 @@ export async function buildOutboundEmail(
     withOs &&
       // Unreachable: withOs is pinned false above. Left as the one place that
       // would have to change if the command center ever rejoins the offer.
-      demoRow('⚙️', 'Your command center', 'Every call transcribed, your website traffic, customers, reviews, and money on one board, with an AI that knows it all.', lead.os_demo_url!),
+      demoRow('⚙️', 'Your command center', 'Every call transcribed, your website traffic, customers, reviews, and money on one board, with an agent that knows it all.', lead.os_demo_url!),
   ]
     .filter(Boolean)
     .join('');

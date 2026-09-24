@@ -8,7 +8,7 @@ import Link from 'next/link';
 
 export const metadata = buildMetadata({
   title: 'Your GEO Fix Pack',
-  description: 'Your AI-findability signals, generated for your site and ready to install.',
+  description: 'Your answer engine visibility signals, generated for your site and ready to install.',
   path: '/geo/pack',
   noindex: true,
 });

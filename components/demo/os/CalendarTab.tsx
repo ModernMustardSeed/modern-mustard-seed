@@ -94,7 +94,7 @@ export default function CalendarTab() {
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
         <StatCard label="Booked today" value={String(booked)} sub={`${byAi} by your voice agent`} i={0} pulse={byAi > 0} />
-        <StatCard label="Open slots" value={String(openSlots)} sub="the AI is filling them" i={1} />
+        <StatCard label="Open slots" value={String(openSlots)} sub="the agent is filling them" i={1} />
         <StatCard label="Filled" value={`${fillPct}%`} sub="of your working day" i={2} />
         <StatCard label="No-shows" value="0" sub="every booking gets reminders" i={3} />
       </div>

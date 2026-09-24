@@ -22,7 +22,7 @@ metrics:
 
 ## The brief
 
-Solopreneurs run their businesses across 8 to 12 disconnected tools: notes, tasks, CRM, calendar, finance, content, comms. Every one of those is a tax. Olive Shoot is an opinionated, AI-native operating system that collapses the tax. One workspace, one schema, one set of agents.
+Solopreneurs run their businesses across 8 to 12 disconnected tools: notes, tasks, CRM, calendar, finance, content, comms. Every one of those is a tax. Olive Shoot is an opinionated, agentic operating system that collapses the tax. One workspace, one schema, one set of agents.
 
 ## What we shipped
 
@@ -31,8 +31,8 @@ A production-grade web application with:
 - Real-time multi-tenant workspaces (Supabase RLS + Realtime)
 - Type-safe end-to-end RPC (tRPC v11 with React Query)
 - Server-driven UI with Zustand v5 for client state
-- Embedded AI agents for triage, drafting, and research
-- Stripe-backed billing with metered usage on AI calls
+- Embedded agents for triage, drafting, and research
+- Stripe-backed billing with metered usage on model calls
 - Cron-driven background jobs via Trigger.dev
 
 Six weeks from blank repo to public preview. Twelve weeks total to production.
@@ -49,7 +49,7 @@ Six weeks from blank repo to public preview. Twelve weeks total to production.
 
 Week 1-2: Schema design, auth, workspace primitives.
 Week 3-4: Core domain (notes, tasks, contacts), tRPC layer, base UI.
-Week 5-6: AI agent integration, embeddings, real-time presence.
+Week 5-6: Agent integration, embeddings, real-time presence.
 Week 7-12: Hardening, billing, cron jobs, observability, beta launch.
 
 No standups. No estimates. No sprint planning. The roadmap was a pinned tab in Linear and a 30-minute weekly review.
@@ -60,8 +60,8 @@ No standups. No estimates. No sprint planning. The roadmap was a pinned tab in L
 
 **Real-time is cheap if you start with it.** Adding Supabase Realtime in week 2 was 90 minutes. Adding it in week 12 would have been a refactor.
 
-**AI features should be vertical, not horizontal.** A "summarize" button on every screen is noise. A single workflow ("triage my inbox into next actions") is value.
+**Agentic features should be vertical, not horizontal.** A "summarize" button on every screen is noise. A single workflow ("triage my inbox into next actions") is value.
 
 ## Where it goes next
 
-Public beta is open. The next push is multiplayer agents, where multiple specialized AI roles operate inside the same workspace coordinating through shared state. If you want a tour, [book a 30-minute walkthrough](/contact).
+Public beta is open. The next push is multiplayer agents, where multiple specialized agent roles operate inside the same workspace coordinating through shared state. If you want a tour, [book a 30-minute walkthrough](/contact).

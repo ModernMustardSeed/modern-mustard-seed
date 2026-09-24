@@ -63,7 +63,7 @@ function builtPieces(lead: OutboundLead): string[] {
 function extras(lead: OutboundLead): string[] {
   return [
     lead.presence_audit_url ? 'presence audit' : null,
-    lead.integration_plan_status === 'ready' && lead.integration_plan_url ? 'AI Integration Plan' : null,
+    lead.integration_plan_status === 'ready' && lead.integration_plan_url ? 'Agentic Integration Plan' : null,
   ].filter(Boolean) as string[];
 }
 

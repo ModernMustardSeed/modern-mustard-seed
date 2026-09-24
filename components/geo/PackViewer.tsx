@@ -103,7 +103,7 @@ export default function PackViewer({ sessionId, pack: initial }: { sessionId: st
           note="Title + description per page"
           content={pack.artifacts.metaRewrites.map((m) => `${m.page}\nTitle: ${m.title}\nDescription: ${m.description}`).join('\n\n')}
         />
-        <CopyCard title="Citable FAQ block" note="Add as a visible section (AI engines quote what humans can read)" content={pack.artifacts.faqBlock} />
+        <CopyCard title="Citable FAQ block" note="Add as a visible section (answer engines quote what humans can read)" content={pack.artifacts.faqBlock} />
       </div>
 
       <div className="mt-10 rounded-2xl border-2 border-[#161616] bg-[#161616] text-[#FBF6EA] p-7">

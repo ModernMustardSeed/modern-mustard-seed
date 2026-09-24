@@ -38,7 +38,7 @@ export const CAMPAIGN_PLAYS: OsCampaignPlay[] = [
     steps: [
       { title: 'Pull every customer who has gone quiet and scrub the do-not-text list', channel: 'Text' },
       { title: 'Send a personal check-in in your voice, spaced over 4 mornings', channel: 'Text' },
-      { title: 'Replies land in Customers; the AI books them straight onto the calendar', channel: 'Calls' },
+      { title: 'Replies land in Customers; the agent books them straight onto the calendar', channel: 'Calls' },
     ],
     sampleMessage:
       'Hi {firstName}, it is {biz} in {city}. It has been a while since your last {job} and we had you on our mind. Want us to take a look this month? Reply YES and we will find you a time.',
@@ -83,7 +83,7 @@ export const CAMPAIGN_PLAYS: OsCampaignPlay[] = [
     steps: [
       { title: 'Each finished {job} drops a pin; the OS builds the surrounding audience', channel: 'Ads' },
       { title: '"We just did a {job} on your street" ads run to that pocket for 10 days', channel: 'Social' },
-      { title: 'Callers mention the street; the AI tags them so you see what worked', channel: 'Calls' },
+      { title: 'Callers mention the street; the agent tags them so you see what worked', channel: 'Calls' },
     ],
     sampleMessage:
       'Your neighbors on {street} just had a {job} done by {biz}. Same crew, same week, neighbor pricing while we are close.',

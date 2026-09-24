@@ -22,7 +22,7 @@ function prescription(grade: string): string {
   if (g === 'B') return 'Review the missing signals in your report. Verify each finding, then fix the highest-impact gaps.';
   if (g === 'C') return 'Start with crawlability, accurate business facts and clear service pages. The report gives you a sequence.';
   if (g === 'D') return 'The audit found substantial gaps. Check access and page content before adding more pages.';
-  return 'Start with the evidence in the report. A low audit grade identifies work to inspect; it does not prove the site is absent from AI search.';
+  return 'Start with the evidence in the report. A low audit grade identifies work to inspect; it does not prove the site is absent from answer engines.';
 }
 
 export default function GeoDesk() {
@@ -61,7 +61,7 @@ export default function GeoDesk() {
         )}
         <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#C4160B] font-bold mb-3 text-center">{GEO.wordmark}</p>
         <h2 className="font-display text-3xl md:text-5xl font-black text-[#161616] tracking-tight text-center leading-[1.05]">
-          Be the answer AI gives.
+          Be the answer ChatGPT gives.
         </h2>
         <p className="font-body text-[#161616]/65 max-w-2xl mx-auto mt-4 text-center leading-relaxed">
           {GEO.promise}

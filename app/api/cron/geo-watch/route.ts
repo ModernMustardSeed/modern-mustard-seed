@@ -90,7 +90,7 @@ export async function GET(req: Request) {
           replyTo: 'sarah@modernmustardseed.com',
           subject: drift ? 'Your Watch report (something moved)' : 'Your monthly Watch report',
           html: clientEmail({
-            preheader: 'This month\'s AI-findability re-grade.',
+            preheader: 'This month\'s answer engine re-grade.',
             eyebrow: 'GEO DESK · THE WATCH',
             greeting: drift ? 'Something moved this month.' : 'Steady as she goes.',
             body: lines.join('') + '<p style="font-size:13px;color:#666">Honest reports, never ranking promises. Reply anytime; it reaches Sarah directly.</p>',

@@ -33,21 +33,21 @@ export default function MarketingKit({
     {
       key: 'x',
       label: 'For X',
-      text: `If your website, phone, or systems are a headache, talk to Modern Mustard Seed. Websites, AI assistants, voice agents, and custom software, shipped in weeks, not months. This is who I trust. Book a quick call: ${primaryUrl}`,
+      text: `If your website, phone, or systems are a headache, talk to Modern Mustard Seed. Websites, agentic assistants, voice agents, and custom software, shipped in weeks, not months. This is who I trust. Book a quick call: ${primaryUrl}`,
     },
     {
       key: 'li',
       label: 'For LinkedIn',
-      text: `Most small businesses lose money to slow websites, missed messages, and missed calls. Modern Mustard Seed fixes that with websites, AI assistants, voice agents, and custom tools that actually ship, usually in weeks, not months. I recommend them without hesitation. Grab a quick call: ${primaryUrl}`,
+      text: `Most small businesses lose money to slow websites, missed messages, and missed calls. Modern Mustard Seed fixes that with websites, agentic assistants, voice agents, and custom tools that actually ship, usually in weeks, not months. I recommend them without hesitation. Grab a quick call: ${primaryUrl}`,
     },
     {
       key: 'email',
       label: 'For email / DM',
-      text: `Hey, wanted to point you to Modern Mustard Seed. They build websites, AI assistants, voice agents, and custom software for small businesses and they are genuinely excellent. Easiest start is a quick 15-minute call, no pressure. Here is my link: ${primaryUrl}`,
+      text: `Hey, wanted to point you to Modern Mustard Seed. They build websites, agentic assistants, voice agents, and custom software for small businesses and they are genuinely excellent. Easiest start is a quick 15-minute call, no pressure. Here is my link: ${primaryUrl}`,
     },
   ];
 
-  const blurb = `Modern Mustard Seed builds websites, AI assistants, voice agents, and custom software for small businesses. A boutique studio: fast, honest, and built to be owned. Idea to launched in weeks, not months.`;
+  const blurb = `Modern Mustard Seed builds websites, agentic assistants, voice agents, and custom software for small businesses. A boutique studio: fast, honest, and built to be owned. Idea to launched in weeks, not months.`;
 
   const shareX = `https://twitter.com/intent/tweet?text=${encodeURIComponent(captions[0].text)}`;
   const shareLI = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(primaryUrl)}`;

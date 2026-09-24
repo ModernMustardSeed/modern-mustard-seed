@@ -88,7 +88,7 @@ Call the live demo yourself: ${demoNumber}
 See it run: ${demoSite}`;
 
 // ============================================================================
-// NEWK'S EATERY  —  AI Voice Concierge
+// NEWK'S EATERY  —  Voice Concierge
 // ============================================================================
 
 const NEWKS_DEMO_NUMBER = '(803) 879-1356';
@@ -97,7 +97,7 @@ const NEWKS_DEMO_SITE = 'newks-voice-concierge.vercel.app';
 const newks: Campaign = {
   slug: 'newks',
   brand: "Newk's Eatery",
-  product: 'AI Voice Concierge',
+  product: 'Voice Concierge',
   lead: { name: 'Sarah Scarano', role: 'Account lead' },
   status: 'live',
   headquarters: 'Ridgeland, Mississippi',
@@ -168,7 +168,7 @@ You built Newk's Rewards, so here is the part I think you will care about most. 
 
 ${NEWKS_DEMO_NUMBER}
 
-That is a 24/7 AI Voice Concierge in Newk's colors. When a Rewards member calls, it recognizes them by their phone number, greets them by name, tells them their points balance, and nudges them toward their next reward, all before they finish ordering. It offers them "the usual," takes to-go and catering orders in the guest's language, and never sends anyone to voicemail.
+That is a 24/7 Voice Concierge in Newk's colors. When a Rewards member calls, it recognizes them by their phone number, greets them by name, tells them their points balance, and nudges them toward their next reward, all before they finish ordering. It offers them "the usual," takes to-go and catering orders in the guest's language, and never sends anyone to voicemail.
 
 The phone is the one touchpoint you own that still drops loyalty members on the floor during the lunch and catering rush. Every missed call is a member who did not earn points and an order that walked next door. This closes that gap, it feeds Rewards instead of fighting it, and a fleet dashboard shows corporate the recovered revenue per location across all 15 states.
 
@@ -201,7 +201,7 @@ ${SIG(NEWKS_DEMO_NUMBER, NEWKS_DEMO_SITE)}`,
         subject: 'A voice layer for Newk’s that plugs into your stack',
         body: `Hi Adam,
 
-Modern Mustard Seed built a working AI Voice Concierge for Newk's and I would rather show you than pitch you. Call it: ${NEWKS_DEMO_NUMBER}
+Modern Mustard Seed built a working Voice Concierge for Newk's and I would rather show you than pitch you. Call it: ${NEWKS_DEMO_NUMBER}
 
 The part that matters to you: it is built to plug into your existing stack, not replace it.
 
@@ -241,7 +241,7 @@ ${SIG(NEWKS_DEMO_NUMBER, NEWKS_DEMO_SITE)}`,
 
 I will keep this short. When a Newk's gets slammed at lunch, the phone is the first thing to go. The person calling to place a big catering order usually will not leave a message. They just call somewhere else. That is real money walking out the door, every day, at every location.
 
-We built something for Newk's that fixes it. It is a friendly AI concierge that answers every call, day or night, takes to-go and catering orders, and never lets anyone hit voicemail. It is already live, and honestly the best way to get it is to call it yourself and order something: ${NEWKS_DEMO_NUMBER}.
+We built something for Newk's that fixes it. It is a friendly agentic concierge that answers every call, day or night, takes to-go and catering orders, and never lets anyone hit voicemail. It is already live, and honestly the best way to get it is to call it yourself and order something: ${NEWKS_DEMO_NUMBER}.
 
 You can watch it work here: ${NEWKS_DEMO_SITE}. There is a simple dashboard that shows, location by location, how much business it brought back.
 
@@ -274,7 +274,7 @@ ${SIG(NEWKS_DEMO_NUMBER, NEWKS_DEMO_SITE)}`,
 
 Congrats on the return to Newk's. I will keep this short because it is really a franchisee-economics play.
 
-Modern Mustard Seed built a 24/7 AI Voice Concierge for Newk's that answers every call, takes to-go and catering orders, and captures catering leads that get missed during the rush. For a franchisee, that is recovered revenue with no added labor, and for a new unit it ramps catering faster.
+Modern Mustard Seed built a 24/7 Voice Concierge for Newk's that answers every call, takes to-go and catering orders, and captures catering leads that get missed during the rush. For a franchisee, that is recovered revenue with no added labor, and for a new unit it ramps catering faster.
 
 It is live. Call it: ${NEWKS_DEMO_NUMBER}. Full build: ${NEWKS_DEMO_SITE}.
 
@@ -300,8 +300,8 @@ ${SIG(NEWKS_DEMO_NUMBER, NEWKS_DEMO_SITE)}`,
     { objection: 'Sounds expensive at the franchise level.', answer: 'It is $749/mo per store at fleet scale (25+ stores committed, activation waived), or $799 standard with a $1,000 activation. One recovered catering order a month more than pays for it, and there is a 30-day pilot guarantee.' },
     { objection: 'Integration sounds painful.', answer: 'It is built to plug into Olo / Toast and we run the rollout. Start with one location, no rip-and-replace.' },
   ],
-  linkedinDm: `Hi {{NAME}}, I run client work at Modern Mustard Seed. We built a live 24/7 AI Voice Concierge for Newk's, you can actually call it and order: ${NEWKS_DEMO_NUMBER}. It catches every to-go and catering call your teams miss at peak and rolls recovered revenue up to corporate. Built and running here: ${NEWKS_DEMO_SITE}. Worth 15 minutes?`,
-  voicemail: `Hi {{NAME}}, this is {{REP}} with Modern Mustard Seed. We built a working AI voice concierge for Newk's that answers every call and captures the to-go and catering orders your teams miss during the rush. The easiest way to see it is to call it yourself, ${NEWKS_DEMO_NUMBER}, and order something. I will follow up by email with the link. Thanks.`,
+  linkedinDm: `Hi {{NAME}}, I run client work at Modern Mustard Seed. We built a live 24/7 Voice Concierge for Newk's, you can actually call it and order: ${NEWKS_DEMO_NUMBER}. It catches every to-go and catering call your teams miss at peak and rolls recovered revenue up to corporate. Built and running here: ${NEWKS_DEMO_SITE}. Worth 15 minutes?`,
+  voicemail: `Hi {{NAME}}, this is {{REP}} with Modern Mustard Seed. We built a working voice concierge for Newk's that answers every call and captures the to-go and catering orders your teams miss during the rush. The easiest way to see it is to call it yourself, ${NEWKS_DEMO_NUMBER}, and order something. I will follow up by email with the link. Thanks.`,
   playbook: [
     { title: '1. Call the demo first', detail: `Before you reach out, call ${NEWKS_DEMO_NUMBER} and place an order so you can speak to it from experience.` },
     { title: '2. Verify the email', detail: 'The corporate emails below are best-guess patterns. Confirm on LinkedIn or with a quick Hunter lookup before sending. LinkedIn DM works today regardless.' },
@@ -314,7 +314,7 @@ ${SIG(NEWKS_DEMO_NUMBER, NEWKS_DEMO_SITE)}`,
 };
 
 // ============================================================================
-// BENJAMIN FRANKLIN PLUMBING (Authority Brands)  —  AI Voice Concierge
+// BENJAMIN FRANKLIN PLUMBING (Authority Brands)  —  Voice Concierge
 // ============================================================================
 
 const FRANKLIN_DEMO_NUMBER = '(804) 480-1564';
@@ -323,7 +323,7 @@ const FRANKLIN_DEMO_SITE = 'franklin-voice-concierge.vercel.app';
 const franklin: Campaign = {
   slug: 'franklin',
   brand: 'Benjamin Franklin Plumbing',
-  product: 'AI Voice Concierge (after-hours dispatcher)',
+  product: 'Voice Concierge (after-hours dispatcher)',
   lead: { name: 'Polly Thompson', role: 'Account lead' },
   status: 'live',
   headquarters: 'Columbia, Maryland (Authority Brands)',
@@ -380,7 +380,7 @@ const franklin: Campaign = {
 
 48% of plumbing emergencies happen after hours, and 85% of callers who hit voicemail just call the next contractor. For a Ben Franklin franchisee that is the single most expensive leak in the business, and it has nothing to do with pipes.
 
-Modern Mustard Seed built a 24/7 AI Voice Concierge for Benjamin Franklin Plumbing that answers every call, triages emergencies, books jobs, captures big-ticket estimates, and warm-transfers true emergencies to on-call dispatch.
+Modern Mustard Seed built a 24/7 Voice Concierge for Benjamin Franklin Plumbing that answers every call, triages emergencies, books jobs, captures big-ticket estimates, and warm-transfers true emergencies to on-call dispatch.
 
 It is live. Call it: ${FRANKLIN_DEMO_NUMBER}. See it run: ${FRANKLIN_DEMO_SITE}.
 
@@ -405,7 +405,7 @@ ${SIG(FRANKLIN_DEMO_NUMBER, FRANKLIN_DEMO_SITE)}`,
 
 Growth-and-transformation framing: the fastest revenue lift across the home-services trade brands is not more leads, it is catching the ones already calling. 62% of calls to home-services businesses go unanswered.
 
-Modern Mustard Seed built a live AI Voice Concierge for Benjamin Franklin Plumbing that answers and triages every call 24/7, books jobs, and captures after-hours emergencies. It is a repeatable layer that drops onto any trade brand.
+Modern Mustard Seed built a live Voice Concierge for Benjamin Franklin Plumbing that answers and triages every call 24/7, books jobs, and captures after-hours emergencies. It is a repeatable layer that drops onto any trade brand.
 
 Live demo, call it: ${FRANKLIN_DEMO_NUMBER}. Build: ${FRANKLIN_DEMO_SITE}.
 
@@ -424,11 +424,11 @@ ${SIG(FRANKLIN_DEMO_NUMBER, FRANKLIN_DEMO_SITE)}`,
   ],
   objections: [
     { objection: 'We use an answering service already.', answer: 'Answering services take a message. This triages the emergency, books the job, captures the estimate, and warm-transfers real emergencies to on-call. It does the work, not just the note.' },
-    { objection: 'Plumbing is too technical for AI.', answer: 'It does not diagnose, it triages and books. It knows emergency vs routine, captures the big-ticket estimates, and hands true emergencies to a human.' },
+    { objection: 'Plumbing is too technical for a voice agent.', answer: 'It does not diagnose, it triages and books. It knows emergency vs routine, captures the big-ticket estimates, and hands true emergencies to a human.' },
     { objection: 'Franchisees will not pay for it.', answer: 'One captured after-hours emergency a month covers it several times over. There is a pilot to prove the number first.' },
   ],
-  linkedinDm: `Hi {{NAME}}, I run client work at Modern Mustard Seed. We built a live 24/7 AI dispatcher for Benjamin Franklin Plumbing, you can call it: ${FRANKLIN_DEMO_NUMBER}. It triages emergencies, books jobs, and catches the after-hours calls franchisees lose to voicemail. Running here: ${FRANKLIN_DEMO_SITE}. Worth 15 minutes?`,
-  voicemail: `Hi {{NAME}}, this is {{REP}} with Modern Mustard Seed. We built a working 24/7 AI dispatcher for Benjamin Franklin Plumbing that triages emergencies and catches the after-hours calls franchisees lose. Easiest way to see it is to call it, ${FRANKLIN_DEMO_NUMBER}. I will follow up by email. Thanks.`,
+  linkedinDm: `Hi {{NAME}}, I run client work at Modern Mustard Seed. We built a live 24/7 agentic dispatcher for Benjamin Franklin Plumbing, you can call it: ${FRANKLIN_DEMO_NUMBER}. It triages emergencies, books jobs, and catches the after-hours calls franchisees lose to voicemail. Running here: ${FRANKLIN_DEMO_SITE}. Worth 15 minutes?`,
+  voicemail: `Hi {{NAME}}, this is {{REP}} with Modern Mustard Seed. We built a working 24/7 agentic dispatcher for Benjamin Franklin Plumbing that triages emergencies and catches the after-hours calls franchisees lose. Easiest way to see it is to call it, ${FRANKLIN_DEMO_NUMBER}. I will follow up by email. Thanks.`,
   playbook: [
     { title: '1. Call the demo first', detail: `Call ${FRANKLIN_DEMO_NUMBER} and run an after-hours emergency so you can speak to it from experience.` },
     { title: '2. Verify the email', detail: 'Authority Brands uses @authoritybrandsllc.com. Confirm the exact address on LinkedIn / Hunter before sending.' },
@@ -440,7 +440,7 @@ ${SIG(FRANKLIN_DEMO_NUMBER, FRANKLIN_DEMO_SITE)}`,
 };
 
 // ============================================================================
-// SERABELLA MEDSPA  —  AI Voice Concierge (medspa vertical demo)
+// SERABELLA MEDSPA  —  Voice Concierge (medspa vertical demo)
 // ============================================================================
 
 const SERA_DEMO_NUMBER = '(516) 703-0029';
@@ -449,7 +449,7 @@ const SERA_DEMO_SITE = 'serabella-medspa-concierge.vercel.app';
 const serabella: Campaign = {
   slug: 'serabella',
   brand: 'Serabella MedSpa',
-  product: 'AI Voice Concierge (medspa vertical)',
+  product: 'Voice Concierge (medspa vertical)',
   lead: { name: 'Sarah Scarano', role: 'Account lead' },
   status: 'live',
   headquarters: 'Modern Mustard Seed flagship demo',
@@ -491,7 +491,7 @@ const serabella: Campaign = {
 
 Congratulations on 60 locations. At that scale, the most expensive thing in the building is the call nobody could pick up. About a third of medspa calls go to voicemail, and the caller usually just books the next spa.
 
-We built a working demo of a 24/7 AI voice concierge for the medspa vertical, and the best way to get it is to call it and book a treatment: ${SERA_DEMO_NUMBER}
+We built a working demo of a 24/7 voice concierge for the medspa vertical, and the best way to get it is to call it and book a treatment: ${SERA_DEMO_NUMBER}
 
 It answers every call, books the consult, recognizes members by name and applies member pricing, and captures the high-value packages your team is too busy to catch. A fleet dashboard rolls recovered revenue up across every location. It never gives medical advice, it books the consult.
 
@@ -517,7 +517,7 @@ ${SIG(SERA_DEMO_NUMBER, SERA_DEMO_SITE)}`,
 
 You spend real money to make the phone ring. When that call hits voicemail, that is paid acquisition walking straight out the door, and in medspa about 1 in 3 calls go unanswered.
 
-We built a working demo of a 24/7 AI voice concierge for the medspa vertical. Call it and book a treatment: ${SERA_DEMO_NUMBER}
+We built a working demo of a 24/7 voice concierge for the medspa vertical. Call it and book a treatment: ${SERA_DEMO_NUMBER}
 
 It answers every call 24/7, books the consult, recognizes members, and captures the high-value packages, so your ad spend actually converts. See it: ${SERA_DEMO_SITE}
 
@@ -541,7 +541,7 @@ ${SIG(SERA_DEMO_NUMBER, SERA_DEMO_SITE)}`,
 
 Two thirds of medspa bookings happen outside 9 to 5. Across 150+ centers, the after-hours calls you miss are a large, quiet revenue leak.
 
-We built a working demo of a 24/7 AI voice concierge for the medspa vertical. Call it: ${SERA_DEMO_NUMBER}. It answers every call, books the consult, recognizes members, and rolls recovered revenue up across the fleet. See it: ${SERA_DEMO_SITE}.
+We built a working demo of a 24/7 voice concierge for the medspa vertical. Call it: ${SERA_DEMO_NUMBER}. It answers every call, books the consult, recognizes members, and rolls recovered revenue up across the fleet. See it: ${SERA_DEMO_SITE}.
 
 Worth 15 minutes to see the Ideal Image version and the rollout math?
 
@@ -561,11 +561,11 @@ ${SIG(SERA_DEMO_NUMBER, SERA_DEMO_SITE)}`,
   objections: [
     { objection: 'We already have an online booking system.', answer: 'Great, this is for the calls booking software never catches: the after-hours caller, the high-value package question, the member who always phones. It complements your booking, it does not replace it.' },
     { objection: 'Our front desk answers the phone.', answer: 'During treatments and after hours they cannot, and that is when the big consults call. This answers the ones your team physically cannot get to, 24/7.' },
-    { objection: 'It is a medical practice, AI is risky.', answer: 'It is a concierge, not a clinician. It books the consult and never diagnoses or gives medical advice. Anything clinical goes to a provider. Safe by design, and you can hear it on the demo.' },
+    { objection: 'It is a medical practice, a voice agent is risky.', answer: 'It is a concierge, not a clinician. It books the consult and never diagnoses or gives medical advice. Anything clinical goes to a provider. Safe by design, and you can hear it on the demo.' },
     { objection: 'Will it sound off-brand?', answer: 'Call the demo and judge for yourself. It is warm, discreet, multilingual, and trained on your menu. It never invents a treatment or a price.' },
   ],
-  linkedinDm: `Hi {{NAME}}, I run client work at Modern Mustard Seed. We built a live 24/7 AI voice concierge for the medspa vertical, you can actually call it and book a treatment: ${SERA_DEMO_NUMBER}. It books the consult, knows your members, and catches the after-hours packages most spas lose to voicemail. See it: ${SERA_DEMO_SITE}. Worth 15 minutes?`,
-  voicemail: `Hi {{NAME}}, this is {{REP}} with Modern Mustard Seed. We built a working 24/7 AI concierge for medspas that books consults and catches the after-hours calls most spas lose. Easiest way to see it is to call it, ${SERA_DEMO_NUMBER}, and book a treatment. I will follow up by email with the link. Thanks.`,
+  linkedinDm: `Hi {{NAME}}, I run client work at Modern Mustard Seed. We built a live 24/7 voice concierge for the medspa vertical, you can actually call it and book a treatment: ${SERA_DEMO_NUMBER}. It books the consult, knows your members, and catches the after-hours packages most spas lose to voicemail. See it: ${SERA_DEMO_SITE}. Worth 15 minutes?`,
+  voicemail: `Hi {{NAME}}, this is {{REP}} with Modern Mustard Seed. We built a working 24/7 agentic concierge for medspas that books consults and catches the after-hours calls most spas lose. Easiest way to see it is to call it, ${SERA_DEMO_NUMBER}, and book a treatment. I will follow up by email with the link. Thanks.`,
   playbook: [
     { title: '1. Call the demo first', detail: `Call ${SERA_DEMO_NUMBER} and book a HydraFacial so you can speak to it from experience, then build a Glow Plan.` },
     { title: '2. Pick the target', detail: 'Choose a chain from the target universe (SkinSpirit, LaserAway, Ideal Image, Milan Laser, etc.). One push per chain.' },

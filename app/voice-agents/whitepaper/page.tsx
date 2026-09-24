@@ -7,7 +7,7 @@ import WhitepaperGate from '@/components/WhitepaperGate';
 import { WHITEPAPER as WP } from '@/data/voice-agent-whitepaper';
 
 export const metadata = buildMetadata({
-  title: 'AI Voice Agents: Business Whitepaper',
+  title: 'Voice Agents: Business Whitepaper',
   description:
     'A field guide to voice agents that answer every call 24/7 in a natural human voice, remember every caller with persistent memory, speak 100+ languages, run inbound and outbound sales, book appointments, take orders, and upsell. By Modern Mustard Seed.',
   path: '/voice-agents/whitepaper',
@@ -16,7 +16,7 @@ export const metadata = buildMetadata({
 const articleJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Article',
-  headline: 'The Always-On Voice Agent: AI That Answers Every Call, Remembers Every Caller, and Sells 24/7',
+  headline: 'The Always-On Voice Agent: An Agent That Answers Every Call, Remembers Every Caller, and Sells 24/7',
   description: WP.subtitle,
   author: { '@type': 'Person', name: 'Sarah Scarano', url: 'https://modernmustardseed.com/about' },
   publisher: { '@id': 'https://modernmustardseed.com/#organization' },
@@ -25,7 +25,7 @@ const articleJsonLd = {
   inLanguage: 'en-US',
   about: 'voice agents for small business',
   keywords:
-    'voice agent, voice agent, multilingual voice agent, AI SDR, speed to lead, AI phone answering, voice AI for restaurants, persistent memory voice assistant',
+    'voice agent, voice agent, multilingual voice agent, agentic SDR, speed to lead, agentic phone answering, voice agents for restaurants, persistent memory voice assistant',
   speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', 'h2'] },
   mainEntityOfPage: 'https://modernmustardseed.com/voice-agents/whitepaper',
 };
@@ -138,7 +138,7 @@ export default function WhitepaperPage() {
 
           <NewsletterSignup
             headline="More plays like this. Weekly."
-            subhead="How small businesses stop the leak with AI, automation, and faster follow-up. One letter a week, from the desk."
+            subhead="How small businesses stop the leak with agentic systems, automation, and faster follow-up. One letter a week, from the desk."
           />
         </article>
       </div>

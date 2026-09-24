@@ -66,7 +66,7 @@ export default async function LeadAuditReportPage({ params }: { params: Params }
           <h1 className="font-display text-4xl md:text-6xl text-[#161616] font-black tracking-tight leading-[1.05]">{business}</h1>
           <p className="text-[#3a3733] font-body text-base md:text-lg leading-relaxed max-w-2xl mx-auto mt-5">
             {firstName ? `${firstName}, we` : 'We'} ran your website through a real, multi-category audit graded by Claude across brand,
-            trust, SEO, GEO and AI search, conversion, and design. Here is the whole thing, no email required.
+            trust, SEO, GEO and answer engines, conversion, and design. Here is the whole thing, no email required.
           </p>
         </header>
 
@@ -108,7 +108,7 @@ export default async function LeadAuditReportPage({ params }: { params: Params }
             </Link>
           </div>
           <p className="text-[#161616]/80 font-body font-medium leading-relaxed mt-6">
-            Or call Mr. Mustard, our AI, on{' '}
+            Or call Mr. Mustard, our voice agent, on{' '}
             <a href={`tel:+1${SITE.phone.replace(/\D/g, '')}`} className="font-mono font-bold underline decoration-2 underline-offset-4 hover:text-[#E0301E]">
               {SITE.phone}
             </a>

@@ -51,7 +51,7 @@ export const MMS_TOUR: MmsTourBeat[] = [
     anchor: 'tour-doors',
     text:
       'There are three ways in, depending on how much you want to hand over. ' +
-      'Sarah answers you personally, and fast. And Mr. Mustard, the studio AI, is on call around the clock in between.',
+      'Sarah answers you personally, and fast. And Mr. Mustard, the studio voice agent, is on call around the clock in between.',
   },
   {
     id: 'close',

@@ -171,7 +171,7 @@ export const FB_PLAYBOOK = {
       "pillar": "Under the Hood",
       "shot": "SCREEN",
       "length": "40s",
-      "onScreenHook": "This is a real AI answering a real call",
+      "onScreenHook": "This is a real voice agent answering a real call",
       "hook": "This is not a demo video. I'm calling a voice agent right now and you're going to hear the whole thing.",
       "script": [
         "[Place the call on speaker. Let it play. Do not talk over it.]",
@@ -181,12 +181,12 @@ export const FB_PLAYBOOK = {
       ],
       "beats": [
         "Real call. Not a demo.",
-        "live captions of the AI's actual words",
+        "live captions of the agent's actual words",
         "Answered on ring 1",
         "Booked it",
         "Texted the owner"
       ],
-      "caption": "No editing, no script, just a real call to a real voice agent. Whatever you think about AI, this is what your after-hours customer is comparing you to now. Curious what you make of it. 👇",
+      "caption": "No editing, no script, just a real call to a real voice agent. Whatever you think about agentic systems, this is what your after-hours customer is comparing you to now. Curious what you make of it. 👇",
       "ask": "1 of 3 this month"
     },
     {
@@ -221,16 +221,16 @@ export const FB_PLAYBOOK = {
       "pillar": "Steal This",
       "shot": "BOTH",
       "length": "32s",
-      "onScreenHook": "Paste your 1-star reviews into AI. Ask this.",
+      "onScreenHook": "Paste your 1-star reviews into ChatGPT. Ask this.",
       "hook": "Copy every bad review you've ever gotten, paste them into ChatGPT, and ask it one question.",
       "script": [
         "\"What is the single most common complaint across all of these, and what would fix it?\"",
         "You will get an answer you did not expect. It's almost never the thing you've been defending. It's usually communication. Nobody told them when you'd arrive. Nobody called when you were running late.",
         "You've read those reviews one at a time and felt attacked. Read all forty at once and it stops being personal and starts being a checklist.",
-        "Free, takes ten minutes, and it's the most useful thing AI does for a small business that has nothing to do with chatbots."
+        "Free, takes ten minutes, and it's the most useful thing ChatGPT does for a small business that has nothing to do with chatbots."
       ],
       "beats": [
-        "Paste ALL your bad reviews into AI",
+        "Paste ALL your bad reviews into ChatGPT",
         "Ask: what's the ONE pattern?",
         "It's almost never what you think",
         "It's usually communication",
@@ -247,11 +247,11 @@ export const FB_PLAYBOOK = {
       "shot": "FACE",
       "length": "30s",
       "onScreenHook": "Most small business chatbots are worse than nothing.",
-      "hook": "I build AI for small businesses and I'm telling you most of the chatbots on small business websites are worse than having nothing.",
+      "hook": "I build agentic systems for small businesses and I'm telling you most of the chatbots on small business websites are worse than having nothing.",
       "script": [
         "Here's why. A bubble pops up, it says \"Hi! How can I help?\" and then it cannot help. It cannot check your calendar, it cannot quote your job, it cannot reach you. It takes an interested customer and gives them a dead end wearing a friendly face.",
         "A plain contact form is more honest. At least it does not promise a conversation it cannot have.",
-        "The test for any AI in your business is one question: can it actually complete something? Book the job, take the order, get the message to a human who calls back. If it can only chat, it's decoration.",
+        "The test for any agentic system in your business is one question: can it actually complete something? Book the job, take the order, get the message to a human who calls back. If it can only chat, it's decoration.",
         "Decoration does not pay for itself."
       ],
       "beats": [
@@ -261,7 +261,7 @@ export const FB_PLAYBOOK = {
         "THE TEST: can it COMPLETE something?",
         "If it only chats, it's decoration"
       ],
-      "caption": "I build this stuff and I'll still say it. If the AI on your site can't book, quote, or reach a human, it's decoration and decoration doesn't pay for itself. Fight me in the comments. 👇",
+      "caption": "I build this stuff and I'll still say it. If the agent on your site can't book, quote, or reach a human, it's decoration and decoration doesn't pay for itself. Fight me in the comments. 👇",
       "ask": null
     },
     {
@@ -297,7 +297,7 @@ export const FB_PLAYBOOK = {
       "onScreenHook": "Your last 100 invoices are a business plan.",
       "hook": "Your last hundred invoices are a business plan and you're using them as a filing cabinet.",
       "script": [
-        "Export them. Drop them into AI. Ask it three things.",
+        "Export them. Drop them into ChatGPT. Ask it three things.",
         "One: what are my ten most common jobs and what did I actually charge for each. Two: which job type takes the most time for the least money. Three: what should my standard price list look like.",
         "Nearly every owner who does this finds the same thing. There's one job they keep saying yes to that quietly loses money, and one they under-charge for that customers never blink at.",
         "You've been guessing at your prices. The answer was in your own paperwork the whole time."
@@ -309,7 +309,7 @@ export const FB_PLAYBOOK = {
         "There's always one",
         "The answer was in your own paperwork"
       ],
-      "caption": "The most valuable AI use case in your business is boring. It's your invoices. Here's the exact prompt on screen. Try it and tell me which job turned out to be the loser, there's always one.",
+      "caption": "The most valuable agentic use case in your business is boring. It's your invoices. Here's the exact prompt on screen. Try it and tell me which job turned out to be the loser, there's always one.",
       "ask": null
     },
     {
@@ -347,7 +347,7 @@ export const FB_PLAYBOOK = {
       "onScreenHook": "Record your best closer. Steal their brain.",
       "hook": "Whoever is best on the phone at your company, record three of their calls this week. With their permission. Then do this.",
       "script": [
-        "Drop the transcripts into AI and ask: what exactly does this person do that the others don't. What order do they ask questions in. Where do they handle the price objection. What's the exact line they use to book.",
+        "Drop the transcripts into ChatGPT and ask: what exactly does this person do that the others don't. What order do they ask questions in. Where do they handle the price objection. What's the exact line they use to book.",
         "You'll get a one-page script. That's not a manager's guess about what good looks like. That's what your actual best person actually does, written down.",
         "Hand it to everyone else. That's the cheapest training you will ever run, and it beats any sales course because it's already working in your business.",
         "Costs nothing. Do it this week."
@@ -355,7 +355,7 @@ export const FB_PLAYBOOK = {
       "beats": [
         "Record your best closer, 3 calls",
         "Transcripts",
-        "AI",
+        "ChatGPT",
         "What do THEY do that others don't?",
         "You now have a real script",
         "Cheapest training you'll ever run"
@@ -397,10 +397,10 @@ export const FB_PLAYBOOK = {
       "onScreenHook": "They send a photo. You send a ballpark. In 60 seconds.",
       "hook": "Customer texts you a photo of the problem. Instead of driving out there for a free estimate you may not win, do this.",
       "script": [
-        "[Screen: drop a photo into AI with a real prompt]",
-        "Give AI the photo, your price book, and this instruction: \"Based on this photo and my standard pricing, draft a ballpark range and the three questions I need answered before I can be exact.\"",
+        "[Screen: drop a photo into ChatGPT with a real prompt]",
+        "Give ChatGPT the photo, your price book, and this instruction: \"Based on this photo and my standard pricing, draft a ballpark range and the three questions I need answered before I can be exact.\"",
         "You get a range and the qualifying questions in under a minute. You send it. Now you know if this person is real before you burn a two-hour round trip on a tire-kicker.",
-        "You're still the one who prices it. AI just stopped you from driving across the county for free."
+        "You're still the one who prices it. ChatGPT just stopped you from driving across the county for free."
       ],
       "beats": [
         "[real screen recording] \"Photo + your price book + this prompt",
@@ -413,26 +413,26 @@ export const FB_PLAYBOOK = {
     },
     {
       "n": 15,
-      "title": "AI Won't Fix a Business That Doesn't Answer",
+      "title": "Agents Won't Fix a Business That Doesn't Answer",
       "batch": "Weeks 3 to 4",
       "pillar": "Straight Talk",
       "shot": "FACE",
       "length": "26s",
-      "onScreenHook": "AI won't save a business that doesn't answer the phone.",
-      "hook": "I sell AI to small businesses and here's what I tell people who want to buy it for the wrong reason.",
+      "onScreenHook": "Agents won't save a business that doesn't answer the phone.",
+      "hook": "I sell agentic systems to small businesses and here's what I tell people who want to buy it for the wrong reason.",
       "script": [
-        "AI will not fix a business that doesn't answer the phone. It will just help you miss calls faster and more professionally.",
+        "An agent will not fix a business that doesn't answer the phone. It will just help you miss calls faster and more professionally.",
         "If your problem is that you never call people back, that's a habit, and no software fixes a habit. If your problem is that you physically cannot be in two places at once, that's capacity, and that's what this stuff is actually for.",
         "Be honest with yourself about which one you have. One of them costs money to solve. The other one costs discipline, and it's free."
       ],
       "beats": [
-        "AI won't fix a business that doesn't answer",
+        "Agents won't fix a business that doesn't answer",
         "It'll help you miss calls FASTER",
         "Habit problem? No software fixes that.",
         "Capacity problem? That's what it's for.",
         "One costs money. One costs discipline."
       ],
-      "caption": "The honest version from someone who sells this stuff. Half the people who ask me about AI have a discipline problem, not a capacity problem, and I'd rather say it than take the money. Which one is yours?",
+      "caption": "The honest version from someone who sells this stuff. Half the people who ask me about agentic systems have a discipline problem, not a capacity problem, and I'd rather say it than take the money. Which one is yours?",
       "ask": null
     },
     {
@@ -446,7 +446,7 @@ export const FB_PLAYBOOK = {
       "hook": "Every review you never replied to is quietly costing you position in local search.",
       "script": [
         "Google says it plainly. Responding to reviews affects local ranking. Most small businesses reply to none of them, or only the angry ones, which is the worst possible pattern.",
-        "Here's the free version. Once a week, pull your new reviews, drop them into AI, and ask for a short warm reply to each one that mentions the specific thing they said. Read them, fix anything that sounds like a robot, paste them in.",
+        "Here's the free version. Once a week, pull your new reviews, drop them into ChatGPT, and ask for a short warm reply to each one that mentions the specific thing they said. Read them, fix anything that sounds like a robot, paste them in.",
         "Fifteen minutes a week. It moves your ranking and it makes the next person reading those reviews trust you more."
       ],
       "beats": [
@@ -455,7 +455,7 @@ export const FB_PLAYBOOK = {
         "drafted replies] \"Google: replying affects local ranking",
         "Most businesses reply to NONE",
         "Weekly: reviews",
-        "AI",
+        "ChatGPT",
         "warm replies",
         "READ THEM FIRST",
         "15 min/week"
@@ -527,7 +527,7 @@ export const FB_PLAYBOOK = {
         "Invoices, quotes, scheduling, the texts you didn't answer. It piles up all week and it lands on the one day you were supposed to have.",
         "Here's the thing about that pile. Almost none of it requires your judgment. It requires your attention. Those are different, and only one of them has to be you.",
         "Pick the single biggest item on your Sunday list and ask one question: does this need me, or does it just need someone.",
-        "Start there. Not with AI, not with software. With that question."
+        "Start there. Not with agents, not with software. With that question."
       ],
       "beats": [
         "Sunday paperwork = a second job",
@@ -549,7 +549,7 @@ export const FB_PLAYBOOK = {
       "onScreenHook": "Bad applicants are a job-post problem.",
       "hook": "If you're drowning in unqualified applicants, that's not a labor market problem. That's a job post problem.",
       "script": [
-        "Take your current job post, drop it in AI, and ask: \"Rewrite this so the wrong people screen themselves out. Be specific about the hard parts, the schedule, and the pay range.\"",
+        "Take your current job post, drop it in ChatGPT, and ask: \"Rewrite this so the wrong people screen themselves out. Be specific about the hard parts, the schedule, and the pay range.\"",
         "Most job posts are written to attract everyone. That's the mistake. A good one repels. It says the truck leaves at 6:15am, you'll be in an attic in August, here's the actual number.",
         "You'll get fewer applications and better ones, and you'll stop spending your week interviewing people who were never going to take it.",
         "Say the hard part out loud. The right person reads it and thinks \"finally, someone honest.\""
@@ -617,27 +617,27 @@ export const FB_PLAYBOOK = {
     },
     {
       "n": 23,
-      "title": "Stop Asking AI to Write Your Marketing",
+      "title": "Stop Asking ChatGPT to Write Your Marketing",
       "batch": "Weeks 5 to 6",
       "pillar": "Straight Talk",
       "shot": "FACE",
       "length": "27s",
-      "onScreenHook": "Stop asking AI to write your marketing.",
-      "hook": "Stop asking AI to write your marketing. It's the worst thing you can use it for and it's the first thing everyone tries.",
+      "onScreenHook": "Stop asking ChatGPT to write your marketing.",
+      "hook": "Stop asking ChatGPT to write your marketing. It's the worst thing you can use it for and it's the first thing everyone tries.",
       "script": [
-        "Everybody's feed is full of the same beige AI paragraphs now and customers can smell it. You are not going to out-content the internet.",
+        "Everybody's feed is full of the same beige machine-written paragraphs now and customers can smell it. You are not going to out-content the internet.",
         "Point it at the stuff nobody sees instead. Your invoices. Your calendar. Your missed calls. Your bad reviews. Your quote follow-ups.",
         "That's where the money is, and it's boring, which is exactly why nobody's doing it.",
-        "The best AI use case in your business is not a clever caption. It's the fact that nobody called Mrs. Henderson back."
+        "The best agentic use case in your business is not a clever caption. It's the fact that nobody called Mrs. Henderson back."
       ],
       "beats": [
-        "Stop using AI for marketing",
+        "Stop using ChatGPT for marketing",
         "Everyone's feed is beige now. Customers can smell it.",
         "Point it at: invoices / calendar / missed calls / bad reviews",
         "Boring is where the money is",
         "Nobody called Mrs. Henderson back."
       ],
-      "caption": "Hot take from someone who builds AI for small businesses. The good use cases are boring and that's exactly why they're still available. What's the most boring thing in your week? That's probably the answer.",
+      "caption": "Hot take from someone who builds agentic systems for small businesses. The good use cases are boring and that's exactly why they're still available. What's the most boring thing in your week? That's probably the answer.",
       "ask": null
     },
     {
@@ -672,12 +672,12 @@ export const FB_PLAYBOOK = {
     {
       "id": "fb-01",
       "pillar": "Thesis",
-      "headline": "Big companies got AI first. That's backwards.",
+      "headline": "Big companies got agentic systems first. That's backwards.",
       "fb": [
-        "Big companies got AI first. That's backwards.",
+        "Big companies got agentic systems first. That's backwards.",
         "It isn't the Fortune 500 that loses a $4,000 job because nobody picked up at 5:15 on a Friday. It's the plumber. The salon. The family restaurant that had two people on and forty phone calls.",
-        "Main Street feels every dropped call in its bank account the same week it happens. And Main Street is the one place that got handed AI last, in the form of a chatbot bubble that can't do anything.",
-        "So I started posting here. Every week I'm going to give away the specific moves that put money back in a small business. Free, no course, no funnel. Some of them involve AI. Half of them are just a switch you already pay for and never turned on.",
+        "Main Street feels every dropped call in its bank account the same week it happens. And Main Street is the one place that got handed agentic systems last, in the form of a chatbot bubble that can't do anything.",
+        "So I started posting here. Every week I'm going to give away the specific moves that put money back in a small business. Free, no course, no funnel. Some of them involve agentic systems. Half of them are just a switch you already pay for and never turned on.",
         "Tell me what you do in the comments and I'll tell you where I'd start."
       ],
       "firstComment": null,
@@ -688,10 +688,10 @@ export const FB_PLAYBOOK = {
     {
       "id": "fb-02",
       "pillar": "Ritual",
-      "headline": "Comment your industry. I'll give you the one AI move that pays for itself.",
+      "headline": "Comment your industry. I'll give you the one agentic move that pays for itself.",
       "fb": [
-        "Comment your industry below and I'll give you the one AI move I'd make first in your specific business. Free, no pitch, I'm not going to DM you.",
-        "Not \"use AI to save time.\" An actual move. The thing I'd do on Monday morning if it were my company.",
+        "Comment your industry below and I'll give you the one agentic move I'd make first in your specific business. Free, no pitch, I'm not going to DM you.",
+        "Not \"use agents to save time.\" An actual move. The thing I'd do on Monday morning if it were my company.",
         "Roofing is different from a med spa. A two-truck landscaping outfit is different from a twelve-chair salon. Generic advice is why most owners have concluded this stuff isn't for them.",
         "So tell me: what do you do, how many people, and what's the part of the week that makes you want to quit?",
         "I answer every one of these. Might take me a day, but I get to all of them."
@@ -742,9 +742,9 @@ export const FB_PLAYBOOK = {
     {
       "id": "fb-05",
       "pillar": "Straight Talk",
-      "headline": "Four things AI genuinely cannot do for your business.",
+      "headline": "Four things agentic systems genuinely cannot do for your business.",
       "fb": [
-        "I build AI for small businesses, so here are four things it genuinely cannot do. Anyone telling you otherwise is selling.",
+        "I build agentic systems for small businesses, so here are four things they genuinely cannot do. Anyone telling you otherwise is selling.",
         "1. It cannot make a judgment call about a customer. Whether to eat the cost on a job that went sideways, whether this person is worth keeping. That's you. That will stay you.",
         "2. It cannot fix a business that doesn't answer the phone. If the problem is a habit, software just helps you miss things faster and more professionally.",
         "3. It cannot know your prices, your area, or your standards unless somebody sits down and tells it. The setup is real work. Anyone promising \"plug it in, done\" has never done it.",
@@ -797,7 +797,7 @@ export const FB_PLAYBOOK = {
     {
       "id": "fb-08",
       "pillar": "Steal This",
-      "headline": "Paste your last 50 customer texts into AI and ask it this one question.",
+      "headline": "Paste your last 50 customer texts into ChatGPT and ask it this one question.",
       "fb": [
         "Prompt of the week. Copy this exactly.",
         "Scroll back through your last fifty customer texts. Copy them, paste them into ChatGPT or Claude, and say:",
@@ -866,9 +866,9 @@ export const FB_PLAYBOOK = {
     {
       "id": "fb-12",
       "pillar": "Steal This",
-      "headline": "Export last month's calendar into AI and ask where your week actually went.",
+      "headline": "Export last month's calendar into ChatGPT and ask where your week actually went.",
       "fb": [
-        "Export last month's calendar to a spreadsheet, drop it into AI, and ask this:",
+        "Export last month's calendar to a spreadsheet, drop it into ChatGPT, and ask this:",
         "\"Categorize every entry as revenue-generating, admin, or travel. Show me the hours and percentage in each. Then tell me what a normal week actually looks like for me.\"",
         "Almost every owner who runs this finds the same two things. Way more travel than they thought, and one recurring meeting or errand that eats half a day a week and generates nothing.",
         "You cannot fix a week you've never actually looked at. You've been running on a feeling about where your time goes, and the feeling is wrong in a specific direction: you think you spend more time making money than you do.",
@@ -900,14 +900,14 @@ export const FB_PLAYBOOK = {
     {
       "id": "fb-14",
       "pillar": "Straight Talk",
-      "headline": "Stop asking AI to write your marketing. Point it at your invoices.",
+      "headline": "Stop asking ChatGPT to write your marketing. Point it at your invoices.",
       "fb": [
-        "Stop asking AI to write your marketing. It's the first thing everybody tries and it's the worst thing it does for you.",
-        "Everyone's feed is full of the same beige AI paragraphs now and customers can smell it from across the room. You are not going to out-post the internet, and honestly nobody hired a plumber because of a caption.",
+        "Stop asking ChatGPT to write your marketing. It's the first thing everybody tries and it's the worst thing it does for you.",
+        "Everyone's feed is full of the same beige machine-written paragraphs now and customers can smell it from across the room. You are not going to out-post the internet, and honestly nobody hired a plumber because of a caption.",
         "Point it at the stuff nobody sees.",
         "Your invoices, to find the job type that quietly loses money. Your calendar, to find where the week actually goes. Your missed calls, to find out what a Tuesday costs you. Your bad reviews, all at once, to find the one pattern. Your old quotes, to find the money already sitting there.",
         "That's where it earns. It's boring, which is exactly why it's still available.",
-        "The best AI use case in your business isn't a clever post. It's the fact that nobody called Mrs. Henderson back.",
+        "The best agentic use case in your business isn't a clever post. It's the fact that nobody called Mrs. Henderson back.",
         "Disagree with me. I want to hear it."
       ],
       "firstComment": null,
@@ -922,7 +922,7 @@ export const FB_PLAYBOOK = {
       "fb": [
         "Google says plainly that responding to reviews affects your local ranking. Most small businesses reply to none of them, or only the angry ones, which is the worst possible pattern to show a stranger reading your profile.",
         "Fifteen minutes a week, free:",
-        "Pull the week's new reviews. Drop them into AI and ask for a short, warm, specific reply to each one that mentions the actual thing they said. Then read every single one before you post it and fix anything that sounds like a machine.",
+        "Pull the week's new reviews. Drop them into ChatGPT and ask for a short, warm, specific reply to each one that mentions the actual thing they said. Then read every single one before you post it and fix anything that sounds like a machine.",
         "That last part is not optional. A reply that reads like a robot is worse than no reply, and people can tell instantly. \"Thank you for your valuable feedback\" makes you look like a cable company.",
         "For the bad ones: acknowledge, don't argue, and take it to a phone call. Anyone reading it later is judging how you handled it, not who was right.",
         "How many reviews are sitting on your profile right now with no reply? Go look. It's usually more than you'd guess."
@@ -973,7 +973,7 @@ export const FB_PLAYBOOK = {
       "headline": "Drowning in bad applicants is a job-post problem, not a labor problem.",
       "fb": [
         "If you're drowning in unqualified applicants, that's not the labor market. That's your job post.",
-        "Take your current one, paste it into AI, and say: \"Rewrite this so the wrong people screen themselves out. Be specific and honest about the hard parts, the schedule, and the pay range.\"",
+        "Take your current one, paste it into ChatGPT, and say: \"Rewrite this so the wrong people screen themselves out. Be specific and honest about the hard parts, the schedule, and the pay range.\"",
         "Most job posts are written to attract everybody. That's the whole mistake. A good job post repels.",
         "It says the truck leaves at 6:15, you will be in an attic in August, we drug test, here is the actual number, and here is what you'll be making in two years if you're good.",
         "You'll get fewer applications and better ones, and you'll stop burning a week interviewing people who were never going to take it.",
@@ -1005,9 +1005,9 @@ export const FB_PLAYBOOK = {
     {
       "id": "fb-20",
       "pillar": "Under the Hood",
-      "headline": "This is what an AI answering your phone actually sounds like now.",
+      "headline": "This is what a voice agent answering your phone actually sounds like now.",
       "fb": [
-        "Whatever picture you have in your head of \"AI answering the phone,\" it's probably four years out of date. It's not the press-1-for-billing tree.",
+        "Whatever picture you have in your head of \"a machine answering the phone,\" it's probably four years out of date. It's not the press-1-for-billing tree.",
         "It picks up on the first ring, it knows your hours and your service area, it answers the eight questions you get all week, it books straight into your calendar, and it texts you the details before you're off the ladder.",
         "I'm not posting this to sell you one. I'm posting it because this is what your customer at 8pm is comparing you to now, whether you like it or not. Somebody in your market already has this and is quietly eating the after-hours work.",
         "You can call one and hear it yourself. Link in the comments, free, no signup, it just rings your phone and talks to you.",
@@ -1093,7 +1093,7 @@ export const FB_PLAYBOOK = {
       "headline": "One jobsite photo is a week of posts. It's already on your phone.",
       "fb": [
         "You take before-and-after photos on every job and then do nothing with them. Four-minute fix.",
-        "Drop the photo into AI and say: \"I'm a [trade] in [town]. Write a short Facebook post about this job aimed at local homeowners. No hashtags, no hype, write like a normal person talking about their work. Then give me three variations.\"",
+        "Drop the photo into ChatGPT and say: \"I'm a [trade] in [town]. Write a short Facebook post about this job aimed at local homeowners. No hashtags, no hype, write like a normal person talking about their work. Then give me three variations.\"",
         "One job, a week of posts.",
         "And here's why this beats any clever marketing idea you'll read this month: people don't hire you because you posted a tip. They hire you because they saw you doing the work over and over until you were the obvious person to call when the thing broke.",
         "Consistency beats cleverness, and the photos are already sitting on your phone from work you already did.",
@@ -1125,7 +1125,7 @@ export const FB_PLAYBOOK = {
     {
       "id": "fb-27",
       "pillar": "Straight Talk",
-      "headline": "What I got wrong about AI for small business.",
+      "headline": "What I got wrong about agentic systems for small business.",
       "fb": [
         "Things I was wrong about, since this group is supposed to be useful and not a highlight reel.",
         "I thought owners would want to build it themselves. Give them the prompts, the tools, the how. Most don't, and it's not laziness. It's that a person doing forty things already does not want a forty-first, even a good one. The people who DO want to build it are wonderful and they're maybe one in ten.",
@@ -1145,7 +1145,7 @@ export const FB_PLAYBOOK = {
       "fb": [
         "You've been meaning to write down how things work here for about four years. Here's how to do it in an afternoon.",
         "Next time you do the thing, talk through it out loud and record it on your phone. Opening the shop. Running the estimate. Closing out a job. Whatever the new person always gets wrong.",
-        "Then drop the recording into AI and say: \"Turn this into a step-by-step checklist a brand new employee could follow, in plain language, and flag anything I skipped or assumed.\"",
+        "Then drop the recording into ChatGPT and say: \"Turn this into a step-by-step checklist a brand new employee could follow, in plain language, and flag anything I skipped or assumed.\"",
         "That last part is the gold. It catches the fifteen things you do automatically and never mention, which is exactly the stuff new hires get wrong and then get yelled at for.",
         "One afternoon, five recordings, and you have the manual you've been meaning to write since 2022.",
         "What's the one job at your company that only exists in one person's head? That's the first one to record."
@@ -1182,7 +1182,7 @@ export const FB_PLAYBOOK = {
         "WEEK 1. Find out how many calls you actually miss. Just the number, from your phone bill or your carrier app. Most owners have never looked and it is the single most upsetting number in the business.",
         "WEEK 2. Turn on missed-call text-back (it's already in the system you pay for) and fix your Google review link so it opens the review box in one tap instead of four. Both free, both an afternoon.",
         "WEEK 3. Text every quote from the last twelve months that never closed. One line: \"Did you ever get that handled?\" No pitch, no discount.",
-        "WEEK 4. Paste all your bad reviews into AI at once and ask for the single most common pattern. Fix that one thing. It's almost never what you've been defending, it's almost always communication.",
+        "WEEK 4. Paste all your bad reviews into ChatGPT at once and ask for the single most common pattern. Fix that one thing. It's almost never what you've been defending, it's almost always communication.",
         "Zero dollars. Four afternoons. And it's more than most businesses will do all year, which is the entire reason it works.",
         "Start with week one. Post your missed-call number when you find it. I promise you it's worse than you think, and I promise you're not the only one."
       ],
@@ -1196,19 +1196,19 @@ export const FB_PLAYBOOK = {
     {
       "label": "Group name",
       "lines": [
-        "Main Street AI: AI Hacks for Small Business Owners"
+        "Main Street Agentic: Agentic Hacks for Small Business Owners"
       ]
     },
     {
       "label": "Description",
       "lines": [
-        "Practical AI for people who run real businesses.",
+        "Practical agentic systems for people who run real businesses.",
         "No theory, no crypto-bro hype, no \"10x your mindset.\" Just the specific moves that put money back in a small business: the calls you're missing, the follow-ups you're not sending, the paperwork eating your Sunday.",
         "Free. Always. You'll get:",
         "• Teardown Tuesday. I take one real member business and find the money leak on video, free",
-        "• Steal This Thursday. One AI move you can run today, no tools, no budget",
+        "• Steal This Thursday. One agentic move you can run today, no tools, no budget",
         "• Straight answers when you ask. Post your question, I answer it.",
-        "Run by Sarah at Modern Mustard Seed. We build AI staff for Main Street businesses. But this group is not a sales pitch. If you never buy anything, you should still leave with more money than you came in with.",
+        "Run by Sarah at Modern Mustard Seed. We build agentic staff for Main Street businesses. But this group is not a sales pitch. If you never buy anything, you should still leave with more money than you came in with.",
         "Rules in the pinned post. Come in, tell us what you do, and steal everything that isn't nailed down."
       ]
     },
@@ -1217,7 +1217,7 @@ export const FB_PLAYBOOK = {
       "lines": [
         "1. What's your business, and how long have you been running it? (qualifies real owners, kills spam)",
         "2. What's the one thing in your week that eats the most time and makes the least money? (this is your content research engine AND your sales intel, forever)",
-        "3. Want the weekly Main Street AI move sent to you? Drop your email. (optional). This builds an owned email list for free. Facebook can change the rules on your group tomorrow. It cannot take your list."
+        "3. Want the weekly Main Street Agentic move sent to you? Drop your email. (optional). This builds an owned email list for free. Facebook can change the rules on your group tomorrow. It cannot take your list."
       ]
     },
     {
@@ -1225,7 +1225,7 @@ export const FB_PLAYBOOK = {
       "lines": [
         "1. No pitching in posts. Ever. Not yours, not mine. Answer questions and people will find you.",
         "2. No link drops without context. Explain the thing, then link it if someone asks.",
-        "3. Real questions get real answers. Ask specific (\"my HVAC company misses calls during install days\") not vague (\"how do I use AI\").",
+        "3. Real questions get real answers. Ask specific (\"my HVAC company misses calls during install days\") not vague (\"how do I use agentic systems\").",
         "4. No DM pitching members. One report and you're out. This rule is why the group stays worth being in.",
         "5. Share what worked. If you steal something here and it made you money, come back and say so. That's rent."
       ]
@@ -1234,7 +1234,7 @@ export const FB_PLAYBOOK = {
       "label": "Pinned \"Start Here\" post",
       "lines": [
         "Welcome, Main Streeter.",
-        "Here's what this place is for. You run a real business. You keep hearing you should \"use AI\" and every article you find was written for a software company with a marketing department. This group is the translation.",
+        "Here's what this place is for. You run a real business. You keep hearing you should \"use agentic systems\" and every article you find was written for a software company with a marketing department. This group is the translation.",
         "Start with these three, in order. They cost nothing and they're the highest-return moves for almost any small business:",
         "1. Call your own business right now. From your cell phone. After hours. Listen to the whole thing the way a customer would. Most owners have never done this and most are horrified. That is your baseline.",
         "2. Turn on missed-call text-back. If a call goes unanswered, an automatic text goes out inside 60 seconds: \"Sorry we missed you, this is [Business], what do you need?\" Almost every phone system and CRM does this and most owners never turned it on. It is the highest-ROI switch in small business.",

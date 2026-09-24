@@ -360,7 +360,7 @@ export default function DemosPage() {
               <a href="tel:+14063121223" className="font-bold text-[#B92417] underline underline-offset-2">
                 (406) 312-1223
               </a>
-              . Yes, an AI answers our phone too. Try to stump it.
+              . Yes, a voice agent answers our phone too. Try to stump it.
             </p>
           </div>
           <div className="lg:col-span-8 space-y-3">

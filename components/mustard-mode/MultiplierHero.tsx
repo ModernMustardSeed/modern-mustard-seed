@@ -463,7 +463,7 @@ export default function MultiplierHero() {
         </h1>
 
         <p className="font-sans text-base md:text-lg text-[#161616]/80 max-w-2xl mt-6">
-          A personal AI coach, a four-track curriculum, and the exact prompts to ship software, design,
+          A personal agentic coach, a four-track curriculum, and the exact prompts to ship software, design,
           and ideas with nothing but your Claude subscription. Mr. Mustard trains you. Claude does the
           reps. Your first coaching session starts on this page, free.
         </p>

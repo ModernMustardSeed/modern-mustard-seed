@@ -44,7 +44,7 @@ const CHANNELS: Channel[] = [
   {
     n: '04',
     title: 'The Dinner Rush',
-    note: 'Restaurant vertical: the family runs a trattoria while the AI host books tables in two languages.',
+    note: 'Restaurant vertical: the family runs a trattoria while the agentic host books tables in two languages.',
     src: '/ads/restaurant-16x9.mp4',
     poster: '/ads/restaurant-poster.png',
   },
@@ -72,7 +72,7 @@ const CHANNELS: Channel[] = [
   {
     n: '08',
     title: '9:47 PM',
-    note: 'Nothing the voice says here was written. We called our own AI after hours, recorded what it said back, and cut the ad from that.',
+    note: 'Nothing the voice says here was written. We called our own voice agent after hours, recorded what it said back, and cut the ad from that.',
     src: '/ads/after-hours-16x9.mp4',
     poster: '/ads/after-hours-poster.jpg',
   },

@@ -19,14 +19,14 @@
  */
 
 export const AI_NATIVE = {
-  name: 'AI Native',
-  wordmark: '[ AI NATIVE ]',
-  tagline: 'Your company, running on AI. Your team, running it.',
+  name: 'Agentic Native',
+  wordmark: '[ AGENTIC NATIVE ]',
+  tagline: 'Your company, running on agentic systems. Your team, running it.',
   promise:
-    'We map every workflow in your business, put AI into the ones that pay first, build it inside accounts you own, and coach your team on their real work until they run it without us. Set prices, a fixed timeline, and no dependency on the studio when it is done.',
-  metaTitle: 'AI Consulting for Small Business',
+    'We map every workflow in your business, put agentic systems into the ones that pay first, build it inside accounts you own, and coach your team on their real work until they run it without us. Set prices, a fixed timeline, and no dependency on the studio when it is done.',
+  metaTitle: 'Agentic Systems Consulting for Small Business',
   metaDescription:
-    'AI integration consulting for small and mid-sized companies: every workflow mapped, AI put into the five that pay first, built in accounts you own, and your team coached on their real work. Set prices, delivered in eight weeks, by Modern Mustard Seed in Kalispell, Montana.',
+    'Agentic systems consulting for small and mid-sized companies: every workflow mapped, agentic systems put into the five that pay first, built in accounts you own, and your team coached on their real work. Set prices, delivered in eight weeks, by Modern Mustard Seed in Kalispell, Montana.',
   mapDelivery: 'delivered within two weeks',
   buildDelivery: 'delivered within eight weeks',
   readDelivery: 'within two business days',
@@ -61,34 +61,34 @@ export type AiNativeTier = {
 export const aiNativeTiers: AiNativeTier[] = [
   {
     slug: 'ai-map',
-    name: 'THE AI MAP',
+    name: 'THE AGENTIC MAP',
     chip: '[ TWO WEEKS ]',
     priceCents: 250000,
     cadence: 'once',
     mode: 'payment',
-    pitch: 'Every workflow in the business, written down and ranked by what AI pays back first.',
+    pitch: 'Every workflow in the business, written down and ranked by what agentic systems pay back first.',
     includes: [
       'Every workflow mapped: who does it, how long it takes, what it costs, where it breaks',
-      'The AI moves ranked by payoff, with the first five named',
+      'The agentic moves ranked by payoff, with the first five named',
       'The tools chosen, with the monthly price of each, in writing',
       'A sequenced plan your team can run with us or without us',
       'One working session with the team on the first move, so the map starts moving that day',
       `Hand-written and ${AI_NATIVE.mapDelivery}`,
-      'Credits in full toward AI NATIVE within ninety days',
+      'Credits in full toward AGENTIC NATIVE within ninety days',
     ],
     cta: 'Book the map',
   },
   {
     slug: 'ai-native',
-    name: 'AI NATIVE',
+    name: 'AGENTIC NATIVE',
     chip: '[ EIGHT WEEKS ]',
     priceCents: 1200000,
     cadence: 'once',
     mode: 'payment',
-    pitch: 'The map, then the first five workflows moved onto AI and your team trained on them.',
+    pitch: 'The map, then the first five workflows moved onto agentic systems and your team trained on them.',
     includes: [
-      'Everything in THE AI MAP',
-      'AI put into the five workflows that pay first, built and running, not recommended',
+      'Everything in THE AGENTIC MAP',
+      'Agentic systems put into the five workflows that pay first, built and running, not recommended',
       'Internal copilots and automations built inside accounts your company owns',
       'Six working sessions with your team, on their real work, each one ending with something live',
       'The operating playbook: what runs where, who owns it, what to do when it breaks, how to add the next one',
@@ -109,8 +109,8 @@ export const aiNativeTiers: AiNativeTier[] = [
     includes: [
       'Two live team sessions a month, on whatever the team is working on that week',
       'A standing line for questions between sessions, answered the same business day',
-      'A monthly briefing: what changed in AI this month and what it means for your shop',
-      'One more workflow moved onto AI each month',
+      'A monthly briefing: what changed in agentic systems this month and what it means for your shop',
+      'One more workflow moved onto agentic systems each month',
       'The playbook kept current as the stack changes',
       'Month to month. Cancel the day your team stops needing it.',
     ],
@@ -131,7 +131,7 @@ export const aiNativeMethod = [
   {
     n: '01',
     title: 'The map comes first',
-    body: 'Two weeks inside your operation. Every workflow gets written down with who does it, how long it takes, what it costs and where it breaks. Then each one is scored on what AI pays back and how fast. The map is the plan, and it is yours whether or not we build a thing.',
+    body: 'Two weeks inside your operation. Every workflow gets written down with who does it, how long it takes, what it costs and where it breaks. Then each one is scored on what agentic systems pay back and how fast. The map is the plan, and it is yours whether or not we build a thing.',
   },
   {
     n: '02',
@@ -163,23 +163,23 @@ export const aiNativeMethod = [
 export const aiNativeFaq = [
   {
     q: 'What kind of company is this for?',
-    a: 'A company that already works. Three to fifty people, real customers, real revenue, and an owner who can see that the next five years run on AI and does not want to hire a department to get there. Service businesses, trades, professional firms, agencies, regional brands, second businesses run alongside a first one.',
+    a: 'A company that already works. Three to fifty people, real customers, real revenue, and an owner who can see that the next five years run on agentic systems and does not want to hire a department to get there. Service businesses, trades, professional firms, agencies, regional brands, second businesses run alongside a first one.',
   },
   {
     q: 'We are not a technical team. Does that matter?',
     a: 'No. Nobody on your team writes code, and nothing we set up needs them to. The sessions happen on their own work, in the tools they already open every morning. The playbook is written in plain language. If someone can run a spreadsheet, they can run what we build.',
   },
   {
-    q: 'Which AI tools do you use?',
+    q: 'Which tools do you use?',
     a: 'The ones that fit the workflow. Most engagements run on Claude for writing, research and the internal copilots, with voice, automation and the connections to your existing software built around it. Every tool is set up in your own account, on the business plan that keeps your data out of training, and the price of each is in the map before anything is bought.',
   },
   {
-    q: 'How is this different from AI-Proof Your Business?',
-    a: 'AI-Proof is the defensive engagement: audit an operation against the shift and harden it, quoted per business because the operation decides the scope. AI NATIVE is set-price and team-first. The finish line is not that AI is running in your company. It is that your people are running it.',
+    q: 'How is this different from Future-Proof Your Business?',
+    a: 'Future-Proof is the defensive engagement: audit an operation against the shift and harden it, quoted per business because the operation decides the scope. AGENTIC NATIVE is set-price and team-first. The finish line is not that agentic systems are running in your company. It is that your people are running it.',
   },
   {
     q: 'How is this different from HUNDREDFOLD or Mustard Mode?',
-    a: 'HUNDREDFOLD is a twelve-month scaling program where we build and run the growth machine for you. Mustard Mode teaches one person to run Claude the way the studio does. AI NATIVE is for a whole team inside an existing company: the workflows, the accounts, the playbook and the habit, in eight weeks.',
+    a: 'HUNDREDFOLD is a twelve-month scaling program where we build and run the growth machine for you. Mustard Mode teaches one person to run Claude the way the studio does. AGENTIC NATIVE is for a whole team inside an existing company: the workflows, the accounts, the playbook and the habit, in eight weeks.',
   },
   {
     q: 'What if we want changes?',
@@ -191,6 +191,6 @@ export const aiNativeFaq = [
   },
   {
     q: 'Where do we start?',
-    a: `Send the business and get the AI Read, free, ${AI_NATIVE.readDelivery}: the three AI moves that pay first in your company, what each one costs to run, and which of the three doors fits. Most owners book the map from there.`,
+    a: `Send the business and get the Agentic Read, free, ${AI_NATIVE.readDelivery}: the three agentic moves that pay first in your company, what each one costs to run, and which of the three doors fits. Most owners book the map from there.`,
   },
 ] as const;

@@ -137,7 +137,7 @@ export const POOR_FIT = [
   'You are shopping for the cheapest quote. We will lose that one on purpose.',
   'You want a strategy deck. The work here is the deliverable, not a document about it.',
   'Eight people have to approve a button colour.',
-  'You want AI in the business because a competitor announced some.',
+  'You want agentic systems in the business because a competitor announced some.',
 ];
 
 /* ------------------------------------------------------------------ */
@@ -223,7 +223,7 @@ export const STANDARD = [
   },
   {
     title: 'It is findable',
-    body: 'Metadata, structured data, and the signals that get a business cited by Google and by AI answers. Built into the pages from the first one rather than bolted on later.',
+    body: 'Metadata, structured data, and the signals that get a business cited by Google and by answer engines. Built into the pages from the first one rather than bolted on later.',
   },
   {
     title: 'It says something true',
@@ -273,7 +273,7 @@ export const ENGAGEMENT_FAQ = [
     a: 'We do not work in handoffs, we work in iterations, and we do not stop until it is right by you. Revisions are inside every engagement rather than bolted on. There is nothing to refund because we do not walk away from unfinished work.',
   },
   {
-    q: 'I do not know much about AI. Is this still for me?',
+    q: 'I do not know much about agentic systems. Is this still for me?',
     a: 'Yes, and most clients do not. A website or a voice agent asks nothing of you technically, and a custom build starts with working out what to build together. You bring the business and the judgment about your own customers. We bring the technical decisions and we explain the ones that matter.',
   },
   {

@@ -28,7 +28,7 @@ const TUESDAY = [
 const FOR = [
   'You run a company with a team, and the team runs the day to day without you in every step.',
   'You have watched a competitor get faster and you know why.',
-  'You want AI in the business, in your accounts, with your people running it.',
+  'You want agentic systems in the business, in your accounts, with your people running it.',
   'You would rather pay a set price than sign up for a retainer with no finish line.',
 ];
 
@@ -44,8 +44,8 @@ export default function AiNativePage() {
     '@graph': [
       {
         '@type': 'Service',
-        name: 'AI Native by Modern Mustard Seed',
-        serviceType: 'AI integration consulting and team training for small business',
+        name: 'Agentic Native by Modern Mustard Seed',
+        serviceType: 'Agentic systems integration consulting and team training for small business',
         description: AI_NATIVE.metaDescription,
         provider: { '@type': 'Organization', name: 'Modern Mustard Seed', url: SITE.url },
         areaServed: 'US',
@@ -58,7 +58,7 @@ export default function AiNativePage() {
       },
       {
         '@type': 'HowTo',
-        name: 'How a company goes AI native here',
+        name: 'How a company goes agentic here',
         step: aiNativeMethod.map((s) => ({ '@type': 'HowToStep', name: s.title, text: s.body })),
       },
       {
@@ -82,7 +82,7 @@ export default function AiNativePage() {
           <div className="text-center">
             <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#E0301E] font-bold mb-4">{AI_NATIVE.wordmark}</p>
             <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-black text-[#161616] tracking-tight leading-[0.98]">
-              Your company, running on AI.
+              Your company, running on agentic systems.
               <br />
               Your team, <em className="italic">running it</em>.
             </h1>
@@ -100,7 +100,7 @@ export default function AiNativePage() {
               href="#read"
               className="rounded-full bg-white border-2 border-[#161616] px-8 py-3.5 font-sans font-extrabold text-[#161616] text-xs uppercase tracking-[0.18em] shadow-[4px_4px_0_0_#161616] transition-all hover:-translate-y-0.5"
             >
-              Start with the AI Read
+              Start with the Agentic Read
             </a>
           </div>
           <p className="font-body text-sm text-[#161616]/60 text-center mt-6">
@@ -136,10 +136,10 @@ export default function AiNativePage() {
               One person. Seventeen agents. <em className="italic">A whole company.</em>
             </h2>
             <p className="font-body text-[#161616]/75 leading-relaxed mt-5">
-              Modern Mustard Seed is a product studio run by one person and a back office of agents. The leads are found by the machine, the demo sites are built by it, the follow-up is sent by it, and the books are kept by it. The person at the desk decides, designs and talks to clients. That is what AI native means here, and it is the same shape we build inside your company.
+              Modern Mustard Seed is a product studio run by one person and a back office of agents. The leads are found by the machine, the demo sites are built by it, the follow-up is sent by it, and the books are kept by it. The person at the desk decides, designs and talks to clients. That is what agentic native means here, and it is the same shape we build inside your company.
             </p>
             <p className="font-body text-[#161616]/75 leading-relaxed mt-4">
-              Nothing on this page is theory. Every workflow we move onto AI for you is one we moved first for ourselves, and the portfolio is the receipt.
+              Nothing on this page is theory. Every workflow we move onto agentic systems for you is one we moved first for ourselves, and the portfolio is the receipt.
             </p>
             <div className="mt-7 flex flex-col sm:flex-row gap-3">
               <Link
@@ -241,7 +241,7 @@ export default function AiNativePage() {
                 </Link>
                 {' · '}
                 <Link href="/future-proof" className="font-bold text-[#161616] underline underline-offset-4">
-                  AI-Proof Your Business
+                  Future-Proof Your Business
                 </Link>
               </p>
             </div>
@@ -274,10 +274,10 @@ export default function AiNativePage() {
           <div>
             <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#161616]/70 font-bold mb-3">[ The read, first ]</p>
             <h2 id="read-heading" className="font-display text-3xl md:text-5xl font-black text-[#161616] tracking-tight leading-[1.05]">
-              Send the business. Get the AI Read.
+              Send the business. Get the Agentic Read.
             </h2>
             <p className="font-body text-[#161616]/80 leading-relaxed mt-5">
-              We read your business the way we would on day one of the map and send back one page: the three AI moves that pay first in your company, what each one costs to run, and which of the three doors fits. It comes back {AI_NATIVE.readDelivery}, it costs nothing, and it is yours whether or not you book.
+              We read your business the way we would on day one of the map and send back one page: the three agentic moves that pay first in your company, what each one costs to run, and which of the three doors fits. It comes back {AI_NATIVE.readDelivery}, it costs nothing, and it is yours whether or not you book.
             </p>
             <p className="font-body text-[#161616]/80 leading-relaxed mt-4">
               Most owners have never seen their own week written down as workflows with a price on each one. That is usually the moment they decide.
@@ -315,10 +315,10 @@ export default function AiNativePage() {
         <div className="max-w-3xl mx-auto px-5 text-center">
           <h2 className="font-display text-3xl md:text-5xl font-black text-[#FBF6EA] tracking-tight leading-[1.05]">
             You built the company.
-            <br className="hidden md:block" /> Now let it run on AI.
+            <br className="hidden md:block" /> Now let it run on agentic systems.
           </h2>
           <p className="font-body text-[#FBF6EA]/70 mt-4 max-w-xl mx-auto">
-            A set package price, {AI_NATIVE.mapDelivery}. Or send the business first and read the AI Read before you decide.
+            A set package price, {AI_NATIVE.mapDelivery}. Or send the business first and read the Agentic Read before you decide.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
             <a

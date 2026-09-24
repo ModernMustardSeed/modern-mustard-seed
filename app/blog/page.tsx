@@ -7,7 +7,7 @@ import { listContent } from '@/lib/content';
 export const metadata = buildMetadata({
   title: 'Blog',
   description:
-    'Playbooks, case studies, and lessons from shipping AI products solo. New posts most weeks.',
+    'Playbooks, case studies, and lessons from shipping agentic products solo. New posts most weeks.',
   path: '/blog',
 });
 
@@ -36,7 +36,7 @@ export default function BlogIndex() {
               </span>
             </h1>
             <p className="text-[#3a3733] text-lg font-body leading-relaxed max-w-2xl mx-auto">
-              Real plays from the frontlines of building AI products solo. Tools, tactics, and the occasional war story.
+              Real plays from the frontlines of building agentic products solo. Tools, tactics, and the occasional war story.
             </p>
           </div>
 

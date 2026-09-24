@@ -47,7 +47,7 @@ export const COURSE_WEEKS = [
     title: 'Wire the engine',
     result: 'A page, payment path, follow-up, and simple delivery system.',
     details:
-      'Turn the offer into a working business path. One page, one next step, one follow-up sequence, and AI handling the repeatable middle.',
+      'Turn the offer into a working business path. One page, one next step, one follow-up sequence, and agentic systems handling the repeatable middle.',
   },
   {
     code: '05',
@@ -84,7 +84,7 @@ export const INCLUDED_ASSETS = [
   },
   {
     title: 'The Foundations Bundle',
-    detail: 'The $97 AI-ready, AI-native, and sales playbooks that support the core missions.',
+    detail: 'The $97 Agentic Business Blueprint, Agentic Native, and Sales Machine playbooks that support the core missions.',
   },
   {
     title: 'The Brand Studio Playbook',
@@ -111,7 +111,7 @@ export const SEED_FAQ = [
   },
   {
     q: 'Do I need to know how to code?',
-    a: 'No. You need a computer and the willingness to learn a few new motions. The system uses AI to do much of the technical work, and Sarah teaches the rest in order.',
+    a: 'No. You need a computer and the willingness to learn a few new motions. The system uses agentic tools to do much of the technical work, and Sarah teaches the rest in order.',
   },
   {
     q: 'Will I make money in six weeks?',

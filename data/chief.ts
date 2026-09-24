@@ -28,10 +28,10 @@ export const CHIEF = {
   // The whole offer in one line: the price anchor Sarah asked to lead with.
   anchor:
     'You thought a personal assistant was expensive. A human chief of staff runs $4,000 to $8,000 a month. Yours is a set package price, and it is not close.',
-  metaTitle: 'AI Chief of Staff You Can Call Anytime, 24/7',
+  metaTitle: 'Agentic Chief of Staff You Can Call Anytime, 24/7',
   metaDescription:
-    'Meet The Chief: a proactive AI chief of staff from Modern Mustard Seed. Call, text, or type any hour. He runs your calendar, drafts and sends email, makes calls, researches anything, runs sales role-play, builds your lead list, and wakes you with scripture and your day. Trained on your business, with a command center included. A set package price, quoted privately, and a fraction of a human assistant.',
-  phoneLineNote: 'He answers in Mr. Mustard’s voice, the same AI who runs our own front desk at (406) 312-1223. Call and hear him yourself.',
+    'Meet The Chief: a proactive agentic chief of staff from Modern Mustard Seed. Call, text, or type any hour. He runs your calendar, drafts and sends email, makes calls, researches anything, runs sales role-play, builds your lead list, and wakes you with scripture and your day. Trained on your business, with a command center included. A set package price, quoted privately, and a fraction of a human assistant.',
+  phoneLineNote: 'He answers in Mr. Mustard’s voice, the same voice agent who runs our own front desk at (406) 312-1223. Call and hear him yourself.',
 } as const;
 
 /**
@@ -283,6 +283,6 @@ export const chiefFaq = [
   },
   {
     q: 'Who is Mr. Mustard?',
-    a: 'The AI who runs Modern Mustard Seed’s own front desk at (406) 312-1223, built by Sarah on the same stack she is handing you. Your Chief is his voice and his manners, trained on your world instead of ours. Call him and hear it for yourself.',
+    a: 'The voice agent who runs Modern Mustard Seed’s own front desk at (406) 312-1223, built by Sarah on the same stack she is handing you. Your Chief is his voice and his manners, trained on your world instead of ours. Call him and hear it for yourself.',
   },
 ] as const;

@@ -212,7 +212,7 @@ export async function buildOutreachPlaybookPdf(opts: { bookUrl: string; code: st
   page.drawText(clean(name ? `Prepared for ${name}` : 'Partner field guide'), { x: M, y: 150, size: 11, font: bold, color: YELLOW });
   page.drawText(clean(`Your money link: ${bookUrl}`), { x: M, y: 130, size: 10, font: reg, color: rgb(0.8, 0.78, 0.72) });
   page.drawText(clean(`Partner code ${code}`), { x: M, y: 112, size: 9, font: reg, color: MUTED });
-  page.drawText('WEBSITES / AI ASSISTANTS / VOICE AGENTS / CUSTOM SOFTWARE', { x: M, y: 60, size: 8, font: bold, color: YELLOW });
+  page.drawText('WEBSITES / AGENTIC SYSTEMS / VOICE AGENTS / CUSTOM SOFTWARE', { x: M, y: 60, size: 8, font: bold, color: YELLOW });
 
   // ── Your job ──
   newPage();

@@ -491,13 +491,13 @@ export default function DemoOrderIntake({
       </div>
 
       {/* Where they already exist online. This is the raw material for getting them
-          found, by Google and by the AI assistants people now ask instead. Search
+          found, by Google and by the answer engines people now ask instead. Search
           presence is website work, so a voice-only buyer is not asked. */}
       {wantsSite && (
       <div className="pt-2 border-t-2 border-[#161616]/10">
         <h3 className="font-display text-xl font-bold text-[#161616]">Where you already are online</h3>
         <p className="font-body text-[13px] text-[#161616]/60 mb-3">
-          We link these up so you show up when people search, and when they ask an AI assistant. Leave blank what you do not have.
+          We link these up so you show up when people search, and when they ask ChatGPT or another answer engine. Leave blank what you do not have.
         </p>
         <div className="space-y-3">
           {LINKS.map((f) => (

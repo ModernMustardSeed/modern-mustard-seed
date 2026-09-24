@@ -18,7 +18,7 @@ const PAGE_PATH = '/sarahscarano';
 export const metadata = buildMetadata({
   title: 'Sarah Scarano, Portfolio',
   description:
-    'Twenty-five live works by Sarah Scarano, founder of Modern Mustard Seed: an AI product studio run by agents, a voice agent that answers a real phone line, a faith apparel brand, client sites, films, and a book.',
+    'Twenty-five live works by Sarah Scarano, founder of Modern Mustard Seed: a product studio run by agents, a voice agent that answers a real phone line, a faith apparel brand, client sites, films, and a book.',
   path: PAGE_PATH,
 });
 
@@ -26,7 +26,7 @@ export const metadata = buildMetadata({
 // ("I don't like that"); the disciplines below are the gallery's own four.
 const DISCIPLINES: { t: string; d: string }[] = [
   { t: 'Product and software', d: 'Strategy, websites, custom applications, payments.' },
-  { t: 'AI and operations', d: 'Voice agents, lead pipelines, agent back offices, workflow automation.' },
+  { t: 'Agentic systems and operations', d: 'Voice agents, lead pipelines, agent back offices, workflow automation.' },
   { t: 'Brand and commerce', d: 'Direction, identity, storefronts, print, creative systems.' },
   { t: 'Story and launch', d: 'Positioning, copy, commercials, films, the go-to-market around a product.' },
 ];
@@ -178,7 +178,7 @@ export default function SarahScaranoPage() {
                 </span>
               </h1>
               <p className="font-body text-lg md:text-xl text-[#3A3733] leading-relaxed max-w-xl">
-                I turn ideas into products, brands and businesses you can use. Full-stack developer, AI builder and creative director, working from Flathead Lake, Montana. Everything below is live.
+                I turn ideas into products, brands and businesses you can use. Full-stack developer, agentic systems builder and creative director, working from Flathead Lake, Montana. Everything below is live.
               </p>
               <div className="flex flex-wrap justify-center md:justify-start gap-3 mt-7">
                 <a

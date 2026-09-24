@@ -25,7 +25,7 @@ export default function TermsPage() {
             </p>
             <h2>Services</h2>
             <p>
-              We provide AI products, voice agents, full-stack development, business automation, brand strategy, and creative technology services. Each engagement is governed by a separate written scope and fee agreement.
+              We provide agentic products, voice agents, full-stack development, business automation, brand strategy, and creative technology services. Each engagement is governed by a separate written scope and fee agreement.
             </p>
             <h2>Text messaging (SMS) terms</h2>
             <p>

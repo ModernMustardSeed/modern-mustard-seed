@@ -16,11 +16,11 @@ type Tool = { key: string; label: string; sub: string; cost: number };
 
 const TOOLS: Tool[] = [
   { key: 'crm', label: 'CRM / pipeline software', sub: 'Customers, leads, follow-up', cost: 49 },
-  { key: 'calls', label: 'Call transcription + AI notes', sub: 'Every call written down', cost: 30 },
+  { key: 'calls', label: 'Call transcription + agentic notes', sub: 'Every call written down', cost: 30 },
   { key: 'analytics', label: 'Website analytics (paid tier)', sub: 'Traffic, sources, top pages', cost: 19 },
   { key: 'reviews', label: 'Review management', sub: 'Chase and reply to Google reviews', cost: 40 },
   { key: 'invoicing', label: 'Invoicing + payment chasing', sub: 'Send invoices, chase the late ones', cost: 30 },
-  { key: 'scheduling', label: 'Scheduling / booking tool', sub: 'The calendar the AI books into', cost: 20 },
+  { key: 'scheduling', label: 'Scheduling / booking tool', sub: 'The calendar the agents book into', cost: 20 },
   { key: 'reporting', label: 'Reporting dashboard', sub: 'The whole business on one screen', cost: 25 },
 ];
 

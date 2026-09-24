@@ -33,15 +33,15 @@ function pickPlaybook(industry?: string): { slug: string; title: string; hook: s
   if (i.includes('real estate') || i.includes('investor') || i.includes('agent')) {
     return {
       slug: 'specialty-ai-tool',
-      title: 'The Specialty AI Tool Playbook',
+      title: 'The Specialty Agentic Tool Playbook',
       hook:
-        'How real estate operators are replacing $3K friction lines with $99 AI tools. Examples from staging, deal analysis, and FSBO listings.',
+        'How real estate operators are replacing $3K friction lines with $99 agentic tools. Examples from staging, deal analysis, and FSBO listings.',
     };
   }
   if (i.includes('saas') || i.includes('founder') || i.includes('startup')) {
     return {
       slug: 'scope-an-ai-project',
-      title: 'How to Scope an AI Project in 90 Minutes',
+      title: 'How to Scope an Agentic Systems Project in 90 Minutes',
       hook:
         'The exact 90-minute scoping conversation we run before every build. Run it on your own project before anyone writes a line of code.',
     };
@@ -51,7 +51,7 @@ function pickPlaybook(industry?: string): { slug: string; title: string; hook: s
       slug: 'byok-pricing',
       title: 'The BYOK Pricing Playbook',
       hook:
-        'Why most AI products underprice themselves into the ground, and the three pricing models we use across every engagement.',
+        'Why most agentic products underprice themselves into the ground, and the three pricing models we use across every engagement.',
     };
   }
   return {
@@ -105,7 +105,7 @@ export async function POST(req: Request) {
     });
 
     await resend.emails.send({
-      from: 'AI Audit Leads <sarah@modernmustardseed.com>',
+      from: 'Audit Leads <sarah@modernmustardseed.com>',
       to: OWNER_NOTIFY_TO,
       replyTo: email,
       subject: `Audit Lead: ${name}${company ? ` (${company})` : ''}`,

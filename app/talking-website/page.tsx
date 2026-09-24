@@ -62,11 +62,11 @@ const FAQ = [
   },
   {
     q: 'How much does it cost?',
-    a: 'It comes in three sizes, and the scope follows the size of the site: a focused site, one where every service and every town has its own page, or the full map. Google and AI search index pages rather than sections, so the size you pick is really a decision about how much of your market you want to be findable in. We settle it in one conversation and the quote is built on it.',
+    a: 'It comes in three sizes, and the scope follows the size of the site: a focused site, one where every service and every town has its own page, or the full map. Google and the answer engines index pages rather than sections, so the size you pick is really a decision about how much of your market you want to be findable in. We settle it in one conversation and the quote is built on it.',
   },
   {
     q: 'Why would I want 20 or 50 pages?',
-    a: 'Because Google and AI search index pages, not sections. A page for each service and a page for each town you serve means you are the answer when somebody in that town asks for that job, on Google or in ChatGPT. Five pages is a real storefront. Twenty is every service and every town on its own page. Fifty is every service in every town, so you own the map. Bigger sites cost more because there is more to build and more to keep found.',
+    a: 'Because Google and the answer engines index pages, not sections. A page for each service and a page for each town you serve means you are the answer when somebody in that town asks for that job, on Google or in ChatGPT. Five pages is a real storefront. Twenty is every service and every town on its own page. Fifty is every service in every town, so you own the map. Bigger sites cost more because there is more to build and more to keep found.',
   },
   {
     q: 'What counts as an edit, and what counts as a new page?',
@@ -81,7 +81,7 @@ const FAQ = [
     a: 'Yes. The voice agent bolts onto any site, including one we did not build. You will not get the shared-brain part until the site is ours too, but you will get your phone answered 24/7 starting the week you order it.',
   },
   {
-    q: 'Will my customers know it is AI?',
+    q: 'Will my customers know it is a voice agent?',
     a: 'It introduces itself honestly and it never pretends to be a person. That turns out to be fine, because at nine on a Saturday night the alternative was never a human, it was a beep. What loses you the job is the call nobody picks up.',
   },
   {
@@ -106,9 +106,9 @@ function talkingWebsiteJsonLd() {
         '@type': 'Service',
         name: 'The Talking Website by Modern Mustard Seed',
         serviceType:
-          'Combined small-business website and AI voice agent built on one shared knowledge base',
+          'Combined small-business website and voice agent built on one shared knowledge base',
         description:
-          'A website that answers its own phone. The website and the AI voice agent are built as one system off one brain, so the answer a visitor reads on the page is the same answer a caller hears at midnight. Includes custom website design, funnels, SEO and GEO, and a 24/7 AI voice agent answering the number you already have.',
+          'A website that answers its own phone. The website and the voice agent are built as one system off one brain, so the answer a visitor reads on the page is the same answer a caller hears at midnight. Includes custom website design, funnels, SEO and GEO, and a 24/7 voice agent answering the number you already have.',
         provider: { '@type': 'Organization', name: 'Modern Mustard Seed', url: SITE.url },
         areaServed: 'US',
         url: `${SITE.url}/talking-website`,
@@ -151,7 +151,7 @@ export default function TalkingWebsitePage() {
               <h1 className="font-display text-[2.6rem] sm:text-5xl xl:text-6xl font-bold mt-4 leading-[1.02] tracking-tight">
                 A website that answers its <em className="italic text-[#C4160B]">own phone.</em>
               </h1>
-            <p className="mt-5 font-body text-base leading-relaxed">Designed and built by Modern Mustard Seed, a boutique design and AI studio in Kalispell, Montana, working with clients nationwide. <Link href="/agentic-websites" className="underline font-bold">See how our AI websites connect the page and the business.</Link></p>
+            <p className="mt-5 font-body text-base leading-relaxed">Designed and built by Modern Mustard Seed, a boutique design and agentic systems studio in Kalispell, Montana, working with clients nationwide. <Link href="/agentic-websites" className="underline font-bold">See how our agentic websites connect the page and the business.</Link></p>
               <p className="font-body text-[17px] text-[#161616]/75 mt-5 leading-relaxed">
                 Not a site with a chat bubble bolted on. Your website and your voice agent, built as one thing off one
                 brain, so the answer a visitor reads at noon is the exact answer a caller hears at midnight. The
@@ -333,7 +333,7 @@ export default function TalkingWebsitePage() {
             The size of the site is the size of the decision.
           </h2>
           <p className="font-body text-[15px] text-[#161616]/70 mt-4 max-w-2xl leading-relaxed">
-            Google and AI search index pages, not sections. Every service and every town on its own
+            Google and the answer engines index pages, not sections. Every service and every town on its own
             page is how you become the answer. The voice agent reads every page, so a bigger site is
             a smarter phone too. Where you land is the first thing we work out together, and it is
             what the quote is built on.

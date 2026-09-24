@@ -76,7 +76,7 @@ export async function POST(req: Request) {
           body:
             p(`Here is your AI Prompt Playbook, tailored for ${niche.label}. It is built for anyone who wants to use AI but never has. Open a free tool like Claude (claude.ai) or ChatGPT (chatgpt.com), paste one of the prompts, and watch it write the email, the week of social posts, the proposal, or the summary for you.`) +
             p('Every prompt is already customized to your work. Fill in the blanks in brackets, press enter, and if it is not quite right just tell it to make it shorter or more casual. You cannot break it.') +
-            p('When you are ready for AI that answers your phone, books appointments, and follows up with every lead around the clock, that is exactly what we build.'),
+            p('When you are ready for an agentic system that answers your phone, books appointments, and follows up with every lead around the clock, that is exactly what we build.'),
           cta: { label: 'Download your playbook (PDF)', url: fullPdfUrl },
           secondary: { label: 'See what we build', url: `${SITE.url}/work-with-us` },
         }),

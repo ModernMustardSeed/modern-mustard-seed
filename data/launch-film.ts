@@ -234,7 +234,7 @@ export const launchFilmFaq = [
     a: 'The product, running, and thirty minutes. We drive it ourselves and keep what it produces. If it is not live yet, a staging URL works. The treatment comes back with the shot list and the length before anything is rendered.',
   },
   {
-    q: 'Is this AI-generated footage?',
+    q: 'Is this generated footage?',
     a: 'No. The screens are your real product, captured while it runs. The type, the motion and the backdrops are painted procedurally, and the score is synthesised. Where a film calls for illustration we generate it to a character sheet, and we say so in the treatment.',
   },
   {

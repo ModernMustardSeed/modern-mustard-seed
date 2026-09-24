@@ -50,14 +50,14 @@ export default function PlaybooksPage() {
                 Interactive tool
               </span>
               <span className="text-[9px] uppercase tracking-[0.25em] text-[#E0301E] font-mono font-bold">
-                Never used AI? Start here
+                Never used agentic tools? Start here
               </span>
             </div>
             <h2 className="font-display text-2xl md:text-4xl font-black text-[#161616] tracking-tight mb-3 leading-[1.05]">
-              The AI Prompt Playbook
+              The Agentic Prompt Playbook
             </h2>
             <p className="text-[#161616]/75 text-sm md:text-base font-body leading-7 max-w-2xl">
-              Pick your niche and get a full set of ready-to-paste AI prompts, rewritten for your exact business. Copy one,
+              Pick your niche and get a full set of ready-to-paste prompts for ChatGPT or Claude, rewritten for your exact business. Copy one,
               paste it into a free tool like Claude or ChatGPT, and watch it write for you. Email yourself the branded PDF
               to keep.
             </p>

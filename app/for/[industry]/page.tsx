@@ -64,7 +64,7 @@ export default async function IndustryPage({ params }: { params: Params }) {
       <JsonLd
         data={[
           webPageJsonLd,
-          serviceJsonLd({ name: `AI Build Services for ${i.name}`, description: i.metaDescription }),
+          serviceJsonLd({ name: `Agentic Build Services for ${i.name}`, description: i.metaDescription }),
           faqJsonLd(i.faqs),
           breadcrumbJsonLd([
             { name: 'Home', url: '/' },

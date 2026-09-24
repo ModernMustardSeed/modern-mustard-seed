@@ -38,7 +38,7 @@ export const PORTFOLIO: PortfolioCategory[] = [
         name: 'Modern Mustard Seed',
         url: 'https://modernmustardseed.com',
         status: 'live',
-        blurb: 'The AI studio itself. Marketing site, blog, case studies, the AI audit tool, and this entire command center.',
+        blurb: 'The agentic studio itself. Marketing site, blog, case studies, the agentic audit tool, and this entire command center.',
         tags: ['studio', 'flagship'],
       },
       {
@@ -111,7 +111,7 @@ export const PORTFOLIO: PortfolioCategory[] = [
         url: '/pictures',
         internal: true,
         status: 'live',
-        blurb: 'A free AI Screen Test that turns into a finished commercial. The top of the video funnel.',
+        blurb: 'A free agentic Screen Test that turns into a finished commercial. The top of the video funnel.',
         tags: ['funnel', 'video'],
       },
       {
@@ -127,7 +127,7 @@ export const PORTFOLIO: PortfolioCategory[] = [
         url: '/mustard-launch',
         internal: true,
         status: 'live',
-        blurb: 'AI launch coach. A free Blueprint that upsells the full launch Kit.',
+        blurb: 'Agentic launch coach. A free Blueprint that upsells the full launch Kit.',
         tags: ['funnel', 'coaching'],
       },
       {
@@ -152,7 +152,7 @@ export const PORTFOLIO: PortfolioCategory[] = [
         url: '/prompt-playbook',
         internal: true,
         status: 'live',
-        blurb: 'An AI-prompt lead magnet that captures emails at the top of the funnel.',
+        blurb: 'A prompt playbook lead magnet that captures emails at the top of the funnel.',
         tags: ['funnel', 'lead-magnet'],
       },
       {
@@ -228,13 +228,13 @@ export const PORTFOLIO: PortfolioCategory[] = [
   {
     key: 'concierge',
     title: 'Voice Concierge Demos',
-    kicker: 'AI that answers the phone',
+    kicker: 'Agents that answer the phone',
     items: [
       {
         name: "Newk's",
         url: 'https://newks-voice-concierge.vercel.app',
         status: 'demo',
-        blurb: 'AI phone concierge demo for Newk\'s. Answers, books, and never misses a call.',
+        blurb: 'Agentic phone concierge demo for Newk\'s. Answers, books, and never misses a call.',
         tags: ['voice', 'restaurant'],
       },
       {
@@ -308,7 +308,7 @@ export const PORTFOLIO: PortfolioCategory[] = [
         url: 'https://chinatown-kalispell.vercel.app',
         owner: 'Chinatown Restaurant, Kalispell',
         status: 'live',
-        blurb: 'Midnight lacquer ticket direction for the Kalispell Chinese kitchen. Their real 150-item menu with every dish photographed, a thermal-receipt ordering flow, and a live AI host that takes orders in English, Mandarin, Cantonese, or Spanish. Lead on the dial floor: (406) 755-2401, kalispellchinatown@gmail.com.',
+        blurb: 'Midnight lacquer ticket direction for the Kalispell Chinese kitchen. Their real 150-item menu with every dish photographed, a thermal-receipt ordering flow, and a live agentic host that takes orders in English, Mandarin, Cantonese, or Spanish. Lead on the dial floor: (406) 755-2401, kalispellchinatown@gmail.com.',
         tags: ['demo-build', 'restaurant', 'voice', 'multilingual'],
       },
     ],

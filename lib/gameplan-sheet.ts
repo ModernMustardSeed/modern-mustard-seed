@@ -47,7 +47,7 @@ const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replac
 type PlanStep = { t: string; d: string };
 
 function planSteps(voiceFirst: boolean): PlanStep[] {
-  const voice: PlanStep = { t: 'An agent that answers every call', d: 'Your own AI front desk picks up when you cannot: after hours, weekends, lunch, mid-job. It answers real questions, books real appointments, and texts you the details. Scan the code below and talk to it yourself.' };
+  const voice: PlanStep = { t: 'An agent that answers every call', d: 'Your own agentic front desk picks up when you cannot: after hours, weekends, lunch, mid-job. It answers real questions, books real appointments, and texts you the details. Scan the code below and talk to it yourself.' };
   const site: PlanStep = { t: 'A website that books while you sleep', d: 'Not a brochure. A site built to turn a search into a booked job: clear services, real reviews, tap-to-call, and online booking that works at 11pm.' };
   const os: PlanStep = { t: 'One place every lead lands', d: 'Every call, booking, and lead in one inbox you own. No logins to seven tools. You see exactly what the phone and the website brought in.' };
   return voiceFirst ? [voice, site, os] : [site, voice, os];
@@ -134,7 +134,7 @@ export function gameplanSheetHtml(l: OutboundLead, { hubQr, siteQr, planQr }: Ga
     <div class="wordmark">MODERN <span>MUSTARD</span> SEED</div>
     <div class="date">Prepared ${new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })} &middot; modernmustardseed.com</div>
   </div>
-  <h1>The AI <span class="accent">Game Plan</span></h1>
+  <h1>The Agentic <span class="accent">Game Plan</span></h1>
   <p class="prepared">Prepared for <b>${esc(l.business_name)}</b>${l.city ? ` &middot; ${esc(l.city)}, ${esc(l.state || 'MT')}` : ''}${trade ? ` &middot; ${esc(trade)}` : ''}</p>
   <p class="intro">We looked at how ${esc(l.business_name)} shows up online and what happens to your phone when nobody can answer it. This page is what we found and what we would do about it. It is yours to keep either way, and the demos on it are already live.</p>
 
@@ -155,19 +155,19 @@ export function gameplanSheetHtml(l: OutboundLead, { hubQr, siteQr, planQr }: Ga
     ${planQr ? `<div><div class="qr">${planQr}</div><div class="qrlabel">Your full plan</div></div>` : ''}
     <div>
       <h3>Already built. <span>Live right now.</span></h3>
-      <p>We did not bring a sales deck, we brought the finished thing. Scan the codes: your own AI agent ready to talk${siteQr ? ', the website we built you' : ''}${planQr ? ', and your full step-by-step AI plan, with everything AI can do for a business like yours and our free playbook shelf inside' : ''}. Talk to the agent. Ask it what you would ask a front desk.</p>
+      <p>We did not bring a sales deck, we brought the finished thing. Scan the codes: your own voice agent ready to talk${siteQr ? ', the website we built you' : ''}${planQr ? ', and your full step-by-step AI plan, with everything AI can do for a business like yours and our free playbook shelf inside' : ''}. Talk to the agent. Ask it what you would ask a front desk.</p>
     </div>
   </div>
 
   <div class="contact">
     <span><b>Sarah Scarano</b> &middot; (406) 250-6076 &middot; call or text me directly</span>
-    <span><b class="m">Talk to our AI any time:</b> Mr. Mustard &middot; (406) 312-1223</span>
+    <span><b class="m">Talk to our voice agent any time:</b> Mr. Mustard &middot; (406) 312-1223</span>
     <span><b>modernmustardseed.com</b> &middot; sarah@modernmustardseed.com</span>
   </div>
 
   <footer>
     <div><b>Set package pricing.</b> Changes included. No hourly billing, ever. You own everything we build.</div>
-    <div>Kalispell, Montana &middot; yes, an AI answers our phone too</div>
+    <div>Kalispell, Montana &middot; yes, a voice agent answers our phone too</div>
   </footer>
 </div>
 </body></html>`;

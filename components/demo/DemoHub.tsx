@@ -286,7 +286,7 @@ export default function DemoHub({
         integrationPlanUrl && {
           href: integrationPlanUrl,
           icon: '📋',
-          title: 'Your AI Integration Plan',
+          title: 'Your Agentic Integration Plan',
           desc: planQuote
             ? `From your plan: "${planQuote}" The rest is a step-by-step path, yours to keep, free either way.`
             : `The step-by-step plan we wrote for ${business}: where the calls are leaking, what to do about it, and the order to do it in. Yours to keep, free either way.`,
@@ -596,7 +596,7 @@ export default function DemoHub({
 
         <section className="text-center pb-6">
           <p className="font-mono text-[11px] text-[#161616]/40">
-            Demos built with care by Modern Mustard Seed · Kalispell, MT · Yes, an AI answers our phone too. Try it.
+            Demos built with care by Modern Mustard Seed · Kalispell, MT · Yes, a voice agent answers our phone too. Try it.
           </p>
         </section>
       </main>

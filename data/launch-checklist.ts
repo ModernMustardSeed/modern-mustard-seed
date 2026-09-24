@@ -79,7 +79,7 @@ export const PHASES: Phase[] = [
   { id: 'money', title: 'Money and books', eyebrow: 'Phase 2', blurb: 'Separate business money from personal, get paid cleanly, and keep the books from day one.' },
   { id: 'local', title: 'Get found locally', eyebrow: 'Phase 3', blurb: 'Show up on the map and in search the moment someone nearby looks for what you do.' },
   { id: 'online', title: 'Your online home', eyebrow: 'Phase 4', blurb: 'A domain, a real website, and a brand that looks like the business you are becoming.' },
-  { id: 'systems', title: 'Systems that run it', eyebrow: 'Phase 5', blurb: 'The CRM, AI agents, and automations that answer, book, and follow up while you work.' },
+  { id: 'systems', title: 'Systems that run it', eyebrow: 'Phase 5', blurb: 'The CRM, agents, and automations that answer, book, and follow up while you work.' },
   { id: 'customers', title: 'Get customers', eyebrow: 'Phase 6', blurb: 'Funnels, lead magnets, ads, and social that turn attention into booked, paying work.' },
 ];
 
@@ -333,7 +333,7 @@ export const ITEMS: ChecklistItem[] = [
     why: 'Apple Maps and Bing power Siri, ChatGPT, and millions of searches Google never sees.',
     steps: [
       'Claim Apple Business Connect so you appear in Apple Maps and Siri.',
-      'Claim Bing Places. Bing increasingly feeds AI answers in Copilot and ChatGPT.',
+      'Claim Bing Places. Bing increasingly feeds the answers in Microsoft Copilot and ChatGPT.',
       'Keep name, address, and phone identical across all three to avoid hurting local ranking.',
     ],
     links: [
@@ -457,10 +457,10 @@ export const ITEMS: ChecklistItem[] = [
     id: 'seo-geo',
     phase: 'online',
     title: 'Lay an SEO and GEO foundation',
-    why: 'Get found on Google AND inside AI answers (ChatGPT, Perplexity, Gemini), where buyers increasingly start.',
+    why: 'Get found on Google AND inside answer engines (ChatGPT, Perplexity, Gemini), where buyers increasingly start.',
     steps: [
       'Cover the basics: titles, meta, fast pages, a sitemap, and local schema markup.',
-      'Add GEO: structured data, an llms.txt, and clear factual content so AI tools cite you.',
+      'Add GEO: structured data, an llms.txt, and clear factual content so answer engines cite you.',
       'Publish a few pages that answer the exact questions your customers ask.',
     ],
     links: [{ label: 'Google Search Console', url: 'https://search.google.com/search-console/about', official: true }],
@@ -489,21 +489,21 @@ export const ITEMS: ChecklistItem[] = [
   {
     id: 'ai-sdr',
     phase: 'systems',
-    title: 'Put an AI agent on the front line',
-    why: 'Most leads call or message once. An AI voice and chat agent answers 24/7, qualifies, and books while you work.',
+    title: 'Put an agent on the front line',
+    why: 'Most leads call or message once. A voice and chat agent answers 24/7, qualifies, and books while you work.',
     steps: [
-      'Add an AI chat agent to your site and a voice agent answering your calls.',
+      'Add a chat agent to your site and a voice agent answering your calls.',
       'It answers common questions, qualifies the lead, and books the appointment automatically.',
       'Every conversation lands in your CRM with notes, so nothing is lost.',
     ],
     verticals: 'all',
     notes: {
-      'home-field-trades': 'The after-hours call you miss is the job your competitor takes. An AI agent answers at 9pm and books the estimate.',
+      'home-field-trades': 'The after-hours call you miss is the job your competitor takes. An agent answers at 9pm and books the estimate.',
       'food-retail-ecom': 'Handle reservations, order questions, and hours automatically so staff stay on the floor.',
       'health-beauty-wellness': 'Fill the book and the cancellations list automatically, and cut no-shows with confirmations and reminders.',
       'pro-creative-realestate': 'Qualify and intake new inquiries so only fit, ready prospects reach your calendar.',
     },
-    mms: { label: 'Meet Mr. Mustard, our AI SDR', href: '/voice-agents' },
+    mms: { label: 'Meet Mr. Mustard, our agentic SDR', href: '/voice-agents' },
     time: '1 to 2 weeks',
     cost: 'Our specialty',
   },

@@ -128,7 +128,7 @@ export function renderNewsletter(playbook: NewsletterPlaybook, features = NEWSLE
   <p style="font-size:14px;color:#777">If you would rather have us ship the thing for you, a <a href="https://modernmustardseed.com/book" style="color:#C8964E">free call</a> is the fastest way in, and we are booking new builds.</p>
   ${features.map((f) => f.html()).join('\n')}
   <hr style="border:0;border-top:1px solid #eee;margin:32px 0">
-  <p style="font-size:12px;color:#888">Modern Mustard Seed. Apps, sites, and specialty AI tools.<br>
+  <p style="font-size:12px;color:#888">Modern Mustard Seed. Apps, sites, and agentic systems.<br>
   Reply to this email to talk to Sarah directly.</p>
   <p style="font-size:11px;color:#aaa">You are getting this because you subscribed at modernmustardseed.com.
   <a href="{{{RESEND_UNSUBSCRIBE_URL}}}" style="color:#aaa">Unsubscribe</a>.</p>

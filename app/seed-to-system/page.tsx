@@ -134,7 +134,7 @@ export default function SeedToSystemPage() {
             </div>
             <div>
               <Sparkles className="h-6 w-6 text-[#B92417]" aria-hidden="true" />
-              <h3 className="mt-4 font-display text-xl font-black">AI in its proper place</h3>
+              <h3 className="mt-4 font-display text-xl font-black">Agentic systems in their proper place</h3>
               <p className="mt-2 font-body text-sm leading-relaxed text-[#5C554A]">
                 The machine carries the repeatable middle. Your judgment, taste, and relationships stay human.
               </p>
@@ -226,7 +226,7 @@ export default function SeedToSystemPage() {
               Sarah teaches what she ships.
             </h2>
             <p className="mt-6 font-body text-lg leading-relaxed text-[#5C554A]">
-              Modern Mustard Seed has built stores, AI products, voice agents, command centers, lead engines, and
+              Modern Mustard Seed has built stores, agentic products, voice agents, command centers, lead engines, and
               client systems across dozens of industries. Cross + Covenant went from a sketch to a live storefront
               with a tiny human team.
             </p>

@@ -8,14 +8,14 @@ import { PHASES } from '@/data/launch-checklist';
 export const metadata = buildMetadata({
   title: 'The New Business Launch Checklist',
   description:
-    'Every step to open and digitize a new business, tailored to your industry. LLC, EIN, licenses, insurance, bank, Google and Maps, website, CRM, AI agents, funnels, and ads. Free, with a branded PDF.',
+    'Every step to open and digitize a new business, tailored to your industry. LLC, EIN, licenses, insurance, bank, Google and Maps, website, CRM, voice and chat agents, funnels, and ads. Free, with a branded PDF.',
   path: '/launch-checklist',
 });
 
 const checklistFaq = [
   {
     q: 'What is the New Business Launch Checklist?',
-    a: 'A complete, step-by-step checklist for opening and digitizing a new business. It covers the legal foundation (LLC, EIN, licenses, insurance), money and books, getting found on Google and Maps, your website and brand, the CRM and AI agents that answer and book for you, and the funnels, lead magnets, and ads that bring in customers. Each step has a short how-to, official links, and the option to have Modern Mustard Seed do it for you.',
+    a: 'A complete, step-by-step checklist for opening and digitizing a new business. It covers the legal foundation (LLC, EIN, licenses, insurance), money and books, getting found on Google and Maps, your website and brand, the CRM and agents that answer and book for you, and the funnels, lead magnets, and ads that bring in customers. Each step has a short how-to, official links, and the option to have Modern Mustard Seed do it for you.',
   },
   {
     q: 'Is it free?',
@@ -27,11 +27,11 @@ const checklistFaq = [
   },
   {
     q: 'Can Modern Mustard Seed set it all up for me?',
-    a: 'Yes. That is what we do. We build the website, CRM, AI voice and chat agents, automations, funnels, and ad systems that the checklist describes, properly and fast, usually shipped in weeks, not months. Most owners use the checklist to get the legal and money basics in place, then hand the digital build to us.',
+    a: 'Yes. That is what we do. We build the website, CRM, voice and chat agents, automations, funnels, and ad systems that the checklist describes, properly and fast, usually shipped in weeks, not months. Most owners use the checklist to get the legal and money basics in place, then hand the digital build to us.',
   },
   {
     q: 'What does it cover that a generic startup checklist does not?',
-    a: 'The digital side. Most checklists stop at LLC and EIN. This one keeps going through Google Business Profile, Bing and Apple Maps, a real website with SEO and GEO, a CRM, AI agents that answer and book around the clock, automations, lead magnets, funnels, email and SMS, and ads, which is where new businesses actually win or stall today.',
+    a: 'The digital side. Most checklists stop at LLC and EIN. This one keeps going through Google Business Profile, Bing and Apple Maps, a real website with SEO and GEO, a CRM, agents that answer and book around the clock, automations, lead magnets, funnels, email and SMS, and ads, which is where new businesses actually win or stall today.',
   },
 ];
 
@@ -80,7 +80,7 @@ export default function LaunchChecklistPage() {
               </span>
             </h1>
             <p className="text-[#3a3733] text-base md:text-lg font-body leading-relaxed max-w-2xl mx-auto mb-4">
-              Every step to get your business open, online, and bringing in customers. The legal and money basics, then the website, CRM, AI agents, and funnels most checklists skip. Tailored to your field, with how-tos and links on every step.
+              Every step to get your business open, online, and bringing in customers. The legal and money basics, then the website, CRM, agents, and funnels most checklists skip. Tailored to your field, with how-tos and links on every step.
             </p>
             <p className="text-[#161616]/50 text-sm font-body italic mb-7">
               Pick your industry, work the list, and grab the branded PDF to keep.
@@ -106,7 +106,7 @@ export default function LaunchChecklistPage() {
                 We build the digital half for you
               </h2>
               <p className="text-[#161616]/75 text-base font-body font-medium mb-7 max-w-xl mx-auto">
-                Website, CRM, AI voice and chat agents, automations, funnels, and ads. The whole stack the checklist describes, built right and shipped in weeks, not months. You get the basics in place. We handle the engine.
+                Website, CRM, voice and chat agents, automations, funnels, and ads. The whole stack the checklist describes, built right and shipped in weeks, not months. You get the basics in place. We handle the engine.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Link

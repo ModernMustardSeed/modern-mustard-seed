@@ -58,7 +58,7 @@ export default function ReadForm() {
         <p className="font-mono text-[11px] font-bold uppercase tracking-[0.3em] text-[#E0301E]">[ RECEIVED ]</p>
         <h3 className="font-display text-2xl font-black tracking-tight text-[#161616] mt-2">The business is in the queue.</h3>
         <p className="font-body text-sm leading-relaxed text-[#161616]/75 mt-3">
-          We read it and send the AI Read back {AI_NATIVE.readDelivery}: the three AI moves that pay first in your company, what each one costs to run, and which door fits. No charge, and the read is yours either way.
+          We read it and send the Agentic Read back {AI_NATIVE.readDelivery}: the three agentic moves that pay first in your company, what each one costs to run, and which door fits. No charge, and the read is yours either way.
         </p>
       </div>
     );

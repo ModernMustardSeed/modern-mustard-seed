@@ -44,7 +44,7 @@ export const PA_CAROUSEL = [
   { file: '01-hook', label: 'The hook', alt: 'Most people decide about you before they reach your website. A sample Google listing: Sample Roofing Co., 4.8 stars from 58 reviews.' },
   { file: '02-a-third', label: 'A third of the problem', alt: 'A website audit grades a third of the problem. The website 45 percent, the reviews 30 percent, the Google profile 25 percent.' },
   { file: '03-sample-report', label: 'The sample report', alt: 'Sample report: 64 out of 100, a D. Your reviews are outrunning your website. Website 41, reviews 88, profile 75. Fix number one: publish your hours on Google.' },
-  { file: '04-eight-checks', label: 'Eight checks', alt: 'Eight checks, pass or fail. The Google profile pillar has no AI and every check can be verified in a minute.' },
+  { file: '04-eight-checks', label: 'Eight checks', alt: 'Eight checks, pass or fail. The Google profile pillar uses no language model and every check can be verified in a minute.' },
   { file: '05-how-it-works', label: 'How it works', alt: 'You ask. We grade. It lands. Leave your email, we grade all three, the report hits your inbox.' },
   { file: '06-get-yours', label: 'Get yours free', alt: 'Get yours free. Your website, your Google profile and your reviews, graded and emailed to you. modernmustardseed.com/presence-audit' },
 ];
@@ -59,7 +59,7 @@ So I built an audit that grades what they actually see:
 → Your reviews, volume and rating against businesses like yours. 30%.
 → Your Google Business Profile, on eight checks that each pass or fail. 25%.
 
-Two of those three pillars have no AI in them, on purpose. Every check prints what it is worth and where the number came from, so you can verify the whole report in about ninety seconds. Every score comes with evidence you can check.
+Two of those three pillars use no language model, on purpose. Every check prints what it is worth and where the number came from, so you can verify the whole report in about ninety seconds. Every score comes with evidence you can check.
 
 Leave your email and the full report lands in your inbox with the fixes ranked. The free fixes come first.
 

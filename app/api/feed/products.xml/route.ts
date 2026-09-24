@@ -91,7 +91,7 @@ export async function GET() {
   <channel>
     <title>${escapeXml(SITE.name + ' Playbook Store')}</title>
     <link>${escapeXml(SITE.url + '/store')}</link>
-    <description>${escapeXml('Production-tested AI workbooks and playbooks from Modern Mustard Seed.')}</description>
+    <description>${escapeXml('Production-tested agentic systems workbooks and playbooks from Modern Mustard Seed.')}</description>
     ${itemsXml}
   </channel>
 </rss>`;

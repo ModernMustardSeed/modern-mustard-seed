@@ -5,7 +5,7 @@ import { buildMetadata, SITE } from '@/lib/seo';
 export const metadata = buildMetadata({
   title: 'Mustard Life. The Family Business Issue',
   description:
-    'A glossy magazine comic starring Mr. and Mrs. Mustard: how one family yachts, brunches, and premieres while AI staff answer the phones, build the websites, and run the ads. Every product, every price, printed in ink.',
+    'A glossy magazine comic starring Mr. and Mrs. Mustard: how one family yachts, brunches, and premieres while agentic staff answer the phones, build the websites, and run the ads. Every product, every price, printed in ink.',
   path: '/comic',
   image: '/comic/og.jpg',
 });
@@ -31,11 +31,11 @@ const offerIndexJsonLd = {
   '@type': 'ItemList',
   name: 'Everything in this issue',
   itemListElement: [
-    { name: 'Voice Agents (24/7 AI phone answering)', url: `${SITE.url}/voice-agents` },
+    { name: 'Voice Agents (24/7 phone answering)', url: `${SITE.url}/voice-agents` },
     { name: 'The Demo Station (websites and command centers)', url: `${SITE.url}/demos` },
     { name: 'Mustard Pictures (commercials)', url: `${SITE.url}/pictures` },
-    { name: 'Mustard Launch (AI launch coach)', url: `${SITE.url}/mustard-launch` },
-    { name: 'GEO Desk (AI findability)', url: `${SITE.url}/website-audit` },
+    { name: 'Mustard Launch (agentic launch coach)', url: `${SITE.url}/mustard-launch` },
+    { name: 'GEO Desk (answer engine findability)', url: `${SITE.url}/website-audit` },
     { name: 'The Switchboard (franchise concierge)', url: `${SITE.url}/switchboard` },
     { name: 'Mustard Mode (Claude coaching)', url: `${SITE.url}/mustard-mode` },
     { name: 'The Store (playbooks and courses)', url: `${SITE.url}/store` },

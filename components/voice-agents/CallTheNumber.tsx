@@ -128,7 +128,7 @@ export default function CallTheNumber({ location = 'voice-agents-hero' }: { loca
         </div>
 
         <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.2em] text-[#FBF6EA]/55">
-          Free · No script · He tells you he is an AI in the first sentence
+          Free · No script · He tells you he is a voice agent in the first sentence
         </p>
       </div>
     </div>

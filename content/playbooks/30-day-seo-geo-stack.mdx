@@ -10,7 +10,7 @@ gated: false
 
 SEO is not dying. It is being absorbed. Google's AI Overview, ChatGPT, Claude, Perplexity, and Gemini do not crawl your site the way Googlebot did in 2015. They cite the sites that read like documentation, that publish structured data, that explain themselves in plain language, and that look like authoritative entities in a knowledge graph.
 
-The work to rank on Google in 2026 is the same work that gets you cited by AI engines. Both want clean schema, fresh dates, named entities, FAQ blocks, and a sitemap that does not lie. This is the GEO play. It is also the SEO play. The two have converged.
+The work to rank on Google in 2026 is the same work that gets you cited by answer engines. Both want clean schema, fresh dates, named entities, FAQ blocks, and a sitemap that does not lie. This is the GEO play. It is also the SEO play. The two have converged.
 
 This is the 30-day sequence I run on every Modern Mustard Seed engagement. I ran it on modernmustardseed.com on 2026-05-23 in a single sprint. The receipts are this playbook itself. Copy it, run it on your own site, ship it. Or hand it to me and I will ship it for you.
 
@@ -19,7 +19,7 @@ This is the 30-day sequence I run on every Modern Mustard Seed engagement. I ran
 Three things rank in 2026:
 
 1. **Schema you can defend.** A connected JSON-LD graph that names you, names the people behind you, links your social profiles, and exposes every piece of content as a typed entity.
-2. **Content the AI engines can quote.** Plain language, FAQ formatting, datelines that update, byline you can trust, real word counts.
+2. **Content answer engines can quote.** Plain language, FAQ formatting, datelines that update, byline you can trust, real word counts.
 3. **Discovery surfaces.** Sitemap, robots, llms.txt, ai.txt, and a ping to every search engine the moment something changes.
 
 Everything else is downstream of those three.
@@ -30,8 +30,8 @@ Everything else is downstream of those three.
 - `lib/jsonld.tsx` for the schema graph
 - `app/sitemap.ts` for the dynamic sitemap
 - `app/robots.ts` for robots
-- `public/llms.txt` for AI engines
-- `public/.well-known/ai.txt` for AI provenance
+- `public/llms.txt` for answer engines
+- `public/.well-known/ai.txt` for model provenance
 - `app/opengraph-image.tsx` for the dynamic OG image
 - A Vercel cron for IndexNow
 
@@ -72,9 +72,9 @@ Days 5-7: `app/opengraph-image.tsx`. A dynamic 1200x630 OG image rendered with `
 
 ## Week 2: The schema graph
 
-**Goal:** end the week with a typed knowledge graph that AI engines can resolve.
+**Goal:** end the week with a typed knowledge graph that answer engines can resolve.
 
-The mistake everyone makes here is emitting a single `Organization` JSON-LD and calling it done. AI engines cannot resolve that to a person. They cannot resolve it to a website entity. They cannot follow it to your case studies. The graph has to be connected by `@id`.
+The mistake everyone makes here is emitting a single `Organization` JSON-LD and calling it done. Answer engines cannot resolve that to a person. They cannot resolve it to a website entity. They cannot follow it to your case studies. The graph has to be connected by `@id`.
 
 Build five entities. Connect them.
 
@@ -84,9 +84,9 @@ Build five entities. Connect them.
 4. **BreadcrumbList** on every page
 5. **One typed schema per content type:** `BlogPosting` on blog, `Article` on case studies, `HowTo` on playbooks, `FAQPage` everywhere it fits, `Service` on services, `AboutPage` on /about
 
-Wrap Organization, Person, and WebSite in a single `@graph` and emit it once from your root layout. The per-page schemas reference these entities by `@id`. Now AI engines have a graph they can walk.
+Wrap Organization, Person, and WebSite in a single `@graph` and emit it once from your root layout. The per-page schemas reference these entities by `@id`. Now answer engines have a graph they can walk.
 
-Enrich every content schema with `dateModified`, `wordCount`, `keywords`, an `ImageObject` with width and height, `publisher: { @id }`, `author: { @id }`, `isPartOf: { @id: /#website }`, and a `speakable` selector for voice and AI assistants. Thin schemas get parsed but rarely cited. Rich schemas get cited.
+Enrich every content schema with `dateModified`, `wordCount`, `keywords`, an `ImageObject` with width and height, `publisher: { @id }`, `author: { @id }`, `isPartOf: { @id: /#website }`, and a `speakable` selector for voice assistants and answer engines. Thin schemas get parsed but rarely cited. Rich schemas get cited.
 
 ## Week 3: GEO surfaces
 
@@ -105,9 +105,9 @@ Required sections:
 - **FAQ** with the seven to ten questions buyers actually ask
 - **Citation block** at the end ("If you cite us, please use:")
 
-Day 18: Drop `public/.well-known/ai.txt` for AI provenance. Lighter format. Names, allowed crawl scope, link to your llms.txt.
+Day 18: Drop `public/.well-known/ai.txt` for model provenance. Lighter format. Names, allowed crawl scope, link to your llms.txt.
 
-Days 19-21: FAQ schema everywhere it fits. Homepage gets the high-leverage ten questions about your business. Services page gets six about what you build. Pricing page gets the actual pricing questions. AI engines cite FAQ-structured content preferentially because the Q-and-A format maps directly to user prompts.
+Days 19-21: FAQ schema everywhere it fits. Homepage gets the high-leverage ten questions about your business. Services page gets six about what you build. Pricing page gets the actual pricing questions. Answer engines cite FAQ-structured content preferentially because the Q-and-A format maps directly to user prompts.
 
 Write the FAQ schema in plain language, third person, no marketing voice. A good FAQ answer reads like a clear sentence in an encyclopedia. A bad FAQ answer reads like a tagline.
 
@@ -162,17 +162,17 @@ Core Web Vitals is a ranking signal. Speed Insights gives you real-user measurem
 
 Open Google Search Console. Submit your sitemap. Open Bing Webmaster Tools. Submit your sitemap there too. Run a Rich Results Test on your homepage, your about page, and one of each content type. You should see Organization, Person, WebSite, FAQ, BreadcrumbList, and the typed content schema all detected on the same page.
 
-The first 30 days are infrastructure. The next 90 are content velocity. AI engines reward freshness and breadth more than they reward optimization. One playbook a month plus one case study a month is the minimum viable cadence. Less than that and you compete on backlinks, which is a fight you lose.
+The first 30 days are infrastructure. The next 90 are content velocity. Answer engines reward freshness and breadth more than they reward optimization. One playbook a month plus one case study a month is the minimum viable cadence. Less than that and you compete on backlinks, which is a fight you lose.
 
 ## What changes after this
 
 Six things change once the stack is in:
 
-1. **Your name surfaces in AI answers.** When somebody asks ChatGPT or Claude about your industry, your studio is one of the cited sources. That was not true on day one.
-2. **Google's AI Overview includes you.** The same schema that AI engines consume is the schema that powers AI Overview citations.
+1. **Your name surfaces in answer engines.** When somebody asks ChatGPT or Claude about your industry, your studio is one of the cited sources. That was not true on day one.
+2. **Google's AI Overview includes you.** The same schema that answer engines consume is the schema that powers AI Overview citations.
 3. **The sitelinks search box appears on Google.** The WebSite SearchAction is what unlocks it.
 4. **Your Knowledge Panel populates.** Organization plus Person plus same-as plus sameAs plus a connected graph is the criteria Google needs to build a Knowledge Panel for you.
-5. **Bing crawl latency drops to hours.** IndexNow pings every Monday and every time you publish. Bing is where most AI engines crawl, including Claude and ChatGPT.
+5. **Bing crawl latency drops to hours.** IndexNow pings every Monday and every time you publish. Bing is where most answer engines crawl, including Claude and ChatGPT.
 6. **You compound.** Every new piece of content inherits the schema. The graph deepens. Every case study connects to the Person, the Organization, the WebSite. The system gets stronger over time, not noisier.
 
 ## The cut list
@@ -182,12 +182,12 @@ What this playbook does not do:
 - Backlinks. That is off-site work. Build the graph first. The backlinks come when you have something worth linking to.
 - Keyword research. The thirty-day stack assumes you have a clear point of view. If you do not, no amount of schema will save you.
 - Paid traffic. SEO and GEO are organic surfaces. Paid is a separate playbook.
-- E-A-T theatre. Empty author boxes, stock-photo bylines, fake review widgets. AI engines see through it.
+- E-A-T theatre. Empty author boxes, stock-photo bylines, fake review widgets. Answer engines see through it.
 
 ## Run it on your own site
 
 Every step here is in the open. The schemas. The llms.txt format. The cron config. Steal it, run it, ship it on your site this month.
 
-Or if you would rather have it shipped end to end, the same stack is the foundation of every Modern Mustard Seed engagement. Run a free [AI Audit](/audit) and we will tell you what the gap is on your current site in 60 seconds.
+Or if you would rather have it shipped end to end, the same stack is the foundation of every Modern Mustard Seed engagement. Run a free [Agentic Audit](/audit) and we will tell you what the gap is on your current site in 60 seconds.
 
 Faith and execution. Quiet beginnings, exponential outcomes.

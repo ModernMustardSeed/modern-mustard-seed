@@ -197,7 +197,7 @@ ${pays.length ? `<tr><td style="padding:22px 26px 0;">
   <p style="margin:0 0 12px;">A website nobody finds is a business card in a drawer. Everything we build is set up for all three of the ways people look for a contractor now, and none of it costs extra:</p>
   <p style="margin:0 0 10px;"><strong>Google and Bing.</strong> Every service and every town you cover gets its own page, because that is what actually ranks. Your address, hours and service area are marked up so the search engines read them as facts rather than as text. Sitemap submitted, everything indexed.</p>
   <p style="margin:0 0 10px;"><strong>Your map listing.</strong> The website and the Google listing point at each other, which is most of local ranking. That is why claiming it matters more than anything on this email.</p>
-  <p style="margin:0 0 12px;"><strong>AI search.</strong> When somebody asks ChatGPT or Google's AI answers who does concrete in Kalispell, those systems read structured pages, not adverts. Yours are written and marked up so they can be read, quoted and cited. Most contractors' sites cannot be.</p>
+  <p style="margin:0 0 12px;"><strong>Answer engines.</strong> When somebody asks ChatGPT or Google's AI answers who does concrete in Kalispell, those systems read structured pages, not adverts. Yours are written and marked up so they can be read, quoted and cited. Most contractors' sites cannot be.</p>
   <p style="margin:0 0 12px;">And we keep doing it. If a page is not ranking in a few months, that is our problem to fix, not a new invoice.</p>
 </td></tr>
 
@@ -247,7 +247,7 @@ ${pays.length ? `<tr><td style="padding:22px 26px 0;">
     "GETTING FOUND",
     "Every service and every town gets its own page, which is what ranks. Your",
     "details are marked up so Google and Bing read them as facts. The site and",
-    "your map listing point at each other. And the pages are written so AI search",
+    "your map listing point at each other. And the pages are written so answer engines",
     "can read, quote and cite them, which most contractors' sites cannot. If a",
     "page is not ranking in a few months, that is ours to fix, not a new invoice.",
     "",

@@ -7,7 +7,7 @@ import { industries } from '@/data/industries';
 export const metadata = buildMetadata({
   title: 'Industries We Build For',
   description:
-    'Custom AI tools, apps, and sites for real estate investors, real estate agents, service businesses, DTC and apparel brands, solopreneurs, and consultants. Shipped in weeks, not months.',
+    'Custom agentic tools, apps, and sites for real estate investors, real estate agents, service businesses, DTC and apparel brands, solopreneurs, and consultants. Shipped in weeks, not months.',
   path: '/for',
 });
 
@@ -18,7 +18,7 @@ const collectionJsonLd = {
   url: `${SITE.url}/for`,
   name: 'Industries Modern Mustard Seed Builds For',
   description:
-    'Specialty AI tools, apps, and sites for six core industries. Each industry page documents what we build, the real receipts, and how an engagement in that trade is scoped.',
+    'Specialty agentic tools, apps, and sites for six core industries. Each industry page documents what we build, the real receipts, and how an engagement in that trade is scoped.',
   isPartOf: { '@id': `${SITE.url}/#website` },
   hasPart: [
     ...industries.map((i) => ({
@@ -29,7 +29,7 @@ const collectionJsonLd = {
     })),
     {
       '@type': 'WebPage',
-      name: 'AI for Restaurants. Phone Ordering and Missed-Call Revenue.',
+      name: 'Agentic Systems for Restaurants. Phone Ordering and Missed-Call Revenue.',
       url: `${SITE.url}/for/restaurants`,
       description:
         'voice agents for restaurants that take phone orders, book tables, and save the dinner rush from voicemail. Integrates with Toast, Square, and Clover.',
@@ -62,7 +62,7 @@ export default function ForIndex() {
               <span className="text-gradient-mustard">actually do</span>
             </h1>
             <p className="text-white/65 text-base md:text-lg font-body font-light leading-relaxed max-w-2xl mx-auto">
-              Generic AI agencies pitch generic builds. We document exactly what gets built per industry, the case studies that anchor it, and what it costs.
+              Generic automation agencies pitch generic builds. We document exactly what gets built per industry, the case studies that anchor it, and what it costs.
             </p>
           </header>
 
@@ -94,7 +94,7 @@ export default function ForIndex() {
               className="glass-card p-8 md:p-10 hover:border-mustard-500/30 transition-all duration-500 group"
             >
               <span className="text-[10px] uppercase tracking-[0.35em] text-mustard-500/70 font-mono font-medium mb-4 block">
-                AI for Restaurants
+                Agentic Systems for Restaurants
               </span>
               <h2 className="font-sans text-xl md:text-2xl font-semibold text-white tracking-tight mb-4 group-hover:text-mustard-100 transition-colors">
                 Restaurants

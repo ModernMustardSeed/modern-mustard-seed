@@ -32,7 +32,7 @@ const INCLUDED = [
   { icon: '🌐', name: 'Domain, hosting, and care', desc: 'Your domain, the hosting, and ongoing care all handled. Unlimited edits, before launch and forever after, and we keep it running.' },
   { icon: '📈', name: 'Funnels and SEO', desc: 'Built in from the first page, not bolted on later. Your site is found, and the people who find it get somewhere to go.' },
   { icon: '🧲', name: 'Funnels + a lead magnet', desc: 'A real capture flow and a reason to opt in, live and converting on day one, not someday.' },
-  { icon: '🔎', name: 'SEO + GEO baked in', desc: 'Built to be found on Google and cited by AI search. Metadata, structured data, the works.' },
+  { icon: '🔎', name: 'SEO + GEO baked in', desc: 'Built to be found on Google and cited by answer engines. Metadata, structured data, the works.' },
   { icon: '🔑', name: 'You own every line', desc: 'The repo, the domain, the accounts, all yours on launch day. No rental, no lock-in.' },
 ];
 
@@ -67,7 +67,7 @@ const FAQ = [
   },
   {
     q: 'Can you build it on WordPress or Webflow?',
-    a: 'No. Every site we ship is built on Next.js and hosted on Vercel, and that is not a limitation you feel. Anything you use as a WordPress or Webflow plugin, whether it is an AI tool, a booking system, a CRM, a chat widget, or a payment processor, we wire in directly. You own the code, edits are included forever, and any JavaScript developer can pick it up if you leave. What you skip is the admin panel with thirty plugins that need updating every month.',
+    a: 'No. Every site we ship is built on Next.js and hosted on Vercel, and that is not a limitation you feel. Anything you use as a WordPress or Webflow plugin, whether it is an agentic tool, a booking system, a CRM, a chat widget, or a payment processor, we wire in directly. You own the code, edits are included forever, and any JavaScript developer can pick it up if you leave. What you skip is the admin panel with thirty plugins that need updating every month.',
   },
   {
     q: 'What if I already have a website?',
@@ -123,7 +123,7 @@ export default function WebsitesPage() {
               <h1 className="font-display text-[2.6rem] sm:text-5xl xl:text-6xl font-bold mt-4 leading-[1.02] tracking-tight">
                 Not a brochure. A website that <em className="italic text-[#C4160B]">works.</em>
               </h1>
-            <p className="mt-5 font-body text-base leading-relaxed">Designed and built by Modern Mustard Seed, a boutique design and AI studio in Kalispell, Montana, working with clients nationwide. <Link href="/agentic-websites" className="underline font-bold">See how our AI websites connect the page and the business.</Link></p>
+            <p className="mt-5 font-body text-base leading-relaxed">Designed and built by Modern Mustard Seed, a boutique design and agentic systems studio in Kalispell, Montana, working with clients nationwide. <Link href="/agentic-websites" className="underline font-bold">See how our agentic websites connect the page and the business.</Link></p>
               <p className="font-body text-[17px] text-[#161616]/75 mt-5 leading-relaxed">
                 Identity and art direction, funnels and SEO baked in, your domain and hosting handled.
                 It captures the lead and follows up while you sleep, and it answers the phone too the
@@ -144,7 +144,7 @@ export default function WebsitesPage() {
                 </Link>
               </div>
               <p className="font-body text-[13px] text-[#161616]/70 mt-4">
-                A boutique design and AI studio in Kalispell, Montana. Every inquiry is answered personally, inside one business day.
+                A boutique design and agentic systems studio in Kalispell, Montana. Every inquiry is answered personally, inside one business day.
               </p>
             </div>
 
@@ -391,7 +391,7 @@ export default function WebsitesPage() {
               {
                 k: 'What decides it',
                 h: 'The shape of the work',
-                d: 'How many pages have to earn their keep, whether every service and every town needs its own, and what has to run behind the page: booking, a store, a CRM, an AI sales rep, a back office.',
+                d: 'How many pages have to earn their keep, whether every service and every town needs its own, and what has to run behind the page: booking, a store, a CRM, an agentic sales rep, a back office.',
               },
               {
                 k: 'What is always in',
@@ -478,7 +478,7 @@ export default function WebsitesPage() {
           </p>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-10">
             {[
-              ['Keep your tools', 'Anything you run as a plugin today, an AI assistant, a booking system, a CRM, a chat widget, a payment processor, we wire in directly. No plugin marketplace in the way.'],
+              ['Keep your tools', 'Anything you run as a plugin today, an agentic assistant, a booking system, a CRM, a chat widget, a payment processor, we wire in directly. No plugin marketplace in the way.'],
               ['Own it', 'The code lives in a GitHub repo in your name. The hosting is a Vercel project in your name. The domain stays yours. Nothing runs through an account of ours.'],
               ['Change it', 'Edits to what we built are included, before launch and forever after. Send the change, we ship it. No ticket and no charge.'],
               ['Leave whenever', 'No theme license, no plugin subscription, no login of ours to get past. Any developer who works in JavaScript can pick the repo up the day you hand it over.'],

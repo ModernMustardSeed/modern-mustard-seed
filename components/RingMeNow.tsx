@@ -191,7 +191,7 @@ export default function RingMeNow({
           {/* ⚠️ Consent. See the header comment. This sentence is why the call is
               welcome. It does not get trimmed. */}
           <p className="mt-3 font-body text-[12px] leading-relaxed text-[#5c554a]">
-            One call, placed by our AI to the number you just typed, because you asked for it. No
+            One call, placed by Mr. Mustard to the number you just typed, because you asked for it. No
             list, no spam, and he will not ring you twice. Rather dial him?{' '}
             <a href={`tel:${DEMO_LINE.tel}`} className="font-bold text-[#C2261A] underline underline-offset-2">
               {DEMO_LINE.display}

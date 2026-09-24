@@ -10,7 +10,7 @@ export type Project = {
 export const projects: Project[] = [
   {
     title: 'Make Me Studio',
-    subtitle: 'AI creative studio for video, image, and asset generation',
+    subtitle: 'Agentic creative studio for video, image, and asset generation',
     tags: ['Next.js', 'Gemini', 'Stripe'],
     href: 'https://source-zip.vercel.app',
     color: 'from-amber-900/40 to-amber-800/20',
@@ -25,7 +25,7 @@ export const projects: Project[] = [
   },
   {
     title: 'Olive Shoot',
-    subtitle: 'Agentic OS for solopreneurs. tRPC, real-time, AI-native',
+    subtitle: 'Agentic OS for solopreneurs. tRPC, real-time, agentic',
     tags: ['Next.js 16', 'tRPC', 'Zustand'],
     href: 'https://olive-shoot.vercel.app',
     color: 'from-blue-900/40 to-blue-800/20',
@@ -33,7 +33,7 @@ export const projects: Project[] = [
   },
   {
     title: 'Ignition',
-    subtitle: 'Multi-agent idea-to-income swarm. Coordinated AI collaboration',
+    subtitle: 'Multi-agent idea-to-income swarm. Coordinated agent collaboration',
     tags: ['Multi-Agent', 'Claude', 'Gemini'],
     href: 'https://ignition-sarah-7990s-projects.vercel.app',
     color: 'from-emerald-900/40 to-emerald-800/20',
@@ -47,22 +47,22 @@ export const projects: Project[] = [
   },
   {
     title: 'Kingdom Lab',
-    subtitle: 'AI experimentation playground. Prototypes and showcases',
-    tags: ['Next.js', 'AI APIs', 'Vercel'],
+    subtitle: 'Agentic experimentation playground. Prototypes and showcases',
+    tags: ['Next.js', 'Model APIs', 'Vercel'],
     href: 'https://kingdom-lab.vercel.app',
     color: 'from-amber-900/40 to-amber-800/20',
   },
   {
     title: 'Luxe Design',
-    subtitle: 'AI interior design and virtual staging for real estate pros',
+    subtitle: 'Agentic interior design and virtual staging for real estate pros',
     tags: ['Replicate', 'Stripe', 'Supabase'],
     href: 'https://luxedesign-five.vercel.app',
     color: 'from-rose-900/40 to-rose-800/20',
   },
   {
     title: 'AdBuild Studio',
-    subtitle: 'AI-powered ad creative generation and campaign design',
-    tags: ['AI', 'Creative', 'Studio'],
+    subtitle: 'Agent-powered ad creative generation and campaign design',
+    tags: ['Agentic', 'Creative', 'Studio'],
     href: 'https://adforge-studio.vercel.app',
     color: 'from-emerald-900/40 to-emerald-800/20',
   },
@@ -75,15 +75,15 @@ export const projects: Project[] = [
   },
   {
     title: 'Upskill Academy',
-    subtitle: 'AI workforce development. 25 courses, WIOA-eligible',
+    subtitle: 'Agentic workforce development. 25 courses, WIOA-eligible',
     tags: ['React', 'Zustand', 'Education'],
     href: 'https://modern-mustard-seed-academy.vercel.app',
     color: 'from-indigo-900/40 to-indigo-800/20',
   },
   {
     title: 'What Next',
-    subtitle: 'AI decision intelligence. Scenario modeling and outcome prediction',
-    tags: ['AI', 'Supabase', 'TypeScript'],
+    subtitle: 'Agentic decision intelligence. Scenario modeling and outcome prediction',
+    tags: ['Agentic', 'Supabase', 'TypeScript'],
     href: 'https://what-next-ruddy.vercel.app',
     color: 'from-rose-900/40 to-rose-800/20',
   },
@@ -99,6 +99,6 @@ export const projects: Project[] = [
 export const stats = [
   { value: '40+', label: 'Products Shipped' },
   { value: '2-6 Wks', label: 'Idea to Launch' },
-  { value: 'AI-First', label: 'Every Product' },
+  { value: 'Agentic-First', label: 'Every Product' },
   { value: 'Full Stack', label: 'Concept to Launch' },
 ];

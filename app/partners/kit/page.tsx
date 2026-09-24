@@ -12,7 +12,7 @@ import { buildMetadata } from '@/lib/seo';
 export const metadata = buildMetadata({
   title: 'Partner Recruitment Kit',
   description:
-    'The Partner Build, in one place: mint a finished AI demo suite for a business you know, presented under your flag, and earn when they buy.',
+    'The Partner Build, in one place: mint a finished agentic demo suite for a business you know, presented under your flag, and earn when they buy.',
   path: '/partners/kit',
   noindex: true,
 });
@@ -59,7 +59,7 @@ export default function PartnerKitPage() {
             Build under<br className="hidden sm:block" /> your flag.
           </h1>
           <p className="mt-7 text-[#3A3733] text-lg font-body font-light max-w-2xl mx-auto leading-relaxed">
-            Put a finished AI demo suite, with your name on it, in the hands of a business you already know. Type in one business, a full suite appears under your flag, you forward three lines. When they buy, the commission is yours and it tracks itself.
+            Put a finished agentic demo suite, with your name on it, in the hands of a business you already know. Type in one business, a full suite appears under your flag, you forward three lines. When they buy, the commission is yours and it tracks itself.
           </p>
           <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link

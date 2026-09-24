@@ -16,9 +16,9 @@ import { JsonLd, breadcrumbJsonLd, faqJsonLd, serviceJsonLd } from '@/lib/jsonld
 import { buildMetadata } from '@/lib/seo';
 
 export const metadata = buildMetadata({
-  title: 'AI Voice Agents for Business Calls',
+  title: 'Voice Agents for Business Calls',
   description:
-    'Call (406) 312-1223 and hear a real AI voice agent answer. A voice agent that picks up every call in a natural human voice, books appointments, answers questions, and routes the urgent ones to you. Multilingual: it greets and serves callers in 100+ languages and detects the caller automatically. Designed and built per engagement by a boutique studio in Kalispell, Montana.',
+    'Call (406) 312-1223 and hear a real voice agent answer. A voice agent that picks up every call in a natural human voice, books appointments, answers questions, and routes the urgent ones to you. Multilingual: it greets and serves callers in 100+ languages and detects the caller automatically. Designed and built per engagement by a boutique studio in Kalispell, Montana.',
   path: '/voice-agents',
 });
 
@@ -202,7 +202,7 @@ export default function VoiceAgentsPage() {
               <br />
               <span className="text-[#F5B700]">Somebody picks up.</span>
             </h1>
-            <p className="mt-5 font-body text-base leading-relaxed">Designed and built by Modern Mustard Seed, a boutique design and AI studio in Kalispell, Montana, working with clients nationwide. <Link href="/agentic-websites" className="underline font-bold">See how our AI websites connect the page and the business.</Link></p>
+            <p className="mt-5 font-body text-base leading-relaxed">Designed and built by Modern Mustard Seed, a boutique design and agentic systems studio in Kalispell, Montana, working with clients nationwide. <Link href="/agentic-websites" className="underline font-bold">See how our agentic websites connect the page and the business.</Link></p>
 
             <div className="mt-10 grid lg:grid-cols-12 gap-10 lg:gap-12 items-center pb-4">
               <div className="lg:col-span-6">
@@ -749,7 +749,7 @@ export default function VoiceAgentsPage() {
           <div className="mt-14">
             <NewsletterSignup
               headline="Speed-to-lead plays. Weekly."
-              subhead="How small businesses stop the leak with AI, automation, and faster follow-up. One letter a week, from the desk."
+              subhead="How small businesses stop the leak with agentic systems, automation, and faster follow-up. One letter a week, from the desk."
             />
           </div>
         </div>

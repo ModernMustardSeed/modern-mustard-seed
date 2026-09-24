@@ -175,7 +175,7 @@ export function MeetTheTrainer() {
           <div className="absolute inset-0 translate-x-2 translate-y-2 rounded-2xl bg-[#F5B700] border-2 border-[#161616]" aria-hidden="true" />
           <Image
             src="/brand/mascot.png"
-            alt="Mr. Mustard, the AI who trains every Voice Agent"
+            alt="Mr. Mustard, the agent who trains every Voice Agent"
             width={220}
             height={220}
             className="relative rounded-2xl border-2 border-[#161616] bg-[#FBF6EA]"
@@ -212,7 +212,7 @@ export function CrossSell() {
               Your Voice Agent answers your customers. The Chief works for you.
             </h3>
             <p className="font-body text-sm text-[#161616]/80 mt-2.5 leading-relaxed max-w-2xl">
-              Meet his big brother: a personal AI chief of staff who runs your calendar, drafts your email, makes your
+              Meet his big brother: a personal agentic chief of staff who runs your calendar, drafts your email, makes your
               calls, preps your pitches, and wakes you with a verse. Call, text, or type to him any hour. From $
               {chiefUsd(chiefTiers[0].monthlyCents)}/mo, a fraction of a human assistant.
             </p>

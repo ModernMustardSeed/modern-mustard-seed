@@ -93,7 +93,7 @@ export default async function ProofBand() {
           Real products. Real receipts.
         </h2>
         <p className="font-sans text-white/70 max-w-2xl mt-5">
-          40+ products shipped across AI, e-commerce, real estate, hospitality, and SaaS. Every
+          40+ products shipped across agentic systems, e-commerce, real estate, hospitality, and SaaS. Every
           metric below comes from a real build with a case study behind it.
         </p>
       </div>

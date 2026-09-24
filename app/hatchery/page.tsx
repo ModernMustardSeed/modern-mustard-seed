@@ -290,7 +290,7 @@ export default function HatcheryPage() {
             <ClaimEgg variant="gold" />
           </div>
           <p className="mt-10 text-sm text-[#FBF6EA]/55 max-w-lg mx-auto leading-relaxed">
-            Every hatched mascot is an AI character and says so, cheerfully. The Huckleberry Scoop is a fictional shop we used to hatch our pilot. Your business is real, and so is the mascot we will build for it.
+            Every hatched mascot is an agentic character and says so, cheerfully. The Huckleberry Scoop is a fictional shop we used to hatch our pilot. Your business is real, and so is the mascot we will build for it.
           </p>
           <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.35em] text-[#F5B700]/80">
             {HATCHERY.wordmark} &middot; {HATCHERY.by} &middot; Kalispell, Montana

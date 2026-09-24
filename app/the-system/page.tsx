@@ -8,7 +8,7 @@ import { DEMO_BUNDLE, formatUsd } from '@/lib/demo-order';
 import { HUNDREDFOLD, money } from '@/lib/hundredfold';
 
 export const metadata = buildMetadata({
-  title: 'The System: your whole company, AI native',
+  title: 'The System: your whole company, agentic',
   description:
     'Website, voice agent, command center, lead finder, campaigns, deal tracking, social scheduling, forms, interviews, automations, and custom software, built as one loop off one brain. See the whole cycle a lead travels, from found to grown.',
   path: '/the-system',
@@ -97,7 +97,7 @@ export default function TheSystemPage() {
                 Your whole company,
                 <br />
                 <em className="italic text-[#F5B700]" style={{ WebkitTextStroke: '2px #161616' }}>
-                  AI native.
+                  agentic.
                 </em>
               </h1>
               <p className="font-body text-[17px] md:text-lg text-[#161616]/75 mt-6 max-w-xl leading-relaxed">
@@ -264,7 +264,7 @@ export default function TheSystemPage() {
                 One digital architect. One agentic engineer. Same person.
               </h2>
               <p className="font-body text-[15px] text-[#161616]/75 mt-5 leading-relaxed">
-Sarah Scarano, self-taught full-stack engineer and AI systems architect, Kalispell, Montana. Forty plus shipped products and four ventures running on this exact system. The people who draw the blueprint are the people who pour the foundation and hand you the keys.
+Sarah Scarano, self-taught full-stack engineer and agentic systems architect, Kalispell, Montana. Forty plus shipped products and four ventures running on this exact system. The people who draw the blueprint are the people who pour the foundation and hand you the keys.
               </p>
               <p className="font-body text-[15px] text-[#161616]/75 mt-4 leading-relaxed">
                 Off-the-shelf software makes you bend your business around it. Custom infrastructure bends around you: your intake, your pricing, your crew, your customer. That is the difference between a tool you rent and an asset you own.

@@ -230,11 +230,11 @@ export const tracks: Track[] = [
     missions: [
       {
         id: 'design-01-the-brief',
-        title: 'Write a brief that kills the generic AI look',
+        title: 'Write a brief that kills the generic machine-made look',
         minutes: 25,
         xp: 50,
         lesson: [
-          'There is a reason so much AI made design looks the same: purple gradients, a rounded everything, a hero with a vague headline, three feature cards, the end. It is what you get when the request is make me a nice landing page. Generic in, generic out. The fix is not a magic prompt, it is a real brief, and writing one takes five minutes.',
+          'There is a reason so much machine-made design looks the same: purple gradients, a rounded everything, a hero with a vague headline, three feature cards, the end. It is what you get when the request is make me a nice landing page. Generic in, generic out. The fix is not a magic prompt, it is a real brief, and writing one takes five minutes.',
           'A brief answers four questions before any pixels exist. Who is this for and what do they feel when they arrive. What is the one action we want them to take. What is the personality, named with adjectives and a reference or two, like editorial and calm as a high end magazine, not techy and loud. And what to avoid, because naming the cliches you hate steers away from them hard.',
           'References are your secret weapon and you do not need design words to use them. Point at things: I want it to feel like the Aesop skincare site, quiet and confident with lots of white space, not like a typical software startup. Claude knows those reference points. Two good references communicate more than a paragraph of adjectives, and they anchor the whole thing to a level of taste instead of an average.',
           'Give the brief, then ask for the thinking before the building. Have Claude restate the direction it heard and describe the design decisions it will make, the mood, the type feeling, the color story, the one memorable moment. If its description already sounds generic, you caught it at the cheapest possible moment, before a single screen was built.',
@@ -242,13 +242,13 @@ export const tracks: Track[] = [
         prompts: [
           {
             label: 'The anti generic design brief',
-            text: 'Before you design anything, here is my brief. Audience: [who they are and how they should feel arriving]. Goal: the one action I want is [primary action]. Personality: it should feel [three or four adjectives], in the spirit of [one or two reference sites or brands you admire], and absolutely not like [the cliche you want to avoid, for example a generic purple gradient AI startup]. Now, do not build yet. Tell me back the direction you heard, and describe the specific choices you will make: the overall mood, the type feeling, the color story, and the one moment that will make this memorable. If any of it sounds generic, push yourself to something with more taste and point of view.',
+            text: 'Before you design anything, here is my brief. Audience: [who they are and how they should feel arriving]. Goal: the one action I want is [primary action]. Personality: it should feel [three or four adjectives], in the spirit of [one or two reference sites or brands you admire], and absolutely not like [the cliche you want to avoid, for example a generic purple gradient tech startup]. Now, do not build yet. Tell me back the direction you heard, and describe the specific choices you will make: the overall mood, the type feeling, the color story, and the one moment that will make this memorable. If any of it sounds generic, push yourself to something with more taste and point of view.',
           },
         ],
         assignment:
           'Choose a page you want to design (real or practice), write the four part brief with at least two references, and get Claude to describe its direction in words before building anything.',
         proof:
-          'You have a written design direction from Claude that names a specific mood, type feeling, and color story, and it does not read like generic AI filler.',
+          'You have a written design direction from Claude that names a specific mood, type feeling, and color story, and it does not read like generic machine filler.',
         coachCue:
           'Generic in, generic out. Feed it taste and references, and watch the purple gradients die.',
       },
@@ -422,7 +422,7 @@ export const tracks: Track[] = [
   {
     slug: 'cowork',
     name: 'COWORK',
-    tagline: 'Your AI chief of staff',
+    tagline: 'Your agentic chief of staff',
     color: '#F5B700',
     bossMission:
       'Run one full workday with Claude in the loop on everything you do, and document the hours you got back.',
@@ -457,7 +457,7 @@ export const tracks: Track[] = [
         minutes: 30,
         xp: 75,
         lesson: [
-          'The number one reason people distrust AI writing is that it sounds like AI: hollow, over polished, allergic to a real opinion. The fix is not accepting slop, it is teaching Claude your voice and refusing to send anything that does not sound like you. Done right, it writes your emails and posts faster than you would and in your actual voice, which is the whole dream.',
+          'The number one reason people distrust machine writing is that it sounds like a machine: hollow, over polished, allergic to a real opinion. The fix is not accepting slop, it is teaching Claude your voice and refusing to send anything that does not sound like you. Done right, it writes your emails and posts faster than you would and in your actual voice, which is the whole dream.',
           'Voice is learned from examples, not adjectives. Instead of telling Claude to sound warm and professional, show it. Paste two or three things you actually wrote, an email, a post, a message you were proud of, and ask it to study your patterns: your sentence length, your level of formality, the words you reach for, whether you use humor. Real samples teach it more in one paste than a paragraph of description ever could.',
           'Then make it draft and you edit, never the reverse. Claude gets you to a solid draft in seconds, and your job is the last ten percent that makes it yours: cut the sentence that sounds too corporate, add the specific detail only you know, restore the phrase you actually say. That last ten percent is where trust lives, and it takes a fraction of the time that staring at a blank page does.',
           'Watch for the tells and kill them on sight. Overuse of certain transition words, a relentlessly even tone, grand empty phrases, hedging where you would be direct. Tell Claude your rules once, like no corporate filler, get to the point, sound like a person, and it will hold them. Over a few weeks it learns your voice well enough that the edits shrink to almost nothing.',
@@ -465,7 +465,7 @@ export const tracks: Track[] = [
         prompts: [
           {
             label: 'Teach Claude your writing voice',
-            text: 'I want you to learn my writing voice so you can draft in it. Here are three things I actually wrote: [paste an email, a post, and a message]. Study them and tell me back what you notice about how I write: my typical sentence length, how formal or casual I am, the words and phrases I reach for, my sense of humor, how I open and close. Then write me a short reusable voice guide capturing those patterns, plus a list of things to avoid so nothing you draft for me sounds like generic AI. From now on, use this voice unless I say otherwise.',
+            text: 'I want you to learn my writing voice so you can draft in it. Here are three things I actually wrote: [paste an email, a post, and a message]. Study them and tell me back what you notice about how I write: my typical sentence length, how formal or casual I am, the words and phrases I reach for, my sense of humor, how I open and close. Then write me a short reusable voice guide capturing those patterns, plus a list of things to avoid so nothing you draft for me sounds like generic machine writing. From now on, use this voice unless I say otherwise.',
           },
           {
             label: 'Draft something real in your voice',

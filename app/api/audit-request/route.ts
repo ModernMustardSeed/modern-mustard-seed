@@ -38,8 +38,8 @@ const WANTS: Record<string, string> = {
   voice: 'a voice agent',
   agents: 'agents that do the work',
   command: 'a command center',
-  advisory: 'AI advisory',
-  plan: 'an AI integration plan',
+  advisory: 'agentic systems advisory',
+  plan: 'an agentic integration plan',
 };
 
 export async function POST(req: NextRequest) {

@@ -5,9 +5,9 @@ import { DEPARTMENTS, BESPOKE } from '@/data/services-hub';
 import PathFinder from '@/components/services/PathFinder';
 
 export const metadata = buildMetadata({
-  title: 'Websites, Software and AI Services',
+  title: 'Websites, Software and Agentic Systems',
   description:
-    'Custom websites, software, AI voice agents, and brand design. Built in Kalispell, Montana, for businesses nationwide. Set package pricing. You own the work.',
+    'Custom websites, software, voice agents, and brand design. Built in Kalispell, Montana, for businesses nationwide. Set package pricing. You own the work.',
   path: '/services',
 });
 
@@ -17,14 +17,14 @@ const rest = DEPARTMENTS.filter((d) => !d.flagship);
 const FAQ = [
   {
     q: 'What does Modern Mustard Seed build?',
-    a: 'Five disciplines: design-led websites and brand, custom software, voice agents, marketing, and retained advisory. Marketing covers social posting, blog writing, commercials, ad campaigns, email newsletters, and Google Business Profile upkeep. Inside those sit the departments the studio has built over time: command centers, commercials and brand films, ads, print, launch, specialty AI tools, stores, and agentic systems. Every engagement is designed and shipped end to end by Sarah Scarano at a set package price, and you own the result outright.',
+    a: 'Five disciplines: design-led websites and brand, custom software, voice agents, marketing, and retained advisory. Marketing covers social posting, blog writing, commercials, ad campaigns, email newsletters, and Google Business Profile upkeep. Inside those sit the departments the studio has built over time: command centers, commercials and brand films, ads, print, launch, specialty agentic tools, stores, and agentic systems. Every engagement is designed and shipped end to end by Sarah Scarano at a set package price, and you own the result outright.',
   },
   {
     q: 'How fast can you ship?',
     a: 'A website, a voice agent, or a command center is typically live within a week or two of kickoff. Custom applications, deeper software, and online stores usually run two to six weeks. Every engagement carries a fixed timeline that you see in the proposal, next to the price, before any work begins.',
   },
   {
-    q: 'What is a specialty AI tool?',
+    q: 'What is a specialty agentic tool?',
     a: 'An industry-specific software tool that replaces an expensive recurring workflow. Examples: a for-sale-by-owner command center that stands in for an agent commission, a deal analyzer that cuts investment evaluation from two hours to ninety seconds, a staging tool that finishes a room in under a minute. The pattern is the same every time: take the costliest repeated task in a trade and turn it into software the operator owns.',
   },
   {

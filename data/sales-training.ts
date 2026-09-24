@@ -131,7 +131,7 @@ export const COLD_CALL = {
   intro: 'Cold calling sounds scary but it is just a quick, friendly chat. You will get a lot of no\'s and that is completely normal, it is a numbers game. Keep it short, smile (they can hear it), and aim for one thing: a booked demo. Stand up, warm up with a few easy ones, and do them in batches.',
   steps: [
     { label: 'Opener (ask permission)', script: 'Hi, is this [business name]? Hey, my name is [your name]. I\'ll be honest, this is a quick cold call, do you have 20 seconds before I let you go?', note: 'Admitting it is a cold call disarms people. The little permission ask earns you a moment instead of a hang-up.' },
-    { label: 'The hook', script: 'Thanks, I appreciate it. Honestly, here is the one question I ask every owner: do you want your business to thrive? Because the ones that do never let a call go unanswered. I work with a company that builds AI tools for local businesses, and we set up a system that answers your phone and books appointments around the clock, even when you\'re closed or slammed. A lot of [their type of business] lose customers to voicemail without realizing it.', note: 'Open with the question "do you want your business to thrive?" It is warm, honest, and almost always gets a yes that bridges straight into the missed-calls pain. Then lead with the voice agent. It is the easiest thing for them to picture.' },
+    { label: 'The hook', script: 'Thanks, I appreciate it. Honestly, here is the one question I ask every owner: do you want your business to thrive? Because the ones that do never let a call go unanswered. I work with a company that builds agentic tools for local businesses, and we set up a system that answers your phone and books appointments around the clock, even when you\'re closed or slammed. A lot of [their type of business] lose customers to voicemail without realizing it.', note: 'Open with the question "do you want your business to thrive?" It is warm, honest, and almost always gets a yes that bridges straight into the missed-calls pain. Then lead with the voice agent. It is the easiest thing for them to picture.' },
     { label: 'Find the problem', script: 'Quick question: when you\'re busy or after hours, what happens to your calls right now? Do they mostly go to voicemail?', note: 'Then be quiet and let them answer. Their answer is your opening, and most will admit they miss calls.' },
     { label: 'The offer (book the demo)', script: 'That\'s exactly what we fix, and the easiest way to get it is to see it. I\'d love to show you a quick live demo where you can actually talk to it and hear it. Takes about ten minutes. Would tomorrow morning or afternoon be better?', note: 'Offer two times instead of asking "are you interested." Assume the demo. Confidence is kind here.' },
     { label: 'Lock it in', script: 'Perfect. What\'s the best cell or email to send the details to? I\'ll book you for [time] and send a confirmation. Looking forward to it.', note: 'Get the contact, book it, and tell Sarah if it is a strong one so she is ready.' },
@@ -161,8 +161,8 @@ export const VOICE_DEMO_PLAY = {
   title: 'The walk-in voice agent play',
   intro: 'This is the highest-converting thing you can do, and the easiest, because the product does the selling. You walk in, get them talking to the live voice agent, and it shows them exactly what it can do for their business. Have modernmustardseed.com/voice-agents open on your phone before you walk in.',
   steps: [
-    { label: 'Walk in friendly', script: 'Hi, I know you\'re busy, I\'ll be quick. I work with a local company that builds AI tools for businesses like yours. Can I show you something kind of cool? Takes about 30 seconds.' },
-    { label: 'Set it up', script: 'This is an AI that can answer your phone 24/7, in a natural voice, and book appointments for you, even when you\'re slammed or closed. Here, talk to it like you\'re a customer calling in. Ask it anything, or ask it to book you an appointment.' },
+    { label: 'Walk in friendly', script: 'Hi, I know you\'re busy, I\'ll be quick. I work with a local company that builds agentic tools for businesses like yours. Can I show you something kind of cool? Takes about 30 seconds.' },
+    { label: 'Set it up', script: 'This is a voice agent that can answer your phone 24/7, in a natural voice, and book appointments for you, even when you\'re slammed or closed. Here, talk to it like you\'re a customer calling in. Ask it anything, or ask it to book you an appointment.' },
     { label: 'Hand them your phone', script: '(Tap the talk button on /voice-agents and hand it over. Let them have a real back-and-forth. Stay quiet and let them be amazed. This is the moment that sells it.)' },
     { label: 'Bridge to their business', script: 'Imagine that answering YOUR phone, in your business\'s name, booking jobs while you\'re with a customer. You stop losing people to voicemail. And that\'s just one thing we build. We also do websites, online tools, and custom software.' },
     { label: 'Book the next step', script: 'I\'d love to set you up a proper demo where we show what it would look like for your shop specifically. Are mornings or afternoons better? (Or: can I grab your number and text you a time?)' },
@@ -185,14 +185,14 @@ export const WHAT_WE_SELL: { name: string; isWhat: string; doesWhat: string; bri
     bringUp: 'When they say their site is old, embarrassing, DIY, or "brings in nothing," or they have no site at all.',
   },
   {
-    name: 'AI assistant (chat)',
+    name: 'Agentic assistant (chat)',
     isWhat: 'A helper on their website and messages that answers customers and follows up with leads around the clock.',
     doesWhat: 'Answers the same questions for them all day, captures leads at 2am, and stops people from slipping away.',
     bringUp: 'When they say they are buried in DMs, answering the same questions constantly, or leads go cold.',
   },
   {
     name: 'Voice agent',
-    isWhat: 'A friendly AI voice that answers their phone 24/7 and books appointments, even after hours.',
+    isWhat: 'A friendly voice agent that answers their phone 24/7 and books appointments, even after hours.',
     doesWhat: 'Never misses a call, books jobs while they work, and saves the customers they lose to voicemail.',
     bringUp: 'When they miss calls, have no one to answer the phone, or lose business after hours. This is the one to demo live.',
   },
@@ -211,7 +211,7 @@ export const OBJECTIONS: { q: string; a: string }[] = [
   { q: '"I do not have time right now."', a: 'Totally get it, that is usually the whole reason this helps. It runs on its own once it is set up. Can I grab your number and text you a time that actually works for you?' },
   { q: '"I am not very techy."', a: 'You do not have to be. That is the whole point, we build it and run it, you just get the results. The demo is literally just talking to it like a normal phone call.' },
   { q: '"Send me some info."', a: 'Happy to. The fastest way to get it though is to see it live, it takes 30 seconds. (Show the demo, or text the /voice-agents link.) Can I follow up next week?' },
-  { q: '"Is this one of those AI things that sounds like a robot?"', a: 'Fair worry. Here, listen for yourself. (Hand them the live demo.) It sounds like a real person, and it is trained on your business so it answers like your best employee would.' },
+  { q: '"Is this one of those phone bots that sounds like a robot?"', a: 'Fair worry. Here, listen for yourself. (Hand them the live demo.) It sounds like a real person, and it is trained on your business so it answers like your best employee would.' },
 ];
 
 /** Activity goals so effort, not luck, drives results. */

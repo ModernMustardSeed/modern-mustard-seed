@@ -20,7 +20,7 @@ const jsonLd = {
       '@type': 'Service',
       '@id': `${SITE.url}/mustard-launch#service`,
       name: 'Mustard Launch',
-      serviceType: 'AI launch coaching for new businesses',
+      serviceType: 'Agentic launch coaching for new businesses',
       provider: { '@id': `${SITE.url}#organization` },
       description: LAUNCH.metaDescription,
       url: `${SITE.url}/mustard-launch`,
@@ -75,7 +75,7 @@ export default function MustardLaunchPage() {
             <span className="font-mono text-[11px] font-bold tracking-[0.2em] uppercase text-[#E0301E]">Mustard Launch · from Modern Mustard Seed</span>
           </div>
           <h1 className="font-display font-extrabold text-5xl sm:text-7xl leading-[0.92] max-w-4xl">
-            Your AI launch coach, from <span className="italic text-[#161616]">idea</span> to <span className="text-[#F5B700] [text-shadow:3px_3px_0_#161616]">open</span>.
+            Your agentic launch coach, from <span className="italic text-[#161616]">idea</span> to <span className="text-[#F5B700] [text-shadow:3px_3px_0_#161616]">open</span>.
           </h1>
           <p className="font-sans text-lg text-[#161616]/75 mt-5 max-w-2xl">
             Tell Mr. Mustard what you are starting. He builds your whole launch (brand, offer, money, presence, first customers) and counts you down to open. Your Blueprint is free.

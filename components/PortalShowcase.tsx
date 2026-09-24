@@ -12,7 +12,7 @@ import { useEffect, useRef, useState } from 'react';
 const FEATURES = [
   { label: 'Live project status', detail: 'Progress, milestones, and a real launch countdown.' },
   { label: 'Secure payments', detail: 'Pay a balance or start a plan without an invoice chase.' },
-  { label: 'An AI guide', detail: 'Ask where your build stands and get a real answer.' },
+  { label: 'An agentic guide', detail: 'Ask where your build stands and get a real answer.' },
 ];
 
 export default function PortalShowcase() {
@@ -58,7 +58,7 @@ export default function PortalShowcase() {
           , not a folder of files
         </h2>
         <p className="text-[#3a3733] text-base font-body leading-relaxed">
-          One home base for your build. Track progress, grab files, pay securely, and ask the in-house AI guide where things stand. This is a real recording, not a mockup.
+          One home base for your build. Track progress, grab files, pay securely, and ask the in-house agentic guide where things stand. This is a real recording, not a mockup.
         </p>
       </div>
 
@@ -81,7 +81,7 @@ export default function PortalShowcase() {
           playsInline
           preload="metadata"
           controls={reduced}
-          aria-label="A screen recording of the Modern Mustard Seed client portal: project progress, billing, milestones, and the in-portal AI guide answering a question about project status."
+          aria-label="A screen recording of the Modern Mustard Seed client portal: project progress, billing, milestones, and the in-portal agentic guide answering a question about project status."
         >
           <source src="/video/portal-walkthrough.webm" type="video/webm" />
           <source src="/video/portal-walkthrough.mp4" type="video/mp4" />

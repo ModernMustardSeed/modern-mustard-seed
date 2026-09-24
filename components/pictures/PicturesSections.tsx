@@ -121,7 +121,7 @@ export function StudioCrossSell() {
           <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-bold">Bigger picture?</p>
           <h3 className="font-display text-xl font-black text-[#161616] mt-1.5">A whole presence, built for you</h3>
           <p className="font-body text-sm text-[#161616]/70 mt-2 leading-relaxed">
-            Sites, stores, funnels, and AI systems, shipped in weeks by the studio that makes its own commercials. Fixed quote before work starts.
+            Sites, stores, funnels, and agentic systems, shipped in weeks by the studio that makes its own commercials. Fixed quote before work starts.
           </p>
           <Link href="/work-with-us" className="inline-block mt-4 font-sans font-extrabold text-xs uppercase tracking-[0.18em] text-[#B92417] underline underline-offset-4">
             Work with the studio →
