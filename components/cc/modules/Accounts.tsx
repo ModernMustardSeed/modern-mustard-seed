@@ -356,7 +356,7 @@ export default function Accounts({ session }: { session: Session }) {
       const f = feed(p);
       const st = feedState(f);
       // Instagram has no door of its own: it signs in through the Facebook Page it is linked to.
-      const oauth = p === 'facebook' || p === 'instagram' ? '/api/oauth/facebook/start?back=cc' : p === 'x' ? '/api/oauth/x/start' : p === 'linkedin' ? '/api/oauth/linkedin/start' : p === 'tiktok' ? '/api/oauth/tiktok/start' : null;
+      const oauth = p === 'facebook' || p === 'instagram' ? '/api/oauth/facebook/start?back=cc' : p === 'x' ? '/api/oauth/x/start?back=cc' : p === 'linkedin' ? '/api/oauth/linkedin/start?back=cc' : p === 'tiktok' ? '/api/oauth/tiktok/start?back=cc' : null;
       const canOauth = Boolean(oauth) && (p === 'facebook' || p === 'instagram' ? Boolean(f?.oauth) : !f?.needs);
       return {
         key: p,

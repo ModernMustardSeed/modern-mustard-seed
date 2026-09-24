@@ -17,6 +17,8 @@ const SCOPES = ['user.info.basic', 'video.upload', 'video.publish'];
 
 export async function GET(req: Request) {
   const url = new URL(req.url);
+  // Started from the Command Center: come home to its Accounts room, not the portal.
+  const back = url.searchParams.get('back') === 'cc' ? ('cc' as const) : undefined;
   const client = await getClientSession();
   let email: string | null = client?.email ?? null;
   let by: 'client' | 'admin' = 'client';
@@ -28,13 +30,16 @@ export async function GET(req: Request) {
       by = 'admin';
     }
   }
-  if (!email) return NextResponse.redirect(`${SITE.url}/portal/login?next=/portal/posting`);
+  if (!email) return NextResponse.redirect(back === 'cc' ? `${SITE.url}/cc/login` : `${SITE.url}/portal/login?next=/portal/posting`);
 
   const key = real(process.env.TIKTOK_CLIENT_KEY);
-  if (!key) return NextResponse.redirect(by === 'admin' ? `${SITE.url}/admin/posting?client=${encodeURIComponent(email)}&connect=tiktok-unconfigured` : `${SITE.url}/portal/posting?connect=tiktok-unconfigured`);
+  if (!key) {
+    if (back === 'cc') return NextResponse.redirect(`${SITE.url}/cc?connect=tiktok-unconfigured#accounts`);
+    return NextResponse.redirect(by === 'admin' ? `${SITE.url}/admin/posting?client=${encodeURIComponent(email)}&connect=tiktok-unconfigured` : `${SITE.url}/portal/posting?connect=tiktok-unconfigured`);
+  }
 
   const { verifier, challenge } = pkce();
-  const state = signState({ email, provider: 'tiktok', verifier, by });
+  const state = signState({ email, provider: 'tiktok', verifier, by, back });
   const auth = new URL('https://www.tiktok.com/v2/auth/authorize/');
   auth.searchParams.set('client_key', key);
   auth.searchParams.set('response_type', 'code');
