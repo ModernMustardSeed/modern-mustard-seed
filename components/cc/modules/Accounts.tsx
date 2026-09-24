@@ -112,7 +112,10 @@ function Paste({ fields, submit, label }: { fields: Array<{ key: string; label: 
       <div className="grid gap-3 sm:grid-cols-2">
         {fields.map((f) => (
           <Field key={f.key} label={f.label} hint={f.hint}>
-            <input className={inputCls} type={f.secret ? 'password' : 'text'} autoComplete="off" value={v[f.key] ?? ''} onChange={(e) => setV({ ...v, [f.key]: e.target.value })} />
+            {/* Chrome ignores "off" on a password box and fills the viewer's own saved login, which
+                once put Sarah's mailbox and password into a client's "Add a mailbox" form.
+                "new-password" is the value it honours; the ignore flags stop password managers. */}
+            <input className={inputCls} type={f.secret ? 'password' : 'text'} name={`cc-${f.key}`} autoComplete={f.secret ? 'new-password' : 'off'} data-1p-ignore data-lpignore="true" data-bwignore value={v[f.key] ?? ''} onChange={(e) => setV({ ...v, [f.key]: e.target.value })} />
           </Field>
         ))}
       </div>
