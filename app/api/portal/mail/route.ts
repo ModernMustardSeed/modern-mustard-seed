@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { getClientSession } from '@/lib/client-auth';
 import { getSupabase } from '@/lib/supabase';
 import { visibleProject } from '@/lib/command-center/visible';
-import { CATEGORIES, collectSorted, connectMailbox, disconnectMailbox, mailStatus, saveDraft, sendReply, syncMailbox, type MailRow } from '@/lib/mail-desk';
+import { CATEGORIES, collectSorted, connectMailbox, disconnectMailbox, mailStatus, saveDraft, sendReply, syncMailbox, writeReply, type MailRow } from '@/lib/mail-desk';
 import { resendClient } from '@/lib/send-email';
 
 export const runtime = 'nodejs';
@@ -55,7 +55,7 @@ export async function POST(req: Request) {
   const sb = getSupabase();
   const project = sb ? await visibleProject(sb, session.email) : null;
   if (!sb || !project) return NextResponse.json({ error: 'Not on a project.' }, { status: 404 });
-  let body: { action?: string; address?: string; appPassword?: string; id?: string; text?: string };
+  let body: { action?: string; address?: string; appPassword?: string; id?: string; text?: string; mode?: string; again?: boolean; attempt?: string };
   try {
     body = (await req.json()) as typeof body;
   } catch {
@@ -92,6 +92,11 @@ export async function POST(req: Request) {
   if (action === 'send') {
     const r = await sendReply(sb, session.email, id, String(body.text ?? ''));
     return r.ok ? NextResponse.json({ ok: true }) : NextResponse.json({ error: r.error }, { status: 400 });
+  }
+  if (action === 'write') {
+    // The owner asked for help: a suggested reply, or their own words polished. Nothing is sent.
+    const r = await writeReply(sb, project, session.email, id, body.mode === 'polish' ? 'polish' : 'suggest', { text: String(body.text ?? ''), again: Boolean(body.again), attempt: String(body.attempt ?? '') });
+    return r.ok ? NextResponse.json({ ok: true, text: r.text }) : NextResponse.json({ error: r.error, pending: Boolean(r.pending) }, { status: r.pending ? 202 : 400 });
   }
   if (action === 'draft') {
     const r = await saveDraft(sb, session.email, id, String(body.text ?? ''));
