@@ -230,6 +230,11 @@ export async function POST(req: Request) {
       user: renderTranscript(convo, { assistantLabel: 'Assistant', userLabel: 'Client' }),
       schema: DECISION_SCHEMA,
       timeoutMs: 45_000,
+      // A client is sitting in the Operator watching a spinner. This is the one
+      // call site in the product where the queue hop, not the thinking, is the
+      // wait, and where forty seconds reads as broken rather than busy. Costs a
+      // few cents a turn, and does nothing at all until a paid key exists.
+      preferPaid: true,
     });
 
     let noteSent = false;
