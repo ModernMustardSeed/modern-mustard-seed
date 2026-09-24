@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getDesk } from '@/lib/cc-desk';
 import { listContacts } from '@/lib/client-contacts';
 import { daysUntil } from '@/lib/domains';
+import { hiddenMailboxes, mailboxFilter } from '@/lib/mail-scope';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -24,6 +25,9 @@ export async function GET() {
   const monthAgo = new Date(now - 30 * 86_400_000).toISOString();
   const fortnightAgo = new Date(now - 13 * 86_400_000).toISOString();
   const today = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Denver' });
+  // Mail counts are the person's own inbox and the shared ones, the same list the Inbox shows them.
+  const onlyMail = mailboxFilter(await hiddenMailboxes(account.project));
+  const mine = <T extends { or: (f: string) => T }>(q: T): T => (onlyMail ? q.or(onlyMail) : q);
 
   const [waitingRows, fresh, month, series, mailNew, mailReply, asks, posts, approvals, visits, domains, contacts] = await Promise.all([
     // The waiting rows themselves, not just their count: the board needs the
@@ -32,8 +36,8 @@ export async function GET() {
     sb.from('client_leads').select('id', { count: 'exact', head: true }).eq('client_email', email).gte('created_at', dayAgo),
     sb.from('client_leads').select('id', { count: 'exact', head: true }).eq('client_email', email).gte('created_at', monthAgo),
     sb.from('client_leads').select('created_at').eq('client_email', email).gte('created_at', fortnightAgo),
-    sb.from('client_mail').select('id', { count: 'exact', head: true }).eq('client_email', email).eq('status', 'new'),
-    sb.from('client_mail').select('id', { count: 'exact', head: true }).eq('client_email', email).eq('status', 'new').eq('needs_reply', true),
+    mine(sb.from('client_mail').select('id', { count: 'exact', head: true }).eq('client_email', email).eq('status', 'new')),
+    mine(sb.from('client_mail').select('id', { count: 'exact', head: true }).eq('client_email', email).eq('status', 'new').eq('needs_reply', true)),
     sb.from('client_review_requests').select('id', { count: 'exact', head: true }).eq('client_email', email).gte('created_at', monthAgo),
     sb.from('posting_posts').select('id', { count: 'exact', head: true }).eq('client_email', email).gte('scheduled_for', today),
     sb.from('posting_posts').select('id', { count: 'exact', head: true }).eq('client_email', email).eq('status', 'awaiting_approval'),

@@ -1,4 +1,5 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
+import { mailFilterFor } from '@/lib/mail-scope';
 import { daysUntil } from '@/lib/domains';
 import { OPEN_STAGES, STAGE_LABEL, listJobs, money, riskOf } from '@/lib/cc-jobs';
 import { certState, listTrades } from '@/lib/cc-trades';
@@ -19,7 +20,11 @@ export async function commandCenterContext(sb: SupabaseClient, email: string): P
   const [waiting, month, mailNeed, domains, campaigns, visits, posts, bt, mail] = await Promise.all([
     sb.from('client_leads').select('id, name, town, priority, source, campaign, created_at, owner_name').eq('client_email', email).is('handled_at', null).order('priority', { ascending: true, nullsFirst: false }).order('created_at', { ascending: false }).limit(8),
     sb.from('client_leads').select('source, sources, campaign').eq('client_email', email).gte('created_at', monthAgo),
-    sb.from('client_mail').select('from_name, from_addr, subject, summary').eq('client_email', email).eq('status', 'new').eq('needs_reply', true).order('received_at', { ascending: false }).limit(6),
+    mailFilterFor(email).then((only) => {
+      // The Operator is told only the mail the person asking may read.
+      const q = sb.from('client_mail').select('from_name, from_addr, subject, summary').eq('client_email', email).eq('status', 'new').eq('needs_reply', true);
+      return (only ? q.or(only) : q).order('received_at', { ascending: false }).limit(6);
+    }),
     sb.from('client_domains').select('domain, role, expires_on, status').eq('client_email', email),
     sb.from('client_campaigns').select('code, label, medium, scans, leads').eq('client_email', email).is('archived_at', null),
     sb.from('client_visits').select('campaign_code').eq('client_email', email).gte('created_at', weekAgo),

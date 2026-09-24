@@ -1,4 +1,5 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
+import { mailFilterFor } from '@/lib/mail-scope';
 
 /**
  * ONE SEARCH THAT KNOWS THE WHOLE BUSINESS, and one card that knows a person.
@@ -61,6 +62,13 @@ export async function search(sb: SupabaseClient, clientEmail: string, raw: strin
   const email = clientEmail.toLowerCase().trim();
   const like = `%${esc(term)}%`;
   const phone = phoneLike(term);
+  // Search never surfaces a colleague's own inbox; two .or filters are both applied.
+  const onlyMail = await mailFilterFor(email);
+  const mailQ = sb
+    .from('client_mail')
+    .select('id, from_addr, from_name, subject, snippet, received_at')
+    .eq('client_email', email)
+    .or(`subject.ilike.${like},snippet.ilike.${like},from_addr.ilike.${like},from_name.ilike.${like}`);
 
   const [contacts, leads, jobs, mail, posts, requests, notes] = await Promise.all([
     sb
@@ -81,13 +89,7 @@ export async function search(sb: SupabaseClient, clientEmail: string, raw: strin
       .eq('client_email', email)
       .or(`name.ilike.${like},contact_name.ilike.${like},contact_email.ilike.${like},town.ilike.${like},site.ilike.${like},source.ilike.${like},notes.ilike.${like}`)
       .limit(12),
-    sb
-      .from('client_mail')
-      .select('id, from_addr, from_name, subject, snippet, received_at')
-      .eq('client_email', email)
-      .or(`subject.ilike.${like},snippet.ilike.${like},from_addr.ilike.${like},from_name.ilike.${like}`)
-      .order('received_at', { ascending: false })
-      .limit(12),
+    (onlyMail ? mailQ.or(onlyMail) : mailQ).order('received_at', { ascending: false }).limit(12),
     sb
       .from('posting_posts')
       .select('id, headline, scheduled_for, status')
@@ -274,8 +276,10 @@ export async function dossier(sb: SupabaseClient, clientEmail: string, who: { em
 
   // Their mail and the notes on their jobs, which is most of what "what did we
   // last say to them" actually means.
+  const onlyMail = await mailFilterFor(email);
+  const mailQ = sb.from('client_mail').select('id, subject, snippet, from_addr, received_at, status').eq('client_email', email).ilike('from_addr', `%${esc(addr ?? '')}%`);
   const [mail, events] = await Promise.all([
-    addr ? sb.from('client_mail').select('id, subject, snippet, from_addr, received_at, status').eq('client_email', email).ilike('from_addr', `%${esc(addr)}%`).order('received_at', { ascending: false }).limit(15) : Promise.resolve({ data: [] }),
+    addr ? (onlyMail ? mailQ.or(onlyMail) : mailQ).order('received_at', { ascending: false }).limit(15) : Promise.resolve({ data: [] }),
     jobRows.length
       ? sb.from('client_job_events').select('kind, body, author_name, created_at, job_id').eq('client_email', email).in('job_id', jobRows.map((j) => String(j.id))).order('created_at', { ascending: false }).limit(25)
       : Promise.resolve({ data: [] }),
