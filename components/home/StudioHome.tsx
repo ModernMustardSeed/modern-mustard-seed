@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import Link from '@/components/AttributionLink';
 import Image from 'next/image';
 import styles from './StudioHome.module.css';
@@ -42,14 +43,14 @@ function ProjectImage({ name, alt, sizes }: { name: string; alt: string; sizes: 
 function PressRule() {
   return <div className={styles.pressRule} aria-hidden="true"><i /><b /><span /><b /><i /></div>;
 }
-export default function StudioHome({ faq }: { faq: { q: string; a: string }[] }) {
+export default function StudioHome({ faq, hero, showMine = true }: { faq: { q: string; a: string }[]; hero?: ReactNode; showMine?: boolean }) {
   return <div className={styles.studio} data-design="mms-editorial-2026" data-edition="pop-art-studio">
-    <PosterHero />
+    {hero ?? <PosterHero />}
     <figure className={styles.verse}><blockquote><SproutSeed className={styles.sprout} grownClass={styles.grown} /><p>“If you have faith as small as a mustard seed, nothing will be impossible for you.”</p></blockquote><figcaption>Matthew 17:20</figcaption><Link href="/kingdom" className={styles.kingdomLink}>Serving a ministry? We build for the Kingdom, at ministry pricing <Arrow /></Link></figure>
-    <section id="show-me-mine" className={styles.showMine} aria-labelledby="show-mine-heading">
+    {showMine && <section id="show-me-mine" className={styles.showMine} aria-labelledby="show-mine-heading">
       <div><p className={styles.eyebrow}>Show me mine</p><h2 id="show-mine-heading">Paste your website. <em>We’ll sketch you a new one.</em></h2><p>Free, in your look, within 24 hours, with a free audit of the site, Google profile and reviews you have now. {PREVIEW.short}</p></div>
       <div><ShowMeMine className={styles.showForm} /><Link href="/presence-audit" className={styles.auditOnly}>Just want the audit? Get it free <Arrow /></Link></div>
-    </section>
+    </section>}
     <PressRule />
     <section id="selected-work" className={styles.work} aria-labelledby="work-heading">
       <div className={styles.sectionTop}><p className={styles.eyebrow}>01 / Selected Work</p><span>Made here. Out in the world.</span></div>
