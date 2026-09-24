@@ -20,20 +20,21 @@ const CHANNELS = [
   { key: 'make-it-real', title: 'Make It Real', line: 'An original song. Something you can call your own.', runtime: '38 sec' },
   { key: 'dinner-rush', title: 'The Dinner Rush', line: 'Friday night, full house. You cook. He books. Buonissimo.', runtime: '36 sec' },
   { key: 'find-your-horizon', title: 'Find Your Horizon', line: 'How does a little seed end up on a yacht?', runtime: '36 sec' },
-  { key: 'unveiling', title: 'The Unveiling', line: 'Tonight, an unveiling. Built for one guest. You.', runtime: '36 sec' },
   { key: 'wonderful-time', title: 'A Wonderful Time To Be Alive', line: 'The studio film. Consume less. Create.', runtime: '96 sec' },
   { key: 'nine-forty-seven', title: '9:47 PM', line: 'A real call, booked while nobody was working.', runtime: '33 sec' },
-  { key: 'scenic-route', title: 'The Scenic Route', line: 'Down the road to Mustard Seed Ranch.', runtime: '30 sec' },
-  { key: 'take-the-bridge', title: 'Take the Bridge', line: 'Somewhere, a business phone rings. Not on this ship.', runtime: '36 sec' },
   { key: 'good-news', title: 'Good News', line: 'Your business thrives. You get your life back.', runtime: '36 sec' },
 ] as const;
 
 export default function MustardTV() {
   const [idx, setIdx] = useState(0);
   const [muted, setMuted] = useState(true);
+  // Captions start on: the films autoplay muted, so the words are on screen from the first frame.
+  const [cc, setCc] = useState(true);
   const [static_, setStatic] = useState(false);
   const [onScreen, setOnScreen] = useState(false);
   const [seen, setSeen] = useState(false);
+  // The poster waits until the set is a screen away, so it never competes with the hero.
+  const [near, setNear] = useState(false);
   const [paused, setPaused] = useState(true);
   const video = useRef<HTMLVideoElement | null>(null);
   const set = useRef<HTMLDivElement | null>(null);
@@ -47,8 +48,17 @@ export default function MustardTV() {
     if (!el) return;
     const io = new IntersectionObserver(([e]) => { setOnScreen(e.isIntersecting); if (e.isIntersecting) setSeen(true); }, { threshold: 0.4 });
     io.observe(el);
-    return () => { io.disconnect(); window.clearTimeout(switchTimer.current); };
+    const soon = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setNear(true); soon.disconnect(); } }, { rootMargin: '900px 0px' });
+    soon.observe(el);
+    return () => { io.disconnect(); soon.disconnect(); window.clearTimeout(switchTimer.current); };
   }, []);
+
+  // Show or hide the caption track on the current film.
+  const applyCaptions = () => {
+    const t = video.current?.textTracks?.[0];
+    if (t) t.mode = cc ? 'showing' : 'hidden';
+  };
+  useEffect(applyCaptions);
 
   // Play while on screen (unless the visitor asked for stillness), pause off it.
   useEffect(() => {
@@ -94,16 +104,19 @@ export default function MustardTV() {
                 ref={video}
                 className={s.video}
                 src={seen ? `/video/tv/${ch.key}.mp4` : undefined}
-                poster={`/video/tv/${ch.key}.webp`}
+                poster={near ? `/video/tv/${ch.key}.webp` : undefined}
                 muted={muted}
                 playsInline
                 preload="none"
+                onLoadedMetadata={applyCaptions}
                 onPlay={() => setPaused(false)}
                 onPause={() => setPaused(true)}
                 onEnded={() => tune(idx + 1, 'ended')}
                 onClick={togglePlay}
                 aria-label={`${ch.title}, a film by Modern Mustard Seed`}
-              />
+              >
+                <track kind="captions" src={`/video/tv/${ch.key}.vtt`} srcLang="en" label="English" default />
+              </video>
               <div className={s.glass} aria-hidden="true" />
               <div className={s.static} data-on={static_ || undefined} aria-hidden="true" />
               <span className={s.osd} aria-hidden="true">CH {String(idx + 1).padStart(2, '0')}</span>
@@ -114,7 +127,7 @@ export default function MustardTV() {
           </div>
           <div className={s.panel}>
             <span className={s.badge}>Mustard<br />TV</span>
-            <button type="button" className={s.dial} style={{ ['--turn' as string]: `${idx * 36}deg` }} onClick={() => tune(idx + 1, 'dial')} aria-label="Next channel">
+            <button type="button" className={s.dial} style={{ ['--turn' as string]: `${idx * (360 / CHANNELS.length)}deg` }} onClick={() => tune(idx + 1, 'dial')} aria-label="Next channel">
               <i aria-hidden="true" />
             </button>
             <span className={s.dialLabel}>Channel</span>
@@ -125,6 +138,10 @@ export default function MustardTV() {
             <button type="button" className={s.sound} onClick={toggleSound} aria-pressed={!muted}>
               {muted ? 'Sound on' : 'Mute'}
             </button>
+            <div className={s.duo}>
+              <button type="button" onClick={togglePlay} aria-label={paused ? `Play ${ch.title}` : `Pause ${ch.title}`}>{paused ? 'Play' : 'Pause'}</button>
+              <button type="button" onClick={() => { setCc((v) => !v); trackEvent('mustard_tv_captions', { on: !cc }); }} aria-pressed={cc} aria-label="Captions">CC</button>
+            </div>
             <span className={s.grille} aria-hidden="true" />
           </div>
         </div>

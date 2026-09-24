@@ -204,7 +204,7 @@ export default function Navbar() {
               height={1180}
               sizes="40px"
               className="h-9 w-auto md:h-10"
-              priority
+              loading="eager"
             />
             <span className="font-sans text-sm md:text-base tracking-[0.06em] text-[#161616] uppercase font-extrabold">
               Modern Mustard Seed
