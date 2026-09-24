@@ -132,6 +132,22 @@ async function checkGbp(sb: SupabaseClient, email: string): Promise<Check> {
   return pass('gbp', j.title ?? 'the profile');
 }
 
+async function checkTikTok(sb: SupabaseClient, email: string): Promise<Check> {
+  const acct = await accessToken(sb, email, 'tiktok');
+  if (!acct) return fail('tiktok', 'Not connected.', 'Connect TikTok with the account the business posts from.');
+  const res = await fetch('https://open.tiktokapis.com/v2/user/info/?fields=open_id,display_name', { headers: { Authorization: `Bearer ${acct.token}` }, signal: AbortSignal.timeout(20_000) });
+  const j = (await res.json().catch(() => ({}))) as { data?: { user?: { display_name?: string } }; error?: { code?: string; message?: string } };
+  if (!res.ok || (j.error?.code && j.error.code !== 'ok')) {
+    // TikTok access tokens last a day and renew from the refresh token at publish time.
+    const renewable = j.error?.code === 'access_token_invalid' && Boolean(acct.row.refresh_ciphertext);
+    const msg = j.error?.message || `HTTP ${res.status}`;
+    if (!renewable) await markAccount(sb, email, 'tiktok', res.status === 401 ? 'revoked' : 'error', msg);
+    return renewable ? pass('tiktok', acct.row.account_name) : fail('tiktok', msg, res.status === 401 ? 'Connect TikTok again; the token was revoked.' : null);
+  }
+  await markAccount(sb, email, 'tiktok', 'connected', null);
+  return pass('tiktok', j.data?.user?.display_name ?? acct.row.account_name);
+}
+
 /** Ask one platform, live. */
 export async function checkOne(sb: SupabaseClient, email: string, platform: Platform): Promise<Check> {
   try {
@@ -145,6 +161,8 @@ export async function checkOne(sb: SupabaseClient, email: string, platform: Plat
         return await checkLinkedIn(sb, email);
       case 'gbp':
         return await checkGbp(sb, email);
+      case 'tiktok':
+        return await checkTikTok(sb, email);
       case 'houzz':
         return fail('houzz', 'Houzz has no door for software.', 'Each post goes on the sheet and takes a minute by hand.');
     }

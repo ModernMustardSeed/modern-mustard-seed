@@ -18,13 +18,13 @@ import type { Session } from '@/components/cc/Workspace';
  * Nothing is written until "Put it on the calendar". The shape step reads.
  */
 
-type Platform = 'facebook' | 'instagram' | 'linkedin' | 'x' | 'gbp' | 'houzz';
+type Platform = 'facebook' | 'instagram' | 'linkedin' | 'x' | 'gbp' | 'tiktok' | 'houzz';
 
-const LABEL: Record<Platform, string> = { facebook: 'Facebook', instagram: 'Instagram', linkedin: 'LinkedIn', x: 'X', gbp: 'Google Business Profile', houzz: 'Houzz' };
-const SHORT: Record<Platform, string> = { facebook: 'Facebook', instagram: 'Instagram', linkedin: 'LinkedIn', x: 'X', gbp: 'Google', houzz: 'Houzz' };
+const LABEL: Record<Platform, string> = { facebook: 'Facebook', instagram: 'Instagram', linkedin: 'LinkedIn', x: 'X', gbp: 'Google Business Profile', tiktok: 'TikTok', houzz: 'Houzz' };
+const SHORT: Record<Platform, string> = { facebook: 'Facebook', instagram: 'Instagram', linkedin: 'LinkedIn', x: 'X', gbp: 'Google', tiktok: 'TikTok', houzz: 'Houzz' };
 
 /** What each feed cuts off at. The count turns amber near the line and red past it. */
-const LIMIT: Record<Platform, number> = { facebook: 63_206, instagram: 2_200, linkedin: 3_000, x: 280, gbp: 1_500, houzz: 4_000 };
+const LIMIT: Record<Platform, number> = { facebook: 63_206, instagram: 2_200, linkedin: 3_000, x: 280, gbp: 1_500, tiktok: 2_200, houzz: 4_000 };
 
 /** Why each feed gets its own shape. Shown once, under the version, in plain words. */
 const WHY: Record<Platform, string> = {
@@ -33,6 +33,7 @@ const WHY: Record<Platform, string> = {
   linkedin: 'A professional frame and at most two hashtags, for the reader who is at work.',
   x: 'One strong thought under the limit. No hashtags, no link: X buries both.',
   gbp: 'One paragraph a searcher can use, no hashtags. This is the one that shows up next to your map pin.',
+  tiktok: 'A line you would say out loud, then a few hashtags. TikTok only posts with a photo or a video.',
   houzz: 'A project note about the work itself, the way Houzz readers browse.',
 };
 
