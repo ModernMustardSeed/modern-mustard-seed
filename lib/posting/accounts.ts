@@ -47,6 +47,11 @@ function real(v: string | undefined): string | null {
   return v && !/^\[SENSITIVE\]$/i.test(v) ? v : null;
 }
 
+/** Facebook's Connect button needs the Meta app's id and secret; the paste does not. */
+export function facebookOAuthReady(): boolean {
+  return Boolean(real(process.env.FACEBOOK_APP_ID) && real(process.env.FACEBOOK_APP_SECRET));
+}
+
 /** What a platform still needs before it can connect, or null when it is ready. */
 export function connectNeeds(platform: Platform): string | null {
   switch (platform) {
@@ -88,6 +93,7 @@ export async function accountViews(sb: SupabaseClient, clientEmail: string): Pro
       error: p === 'gbp' && r && r.status === 'connected' && !connected ? 'Google is connected; the Business Profile location is not chosen yet.' : (r?.error ?? null),
       manualOnly: p === 'houzz',
       needs: connected ? null : connectNeeds(p),
+      oauth: p === 'facebook' || p === 'instagram' ? facebookOAuthReady() : p === 'x' || p === 'linkedin' ? !connectNeeds(p) : false,
     });
   }
   return out;
