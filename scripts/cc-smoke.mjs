@@ -203,6 +203,24 @@ await check('lists read', async () => {
   return `${(body?.lists ?? []).length} lists`;
 });
 
+await check('conversations come from the record', async () => {
+  const { status, body } = await call('/api/portal/conversations');
+  must(status === 200, `conversations answered ${status}`);
+  must(Array.isArray(body?.conversations), 'no conversations array');
+  // `read` false means the provider could not be reached AND nothing was
+  // stored, which is the one case where an empty list would be a lie.
+  must(body.read === true, 'the room could neither read the record nor the provider');
+  // An empty list is NOT a pass. This room answered 200 with zero rows for
+  // weeks while thirteen conversations sat in the table, because it was gated
+  // on a different rule than every other room and failed silently to empty.
+  // A check that accepts nothing accepts that bug back.
+  must(body.conversations.length > 0, 'no conversations came back, though the record holds some');
+  const withTurns = body.conversations.filter((c) => (c.turns ?? []).length > 0);
+  must(withTurns.length > 0, 'conversations came back with no turns in any of them');
+  const linked = body.conversations.filter((c) => c.leadId).length;
+  return `${body.conversations.length} conversations, ${linked} became leads`;
+});
+
 await check('the pulse counts', async () => {
   const { status, body } = await call('/api/cc/pulse');
   must(status === 200, `pulse answered ${status}`);
