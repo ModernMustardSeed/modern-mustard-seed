@@ -144,4 +144,6 @@ export type AccountView = {
   manualOnly: boolean;
   /** What is missing before it can connect, in words a person can act on. */
   needs: string | null;
+  /** True when a Connect button can sign this platform in, no paste needed. */
+  oauth: boolean;
 };

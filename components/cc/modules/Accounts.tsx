@@ -19,7 +19,7 @@ import Systems from '@/components/cc/Systems';
  */
 
 type Integration = { provider: string; account_email: string | null; account_name: string | null; status: string; error: string | null; scopes: string[] };
-type Feed = { provider: string; connected: boolean; status: string; accountName: string | null; error: string | null; manualOnly: boolean; needs: string | null };
+type Feed = { provider: string; connected: boolean; status: string; accountName: string | null; error: string | null; manualOnly: boolean; needs: string | null; oauth?: boolean };
 type State = 'on' | 'off' | 'warn' | 'manual';
 type Check = { platform: string; ok: boolean; account: string | null; error: string | null; fix: string | null; at: string };
 
@@ -149,6 +149,30 @@ export default function Accounts({ session }: { session: Session }) {
   const [checks, setChecks] = useState<Record<string, Check>>({});
   const [checking, setChecking] = useState<string | null>(null);
   const [steps, setSteps] = useState<string | null>(null);
+  // Where a Connect button's sign-in came home: "facebook-ok:Built Right..." or "facebook-failed:why".
+  const [returned, setReturned] = useState<{ ok: boolean; text: string } | null>(null);
+  useEffect(() => {
+    const c = new URLSearchParams(window.location.search).get('connect');
+    if (!c) return;
+    const [head, ...rest] = c.split(':');
+    const detail = rest.join(':');
+    const name = head.split('-')[0];
+    const label = FEED_LABEL[name] ?? name;
+    const ok = head.endsWith('-ok');
+    setReturned({
+      ok,
+      text: ok
+        ? `Connected ${detail || label}.`
+        : head.endsWith('-denied')
+          ? `${label} was not connected: the sign-in was cancelled.`
+          : head.endsWith('-unconfigured')
+            ? `${label} cannot sign in from here yet. The app keys are not on the site.`
+            : `${label} did not connect${detail ? `: ${detail}` : '.'}`,
+    });
+    const u = new URL(window.location.href);
+    u.searchParams.delete('connect');
+    window.history.replaceState(null, '', u.toString());
+  }, []);
 
   const load = useCallback(async () => {
     setError(false);
@@ -318,8 +342,9 @@ export default function Accounts({ session }: { session: Session }) {
     ...(['facebook', 'instagram', 'x', 'linkedin', 'houzz'] as const).map((p): Row => {
       const f = feed(p);
       const st = feedState(f);
-      const oauth = p === 'x' ? '/api/oauth/x/start' : p === 'linkedin' ? '/api/oauth/linkedin/start' : null;
-      const canOauth = Boolean(oauth) && !f?.needs;
+      // Instagram has no door of its own: it signs in through the Facebook Page it is linked to.
+      const oauth = p === 'facebook' || p === 'instagram' ? '/api/oauth/facebook/start?back=cc' : p === 'x' ? '/api/oauth/x/start' : p === 'linkedin' ? '/api/oauth/linkedin/start' : null;
+      const canOauth = Boolean(oauth) && (p === 'facebook' || p === 'instagram' ? Boolean(f?.oauth) : !f?.needs);
       return {
         key: p,
         name: FEED_LABEL[p],
@@ -332,14 +357,16 @@ export default function Accounts({ session }: { session: Session }) {
             : st === 'warn'
               ? (f?.error ?? 'The connection needs a fresh sign-in.')
               : p === 'instagram'
-                ? 'Comes with Facebook. Connect the Facebook Page and the Instagram account linked to it connects too.'
+                ? canOauth
+                  ? 'Signs in through Facebook. Tick the Page and the Instagram account on the screen Facebook shows and both connect.'
+                  : 'Comes with Facebook. Connect the Facebook Page and the Instagram account linked to it connects too.'
                 : canOauth
                   ? 'Sign in once and posts go out here on their own.'
                   : 'Being wired from our side. Nothing for you to do yet.',
         open: FEED_OPEN[p],
         action: st !== 'on' && canOauth && oauth ? { label: `Connect ${FEED_LABEL[p]}`, href: oauth } : null,
         paste:
-          preview && st !== 'on' && p === 'facebook' ? (
+          preview && st !== 'on' && p === 'facebook' && !canOauth ? (
             <Paste label="Connect the Page" fields={[{ key: 'token', label: 'Page access token', secret: true, hint: 'Graph API Explorer, their Page, a long-lived Page token.' }]} submit={(v) => desk('facebook-token', v)} />
           ) : preview && st !== 'on' && p === 'x' && !canOauth ? (
             <Paste
@@ -399,6 +426,13 @@ export default function Accounts({ session }: { session: Session }) {
         ) : !integrations || !feeds ? (
           <div className="p-5"><Skeleton rows={5} /></div>
         ) : (
+          <>
+          {returned && (
+            <div role="status" className="flex flex-wrap items-center gap-2 border-b border-[var(--cc-line)] px-5 py-3 text-[13.5px] text-[var(--cc-ink)]">
+              <Badge tone={returned.ok ? 'good' : 'warn'}>{returned.ok ? 'Connected' : 'Not connected'}</Badge>
+              {returned.text}
+            </div>
+          )}
           <ul className="divide-y divide-[var(--cc-line)]">
             {rows.map((r) => (
               <li key={r.key} className="px-5 py-4">
@@ -476,6 +510,7 @@ export default function Accounts({ session }: { session: Session }) {
               </li>
             ))}
           </ul>
+          </>
         )}
       </Card>
 

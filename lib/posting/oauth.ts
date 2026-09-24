@@ -15,7 +15,7 @@ function secret(): string {
 }
 const b64 = (s: string | Buffer) => Buffer.from(s).toString('base64url');
 
-export type OAuthState = { email: string; provider: 'x' | 'linkedin'; verifier?: string; by: 'client' | 'admin'; exp: number };
+export type OAuthState = { email: string; provider: 'x' | 'linkedin' | 'facebook'; verifier?: string; by: 'client' | 'admin'; back?: 'cc'; exp: number };
 
 export function signState(st: Omit<OAuthState, 'exp'>): string {
   const payload = b64(JSON.stringify({ ...st, exp: Date.now() + 15 * 60_000 }));
@@ -47,12 +47,14 @@ export function real(v: string | undefined): string | null {
   return v && !/^\[SENSITIVE\]$/i.test(v) ? v : null;
 }
 
-export function redirectUri(provider: 'x' | 'linkedin'): string {
+export function redirectUri(provider: 'x' | 'linkedin' | 'facebook'): string {
   return `${SITE.url}/api/oauth/${provider}/callback`;
 }
 
 /** Where a flow goes home: the client's calendar, or the admin desk when Sarah ran it. */
-export function homeFor(st: Pick<OAuthState, 'by' | 'email'>, note: string): string {
+export function homeFor(st: Pick<OAuthState, 'by' | 'email' | 'back'>, note: string): string {
+  // Started from the Command Center (the client, or Sarah looking as them): back to its Accounts room.
+  if (st.back === 'cc') return `${SITE.url}/cc?connect=${encodeURIComponent(note)}#accounts`;
   return st.by === 'admin'
     ? `${SITE.url}/admin/posting?client=${encodeURIComponent(st.email)}&connect=${encodeURIComponent(note)}`
     : `${SITE.url}/portal/posting?connect=${encodeURIComponent(note)}`;
