@@ -8,6 +8,7 @@ import { CLIENT_PROJECTS, PRIORITY_LABEL, confirmVisitor, priorityFromLand } fro
 import { pushLeadToBuildertrend } from '@/lib/buildertrend';
 import { creditLead, isCode } from '@/lib/campaigns';
 import { checkAnswer } from '@/lib/human-check';
+import { chatIdFromToolCall, linkChatToLead } from '@/lib/command-center/chat-store';
 
 export const runtime = 'nodejs';
 export const maxDuration = 30;
@@ -87,10 +88,15 @@ export async function POST(req: Request) {
 
   // Vapi wraps the arguments; the site sends them bare. Same fields either way.
   let toolCallId: string | null = null;
+  // The conversation this lead came out of, when the agent is the one asking.
+  // Captured before `body` is replaced by the tool arguments, because the
+  // envelope that carries it is about to be thrown away.
+  let chatId: string | null = null;
   const msg = body.message as { type?: string; toolCallList?: Array<{ id?: string; arguments?: unknown }> } | undefined;
   if (msg?.type === 'tool-calls' && Array.isArray(msg.toolCallList) && msg.toolCallList.length) {
     const call = msg.toolCallList[0];
     toolCallId = call.id ?? null;
+    chatId = chatIdFromToolCall(body.message);
     let args: unknown = call.arguments;
     if (typeof args === 'string') {
       try {
@@ -201,11 +207,20 @@ export async function POST(req: Request) {
     id = existing.id as string;
     merged = true;
   } else {
-    const row = { client_email: project.clientEmail, project: project.key, source, sources: [source], ...lead, campaign, answers, priority, sms_consent: smsConsent, sms_promo: smsPromo, elapsed_ms: elapsedMs, ip_hash: ipHash, ua, visit_hashes: visitHashes };
+    const row = { client_email: project.clientEmail, project: project.key, source, sources: [source], ...lead, campaign, answers, priority, sms_consent: smsConsent, sms_promo: smsPromo, elapsed_ms: elapsedMs, ip_hash: ipHash, ua, visit_hashes: visitHashes, chat_id: chatId };
     const { data, error } = await sb.from('client_leads').insert(row).select('id').single();
     if (error || !data) return reply({ ok: false, error: 'could not save' }, 500);
     id = data.id as string;
     if (campaign) await creditLead(sb, project.clientEmail, campaign);
+  }
+
+  // Join the conversation to the lead, both ways, so opening either one finds
+  // the other. Never allowed to fail the lead: by this point the row is saved
+  // and the client is about to be told, and a missing link is a convenience
+  // lost, not a lead lost.
+  if (chatId && project.assistantId) {
+    if (merged) await sb.from('client_leads').update({ chat_id: chatId }).eq('id', id).is('chat_id', null);
+    await linkChatToLead(sb, { assistantId: project.assistantId, chatId, leadId: id });
   }
 
   // Tell the client, twice. Plain words, everything they need to call back.
