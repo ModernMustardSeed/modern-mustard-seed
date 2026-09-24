@@ -38,7 +38,7 @@ const PACKAGES: { chip: string; name: string; fit: string; points: string[]; fea
     name: 'Daily Posting',
     fit: 'You take good photos of the work and want them seen every day.',
     points: [
-      'A post every day on Facebook, Instagram, Google, and Houzz',
+      'A post every day on Facebook, Instagram, and your Google profile',
       'Written for each platform, never one caption pasted four times',
       'You drop photos and a few words in your portal. That is your whole job',
       'One blog post a month from the same material',

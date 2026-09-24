@@ -114,7 +114,7 @@ export default function Marketing({ session, refreshPulse }: { session: Session;
   // day sat held until it passed.
   const waiting = (data?.posts ?? []).filter((p) => p.status === 'held');
   const recent = (data?.posts ?? []).filter((p) => p.scheduled_for < today).slice(0, 8);
-  const platforms: Platform[] = data?.settings?.platforms?.length ? data.settings.platforms : (['facebook', 'instagram', 'linkedin', 'x', 'gbp', 'houzz'] as Platform[]);
+  const platforms: Platform[] = data?.settings?.platforms?.length ? data.settings.platforms : (['facebook', 'instagram', 'linkedin', 'x', 'gbp'] as Platform[]);
 
   return (
     <div className="space-y-5">

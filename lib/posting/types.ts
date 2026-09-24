@@ -5,6 +5,14 @@
 export const PLATFORMS = ['facebook', 'instagram', 'linkedin', 'x', 'gbp', 'houzz'] as const;
 export type Platform = (typeof PLATFORMS)[number];
 
+/**
+ * What a new client posts to when nobody has chosen. Houzz came off the offer
+ * 2026-09-24 (Sarah): it has no posting API, so it is only ever hand-posted.
+ * It stays in PLATFORMS so a client already posting there (Built Right) keeps
+ * the feed; it is just never the default again.
+ */
+export const DEFAULT_PLATFORMS: Platform[] = ['facebook', 'instagram', 'linkedin', 'x', 'gbp'];
+
 /** Platforms we can post to by API once an account is connected. The rest go on the hand-post sheet. */
 export const API_PLATFORMS: Platform[] = ['facebook', 'instagram', 'x', 'linkedin', 'gbp'];
 

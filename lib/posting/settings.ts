@@ -1,6 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { SettingsRow, Platform } from './types';
-import { PLATFORMS } from './types';
+import { DEFAULT_PLATFORMS, PLATFORMS } from './types';
 
 export async function getSettings(sb: SupabaseClient, clientEmail: string): Promise<SettingsRow | null> {
   const { data } = await sb.from('posting_settings').select('*').eq('client_email', clientEmail.toLowerCase().trim()).maybeSingle();
@@ -28,7 +28,7 @@ function normalize(r: Record<string, unknown>): SettingsRow {
     facts: (r.facts as string | null) ?? null,
     tone: (r.tone as string | null) ?? null,
     hard_nos: (r.hard_nos as string | null) ?? null,
-    platforms: platforms.length ? platforms : [...PLATFORMS],
+    platforms: platforms.length ? platforms : [...DEFAULT_PLATFORMS],
     post_hour_mt: Number(r.post_hour_mt ?? 9),
     platform_hours,
     auto_publish: r.auto_publish !== false,

@@ -4,7 +4,7 @@
  *
  * The client drops photos and a few words in their portal. The studio turns
  * them into platform-specific posts and posts every day on Facebook,
- * Instagram, Google Business Profile and Houzz. The calendar and every post
+ * Instagram and Google Business Profile. The calendar and every post
  * live in the portal. One blog post a month comes out of the same material.
  *
  * SUBSCRIPTION ONLY. There is no setup line, so this does not live in
@@ -33,9 +33,9 @@ export const DAILY_POSTING: SubscriptionProduct = {
   monthlyCents: 29700,
   pitch: 'You drop the photos. We post every day, everywhere your customers look.',
   description:
-    'Drop photos and a few words in your portal. We turn them into platform-specific posts and post every day on Facebook, Instagram, Google Business Profile and Houzz. Your calendar and every post live in your portal. One blog post a month from the same material.',
+    'Drop photos and a few words in your portal. We turn them into platform-specific posts and post every day on Facebook, Instagram and Google Business Profile. Your calendar and every post live in your portal. One blog post a month from the same material.',
   includes: [
-    'A post every day on Facebook, Instagram, Google Business Profile and Houzz',
+    'A post every day on Facebook, Instagram and Google Business Profile',
     'Written for each platform, not one caption pasted four times',
     'You drop photos and a few words in your portal; that is your whole job',
     'The calendar and every post, live in your portal',
