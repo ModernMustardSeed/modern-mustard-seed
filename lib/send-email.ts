@@ -136,7 +136,18 @@ function unroutable(addr: string): boolean {
  * The Reply-To this message should actually carry. Keeps whatever the caller
  * set unless that address is itself a dead one on our domain.
  */
-export function routableReplyTo(from: string, replyTo?: string): string | undefined {
+export function routableReplyTo(from: string, replyTo?: string | string[]): string | string[] | undefined {
+  // Resend takes one address or a list, and fifteen callers pass a list. Reading
+  // a list as one string threw inside the send, so every client lead, booking
+  // and review ask with a list failed from 2026-09-18 until this line.
+  if (Array.isArray(replyTo)) {
+    const list = replyTo.filter((r): r is string => typeof r === 'string' && r.trim() !== '');
+    if (list.length) {
+      const kept = list.filter((r) => !unroutable(bareAddr(r)));
+      return kept.length ? kept : replyFallback();
+    }
+    return unroutable(bareAddr(from)) ? replyFallback() : undefined;
+  }
   if (replyTo) return unroutable(bareAddr(replyTo)) ? replyFallback() : replyTo;
   return unroutable(bareAddr(from)) ? replyFallback() : undefined;
 }
@@ -318,7 +329,7 @@ export function resendClient(): Resend {
       subject?: string;
       html?: string;
       text?: string;
-      replyTo?: string;
+      replyTo?: string | string[];
       headers?: Record<string, string>;
     };
     let to = arr(p.to);
@@ -382,7 +393,7 @@ export function resendClient(): Resend {
         html,
         text: p.text,
         fromName: fromName || undefined,
-        replyTo,
+        replyTo: Array.isArray(replyTo) ? replyTo.join(', ') : replyTo,
       });
       await recordSentEmail({
         mailbox: z.from || mailbox,
