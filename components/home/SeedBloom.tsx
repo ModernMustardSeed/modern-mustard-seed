@@ -13,16 +13,16 @@ import { useEffect, useRef } from 'react';
  * motion gets the grown tree, still.
  */
 
-type Seg = { a: [number, number, number]; b: [number, number, number]; depth: number };
+export type Seg = { a: [number, number, number]; b: [number, number, number]; depth: number };
 
-function rng(seed: number) {
+export function rng(seed: number) {
   return () => {
     seed = (seed * 1664525 + 1013904223) >>> 0;
     return seed / 4294967296;
   };
 }
 
-function growTree(rand: () => number) {
+export function growTree(rand: () => number) {
   const segs: Seg[] = [];
   const tips: [number, number, number][] = [];
   const branch = (x: number, y: number, z: number, dx: number, dy: number, dz: number, len: number, depth: number) => {
@@ -44,7 +44,14 @@ function growTree(rand: () => number) {
   return { segs, tips };
 }
 
-export default function SeedBloom({ className }: { className?: string }) {
+export type GroveSite = { name: string; slug: string; url: string };
+
+/* With `sites`, the grown tree carries the live work: each site hangs from a
+   branch tip on a gold thread, turning with the tree, facing the viewer. The
+   piece nearest the viewer is reported through onFront; tap one to visit. */
+export default function SeedBloom({ className, sites, onFront, centered }: { className?: string; sites?: GroveSite[]; onFront?: (i: number) => void; centered?: boolean }) {
+  const front = useRef(onFront);
+  useEffect(() => { front.current = onFront; }, [onFront]);
   const host = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -61,7 +68,7 @@ export default function SeedBloom({ className }: { className?: string }) {
 
       let renderer: import('three').WebGLRenderer;
       try {
-        renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true, powerPreference: 'high-performance' });
+        renderer = new THREE.WebGLRenderer({ antialias: !!sites?.length, alpha: true, powerPreference: 'high-performance' });
       } catch { el.dataset.fallback = '1'; return; }
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
       renderer.setClearColor(0x000000, 0);
@@ -165,13 +172,64 @@ export default function SeedBloom({ className }: { className?: string }) {
       group.add(points);
       scene.add(group);
 
+      type Hung = { g: import('three').Group; frame: import('three').MeshBasicMaterial; img: import('three').MeshBasicMaterial; mesh: import('three').Mesh; line: import('three').LineBasicMaterial; url: string };
+      const hung: Hung[] = [];
+      const disposables: { dispose: () => void }[] = [];
+      if (sites?.length) {
+        const upper = tips.filter(t => t[1] > 0.9);
+        const taken = new Set<number>();
+        const loader = new THREE.TextureLoader();
+        const PW = phone ? 1.4 : 1.55, PH = PW * 0.625;
+        sites.forEach((site, i) => {
+          const want = -Math.PI + (i + 0.5) * (Math.PI * 2 / sites.length);
+          let best = 0, bestD = Infinity;
+          upper.forEach((t, k) => {
+            if (taken.has(k)) return;
+            const d = Math.abs(Math.atan2(Math.sin(Math.atan2(t[2], t[0]) - want), Math.cos(Math.atan2(t[2], t[0]) - want))) - t[1] * 0.08;
+            if (d < bestD) { bestD = d; best = k; }
+          });
+          taken.add(best);
+          const tip = upper[best];
+          const out = Math.hypot(tip[0], tip[2]) || 1;
+          const drop = 0.55 + (i % 2) * 0.55;
+          const pos = new THREE.Vector3(tip[0] + (tip[0] / out) * 1.15, tip[1] - drop, tip[2] + (tip[2] / out) * 1.15);
+          const g = new THREE.Group();
+          g.position.copy(pos);
+          const frameMat = new THREE.MeshBasicMaterial({ color: 0xf6ecd2, transparent: true });
+          const frameGeo = new THREE.PlaneGeometry(PW + 0.09, PH + 0.09);
+          const frame = new THREE.Mesh(frameGeo, frameMat);
+          const tex = loader.load('/images/editorial/' + site.slug + '-960.webp', () => { if (still) renderer.render(scene, camera); });
+          tex.colorSpace = THREE.SRGBColorSpace;
+          const imgMat = new THREE.MeshBasicMaterial({ map: tex, transparent: true });
+          const imgGeo = new THREE.PlaneGeometry(PW, PH);
+          const mesh = new THREE.Mesh(imgGeo, imgMat);
+          mesh.position.z = 0.01;
+          frame.renderOrder = 1; mesh.renderOrder = 2;
+          g.add(frame, mesh);
+          g.scale.setScalar(still ? 1 : 0.0001);
+          group.add(g);
+          const lineGeo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(...tip), pos.clone().add(new THREE.Vector3(0, PH / 2 + 0.05, 0))]);
+          const lineMat = new THREE.LineBasicMaterial({ color: 0xf5b700, transparent: true, opacity: still ? 0.55 : 0 });
+          group.add(new THREE.Line(lineGeo, lineMat));
+          disposables.push(frameMat, frameGeo, tex, imgMat, imgGeo, lineGeo, lineMat);
+          hung.push({ g, frame: frameMat, img: imgMat, mesh, line: lineMat, url: site.url });
+        });
+      }
+      let hover = -1, frontIdx = -1;
+      const wp = new THREE.Vector3();
+
       const resize = () => {
         const w = el.clientWidth, h = el.clientHeight;
         renderer.setSize(w, h, false);
         camera.aspect = w / h;
         const narrow = w < 760;
-        group.position.set(narrow ? 0 : Math.min(3.2, (w / h) * 1.62), narrow ? 0.7 : -0.1, 0);
-        group.scale.setScalar(narrow ? 0.72 : 0.98);
+        if (centered) {
+          group.position.set(0, narrow ? 1.3 : 1.12, 0);
+          group.scale.setScalar(narrow ? 0.44 : 0.56);
+        } else {
+          group.position.set(narrow ? 0 : Math.min(3.2, (w / h) * 1.62), narrow ? 0.7 : -0.1, 0);
+          group.scale.setScalar(narrow ? 0.72 : 0.98);
+        }
         uniforms.uScale.value = h / 900;
         camera.updateProjectionMatrix();
         if (still) renderer.render(scene, camera);
@@ -190,7 +248,15 @@ export default function SeedBloom({ className }: { className?: string }) {
         target.x = nx; target.y = ny;
         ray.setFromCamera(new THREE.Vector2(nx, ny), camera);
         if (ray.ray.intersectPlane(plane, hit)) uniforms.uMouse.value.copy(group.worldToLocal(hit.clone()));
+        if (hung.length) {
+          const inside = e.clientX >= b.left && e.clientX <= b.right && e.clientY >= b.top && e.clientY <= b.bottom;
+          const hits = inside ? ray.intersectObjects(hung.map(x => x.mesh)) : [];
+          hover = hits.length ? hung.findIndex(x => x.mesh === hits[0].object) : -1;
+          el.style.cursor = hover >= 0 ? 'pointer' : '';
+        }
       };
+      const onClick = () => { if (hover >= 0) window.open(hung[hover].url, '_blank', 'noopener,noreferrer'); };
+      el.addEventListener('click', onClick);
       const onLeave = () => uniforms.uMouse.value.set(99, 99, 0);
       window.addEventListener('pointermove', onMove, { passive: true });
       el.addEventListener('pointerleave', onLeave);
@@ -212,6 +278,21 @@ export default function SeedBloom({ className }: { className?: string }) {
           camera.position.y += (0.2 + target.y * 0.3 - camera.position.y) * 0.04;
           camera.lookAt(group.position.x * 0.35, 0.3, 0);
         }
+        let bestZ = -Infinity, bestI = -1;
+        hung.forEach((x, i) => {
+          x.g.lookAt(camera.position);
+          x.g.getWorldPosition(wp);
+          const near = Math.min(1, Math.max(0, (wp.z + 2.2) / 4.4));
+          const born = still ? 1 : Math.min(1, Math.max(0, (age - 4.1 - i * 0.22) / 0.9));
+          const pop = born < 1 ? 1 + 2.2 * Math.pow(born - 1, 3) + 1.2 * Math.pow(born - 1, 2) : 1;
+          const k = pop * (hover === i ? 1.12 : 1) * (0.72 + near * 0.5);
+          x.g.scale.lerp(new THREE.Vector3(k, k, k), still ? 1 : 0.18);
+          x.img.opacity = Math.min(1, 0.35 + near * 1.1) * Math.min(1, born * 1.5);
+          x.frame.opacity = x.img.opacity;
+          x.line.opacity = (0.15 + near * 0.45) * born;
+          if (wp.z > bestZ) { bestZ = wp.z; bestI = i; }
+        });
+        if (bestI !== frontIdx) { frontIdx = bestI; front.current?.(bestI); }
         renderer.render(scene, camera);
         if (!still) raf = requestAnimationFrame(tick);
       }
@@ -220,13 +301,14 @@ export default function SeedBloom({ className }: { className?: string }) {
 
       cleanup = () => {
         cancelAnimationFrame(raf); io.disconnect(); ro.disconnect();
-        window.removeEventListener('pointermove', onMove); el.removeEventListener('pointerleave', onLeave);
+        window.removeEventListener('pointermove', onMove); el.removeEventListener('pointerleave', onLeave); el.removeEventListener('click', onClick);
+        disposables.forEach(d => d.dispose());
         geo.dispose(); mat.dispose(); renderer.dispose(); renderer.domElement.remove();
       };
     })();
 
     return () => { disposed = true; cleanup(); };
-  }, []);
+  }, [sites, centered]);
 
   return <div ref={host} className={className} aria-hidden="true" />;
 }

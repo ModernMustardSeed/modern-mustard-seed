@@ -90,3 +90,32 @@
   .line>span,.rule,.bloom,.seedLead,.seedActions,.foot,.ringWrap,.galleryActions{animation:none}
   .seed h1 em,.cue i:after{animation:none}
 }
+
+/* ---------- III. The Grove ---------- */
+.grove:after{background:linear-gradient(0deg,#0b0906 0,#0b0906e0 24%,#0b090600 48%)}
+.grove .seedInner{pointer-events:none}
+.grove .seedInner a{pointer-events:auto}
+.groveCopy{margin:auto auto 0;padding:clamp(260px,40vh,440px) 0 4px;max-width:1100px;text-align:center}
+.inBranch{animation:fadeIn .8s both;color:#fbf6eab3;transition:color .3s}.inBranch b{font-weight:500;color:var(--mustard)}.inBranch:hover{color:var(--cream)}
+.grove h1{font-size:clamp(42px,4.5vw,80px);line-height:1.02}
+.grove .seedLead{max-width:620px;margin:18px auto 0!important;font-size:16px}
+.grove .seedActions{justify-content:center;margin-top:26px}
+.branches{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 26px;margin:34px 0 0;padding:18px 0 0;list-style:none;border-top:1px solid #fbf6ea1f;animation:fadeIn 1.2s 4.6s both}
+.branches a{position:relative;display:inline-flex;align-items:center;gap:8px;min-height:32px;font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:#fbf6ea73;transition:color .5s}
+.branches a:before{content:'';width:5px;height:5px;border-radius:50%;background:#fbf6ea40;transition:background .5s,box-shadow .5s}
+.branches a[data-front]{color:#f6eedd}
+.branches a[data-front]:before{background:var(--mustard);box-shadow:0 0 10px var(--mustard)}
+.branches a:hover{color:var(--mustard)}
+@media(max-width:760px){
+  .groveCopy{padding-top:40vh;text-align:left}
+  .grove .rule{justify-content:flex-start}
+  .grove .rule>span{display:none}
+  .grove .rule span:last-child{display:none}
+  .inBranch{letter-spacing:.14em}
+  .grove h1{font-size:clamp(36px,9.6vw,50px)}
+  .grove .seedLead{margin:18px 0 0!important}
+  .grove .seedActions{justify-content:flex-start}
+  .branches{justify-content:flex-start;gap:2px 18px}
+  .branches a{font-size:9.5px;letter-spacing:.16em}
+}
+@media(prefers-reduced-motion:reduce){.branches{animation:none}}
