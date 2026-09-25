@@ -1,9 +1,11 @@
-import { Suspense } from 'react';
+import { Suspense, type CSSProperties } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import BookCall from '@/components/BookCall';
+import { Marquee } from '@/components/home/HeroMotion';
 import { buildMetadata, SITE } from '@/lib/seo';
 import { JsonLd, breadcrumbJsonLd, faqJsonLd } from '@/lib/jsonld';
+import s from './book.module.css';
 
 export const metadata = buildMetadata({
   title: 'Book a Call with Sarah',
@@ -16,18 +18,33 @@ export const metadata = buildMetadata({
    /api/book/slots, so they stay live even when this page is served from the CDN.
    Prerendering it drops the per-request server render (~730ms of TTFB). */
 
+/* Each step is a comic panel cut from the same screenprint as the hero: the
+   phone for the talking, the pen for the plan, the stamp for the next move.
+   s is the zoom, ox/oy the point it zooms into. */
 const whatHappens = [
   {
     title: 'You talk, she listens',
     body: 'You walk her through what you are building and where it is stuck. She read your answers before the call, so you are not starting from zero.',
+    narr: 'Meanwhile, on the call',
+    bubble: 'Tell me everything.',
+    crop: { s: 2.0, ox: '80%', oy: '30%' },
+    tilt: '-1.4deg',
   },
   {
     title: 'She tells you what she would do',
     body: 'Straight read on the fastest path, what it takes, and what it costs. If software is the wrong answer, she says so on the call.',
+    narr: 'Then',
+    bubble: 'Here is the fast path.',
+    crop: { s: 2.5, ox: '14%', oy: '88%' },
+    tilt: '0.9deg',
   },
   {
     title: 'You leave with the next move',
     body: 'A plan you can act on whether or not you hire her. Most people leave with something they can do that same week.',
+    narr: 'And finally',
+    bubble: 'Stamped. Your move.',
+    crop: { s: 1.9, ox: '44%', oy: '46%' },
+    tilt: '-0.7deg',
   },
 ];
 
@@ -40,9 +57,51 @@ const faq = [
   { q: 'Can I reschedule?', a: 'Yes. Reply to the calendar invite or email sarah@modernmustardseed.com and we will move it. No penalty, no awkwardness.' },
 ];
 
+const DAYS = ['Tuesdays', 'Wednesdays', 'Thursdays', 'Fridays', '30 minutes', 'Free', 'No pitch'];
+const TAPE = ['Questions, answered plainly', 'Mountain Time', 'Tuesdays through Fridays', 'Reschedule any time', 'No intake bot'];
+
+/** A comic starburst as SVG polygon points, in a 100 by 100 box. */
+function burst(points: number, outer: number, inner: number): string {
+  return Array.from({ length: points * 2 }, (_, i) => {
+    const r = i % 2 === 0 ? outer : inner;
+    const a = (Math.PI * i) / points - Math.PI / 2;
+    return `${(50 + r * Math.cos(a)).toFixed(2)},${(50 + r * Math.sin(a)).toFixed(2)}`;
+  }).join(' ');
+}
+const BIG_BURST = burst(16, 50, 38);
+const INNER_BURST = burst(16, 41, 31);
+const NUM_BURST = burst(12, 50, 36);
+
+/** Mr. Mustard, waving. AVIF first, WebP next, the PNG for everything else. */
+function Mascot({ sizes, eager = false }: { sizes: string; eager?: boolean }) {
+  return (
+    <picture>
+      <source type="image/avif" srcSet="/brand/mascot-hero-480.avif 480w, /brand/mascot-hero-720.avif 720w" sizes={sizes} />
+      <source type="image/webp" srcSet="/brand/mascot-hero-480.webp 480w, /brand/mascot-hero-720.webp 720w" sizes={sizes} />
+      <img src="/brand/mascot.png" alt="" width={480} height={652} loading={eager ? 'eager' : 'lazy'} decoding="async" className={s.mascotImg} />
+    </picture>
+  );
+}
+
+function Strip({ items, className }: { items: string[]; className: string }) {
+  return (
+    <Marquee className={className}>
+      <div>
+        {[0, 1].map((k) => (
+          <span key={k} className="inline-flex">
+            {items.map((t) => (
+              <span key={t} className={s.mItem}>{t}<i>✦</i></span>
+            ))}
+          </span>
+        ))}
+      </div>
+    </Marquee>
+  );
+}
+
 export default function BookPage() {
   return (
-    <div className="bg-[#FBF6EA] text-[#161616]">
+    <div className={s.page}>
       <JsonLd
         data={[
           breadcrumbJsonLd([{ name: 'Home', url: '/' }, { name: 'Book a Call', url: '/book' }]),
@@ -62,106 +121,147 @@ export default function BookPage() {
         ]}
       />
 
-      {/* ───────────────  HERO — the desk  ─────────────── */}
-      <section className="relative overflow-hidden border-b-2 border-[#161616] halftone-bg">
-        <div className="relative z-[2] max-w-6xl mx-auto px-6 pt-28 md:pt-36 pb-14 md:pb-20">
-          <div className="grid lg:grid-cols-12 gap-10 lg:gap-8 items-center">
-            <div className="lg:col-span-7">
-              <span className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.18em] font-bold bg-white text-[#E0301E] border-2 border-[#161616] rounded-full px-3.5 py-1.5 shadow-[3px_3px_0_0_#161616]">
-                ☎ Tuesdays through Fridays · 30 minutes · free
-              </span>
-              <h1 className="mt-6 font-display font-extrabold leading-[0.98] tracking-tight text-5xl md:text-6xl lg:text-[4.6rem] text-[#161616]">
-                Get on the <em className="italic text-[#B48600]">book</em>.
-              </h1>
-              <p className="mt-6 max-w-xl text-lg md:text-xl text-[#3d382e] font-body leading-relaxed">
-                Thirty minutes with Sarah, no pitch. Tell her what you are building and where you are stuck, pick a time, and she comes prepared. Done-for-you build or just figuring out the next move, this is where it starts.
-              </p>
-              <div className="mt-8 flex flex-wrap gap-3">
-                <a href="#pick" className="rounded-full border-2 border-[#161616] bg-[#F5B700] text-[#161616] px-8 py-4 font-sans font-extrabold text-sm uppercase tracking-[0.14em] shadow-[5px_5px_0_0_#161616] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#161616]">
-                  Pick your time
-                </a>
-                <a href="#what-happens" className="rounded-full border-2 border-[#161616] bg-white px-8 py-4 font-sans font-extrabold text-sm uppercase tracking-[0.14em] text-[#161616] shadow-[5px_5px_0_0_#161616] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#161616]">
-                  See what happens on it
-                </a>
-              </div>
-              <p className="mt-6 font-body text-[15px] text-[#5c554a]">
-                Not ready to talk?{' '}
-                <Link href="/contact" className="font-bold text-[#B92417] underline decoration-2 underline-offset-2 hover:text-[#E0301E]">
-                  Send a note instead
-                </Link>{' '}
-                and Sarah answers inside a day.
-              </p>
-            </div>
+      {/* ───────────────  HERO: the desk, framed and hung  ─────────────── */}
+      <section className={s.hero}>
+        <div className={s.heroDots} aria-hidden="true" />
+        <span className={`${s.spark} ${s.hs1}`} aria-hidden="true">✦</span>
+        <span className={`${s.spark} ${s.hs2}`} aria-hidden="true">✦</span>
+        <span className={`${s.spark} ${s.hs3}`} aria-hidden="true">✦</span>
+        <span className={`${s.spark} ${s.hs4}`} aria-hidden="true">✦</span>
+        <span className={`${s.spark} ${s.hs5}`} aria-hidden="true">✦</span>
 
-            {/* The desk: her book is open, and you stamp your name into it. */}
-            <div className="lg:col-span-5">
-              <figure className="relative rotate-[-1.5deg] rounded-2xl border-[3px] border-[#161616] bg-white p-2.5 shadow-[9px_9px_0_0_#F5B700]">
-                <Image
-                  src="/book/datebook-hero.jpg"
-                  alt="Pop-art screenprint: a hand stamps an open appointment datebook on a desk beside a rotary telephone and a gold fountain pen"
-                  width={1600}
-                  height={900}
-                  priority
-                  sizes="(min-width: 1024px) 40vw, 92vw"
-                  className="rounded-xl border-2 border-[#161616] w-full h-auto"
-                />
-                <figcaption className="px-2 pt-2 pb-1 font-mono text-[10px] uppercase tracking-[0.22em] text-[#5c554a] text-center">
-                  Her book is open · stamp your name in it
-                </figcaption>
-              </figure>
+        <div className={s.heroInner}>
+          <div className={s.heroCopy}>
+            <span className="inline-flex items-center gap-2 font-mono text-[9.5px] sm:text-[10px] uppercase tracking-[0.1em] sm:tracking-[0.18em] font-bold bg-white text-[#B92417] border-2 border-[#161616] rounded-full px-3.5 py-1.5 shadow-[3px_3px_0_0_#161616]">
+              ☎ Tuesdays through Fridays · 30 minutes · free
+            </span>
+            <h1 className={s.h1}>
+              Get on the <em className={s.hl}>book</em>.
+            </h1>
+            <p className={s.lead}>
+              Thirty minutes with Sarah, no pitch. Tell her what you are building and where you are stuck, pick a time, and she comes prepared. Done-for-you build or just figuring out the next move, this is where it starts.
+            </p>
+            <div className={s.actions}>
+              <a href="#pick" className={s.cta}>
+                Pick your time <span aria-hidden="true">↓</span>
+              </a>
+              <a href="#what-happens" className={s.ctaAlt}>
+                See what happens on it
+              </a>
             </div>
+            <p className={s.note}>
+              Not ready to talk?{' '}
+              <Link href="/contact" className="font-bold text-[#B92417] underline decoration-2 underline-offset-2 hover:text-[#E0301E]">
+                Send a note instead
+              </Link>{' '}
+              and Sarah answers inside a day.
+            </p>
+          </div>
+
+          {/* The desk: her book is open, and you stamp your name into it. */}
+          <div className={s.stage}>
+            <div className={s.glow} aria-hidden="true" />
+            <div className={s.rays} aria-hidden="true" />
+            <figure className={s.frame}>
+              <span className={`${s.tape} ${s.tapeL}`} aria-hidden="true" />
+              <span className={`${s.tape} ${s.tapeR}`} aria-hidden="true" />
+              <Image
+                src="/book/datebook-hero.jpg"
+                alt="Pop-art screenprint: a hand stamps an open appointment datebook on a desk beside a rotary telephone and a gold fountain pen"
+                width={1600}
+                height={904}
+                priority
+                sizes="(min-width: 1024px) 600px, 92vw"
+                className={s.frameImg}
+              />
+              <figcaption className={s.frameCap}>Her book is open · stamp your name in it</figcaption>
+            </figure>
+            <div className={s.sticker} aria-hidden="true">
+              <svg viewBox="0 0 100 100">
+                <polygon points={BIG_BURST} fill="#E0301E" stroke="#161616" strokeWidth="2.4" strokeLinejoin="round" />
+                <polygon points={INNER_BURST} fill="#F5B700" stroke="#161616" strokeWidth="1.6" strokeLinejoin="round" />
+              </svg>
+              <span className={s.stickerText}>Ka-<br />chunk!</span>
+            </div>
+            <div className={s.heroMascot} aria-hidden="true">
+              <Mascot sizes="(max-width: 760px) 92px, 168px" eager />
+            </div>
+            <span className={`${s.bubble} ${s.heroBubble}`} aria-hidden="true">Your name goes here!</span>
           </div>
         </div>
       </section>
 
-      {/* ───────────────  WHAT HAPPENS ON IT  ─────────────── */}
-      <section id="what-happens" className="scroll-mt-20 border-b-2 border-[#161616] bg-[#F5F0E8]">
-        <div className="relative z-[2] max-w-5xl mx-auto px-6 py-16 md:py-24">
-          <div className="text-center max-w-2xl mx-auto mb-10">
-            <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#C4160B] font-bold">What happens on it</p>
-            <h2 className="mt-4 font-display text-3xl md:text-5xl font-extrabold leading-[1.05] text-[#161616]">
-              Thirty minutes. Nobody books blind.
+      <Strip items={DAYS} className={s.marquee} />
+
+      {/* ───────────────  WHAT HAPPENS ON IT: the comic strip  ─────────────── */}
+      <section id="what-happens" className={`scroll-mt-20 ${s.steps}`}>
+        <div className={s.stepsDots} aria-hidden="true" />
+        <div className={s.inner}>
+          <div className={s.head}>
+            <p className={s.caption}>What happens on it</p>
+            <h2 className={s.h2}>
+              Thirty minutes. Nobody books <em className={s.hl}>blind.</em>
             </h2>
-            <p className="mt-4 text-[#5c554a] font-body leading-relaxed">
+            <p className={s.sub}>
               You are not booking a mystery. Here is exactly how the half hour goes, start to finish.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-5">
-            {whatHappens.map((s, i) => (
-              <div key={s.title} className="rounded-2xl border-2 border-[#161616] bg-white p-6 shadow-[5px_5px_0_0_#161616]">
-                <span className="inline-grid place-items-center w-12 h-12 rounded-full bg-[#F5B700] border-2 border-[#161616] font-mono font-bold text-lg shadow-[3px_3px_0_0_#161616]">
-                  {String(i + 1).padStart(2, '0')}
-                </span>
-                <h3 className="mt-4 font-display text-xl font-bold text-[#161616]">{s.title}</h3>
-                <p className="mt-1.5 text-[#5c554a] text-[15px] leading-relaxed font-body">{s.body}</p>
-              </div>
+          <div className={s.panels}>
+            {whatHappens.map((step, i) => (
+              <article key={step.title} className={s.panel} style={{ '--tilt': step.tilt } as CSSProperties}>
+                <div className={s.num} aria-hidden="true">
+                  <svg viewBox="0 0 100 100">
+                    <polygon points={NUM_BURST} fill="#F5B700" stroke="#161616" strokeWidth="3.2" strokeLinejoin="round" />
+                  </svg>
+                  <span>{String(i + 1).padStart(2, '0')}</span>
+                </div>
+                <div
+                  className={s.panelArt}
+                  style={{ '--s': step.crop.s, '--ox': step.crop.ox, '--oy': step.crop.oy } as CSSProperties}
+                >
+                  {/* The crop zooms in about 2x, so ask for twice the pixels to stay sharp. */}
+                  <Image src="/book/datebook-hero.jpg" alt="" fill sizes="(min-width: 900px) 760px, 200vw" />
+                  <span className={`${s.bubble} ${s.bubbleRight} ${s.panelBubble}`} aria-hidden="true">{step.bubble}</span>
+                  <span className={s.narr} aria-hidden="true">{step.narr}</span>
+                </div>
+                <h3 className={s.panelTitle}>{step.title}</h3>
+                <p className={s.panelBody}>{step.body}</p>
+              </article>
             ))}
           </div>
 
-          <div className="mt-8 rounded-2xl border-2 border-[#161616] bg-[#F5B700] p-6 md:p-7 shadow-[5px_5px_0_0_#161616] flex flex-col sm:flex-row sm:items-center gap-4">
-            <span className="relative h-14 w-14 flex-shrink-0 overflow-hidden rounded-full border-2 border-[#161616] bg-white">
-              <Image src="/brand/mascot.png" alt="" fill sizes="56px" className="object-contain p-1" />
-            </span>
-            <div>
-              <p className="font-mono text-[10px] uppercase tracking-[0.24em] font-bold text-[#161616]/70">The no-pitch promise</p>
-              <p className="mt-1 font-body text-[15px] leading-relaxed text-[#161616]/85">
-                Nobody is going to chase you afterward. If it is a fit, Sarah tells you what it costs and you decide on your own clock. If it is not, she points you at what is.
-              </p>
+          <div className={s.promise}>
+            <div className={s.promiseDots} aria-hidden="true" />
+            <div className={s.promiseMascot} aria-hidden="true">
+              <Mascot sizes="(max-width: 760px) 118px, 170px" />
             </div>
+            <span className={s.swear} aria-hidden="true">Pinky swear</span>
+            <p className={s.promiseLabel}>The no-pitch promise</p>
+            <p className={s.promiseText}>
+              Nobody is going to chase you afterward. If it is a fit, Sarah tells you what it costs and you decide on your own clock. If it is not, she points you at what is.
+            </p>
           </div>
         </div>
       </section>
 
-      {/* ───────────────  THE CARD + THE FORM (signature)  ─────────────── */}
-      <section className="border-b-2 border-[#161616] halftone-bg">
-        <div className="relative z-[2] max-w-6xl mx-auto px-6 py-16 md:py-24">
-          <div className="text-center max-w-2xl mx-auto mb-10">
-            <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#E0301E] font-bold">Your appointment card</p>
-            <h2 className="mt-4 font-display text-3xl md:text-5xl font-extrabold leading-[1.05] text-[#161616]">
-              Fill it in. Pick a time. Stamp it.
+      <div className={s.zig} aria-hidden="true" />
+
+      {/* ───────────────  THE CARD + THE FORM (signature), on mustard  ─────────────── */}
+      <section className={s.ticket}>
+        <div className={s.ticketRays} aria-hidden="true" />
+        <div className={s.ticketDots} aria-hidden="true" />
+        <span className={`${s.spark} ${s.ts1}`} aria-hidden="true">✦</span>
+        <span className={`${s.spark} ${s.ts2}`} aria-hidden="true">✦</span>
+        <span className={`${s.spark} ${s.ts3}`} aria-hidden="true">✦</span>
+        <span className={`${s.spark} ${s.ts4}`} aria-hidden="true">✦</span>
+        <div className={s.ticketInner}>
+          <div className={s.ticketHead}>
+            <p className={s.caption}>Your appointment card</p>
+            <h2 className={s.h2}>
+              Fill it in. Pick a time. <em className={`${s.hl} ${s.hlCream}`}>Stamp it.</em>
             </h2>
-            <p className="mt-4 text-[#5c554a] font-body leading-relaxed">
+            <p className={s.ticketSub}>
               Your card writes itself as you go. Answer what you can, skip what you cannot, and pick whichever time fits. The optional questions just make the thirty minutes count for more.
             </p>
           </div>
@@ -175,28 +275,54 @@ export default function BookPage() {
             occurred prerendering page /book". The boundary is what lets the rest
             of the page stay static while the form waits for the URL.
           */}
-          <Suspense fallback={<div className="min-h-[420px]" />}>
-            <BookCall />
-          </Suspense>
+          <div className={s.bookWrap}>
+            {/* Mr. Mustard peeks over the top of the first card. */}
+            <div className={s.peek} aria-hidden="true">
+              <Mascot sizes="(max-width: 1023px) 104px, 150px" />
+            </div>
+            <span className={`${s.bubble} ${s.bubbleRight} ${s.peekBubble}`} aria-hidden="true">Psst. Pick a time!</span>
+            <Suspense fallback={<div className="min-h-[420px]" />}>
+              <BookCall />
+            </Suspense>
+          </div>
         </div>
       </section>
 
-      {/* ───────────────  FAQ  ─────────────── */}
-      <section className="bg-[#F5F0E8]">
-        <div className="relative z-[2] max-w-3xl mx-auto px-6 py-16 md:py-24">
-          <h2 className="font-display text-3xl md:text-4xl font-extrabold text-[#161616] mb-8 text-center">Questions, answered plainly.</h2>
-          <div className="space-y-4">
+      <Strip items={TAPE} className={s.tapeBand} />
+
+      {/* ───────────────  FAQ: speech bubbles  ─────────────── */}
+      <section className={s.faq}>
+        <div className={s.faqDots} aria-hidden="true" />
+        <span className={`${s.spark} ${s.fs1}`} aria-hidden="true">✦</span>
+        <span className={`${s.spark} ${s.fs2}`} aria-hidden="true">✦</span>
+        <span className={`${s.spark} ${s.fs3}`} aria-hidden="true">✦</span>
+        <div className={s.faqInner}>
+          <div className={s.faqHead}>
+            <div className={`${s.faqMascot} ${s.faqArt}`} aria-hidden="true">
+              <div className={s.faqBurst}>
+                <svg viewBox="0 0 100 100">
+                  <polygon points={BIG_BURST} fill="#F5B700" stroke="#161616" strokeWidth="1.4" strokeLinejoin="round" />
+                </svg>
+              </div>
+              <Mascot sizes="(min-width: 1024px) 200px, 84px" />
+              <span className={`${s.bubble} ${s.faqBubble}`}>?</span>
+            </div>
+            <h2 className={`${s.h2} ${s.faqH2}`}>
+              Questions, answered <em className={s.hl}>plainly.</em>
+            </h2>
+          </div>
+          <div className={s.faqList}>
             {faq.map((f) => (
-              <details key={f.q} className="group rounded-xl border-2 border-[#161616] bg-white p-5 open:shadow-[4px_4px_0_0_#F5B700] transition-shadow">
-                <summary className="font-display text-lg font-bold text-[#161616] cursor-pointer list-none flex items-center justify-between gap-4">
+              <details key={f.q} className={s.q}>
+                <summary>
                   {f.q}
-                  <span className="flex-shrink-0 text-[#E0301E] transition-transform group-open:rotate-45" aria-hidden="true">+</span>
+                  <span className={s.toggle} aria-hidden="true">+</span>
                 </summary>
-                <p className="mt-3 text-[#5c554a] leading-relaxed font-body">{f.a}</p>
+                <p className={s.answer}>{f.a}</p>
               </details>
             ))}
           </div>
-          <p className="mt-10 text-center font-body text-[15px] text-[#5c554a]">
+          <p className={s.faqNote}>
             Would rather write it out?{' '}
             <Link href="/contact" className="font-bold text-[#B92417] underline decoration-2 underline-offset-2 hover:text-[#E0301E]">
               Send a note instead
