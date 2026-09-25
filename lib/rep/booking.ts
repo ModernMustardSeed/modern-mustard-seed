@@ -27,7 +27,7 @@ export type RepBooking = {
   business: string;
   channel: string;
   /** What ChatGPT answered when the Rep asked the customer's question. */
-  aiAnswer: { question: string; named: string[]; included: boolean; checkedAt: string } | null;
+  aiAnswer: { engine: string; question: string; named: string[]; included: boolean; checkedAt: string } | null;
   mockup: string;
 };
 
@@ -59,10 +59,12 @@ export async function noteRepBooking(
       .order('occurred_at', { ascending: false })
       .limit(40);
     const rep = (events ?? []) as { detail: RepDetail; occurred_at: string }[];
-    const channel = rep.find((e) => e.detail?.channel)?.detail.channel ?? 'a direct message';
+    // An ai_check event's channel is the engine asked, not where they were messaged.
+    const channel = rep.find((e) => e.detail?.channel && e.detail.kind !== 'ai_check')?.detail.channel ?? 'a direct message';
     const check = rep.find((e) => e.detail?.kind === 'ai_check');
     const aiAnswer = check
       ? {
+          engine: check.detail.channel === 'google' ? "Google's AI Mode" : 'ChatGPT',
           question: String(check.detail.question ?? ''),
           named: Array.isArray(check.detail.named) ? check.detail.named.map(String) : [],
           included: Boolean(check.detail.included),
