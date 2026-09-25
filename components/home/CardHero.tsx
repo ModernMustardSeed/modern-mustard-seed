@@ -1,12 +1,11 @@
 import Link from '@/components/AttributionLink';
 import s from './CardHero.module.css';
-import p from './PosterHero.module.css';
-import HeroTalk from './HeroTalk';
 import { MascotLean, Marquee } from './HeroMotion';
 
 /* The homepage hero is the link-preview card Sarah loves, blown up: Mr.
    Mustard waving over the comic wordmark, on cream in a mustard glow, the one
-   line that says what the studio does, and the way in. Pop art that stays
+   line that says what the studio does, and the way in. Talking to him is the
+   floating widget's job, not the hero's (Sarah, 2026-09-25). Pop art that stays
    readable: mustard, ink, cream and red, no outlined UI type. */
 export default function CardHero() {
   return <section className={s.card} aria-labelledby="studio-heading">
@@ -21,7 +20,7 @@ export default function CardHero() {
       <span className={s.spark + ' ' + s.s3} aria-hidden="true">✦</span>
       <span className={s.spark + ' ' + s.s4} aria-hidden="true">✦</span>
       <div className={s.pop}>
-        <MascotLean className={s.lean} danceClass={s.dance} confettiClass={p.confetti}>
+        <MascotLean className={s.lean} danceClass={s.dance} confettiClass={s.confetti}>
           <picture>
             <source type="image/avif" srcSet="/brand/lockup-560.avif 560w, /brand/lockup-1000.avif 1000w" sizes="(max-width: 760px) 78vw, 500px" />
             <source type="image/webp" srcSet="/brand/lockup-560.webp 560w, /brand/lockup-1000.webp 1000w" sizes="(max-width: 760px) 78vw, 500px" />
@@ -29,7 +28,6 @@ export default function CardHero() {
             <img src="/brand/logo-lockup.png" alt="" width={1000} height={1093} className={s.lockup} fetchPriority="high" decoding="async" />
           </picture>
         </MascotLean>
-        <HeroTalk bubbleClass={p.posterBubble + ' ' + s.bubble} panelClass={p.talkPanel + ' ' + s.panel} />
       </div>
     </div>
 
