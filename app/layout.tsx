@@ -60,7 +60,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}window.gtag=window.gtag||gtag;gtag('consent','default',{ad_storage:'denied',analytics_storage:'denied',ad_user_data:'denied',ad_personalization:'denied'});`}
         </Script>
       </head>
-      <body className="bg-[#FBF6EA] text-[#161616] selection:bg-[#F5B700] selection:text-[#161616]">
+      {/* Ground and ink come from the base rule in globals.css, not utilities here:
+          a utility would out-rank the admin and portal rule that keeps their
+          old ink ground and white type. */}
+      <body className="selection:bg-[#F5B700] selection:text-[#161616]">
         <div className="relative z-30">
           <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[9999] focus:bg-[#F5B700] focus:text-[#161616] focus:px-5 focus:py-3">Skip to content</a>
           <Navbar />
