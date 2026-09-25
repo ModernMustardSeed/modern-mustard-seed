@@ -96,6 +96,13 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, skipped: 'they opted out' });
   }
 
+  // A prospect who booked Sarah sees their website on the call, from her. An
+  // email landing first spends the reveal, and a hub can carry a voice demo
+  // whose every test call burns Vapi credit.
+  if (lead.meeting_status === 'booked') {
+    return NextResponse.json({ ok: false, skipped: 'booked: Sarah shows it on the call' });
+  }
+
   /*
    * THE FILM GATE IS GONE (Sarah, 2026-09-10: "no film needed, actually take
    * the film thing out altogether").
