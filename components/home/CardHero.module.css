@@ -1,4 +1,5 @@
-/* The card hero: the pop-art link preview, blown up and brought to life.
+/* The card hero (talk panel and confetti styles still come from
+   PosterHero.module.css): the pop-art link preview, blown up and brought to life.
    Mustard, ink, cream and red. No outlined UI type, no cobalt. */
 .card{--ink:#080c16;--cream:#fbf6ea;--mustard:#f5b700;--red:#e0301e;position:relative;overflow:hidden;padding:112px 6vw 0;background:var(--cream);color:var(--ink);font-family:var(--font-body),sans-serif;border-bottom:3px solid var(--ink);isolation:isolate}
 .card h1,.card p{margin:0}
@@ -27,11 +28,14 @@
 .s4{left:calc(50% - clamp(250px,30vh,340px));top:70%;font-size:22px;color:var(--red);animation-delay:2.2s}
 @keyframes twinkle{0%,100%{transform:scale(1) rotate(0)}50%{transform:scale(.55) rotate(45deg)}}
 
-/* Mr. Mustard's speech bubble sits by his waving hand. */
-.bubble{top:4%!important;right:auto!important;left:-34%;transform:rotate(-5deg)!important;animation:fade .6s 1.4s both}
-button.bubble:hover{transform:rotate(-3deg) translate(-2px,-2px)!important}
-.bubble:after{left:auto!important;right:22px;border-width:20px 20px 0 0!important;border-color:var(--ink) transparent transparent transparent!important}
-.panel{top:calc(4% + 104px)!important;right:auto!important;left:-40%}
+/* Mr. Mustard's talk bubble: a small comic circle by his waving hand, not a
+   banner. The floating widget bottom right is the main way to talk to him. */
+button.bubble{top:3%!important;right:auto!important;left:-4%;width:84px;height:84px;padding:0!important;border-radius:50%!important;border-width:2px!important;box-shadow:3px 3px 0 var(--ink)!important;align-items:center!important;justify-content:center;gap:5px!important;text-align:center!important;transform:rotate(-8deg)!important;animation:fade .6s 1.4s both}
+button.bubble>span{display:none}
+button.bubble small{flex-direction:column;gap:5px!important;font-size:9.5px!important;line-height:1.25;letter-spacing:.1em!important;max-width:60px}
+button.bubble:hover{transform:rotate(-4deg) translate(-2px,-2px)!important;box-shadow:5px 5px 0 var(--ink)!important}
+button.bubble:after{left:auto!important;right:6px;bottom:-9px!important;border-width:12px 12px 0 0!important;border-color:var(--ink) transparent transparent transparent!important}
+.panel{top:calc(3% + 96px)!important;right:auto!important;left:-30%}
 
 .copy{position:relative;z-index:2;margin-top:clamp(10px,2vh,24px);padding-bottom:clamp(30px,4.4vh,48px);text-align:center;animation:fade .9s .55s both}
 .copy h1{font-weight:800;font-size:clamp(30px,3.5vw,54px);line-height:1.08;letter-spacing:-.035em}
@@ -58,8 +62,8 @@ button.bubble:hover{transform:rotate(-3deg) translate(-2px,-2px)!important}
   .pop{height:auto;width:min(78vw,340px)}
   .s1{left:4%}.s2{left:auto;right:6%}.s3{left:auto;right:3%}.s4{left:6%}
   .stage{padding-top:44px}
-  .bubble{left:-8%;top:-40px!important;font-size:14px!important;padding:8px 12px!important}
-  .bubble small{font-size:9px!important}
+  button.bubble{left:-2%;top:-16px!important;width:72px;height:72px}
+  button.bubble small{font-size:8.5px!important}
   .panel{left:-10vw;right:auto!important;top:88px!important;width:calc(100vw - 32px)!important;max-width:360px}
   .copy h1{font-size:clamp(28px,8vw,38px)}
   .lead{font-size:15.5px}
