@@ -131,10 +131,10 @@ export default function BookCall() {
         <h2 className="mt-10 font-display text-3xl md:text-4xl font-extrabold text-[#161616] leading-[1.05]">
           You are on the book.
         </h2>
-        <p className="mt-3 text-[#5c554a] font-body leading-relaxed">
+        <p className="mt-3 text-[#161616]/85 font-body leading-relaxed">
           A calendar invite with the video link is on its way to your inbox. Sarah reads every answer before the call, so you can skip the throat-clearing and get right to it.
         </p>
-        <p className="mt-5 font-mono text-[11px] uppercase tracking-[0.2em] text-[#5c554a]">
+        <p className="mt-5 font-mono text-[11px] uppercase tracking-[0.2em] text-[#161616]/85">
           Something come up?{' '}
           <a href="mailto:sarah@modernmustardseed.com" className="font-bold text-[#B92417] underline decoration-2 underline-offset-2 hover:text-[#E0301E]">
             Email Sarah
@@ -290,16 +290,16 @@ export default function BookCall() {
 
           <div className="mt-8">
             {error && (
-              <p role="alert" className="mb-4 text-center font-body text-sm font-bold text-[#E0301E]">{error}</p>
+              <p role="alert" className="mb-4 rounded-xl border-2 border-[#161616] bg-[#FBF6EA] px-4 py-2.5 text-center font-body text-sm font-bold text-[#B92417] shadow-[3px_3px_0_0_#161616]">{error}</p>
             )}
             <button
               type="submit"
               disabled={submitting || (!slotsLoading && slots.length === 0)}
-              className="w-full rounded-full border-2 border-[#161616] bg-[#F5B700] px-8 py-4 font-sans text-sm font-extrabold uppercase tracking-[0.14em] text-[#161616] shadow-[5px_5px_0_0_#161616] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#161616] disabled:opacity-40 disabled:hover:translate-y-0 disabled:hover:shadow-[5px_5px_0_0_#161616]"
+              className="w-full min-h-[58px] rounded-full border-[2.5px] border-[#161616] bg-[#080c16] px-8 py-4 font-sans text-sm font-extrabold uppercase tracking-[0.14em] text-[#FBF6EA] shadow-[6px_6px_0_0_#FBF6EA,6px_6px_0_2.5px_#161616] transition-all hover:-translate-y-0.5 hover:shadow-[8px_8px_0_0_#FBF6EA,8px_8px_0_2.5px_#161616] motion-reduce:transition-none motion-reduce:hover:translate-y-0 disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:shadow-[6px_6px_0_0_#FBF6EA,6px_6px_0_2.5px_#161616]"
             >
               {submitting ? 'Booking...' : 'Stamp it and book'}
             </button>
-            <p className="mt-4 text-center font-body text-[13px] leading-relaxed text-[#5c554a]">
+            <p className="mt-4 text-center font-body text-[13px] font-semibold leading-relaxed text-[#161616]/85">
               Free, 30 minutes, no pitch. You will get a calendar invite with the video link the moment you book.
             </p>
           </div>
