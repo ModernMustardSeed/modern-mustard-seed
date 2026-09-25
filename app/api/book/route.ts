@@ -121,7 +121,7 @@ export async function POST(req: Request) {
             ...(rep?.aiAnswer
               ? [{
                   label: 'The AI Answer',
-                  value: `Asked ChatGPT "${rep.aiAnswer.question}" on ${rep.aiAnswer.checkedAt.slice(0, 10)}. Named: ${rep.aiAnswer.named.join(', ') || 'nobody'}. ${rep.aiAnswer.included ? 'They were in the answer.' : 'They were left out.'}`,
+                  value: `Asked ${rep.aiAnswer.engine} "${rep.aiAnswer.question}" on ${rep.aiAnswer.checkedAt.slice(0, 10)}. Named: ${rep.aiAnswer.named.join(', ') || 'nobody'}. ${rep.aiAnswer.included ? 'They were in the answer.' : 'They were left out.'}`,
                 }]
               : []),
             ...(rep ? [{ label: 'Website mockup', value: rep.mockup }] : []),
