@@ -1,0 +1,35 @@
+/* THE ARTIST DIAL: site palettes by style. <html data-art="..."> is set by the
+   head script in app/layout.tsx (before paint) and by the dial. No attribute
+   means pop art, the house style. The homepage reads its palette from the
+   variables on [data-design="mms-editorial-2026"], so re-pointing them here
+   repaints every section below the hero too. See lib/art-styles.ts. */
+
+/* Coming back in another style: hide the house hero until the painted one
+   mounts, so it never flashes. */
+html[data-art] [data-hero="pop"]{visibility:hidden}
+
+/* The change blooms out of the dial's knob. */
+::view-transition-old(root){animation:none}
+::view-transition-new(root){animation:artBloom .9s cubic-bezier(.7,0,.2,1)}
+@keyframes artBloom{from{clip-path:circle(0 at var(--bloom-x,50%) var(--bloom-y,50%))}to{clip-path:circle(150vmax at var(--bloom-x,50%) var(--bloom-y,50%))}}
+@media(prefers-reduced-motion:reduce){::view-transition-new(root){animation:none}}
+
+/* ---------- Leonardo ---------- */
+html[data-art=davinci] [data-design="mms-editorial-2026"]{--ink:#3b2716;--cream:#efe3c6;--mustard:#c9a15a;--red:#9c3f22;--butter:#e3cf9f;--midnight:#3b2716;--font-display:var(--font-serif);background-image:radial-gradient(ellipse at 50% 0,#f6ecd4 0,#efe3c6 60%,#e6d6b0 100%)}
+html[data-art=davinci] [data-design="mms-editorial-2026"] img:not([alt=""]),html[data-art=davinci] [data-design="mms-editorial-2026"] video{filter:sepia(.35) contrast(1.02)}
+
+/* ---------- Monet ---------- */
+html[data-art=monet] [data-design="mms-editorial-2026"]{--ink:#35304a;--cream:#f6f1ec;--mustard:#e8b4c8;--red:#8a5aa8;--butter:#dfe8d4;--midnight:#35304a;--font-display:var(--font-serif)}
+
+/* ---------- Van Gogh ---------- */
+html[data-art=vangogh] [data-design="mms-editorial-2026"]{--ink:#101a3a;--cream:#fbf1d6;--mustard:#f2c12e;--red:#d9542b;--butter:#f7e1a0;--midnight:#101a3a}
+
+/* ---------- Ansel Adams: the whole page in silver ---------- */
+html[data-art=adams] [data-design="mms-editorial-2026"]{--ink:#111;--cream:#f4f4f2;--mustard:#cfcfca;--red:#3a3a3a;--butter:#e4e4e0;--midnight:#111;--font-display:var(--font-body)}
+html[data-art=adams] [data-design="mms-editorial-2026"] img,html[data-art=adams] [data-design="mms-editorial-2026"] video{filter:grayscale(1) contrast(1.06)}
+
+/* ---------- Cathedral ---------- */
+html[data-art=cathedral] [data-design="mms-editorial-2026"]{--ink:#2a1d10;--cream:#fbf3e2;--mustard:#c9962a;--red:#8a1c2c;--butter:#f3e3b8;--midnight:#2a1d10;--font-display:var(--font-cinzel)}
+
+/* ---------- Graffiti couture ---------- */
+html[data-art=graffiti] [data-design="mms-editorial-2026"]{--ink:#0d0d0d;--cream:#f1ede4;--mustard:#ffd400;--red:#ff3b2f;--butter:#ffe98a;--midnight:#0d0d0d;--font-display:var(--font-anton)}
