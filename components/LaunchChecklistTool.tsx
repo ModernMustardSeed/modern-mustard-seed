@@ -123,12 +123,12 @@ export default function LaunchChecklistTool() {
                         aria-label={`Mark ${item.title}`}
                         onClick={() => setTicked((t) => ({ ...t, [item.id]: !isTicked }))}
                         className={`mt-0.5 w-5 h-5 rounded-md border-2 border-[#161616] flex items-center justify-center shrink-0 transition-colors ${
-                          isTicked ? 'bg-emerald-500' : 'bg-white hover:bg-[#FFF8E6]'
+                          isTicked ? 'bg-[#161616]' : 'bg-white hover:bg-[#FFF8E6]'
                         }`}
                       >
                         {isTicked && (
                           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden>
-                            <path d="M5 13l4 4L19 7" stroke="#fff" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" />
+                            <path d="M5 13l4 4L19 7" stroke="#F5B700" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" />
                           </svg>
                         )}
                       </button>

@@ -87,14 +87,14 @@ export default function HuckVoiceWidget() {
   const isConnecting = state === 'connecting';
 
   return (
-    <div className="rounded-2xl border-2 border-[#161616] bg-[#FBF6EA] text-[#161616] p-6 md:p-7 shadow-[6px_6px_0_0_#B54423]">
+    <div className="rounded-2xl border-2 border-[#161616] bg-[#FBF6EA] text-[#161616] p-6 md:p-7 shadow-[6px_6px_0_0_#B92417]">
       <div className="flex flex-col sm:flex-row items-center gap-5">
         {/* The egg / mic */}
         <div className="relative flex-shrink-0">
           {isLive && (
             <span
               aria-hidden="true"
-              className="absolute inset-0 rounded-full bg-[#E8A542] opacity-40 animate-ping"
+              className="absolute inset-0 rounded-full bg-[#F5B700] opacity-40 animate-ping"
               style={{ animationDuration: '1.6s' }}
             />
           )}
@@ -105,7 +105,7 @@ export default function HuckVoiceWidget() {
             aria-label={isLive ? 'End the call with Huck' : 'Talk to Huck now'}
             className={`relative w-20 h-20 md:w-24 md:h-24 rounded-full border-[3px] flex items-center justify-center transition-all duration-300 ${
               isLive
-                ? 'bg-[#B54423] border-[#161616] shadow-[0_0_44px_rgba(232,165,66,0.55)]'
+                ? 'bg-[#B92417] border-[#161616] shadow-[0_0_44px_rgba(232,165,66,0.55)]'
                 : 'bg-[#F5B700] border-[#161616] shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 hover:shadow-[4px_4px_0_0_#161616]'
             } ${isConnecting ? 'opacity-60 cursor-wait' : ''}`}
             style={isLive ? { transform: `scale(${1 + Math.min(volume, 1) * 0.12})` } : undefined}
@@ -124,7 +124,7 @@ export default function HuckVoiceWidget() {
 
         {/* Status + copy */}
         <div className="flex-1 text-center sm:text-left">
-          <span className="text-[10px] uppercase tracking-[0.35em] text-[#B54423] font-mono font-bold block mb-1.5">
+          <span className="text-[10px] uppercase tracking-[0.35em] text-[#B92417] font-mono font-bold block mb-1.5">
             {isLive
               ? speaking
                 ? 'Huck is talking'
@@ -142,19 +142,19 @@ export default function HuckVoiceWidget() {
                 ? 'Call him again anytime.'
                 : 'Call him without a phone. Tap the egg.'}
           </p>
-          <p className="text-[#161616]/65 text-sm leading-relaxed max-w-md" style={{ fontFamily: 'var(--font-serif, Cormorant Garamond, serif)', fontSize: '1.05rem' }}>
+          <p className="font-display italic text-[#161616]/75 text-[0.95rem] leading-relaxed max-w-md">
             {isLive
               ? 'Ask him how he got his name. Tell him yours. He will cheerfully remind you he is an agentic mascot.'
               : `This is the same live line the whole town can dial at ${HUCK.phone}. Now it opens right here.`}
           </p>
-          {error && <p className="text-[#B54423] text-xs font-mono mt-2">{error}</p>}
+          {error && <p className="text-[#B92417] text-xs font-mono mt-2">{error}</p>}
         </div>
 
         {isLive && (
           <button
             type="button"
             onClick={stop}
-            className="px-5 py-2.5 rounded-full border-2 border-[#B54423] bg-[#B54423] text-[#FBF6EA] text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold hover:brightness-110 transition-all"
+            className="px-5 py-2.5 rounded-full border-2 border-[#B92417] bg-[#B92417] text-[#FBF6EA] text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold hover:brightness-110 transition-all"
           >
             End call
           </button>

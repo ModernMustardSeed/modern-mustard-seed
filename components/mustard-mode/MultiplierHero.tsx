@@ -473,34 +473,34 @@ export default function MultiplierHero() {
           className={`mt-10 max-w-2xl transition-all duration-700 ${phase === 'terminal' ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6 pointer-events-none'}`}
         >
           <div className="bg-[#080C16] border-2 border-[#161616] shadow-[6px_6px_0_0_#161616] rounded-none overflow-hidden">
-            <div className="flex items-center gap-2 bg-[#0F1422] px-4 py-2.5 border-b border-white/10">
+            <div className="flex items-center gap-2 bg-[#1F1F1F] px-4 py-2.5 border-b border-white/10">
               <span className="w-2.5 h-2.5 rounded-full bg-[#E0301E]" />
               <span className="w-2.5 h-2.5 rounded-full bg-[#F5B700]" />
-              <span className="w-2.5 h-2.5 rounded-full bg-[#3fbf6b]" />
-              <span className="font-mono text-[10px] text-[#5C7188] ml-2">mr-mustard — coach session 001</span>
+              <span className="w-2.5 h-2.5 rounded-full bg-[#FBF6EA]" />
+              <span className="font-mono text-[10px] text-[#9A958A] ml-2">mr-mustard · coach session 001</span>
             </div>
-            <div className="p-5 font-mono text-[13px] md:text-sm leading-relaxed text-[#d7dbe6]">
+            <div className="p-5 font-mono text-[13px] md:text-sm leading-relaxed text-[#EDE6D6]">
               <div>
-                <span className="text-[#5C7188]">$ </span>
+                <span className="text-[#9A958A]">$ </span>
                 <span className="text-[#FFDD55]">[MUSTARD MODE: ON]</span>
                 {/* eslint-disable-next-line react/jsx-no-comment-textnodes -- a terminal-style // separator, not a comment */}
-                <span className="text-[#5C7188]"> // 1 free credit</span>
+                <span className="text-[#9A958A]"> // 1 free credit</span>
               </div>
-              <div className="mt-1 text-[#7aa2ff]">INSERT AMBITION TO PLAY. What do you want to build?</div>
+              <div className="mt-1 text-[#F7DC8A]">INSERT AMBITION TO PLAY. What do you want to build?</div>
 
               {play === 'idle' || play === 'typing' ? (
                 <form
                   className="mt-3 flex items-center gap-2"
                   onSubmit={(e) => { e.preventDefault(); submitAmbition(); }}
                 >
-                  <span className="text-[#5C7188]">&gt;</span>
+                  <span className="text-[#9A958A]">&gt;</span>
                   <input
                     value={ambition}
                     onChange={(e) => setAmbition(e.target.value)}
                     placeholder="a booking app for my dog grooming shop"
                     maxLength={300}
                     aria-label="What do you want to build?"
-                    className="flex-1 bg-transparent outline-none text-white placeholder:text-[#5C7188]/70 caret-[#F5B700]"
+                    className="flex-1 bg-transparent outline-none text-white placeholder:text-[#9A958A]/70 caret-[#F5B700]"
                   />
                   <button
                     type="submit"
@@ -512,7 +512,7 @@ export default function MultiplierHero() {
                 </form>
               ) : (
                 <div className="mt-3">
-                  <span className="text-[#5C7188]">&gt; </span>
+                  <span className="text-[#9A958A]">&gt; </span>
                   <span className="text-white">{ambition}</span>
                 </div>
               )}
@@ -533,7 +533,7 @@ export default function MultiplierHero() {
                       onSubmit={(e) => { e.preventDefault(); void submitEmail(); }}
                     >
                       <p className="text-[#ff6b5e] font-bold text-[12px] uppercase tracking-wider">[ Save your run to continue ]</p>
-                      <p className="text-[#d7dbe6]/80 text-[12px] mt-1">Your personalized coaching reply unlocks with an email. That email is also your Level 0 pass (the starter prompt sampler is on the house).</p>
+                      <p className="text-[#EDE6D6]/80 text-[12px] mt-1">Your personalized coaching reply unlocks with an email. That email is also your Level 0 pass (the starter prompt sampler is on the house).</p>
                       <input
                         type="text"
                         name="website"
@@ -551,7 +551,7 @@ export default function MultiplierHero() {
                           onChange={(e) => setEmail(e.target.value)}
                           placeholder="you@buildsomething.com"
                           aria-label="Email to save your run"
-                          className="flex-1 bg-[#080C16] border border-white/20 px-3 py-2 outline-none text-white placeholder:text-[#5C7188]/70 focus:border-[#F5B700]"
+                          className="flex-1 bg-[#080C16] border border-white/20 px-3 py-2 outline-none text-white placeholder:text-[#9A958A]/70 focus:border-[#F5B700]"
                         />
                         <button
                           type="submit"
@@ -566,7 +566,7 @@ export default function MultiplierHero() {
                   ) : (
                     <div>
                       {play === 'live' && !liveText && (
-                        <p className="text-[#5C7188] text-[12px] animate-pulse">MR.MUSTARD is thinking about your run…</p>
+                        <p className="text-[#9A958A] text-[12px] animate-pulse">MR.MUSTARD is thinking about your run…</p>
                       )}
                       {liveText && (
                         <div>
@@ -584,7 +584,7 @@ export default function MultiplierHero() {
                           >
                             Level up. Keep this coach →
                           </a>
-                          <span className="font-mono text-[11px] text-[#5C7188] self-center">Run saved. It will be waiting in your HQ.</span>
+                          <span className="font-mono text-[11px] text-[#9A958A] self-center">Run saved. It will be waiting in your HQ.</span>
                         </div>
                       )}
                     </div>

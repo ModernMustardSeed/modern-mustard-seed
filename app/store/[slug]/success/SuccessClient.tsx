@@ -54,23 +54,23 @@ export default function SuccessClient({ slug }: { slug: string }) {
   }, [sessionId, slug]);
 
   return (
-    <section className="glass-card p-8 md:p-10 border-gold-light/25 mb-12">
-      <span className="text-[10px] uppercase tracking-[0.45em] text-gold-light/85 font-mono font-medium mb-5 block">
+    <section className="pop-card p-8 md:p-10 mb-12">
+      <span className="text-[10px] uppercase tracking-[0.45em] text-[#B92417] font-mono font-bold mb-5 block">
         Your download{state.status === 'ready' && state.downloads.length > 1 ? 's' : ''}
       </span>
 
       {state.status === 'loading' && (
-        <p className="text-cream-100/65 text-sm font-body font-light">Pulling your download link from Stripe…</p>
+        <p className="text-[#3a3733] text-sm font-body">Pulling your download link from Stripe…</p>
       )}
 
       {state.status === 'pending' && (
         <div>
-          <p className="text-cream-100/75 text-base font-body font-light leading-relaxed mb-3">
+          <p className="text-[#3a3733] text-base font-body leading-relaxed mb-3">
             Payment is still processing. This usually clears in a few seconds. Refresh the page once your email confirmation arrives.
           </p>
           <button
             onClick={() => window.location.reload()}
-            className="text-[11px] uppercase tracking-[0.22em] font-mono font-bold text-gold-light/85 hover:text-gold-light transition-colors"
+            className="text-[11px] uppercase tracking-[0.22em] font-mono font-bold text-[#B92417] hover:text-[#E0301E] transition-colors"
           >
             Refresh →
           </button>
@@ -78,9 +78,9 @@ export default function SuccessClient({ slug }: { slug: string }) {
       )}
 
       {state.status === 'error' && (
-        <p className="text-cream-100/75 text-sm font-body font-light leading-relaxed">
+        <p className="text-[#3a3733] text-sm font-body leading-relaxed">
           {state.message} If you have not received an email within 5 minutes, contact sarah@modernmustardseed.com with your order ID:{' '}
-          <code className="text-gold-light/85 font-mono text-xs">{sessionId}</code>
+          <code className="text-[#161616] font-bold font-mono text-xs">{sessionId}</code>
         </p>
       )}
 
@@ -93,23 +93,23 @@ export default function SuccessClient({ slug }: { slug: string }) {
                 href={d.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-between gap-4 p-5 rounded-xl border border-gold-light/20 hover:border-gold-light/45 bg-midnight-700/40 hover:bg-midnight-700/60 transition-all group"
+                className="flex items-center justify-between gap-4 p-5 rounded-xl border-2 border-[#161616] bg-[#FFFDF6] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 hover:bg-[#F5B700] transition-all group"
               >
                 <div>
-                  <p className="font-display text-base md:text-lg text-cream-50 font-medium tracking-tight leading-snug mb-1">
+                  <p className="font-display text-base md:text-lg text-[#161616] font-black tracking-tight leading-snug mb-1">
                     {d.name}
                   </p>
-                  <p className="text-cream-100/50 text-[10px] font-mono uppercase tracking-[0.25em]">PDF · 24h signed link</p>
+                  <p className="text-[#161616]/60 text-[10px] font-mono uppercase tracking-[0.25em]">PDF · 24h signed link</p>
                 </div>
-                <span className="text-[11px] uppercase tracking-[0.22em] font-mono font-bold text-gold-light/85 group-hover:text-gold-light flex-shrink-0">
+                <span className="text-[11px] uppercase tracking-[0.22em] font-mono font-bold text-[#B92417] group-hover:text-[#161616] flex-shrink-0">
                   Download →
                 </span>
               </a>
             ))}
           </div>
-          <p className="text-cream-100/45 text-xs font-mono uppercase tracking-[0.22em]">
+          <p className="text-[#161616]/60 text-xs font-mono uppercase tracking-[0.22em]">
             Receipt and download links also sent to{' '}
-            {state.email ? <span className="text-gold-light/85 normal-case">{state.email}</span> : 'your email'}
+            {state.email ? <span className="text-[#161616] font-bold normal-case">{state.email}</span> : 'your email'}
           </p>
         </div>
       )}

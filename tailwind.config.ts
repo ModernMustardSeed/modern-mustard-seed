@@ -70,7 +70,7 @@ const config: Config = {
         pop: {
           yellow: '#F5B700',
           red: '#E0301E',
-          blue: '#1E50C8',
+          blue: '#B92417', // brick, not cobalt: matches --pop-blue in globals.css so a stray pop-blue class renders brand red
           cream: '#FBF6EA',
           ink: '#161616',
         },

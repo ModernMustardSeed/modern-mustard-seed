@@ -49,7 +49,7 @@ export default function PayoutForm({ method, details }: { method: string | null;
     return (
       <div className="flex items-start justify-between gap-3 bg-[#FFF8E6] border border-[#161616]/20 rounded-xl px-4 py-3">
         <div className="min-w-0">
-          <span className="text-[9px] uppercase tracking-[0.25em] text-emerald-700 font-mono font-bold block">Payout info on file</span>
+          <span className="text-[9px] uppercase tracking-[0.25em] text-[#B92417] font-mono font-bold block">Payout info on file</span>
           <p className="text-[#161616] font-body text-sm mt-1 break-words">
             {payoutMethodLabel(saved.method)} · <span className="font-mono">{saved.details}</span>
           </p>

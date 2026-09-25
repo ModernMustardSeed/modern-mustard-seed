@@ -8,10 +8,15 @@ export default function BuyButton({
   slug,
   label = 'Get it now',
   className,
+  tone = 'cream',
 }: {
   slug: string;
   label?: string;
   className?: string;
+  /** Default button skin: the mustard pop pill. `cream` sits on a cream ground,
+   *  `ink` on an ink band (cream border and shadow), `onMustard` on a mustard
+   *  band (ink pill so it does not vanish into the ground). */
+  tone?: 'cream' | 'ink' | 'onMustard';
 }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -50,12 +55,18 @@ export default function BuyButton({
         disabled={loading}
         className={
           className ||
-          'px-9 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-bold text-cream-50 bg-brass rounded-full campfire-glow hover:shadow-[0_0_45px_rgba(255,107,53,0.5)] transition-all disabled:opacity-50'
+          `px-9 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold rounded-full border-2 hover:-translate-y-0.5 transition-all disabled:opacity-50 ${
+            tone === 'ink'
+              ? 'text-[#161616] bg-[#F5B700] border-[#FBF6EA] shadow-[4px_4px_0_0_#FBF6EA]'
+              : tone === 'onMustard'
+                ? 'text-[#FBF6EA] bg-[#161616] border-[#161616] shadow-[4px_4px_0_0_#FBF6EA]'
+                : 'text-[#161616] bg-[#F5B700] border-[#161616] shadow-[4px_4px_0_0_#161616]'
+          }`
         }
       >
         {loading ? 'Opening checkout...' : label}
       </button>
-      {error && <p className="text-rust-light text-xs font-body max-w-xs text-center">{error}</p>}
+      {error && <p className={`text-xs font-body font-semibold max-w-xs text-center ${tone === 'ink' ? 'text-[#F5B700]' : 'text-[#B92417]'}`}>{error}</p>}
     </div>
   );
 }

@@ -60,7 +60,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}window.gtag=window.gtag||gtag;gtag('consent','default',{ad_storage:'denied',analytics_storage:'denied',ad_user_data:'denied',ad_personalization:'denied'});`}
         </Script>
       </head>
-      <body className="bg-[#080c16] text-white selection:bg-mustard-500/30 selection:text-white">
+      <body className="bg-[#FBF6EA] text-[#161616] selection:bg-[#F5B700] selection:text-[#161616]">
         <div className="relative z-30">
           <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[9999] focus:bg-[#F5B700] focus:text-[#161616] focus:px-5 focus:py-3">Skip to content</a>
           <Navbar />
@@ -87,9 +87,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Analytics />
         <SpeedInsights />
         <noscript>
-          <p style={{ padding: '2rem', textAlign: 'center', color: '#fff' }}>
+          <p style={{ padding: '2rem', textAlign: 'center', color: '#161616' }}>
             {SITE.name}. {SITE.description} Visit{' '}
-            <a href={SITE.url} style={{ color: '#C8964E' }}>
+            <a href={SITE.url} style={{ color: '#B92417' }}>
               {SITE.url}
             </a>{' '}
             for more.

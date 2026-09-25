@@ -70,13 +70,26 @@ html:not(.mm-js) .mm-r {
   html, body {
     width: 100%;
     max-width: 100vw;
-    background-color: #080c16;
-    color: #f5f0e8;
+    /* The pop-art ground: cream paper, ink type. Dark surfaces are bands a
+       page paints on purpose, never the default. */
+    background-color: #fbf6ea;
+    color: #161616;
     font-family: var(--font-body), system-ui, sans-serif;
     /* DM Sans merges "fi"/"fl" into ligature glyphs (the dotless-i "finally"
        problem). Keep letters as typed, sitewide. */
     font-variant-ligatures: none;
     font-feature-settings: 'liga' 0, 'clig' 0, 'dlig' 0;
+  }
+
+  /* App shells (admin, client portal) are their own products and keep the
+     ground they were built on: the old ink body with white type. Only the
+     public site moved to cream. */
+  html:has(.admin-shell),
+  html:has(.admin-shell) body,
+  html:has(.portal-shell),
+  html:has(.portal-shell) body {
+    background-color: #080c16;
+    color: #ffffff;
   }
 
   /* Clip horizontal overflow on the body only. Putting overflow-x on <html>
@@ -91,8 +104,9 @@ html:not(.mm-js) .mm-r {
     scroll-behavior: smooth;
   }
 
-  /* Admin is a LIGHT surface, but the site-wide body color is near-white
-     (#f5f0e8) for the dark marketing pages. Tailwind's preflight makes form
+  /* Admin is a LIGHT surface. The site-wide body color was once near-white
+     (#f5f0e8) for the old dark marketing pages, and the admin shell still
+     inherits white from its own legacy ground below. Tailwind's preflight makes form
      controls `color: inherit`, so any admin <input>/<textarea> without an
      explicit text color inherited the near-white color = white text in a white
      box (illegible). Set a dark-ink default + light color-scheme for every

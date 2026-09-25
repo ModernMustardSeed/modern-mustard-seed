@@ -1,4 +1,3 @@
-import StaticBackground from '@/components/StaticBackground';
 import { buildMetadata } from '@/lib/seo';
 
 /**
@@ -16,16 +15,16 @@ export const metadata = buildMetadata({
 export default function SuperNomadPrivacyPage() {
   return (
     <>
-      <StaticBackground />
-      <div className="relative pt-36 md:pt-44 pb-28">
-        <div className="max-w-3xl mx-auto px-6 md:px-8">
-          <p className="text-mustard text-xs font-mono uppercase tracking-[0.2em] mb-4">Super Nomad</p>
-          <h1 className="font-sans text-4xl md:text-5xl font-semibold text-white tracking-tight mb-2">
-            Privacy <span className="text-gradient-mustard">Policy</span>
+      <div className="relative min-h-screen bg-[#FBF6EA] text-[#161616] pt-36 md:pt-44 pb-28 overflow-hidden">
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-[420px] halftone-bg opacity-60 [mask-image:linear-gradient(to_bottom,black,transparent)]" aria-hidden="true" />
+        <div className="relative max-w-3xl mx-auto px-6 md:px-8">
+          <p className="text-[#B92417] text-xs font-mono font-bold uppercase tracking-[0.3em] mb-4">Super Nomad</p>
+          <h1 className="font-display text-4xl md:text-6xl font-black text-[#161616] tracking-tight leading-[1.05] mb-3">
+            Privacy <span className="italic text-[#B92417]">Policy</span>
           </h1>
-          <p className="text-white/40 text-sm font-mono mb-12">Effective 2026-09-04</p>
+          <p className="inline-block text-[10px] uppercase tracking-[0.25em] font-mono font-bold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-full px-3 py-1 shadow-[3px_3px_0_0_#161616] mb-10">Effective 2026-09-04</p>
 
-          <div className="mdx-prose space-y-5">
+          <div className="mdx-prose mdx-prose-pop pop-card-cream p-6 md:p-10 space-y-5 [&>h2:first-child]:mt-0">
             <h2>The short version</h2>
             <p>
               Super Nomad runs on your phone. It does not have accounts, analytics, advertising, or tracking. The app does not know who you are and does not want to.

@@ -172,7 +172,7 @@ export default function OneBrain() {
         <div className="flex flex-col rounded-2xl border-2 border-[#161616] bg-white shadow-[6px_6px_0_0_#161616] overflow-hidden">
           <div className="flex items-center gap-2 px-4 h-10 border-b-2 border-[#161616] bg-[#FBF6EA]">
             <span className="flex gap-1.5">
-              {['#E0301E', '#F5B700', '#8FA98F'].map((c) => (
+              {['#E0301E', '#F5B700', '#161616'].map((c) => (
                 <span key={c} className="h-3 w-3 rounded-full border border-[#161616]" style={{ background: c }} />
               ))}
             </span>
@@ -213,8 +213,8 @@ export default function OneBrain() {
 
         {/* ── The phone call ── */}
         <div className="flex flex-col rounded-2xl border-2 border-[#161616] bg-[#161616] shadow-[6px_6px_0_0_#F5B700] overflow-hidden">
-          <div className="flex items-center gap-2.5 px-4 h-10 border-b-2 border-[#F5B700]/25 bg-[#0F1422]">
-            <span className="h-2 w-2 rounded-full bg-[#8FA98F]" style={{ animation: 'tw-pulse 1.6s ease-in-out infinite' }} aria-hidden />
+          <div className="flex items-center gap-2.5 px-4 h-10 border-b-2 border-[#F5B700]/25 bg-[#080c16]">
+            <span className="h-2 w-2 rounded-full bg-[#F5B700]" style={{ animation: 'tw-pulse 1.6s ease-in-out infinite' }} aria-hidden />
             <span className="font-mono text-[11px] text-[#FBF6EA]/70">Incoming call, 11:04pm</span>
           </div>
           <div className="p-6 flex-1 flex flex-col">

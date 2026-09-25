@@ -86,7 +86,7 @@ function MarkdownLite({ body }: { body: string }) {
     if (line.trim().startsWith('```')) {
       if (inCode) {
         out.push(
-          <pre key={`code-${key}`} className="bg-[#080C16] text-[#d7dbe6] font-mono text-[12px] p-4 my-3 overflow-x-auto border-2 border-[#161616]">
+          <pre key={`code-${key}`} className="bg-[#080C16] text-[#EDE6D6] font-mono text-[12px] p-4 my-3 overflow-x-auto border-2 border-[#161616]">
             {code.join('\n')}
           </pre>
         );
@@ -454,17 +454,17 @@ function CoachTab({ savedRun, activeTrack, activeMission }: { savedRun: string |
   return (
     <div className="max-w-3xl">
       <div className="bg-[#080C16] border-2 border-[#161616] shadow-[6px_6px_0_0_#161616]">
-        <div className="flex items-center gap-2 bg-[#0F1422] px-4 py-2.5 border-b border-white/10">
+        <div className="flex items-center gap-2 bg-[#1F1F1F] px-4 py-2.5 border-b border-white/10">
           <span className="w-2.5 h-2.5 rounded-full bg-[#E0301E]" />
           <span className="w-2.5 h-2.5 rounded-full bg-[#F5B700]" />
-          <span className="w-2.5 h-2.5 rounded-full bg-[#3fbf6b]" />
-          <span className="font-mono text-[10px] text-[#5C7188] ml-2">
+          <span className="w-2.5 h-2.5 rounded-full bg-[#FBF6EA]" />
+          <span className="font-mono text-[10px] text-[#9A958A] ml-2">
             mr-mustard — live coach{activeMission ? ` — ${activeMission.title}` : ''}
           </span>
         </div>
         <div className="p-5 h-[52vh] overflow-y-auto font-mono text-[13px] leading-relaxed">
           {messages.length === 0 && (
-            <div className="text-[#d7dbe6]">
+            <div className="text-[#EDE6D6]">
               <span className="text-[#FFDD55] font-bold">MR.MUSTARD: </span>
               {savedRun
                 ? `There you are. Last time you told me you want to build ${savedRun.slice(0, 100)}. I have not stopped thinking about it. Ready to make it real?`
@@ -472,14 +472,14 @@ function CoachTab({ savedRun, activeTrack, activeMission }: { savedRun: string |
             </div>
           )}
           {messages.map((m, i) => (
-            <div key={i} className="mt-4 text-[#d7dbe6]">
-              <span className={`font-bold ${m.role === 'user' ? 'text-[#7aa2ff]' : 'text-[#FFDD55]'}`}>
+            <div key={i} className="mt-4 text-[#EDE6D6]">
+              <span className={`font-bold ${m.role === 'user' ? 'text-[#F7DC8A]' : 'text-[#FFDD55]'}`}>
                 {m.role === 'user' ? 'YOU: ' : 'MR.MUSTARD: '}
               </span>
               <span className="whitespace-pre-wrap">{m.content}</span>
             </div>
           ))}
-          {busy && <p className="mt-4 text-[#5C7188] animate-pulse">MR.MUSTARD is thinking…</p>}
+          {busy && <p className="mt-4 text-[#9A958A] animate-pulse">MR.MUSTARD is thinking…</p>}
           {err && <p className="mt-4 text-[#ff6b5e]">{err}</p>}
           <div ref={bottomRef} />
         </div>
@@ -487,13 +487,13 @@ function CoachTab({ savedRun, activeTrack, activeMission }: { savedRun: string |
           className="flex items-center gap-2 border-t border-white/10 p-3"
           onSubmit={(e) => { e.preventDefault(); void send(); }}
         >
-          <span className="font-mono text-[#5C7188]">&gt;</span>
+          <span className="font-mono text-[#9A958A]">&gt;</span>
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Talk to your coach…"
             aria-label="Message Mr. Mustard"
-            className="flex-1 bg-transparent outline-none font-mono text-[13px] text-white placeholder:text-[#5C7188]/70 caret-[#F5B700]"
+            className="flex-1 bg-transparent outline-none font-mono text-[13px] text-white placeholder:text-[#9A958A]/70 caret-[#F5B700]"
           />
           <button
             type="submit"
@@ -575,7 +575,7 @@ function TracksTab({
                       <span className="font-mono font-bold text-[11px] text-[#FFDD55]">{pr.label}</span>
                       <CopyButton text={pr.text} />
                     </div>
-                    <pre className="p-4 font-mono text-[12px] text-[#d7dbe6] whitespace-pre-wrap leading-relaxed max-h-64 overflow-y-auto">{pr.text}</pre>
+                    <pre className="p-4 font-mono text-[12px] text-[#EDE6D6] whitespace-pre-wrap leading-relaxed max-h-64 overflow-y-auto">{pr.text}</pre>
                   </div>
                 ))}
               </div>

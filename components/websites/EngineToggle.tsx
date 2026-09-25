@@ -58,7 +58,7 @@ export default function EngineToggle() {
           {/* browser chrome */}
           <div className="flex items-center gap-2 px-4 h-10 border-b-2 border-[#161616] bg-[#FBF6EA]">
             <span className="flex gap-1.5">
-              {['#E0301E', '#F5B700', '#8FA98F'].map((c) => (
+              {['#E0301E', '#F5B700', '#161616'].map((c) => (
                 <span key={c} className="h-3 w-3 rounded-full border border-[#161616]" style={{ background: c }} />
               ))}
             </span>
