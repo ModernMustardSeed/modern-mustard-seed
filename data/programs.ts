@@ -52,7 +52,7 @@ export const programs: Program[] = [
     playbookName: 'the 38-page Idea to Spec playbook',
     toolName: 'The Spec Studio',
     toolBlurb: 'A live, on-site tool with a Spec Builder, a 14-day validation sprint tracker, a prompt library, and an idea pipeline. It saves your progress in the browser and stays current as it grows.',
-    accent: '#1F4280',
+    accent: '#F5B700',
     metaTitle: 'Idea to Spec. Turn Any Idea Into a Production-Ready Spec',
     metaDescription: 'A $497 program that teaches you to turn any idea into a validated, production-ready spec. The 38-page playbook plus the live Spec Studio. From Modern Mustard Seed.',
     whoFor: [
@@ -95,7 +95,7 @@ export const programs: Program[] = [
     playbookName: 'the 47-page fullstack playbook',
     toolName: 'The Ops Center',
     toolBlurb: 'A live, on-site dashboard with a curriculum tracker, a setup checklist, a prompt library, and a project tracker. It saves your progress in the browser and stays current as it grows.',
-    accent: '#163259',
+    accent: '#E0301E',
     metaTitle: 'The Terminal. Become a Fullstack Engineer with Claude Code',
     metaDescription: 'A $497 program that teaches you to become a fullstack, zero-to-one builder using Claude Code, the command line, and MCP. The 47-page playbook plus the live Ops Center.',
     whoFor: [

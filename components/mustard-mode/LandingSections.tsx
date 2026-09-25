@@ -287,7 +287,7 @@ export function ProofSection() {
         </p>
         <div className="grid md:grid-cols-3 gap-6 mt-12">
           {stats.map((s) => (
-            <div key={s.label} className="border-2 border-white/15 bg-[#0F1422] p-6">
+            <div key={s.label} className="border-2 border-white/15 bg-[#1F1F1F] p-6">
               <span className="font-mono font-bold text-5xl text-[#F5B700]">{s.n}</span>
               <p className="font-sans text-sm text-white/65 mt-3 leading-relaxed">{s.label}</p>
             </div>

@@ -26,15 +26,9 @@ nav[data-studio-nav] a[aria-label='Modern Mustard Seed on Facebook']{border:0;ba
 .studio-footer-bottom{border-top:1px solid #fbf6ea25;padding-top:24px}.studio-footer-bottom>div{display:flex;flex-wrap:wrap;gap:8px 22px;align-items:center}.studio-footer-bottom a,.studio-footer-bottom button{font-family:var(--font-body),sans-serif;font-weight:400;font-size:10px;letter-spacing:0;color:#c6c8cc;border:0;border-radius:0;box-shadow:none;background:transparent;text-transform:none;min-height:44px;display:inline-flex;align-items:center;padding:0}.studio-footer-bottom>p{font-size:10px;color:#9c9fa6;margin-top:20px}
 @media(max-width:760px){nav[data-studio-nav]>div{padding:14px 5vw;gap:10px}nav[data-studio-nav]>div>a{gap:7px}nav[data-studio-nav]>div>a>span{font-size:11px;max-width:130px;line-height:1.3}nav[data-studio-nav]>div>a>img{height:29px}nav[data-studio-nav] a[aria-label='Modern Mustard Seed on Facebook']{display:none}.studio-footer{padding:55px 6vw 25px}.studio-footer-top{grid-template-columns:1fr;gap:30px;padding-bottom:35px}.studio-footer-brand{font-size:46px}.studio-footer-links{grid-template-columns:1fr 1fr;gap:30px 20px;padding:38px 0}.studio-footer-links a{font-size:11px;min-height:44px;display:flex;align-items:center;padding:8px 0}.studio-footer-links h2{font-size:8px;margin-bottom:12px}.studio-footer-seed{gap:16px;margin-bottom:25px}.studio-footer-seed p{font-size:13px}.studio-footer-bottom>div{gap:0 18px}}
 
-[data-studio-page] .halftone-bg{display:none}
-[data-studio-page] .pop-card,[data-studio-page] .pop-card-yellow,[data-studio-page] [class*='shadow-']{box-shadow:none!important;border-width:1px;border-color:#080c1630;border-radius:3px}
 [data-studio-page] h1,[data-studio-page] h2,[data-studio-page] h3{font-weight:400;letter-spacing:-.035em}
 [data-studio-page] h1{letter-spacing:-.055em;line-height:1.05}
 [data-studio-page] [style*='text-stroke']{-webkit-text-stroke:0!important;color:#080c16;font-style:italic}
-[data-studio-page] input,[data-studio-page] textarea,[data-studio-page] select{border-width:1px;border-radius:3px}
-[data-studio-page] [class*='border-2']{border-width:1px}
-[data-studio-page] [class*='border-t-2']{border-top-width:1px}
-[data-studio-page] [class*='border-b-2']{border-bottom-width:1px}
 [data-studio-consent]>div{border-width:1px;border-color:#080c1630;border-radius:4px;box-shadow:0 12px 50px #080c1620}
 [data-studio-consent] button{border-width:1px;box-shadow:none;min-height:44px;border-radius:2px;font-weight:500;font-size:10px}
 [data-studio-consent] p:first-child{font-weight:500}
@@ -68,7 +62,5 @@ nav[data-studio-nav] a[href='/book']{border:1px solid #080c16}
 /* Carry the pop-art identity through the shared studio surfaces. */
 nav[data-studio-nav]{border-bottom:2px solid #080c16}
 nav[data-studio-nav] a[href='/book']{border:2px solid #080c16;box-shadow:3px 3px 0 #080c16!important}
-[data-studio-page] .halftone-bg{display:block}
-[data-studio-page] .pop-card,[data-studio-page] .pop-card-yellow{border:2px solid #080c16;box-shadow:4px 4px 0 #080c16!important;border-radius:6px}
 .studio-footer{border-top:8px solid #f5b700}
 [data-studio-launcher]>div{border:2px solid #080c16;box-shadow:3px 3px 0 #080c16}

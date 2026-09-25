@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import StaticBackground from '@/components/StaticBackground';
 import { buildMetadata } from '@/lib/seo';
 
 /**
@@ -43,20 +42,19 @@ const STEPS = [
 export default function LandingPage() {
   return (
     <>
-      <StaticBackground />
-
-      <div className="relative pt-32 md:pt-44 pb-24">
-        <div className="max-w-4xl mx-auto px-6 md:px-8">
+      <div className="relative min-h-screen bg-[#FBF6EA] text-[#161616] pt-32 md:pt-44 pb-24 overflow-hidden">
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-[560px] halftone-bg opacity-60 [mask-image:linear-gradient(to_bottom,black,transparent)]" aria-hidden="true" />
+        <div className="relative max-w-4xl mx-auto px-6 md:px-8">
           {/* Hero */}
           <header className="text-center mb-14">
-            <span className="text-[10px] uppercase tracking-[0.4em] text-mustard-500/80 font-mono font-medium mb-6 block">
+            <span className="text-[10px] uppercase tracking-[0.4em] text-[#B92417] font-mono font-bold mb-6 block">
               Modern Mustard Seed
             </span>
-            <h1 className="font-sans text-4xl md:text-6xl font-semibold text-white tracking-tight leading-[1.08] mb-6">
+            <h1 className="font-display text-4xl md:text-6xl font-black text-[#161616] tracking-tight leading-[1.05] mb-6">
               Agentic systems that pay for themselves,{' '}
-              <span className="text-gradient-mustard">fast</span>
+              <span className="italic text-[#B92417]">fast</span>
             </h1>
-            <p className="text-white/70 text-base md:text-lg font-body font-light leading-relaxed max-w-2xl mx-auto mb-10">
+            <p className="text-[#3a3733] text-base md:text-lg font-body leading-relaxed max-w-2xl mx-auto mb-10">
               Custom agentic tools, apps, and websites for your business. Built by a studio that
               designs, builds, and ships the whole thing. Start with a free 60-second audit and
               see exactly where agentic systems move your numbers.
@@ -65,18 +63,18 @@ export default function LandingPage() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
                 href="/audit"
-                className="inline-block w-full sm:w-auto px-9 py-4 text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-white bg-gradient-to-r from-mustard-600 via-mustard-500 to-mustard-400 rounded-full shadow-[0_0_30px_rgba(255,107,53,0.3)] hover:shadow-[0_0_44px_rgba(255,107,53,0.5)] hover:-translate-y-0.5 transition-all"
+                className="inline-block w-full sm:w-auto px-9 py-4 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all text-[#161616] bg-[#F5B700]"
               >
                 Run the Bottleneck Breaker
               </Link>
               <Link
                 href="/book"
-                className="inline-block w-full sm:w-auto px-9 py-4 text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-white/90 border border-white/25 rounded-full hover:border-mustard-500/50 hover:text-white transition-all"
+                className="inline-block w-full sm:w-auto px-9 py-4 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all text-[#161616] bg-white"
               >
                 Book a Discovery Call
               </Link>
             </div>
-            <p className="text-white/40 text-xs font-mono mt-5">
+            <p className="text-[#161616]/60 text-xs font-mono mt-5">
               No credit card. No obligation. Tuesdays through Fridays for calls.
             </p>
           </header>
@@ -84,29 +82,29 @@ export default function LandingPage() {
           {/* Proof bar */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-20">
             {PROOF.map((p) => (
-              <div key={p.stat} className="glass-card p-7 text-center">
-                <div className="font-sans text-2xl md:text-3xl font-semibold text-gradient-mustard mb-2">
+              <div key={p.stat} className="pop-card-yellow p-7 text-center">
+                <div className="font-display text-2xl md:text-3xl font-black text-[#161616] mb-2">
                   {p.stat}
                 </div>
-                <p className="text-white/60 text-sm font-body font-light leading-6">{p.label}</p>
+                <p className="text-[#161616]/85 text-sm font-body leading-6">{p.label}</p>
               </div>
             ))}
           </div>
 
           {/* How it works */}
           <section className="mb-20">
-            <h2 className="font-sans text-2xl md:text-3xl font-semibold text-white tracking-tight text-center mb-12">
+            <h2 className="font-display text-3xl md:text-5xl font-black text-[#161616] tracking-tight text-center mb-12">
               How it works
             </h2>
             <div className="space-y-5">
               {STEPS.map((s) => (
-                <div key={s.n} className="glass-card p-8 flex gap-6 items-start">
-                  <span className="font-mono text-mustard-500/70 text-sm font-bold pt-1">{s.n}</span>
+                <div key={s.n} className="pop-card p-8 flex gap-6 items-start">
+                  <span className="font-display text-2xl text-[#B92417] font-black leading-none pt-0.5">{s.n}</span>
                   <div>
-                    <h3 className="font-sans text-lg md:text-xl font-semibold text-white mb-2">
+                    <h3 className="font-display text-lg md:text-xl font-black text-[#161616] tracking-tight mb-2">
                       {s.title}
                     </h3>
-                    <p className="text-white/60 text-sm md:text-base font-body font-light leading-7">
+                    <p className="text-[#3a3733] text-sm md:text-base font-body leading-7">
                       {s.body}
                     </p>
                   </div>
@@ -116,20 +114,23 @@ export default function LandingPage() {
           </section>
 
           {/* Final CTA */}
-          <div className="glass-card p-10 md:p-14 text-center border-mustard-500/25">
-            <h2 className="font-sans text-2xl md:text-4xl font-semibold text-white tracking-tight mb-5">
+          <div className="relative p-10 md:p-14 text-center rounded-2xl border-2 border-[#161616] bg-[#161616] text-[#FBF6EA] shadow-[6px_6px_0_0_#F5B700] overflow-hidden">
+            <div className="pointer-events-none absolute inset-0 halftone-ink" aria-hidden="true" />
+            <div className="relative">
+            <h2 className="font-display text-2xl md:text-4xl font-black text-[#FBF6EA] tracking-tight mb-5">
               See what agentic systems can do for your business
             </h2>
-            <p className="text-white/65 text-base font-body font-light leading-relaxed max-w-xl mx-auto mb-9">
+            <p className="text-[#FBF6EA]/80 text-base font-body leading-relaxed max-w-xl mx-auto mb-9">
               The audit is free and takes a minute. If the opportunities are real, the next step is
               a conversation. If they are not, you have lost nothing.
             </p>
             <Link
               href="/audit"
-              className="inline-block px-10 py-4 text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-white bg-gradient-to-r from-mustard-600 via-mustard-500 to-mustard-400 rounded-full shadow-[0_0_30px_rgba(255,107,53,0.3)] hover:shadow-[0_0_44px_rgba(255,107,53,0.5)] hover:-translate-y-0.5 transition-all"
+              className="inline-block px-10 py-4 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] rounded-full border-2 border-[#FBF6EA] shadow-[4px_4px_0_0_#FBF6EA] hover:-translate-y-0.5 transition-all"
             >
               Start the Free Audit
             </Link>
+            </div>
           </div>
         </div>
       </div>

@@ -171,7 +171,7 @@ export default async function TradePage({ params }: { params: Promise<{ trade: s
                       <span className="font-mono text-xs text-[#F5B700]">{c.time}</span>
                     </div>
                     <p className="mt-1 font-body text-sm text-[#FBF6EA]/70">“{c.need}”</p>
-                    <p className="mt-1 font-body text-sm text-[#8FA98F]">→ {c.outcome}</p>
+                    <p className="mt-1 font-body text-sm text-[#F5B700]">→ {c.outcome}</p>
                   </li>
                 ))}
               </ul>

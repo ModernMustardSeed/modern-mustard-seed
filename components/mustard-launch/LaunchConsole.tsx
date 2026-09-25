@@ -116,7 +116,7 @@ export default function LaunchConsole() {
   const igniting = running && tick >= SYSTEMS.length;
 
   return (
-    <div className="relative overflow-hidden rounded-2xl border-2 border-[#161616] bg-[radial-gradient(120%_130%_at_78%_8%,#0F1422,#080C16_60%)] text-[#FBF6EA] shadow-[8px_8px_0_0_#161616]">
+    <div className="relative overflow-hidden rounded-2xl border-2 border-[#161616] bg-[radial-gradient(120%_130%_at_78%_8%,#2A2A2A,#161616_60%)] text-[#FBF6EA] shadow-[8px_8px_0_0_#161616]">
       {/* halftone starfield */}
       <div
         className="pointer-events-none absolute inset-0 opacity-90"

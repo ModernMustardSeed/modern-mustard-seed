@@ -179,7 +179,7 @@ export default function PromptPlaybookTool() {
                         aria-label={`Copy the ${p.title} prompt`}
                         className={`shrink-0 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full border-2 border-[#161616] text-[10px] uppercase tracking-[0.15em] font-mono font-bold transition-all ${
                           isCopied
-                            ? 'bg-emerald-500 text-white'
+                            ? 'bg-[#161616] text-[#FBF6EA]'
                             : 'bg-[#F5B700] text-[#161616] shadow-[2px_2px_0_0_#161616] hover:-translate-y-0.5'
                         }`}
                       >

@@ -47,7 +47,7 @@ function FloatProp({ kind, dark }: { kind: 'cake' | 'bouquet' | 'board' | 'card'
         <span className="absolute left-[62%] top-2 w-5 h-5 rounded-full border-2" style={{ borderColor: ink, background: '#161616' }} />
         <span className="absolute left-[33%] top-5 w-5 h-5 rounded-full border-2" style={{ borderColor: ink, background: '#FFDD55' }} />
         <span className="absolute left-[52%] top-6 w-5 h-5 rounded-full border-2 bg-white" style={{ borderColor: ink }} />
-        <span className="absolute left-1/2 -translate-x-1/2 bottom-0 w-5 h-6 rounded-b-lg border-2" style={{ borderColor: ink, background: '#8FA98F' }} />
+        <span className="absolute left-1/2 -translate-x-1/2 bottom-0 w-5 h-6 rounded-b-lg border-2" style={{ borderColor: ink, background: '#F7DC8A' }} />
       </div>
     );
   }

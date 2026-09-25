@@ -1,4 +1,3 @@
-import StaticBackground from '@/components/StaticBackground';
 import { buildMetadata } from '@/lib/seo';
 
 export const metadata = buildMetadata({
@@ -10,15 +9,15 @@ export const metadata = buildMetadata({
 export default function TermsPage() {
   return (
     <>
-      <StaticBackground />
-      <div className="relative pt-36 md:pt-44 pb-28">
-        <div className="max-w-3xl mx-auto px-6 md:px-8">
-          <h1 className="font-sans text-4xl md:text-5xl font-semibold text-white tracking-tight mb-2">
-            Terms of <span className="text-gradient-mustard">Service</span>
+      <div className="relative min-h-screen bg-[#FBF6EA] text-[#161616] pt-36 md:pt-44 pb-28 overflow-hidden">
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-[420px] halftone-bg opacity-60 [mask-image:linear-gradient(to_bottom,black,transparent)]" aria-hidden="true" />
+        <div className="relative max-w-3xl mx-auto px-6 md:px-8">
+          <h1 className="font-display text-4xl md:text-6xl font-black text-[#161616] tracking-tight leading-[1.05] mb-3">
+            Terms of <span className="italic text-[#B92417]">Service</span>
           </h1>
-          <p className="text-white/40 text-sm font-mono mb-12">Last updated: 2026-07-20</p>
+          <p className="inline-block text-[10px] uppercase tracking-[0.25em] font-mono font-bold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-full px-3 py-1 shadow-[3px_3px_0_0_#161616] mb-10">Last updated: 2026-07-20</p>
 
-          <div className="mdx-prose space-y-5">
+          <div className="mdx-prose mdx-prose-pop pop-card-cream p-6 md:p-10 space-y-5 [&>h2:first-child]:mt-0">
             <h2>Acceptance of terms</h2>
             <p>
               By using modernmustardseed.com or engaging Modern Mustard Seed for services, you agree to these terms.

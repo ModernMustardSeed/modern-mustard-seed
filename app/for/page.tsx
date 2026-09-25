@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import StaticBackground from '@/components/StaticBackground';
 import { JsonLd, breadcrumbJsonLd } from '@/lib/jsonld';
 import { buildMetadata, SITE } from '@/lib/seo';
 import { industries } from '@/data/industries';
@@ -49,19 +48,18 @@ export default function ForIndex() {
           ]),
         ]}
       />
-      <StaticBackground />
-
-      <div className="relative pt-36 md:pt-44 pb-24">
-        <div className="max-w-6xl mx-auto px-6 md:px-8">
+      <div className="relative min-h-screen bg-[#FBF6EA] text-[#161616] pt-36 md:pt-44 pb-24 overflow-hidden">
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-[520px] halftone-bg opacity-60 [mask-image:linear-gradient(to_bottom,black,transparent)]" aria-hidden="true" />
+        <div className="relative max-w-6xl mx-auto px-6 md:px-8">
           <header className="text-center mb-12">
-            <span className="text-[10px] uppercase tracking-[0.4em] text-mustard-500/70 font-mono font-medium mb-6 block">
+            <span className="text-[10px] uppercase tracking-[0.4em] text-[#B92417] font-mono font-bold mb-6 block">
               Industries
             </span>
-            <h1 className="font-sans text-4xl md:text-6xl font-semibold text-white tracking-tight leading-[1.1] mb-6">
+            <h1 className="font-display text-4xl md:text-6xl font-black text-[#161616] tracking-tight leading-[1.05] mb-6">
               Built for the work you{' '}
-              <span className="text-gradient-mustard">actually do</span>
+              <span className="italic text-[#B92417]">actually do</span>
             </h1>
-            <p className="text-white/65 text-base md:text-lg font-body font-light leading-relaxed max-w-2xl mx-auto">
+            <p className="text-[#3a3733] text-base md:text-lg font-body leading-relaxed max-w-2xl mx-auto">
               Generic automation agencies pitch generic builds. We document exactly what gets built per industry, the case studies that anchor it, and what it costs.
             </p>
           </header>
@@ -71,18 +69,18 @@ export default function ForIndex() {
               <Link
                 key={i.slug}
                 href={`/for/${i.slug}`}
-                className="glass-card p-8 md:p-10 hover:border-mustard-500/30 transition-all duration-500 group"
+                className="pop-card p-8 md:p-10 hover:-translate-y-1 hover:shadow-[7px_7px_0_0_#161616] transition-all duration-300 group"
               >
-                <span className="text-[10px] uppercase tracking-[0.35em] text-mustard-500/70 font-mono font-medium mb-4 block">
+                <span className="text-[10px] uppercase tracking-[0.35em] text-[#B92417] font-mono font-bold mb-4 block">
                   {i.eyebrow}
                 </span>
-                <h2 className="font-sans text-xl md:text-2xl font-semibold text-white tracking-tight mb-4 group-hover:text-mustard-100 transition-colors">
+                <h2 className="font-display text-xl md:text-2xl font-black text-[#161616] tracking-tight mb-4">
                   {i.name}
                 </h2>
-                <p className="text-white/55 text-sm md:text-base font-body font-light leading-7 mb-5">
+                <p className="text-[#3a3733] text-sm md:text-base font-body leading-7 mb-5">
                   {i.lede.split('. ').slice(0, 2).join('. ')}.
                 </p>
-                <span className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.25em] font-mono font-bold text-mustard-400 group-hover:text-mustard-300 transition-colors">
+                <span className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.25em] font-mono font-bold text-[#B92417] group-hover:text-[#E0301E] transition-colors">
                   Read the playbook
                   <span aria-hidden="true">→</span>
                 </span>
@@ -91,18 +89,18 @@ export default function ForIndex() {
 
             <Link
               href="/for/restaurants"
-              className="glass-card p-8 md:p-10 hover:border-mustard-500/30 transition-all duration-500 group"
+              className="pop-card p-8 md:p-10 hover:-translate-y-1 hover:shadow-[7px_7px_0_0_#161616] transition-all duration-300 group"
             >
-              <span className="text-[10px] uppercase tracking-[0.35em] text-mustard-500/70 font-mono font-medium mb-4 block">
+              <span className="text-[10px] uppercase tracking-[0.35em] text-[#B92417] font-mono font-bold mb-4 block">
                 Agentic Systems for Restaurants
               </span>
-              <h2 className="font-sans text-xl md:text-2xl font-semibold text-white tracking-tight mb-4 group-hover:text-mustard-100 transition-colors">
+              <h2 className="font-display text-xl md:text-2xl font-black text-[#161616] tracking-tight mb-4">
                 Restaurants
               </h2>
-              <p className="text-white/55 text-sm md:text-base font-body font-light leading-7 mb-5">
+              <p className="text-[#3a3733] text-sm md:text-base font-body leading-7 mb-5">
                 A voice agent that takes phone orders, books tables, and saves the dinner rush from voicemail. Fires orders to Toast, Square, or Clover, plus a commission-free ordering page.
               </p>
-              <span className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.25em] font-mono font-bold text-mustard-400 group-hover:text-mustard-300 transition-colors">
+              <span className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.25em] font-mono font-bold text-[#B92417] group-hover:text-[#E0301E] transition-colors">
                 Read the playbook
                 <span aria-hidden="true">→</span>
               </span>
@@ -112,7 +110,7 @@ export default function ForIndex() {
           <div className="text-center">
             <Link
               href="/audit"
-              className="inline-block px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-semibold text-white bg-gradient-to-r from-mustard-600 via-mustard-500 to-mustard-400 rounded-full shadow-[0_0_30px_rgba(255,107,53,0.25)] hover:shadow-[0_0_40px_rgba(255,107,53,0.45)] transition-all"
+              className="inline-block px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all text-center text-[#161616] bg-[#F5B700]"
             >
               Not sure which fits? Run the Bottleneck Breaker.
             </Link>

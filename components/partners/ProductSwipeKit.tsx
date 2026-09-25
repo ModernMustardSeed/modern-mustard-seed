@@ -31,7 +31,7 @@ function CopyButton({ text, label = 'Copy' }: { text: string; label?: string }) 
       }}
       className={`shrink-0 px-4 py-2 text-[10px] uppercase tracking-[0.18em] font-sans font-bold rounded-full border-2 border-[#161616] transition-all ${
         copied
-          ? 'bg-emerald-500 text-white'
+          ? 'bg-[#161616] text-[#FBF6EA]'
           : 'bg-[#F5B700] text-[#161616] shadow-[2px_2px_0_0_#161616] hover:shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5'
       }`}
     >

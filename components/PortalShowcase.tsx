@@ -67,7 +67,7 @@ export default function PortalShowcase() {
         <div className="flex items-center gap-2 px-4 py-3 border-b-2 border-[#161616] bg-[#FFFDF6]">
           <span className="w-3 h-3 rounded-full bg-[#E0301E] border border-[#161616]" aria-hidden />
           <span className="w-3 h-3 rounded-full bg-[#F5B700] border border-[#161616]" aria-hidden />
-          <span className="w-3 h-3 rounded-full bg-[#8FA98F] border border-[#161616]" aria-hidden />
+          <span className="w-3 h-3 rounded-full bg-[#161616] border border-[#161616]" aria-hidden />
           <span className="ml-3 inline-flex items-center px-3 py-1 rounded-full bg-white border-2 border-[#161616] text-[10px] md:text-[11px] font-mono text-[#161616]/70 tracking-tight">
             modernmustardseed.com/portal
           </span>

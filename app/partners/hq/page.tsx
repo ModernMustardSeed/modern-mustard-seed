@@ -254,7 +254,7 @@ function Row({ label, value, accent }: { label: string; value: string; accent?: 
   return (
     <div className="flex items-center justify-between gap-3">
       <span className="text-[#3A3733] font-body text-sm min-w-0 pr-3">{label}</span>
-      <span className={`font-mono text-sm font-semibold shrink-0 whitespace-nowrap ${accent ? 'text-emerald-700' : 'text-[#161616]/80'}`}>{value}</span>
+      <span className={`font-mono text-sm font-semibold shrink-0 whitespace-nowrap ${accent ? 'text-[#B92417]' : 'text-[#161616]/80'}`}>{value}</span>
     </div>
   );
 }
