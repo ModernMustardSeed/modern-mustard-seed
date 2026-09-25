@@ -52,7 +52,9 @@ export async function GET(req: Request) {
   const selftest = new URL(req.url).searchParams.get('selftest') === '1';
 
   const checks: Check[] = await Promise.all([
-    page('Homepage', '/', 'Beautifully'),
+    // The homepage wrapper's own attribute, not hero copy: the hero changes,
+    // and a copy marker failed the check the day it did (2026-09-25).
+    page('Homepage', '/', 'data-design="mms-editorial-2026"'),
     page('Build ask page (/demos)', '/demos', 'We sketch your'),
     page('For the Kingdom', '/kingdom', 'Until all have heard'),
     // The build ask must answer, and fast. An empty body is a validation error:
