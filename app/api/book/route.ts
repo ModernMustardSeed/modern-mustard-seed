@@ -118,6 +118,13 @@ export async function POST(req: Request) {
           fields: [
             { label: 'When', value: display },
             ...(business ? [{ label: 'Business', value: business }] : []),
+            ...(rep?.aiAnswer
+              ? [{
+                  label: 'The AI Answer',
+                  value: `Asked ChatGPT "${rep.aiAnswer.question}" on ${rep.aiAnswer.checkedAt.slice(0, 10)}. Named: ${rep.aiAnswer.named.join(', ') || 'nobody'}. ${rep.aiAnswer.included ? 'They were in the answer.' : 'They were left out.'}`,
+                }]
+              : []),
+            ...(rep ? [{ label: 'Website mockup', value: rep.mockup }] : []),
             { label: 'Focus', value: focus },
             ...(body.current ? [{ label: 'Where they are now', value: body.current.trim() }] : []),
             ...(body.success ? [{ label: 'Success looks like', value: body.success.trim() }] : []),
