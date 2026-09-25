@@ -5,19 +5,20 @@
  * result says so.
  */
 import type { SupabaseClient } from '@supabase/supabase-js';
-import { accessToken, markAccount } from '../accounts';
+import { markAccount } from '../accounts';
+import { instagramAccess } from '../instagram-login';
 import type { PostResult } from '../types';
-
-const GRAPH = 'https://graph.facebook.com/v21.0';
 
 export async function publishInstagram(sb: SupabaseClient, clientEmail: string, caption: string, imageUrl: string | null): Promise<PostResult> {
   const at = new Date().toISOString();
-  const acct = await accessToken(sb, clientEmail, 'instagram');
+  const acct = await instagramAccess(sb, clientEmail);
   if (!acct) return { ok: false, error: 'Instagram is not connected.', at, pending: true };
   const igId = acct.row.external_id;
-  if (!igId) return { ok: false, error: 'No Instagram account id on the connection. Reconnect Facebook.', at };
+  if (!igId) return { ok: false, error: 'No Instagram account id on the connection. Connect Instagram again.', at };
   if (!imageUrl) return { ok: false, error: 'Instagram needs a photo. No image on this post.', at };
 
+  // graph.facebook.com for an account linked to the Page, graph.instagram.com for one signed in with Instagram Login.
+  const GRAPH = acct.graph;
   try {
     const create = new URLSearchParams({ image_url: imageUrl, caption, access_token: acct.token });
     const c = await fetch(`${GRAPH}/${igId}/media`, { method: 'POST', body: create, signal: AbortSignal.timeout(60_000) });

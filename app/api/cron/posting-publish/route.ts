@@ -5,6 +5,7 @@ import { listSettings } from '@/lib/posting/settings';
 import { publishDue, retryFailed, upgradeWords } from '@/lib/posting/publish';
 import { planClient, emptyDaysAhead } from '@/lib/posting/planner';
 import { refreshRecentStats } from '@/lib/posting/insights';
+import { renewInstagramLogins } from '@/lib/posting/instagram-login';
 import { sendQueueNudge, sendStallNote, sendWeeklySummary } from '@/lib/posting/notify';
 import { mountainDate, mountainHour, mountainWeekday, addDays } from '@/lib/posting/time';
 import type { PostRow } from '@/lib/posting/types';
@@ -58,7 +59,11 @@ export async function GET(req: Request) {
   for (const row of waiting ?? []) await upgradeWords(sb, row as PostRow);
 
   let stats = 0;
-  if (hour === 7) stats = await refreshRecentStats(sb, now);
+  if (hour === 7) {
+    // An Instagram Login token lives 60 days; renew any inside a week of its end before the stats read it.
+    await renewInstagramLogins(sb);
+    stats = await refreshRecentStats(sb, now);
+  }
 
   for (const s of clients) {
     if (!s.active) continue;

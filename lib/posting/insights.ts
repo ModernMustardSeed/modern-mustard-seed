@@ -7,6 +7,7 @@
  */
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { accessToken } from './accounts';
+import { instagramAccess } from './instagram-login';
 import type { PlatformStats, Platform, PostRow } from './types';
 
 const GRAPH = 'https://graph.facebook.com/v21.0';
@@ -26,10 +27,10 @@ async function facebookStats(sb: SupabaseClient, clientEmail: string, postId: st
 }
 
 async function instagramStats(sb: SupabaseClient, clientEmail: string, mediaId: string): Promise<PlatformStats | null> {
-  const acct = await accessToken(sb, clientEmail, 'instagram');
+  const acct = await instagramAccess(sb, clientEmail);
   if (!acct) return null;
   try {
-    const res = await fetch(`${GRAPH}/${mediaId}?fields=like_count,comments_count,insights.metric(reach,saved)&access_token=${encodeURIComponent(acct.token)}`, { signal: AbortSignal.timeout(20_000) });
+    const res = await fetch(`${acct.graph}/${mediaId}?fields=like_count,comments_count,insights.metric(reach,saved)&access_token=${encodeURIComponent(acct.token)}`, { signal: AbortSignal.timeout(20_000) });
     const j = (await res.json().catch(() => ({}))) as { like_count?: number; comments_count?: number; insights?: { data?: Array<{ name: string; values?: Array<{ value?: number }> }> }; error?: unknown };
     if (!res.ok || j.error) return null;
     const metric = (n: string) => j.insights?.data?.find((d) => d.name === n)?.values?.[0]?.value;

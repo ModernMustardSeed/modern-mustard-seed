@@ -15,7 +15,7 @@ function secret(): string {
 }
 const b64 = (s: string | Buffer) => Buffer.from(s).toString('base64url');
 
-export type OAuthState = { email: string; provider: 'x' | 'linkedin' | 'facebook'; verifier?: string; by: 'client' | 'admin'; back?: 'cc'; exp: number };
+export type OAuthState = { email: string; provider: 'x' | 'linkedin' | 'facebook' | 'instagram'; verifier?: string; by: 'client' | 'admin'; back?: 'cc'; exp: number };
 
 export function signState(st: Omit<OAuthState, 'exp'>): string {
   const payload = b64(JSON.stringify({ ...st, exp: Date.now() + 15 * 60_000 }));
@@ -47,7 +47,7 @@ export function real(v: string | undefined): string | null {
   return v && !/^\[SENSITIVE\]$/i.test(v) ? v : null;
 }
 
-export function redirectUri(provider: 'x' | 'linkedin' | 'facebook'): string {
+export function redirectUri(provider: 'x' | 'linkedin' | 'facebook' | 'instagram'): string {
   return `${SITE.url}/api/oauth/${provider}/callback`;
 }
 

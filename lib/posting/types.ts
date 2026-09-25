@@ -154,4 +154,8 @@ export type AccountView = {
   needs: string | null;
   /** True when a Connect button can sign this platform in, no paste needed. */
   oauth: boolean;
+  /** Instagram only: its own sign-in (Instagram Login) is wired, so it does not need the Facebook Page. */
+  instagramLogin?: boolean;
+  /** Instagram only: which door the stored connection came through, 'instagram-login' or the Page ('token'). */
+  via?: string | null;
 };

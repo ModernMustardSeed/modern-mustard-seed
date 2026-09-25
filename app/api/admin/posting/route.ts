@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { requireAcqAdmin } from '@/lib/acq/server';
 import { getSession } from '@/lib/admin-auth';
 import { listSettings, getSettings, saveSettings, EDITABLE_SETTINGS } from '@/lib/posting/settings';
-import { accountViews, connectFacebookByToken, connectXByTokens, disconnectAccount, setGbpLocation } from '@/lib/posting/accounts';
+import { accountViews, connectFacebookByToken, connectXByTokens, disconnectAccount, dropPageInstagram, setGbpLocation } from '@/lib/posting/accounts';
 import { planClient, releaseForGraphic, approvePost, repost } from '@/lib/posting/planner';
 import { publishPost, markManual, ensureWords } from '@/lib/posting/publish';
 import { refreshStats } from '@/lib/posting/insights';
@@ -219,7 +219,7 @@ export async function POST(req: Request) {
       const p = String(body.platform ?? '') as Platform;
       if (!client || !(PLATFORMS as readonly string[]).includes(p)) return bad('Client and platform are needed.');
       await disconnectAccount(db, client, p);
-      if (p === 'facebook') await disconnectAccount(db, client, 'instagram');
+      if (p === 'facebook') await dropPageInstagram(db, client);
       return NextResponse.json({ ok: true });
     }
     case 'post': {

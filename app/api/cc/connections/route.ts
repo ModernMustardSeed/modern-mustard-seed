@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getDesk } from '@/lib/cc-desk';
-import { accountViews, connectFacebookByToken, connectXByTokens, disconnectAccount, saveAccount } from '@/lib/posting/accounts';
+import { accountViews, connectFacebookByToken, connectXByTokens, disconnectAccount, dropPageInstagram, saveAccount } from '@/lib/posting/accounts';
 import { checkAll, checkOne } from '@/lib/posting/verify';
 import { importFacebookHistory, importInstagramHistory } from '@/lib/posting/import-history';
 import { getSettings } from '@/lib/posting/settings';
@@ -78,7 +78,7 @@ export async function POST(req: Request) {
     await disconnectAccount(sb, email, body.platform);
     // Instagram lives on the Facebook Page's token. Dropping the Page and
     // leaving Instagram behind leaves a green check on a dead connection.
-    if (body.platform === 'facebook') await disconnectAccount(sb, email, 'instagram');
+    if (body.platform === 'facebook') await dropPageInstagram(sb, email);
     return NextResponse.json({ ok: true, accounts: await accountViews(sb, email) });
   }
 

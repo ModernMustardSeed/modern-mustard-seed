@@ -19,7 +19,7 @@ import Systems from '@/components/cc/Systems';
  */
 
 type Integration = { provider: string; account_email: string | null; account_name: string | null; status: string; error: string | null; scopes: string[] };
-type Feed = { provider: string; connected: boolean; status: string; accountName: string | null; error: string | null; manualOnly: boolean; needs: string | null; oauth?: boolean };
+type Feed = { provider: string; connected: boolean; status: string; accountName: string | null; error: string | null; manualOnly: boolean; needs: string | null; oauth?: boolean; instagramLogin?: boolean };
 type State = 'on' | 'off' | 'warn' | 'manual';
 type Check = { platform: string; ok: boolean; account: string | null; error: string | null; fix: string | null; at: string };
 
@@ -47,11 +47,13 @@ const STEPS: Record<string, { title: string; steps: string[]; where?: { label: s
     ],
   },
   instagram: {
-    title: 'Instagram rides on the Page',
+    title: 'Instagram signs in on its own',
+    where: { label: 'Meta app dashboard', href: 'https://developers.facebook.com/apps/' },
     steps: [
-      'Instagram has no separate connection. It must be a Business or Creator account and it must be linked to their Facebook Page.',
-      'Check the link in Meta Business Suite, Settings, Accounts, Instagram accounts.',
-      'Connect the Facebook Page here and Instagram connects with it.',
+      'It must be a Business or Creator account. Instagram, Settings, Account type and tools, Switch to professional account.',
+      'Press Connect Instagram and sign in with that account on Instagram\'s own screen. No Facebook Page link is needed.',
+      'While the Meta app is in development mode, add the account first: App roles, Roles, Add People, Instagram Tester, then the owner accepts under Instagram, Settings, Apps and websites, Tester invites.',
+      'Without the Instagram app keys on the site, Instagram connects through the Facebook Page instead: link it in Meta Business Suite, Settings, Accounts, Instagram accounts, then connect Facebook.',
     ],
   },
   x: {
@@ -345,8 +347,9 @@ export default function Accounts({ session }: { session: Session }) {
     ...(['facebook', 'instagram', 'x', 'linkedin', 'houzz'] as const).map((p): Row => {
       const f = feed(p);
       const st = feedState(f);
-      // Instagram has no door of its own: it signs in through the Facebook Page it is linked to.
-      const oauth = p === 'facebook' || p === 'instagram' ? '/api/oauth/facebook/start?back=cc' : p === 'x' ? '/api/oauth/x/start' : p === 'linkedin' ? '/api/oauth/linkedin/start' : null;
+      // Instagram has its own door (Instagram Login) when those keys are on the site; otherwise it signs in through the Facebook Page it is linked to.
+      const igOwn = p === 'instagram' && Boolean(f?.instagramLogin);
+      const oauth = igOwn ? '/api/oauth/instagram/start?back=cc' : p === 'facebook' || p === 'instagram' ? '/api/oauth/facebook/start?back=cc' : p === 'x' ? '/api/oauth/x/start' : p === 'linkedin' ? '/api/oauth/linkedin/start' : null;
       const canOauth = Boolean(oauth) && (p === 'facebook' || p === 'instagram' ? Boolean(f?.oauth) : !f?.needs);
       return {
         key: p,
@@ -360,7 +363,9 @@ export default function Accounts({ session }: { session: Session }) {
             : st === 'warn'
               ? (f?.error ?? 'The connection needs a fresh sign-in.')
               : p === 'instagram'
-                ? canOauth
+                ? igOwn
+                  ? 'Sign in with the Instagram account you post from. It must be a Business or Creator account; it does not need to be linked to the Facebook Page.'
+                  : canOauth
                   ? 'Signs in through Facebook. Tick the Page and the Instagram account on the screen Facebook shows and both connect.'
                   : 'Comes with Facebook. Connect the Facebook Page and the Instagram account linked to it connects too.'
                 : canOauth
