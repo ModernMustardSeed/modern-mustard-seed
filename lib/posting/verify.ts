@@ -19,10 +19,11 @@
  */
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { accessToken, markAccount } from './accounts';
+import { instagramAccess, viaInstagramLogin } from './instagram-login';
 import { getGoogleAccessToken } from '@/lib/oauth-google';
 import type { Platform } from './types';
 
-const GRAPH = 'https://graph.facebook.com/v21.0';
+const FB_GRAPH = 'https://graph.facebook.com/v21.0';
 
 export type Check = {
   platform: Platform;
@@ -40,8 +41,10 @@ const fail = (platform: Platform, error: string, fix: string | null = null): Che
 const pass = (platform: Platform, account: string | null): Check => ({ platform, ok: true, account, error: null, fix: null, at: new Date().toISOString() });
 
 async function checkFacebook(sb: SupabaseClient, email: string, platform: 'facebook' | 'instagram'): Promise<Check> {
-  const acct = await accessToken(sb, email, platform);
-  if (!acct) return fail(platform, 'Not connected.', platform === 'instagram' ? 'Instagram comes with the Facebook Page. Connect the Page and the linked account comes with it.' : 'Connect the Page with a Page access token.');
+  const acct = platform === 'instagram' ? await instagramAccess(sb, email) : await accessToken(sb, email, platform);
+  if (!acct) return fail(platform, 'Not connected.', platform === 'instagram' ? 'Press Connect Instagram and sign in with the Business or Creator account.' : 'Connect the Page with a Page access token.');
+  const GRAPH = 'graph' in acct ? acct.graph : FB_GRAPH;
+  const igLogin = 'graph' in acct && viaInstagramLogin(acct.row);
   const id = acct.row.external_id;
   if (!id) return fail(platform, 'The connection has no account id on it.', 'Connect it again.');
 
@@ -53,7 +56,7 @@ async function checkFacebook(sb: SupabaseClient, email: string, platform: 'faceb
     // 190 is the whole family of expired, invalidated and revoked tokens.
     const expired = j.error?.code === 190;
     await markAccount(sb, email, platform, expired ? 'revoked' : 'error', msg);
-    return fail(platform, msg, expired ? 'The token has expired or been revoked. Generate a new Page token and paste it here.' : null);
+    return fail(platform, msg, expired ? (igLogin ? 'The Instagram sign-in has ended. Press Connect Instagram and sign in again.' : 'The token has expired or been revoked. Connect it again.') : null);
   }
 
   if (platform === 'facebook') {

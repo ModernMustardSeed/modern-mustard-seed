@@ -3,7 +3,7 @@ import { projectForEmail } from '@/lib/client-leads';
 import { getClientSession } from '@/lib/client-auth';
 import { getSupabase } from '@/lib/supabase';
 import { getSettings, saveSettings } from '@/lib/posting/settings';
-import { accountViews, disconnectAccount } from '@/lib/posting/accounts';
+import { accountViews, disconnectAccount, dropPageInstagram } from '@/lib/posting/accounts';
 import { planClient, emptyDaysAhead, approvePost, repost } from '@/lib/posting/planner';
 import { sendGraphicRequest } from '@/lib/posting/notify';
 import { scrub } from '@/lib/posting/captions';
@@ -179,7 +179,7 @@ export async function POST(req: Request) {
       if (!(PLATFORMS as readonly string[]).includes(String(body.platform))) return NextResponse.json({ error: 'Unknown platform' }, { status: 400 });
       if (body.platform === 'gbp') return NextResponse.json({ error: 'Google is disconnected from the main portal page.' }, { status: 400 });
       await disconnectAccount(sb, email, body.platform);
-      if (body.platform === 'facebook') await disconnectAccount(sb, email, 'instagram');
+      if (body.platform === 'facebook') await dropPageInstagram(sb, email);
       return NextResponse.json({ ok: true });
     }
     default:

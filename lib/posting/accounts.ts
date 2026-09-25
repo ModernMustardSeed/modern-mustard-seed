@@ -52,6 +52,11 @@ export function facebookOAuthReady(): boolean {
   return Boolean(real(process.env.FACEBOOK_APP_ID) && real(process.env.FACEBOOK_APP_SECRET));
 }
 
+/** Instagram's own Connect button needs the Meta app's Instagram product id and secret, not the Facebook app's. */
+export function instagramLoginReady(): boolean {
+  return Boolean(real(process.env.INSTAGRAM_APP_ID) && real(process.env.INSTAGRAM_APP_SECRET));
+}
+
 /** What a platform still needs before it can connect, or null when it is ready. */
 export function connectNeeds(platform: Platform): string | null {
   switch (platform) {
@@ -93,7 +98,8 @@ export async function accountViews(sb: SupabaseClient, clientEmail: string): Pro
       error: p === 'gbp' && r && r.status === 'connected' && !connected ? 'Google is connected; the Business Profile location is not chosen yet.' : (r?.error ?? null),
       manualOnly: p === 'houzz',
       needs: connected ? null : connectNeeds(p),
-      oauth: p === 'facebook' || p === 'instagram' ? facebookOAuthReady() : p === 'x' || p === 'linkedin' ? !connectNeeds(p) : false,
+      oauth: p === 'instagram' ? instagramLoginReady() || facebookOAuthReady() : p === 'facebook' ? facebookOAuthReady() : p === 'x' || p === 'linkedin' ? !connectNeeds(p) : false,
+      ...(p === 'instagram' ? { instagramLogin: instagramLoginReady(), via: ((r?.meta as { via?: string } | null)?.via as string | undefined) ?? null } : {}),
     });
   }
   return out;
@@ -173,6 +179,17 @@ export async function markAccount(sb: SupabaseClient, clientEmail: string, provi
 
 export async function disconnectAccount(sb: SupabaseClient, clientEmail: string, provider: Platform): Promise<void> {
   await sb.from('client_integrations').delete().eq('client_email', clientEmail.toLowerCase().trim()).eq('provider', provider);
+}
+
+/**
+ * The Facebook side dropping its Instagram. Only an Instagram that came WITH
+ * the Page goes; one the owner signed in to directly (Instagram Login) is
+ * theirs to keep, connected or not.
+ */
+export async function dropPageInstagram(sb: SupabaseClient, clientEmail: string): Promise<void> {
+  const { data } = await sb.from('client_integrations').select('meta').eq('client_email', clientEmail.toLowerCase().trim()).eq('provider', 'instagram').maybeSingle();
+  if ((data?.meta as { via?: string } | null)?.via === 'instagram-login') return;
+  await disconnectAccount(sb, clientEmail, 'instagram');
 }
 
 /** Set which Business Profile location the Google connection posts to. */
@@ -271,7 +288,7 @@ export async function connectFacebookByToken(
     });
     if (!igOk.ok) return igOk;
   } else {
-    await disconnectAccount(sb, clientEmail, 'instagram');
+    await dropPageInstagram(sb, clientEmail);
   }
   return { ok: true, page: { id: page.id, name: page.name }, instagram: ig ? { id: ig.id, username: ig.username ?? null } : null };
 }

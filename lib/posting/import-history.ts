@@ -1,5 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { accessToken } from './accounts';
+import { instagramAccess } from './instagram-login';
 
 /**
  * BRING THEIR OWN POSTING HISTORY HOME.
@@ -116,13 +117,13 @@ export async function importFacebookHistory(sb: SupabaseClient, clientEmail: str
 
 /** The same for Instagram, which lives on the Page's token. */
 export async function importInstagramHistory(sb: SupabaseClient, clientEmail: string, max = 400): Promise<ImportResult> {
-  const acct = await accessToken(sb, clientEmail, 'instagram');
+  const acct = await instagramAccess(sb, clientEmail);
   if (!acct) return { ok: false, error: 'Instagram is not connected.' };
   const igId = acct.row.external_id;
   if (!igId) return { ok: false, error: 'That connection has no account on it.' };
 
   const rows: ArchiveRow[] = [];
-  let url: string | null = `${GRAPH}/${igId}/media?fields=id,caption,timestamp,permalink,media_url,thumbnail_url,like_count,comments_count&limit=50&access_token=${encodeURIComponent(acct.token)}`;
+  let url: string | null = `${acct.graph}/${igId}/media?fields=id,caption,timestamp,permalink,media_url,thumbnail_url,like_count,comments_count&limit=50&access_token=${encodeURIComponent(acct.token)}`;
 
   try {
     while (url && rows.length < max) {
