@@ -1,5 +1,4 @@
-/* The card hero (talk panel and confetti styles still come from
-   PosterHero.module.css): the pop-art link preview, blown up and brought to life.
+/* The card hero: the pop-art link preview, blown up and brought to life.
    Mustard, ink, cream and red. No outlined UI type, no cobalt. */
 .card{--ink:#080c16;--cream:#fbf6ea;--mustard:#f5b700;--red:#e0301e;position:relative;overflow:hidden;padding:112px 6vw 0;background:var(--cream);color:var(--ink);font-family:var(--font-body),sans-serif;border-bottom:3px solid var(--ink);isolation:isolate}
 .card h1,.card p{margin:0}
@@ -18,6 +17,10 @@
 .lean picture{display:block;width:100%;height:100%}
 .lockup{display:block;width:100%;height:100%;object-fit:contain;filter:drop-shadow(10px 12px 0 #16161620);animation:float 4.5s 1.3s ease-in-out infinite}
 @keyframes float{0%,100%{translate:0 0}50%{translate:0 -9px}}
+/* Tap Mr. Mustard five times: he dances in a burst of confetti. */
+.confetti{position:absolute;left:50%;top:40%;width:0;height:0;pointer-events:none;z-index:5}
+.confetti i{position:absolute;width:10px;height:14px;border:1.5px solid var(--ink);animation:confettiPop 1.5s cubic-bezier(.15,.8,.3,1) forwards}
+@keyframes confettiPop{0%{transform:translate(0,0) rotate(0);opacity:1}80%{opacity:1}100%{transform:translate(var(--dx),calc(var(--dy) + 120px)) rotate(var(--rot));opacity:0}}
 .dance .lockup{animation:jig .6s ease-in-out 4}
 @keyframes jig{0%,100%{rotate:0deg;translate:0 0}25%{rotate:-6deg;translate:-8px -14px}50%{rotate:0deg;translate:0 -4px}75%{rotate:6deg;translate:8px -14px}}
 
@@ -27,15 +30,6 @@
 .s3{left:calc(50% + clamp(230px,28vh,330px));top:64%;font-size:34px;color:var(--ink);animation-delay:1.6s}
 .s4{left:calc(50% - clamp(250px,30vh,340px));top:70%;font-size:22px;color:var(--red);animation-delay:2.2s}
 @keyframes twinkle{0%,100%{transform:scale(1) rotate(0)}50%{transform:scale(.55) rotate(45deg)}}
-
-/* Mr. Mustard's talk bubble: a small comic circle by his waving hand, not a
-   banner. The floating widget bottom right is the main way to talk to him. */
-button.bubble{top:3%!important;right:auto!important;left:-4%;width:84px;height:84px;padding:0!important;border-radius:50%!important;border-width:2px!important;box-shadow:3px 3px 0 var(--ink)!important;align-items:center!important;justify-content:center;gap:5px!important;text-align:center!important;transform:rotate(-8deg)!important;animation:fade .6s 1.4s both}
-button.bubble>span{display:none}
-button.bubble small{flex-direction:column;gap:5px!important;font-size:9.5px!important;line-height:1.25;letter-spacing:.1em!important;max-width:60px}
-button.bubble:hover{transform:rotate(-4deg) translate(-2px,-2px)!important;box-shadow:5px 5px 0 var(--ink)!important}
-button.bubble:after{left:auto!important;right:6px;bottom:-9px!important;border-width:12px 12px 0 0!important;border-color:var(--ink) transparent transparent transparent!important}
-.panel{top:calc(3% + 96px)!important;right:auto!important;left:-30%}
 
 .copy{position:relative;z-index:2;margin-top:clamp(10px,2vh,24px);padding-bottom:clamp(30px,4.4vh,48px);text-align:center;animation:fade .9s .55s both}
 .copy h1{font-weight:800;font-size:clamp(30px,3.5vw,54px);line-height:1.08;letter-spacing:-.035em}
@@ -62,11 +56,8 @@ button.bubble:after{left:auto!important;right:6px;bottom:-9px!important;border-w
   .pop{height:auto;width:min(78vw,340px)}
   .s1{left:4%}.s2{left:auto;right:6%}.s3{left:auto;right:3%}.s4{left:6%}
   .stage{padding-top:44px}
-  button.bubble{left:-2%;top:-16px!important;width:72px;height:72px}
-  button.bubble small{font-size:8.5px!important}
-  .panel{left:-10vw;right:auto!important;top:88px!important;width:calc(100vw - 32px)!important;max-width:360px}
   .copy h1{font-size:clamp(28px,8vw,38px)}
   .lead{font-size:15.5px}
   .cta{width:100%;justify-content:space-between}
 }
-@media(prefers-reduced-motion:reduce){.rays,.pop,.lockup,.spark,.bubble,.copy,.top,.marquee>div{animation:none}.lean{transition:none;transform:none}}
+@media(prefers-reduced-motion:reduce){.rays,.pop,.lockup,.spark,.copy,.top,.marquee>div{animation:none}.lean{transition:none;transform:none}}
