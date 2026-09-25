@@ -5,7 +5,8 @@
  * long-lived Page token, X through its own API with the account's OAuth 2.0
  * user token, LinkedIn through the Marketing API with the page admin's token,
  * Google Business Profile through the Business Profile API on the Google
- * connection the portal already has. Every token is encrypted at rest in
+ * connection the portal already has, TikTok through the Content Posting API
+ * on the creator's own OAuth token. Every token is encrypted at rest in
  * `client_integrations` with the same secret the Google connection uses, and
  * none of them ever reach a browser.
  *
@@ -62,6 +63,8 @@ export function connectNeeds(platform: Platform): string | null {
       return real(process.env.X_OAUTH2_CLIENT_ID) && real(process.env.X_OAUTH2_CLIENT_SECRET) ? null : 'X_OAUTH2_CLIENT_ID and X_OAUTH2_CLIENT_SECRET in the environment';
     case 'linkedin':
       return real(process.env.LINKEDIN_CLIENT_ID) && real(process.env.LINKEDIN_CLIENT_SECRET) ? null : 'LINKEDIN_CLIENT_ID and LINKEDIN_CLIENT_SECRET in the environment';
+    case 'tiktok':
+      return real(process.env.TIKTOK_CLIENT_KEY) && real(process.env.TIKTOK_CLIENT_SECRET) ? null : 'TIKTOK_CLIENT_KEY and TIKTOK_CLIENT_SECRET in the environment';
     case 'gbp':
       return real(process.env.GOOGLE_CLIENT_ID) && real(process.env.GOOGLE_CLIENT_SECRET) ? null : 'GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET in the environment';
     case 'houzz':
@@ -80,7 +83,7 @@ export async function accountViews(sb: SupabaseClient, clientEmail: string): Pro
   const byProvider = new Map(all.map((r) => [r.provider, r]));
   const google = byProvider.get('google');
   const out: AccountView[] = [];
-  const platforms: Platform[] = ['facebook', 'instagram', 'linkedin', 'x', 'gbp', 'houzz'];
+  const platforms: Platform[] = ['facebook', 'instagram', 'linkedin', 'x', 'gbp', 'tiktok', 'houzz'];
   for (const p of platforms) {
     const r = p === 'gbp' ? google : byProvider.get(p);
     const connected = !!r && r.status === 'connected' && (p !== 'gbp' || Boolean((r.meta as { gbp_location?: string } | null)?.gbp_location));
@@ -93,7 +96,7 @@ export async function accountViews(sb: SupabaseClient, clientEmail: string): Pro
       error: p === 'gbp' && r && r.status === 'connected' && !connected ? 'Google is connected; the Business Profile location is not chosen yet.' : (r?.error ?? null),
       manualOnly: p === 'houzz',
       needs: connected ? null : connectNeeds(p),
-      oauth: p === 'facebook' || p === 'instagram' ? facebookOAuthReady() : p === 'x' || p === 'linkedin' ? !connectNeeds(p) : false,
+      oauth: p === 'facebook' || p === 'instagram' ? facebookOAuthReady() : p === 'x' || p === 'linkedin' || p === 'tiktok' ? !connectNeeds(p) : false,
     });
   }
   return out;

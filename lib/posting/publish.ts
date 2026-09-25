@@ -22,6 +22,7 @@ import { publishInstagram } from './publishers/instagram';
 import { publishX } from './publishers/x';
 import { publishLinkedIn } from './publishers/linkedin';
 import { publishGbp } from './publishers/gbp';
+import { publishTikTok } from './publishers/tiktok';
 import { accountViews } from './accounts';
 import { mountainToUtc } from './time';
 import { platformsFor } from './planner';
@@ -150,6 +151,10 @@ export async function publishPost(sb: SupabaseClient, postId: string, opts: { fo
         break;
       case 'gbp':
         r = await publishGbp(sb, post.client_email, caption, post.image_url, gbpLocation, post.link ?? s.site_url);
+        break;
+      case 'tiktok':
+        // A caption written before TikTok was a feed falls back to the Instagram one, which is the same shape.
+        r = await publishTikTok(sb, post.client_email, post.captions.tiktok ?? post.captions.instagram ?? caption, post.image_url);
         break;
       default:
         continue;

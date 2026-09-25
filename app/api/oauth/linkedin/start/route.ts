@@ -17,6 +17,8 @@ const SCOPES = ['openid', 'profile', 'w_organization_social', 'r_organization_so
 
 export async function GET(req: Request) {
   const url = new URL(req.url);
+  // Started from the Command Center: come home to its Accounts room, not the portal.
+  const back = url.searchParams.get('back') === 'cc' ? ('cc' as const) : undefined;
   const client = await getClientSession();
   let email: string | null = client?.email ?? null;
   let by: 'client' | 'admin' = 'client';
@@ -28,12 +30,15 @@ export async function GET(req: Request) {
       by = 'admin';
     }
   }
-  if (!email) return NextResponse.redirect(`${SITE.url}/portal/login?next=/portal/posting`);
+  if (!email) return NextResponse.redirect(back === 'cc' ? `${SITE.url}/cc/login` : `${SITE.url}/portal/login?next=/portal/posting`);
 
   const clientId = real(process.env.LINKEDIN_CLIENT_ID);
-  if (!clientId) return NextResponse.redirect(by === 'admin' ? `${SITE.url}/admin/posting?client=${encodeURIComponent(email)}&connect=linkedin-unconfigured` : `${SITE.url}/portal/posting?connect=linkedin-unconfigured`);
+  if (!clientId) {
+    if (back === 'cc') return NextResponse.redirect(`${SITE.url}/cc?connect=linkedin-unconfigured#accounts`);
+    return NextResponse.redirect(by === 'admin' ? `${SITE.url}/admin/posting?client=${encodeURIComponent(email)}&connect=linkedin-unconfigured` : `${SITE.url}/portal/posting?connect=linkedin-unconfigured`);
+  }
 
-  const state = signState({ email, provider: 'linkedin', by });
+  const state = signState({ email, provider: 'linkedin', by, back });
   const auth = new URL('https://www.linkedin.com/oauth/v2/authorization');
   auth.searchParams.set('response_type', 'code');
   auth.searchParams.set('client_id', clientId);

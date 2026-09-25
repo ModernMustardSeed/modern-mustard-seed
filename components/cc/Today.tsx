@@ -30,7 +30,7 @@ type Day = { today: string; who: string | null; appointments: Appointment[]; due
 const clock = (iso: string) =>
   new Date(iso).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/Denver' }).replace(':00', '').toLowerCase();
 
-const PLATFORM: Record<string, string> = { facebook: 'Facebook', instagram: 'Instagram', linkedin: 'LinkedIn', x: 'X', gbp: 'Google', houzz: 'Houzz' };
+const PLATFORM: Record<string, string> = { facebook: 'Facebook', instagram: 'Instagram', linkedin: 'LinkedIn', x: 'X', gbp: 'Google', tiktok: 'TikTok', houzz: 'Houzz' };
 
 export default function Today({ go }: { go: (room: string) => void }) {
   const [day, setDay] = useState<Day | null | undefined>(undefined);

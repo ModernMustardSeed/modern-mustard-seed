@@ -7,12 +7,14 @@ import { pkce, real, redirectUri, signState } from '@/lib/posting/oauth';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-const SCOPES = ['tweet.read', 'tweet.write', 'users.read', 'media.write', 'offline.access'];
-
 /**
- * Connect an X account with OAuth 2.0 and PKCE. The client clicks from their
- * calendar; Sarah can run it for them from the desk with ?client=.
+ * Connect a TikTok account with Login Kit. user.info.basic names the account;
+ * video.upload puts a post in the inbox; video.publish posts it directly once
+ * the app has passed TikTok's audit. The client clicks from their calendar;
+ * Sarah can run it for them from the desk with ?client=.
  */
+const SCOPES = ['user.info.basic', 'video.upload', 'video.publish'];
+
 export async function GET(req: Request) {
   const url = new URL(req.url);
   // Started from the Command Center: come home to its Accounts room, not the portal.
@@ -30,19 +32,19 @@ export async function GET(req: Request) {
   }
   if (!email) return NextResponse.redirect(back === 'cc' ? `${SITE.url}/cc/login` : `${SITE.url}/portal/login?next=/portal/posting`);
 
-  const clientId = real(process.env.X_OAUTH2_CLIENT_ID);
-  if (!clientId) {
-    if (back === 'cc') return NextResponse.redirect(`${SITE.url}/cc?connect=x-unconfigured#accounts`);
-    return NextResponse.redirect(by === 'admin' ? `${SITE.url}/admin/posting?client=${encodeURIComponent(email)}&connect=x-unconfigured` : `${SITE.url}/portal/posting?connect=x-unconfigured`);
+  const key = real(process.env.TIKTOK_CLIENT_KEY);
+  if (!key) {
+    if (back === 'cc') return NextResponse.redirect(`${SITE.url}/cc?connect=tiktok-unconfigured#accounts`);
+    return NextResponse.redirect(by === 'admin' ? `${SITE.url}/admin/posting?client=${encodeURIComponent(email)}&connect=tiktok-unconfigured` : `${SITE.url}/portal/posting?connect=tiktok-unconfigured`);
   }
 
   const { verifier, challenge } = pkce();
-  const state = signState({ email, provider: 'x', verifier, by, back });
-  const auth = new URL('https://x.com/i/oauth2/authorize');
+  const state = signState({ email, provider: 'tiktok', verifier, by, back });
+  const auth = new URL('https://www.tiktok.com/v2/auth/authorize/');
+  auth.searchParams.set('client_key', key);
   auth.searchParams.set('response_type', 'code');
-  auth.searchParams.set('client_id', clientId);
-  auth.searchParams.set('redirect_uri', redirectUri('x'));
-  auth.searchParams.set('scope', SCOPES.join(' '));
+  auth.searchParams.set('scope', SCOPES.join(','));
+  auth.searchParams.set('redirect_uri', redirectUri('tiktok'));
   auth.searchParams.set('state', state);
   auth.searchParams.set('code_challenge', challenge);
   auth.searchParams.set('code_challenge_method', 'S256');

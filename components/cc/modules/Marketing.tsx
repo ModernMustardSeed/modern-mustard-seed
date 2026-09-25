@@ -14,7 +14,7 @@ import type { Session } from '@/components/cc/Workspace';
  * each feed happens on this screen, in front of them, not behind it.
  */
 
-type Platform = 'facebook' | 'instagram' | 'linkedin' | 'x' | 'gbp' | 'houzz';
+type Platform = 'facebook' | 'instagram' | 'linkedin' | 'x' | 'gbp' | 'tiktok' | 'houzz';
 type Post = { id: string; scheduled_for: string; headline: string | null; captions: Record<string, string>; platforms: string[] | null; status: string; image_url: string | null; link: string | null; results?: { note?: string } | null };
 type Account = { provider: string; connected: boolean; manualOnly?: boolean; label?: string | null; error?: string | null };
 type Payload = {
@@ -25,7 +25,7 @@ type Payload = {
   emptyDays?: number;
 };
 
-const LABEL: Record<string, string> = { facebook: 'Facebook', instagram: 'Instagram', linkedin: 'LinkedIn', x: 'X', gbp: 'Google', houzz: 'Houzz' };
+const LABEL: Record<string, string> = { facebook: 'Facebook', instagram: 'Instagram', linkedin: 'LinkedIn', x: 'X', gbp: 'Google', tiktok: 'TikTok', houzz: 'Houzz' };
 
 export default function Marketing({ session, refreshPulse }: { session: Session; refreshPulse: () => void }) {
   const [data, setData] = useState<Payload | null>(null);

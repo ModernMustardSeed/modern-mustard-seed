@@ -6,8 +6,8 @@
  * tighten it and shape it for each feed so each algorithm is happy: Facebook
  * wants paragraphs and a plain invitation, Instagram wants line breaks and
  * local hashtags, LinkedIn wants a professional frame, X wants one thought
- * under the limit, Google wants something a searcher can use, Houzz wants a
- * project note. Meaning, facts and voice stay theirs. Nothing is added that
+ * under the limit, Google wants something a searcher can use, TikTok wants a
+ * line you would say out loud, Houzz wants a project note. Meaning, facts and voice stay theirs. Nothing is added that
  * their text did not say. Every version carries a one-line note on what the
  * edit did, so the client can see the work and trust it.
  *
@@ -20,7 +20,7 @@ import type { Captions, MaterialRow, Notes, Platform, SettingsRow } from './type
 
 export const CAPTION_SCHEMA = {
   type: 'object',
-  required: ['headline', 'facebook', 'instagram', 'linkedin', 'x', 'gbp', 'houzz', 'notes'],
+  required: ['headline', 'facebook', 'instagram', 'linkedin', 'x', 'gbp', 'tiktok', 'houzz', 'notes'],
   properties: {
     headline: { type: 'string', description: 'Six words or fewer. What the post is about, for the calendar.' },
     facebook: { type: 'string' },
@@ -28,11 +28,12 @@ export const CAPTION_SCHEMA = {
     linkedin: { type: 'string' },
     x: { type: 'string', description: 'At most 260 characters.' },
     gbp: { type: 'string', description: 'A Google Business Profile update. At most 1200 characters. No hashtags.' },
+    tiktok: { type: 'string', description: 'A TikTok caption. At most 150 characters before three to five hashtags.' },
     houzz: { type: 'string', description: 'A Houzz project note. Plain, descriptive, no hashtags.' },
     notes: {
       type: 'object',
       description: 'One short sentence per platform on what the edit did and why it suits that feed. Plain words to the business owner.',
-      properties: { facebook: { type: 'string' }, instagram: { type: 'string' }, linkedin: { type: 'string' }, x: { type: 'string' }, gbp: { type: 'string' }, houzz: { type: 'string' } },
+      properties: { facebook: { type: 'string' }, instagram: { type: 'string' }, linkedin: { type: 'string' }, x: { type: 'string' }, gbp: { type: 'string' }, tiktok: { type: 'string' }, houzz: { type: 'string' } },
     },
   },
 } as const;
@@ -45,15 +46,15 @@ export type Brief = {
 export function systemPrompt(s: SettingsRow): string {
   const towns = s.towns.length ? s.towns.join(', ') : 'the Flathead Valley';
   return [
-    `You are the social media editor for ${s.business_name}, a real business. The business writes its own posts. Your job is to edit one post into six platform versions. You are not the author.`,
+    `You are the social media editor for ${s.business_name}, a real business. The business writes its own posts. Your job is to edit one post into seven platform versions. You are not the author.`,
     'Keep their meaning, their facts and their voice. Fix spelling and grammar. Tighten what rambles. Never add a fact, a claim, a project, a name, a number, a price, a date or a promise that is not in their text. If their text is one line, the versions are short; do not pad.',
     'The business speaks as itself: we, us, our. If they wrote in first person singular, keep it.',
     `Towns they serve, for hashtags and local framing only: ${towns}.`,
     s.tone ? `How they talk: ${s.tone}` : '',
     s.hard_nos ? `Hard rules from the business: ${s.hard_nos}` : '',
     'Never introduce a price, a price per square foot, a timeline or financing unless their text already states it. Never claim their name is on a building, truck or sign.',
-    'No em dashes anywhere. At most one exclamation point across all six versions. No emoji except at most two on Instagram, and only if their text had a light tone.',
-    'Platform shapes. Facebook: their text as two to four short paragraphs, conversational, ending with one plain invitation only if their text invites something. Instagram: three to six short lines from their text, then a blank line and five to eight real local hashtags. LinkedIn: their text framed for a professional reader, two to three paragraphs, at most two hashtags. X: the single strongest thought from their text, under 260 characters, no hashtags, no link. Google Business Profile: one paragraph a searcher would find useful, no hashtags, ending with a plain call to action if their text has one. Houzz: a project note in two or three sentences, descriptive, about the work.',
+    'No em dashes anywhere. At most one exclamation point across all seven versions. No emoji except at most two on Instagram, and only if their text had a light tone.',
+    'Platform shapes. Facebook: their text as two to four short paragraphs, conversational, ending with one plain invitation only if their text invites something. Instagram: three to six short lines from their text, then a blank line and five to eight real local hashtags. LinkedIn: their text framed for a professional reader, two to three paragraphs, at most two hashtags. X: the single strongest thought from their text, under 260 characters, no hashtags, no link. Google Business Profile: one paragraph a searcher would find useful, no hashtags, ending with a plain call to action if their text has one. TikTok: one or two short lines in a spoken, casual register, then three to five hashtags, no link. Houzz: a project note in two or three sentences, descriptive, about the work.',
     'Notes: for each platform, one short sentence to the business owner on what you changed and why that shape suits the feed. If you changed nothing, say so.',
     s.phone ? `Their phone is ${s.phone}. Use it only where their text asks people to call.` : '',
     s.site_url ? `Their website is ${s.site_url}. Use it only where their text points to the site, never on X.` : '',
@@ -73,7 +74,7 @@ export function userPrompt(b: Brief): string {
     m.link ? `They want this link with it: ${m.link}. Put it at the end of the Facebook, LinkedIn and Google versions as a plain URL. Never on X or Instagram.` : '',
     m.platforms?.length ? `They are posting this to: ${m.platforms.join(', ')}. Still return every version.` : '',
     m.note ? `Their note to the editor: ${m.note}` : '',
-    'Edit it into the six versions, with a note on each.',
+    'Edit it into the seven versions, with a note on each.',
   ]
     .filter(Boolean)
     .join('\n');
@@ -101,6 +102,7 @@ export function captionsFromJson(json: unknown): { headline: string; captions: C
     linkedin: pick('linkedin'),
     x: pick('x').slice(0, 275),
     gbp: pick('gbp').slice(0, 1400),
+    tiktok: pick('tiktok').slice(0, 2000),
     houzz: pick('houzz'),
   };
   if (!captions.facebook || !captions.instagram) return null;
@@ -141,6 +143,7 @@ export function templateCaptions(s: SettingsRow, b: Brief): { headline: string; 
       linkedin: paragraphs.join('\n\n') + link,
       x: xText.slice(0, 260),
       gbp: (sentences.join(' ') + link).slice(0, 1400),
+      tiktok: `${sentences.slice(0, 2).join(' ').slice(0, 150)}\n\n${tags}`,
       houzz: sentences.slice(0, 3).join(' '),
     }),
     notes: {
@@ -149,6 +152,7 @@ export function templateCaptions(s: SettingsRow, b: Brief): { headline: string; 
       linkedin: 'Your words as you wrote them.',
       x: 'Your first sentence, so it fits the limit.',
       gbp: 'Your words as one paragraph for a searcher.',
+      tiktok: 'Your first two sentences, with local hashtags.',
       houzz: 'Your first three sentences as a project note.',
     },
   };

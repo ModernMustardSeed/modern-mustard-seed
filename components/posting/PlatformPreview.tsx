@@ -3,7 +3,7 @@
 /**
  * WHAT IT WILL LOOK LIKE. One post rendered the way each feed shows it, so a
  * client sees the Facebook card, the Instagram square, the tweet, the
- * LinkedIn update, the Google post and the Houzz note before any of them
+ * LinkedIn update, the Google post, the TikTok card and the Houzz note before any of them
  * exist. Shapes are faithful, brand colors are hinted, nothing is a logo.
  */
 import type { Platform } from '@/lib/posting/types';
@@ -96,6 +96,21 @@ export default function PlatformPreview({ platform, business, handle, text, imag
             <p className="font-sans text-[11px] text-[#5f6368]">{business} · Update</p>
             <Body text={text} />
             <p className="mt-2 font-sans text-[13px] font-semibold text-[#1a73e8]">{link ? 'Learn more' : 'Call now'}</p>
+          </div>
+        </div>
+      );
+    case 'tiktok':
+      return (
+        <div className={`${frame} relative max-w-[280px] bg-[#000]`}>
+          {imageUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={imageUrl} alt="" className="aspect-[9/16] w-full object-cover opacity-90" />
+          ) : (
+            <div className="flex aspect-[9/16] items-center justify-center font-sans text-[12px] text-white/60">TikTok needs a photo or a video</div>
+          )}
+          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 to-transparent px-3 pb-3 pt-10">
+            <p className="font-sans text-[13px] font-bold text-white">{h}</p>
+            <p className="mt-1 line-clamp-4 whitespace-pre-line font-body text-[12.5px] leading-snug text-white">{text}</p>
           </div>
         </div>
       );

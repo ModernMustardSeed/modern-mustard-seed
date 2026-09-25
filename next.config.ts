@@ -214,7 +214,12 @@ const config: NextConfig = {
     minimumCacheTTL: 60 * 60 * 24 * 30,
     // The portfolio page at /sarahscarano renders the project images the gallery
     // already serves, so the two never drift.
-    remotePatterns: [{ protocol: 'https', hostname: 'sarahscarano.com', pathname: '/images/web/**' }],
+    // The TikTok media relay (app/api/posting/media) re-encodes a client's PNG
+    // or HEIC upload through the optimizer, because TikTok takes JPEG and WEBP only.
+    remotePatterns: [
+      { protocol: 'https', hostname: 'sarahscarano.com', pathname: '/images/web/**' },
+      { protocol: 'https', hostname: 'qqvohlvhynmtavdbvkha.supabase.co', pathname: '/storage/v1/object/public/**' },
+    ],
   },
   async headers() {
     return [{ source: '/:path*', headers: SECURITY_HEADERS }];

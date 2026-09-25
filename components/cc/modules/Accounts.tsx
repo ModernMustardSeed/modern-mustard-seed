@@ -23,8 +23,8 @@ type Feed = { provider: string; connected: boolean; status: string; accountName:
 type State = 'on' | 'off' | 'warn' | 'manual';
 type Check = { platform: string; ok: boolean; account: string | null; error: string | null; fix: string | null; at: string };
 
-const FEED_LABEL: Record<string, string> = { facebook: 'Facebook', instagram: 'Instagram', linkedin: 'LinkedIn', x: 'X', gbp: 'Google Business Profile', houzz: 'Houzz' };
-const FEED_OPEN: Record<string, string> = { facebook: 'https://www.facebook.com/', instagram: 'https://www.instagram.com/', linkedin: 'https://www.linkedin.com/', x: 'https://x.com/', gbp: 'https://business.google.com/', houzz: 'https://pro.houzz.com/' };
+const FEED_LABEL: Record<string, string> = { facebook: 'Facebook', instagram: 'Instagram', linkedin: 'LinkedIn', x: 'X', gbp: 'Google Business Profile', tiktok: 'TikTok', houzz: 'Houzz' };
+const FEED_OPEN: Record<string, string> = { facebook: 'https://www.facebook.com/', instagram: 'https://www.instagram.com/', linkedin: 'https://www.linkedin.com/', x: 'https://x.com/', gbp: 'https://business.google.com/', tiktok: 'https://www.tiktok.com/', houzz: 'https://pro.houzz.com/' };
 
 /**
  * THE EXACT CLICKS. Written down because the alternative is remembering them
@@ -82,6 +82,16 @@ const STEPS: Record<string, { title: string; steps: string[]; where?: { label: s
       'Connect the Google account that manages the profile with the Connect Google button.',
       'Then pick which profile posts go to, if they have more than one.',
       'Posting by API waits on Google approving Business Profile API access for our project. Until then every Google post goes on the hand-post sheet and is posted from inside the profile.',
+    ],
+  },
+  tiktok: {
+    title: 'Connecting TikTok',
+    where: { label: 'TikTok for developers', href: 'https://developers.tiktok.com/apps' },
+    steps: [
+      'The Connect button works as soon as TIKTOK_CLIENT_KEY and TIKTOK_CLIENT_SECRET are on the production environment.',
+      'Sign in with the TikTok account the business posts from. A Business or Creator account both work.',
+      'TikTok posts a photo or a video, never words alone. A words-only day skips TikTok.',
+      'Until TikTok passes the app audit, each post lands in the TikTok inbox and one tap in the app publishes it.',
     ],
   },
   houzz: {
@@ -342,11 +352,11 @@ export default function Accounts({ session }: { session: Session }) {
           }
         : undefined,
     },
-    ...(['facebook', 'instagram', 'x', 'linkedin', 'houzz'] as const).map((p): Row => {
+    ...(['facebook', 'instagram', 'x', 'linkedin', 'tiktok', 'houzz'] as const).map((p): Row => {
       const f = feed(p);
       const st = feedState(f);
       // Instagram has no door of its own: it signs in through the Facebook Page it is linked to.
-      const oauth = p === 'facebook' || p === 'instagram' ? '/api/oauth/facebook/start?back=cc' : p === 'x' ? '/api/oauth/x/start' : p === 'linkedin' ? '/api/oauth/linkedin/start' : null;
+      const oauth = p === 'facebook' || p === 'instagram' ? '/api/oauth/facebook/start?back=cc' : p === 'x' ? '/api/oauth/x/start?back=cc' : p === 'linkedin' ? '/api/oauth/linkedin/start?back=cc' : p === 'tiktok' ? '/api/oauth/tiktok/start?back=cc' : null;
       const canOauth = Boolean(oauth) && (p === 'facebook' || p === 'instagram' ? Boolean(f?.oauth) : !f?.needs);
       return {
         key: p,

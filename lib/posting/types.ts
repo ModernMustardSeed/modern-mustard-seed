@@ -2,19 +2,20 @@
  * DAILY POSTING. Their words, our edit, one version per platform, at the hour
  * each feed rewards. Nothing posts that the client did not write.
  */
-export const PLATFORMS = ['facebook', 'instagram', 'linkedin', 'x', 'gbp', 'houzz'] as const;
+export const PLATFORMS = ['facebook', 'instagram', 'linkedin', 'x', 'gbp', 'tiktok', 'houzz'] as const;
 export type Platform = (typeof PLATFORMS)[number];
 
 /**
  * What a new client posts to when nobody has chosen. Houzz came off the offer
  * 2026-09-24 (Sarah): it has no posting API, so it is only ever hand-posted.
  * It stays in PLATFORMS so a client already posting there (Built Right) keeps
- * the feed; it is just never the default again.
+ * the feed; it is just never the default again. TikTok is opt-in per client:
+ * it only posts a photo or a video, so a words-only business should not get it.
  */
 export const DEFAULT_PLATFORMS: Platform[] = ['facebook', 'instagram', 'linkedin', 'x', 'gbp'];
 
 /** Platforms we can post to by API once an account is connected. The rest go on the hand-post sheet. */
-export const API_PLATFORMS: Platform[] = ['facebook', 'instagram', 'x', 'linkedin', 'gbp'];
+export const API_PLATFORMS: Platform[] = ['facebook', 'instagram', 'x', 'linkedin', 'gbp', 'tiktok'];
 
 export const PLATFORM_LABEL: Record<Platform, string> = {
   facebook: 'Facebook',
@@ -22,14 +23,15 @@ export const PLATFORM_LABEL: Record<Platform, string> = {
   linkedin: 'LinkedIn',
   x: 'X',
   gbp: 'Google Business Profile',
+  tiktok: 'TikTok',
   houzz: 'Houzz',
 };
 
 /**
  * The hour (Mountain) each feed tends to reward, used when a client has not
  * set their own. Instagram and X later in the morning when people are on
- * their phones; LinkedIn early on a workday; Facebook and Google at the
- * business's own hour.
+ * their phones; LinkedIn early on a workday; TikTok in the evening scroll;
+ * Facebook and Google at the business's own hour.
  */
 export const DEFAULT_PLATFORM_HOURS: Record<Platform, number> = {
   facebook: 9,
@@ -37,6 +39,7 @@ export const DEFAULT_PLATFORM_HOURS: Record<Platform, number> = {
   linkedin: 8,
   x: 12,
   gbp: 9,
+  tiktok: 18,
   houzz: 9,
 };
 

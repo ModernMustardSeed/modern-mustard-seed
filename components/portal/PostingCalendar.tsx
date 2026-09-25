@@ -71,6 +71,7 @@ export default function PostingCalendar() {
     if (!c) return;
     if (c.startsWith('x-ok:')) setNotice(`X is connected as ${c.slice(5)}.`);
     else if (c.startsWith('linkedin-ok:')) setNotice(`LinkedIn is connected: ${c.slice(12)}.`);
+    else if (c.startsWith('tiktok-ok:')) setNotice(`TikTok is connected: ${c.slice(10)}.`);
     else if (c.endsWith('unconfigured')) setError('That connection is not switched on yet. Sarah will connect it for you.');
     else if (c.includes('denied')) setError('The connection was cancelled.');
     else if (c.includes('failed')) setError(`The connection did not go through${c.includes(':') ? `: ${c.split(':').slice(1).join(':')}` : ''}.`);
@@ -328,7 +329,7 @@ function Shell({ children, business }: { children: React.ReactNode; business?: s
 
 function AccountRow({ platform, account, onDisconnect }: { platform: Platform; account?: AccountView; onDisconnect: () => void }) {
   const connected = account?.connected;
-  const connectHref = platform === 'x' ? '/api/oauth/x/start' : platform === 'linkedin' ? '/api/oauth/linkedin/start' : platform === 'gbp' ? '/api/oauth/google/start' : null;
+  const connectHref = platform === 'x' ? '/api/oauth/x/start' : platform === 'linkedin' ? '/api/oauth/linkedin/start' : platform === 'tiktok' ? '/api/oauth/tiktok/start' : platform === 'gbp' ? '/api/oauth/google/start' : null;
   const canSelf = connectHref && !account?.needs;
   return (
     <li className="flex items-start justify-between gap-3">
