@@ -3,8 +3,11 @@
    words sit in the calm third the art was composed to leave open. */
 .hero{--t:#080c16;--t2:#080c16b8;--accent:#f5b700;--scrim:linear-gradient(90deg,#fbf6eaee 0,#fbf6eab0 34%,#fbf6ea00 62%);position:relative;display:flex;align-items:center;min-height:calc(100svh - 82px);overflow:hidden;padding:112px 6vw 72px;color:var(--t);isolation:isolate;border-bottom:3px solid var(--t)}
 .hero h1,.hero p{margin:0}
-.scene{position:absolute;inset:0;z-index:-3}
-.scene img{width:100%;height:100%;object-fit:cover;object-position:70% 50%;animation:sceneIn 1.6s cubic-bezier(.16,1,.3,1) both}
+.scene{position:absolute;inset:0;z-index:-4;overflow:hidden}
+.scene img{width:100%;height:100%;object-fit:cover;object-position:70% 50%;filter:blur(28px) saturate(1.05);transform:scale(1.12)}
+/* The whole painting, from under the nav (82px) to the floor, right-aligned. */
+.art{position:absolute;top:82px;right:0;bottom:0;left:0;z-index:-3}
+.art img{width:100%;height:100%;object-fit:contain;object-position:100% 50%;animation:sceneIn 1.6s cubic-bezier(.16,1,.3,1) both;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 9%);mask-image:linear-gradient(90deg,transparent 0,#000 9%)}
 @keyframes sceneIn{from{opacity:0;transform:scale(1.06)}to{opacity:1;transform:scale(1)}}
 .scrim{position:absolute;inset:0;z-index:-2;background:var(--scrim)}
 .light{position:absolute;inset:0;z-index:-1;pointer-events:none}
@@ -51,7 +54,9 @@
 /* ---------- Ansel Adams: the zone system, mounted like a print ---------- */
 .hero[data-scene=adams]{--t:#f4f4f2;--t2:#f4f4f2c4;--accent:#d8d8d4;--cta-ink:#111;--scrim:linear-gradient(90deg,#0b0b0bdd 0,#0b0b0b90 36%,#0b0b0b00 62%);border-color:#111;background:#111}
 .hero[data-scene=adams] .scene{inset:18px;border:1px solid #ffffff30}
-.hero[data-scene=adams] .scene img{filter:grayscale(1) contrast(1.08)}
+.hero[data-scene=adams] .scene img{filter:grayscale(1) blur(28px)}
+.hero[data-scene=adams] .art{top:100px;right:18px;bottom:18px}
+.hero[data-scene=adams] .art img{filter:grayscale(1) contrast(1.08)}
 .hero[data-scene=adams] .name{font-family:var(--font-body),sans-serif;font-weight:300;letter-spacing:-.02em;text-transform:none}
 .hero[data-scene=adams] .name em{font-family:var(--font-body),sans-serif;font-style:normal;font-weight:600;color:#fff}
 .hero[data-scene=adams] .line{font-family:var(--font-body),sans-serif;font-style:normal;font-weight:300;letter-spacing:.02em}
@@ -59,14 +64,6 @@
 .hero[data-scene=adams] .cta{background:#f4f4f2;border-color:#f4f4f2;color:#111}
 .hero[data-scene=adams] .cta span{color:#111}
 
-/* ---------- Cathedral: stained glass and a great deal of light ---------- */
-.hero[data-scene=cathedral]{--t:#2a1d10;--t2:#2a1d10c4;--accent:#a0761c;--scrim:linear-gradient(90deg,#fbf3e2f0 0,#fbf3e2b0 34%,#fbf3e200 60%);border-color:#2a1d10}
-.hero[data-scene=cathedral] .name,.hero[data-scene=cathedral] .line{font-family:var(--font-cinzel),serif;font-style:normal;font-weight:600;letter-spacing:.02em}
-.hero[data-scene=cathedral] .name{font-size:clamp(46px,5.8vw,98px);line-height:1.02}
-.hero[data-scene=cathedral] .name em{font-style:normal;background:linear-gradient(100deg,#8a1c2c,#a0761c 30%,#1f6a4a 60%,#6b2a8a);-webkit-background-clip:text;background-clip:text;color:transparent}
-.hero[data-scene=cathedral] .line{font-size:clamp(17px,1.6vw,22px);font-weight:500;letter-spacing:.14em;text-transform:uppercase}
-.hero[data-scene=cathedral] .cta{background:#2a1d10;border-color:#a0761c;box-shadow:0 0 0 3px #fbf3e2,0 0 0 5px #a0761c}
-.hero[data-scene=cathedral] .light{background:repeating-linear-gradient(115deg,#fff6d800 0 60px,#fff6d833 60px 110px,#fff6d800 110px 190px);mix-blend-mode:screen;mask-image:linear-gradient(200deg,#000 0,transparent 70%);-webkit-mask-image:linear-gradient(200deg,#000 0,transparent 70%);animation:beams 9s ease-in-out infinite}
 @keyframes beams{50%{opacity:.5;transform:translateX(-30px)}}
 
 /* ---------- Graffiti couture: the wall, dressed for the runway ---------- */
@@ -79,18 +76,21 @@
 
 @media(max-width:760px){
   .hero{align-items:flex-end;min-height:calc(100svh - 70px);padding:96px 6vw 110px}
-  .scene img{object-position:74% 50%}
-  .hero{--scrim:linear-gradient(0deg,#fbf6eaf5 0,#fbf6eac8 46%,#fbf6ea00 78%)}
-  .hero[data-scene=davinci]{--scrim:linear-gradient(0deg,#efe3c6f5 0,#efe3c6c8 46%,#efe3c600 78%)}
-  .hero[data-scene=monet]{--scrim:linear-gradient(0deg,#f6f1ecf5 0,#f6f1ecc8 46%,#f6f1ec00 78%)}
-  .hero[data-scene=vangogh]{--scrim:linear-gradient(0deg,#0c1430f2 0,#0c1430c0 46%,#0c143000 78%)}
-  .hero[data-scene=adams]{--scrim:linear-gradient(0deg,#0b0b0bf0 0,#0b0b0bb8 46%,#0b0b0b00 78%)}
-  .hero[data-scene=adams] .scene{inset:10px}
-  .hero[data-scene=cathedral]{--scrim:linear-gradient(0deg,#fbf3e2f5 0,#fbf3e2c8 46%,#fbf3e200 78%)}
-  .hero[data-scene=graffiti]{--scrim:linear-gradient(0deg,#f1ede4f5 0,#f1ede4c8 46%,#f1ede400 78%)}
-  .name{font-size:clamp(44px,12.5vw,64px)}
+  /* Phone: the painting sits whole across the top, the words below it. */
+  .art{top:70px;bottom:auto;height:calc(100vw / 1.5)}
+  .art img{object-position:50% 0;-webkit-mask-image:linear-gradient(0deg,transparent 0,#000 16%);mask-image:linear-gradient(0deg,transparent 0,#000 16%)}
+  .hero{padding-top:calc(70px + 100vw / 1.5 - 20px)}
+  .hero[data-scene=adams] .art{top:80px;right:10px;left:10px;height:calc((100vw - 20px) / 1.5)}
+            .hero[data-scene=adams] .scene{inset:10px}
+  .hero{--ground:#fbf6ea}
+  .hero[data-scene=davinci]{--ground:#efe3c6}
+  .hero[data-scene=monet]{--ground:#f6f1ec}
+  .hero[data-scene=vangogh]{--ground:#0c1430}
+  .hero[data-scene=adams]{--ground:#0b0b0b}
+  .hero[data-scene=graffiti]{--ground:#f1ede4}
+  .hero[data-scene]{--scrim:linear-gradient(180deg,transparent 0,transparent calc(70px + 100vw / 1.5 - 40px),var(--ground) calc(70px + 100vw / 1.5 + 20px))}
+      .name{font-size:clamp(44px,12.5vw,64px)}
   .hero[data-scene=graffiti] .name{font-size:clamp(52px,15vw,80px)}
-  .hero[data-scene=cathedral] .name{font-size:clamp(36px,10vw,52px)}
   .cta{width:100%;justify-content:space-between}
 }
-@media(prefers-reduced-motion:reduce){.scene img,.copy>*,.light{animation:none}}
+@media(prefers-reduced-motion:reduce){.art img,.scene img,.copy>*,.light{animation:none}}
