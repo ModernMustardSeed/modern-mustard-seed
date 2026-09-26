@@ -181,3 +181,10 @@
 
 /* Two numbers under the concierge: Mr. Mustard, then Sarah (2026-09-26). */
 .phone+.phone{margin-top:0}
+
+/* The statement in comic lettering (2026-09-26): the serif's tight -.055em
+   crushed "beautiful" and "beautifully" into an illegible block on phones.
+   Comic letters need open tracking. Painted dial styles keep the old setting. */
+:global(html:not(:has([data-scene]))) .statement>p{letter-spacing:.015em;line-height:1.08}
+:global(html:not(:has([data-scene]))) .statement>p>em,:global(html:not(:has([data-scene]))) .statement>p>span{letter-spacing:.035em}
+@media(max-width:760px){:global(html:not(:has([data-scene]))) .statement>p{font-size:clamp(44px,13vw,60px);line-height:1.12}:global(html:not(:has([data-scene]))) .statement>p>em{margin:4px 0 8px}}
