@@ -83,7 +83,7 @@ export default function Footer() {
     <footer className="studio-footer">
       <div className="studio-footer-top">
         <Link href="/" className="studio-footer-brand">Modern<br /><em>Mustard Seed.</em></Link>
-        <div><p>{SITE.description}</p><Link href="/inquire" className="studio-footer-inquire">Begin A Conversation <span aria-hidden="true">↗</span></Link><a href={'mailto:' + SITE.email}>{SITE.email}</a><a href={'tel:' + SITE.phoneE164}>{SITE.phone}</a></div>
+        <div><p>{SITE.description}</p><Link href="/inquire" className="studio-footer-inquire">Begin A Conversation <span aria-hidden="true">↗</span></Link><a href={'mailto:' + SITE.email}>{SITE.email}</a><a href={'tel:' + SITE.sarahPhoneE164}>Sarah · {SITE.sarahPhone}</a><a href={'tel:' + SITE.phoneE164}>Mr. Mustard · {SITE.phone}</a></div>
       </div>
       <div className="studio-footer-links">{linkSections.map(section => <div key={section.title}><h2>{section.title}</h2><ul>{section.links.map(l => <li key={l.label}><Link href={l.href}>{l.label}</Link></li>)}</ul></div>)}</div>
       <div className="studio-footer-seed"><Image src="/images/editorial/mascot-160.webp" alt="Mr. Mustard, the studio mascot" width={44} height={59} /><div><p>&ldquo;{PARABLE_SEGMENTS.map(s => s.t).join('')}&rdquo;</p><span>{PARABLE_REFERENCE} · Every build starts seed-sized.</span></div></div>

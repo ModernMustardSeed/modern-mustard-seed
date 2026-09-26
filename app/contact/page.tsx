@@ -44,7 +44,7 @@ export default async function ContactPage({ searchParams }: { searchParams: Sear
               <p className="mt-6 max-w-xl text-lg md:text-xl text-[#3d382e] font-body leading-relaxed">
                 A build, a partnership, a question, or just hello. Tear off the card, fill it in, and mail it. It lands in Sarah&rsquo;s inbox and a human answers inside a day.
               </p>
-              <p className="mt-5 font-body leading-relaxed">Based in {SITE.city}, {SITE.regionName}. Serving Northwest Montana and clients nationwide. <a href={`tel:${SITE.phoneE164}`} className="font-bold text-[#B92417] underline">{SITE.phone}</a> &middot; <a href={`mailto:${SITE.email}`} className="text-[#B92417] underline">{SITE.email}</a></p>
+              <p className="mt-5 font-body leading-relaxed">Based in {SITE.city}, {SITE.regionName}. Serving Northwest Montana and clients nationwide. Sarah <a href={`tel:${SITE.sarahPhoneE164}`} className="font-bold text-[#B92417] underline">{SITE.sarahPhone}</a> &middot; Mr. Mustard <a href={`tel:${SITE.phoneE164}`} className="font-bold text-[#B92417] underline">{SITE.phone}</a> &middot; <a href={`mailto:${SITE.email}`} className="text-[#B92417] underline">{SITE.email}</a></p>
               <p className="mt-6 font-body text-[15px] text-[#5c554a]">
                 Here to build something?{' '}
                 <Link href="/inquire" className="font-bold text-[#B92417] underline decoration-2 underline-offset-2 hover:text-[#E0301E]">

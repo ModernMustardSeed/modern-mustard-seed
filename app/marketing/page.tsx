@@ -332,7 +332,7 @@ export default function MarketingPage() {
             ))}
           </div>
           <p className="mt-10 font-body text-sm text-[#3d382e]">
-            Or call the studio at <a href={`tel:${SITE.phoneE164}`} className="font-bold underline underline-offset-4">{SITE.phone}</a>. It answers day or night.
+            Or call the studio at <a href={`tel:${SITE.phoneE164}`} className="font-bold underline underline-offset-4">{SITE.phone}</a>. It answers day or night. Or reach Sarah directly at <a href={`tel:${SITE.sarahPhoneE164}`} className="font-bold underline underline-offset-4">{SITE.sarahPhone}</a>.
           </p>
         </div>
       </section>

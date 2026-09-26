@@ -41,7 +41,7 @@ export default function TermsPage() {
             </p>
             <p>
               <strong>How to stop.</strong> Reply <strong>STOP</strong> to any message to opt out. You will get one confirmation that you have been unsubscribed, and we will not text that number again. Reply <strong>HELP</strong> for help, or contact us at{' '}
-              <a href="mailto:sarah@modernmustardseed.com">sarah@modernmustardseed.com</a> or (406) 312-1223.
+              <a href="mailto:sarah@modernmustardseed.com">sarah@modernmustardseed.com</a>, Sarah at (406) 250-6076, or Mr. Mustard at (406) 312-1223.
             </p>
             <p>
               <strong>Carriers.</strong> Mobile carriers are not liable for delayed or undelivered messages. Delivery is best effort and depends on your carrier and device.

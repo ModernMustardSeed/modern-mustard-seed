@@ -18,7 +18,7 @@ export const metadata = buildMetadata({
 const FAQ = [
   {
     q: 'Where in Montana are you based?',
-    a: `Kalispell, in the Flathead Valley. We work in person across the valley and remotely with clients in every state. The phone is ${SITE.phone} and it is answered around the clock by the voice agent we build for other businesses.`,
+    a: `Kalispell, in the Flathead Valley. We work in person across the valley and remotely with clients in every state. The phone is ${SITE.phone} and it is answered around the clock by the voice agent we build for other businesses. Sarah's own number is ${SITE.sarahPhone}.`,
   },
   {
     q: 'Do you only work with Montana businesses?',

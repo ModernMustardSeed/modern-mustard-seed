@@ -178,3 +178,6 @@
 @supports (animation-timeline:view()){@media(prefers-reduced-motion:no-preference){
 .verse>*,.showMine>*,.work>*,.results>*,.tvSection>*,.statement>*,.disciplines>*,.founder>*,.concierge>*,.faq>*,.close>*,.proofIntro,.proofCards,.reviewRow{animation:sectionIn linear both;animation-timeline:view();animation-range:entry 0% entry 55%}
 }}
+
+/* Two numbers under the concierge: Mr. Mustard, then Sarah (2026-09-26). */
+.phone+.phone{margin-top:0}
