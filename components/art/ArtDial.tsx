@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ART_STYLES, artStyle, type ArtStyleId } from '@/lib/art-styles';
 import { setArtStyle, useArtStyle } from './useArtStyle';
 import { trackEvent } from '@/lib/analytics';
@@ -11,6 +11,8 @@ import s from './ArtDial.module.css';
  * arrow keys. Each notch is a master; the page blooms into that hand from the
  * knob outward. Only styles whose scene exists are on the dial.
  */
+const HINT_KEY = 'mms-art-hinted';
+
 export default function ArtDial({ ready }: { ready: ArtStyleId[] }) {
   const styles = ART_STYLES.filter((x) => x.id === 'pop' || ready.includes(x.id));
   const current = useArtStyle();
@@ -19,6 +21,21 @@ export default function ArtDial({ ready }: { ready: ArtStyleId[] }) {
   const knob = useRef<HTMLButtonElement>(null);
   const drag = useRef<{ a0: number; turned: boolean } | null>(null);
   const [open, setOpen] = useState(false);
+  // The invitation: a speech bubble over the knob until the visitor turns it
+  // once (remembered), and for twelve seconds a visit at most.
+  const [hint, setHint] = useState(false);
+  useEffect(() => {
+    let seen = false;
+    try { seen = localStorage.getItem(HINT_KEY) === '1'; } catch { /* private mode: show it */ }
+    if (seen) return;
+    const show = window.setTimeout(() => setHint(true), 2200);
+    const hide = window.setTimeout(() => setHint(false), 14200);
+    return () => { window.clearTimeout(show); window.clearTimeout(hide); };
+  }, []);
+  const dismissHint = () => {
+    setHint(false);
+    try { localStorage.setItem(HINT_KEY, '1'); } catch { /* ignore */ }
+  };
   // Whole laps the knob has made, so turning past the last notch keeps
   // going round instead of unwinding backwards to the first.
   const [laps, setLaps] = useState(0);
@@ -27,6 +44,7 @@ export default function ArtDial({ ready }: { ready: ArtStyleId[] }) {
   if (styles.length < 2) return null;
 
   const go = (i: number) => {
+    dismissHint();
     if (i >= styles.length) setLaps((l) => l + 1);
     if (i < 0) setLaps((l) => l - 1);
     const next = styles[(i + styles.length) % styles.length];
@@ -41,7 +59,8 @@ export default function ArtDial({ ready }: { ready: ArtStyleId[] }) {
   };
 
   const style = artStyle(current);
-  return <div className={s.dock} data-open={open ? '' : undefined}>
+  return <div className={s.dock} data-open={open ? '' : undefined} data-hint={hint ? '' : undefined}>
+    {hint && <p className={s.hint} role="status"><b>Turn the dial!</b><span>Choose the style: Leonardo, Monet, Van Gogh and more.</span><button type="button" onClick={dismissHint} aria-label="Hide this tip">×</button></p>}
     <div className={s.face}>
       <button
         ref={knob}
@@ -79,7 +98,7 @@ export default function ArtDial({ ready }: { ready: ArtStyleId[] }) {
       </ol>
     </div>
     <button type="button" className={s.label} onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-controls="art-dial-list">
-      <small>Turn the dial</small>
+      <small>Turn the dial · choose the style</small>
       <strong key={style.id}>{style.name}</strong>
       <em>{style.credit}</em>
     </button>
