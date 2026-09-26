@@ -40,3 +40,17 @@
   .label em{display:none}
 }
 @media(prefers-reduced-motion:reduce){.knob{transition:none}.label strong{animation:none}}
+
+/* The invitation: a comic speech bubble over the knob, its tail pointing down. */
+.hint{position:absolute;left:4px;bottom:calc(100% + 16px);width:250px;margin:0;padding:12px 34px 13px 15px;background:var(--cream);border:2.5px solid var(--ink);border-radius:18px;box-shadow:4px 4px 0 var(--ink);animation:hintIn .5s cubic-bezier(.3,1.5,.5,1) both}
+.hint:after{content:'';position:absolute;left:38px;bottom:-15px;border-style:solid;border-width:15px 12px 0 0;border-color:var(--ink) transparent transparent transparent}
+.hint:before{content:'';position:absolute;z-index:1;left:40.5px;bottom:-9.5px;border-style:solid;border-width:10px 8px 0 0;border-color:var(--cream) transparent transparent transparent}
+.hint b{display:block;font-family:var(--font-comic),sans-serif;font-weight:400;font-size:26px;line-height:1;letter-spacing:.03em;color:#b92417}
+.hint span{display:block;margin-top:5px;font-size:13px;line-height:1.4;font-weight:600}
+.hint button{position:absolute;top:6px;right:7px;width:26px;height:26px;padding:0;border:0;border-radius:50%;background:transparent;color:var(--ink);font-size:18px;line-height:1;cursor:pointer}
+.hint button:hover{background:#f5b70055}
+@keyframes hintIn{from{opacity:0;transform:translateY(10px) scale(.85)}to{opacity:1;transform:none}}
+.dock[data-hint] .knob{animation:nudge 2.4s 1s ease-in-out infinite}
+@keyframes nudge{0%,70%,100%{rotate:0deg}78%{rotate:-18deg}86%{rotate:14deg}93%{rotate:-6deg}}
+@media(max-width:760px){.hint{width:220px;padding:10px 30px 11px 13px}.hint b{font-size:22px}.hint span{font-size:12px}.hint:after{left:26px}.hint:before{left:28.5px}}
+@media(prefers-reduced-motion:reduce){.hint,.dock[data-hint] .knob{animation:none}}
