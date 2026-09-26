@@ -15,6 +15,8 @@ const SCOPES = ['tweet.read', 'tweet.write', 'users.read', 'media.write', 'offli
  */
 export async function GET(req: Request) {
   const url = new URL(req.url);
+  // Started from the Command Center: come home to its Accounts room, not the portal.
+  const back = url.searchParams.get('back') === 'cc' ? ('cc' as const) : undefined;
   const client = await getClientSession();
   let email: string | null = client?.email ?? null;
   let by: 'client' | 'admin' = 'client';
@@ -26,13 +28,16 @@ export async function GET(req: Request) {
       by = 'admin';
     }
   }
-  if (!email) return NextResponse.redirect(`${SITE.url}/portal/login?next=/portal/posting`);
+  if (!email) return NextResponse.redirect(back === 'cc' ? `${SITE.url}/cc/login` : `${SITE.url}/portal/login?next=/portal/posting`);
 
   const clientId = real(process.env.X_OAUTH2_CLIENT_ID);
-  if (!clientId) return NextResponse.redirect(by === 'admin' ? `${SITE.url}/admin/posting?client=${encodeURIComponent(email)}&connect=x-unconfigured` : `${SITE.url}/portal/posting?connect=x-unconfigured`);
+  if (!clientId) {
+    if (back === 'cc') return NextResponse.redirect(`${SITE.url}/cc?connect=x-unconfigured#accounts`);
+    return NextResponse.redirect(by === 'admin' ? `${SITE.url}/admin/posting?client=${encodeURIComponent(email)}&connect=x-unconfigured` : `${SITE.url}/portal/posting?connect=x-unconfigured`);
+  }
 
   const { verifier, challenge } = pkce();
-  const state = signState({ email, provider: 'x', verifier, by });
+  const state = signState({ email, provider: 'x', verifier, by, back });
   const auth = new URL('https://x.com/i/oauth2/authorize');
   auth.searchParams.set('response_type', 'code');
   auth.searchParams.set('client_id', clientId);
