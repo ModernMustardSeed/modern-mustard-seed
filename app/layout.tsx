@@ -31,7 +31,6 @@ const condensedFont = Oswald({ subsets: ['latin'], weight: ['400', '500', '600',
 const cathedralFont = Cinzel({ subsets: ['latin'], weight: ['500', '600', '700'], display: 'swap', preload: false, variable: '--font-cinzel' });
 const posterFont = Anton({ subsets: ['latin'], weight: ['400'], display: 'swap', preload: false, variable: '--font-anton' });
 const markerFont = Permanent_Marker({ subsets: ['latin'], weight: ['400'], display: 'swap', preload: false, variable: '--font-marker' });
-const artReady = readyArtStyles();
 
 export const metadata: Metadata = buildMetadata();
 
@@ -42,6 +41,7 @@ export const viewport: Viewport = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const artReady = readyArtStyles();
   return (
     <html lang="en" suppressHydrationWarning className={`${bodyFont.variable} ${displayFont.variable} ${serifFont.variable} ${monoFont.variable} ${condensedFont.variable} ${cathedralFont.variable} ${posterFont.variable} ${markerFont.variable}`}>
       <head>
