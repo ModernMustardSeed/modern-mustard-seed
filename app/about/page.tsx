@@ -58,7 +58,7 @@ export default function AboutPage() {
           art={{
             src: '/art/pages/about',
             alt: 'Pop-art screenprint: a studio desk with a laptop, sketches, a rotary phone and a mustard seedling, under a window onto Montana mountains and a lake at sunrise',
-            caption: 'Meanwhile, in Montana',
+            caption: 'Made in Kalispell, Montana',
           }}
           sticker="Built here!"
           mascot={{ bubble: 'Welcome to the studio!' }}
