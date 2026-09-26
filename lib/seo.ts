@@ -17,6 +17,10 @@ export const SITE = {
    */
   phone: '(406) 312-1223',
   phoneE164: '+14063121223',
+  /** Sarah's own cell, listed beside Mr. Mustard's line wherever the site
+   *  offers a way to reach the studio (Sarah, 2026-09-26). */
+  sarahPhone: '(406) 250-6076',
+  sarahPhoneE164: '+14062506076',
   city: 'Kalispell',
   region: 'MT',
   regionName: 'Montana',

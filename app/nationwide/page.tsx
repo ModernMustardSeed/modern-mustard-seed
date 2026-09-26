@@ -40,7 +40,7 @@ const FAQ = [
   },
   {
     q: 'What time zone do you work in?',
-    a: `Mountain Time, and we meet you in yours. The studio line, ${SITE.phone}, is answered day or night by the same kind of voice agent we build for clients.`,
+    a: `Mountain Time, and we meet you in yours. The studio line, ${SITE.phone}, is answered day or night by the same kind of voice agent we build for clients. Sarah's own number is ${SITE.sarahPhone}.`,
   },
   {
     q: 'Is there a different price outside Montana?',

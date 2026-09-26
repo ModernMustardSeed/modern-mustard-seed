@@ -62,7 +62,9 @@ export const orgJsonLd = {
     'Agentic websites', 'Voice agents', 'Custom software and applications',
     'Agentic systems', 'Business automation', 'CRM and workflow systems',
     'Agentic systems advisory', 'Answer engine optimization'],
-  contactPoint: {
+  contactPoint: [{
+    '@type': 'ContactPoint', contactType: 'Sarah Scarano, founder', telephone: SITE.sarahPhoneE164, email: SITE.email, availableLanguage: 'English',
+  }, {
     '@type': 'ContactPoint', contactType: 'Enquiries answered by Mr. Mustard, the studio voice agent',
     telephone: SITE.phoneE164, email: SITE.email, availableLanguage: 'English',
     hoursAvailable: {
@@ -70,7 +72,7 @@ export const orgJsonLd = {
       dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
       opens: '00:00', closes: '23:59',
     },
-  },
+  }],
 };
 
 // Compatibility export for existing callers, with the same identity.

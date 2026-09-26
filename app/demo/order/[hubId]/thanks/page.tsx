@@ -27,7 +27,7 @@ export default async function DemoOrderThanksPage({
       <div className="max-w-md text-center bg-white border-2 border-[#161616] rounded-2xl shadow-[6px_6px_0_0_#161616] p-8">
         <h1 className="font-display text-3xl font-bold text-[#161616]">We could not find that order</h1>
         <p className="font-body text-[#161616]/70 mt-3">
-          If you just paid, your receipt is in your email and Sarah already got the order. Call (406) 312-1223 and we
+          If you just paid, your receipt is in your email and Sarah already got the order. Call Sarah at (406) 250-6076 and we
           will sort anything out on the spot.
         </p>
       </div>
@@ -109,7 +109,7 @@ export default async function DemoOrderThanksPage({
           <DemoOrderIntake hubId={hubId} sessionId={sessionId} products={products} business={business} prefill={prefill} />
         )}
         <p className="font-mono text-[11px] text-[#161616]/40 text-center pb-6">
-          Modern Mustard Seed · Kalispell, MT · (406) 312-1223 · sarah@modernmustardseed.com
+          Modern Mustard Seed · Kalispell, MT · Sarah (406) 250-6076 · Mr. Mustard (406) 312-1223 · sarah@modernmustardseed.com
         </p>
       </main>
     </div>
