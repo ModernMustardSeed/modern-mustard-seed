@@ -4,7 +4,7 @@ import { MascotLean, Marquee } from './HeroMotion';
 
 /* The homepage hero is a comic-book cover. Mr. Mustard and the comic
    wordmark take most of the frame and burst out of an ink panel, with an
-   issue box, a POW burst, action lines and caption boxes the way a cover
+   issue box, a POW burst, action lines and a caption box the way a cover
    carries them (Sarah, 2026-09-26: "bigger ... even more like a comic
    book"). Talking to him is the floating widget's job, not the hero's.
    Pop art that stays readable: mustard, ink, cream and red, no outlined type. */
@@ -32,8 +32,6 @@ export default function CardHero() {
       </div>
 
       <h1 id="studio-heading" className={s.caption}><span className="sr-only">Modern Mustard Seed. </span>Websites, custom software, and <em>agentic systems.</em></h1>
-
-      <p className={s.note}><small aria-hidden="true">Meanwhile, in Montana…</small>Designed and built by Sarah Scarano, for people with something of their own to build. You own all of it.</p>
     </div>
 
     <div className={s.actions}>
