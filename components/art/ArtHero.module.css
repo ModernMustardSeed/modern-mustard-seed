@@ -51,18 +51,6 @@
 .hero[data-scene=vangogh] .cta{background:#f2c12e;border-color:#f2c12e;color:#101a3a}
 .hero[data-scene=vangogh] .cta span{color:#101a3a}
 
-/* ---------- Ansel Adams: the zone system, mounted like a print ---------- */
-.hero[data-scene=adams]{--t:#f4f4f2;--t2:#f4f4f2c4;--accent:#d8d8d4;--cta-ink:#111;--scrim:linear-gradient(90deg,#0b0b0bdd 0,#0b0b0b90 36%,#0b0b0b00 62%);border-color:#111;background:#111}
-.hero[data-scene=adams] .scene{inset:18px;border:1px solid #ffffff30}
-.hero[data-scene=adams] .scene img{filter:grayscale(1) blur(28px)}
-.hero[data-scene=adams] .art{top:100px;right:18px;bottom:18px}
-.hero[data-scene=adams] .art img{filter:grayscale(1) contrast(1.08)}
-.hero[data-scene=adams] .name{font-family:var(--font-body),sans-serif;font-weight:300;letter-spacing:-.02em;text-transform:none}
-.hero[data-scene=adams] .name em{font-family:var(--font-body),sans-serif;font-style:normal;font-weight:600;color:#fff}
-.hero[data-scene=adams] .line{font-family:var(--font-body),sans-serif;font-style:normal;font-weight:300;letter-spacing:.02em}
-.hero[data-scene=adams] .credit{color:#bdbdb8;letter-spacing:.4em}
-.hero[data-scene=adams] .cta{background:#f4f4f2;border-color:#f4f4f2;color:#111}
-.hero[data-scene=adams] .cta span{color:#111}
 
 @keyframes beams{50%{opacity:.5;transform:translateX(-30px)}}
 
@@ -80,13 +68,10 @@
   .art{top:70px;bottom:auto;height:calc(100vw / 1.5)}
   .art img{object-position:50% 0;-webkit-mask-image:linear-gradient(0deg,transparent 0,#000 16%);mask-image:linear-gradient(0deg,transparent 0,#000 16%)}
   .hero{padding-top:calc(70px + 100vw / 1.5 - 20px)}
-  .hero[data-scene=adams] .art{top:80px;right:10px;left:10px;height:calc((100vw - 20px) / 1.5)}
-            .hero[data-scene=adams] .scene{inset:10px}
   .hero{--ground:#fbf6ea}
   .hero[data-scene=davinci]{--ground:#efe3c6}
   .hero[data-scene=monet]{--ground:#f6f1ec}
   .hero[data-scene=vangogh]{--ground:#0c1430}
-  .hero[data-scene=adams]{--ground:#0b0b0b}
   .hero[data-scene=graffiti]{--ground:#f1ede4}
   .hero[data-scene]{--scrim:linear-gradient(180deg,transparent 0,transparent calc(70px + 100vw / 1.5 - 40px),var(--ground) calc(70px + 100vw / 1.5 + 20px))}
       .name{font-size:clamp(44px,12.5vw,64px)}

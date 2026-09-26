@@ -60,7 +60,7 @@ export default function ArtDial({ ready }: { ready: ArtStyleId[] }) {
 
   const style = artStyle(current);
   return <div className={s.dock} data-open={open ? '' : undefined} data-hint={hint ? '' : undefined}>
-    {hint && <p className={s.hint} role="status"><b>Turn the dial!</b><span>Choose the style: Leonardo, Monet, Van Gogh and more.</span><button type="button" onClick={dismissHint} aria-label="Hide this tip">×</button></p>}
+    {hint && <p className={s.hint} role="status"><b>Turn the dial!</b><span>Choose the style: Leonardo, Monet, Van Gogh or Graffiti Couture.</span><button type="button" onClick={dismissHint} aria-label="Hide this tip">×</button></p>}
     <div className={s.face}>
       <button
         ref={knob}
