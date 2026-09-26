@@ -24,9 +24,6 @@ html[data-art=monet] [data-design="mms-editorial-2026"]{--ink:#35304a;--cream:#f
 /* ---------- Van Gogh ---------- */
 html[data-art=vangogh] [data-design="mms-editorial-2026"]{--ink:#101a3a;--cream:#fbf1d6;--mustard:#f2c12e;--red:#d9542b;--butter:#f7e1a0;--midnight:#101a3a}
 
-/* ---------- Ansel Adams: the whole page in silver ---------- */
-html[data-art=adams] [data-design="mms-editorial-2026"]{--ink:#111;--cream:#f4f4f2;--mustard:#cfcfca;--red:#3a3a3a;--butter:#e4e4e0;--midnight:#111;--font-display:var(--font-body)}
-html[data-art=adams] [data-design="mms-editorial-2026"] img,html[data-art=adams] [data-design="mms-editorial-2026"] video{filter:grayscale(1) contrast(1.06)}
 
 
 /* ---------- Graffiti couture ---------- */

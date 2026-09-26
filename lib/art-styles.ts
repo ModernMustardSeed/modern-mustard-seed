@@ -1,7 +1,7 @@
 /**
  * THE ARTIST DIAL (Sarah, 2026-09-25): turn the dial and the site comes alive
- * in another master's hand. Pop art is home; Leonardo is second on the dial. Cathedral was cut (Sarah,
- * 2026-09-26). Credits say "Inspired by", never "After".
+ * in another master's hand. Pop art is home; Leonardo is second on the dial. Cathedral and Ansel Adams were cut
+ * (Sarah, 2026-09-26). Credits say "Inspired by", never "After".
  *
  * This is the one registry. The dial reads it, the homepage hero reads it, and
  * app/art-styles.css keys its palettes off the same ids through
@@ -9,7 +9,7 @@
  * dial never shows a turn that lands on nothing.
  */
 
-export type ArtStyleId = 'pop' | 'davinci' | 'monet' | 'vangogh' | 'adams' | 'graffiti';
+export type ArtStyleId = 'pop' | 'davinci' | 'monet' | 'vangogh' | 'graffiti';
 
 export type ArtStyle = {
   id: ArtStyleId;
@@ -30,7 +30,6 @@ export const ART_STYLES: ArtStyle[] = [
   { id: 'davinci', name: 'Leonardo', credit: 'Inspired by Leonardo da Vinci', line: 'Every build begins as a study.', scene: '/art/dial/davinci', dark: false },
   { id: 'monet', name: 'Monet', credit: 'Inspired by Claude Monet', line: 'Websites that feel like light on water.', scene: '/art/dial/monet', dark: false },
   { id: 'vangogh', name: 'Van Gogh', credit: 'Inspired by Vincent van Gogh', line: 'Software with a pulse you can feel.', scene: '/art/dial/vangogh', dark: true },
-  { id: 'adams', name: 'Ansel Adams', credit: 'Inspired by Ansel Adams', line: 'Clarity, in every tone between black and white.', scene: '/art/dial/adams', dark: true },
   { id: 'graffiti', name: 'Graffiti Couture', credit: 'Inspired by street art and the runway', line: 'Loud where it counts. Tailored everywhere else.', scene: '/art/dial/graffiti', dark: false },
 ];
 
