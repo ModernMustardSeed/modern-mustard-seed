@@ -21,7 +21,15 @@ export default function ArtHero({ ready, children }: { ready: ArtStyleId[]; chil
 
   const src = style.scene;
   return <section className={s.hero} data-scene={style.id} aria-labelledby="studio-heading">
-    <picture className={s.scene} key={style.id}>
+    {/* The painting shows whole, below the nav, so Mr. Mustard is never
+        cropped; a blurred copy of it (same file, one download) fills the
+        rest of the frame. */}
+    <picture className={s.scene} key={style.id + '-fill'} aria-hidden="true">
+      <source type="image/avif" srcSet={src + '-960.avif 960w, ' + src + '-1600.avif 1600w'} sizes="100vw" />
+      <source type="image/webp" srcSet={src + '-960.webp 960w, ' + src + '-1600.webp 1600w'} sizes="100vw" />
+      <img src={src + '-1600.webp'} alt="" width={1600} height={1067} decoding="async" />
+    </picture>
+    <picture className={s.art} key={style.id}>
       <source type="image/avif" srcSet={src + '-960.avif 960w, ' + src + '-1600.avif 1600w'} sizes="100vw" />
       <source type="image/webp" srcSet={src + '-960.webp 960w, ' + src + '-1600.webp 1600w'} sizes="100vw" />
       <img src={src + '-1600.webp'} alt="" width={1600} height={1067} decoding="async" fetchPriority="high" />

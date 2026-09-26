@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { DM_Sans, Playfair_Display, Cormorant_Garamond, JetBrains_Mono, Oswald, Cinzel, Anton, Permanent_Marker } from 'next/font/google';
+import { DM_Sans, Playfair_Display, Cormorant_Garamond, JetBrains_Mono, Oswald, Anton, Permanent_Marker, Bangers } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import Navbar from '@/components/Navbar';
@@ -28,7 +28,9 @@ const monoFont = JetBrains_Mono({ subsets: ['latin'], weight: ['400', '500', '70
 const condensedFont = Oswald({ subsets: ['latin'], weight: ['400', '500', '600', '700'], display: 'swap', preload: false, variable: '--font-oswald' });
 // The artist dial's own hands (lib/art-styles.ts). Never preloaded: only a
 // visitor who turns the dial to these styles downloads them.
-const cathedralFont = Cinzel({ subsets: ['latin'], weight: ['500', '600', '700'], display: 'swap', preload: false, variable: '--font-cinzel' });
+// The pop hero's comic lettering (components/home/CardHero). It is on the
+// first screen, so it preloads.
+const comicFont = Bangers({ subsets: ['latin'], weight: ['400'], display: 'swap', variable: '--font-comic' });
 const posterFont = Anton({ subsets: ['latin'], weight: ['400'], display: 'swap', preload: false, variable: '--font-anton' });
 const markerFont = Permanent_Marker({ subsets: ['latin'], weight: ['400'], display: 'swap', preload: false, variable: '--font-marker' });
 
@@ -43,7 +45,7 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const artReady = readyArtStyles();
   return (
-    <html lang="en" suppressHydrationWarning className={`${bodyFont.variable} ${displayFont.variable} ${serifFont.variable} ${monoFont.variable} ${condensedFont.variable} ${cathedralFont.variable} ${posterFont.variable} ${markerFont.variable}`}>
+    <html lang="en" suppressHydrationWarning className={`${bodyFont.variable} ${displayFont.variable} ${serifFont.variable} ${monoFont.variable} ${condensedFont.variable} ${comicFont.variable} ${posterFont.variable} ${markerFont.variable}`}>
       <head>
         <link rel="manifest" href="/site.webmanifest" />
         <JsonLd data={siteGraphJsonLd} />

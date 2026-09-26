@@ -31,11 +31,12 @@
 
 @media(max-width:760px){
   .dock{left:12px;bottom:12px;gap:8px}
-  .face{--tick-r:-32px;width:78px;height:78px}
-  .knob{width:50px;height:50px;margin:-25px 0 0 -25px}
+  .face{--tick-r:-27px;width:66px;height:66px}
+  .knob{width:42px;height:42px;margin:-21px 0 0 -21px}
   .ticks li{width:5px;height:5px}
-  .label{min-width:0;padding:7px 11px 8px}
-  .label strong{font-size:16px}
+  .label{min-width:0;padding:5px 9px 6px;border-radius:10px}
+  .label small{font-size:8px;letter-spacing:.14em}
+  .label strong{font-size:14px}
   .label em{display:none}
 }
 @media(prefers-reduced-motion:reduce){.knob{transition:none}.label strong{animation:none}}

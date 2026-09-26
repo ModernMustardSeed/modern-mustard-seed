@@ -1,6 +1,7 @@
 /**
  * THE ARTIST DIAL (Sarah, 2026-09-25): turn the dial and the site comes alive
- * in another master's hand. Pop art is home; Leonardo is second on the dial.
+ * in another master's hand. Pop art is home; Leonardo is second on the dial. Cathedral was cut (Sarah,
+ * 2026-09-26). Credits say "Inspired by", never "After".
  *
  * This is the one registry. The dial reads it, the homepage hero reads it, and
  * app/art-styles.css keys its palettes off the same ids through
@@ -8,7 +9,7 @@
  * dial never shows a turn that lands on nothing.
  */
 
-export type ArtStyleId = 'pop' | 'davinci' | 'monet' | 'vangogh' | 'adams' | 'cathedral' | 'graffiti';
+export type ArtStyleId = 'pop' | 'davinci' | 'monet' | 'vangogh' | 'adams' | 'graffiti';
 
 export type ArtStyle = {
   id: ArtStyleId;
@@ -26,12 +27,11 @@ export type ArtStyle = {
 
 export const ART_STYLES: ArtStyle[] = [
   { id: 'pop', name: 'Pop Art', credit: 'The house style', line: 'Websites, custom software, and agentic systems.', dark: false },
-  { id: 'davinci', name: 'Leonardo', credit: 'After Leonardo da Vinci', line: 'Every build begins as a study.', scene: '/art/dial/davinci', dark: false },
-  { id: 'monet', name: 'Monet', credit: 'After Claude Monet', line: 'Websites that feel like light on water.', scene: '/art/dial/monet', dark: false },
-  { id: 'vangogh', name: 'Van Gogh', credit: 'After Vincent van Gogh', line: 'Software with a pulse you can feel.', scene: '/art/dial/vangogh', dark: true },
-  { id: 'adams', name: 'Ansel Adams', credit: 'After Ansel Adams', line: 'Clarity, in every tone between black and white.', scene: '/art/dial/adams', dark: true },
-  { id: 'cathedral', name: 'Cathedral', credit: 'After the stained-glass masters', line: 'Built to let the light through.', scene: '/art/dial/cathedral', dark: false },
-  { id: 'graffiti', name: 'Graffiti Couture', credit: 'After the street, dressed for the runway', line: 'Loud where it counts. Tailored everywhere else.', scene: '/art/dial/graffiti', dark: false },
+  { id: 'davinci', name: 'Leonardo', credit: 'Inspired by Leonardo da Vinci', line: 'Every build begins as a study.', scene: '/art/dial/davinci', dark: false },
+  { id: 'monet', name: 'Monet', credit: 'Inspired by Claude Monet', line: 'Websites that feel like light on water.', scene: '/art/dial/monet', dark: false },
+  { id: 'vangogh', name: 'Van Gogh', credit: 'Inspired by Vincent van Gogh', line: 'Software with a pulse you can feel.', scene: '/art/dial/vangogh', dark: true },
+  { id: 'adams', name: 'Ansel Adams', credit: 'Inspired by Ansel Adams', line: 'Clarity, in every tone between black and white.', scene: '/art/dial/adams', dark: true },
+  { id: 'graffiti', name: 'Graffiti Couture', credit: 'Inspired by street art and the runway', line: 'Loud where it counts. Tailored everywhere else.', scene: '/art/dial/graffiti', dark: false },
 ];
 
 export const DEFAULT_ART: ArtStyleId = 'pop';

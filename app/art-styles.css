@@ -28,8 +28,6 @@ html[data-art=vangogh] [data-design="mms-editorial-2026"]{--ink:#101a3a;--cream:
 html[data-art=adams] [data-design="mms-editorial-2026"]{--ink:#111;--cream:#f4f4f2;--mustard:#cfcfca;--red:#3a3a3a;--butter:#e4e4e0;--midnight:#111;--font-display:var(--font-body)}
 html[data-art=adams] [data-design="mms-editorial-2026"] img,html[data-art=adams] [data-design="mms-editorial-2026"] video{filter:grayscale(1) contrast(1.06)}
 
-/* ---------- Cathedral ---------- */
-html[data-art=cathedral] [data-design="mms-editorial-2026"]{--ink:#2a1d10;--cream:#fbf3e2;--mustard:#c9962a;--red:#8a1c2c;--butter:#f3e3b8;--midnight:#2a1d10;--font-display:var(--font-cinzel)}
 
 /* ---------- Graffiti couture ---------- */
 html[data-art=graffiti] [data-design="mms-editorial-2026"]{--ink:#0d0d0d;--cream:#f1ede4;--mustard:#ffd400;--red:#ff3b2f;--butter:#ffe98a;--midnight:#0d0d0d;--font-display:var(--font-anton)}
