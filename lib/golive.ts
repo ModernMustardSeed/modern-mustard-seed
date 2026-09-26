@@ -244,3 +244,118 @@ export async function createRunbook(args: {
   }
   return slug;
 }
+
+/* ===========================================================================
+ * THE STANDARD LAUNCH, AND ITS CLIENT SIDE
+ * ======================================================================== */
+
+/**
+ * Create the standard launch runbook for a client who has no Google Business
+ * Profile yet, which is most of them.
+ *
+ * Idempotent on client_email: calling it twice returns the existing slug rather
+ * than creating a second list. Two runbooks for one person means two answers to
+ * "am I done", and the one they are looking at is always the wrong one.
+ */
+export async function createStandardLaunch(args: {
+  title: string;
+  clientEmail: string;
+  facts: import('@/data/launch-standard').LaunchFacts;
+  repo_path?: string | null;
+  prod_url?: string | null;
+}): Promise<string | null> {
+  const sb = getSupabase();
+  if (!sb) return null;
+  const email = args.clientEmail.trim().toLowerCase();
+  if (!email) return null;
+
+  const { data: existing } = await sb
+    .from('golive_runbooks')
+    .select('slug')
+    .eq('client_email', email)
+    .eq('archived', false)
+    .maybeSingle();
+  if (existing?.slug) return existing.slug as string;
+
+  const { standardLaunchGroups } = await import('@/data/launch-standard');
+  const title = args.title.trim() || args.facts.business;
+  const base = slugify(title) || 'launch';
+  const { data: rows } = await sb.from('golive_runbooks').select('slug');
+  const taken = new Set((rows ?? []).map((r: { slug: string }) => r.slug));
+  let slug = base;
+  for (let n = 2; taken.has(slug); n++) slug = `${base}-${n}`;
+
+  const { error } = await sb.from('golive_runbooks').insert({
+    slug,
+    title,
+    subtitle:
+      'Standard launch for a business with no Google Business Profile yet. ' +
+      'The Client steps are the ones only the owner can do; the portal shows them those.',
+    repo_path: args.repo_path?.trim() || null,
+    prod_url: args.prod_url?.trim() || args.facts.siteUrl || null,
+    client_email: email,
+    facts: args.facts,
+    data: standardLaunchGroups(args.facts),
+    done: {},
+    extras: [],
+  });
+  if (error) {
+    console.error('golive standard create error:', error);
+    return null;
+  }
+  return slug;
+}
+
+/** The runbook belonging to a signed-in client, or null. */
+export async function runbookForClient(email: string): Promise<GoliveRunbook | null> {
+  const sb = getSupabase();
+  if (!sb) return null;
+  const clean = (email || '').trim().toLowerCase();
+  if (!clean) return null;
+  const { data, error } = await sb
+    .from('golive_runbooks')
+    .select('*')
+    .eq('client_email', clean)
+    .eq('archived', false)
+    .maybeSingle();
+  if (error) {
+    console.error('golive client lookup error:', error);
+    return null;
+  }
+  return data ? mergeExtras(data as Row) : null;
+}
+
+/**
+ * Tick one of the CLIENT's own steps, from the portal.
+ *
+ * Deliberately not setItemDone with a different caller: a client must never be
+ * able to tick a step they do not own. The runbook is looked up by their email
+ * and the item's who is checked before anything is written, so a hand-made
+ * request naming somebody else's slug or our item id does nothing.
+ */
+export async function setClientItemDone(
+  email: string,
+  itemId: string,
+  done: boolean,
+): Promise<Record<string, GoliveDoneMark> | null> {
+  const sb = getSupabase();
+  if (!sb) return null;
+  const rb = await runbookForClient(email);
+  if (!rb) return null;
+  const item = rb.data.flatMap((g) => g.items).find((i) => i.id === itemId);
+  if (!item || item.who !== 'Client') return null;
+
+  const next = { ...rb.done };
+  if (done) next[itemId] = { at: new Date().toISOString(), by: email.trim().toLowerCase() };
+  else delete next[itemId];
+
+  const { error } = await sb
+    .from('golive_runbooks')
+    .update({ done: next, updated_at: new Date().toISOString() })
+    .eq('slug', rb.slug);
+  if (error) {
+    console.error('golive client toggle error:', error);
+    return null;
+  }
+  return next;
+}

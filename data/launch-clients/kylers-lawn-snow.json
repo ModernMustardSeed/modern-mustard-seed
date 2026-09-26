@@ -1,0 +1,74 @@
+{
+  "title": "Kyler's Lawn & Snow",
+  "clientEmail": "sarah@modernmustardseed.com",
+  "repoPath": "~/dev/mms/clients/kylers-lawn-snow",
+  "emailNote": "Kyler has no email address yet. clientEmail is Sarah's so the runbook exists and is visible; change it to his the day he has one and the same list follows him.",
+  "palette": { "ink": "#12281B", "accent": "#B4491F", "soft": "#5E5B4E", "band": "#EBE7D9" },
+  "officeLogin": {
+    "url": "https://kylers-lawn-snow.vercel.app/office",
+    "user": "kyler",
+    "note": "It is the same website, just a door only you have a key to."
+  },
+  "officeTabs": [
+    {
+      "name": "Today",
+      "what": "The first screen and most days the only one you need. Who is waiting on a call back, which stops are on today's route, what is behind schedule, and what has not been paid for. The number top left is people waiting; if it is not zero, start there.",
+      "when": "Open it in the morning before you load the trailer."
+    },
+    {
+      "name": "Requests",
+      "what": "Everything the website sends you. Nothing is emailed anywhere, so this is the list. Tap Call or Text right on the row, then say what happened: talked to them, booked a look, on the route, or not this time. Add a note while you remember it, because the price you quoted in a driveway is gone by Thursday.",
+      "when": "Twice a day. The count on the tab clears when you open it."
+    },
+    {
+      "name": "The book",
+      "what": "The month, and what the website is allowed to promise. Tap any day to block it and it comes off the website straight away. Booked looks are listed underneath with the address and the number.",
+      "when": "Before you take a day off, and before hunting season."
+    },
+    {
+      "name": "The route",
+      "what": "Your standing customers, grouped by the day they belong to. Each one holds the gate code, the dog, the price and anything else that costs you an hour if you find it on the driveway instead of in the truck. Drive it opens the whole day in Google Maps. Mark done as you leave each one.",
+      "when": "Set it up once, then it runs the week."
+    },
+    {
+      "name": "Customers",
+      "what": "Everybody who has ever contacted you, with their history. Search a name, a street or a phone number and it finds them. Nothing to add by hand: they arrive here from the website on their own.",
+      "when": "When somebody calls and you cannot place them."
+    },
+    {
+      "name": "Settings",
+      "what": "The two switches that matter. Turn off the website offering times when you are slammed, and close the winter list when you have as many driveways as you can hold. The website changes within seconds and stops promising what you cannot do.",
+      "when": "When the season turns or the list is full."
+    }
+  ],
+  "open": [
+    {
+      "what": "Where Kyler's office data lives",
+      "why": "It cannot be the MMS Supabase project: that key bypasses row level security on every lead, client and project we have, and it would be sitting in his deploy. Either his own Supabase project, like D&D Landscaping has, or the office stays on the in-memory store and loses every request on each deploy. The second one is not shippable."
+    },
+    {
+      "what": "The domain",
+      "why": "kylerslawnandsnow.com is not registered. Canonicals currently name the vercel.app host, which is correct for where it is served. One env var and a rebuild repoints everything the day it exists."
+    }
+  ],
+  "facts": {
+    "business": "Kyler's Lawn & Snow",
+    "city": "Kalispell",
+    "state": "MT",
+    "phone": "(406) 261-5296",
+    "siteUrl": "https://kylers-lawn-snow.vercel.app",
+    "officeUrl": "https://kylers-lawn-snow.vercel.app/office",
+    "primaryCategory": "Lawn care service",
+    "extraCategories": ["Snow removal service", "Landscaper"],
+    "serviceAreas": [
+      "Kalispell",
+      "Evergreen",
+      "Whitefish",
+      "Columbia Falls",
+      "Bigfork",
+      "Somers",
+      "Lakeside"
+    ],
+    "serviceAreaBusiness": true
+  }
+}
