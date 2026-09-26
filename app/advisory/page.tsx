@@ -11,6 +11,7 @@ import {
   NOT_FOR,
   ADVISORY_FAQ,
 } from '@/data/advisory';
+import PopPageHero, { pop } from '@/components/pop/PopPageHero';
 
 export const metadata = buildMetadata({
   title: ADVISORY.metaTitle,
@@ -52,39 +53,33 @@ export default function AdvisoryPage() {
         ]}
       />
 
-      {/* ─────────────── Hero ─────────────── */}
-      <header className="relative overflow-hidden border-b-2 border-[#161616] halftone-bg">
-        <div className="relative z-[2] mx-auto max-w-6xl px-6 pt-32 pb-16 md:pt-44 md:pb-24">
-          <div className="max-w-3xl">
-            <span className="inline-flex items-center gap-2 rounded-full border-2 border-[#161616] bg-white px-4 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-[#C4160B] shadow-[3px_3px_0_0_#161616]">
-              The fourth discipline · Retained by the quarter
-            </span>
-            <h1 className="mt-7 font-display text-5xl font-extrabold leading-[0.98] tracking-tight md:text-6xl lg:text-[4.4rem]">
-              Almost nobody loses money on agentic systems by picking the{' '}
-              <em className="italic text-[#B48600]">wrong tool</em>.
-            </h1>
-            <p className="mt-7 max-w-2xl font-body text-lg leading-relaxed text-[#3d382e] md:text-xl">
-              They lose it by building the wrong thing well. Advisory is the seat you hire so that
-              does not happen: retained counsel for operators putting agentic systems into a business that already
-              works. What to build, what to refuse, what to automate, and in what order.
-            </p>
-            <div className="mt-9 flex flex-wrap gap-3">
-              <Link
-                href="/book"
-                className="inline-flex items-center gap-2 rounded-full border-2 border-[#161616] bg-[#161616] px-7 py-4 font-sans text-[12px] font-bold uppercase tracking-[0.14em] text-[#FBF6EA] shadow-[5px_5px_0_0_#F5B700] transition-transform hover:-translate-y-0.5"
-              >
-                Begin an engagement →
-              </Link>
-              <a
-                href="#quarter"
-                className="inline-flex items-center gap-2 rounded-full border-2 border-[#161616] bg-white px-7 py-4 font-sans text-[12px] font-bold uppercase tracking-[0.14em] text-[#161616] shadow-[5px_5px_0_0_#161616] transition-all hover:-translate-y-0.5"
-              >
-                What a quarter contains
-              </a>
-            </div>
-          </div>
+      {/* ─────────────── Hero: the comic cover ─────────────── */}
+      <PopPageHero
+        eyebrow={<span>The fourth discipline · Retained by the quarter</span>}
+        title={<>Almost nobody loses money on agentic systems by picking the{' '}<em>wrong tool</em>.</>}
+        issue={{ no: 'No.4', lines: ['Advisory', 'By the quarter'] }}
+        art={{
+          src: '/art/pages/advisory',
+          alt: 'Pop-art screenprint: a hand moves a chess piece on a strategist table beside an unrolled route map, a brass compass and a magnifying glass',
+          caption: 'The next move, in order',
+        }}
+        sticker="Check!"
+        marquee={['What to build', 'What to refuse', 'What to automate', 'In what order', 'Retained by the quarter']}
+      >
+        <p>
+          They lose it by building the wrong thing well. Advisory is the seat you hire so that
+          does not happen: retained counsel for operators putting agentic systems into a business that already
+          works. What to build, what to refuse, what to automate, and in what order.
+        </p>
+        <div className={pop.actions}>
+          <Link href="/book" className={pop.cta}>
+            Begin an engagement →
+          </Link>
+          <a href="#quarter" className={pop.ctaAlt}>
+            What a quarter contains
+          </a>
         </div>
-      </header>
+      </PopPageHero>
 
       <div className="mx-auto max-w-6xl space-y-20 px-6 py-16 lg:py-20">
         {/* ─────────────── Why this seat exists ─────────────── */}

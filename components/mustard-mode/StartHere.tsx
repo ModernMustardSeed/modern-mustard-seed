@@ -11,6 +11,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
 import Reveal from './Reveal';
+import PopPageHero, { pop } from '@/components/pop/PopPageHero';
 
 function CopyButton({ text }: { text: string }) {
   const [copied, setCopied] = useState(false);
@@ -97,41 +98,28 @@ const STEPS = [
 export default function StartHere() {
   return (
     <div className="bg-[#FBF6EA] text-[#161616]">
-      {/* Hero */}
-      <section className="relative overflow-hidden border-b-2 border-[#161616]">
-        <div className="absolute inset-0 halftone-bg opacity-50" aria-hidden />
-        <div className="relative max-w-4xl mx-auto px-6 pt-20 pb-16 md:pt-28 md:pb-20">
-          <Reveal variant="eyebrow">
-            <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#E0301E] uppercase">
-              Free // No account needed to read this // Mr. Mustard&apos;s beginner brief
-            </p>
-          </Reveal>
-          <Reveal variant="slam" delay={100}>
-            <h1 className="font-display italic font-extrabold text-[#161616] leading-[0.98] tracking-tight mt-4 text-4xl md:text-6xl">
-              Never used Claude or a terminal?
-              <br />
-              Start here.
-            </h1>
-          </Reveal>
-          <Reveal variant="rise" delay={220}>
-            <p className="font-sans text-base md:text-lg text-[#161616]/80 max-w-2xl mt-6">
-              This is the ten-minute setup that every MUSTARD MODE mission assumes you already have. No
-              jargon, no skipped steps. By the end you will have an account, a terminal you are not afraid
-              of, and Claude Code answering you for the first time.
-            </p>
-          </Reveal>
-          <Reveal variant="drop" delay={340}>
-            <div className="flex flex-wrap gap-4 mt-8">
-              <a href="#step-01" className="font-sans font-bold bg-[#F5B700] text-[#161616] border-2 border-[#161616] shadow-[5px_5px_0_0_#161616] px-6 py-3 hover:translate-y-[2px] hover:shadow-[3px_3px_0_0_#161616] transition-all">
-                Start the setup ↓
-              </a>
-              <Link href="/mustard-mode#top" className="font-sans font-bold bg-white text-[#161616] border-2 border-[#161616] shadow-[5px_5px_0_0_#161616] px-6 py-3 hover:translate-y-[2px] hover:shadow-[3px_3px_0_0_#161616] transition-all">
-                Already set up? Play free →
-              </Link>
-            </div>
-          </Reveal>
+      {/* Hero: the comic cover */}
+      <PopPageHero
+        eyebrow={<span>Free // No account needed to read this // Mr. Mustard&apos;s beginner brief</span>}
+        title={<>Never used Claude or a terminal?<br /><em>Start here.</em></>}
+        issue={{ no: 'No.0', lines: ['Beginner brief', 'Ten minutes'] }}
+        sticker="Easy!"
+        mascot={{ bubble: 'No jargon, promise!' }}
+      >
+        <p>
+          This is the ten-minute setup that every MUSTARD MODE mission assumes you already have. No
+          jargon, no skipped steps. By the end you will have an account, a terminal you are not afraid
+          of, and Claude Code answering you for the first time.
+        </p>
+        <div className={pop.actions}>
+          <a href="#step-01" className={pop.cta}>
+            Start the setup ↓
+          </a>
+          <Link href="/mustard-mode#top" className={pop.ctaAlt}>
+            Already set up? Play free →
+          </Link>
         </div>
-      </section>
+      </PopPageHero>
 
       {/* Steps */}
       <section className="py-16 md:py-20">

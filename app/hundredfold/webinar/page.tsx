@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { FILMS } from '@/lib/films';
 import { buildMetadata } from '@/lib/seo';
 import { HUNDREDFOLD, money } from '@/lib/hundredfold';
+import PopPageHero from '@/components/pop/PopPageHero';
 
 export const metadata: Metadata = buildMetadata({
   title: 'Watch: How To Scale A Business That Is Capped By You',
@@ -42,28 +43,22 @@ export default function HundredfoldWebinarPage() {
   const { mp4, poster, shipped: hasFilm } = FILMS.webinar;
 
   return (
-    <div className="relative min-h-screen bg-[#FBF6EA] text-[#161616] pt-32 md:pt-40 overflow-hidden">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-[520px] halftone-bg opacity-60 [mask-image:linear-gradient(to_bottom,black,transparent)]" aria-hidden="true" />
-      <div className="relative max-w-5xl mx-auto px-6 md:px-8">
-        <div className="text-center max-w-3xl mx-auto">
-          <p className="font-mono font-bold text-[10px] tracking-[0.4em] uppercase text-[#B92417]">
-            Starts when you press play // No registration
-          </p>
-          <h1 className="mt-6 font-display text-4xl md:text-6xl font-black tracking-tight leading-[1.0]">
-            How to scale a business that is{' '}
-            <span className="italic text-[#B92417]">
-              capped by you
-            </span>
-          </h1>
-          <p className="mt-5 text-[#3a3733] font-body text-base md:text-lg leading-relaxed">
-            The whole method on one real business, start to finish. Nothing to schedule, nobody waiting on
-            the other end, and no sales call at the end of it.
-          </p>
-        </div>
-      </div>
+    <div className="relative min-h-screen bg-[#FBF6EA] text-[#161616] overflow-hidden">
+      <PopPageHero
+        eyebrow={<span>Starts when you press play // No registration</span>}
+        title={<>How to scale a business that is{' '}<em>capped by you</em></>}
+        issue={{ no: 'No.100', lines: ['The screening', 'Press play'] }}
+        sticker="Play!"
+        mascot={{ bubble: 'Grab a coffee!' }}
+      >
+        <p>
+          The whole method on one real business, start to finish. Nothing to schedule, nobody waiting on
+          the other end, and no sales call at the end of it.
+        </p>
+      </PopPageHero>
 
       {/* The screening room: an ink band holding the player and the ask */}
-      <section className="relative mt-14 bg-[#161616] text-[#FBF6EA] border-y-2 border-[#161616] overflow-hidden">
+      <section className="relative bg-[#161616] text-[#FBF6EA] border-y-2 border-[#161616] overflow-hidden">
         <div className="pointer-events-none absolute inset-0 halftone-ink" aria-hidden="true" />
         <div className="relative max-w-5xl mx-auto px-6 md:px-8 py-14 md:py-16">
           <div className="border-2 border-[#FBF6EA] rounded-2xl overflow-hidden shadow-[8px_8px_0_0_#F5B700] bg-black">

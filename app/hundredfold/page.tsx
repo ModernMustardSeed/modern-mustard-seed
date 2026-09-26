@@ -15,6 +15,7 @@ import {
 } from '@/lib/hundredfold';
 import { JsonLd, breadcrumbJsonLd, faqJsonLd, serviceJsonLd } from '@/lib/jsonld';
 import { buildMetadata, SITE } from '@/lib/seo';
+import PopPageHero, { pop } from '@/components/pop/PopPageHero';
 
 export const metadata = buildMetadata({
   title: 'HUNDREDFOLD. The Scaling Program That Builds The Machine With You.',
@@ -113,54 +114,45 @@ export default function HundredfoldPage() {
 
       <div className="relative bg-[#FBF6EA] text-[#161616]">
         {/* ── Hero ─────────────────────────────────────────────────────────── */}
-        <header className="relative pt-36 md:pt-44 pb-20 overflow-hidden">
-          <div aria-hidden="true" className="absolute inset-0 halftone-bg opacity-50 pointer-events-none" />
-          <div className="relative max-w-6xl mx-auto px-6 md:px-8">
-            <div className="text-center max-w-4xl mx-auto">
-              <span className="text-[10px] uppercase tracking-[0.45em] font-mono font-bold mb-7 block" style={{ color: RED }}>
-                The flagship
-              </span>
-              <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-black tracking-tight leading-[0.92]">
-                HUNDRED
-                <span className="text-[#F5B700]" style={{ WebkitTextStroke: '2px #161616' }}>
-                  FOLD
-                </span>
-              </h1>
-              <p className="mt-6 font-display italic font-bold text-2xl md:text-3xl leading-snug">
-                We do not hand you a plan. We build the machine that runs it.
-              </p>
-              <p className="mt-5 text-[#3a3733] text-base md:text-lg font-body leading-relaxed max-w-2xl mx-auto">
-                Mr. Mustard interviews you like a coach who will not take a vague answer. We build the offer
-                you should actually be selling. We wire the agents that execute your roadmap inside your
-                business. Then your own coach answers you at any hour, against four gates with a number on each.
-              </p>
-            </div>
-
-            {/* The film */}
-            <div className="mt-12 max-w-4xl mx-auto">
-              <HundredfoldFilm />
-            </div>
-
-            <div className="mt-10 flex flex-col sm:flex-row justify-center gap-3">
-              <a
-                href="#interview"
-                className="px-8 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-white bg-[#161616] rounded-xl border-2 border-[#161616] hover:-translate-y-0.5 transition-all text-center"
-              >
-                Start the interview
-              </a>
-              <Link
-                href="/scaling-roadmap"
-                className="px-8 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-[#161616] bg-white rounded-xl border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all text-center"
-              >
-                Get the free roadmap first
-              </Link>
-            </div>
-
-            <p className="mt-6 text-center text-[10px] uppercase tracking-[0.3em] font-mono font-bold" style={{ color: RED }}>
-              {priceSentence()} · Month to month
-            </p>
+        <PopPageHero
+          eyebrow={<span>The flagship</span>}
+          title={<>HUNDRED<em>FOLD</em></>}
+          issue={{ no: 'No.100', lines: ['The flagship', 'Four gates, twelve months'] }}
+          art={{
+            src: '/art/pages/system',
+            alt: 'Pop-art screenprint: a retro machine takes in envelopes and ringing phones, runs them through gears and a switchboard, and sends out tied parcels and a stamped calendar page',
+            caption: 'The machine that runs the plan',
+          }}
+          sticker="x100!"
+          mascot={{ bubble: 'No vague answers!' }}
+        >
+          <p className="font-display text-2xl leading-snug">
+            We do not hand you a plan. We build the machine that runs it.
+          </p>
+          <p>
+            Mr. Mustard interviews you like a coach who will not take a vague answer. We build the offer
+            you should actually be selling. We wire the agents that execute your roadmap inside your
+            business. Then your own coach answers you at any hour, against four gates with a number on each.
+          </p>
+          <div className={pop.actions}>
+            <a href="#interview" className={pop.cta}>
+              Start the interview
+            </a>
+            <Link href="/scaling-roadmap" className={pop.ctaAlt}>
+              Get the free roadmap first
+            </Link>
           </div>
-        </header>
+          <p className="font-mono uppercase text-[#B92417]">
+            {priceSentence()} · Month to month
+          </p>
+        </PopPageHero>
+
+        {/* The film */}
+        <section className="relative pb-20">
+          <div className="max-w-4xl mx-auto px-6 md:px-8">
+            <HundredfoldFilm />
+          </div>
+        </section>
 
         {/* ── The truth ────────────────────────────────────────────────────── */}
         <section className="py-20 md:py-28 border-y-2 border-[#161616]/12">

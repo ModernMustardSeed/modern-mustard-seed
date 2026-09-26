@@ -8,6 +8,7 @@ import EmailPlaybookCTA from '@/components/EmailPlaybookCTA';
 import { JsonLd, breadcrumbJsonLd, howToJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
 import { getAllSlugs, getContent } from '@/lib/content';
+import PopPageHero, { pop } from '@/components/pop/PopPageHero';
 
 type Params = Promise<{ slug: string }>;
 
@@ -50,33 +51,29 @@ export default async function PlaybookPage({ params }: { params: Params }) {
           ]),
         ]}
       />
-      <article className="relative min-h-screen bg-[#FBF6EA] text-[#161616] pt-36 md:pt-44 pb-20">
+      <article className="relative min-h-screen bg-[#FBF6EA] text-[#161616] pb-20 overflow-x-clip">
         <div aria-hidden="true" className="absolute inset-0 halftone-bg opacity-40 pointer-events-none" />
-        <div className="relative max-w-3xl mx-auto px-6 md:px-8">
-          <Link
-            href="/playbooks"
-            className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold hover:text-[#161616] transition-colors"
-          >
-            &larr; All playbooks
-          </Link>
-
-          <header className="mt-8 mb-12 pb-12 border-b-2 border-[#161616]/10">
-            <div className="flex flex-wrap items-center gap-3 mb-6">
-              {pb.meta.tag && (
-                <span className="text-[9px] uppercase tracking-[0.18em] font-mono font-bold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-full px-2.5 py-1">
-                  {pb.meta.tag}
-                </span>
-              )}
-              <span className="text-[10px] text-[#161616]/40 font-mono">{pb.meta.readingTime}</span>
-            </div>
-            <h1 className="font-display text-4xl md:text-6xl font-black text-[#161616] tracking-tight leading-[1.05] mb-6">
-              {pb.meta.title}
-            </h1>
-            <p className="text-[#3a3733] text-lg font-body leading-relaxed">
-              {pb.meta.description}
-            </p>
-            <EditorialByline author={pb.meta.author} date={pb.meta.date} modified={pb.meta.dateModified} />
-          </header>
+        <PopPageHero
+          eyebrow={
+            <>
+              <Link href="/playbooks" className={pop.back}>
+                &larr; All playbooks
+              </Link>
+              {pb.meta.tag && <span className={pop.pill}>{pb.meta.tag}</span>}
+            </>
+          }
+          title={pb.meta.title}
+          mascot={{ bubble: 'Run it yourself!' }}
+        >
+          <p className={pop.note}>
+            <span className="font-mono">{pb.meta.readingTime}</span>
+          </p>
+          <p>
+            {pb.meta.description}
+          </p>
+          <EditorialByline author={pb.meta.author} date={pb.meta.date} modified={pb.meta.dateModified} />
+        </PopPageHero>
+        <div className="relative max-w-3xl mx-auto px-6 md:px-8 pt-6 md:pt-10">
 
           <div className="mdx-prose mdx-prose-pop">
             <MDXRemote

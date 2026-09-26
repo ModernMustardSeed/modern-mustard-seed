@@ -424,7 +424,20 @@ export default function MultiplierHero() {
         </div>
       )}
 
-      <div className="relative max-w-6xl mx-auto px-6 pt-20 pb-16 md:pt-24 md:pb-24 min-h-[92vh] flex flex-col justify-center">
+      <div className="relative max-w-6xl mx-auto px-4 md:px-6 pt-24 pb-12 md:pt-32 md:pb-16 min-h-[92vh] flex flex-col justify-center">
+        {/* The comic cover panel: ink border, hard shadow, rays and a red halftone
+            corner, translucent so the living dots still show through. */}
+        <div className="relative border-[3px] md:border-4 border-[#161616] bg-[#fff7de]/75 shadow-[6px_6px_0_0_#161616] md:shadow-[10px_10px_0_0_#161616] px-5 pt-16 pb-9 md:px-12 md:pt-20 md:pb-12">
+        <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
+          <i className="absolute left-[78%] top-1/2 block aspect-square w-[170%] -translate-x-1/2 -translate-y-1/2" style={{ background: 'repeating-conic-gradient(from 0deg, #f5b70047 0 5deg, #f5b70000 5deg 12deg)', maskImage: 'radial-gradient(circle, #000 0, #000 22%, transparent 62%)', WebkitMaskImage: 'radial-gradient(circle, #000 0, #000 22%, transparent 62%)' }} />
+          <i className="absolute inset-0 block opacity-25" style={{ backgroundImage: 'radial-gradient(#e0301e 2px, transparent 2.3px)', backgroundSize: '13px 13px', maskImage: 'linear-gradient(135deg, transparent 64%, #000 100%)', WebkitMaskImage: 'linear-gradient(135deg, transparent 64%, #000 100%)' }} />
+        </div>
+        <p className="absolute -top-5 left-5 md:left-7 z-[2] m-0 flex -rotate-3 flex-col gap-0.5 border-[3px] border-[#080c16] bg-[#080c16] px-3 pb-2 pt-1.5 text-[#FBF6EA] shadow-[5px_5px_0_0_#E0301E]" aria-hidden>
+          <b className="text-[28px] md:text-[34px] font-normal leading-[.9] tracking-[.02em] text-[#F5B700]" style={{ fontFamily: 'var(--font-comic), sans-serif' }}>No.1</b>
+          <span className="text-[9px] font-bold uppercase tracking-[.18em]">Mustard Mode</span>
+          <span className="text-[9px] font-bold uppercase tracking-[.18em]">1 free credit</span>
+        </p>
+        <div className="relative">
         <p className="font-mono font-bold text-[11px] md:text-xs tracking-[0.18em] text-[#E0301E] uppercase">
           Mr. Mustard presents // Insert ambition to play // 1 free credit
         </p>
@@ -440,7 +453,7 @@ export default function MultiplierHero() {
                 <span key={i}>
                   {part}
                   {i < arr.length - 1 && (
-                    <span className="not-italic font-mono text-[#F5B700]" style={{ textShadow: '2px 2px 0 #161616, -1px -1px 0 #161616, 1px -1px 0 #161616, -1px 1px 0 #161616' }}>
+                    <span className="not-italic text-[#E0301E]" style={{ textShadow: '2px 2px 0 #161616' }}>
                       100x
                     </span>
                   )}
@@ -452,8 +465,8 @@ export default function MultiplierHero() {
               One seed.{' '}
               <span
                 ref={counterElRef}
-                className="not-italic font-mono text-[#F5B700] tabular-nums"
-                style={{ textShadow: '3px 3px 0 #161616, -1px -1px 0 #161616, 1px -1px 0 #161616, -1px 1px 0 #161616' }}
+                className="not-italic text-[#E0301E] tabular-nums"
+                style={{ textShadow: '3px 3px 0 #161616' }}
               >
                 {reduced || phase !== 'attract' ? '100x' : '1x'}
               </span>{' '}
@@ -609,6 +622,8 @@ export default function MultiplierHero() {
             </a>
           </div>
         )}
+        </div>
+        </div>
       </div>
     </section>
   );

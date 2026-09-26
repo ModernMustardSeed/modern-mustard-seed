@@ -1,6 +1,7 @@
 import Link from '@/components/AttributionLink';
 import { JsonLd, aboutPageJsonLd, breadcrumbJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
+import PopPageHero from '@/components/pop/PopPageHero';
 
 export const metadata = buildMetadata({
   title: 'Sarah Scarano and the Agentic Studio in Kalispell',
@@ -49,23 +50,27 @@ export default function AboutPage() {
           ]),
         ]}
       />
-      <div data-studio-page="about" className="relative min-h-screen bg-[#FBF6EA] text-[#161616] pt-36 md:pt-44 pb-28 overflow-hidden">
+      <div data-studio-page="about" className="relative min-h-screen bg-[#FBF6EA] text-[#161616] overflow-x-clip">
+        <PopPageHero
+          eyebrow={<span>About</span>}
+          title={<>Faith Meets{' '}<em>Function</em></>}
+          issue={{ no: 'No.1', lines: ['The studio', 'Kalispell, Montana'] }}
+          art={{
+            src: '/art/pages/about',
+            alt: 'Pop-art screenprint: a studio desk with a laptop, sketches, a rotary phone and a mustard seedling, under a window onto Montana mountains and a lake at sunrise',
+            caption: 'Made in Kalispell, Montana',
+          }}
+          sticker="Built here!"
+          mascot={{ bubble: 'Welcome to the studio!' }}
+          marquee={['Ship complete', 'Design like it matters', 'Honest and flat', 'You own everything', 'Kalispell, Montana', 'Clients nationwide']}
+        >
+          <p>
+            Modern Mustard Seed is a boutique design and agentic systems studio in Kalispell, Montana. We design and build websites and brand, custom software, and voice agents for Northwest Montana and clients nationwide, and we advise operators putting agentic systems to work in a business that already works.
+          </p>
+        </PopPageHero>
+      <div className="relative pt-16 md:pt-20 pb-28">
         <div aria-hidden="true" className="absolute inset-0 halftone-bg opacity-50 pointer-events-none" />
         <div className="relative max-w-3xl mx-auto px-6 md:px-8">
-          {/* ─── Hero ─── */}
-          <div className="text-center mb-16">
-            <span className="text-[10px] uppercase tracking-[0.5em] text-[#E0301E] font-mono font-bold mb-6 block">About</span>
-            <h1 className="font-display text-5xl md:text-7xl font-black text-[#161616] tracking-tight mb-6">
-              Faith Meets{' '}
-              <span className="text-[#F5B700]" style={{ WebkitTextStroke: '2px #161616' }}>
-                Function
-              </span>
-            </h1>
-            <p className="font-body text-lg md:text-xl text-[#3A3733] leading-relaxed max-w-2xl mx-auto">
-              Modern Mustard Seed is a boutique design and agentic systems studio in Kalispell, Montana. We design and build websites and brand, custom software, and voice agents for Northwest Montana and clients nationwide, and we advise operators putting agentic systems to work in a business that already works.
-            </p>
-          </div>
-
           {/* ─── Who we are ─── */}
           <div className="space-y-5 text-[#3A3733] font-body text-[17px] leading-relaxed max-w-2xl mx-auto">
             <p>
@@ -206,6 +211,7 @@ export default function AboutPage() {
             </Link>
           </div>
         </div>
+      </div>
       </div>
     </>
   );

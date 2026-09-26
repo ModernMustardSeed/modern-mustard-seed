@@ -7,6 +7,7 @@ import remarkGfm from 'remark-gfm';
 import { JsonLd, breadcrumbJsonLd, caseStudyJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
 import { getAllSlugs, getContent } from '@/lib/content';
+import PopPageHero, { pop } from '@/components/pop/PopPageHero';
 
 type Params = Promise<{ slug: string }>;
 
@@ -52,35 +53,28 @@ export default async function WorkDetail({ params }: { params: Params }) {
           ]),
         ]}
       />
-      <article className="relative min-h-screen bg-[#FBF6EA] text-[#161616] pt-36 md:pt-44 pb-20">
+      <article className="relative min-h-screen bg-[#FBF6EA] text-[#161616] pb-20 overflow-x-clip">
         <div aria-hidden="true" className="absolute inset-0 halftone-bg opacity-40 pointer-events-none" />
-        <div className="relative max-w-4xl mx-auto px-6 md:px-8">
-          <Link
-            href="/work"
-            className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold hover:text-[#161616] transition-colors"
-          >
-            &larr; All work
-          </Link>
-
-          <header className="mt-8 mb-12 pb-12 border-b-2 border-[#161616]/10">
-            <div className="flex flex-wrap items-center gap-3 mb-6">
-              {study.meta.tag && (
-                <span className="text-[9px] uppercase tracking-[0.18em] font-mono font-bold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-full px-2.5 py-1">
-                  {study.meta.tag}
-                </span>
-              )}
-              {study.meta.client && (
-                <span className="text-[10px] uppercase tracking-[0.2em] text-[#161616]/40 font-mono">
-                  Client: {study.meta.client}
-                </span>
-              )}
-            </div>
-            <h1 className="font-display text-4xl md:text-6xl font-black text-[#161616] tracking-tight leading-[1.05] mb-6">
-              {study.meta.title}
-            </h1>
-            <p className="text-[#3a3733] text-lg font-body leading-relaxed mb-8">
-              {study.meta.description}
+        <PopPageHero
+          eyebrow={
+            <>
+              <Link href="/work" className={pop.back}>
+                &larr; All work
+              </Link>
+              {study.meta.tag && <span className={pop.pill}>{study.meta.tag}</span>}
+            </>
+          }
+          title={study.meta.title}
+          mascot={{ bubble: 'Case closed!' }}
+        >
+          {study.meta.client && (
+            <p className={pop.note}>
+              <span className="font-mono">Client: {study.meta.client}</span>
             </p>
+          )}
+          <p className="mb-8">
+            {study.meta.description}
+          </p>
 
             {study.meta.metrics && study.meta.metrics.length > 0 && (
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
@@ -124,7 +118,8 @@ export default async function WorkDetail({ params }: { params: Params }) {
               </a>
             )}
             <EditorialByline author={study.meta.author} date={study.meta.date} modified={study.meta.dateModified} />
-          </header>
+        </PopPageHero>
+        <div className="relative max-w-4xl mx-auto px-6 md:px-8 pt-6 md:pt-10">
 
           <CaseStudyEvidence evidence={study.meta.evidence} />
           <div className="mdx-prose mdx-prose-pop">

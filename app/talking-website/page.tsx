@@ -7,6 +7,8 @@ import VoiceTalkButton from '@/components/VoiceTalkButton';
 import MissedCallCalculator from '@/components/MissedCallCalculator';
 import OneBrain from '@/components/talking-website/OneBrain';
 import CommercialPlayer from '@/components/talking-website/CommercialPlayer';
+import ps from '@/components/pop/PopPageHero.module.css';
+import { pop } from '@/components/pop/PopPageHero';
 
 // The three sizes of the site. Sarah 2026-09-11: the rungs still describe the
 // scope decision, they just no longer carry their prices onto the page. The
@@ -140,16 +142,14 @@ export default function TalkingWebsitePage() {
     <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
       <JsonLd data={talkingWebsiteJsonLd()} />
 
-      {/* ── Hero ── */}
-      <header className="halftone-bg border-b-2 border-[#161616]">
-        <div className="max-w-6xl mx-auto px-6 pt-32 pb-16 md:pt-40 lg:pb-20">
-          <div className="grid grid-cols-1 [&>*]:min-w-0 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
-            <div className="lg:col-span-6 xl:col-span-5">
-              <span className="font-mono text-[11px] uppercase tracking-[0.32em] text-[#C4160B] font-bold">
-                The Talking Website // One shared brain
-              </span>
-              <h1 className="font-display text-[2.6rem] sm:text-5xl xl:text-6xl font-bold mt-4 leading-[1.02] tracking-tight">
-                A website that answers its <em className="italic text-[#C4160B]">own phone.</em>
+      <section className={`${ps.hero} ${ps.withIssue}`}>
+        <div className={ps.panel}>
+          <div className={ps.ground} aria-hidden="true"><i className={ps.rays} /><i className={ps.lines} /><i className={ps.dots} /></div>
+          <p className={ps.issue} aria-hidden="true"><b>No.2</b><span>The Talking Website</span><span>One shared brain</span></p>
+            <div className={ps.copy}>
+              <div className={ps.eyebrow}><span>The Talking Website // One shared brain</span></div>
+              <h1 className={ps.h1}>
+                A website that answers its <em>own phone.</em>
               </h1>
             <p className="mt-5 font-body text-base leading-relaxed">Designed and built by Modern Mustard Seed, a boutique design and agentic systems studio in Kalispell, Montana, working with clients nationwide. <Link href="/agentic-websites" className="underline font-bold">See how our agentic websites connect the page and the business.</Link></p>
               <p className="font-body text-[17px] text-[#161616]/75 mt-5 leading-relaxed">
@@ -160,16 +160,16 @@ export default function TalkingWebsitePage() {
               <p className="font-display italic font-bold text-[19px] mt-5 leading-snug">
                 One engagement. One brain. The page and the phone.
               </p>
-              <div className="mt-7 flex flex-wrap gap-3">
+              <div className={pop.actions}>
                 <Link
                   href="/book"
-                  className="inline-flex items-center gap-2 bg-[#161616] text-[#FBF6EA] border-2 border-[#161616] rounded-full px-7 py-4 font-sans font-bold uppercase tracking-[0.14em] text-[12px] shadow-[5px_5px_0_0_#F5B700] hover:-translate-y-0.5 transition-transform"
+                  className={pop.cta}
                 >
                   Begin an engagement →
                 </Link>
                 <a
                   href={`tel:${DEMO_LINE.tel}`}
-                  className="inline-flex items-center gap-2 bg-white text-[#161616] border-2 border-[#161616] rounded-full px-7 py-4 font-sans font-bold uppercase tracking-[0.14em] text-[12px] shadow-[5px_5px_0_0_#161616] hover:-translate-y-0.5 transition-all"
+                  className={pop.ctaAlt}
                 >
                   Call it: {DEMO_LINE.display}
                 </a>
@@ -181,7 +181,7 @@ export default function TalkingWebsitePage() {
             </div>
 
             {/* The commercial, in a frame. */}
-            <div className="lg:col-span-6 xl:col-span-7">
+            <div className={ps.stage}>
               <div className="rounded-2xl border-2 border-[#161616] bg-white shadow-[8px_8px_0_0_#161616] overflow-hidden">
                 <div className="flex items-center gap-2 px-4 h-10 border-b-2 border-[#161616] bg-[#FBF6EA]">
                   <span className="flex gap-1.5">
@@ -199,10 +199,19 @@ export default function TalkingWebsitePage() {
                   label="The Talking Website, a short film from Modern Mustard Seed about a website that answers its own phone"
                 />
               </div>
+              <p className={ps.pow} aria-hidden="true"><span>Ring ring!</span></p>
+              <div className={ps.mascot} aria-hidden="true" style={{ left: 'auto', right: '-34px', bottom: '-46px', pointerEvents: 'none' }}>
+                <span className={ps.bubble} style={{ left: 'auto', right: '10px', rotate: '4deg' }}>I answer both!</span>
+                <picture>
+                  <source type="image/avif" srcSet="/brand/mascot-hero-480.avif 480w, /brand/mascot-hero-720.avif 720w" sizes="(max-width: 760px) 96px, 150px" />
+                  <source type="image/webp" srcSet="/brand/mascot-hero-480.webp 480w, /brand/mascot-hero-720.webp 720w" sizes="(max-width: 760px) 96px, 150px" />
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="/brand/mascot.png" alt="" width={480} height={652} decoding="async" className={ps.mascotImg} />
+                </picture>
+              </div>
             </div>
-          </div>
         </div>
-      </header>
+      </section>
 
       <div className="max-w-6xl mx-auto px-6 py-16 lg:py-20 space-y-20">
         {/* ── Signature moment: one brain, two mouths ── */}

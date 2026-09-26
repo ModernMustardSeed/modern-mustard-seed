@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { JsonLd, breadcrumbJsonLd } from '@/lib/jsonld';
 import { buildMetadata, SITE } from '@/lib/seo';
 import { industries } from '@/data/industries';
+import PopPageHero from '@/components/pop/PopPageHero';
 
 export const metadata = buildMetadata({
   title: 'Industries We Build For',
@@ -36,6 +37,8 @@ const collectionJsonLd = {
   ],
 };
 
+const IND_ALT = 'Pop-art screenprint: a mountain-town main street of storefronts, a diner, a bakery, a hardware store and a salon, with a contractor pickup out front';
+
 export default function ForIndex() {
   return (
     <>
@@ -48,22 +51,21 @@ export default function ForIndex() {
           ]),
         ]}
       />
-      <div className="relative min-h-screen bg-[#FBF6EA] text-[#161616] pt-36 md:pt-44 pb-24 overflow-hidden">
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-[520px] halftone-bg opacity-60 [mask-image:linear-gradient(to_bottom,black,transparent)]" aria-hidden="true" />
+      <div className="relative min-h-screen bg-[#FBF6EA] text-[#161616] overflow-x-clip">
+        <PopPageHero
+          eyebrow={<span>Industries</span>}
+          title={<>Built for the work you{' '}<em>actually do</em></>}
+          issue={{ no: 'No.3', lines: ['Industries', 'Built per trade'] }}
+          art={{ src: '/art/pages/industries', alt: IND_ALT, caption: 'Your street, your trade' }}
+          sticker="Open!"
+          mascot={{ bubble: 'Which one is yours?' }}
+        >
+          <p>
+            Generic automation agencies pitch generic builds. We document exactly what gets built per industry, the case studies that anchor it, and what it costs.
+          </p>
+        </PopPageHero>
+      <div className="relative pt-14 md:pt-20 pb-24">
         <div className="relative max-w-6xl mx-auto px-6 md:px-8">
-          <header className="text-center mb-12">
-            <span className="text-[10px] uppercase tracking-[0.4em] text-[#B92417] font-mono font-bold mb-6 block">
-              Industries
-            </span>
-            <h1 className="font-display text-4xl md:text-6xl font-black text-[#161616] tracking-tight leading-[1.05] mb-6">
-              Built for the work you{' '}
-              <span className="italic text-[#B92417]">actually do</span>
-            </h1>
-            <p className="text-[#3a3733] text-base md:text-lg font-body leading-relaxed max-w-2xl mx-auto">
-              Generic automation agencies pitch generic builds. We document exactly what gets built per industry, the case studies that anchor it, and what it costs.
-            </p>
-          </header>
-
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-16">
             {industries.map((i) => (
               <Link
@@ -116,6 +118,7 @@ export default function ForIndex() {
             </Link>
           </div>
         </div>
+      </div>
       </div>
     </>
   );

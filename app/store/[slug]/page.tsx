@@ -17,6 +17,7 @@ import {
   isComingSoon,
 } from '@/data/products';
 import StoreBuyButton from '@/components/StoreBuyButton';
+import PopPageHero, { pop } from '@/components/pop/PopPageHero';
 
 export const dynamicParams = false;
 export const revalidate = 3600;
@@ -129,7 +130,7 @@ export default async function StoreItemPage({
   const configured = !!item.stripePriceId && !isComingSoon(slug);
 
   return (
-    <div className="relative min-h-screen bg-[#FBF6EA] text-[#161616] pt-24 overflow-hidden">
+    <div className="relative min-h-screen bg-[#FBF6EA] text-[#161616] overflow-x-clip">
       <JsonLd data={jsonLd} />
 
       <div aria-hidden="true" className="absolute inset-0 halftone-bg opacity-40 pointer-events-none" />
@@ -140,24 +141,28 @@ export default async function StoreItemPage({
         style={{ backgroundColor: accentColor }}
       />
 
-      <div className="max-w-5xl mx-auto px-6 md:px-8 relative">
-        <nav className="text-xs font-mono text-[#E0301E] font-bold uppercase tracking-[0.22em] mb-8">
-          <Link href="/store" className="hover:text-[#161616] transition-colors">
-            ← Back to store
-          </Link>
-        </nav>
+      <PopPageHero
+        eyebrow={
+          <>
+            <Link href="/store" className={pop.back}>
+              ← Back to store
+            </Link>
+            <span className={pop.pill}>{isProductItem ? item.category : 'Bundle · Save $' + item.savings}</span>
+          </>
+        }
+        title={item.name}
+        art={{
+          src: '/art/pages/store',
+          alt: 'Pop-art screenprint: a stack of playbooks tied with twine on a shop counter, one open to hand-drawn diagrams, beside a desk bell and a shopping bag',
+          caption: 'Straight off the shelf',
+        }}
+      >
+        <p className="font-display">
+          {item.pitch}
+        </p>
+      </PopPageHero>
 
-        <header className="mb-12">
-          <span className="text-[10px] uppercase tracking-[0.45em] font-mono font-bold mb-6 block text-[#E0301E]">
-            {isProductItem ? item.category : 'Bundle · Save $' + item.savings}
-          </span>
-          <h1 className="font-display text-4xl md:text-6xl font-black text-[#161616] tracking-tight leading-[1.05] mb-6">
-            {item.name}
-          </h1>
-          <p className="font-display italic font-bold text-xl md:text-2xl text-[#161616] leading-snug max-w-3xl">
-            {item.pitch}
-          </p>
-        </header>
+      <div className="max-w-5xl mx-auto px-6 md:px-8 relative">
 
         {/* Buy panel */}
         <section className="pop-card-yellow p-8 md:p-10 mb-16">

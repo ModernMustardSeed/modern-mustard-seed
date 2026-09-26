@@ -5,6 +5,7 @@ import { JsonLd, breadcrumbJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
 import WhitepaperGate from '@/components/WhitepaperGate';
 import { WHITEPAPER as WP } from '@/data/voice-agent-whitepaper';
+import PopPageHero from '@/components/pop/PopPageHero';
 
 export const metadata = buildMetadata({
   title: 'Voice Agents: Business Whitepaper',
@@ -43,37 +44,36 @@ export default function WhitepaperPage() {
           articleJsonLd,
         ]}
       />
-      <div className="relative min-h-screen bg-[#FBF6EA] text-[#161616] pt-36 md:pt-44 pb-28">
+      <div className="relative min-h-screen bg-[#FBF6EA] text-[#161616]">
+        <PopPageHero
+          eyebrow={<span>Whitepaper</span>}
+          title={WP.title}
+          issue={{ no: 'No.1', lines: ['Whitepaper', 'Voice agents'] }}
+          sticker="Ring!"
+          mascot={{ bubble: 'I never miss a call!' }}
+        >
+          <p>{WP.subtitle}</p>
+          <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] font-mono uppercase tracking-[0.18em] text-[#161616]/60">
+            <span>{WP.author}</span>
+            <span aria-hidden="true">·</span>
+            <span>{WP.dateLabel}</span>
+            <span aria-hidden="true">·</span>
+            <span>{WP.readingMinutes} min read</span>
+          </div>
+          <div className="mt-7 max-w-md">
+            <WhitepaperGate />
+            <p className="text-center mt-3 text-sm font-body text-[#161616]/60">
+              or{' '}
+              <Link href="/book" className="text-[#B92417] font-bold underline underline-offset-2">
+                book a call
+              </Link>{' '}
+              and we will walk you through it.
+            </p>
+          </div>
+        </PopPageHero>
+      <div className="relative pt-14 md:pt-20 pb-28">
         <div aria-hidden="true" className="absolute inset-0 halftone-bg opacity-40 pointer-events-none" />
         <article className="relative max-w-3xl mx-auto px-6 md:px-8">
-          {/* Header */}
-          <header className="mb-12">
-            <span className="text-[10px] uppercase tracking-[0.5em] text-[#E0301E] font-mono font-bold mb-5 block">
-              Whitepaper
-            </span>
-            <h1 className="font-display text-4xl md:text-6xl font-black tracking-tight leading-[1.05] mb-5">
-              {WP.title}
-            </h1>
-            <p className="text-[#3a3733] text-lg md:text-xl font-body leading-relaxed mb-6">{WP.subtitle}</p>
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] font-mono uppercase tracking-[0.18em] text-[#161616]/55 mb-7">
-              <span>{WP.author}</span>
-              <span aria-hidden="true">·</span>
-              <span>{WP.dateLabel}</span>
-              <span aria-hidden="true">·</span>
-              <span>{WP.readingMinutes} min read</span>
-            </div>
-            <div className="max-w-md">
-              <WhitepaperGate />
-              <p className="text-center mt-3 text-sm font-body text-[#161616]/60">
-                or{' '}
-                <Link href="/book" className="text-[#B92417] font-bold underline underline-offset-2">
-                  book a call
-                </Link>{' '}
-                and we will walk you through it.
-              </p>
-            </div>
-          </header>
-
           {/* Intro */}
           <p className="font-serif text-xl md:text-2xl italic text-[#161616] leading-relaxed mb-12 pb-12 border-b-2 border-[#161616]/10">
             {WP.intro}
@@ -83,7 +83,7 @@ export default function WhitepaperPage() {
           {WP.sections.map((s, i) => (
             <section key={s.heading} className="mb-12">
               <h2 className="font-display text-2xl md:text-3xl font-black tracking-tight mb-4 leading-snug">
-                <span className="text-[#F5B700] font-mono text-base mr-2" style={{ WebkitTextStroke: '0.5px #161616' }}>
+                <span className="text-[#B92417] font-mono text-base mr-2">
                   {String(i + 1).padStart(2, '0')}
                 </span>
                 {s.heading}
@@ -141,6 +141,7 @@ export default function WhitepaperPage() {
             subhead="How small businesses stop the leak with agentic systems, automation, and faster follow-up. One letter a week, from the desk."
           />
         </article>
+      </div>
       </div>
     </>
   );

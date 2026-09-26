@@ -4,6 +4,7 @@ import NewsletterSignup from '@/components/NewsletterSignup';
 import { JsonLd, breadcrumbJsonLd, faqJsonLd } from '@/lib/jsonld';
 import { buildMetadata, SITE } from '@/lib/seo';
 import { PHASES } from '@/data/launch-checklist';
+import PopPageHero, { pop } from '@/components/pop/PopPageHero';
 
 export const metadata = buildMetadata({
   title: 'The New Business Launch Checklist',
@@ -65,34 +66,29 @@ export default function LaunchChecklistPage() {
         ]}
       />
 
-      <div className="relative min-h-screen bg-[#FBF6EA] text-[#161616] pt-36 md:pt-44 pb-24">
-        <div aria-hidden="true" className="absolute inset-0 halftone-bg opacity-50 pointer-events-none" />
-        <div className="relative">
-          {/* Hero */}
-          <div className="max-w-3xl mx-auto px-6 md:px-8 text-center mb-14">
-            <span className="text-[10px] uppercase tracking-[0.4em] text-[#E0301E] font-mono font-bold mb-6 block">
-              Free tool for new business owners
-            </span>
-            <h1 className="font-display text-4xl md:text-6xl font-black text-[#161616] tracking-tight leading-[1.08] mb-6">
-              The New Business{' '}
-              <span className="text-[#F5B700]" style={{ WebkitTextStroke: '2px #161616' }}>
-                Launch Checklist
-              </span>
-            </h1>
-            <p className="text-[#3a3733] text-base md:text-lg font-body leading-relaxed max-w-2xl mx-auto mb-4">
+      <div className="relative min-h-screen bg-[#FBF6EA] text-[#161616] pb-24 overflow-x-clip">
+        <PopPageHero
+          eyebrow={<span>Free tool for new business owners</span>}
+          title={<>The New Business{' '}<em>Launch Checklist</em></>}
+          issue={{ no: 'No.1', lines: ['Free tool', 'Open, online, busy'] }}
+          sticker="Check!"
+          mascot={{ bubble: 'Tick, tick, open!' }}
+        >
+          <p>
               Every step to get your business open, online, and bringing in customers. The legal and money basics, then the website, CRM, agents, and funnels most checklists skip. Tailored to your field, with how-tos and links on every step.
             </p>
-            <p className="text-[#161616]/50 text-sm font-body italic mb-7">
+          <p className={pop.note}>
               Pick your industry, work the list, and grab the branded PDF to keep.
             </p>
-            <a
-              href="#get-it"
-              className="inline-block px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
-            >
+          <div className={pop.actions}>
+            <a href="#get-it" className={pop.cta}>
               Get the free PDF →
             </a>
           </div>
-
+        </PopPageHero>
+        <div className="relative pt-4">
+          <div aria-hidden="true" className="absolute inset-0 halftone-bg opacity-50 pointer-events-none" />
+          <div className="relative">
           {/* The tool */}
           <LaunchChecklistTool />
 
@@ -132,6 +128,7 @@ export default function LaunchChecklistPage() {
             />
           </div>
         </div>
+      </div>
       </div>
     </>
   );

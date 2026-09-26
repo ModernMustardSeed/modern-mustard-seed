@@ -5,6 +5,7 @@ import { buildMetadata, SITE } from '@/lib/seo';
 import { JsonLd, breadcrumbJsonLd, collectionPageJsonLd } from '@/lib/jsonld';
 import { products, bundles, isComingSoon } from '@/data/products';
 import { programs } from '@/data/programs';
+import PopPageHero, { pop } from '@/components/pop/PopPageHero';
 
 export const metadata: Metadata = buildMetadata({
   title: 'The Store. Playbooks and courses for builders and operators',
@@ -45,31 +46,33 @@ export default function StorePage() {
   ];
 
   return (
-    <div className="relative min-h-screen bg-[#FBF6EA] text-[#161616] pt-24">
+    <div className="relative min-h-screen bg-[#FBF6EA] text-[#161616] overflow-x-clip">
       <div aria-hidden="true" className="absolute inset-0 halftone-bg opacity-50 pointer-events-none" />
       <div className="relative">
         <JsonLd data={jsonLd} />
 
-        <header className="max-w-5xl mx-auto px-6 md:px-8 pt-12 md:pt-20 pb-12 text-center">
-          <span className="text-[10px] uppercase tracking-[0.45em] text-[#E0301E] font-mono font-bold mb-7 block">
-            The Store
-          </span>
-          <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-black text-[#161616] tracking-tight leading-[1.02] mb-7">
-            The same systems behind our{' '}
-            <span className="text-[#F5B700] italic" style={{ WebkitTextStroke: '2px #161616' }}>
-              client work
-            </span>
-          </h1>
-          <p className="font-display italic font-bold text-2xl md:text-3xl text-[#161616] leading-snug mb-5">
+        <PopPageHero
+          eyebrow={<span>The Store</span>}
+          title={<>The same systems behind our{' '}<em>client work</em></>}
+          issue={{ no: 'No.6', lines: ['The store', 'Playbooks and courses'] }}
+          art={{
+            src: '/art/pages/store',
+            alt: 'Pop-art screenprint: a stack of playbooks tied with twine on a shop counter, one open to hand-drawn diagrams, beside a desk bell, a shopping bag and a mustard seedling',
+            caption: 'Fresh from the studio shelf',
+          }}
+          sticker="New drops!"
+          mascot={{ bubble: 'Take one home!' }}
+        >
+          <p className="font-display">
             Playbooks and courses. From $47
           </p>
-          <p className="text-[#3a3733] text-base md:text-lg font-body leading-relaxed max-w-2xl mx-auto mb-2">
+          <p>
             Production-tested workbooks and courses built from 40+ shipped agentic products. Agentic systems strategy. Claude Code. Shopify builds. Brand systems. Agentic sales. GEO and agentic commerce. A growing library, with new drops added as we ship.
           </p>
-          <p className="text-[#161616]/45 text-xs font-mono uppercase tracking-[0.25em]">
+          <p className={`${pop.note} font-mono uppercase`}>
             Authored by Sarah Scarano. Built by Modern Mustard Seed
           </p>
-        </header>
+        </PopPageHero>
 
         {/* MUSTARD LIFE: the whole catalog as a magazine comic */}
         <section className="max-w-5xl mx-auto px-6 md:px-8 mb-8">

@@ -2,6 +2,7 @@ import Link from '@/components/AttributionLink';
 import { buildMetadata, SITE } from '@/lib/seo';
 import { JsonLd, breadcrumbJsonLd, serviceJsonLd, webPageJsonLd } from '@/lib/jsonld';
 import { SITE_RUNGS, DEMO_PRODUCTS, formatUsd } from '@/lib/demo-order';
+import PopPageHero, { pop } from '@/components/pop/PopPageHero';
 
 const description = 'Agentic website design from Kalispell, Montana. Custom websites, shared-brain voice agents and answer engine foundations for businesses nationwide.';
 export const metadata = buildMetadata({ title: 'Agentic Website Design in Montana, Built in Kalispell', description, path: '/agentic-websites' });
@@ -9,30 +10,36 @@ const linkStyle = 'font-bold text-[#B92417] underline decoration-2 underline-off
 
 export default function AIWebsitesPage() {
   return (
-    <article className="bg-[#FBF6EA] text-[#161616] pt-28 md:pt-40 pb-20">
+    <article className="bg-[#FBF6EA] text-[#161616] pb-20 overflow-x-clip">
       <JsonLd data={[
         webPageJsonLd({ path: '/agentic-websites', name: 'Agentic Website Design in Montana', description }),
         serviceJsonLd({ path: '/agentic-websites', name: 'Agentic website design and development', description }),
         breadcrumbJsonLd([{ name: 'Home', url: '/' }, { name: 'Agentic Websites', url: '/agentic-websites' }]),
       ]} />
-      <header className="max-w-6xl mx-auto px-6 pb-16">
-        <p className="font-mono text-xs tracking-widest uppercase font-bold text-[#C4160B]">Built in Kalispell · Working nationwide</p>
-        <div className="mt-6 grid lg:grid-cols-[1.3fr_1fr] gap-10 items-end">
-          <div>
-            <h1 className="font-display text-4xl sm:text-5xl lg:text-7xl font-black leading-[1.02]">An agentic website should<br /><em>carry its share.</em></h1>
-            <p className="mt-6 text-lg leading-relaxed max-w-2xl">Modern Mustard Seed is a boutique design and agentic systems studio in Kalispell, Montana. We design and build websites that explain your business clearly, connect the enquiry to the next job, and work with the systems behind the counter.</p>
-            <div className="mt-8 flex flex-wrap gap-4">
-              <Link href="/book" className="pop-card-yellow px-6 py-4 font-bold">Begin an Engagement</Link>
-              <Link href="/book" className="pop-card px-6 py-4 font-bold">Talk With Sarah</Link>
-            </div>
-          </div>
-          <aside className="pop-card p-7 md:p-9 rotate-1">
-            <p className="font-mono text-xs font-bold uppercase text-[#C4160B]">The test we build around</p>
-            <p className="font-display text-3xl font-bold mt-4">A customer arrives.<br />What happens next?</p>
-            <p className="mt-5 leading-relaxed">A roofer needs the address, the roof problem and permission to call back. A lodge needs dates and a real availability check. A studio needs a useful brief. Start with that handoff. Then decide where agentic systems earn their place.</p>
-          </aside>
+      <PopPageHero
+        eyebrow={<span>Built in Kalispell · Working nationwide</span>}
+        title={<>An agentic website should<br /><em>carry its share.</em></>}
+        issue={{ no: 'No.6', lines: ['Agentic websites', 'Found, understood, chosen'] }}
+        art={{
+          src: '/art/pages/system',
+          alt: 'Pop-art screenprint: a retro machine takes in envelopes and ringing phones, runs them through gears and a switchboard, and sends out tied parcels and a stamped calendar page',
+          caption: 'The enquiry, all the way to the job',
+        }}
+        sticker="Handoff!"
+      >
+        <p>Modern Mustard Seed is a boutique design and agentic systems studio in Kalispell, Montana. We design and build websites that explain your business clearly, connect the enquiry to the next job, and work with the systems behind the counter.</p>
+        <div className={pop.actions}>
+          <Link href="/book" className={pop.cta}>Begin an Engagement</Link>
+          <Link href="/book" className={pop.ctaAlt}>Talk With Sarah</Link>
         </div>
-      </header>
+      </PopPageHero>
+      <div className="max-w-6xl mx-auto px-6 pb-16">
+        <aside className="pop-card p-7 md:p-9 rotate-1 max-w-3xl">
+          <p className="font-mono text-xs font-bold uppercase text-[#C4160B]">The test we build around</p>
+          <p className="font-display text-3xl font-bold mt-4">A customer arrives.<br />What happens next?</p>
+          <p className="mt-5 leading-relaxed">A roofer needs the address, the roof problem and permission to call back. A lodge needs dates and a real availability check. A studio needs a useful brief. Start with that handoff. Then decide where agentic systems earn their place.</p>
+        </aside>
+      </div>
 
       <section className="border-y-2 border-[#161616] bg-white py-14">
         <div className="max-w-6xl mx-auto px-6">

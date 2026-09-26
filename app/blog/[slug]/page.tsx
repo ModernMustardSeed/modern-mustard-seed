@@ -9,6 +9,7 @@ import NewsletterSignup from '@/components/NewsletterSignup';
 import { JsonLd, blogPostingJsonLd, breadcrumbJsonLd, faqJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
 import { getAllSlugs, getContent } from '@/lib/content';
+import PopPageHero, { pop } from '@/components/pop/PopPageHero';
 
 type Params = Promise<{ slug: string }>;
 
@@ -59,40 +60,36 @@ export default async function BlogPost({ params }: { params: Params }) {
           ...(post.meta.faq?.length ? [faqJsonLd(post.meta.faq)] : []),
         ]}
       />
-      <article className="relative min-h-screen bg-[#FBF6EA] text-[#161616] pt-36 md:pt-44 pb-20">
+      <article className="relative min-h-screen bg-[#FBF6EA] text-[#161616] pb-20 overflow-x-clip">
         <div aria-hidden="true" className="absolute inset-0 halftone-bg opacity-40 pointer-events-none" />
-        <div className="relative max-w-3xl mx-auto px-6 md:px-8">
-          <Link
-            href="/blog"
-            className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold hover:text-[#161616] transition-colors"
-          >
-            &larr; All posts
-          </Link>
-
-          <header className="mt-8 mb-12 pb-12 border-b-2 border-[#161616]/10">
-            <div className="flex flex-wrap items-center gap-3 mb-6">
-              {post.meta.tag && (
-                <span className="text-[9px] uppercase tracking-[0.18em] font-mono font-bold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-full px-2.5 py-1">
-                  {post.meta.tag}
-                </span>
-              )}
-              <span className="text-[10px] text-[#161616]/40 font-mono">
-                {new Date(post.meta.date).toLocaleDateString('en-US', {
-                  month: 'long',
-                  day: 'numeric',
-                  year: 'numeric',
-                })}
-              </span>
-              <span className="text-[10px] text-[#161616]/40 font-mono">{post.meta.readingTime}</span>
-            </div>
-            <h1 className="font-display text-4xl md:text-6xl font-black text-[#161616] tracking-tight leading-[1.05] mb-6">
-              {post.meta.title}
-            </h1>
-            <p className="text-[#3a3733] text-lg font-body leading-relaxed">
-              {post.meta.description}
-            </p>
-            <EditorialByline author={post.meta.author} date={post.meta.date} modified={post.meta.dateModified} />
-          </header>
+        <PopPageHero
+          eyebrow={
+            <>
+              <Link href="/blog" className={pop.back}>
+                &larr; All posts
+              </Link>
+              {post.meta.tag && <span className={pop.pill}>{post.meta.tag}</span>}
+            </>
+          }
+          title={post.meta.title}
+          mascot={{ bubble: 'Pull up a chair!' }}
+        >
+          <p className={pop.note}>
+            <span className="font-mono">
+              {new Date(post.meta.date).toLocaleDateString('en-US', {
+                month: 'long',
+                day: 'numeric',
+                year: 'numeric',
+              })}
+            </span>{' '}
+            · <span className="font-mono">{post.meta.readingTime}</span>
+          </p>
+          <p>
+            {post.meta.description}
+          </p>
+          <EditorialByline author={post.meta.author} date={post.meta.date} modified={post.meta.dateModified} />
+        </PopPageHero>
+        <div className="relative max-w-3xl mx-auto px-6 md:px-8 pt-6 md:pt-10">
 
           <div className="mdx-prose mdx-prose-pop">
             <MDXRemote

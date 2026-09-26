@@ -3,6 +3,7 @@ import { buildMetadata, SITE } from '@/lib/seo';
 import { AI_NATIVE, STUDIO_PROOF, aiNativeTiers, aiNativeMethod, aiNativeFaq } from '@/data/ai-native';
 import AiNativeTiers from '@/components/ai-native/AiNativeTiers';
 import ReadForm from '@/components/ai-native/ReadForm';
+import PopPageHero, { pop } from '@/components/pop/PopPageHero';
 
 export const metadata = buildMetadata({
   title: AI_NATIVE.metaTitle,
@@ -37,6 +38,8 @@ const NOT_FOR = [
   'You want us to run it for you forever. That is HUNDREDFOLD, and it is a different door.',
   'You have an idea and no company yet. That is Idea to Product.',
 ];
+
+const SYS_ALT = 'Pop-art screenprint: a retro machine takes in envelopes and ringing telephones, runs them through gears, tubes and a switchboard, and sends out tied parcels and a stamped calendar page';
 
 export default function AiNativePage() {
   const jsonLd = {
@@ -77,40 +80,28 @@ export default function AiNativePage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       {/* ─── THE DOOR ─── */}
-      <section className="halftone-bg border-b-2 border-[#161616]">
-        <div className="max-w-5xl mx-auto px-5 pt-28 md:pt-24 pb-14 md:pb-20">
-          <div className="text-center">
-            <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#E0301E] font-bold mb-4">{AI_NATIVE.wordmark}</p>
-            <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-black text-[#161616] tracking-tight leading-[0.98]">
-              Your company, running on agentic systems.
-              <br />
-              Your team, <em className="italic">running it</em>.
-            </h1>
-            <p className="font-body text-base md:text-lg text-[#161616]/70 max-w-2xl mx-auto mt-6 leading-relaxed">{AI_NATIVE.promise}</p>
-          </div>
-
-          <div className="mt-10 md:mt-12 flex flex-col sm:flex-row items-center justify-center gap-3">
-            <a
-              href="#book"
-              className="rounded-full bg-[#161616] border-2 border-[#161616] px-8 py-3.5 font-sans font-extrabold text-[#FBF6EA] text-xs uppercase tracking-[0.18em] shadow-[4px_4px_0_0_#F5B700] transition-all hover:-translate-y-0.5"
-            >
-              See the three doors
-            </a>
-            <a
-              href="#read"
-              className="rounded-full bg-white border-2 border-[#161616] px-8 py-3.5 font-sans font-extrabold text-[#161616] text-xs uppercase tracking-[0.18em] shadow-[4px_4px_0_0_#161616] transition-all hover:-translate-y-0.5"
-            >
-              Start with the Agentic Read
-            </a>
-          </div>
-          <p className="font-body text-sm text-[#161616]/60 text-center mt-6">
-            Built and coached by Sarah Scarano.{' '}
-            <Link href={PORTFOLIO_PATH} className="font-bold text-[#161616] underline underline-offset-4 decoration-[#F5B700] decoration-2 hover:decoration-[#161616]">
-              See the portfolio
-            </Link>
-          </p>
+      <PopPageHero
+        eyebrow={<span>{AI_NATIVE.wordmark}</span>}
+        title={<>Your company, running on agentic systems.<br />Your team, <em>running it</em>.</>}
+        art={{ src: '/art/pages/system', alt: SYS_ALT, caption: 'Your workflows, on the machine' }}
+        sticker="8 weeks!"
+      >
+        <p>{AI_NATIVE.promise}</p>
+        <div className={pop.actions}>
+          <a href="#book" className={pop.cta}>
+            See the three doors
+          </a>
+          <a href="#read" className={pop.ctaAlt}>
+            Start with the Agentic Read
+          </a>
         </div>
-      </section>
+        <p className={pop.note}>
+          Built and coached by Sarah Scarano.{' '}
+          <Link href={PORTFOLIO_PATH} className="font-bold text-[#161616] underline underline-offset-4 decoration-[#F5B700] decoration-2 hover:decoration-[#161616]">
+            See the portfolio
+          </Link>
+        </p>
+      </PopPageHero>
 
       {/* ─── THE PROOF STRIP ─── */}
       <section className="bg-[#161616] border-b-2 border-[#161616]" aria-label="How the studio itself runs">

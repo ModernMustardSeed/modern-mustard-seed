@@ -1,6 +1,7 @@
 import Link from '@/components/AttributionLink';
 import { JsonLd, breadcrumbJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
+import PopPageHero from '@/components/pop/PopPageHero';
 import { listContent } from '@/lib/content';
 
 export const metadata = buildMetadata({
@@ -21,24 +22,26 @@ export default function WorkIndex() {
           { name: 'Work', url: '/work' },
         ])}
       />
-      <div data-studio-page="work" className="relative min-h-screen bg-[#FBF6EA] text-[#161616] pt-36 md:pt-44 pb-28">
+      <div data-studio-page="work" className="relative min-h-screen bg-[#FBF6EA] text-[#161616]">
+        <PopPageHero
+          eyebrow={<span>The Work</span>}
+          title={<>Real Products{' '}<em>Real Receipts</em></>}
+          issue={{ no: 'No.2', lines: ['Case files', 'Shipped and working'] }}
+          art={{
+            src: '/art/pages/work',
+            alt: 'Pop-art screenprint: a brass cash register prints a long receipt beside shipped parcels, a laptop, a phone and a mustard seedling',
+            caption: 'Ka-ching! It shipped',
+          }}
+          sticker="Sold!"
+          marquee={['The problem', 'The build', 'The stack', 'The outcome', 'What it does now']}
+        >
+          <p>
+            Each case study is a teardown. The problem, the build, the stack, the outcome. What it was. How we built it. What it does now.
+          </p>
+        </PopPageHero>
+      <div className="relative pt-16 md:pt-20 pb-28">
         <div aria-hidden="true" className="absolute inset-0 halftone-bg opacity-50 pointer-events-none" />
         <div className="relative max-w-6xl mx-auto px-6 md:px-8">
-          <div className="text-center mb-12">
-            <span className="text-[10px] uppercase tracking-[0.5em] text-[#E0301E] font-mono font-bold mb-6 block">
-              The Work
-            </span>
-            <h1 className="font-display text-5xl md:text-7xl font-black text-[#161616] tracking-tight mb-6">
-              Real Products{' '}
-              <span className="text-[#F5B700]" style={{ WebkitTextStroke: '2px #161616' }}>
-                Real Receipts
-              </span>
-            </h1>
-            <p className="text-[#3a3733] text-lg font-body leading-relaxed max-w-2xl mx-auto">
-              Each case study is a teardown. The problem, the build, the stack, the outcome. What it was. How we built it. What it does now.
-            </p>
-          </div>
-
           {studies.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-20">
               {studies.map((s) => (
@@ -107,6 +110,7 @@ export default function WorkIndex() {
             </Link>
           </div>
         </div>
+      </div>
       </div>
     </>
   );

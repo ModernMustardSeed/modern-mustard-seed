@@ -4,6 +4,7 @@ import NewsletterSignup from '@/components/NewsletterSignup';
 import { JsonLd, breadcrumbJsonLd, faqJsonLd } from '@/lib/jsonld';
 import { buildMetadata, SITE } from '@/lib/seo';
 import { CATEGORIES } from '@/data/prompt-playbook';
+import PopPageHero, { pop } from '@/components/pop/PopPageHero';
 
 export const metadata = buildMetadata({
   title: 'The Prompt Playbook',
@@ -65,37 +66,32 @@ export default function PromptPlaybookPage() {
         ]}
       />
 
-      <div className="relative min-h-screen bg-[#FBF6EA] text-[#161616] pt-36 md:pt-44 pb-24">
-        <div aria-hidden="true" className="absolute inset-0 halftone-bg opacity-50 pointer-events-none" />
-        <div className="relative">
-          {/* Hero */}
-          <div className="max-w-3xl mx-auto px-6 md:px-8 text-center mb-14">
-            <span className="text-[10px] uppercase tracking-[0.4em] text-[#E0301E] font-mono font-bold mb-6 block">
-              Free tool · Never used Claude or ChatGPT? Start here
-            </span>
-            <h1 className="font-display text-4xl md:text-6xl font-black text-[#161616] tracking-tight leading-[1.08] mb-6">
-              The{' '}
-              <span className="text-[#F5B700]" style={{ WebkitTextStroke: '2px #161616' }}>
-                Prompt Playbook
-              </span>
-            </h1>
-            <p className="text-[#3a3733] text-base md:text-lg font-body leading-relaxed max-w-2xl mx-auto mb-4">
+      <div className="relative min-h-screen bg-[#FBF6EA] text-[#161616] pb-24 overflow-x-clip">
+        <PopPageHero
+          eyebrow={<span>Free tool · Never used Claude or ChatGPT? Start here</span>}
+          title={<>The{' '}<em>Prompt Playbook</em></>}
+          issue={{ no: 'No.1', lines: ['Free tool', 'Copy, paste, done'] }}
+          sticker="Paste!"
+          mascot={{ bubble: 'Copy me!' }}
+        >
+          <p>
               Want to use Claude or ChatGPT but never have? Pick your niche and get a full set of ready-to-paste prompts, rewritten for
               your exact business. Copy one, paste it into a free chat tool, and watch it write the email, the posts, or the
               proposal for you. No experience needed.
             </p>
-            <p className="text-[#161616]/50 text-sm font-body italic mb-7">
+          <p className={pop.note}>
               Pick your niche, copy the prompts you like, and email yourself the branded PDF to keep.
             </p>
-            <CategoryPills />
-            <a
-              href="#get-it"
-              className="inline-block px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
-            >
+          <CategoryPills />
+          <div className={pop.actions}>
+            <a href="#get-it" className={pop.cta}>
               Get the free PDF →
             </a>
           </div>
-
+        </PopPageHero>
+        <div className="relative pt-4">
+          <div aria-hidden="true" className="absolute inset-0 halftone-bg opacity-50 pointer-events-none" />
+          <div className="relative">
           {/* The tool */}
           <PromptPlaybookTool />
 
@@ -137,6 +133,7 @@ export default function PromptPlaybookPage() {
             />
           </div>
         </div>
+      </div>
       </div>
     </>
   );

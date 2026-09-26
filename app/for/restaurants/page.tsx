@@ -3,6 +3,7 @@ import RestaurantCalculator from '@/components/RestaurantCalculator';
 import RestaurantVoiceSection from '@/components/RestaurantVoiceSection';
 import { JsonLd, breadcrumbJsonLd, faqJsonLd, serviceJsonLd } from '@/lib/jsonld';
 import { buildMetadata, SITE } from '@/lib/seo';
+import PopPageHero, { pop } from '@/components/pop/PopPageHero';
 
 export const metadata = buildMetadata({
   title: 'Agentic Systems for Restaurants and Franchises. Phone Ordering and Missed-Call Revenue.',
@@ -115,47 +116,36 @@ export default function RestaurantsPage() {
           ]),
         ]}
       />
-      <div className="relative min-h-screen bg-[#FBF6EA] text-[#161616] pt-36 md:pt-44 pb-28">
-        <div aria-hidden="true" className="absolute inset-0 halftone-bg opacity-50 pointer-events-none" />
-        <div className="relative max-w-5xl mx-auto px-6 md:px-8">
-          {/* Hero */}
-          <div className="text-center mb-16">
-            <Link
-              href="/for"
-              className="text-[10px] uppercase tracking-[0.3em] text-[#161616]/45 font-mono font-bold hover:text-[#E0301E] transition-colors inline-block mb-8"
-            >
-              ← All industries
-            </Link>
-            <span className="text-[10px] uppercase tracking-[0.5em] text-[#E0301E] font-mono font-bold mb-6 block">
-              Agentic Systems for Restaurants
-            </span>
-            <h1 className="font-display text-5xl md:text-7xl font-black text-[#161616] tracking-tight mb-6 leading-[1.05]">
-              Stop losing the rush to{' '}
-              <span className="text-[#F5B700]" style={{ WebkitTextStroke: '2px #161616' }}>
-                voicemail
-              </span>
-            </h1>
-            <p className="resto-lede text-[#3a3733] text-lg font-body leading-relaxed max-w-2xl mx-auto mb-9">
+      <div className="relative min-h-screen bg-[#FBF6EA] text-[#161616]">
+        <PopPageHero
+          eyebrow={
+            <>
+              <Link href="/for" className={pop.back}>
+                ← All industries
+              </Link>
+              <span className={pop.pill}>Agentic Systems for Restaurants</span>
+            </>
+          }
+          title={<>Stop losing the rush to{' '}<em>voicemail</em></>}
+          art={{ src: '/art/pages/industries', alt: 'Pop-art screenprint: a mountain-town main street with a diner, a bakery and a cafe with a chalkboard easel out front', caption: 'The dinner rush, answered', focus: '30% 60%' }}
+          sticker="Order up!"
+          mascot={{ bubble: 'Table for four? Done!' }}
+        >
+          <p className="resto-lede">
               Your phone rings hardest when the kitchen is slammed. A Modern Mustard Seed voice agent
               answers every call in a natural human voice, takes the order, books the table, and fires
               it straight to your POS. Phone orders, reservations, and catching the dinner rush, all
               without pulling a single person off the floor.
             </p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <Link
-                href="/book"
-                className="px-8 py-4 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
-              >
-                Start a rollout
-              </Link>
-              <a
-                href="#calculator"
-                className="px-8 py-4 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-white rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
-              >
-                Calculate my leak
-              </a>
-            </div>
-            <p className="mt-4 text-[13px] font-body text-[#161616]/55 max-w-md mx-auto">
+          <div className={pop.actions}>
+            <Link href="/book" className={pop.cta}>
+              Start a rollout
+            </Link>
+            <a href="#calculator" className={pop.ctaAlt}>
+              Calculate my leak
+            </a>
+          </div>
+          <p className={pop.note}>
               Trained on your menu, your hours, and the questions your callers actually ask.{' '}
               <Link
                 href="/book"
@@ -164,7 +154,10 @@ export default function RestaurantsPage() {
                 Tell us about your restaurant.
               </Link>
             </p>
-          </div>
+        </PopPageHero>
+      <div className="relative pt-14 md:pt-20 pb-28">
+        <div aria-hidden="true" className="absolute inset-0 halftone-bg opacity-50 pointer-events-none" />
+        <div className="relative max-w-5xl mx-auto px-6 md:px-8">
 
           {/* Hear it live: the studio line, which is the standard of the work */}
           <div className="pop-card p-8 md:p-10 bg-[#F5B700] mb-24">
@@ -497,6 +490,7 @@ export default function RestaurantsPage() {
             </div>
           </div>
         </div>
+      </div>
       </div>
     </>
   );
