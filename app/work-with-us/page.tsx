@@ -2,6 +2,7 @@ import Link from '@/components/AttributionLink';
 import { JsonLd, breadcrumbJsonLd, faqJsonLd, webPageJsonLd } from '@/lib/jsonld';
 import { buildMetadata, SITE } from '@/lib/seo';
 import { STEPS, TERMS, GOOD_FIT, POOR_FIT, ENGAGEMENT_FAQ } from '@/data/engagement';
+import PopPageHero, { pop } from '@/components/pop/PopPageHero';
 
 export const metadata = buildMetadata({
   title: 'How We Work',
@@ -58,48 +59,28 @@ export default function WorkWithUsPage() {
         ]}
       />
 
-      {/* ─────────────── Hero ─────────────── */}
-      <header className="relative overflow-hidden border-b-2 border-[#161616]">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 opacity-[0.05]"
-          style={{
-            backgroundImage:
-              'linear-gradient(#161616 1px, transparent 1px), linear-gradient(90deg, #161616 1px, transparent 1px)',
-            backgroundSize: '72px 72px',
-          }}
-        />
-        <div className="relative mx-auto max-w-6xl px-6 pt-32 pb-16 md:pt-44 md:pb-24">
-          <div className="max-w-3xl">
-            <span className="inline-flex items-center rounded-full border-2 border-[#161616] bg-white px-4 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-[#C4160B] shadow-[3px_3px_0_0_#161616]">
-              How we work
-            </span>
-            <h1 className="mt-7 font-display text-5xl font-extrabold leading-[0.98] tracking-tight md:text-6xl lg:text-[4.4rem]">
-              Five steps. One number.{' '}
-              <em className="italic text-[#B48600]">No surprises</em> anywhere in it.
-            </h1>
-            <p className="mt-7 max-w-2xl font-body text-lg leading-relaxed text-[#3d382e] md:text-xl">
-              Most studios describe their process in adjectives. Here is ours in specifics: what
-              happens at each step, what you have to do, what exists at the end of it, and how long
-              it takes. If a step cannot answer all four, it is not a step, it is a delay.
-            </p>
-            <div className="mt-9 flex flex-wrap gap-3">
-              <Link
-                href="/book"
-                className="inline-flex items-center gap-2 rounded-full border-2 border-[#161616] bg-[#161616] px-7 py-4 font-sans text-[12px] font-bold uppercase tracking-[0.14em] text-[#FBF6EA] shadow-[5px_5px_0_0_#F5B700] transition-transform hover:-translate-y-0.5"
-              >
-                Begin an engagement →
-              </Link>
-              <Link
-                href="/playbook"
-                className="inline-flex items-center gap-2 rounded-full border-2 border-[#161616] bg-white px-7 py-4 font-sans text-[12px] font-bold uppercase tracking-[0.14em] text-[#161616] shadow-[5px_5px_0_0_#161616] transition-all hover:-translate-y-0.5"
-              >
-                See what you receive
-              </Link>
-            </div>
-          </div>
+      {/* ─────────────── Hero: the comic cover ─────────────── */}
+      <PopPageHero
+        eyebrow={<span>How we work</span>}
+        title={<>Five steps. One number.{' '}<em>No surprises</em> anywhere in it.</>}
+        issue={{ no: 'No.5', lines: ['Five steps', 'Start to keys'] }}
+        mascot={{ bubble: 'Step one is a note!' }}
+        marquee={['What happens', 'What you do', 'What exists at the end', 'How long it takes', 'One number']}
+      >
+        <p>
+          Most studios describe their process in adjectives. Here is ours in specifics: what
+          happens at each step, what you have to do, what exists at the end of it, and how long
+          it takes. If a step cannot answer all four, it is not a step, it is a delay.
+        </p>
+        <div className={pop.actions}>
+          <Link href="/book" className={pop.cta}>
+            Begin an engagement →
+          </Link>
+          <Link href="/playbook" className={pop.ctaAlt}>
+            See what you receive
+          </Link>
         </div>
-      </header>
+      </PopPageHero>
 
       {/* ─────────────── The five steps ─────────────── */}
       <section className="mx-auto max-w-6xl px-6 py-16 md:py-24">

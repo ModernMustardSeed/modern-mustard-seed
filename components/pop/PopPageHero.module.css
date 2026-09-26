@@ -1,0 +1,404 @@
+/* The comic cover for inner pages. Cream, ink, mustard, red, brick and
+   butter. Lettering in Bangers (--font-comic) only on decorative pieces; no
+   outlined or stroked type, no blue. Motion is entrance only (plus the ink
+   marquee the homepage and /book already run), all of it off under
+   prefers-reduced-motion. */
+
+.hero {
+  --ink: #161616;
+  --ink2: #080c16;
+  --cream: #fbf6ea;
+  --mustard: #f5b700;
+  --red: #e0301e;
+  --brick: #b92417;
+  --butter: #f7dc8a;
+  --rx: 74%;
+  --ry: 50%;
+  position: relative;
+  isolation: isolate;
+  overflow-x: clip;
+  padding: 112px 6vw 0;
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-body), sans-serif;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: radial-gradient(var(--ink) 1px, transparent 1.2px);
+  background-size: 10px 10px;
+  opacity: .07;
+  pointer-events: none;
+}
+
+/* ---------- The panel ---------- */
+.panel {
+  position: relative;
+  max-width: 1280px;
+  margin: 0 auto 56px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.02fr) minmax(0, .98fr);
+  gap: 48px;
+  align-items: center;
+  padding: 64px 52px 60px;
+  background: #fff7de;
+  border: 4px solid var(--ink);
+  box-shadow: 10px 10px 0 var(--ink);
+  animation: panelIn .7s cubic-bezier(.2, .8, .2, 1) both;
+}
+@keyframes panelIn { from { opacity: 0; transform: scale(.97) rotate(-.6deg); } to { opacity: 1; transform: none; } }
+.ground { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.ground i { position: absolute; display: block; }
+.rays {
+  left: var(--rx);
+  top: var(--ry);
+  width: 170%;
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  background: repeating-conic-gradient(from 0deg, #f5b70052 0 5deg, #f5b70000 5deg 12deg);
+  -webkit-mask-image: radial-gradient(circle, #000 0, #000 22%, transparent 62%);
+  mask-image: radial-gradient(circle, #000 0, #000 22%, transparent 62%);
+}
+.lines {
+  inset: 0;
+  background: repeating-conic-gradient(from 2deg at var(--rx) var(--ry), #080c161f 0 .5deg, transparent .5deg 7deg);
+  -webkit-mask-image: radial-gradient(ellipse 60% 70% at var(--rx) var(--ry), transparent 58%, #000 100%);
+  mask-image: radial-gradient(ellipse 60% 70% at var(--rx) var(--ry), transparent 58%, #000 100%);
+  opacity: .8;
+}
+.dots {
+  inset: 0;
+  background-image: radial-gradient(var(--red) 2px, transparent 2.3px);
+  background-size: 13px 13px;
+  opacity: .26;
+  -webkit-mask-image: linear-gradient(135deg, transparent 64%, #000 100%);
+  mask-image: linear-gradient(135deg, transparent 64%, #000 100%);
+}
+
+/* The cover's issue box, riding the top edge of the panel. */
+.issue {
+  position: absolute;
+  z-index: 3;
+  top: -22px;
+  left: 28px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 13px 10px;
+  background: var(--ink2);
+  color: var(--cream);
+  border: 3px solid var(--ink2);
+  box-shadow: 5px 5px 0 var(--red);
+  transform: rotate(-3deg);
+  animation: dropIn .6s .45s cubic-bezier(.3, 1.5, .5, 1) both;
+}
+.issue b { font-family: var(--font-comic), sans-serif; font-weight: 400; font-size: 34px; line-height: .9; letter-spacing: .02em; color: var(--mustard); }
+.issue span { font-size: 9.5px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; }
+@keyframes dropIn { from { opacity: 0; transform: translateY(-24px) rotate(-10deg); } to { opacity: 1; transform: rotate(-3deg); } }
+
+/* With an issue box on the top edge, the copy starts under it. */
+.withIssue .panel { padding-top: 96px; }
+
+/* ---------- The copy: the page's own words, dressed ---------- */
+.copy { position: relative; z-index: 2; min-width: 0; }
+.eyebrow { margin-bottom: 24px; }
+.pill,
+.eyebrow > span:only-child,
+.eyebrow > p:only-child {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 6px 13px 5px;
+  background: var(--cream);
+  color: var(--brick);
+  border: 2.5px solid var(--ink);
+  box-shadow: 4px 4px 0 var(--ink);
+  font-family: var(--font-comic), sans-serif;
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  font-synthesis: none;
+  transform: rotate(-1.5deg);
+}
+.eyebrow:has(.back) { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 18px; }
+.back {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-family: var(--font-comic), sans-serif;
+  font-size: 17px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--ink);
+  border-bottom: 2px solid var(--ink);
+  line-height: 1;
+  font-synthesis: none;
+}
+.back:hover { color: var(--brick); border-color: var(--brick); }
+/* Beats the editorial [data-studio-page] h1 rule so every cover sets the same. */
+.hero .h1 {
+  margin: 0;
+  font-family: var(--font-display), serif;
+  font-weight: 800;
+  font-size: clamp(2.7rem, 5.4vw, 5.1rem);
+  line-height: .98;
+  letter-spacing: -.035em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+.hero .h1 em {
+  font-style: normal;
+  padding: 0 .06em;
+  /* A mustard highlighter stripe that follows the words across a line break. */
+  background: linear-gradient(transparent 58%, var(--mustard) 58%, var(--mustard) 88%, transparent 88%);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+.lead,
+.copy > p {
+  margin: 22px 0 0;
+  max-width: 36rem;
+  font-size: 18px;
+  line-height: 1.62;
+  font-weight: 500;
+  color: #3d382e;
+}
+.copy > p + p { margin-top: 14px; }
+.note { font-size: 15px !important; color: #5c554a !important; }
+.actions { margin-top: 30px; display: flex; flex-wrap: wrap; gap: 16px 18px; }
+.cta,
+.ctaAlt {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  min-height: 56px;
+  padding: 0 26px;
+  border: 2.5px solid var(--ink);
+  font-family: var(--font-body), sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  transition: transform .2s, box-shadow .2s;
+}
+.cta { background: var(--ink2); color: var(--cream); box-shadow: 6px 6px 0 var(--mustard), 6px 6px 0 2.5px var(--ink); }
+.cta span { color: var(--mustard); }
+.ctaAlt { background: #fff; color: var(--ink); box-shadow: 6px 6px 0 var(--ink); }
+.cta:hover { transform: translate(-3px, -3px); box-shadow: 9px 9px 0 var(--mustard), 9px 9px 0 2.5px var(--ink); }
+.ctaAlt:hover { transform: translate(-3px, -3px); box-shadow: 9px 9px 0 var(--ink); }
+.cta:focus-visible,
+.ctaAlt:focus-visible { outline: 3px solid var(--red); outline-offset: 4px; }
+
+/* ---------- The art: a framed screenprint, taped up ---------- */
+.stage { position: relative; z-index: 1; padding: 18px 20px 34px 10px; }
+.frame {
+  position: relative;
+  margin: 0;
+  background: #fff;
+  border: 5px solid var(--ink);
+  padding: 10px 10px 4px;
+  rotate: 1.8deg;
+  box-shadow: 14px 14px 0 var(--mustard), 14px 14px 0 4px var(--ink);
+  animation: popIn 1s .15s cubic-bezier(.34, 1.56, .64, 1) both;
+}
+.frame picture { display: block; }
+.frameImg { display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; border: 3px solid var(--ink); }
+.frameCap {
+  padding: 9px 6px 7px;
+  text-align: center;
+  font-family: var(--font-comic), sans-serif;
+  font-size: 17px;
+  line-height: 1.1;
+  letter-spacing: .06em;
+  color: var(--brick);
+}
+.tape { position: absolute; z-index: 2; width: 112px; height: 30px; background: #f7dc8ad0; border: 1.5px solid #16161630; pointer-events: none; }
+.tapeL { top: -17px; left: 22px; rotate: -9deg; }
+.tapeR { bottom: -8px; right: -40px; rotate: -38deg; }
+@keyframes popIn { from { opacity: 0; transform: scale(.55) rotate(-9deg); } 60% { opacity: 1; } to { opacity: 1; transform: none; } }
+
+/* POW: a red burst with the word set on it. */
+.pow {
+  position: absolute;
+  z-index: 4;
+  top: -34px;
+  right: -18px;
+  margin: 0;
+  display: grid;
+  place-items: center;
+  width: clamp(112px, 10vw, 150px);
+  aspect-ratio: 1;
+  background: var(--red);
+  clip-path: polygon(50% 0, 59% 22%, 80% 8%, 76% 32%, 100% 30%, 82% 48%, 100% 64%, 76% 66%, 84% 92%, 60% 78%, 50% 100%, 40% 78%, 16% 92%, 24% 66%, 0 64%, 18% 48%, 0 30%, 24% 32%, 20% 8%, 41% 22%);
+  filter: drop-shadow(5px 5px 0 var(--ink));
+  transform: rotate(10deg);
+  animation: burst .55s .8s cubic-bezier(.3, 1.6, .5, 1) both;
+}
+.pow span {
+  max-width: 72%;
+  text-align: center;
+  font-family: var(--font-comic), sans-serif;
+  font-size: clamp(22px, 2.1vw, 32px);
+  line-height: .95;
+  letter-spacing: .03em;
+  color: var(--mustard);
+  text-shadow: 3px 3px 0 var(--ink);
+  transform: rotate(-8deg);
+}
+@keyframes burst { from { opacity: 0; transform: rotate(-30deg) scale(.2); } to { opacity: 1; transform: rotate(10deg) scale(1); } }
+
+/* Mr. Mustard at the corner of the print. */
+.mascot {
+  position: absolute;
+  z-index: 3;
+  left: -36px;
+  bottom: -30px;
+  width: clamp(96px, 9.5vw, 150px);
+  animation: mascotIn .9s 1.2s cubic-bezier(.34, 1.56, .64, 1) both;
+}
+.mascot picture { display: block; }
+.mascotImg { display: block; width: 100%; height: auto; filter: drop-shadow(6px 7px 0 #16161626); }
+@keyframes mascotIn { from { opacity: 0; transform: translateY(60px) scale(.6) rotate(-14deg); } to { opacity: 1; transform: none; } }
+
+.bubble {
+  position: absolute;
+  z-index: 4;
+  bottom: calc(100% + 12px);
+  left: 6px;
+  width: max-content;
+  max-width: 220px;
+  padding: 7px 14px 8px;
+  background: #fff;
+  color: var(--ink);
+  border: 2.5px solid var(--ink);
+  border-radius: 18px;
+  box-shadow: 3px 3px 0 var(--ink);
+  font-family: var(--font-comic), sans-serif;
+  font-size: 19px;
+  line-height: 1.05;
+  letter-spacing: .04em;
+  rotate: -4deg;
+  animation: fade .5s 1.9s both;
+}
+.bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -9px;
+  left: 22px;
+  width: 14px;
+  height: 14px;
+  background: #fff;
+  border-right: 2.5px solid var(--ink);
+  border-bottom: 2.5px solid var(--ink);
+  transform: rotate(45deg) skew(12deg, 12deg);
+}
+@keyframes fade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+/* ---------- No print: Mr. Mustard pops out of the panel ---------- */
+.solo .panel { grid-template-columns: minmax(0, 1fr) auto; }
+.popOut {
+  position: relative;
+  z-index: 2;
+  align-self: end;
+  justify-self: center;
+  width: clamp(190px, 21vw, 300px);
+  margin: -120px 12px -64px 0;
+  animation: popIn2 1s .2s cubic-bezier(.34, 1.56, .64, 1) both;
+}
+.popOut picture { display: block; }
+.mascotBig { display: block; width: 100%; height: auto; filter: drop-shadow(12px 14px 0 #080c1629); }
+.popOut .pow { top: 6%; left: auto; right: -24%; }
+.popOut .bubble { bottom: 16%; top: auto; left: auto; right: 84%; max-width: 190px; }
+/* Tablet: the copy column is narrow, so the bubble would sit on the lead. */
+@media (min-width: 761px) and (max-width: 1180px) {
+  .popOut { width: clamp(170px, 20vw, 240px); }
+  .popOut .bubble { display: none; }
+  .popOut .pow { width: 104px; right: -18%; top: -2%; }
+  .popOut .pow span { font-size: 21px; }
+}
+@keyframes popIn2 { from { opacity: 0; transform: scale(.5) rotate(-10deg) translateY(40px); } 60% { opacity: 1; } to { opacity: 1; transform: none; } }
+
+/* Centered copy for long reads and legal pages. */
+.center .copy { text-align: left; }
+
+/* ---------- The ink marquee ---------- */
+.marquee {
+  position: relative;
+  z-index: 2;
+  margin: 0 -6vw;
+  background: var(--ink2);
+  color: var(--mustard);
+  overflow: hidden;
+  white-space: nowrap;
+  border-block: 3px solid var(--ink);
+}
+.stripAlone { margin: 0; }
+.marquee > div { display: inline-flex; animation: slide 38s linear infinite; }
+.mRun { display: inline-flex; }
+.mItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 22px;
+  padding: 15px 22px 15px 0;
+  font-family: var(--font-body), sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+.mItem i { font-style: normal; color: var(--cream); }
+.mItem:nth-child(3n + 2) i { color: var(--red); }
+@keyframes slide { to { transform: translateX(-50%); } }
+
+/* ---------- Tablet: the print tucks under the copy ---------- */
+@media (max-width: 1023px) {
+  .hero { --rx: 50%; --ry: 76%; }
+  .panel { grid-template-columns: minmax(0, 1fr); gap: 40px; padding: 56px 40px 52px; }
+  .stage { max-width: 640px; width: 100%; justify-self: center; }
+  .solo .panel { grid-template-columns: minmax(0, 1fr) auto; }
+  .solo { --rx: 84%; --ry: 60%; }
+}
+
+/* ---------- Phone ---------- */
+@media (max-width: 760px) {
+  .hero { padding: 92px 16px 0; }
+  .panel { gap: 34px; padding: 44px 20px 36px; border-width: 3px; box-shadow: 6px 6px 0 var(--ink); margin-bottom: 40px; }
+  .issue { top: -18px; left: 16px; padding: 6px 10px 8px; }
+  .withIssue .panel { padding-top: 78px; }
+  .issue b { font-size: 26px; }
+  .issue span { font-size: 8.5px; }
+  .eyebrow { margin-bottom: 18px; }
+  .hero .h1 { font-size: clamp(2.3rem, 10.5vw, 3.2rem); }
+  .lead, .copy > p { font-size: 16.5px; }
+  .actions { flex-direction: column; align-items: stretch; }
+  .cta, .ctaAlt { justify-content: space-between; padding: 0 20px; font-size: 13px; }
+  .stage { padding: 10px 6px 28px; }
+  .frame { border-width: 4px; padding: 7px 7px 2px; box-shadow: 8px 8px 0 var(--mustard), 8px 8px 0 3px var(--ink); }
+  .frameCap { font-size: 15px; }
+  .tape { width: 84px; height: 24px; }
+  .tapeR { right: -18px; }
+  .pow { width: 96px; top: -30px; right: -8px; }
+  .pow span { font-size: 21px; }
+  .mascot { left: -8px; bottom: -34px; width: 88px; }
+  .bubble { font-size: 16px; max-width: 170px; }
+  .solo { --rx: 50%; --ry: 88%; }
+  .solo .panel { grid-template-columns: minmax(0, 1fr); padding-bottom: 0; }
+  .popOut { width: 168px; margin: -10px auto -6px; justify-self: center; }
+  .popOut .pow { left: auto; right: -50%; top: 4%; width: 88px; }
+  .popOut .bubble { right: 80%; left: auto; top: 14%; bottom: auto; max-width: 104px; font-size: 14.5px; }
+  .marquee { margin: 0 -16px; }
+  .stripAlone { margin: 0; }
+  .mItem { font-size: 12.5px; padding-block: 13px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel, .issue, .frame, .pow, .mascot, .bubble, .popOut, .marquee > div { animation: none; }
+  .cta, .ctaAlt { transition: none; }
+}

@@ -6,6 +6,8 @@ import { workByKey } from '@/data/website-work';
 import EngineToggle from '@/components/websites/EngineToggle';
 import WorkShowcase from '@/components/websites/WorkShowcase';
 import HeroFilm from '@/components/websites/HeroFilm';
+import ps from '@/components/pop/PopPageHero.module.css';
+import { pop } from '@/components/pop/PopPageHero';
 
 const STORE = workByKey['cross-covenant'];
 
@@ -112,16 +114,14 @@ export default function WebsitesPage() {
     <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
       <JsonLd data={websitesJsonLd()} />
 
-      {/* ── Hero ── */}
-      <header className="halftone-bg border-b-2 border-[#161616]">
-        <div className="max-w-6xl mx-auto px-6 pt-32 pb-16 md:pt-40 lg:pb-20">
-          <div className="grid lg:grid-cols-12 gap-10 lg:gap-12 items-center">
-            <div className="lg:col-span-6 xl:col-span-5">
-              <span className="font-mono text-[11px] uppercase tracking-[0.32em] text-[#C4160B] font-bold">
-                Websites and Brand // By inquiry
-              </span>
-              <h1 className="font-display text-[2.6rem] sm:text-5xl xl:text-6xl font-bold mt-4 leading-[1.02] tracking-tight">
-                Not a brochure. A website that <em className="italic text-[#C4160B]">works.</em>
+      <section className={`${ps.hero} ${ps.withIssue}`}>
+        <div className={ps.panel}>
+          <div className={ps.ground} aria-hidden="true"><i className={ps.rays} /><i className={ps.lines} /><i className={ps.dots} /></div>
+          <p className={ps.issue} aria-hidden="true"><b>No.1</b><span>Websites and brand</span><span>By inquiry</span></p>
+            <div className={ps.copy}>
+              <div className={ps.eyebrow}><span>Websites and Brand // By inquiry</span></div>
+              <h1 className={ps.h1}>
+                Not a brochure. A website that <em>works.</em>
               </h1>
             <p className="mt-5 font-body text-base leading-relaxed">Designed and built by Modern Mustard Seed, a boutique design and agentic systems studio in Kalispell, Montana, working with clients nationwide. <Link href="/agentic-websites" className="underline font-bold">See how our agentic websites connect the page and the business.</Link></p>
               <p className="font-body text-[17px] text-[#161616]/75 mt-5 leading-relaxed">
@@ -129,16 +129,16 @@ export default function WebsitesPage() {
                 It captures the lead and follows up while you sleep, and it answers the phone too the
                 day you commission the voice agent. You own every line of it.
               </p>
-              <div className="mt-8 flex flex-wrap gap-3">
+              <div className={pop.actions}>
                 <Link
                   href="/book"
-                  className="inline-flex items-center gap-2 bg-[#161616] text-[#FBF6EA] border-2 border-[#161616] rounded-full px-7 py-4 font-sans font-bold uppercase tracking-[0.14em] text-[12px] shadow-[5px_5px_0_0_#F5B700] hover:-translate-y-0.5 transition-transform"
+                  className={pop.cta}
                 >
                   Begin an engagement →
                 </Link>
                 <Link
                   href="/work"
-                  className="inline-flex items-center gap-2 bg-white text-[#161616] border-2 border-[#161616] rounded-full px-7 py-4 font-sans font-bold uppercase tracking-[0.14em] text-[12px] shadow-[5px_5px_0_0_#161616] hover:-translate-y-0.5 transition-all"
+                  className={pop.ctaAlt}
                 >
                   See the work
                 </Link>
@@ -149,7 +149,7 @@ export default function WebsitesPage() {
             </div>
 
             {/* Hero visual: a REAL site we built, in living color. */}
-            <div className="lg:col-span-6 xl:col-span-7">
+            <div className={ps.stage}>
               <div className="rounded-2xl border-2 border-[#161616] bg-white shadow-[8px_8px_0_0_#161616] overflow-hidden">
                 <div className="flex items-center gap-2 px-4 h-10 border-b-2 border-[#161616] bg-[#FBF6EA]">
                   <span className="flex gap-1.5">
@@ -176,14 +176,23 @@ export default function WebsitesPage() {
                   </div>
                 </div>
               </div>
-              <p className="font-body text-[13px] text-[#161616]/70 mt-3">
+              <p className="font-body text-[13px] text-[#161616]/70 mt-3 pr-24 md:pr-32">
                 {HERO_FILM.brand}, designed and built from scratch. Every scroll, every reveal, and the
                 booking form at the end.
               </p>
+              <p className={ps.pow} aria-hidden="true"><span>Works!</span></p>
+              <div className={ps.mascot} aria-hidden="true" style={{ left: 'auto', right: '-34px', bottom: '-46px', pointerEvents: 'none' }}>
+                <span className={ps.bubble} style={{ left: 'auto', right: '10px', rotate: '4deg' }}>It books the job!</span>
+                <picture>
+                  <source type="image/avif" srcSet="/brand/mascot-hero-480.avif 480w, /brand/mascot-hero-720.avif 720w" sizes="(max-width: 760px) 96px, 150px" />
+                  <source type="image/webp" srcSet="/brand/mascot-hero-480.webp 480w, /brand/mascot-hero-720.webp 720w" sizes="(max-width: 760px) 96px, 150px" />
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="/brand/mascot.png" alt="" width={480} height={652} decoding="async" className={ps.mascotImg} />
+                </picture>
+              </div>
             </div>
-          </div>
         </div>
-      </header>
+      </section>
 
       <div className="max-w-6xl mx-auto px-6 py-16 lg:py-20 space-y-20">
         {/* ── Signature: brochure vs engine ── */}

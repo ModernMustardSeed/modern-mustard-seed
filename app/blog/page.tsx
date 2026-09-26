@@ -3,6 +3,7 @@ import NewsletterSignup from '@/components/NewsletterSignup';
 import { JsonLd, breadcrumbJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
 import { listContent } from '@/lib/content';
+import PopPageHero from '@/components/pop/PopPageHero';
 
 export const metadata = buildMetadata({
   title: 'Blog',
@@ -22,24 +23,26 @@ export default function BlogIndex() {
           { name: 'Blog', url: '/blog' },
         ])}
       />
-      <div className="relative min-h-screen bg-[#FBF6EA] text-[#161616] pt-36 md:pt-44 pb-28">
+      <div className="relative min-h-screen bg-[#FBF6EA] text-[#161616]">
+        <PopPageHero
+          eyebrow={<span>Insights</span>}
+          title={<>Thinking Out{' '}<em>Loud</em></>}
+          issue={{ no: 'No.7', lines: ['The journal', 'New posts most weeks'] }}
+          art={{
+            src: '/art/pages/blog',
+            alt: 'Pop-art screenprint: a vintage typewriter mid-sentence under a popping light bulb, with crumpled drafts, newspapers and a coffee',
+            caption: 'Hot off the typewriter',
+          }}
+          sticker="Idea!"
+          mascot={{ bubble: 'Fresh off the press!' }}
+        >
+          <p>
+            Real plays from the frontlines of building agentic products solo. Tools, tactics, and the occasional war story.
+          </p>
+        </PopPageHero>
+      <div className="relative pt-16 md:pt-20 pb-28">
         <div aria-hidden="true" className="absolute inset-0 halftone-bg opacity-50 pointer-events-none" />
         <div className="relative max-w-5xl mx-auto px-6 md:px-8">
-          <div className="text-center mb-16">
-            <span className="text-[10px] uppercase tracking-[0.5em] text-[#E0301E] font-mono font-bold mb-6 block">
-              Insights
-            </span>
-            <h1 className="font-display text-5xl md:text-7xl font-black text-[#161616] tracking-tight mb-6">
-              Thinking Out{' '}
-              <span className="text-[#F5B700]" style={{ WebkitTextStroke: '2px #161616' }}>
-                Loud
-              </span>
-            </h1>
-            <p className="text-[#3a3733] text-lg font-body leading-relaxed max-w-2xl mx-auto">
-              Real plays from the frontlines of building agentic products solo. Tools, tactics, and the occasional war story.
-            </p>
-          </div>
-
           {posts.length === 0 ? (
             <p className="text-center text-[#161616]/40 font-body italic">
               First posts shipping shortly. Subscribe below to be notified.
@@ -84,6 +87,7 @@ export default function BlogIndex() {
             <NewsletterSignup />
           </div>
         </div>
+      </div>
       </div>
     </>
   );

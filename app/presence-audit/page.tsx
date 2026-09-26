@@ -4,6 +4,7 @@ import SampleScorecard from '@/components/presence/SampleScorecard';
 import { JsonLd, breadcrumbJsonLd, faqJsonLd, webPageJsonLd } from '@/lib/jsonld';
 import { buildMetadata, SITE } from '@/lib/seo';
 import { PRESENCE, TICKER, STEPS, WHY, PILLARS, DESK, PRESENCE_FAQ } from '@/data/presence-audit-page';
+import PopPageHero from '@/components/pop/PopPageHero';
 
 export const metadata = buildMetadata({
   title: PRESENCE.metaTitle,
@@ -27,6 +28,8 @@ export const metadata = buildMetadata({
  *
  * Requests land on the Audit Desk (/admin/audit) via /api/presence-audit.
  */
+const AUD_ALT = 'Pop-art screenprint: a hand holds a magnifying glass over a small storefront beside a phone showing star ratings and a checklist with one red check';
+
 export default function PresenceAuditPage() {
   return (
     <div className="min-h-screen overflow-x-clip bg-[#FBF6EA] text-[#161616]">
@@ -46,46 +49,39 @@ export default function PresenceAuditPage() {
       />
 
       {/* ─────────────── Hero, with the ask in it ─────────────── */}
-      <header className="relative border-b-2 border-[#161616] halftone-bg">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute -right-24 top-24 hidden h-[420px] w-[420px] rounded-full border-2 border-[#161616] bg-[#F5B700] opacity-90 lg:block"
-        />
-        <div className="relative z-[2] mx-auto grid max-w-6xl items-center gap-12 px-4 pb-16 pt-28 sm:px-6 md:pt-36 lg:grid-cols-[1.08fr_0.92fr] lg:gap-14 lg:pb-24 lg:pt-40">
-          <div className="min-w-0">
-            <span className="inline-flex items-center gap-2 whitespace-nowrap rounded-full border-2 border-[#161616] bg-white px-3.5 py-1.5 font-mono text-[9px] font-bold uppercase tracking-[0.14em] text-[#C4160B] shadow-[3px_3px_0_0_#161616] sm:px-4 sm:text-[10px] sm:tracking-[0.22em]">
-              <span className="h-2 w-2 rounded-full bg-[#E0301E]" aria-hidden />
-              Free · Three pillars · Yours to keep
-            </span>
-            <h1 className="mt-7 font-display text-[2.65rem] font-extrabold leading-[0.98] tracking-tight sm:text-6xl lg:text-[4.3rem]">
-              Most people decide about you{' '}
-              <em className="relative inline-block italic text-[#161616]">
-                <span className="relative z-[1]">before</span>
-                <span aria-hidden className="absolute inset-x-[-4px] bottom-[0.08em] z-0 h-[0.34em] -rotate-1 bg-[#F5B700]" />
-              </em>{' '}
-              they reach your website.
-            </h1>
-            <p className="mt-7 max-w-xl font-body text-lg leading-relaxed text-[#3d382e] md:text-xl">
-              A listing, a star rating and a pile of reviews, and their mind is made up before a page of yours loads. So we
-              grade all three, the way a stranger meets you, and email you the whole report.
-            </p>
+      <PopPageHero
+        eyebrow={
+          <span>
+            <span className="h-2 w-2 rounded-full bg-[#E0301E]" aria-hidden />
+            Free · Three pillars · Yours to keep
+          </span>
+        }
+        title={<>Most people decide about you{' '}<em>before</em>{' '}they reach your website.</>}
+        art={{ src: '/art/pages/audit', alt: AUD_ALT, caption: 'The way a stranger meets you' }}
+        sticker="Graded!"
+      >
+        <p>
+          A listing, a star rating and a pile of reviews, and their mind is made up before a page of yours loads. So we
+          grade all three, the way a stranger meets you, and email you the whole report.
+        </p>
 
-            <ul className="mt-8 hidden max-w-xl gap-3 sm:grid sm:grid-cols-3">
-              {PILLARS.map((p) => (
-                <li key={p.name} className="rounded-xl border-2 border-[#161616] bg-white px-4 py-3 shadow-[3px_3px_0_0_#161616]">
-                  <span className="block font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-[#C4160B]">{p.weight}% of the score</span>
-                  <span className="mt-1 block font-display text-lg font-extrabold italic leading-tight">{p.name.replace(/^The (\w)/, (_, c: string) => c.toUpperCase())}</span>
-                  <span className="mt-0.5 block font-body text-[12px] leading-snug text-[#161616]/60">{p.how}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
+        <ul className="mt-8 hidden max-w-xl gap-3 sm:grid sm:grid-cols-3">
+          {PILLARS.map((p) => (
+            <li key={p.name} className="rounded-xl border-2 border-[#161616] bg-white px-4 py-3 shadow-[3px_3px_0_0_#161616]">
+              <span className="block font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-[#C4160B]">{p.weight}% of the score</span>
+              <span className="mt-1 block font-display text-lg font-extrabold italic leading-tight">{p.name.replace(/^The (\w)/, (_, c: string) => c.toUpperCase())}</span>
+              <span className="mt-0.5 block font-body text-[12px] leading-snug text-[#161616]/60">{p.how}</span>
+            </li>
+          ))}
+        </ul>
+      </PopPageHero>
 
-          <div className="min-w-0 lg:pl-2">
-            <PresenceRequestForm id="get" />
-          </div>
+      {/* The ask, straight under the cover */}
+      <section className="relative border-b-2 border-[#161616] bg-[#FBF6EA]">
+        <div className="relative z-[2] mx-auto max-w-2xl px-4 pb-16 sm:px-6 lg:pb-20">
+          <PresenceRequestForm id="get" />
         </div>
-      </header>
+      </section>
 
       {/* ─────────────── Ticker ─────────────── */}
       <div className="overflow-hidden border-b-2 border-[#161616] bg-[#161616] py-3.5" aria-hidden>

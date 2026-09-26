@@ -2,6 +2,7 @@ import Link from '@/components/AttributionLink';
 import { buildMetadata, SITE } from '@/lib/seo';
 import { JsonLd, faqJsonLd, breadcrumbJsonLd } from '@/lib/jsonld';
 import { MONTANA_CITIES } from '@/data/montana-cities';
+import PopPageHero, { pop } from '@/components/pop/PopPageHero';
 
 /**
  * The parent of the local fleet. Catches the region-wide query ("web design
@@ -34,6 +35,8 @@ const FAQ = [
   },
 ];
 
+const MT_ALT = 'Pop-art screenprint: a Montana valley at sunrise with a lake and island, snow-capped peaks, a red barn, a grain elevator and a pickup on a country road';
+
 export default function MontanaPage() {
   return (
     <div className="bg-[#FBF6EA] text-[#161616]">
@@ -56,33 +59,26 @@ export default function MontanaPage() {
         ]}
       />
 
-      <section className="relative overflow-hidden border-b-2 border-[#161616] halftone-bg">
-        <div className="relative z-[2] max-w-5xl mx-auto px-6 pt-28 md:pt-36 pb-14 md:pb-20">
-          <span className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.18em] font-bold bg-white text-[#C4160B] border-2 border-[#161616] rounded-full px-3.5 py-1.5 shadow-[3px_3px_0_0_#161616]">
-            ▲ The Flathead Valley
-          </span>
-          <h1 className="mt-6 font-display font-extrabold leading-[0.98] tracking-tight text-4xl md:text-5xl lg:text-[3.9rem]">
-            The agentic studio in your valley, not in your inbox from three time zones away.
-          </h1>
-          <p className="mt-6 max-w-2xl text-lg md:text-xl text-[#3d382e] font-body leading-relaxed">
-            Modern Mustard Seed is a boutique design and agentic systems studio based in Kalispell. We design and build websites and brand, custom software, and voice agents for Northwest Montana and clients nationwide. You own everything we build.
-          </p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Link
-              href="/book"
-              className="rounded-full border-2 border-[#161616] bg-[#F5B700] px-8 py-4 font-sans font-extrabold text-sm uppercase tracking-[0.14em] shadow-[5px_5px_0_0_#161616] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#161616]"
-            >
-              See The Work
-            </Link>
-            <a
-              href={`tel:${SITE.phoneE164}`}
-              className="rounded-full border-2 border-[#161616] bg-white px-8 py-4 font-sans font-extrabold text-sm uppercase tracking-[0.14em] shadow-[5px_5px_0_0_#161616] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#161616]"
-            >
-              Call {SITE.phone}
-            </a>
-          </div>
+      <PopPageHero
+        eyebrow={<span>▲ The Flathead Valley</span>}
+        title={<>The agentic studio in your valley, not in your inbox from three time zones away.</>}
+        issue={{ no: 'No.1', lines: ['The Flathead Valley', 'Kalispell, Montana'] }}
+        art={{ src: '/art/pages/montana', alt: MT_ALT, caption: 'Big sky, short drive' }}
+        sticker="Howdy!"
+        mascot={{ bubble: 'Right down the road!' }}
+      >
+        <p>
+          Modern Mustard Seed is a boutique design and agentic systems studio based in Kalispell. We design and build websites and brand, custom software, and voice agents for Northwest Montana and clients nationwide. You own everything we build.
+        </p>
+        <div className={pop.actions}>
+          <Link href="/book" className={pop.cta}>
+            See The Work
+          </Link>
+          <a href={`tel:${SITE.phoneE164}`} className={pop.ctaAlt}>
+            Call {SITE.phone}
+          </a>
         </div>
-      </section>
+      </PopPageHero>
 
       <nav aria-label="Explore the studio" className="max-w-6xl mx-auto px-6 py-8 flex flex-wrap gap-6 font-bold text-[#B92417] underline underline-offset-4">
         <Link href="/agentic-websites">Agentic websites, explained</Link>

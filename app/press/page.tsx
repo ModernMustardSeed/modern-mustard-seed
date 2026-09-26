@@ -2,6 +2,7 @@ import { buildMetadata, SITE } from '@/lib/seo';
 import { PRESS, pressTiers, pressFaq } from '@/data/press';
 import PressRunExperience from '@/components/press/PressRunExperience';
 import { HowThePressWorks, FreshProofs, PressFaqSection, PressCrossSell } from '@/components/press/PressSections';
+import PopPageHero, { pop } from '@/components/pop/PopPageHero';
 
 export const metadata = buildMetadata({
   title: PRESS.metaTitle,
@@ -60,21 +61,23 @@ export default function PressPage() {
     <div id="top" className="bg-[#FBF6EA] text-[#161616]">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      {/* ─── MASTHEAD + THE PRESS RUN ─── */}
+      {/* ─── MASTHEAD: the comic cover, then THE PRESS RUN ─── */}
+      <PopPageHero
+        eyebrow={<span>{PRESS.wordmark}</span>}
+        title={<>That menu taped to<br className="hidden md:block" /> your counter? <em>Ouch.</em></>}
+        issue={{ no: 'No.1', lines: ['The press run', 'Free proof'] }}
+        sticker="Stop the press!"
+        mascot={{ bubble: 'Hand me your price list!' }}
+      >
+        <p>
+          {PRESS.promise}
+        </p>
+        <p className={pop.note}>
+          Free proof · No card · Every price exactly as you wrote it
+        </p>
+      </PopPageHero>
       <section className="halftone-bg border-b-2 border-[#161616]">
-        <div className="max-w-5xl mx-auto px-5 pt-16 md:pt-24 pb-16 md:pb-24">
-          <div className="text-center mb-10 md:mb-14">
-            <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#E0301E] font-bold mb-4">{PRESS.wordmark}</p>
-            <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-black text-[#161616] tracking-tight leading-[0.98]">
-              That menu taped to<br className="hidden md:block" /> your counter? Ouch.
-            </h1>
-            <p className="font-body text-base md:text-lg text-[#161616]/70 max-w-2xl mx-auto mt-5 leading-relaxed">
-              {PRESS.promise}
-            </p>
-            <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-[#161616]/50 mt-5">
-              Free proof · No card · Every price exactly as you wrote it
-            </p>
-          </div>
+        <div className="max-w-5xl mx-auto px-5 pb-16 md:pb-24">
           <div className="max-w-2xl mx-auto">
             <PressRunExperience />
           </div>

@@ -4,6 +4,7 @@ import { buildMetadata, SITE } from '@/lib/seo';
 import { JsonLd, faqJsonLd, breadcrumbJsonLd, serviceJsonLd, webPageJsonLd } from '@/lib/jsonld';
 import { MONTANA_CITIES, getCity, cityFaqs } from '@/data/montana-cities';
 import { DEMO_PRODUCTS, formatUsd } from '@/lib/demo-order';
+import PopPageHero, { pop } from '@/components/pop/PopPageHero';
 
 // Five service areas, one Kalispell business. Preserve each town's local context.
 export const dynamicParams = false;
@@ -22,6 +23,8 @@ export async function generateMetadata({ params }: { params: Promise<{ city: str
     path: `/montana/${city.slug}`,
   });
 }
+
+const MT_ALT = 'Pop-art screenprint: a Montana valley at sunrise with a lake and island, snow-capped peaks, a red barn, a grain elevator and a pickup on a country road';
 
 export default async function CityPage({ params }: { params: Promise<{ city: string }> }) {
   const { city: slug } = await params;
@@ -53,48 +56,36 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
         ]}
       />
 
-      {/* ─────────────── HERO ─────────────── */}
-      <section className="relative overflow-hidden border-b-2 border-[#161616] halftone-bg">
-        <div className="relative z-[2] max-w-6xl mx-auto px-6 pt-28 md:pt-36 pb-14 md:pb-20">
-          <div className="grid lg:grid-cols-12 gap-10 lg:gap-8 items-start">
-            <div className="lg:col-span-7">
-              <span className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.18em] font-bold bg-white text-[#C4160B] border-2 border-[#161616] rounded-full px-3.5 py-1.5 shadow-[3px_3px_0_0_#161616]">
-                ▲ {city.nameWithState}
-              </span>
-              <h1 className="mt-6 font-display font-extrabold leading-[0.98] tracking-tight text-4xl md:text-5xl lg:text-[3.9rem]">
-                Websites and a phone that always answers, for {city.name} businesses.
-              </h1>
-              <p className="mt-6 max-w-xl text-lg md:text-xl text-[#3d382e] font-body leading-relaxed">
-                Modern Mustard Seed is a boutique design and agentic systems studio based in Kalispell, serving {city.name} and clients nationwide. We design and build websites and brand, custom software, and voice agents. You own the code and accounts.
-              </p>
-              <div className="mt-8 flex flex-wrap gap-3">
-                <Link
-                  href="/book"
-                  className="rounded-full border-2 border-[#161616] bg-[#F5B700] text-[#161616] px-8 py-4 font-sans font-extrabold text-sm uppercase tracking-[0.14em] shadow-[5px_5px_0_0_#161616] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#161616]"
-                >
-                  See the Work
-                </Link>
-                <a
-                  href={`tel:${SITE.phoneE164}`}
-                  className="rounded-full border-2 border-[#161616] bg-white px-8 py-4 font-sans font-extrabold text-sm uppercase tracking-[0.14em] shadow-[5px_5px_0_0_#161616] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#161616]"
-                >
-                  Call {SITE.phone}
-                </a>
-              </div>
-              <p className="mt-6 font-body text-[15px] text-[#161616]/70">
-                Our own line is answered by the voice agent we sell. Call it at midnight and try to stump it.
-              </p>
-            </div>
+      <PopPageHero
+        eyebrow={<span>▲ {city.nameWithState}</span>}
+        title={<>Websites and a phone that always answers, for {city.name} businesses.</>}
+        art={{ src: '/art/pages/montana', alt: MT_ALT, caption: `Hello, ${city.name}` }}
+        sticker="Howdy!"
+      >
+        <p>
+          Modern Mustard Seed is a boutique design and agentic systems studio based in Kalispell, serving {city.name} and clients nationwide. We design and build websites and brand, custom software, and voice agents. You own the code and accounts.
+        </p>
+        <div className={pop.actions}>
+          <Link href="/book" className={pop.cta}>
+            See the Work
+          </Link>
+          <a href={`tel:${SITE.phoneE164}`} className={pop.ctaAlt}>
+            Call {SITE.phone}
+          </a>
+        </div>
+        <p className={pop.note}>
+          Our own line is answered by the voice agent we sell. Call it at midnight and try to stump it.
+        </p>
+      </PopPageHero>
 
-            {/* The local truth card. This is what makes the page about THIS town. */}
-            <div className="lg:col-span-5">
-              <div className="rounded-2xl border-[3px] border-[#161616] bg-[#161616] p-6 shadow-[9px_9px_0_0_#F5B700]">
-                <p className="font-mono text-[10px] uppercase tracking-[0.24em] font-bold text-[#F5B700]">
-                  Why the phone gets missed here
-                </p>
-                <p className="mt-4 font-body text-[15px] text-[#FBF6EA]/85 leading-relaxed">{city.phoneProblem}</p>
-              </div>
-            </div>
+      {/* The local truth card. This is what makes the page about THIS town. */}
+      <section className="border-b-2 border-[#161616] bg-[#FBF6EA]">
+        <div className="max-w-6xl mx-auto px-6 pb-12">
+          <div className="max-w-3xl rounded-2xl border-[3px] border-[#161616] bg-[#161616] p-6 md:p-8 shadow-[9px_9px_0_0_#F5B700]">
+            <p className="font-mono text-[10px] uppercase tracking-[0.24em] font-bold text-[#F5B700]">
+              Why the phone gets missed here
+            </p>
+            <p className="mt-4 font-body text-[15px] text-[#FBF6EA]/85 leading-relaxed">{city.phoneProblem}</p>
           </div>
         </div>
       </section>

@@ -3,6 +3,7 @@ import { buildMetadata } from '@/lib/seo';
 import { JsonLd, breadcrumbJsonLd } from '@/lib/jsonld';
 import { byId, isRecurring, type Service } from '@/data/proposal-menu';
 import ProposalDoc from '@/components/ProposalDoc';
+import sp from './sample-proposal.module.css';
 
 export const metadata = buildMetadata({
   title: 'See a Sample Proposal',
@@ -47,17 +48,31 @@ export default function SampleProposalPage() {
   const hasVariable = lines.some((l) => svc(l)?.variable);
 
   return (
-    <div className="relative min-h-screen bg-[#FBF6EA] text-[#161616] pt-28 pb-24 px-5">
+    <div className="relative min-h-screen bg-[#FBF6EA] text-[#161616] pt-28 pb-24 px-5 overflow-x-clip">
+      <div aria-hidden="true" className={sp.rays} />
       <JsonLd data={breadcrumbJsonLd([{ name: 'Home', url: '/' }, { name: 'Sample Proposal', url: '/sample-proposal' }])} />
       <div aria-hidden="true" className="absolute inset-0 halftone-bg opacity-40 pointer-events-none" />
       <div className="relative max-w-3xl mx-auto">
         <div className="text-center mb-6">
-          <span className="inline-block text-[10px] uppercase tracking-[0.25em] font-mono font-bold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-full px-4 py-1.5">
+          <span className={sp.tag}>
             Sample · this is what you get
           </span>
         </div>
 
-        {/* Doc */}
+        {/* Doc, taped up with Mr. Mustard pointing at it */}
+        <div className={sp.frame}>
+        <span className={`${sp.tape} ${sp.tapeL}`} aria-hidden="true" />
+        <span className={`${sp.tape} ${sp.tapeR}`} aria-hidden="true" />
+        <p className={sp.pow} aria-hidden="true"><span>Fixed price!</span></p>
+        <div className={sp.mascot} aria-hidden="true">
+          <span className={sp.bubble}>Yours looks like this!</span>
+          <picture>
+            <source type="image/avif" srcSet="/brand/mascot-hero-480.avif 480w, /brand/mascot-hero-720.avif 720w" sizes="(max-width: 760px) 84px, 140px" />
+            <source type="image/webp" srcSet="/brand/mascot-hero-480.webp 480w, /brand/mascot-hero-720.webp 720w" sizes="(max-width: 760px) 84px, 140px" />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/brand/mascot.png" alt="" width={480} height={652} decoding="async" />
+          </picture>
+        </div>
         <ProposalDoc
           preparedFor={`${SAMPLE.client_name}, ${SAMPLE.client_company}`}
           headlineFor={SAMPLE.client_company}
@@ -71,6 +86,7 @@ export default function SampleProposalPage() {
           hasVariable={hasVariable}
           hidePrices
         />
+        </div>
 
         {/* Sample sign/pay preview (disabled) */}
         <div className="mt-6 pop-card p-7 text-center">

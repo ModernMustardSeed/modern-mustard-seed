@@ -3,6 +3,7 @@ import NewsletterSignup from '@/components/NewsletterSignup';
 import { JsonLd, breadcrumbJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
 import { listContent } from '@/lib/content';
+import PopPageHero from '@/components/pop/PopPageHero';
 
 export const metadata = buildMetadata({
   title: 'Playbooks',
@@ -22,24 +23,26 @@ export default function PlaybooksPage() {
           { name: 'Playbooks', url: '/playbooks' },
         ])}
       />
-      <div className="relative min-h-screen bg-[#FBF6EA] text-[#161616] pt-36 md:pt-44 pb-28">
+      <div className="relative min-h-screen bg-[#FBF6EA] text-[#161616]">
+        <PopPageHero
+          eyebrow={<span>Playbooks</span>}
+          title={<>Run These{' '}<em>Yourself</em></>}
+          issue={{ no: 'No.6', lines: ['Playbooks', 'Free to read'] }}
+          art={{
+            src: '/art/pages/store',
+            alt: 'Pop-art screenprint: a stack of playbooks tied with twine on a shop counter, one open to hand-drawn diagrams, beside a desk bell and a mustard seedling',
+            caption: 'Free to read, free to use',
+          }}
+          sticker="Free!"
+          mascot={{ bubble: 'Ship it today!' }}
+        >
+          <p>
+            The exact playbooks we run on client engagements. Free to read. Free to use. Built so you can ship them today.
+          </p>
+        </PopPageHero>
+      <div className="relative pt-16 md:pt-20 pb-28">
         <div aria-hidden="true" className="absolute inset-0 halftone-bg opacity-50 pointer-events-none" />
         <div className="relative max-w-5xl mx-auto px-6 md:px-8">
-          <div className="text-center mb-16">
-            <span className="text-[10px] uppercase tracking-[0.5em] text-[#E0301E] font-mono font-bold mb-6 block">
-              Playbooks
-            </span>
-            <h1 className="font-display text-5xl md:text-7xl font-black text-[#161616] tracking-tight mb-6">
-              Run These{' '}
-              <span className="text-[#F5B700]" style={{ WebkitTextStroke: '2px #161616' }}>
-                Yourself
-              </span>
-            </h1>
-            <p className="text-[#3a3733] text-lg font-body leading-relaxed max-w-2xl mx-auto">
-              The exact playbooks we run on client engagements. Free to read. Free to use. Built so you can ship them today.
-            </p>
-          </div>
-
           {/* Featured interactive tool */}
           <Link
             href="/prompt-playbook"
@@ -135,6 +138,7 @@ export default function PlaybooksPage() {
             subhead="One email per drop. Subscribers get the PDF version of each playbook free."
           />
         </div>
+      </div>
       </div>
     </>
   );

@@ -3,6 +3,7 @@
 import { useState, useCallback } from 'react';
 import Link from 'next/link';
 import { trackLead, metaDedup } from '@/lib/analytics';
+import PopPageHero from '@/components/pop/PopPageHero';
 
 /**
  * Bottleneck Breaker. One clean flow: drop your site, the engine finds the one
@@ -121,24 +122,26 @@ export default function BottleneckBreaker() {
     'w-full bg-white border-2 border-[#161616] rounded-lg px-4 py-3 text-[#161616] font-body placeholder-[#161616]/40 focus:outline-none focus:shadow-[3px_3px_0_0_#161616] transition-shadow';
 
   return (
-    <section className="relative min-h-screen bg-[#FBF6EA] text-[#161616] pt-32 md:pt-40 pb-24 px-6 overflow-hidden">
+    <>
+    <PopPageHero
+      eyebrow={<span>Free · 60 seconds · No fluff</span>}
+      title={<>Bottleneck{' '}<em>Breaker</em></>}
+      art={{
+        src: '/art/pages/audit',
+        alt: 'Pop-art screenprint: a hand holds a magnifying glass over a storefront beside a phone showing stars and a rising bar chart and a checklist with one red check',
+        caption: 'Found it',
+      }}
+      sticker="Break it!"
+      mascot={{ bubble: 'Drop your site below!' }}
+    >
+      <p>
+        Every business has one thing quietly costing it the most. Drop your site, and we will find your biggest bottleneck and show you exactly how to break it.
+      </p>
+    </PopPageHero>
+    <section className="relative bg-[#FBF6EA] text-[#161616] pt-4 md:pt-8 pb-24 px-6 overflow-hidden">
       <div aria-hidden className="absolute inset-0 z-0 pointer-events-none" style={{ backgroundImage: 'radial-gradient(rgba(245,183,0,0.28) 1.5px, transparent 1.6px)', backgroundSize: '20px 20px' }} />
 
       <div className="relative z-10 max-w-3xl mx-auto">
-        {/* Framing */}
-        <div className="text-center mb-10">
-          <span className="text-[10px] uppercase tracking-[0.4em] text-[#E0301E] font-mono font-bold block mb-4">Free · 60 seconds · No fluff</span>
-          <h1 className="font-display text-5xl md:text-7xl font-black tracking-tight leading-[0.95]">
-            Bottleneck{' '}
-            <span className="inline-block -rotate-[5deg] rounded-[10px] border-[3px] border-[#161616] bg-[#F5B700] px-3 py-1 text-[0.8em] leading-none uppercase tracking-tight shadow-[4px_4px_0_0_#161616,7px_7px_0_0_#F5B700]">
-              Breaker
-            </span>
-          </h1>
-          <p className="text-[#3a3733] text-lg md:text-xl font-body leading-relaxed mt-6 max-w-2xl mx-auto">
-            Every business has one thing quietly costing it the most. Drop your site, and we will find your biggest bottleneck and show you exactly how to break it.
-          </p>
-        </div>
-
         {/* The tool */}
         {!result && !loading && (
           <div className="pop-card p-6 md:p-8 max-w-xl mx-auto">
@@ -275,5 +278,6 @@ export default function BottleneckBreaker() {
         )}
       </div>
     </section>
+    </>
   );
 }

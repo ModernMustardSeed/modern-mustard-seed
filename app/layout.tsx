@@ -20,6 +20,8 @@ import { ART_STORAGE_KEY } from '@/lib/art-styles';
 import './globals.css';
 import './studio-chrome.css';
 import './art-styles.css';
+import './comic-type.css';
+import ComicScope from '@/components/pop/ComicScope';
 
 const bodyFont = DM_Sans({ subsets: ['latin'], style: ['normal'], display: 'optional', variable: '--font-body' });
 const displayFont = Playfair_Display({ subsets: ['latin'], style: ['normal', 'italic'], display: 'optional', variable: '--font-display' });
@@ -82,6 +84,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           a utility would out-rank the admin and portal rule that keeps their
           old ink ground and white type. */}
       <body className="selection:bg-[#F5B700] selection:text-[#161616]">
+        <ComicScope />
         <div className="relative z-30">
           <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[9999] focus:bg-[#F5B700] focus:text-[#161616] focus:px-5 focus:py-3">Skip to content</a>
           <Navbar />

@@ -1,4 +1,5 @@
 import { buildMetadata } from '@/lib/seo';
+import PopPageHero from '@/components/pop/PopPageHero';
 
 export const metadata = buildMetadata({
   title: 'Privacy Policy',
@@ -10,13 +11,19 @@ export const metadata = buildMetadata({
 export default function PrivacyPage() {
   return (
     <>
-      <div className="relative min-h-screen bg-[#FBF6EA] text-[#161616] pt-36 md:pt-44 pb-28 overflow-hidden">
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-[420px] halftone-bg opacity-60 [mask-image:linear-gradient(to_bottom,black,transparent)]" aria-hidden="true" />
+      <div className="relative min-h-screen bg-[#FBF6EA] text-[#161616] overflow-x-clip">
+        <PopPageHero
+          eyebrow={<span>Last updated: 2026-07-20</span>}
+          title={<>Privacy <em>Policy</em></>}
+          art={{
+            src: '/art/pages/legal',
+            alt: 'Pop-art screenprint: an open ledger, a brass padlock and key, a document sealed with red wax and a fountain pen on a desk',
+          }}
+          mascot={{ bubble: 'We never sell it!' }}
+        />
+      <div className="relative pt-14 md:pt-20 pb-28">
         <div className="relative max-w-3xl mx-auto px-6 md:px-8">
-          <h1 className="font-display text-4xl md:text-6xl font-black text-[#161616] tracking-tight leading-[1.05] mb-3">
-            Privacy <span className="italic text-[#B92417]">Policy</span>
-          </h1>
-          <p className="inline-block text-[10px] uppercase tracking-[0.25em] font-mono font-bold text-[#161616] bg-[#F5B700] border-2 border-[#161616] rounded-full px-3 py-1 shadow-[3px_3px_0_0_#161616] mb-10">Last updated: 2026-07-20</p>
+
 
           <div className="mdx-prose mdx-prose-pop pop-card-cream p-6 md:p-10 space-y-5 [&>h2:first-child]:mt-0">
             <h2>Information we collect</h2>
@@ -64,6 +71,7 @@ export default function PrivacyPage() {
             </p>
           </div>
         </div>
+      </div>
       </div>
     </>
   );

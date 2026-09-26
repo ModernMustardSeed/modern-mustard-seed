@@ -9,6 +9,7 @@ import {
 import { buildMetadata, SITE } from '@/lib/seo';
 import { industries, industryBySlug } from '@/data/industries';
 import { bookingUrl } from '@/data/socials';
+import PopPageHero, { pop } from '@/components/pop/PopPageHero';
 
 type Params = Promise<{ industry: string }>;
 
@@ -26,6 +27,8 @@ export async function generateMetadata({ params }: { params: Params }) {
     path: `/for/${industry}`,
   });
 }
+
+const IND_ALT = 'Pop-art screenprint: a mountain-town main street of storefronts, a diner, a bakery, a hardware store and a salon, with a contractor pickup out front';
 
 export default async function IndustryPage({ params }: { params: Params }) {
   const { industry } = await params;
@@ -70,52 +73,36 @@ export default async function IndustryPage({ params }: { params: Params }) {
           ]),
         ]}
       />
-      <article className="relative min-h-screen bg-[#FBF6EA] text-[#161616] pt-36 md:pt-44 overflow-hidden">
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-[560px] halftone-bg opacity-60 [mask-image:linear-gradient(to_bottom,black,transparent)]" aria-hidden="true" />
-        {/* Hero */}
-        <header className="relative max-w-5xl mx-auto px-6 md:px-8 text-center mb-20">
-          <Link
-            href="/for"
-            className="text-[10px] uppercase tracking-[0.3em] text-[#161616]/55 font-mono font-bold hover:text-[#B92417] transition-colors inline-block mb-10"
-          >
-            ← All Industries
-          </Link>
+      <article className="relative min-h-screen bg-[#FBF6EA] text-[#161616] overflow-x-clip">
 
-          <span className="text-[10px] uppercase tracking-[0.4em] text-[#B92417] font-mono font-bold mb-6 block">
-            {i.eyebrow}
-          </span>
-
-          <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-black text-[#161616] tracking-tight leading-[1.05] mb-8">
-            {i.h1}
-          </h1>
-
-          <p className="industry-lede text-[#3a3733] text-base md:text-lg font-body leading-relaxed max-w-3xl mx-auto mb-10">
+        <PopPageHero
+          eyebrow={
+            <>
+              <Link href="/for" className={pop.back}>
+                ← All Industries
+              </Link>
+              <span className={pop.pill}>{i.eyebrow}</span>
+            </>
+          }
+          title={i.h1}
+          art={{ src: '/art/pages/industries', alt: IND_ALT, caption: 'Built for the work you do' }}
+          sticker="Open!"
+        >
+          <p className="industry-lede">
             {i.lede}
           </p>
-
-          <div className="flex flex-col sm:flex-row flex-wrap gap-3 justify-center">
-            <Link
-              href={i.build.href}
-              className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all text-center text-[#161616] bg-[#F5B700]"
-            >
+          <div className={pop.actions}>
+            <Link href={i.build.href} className={pop.cta}>
               {i.build.label}
             </Link>
-            <Link
-              href="/audit"
-              className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all text-center text-[#161616] bg-white"
-            >
+            <Link href="/audit" className={pop.ctaAlt}>
               Run the Bottleneck Breaker
             </Link>
-            <a
-              href={bookingUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#F5B700] hover:-translate-y-0.5 transition-all text-center text-[#FBF6EA] bg-[#161616]"
-            >
+            <a href={bookingUrl} target="_blank" rel="noopener noreferrer" className={pop.ctaAlt}>
               Book a Discovery Call
             </a>
           </div>
-        </header>
+        </PopPageHero>
 
         {/* Builds */}
         <section className="relative max-w-6xl mx-auto px-6 md:px-8 py-12">

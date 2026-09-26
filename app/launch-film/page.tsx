@@ -4,6 +4,7 @@ import { LAUNCH_FILM, EXAMPLE_FILM, REEL, launchFilmTiers, launchFilmMethod, lau
 import LaunchFilmPlayer from '@/components/launch-film/LaunchFilmPlayer';
 import LaunchFilmTiers from '@/components/launch-film/LaunchFilmTiers';
 import TreatmentForm from '@/components/launch-film/TreatmentForm';
+import PopPageHero, { pop } from '@/components/pop/PopPageHero';
 
 export const metadata = buildMetadata({
   title: LAUNCH_FILM.metaTitle,
@@ -74,16 +75,26 @@ export default function LaunchFilmPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       {/* ─── THE PREMIERE ─── */}
-      <section className="halftone-bg border-b-2 border-[#161616]">
-        <div className="max-w-5xl mx-auto px-5 pt-16 md:pt-24 pb-14 md:pb-20">
-          <div className="text-center mb-10 md:mb-12">
-            <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#E0301E] font-bold mb-4">{LAUNCH_FILM.wordmark}</p>
-            <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-black text-[#161616] tracking-tight leading-[0.98]">
-              The film your launch <em className="italic">deserves</em>.
-            </h1>
-            <p className="font-body text-base md:text-lg text-[#161616]/70 max-w-2xl mx-auto mt-5 leading-relaxed">{LAUNCH_FILM.promise}</p>
-          </div>
+      <PopPageHero
+        eyebrow={<span>{LAUNCH_FILM.wordmark}</span>}
+        title={<>The film your launch <em>deserves</em>.</>}
+        issue={{ no: 'No.9', lines: ['The launch film', 'Cut from your real product'] }}
+        sticker="Premiere!"
+        mascot={{ bubble: 'Popcorn ready!' }}
+      >
+        <p>{LAUNCH_FILM.promise}</p>
+        <div className={pop.actions}>
+          <a href="#book" className={pop.cta}>
+            See the three films
+          </a>
+          <a href="#treatment" className={pop.ctaAlt}>
+            Start with the treatment
+          </a>
+        </div>
+      </PopPageHero>
 
+      <section className="border-b-2 border-[#161616]">
+        <div className="max-w-5xl mx-auto px-5 pb-14 md:pb-20">
           <div className="max-w-4xl mx-auto">
             <LaunchFilmPlayer
               cuts={{ webm: EXAMPLE_FILM.wide.webm, mp4: EXAMPLE_FILM.wide.mp4 }}
@@ -101,20 +112,6 @@ export default function LaunchFilmPage() {
             </p>
           </div>
 
-          <div className="mt-10 md:mt-12 flex flex-col sm:flex-row items-center justify-center gap-3">
-            <a
-              href="#book"
-              className="rounded-full bg-[#161616] border-2 border-[#161616] px-8 py-3.5 font-sans font-extrabold text-[#FBF6EA] text-xs uppercase tracking-[0.18em] shadow-[4px_4px_0_0_#F5B700] transition-all hover:-translate-y-0.5"
-            >
-              See the three films
-            </a>
-            <a
-              href="#treatment"
-              className="rounded-full bg-white border-2 border-[#161616] px-8 py-3.5 font-sans font-extrabold text-[#161616] text-xs uppercase tracking-[0.18em] shadow-[4px_4px_0_0_#161616] transition-all hover:-translate-y-0.5"
-            >
-              Start with the treatment
-            </a>
-          </div>
         </div>
       </section>
 

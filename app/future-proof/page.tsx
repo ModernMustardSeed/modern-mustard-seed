@@ -3,6 +3,7 @@ import NewsletterSignup from '@/components/NewsletterSignup';
 import { JsonLd, breadcrumbJsonLd, faqJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
 import { bookingUrl } from '@/data/socials';
+import PopPageHero from '@/components/pop/PopPageHero';
 
 export const metadata = buildMetadata({
   title: 'Future-Proof Your Business',
@@ -63,24 +64,21 @@ export default function AiProofPage() {
           faqJsonLd(faq),
         ]}
       />
-      <div className="relative min-h-screen bg-[#FBF6EA] text-[#161616] pt-36 md:pt-44 pb-28">
+      <div className="relative min-h-screen bg-[#FBF6EA] text-[#161616]">
+        <PopPageHero
+          eyebrow={<span>Future-Proof Your Business</span>}
+          title={<>Defend the{' '}<em>Moat</em></>}
+          issue={{ no: 'No.3', lines: ['Audit', 'Harden', 'Re-equip'] }}
+          sticker="Hold!"
+          mascot={{ bubble: 'Your business stays yours!' }}
+        >
+          <p>
+            For owners who already built something real. We audit your operation against the agentic shift, harden the surfaces automation will hit first, and re-equip your team to run the new stack. Your business stays yours.
+          </p>
+        </PopPageHero>
+      <div className="relative pt-14 md:pt-20 pb-28">
         <div aria-hidden="true" className="absolute inset-0 halftone-bg opacity-50 pointer-events-none" />
         <div className="relative max-w-5xl mx-auto px-6 md:px-8">
-          <div className="text-center mb-16">
-            <span className="text-[10px] uppercase tracking-[0.5em] text-[#E0301E] font-mono font-bold mb-6 block">
-              Future-Proof Your Business
-            </span>
-            <h1 className="font-display text-5xl md:text-7xl font-black text-[#161616] tracking-tight mb-6 leading-[1.05]">
-              Defend the{' '}
-              <span className="text-[#F5B700]" style={{ WebkitTextStroke: '2px #161616' }}>
-                Moat
-              </span>
-            </h1>
-            <p className="text-[#3a3733] text-lg font-body leading-relaxed max-w-2xl mx-auto">
-              For owners who already built something real. We audit your operation against the agentic shift, harden the surfaces automation will hit first, and re-equip your team to run the new stack. Your business stays yours.
-            </p>
-          </div>
-
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20">
             {phases.map((p) => (
               <article key={p.title} className="pop-card p-8 md:p-10 hover:-translate-y-1 transition-transform duration-300">
@@ -108,9 +106,7 @@ export default function AiProofPage() {
             <div className="text-center mb-10">
               <h2 className="font-display text-3xl md:text-4xl font-black text-[#161616] tracking-tight mb-3">
                 Common{' '}
-                <span className="text-[#F5B700]" style={{ WebkitTextStroke: '1.5px #161616' }}>
-                  Questions
-                </span>
+                <em>Questions</em>
               </h2>
             </div>
             <div className="space-y-4">
@@ -162,6 +158,7 @@ export default function AiProofPage() {
             subhead="Real plays for defending an existing business through the agentic shift. One letter a week, from the desk."
           />
         </div>
+      </div>
       </div>
     </>
   );

@@ -1,0 +1,5 @@
+/* The comic cover replaces the shared sales page's own ink hero on this
+   route: the cover carries the same tagline, promise and buy button, so the
+   component's first band steps aside here. */
+.sales > div > section:first-of-type { display: none; }
+.fine { margin-top: 14px !important; font-family: var(--font-mono), monospace; font-size: 12px !important; letter-spacing: .06em; color: #5c554a !important; }

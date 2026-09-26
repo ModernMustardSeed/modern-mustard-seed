@@ -2,6 +2,7 @@ import { buildMetadata, SITE } from '@/lib/seo';
 import { DEMO_AGENT, demoAgentTiers, demoAgentFaq, demoAgentUsd } from '@/data/demo-agent';
 import BuildExperience from '@/components/demo-agent/BuildExperience';
 import { HowItWorks, Boundaries, Faq, MeetTheTrainer, CrossSell, GiveHimAHome } from '@/components/demo-agent/DemoAgentSections';
+import PopPageHero, { pop } from '@/components/pop/PopPageHero';
 
 export const metadata = buildMetadata({
   title: DEMO_AGENT.metaTitle,
@@ -70,21 +71,22 @@ export default function DemoAgentPage() {
     <div id="top" className="bg-[#FBF6EA] text-[#161616]">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      {/* ─── HERO + THE BUILD ─── */}
+      {/* ─── HERO: the comic cover, then THE BUILD ─── */}
+      <PopPageHero
+        eyebrow={<span>[ The Voice Agent Build ]</span>}
+        title={<>Your missed calls just met<br className="hidden md:block" /> their worst enemy.</>}
+        issue={{ no: 'No.1', lines: ['The build', 'Free, live'] }}
+        mascot={{ bubble: 'Train me. I pick up.' }}
+      >
+        <p>
+          {DEMO_AGENT.promise}
+        </p>
+        <p className={pop.note}>
+          Free · No card · He talks to you live
+        </p>
+      </PopPageHero>
       <section className="halftone-bg border-b-2 border-[#161616]">
-        <div className="max-w-5xl mx-auto px-5 pt-16 md:pt-24 pb-16 md:pb-24">
-          <div className="text-center mb-10 md:mb-14">
-            <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#C4160B] font-bold mb-4">[ The Voice Agent Build ]</p>
-            <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-black text-[#161616] tracking-tight leading-[0.98]">
-              Your missed calls just met<br className="hidden md:block" /> their worst enemy.
-            </h1>
-            <p className="font-body text-base md:text-lg text-[#161616]/70 max-w-2xl mx-auto mt-5 leading-relaxed">
-              {DEMO_AGENT.promise}
-            </p>
-            <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-[#161616]/70 mt-5">
-              Free · No card · He talks to you live
-            </p>
-          </div>
+        <div className="max-w-5xl mx-auto px-5 pb-16 md:pb-24">
           <div className="max-w-2xl mx-auto">
             <BuildExperience />
           </div>

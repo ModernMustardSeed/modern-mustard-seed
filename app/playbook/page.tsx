@@ -3,6 +3,7 @@ import PortalShowcase from '@/components/PortalShowcase';
 import { JsonLd, breadcrumbJsonLd, webPageJsonLd } from '@/lib/jsonld';
 import { buildMetadata, SITE } from '@/lib/seo';
 import { DELIVERABLES, CADENCE, STANDARD } from '@/data/engagement';
+import PopPageHero, { pop } from '@/components/pop/PopPageHero';
 
 export const metadata = buildMetadata({
   title: 'What You Get',
@@ -48,48 +49,33 @@ export default function PlaybookPage() {
         ]}
       />
 
-      {/* ─────────────── Hero ─────────────── */}
-      <header className="relative overflow-hidden border-b-2 border-[#161616]">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 opacity-[0.05]"
-          style={{
-            backgroundImage:
-              'linear-gradient(#161616 1px, transparent 1px), linear-gradient(90deg, #161616 1px, transparent 1px)',
-            backgroundSize: '72px 72px',
-          }}
-        />
-        <div className="relative mx-auto max-w-6xl px-6 pt-32 pb-16 md:pt-44 md:pb-24">
-          <div className="max-w-3xl">
-            <span className="inline-flex items-center rounded-full border-2 border-[#161616] bg-white px-4 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-[#C4160B] shadow-[3px_3px_0_0_#161616]">
-              What you get
-            </span>
-            <h1 className="mt-7 font-display text-5xl font-extrabold leading-[0.98] tracking-tight md:text-6xl lg:text-[4.4rem]">
-              The whole asset, in your name, with{' '}
-              <em className="italic text-[#B48600]">the keys</em>.
-            </h1>
-            <p className="mt-7 max-w-2xl font-body text-lg leading-relaxed text-[#3d382e] md:text-xl">
-              Plenty of studios will tell you what they do. Fewer will tell you, before you pay,
-              exactly what you are holding at the end. This page is that list, and it is on the page
-              rather than behind an email form.
-            </p>
-            <div className="mt-9 flex flex-wrap gap-3">
-              <Link
-                href="/book"
-                className="inline-flex items-center gap-2 rounded-full border-2 border-[#161616] bg-[#161616] px-7 py-4 font-sans text-[12px] font-bold uppercase tracking-[0.14em] text-[#FBF6EA] shadow-[5px_5px_0_0_#F5B700] transition-transform hover:-translate-y-0.5"
-              >
-                Begin an engagement →
-              </Link>
-              <Link
-                href="/work-with-us"
-                className="inline-flex items-center gap-2 rounded-full border-2 border-[#161616] bg-white px-7 py-4 font-sans text-[12px] font-bold uppercase tracking-[0.14em] text-[#161616] shadow-[5px_5px_0_0_#161616] transition-all hover:-translate-y-0.5"
-              >
-                How an engagement runs
-              </Link>
-            </div>
-          </div>
+      {/* ─────────────── Hero: the comic cover ─────────────── */}
+      <PopPageHero
+        eyebrow={<span>What you get</span>}
+        title={<>The whole asset, in your name, with{' '}<em>the keys</em>.</>}
+        issue={{ no: 'No.6', lines: ['The deliverables', 'Handed over, not licensed'] }}
+        art={{
+          src: '/art/pages/store',
+          alt: 'Pop-art screenprint: a tall stack of bound workbooks tied with twine beside an open book of diagrams, a shopping bag, a desk bell and a mustard seedling',
+          caption: 'Six things land on your desk',
+        }}
+        sticker="Yours!"
+        mascot={{ bubble: 'Keys included!' }}
+      >
+        <p>
+          Plenty of studios will tell you what they do. Fewer will tell you, before you pay,
+          exactly what you are holding at the end. This page is that list, and it is on the page
+          rather than behind an email form.
+        </p>
+        <div className={pop.actions}>
+          <Link href="/book" className={pop.cta}>
+            Begin an engagement →
+          </Link>
+          <Link href="/work-with-us" className={pop.ctaAlt}>
+            How an engagement runs
+          </Link>
         </div>
-      </header>
+      </PopPageHero>
 
       {/* ─────────────── The deliverables ─────────────── */}
       <section className="mx-auto max-w-6xl px-6 py-16 md:py-24">

@@ -2,6 +2,7 @@ import Link from '@/components/AttributionLink';
 import WebsiteAuditEngine from '@/components/WebsiteAuditEngine';
 import { JsonLd, breadcrumbJsonLd, faqJsonLd, serviceJsonLd } from '@/lib/jsonld';
 import { buildMetadata, SITE } from '@/lib/seo';
+import PopPageHero from '@/components/pop/PopPageHero';
 
 export const metadata = buildMetadata({
   title: 'Free Website Audit. Real Score. Real To-Do List.',
@@ -57,6 +58,8 @@ const auditServiceJsonLd = {
   areaServed: 'Worldwide',
 };
 
+const AUD_ALT = 'Pop-art screenprint: a hand holds a magnifying glass over a small storefront beside a phone showing star ratings and a checklist with one red check';
+
 export default function WebsiteAuditPage() {
   return (
     <>
@@ -75,27 +78,23 @@ export default function WebsiteAuditPage() {
           ]),
         ]}
       />
-      <article className="relative min-h-screen bg-[#FBF6EA] text-[#161616] pt-36 md:pt-44 pb-24">
+      <article className="relative min-h-screen bg-[#FBF6EA] text-[#161616] pb-24 overflow-x-clip">
         <div aria-hidden="true" className="absolute inset-0 halftone-bg opacity-50 pointer-events-none" />
         <div className="relative">
-        {/* Hero */}
-        <header className="max-w-4xl mx-auto px-6 md:px-8 text-center mb-16">
-          <span className="text-[10px] uppercase tracking-[0.45em] text-[#E0301E] font-mono font-bold mb-7 block">
-            Free Website Audit
-          </span>
-          <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-black text-[#161616] tracking-tight leading-[1.02] mb-7">
-            Get a real grade on your{' '}
-            <span className="text-[#F5B700] italic" style={{ WebkitTextStroke: '2px #161616' }}>
-              website
-            </span>
-          </h1>
-          <p className="font-display italic font-bold text-2xl md:text-3xl text-[#161616] leading-snug mb-5">
+        <PopPageHero
+          eyebrow={<span>Free Website Audit</span>}
+          title={<>Get a real grade on your{' '}<em>website</em></>}
+          art={{ src: '/art/pages/audit', alt: AUD_ALT, caption: 'Graded, then fixed' }}
+          sticker="Grade A?"
+          mascot={{ bubble: 'Drop your URL below!' }}
+        >
+          <p className="font-display">
             In 60 seconds
           </p>
-          <p className="text-[#3a3733] text-base md:text-lg font-body leading-relaxed max-w-2xl mx-auto">
+          <p>
             Drop your URL. Get a numeric score, a letter grade, an honest one-line headline, the three things to fix first, and a full to-do list to get to an A. Across brand, trust, SEO, GEO, agentic features, conversion, and design.
           </p>
-        </header>
+        </PopPageHero>
 
         {/* The tool */}
         <section className="max-w-5xl mx-auto px-6 md:px-8 mb-24">

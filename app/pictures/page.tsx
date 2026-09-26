@@ -1,6 +1,7 @@
 import Link from '@/components/AttributionLink';
 import { buildMetadata, SITE } from '@/lib/seo';
 import MustardNetworkTV from '@/components/ads/MustardNetworkTV';
+import PopPageHero, { pop } from '@/components/pop/PopPageHero';
 
 const description = 'Commercials, brand films, and managed advertising from one studio. Mustard Pictures brings creative direction, production, and campaign management together. Contact Modern Mustard Seed to discuss your project.';
 export const metadata = buildMetadata({ title: 'Mustard Pictures | Films & Advertising', description, path: '/pictures', image: '/pictures/opengraph-image' });
@@ -23,15 +24,20 @@ export default function PicturesPage() {
   ] };
   return <div data-offer="pictures-and-broadcast" className="bg-[#FBF6EA] text-[#161616]">
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-    <section className="relative overflow-hidden border-b-2 border-[#161616] px-6 pb-20 pt-32 md:px-[6vw] md:pb-28 md:pt-40">
-      <div className="mx-auto max-w-7xl">
-        <div className="flex flex-wrap justify-between gap-4 border-b border-[#161616] pb-5 font-mono text-[10px] uppercase tracking-[.2em]"><span>Mustard Pictures</span><span>Films &amp; Advertising / Modern Mustard Seed</span></div>
-        <div className="mt-14 grid items-end gap-10 lg:grid-cols-[1.35fr_1fr] lg:gap-20">
-          <div><p className="font-mono text-[10px] font-bold uppercase tracking-[.2em] text-[#C4160B]">A good story deserves an audience.</p><h1 className="mt-6 font-display text-[clamp(2.7rem,7.5vw,7rem)] font-black leading-[.98] tracking-[-.05em]">Make a scene.<em className="mt-3 block w-fit bg-[#F5B700] px-2 py-1 leading-[1.08]">Make it count.</em></h1></div>
-          <div className="lg:pb-2"><p className="max-w-lg font-body text-lg leading-relaxed">A film worth watching. A campaign built to carry it. We bring commercial production and managed advertising together, from the first idea to the work your customers see.</p><Link href="/inquire" className={cta + ' mt-8'}>Tell Us About Your Project <span aria-hidden="true">↗</span></Link><a href="#network" className="mt-7 block w-fit font-sans text-sm font-bold underline underline-offset-4">Watch The Studio Reel ↓</a></div>
-        </div>
+    <PopPageHero
+      eyebrow={<span>A good story deserves an audience.</span>}
+      title={<>Make a scene.<br /><em>Make it count.</em></>}
+      issue={{ no: 'No.1', lines: ['Mustard Pictures', 'Films & Advertising'] }}
+      sticker="Action!"
+      mascot={{ bubble: 'Roll camera!' }}
+    >
+      <p>A film worth watching. A campaign built to carry it. We bring commercial production and managed advertising together, from the first idea to the work your customers see.</p>
+      <div className={pop.actions}>
+        <Link href="/inquire" className={pop.cta}>Tell Us About Your Project <span aria-hidden="true">↗</span></Link>
+        <a href="#network" className={pop.ctaAlt}>Watch The Studio Reel ↓</a>
       </div>
-    </section>
+      <div className="mt-8 flex flex-wrap justify-between gap-4 border-t border-[#161616] pt-4 font-mono text-[10px] uppercase tracking-[.2em]"><span>Mustard Pictures</span><span>Films &amp; Advertising / Modern Mustard Seed</span></div>
+    </PopPageHero>
     <div className="border-b-2 border-[#161616] bg-[#161616] px-6 py-5 text-center font-mono text-xs uppercase tracking-[.16em] leading-7 text-[#FBF6EA]">Creative direction <span aria-hidden="true"> / </span> Film production <span aria-hidden="true"> / </span> Campaign management</div>
     <section className="mx-auto max-w-7xl px-6 py-20 md:px-[6vw] md:py-28" aria-labelledby="one-studio"><div className="grid gap-8 md:grid-cols-2 md:gap-16"><h2 id="one-studio" className="font-display text-4xl font-bold leading-[1.08] tracking-tight md:text-5xl">From first frame<br />to the right audience.</h2><div className="font-body text-base leading-relaxed"><p>Mustard Pictures and Broadcast are now one offer. The same studio shapes the story, makes the commercial, and manages the campaign that puts it in front of people.</p><p className="mt-4">Brand films, commercial spots, and social cuts. Meta and Google campaigns, with ongoing refinement and reporting you can read. Everything begins with a conversation about your business.</p></div></div>
       <div className="mt-14 grid gap-6 md:grid-cols-3">{steps.map((step, i) => <article key={step.title} className="border-2 border-[#161616] bg-white p-7 shadow-[5px_5px_0_0_#161616]"><span className="font-mono text-xs font-bold text-[#C4160B]">0{i + 1}</span><h3 className="mt-5 font-display text-3xl font-bold">{step.title}</h3><p className="mt-4 font-body text-sm leading-relaxed text-[#45484e]">{step.text}</p></article>)}</div>

@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { JsonLd, breadcrumbJsonLd, faqJsonLd, serviceJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
+import PopPageHero, { pop } from '@/components/pop/PopPageHero';
 import { DEPARTMENTS, BESPOKE } from '@/data/services-hub';
 import PathFinder from '@/components/services/PathFinder';
 
@@ -59,36 +60,33 @@ export default function ServicesPage() {
         ]}
       />
 
-      {/* ── Hero ── */}
-      <header className="halftone-bg border-b-2 border-[#161616]">
-        <div className="max-w-5xl mx-auto px-6 pt-32 pb-16 md:pt-40 lg:pb-20 text-center">
-          <span className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#C4160B] font-bold">
-            The studio // Five disciplines, one standard
-          </span>
-          <h1 className="font-display text-[2.7rem] sm:text-6xl xl:text-7xl font-bold mt-4 leading-[1.0] tracking-tight">
-            Everything we build.<br /><em className="italic text-[#C4160B]">One standard.</em>
-          </h1>
-          <p className="font-body text-[17px] text-[#161616]/75 mt-6 leading-relaxed max-w-2xl mx-auto">
-            Not a list of services on a slide. Five disciplines practiced deliberately, and the
-            departments underneath them that a working engagement actually reaches for. Designed and
-            shipped end to end by the studio, and you own everything on launch day.
-          </p>
-          <div className="mt-8 flex flex-wrap gap-3 justify-center">
-            <Link
-              href="/book"
-              className="inline-flex items-center gap-2 bg-[#161616] text-[#FBF6EA] border-2 border-[#161616] rounded-full px-7 py-4 font-sans font-bold uppercase tracking-[0.14em] text-[12px] shadow-[5px_5px_0_0_#F5B700] hover:-translate-y-0.5 transition-transform"
-            >
-              Begin an engagement →
-            </Link>
-            <Link
-              href="/work"
-              className="inline-flex items-center gap-2 bg-white text-[#161616] border-2 border-[#161616] rounded-full px-7 py-4 font-sans font-bold uppercase tracking-[0.14em] text-[12px] shadow-[5px_5px_0_0_#161616] hover:-translate-y-0.5 transition-all"
-            >
-              See the work
-            </Link>
-          </div>
+      {/* ── Hero: the comic cover ── */}
+      <PopPageHero
+        eyebrow={<span>The studio // Five disciplines, one standard</span>}
+        title={<>Everything we build.<br /><em>One standard.</em></>}
+        issue={{ no: 'No.5', lines: ['Five disciplines', 'One standard'] }}
+        art={{
+          src: '/art/pages/services',
+          alt: 'Pop-art screenprint: a pegboard of neatly hung tools, a paintbrush, a wrench, a studio microphone and a telephone handset, over a workbench with a spirit level',
+          caption: 'Every tool, one bench',
+        }}
+        sticker="Level!"
+        marquee={['Websites', 'Voice Agents', 'Brand / Rebrand', 'Marketing', 'Mustard Pictures', 'Advisory', 'You own everything on launch day']}
+      >
+        <p>
+          Not a list of services on a slide. Five disciplines practiced deliberately, and the
+          departments underneath them that a working engagement actually reaches for. Designed and
+          shipped end to end by the studio, and you own everything on launch day.
+        </p>
+        <div className={pop.actions}>
+          <Link href="/book" className={pop.cta}>
+            Begin an engagement →
+          </Link>
+          <Link href="/work" className={pop.ctaAlt}>
+            See the work
+          </Link>
         </div>
-      </header>
+      </PopPageHero>
 
       <div className="max-w-6xl mx-auto px-6 py-16 lg:py-20 space-y-20">
         {/* ── The flagship trio ── */}

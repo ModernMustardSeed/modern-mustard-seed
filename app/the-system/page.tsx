@@ -6,6 +6,7 @@ import { buildMetadata, SITE } from '@/lib/seo';
 import { STATIONS, CAPABILITIES, A_DAY, SYSTEM_FAQ } from '@/data/the-system';
 import { DEMO_BUNDLE, formatUsd } from '@/lib/demo-order';
 import { HUNDREDFOLD, money } from '@/lib/hundredfold';
+import PopPageHero, { pop } from '@/components/pop/PopPageHero';
 
 export const metadata = buildMetadata({
   title: 'The System: your whole company, agentic',
@@ -57,6 +58,8 @@ const DOORS = [
   },
 ];
 
+const SYS_ALT = 'Pop-art screenprint: a retro machine takes in envelopes and ringing telephones, runs them through gears, tubes and a switchboard, and sends out tied parcels and a stamped calendar page';
+
 export default function TheSystemPage() {
   return (
     <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
@@ -85,68 +88,55 @@ export default function TheSystemPage() {
         ]}
       />
 
-      {/* ── Hero ── */}
-      <header className="halftone-bg border-b-2 border-[#161616] overflow-hidden">
-        <div className="max-w-6xl mx-auto px-6 pt-32 pb-14 md:pt-40 lg:pb-20">
-          <div className="grid lg:grid-cols-[1.15fr_0.85fr] gap-10 items-center">
-            <div>
-              <span className="font-mono text-[11px] uppercase tracking-[0.35em] font-bold" style={{ color: RED }}>
-                The system // One brain, every door
-              </span>
-              <h1 className="font-display text-[2.8rem] sm:text-6xl xl:text-[5.2rem] font-extrabold mt-4 leading-[0.98] tracking-tight">
-                Your whole company,
-                <br />
-                <em className="italic text-[#F5B700]" style={{ WebkitTextStroke: '2px #161616' }}>
-                  agentic.
-                </em>
-              </h1>
-              <p className="font-body text-[17px] md:text-lg text-[#161616]/75 mt-6 max-w-xl leading-relaxed">
-                Not a website. Not a chatbot. The whole loop: the lead is found, reached, answered, booked, sold, built, run, and grown, and the growth goes and finds the next lead. Designed by one architect, built on infrastructure you own, run from one board.
-              </p>
-              <div className="flex flex-wrap gap-3 mt-8">
-                <Link
-                  href="/book"
-                  className="inline-flex items-center gap-2 bg-[#161616] text-[#FBF6EA] border-2 border-[#161616] rounded-full px-7 py-4 font-sans font-bold uppercase tracking-[0.14em] text-[12px] shadow-[5px_5px_0_0_#F5B700] hover:-translate-y-0.5 transition-transform"
-                >
-                  Begin An Engagement →
-                </Link>
-                <Link
-                  href="/book"
-                  className="inline-flex items-center gap-2 bg-white text-[#161616] border-2 border-[#161616] rounded-full px-7 py-4 font-sans font-bold uppercase tracking-[0.14em] text-[12px] shadow-[5px_5px_0_0_#161616] hover:-translate-y-0.5 transition-all"
-                >
-                  See The Work
-                </Link>
-              </div>
-              <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#161616]/60 mt-5">
-                Set package prices. Changes included. You own it on launch day.
-              </p>
-            </div>
-
-            {/* Hero sticker stack */}
-            <div className="relative h-[300px] sm:h-[340px] lg:h-[420px]" aria-hidden="true">
-              <div className="absolute left-2 top-4 pop-card-yellow px-5 py-4 -rotate-3 w-[240px]">
-                <p className="font-mono text-[10px] uppercase tracking-[0.25em] font-bold" style={{ color: RED }}>
-                  9:15 AM
-                </p>
-                <p className="font-display font-extrabold text-xl leading-tight mt-1">Your agent answered on the first ring.</p>
-              </div>
-              <div className="absolute right-0 top-[110px] pop-card px-5 py-4 rotate-2 w-[250px]">
-                <p className="font-mono text-[10px] uppercase tracking-[0.25em] font-bold" style={{ color: RED }}>
-                  11:30 AM
-                </p>
-                <p className="font-display font-extrabold text-xl leading-tight mt-1">Proposal signed and paid. Deal marked won.</p>
-              </div>
-              <div className="absolute left-8 bottom-6 bg-[#161616] text-[#FBF6EA] border-2 border-[#161616] rounded-2xl shadow-[5px_5px_0_0_#F5B700] px-5 py-4 -rotate-2 w-[260px]">
-                <p className="font-mono text-[10px] uppercase tracking-[0.25em] font-bold text-[#F5B700]">6:30 PM</p>
-                <p className="font-display font-extrabold text-xl leading-tight mt-1">Job closed. Review asked. Next lead already found.</p>
-              </div>
-              <span className="absolute -right-2 -top-3 bg-[#E0301E] text-[#FBF6EA] font-mono font-bold text-[10px] uppercase tracking-[0.25em] px-3 py-1.5 rounded-full border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] rotate-6">
-                One Tuesday
-              </span>
-            </div>
-          </div>
+      {/* ── Hero: the comic cover ── */}
+      <PopPageHero
+        eyebrow={<span>The system // One brain, every door</span>}
+        title={<>Your whole company,<br /><em>agentic.</em></>}
+        issue={{ no: 'No.8', lines: ['The system', 'One brain, every door'] }}
+        art={{ src: '/art/pages/system', alt: SYS_ALT, caption: 'In one side, out the other' }}
+        sticker="Whirr!"
+      >
+        <p>
+          Not a website. Not a chatbot. The whole loop: the lead is found, reached, answered, booked, sold, built, run, and grown, and the growth goes and finds the next lead. Designed by one architect, built on infrastructure you own, run from one board.
+        </p>
+        <div className={pop.actions}>
+          <Link href="/book" className={pop.cta}>
+            Begin An Engagement →
+          </Link>
+          <Link href="/book" className={pop.ctaAlt}>
+            See The Work
+          </Link>
         </div>
-      </header>
+        <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#161616]/60 mt-5">
+          Set package prices. Changes included. You own it on launch day.
+        </p>
+      </PopPageHero>
+
+      <section className="max-w-6xl mx-auto px-6 pt-4 pb-6">
+        {/* One Tuesday, as a strip of comic panels (decorative) */}
+        <div className="relative flex flex-wrap justify-center gap-8 md:gap-10" aria-hidden="true">
+          <div className="relative pop-card-yellow px-5 py-4 -rotate-3 w-[240px]">
+            <p className="font-mono text-[10px] uppercase tracking-[0.25em] font-bold" style={{ color: RED }}>
+              9:15 AM
+            </p>
+            <p className="font-display font-extrabold text-xl leading-tight mt-1">Your agent answered on the first ring.</p>
+          </div>
+          <div className="relative pop-card px-5 py-4 rotate-2 w-[250px]">
+            <p className="font-mono text-[10px] uppercase tracking-[0.25em] font-bold" style={{ color: RED }}>
+              11:30 AM
+            </p>
+            <p className="font-display font-extrabold text-xl leading-tight mt-1">Proposal signed and paid. Deal marked won.</p>
+          </div>
+          <div className="relative bg-[#161616] text-[#FBF6EA] border-2 border-[#161616] rounded-2xl shadow-[5px_5px_0_0_#F5B700] px-5 py-4 -rotate-2 w-[260px]">
+            <p className="font-mono text-[10px] uppercase tracking-[0.25em] font-bold text-[#F5B700]">6:30 PM</p>
+            <p className="font-display font-extrabold text-xl leading-tight mt-1">Job closed. Review asked. Next lead already found.</p>
+          </div>
+          <span className="absolute right-2 -top-5 bg-[#E0301E] text-[#FBF6EA] font-mono font-bold text-[10px] uppercase tracking-[0.25em] px-3 py-1.5 rounded-full border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] rotate-6">
+            One Tuesday
+          </span>
+        </div>
+      </section>
+
 
       <div>
         {/* ── The loop ── */}

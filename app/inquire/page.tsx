@@ -1,5 +1,6 @@
 import Link from '@/components/AttributionLink';
 import InquiryForm from '@/components/InquiryForm';
+import PopPageHero from '@/components/pop/PopPageHero';
 import { JsonLd, breadcrumbJsonLd, webPageJsonLd } from '@/lib/jsonld';
 import { buildMetadata, SITE } from '@/lib/seo';
 
@@ -83,37 +84,29 @@ export default function InquirePage() {
         ]}
       />
 
-      {/* ─────────────── The invitation ─────────────── */}
-      <section className="relative overflow-hidden border-b-2 border-[#161616]">
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 opacity-[0.05]"
-          style={{
-            backgroundImage:
-              'linear-gradient(#161616 1px, transparent 1px), linear-gradient(90deg, #161616 1px, transparent 1px)',
-            backgroundSize: '72px 72px',
-          }}
-        />
-        <div className="relative mx-auto max-w-6xl px-6 pt-32 pb-16 md:pt-44 md:pb-24">
-          <div className="max-w-3xl">
-            <span className="inline-flex items-center gap-2 rounded-full border-2 border-[#161616] bg-white px-4 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-[#B92417] shadow-[3px_3px_0_0_#161616]">
-              By inquiry
-            </span>
-            <h1 className="mt-7 font-display text-5xl font-extrabold leading-[0.98] tracking-tight text-[#161616] md:text-6xl lg:text-[4.5rem]">
-              Tell us what you are{' '}
-              <em className="italic text-[#B48600]">building</em>.
-            </h1>
-            <p className="mt-7 max-w-2xl font-body text-lg leading-relaxed text-[#3d382e] md:text-xl">
-              Modern Mustard Seed is a boutique design and agentic systems studio in Northwest Montana.
-              There is no catalog to browse and no price list, because the right answer depends
-              entirely on what you are trying to make happen.
-            </p>
-            <p className="mt-5 max-w-2xl font-body text-lg leading-relaxed text-[#3d382e]">
-              Write us a real note. You will hear back from Sarah, not a sequence.
-            </p>
-          </div>
-        </div>
-      </section>
+      {/* ─────────────── The invitation: the comic cover ─────────────── */}
+      <PopPageHero
+        eyebrow={<span>By inquiry</span>}
+        title={<>Tell us what you are{' '}<em>building</em>.</>}
+        issue={{ no: 'No.1', lines: ['Private inquiry', 'Kalispell, Montana'] }}
+        art={{
+          src: '/art/pages/inquire',
+          alt: 'Pop-art screenprint: a hand writes a letter with a fountain pen under a desk lamp, beside a wax-sealed envelope, a coffee and a mustard seedling',
+          caption: 'Write us a real note',
+        }}
+        sticker="Dear Sarah!"
+        mascot={{ bubble: 'She reads every one!' }}
+        marquee={['By inquiry', 'Answered inside one business day', 'Fixed scope', 'Fixed price', 'Changes included', 'You own all of it']}
+      >
+        <p>
+          Modern Mustard Seed is a boutique design and agentic systems studio in Northwest Montana.
+          There is no catalog to browse and no price list, because the right answer depends
+          entirely on what you are trying to make happen.
+        </p>
+        <p>
+          Write us a real note. You will hear back from Sarah, not a sequence.
+        </p>
+      </PopPageHero>
 
       {/* ─────────────── The form, with the disciplines beside it ─────────────── */}
       <section className="mx-auto max-w-6xl px-6 py-16 md:py-24">

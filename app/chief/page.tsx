@@ -13,6 +13,8 @@ import {
 import DayWithYourChief from '@/components/chief/DayWithYourChief';
 import ChiefCheckoutButton from '@/components/chief/ChiefCheckoutButton';
 import { PRICE_HEADLINE, PRICE_CADENCE_MONTHLY } from '@/lib/public-pricing';
+import ps from '@/components/pop/PopPageHero.module.css';
+import { pop } from '@/components/pop/PopPageHero';
 
 export const metadata = buildMetadata({
   title: CHIEF.metaTitle,
@@ -62,16 +64,14 @@ export default function ChiefPage() {
     <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
       <JsonLd data={chiefJsonLd()} />
 
-      {/* ── Hero ── */}
-      <header className="halftone-bg border-b-2 border-[#161616]">
-        <div className="max-w-6xl mx-auto px-6 pt-32 pb-16 md:pt-40 lg:pb-20">
-          <div className="grid lg:grid-cols-12 gap-10 lg:gap-12 items-center">
-            <div className="lg:col-span-7">
-              <span className="font-mono text-[11px] uppercase tracking-[0.32em] text-[#C4160B] font-bold">
-                A new flagship // Not a voice agent. Your right hand.
-              </span>
-              <h1 className="font-display text-[2.7rem] sm:text-6xl xl:text-[4.2rem] font-bold mt-4 leading-[0.98] tracking-tight">
-                Your chief of staff, <em className="italic text-[#C4160B]">on call day and night.</em>
+      <section className={`${ps.hero} ${ps.withIssue}`}>
+        <div className={ps.panel}>
+          <div className={ps.ground} aria-hidden="true"><i className={ps.rays} /><i className={ps.lines} /><i className={ps.dots} /></div>
+          <p className={ps.issue} aria-hidden="true"><b>No.1</b><span>A new flagship</span><span>Your right hand</span></p>
+            <div className={ps.copy}>
+              <div className={ps.eyebrow}><span>A new flagship // Not a voice agent. Your right hand.</span></div>
+              <h1 className={ps.h1}>
+                Your chief of staff, <em>on call day and night.</em>
               </h1>
               <p className="font-body text-[17px] text-[#161616]/75 mt-5 leading-relaxed max-w-xl">
                 {CHIEF.promise}
@@ -83,16 +83,16 @@ export default function ChiefPage() {
                   Yours is a <strong>set package price</strong>, quoted privately, and it is not close.
                 </p>
               </div>
-              <div className="mt-8 flex flex-wrap gap-3">
+              <div className={pop.actions}>
                 <Link
                   href="#pricing"
-                  className="inline-flex items-center gap-2 bg-[#161616] text-[#FBF6EA] border-2 border-[#161616] rounded-full px-7 py-4 font-sans font-bold uppercase tracking-[0.14em] text-[12px] shadow-[5px_5px_0_0_#F5B700] hover:-translate-y-0.5 transition-transform"
+                  className={pop.cta}
                 >
                   Hire your Chief →
                 </Link>
                 <a
                   href={`tel:${PHONE_TEL}`}
-                  className="inline-flex items-center gap-2 bg-white text-[#161616] border-2 border-[#161616] rounded-full px-7 py-4 font-sans font-bold uppercase tracking-[0.14em] text-[12px] shadow-[5px_5px_0_0_#161616] hover:-translate-y-0.5 transition-all"
+                  className={pop.ctaAlt}
                 >
                   Hear him: {PHONE_DISPLAY}
                 </a>
@@ -103,8 +103,8 @@ export default function ChiefPage() {
             </div>
 
             {/* Hero visual: a text from your Chief (CSS phone, no external art) */}
-            <div className="lg:col-span-5 flex justify-center lg:justify-end">
-              <div className="w-[268px] rounded-[2.2rem] border-[6px] border-[#161616] bg-[#161616] shadow-[8px_8px_0_0_#161616] p-3 pt-6 rotate-[2deg]">
+            <div className={ps.stage}>
+              <div className="mr-auto ml-2 md:ml-10 w-[250px] md:w-[268px] rounded-[2.2rem] border-[6px] border-[#161616] bg-[#161616] shadow-[8px_8px_0_0_#161616] p-3 pt-6 rotate-[2deg]">
                 <div className="rounded-[1.5rem] bg-[#eef1f6] overflow-hidden">
                   <div className="bg-[#161616] text-[#FBF6EA] px-4 py-2.5 flex items-center gap-2">
                     <span className="w-8 h-8 rounded-full bg-[#F5B700] border-2 border-[#FBF6EA] flex items-center justify-center text-[15px]" aria-hidden>🌱</span>
@@ -133,10 +133,19 @@ export default function ChiefPage() {
                   </div>
                 </div>
               </div>
+              <p className={ps.pow} aria-hidden="true"><span>On call!</span></p>
+              <div className={ps.mascot} aria-hidden="true" style={{ left: 'auto', right: '-34px', bottom: '-46px', pointerEvents: 'none' }}>
+                <span className={ps.bubble} style={{ left: 'auto', right: '10px', rotate: '4deg' }}>Sent. Booked. Done!</span>
+                <picture>
+                  <source type="image/avif" srcSet="/brand/mascot-hero-480.avif 480w, /brand/mascot-hero-720.avif 720w" sizes="(max-width: 760px) 96px, 150px" />
+                  <source type="image/webp" srcSet="/brand/mascot-hero-480.webp 480w, /brand/mascot-hero-720.webp 720w" sizes="(max-width: 760px) 96px, 150px" />
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="/brand/mascot.png" alt="" width={480} height={652} decoding="async" className={ps.mascotImg} />
+                </picture>
+              </div>
             </div>
-          </div>
         </div>
-      </header>
+      </section>
 
       <div className="max-w-6xl mx-auto px-6 py-16 lg:py-20 space-y-20 lg:space-y-24">
         {/* ── The wedge: Voice Agent answers your customers. The Chief works for you. ── */}

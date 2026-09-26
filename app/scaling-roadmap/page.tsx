@@ -3,6 +3,7 @@ import ScalingRoadmapEngine from '@/components/ScalingRoadmapEngine';
 import { listFeatured } from '@/lib/roadmap-store';
 import { JsonLd, breadcrumbJsonLd, faqJsonLd, serviceJsonLd } from '@/lib/jsonld';
 import { buildMetadata, SITE } from '@/lib/seo';
+import PopPageHero from '@/components/pop/PopPageHero';
 
 export const metadata = buildMetadata({
   title: 'The Hundredfold Roadmap. A Free Scaling Plan For Your Business.',
@@ -163,29 +164,26 @@ export default async function ScalingRoadmapPage() {
         ]}
       />
 
-      <article className="relative min-h-screen bg-[#FBF6EA] text-[#161616] pt-36 md:pt-44 pb-24">
-        <div aria-hidden="true" className="absolute inset-0 halftone-bg opacity-50 pointer-events-none" />
+      <article className="relative min-h-screen bg-[#FBF6EA] text-[#161616] pb-24 overflow-x-clip">
+        <PopPageHero
+          eyebrow={<span>The Hundredfold Roadmap</span>}
+          title={<>The plan to scale{' '}<em>your business</em></>}
+          issue={{ no: 'No.100', lines: ['Free roadmap', 'Ninety seconds'] }}
+          sticker="90 sec!"
+          mascot={{ bubble: 'Paste your website!' }}
+        >
+          <p className="font-display text-2xl leading-snug">
+            Built from your website. In ninety seconds.
+          </p>
+          <p>
+            Not a template, not a checklist, not a webinar. A real roadmap for your business: the one
+            thing capping your growth, the offer to sell instead, what to charge, where the next
+            hundred customers come from, and what has to be true before you are allowed to move on.
+          </p>
+        </PopPageHero>
         <div className="relative">
-          {/* Hero */}
-          <header className="max-w-4xl mx-auto px-6 md:px-8 text-center mb-14">
-            <span className="text-[10px] uppercase tracking-[0.45em] text-[#C4160B] font-mono font-bold mb-7 block">
-              The Hundredfold Roadmap
-            </span>
-            <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-black text-[#161616] tracking-tight leading-[1.02] mb-7">
-              The plan to scale{' '}
-              <span className="text-[#F5B700] italic" style={{ WebkitTextStroke: '2px #161616' }}>
-                your business
-              </span>
-            </h1>
-            <p className="font-display italic font-bold text-2xl md:text-3xl text-[#161616] leading-snug mb-5">
-              Built from your website. In ninety seconds.
-            </p>
-            <p className="text-[#3a3733] text-base md:text-lg font-body leading-relaxed max-w-2xl mx-auto">
-              Not a template, not a checklist, not a webinar. A real roadmap for your business: the one
-              thing capping your growth, the offer to sell instead, what to charge, where the next
-              hundred customers come from, and what has to be true before you are allowed to move on.
-            </p>
-          </header>
+          <div aria-hidden="true" className="absolute inset-0 halftone-bg opacity-50 pointer-events-none" />
+          <div className="relative">
 
           {/* The tool */}
           <section className="max-w-5xl mx-auto px-6 md:px-8 mb-24">
@@ -200,9 +198,7 @@ export default async function ScalingRoadmapPage() {
               </span>
               <h2 className="font-display text-3xl md:text-4xl font-black text-[#161616] tracking-tight">
                 Eight sections,{' '}
-                <span className="text-[#F5B700]" style={{ WebkitTextStroke: '1.5px #161616' }}>
-                  no filler
-                </span>
+                <em>no filler</em>
               </h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -351,6 +347,7 @@ export default async function ScalingRoadmapPage() {
               ))}
             </div>
           </section>
+        </div>
         </div>
       </article>
     </>
