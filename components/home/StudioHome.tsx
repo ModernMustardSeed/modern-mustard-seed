@@ -3,6 +3,9 @@ import Image from 'next/image';
 import styles from './StudioHome.module.css';
 import { GOOGLE_PROFILE, GOOGLE_REVIEWS } from '@/data/google-reviews';
 import CardHero from './CardHero';
+import ArtHero from '@/components/art/ArtHero';
+import ArtDial from '@/components/art/ArtDial';
+import { readyArtStyles } from '@/lib/art-ready';
 import ShowMeMine from './ShowMeMine';
 import MustardTV from './MustardTV';
 import WorkVideo from './WorkVideo';
@@ -43,8 +46,10 @@ function PressRule() {
   return <div className={styles.pressRule} aria-hidden="true"><i /><b /><span /><b /><i /></div>;
 }
 export default function StudioHome({ faq }: { faq: { q: string; a: string }[] }) {
+  const ready = readyArtStyles();
   return <div className={styles.studio} data-design="mms-editorial-2026" data-edition="pop-art-studio">
-    <CardHero />
+    <ArtHero ready={ready}><CardHero /></ArtHero>
+    <ArtDial ready={ready} />
     <figure className={styles.verse}><blockquote><SproutSeed className={styles.sprout} grownClass={styles.grown} /><p>“If you have faith as small as a mustard seed, nothing will be impossible for you.”</p></blockquote><figcaption>Matthew 17:20</figcaption><Link href="/kingdom" className={styles.kingdomLink}>Serving a ministry? We build for the Kingdom, at ministry pricing <Arrow /></Link></figure>
     <section id="show-me-mine" className={styles.showMine} aria-labelledby="show-mine-heading">
       <div><p className={styles.eyebrow}>Show me mine</p><h2 id="show-mine-heading">Paste your website. <em>We’ll sketch you a new one.</em></h2><p>Free, in your look, within 24 hours, with a free audit of the site, Google profile and reviews you have now. {PREVIEW.short}</p></div>

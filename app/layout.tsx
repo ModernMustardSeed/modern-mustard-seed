@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { DM_Sans, Playfair_Display, Cormorant_Garamond, JetBrains_Mono, Oswald } from 'next/font/google';
+import { DM_Sans, Playfair_Display, Cormorant_Garamond, JetBrains_Mono, Oswald, Cinzel, Anton, Permanent_Marker } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import Navbar from '@/components/Navbar';
@@ -15,14 +15,22 @@ import HydrationGate from '@/components/HydrationGate';
 import AppNavDock from '@/components/AppNavDock';
 import { JsonLd, siteGraphJsonLd } from '@/lib/jsonld';
 import { buildMetadata, SITE } from '@/lib/seo';
+import { readyArtStyles } from '@/lib/art-ready';
+import { ART_STORAGE_KEY } from '@/lib/art-styles';
 import './globals.css';
 import './studio-chrome.css';
+import './art-styles.css';
 
 const bodyFont = DM_Sans({ subsets: ['latin'], style: ['normal'], display: 'optional', variable: '--font-body' });
 const displayFont = Playfair_Display({ subsets: ['latin'], style: ['normal', 'italic'], display: 'optional', variable: '--font-display' });
 const serifFont = Cormorant_Garamond({ subsets: ['latin'], weight: ['300', '400', '500', '600'], style: ['normal', 'italic'], display: 'swap', preload: false, variable: '--font-serif' });
 const monoFont = JetBrains_Mono({ subsets: ['latin'], weight: ['400', '500', '700'], display: 'swap', preload: false, variable: '--font-mono' });
 const condensedFont = Oswald({ subsets: ['latin'], weight: ['400', '500', '600', '700'], display: 'swap', preload: false, variable: '--font-oswald' });
+// The artist dial's own hands (lib/art-styles.ts). Never preloaded: only a
+// visitor who turns the dial to these styles downloads them.
+const cathedralFont = Cinzel({ subsets: ['latin'], weight: ['500', '600', '700'], display: 'swap', preload: false, variable: '--font-cinzel' });
+const posterFont = Anton({ subsets: ['latin'], weight: ['400'], display: 'swap', preload: false, variable: '--font-anton' });
+const markerFont = Permanent_Marker({ subsets: ['latin'], weight: ['400'], display: 'swap', preload: false, variable: '--font-marker' });
 
 export const metadata: Metadata = buildMetadata();
 
@@ -33,8 +41,9 @@ export const viewport: Viewport = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const artReady = readyArtStyles();
   return (
-    <html lang="en" suppressHydrationWarning className={`${bodyFont.variable} ${displayFont.variable} ${serifFont.variable} ${monoFont.variable} ${condensedFont.variable}`}>
+    <html lang="en" suppressHydrationWarning className={`${bodyFont.variable} ${displayFont.variable} ${serifFont.variable} ${monoFont.variable} ${condensedFont.variable} ${cathedralFont.variable} ${posterFont.variable} ${markerFont.variable}`}>
       <head>
         <link rel="manifest" href="/site.webmanifest" />
         <JsonLd data={siteGraphJsonLd} />
@@ -52,6 +61,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           dangerouslySetInnerHTML={{
             __html:
               "(function(){var d=document.documentElement,done=0;d.className+=' mm-js';function live(){return d.getAttribute('data-mm-live')}function off(){if(done||live())return;done=1;d.className=d.className.replace(' mm-js','')}addEventListener('error',function(e){var t=e&&e.target;if(!t||t===window||t.nodeName==='SCRIPT')off()},true);setTimeout(off,6000)})();",
+          }}
+        />
+        {/* The artist dial: restore the visitor's last style before first paint,
+            but only a style whose art shipped (see lib/art-ready.ts). */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var a=localStorage.getItem(${JSON.stringify(ART_STORAGE_KEY)});if(a&&${JSON.stringify(artReady)}.indexOf(a)>-1)document.documentElement.setAttribute('data-art',a)}catch(e){}})();`,
           }}
         />
         {/* Google Consent Mode v2: default everything non-essential to denied

@@ -1,0 +1,96 @@
+/* The painted hero. One layout; each style sets its own type, color, scrim and
+   light through [data-scene]. The scene fills the frame edge to edge and the
+   words sit in the calm third the art was composed to leave open. */
+.hero{--t:#080c16;--t2:#080c16b8;--accent:#f5b700;--scrim:linear-gradient(90deg,#fbf6eaee 0,#fbf6eab0 34%,#fbf6ea00 62%);position:relative;display:flex;align-items:center;min-height:calc(100svh - 82px);overflow:hidden;padding:112px 6vw 72px;color:var(--t);isolation:isolate;border-bottom:3px solid var(--t)}
+.hero h1,.hero p{margin:0}
+.scene{position:absolute;inset:0;z-index:-3}
+.scene img{width:100%;height:100%;object-fit:cover;object-position:70% 50%;animation:sceneIn 1.6s cubic-bezier(.16,1,.3,1) both}
+@keyframes sceneIn{from{opacity:0;transform:scale(1.06)}to{opacity:1;transform:scale(1)}}
+.scrim{position:absolute;inset:0;z-index:-2;background:var(--scrim)}
+.light{position:absolute;inset:0;z-index:-1;pointer-events:none}
+
+.copy{position:relative;max-width:620px}
+.copy>*{animation:rise 1.1s cubic-bezier(.16,1,.3,1) both}
+.copy>:nth-child(2){animation-delay:.12s}.copy>:nth-child(3){animation-delay:.24s}.copy>:nth-child(4){animation-delay:.34s}.copy>:nth-child(5){animation-delay:.44s}
+@keyframes rise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+
+.credit{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:var(--accent)}
+.name{margin-top:18px!important;font-family:var(--font-display),serif;font-weight:500;font-size:clamp(54px,7vw,116px);line-height:.95;letter-spacing:-.035em}
+.name span{display:inline}
+.name em{font-style:italic;color:var(--accent)}
+.line{margin-top:22px!important;font-family:var(--font-display),serif;font-style:italic;font-size:clamp(22px,2.2vw,32px);line-height:1.25}
+.what{max-width:470px;margin-top:16px!important;font-size:16px;line-height:1.65;color:var(--t2)}
+.actions{display:flex;flex-wrap:wrap;align-items:center;gap:14px 28px;margin-top:30px}
+.cta{display:inline-flex;align-items:center;gap:22px;min-height:56px;padding:0 26px;background:var(--t);color:var(--cta-ink,#fbf6ea);font-size:15px;font-weight:700;border:2px solid var(--t);transition:transform .25s,box-shadow .25s}
+.cta span{color:var(--accent)}
+.cta:hover{transform:translateY(-2px)}
+.quiet{display:inline-flex;align-items:center;min-height:44px;font-size:15px;font-weight:700;border-bottom:2px solid currentColor}
+.cta:focus-visible,.quiet:focus-visible{outline:3px solid var(--accent);outline-offset:4px}
+
+/* ---------- Leonardo: sepia ink and sanguine on parchment ---------- */
+.hero[data-scene=davinci]{--t:#3b2716;--t2:#3b2716c4;--accent:#9c3f22;--scrim:linear-gradient(90deg,#efe3c6f2 0,#efe3c6c0 36%,#efe3c600 64%);border-color:#3b2716}
+.hero[data-scene=davinci] .name,.hero[data-scene=davinci] .line{font-family:var(--font-serif),serif;font-weight:500;letter-spacing:-.01em}
+.hero[data-scene=davinci] .name{font-size:clamp(58px,7.6vw,128px)}
+.hero[data-scene=davinci] .cta{background:transparent;color:var(--t);border:1.5px solid var(--t);border-radius:2px}
+.hero[data-scene=davinci] .light{background:radial-gradient(ellipse at 50% 50%,transparent 55%,#3b271640 100%)}
+
+/* ---------- Monet: light on water ---------- */
+.hero[data-scene=monet]{--t:#35304a;--t2:#35304ac4;--accent:#8a5aa8;--scrim:linear-gradient(90deg,#f6f1ecf0 0,#f6f1ecb8 34%,#f6f1ec00 62%);border-color:#35304a}
+.hero[data-scene=monet] .name,.hero[data-scene=monet] .line{font-family:var(--font-serif),serif;font-weight:400;letter-spacing:-.01em}
+.hero[data-scene=monet] .name em{color:#b0588a}
+.hero[data-scene=monet] .cta{border-radius:999px;background:#35304a}
+.hero[data-scene=monet] .light{background:radial-gradient(circle at 78% 30%,#fff7e680 0,transparent 45%);mix-blend-mode:screen;animation:shimmer 7s ease-in-out infinite}
+@keyframes shimmer{50%{opacity:.55}}
+
+/* ---------- Van Gogh: night, gold and impasto ---------- */
+.hero[data-scene=vangogh]{--t:#fbf1d6;--t2:#fbf1d6cc;--accent:#f2c12e;--cta-ink:#101a3a;--scrim:linear-gradient(90deg,#0c1430e8 0,#0c1430a8 36%,#0c143000 64%);border-color:#f2c12e}
+.hero[data-scene=vangogh] .name em{color:#f2c12e;text-shadow:0 0 30px #f2c12e66}
+.hero[data-scene=vangogh] .cta{background:#f2c12e;border-color:#f2c12e;color:#101a3a}
+.hero[data-scene=vangogh] .cta span{color:#101a3a}
+
+/* ---------- Ansel Adams: the zone system, mounted like a print ---------- */
+.hero[data-scene=adams]{--t:#f4f4f2;--t2:#f4f4f2c4;--accent:#d8d8d4;--cta-ink:#111;--scrim:linear-gradient(90deg,#0b0b0bdd 0,#0b0b0b90 36%,#0b0b0b00 62%);border-color:#111;background:#111}
+.hero[data-scene=adams] .scene{inset:18px;border:1px solid #ffffff30}
+.hero[data-scene=adams] .scene img{filter:grayscale(1) contrast(1.08)}
+.hero[data-scene=adams] .name{font-family:var(--font-body),sans-serif;font-weight:300;letter-spacing:-.02em;text-transform:none}
+.hero[data-scene=adams] .name em{font-family:var(--font-body),sans-serif;font-style:normal;font-weight:600;color:#fff}
+.hero[data-scene=adams] .line{font-family:var(--font-body),sans-serif;font-style:normal;font-weight:300;letter-spacing:.02em}
+.hero[data-scene=adams] .credit{color:#bdbdb8;letter-spacing:.4em}
+.hero[data-scene=adams] .cta{background:#f4f4f2;border-color:#f4f4f2;color:#111}
+.hero[data-scene=adams] .cta span{color:#111}
+
+/* ---------- Cathedral: stained glass and a great deal of light ---------- */
+.hero[data-scene=cathedral]{--t:#2a1d10;--t2:#2a1d10c4;--accent:#a0761c;--scrim:linear-gradient(90deg,#fbf3e2f0 0,#fbf3e2b0 34%,#fbf3e200 60%);border-color:#2a1d10}
+.hero[data-scene=cathedral] .name,.hero[data-scene=cathedral] .line{font-family:var(--font-cinzel),serif;font-style:normal;font-weight:600;letter-spacing:.02em}
+.hero[data-scene=cathedral] .name{font-size:clamp(46px,5.8vw,98px);line-height:1.02}
+.hero[data-scene=cathedral] .name em{font-style:normal;background:linear-gradient(100deg,#8a1c2c,#a0761c 30%,#1f6a4a 60%,#6b2a8a);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero[data-scene=cathedral] .line{font-size:clamp(17px,1.6vw,22px);font-weight:500;letter-spacing:.14em;text-transform:uppercase}
+.hero[data-scene=cathedral] .cta{background:#2a1d10;border-color:#a0761c;box-shadow:0 0 0 3px #fbf3e2,0 0 0 5px #a0761c}
+.hero[data-scene=cathedral] .light{background:repeating-linear-gradient(115deg,#fff6d800 0 60px,#fff6d833 60px 110px,#fff6d800 110px 190px);mix-blend-mode:screen;mask-image:linear-gradient(200deg,#000 0,transparent 70%);-webkit-mask-image:linear-gradient(200deg,#000 0,transparent 70%);animation:beams 9s ease-in-out infinite}
+@keyframes beams{50%{opacity:.5;transform:translateX(-30px)}}
+
+/* ---------- Graffiti couture: the wall, dressed for the runway ---------- */
+.hero[data-scene=graffiti]{--t:#0d0d0d;--t2:#0d0d0dc8;--accent:#ff3b2f;--scrim:linear-gradient(90deg,#f1ede4f0 0,#f1ede4b8 34%,#f1ede400 60%);border-color:#0d0d0d}
+.hero[data-scene=graffiti] .name{font-family:var(--font-anton),sans-serif;font-weight:400;font-size:clamp(64px,8.4vw,150px);line-height:.9;letter-spacing:0;text-transform:uppercase}
+.hero[data-scene=graffiti] .name em{display:inline-block;font-family:var(--font-marker),cursive;font-style:normal;text-transform:none;color:#ff3b2f;transform:rotate(-6deg) translateY(-.04em);text-shadow:4px 4px 0 #ffd400}
+.hero[data-scene=graffiti] .line{font-family:var(--font-marker),cursive;font-style:normal;color:#0d0d0d}
+.hero[data-scene=graffiti] .credit{background:#ffd400;color:#0d0d0d;padding:6px 10px;transform:rotate(-2deg)}
+.hero[data-scene=graffiti] .cta{background:#0d0d0d;box-shadow:6px 6px 0 #ffd400}
+
+@media(max-width:760px){
+  .hero{align-items:flex-end;min-height:calc(100svh - 70px);padding:96px 6vw 110px}
+  .scene img{object-position:74% 50%}
+  .hero{--scrim:linear-gradient(0deg,#fbf6eaf5 0,#fbf6eac8 46%,#fbf6ea00 78%)}
+  .hero[data-scene=davinci]{--scrim:linear-gradient(0deg,#efe3c6f5 0,#efe3c6c8 46%,#efe3c600 78%)}
+  .hero[data-scene=monet]{--scrim:linear-gradient(0deg,#f6f1ecf5 0,#f6f1ecc8 46%,#f6f1ec00 78%)}
+  .hero[data-scene=vangogh]{--scrim:linear-gradient(0deg,#0c1430f2 0,#0c1430c0 46%,#0c143000 78%)}
+  .hero[data-scene=adams]{--scrim:linear-gradient(0deg,#0b0b0bf0 0,#0b0b0bb8 46%,#0b0b0b00 78%)}
+  .hero[data-scene=adams] .scene{inset:10px}
+  .hero[data-scene=cathedral]{--scrim:linear-gradient(0deg,#fbf3e2f5 0,#fbf3e2c8 46%,#fbf3e200 78%)}
+  .hero[data-scene=graffiti]{--scrim:linear-gradient(0deg,#f1ede4f5 0,#f1ede4c8 46%,#f1ede400 78%)}
+  .name{font-size:clamp(44px,12.5vw,64px)}
+  .hero[data-scene=graffiti] .name{font-size:clamp(52px,15vw,80px)}
+  .hero[data-scene=cathedral] .name{font-size:clamp(36px,10vw,52px)}
+  .cta{width:100%;justify-content:space-between}
+}
+@media(prefers-reduced-motion:reduce){.scene img,.copy>*,.light{animation:none}}
