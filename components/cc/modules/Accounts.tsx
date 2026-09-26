@@ -349,7 +349,7 @@ export default function Accounts({ session }: { session: Session }) {
       const st = feedState(f);
       // Instagram has its own door (Instagram Login) when those keys are on the site; otherwise it signs in through the Facebook Page it is linked to.
       const igOwn = p === 'instagram' && Boolean(f?.instagramLogin);
-      const oauth = igOwn ? '/api/oauth/instagram/start?back=cc' : p === 'facebook' || p === 'instagram' ? '/api/oauth/facebook/start?back=cc' : p === 'x' ? '/api/oauth/x/start' : p === 'linkedin' ? '/api/oauth/linkedin/start' : null;
+      const oauth = igOwn ? '/api/oauth/instagram/start?back=cc' : p === 'facebook' || p === 'instagram' ? '/api/oauth/facebook/start?back=cc' : p === 'x' ? '/api/oauth/x/start?back=cc' : p === 'linkedin' ? '/api/oauth/linkedin/start?back=cc' : null;
       const canOauth = Boolean(oauth) && (p === 'facebook' || p === 'instagram' ? Boolean(f?.oauth) : !f?.needs);
       return {
         key: p,
