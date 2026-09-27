@@ -228,6 +228,9 @@ const config: NextConfig = {
       // beside it in public/demos/wedding/. Its image paths are absolute, so
       // the page renders the same at the clean URL.
       { source: '/demos/wedding', destination: '/demos/wedding/index.html' },
+      // The second wedding demo (Sienna and Marco, Mo'orea): a light, different
+      // design on the same product, in public/demos/wedding-tahiti/.
+      { source: '/demos/wedding-tahiti', destination: '/demos/wedding-tahiti/index.html' },
       // Cairnfell, the concept mountain-home builder shown on /for/contractors:
       // the site and its owner portal, static pages in public/demos/cairnfell/
       // with absolute image paths, like the wedding demo.
