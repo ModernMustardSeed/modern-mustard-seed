@@ -28,7 +28,7 @@ export default function GraffitiHero() {
       <p className={s.credit}>Design &amp; Agentic Systems Studio · Kalispell, Montana</p>
       <h1 id="studio-heading" className={s.name}><span>Modern Mustard</span> <em>Seed</em><span className="sr-only">. {LINE}</span></h1>
       <p className={s.line} aria-hidden="true">{LINE}</p>
-      <p className={s.what}>Websites, custom software, and agentic systems, designed and built by Sarah Scarano in Kalispell, Montana.</p>
+      <p className={s.what}><strong>Websites, custom software, and agentic systems,</strong> designed and built by Sarah Scarano in Kalispell, Montana.</p>
       <div className={s.actions}>
         <Link href="/inquire" className={s.cta}>Tell Us What You Have In Mind <span aria-hidden="true">↗</span></Link>
         <a href="#selected-work" className={s.quiet}>See The Work</a>
