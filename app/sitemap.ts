@@ -49,6 +49,7 @@ const STATIC_PATHS = [
   '/for',
   '/for/restaurants',
   '/for/contractors',
+  '/for/health',
   '/montana',
   '/nationwide',
   '/marketing',

@@ -57,6 +57,7 @@ export default function Footer() {
         { label: 'Kalispell', href: '/montana/kalispell' },
         { label: 'Industries We Build For', href: '/for' },
         { label: 'For Builders and Contractors', href: '/for/contractors' },
+        { label: 'For Health Practices', href: '/for/health' },
         { label: 'Future-Proof Your Business', href: '/future-proof' },
         { label: 'Partner Program', href: '/partners' },
       ],

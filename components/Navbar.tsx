@@ -48,6 +48,7 @@ const MENU_GROUPS = [
       { label: 'Kalispell', href: '/montana/kalispell' },
       { label: 'Industries We Build For', href: '/for' },
       { label: 'For Builders and Contractors', href: '/for/contractors' },
+      { label: 'For Health Practices', href: '/for/health' },
     ],
   },
   {
