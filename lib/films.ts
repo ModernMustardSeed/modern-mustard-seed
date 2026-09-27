@@ -36,6 +36,38 @@ export type Film = {
 };
 
 export const FILMS = {
+  /** The Graffiti Couture launch film, in the admin ad playbook. */
+  graffitiCouture: {
+    mp4: '/ads/graffiti-couture/graffiti-couture-16x9.mp4',
+    poster: '/ads/graffiti-couture/preview/poster-16x9-800.webp',
+    shipped: true,
+    runtime: '72 sec',
+  },
+  graffitiCoutureTall: {
+    mp4: '/ads/graffiti-couture/graffiti-couture-9x16.mp4',
+    poster: '/ads/graffiti-couture/preview/poster-9x16-800.webp',
+    shipped: true,
+    runtime: '72 sec',
+  },
+  graffitiCoutureSquare: {
+    mp4: '/ads/graffiti-couture/graffiti-couture-1x1.mp4',
+    poster: '/ads/graffiti-couture/preview/poster-1x1-800.webp',
+    shipped: true,
+    runtime: '72 sec',
+  },
+  graffitiCoutureReels: {
+    mp4: '/ads/graffiti-couture/graffiti-couture-9x16-58s.mp4',
+    poster: '/ads/graffiti-couture/preview/poster-9x16-800.webp',
+    shipped: true,
+    runtime: '58 sec',
+  },
+  graffitiCoutureSocial: {
+    mp4: '/ads/graffiti-couture/graffiti-couture-9x16-social.mp4',
+    poster: '/ads/graffiti-couture/preview/poster-9x16-800.webp',
+    shipped: true,
+    runtime: '72 sec',
+  },
+
   littleYesHook: {
     mp4: '/ads/little-yes/little-yes-hook-9x16.mp4',
     poster: '/ads/little-yes/preview/poster-9x16-800.webp',

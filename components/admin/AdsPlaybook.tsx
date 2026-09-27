@@ -7,6 +7,7 @@ import FreeAuditCampaign from '@/components/admin/FreeAuditCampaign';
 import PresenceAuditCampaign from '@/components/admin/PresenceAuditCampaign';
 import LittleYesCampaign from '@/components/admin/LittleYesCampaign';
 import RoomToGrowCampaign from '@/components/admin/RoomToGrowCampaign';
+import GraffitiCoutureCampaign from '@/components/admin/GraffitiCoutureCampaign';
 import EcommerceCampaign from '@/components/admin/EcommerceCampaign';
 import MakeItRealCampaign from '@/components/admin/MakeItRealCampaign';
 import FlatheadAuditCampaign from '@/components/admin/FlatheadAuditCampaign';
@@ -1150,7 +1151,7 @@ function CopyBlock({ title, text }: { title: string; text: string }) {
   );
 }
 
-type AdsTab = 'cairnfell' | 'aianswer' | 'littleyes' | 'roomtogrow' | 'ecommerce' | 'presence' | 'makeitreal' | 'flathead' | 'freeaudit' | 'callme' | 'tw' | 'mm' | 'fm' | 'sk' | 'px' | 'pr' | 'geo' | 'gn' | 'py' | 'rest' | 'unv' | 'unvr' | 'unvf' | 'brg' | 'stone' | 'chief' | 'ans' | 'scenic' | 'cxc' | 'ah' | 'whaa' | 'debate' | 'lf' | 'social' | 'results';
+type AdsTab = 'graffiti' | 'cairnfell' | 'aianswer' | 'littleyes' | 'roomtogrow' | 'ecommerce' | 'presence' | 'makeitreal' | 'flathead' | 'freeaudit' | 'callme' | 'tw' | 'mm' | 'fm' | 'sk' | 'px' | 'pr' | 'geo' | 'gn' | 'py' | 'rest' | 'unv' | 'unvr' | 'unvf' | 'brg' | 'stone' | 'chief' | 'ans' | 'scenic' | 'cxc' | 'ah' | 'whaa' | 'debate' | 'lf' | 'social' | 'results';
 
 const TABS: { key: AdsTab; num: string; label: string; blurb: string }[] = [
   { key: 'callme', num: '01', label: 'Call Me', blurb: 'Voice agents · call objective · $25/day' },
@@ -1177,6 +1178,7 @@ const TABS: { key: AdsTab; num: string; label: string; blurb: string }[] = [
   { key: 'whaa', num: '22', label: 'Say Whaaa', blurb: 'The build · the agent that builds · $10/day' },
   { key: 'debate', num: '23', label: 'While You Were Debating', blurb: 'Idea to Product · the studio proof · $15/day' },
   { key: 'lf', num: '24', label: 'The Launch Film', blurb: 'Launch films · fifteen seconds of IRL · $20/day' },
+  { key: 'graffiti', num: '34', label: 'Graffiti Couture', blurb: 'The site relaunch launch film, three cuts, a 58s Reels cut, and ad copy' },
   { key: 'cairnfell', num: '33', label: 'Cairnfell', blurb: 'Luxury builder film, website, owner portal and studio, for contractor groups' },
   { key: 'aianswer', num: '32', label: 'The AI Answer', blurb: 'The IG bio as an ad, Mr. Mustard pop art, DM ANSWER, $10/day' },
   { key: 'littleyes', num: '31', label: 'A Little Yes', blurb: 'The Mustard family musical, original song, full film, and chorus cut' },
@@ -1202,7 +1204,7 @@ const TABS: { key: AdsTab; num: string; label: string; blurb: string }[] = [
 const CAMPAIGN_GROUPS: { name: string; keys: AdsTab[] }[] = [
   { name: 'Demo Funnel', keys: ['unv', 'unvr', 'unvf', 'brg', 'stone', 'ans'] },
   { name: 'Product Offers', keys: ['mm', 'sk', 'chief', 'px', 'pr', 'geo', 'lf'] },
-  { name: 'Brand + Verticals', keys: ['cairnfell', 'littleyes', 'roomtogrow', 'ecommerce', 'makeitreal', 'callme', 'ah', 'tw', 'gn', 'rest', 'scenic', 'whaa', 'cxc', 'debate'] },
+  { name: 'Brand + Verticals', keys: ['graffiti', 'cairnfell', 'littleyes', 'roomtogrow', 'ecommerce', 'makeitreal', 'callme', 'ah', 'tw', 'gn', 'rest', 'scenic', 'whaa', 'cxc', 'debate'] },
   { name: 'Audit', keys: ['aianswer', 'presence', 'freeaudit', 'flathead'] },
   { name: 'Partners + Magnets', keys: ['fm', 'py'] },
   { name: 'Organic', keys: ['social'] },
@@ -3475,6 +3477,7 @@ export default function AdsPlaybook() {
         </section>
         </>)}
 
+        {tab === 'graffiti' && <GraffitiCoutureCampaign />}
         {tab === 'cairnfell' && <CairnfellCampaign />}
         {tab === 'aianswer' && <AiAnswerCampaign />}
         {tab === 'littleyes' && <LittleYesCampaign />}
