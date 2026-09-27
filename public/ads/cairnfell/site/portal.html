@@ -1,0 +1,630 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cairnfell Owner Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Cormorant:ital,wght@1,400;1,500&family=Hanken+Grotesk:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    color-scheme: dark;
+    --night: #0E1411; --char: #151B17; --char-2: #1C231E; --char-3: #242C26;
+    --bone: #ECE6DA; --bone-dim: #C9C2B4; --lichen: #9CA391;
+    --brass: #C39A5B; --brass-hi: #D9B57C; --glow: #E3A58A; --moss: #8FB08A;
+    --line: rgba(236,230,218,.12); --line-strong: rgba(236,230,218,.26);
+    --display: 'Marcellus', Georgia, serif; --accent: 'Cormorant', Georgia, serif;
+    --body: 'Hanken Grotesk', 'Helvetica Neue', Arial, sans-serif; --mono: 'DM Mono', ui-monospace, Menlo, monospace;
+    --ease: cubic-bezier(.2,.7,.1,1);
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html, body { height: 100%; }
+  body { margin: 0; background: var(--night); color: var(--bone); font-family: var(--body); font-weight: 300; font-size: 15px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+  img { max-width: 100%; display: block; }
+  a { color: inherit; }
+  button { font: inherit; color: inherit; }
+  :focus-visible { outline: 1px solid var(--brass-hi); outline-offset: 3px; }
+  h1, h2, h3 { font-family: var(--display); font-weight: 400; margin: 0; line-height: 1.08; text-wrap: balance; }
+  p { margin: 0; }
+  em.it { font-family: var(--accent); font-style: italic; color: var(--brass-hi); }
+  .label { font-family: var(--mono); font-size: 10.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--lichen); }
+  .num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; font-size: 11.5px; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; color: var(--night); background: var(--bone); border: 1px solid var(--bone); padding: 12px 20px; cursor: pointer; text-decoration: none; transition: .3s var(--ease); }
+  .btn:hover { background: var(--brass-hi); border-color: var(--brass-hi); }
+  .btn.ghost { background: transparent; color: var(--bone); border-color: var(--line-strong); }
+  .btn.ghost:hover { border-color: var(--brass-hi); color: var(--brass-hi); }
+  .btn.sm { padding: 9px 14px; font-size: 10.5px; }
+  .pill { display: inline-flex; align-items: center; gap: 7px; font-family: var(--mono); font-size: 10px; letter-spacing: .16em; text-transform: uppercase; padding: 5px 9px; border: 1px solid var(--line-strong); color: var(--bone-dim); white-space: nowrap; }
+  .pill i { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .pill.ok { color: var(--moss); border-color: rgba(143,176,138,.4); }
+  .pill.due { color: var(--glow); border-color: rgba(227,165,138,.45); }
+  .pill.live { color: var(--brass-hi); border-color: rgba(217,181,124,.45); }
+  .pill.live i { animation: pulse 1.8s infinite; }
+  @keyframes pulse { 50% { opacity: .25; } }
+
+  /* ——— sign in ——— */
+  .signin { min-height: 100%; display: grid; grid-template-columns: 1.1fr 1fr; }
+  .signin .ph { position: relative; overflow: hidden; }
+  .signin .ph img { width: 100%; height: 100%; object-fit: cover; }
+  .signin .ph::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(14,20,17,0) 50%, var(--night)); }
+  .signin .ph blockquote { position: absolute; left: 40px; bottom: 36px; right: 40px; z-index: 2; margin: 0; font-family: var(--accent); font-style: italic; font-size: 26px; line-height: 1.25; text-shadow: 0 2px 20px rgba(0,0,0,.6); max-width: 30ch; }
+  .signin form { align-self: center; padding: 48px clamp(24px, 6vw, 90px); display: grid; gap: 22px; max-width: 520px; }
+  .mark { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+  .mark svg { width: 26px; height: 26px; }
+  .mark b { font-family: var(--display); font-weight: 400; font-size: 17px; letter-spacing: .3em; }
+  .signin h1 { font-size: clamp(34px, 3.4vw, 48px); margin-top: 26px; }
+  .fld { display: grid; gap: 8px; }
+  .fld label { font-family: var(--mono); font-size: 10.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--lichen); }
+  .fld input { font: inherit; font-size: 17px; color: var(--bone); background: transparent; border: 0; border-bottom: 1px solid var(--line-strong); padding: 10px 0; border-radius: 0; }
+  .fld input:focus { outline: none; border-bottom-color: var(--brass-hi); }
+  .fld .err { font-size: 12.5px; color: var(--glow); min-height: 1.1em; }
+  .hint { font-size: 13px; color: var(--lichen); border-left: 1px solid var(--brass); padding-left: 12px; }
+  .hint b { color: var(--bone); font-weight: 500; font-family: var(--mono); letter-spacing: .06em; }
+  @media (max-width: 860px) { .signin { grid-template-columns: 1fr; grid-template-rows: 34vh auto; } .signin .ph::after { background: linear-gradient(180deg, rgba(14,20,17,0) 40%, var(--night)); } .signin .ph blockquote { font-size: 20px; left: 20px; bottom: 18px; } }
+
+  /* ——— app shell ——— */
+  .app { display: grid; grid-template-columns: 248px 1fr; min-height: 100%; }
+  .side { position: sticky; top: 0; height: 100vh; border-right: 1px solid var(--line); padding: calc(env(safe-area-inset-top, 0px) + 26px) 18px 22px; display: flex; flex-direction: column; gap: 26px; background: var(--char); }
+  .proj { display: grid; grid-template-columns: 52px 1fr; gap: 12px; align-items: center; padding: 10px; border: 1px solid var(--line); }
+  .proj img { width: 52px; height: 52px; object-fit: cover; }
+  .proj b { font-family: var(--display); font-weight: 400; font-size: 15.5px; display: block; line-height: 1.2; }
+  .menu { display: grid; gap: 2px; }
+  .menu button { display: flex; align-items: center; gap: 12px; width: 100%; background: none; border: 0; border-left: 2px solid transparent; padding: 11px 12px; cursor: pointer; text-align: left; font-size: 14px; color: var(--bone-dim); transition: .25s; }
+  .menu button svg { width: 18px; height: 18px; flex: none; stroke: currentColor; fill: none; stroke-width: 1.4; }
+  .menu button:hover { color: var(--bone); background: rgba(236,230,218,.03); }
+  .menu button[aria-current="page"] { color: var(--bone); border-left-color: var(--brass); background: rgba(195,154,91,.07); }
+  .menu .badge { margin-left: auto; font-family: var(--mono); font-size: 10px; color: var(--night); background: var(--glow); padding: 1px 6px; }
+  .side .foot { margin-top: auto; display: grid; gap: 12px; }
+  .mode { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--line-strong); }
+  .mode button { background: none; border: 0; padding: 9px 6px; font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--lichen); cursor: pointer; }
+  .mode button[aria-pressed="true"] { background: var(--bone); color: var(--night); }
+  .main { min-width: 0; padding: calc(env(safe-area-inset-top, 0px) + 28px) clamp(18px, 3.4vw, 48px) 60px; }
+  .top { display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; flex-wrap: wrap; margin-bottom: 28px; }
+  .top h1 { font-size: clamp(28px, 3vw, 42px); }
+  .top .sub { margin-top: 8px; color: var(--bone-dim); }
+  .view { display: none; animation: vin .6s var(--ease); }
+  .view.on { display: block; }
+  @keyframes vin { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  .grid { display: grid; gap: 18px; }
+  .card { background: var(--char); border: 1px solid var(--line); padding: 22px; min-width: 0; }
+  .card h2 { font-size: 21px; }
+  .card .hd { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 16px; }
+  .tabbar { display: none; }
+  @media (max-width: 900px) {
+    .app { grid-template-columns: 1fr; }
+    .side { display: none; }
+    .main { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 96px); }
+    .tabbar { display: grid; grid-template-columns: repeat(5, 1fr); position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; background: rgba(21,27,23,.96); backdrop-filter: blur(12px); border-top: 1px solid var(--line); padding-bottom: env(safe-area-inset-bottom, 0px); }
+    .tabbar button { background: none; border: 0; display: grid; justify-items: center; gap: 4px; padding: 10px 2px 12px; font-size: 10.5px; color: var(--lichen); cursor: pointer; }
+    .tabbar svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.4; }
+    .tabbar button[aria-current="page"] { color: var(--brass-hi); }
+    .mtop { display: flex !important; }
+  }
+  .mtop { display: none; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 20px; }
+
+  /* ——— overview ——— */
+  .ov { grid-template-columns: 1.55fr 1fr; }
+  .herocard { position: relative; overflow: hidden; min-height: 330px; padding: 0; display: grid; align-items: end; }
+  .herocard img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .herocard::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(14,20,17,.1), rgba(14,20,17,.88)); }
+  .herocard .in { position: relative; z-index: 2; padding: 24px; display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; flex-wrap: wrap; }
+  .herocard h2 { font-size: clamp(26px, 2.6vw, 36px); margin-top: 8px; }
+  .ring { width: 116px; height: 116px; position: relative; flex: none; }
+  .ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+  .ring .v { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; }
+  .ring .v b { font-family: var(--display); font-weight: 400; font-size: 30px; line-height: 1; display: block; }
+  .next { display: grid; gap: 14px; }
+  .next .big { font-family: var(--display); font-size: 26px; line-height: 1.15; }
+  .kv { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--line); }
+  .kv > div { padding: 14px 12px 0 0; display: grid; gap: 4px; }
+  .kv > div + div { padding-left: 12px; border-left: 1px solid var(--line); }
+  .kv b { font-family: var(--display); font-weight: 400; font-size: 24px; }
+  .stages { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-top: 6px; }
+  .stages div { display: grid; gap: 8px; }
+  .stages i { height: 4px; background: rgba(236,230,218,.1); position: relative; overflow: hidden; }
+  .stages i::after { content: ''; position: absolute; inset: 0; width: var(--p, 0%); background: linear-gradient(90deg, var(--brass), var(--brass-hi)); }
+  .stages span { font-size: 12px; color: var(--bone-dim); }
+  .needs { display: grid; gap: 10px; }
+  .need { display: grid; grid-template-columns: 58px 1fr auto; gap: 14px; align-items: center; padding: 10px; border: 1px solid var(--line); background: rgba(236,230,218,.02); cursor: pointer; text-align: left; width: 100%; }
+  .need:hover { border-color: var(--line-strong); }
+  .need img { width: 58px; height: 44px; object-fit: cover; }
+  .need b { font-weight: 500; display: block; }
+  .need span { font-size: 12.5px; color: var(--lichen); }
+  @media (max-width: 1100px) { .ov { grid-template-columns: 1fr; } }
+  @media (max-width: 560px) { .stages span { font-size: 10.5px; } .kv b { font-size: 20px; } }
+
+  /* ——— journal ——— */
+  .entry { display: grid; grid-template-columns: 170px 1fr; gap: 26px; padding: 26px 0; border-bottom: 1px solid var(--line); }
+  .entry:first-child { padding-top: 0; }
+  .entry .when b { font-family: var(--display); font-weight: 400; font-size: 34px; display: block; line-height: 1; }
+  .entry h3 { font-size: 24px; }
+  .entry p { margin-top: 10px; color: var(--bone-dim); max-width: 68ch; }
+  .entry .sig { margin-top: 12px; font-family: var(--accent); font-style: italic; font-size: 19px; color: var(--brass-hi); }
+  .photos { margin-top: 18px; display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 8px; }
+  .photos img { width: 100%; height: 150px; object-fit: cover; cursor: zoom-in; transition: opacity .3s; }
+  .photos img:hover { opacity: .85; }
+  .photos img:first-child { height: 308px; grid-row: span 2; }
+  @media (max-width: 760px) { .entry { grid-template-columns: 1fr; gap: 10px; } .photos { grid-template-columns: 1fr 1fr; } .photos img:first-child { grid-column: span 2; grid-row: auto; height: 200px; } .photos img { height: 110px; } }
+
+  /* ——— selections ——— */
+  .sels { grid-template-columns: repeat(3, 1fr); }
+  .sel { display: grid; grid-template-rows: auto 1fr; padding: 0; overflow: hidden; }
+  .sel .sw { height: 170px; position: relative; }
+  .sel .sw img { width: 100%; height: 100%; object-fit: cover; }
+  .sel .bd { padding: 18px; display: grid; gap: 10px; align-content: start; }
+  .sel h3 { font-size: 20px; }
+  .sel p { font-size: 13.5px; color: var(--bone-dim); }
+  .sel .act { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+  .sel .done { font-family: var(--mono); font-size: 11px; letter-spacing: .1em; color: var(--moss); }
+  .sw-soap { background: radial-gradient(ellipse at 30% 40%, #56605a 0, #3a413c 40%, #2c322e 100%); }
+  .sw-soap::after { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(118deg, transparent 0 38px, rgba(220,226,220,.14) 38px 39px, transparent 39px 90px); }
+  .sw-iron { background: linear-gradient(135deg, #2a2b2a, #161716 45%, #34352f 70%, #1b1c1a); }
+  .sw-oak { background: repeating-linear-gradient(90deg, #b99a6e 0 5px, #c7a97c 5px 11px, #ad8d61 11px 14px, #c3a375 14px 24px); }
+  @media (max-width: 1100px) { .sels { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 640px) { .sels { grid-template-columns: 1fr; } }
+
+  /* ——— schedule ——— */
+  .gantt { display: grid; gap: 0; }
+  .gr { display: grid; grid-template-columns: 220px 1fr 110px; gap: 16px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .gr .t b { font-weight: 500; display: block; }
+  .gr .t span { font-size: 12px; color: var(--lichen); }
+  .track { position: relative; height: 22px; background: repeating-linear-gradient(90deg, rgba(236,230,218,.05) 0 1px, transparent 1px 12.5%); }
+  .track i { position: absolute; top: 5px; height: 12px; background: linear-gradient(90deg, var(--brass), var(--brass-hi)); }
+  .track i.done { background: rgba(143,176,138,.55); }
+  .track i.you { background: var(--glow); }
+  .weeks { display: grid; grid-template-columns: 220px 1fr 110px; gap: 16px; padding-bottom: 8px; border-bottom: 1px solid var(--line); }
+  .weeks div { display: grid; grid-template-columns: repeat(8, 1fr); }
+  .gr .d { text-align: right; }
+  @media (max-width: 760px) { .gr, .weeks { grid-template-columns: 1fr; gap: 8px; } .weeks > span, .weeks > i { display: none; } .gr .d { text-align: left; } }
+
+  /* ——— documents ——— */
+  .docs { display: grid; }
+  .doc { display: grid; grid-template-columns: 40px 1fr auto auto; gap: 16px; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--line); }
+  .doc svg { width: 26px; height: 32px; stroke: var(--brass); fill: none; stroke-width: 1.2; }
+  .doc b { font-weight: 500; display: block; }
+  .doc span { font-size: 12.5px; color: var(--lichen); }
+  @media (max-width: 640px) { .doc { grid-template-columns: 34px 1fr; } .doc .pill, .doc .btn { grid-column: 2; justify-self: start; } }
+
+  /* ——— concierge ——— */
+  .cc { display: grid; grid-template-columns: 1fr 300px; gap: 18px; }
+  .thread { display: grid; gap: 12px; align-content: start; min-height: 420px; max-height: 62vh; overflow-y: auto; padding-right: 6px; }
+  .m { max-width: 78%; padding: 12px 15px; font-size: 14.5px; line-height: 1.5; }
+  .m.me { justify-self: end; background: rgba(236,230,218,.08); }
+  .m.ai { background: rgba(195,154,91,.1); border-left: 1px solid var(--brass); color: var(--bone); }
+  .m .ts { display: block; margin-top: 7px; font-family: var(--mono); font-size: 10px; letter-spacing: .1em; color: var(--lichen); }
+  .m .src { display: block; margin-top: 8px; font-family: var(--mono); font-size: 10px; letter-spacing: .06em; color: var(--brass); }
+  .typing { display: inline-flex; gap: 4px; padding: 13px 15px; background: rgba(195,154,91,.1); width: max-content; }
+  .typing i { width: 5px; height: 5px; border-radius: 50%; background: var(--brass-hi); animation: blink 1.2s infinite; }
+  .typing i:nth-child(2) { animation-delay: .2s; } .typing i:nth-child(3) { animation-delay: .4s; }
+  @keyframes blink { 0%, 60%, 100% { opacity: .25; } 30% { opacity: 1; } }
+  .ask { display: flex; gap: 10px; margin-top: 16px; border-top: 1px solid var(--line); padding-top: 16px; }
+  .ask input { flex: 1; min-width: 0; font: inherit; font-size: 15px; color: var(--bone); background: rgba(236,230,218,.04); border: 1px solid var(--line-strong); padding: 12px 14px; }
+  .ask input:focus { outline: none; border-color: var(--brass-hi); }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .chip { background: none; border: 1px solid var(--line-strong); padding: 8px 12px; font-size: 12.5px; color: var(--bone-dim); cursor: pointer; }
+  .chip:hover { border-color: var(--brass-hi); color: var(--bone); }
+  .knows { display: grid; gap: 10px; font-size: 13px; color: var(--bone-dim); }
+  .knows div { display: flex; gap: 10px; align-items: baseline; }
+  .knows div::before { content: ''; width: 5px; height: 5px; background: var(--brass); transform: rotate(45deg); flex: none; margin-top: 6px; }
+  @media (max-width: 1000px) { .cc { grid-template-columns: 1fr; } .m { max-width: 92%; } }
+
+  /* ——— builder view (the studio) ——— */
+  .stats4 { grid-template-columns: repeat(4, 1fr); }
+  .stat b { font-family: var(--display); font-weight: 400; font-size: 38px; line-height: 1; display: block; margin-top: 10px; }
+  .stat span { font-size: 12.5px; color: var(--lichen); display: block; margin-top: 8px; }
+  .stat .d { color: var(--moss); font-family: var(--mono); font-size: 11px; }
+  .studio2 { grid-template-columns: 1.25fr 1fr; }
+  .log { display: grid; }
+  .li { display: grid; grid-template-columns: 76px 22px 1fr; gap: 12px; padding: 13px 0; border-bottom: 1px solid var(--line); align-items: start; }
+  .li .tm { font-family: var(--mono); font-size: 11px; color: var(--lichen); padding-top: 2px; }
+  .li .ic { width: 22px; height: 22px; display: grid; place-items: center; border: 1px solid var(--line-strong); }
+  .li .ic svg { width: 12px; height: 12px; stroke: var(--brass-hi); fill: none; stroke-width: 1.6; }
+  .li b { font-weight: 500; }
+  .li p { font-size: 13.5px; color: var(--bone-dim); margin-top: 3px; }
+  .li.new { animation: slide .8s var(--ease); }
+  @keyframes slide { from { opacity: 0; transform: translateX(-10px); background: rgba(195,154,91,.12); } to { opacity: 1; transform: none; } }
+  .post { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  .post .frame { border: 1px solid var(--line-strong); background: #0B100D; }
+  .post .frame .h { display: flex; align-items: center; gap: 10px; padding: 10px 12px; font-size: 13px; }
+  .post .frame .h i { width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--brass); display: grid; place-items: center; }
+  .post .frame .h i svg { width: 14px; height: 14px; color: var(--bone); }
+  .post .frame img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+  .post .frame p { padding: 12px; font-size: 13.5px; color: var(--bone-dim); }
+  .chan { display: flex; gap: 8px; flex-wrap: wrap; }
+  .found { grid-template-columns: 1fr 1fr; }
+  .grade { display: grid; grid-template-columns: auto 1fr; gap: 22px; align-items: center; }
+  .grade .g { font-family: var(--display); font-size: 84px; line-height: .9; color: var(--brass-hi); }
+  .checks { display: grid; gap: 8px; font-size: 13.5px; }
+  .checks div { display: flex; gap: 10px; color: var(--bone-dim); }
+  .checks div::before { content: '✓'; color: var(--moss); font-family: var(--mono); }
+  .answer { border-left: 1px solid var(--brass); padding: 4px 0 4px 16px; display: grid; gap: 10px; }
+  .answer q { font-family: var(--accent); font-style: italic; font-size: 20px; line-height: 1.3; color: var(--bone); quotes: '\201C' '\201D'; }
+  .answer ol { margin: 0; padding-left: 18px; display: grid; gap: 4px; font-size: 13.5px; color: var(--bone-dim); }
+  .answer ol li:first-child { color: var(--bone); font-weight: 500; }
+  .answer ol li:first-child::marker { color: var(--brass-hi); }
+  @media (max-width: 1100px) { .stats4 { grid-template-columns: 1fr 1fr; } .studio2, .found { grid-template-columns: 1fr; } }
+
+  /* ——— lightbox, toast ——— */
+  .lb { position: fixed; inset: 0; z-index: 60; background: rgba(8,11,9,.95); display: grid; place-items: center; padding: 24px; opacity: 0; pointer-events: none; transition: .4s; }
+  .lb.open { opacity: 1; pointer-events: auto; }
+  .lb img { max-height: 86vh; width: auto; max-width: 100%; }
+  .lb button { position: absolute; top: calc(env(safe-area-inset-top, 0px) + 16px); right: 16px; width: 44px; height: 44px; background: none; border: 1px solid var(--line-strong); cursor: pointer; font-size: 18px; }
+  .toast { position: fixed; left: 50%; bottom: calc(env(safe-area-inset-bottom, 0px) + 28px); transform: translate(-50%, 20px); z-index: 70; background: var(--bone); color: var(--night); padding: 12px 18px; font-size: 13.5px; font-weight: 500; opacity: 0; pointer-events: none; transition: .4s var(--ease); }
+  .toast.on { opacity: 1; transform: translate(-50%, 0); }
+  @media (max-width: 900px) { .toast { bottom: calc(env(safe-area-inset-bottom, 0px) + 90px); } }
+  .demo { font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--lichen); }
+  .credit a { color: #F5B700; text-decoration: none; }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="cairn" viewBox="0 0 40 40"><g fill="none" stroke="currentColor" stroke-width="1.3"><ellipse cx="20" cy="33" rx="13" ry="4.2"/><ellipse cx="20" cy="24.6" rx="9.6" ry="3.6"/><ellipse cx="20" cy="17.2" rx="6.8" ry="3"/><ellipse cx="20" cy="11" rx="4.2" ry="2.4"/><path d="M20 3.2v3.2"/></g></symbol>
+    <symbol id="i-ov" viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9H14v-6h-4v6H3z"/></symbol>
+    <symbol id="i-jr" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-8 8"/></symbol>
+    <symbol id="i-sl" viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7"/><rect x="13" y="4" width="7" height="7"/><rect x="4" y="13" width="7" height="7"/><path d="M14 16.5l2 2 4-4"/></symbol>
+    <symbol id="i-sc" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16"/><path d="M3 10h18M8 3v4M16 3v4"/></symbol>
+    <symbol id="i-dc" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></symbol>
+    <symbol id="i-cc" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 10h8"/></symbol>
+    <symbol id="i-st" viewBox="0 0 24 24"><path d="M12 3l2.4 5.6L20 11l-5.6 2.4L12 19l-2.4-5.6L4 11l5.6-2.4z"/></symbol>
+    <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></symbol>
+    <symbol id="i-cam" viewBox="0 0 24 24"><path d="M4 7h4l2-3h4l2 3h4v12H4z"/><circle cx="12" cy="13" r="3.5"/></symbol>
+    <symbol id="i-msg" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3l2.8 5.8 6.2.9-4.5 4.4 1.1 6.2L12 17.4l-5.6 2.9 1.1-6.2L3 9.7l6.2-.9z"/></symbol>
+    <symbol id="i-cloud" viewBox="0 0 24 24"><path d="M7 18h10a4 4 0 0 0 0-8 6 6 0 0 0-11.5 2A3 3 0 0 0 7 18z"/></symbol>
+    <symbol id="i-cal" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15"/><path d="M4 10h16"/></symbol>
+    <symbol id="i-g" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 12h6"/></symbol>
+  </defs>
+</svg>
+
+<!-- ——— sign in ——— -->
+<section class="signin" id="signin">
+  <div class="ph"><img src="art/log-winter.webp" alt="Hollow Creek Lodge in winter at dusk"><blockquote>“Every Friday, the week's photos from the mountain. It was the best part of our week for a year and a half.”</blockquote></div>
+  <form id="signForm" novalidate>
+    <a class="mark" href="index.html" aria-label="Back to Cairnfell"><svg aria-hidden="true"><use href="#cairn"/></svg><b>CAIRNFELL</b></a>
+    <div>
+      <p class="label">Owner portal</p>
+      <h1>Welcome home, <em class="it">almost.</em></h1>
+    </div>
+    <div class="fld"><label for="sEmail">Email</label><input id="sEmail" type="email" autocomplete="email" value="ellen@calderfamily.com"><span class="err" id="sEmailErr"></span></div>
+    <div class="fld"><label for="sCode">Project code</label><input id="sCode" autocomplete="one-time-code" value="HOLLOW32"><span class="err" id="sCodeErr"></span></div>
+    <button class="btn" type="submit">Open my build →</button>
+    <p class="hint">This is a working demo. It opens on the Calder family's home, <b>Hollow Creek Lodge</b>. Code <b>HOLLOW32</b>.</p>
+  </form>
+</section>
+
+<!-- ——— app ——— -->
+<div class="app" id="app" hidden>
+  <aside class="side" aria-label="Portal">
+    <a class="mark" href="index.html" aria-label="Back to Cairnfell"><svg aria-hidden="true"><use href="#cairn"/></svg><b>CAIRNFELL</b></a>
+    <div class="proj"><img src="art/log-winter.webp" alt=""><div><b>Hollow Creek Lodge</b><span class="label" style="letter-spacing:.12em">Big Sky · Week 32</span></div></div>
+    <nav class="menu" id="menu" aria-label="Sections"></nav>
+    <div class="foot">
+      <p class="label">Viewing as</p>
+      <div class="mode" role="group" aria-label="Viewing as">
+        <button type="button" id="mOwner" aria-pressed="true">Owner</button>
+        <button type="button" id="mBuilder" aria-pressed="false">Builder</button>
+      </div>
+      <p class="demo">Concept demo · Site by <span class="credit"><a href="https://modernmustardseed.com" target="_blank" rel="noopener">Modern Mustard Seed</a></span></p>
+    </div>
+  </aside>
+
+  <main class="main" id="main">
+    <div class="mtop">
+      <a class="mark" href="index.html" aria-label="Back to Cairnfell"><svg aria-hidden="true"><use href="#cairn"/></svg><b>CAIRNFELL</b></a>
+      <div class="mode" role="group" aria-label="Viewing as" style="width:170px">
+        <button type="button" id="mOwner2" aria-pressed="true">Owner</button>
+        <button type="button" id="mBuilder2" aria-pressed="false">Builder</button>
+      </div>
+    </div>
+
+    <!-- OVERVIEW -->
+    <section class="view" id="v-overview" aria-labelledby="h-ov">
+      <div class="top"><div><p class="label">Sunday, September 27</p><h1 id="h-ov">Good evening, <em class="it">Ellen.</em></h1><p class="sub">Your home is on schedule. The ridge beam went up Tuesday, and the great room trusses are next.</p></div><span class="pill live"><i></i>Crew on site Mon to Sat</span></div>
+      <div class="grid ov">
+        <div class="card herocard">
+          <img src="art/great-room.webp" alt="The great room at Hollow Creek Lodge with trusses and the stone fireplace">
+          <div class="in">
+            <div><p class="label" style="color:var(--bone-dim)">Week 32 of 71 · Stage 4, raising the home</p><h2>Hollow Creek Lodge</h2><p style="color:var(--bone-dim);margin-top:6px">9,200 sq ft · Full-scribe log · Big Sky, elev. 7,110 ft</p></div>
+            <div class="ring" aria-label="68 percent complete">
+              <svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" stroke="rgba(236,230,218,.14)" stroke-width="4" fill="none"/><circle id="ringArc" cx="60" cy="60" r="52" stroke="url(#rg)" stroke-width="4" fill="none" stroke-linecap="butt" stroke-dasharray="326.7" stroke-dashoffset="326.7"/><defs><linearGradient id="rg"><stop offset="0" stop-color="#C39A5B"/><stop offset="1" stop-color="#D9B57C"/></linearGradient></defs></svg>
+              <div class="v"><div><b class="num" id="ringNum">0%</b><span class="label">Complete</span></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="card next">
+          <p class="label">Next milestone</p>
+          <p class="big">Great room trusses raised</p>
+          <p style="color:var(--bone-dim)">Wednesday, October 14 · 8:00 a.m. Marcus meets you at the gate. You and David are booked to watch from the deck.</p>
+          <div class="kv">
+            <div><span class="label">On site</span><b class="num">34°F</b></div>
+            <div><span class="label">Snow</span><b class="num">6 in</b></div>
+            <div><span class="label">Crew</span><b class="num">11</b></div>
+          </div>
+          <div class="stages" aria-label="Build stages">
+            <div style="--p:100%"><i></i><span>Land</span></div><div style="--p:100%"><i></i><span>Design</span></div><div style="--p:100%"><i></i><span>Shop</span></div><div style="--p:58%"><i></i><span>Raise</span></div><div style="--p:0%"><i></i><span>Keys</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="hd"><h2>This week</h2><button class="btn ghost sm" data-go="journal">All updates</button></div>
+          <div class="entry" style="grid-template-columns:1fr;padding:0;border:0">
+            <p style="margin:0">The ridge beam went up Tuesday at 11:40 a.m. on the first lift, and all six great room trusses are cut, pegged and test-fit in the yard. Stone crews start the chimney's second story Monday.</p>
+            <div class="photos"><img src="art/craft.webp" alt="Hand-hewn log corner on site" data-lb><img src="art/great-room.webp" alt="Great room trusses" data-lb><img src="art/kitchen.webp" alt="Kitchen framing and soapstone" data-lb></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="hd"><h2>Needs you</h2><span class="pill due" id="needCount"><i></i>2 decisions</span></div>
+          <div class="needs">
+            <button class="need" data-go="selections"><img src="art/kitchen.webp" alt=""><div><b>Island slab</b><span>Barroca soapstone, in the shop</span></div><span class="pill due">Oct 2</span></button>
+            <button class="need" data-go="selections"><img src="art/great-room.webp" alt=""><div><b>Great room chandelier</b><span>Forged iron, two finishes</span></div><span class="pill due">Oct 9</span></button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- JOURNAL -->
+    <section class="view" id="v-journal" aria-labelledby="h-jr">
+      <div class="top"><div><p class="label">Build journal</p><h1 id="h-jr">Every Friday, <em class="it">from the mountain.</em></h1><p class="sub">Written by Marcus Hale, your lead builder. Photos by the crew on site.</p></div></div>
+      <div class="card" id="journal"></div>
+    </section>
+
+    <!-- SELECTIONS -->
+    <section class="view" id="v-selections" aria-labelledby="h-sl">
+      <div class="top"><div><p class="label">Selections</p><h1 id="h-sl">Decisions, <em class="it">in hand.</em></h1><p class="sub">Every sample is photographed in place on site before we ask you to choose.</p></div></div>
+      <div class="grid sels" id="sels"></div>
+    </section>
+
+    <!-- SCHEDULE -->
+    <section class="view" id="v-schedule" aria-labelledby="h-sc">
+      <div class="top"><div><p class="label">Schedule · Next eight weeks</p><h1 id="h-sc">The road <em class="it">to the roof.</em></h1><p class="sub">Updated every morning at 6 a.m. from the crew calendar and the Big Sky forecast.</p></div><span class="pill ok"><i></i>On schedule</span></div>
+      <div class="card"><div class="gantt" id="gantt"></div></div>
+    </section>
+
+    <!-- DOCUMENTS -->
+    <section class="view" id="v-documents" aria-labelledby="h-dc">
+      <div class="top"><div><p class="label">Documents</p><h1 id="h-dc">Everything, <em class="it">in one place.</em></h1><p class="sub">Plans, permits, inspections and warranties. Kept here for the life of the home.</p></div></div>
+      <div class="card"><div class="docs" id="docs"></div></div>
+    </section>
+
+    <!-- CONCIERGE -->
+    <section class="view" id="v-concierge" aria-labelledby="h-cc">
+      <div class="top"><div><p class="label">Concierge</p><h1 id="h-cc">Ask anything, <em class="it">any hour.</em></h1><p class="sub">Answers come from your project's file: the plans, the schedule, every update and every selection. Anything it can't answer goes to Marcus.</p></div><span class="pill live"><i></i>Answering now</span></div>
+      <div class="cc">
+        <div class="card">
+          <div class="thread" id="thread" aria-live="polite"></div>
+          <form class="ask" id="askForm"><label for="askIn" class="label" style="position:absolute;left:-9999px">Ask the concierge</label><input id="askIn" placeholder="When do the windows arrive?" autocomplete="off"><button class="btn" type="submit">Ask</button></form>
+          <div class="chips" id="chips"></div>
+        </div>
+        <div class="card"><p class="label" style="margin-bottom:14px">What it knows</p>
+          <div class="knows"><div>71-week schedule, updated daily at 6 a.m.</div><div>418 site photos and 32 Friday updates</div><div>Plans, revision 14, and every change since</div><div>11 selections, 9 approved</div><div>Inspections, permits and warranties</div><div>Your crew: Marcus Hale (lead), Ana Ruiz (stone), Tom Beck (logs)</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BUILDER VIEW: THE STUDIO -->
+    <section class="view" id="v-studio" aria-labelledby="h-st">
+      <div class="top"><div><p class="label">Builder view · Cairnfell studio</p><h1 id="h-st">Your company, <em class="it">running itself.</em></h1><p class="sub">Every lead answered, every owner updated, every build photographed and posted, and the builder Google and ChatGPT recommend.</p></div><span class="pill live"><i></i>Agents working</span></div>
+      <div class="grid stats4">
+        <div class="card stat"><span class="label">New inquiries · September</span><b class="num" data-count="23">0</b><span><span class="d">▲ 64%</span> from Google, ChatGPT and Instagram</span></div>
+        <div class="card stat"><span class="label">First reply</span><b class="num">38 sec</b><span>Average, day or night, weekends too</span></div>
+        <div class="card stat"><span class="label">Posts published</span><b class="num" data-count="31">0</b><span>Instagram, Facebook and Google, all from crew photos</span></div>
+        <div class="card stat"><span class="label">Google rating</span><b class="num">4.9 <small style="font-size:.4em;color:var(--lichen)">· 47</small></b><span>Every review answered within a day</span></div>
+      </div>
+      <div class="grid studio2" style="margin-top:18px">
+        <div class="card">
+          <div class="hd"><h2>What ran today</h2><span class="pill live"><i></i>Live</span></div>
+          <div class="log" id="log"></div>
+        </div>
+        <div class="card post">
+          <div class="hd" style="margin:0"><h2>Scheduled post</h2><span class="pill ok"><i></i>Owner approved sharing</span></div>
+          <div class="frame">
+            <div class="h"><i><svg aria-hidden="true"><use href="#cairn"/></svg></i><b style="font-weight:500">cairnfell</b><span style="margin-left:auto;color:var(--lichen);font-size:12px">Big Sky, Montana</span></div>
+            <img src="art/log-winter.webp" alt="Hollow Creek Lodge in snow at dusk">
+            <p>Ridge beam day at Hollow Creek. Thirty-eight feet of standing-dead Engelmann spruce, set on the first lift. Six trusses to go. 🏔️<br><br>#bigskymontana #loghome #timberframe #mountainhome #montanabuilder</p>
+          </div>
+          <div class="chan"><span class="pill live"><i></i>Instagram · Tue 7:30 AM</span><span class="pill live"><i></i>Facebook · Tue 7:30 AM</span><span class="pill live"><i></i>Google · Tue 8:00 AM</span></div>
+          <p style="font-size:13px;color:var(--lichen)">Written from Tuesday's crew photos and Marcus's notes. You approve with one tap, or it waits.</p>
+        </div>
+      </div>
+      <div class="grid found" style="margin-top:18px">
+        <div class="card">
+          <div class="hd"><h2>Found by AI</h2><span class="pill ok"><i></i>Checked this morning</span></div>
+          <div class="answer">
+            <p class="label">A buyer asked ChatGPT</p>
+            <q>Who's the best log home builder in Montana?</q>
+            <ol><li>Cairnfell Mountain Homes, Whitefish and Big Sky</li></ol><p style="font-size:13px;color:var(--bone-dim)">Then two other Montana builders.</p>
+            <p style="font-size:13px;color:var(--lichen)">Named first, with the right towns, the right style and your reviews quoted. We ask Google and ChatGPT every week and fix whatever drops.</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="hd"><h2>Presence audit</h2><span class="pill ok"><i></i>Top grade</span></div>
+          <div class="grade">
+            <span class="g">A+</span>
+            <div class="checks"><div>Title and headings name Whitefish and Big Sky</div><div>Business facts in structured data Google and AI read</div><div>Reviews quoted on the site, with names and homes</div><div>Plain answers to the questions buyers ask</div><div>Same name, address and phone on every profile</div><div>Tap-to-call phone, fast on every phone</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <nav class="tabbar" id="tabbar" aria-label="Sections"></nav>
+</div>
+
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Photo"><button type="button" id="lbClose" aria-label="Close photo">×</button><img id="lbImg" src="art/craft.webp" alt=""></div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function () {
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var $ = function (id) { return document.getElementById(id); };
+  function toast(t) { var el = $('toast'); el.textContent = t; el.classList.add('on'); clearTimeout(toast.t); toast.t = setTimeout(function () { el.classList.remove('on'); }, 2600); }
+
+  var OWNER = [['overview', 'Overview', 'i-ov'], ['journal', 'Build journal', 'i-jr'], ['selections', 'Selections', 'i-sl', 2], ['schedule', 'Schedule', 'i-sc'], ['documents', 'Documents', 'i-dc'], ['concierge', 'Concierge', 'i-cc']];
+  var BUILDER = [['studio', 'Studio', 'i-st'], ['overview', 'This build', 'i-ov'], ['journal', 'Build journal', 'i-jr'], ['concierge', 'Concierge', 'i-cc']];
+  var mode = 'owner', current = 'overview', pending = 2;
+
+  function renderNav() {
+    var items = mode === 'owner' ? OWNER : BUILDER;
+    $('menu').innerHTML = items.map(function (x) { return '<button type="button" data-go="' + x[0] + '"><svg aria-hidden="true"><use href="#' + x[2] + '"/></svg>' + x[1] + (x[3] && pending ? '<span class="badge">' + pending + '</span>' : '') + '</button>'; }).join('');
+    var tb = mode === 'owner' ? OWNER.filter(function (x) { return x[0] !== 'documents'; }) : BUILDER.concat([['selections', 'Selections', 'i-sl']]);
+    $('tabbar').innerHTML = tb.slice(0, 5).map(function (x) { return '<button type="button" data-go="' + x[0] + '"><svg aria-hidden="true"><use href="#' + x[2] + '"/></svg>' + x[1].replace('Build journal', 'Journal') + '</button>'; }).join('');
+    markNav();
+  }
+  function markNav() { document.querySelectorAll('[data-go]').forEach(function (b) { if (b.closest('#menu, #tabbar')) { if (b.dataset.go === current) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); } }); }
+  function go(v) {
+    current = v;
+    document.querySelectorAll('.view').forEach(function (s) { s.classList.toggle('on', s.id === 'v-' + v); });
+    markNav(); window.scrollTo(0, 0);
+    if (v === 'overview') ring();
+    if (v === 'concierge') startThread();
+    if (v === 'studio') studio();
+    try { history.replaceState(null, '', '#' + v); } catch (e) {}
+  }
+  document.addEventListener('click', function (e) { var b = e.target.closest('[data-go]'); if (b) go(b.dataset.go); var im = e.target.closest('[data-lb]'); if (im) { $('lbImg').src = im.src; $('lbImg').alt = im.alt; $('lb').classList.add('open'); $('lbClose').focus(); } });
+  $('lbClose').onclick = function () { $('lb').classList.remove('open'); };
+  $('lb').addEventListener('click', function (e) { if (e.target === this) this.classList.remove('open'); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') $('lb').classList.remove('open'); });
+  function setMode(m) {
+    mode = m;
+    ['mOwner', 'mOwner2'].forEach(function (id) { $(id).setAttribute('aria-pressed', m === 'owner'); });
+    ['mBuilder', 'mBuilder2'].forEach(function (id) { $(id).setAttribute('aria-pressed', m === 'builder'); });
+    renderNav(); go(m === 'owner' ? 'overview' : 'studio');
+  }
+  ['mOwner', 'mOwner2'].forEach(function (id) { $(id).onclick = function () { setMode('owner'); }; });
+  ['mBuilder', 'mBuilder2'].forEach(function (id) { $(id).onclick = function () { setMode('builder'); }; });
+
+  /* ——— sign in ——— */
+  function enter(v) { $('signin').hidden = true; $('app').hidden = false; if (v === 'studio') setMode('builder'); else { renderNav(); go(v || 'overview'); } }
+  $('signForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var em = $('sEmail').value.trim(), code = $('sCode').value.trim().toUpperCase(), ok = true;
+    $('sEmailErr').textContent = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em) ? '' : 'Enter the email we have on file for you.';
+    if ($('sEmailErr').textContent) ok = false;
+    $('sCodeErr').textContent = code === 'HOLLOW32' ? '' : (code ? 'That code doesn\'t match a Cairnfell project. It\'s on the card from your design meeting.' : 'Enter your project code.');
+    if ($('sCodeErr').textContent) ok = false;
+    if (ok) enter();
+  });
+
+  /* ——— overview ring ——— */
+  function ring() {
+    var arc = $('ringArc'), num = $('ringNum'), C = 326.7, target = 68;
+    if (reduce) { arc.style.strokeDashoffset = C * (1 - target / 100); num.textContent = target + '%'; return; }
+    var t0 = null; (function f(t) { if (!t0) t0 = t; var k = Math.min(1, (t - t0) / 1800), e = 1 - Math.pow(1 - k, 3); arc.style.strokeDashoffset = C * (1 - target / 100 * e); num.textContent = Math.round(target * e) + '%'; if (k < 1) requestAnimationFrame(f); })(performance.now());
+  }
+
+  /* ——— journal ——— */
+  var J = [
+    { d: 'Sep 25', w: 'Week 32', t: 'The ridge beam is up', p: 'Tuesday at 11:40 a.m., on the first lift, with eleven of us on the ropes and the crane operator from Bozeman who has set every ridge we\'ve raised since 2011. It\'s 38 feet of standing-dead Engelmann spruce and it sits exactly where the drawings said it would. All six great room trusses are cut, pegged and test-fit in the yard, and they come up the mountain October 13.', img: ['great-room', 'craft', 'log-winter'] },
+    { d: 'Sep 18', w: 'Week 31', t: 'Second-story logs, and the first snow', p: 'We finished the last course of second-story logs Thursday, an hour before four inches of snow. Everything is tarped and dry. Ana\'s crew started the chimney\'s first story in river rock from the Gallatin, and your soapstone slabs arrived from Vermont. They\'re waiting in the shop for you.', img: ['log-winter', 'kitchen', 'craft'] },
+    { d: 'Sep 11', w: 'Week 30', t: 'Settling jacks set on every post', p: 'A full-scribe log home settles three to four inches in its first five years. Every post in your home now sits on a screw jack we\'ll adjust twice a year, so doors, windows and stairs never bind. It\'s the least glamorous week of the build and one of the most important.', img: ['craft', 'aerial-larch', 'lake-house'] }
+  ];
+  $('journal').innerHTML = J.map(function (e) {
+    return '<article class="entry"><div class="when"><b class="num">' + e.d.split(' ')[1] + '</b><span class="label">' + e.d.split(' ')[0] + ' · ' + e.w + '</span></div><div><h3>' + e.t + '</h3><p>' + e.p + '</p><p class="sig">Marcus</p><div class="photos">' +
+      e.img.map(function (n) { return '<img src="art/' + n + '.webp" alt="' + e.t + '" data-lb loading="lazy">'; }).join('') + '</div></div></article>';
+  }).join('');
+
+  /* ——— selections ——— */
+  var S = [
+    { k: 'soap', sw: 'sw-soap', t: 'Island slab', s: 'Barroca soapstone, 3 cm, honed', p: 'Two slabs, book-matched along the seam. Photographed on the island base in the shop on Friday.', due: 'Oct 2' },
+    { k: 'iron', sw: 'sw-iron', t: 'Great room chandelier', s: 'Hand-forged iron, 72 in, by Hamilton Forge', p: 'Blackened wax or oil-rubbed bronze. Both samples are hanging in the studio.', due: 'Oct 9' },
+    { k: 'oak', sw: 'sw-oak', t: 'Floors, main level', s: 'Reclaimed barn oak, 8 in plank', p: 'From a 1911 barn near Choteau. Approved September 4.', done: 'Approved Sep 4' }
+  ];
+  function renderSels() {
+    $('sels').innerHTML = S.map(function (s, i) {
+      return '<article class="card sel"><div class="sw ' + s.sw + '"></div><div class="bd"><div style="display:flex;justify-content:space-between;gap:10px;align-items:center"><h3>' + s.t + '</h3>' + (s.done ? '<span class="pill ok"><i></i>Done</span>' : '<span class="pill due"><i></i>By ' + s.due + '</span>') + '</div><p class="label" style="letter-spacing:.1em">' + s.s + '</p><p>' + s.p + '</p>' +
+        (s.done ? '<p class="done">' + s.done + '</p>' : '<div class="act"><button class="btn sm" data-approve="' + i + '">Approve</button><button class="btn ghost sm" data-q="' + i + '">Ask Marcus</button></div>') + '</div></article>';
+    }).join('');
+  }
+  renderSels();
+  $('sels').addEventListener('click', function (e) {
+    var a = e.target.closest('[data-approve]'), q = e.target.closest('[data-q]');
+    if (a) { var s = S[+a.dataset.approve]; s.done = 'Approved just now'; pending = Math.max(0, pending - 1); renderSels(); renderNav(); $('needCount').innerHTML = '<i></i>' + (pending ? pending + ' decision' + (pending > 1 ? 's' : '') : 'All clear'); toast(s.t + ' approved. Marcus has it.'); }
+    if (q) { go('concierge'); setTimeout(function () { ask('Can Marcus call me about the ' + S[+q.dataset.q].t.toLowerCase() + '?'); }, 400); }
+  });
+
+  /* ——— schedule ——— */
+  var G = [
+    ['Chimney, second story', 'Ana Ruiz · stone', 0, 3.5, '', 'Oct 17'],
+    ['Great room trusses', 'Marcus Hale · crane day', 2.2, 1, 'you', 'Oct 14 · You attend'],
+    ['Roof sheathing', 'Log crew', 3, 2, '', 'Oct 30'],
+    ['Cedar shake roof', 'Tom Beck · roof', 4.5, 3, '', 'Nov 20'],
+    ['Windows set', 'Glazing crew', 5, 1.5, '', 'Nov 13'],
+    ['Rough plumbing & electric', 'Trades', 6, 2, '', 'Nov 26'],
+    ['Second-story logs', 'Log crew', 0, .6, 'done', 'Done Sep 17']
+  ];
+  $('gantt').innerHTML = '<div class="weeks"><span class="label">Work</span><div>' + ['Sep 28', 'Oct 5', 'Oct 12', 'Oct 19', 'Oct 26', 'Nov 2', 'Nov 9', 'Nov 16'].map(function (w) { return '<span class="label" style="letter-spacing:.08em">' + w + '</span>'; }).join('') + '</div><span class="label" style="text-align:right">Finish</span></div>' +
+    G.map(function (g) { return '<div class="gr"><div class="t"><b>' + g[0] + '</b><span>' + g[1] + '</span></div><div class="track"><i class="' + g[4] + '" style="left:' + (g[2] / 8 * 100) + '%;width:' + (g[3] / 8 * 100) + '%"></i></div><span class="d label" style="letter-spacing:.08em;color:' + (g[4] === 'you' ? 'var(--glow)' : 'var(--bone-dim)') + '">' + g[5] + '</span></div>'; }).join('');
+
+  /* ——— documents ——— */
+  var D = [
+    ['Construction drawings, revision 14', 'Updated Sep 12 · 86 sheets', 'Current'],
+    ['Gallatin County building permit', 'Issued Mar 3 · B-2026-0412', 'Active'],
+    ['Framing inspection', 'Passed Sep 19 · no corrections', 'Passed'],
+    ['Log structure warranty, 100 years', 'Begins at handover', 'On file'],
+    ['Builder\'s risk insurance', 'Through Aug 2027', 'Active']
+  ];
+  $('docs').innerHTML = D.map(function (d) { return '<div class="doc"><svg aria-hidden="true"><use href="#i-dc"/></svg><div><b>' + d[0] + '</b><span>' + d[1] + '</span></div><span class="pill ok"><i></i>' + d[2] + '</span><button class="btn ghost sm" type="button" data-doc="' + d[0] + '">Open</button></div>'; }).join('');
+  $('docs').addEventListener('click', function (e) { var b = e.target.closest('[data-doc]'); if (b) toast('In the live portal this opens ' + b.dataset.doc.toLowerCase() + '.'); });
+
+  /* ——— concierge ——— */
+  var KB = [
+    [/window|glass|glazing/, 'Your windows ship from the factory in Kalispell on November 9 and the glazing crew sets them November 10 to 13. The great room wall is five units, the largest 11 feet tall.', 'Schedule · Purchase order W-218'],
+    [/truss|great room|crane|14/, 'All six great room trusses go up Wednesday, October 14, starting at 8 a.m. The crane is booked for the full day and the forecast shows 38°F with light wind. You and David are on the list to watch from the deck.', 'Schedule · Friday update, week 32'],
+    [/ridge|beam/, 'The ridge beam went up Tuesday, September 22 at 11:40 a.m. on the first lift. It\'s 38 feet of standing-dead Engelmann spruce. There are 14 photos and a 40-second video in the week 32 update.', 'Build journal · week 32'],
+    [/move|done|finish|keys|christmas|complete/, 'Handover is scheduled for the week of February 7, 2028. Your home is 68% complete and on schedule. The biggest remaining risk is the roof before heavy snow, and it\'s planned to be dried in by November 20.', 'Schedule · 71-week plan'],
+    [/soapstone|island|slab|counter/, 'Your Barroca soapstone arrived September 16: two slabs, 3 cm, honed, book-matched on the seam. They\'re photographed on the island base in the shop, and your approval is due October 2 so fabrication can start.', 'Selections · island slab'],
+    [/chimney|stone|rock/, 'Ana\'s crew is on the chimney\'s second story now. It\'s dry-stacked Gallatin river rock, 38 feet to the cap, finishing October 17.', 'Schedule · stone'],
+    [/snow|weather|cold|temperature/, 'Right now it\'s 34°F on site with 6 inches of snow on the ground. The crew works through snow; only wind over 30 mph stops a crane lift, and the forecast is clear of that through October 14.', 'Site station · 6 a.m. report'],
+    [/call|marcus|talk|phone/, 'I\'ve asked Marcus to call you. He\'s on site until 4 p.m. and usually calls back within the hour. Want me to hold a time on his calendar instead?', 'Sent to Marcus Hale']
+  ];
+  var CHIPS = ['When are the trusses going up?', 'When do the windows arrive?', 'How is the snow affecting the build?', 'When do we get the keys?'];
+  var started = false;
+  function add(who, html, ts, src) { var p = document.createElement('p'); p.className = 'm ' + who; p.innerHTML = html + (src ? '<span class="src">From: ' + src + '</span>' : '') + '<span class="ts">' + ts + '</span>'; $('thread').appendChild(p); $('thread').scrollTop = 1e6; }
+  function now() { var d = new Date(); return d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }); }
+  function ask(q) {
+    if (!q) return; add('me', q.replace(/[<>&]/g, ''), now());
+    var hit = null; KB.forEach(function (k) { if (!hit && k[0].test(q.toLowerCase())) hit = k; });
+    var ty = document.createElement('span'); ty.className = 'typing'; ty.innerHTML = '<i></i><i></i><i></i>'; $('thread').appendChild(ty); $('thread').scrollTop = 1e6;
+    setTimeout(function () { ty.remove(); if (hit) add('ai', hit[1], now() + ' · Concierge', hit[2]); else add('ai', 'That one isn\'t in your project file yet, so I\'ve sent it to Marcus. He\'ll answer here by 7 a.m. tomorrow, and I\'ll let you know the moment he does.', now() + ' · Concierge', 'Sent to Marcus Hale'); }, reduce ? 200 : 1200);
+  }
+  function startThread() {
+    if (started) return; started = true;
+    add('me', 'Is the ridge beam going up this week? We want to fly in for it.', 'Sun 11:42 PM');
+    add('ai', 'It went up Tuesday at 11:40 a.m. The crane was off site by noon. Photos and a 40-second video are in this week\'s update. The next big day is the great room trusses on October 14.', 'Sun 11:42 PM · Concierge', 'Build journal · week 32');
+    add('me', 'Perfect. Book us for the 14th?', 'Sun 11:44 PM');
+    add('ai', 'Done. Marcus will meet you at the gate at 8 a.m. Hard hats are on us.', 'Sun 11:44 PM · Concierge', 'Added to schedule · owner visit');
+  }
+  $('chips').innerHTML = CHIPS.map(function (c) { return '<button class="chip" type="button">' + c + '</button>'; }).join('');
+  $('chips').addEventListener('click', function (e) { var c = e.target.closest('.chip'); if (c) ask(c.textContent); });
+  $('askForm').addEventListener('submit', function (e) { e.preventDefault(); var v = $('askIn').value.trim(); $('askIn').value = ''; ask(v); });
+
+  /* ——— studio (builder view) ——— */
+  var LOG = [
+    ['6:02 AM', 'i-cloud', 'Weather check, Big Sky', 'Wind forecast 34 mph Thursday. Thursday\'s lumber delivery moved to Wednesday, and the crew and the supplier were told.'],
+    ['6:10 AM', 'i-cal', 'Schedules updated for 6 owners', 'Every portal shows today\'s plan before the crew arrives.'],
+    ['7:48 AM', 'i-msg', 'New inquiry answered in 41 seconds', 'The Brennans, Denver: 20 acres near Big Sky, timber frame, move-in 2028. Walk of the land booked for October 3.'],
+    ['9:15 AM', 'i-star', 'Google review answered', '5 stars from the Okafor family (Meadowline). Thanked by name, reply posted.'],
+    ['11:40 AM', 'i-cam', 'Crew photos sorted', '146 photos from 3 sites. The best 14 go to the Friday updates and 3 are drafted as posts.'],
+    ['2:30 PM', 'i-g', 'Found-by-AI check', 'ChatGPT and Google both named Cairnfell first for "best log home builder in Montana".'],
+    ['4:05 PM', 'i-bolt', 'Friday updates drafted', 'Drafts written for 6 owners from the crew notes. Marcus reviews and sends at 5.']
+  ];
+  var studioRan = false;
+  function studio() {
+    document.querySelectorAll('[data-count]').forEach(function (el) { var n = +el.dataset.count; if (reduce) { el.textContent = n; return; } var t0 = null; (function f(t) { if (!t0) t0 = t; var k = Math.min(1, (t - t0) / 1400); el.textContent = Math.round(n * (1 - Math.pow(1 - k, 3))); if (k < 1) requestAnimationFrame(f); })(performance.now()); });
+    if (studioRan) return; studioRan = true;
+    var i = 0;
+    (function next() { if (i >= LOG.length) return; var l = LOG[i++]; var d = document.createElement('div'); d.className = 'li new'; d.innerHTML = '<span class="tm">' + l[0] + '</span><span class="ic"><svg aria-hidden="true"><use href="#' + l[1] + '"/></svg></span><div><b>' + l[2] + '</b><p>' + l[3] + '</p></div>'; $('log').appendChild(d); setTimeout(next, reduce ? 0 : 420); })();
+  }
+
+  /* deep links: #overview, #studio, #concierge ... skip sign-in for the film and for sharing */
+  var h = (location.hash || '').slice(1);
+  if (['overview', 'journal', 'selections', 'schedule', 'documents', 'concierge', 'studio'].indexOf(h) >= 0) enter(h);
+})();
+</script>
+</body>
+</html>
