@@ -47,6 +47,7 @@ const MENU_GROUPS = [
       { label: 'Northwest Montana', href: '/montana' },
       { label: 'Kalispell', href: '/montana/kalispell' },
       { label: 'Industries We Build For', href: '/for' },
+      { label: 'For Builders and Contractors', href: '/for/contractors' },
     ],
   },
   {
