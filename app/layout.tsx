@@ -9,6 +9,7 @@ import RefCapture from '@/components/RefCapture';
 import AcquisitionCapture from '@/components/AcquisitionCapture';
 import AnalyticsScripts from '@/components/AnalyticsScripts';
 import CookieConsent from '@/components/CookieConsent';
+import InquiryPopup from '@/components/InquiryPopup';
 import Script from 'next/script';
 import HideOnAppShell from '@/components/HideOnAppShell';
 import HydrationGate from '@/components/HydrationGate';
@@ -94,6 +95,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <RefCapture />
         <AnalyticsScripts />
         <CookieConsent />
+        <HideOnAppShell>
+          <InquiryPopup />
+        </HideOnAppShell>
         <Analytics />
         <SpeedInsights />
         <noscript>
