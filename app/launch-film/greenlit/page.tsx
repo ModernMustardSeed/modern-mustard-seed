@@ -30,19 +30,19 @@ export default function LaunchFilmGreenlitPage() {
   ];
 
   return (
-    <div className="bg-[#FBF6EA] text-[#161616] min-h-screen">
-      <section className="halftone-bg border-b-2 border-[#161616]">
+    <div className="bg-[#f1ede4] text-[#0d0d0d] min-h-screen">
+      <section className="halftone-bg border-b-2 border-[#0d0d0d]">
         <div className="max-w-2xl mx-auto px-5 py-16 md:py-24 text-center">
           <Image
             src="/brand/mascot.png"
             alt="Mr. Mustard"
             width={84}
             height={84}
-            className="mx-auto rounded-full border-2 border-[#161616] bg-[#F5B700] shadow-[4px_4px_0_0_#161616]"
+            className="mx-auto rounded-full border-2 border-[#0d0d0d] bg-[#ffd400] shadow-[4px_4px_0_0_#0d0d0d]"
           />
-          <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#E0301E] font-bold mt-6 mb-3">[ GREENLIT ]</p>
+          <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#d0241b] font-bold mt-6 mb-3">[ GREENLIT ]</p>
           <h1 className="font-display text-4xl md:text-5xl font-black tracking-tight leading-[1.02]">Your launch has a film now.</h1>
-          <p className="font-body text-[#161616]/70 mt-4 max-w-md mx-auto leading-relaxed">
+          <p className="font-body text-[#0d0d0d]/70 mt-4 max-w-md mx-auto leading-relaxed">
             Order confirmed, the Stripe receipt is on its way, and a note from Sarah lands in your inbox today. Here is what happens next.
           </p>
         </div>
@@ -51,27 +51,27 @@ export default function LaunchFilmGreenlitPage() {
       <section className="max-w-2xl mx-auto px-5 py-14">
         <div className="space-y-4">
           {steps.map((s) => (
-            <div key={s.n} className="rounded-2xl border-2 border-[#161616] bg-white p-6 shadow-[5px_5px_0_0_#161616] flex gap-5">
-              <span className="font-display italic text-3xl font-black text-[#F5B700] leading-none" aria-hidden="true">
+            <div key={s.n} className="rounded-2xl border-2 border-[#0d0d0d] bg-white p-6 shadow-[5px_5px_0_0_#0d0d0d] flex gap-5">
+              <span className="font-display italic text-3xl font-black text-[#ffd400] leading-none" aria-hidden="true">
                 {s.n}
               </span>
               <div>
                 <h2 className="font-display text-lg font-black leading-tight">{s.title}</h2>
-                <p className="font-body text-sm text-[#161616]/70 leading-relaxed mt-1.5">{s.body}</p>
+                <p className="font-body text-sm text-[#0d0d0d]/70 leading-relaxed mt-1.5">{s.body}</p>
               </div>
             </div>
           ))}
         </div>
 
-        <div className="rounded-2xl border-2 border-[#161616] bg-[#161616] text-[#FBF6EA] p-6 mt-8 text-center">
-          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#F5B700] font-bold mb-2">The one thing that speeds it up</p>
+        <div className="rounded-2xl border-2 border-[#0d0d0d] bg-[#0d0d0d] text-[#f1ede4] p-6 mt-8 text-center">
+          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#ffd400] font-bold mb-2">The one thing that speeds it up</p>
           <p className="font-body text-sm leading-relaxed">
             Reply to Sarah&apos;s email with the product link and a login if it needs one. The film starts the moment the product runs.
           </p>
         </div>
 
         <p className="text-center mt-10">
-          <Link href="/" className="font-sans font-extrabold text-xs uppercase tracking-[0.18em] text-[#B92417] underline underline-offset-4">
+          <Link href="/" className="font-sans font-extrabold text-xs uppercase tracking-[0.18em] text-[#c8201a] underline underline-offset-4">
             Back to Modern Mustard Seed →
           </Link>
         </p>

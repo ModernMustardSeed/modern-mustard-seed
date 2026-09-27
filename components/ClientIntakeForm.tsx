@@ -103,16 +103,16 @@ function rid() {
 /* ── Reusable bits ── */
 
 const inputCls =
-  'w-full bg-white border-2 border-[#161616] rounded-lg px-4 py-3 text-sm text-[#161616] font-body placeholder-[#161616]/35 focus:outline-none focus:shadow-[3px_3px_0_0_#161616] transition-shadow';
+  'w-full bg-white border-2 border-[#0d0d0d] rounded-lg px-4 py-3 text-sm text-[#0d0d0d] font-body placeholder-[#0d0d0d]/35 focus:outline-none focus:shadow-[3px_3px_0_0_#0d0d0d] transition-shadow';
 const labelCls =
-  'text-[9px] uppercase tracking-[0.3em] text-[#161616]/45 font-mono font-bold block mb-2';
+  'text-[9px] uppercase tracking-[0.3em] text-[#0d0d0d]/45 font-mono font-bold block mb-2';
 
 function Field({ label, children, hint }: { label: string; children: React.ReactNode; hint?: string }) {
   return (
     <div>
       <label className={labelCls}>{label}</label>
       {children}
-      {hint && <p className="mt-1.5 text-[11px] text-[#161616]/45 font-body italic">{hint}</p>}
+      {hint && <p className="mt-1.5 text-[11px] text-[#0d0d0d]/45 font-body italic">{hint}</p>}
     </div>
   );
 }
@@ -135,10 +135,10 @@ function Chips({
             key={o}
             type="button"
             onClick={() => onToggle(o)}
-            className={`px-3.5 py-2 rounded-full border-2 border-[#161616] text-xs font-body font-bold transition-all ${
+            className={`px-3.5 py-2 rounded-full border-2 border-[#0d0d0d] text-xs font-body font-bold transition-all ${
               on
-                ? 'bg-[#F5B700] text-[#161616] shadow-[2px_2px_0_0_#161616]'
-                : 'bg-white text-[#161616]/70 hover:-translate-y-0.5'
+                ? 'bg-[#ffd400] text-[#0d0d0d] shadow-[2px_2px_0_0_#0d0d0d]'
+                : 'bg-white text-[#0d0d0d]/70 hover:-translate-y-0.5'
             }`}
           >
             {o}
@@ -163,14 +163,14 @@ function SectionCard({
   return (
     <section className="pop-card p-7 md:p-9 space-y-6">
       <div className="flex items-start gap-4">
-        <span className="shrink-0 w-9 h-9 rounded-full bg-[#161616] text-[#F5B700] font-display font-black text-base flex items-center justify-center">
+        <span className="shrink-0 w-9 h-9 rounded-full bg-[#0d0d0d] text-[#ffd400] font-display font-black text-base flex items-center justify-center">
           {n}
         </span>
         <div>
-          <h2 className="font-display text-2xl md:text-3xl font-black text-[#161616] tracking-tight leading-tight">
+          <h2 className="font-display text-2xl md:text-3xl font-black text-[#0d0d0d] tracking-tight leading-tight">
             {title}
           </h2>
-          <p className="text-[#161616]/55 text-sm font-body mt-1">{blurb}</p>
+          <p className="text-[#0d0d0d]/55 text-sm font-body mt-1">{blurb}</p>
         </div>
       </div>
       <div className="space-y-5">{children}</div>
@@ -315,14 +315,14 @@ export default function ClientIntakeForm({ brandName = '', ownerName = '', email
     return (
       <div className="pop-card-yellow p-10 md:p-14 text-center">
         <div className="text-5xl mb-6">🤍</div>
-        <h2 className="font-display text-3xl md:text-5xl font-black text-[#161616] tracking-tight mb-4">
+        <h2 className="font-display text-3xl md:text-5xl font-black text-[#0d0d0d] tracking-tight mb-4">
           Thank you, {form.ownerName.split(' ')[0] || 'friend'}
         </h2>
-        <p className="text-[#161616]/80 text-base md:text-lg font-body font-medium max-w-lg mx-auto leading-relaxed mb-2">
+        <p className="text-[#0d0d0d]/80 text-base md:text-lg font-body font-medium max-w-lg mx-auto leading-relaxed mb-2">
           Everything is in. I am going to design three directions for your store, then send you a
           moodboard to choose from before a single page is built.
         </p>
-        <p className="text-[#161616]/60 text-sm font-body max-w-md mx-auto leading-relaxed">
+        <p className="text-[#0d0d0d]/60 text-sm font-body max-w-md mx-auto leading-relaxed">
           Check your inbox for a note from me. Remembered something or found more photos? Just reply
           and send them over.
         </p>
@@ -332,7 +332,7 @@ export default function ClientIntakeForm({ brandName = '', ownerName = '', email
 
   return (
     <form onSubmit={handleSubmit} className="space-y-7">
-      {/* 1 — About you */}
+      {/* 1. About you */}
       <SectionCard n="1" title="About you" blurb="The basics, and the heart behind it.">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <Field label="Business name">
@@ -356,7 +356,7 @@ export default function ClientIntakeForm({ brandName = '', ownerName = '', email
         </Field>
       </SectionCard>
 
-      {/* 2 — Your look */}
+      {/* 2. Your look */}
       <SectionCard n="2" title="Your look" blurb="Your logo, colors, and the feeling you want.">
         <Field label="Your logo" hint="PNG, JPG, or SVG. No logo yet? Skip this and I will design one.">
           <UploadButton
@@ -389,7 +389,7 @@ export default function ClientIntakeForm({ brandName = '', ownerName = '', email
         </div>
       </SectionCard>
 
-      {/* 3 — What you make */}
+      {/* 3. What you make */}
       <SectionCard n="3" title="What you make" blurb="So your shop is built around your real products.">
         <Field label="What do you make?" hint="Pick all that apply.">
           <Chips options={PRODUCT_OPTIONS} selected={form.productTypes} onToggle={(v) => toggle('productTypes', v)} />
@@ -427,7 +427,7 @@ export default function ClientIntakeForm({ brandName = '', ownerName = '', email
         </Field>
       </SectionCard>
 
-      {/* 4 — Selling & pricing */}
+      {/* 4. Selling & pricing */}
       <SectionCard n="4" title="Selling & pricing" blurb="How people buy from you today.">
         <Field label="Where do you sell now?" hint="Pick all that apply.">
           <Chips options={SELLS_OPTIONS} selected={form.sellsWhere} onToggle={(v) => toggle('sellsWhere', v)} />
@@ -467,7 +467,7 @@ export default function ClientIntakeForm({ brandName = '', ownerName = '', email
         </div>
       </SectionCard>
 
-      {/* 5 — Goals */}
+      {/* 5. Goals */}
       <SectionCard n="5" title="Your goals" blurb="What you want this store to do for you.">
         <Field label="What would make this a win?">
           <textarea rows={3} className={`${inputCls} resize-none`} value={form.goals} onChange={(e) => set('goals', e.target.value)} placeholder="Sell online without DMs? Look legit? Grow beyond local? Wholesale?" />
@@ -502,7 +502,7 @@ export default function ClientIntakeForm({ brandName = '', ownerName = '', email
         </Field>
       </SectionCard>
 
-      {/* 6 — Photos */}
+      {/* 6. Photos */}
       <SectionCard n="6" title="Show me your products" blurb="The single biggest thing for a beautiful store. Add as many as you can.">
         <Field label="Product photos" hint="Phone photos are totally fine. Up to 10 at a time, add more in batches.">
           <UploadButton
@@ -523,17 +523,17 @@ export default function ClientIntakeForm({ brandName = '', ownerName = '', email
       </SectionCard>
 
       {errorMsg && (
-        <p className="text-[#E0301E] text-sm font-body font-bold text-center pop-card-cream p-4">{errorMsg}</p>
+        <p className="text-[#d0241b] text-sm font-body font-bold text-center pop-card-cream p-4">{errorMsg}</p>
       )}
 
       <button
         type="submit"
         disabled={status === 'sending' || anyUploading}
-        className="w-full py-5 text-xs uppercase tracking-[0.25em] font-sans font-extrabold text-[#161616] bg-[#F5B700] rounded-xl border-2 border-[#161616] shadow-[5px_5px_0_0_#161616] hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:translate-y-0"
+        className="w-full py-5 text-xs uppercase tracking-[0.25em] font-sans font-extrabold text-[#0d0d0d] bg-[#ffd400] rounded-xl border-2 border-[#0d0d0d] shadow-[5px_5px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:translate-y-0"
       >
         {status === 'sending' ? 'Sending...' : anyUploading ? 'Finishing uploads...' : 'Send it in'}
       </button>
-      <p className="text-center text-[#161616]/45 text-xs font-body italic">
+      <p className="text-center text-[#0d0d0d]/45 text-xs font-body italic">
         You will hear from Sarah personally, usually the same day.
       </p>
     </form>
@@ -572,7 +572,7 @@ function UploadButton({
       <button
         type="button"
         onClick={() => inputRef.current?.click()}
-        className="inline-flex items-center gap-2 px-5 py-3 rounded-lg border-2 border-dashed border-[#161616]/40 bg-white text-[#161616]/70 text-sm font-body font-bold hover:border-[#161616] hover:text-[#161616] transition-colors"
+        className="inline-flex items-center gap-2 px-5 py-3 rounded-lg border-2 border-dashed border-[#0d0d0d]/40 bg-white text-[#0d0d0d]/70 text-sm font-body font-bold hover:border-[#0d0d0d] hover:text-[#0d0d0d] transition-colors"
       >
         <span className="text-lg leading-none">+</span> {label}
       </button>
@@ -585,23 +585,23 @@ function Thumb({ item, onRemove }: { item: Uploaded; onRemove: () => void }) {
     <div className="mt-3 flex items-center gap-3 pop-card-cream p-3">
       {item.preview ? (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={item.preview} alt="" className="w-12 h-12 object-contain rounded bg-white border border-[#161616]/20" />
+        <img src={item.preview} alt="" className="w-12 h-12 object-contain rounded bg-white border border-[#0d0d0d]/20" />
       ) : (
-        <span className="w-12 h-12 rounded bg-white border border-[#161616]/20 flex items-center justify-center text-lg">📄</span>
+        <span className="w-12 h-12 rounded bg-white border border-[#0d0d0d]/20 flex items-center justify-center text-lg">📄</span>
       )}
       <div className="flex-1 min-w-0">
-        <p className="text-xs font-body font-bold text-[#161616] truncate">{item.name}</p>
+        <p className="text-xs font-body font-bold text-[#0d0d0d] truncate">{item.name}</p>
         <p className="text-[11px] font-mono">
           {item.uploading ? (
-            <span className="text-[#B92417]">Uploading...</span>
+            <span className="text-[#c8201a]">Uploading...</span>
           ) : item.error ? (
-            <span className="text-[#E0301E]">{item.error}</span>
+            <span className="text-[#d0241b]">{item.error}</span>
           ) : (
             <span className="text-[#2e7d32]">✓ Uploaded</span>
           )}
         </p>
       </div>
-      <button type="button" onClick={onRemove} className="text-[#161616]/40 hover:text-[#E0301E] text-lg leading-none px-1">
+      <button type="button" onClick={onRemove} className="text-[#0d0d0d]/40 hover:text-[#d0241b] text-lg leading-none px-1">
         ×
       </button>
     </div>
@@ -610,7 +610,7 @@ function Thumb({ item, onRemove }: { item: Uploaded; onRemove: () => void }) {
 
 function PhotoTile({ item, onRemove }: { item: Uploaded; onRemove: () => void }) {
   return (
-    <div className="relative aspect-square rounded-lg overflow-hidden border-2 border-[#161616] bg-white">
+    <div className="relative aspect-square rounded-lg overflow-hidden border-2 border-[#0d0d0d] bg-white">
       {item.preview ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img src={item.preview} alt="" className="w-full h-full object-cover" />
@@ -618,19 +618,19 @@ function PhotoTile({ item, onRemove }: { item: Uploaded; onRemove: () => void })
         <div className="w-full h-full flex items-center justify-center text-2xl">🖼️</div>
       )}
       {item.uploading && (
-        <div className="absolute inset-0 bg-white/70 flex items-center justify-center text-[10px] font-mono font-bold text-[#B92417]">
+        <div className="absolute inset-0 bg-white/70 flex items-center justify-center text-[10px] font-mono font-bold text-[#c8201a]">
           Uploading...
         </div>
       )}
       {item.error && (
-        <div className="absolute inset-0 bg-[#E0301E]/85 flex items-center justify-center text-[10px] font-mono font-bold text-white px-1 text-center">
+        <div className="absolute inset-0 bg-[#ff3b2f]/85 flex items-center justify-center text-[10px] font-mono font-bold text-white px-1 text-center">
           Failed
         </div>
       )}
       <button
         type="button"
         onClick={onRemove}
-        className="absolute top-1 right-1 w-6 h-6 rounded-full bg-[#161616] text-white text-sm leading-none flex items-center justify-center hover:bg-[#E0301E]"
+        className="absolute top-1 right-1 w-6 h-6 rounded-full bg-[#0d0d0d] text-white text-sm leading-none flex items-center justify-center hover:bg-[#ff3b2f]"
       >
         ×
       </button>

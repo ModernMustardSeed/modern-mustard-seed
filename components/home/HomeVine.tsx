@@ -159,15 +159,15 @@ export default function HomeVine() {
         {/* the planted seed the vine grows from */}
         {seed && (
           <g transform={`translate(${seed.x}, ${seed.y})`}>
-            <path d="M -16 6 Q 0 -6 16 6 L 12 14 Q 0 20 -12 14 Z" fill="#161616" stroke="#FBF6EA" strokeWidth="2" />
-            <ellipse cx="0" cy="0" rx="7" ry="9" fill="#F5B700" stroke="#161616" strokeWidth="2.5" />
-            <path d="M 0 -8 Q 3 -14 8 -15" fill="none" stroke="#161616" strokeWidth="2.5" strokeLinecap="round" />
+            <path d="M -16 6 Q 0 -6 16 6 L 12 14 Q 0 20 -12 14 Z" fill="#0d0d0d" stroke="#f1ede4" strokeWidth="2" />
+            <ellipse cx="0" cy="0" rx="7" ry="9" fill="#ffd400" stroke="#0d0d0d" strokeWidth="2.5" />
+            <path d="M 0 -8 Q 3 -14 8 -15" fill="none" stroke="#0d0d0d" strokeWidth="2.5" strokeLinecap="round" />
           </g>
         )}
         {/* the vine: ink casing, gold core, bright highlight (family with the cable) */}
-        <path d={path} pathLength={1} fill="none" stroke="#161616" strokeWidth="10" strokeLinecap="round"
+        <path d={path} pathLength={1} fill="none" stroke="#0d0d0d" strokeWidth="10" strokeLinecap="round"
           strokeDasharray="1" strokeDashoffset={off} />
-        <path d={path} pathLength={1} fill="none" stroke="#F5B700" strokeWidth="6" strokeLinecap="round"
+        <path d={path} pathLength={1} fill="none" stroke="#ffd400" strokeWidth="6" strokeLinecap="round"
           strokeDasharray="1" strokeDashoffset={off} />
         <path d={path} pathLength={1} fill="none" stroke="#FFDD55" strokeWidth="1.8" strokeLinecap="round"
           strokeDasharray="1" strokeDashoffset={off} opacity=".8" />
@@ -183,8 +183,8 @@ export default function HomeVine() {
                 transition: 'opacity .35s ease, transform .45s cubic-bezier(.2,.8,.3,1.4)',
               }}
             >
-              <path d="M 2 -2 Q 10 -22 30 -22 Q 26 -4 8 0 Z" fill="#F5B700" stroke="#161616" strokeWidth="2.5" strokeLinejoin="round" />
-              <path d="M 2 2 Q 14 16 32 12 Q 22 26 6 8 Z" fill="#FFDD55" stroke="#161616" strokeWidth="2.5" strokeLinejoin="round" />
+              <path d="M 2 -2 Q 10 -22 30 -22 Q 26 -4 8 0 Z" fill="#ffd400" stroke="#0d0d0d" strokeWidth="2.5" strokeLinejoin="round" />
+              <path d="M 2 2 Q 14 16 32 12 Q 22 26 6 8 Z" fill="#FFDD55" stroke="#0d0d0d" strokeWidth="2.5" strokeLinejoin="round" />
             </g>
           </g>
         ))}
@@ -192,23 +192,23 @@ export default function HomeVine() {
         {birds && birdsIn && (
           <g transform={`translate(${birds.x}, ${birds.y})`}>
             {/* branch stub */}
-            <path d="M -26 0 L 26 0" stroke="#161616" strokeWidth="7" strokeLinecap="round" />
-            <path d="M -26 0 L 26 0" stroke="#F5B700" strokeWidth="3.5" strokeLinecap="round" />
+            <path d="M -26 0 L 26 0" stroke="#0d0d0d" strokeWidth="7" strokeLinecap="round" />
+            <path d="M -26 0 L 26 0" stroke="#ffd400" strokeWidth="3.5" strokeLinecap="round" />
             {/* left bird, facing right */}
             <g transform="translate(-12, -12)">
-              <ellipse cx="0" cy="0" rx="9" ry="7.5" fill="#F5B700" stroke="#FBF6EA" strokeWidth="2" />
-              <circle cx="8" cy="-6" r="5" fill="#F5B700" stroke="#FBF6EA" strokeWidth="2" />
-              <path d="M 12.5 -6.5 L 18 -5 L 12.5 -3.5 Z" fill="#E0301E" />
-              <circle cx="9" cy="-7" r="1.3" fill="#161616" />
-              <path d="M -3 7 L -3 11 M 3 7 L 3 11" stroke="#FBF6EA" strokeWidth="1.8" strokeLinecap="round" />
+              <ellipse cx="0" cy="0" rx="9" ry="7.5" fill="#ffd400" stroke="#f1ede4" strokeWidth="2" />
+              <circle cx="8" cy="-6" r="5" fill="#ffd400" stroke="#f1ede4" strokeWidth="2" />
+              <path d="M 12.5 -6.5 L 18 -5 L 12.5 -3.5 Z" fill="#ff3b2f" />
+              <circle cx="9" cy="-7" r="1.3" fill="#0d0d0d" />
+              <path d="M -3 7 L -3 11 M 3 7 L 3 11" stroke="#f1ede4" strokeWidth="1.8" strokeLinecap="round" />
             </g>
             {/* right bird, facing left, a little smaller */}
             <g transform="translate(14, -10) scale(-0.85, 0.85)">
-              <ellipse cx="0" cy="0" rx="9" ry="7.5" fill="#FFDD55" stroke="#FBF6EA" strokeWidth="2" />
-              <circle cx="8" cy="-6" r="5" fill="#FFDD55" stroke="#FBF6EA" strokeWidth="2" />
-              <path d="M 12.5 -6.5 L 18 -5 L 12.5 -3.5 Z" fill="#E0301E" />
-              <circle cx="9" cy="-7" r="1.3" fill="#161616" />
-              <path d="M -3 7 L -3 10.5 M 3 7 L 3 10.5" stroke="#FBF6EA" strokeWidth="1.8" strokeLinecap="round" />
+              <ellipse cx="0" cy="0" rx="9" ry="7.5" fill="#FFDD55" stroke="#f1ede4" strokeWidth="2" />
+              <circle cx="8" cy="-6" r="5" fill="#FFDD55" stroke="#f1ede4" strokeWidth="2" />
+              <path d="M 12.5 -6.5 L 18 -5 L 12.5 -3.5 Z" fill="#ff3b2f" />
+              <circle cx="9" cy="-7" r="1.3" fill="#0d0d0d" />
+              <path d="M -3 7 L -3 10.5 M 3 7 L 3 10.5" stroke="#f1ede4" strokeWidth="1.8" strokeLinecap="round" />
             </g>
           </g>
         )}

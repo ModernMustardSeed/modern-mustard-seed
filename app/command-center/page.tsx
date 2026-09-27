@@ -91,11 +91,11 @@ function commandCenterJsonLd() {
 
 export default function CommandCenterPage() {
   return (
-    <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
+    <div className="min-h-screen bg-[#f1ede4] text-[#0d0d0d]">
       <JsonLd data={commandCenterJsonLd()} />
 
       {/* ── Hero ── */}
-      <header className="halftone-bg border-b-2 border-[#161616]">
+      <header className="halftone-bg border-b-2 border-[#0d0d0d]">
         <div className="max-w-6xl mx-auto px-6 pt-32 pb-16 md:pt-40 lg:pb-20">
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-12 items-center">
             <div className="lg:col-span-6 xl:col-span-5">
@@ -105,7 +105,7 @@ export default function CommandCenterPage() {
               <h1 className="font-display text-[2.6rem] sm:text-5xl xl:text-6xl font-bold mt-4 leading-[1.02] tracking-tight">
                 The command center that <em className="italic text-[#C4160B]">runs the whole business.</em>
               </h1>
-              <p className="font-body text-[17px] text-[#161616]/75 mt-5 leading-relaxed">
+              <p className="font-body text-[17px] text-[#0d0d0d]/75 mt-5 leading-relaxed">
                 Every call transcribed, your website traffic, customers, reviews, invoices, and reports, wired
                 together on one board with an agentic assistant that sees all of it. Built by hand around the
                 software you already run.
@@ -114,18 +114,18 @@ export default function CommandCenterPage() {
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link
                   href="/book"
-                  className="inline-flex items-center gap-2 bg-[#161616] text-[#FBF6EA] border-2 border-[#161616] rounded-full px-7 py-4 font-sans font-bold uppercase tracking-[0.14em] text-[12px] shadow-[5px_5px_0_0_#F5B700] hover:-translate-y-0.5 transition-transform"
+                  className="inline-flex items-center gap-2 bg-[#0d0d0d] text-[#f1ede4] border-2 border-[#0d0d0d] rounded-full px-7 py-4 font-sans font-bold uppercase tracking-[0.14em] text-[12px] shadow-[5px_5px_0_0_#ffd400] hover:-translate-y-0.5 transition-transform"
                 >
                   Scope mine with Sarah →
                 </Link>
                 <Link
                   href="/work"
-                  className="inline-flex items-center gap-2 bg-white text-[#161616] border-2 border-[#161616] rounded-full px-7 py-4 font-sans font-bold uppercase tracking-[0.14em] text-[12px] shadow-[5px_5px_0_0_#161616] hover:-translate-y-0.5 transition-all"
+                  className="inline-flex items-center gap-2 bg-white text-[#0d0d0d] border-2 border-[#0d0d0d] rounded-full px-7 py-4 font-sans font-bold uppercase tracking-[0.14em] text-[12px] shadow-[5px_5px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-all"
                 >
                   See the work
                 </Link>
               </div>
-              <p className="font-body text-[13px] text-[#161616]/70 mt-4">
+              <p className="font-body text-[13px] text-[#0d0d0d]/70 mt-4">
                 Every one is scoped with you before it is built, so it replaces tools instead of
                 becoming a sixth login.
               </p>
@@ -133,7 +133,7 @@ export default function CommandCenterPage() {
 
             {/* Hero visual: a real screenshot of a live command center. */}
             <div className="lg:col-span-6 xl:col-span-7">
-              <div className="rounded-2xl border-2 border-[#161616] bg-[#161616] shadow-[8px_8px_0_0_#161616] overflow-hidden">
+              <div className="rounded-2xl border-2 border-[#0d0d0d] bg-[#0d0d0d] shadow-[8px_8px_0_0_#0d0d0d] overflow-hidden">
                 <Image
                   src="/command-center-hero.png"
                   alt="A roofing company's Business Command Center: three calls caught overnight, today's schedule, rescued revenue, and $61,400 of claim value in motion, all on one board"
@@ -158,7 +158,7 @@ export default function CommandCenterPage() {
           <h2 className="font-display italic font-extrabold text-4xl md:text-5xl mt-3 leading-[1.02] max-w-3xl">
             Everything it takes to run the business, in one place.
           </h2>
-          <p className="font-body text-[15px] text-[#161616]/70 mt-4 max-w-2xl leading-relaxed">
+          <p className="font-body text-[15px] text-[#0d0d0d]/70 mt-4 max-w-2xl leading-relaxed">
             Your phone and your website stop being separate things. Every call and every form lands on the same board,
             with the agents already following up.
           </p>
@@ -166,11 +166,11 @@ export default function CommandCenterPage() {
             {MODULES.map((m) => (
               <div
                 key={m.name}
-                className="flex flex-col border-2 border-[#161616] bg-white rounded-2xl shadow-[5px_5px_0_0_#161616] p-5 transition-transform hover:-translate-y-1"
+                className="flex flex-col border-2 border-[#0d0d0d] bg-white rounded-2xl shadow-[5px_5px_0_0_#0d0d0d] p-5 transition-transform hover:-translate-y-1"
               >
                 <span className="text-2xl leading-none" aria-hidden>{m.icon}</span>
                 <h3 className="font-display font-extrabold text-lg mt-2.5">{m.name}</h3>
-                <p className="font-body text-[13px] text-[#161616]/70 mt-1.5 leading-relaxed">{m.desc}</p>
+                <p className="font-body text-[13px] text-[#0d0d0d]/70 mt-1.5 leading-relaxed">{m.desc}</p>
               </div>
             ))}
           </div>
@@ -184,7 +184,7 @@ export default function CommandCenterPage() {
           <h2 className="font-display italic font-extrabold text-4xl md:text-5xl mt-3 leading-[1.02] max-w-3xl">
             One board instead of a pile of subscriptions.
           </h2>
-          <p className="font-body text-[15px] text-[#161616]/70 mt-4 max-w-2xl leading-relaxed mb-9">
+          <p className="font-body text-[15px] text-[#0d0d0d]/70 mt-4 max-w-2xl leading-relaxed mb-9">
             Most owners quietly pay a monthly for a CRM, a notetaker, an analytics tier, a review app, invoicing, and
             more. Tap what you pay for and watch it stack up.
           </p>
@@ -205,25 +205,25 @@ export default function CommandCenterPage() {
           <h2 className="font-display italic font-extrabold text-4xl md:text-5xl mt-3 leading-[1.02] max-w-3xl">
             Built by hand, around what you already run.
           </h2>
-          <p className="font-body text-[16px] text-[#161616]/75 mt-4 max-w-2xl leading-relaxed">
+          <p className="font-body text-[16px] text-[#0d0d0d]/75 mt-4 max-w-2xl leading-relaxed">
             Most businesses that want this already have software doing pieces of it. That is exactly
             why every one is scoped before it is built: the point is one board, not another tab. It
             is sold on its own and it is never bundled with anything else.
           </p>
 
-          <div className="mt-9 max-w-xl border-2 border-[#161616] bg-[#F5B700] rounded-2xl shadow-[8px_8px_0_0_#161616] p-7 sm:p-9">
-            <span className="font-mono font-bold text-[10px] uppercase tracking-[0.2em] text-[#161616]">Business Command Center</span>
-            <p className="font-display italic font-extrabold text-[26px] mt-3 text-[#161616] leading-tight">
+          <div className="mt-9 max-w-xl border-2 border-[#0d0d0d] bg-[#ffd400] rounded-2xl shadow-[8px_8px_0_0_#0d0d0d] p-7 sm:p-9">
+            <span className="font-mono font-bold text-[10px] uppercase tracking-[0.2em] text-[#0d0d0d]">Business Command Center</span>
+            <p className="font-display italic font-extrabold text-[26px] mt-3 text-[#0d0d0d] leading-tight">
               The whole back office, on one board.
             </p>
-            <p className="font-body text-[14px] text-[#161616]/80 mt-4 leading-relaxed">
+            <p className="font-body text-[14px] text-[#0d0d0d]/80 mt-4 leading-relaxed">
               Wired to your phone, your site, and your customers. We work out what it has to replace
               first, then quote it privately as one set package price, agreed in writing before it is
               built. Changes after that are included, permanently.
             </p>
             <Link
               href="/book"
-              className="mt-7 inline-block text-center border-2 border-[#161616] bg-[#161616] text-[#F5B700] rounded-full px-7 py-3.5 font-sans font-extrabold text-[11px] uppercase tracking-[0.16em] shadow-[4px_4px_0_0_#FBF6EA] hover:-translate-y-0.5 transition-all"
+              className="mt-7 inline-block text-center border-2 border-[#0d0d0d] bg-[#0d0d0d] text-[#ffd400] rounded-full px-7 py-3.5 font-sans font-extrabold text-[11px] uppercase tracking-[0.16em] shadow-[4px_4px_0_0_#f1ede4] hover:-translate-y-0.5 transition-all"
             >
               Scope mine with Sarah
             </Link>
@@ -231,8 +231,8 @@ export default function CommandCenterPage() {
         </section>
 
         {/* ── How it works ── */}
-        <section className="bg-[#161616] border-2 border-[#161616] rounded-2xl shadow-[8px_8px_0_0_#F5B700] p-7 sm:p-10">
-          <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#F5B700] font-bold">How it works</span>
+        <section className="bg-[#0d0d0d] border-2 border-[#0d0d0d] rounded-2xl shadow-[8px_8px_0_0_#ffd400] p-7 sm:p-10">
+          <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#ffd400] font-bold">How it works</span>
           <div className="grid sm:grid-cols-3 gap-8 sm:gap-6 mt-6">
             {[
               ['1', 'We scope it together', 'A short call about the software you already run, so this replaces tools instead of joining them.'],
@@ -240,10 +240,10 @@ export default function CommandCenterPage() {
               ['3', 'Run the whole thing', 'Live within a week. Every call, lead, review, and dollar on one board, with the agents following up while you work.'],
             ].map(([n, t, d]) => (
               <div key={n} className="flex gap-4 sm:block">
-                <span className="font-display text-5xl font-bold text-[#F5B700] leading-none shrink-0">{n}</span>
+                <span className="font-display text-5xl font-bold text-[#ffd400] leading-none shrink-0">{n}</span>
                 <div className="sm:mt-3">
-                  <h3 className="font-display font-bold text-lg text-[#FBF6EA] leading-tight">{t}</h3>
-                  <p className="font-body text-[13.5px] text-[#FBF6EA]/65 mt-1.5 leading-relaxed">{d}</p>
+                  <h3 className="font-display font-bold text-lg text-[#f1ede4] leading-tight">{t}</h3>
+                  <p className="font-body text-[13.5px] text-[#f1ede4]/65 mt-1.5 leading-relaxed">{d}</p>
                 </div>
               </div>
             ))}
@@ -260,7 +260,7 @@ export default function CommandCenterPage() {
           </h2>
           <div className="mt-10 max-w-3xl mx-auto space-y-4">
             {FAQ.map((f) => (
-              <details key={f.q} className="group rounded-xl border-2 border-[#161616] bg-white p-5 open:shadow-[4px_4px_0_0_#F5B700] transition-shadow">
+              <details key={f.q} className="group rounded-xl border-2 border-[#0d0d0d] bg-white p-5 open:shadow-[4px_4px_0_0_#ffd400] transition-shadow">
                 <summary className="font-display text-lg font-bold cursor-pointer list-none flex items-center justify-between gap-4">
                   {f.q}
                   <span className="flex-shrink-0 text-[#C4160B] transition-transform group-open:rotate-45" aria-hidden>+</span>
@@ -272,18 +272,18 @@ export default function CommandCenterPage() {
         </section>
 
         {/* ── Close ── */}
-        <section className="relative halftone-bg border-2 border-[#161616] rounded-2xl bg-[#F5B700] p-10 md:p-14 text-center overflow-hidden">
+        <section className="relative halftone-bg border-2 border-[#0d0d0d] rounded-2xl bg-[#ffd400] p-10 md:p-14 text-center overflow-hidden">
           <div className="relative">
             <h2 className="font-display italic font-extrabold text-3xl md:text-5xl leading-[1.02]">
               Let us scope your command center.
             </h2>
-            <p className="font-body text-[15px] text-[#161616]/80 mt-4 max-w-xl mx-auto leading-relaxed">
+            <p className="font-body text-[15px] text-[#0d0d0d]/80 mt-4 max-w-xl mx-auto leading-relaxed">
               Tell us what you are running now and what it is costing you to keep it all straight.
               Sarah reads every inquiry herself and answers inside one business day.
             </p>
             <Link
               href="/book"
-              className="mt-7 inline-block border-2 border-[#161616] bg-[#161616] text-[#F5B700] rounded-full px-9 py-4 font-sans font-extrabold text-[12px] uppercase tracking-[0.16em] shadow-[5px_5px_0_0_rgba(22,22,22,0.3)] hover:-translate-y-0.5 transition-all"
+              className="mt-7 inline-block border-2 border-[#0d0d0d] bg-[#0d0d0d] text-[#ffd400] rounded-full px-9 py-4 font-sans font-extrabold text-[12px] uppercase tracking-[0.16em] shadow-[5px_5px_0_0_rgba(13,13,13,0.3)] hover:-translate-y-0.5 transition-all"
             >
               Scope mine with Sarah →
             </Link>

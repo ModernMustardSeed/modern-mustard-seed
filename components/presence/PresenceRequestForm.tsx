@@ -24,7 +24,7 @@ import { readAttribution } from '@/lib/ai-attribution';
  */
 
 const inputCls =
-  'w-full min-w-0 rounded-xl border-2 border-[#161616] bg-[#FBF6EA] px-4 py-3.5 font-body text-[16px] text-[#161616] placeholder:text-[#161616]/35 outline-none transition-shadow focus:bg-white focus:shadow-[4px_4px_0_0_#F5B700]';
+  'w-full min-w-0 rounded-xl border-2 border-[#0d0d0d] bg-[#f1ede4] px-4 py-3.5 font-body text-[16px] text-[#0d0d0d] placeholder:text-[#0d0d0d]/35 outline-none transition-shadow focus:bg-white focus:shadow-[4px_4px_0_0_#ffd400]';
 
 /** A partner code from ?ref= on this URL, else the mms_ref cookie RefCapture set. */
 function readRefCode(): string {
@@ -92,22 +92,22 @@ export default function PresenceRequestForm({ id = 'get' }: { id?: string }) {
 
   if (sent) {
     return (
-      <div id={id} className="relative scroll-mt-28 rounded-3xl border-2 border-[#161616] bg-[#F5B700] p-7 shadow-[8px_8px_0_0_#161616] md:p-9">
-        <span className="absolute -top-4 left-7 rotate-[-3deg] rounded-full border-2 border-[#161616] bg-[#161616] px-4 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-[#F5B700]">
+      <div id={id} className="relative scroll-mt-28 rounded-3xl border-2 border-[#0d0d0d] bg-[#ffd400] p-7 shadow-[8px_8px_0_0_#0d0d0d] md:p-9">
+        <span className="absolute -top-4 left-7 rotate-[-3deg] rounded-full border-2 border-[#0d0d0d] bg-[#0d0d0d] px-4 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-[#ffd400]">
           You are on the desk
         </span>
-        <h3 className="mt-3 font-display text-3xl font-extrabold italic leading-[1.05] text-[#161616] md:text-4xl">
+        <h3 className="mt-3 font-display text-3xl font-extrabold italic leading-[1.05] text-[#0d0d0d] md:text-4xl">
           Your audit is on the desk.
         </h3>
-        <p className="mt-4 font-body text-[15px] leading-relaxed text-[#161616]/80">
+        <p className="mt-4 font-body text-[15px] leading-relaxed text-[#0d0d0d]/80">
           The audit for <strong>{sent.business}</strong> is in the queue. We will read your listing, your reviews and your
           site, then email the full report to <strong className="break-all">{sent.email}</strong>.
         </p>
         <ol className="mt-6 space-y-2.5">
           {['A note is on its way now, so you know it landed.', 'Your site, your Google profile and your reviews get graded.', 'The full report arrives in your inbox, yours to keep.'].map(
             (t, i) => (
-              <li key={t} className="flex items-start gap-3 font-body text-[14px] text-[#161616]">
-                <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full border-2 border-[#161616] bg-white font-mono text-[11px] font-bold">
+              <li key={t} className="flex items-start gap-3 font-body text-[14px] text-[#0d0d0d]">
+                <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full border-2 border-[#0d0d0d] bg-white font-mono text-[11px] font-bold">
                   {i + 1}
                 </span>
                 {t}
@@ -115,7 +115,7 @@ export default function PresenceRequestForm({ id = 'get' }: { id?: string }) {
             ),
           )}
         </ol>
-        <p className="mt-6 font-body text-[13px] text-[#161616]/65">Nobody will call you unless you ask.</p>
+        <p className="mt-6 font-body text-[13px] text-[#0d0d0d]/65">Nobody will call you unless you ask.</p>
       </div>
     );
   }
@@ -126,13 +126,13 @@ export default function PresenceRequestForm({ id = 'get' }: { id?: string }) {
       onSubmit={submit}
       name="presence-audit-request"
       autoComplete="on"
-      className="relative scroll-mt-28 rounded-3xl border-2 border-[#161616] bg-white p-6 shadow-[8px_8px_0_0_#161616] md:p-8"
+      className="relative scroll-mt-28 rounded-3xl border-2 border-[#0d0d0d] bg-white p-6 shadow-[8px_8px_0_0_#0d0d0d] md:p-8"
     >
-      <span className="absolute -top-4 right-6 rotate-[3deg] rounded-full border-2 border-[#161616] bg-[#E0301E] px-4 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-white shadow-[3px_3px_0_0_#161616]">
+      <span className="absolute -top-4 right-6 rotate-[3deg] rounded-full border-2 border-[#0d0d0d] bg-[#ff3b2f] px-4 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-white shadow-[3px_3px_0_0_#0d0d0d]">
         Free
       </span>
       <p className="font-mono text-[10px] font-bold uppercase tracking-[0.26em] text-[#C4160B]">Get your audit</p>
-      <h2 className="mt-2 font-display text-[1.75rem] font-extrabold leading-[1.05] text-[#161616] md:text-3xl">
+      <h2 className="mt-2 font-display text-[1.75rem] font-extrabold leading-[1.05] text-[#0d0d0d] md:text-3xl">
         Where should we send it?
       </h2>
 
@@ -226,7 +226,7 @@ export default function PresenceRequestForm({ id = 'get' }: { id?: string }) {
           <button
             type="button"
             onClick={() => setMore(true)}
-            className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-[#161616]/55 underline decoration-[#F5B700] decoration-2 underline-offset-4 hover:text-[#161616]"
+            className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-[#0d0d0d]/55 underline decoration-[#ffd400] decoration-2 underline-offset-4 hover:text-[#0d0d0d]"
           >
             + Add your name or your Google listing link
           </button>
@@ -242,7 +242,7 @@ export default function PresenceRequestForm({ id = 'get' }: { id?: string }) {
       </div>
 
       {error && (
-        <p role="alert" className="mt-5 rounded-lg border-2 border-[#E0301E] bg-[#FDECEA] px-4 py-3 font-body text-sm text-[#8a1c10]">
+        <p role="alert" className="mt-5 rounded-lg border-2 border-[#ff3b2f] bg-[#FDECEA] px-4 py-3 font-body text-sm text-[#8a1c10]">
           {error}
         </p>
       )}
@@ -250,12 +250,12 @@ export default function PresenceRequestForm({ id = 'get' }: { id?: string }) {
       <button
         type="submit"
         disabled={sending}
-        className="group mt-6 flex w-full items-center justify-center gap-2 rounded-full border-2 border-[#161616] bg-[#F5B700] px-8 py-4 font-sans text-[12px] font-extrabold uppercase tracking-[0.2em] text-[#161616] shadow-[5px_5px_0_0_#161616] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#161616] active:translate-y-0 active:shadow-[3px_3px_0_0_#161616] disabled:cursor-not-allowed disabled:opacity-60"
+        className="group mt-6 flex w-full items-center justify-center gap-2 rounded-full border-2 border-[#0d0d0d] bg-[#ffd400] px-8 py-4 font-sans text-[12px] font-extrabold uppercase tracking-[0.2em] text-[#0d0d0d] shadow-[5px_5px_0_0_#0d0d0d] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#0d0d0d] active:translate-y-0 active:shadow-[3px_3px_0_0_#0d0d0d] disabled:cursor-not-allowed disabled:opacity-60"
       >
         {sending ? 'Putting it on the desk…' : 'Get my free audit'}
         {!sending && <span className="transition-transform group-hover:translate-x-1">→</span>}
       </button>
-      <p className="mt-4 text-center font-body text-[12.5px] leading-relaxed text-[#161616]/55">
+      <p className="mt-4 text-center font-body text-[12.5px] leading-relaxed text-[#0d0d0d]/55">
         No card. No call unless you ask. Your email is used to send your report, and that is all.
       </p>
     </form>

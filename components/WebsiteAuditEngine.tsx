@@ -55,17 +55,17 @@ const CATEGORY_LABELS = {
 };
 
 const PRIORITY_STYLES = {
-  high: 'text-[#E0301E] border-[#E0301E]/50 bg-[#E0301E]/10',
-  medium: 'text-[#161616] border-[#161616]/30 bg-[#F5B700]/30',
-  low: 'text-[#B92417] border-[#161616]/50 bg-[#161616]/10',
+  high: 'text-[#d0241b] border-[#ff3b2f]/50 bg-[#ff3b2f]/10',
+  medium: 'text-[#0d0d0d] border-[#0d0d0d]/30 bg-[#ffd400]/30',
+  low: 'text-[#c8201a] border-[#0d0d0d]/50 bg-[#0d0d0d]/10',
 };
 
 const GRADE_GLOW = (grade: string): string => {
   if (grade.startsWith('A')) return 'shadow-[6px_6px_0_0_#15803D]';
-  if (grade.startsWith('B')) return 'shadow-[6px_6px_0_0_#F5B700]';
+  if (grade.startsWith('B')) return 'shadow-[6px_6px_0_0_#ffd400]';
   if (grade.startsWith('C')) return 'shadow-[6px_6px_0_0_#FF8A00]';
-  if (grade === 'D') return 'shadow-[6px_6px_0_0_#E0301E]';
-  return 'shadow-[6px_6px_0_0_#E0301E]';
+  if (grade === 'D') return 'shadow-[6px_6px_0_0_#ff3b2f]';
+  return 'shadow-[6px_6px_0_0_#ff3b2f]';
 };
 
 export default function WebsiteAuditEngine() {
@@ -173,17 +173,17 @@ export default function WebsiteAuditEngine() {
               spellCheck={false}
               autoCapitalize="none"
               autoCorrect="off"
-              className="flex-1 bg-transparent text-[#161616] placeholder:text-[#161616]/35 px-4 md:px-5 py-4 font-body text-base md:text-lg focus:outline-none disabled:opacity-50"
+              className="flex-1 bg-transparent text-[#0d0d0d] placeholder:text-[#0d0d0d]/35 px-4 md:px-5 py-4 font-body text-base md:text-lg focus:outline-none disabled:opacity-50"
             />
             <button
               type="submit"
               disabled={loading || !url.trim()}
-              className="px-7 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-white bg-[#161616] rounded-xl border-2 border-[#161616] hover:-translate-y-0.5 disabled:opacity-50 transition-all whitespace-nowrap"
+              className="px-7 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-white bg-[#0d0d0d] rounded-xl border-2 border-[#0d0d0d] hover:-translate-y-0.5 disabled:opacity-50 transition-all whitespace-nowrap"
             >
               {loading ? 'Auditing…' : 'Audit my site →'}
             </button>
           </div>
-          <p className="text-center text-[#161616]/55 text-xs font-body mt-4">
+          <p className="text-center text-[#0d0d0d]/55 text-xs font-body mt-4">
             Free. No email required to see your score. Powered by Anthropic Claude.
           </p>
         </form>
@@ -198,10 +198,10 @@ export default function WebsiteAuditEngine() {
                 key={s}
                 className={`flex items-center gap-3 text-sm md:text-base font-body font-medium transition-all ${
                   i < loadStep
-                    ? 'text-[#B92417]'
+                    ? 'text-[#c8201a]'
                     : i === loadStep
-                      ? 'text-[#161616] animate-pulse'
-                      : 'text-[#161616]/30'
+                      ? 'text-[#0d0d0d] animate-pulse'
+                      : 'text-[#0d0d0d]/30'
                 }`}
               >
                 <span className="w-5 inline-flex items-center justify-center">
@@ -216,12 +216,12 @@ export default function WebsiteAuditEngine() {
 
       {/* Error */}
       {error && !loading && (
-        <div className="mt-8 pop-card p-6 border-[#E0301E]/40">
-          <p className="text-[#E0301E] text-sm font-body font-bold leading-relaxed">{error}</p>
+        <div className="mt-8 pop-card p-6 border-[#ff3b2f]/40">
+          <p className="text-[#d0241b] text-sm font-body font-bold leading-relaxed">{error}</p>
           <button
             type="button"
             onClick={() => setError(null)}
-            className="mt-3 text-[10px] uppercase tracking-[0.25em] text-[#161616]/65 hover:text-[#161616] font-mono font-bold"
+            className="mt-3 text-[10px] uppercase tracking-[0.25em] text-[#0d0d0d]/65 hover:text-[#0d0d0d] font-mono font-bold"
           >
             Try again
           </button>
@@ -235,25 +235,25 @@ export default function WebsiteAuditEngine() {
           <div className="text-center">
             <div className="inline-flex flex-col items-center gap-5">
               <div
-                className={`relative w-44 h-44 md:w-56 md:h-56 rounded-full flex flex-col items-center justify-center border-[3px] border-[#161616] bg-[#F5B700] ${GRADE_GLOW(report.letter_grade)}`}
+                className={`relative w-44 h-44 md:w-56 md:h-56 rounded-full flex flex-col items-center justify-center border-[3px] border-[#0d0d0d] bg-[#ffd400] ${GRADE_GLOW(report.letter_grade)}`}
               >
-                <span className="font-display text-6xl md:text-7xl font-black text-[#161616] leading-none">
+                <span className="font-display text-6xl md:text-7xl font-black text-[#0d0d0d] leading-none">
                   {report.overall_score}
                 </span>
-                <span className="text-[10px] uppercase tracking-[0.4em] text-[#161616]/60 font-mono mt-1.5">
+                <span className="text-[10px] uppercase tracking-[0.4em] text-[#0d0d0d]/60 font-mono mt-1.5">
                   out of 100
                 </span>
-                <div className="mt-3 px-3 py-0.5 rounded-full border-2 border-[#161616] bg-white">
-                  <span className="font-display italic text-lg md:text-xl font-black text-[#161616] tracking-tight">
+                <div className="mt-3 px-3 py-0.5 rounded-full border-2 border-[#0d0d0d] bg-white">
+                  <span className="font-display italic text-lg md:text-xl font-black text-[#0d0d0d] tracking-tight">
                     {report.letter_grade}
                   </span>
                 </div>
               </div>
-              <p className="font-display italic text-xl md:text-2xl text-[#161616] font-bold max-w-2xl leading-snug px-4">
+              <p className="font-display italic text-xl md:text-2xl text-[#0d0d0d] font-bold max-w-2xl leading-snug px-4">
                 &ldquo;{report.headline}&rdquo;
               </p>
               {auditedUrl && (
-                <p className="text-[10px] uppercase tracking-[0.4em] text-[#161616]/45 font-mono">
+                <p className="text-[10px] uppercase tracking-[0.4em] text-[#0d0d0d]/45 font-mono">
                   {new URL(auditedUrl).hostname}
                 </p>
               )}
@@ -262,7 +262,7 @@ export default function WebsiteAuditEngine() {
 
           {/* Overall analysis */}
           <div className="pop-card p-8 md:p-10">
-            <span className="text-[9px] uppercase tracking-[0.4em] text-[#E0301E] font-mono font-bold block mb-4">
+            <span className="text-[9px] uppercase tracking-[0.4em] text-[#d0241b] font-mono font-bold block mb-4">
               Analysis
             </span>
             <p className="text-[#3a3733] text-base md:text-lg font-body leading-relaxed whitespace-pre-line">
@@ -272,7 +272,7 @@ export default function WebsiteAuditEngine() {
 
           {/* Category breakdown */}
           <div>
-            <span className="text-[9px] uppercase tracking-[0.4em] text-[#E0301E] font-mono font-bold block mb-5 text-center">
+            <span className="text-[9px] uppercase tracking-[0.4em] text-[#d0241b] font-mono font-bold block mb-5 text-center">
               The 7 categories
             </span>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -280,22 +280,22 @@ export default function WebsiteAuditEngine() {
                 ([key, cat]) => (
                   <div key={key} className="pop-card p-6">
                     <div className="flex items-baseline justify-between mb-3">
-                      <h3 className="font-display text-xl text-[#161616] font-black tracking-tight">
+                      <h3 className="font-display text-xl text-[#0d0d0d] font-black tracking-tight">
                         {CATEGORY_LABELS[key]}
                       </h3>
                       <div className="flex items-baseline gap-2">
-                        <span className="font-display text-2xl font-black text-[#161616]">
+                        <span className="font-display text-2xl font-black text-[#0d0d0d]">
                           {cat.score}
                         </span>
-                        <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold">
+                        <span className="text-[10px] uppercase tracking-[0.3em] text-[#d0241b] font-mono font-bold">
                           {cat.letter}
                         </span>
                       </div>
                     </div>
                     {/* Score bar */}
-                    <div className="h-2 rounded-full bg-[#161616]/10 border border-[#161616]/15 mb-4 overflow-hidden">
+                    <div className="h-2 rounded-full bg-[#0d0d0d]/10 border border-[#0d0d0d]/15 mb-4 overflow-hidden">
                       <div
-                        className="h-full bg-[#F5B700] transition-all duration-700"
+                        className="h-full bg-[#ffd400] transition-all duration-700"
                         style={{ width: `${cat.score}%` }}
                       />
                     </div>
@@ -310,28 +310,28 @@ export default function WebsiteAuditEngine() {
 
           {/* Top 3 fixes */}
           <div>
-            <span className="text-[9px] uppercase tracking-[0.4em] text-[#E0301E] font-mono font-bold block mb-5 text-center">
+            <span className="text-[9px] uppercase tracking-[0.4em] text-[#d0241b] font-mono font-bold block mb-5 text-center">
               Fix these three first
             </span>
             <div className="space-y-4">
               {report.top_three_fixes.map((fix, i) => (
                 <div key={i} className="pop-card p-6 md:p-8">
                   <div className="flex items-start gap-5">
-                    <span className="font-display text-4xl md:text-5xl font-black text-[#F5B700] leading-none flex-shrink-0 mt-1" style={{ WebkitTextStroke: '1.5px #161616' }}>
+                    <span className="font-display text-4xl md:text-5xl font-black text-[#ffd400] leading-none flex-shrink-0 mt-1" style={{ WebkitTextStroke: '1.5px #0d0d0d' }}>
                       {i + 1}
                     </span>
                     <div>
-                      <h3 className="font-display text-xl md:text-2xl text-[#161616] font-black tracking-tight mb-2">
+                      <h3 className="font-display text-xl md:text-2xl text-[#0d0d0d] font-black tracking-tight mb-2">
                         {fix.title}
                       </h3>
                       <p className="text-[#3a3733] text-sm md:text-base font-body leading-relaxed mb-2">
-                        <span className="text-[#E0301E] font-mono font-bold text-[10px] uppercase tracking-[0.25em] mr-2">
+                        <span className="text-[#d0241b] font-mono font-bold text-[10px] uppercase tracking-[0.25em] mr-2">
                           Why
                         </span>
                         {fix.why}
                       </p>
-                      <p className="text-[#161616] text-sm md:text-base font-body leading-relaxed">
-                        <span className="text-[#E0301E] font-mono font-bold text-[10px] uppercase tracking-[0.25em] mr-2">
+                      <p className="text-[#0d0d0d] text-sm md:text-base font-body leading-relaxed">
+                        <span className="text-[#d0241b] font-mono font-bold text-[10px] uppercase tracking-[0.25em] mr-2">
                           How
                         </span>
                         {fix.how}
@@ -345,14 +345,14 @@ export default function WebsiteAuditEngine() {
 
           {/* Full to-do */}
           <div>
-            <span className="text-[9px] uppercase tracking-[0.4em] text-[#E0301E] font-mono font-bold block mb-5 text-center">
+            <span className="text-[9px] uppercase tracking-[0.4em] text-[#d0241b] font-mono font-bold block mb-5 text-center">
               The full to-do list to your A
             </span>
             <div className="pop-card p-6 md:p-8 space-y-3">
               {report.full_todo.map((item, i) => (
                 <div
                   key={i}
-                  className="flex items-start gap-4 py-2 border-b border-[#161616]/10 last:border-0"
+                  className="flex items-start gap-4 py-2 border-b border-[#0d0d0d]/10 last:border-0"
                 >
                   <span
                     className={`flex-shrink-0 px-2.5 py-1 text-[9px] uppercase tracking-[0.18em] font-mono font-bold border-2 rounded ${
@@ -361,10 +361,10 @@ export default function WebsiteAuditEngine() {
                   >
                     {item.priority}
                   </span>
-                  <span className="flex-shrink-0 text-[9px] uppercase tracking-[0.3em] text-[#161616]/45 font-mono pt-1 hidden md:inline-block min-w-[90px]">
+                  <span className="flex-shrink-0 text-[9px] uppercase tracking-[0.3em] text-[#0d0d0d]/45 font-mono pt-1 hidden md:inline-block min-w-[90px]">
                     {CATEGORY_LABELS[item.category]}
                   </span>
-                  <p className="text-[#161616] text-sm font-body leading-relaxed flex-1">
+                  <p className="text-[#0d0d0d] text-sm font-body leading-relaxed flex-1">
                     {item.task}
                   </p>
                 </div>
@@ -376,13 +376,13 @@ export default function WebsiteAuditEngine() {
           <div className="pop-card-yellow p-8 md:p-10">
             {!saved ? (
               <>
-                <span className="text-[9px] uppercase tracking-[0.4em] text-[#161616] font-mono font-bold block mb-3">
+                <span className="text-[9px] uppercase tracking-[0.4em] text-[#0d0d0d] font-mono font-bold block mb-3">
                   Save the report
                 </span>
-                <h3 className="font-display text-2xl md:text-3xl text-[#161616] font-black tracking-tight mb-2">
+                <h3 className="font-display text-2xl md:text-3xl text-[#0d0d0d] font-black tracking-tight mb-2">
                   Want this report in your inbox?
                 </h3>
-                <p className="text-[#161616]/75 text-sm md:text-base font-body font-medium leading-relaxed mb-6">
+                <p className="text-[#0d0d0d]/75 text-sm md:text-base font-body font-medium leading-relaxed mb-6">
                   Drop your email and we will send you the top three fixes plus a path to the A version. No spam. Reply to talk to Sarah directly.
                 </p>
                 <form onSubmit={saveReport} className="flex flex-col md:flex-row gap-3">
@@ -392,7 +392,7 @@ export default function WebsiteAuditEngine() {
                     onChange={(e) => setSaveName(e.target.value)}
                     placeholder="Your name (optional)"
                     disabled={saving}
-                    className="flex-1 bg-white border-2 border-[#161616] rounded-lg px-4 py-3 text-[#161616] placeholder:text-[#161616]/40 font-body text-sm focus:outline-none disabled:opacity-50"
+                    className="flex-1 bg-white border-2 border-[#0d0d0d] rounded-lg px-4 py-3 text-[#0d0d0d] placeholder:text-[#0d0d0d]/40 font-body text-sm focus:outline-none disabled:opacity-50"
                   />
                   <input
                     type="email"
@@ -401,24 +401,24 @@ export default function WebsiteAuditEngine() {
                     placeholder="you@yourbusiness.com"
                     disabled={saving}
                     required
-                    className="flex-1 bg-white border-2 border-[#161616] rounded-lg px-4 py-3 text-[#161616] placeholder:text-[#161616]/40 font-body text-sm focus:outline-none disabled:opacity-50"
+                    className="flex-1 bg-white border-2 border-[#0d0d0d] rounded-lg px-4 py-3 text-[#0d0d0d] placeholder:text-[#0d0d0d]/40 font-body text-sm focus:outline-none disabled:opacity-50"
                   />
                   <button
                     type="submit"
                     disabled={saving || !saveEmail.trim()}
-                    className="px-6 py-3 text-[10px] uppercase tracking-[0.22em] font-sans font-extrabold text-white bg-[#161616] rounded-lg border-2 border-[#161616] disabled:opacity-50 hover:-translate-y-0.5 transition-all whitespace-nowrap"
+                    className="px-6 py-3 text-[10px] uppercase tracking-[0.22em] font-sans font-extrabold text-white bg-[#0d0d0d] rounded-lg border-2 border-[#0d0d0d] disabled:opacity-50 hover:-translate-y-0.5 transition-all whitespace-nowrap"
                   >
                     {saving ? 'Sending…' : 'Email me'}
                   </button>
                 </form>
-                {saveError && <p className="text-[#161616] font-bold text-xs font-mono mt-3">{saveError}</p>}
+                {saveError && <p className="text-[#0d0d0d] font-bold text-xs font-mono mt-3">{saveError}</p>}
               </>
             ) : (
               <div className="text-center py-6">
-                <p className="font-display italic text-xl md:text-2xl text-[#161616] font-black mb-3">
+                <p className="font-display italic text-xl md:text-2xl text-[#0d0d0d] font-black mb-3">
                   Sent. Check your inbox.
                 </p>
-                <p className="text-[#161616]/75 text-sm font-body font-medium leading-relaxed">
+                <p className="text-[#0d0d0d]/75 text-sm font-body font-medium leading-relaxed">
                   Sarah was copied. If you want to skip the queue, reply to her note and tell her your context.
                 </p>
               </div>
@@ -437,7 +437,7 @@ export default function WebsiteAuditEngine() {
                 setSaveEmail('');
                 setSaveName('');
               }}
-              className="text-[10px] uppercase tracking-[0.3em] text-[#161616]/55 hover:text-[#E0301E] font-mono font-bold transition-colors"
+              className="text-[10px] uppercase tracking-[0.3em] text-[#0d0d0d]/55 hover:text-[#d0241b] font-mono font-bold transition-colors"
             >
               ← Audit another site
             </button>

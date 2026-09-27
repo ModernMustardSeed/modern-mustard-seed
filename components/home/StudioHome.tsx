@@ -2,10 +2,7 @@ import Link from '@/components/AttributionLink';
 import Image from 'next/image';
 import styles from './StudioHome.module.css';
 import { GOOGLE_PROFILE, GOOGLE_REVIEWS } from '@/data/google-reviews';
-import CardHero from './CardHero';
-import ArtHero from '@/components/art/ArtHero';
-import ArtDial from '@/components/art/ArtDial';
-import { readyArtStyles } from '@/lib/art-ready';
+import GraffitiHero from './GraffitiHero';
 import ShowMeMine from './ShowMeMine';
 import MustardTV from './MustardTV';
 import WorkVideo from './WorkVideo';
@@ -46,12 +43,10 @@ function PressRule() {
   return <div className={styles.pressRule} aria-hidden="true"><i /><b /><span /><b /><i /></div>;
 }
 export default function StudioHome({ faq }: { faq: { q: string; a: string }[] }) {
-  const ready = readyArtStyles();
-  return <div className={styles.studio} data-design="mms-editorial-2026" data-edition="pop-art-studio">
-    <ArtHero ready={ready}><CardHero /></ArtHero>
-    <ArtDial ready={ready} />
+  return <div className={styles.studio} data-design="mms-editorial-2026" data-edition="graffiti-couture">
+    <GraffitiHero />
     <figure className={styles.verse}><blockquote><SproutSeed className={styles.sprout} grownClass={styles.grown} /><p>“If you have faith as small as a mustard seed, nothing will be impossible for you.”</p></blockquote><figcaption>Matthew 17:20</figcaption><Link href="/kingdom" className={styles.kingdomLink}>Serving a ministry? We build for the Kingdom, at ministry pricing <Arrow /></Link></figure>
-    <section id="show-me-mine" className={styles.showMine} aria-labelledby="show-mine-heading">
+    <section id="show-me-mine" className={styles.showMine} data-ground="yellow" aria-labelledby="show-mine-heading">
       <div><p className={styles.eyebrow}>Show me mine</p><h2 id="show-mine-heading">Paste your website. <em>We’ll sketch you a new one.</em></h2><p>Free, in your look, within 24 hours, with a free audit of the site, Google profile and reviews you have now. {PREVIEW.short}</p></div>
       <div><ShowMeMine className={styles.showForm} /><Link href="/presence-audit" className={styles.auditOnly}>Just want the audit? Get it free <Arrow /></Link></div>
     </section>
@@ -85,7 +80,7 @@ export default function StudioHome({ faq }: { faq: { q: string; a: string }[] })
     <section className={styles.concierge} aria-labelledby="mustard-heading"><div className={styles.mascotFrame}><span className={styles.mascotOrbit} aria-hidden="true" /><Image src="/images/editorial/mascot-480.webp" alt="Mr. Mustard, the smiling mustard-seed mascot and studio concierge" width={440} height={590} sizes="(max-width: 760px) 160px, 220px" className={styles.mascot} /><span className={styles.mascotLabel}>A Small Seed With A Real Job.</span></div><div><p className={styles.eyebrow}>A Little Character. A Lot Of Capability.</p><h2 id="mustard-heading">Still Mr. Mustard.<br /><em>Always at your service.</em></h2><p>The name has a story. The little guy has a job. Meet the studio’s agentic concierge, here to answer questions and help you find your next step.</p><Link href="/mustard" className={styles.primary}>Meet Mr. Mustard <Arrow /></Link><a href="tel:+14063121223" className={styles.phone}>Or Call Mr. Mustard · (406) 312-1223</a><a href="tel:+14062506076" className={styles.phone}>Or Call Sarah · (406) 250-6076</a></div></section>
     <section className={styles.faq} aria-labelledby="faq-heading"><div><p className={styles.eyebrow}>Before We Begin</p><h2 id="faq-heading">Good questions.<br /><em>Straight answers.</em></h2></div><div className={styles.faqList}>{faq.map(f => <details key={f.q}><summary>{f.q}<span aria-hidden="true">+</span></summary><p>{f.a}</p></details>)}</div></section>
     <PressRule />
-    <section className={styles.close} aria-labelledby="close-heading"><p className={styles.eyebrow}>The Next Remarkable Thing Starts Somewhere.</p><h2 id="close-heading">Let’s make<br /><em>your mark.</em></h2><Link href="/inquire" className={styles.closeLink}>Begin A Conversation <Arrow /></Link><p>A considered scope. A set package price. Your vision, built.</p></section>
+    <section className={styles.close} data-ground="yellow" aria-labelledby="close-heading"><p className={styles.eyebrow}>The Next Remarkable Thing Starts Somewhere.</p><h2 id="close-heading">Let’s make<br /><em>your mark.</em></h2><Link href="/inquire" className={styles.closeLink}>Begin A Conversation <Arrow /></Link><p>A considered scope. A set package price. Your vision, built.</p></section>
     <section className={styles.proofStrip} aria-label="Studio proof points">
       <div className={styles.proofIntro}><p className={styles.eyebrow}>Proof, in plain sight</p><h2>Worth finding.<br /><em>Easy to trust.</em></h2></div>
       <div className={styles.proofCards}>

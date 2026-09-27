@@ -51,7 +51,7 @@ export default async function PlaybookPage({ params }: { params: Params }) {
           ]),
         ]}
       />
-      <article className="relative min-h-screen bg-[#FBF6EA] text-[#161616] pb-20 overflow-x-clip">
+      <article className="relative min-h-screen bg-[#f1ede4] text-[#0d0d0d] pb-20 overflow-x-clip">
         <div aria-hidden="true" className="absolute inset-0 halftone-bg opacity-40 pointer-events-none" />
         <PopPageHero
           eyebrow={

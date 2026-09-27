@@ -234,7 +234,7 @@ export default function ScalingRoadmapEngine() {
         <form onSubmit={generate}>
           <div className="pop-card p-5 md:p-6 mb-3 grid sm:grid-cols-2 gap-3">
             <label>
-              <span className="block text-[9px] uppercase tracking-[0.28em] font-mono font-bold text-[#161616]/60 mb-1.5">
+              <span className="block text-[9px] uppercase tracking-[0.28em] font-mono font-bold text-[#0d0d0d]/60 mb-1.5">
                 Your name
               </span>
               <input
@@ -243,11 +243,11 @@ export default function ScalingRoadmapEngine() {
                 placeholder="Dana Whitaker"
                 disabled={loading}
                 aria-label="Your name"
-                className="w-full bg-white border-2 border-[#161616] rounded-lg px-4 py-3 text-[#161616] placeholder:text-[#161616]/35 font-body text-sm focus:outline-none focus:shadow-[3px_3px_0_0_#161616] transition-shadow disabled:opacity-50"
+                className="w-full bg-white border-2 border-[#0d0d0d] rounded-lg px-4 py-3 text-[#0d0d0d] placeholder:text-[#0d0d0d]/35 font-body text-sm focus:outline-none focus:shadow-[3px_3px_0_0_#0d0d0d] transition-shadow disabled:opacity-50"
               />
             </label>
             <label>
-              <span className="block text-[9px] uppercase tracking-[0.28em] font-mono font-bold text-[#161616]/60 mb-1.5">
+              <span className="block text-[9px] uppercase tracking-[0.28em] font-mono font-bold text-[#0d0d0d]/60 mb-1.5">
                 Where we send it
               </span>
               <input
@@ -258,7 +258,7 @@ export default function ScalingRoadmapEngine() {
                 disabled={loading}
                 required
                 aria-label="Your email"
-                className="w-full bg-white border-2 border-[#161616] rounded-lg px-4 py-3 text-[#161616] placeholder:text-[#161616]/35 font-body text-sm focus:outline-none focus:shadow-[3px_3px_0_0_#161616] transition-shadow disabled:opacity-50"
+                className="w-full bg-white border-2 border-[#0d0d0d] rounded-lg px-4 py-3 text-[#0d0d0d] placeholder:text-[#0d0d0d]/35 font-body text-sm focus:outline-none focus:shadow-[3px_3px_0_0_#0d0d0d] transition-shadow disabled:opacity-50"
               />
             </label>
           </div>
@@ -273,12 +273,12 @@ export default function ScalingRoadmapEngine() {
               autoCapitalize="none"
               autoCorrect="off"
               aria-label="Your website address"
-              className="flex-1 bg-transparent text-[#161616] placeholder:text-[#161616]/35 px-4 md:px-5 py-4 font-body text-base md:text-lg focus:outline-none disabled:opacity-50"
+              className="flex-1 bg-transparent text-[#0d0d0d] placeholder:text-[#0d0d0d]/35 px-4 md:px-5 py-4 font-body text-base md:text-lg focus:outline-none disabled:opacity-50"
             />
             <button
               type="submit"
               disabled={loading || !url.trim() || !email.includes('@') || name.trim().length < 2}
-              className="px-7 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-white bg-[#161616] rounded-xl border-2 border-[#161616] hover:-translate-y-0.5 disabled:opacity-50 transition-all whitespace-nowrap"
+              className="px-7 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-white bg-[#0d0d0d] rounded-xl border-2 border-[#0d0d0d] hover:-translate-y-0.5 disabled:opacity-50 transition-all whitespace-nowrap"
             >
               {loading ? 'Building…' : 'Build my roadmap →'}
             </button>
@@ -289,7 +289,7 @@ export default function ScalingRoadmapEngine() {
               <button
                 type="button"
                 onClick={() => setShowContext((v) => !v)}
-                className="text-[10px] uppercase tracking-[0.28em] font-mono font-bold text-[#161616]/60 hover:text-[#161616] transition-colors"
+                className="text-[10px] uppercase tracking-[0.28em] font-mono font-bold text-[#0d0d0d]/60 hover:text-[#0d0d0d] transition-colors"
               >
                 {showContext ? '− Hide the extra questions' : '+ Answer six questions and it gets much better'}
               </button>
@@ -298,7 +298,7 @@ export default function ScalingRoadmapEngine() {
                 <div className="mt-4 pop-card p-6 md:p-7 grid sm:grid-cols-2 gap-4">
                   {CONTEXT_FIELDS.map((field) => (
                     <label key={field.key} className={field.wide ? 'sm:col-span-2' : ''}>
-                      <span className="block text-[9px] uppercase tracking-[0.28em] font-mono font-bold text-[#161616]/60 mb-1.5">
+                      <span className="block text-[9px] uppercase tracking-[0.28em] font-mono font-bold text-[#0d0d0d]/60 mb-1.5">
                         {field.label}
                       </span>
                       <input
@@ -306,11 +306,11 @@ export default function ScalingRoadmapEngine() {
                         value={context[field.key] ?? ''}
                         onChange={(e) => setContext((c) => ({ ...c, [field.key]: e.target.value }))}
                         placeholder={field.placeholder}
-                        className="w-full bg-white border-2 border-[#161616] rounded-lg px-4 py-2.5 text-[#161616] placeholder:text-[#161616]/35 font-body text-sm focus:outline-none focus:shadow-[3px_3px_0_0_#161616] transition-shadow"
+                        className="w-full bg-white border-2 border-[#0d0d0d] rounded-lg px-4 py-2.5 text-[#0d0d0d] placeholder:text-[#0d0d0d]/35 font-body text-sm focus:outline-none focus:shadow-[3px_3px_0_0_#0d0d0d] transition-shadow"
                       />
                     </label>
                   ))}
-                  <p className="sm:col-span-2 text-[#161616]/60 text-xs font-body">
+                  <p className="sm:col-span-2 text-[#0d0d0d]/60 text-xs font-body">
                     All optional. Nothing here is shared, and none of it is required to get the roadmap.
                   </p>
                 </div>
@@ -319,7 +319,7 @@ export default function ScalingRoadmapEngine() {
           )}
 
           {!loading && (
-            <p className="text-center text-[#161616]/55 text-xs font-body mt-5">
+            <p className="text-center text-[#0d0d0d]/55 text-xs font-body mt-5">
               Free, no card. It takes about ninety seconds because it is actually reading your site, and the
               whole thing appears right here the moment it is done. We email you a copy too.
             </p>
@@ -334,10 +334,10 @@ export default function ScalingRoadmapEngine() {
                   key={s}
                   className={`flex items-center gap-3 text-sm md:text-base font-body font-medium transition-all ${
                     i < loadStep
-                      ? 'text-[#B92417]'
+                      ? 'text-[#c8201a]'
                       : i === loadStep
-                        ? 'text-[#161616] animate-pulse'
-                        : 'text-[#161616]/30'
+                        ? 'text-[#0d0d0d] animate-pulse'
+                        : 'text-[#0d0d0d]/30'
                   }`}
                 >
                   <span className="w-5 inline-flex items-center justify-center">
@@ -356,15 +356,15 @@ export default function ScalingRoadmapEngine() {
         {/* Still writing. This is a promise being kept, not a failure, so it
             reads like the receipt it is rather than like a warning. */}
         {building && !loading && (
-          <div className="mt-8 border-2 border-[#161616] rounded-2xl bg-[#161616] shadow-[8px_8px_0_0_#F5B700] p-6 md:p-8">
-            <span className="flex items-center gap-3 text-[9px] uppercase tracking-[0.4em] text-[#F5B700] font-mono font-bold">
-              <span className="inline-block h-2 w-2 rounded-full bg-[#F5B700] animate-pulse" />
+          <div className="mt-8 border-2 border-[#0d0d0d] rounded-2xl bg-[#0d0d0d] shadow-[8px_8px_0_0_#ffd400] p-6 md:p-8">
+            <span className="flex items-center gap-3 text-[9px] uppercase tracking-[0.4em] text-[#ffd400] font-mono font-bold">
+              <span className="inline-block h-2 w-2 rounded-full bg-[#ffd400] animate-pulse" />
               Writing your roadmap
             </span>
-            <p className="mt-4 text-[#FBF6EA]/90 text-base font-body leading-relaxed max-w-2xl">
+            <p className="mt-4 text-[#f1ede4]/90 text-base font-body leading-relaxed max-w-2xl">
               {building.message}
             </p>
-            <p className="mt-4 text-[#FBF6EA]/55 text-[13px] font-body leading-relaxed max-w-2xl">
+            <p className="mt-4 text-[#f1ede4]/55 text-[13px] font-body leading-relaxed max-w-2xl">
               This one is written at full depth rather than the fast setting, which is why it takes minutes
               instead of seconds. You do not need to keep this tab open.
             </p>
@@ -372,12 +372,12 @@ export default function ScalingRoadmapEngine() {
         )}
 
         {error && !loading && !building && (
-          <div className="mt-8 pop-card p-6 border-[#E0301E]">
+          <div className="mt-8 pop-card p-6 border-[#ff3b2f]">
             <p className="text-[#C4160B] text-sm font-body font-bold leading-relaxed">{error}</p>
             <button
               type="button"
               onClick={() => setError(null)}
-              className="mt-3 text-[10px] uppercase tracking-[0.25em] text-[#161616]/65 hover:text-[#161616] font-mono font-bold"
+              className="mt-3 text-[10px] uppercase tracking-[0.25em] text-[#0d0d0d]/65 hover:text-[#0d0d0d] font-mono font-bold"
             >
               Try again
             </button>
@@ -394,19 +394,19 @@ export default function ScalingRoadmapEngine() {
 
       {/* Now go do it. The address is already ours, so this space sells the
           implementation instead of asking for an email a second time. */}
-      <div className="mt-16 border-2 border-[#161616] rounded-2xl bg-[#161616] shadow-[8px_8px_0_0_#F5B700] p-8 md:p-12">
-        <span className="block text-[9px] uppercase tracking-[0.4em] text-[#F5B700] font-mono font-bold mb-4">
+      <div className="mt-16 border-2 border-[#0d0d0d] rounded-2xl bg-[#0d0d0d] shadow-[8px_8px_0_0_#ffd400] p-8 md:p-12">
+        <span className="block text-[9px] uppercase tracking-[0.4em] text-[#ffd400] font-mono font-bold mb-4">
           A copy is in your inbox
         </span>
-        <h3 className="font-display text-3xl md:text-5xl text-[#FBF6EA] font-black tracking-tight leading-[1.0]">
+        <h3 className="font-display text-3xl md:text-5xl text-[#f1ede4] font-black tracking-tight leading-[1.0]">
           Reading it is the easy part
         </h3>
-        <p className="mt-5 text-[#FBF6EA]/80 text-base md:text-lg font-body leading-relaxed max-w-2xl">
+        <p className="mt-5 text-[#f1ede4]/80 text-base md:text-lg font-body leading-relaxed max-w-2xl">
           You now know your constraint and what clears the first gate. The reason plans like this sit in a
           folder is never that the plan was wrong. It is that nobody built the machines, and nobody was
           checking on Thursday.
         </p>
-        <p className="mt-4 text-[#FBF6EA]/80 text-base md:text-lg font-body leading-relaxed max-w-2xl">
+        <p className="mt-4 text-[#f1ede4]/80 text-base md:text-lg font-body leading-relaxed max-w-2xl">
           HUNDREDFOLD is the version where it actually happens. Mr. Mustard interviews you properly, we
           build the offer, we wire the agents that run this plan inside your business, and a coach who has
           read every word of it answers you at any hour.
@@ -414,13 +414,13 @@ export default function ScalingRoadmapEngine() {
         <div className="mt-9 flex flex-col sm:flex-row gap-3">
           <a
             href="/hundredfold#interview"
-            className="px-8 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-[#161616] bg-[#F5B700] rounded-xl border-2 border-[#F5B700] hover:-translate-y-0.5 transition-all text-center"
+            className="px-8 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-[#0d0d0d] bg-[#ffd400] rounded-xl border-2 border-[#ffd400] hover:-translate-y-0.5 transition-all text-center"
           >
             Get interviewed, free
           </a>
           <a
             href="/hundredfold"
-            className="px-8 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-[#FBF6EA] rounded-xl border-2 border-[#FBF6EA]/40 hover:border-[#FBF6EA] transition-all text-center"
+            className="px-8 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-[#f1ede4] rounded-xl border-2 border-[#f1ede4]/40 hover:border-[#f1ede4] transition-all text-center"
           >
             See what HUNDREDFOLD is
           </a>
@@ -433,7 +433,7 @@ export default function ScalingRoadmapEngine() {
           <button
             type="button"
             onClick={copyShare}
-            className="px-5 py-3 text-[10px] uppercase tracking-[0.25em] font-mono font-bold text-[#161616] bg-white border-2 border-[#161616] rounded-lg shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-all"
+            className="px-5 py-3 text-[10px] uppercase tracking-[0.25em] font-mono font-bold text-[#0d0d0d] bg-white border-2 border-[#0d0d0d] rounded-lg shadow-[3px_3px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-all"
           >
             {copied ? 'Link copied' : 'Copy share link'}
           </button>
@@ -441,7 +441,7 @@ export default function ScalingRoadmapEngine() {
         <button
           type="button"
           onClick={() => window.print()}
-          className="px-5 py-3 text-[10px] uppercase tracking-[0.25em] font-mono font-bold text-[#161616] bg-white border-2 border-[#161616] rounded-lg shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-all"
+          className="px-5 py-3 text-[10px] uppercase tracking-[0.25em] font-mono font-bold text-[#0d0d0d] bg-white border-2 border-[#0d0d0d] rounded-lg shadow-[3px_3px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-all"
         >
           Print or save as PDF
         </button>
@@ -454,7 +454,7 @@ export default function ScalingRoadmapEngine() {
             setContext({});
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }}
-          className="px-5 py-3 text-[10px] uppercase tracking-[0.25em] font-mono font-bold text-[#161616]/60 hover:text-[#C4160B] transition-colors"
+          className="px-5 py-3 text-[10px] uppercase tracking-[0.25em] font-mono font-bold text-[#0d0d0d]/60 hover:text-[#C4160B] transition-colors"
         >
           ← Run another business
         </button>

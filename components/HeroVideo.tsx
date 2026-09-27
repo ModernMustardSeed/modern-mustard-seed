@@ -69,7 +69,7 @@ export default function HeroVideo() {
   }
 
   return (
-    <div className="relative rounded-3xl overflow-hidden border-[3px] border-[#161616] bg-[#161616] shadow-[8px_8px_0_0_#161616]">
+    <div className="relative rounded-3xl overflow-hidden border-[3px] border-[#0d0d0d] bg-[#0d0d0d] shadow-[8px_8px_0_0_#0d0d0d]">
       <video
         ref={videoRef}
         className="w-full aspect-video object-cover block"
@@ -79,7 +79,7 @@ export default function HeroVideo() {
         preload="none"
         poster="/video/build-the-tree-poster.jpg"
         aria-hidden="true"
-        style={{ backgroundColor: '#161616' }}
+        style={{ backgroundColor: '#0d0d0d' }}
       >
         <source src="/video/build-the-tree-960.mp4" type="video/mp4" />
       </video>
@@ -89,7 +89,7 @@ export default function HeroVideo() {
         onClick={toggleSound}
         aria-pressed={!muted}
         aria-label={muted ? 'Turn on sound' : 'Mute sound'}
-        className="group absolute bottom-3 right-3 inline-flex items-center gap-2 px-3.5 py-2 rounded-full border-2 border-[#161616] bg-[#F5B700] text-[#161616] font-bold hover:bg-[#FFC400] transition-colors"
+        className="group absolute bottom-3 right-3 inline-flex items-center gap-2 px-3.5 py-2 rounded-full border-2 border-[#0d0d0d] bg-[#ffd400] text-[#0d0d0d] font-bold hover:bg-[#FFC400] transition-colors"
       >
         {muted ? (
           <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">

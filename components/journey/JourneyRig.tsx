@@ -161,7 +161,7 @@ export default function JourneyRig() {
 
         // Silhouette: body dash + two flapping wing arcs.
         const flap = Math.sin(b.ph) * 6 * b.s;
-        ctx.strokeStyle = 'rgba(22,22,22,0.78)';
+        ctx.strokeStyle = 'rgba(13,13,13,0.78)';
         ctx.lineWidth = 1.6 * b.s;
         ctx.beginPath();
         ctx.moveTo(b.x - 7 * b.s, b.y - flap);
@@ -202,19 +202,19 @@ export default function JourneyRig() {
 
       {/* The mile rail */}
       <nav aria-label="Journey chapters" className="fixed left-5 top-1/2 -translate-y-1/2 z-[70] hidden lg:block motion-reduce:hidden">
-        <div ref={railRef} className="relative h-[46vh] w-[2px] bg-[#161616]/20">
-          <div ref={fillRef} className="absolute inset-x-0 top-0 h-full origin-top bg-[#F5B700]" style={{ transform: 'scaleY(0)' }} />
-          <div ref={carRef} className="absolute -left-[7px] top-0 h-[10px] w-[16px] rounded-[3px] bg-[#E0301E] border border-[#161616] shadow-[1px_1px_0_0_#161616]" style={{ transform: 'translateY(0)' }} />
+        <div ref={railRef} className="relative h-[46vh] w-[2px] bg-[#0d0d0d]/20">
+          <div ref={fillRef} className="absolute inset-x-0 top-0 h-full origin-top bg-[#ffd400]" style={{ transform: 'scaleY(0)' }} />
+          <div ref={carRef} className="absolute -left-[7px] top-0 h-[10px] w-[16px] rounded-[3px] bg-[#ff3b2f] border border-[#0d0d0d] shadow-[1px_1px_0_0_#0d0d0d]" style={{ transform: 'translateY(0)' }} />
           <div className="absolute inset-0 flex flex-col justify-between">
             {stops.map((s) => (
               <button
                 key={s.id}
                 data-stop
                 onClick={() => go(s)}
-                className="group relative -left-[3px] h-2 w-2 rounded-full border border-[#161616] bg-[#FBF6EA] data-[active='1']:bg-[#F5B700] transition-colors"
+                className="group relative -left-[3px] h-2 w-2 rounded-full border border-[#0d0d0d] bg-[#f1ede4] data-[active='1']:bg-[#ffd400] transition-colors"
                 aria-label={`${s.label} ${s.name}`}
               >
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 whitespace-nowrap font-mono text-[10px] tracking-[0.18em] uppercase text-[#161616]/0 group-hover:text-[#161616]/80 bg-[#FBF6EA]/0 group-hover:bg-[#FBF6EA]/90 px-1.5 py-0.5 rounded transition-colors">
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 whitespace-nowrap font-mono text-[10px] tracking-[0.18em] uppercase text-[#0d0d0d]/0 group-hover:text-[#0d0d0d]/80 bg-[#f1ede4]/0 group-hover:bg-[#f1ede4]/90 px-1.5 py-0.5 rounded transition-colors">
                   {s.label} · {s.name}
                 </span>
               </button>

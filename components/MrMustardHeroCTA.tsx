@@ -88,25 +88,25 @@ export default function MrMustardHeroCTA({ location = 'hero' }: { location?: str
 
   return (
     <div className="opacity-0 animate-fade-in-up-delay-3 mt-10 max-w-xl mx-auto">
-      <div className="relative rounded-2xl border-2 border-[#161616] bg-white shadow-[5px_5px_0_0_#161616] px-5 py-4 md:px-6 md:py-5">
+      <div className="relative rounded-2xl border-2 border-[#0d0d0d] bg-white shadow-[5px_5px_0_0_#0d0d0d] px-5 py-4 md:px-6 md:py-5">
         <div className="flex flex-col sm:flex-row items-center gap-4">
           {/* Mascot */}
           <div className="relative shrink-0">
             {isLive && (
               <span
                 aria-hidden="true"
-                className="absolute inset-0 rounded-full bg-[#F5B700] opacity-40 animate-ping"
+                className="absolute inset-0 rounded-full bg-[#ffd400] opacity-40 animate-ping"
                 style={{ animationDuration: '1.6s' }}
               />
             )}
-            <span className="relative flex h-14 w-14 items-center justify-center rounded-full bg-[#FBF6EA] border-2 border-[#161616] overflow-hidden">
+            <span className="relative flex h-14 w-14 items-center justify-center rounded-full bg-[#f1ede4] border-2 border-[#0d0d0d] overflow-hidden">
               <Image src="/brand/mascot.png" alt="" width={885} height={1180} className="h-11 w-auto" />
             </span>
           </div>
 
           {/* Copy */}
           <div className="flex-1 text-center sm:text-left">
-            <p className="font-display text-lg md:text-xl font-black text-[#161616] tracking-tight leading-snug">
+            <p className="font-display text-lg md:text-xl font-black text-[#0d0d0d] tracking-tight leading-snug">
               {isLive
                 ? speaking
                   ? 'Mr. Mustard is talking…'
@@ -118,7 +118,7 @@ export default function MrMustardHeroCTA({ location = 'hero' }: { location?: str
                 ? 'Ask anything. He can even book your call with Sarah.'
                 : 'Our agentic right hand. Live voice or chat, your pick.'}
             </p>
-            {error && <p className="text-[#E0301E] text-[11px] font-mono mt-1">{error}</p>}
+            {error && <p className="text-[#d0241b] text-[11px] font-mono mt-1">{error}</p>}
           </div>
 
           {/* The two doors */}
@@ -127,7 +127,7 @@ export default function MrMustardHeroCTA({ location = 'hero' }: { location?: str
               <button
                 type="button"
                 onClick={endCall}
-                className="px-5 py-2.5 text-[10px] uppercase tracking-[0.18em] font-sans font-extrabold text-white bg-[#E0301E] rounded-full border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-all"
+                className="px-5 py-2.5 text-[10px] uppercase tracking-[0.18em] font-sans font-extrabold text-white bg-[#ff3b2f] rounded-full border-2 border-[#0d0d0d] shadow-[3px_3px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-all"
               >
                 End call
               </button>
@@ -136,19 +136,19 @@ export default function MrMustardHeroCTA({ location = 'hero' }: { location?: str
                 type="button"
                 onClick={startCall}
                 disabled={isConnecting}
-                className="inline-flex items-center gap-1.5 px-5 py-2.5 text-[10px] uppercase tracking-[0.18em] font-sans font-extrabold text-[#161616] bg-[#F5B700] rounded-full border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-all disabled:opacity-60 disabled:cursor-wait whitespace-nowrap"
+                className="inline-flex items-center gap-1.5 px-5 py-2.5 text-[10px] uppercase tracking-[0.18em] font-sans font-extrabold text-[#0d0d0d] bg-[#ffd400] rounded-full border-2 border-[#0d0d0d] shadow-[3px_3px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-all disabled:opacity-60 disabled:cursor-wait whitespace-nowrap"
               >
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <rect x="9" y="3" width="6" height="11" rx="3" fill="#161616" />
-                  <path d="M5 11a7 7 0 0 0 14 0" stroke="#161616" strokeWidth="2.2" strokeLinecap="round" fill="none" />
-                  <path d="M12 18v3" stroke="#161616" strokeWidth="2.2" strokeLinecap="round" />
+                  <rect x="9" y="3" width="6" height="11" rx="3" fill="#0d0d0d" />
+                  <path d="M5 11a7 7 0 0 0 14 0" stroke="#0d0d0d" strokeWidth="2.2" strokeLinecap="round" fill="none" />
+                  <path d="M12 18v3" stroke="#0d0d0d" strokeWidth="2.2" strokeLinecap="round" />
                 </svg>
                 {isConnecting ? 'Connecting…' : 'Talk live'}
               </button>
             ) : (
               <Link
                 href="/voice-agents"
-                className="px-5 py-2.5 text-[10px] uppercase tracking-[0.18em] font-sans font-extrabold text-[#161616] bg-[#F5B700] rounded-full border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-all whitespace-nowrap"
+                className="px-5 py-2.5 text-[10px] uppercase tracking-[0.18em] font-sans font-extrabold text-[#0d0d0d] bg-[#ffd400] rounded-full border-2 border-[#0d0d0d] shadow-[3px_3px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-all whitespace-nowrap"
               >
                 Talk live
               </Link>
@@ -156,7 +156,7 @@ export default function MrMustardHeroCTA({ location = 'hero' }: { location?: str
             <button
               type="button"
               onClick={openChat}
-              className="px-5 py-2.5 text-[10px] uppercase tracking-[0.18em] font-sans font-extrabold text-[#161616] bg-white rounded-full border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-all whitespace-nowrap"
+              className="px-5 py-2.5 text-[10px] uppercase tracking-[0.18em] font-sans font-extrabold text-[#0d0d0d] bg-white rounded-full border-2 border-[#0d0d0d] shadow-[3px_3px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-all whitespace-nowrap"
             >
               Chat instead
             </button>

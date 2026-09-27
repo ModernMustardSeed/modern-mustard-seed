@@ -12,7 +12,7 @@ export default function PageBackground() {
         className="absolute inset-0"
         style={{
           background:
-            'linear-gradient(180deg, #080c16 0%, #0F1422 22%, #16305C 55%, #1F4280 100%)',
+            'linear-gradient(180deg, #0d0d0d 0%, #0F1422 22%, #16305C 55%, #1F4280 100%)',
         }}
       />
 

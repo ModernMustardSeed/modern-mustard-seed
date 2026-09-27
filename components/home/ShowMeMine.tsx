@@ -109,8 +109,8 @@ export default function ShowMeMine({ className }: { className: string }) {
     }
   };
 
-  const field = 'mt-1.5 w-full border-2 border-[#161616] bg-[#FBF6EA] px-3.5 py-2.5 text-[15px] text-[#161616] placeholder:text-[#161616]/35 focus:outline-none focus:ring-2 focus:ring-[#F5B700]';
-  const label = 'text-[11px] font-bold uppercase tracking-[0.14em] text-[#161616]';
+  const field = 'mt-1.5 w-full border-2 border-[#0d0d0d] bg-[#f1ede4] px-3.5 py-2.5 text-[15px] text-[#0d0d0d] placeholder:text-[#0d0d0d]/35 focus:outline-none focus:ring-2 focus:ring-[#ffd400]';
+  const label = 'text-[11px] font-bold uppercase tracking-[0.14em] text-[#0d0d0d]';
 
   return (
     <>
@@ -123,16 +123,16 @@ export default function ShowMeMine({ className }: { className: string }) {
       </form>
 
       {open && createPortal(
-        <div className="fixed inset-0 z-[80] flex items-center justify-center bg-[#080c16]/70 p-4" onClick={(e) => { if (e.target === e.currentTarget && phase !== 'sending') setOpen(false); }}>
-          <div ref={dialog} role="dialog" aria-modal="true" aria-labelledby="smm-title" className="flex max-h-[90vh] w-full max-w-[560px] flex-col border-[3px] border-[#161616] bg-white text-[#161616] shadow-[10px_10px_0_0_#F5B700]">
-            <div className="flex shrink-0 items-start justify-between gap-4 border-b-2 border-[#161616] bg-[#F5B700] px-6 py-5">
+        <div className="fixed inset-0 z-[80] flex items-center justify-center bg-[#0d0d0d]/70 p-4" onClick={(e) => { if (e.target === e.currentTarget && phase !== 'sending') setOpen(false); }}>
+          <div ref={dialog} role="dialog" aria-modal="true" aria-labelledby="smm-title" className="flex max-h-[90vh] w-full max-w-[560px] flex-col border-[3px] border-[#0d0d0d] bg-white text-[#0d0d0d] shadow-[10px_10px_0_0_#ffd400]">
+            <div className="flex shrink-0 items-start justify-between gap-4 border-b-2 border-[#0d0d0d] bg-[#ffd400] px-6 py-5">
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-[0.18em]">Show me mine · {tidy(site)}</p>
                 <h2 id="smm-title" className="mt-1.5 text-[26px] font-extrabold leading-[1.05] tracking-[-0.03em]">
                   {phase === 'done' ? 'It’s happening.' : 'Let’s build yours.'}
                 </h2>
               </div>
-              <button type="button" onClick={() => setOpen(false)} disabled={phase === 'sending'} aria-label="Close" className="h-9 w-9 shrink-0 border-2 border-[#161616] bg-white text-xl leading-none text-[#161616]">×</button>
+              <button type="button" onClick={() => setOpen(false)} disabled={phase === 'sending'} aria-label="Close" className="h-9 w-9 shrink-0 border-2 border-[#0d0d0d] bg-white text-xl leading-none text-[#0d0d0d]">×</button>
             </div>
 
             <div className="overflow-y-auto px-6 py-6">
@@ -140,10 +140,10 @@ export default function ShowMeMine({ className }: { className: string }) {
                 <div aria-live="polite">
                   <p className="text-[16px] leading-relaxed">
                     Your website preview is being sketched from scratch, and it lands at your private hub <strong>within 24 hours</strong>, with a free audit of your current site, Google profile and reviews. We email you the moment it is ready.</p>
-                  <p className="mt-4 border-l-4 border-[#F5B700] pl-4 text-[14px] leading-relaxed text-[#42454a]"><strong className="text-[#161616]">{PREVIEW.eyebrow}.</strong> {PREVIEW.body}
+                  <p className="mt-4 border-l-4 border-[#ffd400] pl-4 text-[14px] leading-relaxed text-[#42454a]"><strong className="text-[#0d0d0d]">{PREVIEW.eyebrow}.</strong> {PREVIEW.body}
                   </p>
-                  <a href={hub} className="mt-6 flex min-h-[54px] items-center justify-center gap-3 border-2 border-[#161616] bg-[#161616] px-6 text-[15px] font-bold text-[#FBF6EA] shadow-[5px_5px_0_0_#F5B700]">
-                    Open my demo hub <span aria-hidden="true" className="text-[#F5B700]">↗</span>
+                  <a href={hub} className="mt-6 flex min-h-[54px] items-center justify-center gap-3 border-2 border-[#0d0d0d] bg-[#0d0d0d] px-6 text-[15px] font-bold text-[#f1ede4] shadow-[5px_5px_0_0_#ffd400]">
+                    Open my demo hub <span aria-hidden="true" className="text-[#ffd400]">↗</span>
                   </a>
                 </div>
               ) : (
@@ -151,14 +151,14 @@ export default function ShowMeMine({ className }: { className: string }) {
                   <p className="text-[14px] leading-relaxed text-[#42454a]">
                     Free, in your look, within 24 hours, with a free audit of what you have now. No card, no meeting. {PREVIEW.short}
                   </p>
-                  <label className="mt-5 block"><span className={label}>Business name <span className="text-[#b92417]">*</span></span>
+                  <label className="mt-5 block"><span className={label}>Business name <span className="text-[#c8201a]">*</span></span>
                     <input ref={first} required value={v.business || ''} onChange={set('business')} placeholder="Rico Roofing" className={field} /></label>
                   <div className="mt-4 grid gap-4 sm:grid-cols-2">
-                    <label className="block"><span className={label}>Your name <span className="text-[#b92417]">*</span></span>
+                    <label className="block"><span className={label}>Your name <span className="text-[#c8201a]">*</span></span>
                       <input required value={v.name || ''} onChange={set('name')} placeholder="Rico Alvarez" autoComplete="name" className={field} /></label>
-                    <label className="block"><span className={label}>Email <span className="text-[#b92417]">*</span></span>
+                    <label className="block"><span className={label}>Email <span className="text-[#c8201a]">*</span></span>
                       <input required type="email" value={v.email || ''} onChange={set('email')} placeholder="rico@gmail.com" autoComplete="email" className={field} /></label>
-                    <label className="block"><span className={label}>Business phone <span className="text-[#b92417]">*</span></span>
+                    <label className="block"><span className={label}>Business phone <span className="text-[#c8201a]">*</span></span>
                       <input required type="tel" value={v.phone || ''} onChange={set('phone')} placeholder="(406) 555-0134" autoComplete="tel" className={field} /></label>
                     <label className="block"><span className={label}>Kind of business</span>
                       <select value={v.niche} onChange={set('niche')} className={field}>{NICHES.map((n) => <option key={n.value} value={n.value}>{n.label}</option>)}</select></label>
@@ -175,10 +175,10 @@ export default function ShowMeMine({ className }: { className: string }) {
                     <textarea rows={3} maxLength={600} value={v.notes || ''} onChange={set('notes')} placeholder="The jobs you want more of, what you want to be known for, anything you hate about your current site." className={`${field} resize-y leading-relaxed`} /></label>
                   <input type="text" tabIndex={-1} autoComplete="off" value={v.company_url || ''} onChange={set('company_url')} className="hidden" aria-hidden />
                   <p className="mt-4 text-[12px] leading-relaxed text-[#5b5d61]">Your phone number goes on your preview site, and it is how we reach you about the build. Nobody calls unless you ask.</p>
-                  <button type="submit" disabled={phase === 'sending'} className="mt-5 flex min-h-[56px] w-full items-center justify-center gap-3 border-2 border-[#161616] bg-[#F5B700] text-[15px] font-extrabold shadow-[5px_5px_0_0_#161616] disabled:opacity-60">
+                  <button type="submit" disabled={phase === 'sending'} className="mt-5 flex min-h-[56px] w-full items-center justify-center gap-3 border-2 border-[#0d0d0d] bg-[#ffd400] text-[15px] font-extrabold shadow-[5px_5px_0_0_#0d0d0d] disabled:opacity-60">
                     {phase === 'sending' ? 'Starting your build…' : <>Build mine, free <span aria-hidden="true">↗</span></>}
                   </button>
-                  {phase === 'error' && <p role="alert" className="mt-3 text-center text-[13px] font-bold text-[#b92417]">{error}</p>}
+                  {phase === 'error' && <p role="alert" className="mt-3 text-center text-[13px] font-bold text-[#c8201a]">{error}</p>}
                 </form>
               )}
             </div>

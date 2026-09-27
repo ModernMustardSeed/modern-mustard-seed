@@ -141,12 +141,12 @@ const faq = [
  *  third line used to be a price. It is what the half actually does now. */
 function Half({ label, body, note }: { label: string; body: string; note: string }) {
   return (
-    <div className="rounded-2xl border-2 border-[#FBF6EA]/20 bg-[#1F1F1F] p-6 md:p-7">
-      <span className="block font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-[#F5B700]">
+    <div className="rounded-2xl border-2 border-[#f1ede4]/20 bg-[#1F1F1F] p-6 md:p-7">
+      <span className="block font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-[#ffd400]">
         {label}
       </span>
-      <p className="mt-3 font-body text-[15px] leading-6 text-[#FBF6EA]/70">{body}</p>
-      <p className="mt-4 font-mono text-[13px] font-bold text-[#FBF6EA]">{note}</p>
+      <p className="mt-3 font-body text-[15px] leading-6 text-[#f1ede4]/70">{body}</p>
+      <p className="mt-4 font-mono text-[13px] font-bold text-[#f1ede4]">{note}</p>
     </div>
   );
 }
@@ -156,7 +156,7 @@ function Eyebrow({ children, light = false }: { children: React.ReactNode; light
   return (
     <span
       className={`block font-mono text-[10px] md:text-[11px] font-bold uppercase tracking-[0.32em] ${
-        light ? 'text-[#F5B700]' : 'text-[#C4160B]'
+        light ? 'text-[#ffd400]' : 'text-[#C4160B]'
       }`}
     >
       {children}
@@ -183,16 +183,16 @@ export default function VoiceAgentsPage() {
 
       <StickyCallBar />
 
-      <div className="bg-[#FBF6EA] text-[#161616]">
+      <div className="bg-[#f1ede4] text-[#0d0d0d]">
         {/* ═══════════ HERO: the number is the hero ═══════════ */}
-        <section className="relative overflow-hidden border-b-2 border-[#161616] bg-[#161616] text-[#FBF6EA] pt-32 md:pt-40">
+        <section className="relative overflow-hidden border-b-2 border-[#0d0d0d] bg-[#0d0d0d] text-[#f1ede4] pt-32 md:pt-40">
           <div aria-hidden="true" className="absolute inset-0 halftone-ink opacity-90" />
           <div aria-hidden="true" className="absolute inset-0 film-grain" />
           {/* Gold light pooling behind the number, like a desk lamp at 2am */}
           <div
             aria-hidden="true"
             className="absolute left-1/2 top-[58%] h-[720px] w-[1100px] max-w-[150vw] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-[0.16]"
-            style={{ background: 'radial-gradient(closest-side, #F5B700, transparent)' }}
+            style={{ background: 'radial-gradient(closest-side, #ffd400, transparent)' }}
           />
 
           <div className="relative max-w-6xl mx-auto px-6 md:px-8">
@@ -200,18 +200,18 @@ export default function VoiceAgentsPage() {
             <h1 className="mt-6 font-display text-[2.9rem] leading-[0.95] sm:text-6xl lg:text-[4.6rem] font-black tracking-tight">
               Your phone rings at 2am.
               <br />
-              <span className="text-[#F5B700]">Somebody picks up.</span>
+              <span className="text-[#ffd400]">Somebody picks up.</span>
             </h1>
             <p className="mt-5 font-body text-base leading-relaxed">Designed and built by Modern Mustard Seed, a boutique design and agentic systems studio in Kalispell, Montana, working with clients nationwide. <Link href="/agentic-websites" className="underline font-bold">See how our agentic websites connect the page and the business.</Link></p>
 
             <div className="mt-10 grid lg:grid-cols-12 gap-10 lg:gap-12 items-center pb-4">
               <div className="lg:col-span-6">
-                <p className="max-w-xl font-body text-lg md:text-xl leading-relaxed text-[#FBF6EA]/72">
+                <p className="max-w-xl font-body text-lg md:text-xl leading-relaxed text-[#f1ede4]/72">
                   A Modern Mustard Seed voice agent answers every call in a natural human voice,
                   books the job on your calendar, and wakes you only for a real emergency. No
                   voicemail. No missed sale. No leak.
                 </p>
-                <p className="mt-6 max-w-xl font-body text-base leading-relaxed text-[#F5B700]">
+                <p className="mt-6 max-w-xl font-body text-base leading-relaxed text-[#ffd400]">
                   You do not have to take our word for it. Ours is awake right now, and the number
                   is right there.
                 </p>
@@ -220,7 +220,7 @@ export default function VoiceAgentsPage() {
                     (chip) => (
                       <span
                         key={chip}
-                        className="rounded-full border-2 border-[#FBF6EA]/25 px-3.5 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-[#FBF6EA]/70"
+                        className="rounded-full border-2 border-[#f1ede4]/25 px-3.5 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-[#f1ede4]/70"
                       >
                         {chip}
                       </span>
@@ -238,16 +238,16 @@ export default function VoiceAgentsPage() {
 
               {/* Screenprint plate: the bench phone that never rings unanswered */}
               <div className="lg:col-span-6">
-                <figure className="relative rotate-[-2deg] rounded-2xl border-[3px] border-[#FBF6EA] bg-[#FBF6EA] p-2.5 shadow-[10px_10px_0_0_#F5B700]">
+                <figure className="relative rotate-[-2deg] rounded-[2px] border-[3px] border-[#f1ede4] bg-[#f1ede4] p-2.5 shadow-[10px_10px_0_0_#ffd400]">
                   <Image
-                    src="/voice-agents/trades-hero.jpg"
-                    alt="Screenprint art: a black rotary phone ringing on a red workbench beside leather gloves and a coffee mug"
+                    src="/art/pages/voice-1600.webp"
+                    alt="Graffiti couture painting: Mr. Mustard answers a ringing vintage telephone from a black classic convertible parked at a job site under a graffiti-covered bridge, a hard hat and work gloves on the seat"
                     width={1600}
-                    height={900}
+                    height={1067}
                     sizes="(min-width: 1024px) 48vw, 92vw"
-                    className="w-full h-auto rounded-xl border-2 border-[#161616]"
+                    className="w-full h-auto border-2 border-[#0d0d0d]"
                   />
-                  <figcaption className="px-2 pt-2.5 pb-1 text-center font-mono text-[10px] uppercase tracking-[0.2em] text-[#161616]/70">
+                  <figcaption className="px-2 pt-2.5 pb-1 text-center font-mono text-[10px] uppercase tracking-[0.2em] text-[#0d0d0d]/70">
                     Nobody is standing there. It still gets answered.
                   </figcaption>
                 </figure>
@@ -268,20 +268,20 @@ export default function VoiceAgentsPage() {
         <section>
           <CallTicker />
           <div className="max-w-6xl mx-auto px-6 md:px-8 py-4">
-            <p className="text-center font-mono text-[10px] uppercase tracking-[0.24em] text-[#161616]/70">
+            <p className="text-center font-mono text-[10px] uppercase tracking-[0.24em] text-[#0d0d0d]/70">
               A sample night on the line. Illustrative, not a call log.
             </p>
           </div>
         </section>
 
         {/* ═══════════ BROWSER DEMO ═══════════ */}
-        <section id="browser-demo" className="scroll-mt-24 border-y-2 border-[#161616] bg-white">
+        <section id="browser-demo" className="scroll-mt-24 border-y-2 border-[#0d0d0d] bg-white">
           <div className="max-w-5xl mx-auto px-6 md:px-8 py-16 md:py-24">
             <div className="text-center mb-9">
               <Eyebrow>No Phone Handy?</Eyebrow>
               <h2 className="mt-4 font-display text-3xl md:text-5xl font-black tracking-tight leading-[1.05]">
                 Talk to him right{' '}
-                <span className="text-[#F5B700]" style={{ WebkitTextStroke: '1.5px #161616' }}>
+                <span className="text-[#ffd400]" style={{ WebkitTextStroke: '1.5px #0d0d0d' }}>
                   here
                 </span>
                 , in this tab
@@ -296,13 +296,13 @@ export default function VoiceAgentsPage() {
         </section>
 
         {/* ═══════════ THE COST OF A PHONE NOBODY ANSWERS ═══════════ */}
-        <section className="border-b-2 border-[#161616] bg-[#FBF6EA]">
+        <section className="border-b-2 border-[#0d0d0d] bg-[#f1ede4]">
           <div className="max-w-6xl mx-auto px-6 md:px-8 py-16 md:py-24">
             <div className="max-w-2xl">
               <Eyebrow>The Real Numbers</Eyebrow>
               <h2 className="mt-4 font-display text-3xl md:text-5xl font-black tracking-tight leading-[1.05]">
                 A phone nobody answers is a{' '}
-                <span className="text-[#F5B700]" style={{ WebkitTextStroke: '1.5px #161616' }}>
+                <span className="text-[#ffd400]" style={{ WebkitTextStroke: '1.5px #0d0d0d' }}>
                   bill
                 </span>
                 , not a missed call
@@ -329,8 +329,8 @@ export default function VoiceAgentsPage() {
               {stats.map((s) => (
                 <div key={s.label} className="pop-card p-7 flex flex-col">
                   <span
-                    className="block font-display text-[3.5rem] lg:text-[4.1rem] font-black leading-none tracking-tight text-[#F5B700]"
-                    style={{ WebkitTextStroke: '2.5px #161616' }}
+                    className="block font-display text-[3.5rem] lg:text-[4.1rem] font-black leading-none tracking-tight text-[#ffd400]"
+                    style={{ WebkitTextStroke: '2.5px #0d0d0d' }}
                   >
                     {s.figure}
                   </span>
@@ -338,7 +338,7 @@ export default function VoiceAgentsPage() {
                     {s.label}
                   </span>
                   <p className="mt-3 font-body text-sm leading-6 text-[#3a3733] flex-1">{s.body}</p>
-                  <span className="mt-4 block font-mono text-[9px] uppercase tracking-[0.14em] text-[#161616]/70">
+                  <span className="mt-4 block font-mono text-[9px] uppercase tracking-[0.14em] text-[#0d0d0d]/70">
                     {s.source}
                   </span>
                 </div>
@@ -348,19 +348,19 @@ export default function VoiceAgentsPage() {
         </section>
 
         {/* ═══════════ THE BUILD ═══════════ */}
-        <section className="relative overflow-hidden border-b-2 border-[#161616] bg-[#F5B700]">
+        <section className="relative overflow-hidden border-b-2 border-[#0d0d0d] bg-[#ffd400]">
           <div aria-hidden="true" className="absolute inset-0 stripe-ink opacity-[0.07]" />
           <div className="relative max-w-6xl mx-auto px-6 md:px-8 py-16 md:py-24">
             <div className="grid lg:grid-cols-12 gap-10 items-center">
               <div className="lg:col-span-7">
-                <span className="inline-flex items-center gap-2 rounded-full border-2 border-[#161616] bg-white px-3.5 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-[#C4160B] shadow-[3px_3px_0_0_#161616]">
+                <span className="inline-flex items-center gap-2 rounded-full border-2 border-[#0d0d0d] bg-white px-3.5 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-[#C4160B] shadow-[3px_3px_0_0_#0d0d0d]">
                   The studio line · Answering now
                 </span>
-                <h2 className="mt-6 font-display text-3xl md:text-5xl font-black tracking-tight leading-[1.03] text-[#161616]">
+                <h2 className="mt-6 font-display text-3xl md:text-5xl font-black tracking-tight leading-[1.03] text-[#0d0d0d]">
                   That was ours. Yours is trained on{' '}
                   <span className="italic">your</span> business.
                 </h2>
-                <p className="mt-5 max-w-xl font-body text-base md:text-lg leading-relaxed text-[#161616]/80">
+                <p className="mt-5 max-w-xl font-body text-base md:text-lg leading-relaxed text-[#0d0d0d]/80">
                   Mr. Mustard answers for this studio, so what you hear on that call is the
                   standard of the work. Your agent is built the same way: your services, your
                   hours, your pricing, and the questions your callers actually ask.
@@ -368,13 +368,13 @@ export default function VoiceAgentsPage() {
                 <div className="mt-8 flex flex-col sm:flex-row gap-3">
                   <Link
                     href="/book"
-                    className="rounded-full border-2 border-[#161616] bg-[#161616] px-9 py-4 text-center font-sans text-[12px] font-extrabold uppercase tracking-[0.18em] text-[#FBF6EA] shadow-[5px_5px_0_0_#FBF6EA] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#FBF6EA]"
+                    className="rounded-full border-2 border-[#0d0d0d] bg-[#0d0d0d] px-9 py-4 text-center font-sans text-[12px] font-extrabold uppercase tracking-[0.18em] text-[#f1ede4] shadow-[5px_5px_0_0_#f1ede4] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#f1ede4]"
                   >
                     Begin An Engagement →
                   </Link>
                   <Link
                     href="/voice-agents/whitepaper"
-                    className="rounded-full border-2 border-[#161616] bg-white px-9 py-4 text-center font-sans text-[12px] font-extrabold uppercase tracking-[0.18em] text-[#161616] shadow-[5px_5px_0_0_#161616] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#161616]"
+                    className="rounded-full border-2 border-[#0d0d0d] bg-white px-9 py-4 text-center font-sans text-[12px] font-extrabold uppercase tracking-[0.18em] text-[#0d0d0d] shadow-[5px_5px_0_0_#0d0d0d] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#0d0d0d]"
                   >
                     Read The Whitepaper
                   </Link>
@@ -382,8 +382,8 @@ export default function VoiceAgentsPage() {
               </div>
 
               <div className="lg:col-span-5">
-                <div className="rotate-[1.5deg] rounded-2xl border-[3px] border-[#161616] bg-[#161616] p-7 md:p-8 shadow-[9px_9px_0_0_#FBF6EA]">
-                  <span className="block font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-[#F5B700]">
+                <div className="rotate-[1.5deg] rounded-2xl border-[3px] border-[#0d0d0d] bg-[#0d0d0d] p-7 md:p-8 shadow-[9px_9px_0_0_#f1ede4]">
+                  <span className="block font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-[#ffd400]">
                     One Form, Start To Finish
                   </span>
                   <ol className="mt-5 space-y-4">
@@ -393,10 +393,10 @@ export default function VoiceAgentsPage() {
                       'Talk to it, or have it ring your cell.',
                     ].map((line, i) => (
                       <li key={line} className="flex gap-3.5 items-start">
-                        <span className="mt-0.5 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full border-2 border-[#F5B700] font-mono text-[11px] font-bold text-[#F5B700]">
+                        <span className="mt-0.5 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full border-2 border-[#ffd400] font-mono text-[11px] font-bold text-[#ffd400]">
                           {i + 1}
                         </span>
-                        <span className="font-body text-[15px] leading-6 text-[#FBF6EA]/80">
+                        <span className="font-body text-[15px] leading-6 text-[#f1ede4]/80">
                           {line}
                         </span>
                       </li>
@@ -409,19 +409,19 @@ export default function VoiceAgentsPage() {
         </section>
 
         {/* ═══════════ THE TALKING WEBSITE (the cross-sell) ═══════════ */}
-        <section className="relative overflow-hidden border-b-2 border-[#161616] bg-[#161616] text-[#FBF6EA]">
+        <section className="relative overflow-hidden border-b-2 border-[#0d0d0d] bg-[#0d0d0d] text-[#f1ede4]">
           <div aria-hidden="true" className="absolute inset-0 halftone-ink opacity-80" />
           <div aria-hidden="true" className="absolute inset-0 film-grain" />
           <div className="relative max-w-6xl mx-auto px-6 md:px-8 py-16 md:py-24">
             <div className="text-center max-w-3xl mx-auto">
-              <span className="inline-flex items-center gap-2 rounded-full border-2 border-[#E0301E] bg-[#E0301E] px-4 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-white">
+              <span className="inline-flex items-center gap-2 rounded-full border-2 border-[#ff3b2f] bg-[#ff3b2f] px-4 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-white">
                 First Of Its Kind
               </span>
               <h2 className="mt-6 font-display text-3xl md:text-5xl font-black tracking-tight leading-[1.03]">
                 Put him on your website and you get{' '}
-                <span className="text-[#F5B700]">The Talking Website</span>
+                <span className="text-[#ffd400]">The Talking Website</span>
               </h2>
-              <p className="mt-6 font-body text-base md:text-lg leading-relaxed text-[#FBF6EA]/70">
+              <p className="mt-6 font-body text-base md:text-lg leading-relaxed text-[#f1ede4]/70">
                 Not a website with a chat bubble bolted on. Your site and your voice agent built as
                 one thing, off one brain, so the answer a visitor reads on the page is the exact
                 answer a caller hears at midnight. Nobody else is selling this yet.
@@ -437,7 +437,7 @@ export default function VoiceAgentsPage() {
               />
               <div
                 aria-hidden="true"
-                className="hidden md:flex items-center justify-center font-display text-4xl font-black text-[#F5B700]"
+                className="hidden md:flex items-center justify-center font-display text-4xl font-black text-[#ffd400]"
               >
                 +
               </div>
@@ -449,10 +449,10 @@ export default function VoiceAgentsPage() {
             </div>
 
             {/* The offer */}
-            <div className="mt-8 max-w-4xl mx-auto rounded-2xl border-[3px] border-[#F5B700] bg-[#F5B700] p-7 md:p-9 text-[#161616] shadow-[8px_8px_0_0_#FBF6EA]">
+            <div className="mt-8 max-w-4xl mx-auto rounded-2xl border-[3px] border-[#ffd400] bg-[#ffd400] p-7 md:p-9 text-[#0d0d0d] shadow-[8px_8px_0_0_#f1ede4]">
               <div className="md:flex md:items-center md:justify-between gap-8">
                 <div className="md:flex-1">
-                  <span className="block font-mono text-[10px] font-bold uppercase tracking-[0.28em] text-[#161616]/70">
+                  <span className="block font-mono text-[10px] font-bold uppercase tracking-[0.28em] text-[#0d0d0d]/70">
                     Commissioned together
                   </span>
                   <h3 className="mt-2 font-display text-3xl md:text-4xl font-black tracking-tight italic">
@@ -461,7 +461,7 @@ export default function VoiceAgentsPage() {
                   <p className="mt-3 font-display text-2xl md:text-3xl font-black tracking-tight">
                     One brain. The page and the phone.
                   </p>
-                  <p className="mt-3 font-body text-[15px] leading-6 text-[#161616]/80 max-w-xl">
+                  <p className="mt-3 font-body text-[15px] leading-6 text-[#0d0d0d]/80 max-w-xl">
                     Built as one engagement rather than two, which is why the answers never drift
                     apart. Scoped in one conversation and quoted privately, with the price agreed in
                     writing before anything is built.
@@ -470,13 +470,13 @@ export default function VoiceAgentsPage() {
                 <div className="mt-6 md:mt-0 flex flex-col gap-3 shrink-0">
                   <Link
                     href="/book"
-                    className="text-center rounded-full border-2 border-[#161616] bg-[#161616] px-8 py-4 font-sans text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#FBF6EA] shadow-[4px_4px_0_0_#FBF6EA] transition-all hover:-translate-y-0.5"
+                    className="text-center rounded-full border-2 border-[#0d0d0d] bg-[#0d0d0d] px-8 py-4 font-sans text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#f1ede4] shadow-[4px_4px_0_0_#f1ede4] transition-all hover:-translate-y-0.5"
                   >
                     Begin An Engagement →
                   </Link>
                   <Link
                     href="/websites"
-                    className="text-center rounded-full border-2 border-[#161616] bg-white px-8 py-4 font-sans text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#161616] shadow-[4px_4px_0_0_rgba(22,22,22,0.25)] transition-all hover:-translate-y-0.5"
+                    className="text-center rounded-full border-2 border-[#0d0d0d] bg-white px-8 py-4 font-sans text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#0d0d0d] shadow-[4px_4px_0_0_rgba(13,13,13,0.25)] transition-all hover:-translate-y-0.5"
                   >
                     About The Website
                   </Link>
@@ -487,13 +487,13 @@ export default function VoiceAgentsPage() {
         </section>
 
         {/* ═══════════ CALCULATOR ═══════════ */}
-        <section id="calculator" className="scroll-mt-24 border-b-2 border-[#161616] bg-white">
+        <section id="calculator" className="scroll-mt-24 border-b-2 border-[#0d0d0d] bg-white">
           <div className="max-w-5xl mx-auto px-6 md:px-8 py-16 md:py-24">
             <div className="text-center mb-10">
               <Eyebrow>Run Your Own Numbers</Eyebrow>
               <h2 className="mt-4 font-display text-3xl md:text-5xl font-black tracking-tight leading-[1.05]">
                 What is your unanswered phone{' '}
-                <span className="text-[#F5B700]" style={{ WebkitTextStroke: '1.5px #161616' }}>
+                <span className="text-[#ffd400]" style={{ WebkitTextStroke: '1.5px #0d0d0d' }}>
                   worth
                 </span>
                 ?
@@ -504,13 +504,13 @@ export default function VoiceAgentsPage() {
         </section>
 
         {/* ═══════════ WHAT IT HANDLES ═══════════ */}
-        <section className="border-b-2 border-[#161616] bg-[#FBF6EA]">
+        <section className="border-b-2 border-[#0d0d0d] bg-[#f1ede4]">
           <div className="max-w-6xl mx-auto px-6 md:px-8 py-16 md:py-24">
             <div className="text-center mb-12">
               <Eyebrow>What It Handles</Eyebrow>
               <h2 className="mt-4 font-display text-3xl md:text-5xl font-black tracking-tight leading-[1.05]">
                 A front desk that never{' '}
-                <span className="text-[#F5B700]" style={{ WebkitTextStroke: '1.5px #161616' }}>
+                <span className="text-[#ffd400]" style={{ WebkitTextStroke: '1.5px #0d0d0d' }}>
                   sleeps
                 </span>
               </h2>
@@ -537,7 +537,7 @@ export default function VoiceAgentsPage() {
         </section>
 
         {/* ═══════════ SWITCHBOARD PLATE: every line at once ═══════════ */}
-        <section className="relative border-b-2 border-[#161616]">
+        <section className="relative border-b-2 border-[#0d0d0d]">
           <div className="relative h-40 md:h-56 overflow-hidden">
             <Image
               src="/switchboard/exchange-hero.jpg"
@@ -546,21 +546,21 @@ export default function VoiceAgentsPage() {
               sizes="100vw"
               className="object-cover object-center"
             />
-            <div aria-hidden="true" className="absolute inset-0 bg-[#161616]/60" />
+            <div aria-hidden="true" className="absolute inset-0 bg-[#0d0d0d]/60" />
             <div className="absolute inset-0 flex items-center justify-center px-6">
               <p
-                className="text-balance text-center font-display text-2xl md:text-4xl font-black tracking-tight text-[#FBF6EA]"
-                style={{ textShadow: '0 2px 14px rgba(22,22,22,0.75)' }}
+                className="text-balance text-center font-display text-2xl md:text-4xl font-black tracking-tight text-[#f1ede4]"
+                style={{ textShadow: '0 2px 14px rgba(13,13,13,0.75)' }}
               >
                 Every line. At the same time.{' '}
-                <span className="text-[#F5B700]">Nobody on hold.</span>
+                <span className="text-[#ffd400]">Nobody on hold.</span>
               </p>
             </div>
           </div>
         </section>
 
         {/* ═══════════ THE NIGHT SHIFT FILM ═══════════ */}
-        <section className="relative overflow-hidden border-b-2 border-[#161616] bg-[#161616] text-[#FBF6EA]">
+        <section className="relative overflow-hidden border-b-2 border-[#0d0d0d] bg-[#0d0d0d] text-[#f1ede4]">
           <div aria-hidden="true" className="absolute inset-0 halftone-ink opacity-70" />
           <div aria-hidden="true" className="absolute inset-0 film-grain" />
           <div className="relative max-w-6xl mx-auto px-6 md:px-8 py-16 md:py-24">
@@ -570,15 +570,15 @@ export default function VoiceAgentsPage() {
                 <h2 className="mt-5 font-display text-3xl md:text-5xl font-black tracking-tight leading-[1.03] text-balance">
                   There is only one of you.
                   <br />
-                  <span className="text-[#F5B700]">Now there are two.</span>
+                  <span className="text-[#ffd400]">Now there are two.</span>
                 </h2>
-                <p className="mt-6 font-body text-base md:text-lg leading-relaxed text-[#FBF6EA]/70">
+                <p className="mt-6 font-body text-base md:text-lg leading-relaxed text-[#f1ede4]/70">
                   Sixty seconds on what happens to the calls that come in after you go home. Sound
                   on.
                 </p>
                 <a
                   href={`tel:${DEMO_LINE.tel}`}
-                  className="mt-8 inline-flex items-center gap-2.5 rounded-full border-2 border-[#F5B700] bg-transparent px-7 py-3.5 font-sans text-[12px] font-extrabold uppercase tracking-[0.16em] text-[#F5B700] transition-all hover:bg-[#F5B700] hover:text-[#161616] hover:-translate-y-0.5"
+                  className="mt-8 inline-flex items-center gap-2.5 rounded-full border-2 border-[#ffd400] bg-transparent px-7 py-3.5 font-sans text-[12px] font-extrabold uppercase tracking-[0.16em] text-[#ffd400] transition-all hover:bg-[#ffd400] hover:text-[#0d0d0d] hover:-translate-y-0.5"
                 >
                   ☎ Hear Him Now · {DEMO_LINE.display}
                 </a>
@@ -591,21 +591,21 @@ export default function VoiceAgentsPage() {
         </section>
 
         {/* ═══════════ RESTAURANTS ═══════════ */}
-        <section className="border-b-2 border-[#161616] bg-white">
+        <section className="border-b-2 border-[#0d0d0d] bg-white">
           <div className="max-w-5xl mx-auto px-6 md:px-8 py-16 md:py-24 [&>div]:mb-0">
             <RestaurantVoiceSection />
           </div>
         </section>
 
         {/* ═══════════ MULTILINGUAL ═══════════ */}
-        <section className="border-b-2 border-[#161616] bg-[#FBF6EA]">
+        <section className="border-b-2 border-[#0d0d0d] bg-[#f1ede4]">
           <div className="max-w-6xl mx-auto px-6 md:px-8 py-16 md:py-24">
             <div className="grid lg:grid-cols-12 gap-10 items-center">
               <div className="lg:col-span-7">
                 <Eyebrow>Speaks 100+ Languages</Eyebrow>
                 <h2 className="mt-4 font-display text-3xl md:text-5xl font-black tracking-tight leading-[1.05]">
                   It answers in your customer&apos;s{' '}
-                  <span className="text-[#F5B700]" style={{ WebkitTextStroke: '1.5px #161616' }}>
+                  <span className="text-[#ffd400]" style={{ WebkitTextStroke: '1.5px #0d0d0d' }}>
                     language
                   </span>
                 </h2>
@@ -631,7 +631,7 @@ export default function VoiceAgentsPage() {
                   ].map((t) => (
                     <span
                       key={t}
-                      className="rounded-full border-2 border-[#161616] bg-white px-3.5 py-2 font-sans text-[13px] font-bold shadow-[3px_3px_0_0_#161616]"
+                      className="rounded-full border-2 border-[#0d0d0d] bg-white px-3.5 py-2 font-sans text-[13px] font-bold shadow-[3px_3px_0_0_#0d0d0d]"
                     >
                       {t}
                     </span>
@@ -643,13 +643,13 @@ export default function VoiceAgentsPage() {
         </section>
 
         {/* ═══════════ HOW IT WORKS ═══════════ */}
-        <section className="border-b-2 border-[#161616] bg-white">
+        <section className="border-b-2 border-[#0d0d0d] bg-white">
           <div className="max-w-6xl mx-auto px-6 md:px-8 py-16 md:py-24">
             <div className="text-center mb-12">
               <Eyebrow>How It Works</Eyebrow>
               <h2 className="mt-4 font-display text-3xl md:text-5xl font-black tracking-tight leading-[1.05]">
                 Live in about{' '}
-                <span className="text-[#F5B700]" style={{ WebkitTextStroke: '1.5px #161616' }}>
+                <span className="text-[#ffd400]" style={{ WebkitTextStroke: '1.5px #0d0d0d' }}>
                   a week
                 </span>
               </h2>
@@ -676,13 +676,13 @@ export default function VoiceAgentsPage() {
         </section>
 
         {/* ═══════════ FAQ ═══════════ */}
-        <section className="border-b-2 border-[#161616] bg-[#FBF6EA]">
+        <section className="border-b-2 border-[#0d0d0d] bg-[#f1ede4]">
           <div className="max-w-3xl mx-auto px-6 md:px-8 py-16 md:py-24">
             <div className="text-center mb-10">
               <Eyebrow>Common Questions</Eyebrow>
               <h2 className="mt-4 font-display text-3xl md:text-4xl font-black tracking-tight">
                 Ask him these too. He{' '}
-                <span className="text-[#F5B700]" style={{ WebkitTextStroke: '1.5px #161616' }}>
+                <span className="text-[#ffd400]" style={{ WebkitTextStroke: '1.5px #0d0d0d' }}>
                   answers
                 </span>
                 .
@@ -707,16 +707,16 @@ export default function VoiceAgentsPage() {
         </section>
 
         {/* ═══════════ CLOSER: the number, one more time, bigger ═══════════ */}
-        <section className="relative overflow-hidden border-b-2 border-[#161616] bg-[#161616] text-[#FBF6EA]">
+        <section className="relative overflow-hidden border-b-2 border-[#0d0d0d] bg-[#0d0d0d] text-[#f1ede4]">
           <div aria-hidden="true" className="absolute inset-0 halftone-ink" />
           <div aria-hidden="true" className="absolute inset-0 film-grain" />
           <div className="relative max-w-5xl mx-auto px-6 md:px-8 py-20 md:py-28">
             <div className="text-center mb-4">
               <h2 className="font-display text-3xl md:text-5xl font-black tracking-tight leading-[1.05]">
                 Stop reading. Start{' '}
-                <span className="text-[#F5B700]">dialing</span>.
+                <span className="text-[#ffd400]">dialing</span>.
               </h2>
-              <p className="mt-5 max-w-xl mx-auto font-body text-base md:text-lg leading-relaxed text-[#FBF6EA]/70">
+              <p className="mt-5 max-w-xl mx-auto font-body text-base md:text-lg leading-relaxed text-[#f1ede4]/70">
                 Sixty seconds on the phone with him will tell you more than this whole page did. Ask
                 him what he could do for your business.
               </p>
@@ -729,13 +729,13 @@ export default function VoiceAgentsPage() {
             <div className="mt-14 flex flex-col sm:flex-row gap-3 justify-center">
               <Link
                 href="/book"
-                className="rounded-full border-2 border-[#F5B700] bg-[#F5B700] px-9 py-4 text-center font-sans text-[12px] font-extrabold uppercase tracking-[0.18em] text-[#161616] transition-all hover:-translate-y-0.5"
+                className="rounded-full border-2 border-[#ffd400] bg-[#ffd400] px-9 py-4 text-center font-sans text-[12px] font-extrabold uppercase tracking-[0.18em] text-[#0d0d0d] transition-all hover:-translate-y-0.5"
               >
                 Begin An Engagement
               </Link>
               <Link
                 href="/playbooks/14-day-voice-agent"
-                className="rounded-full border-2 border-[#FBF6EA]/40 px-9 py-4 text-center font-sans text-[12px] font-extrabold uppercase tracking-[0.18em] text-[#FBF6EA] transition-all hover:border-[#FBF6EA] hover:-translate-y-0.5"
+                className="rounded-full border-2 border-[#f1ede4]/40 px-9 py-4 text-center font-sans text-[12px] font-extrabold uppercase tracking-[0.18em] text-[#f1ede4] transition-all hover:border-[#f1ede4] hover:-translate-y-0.5"
               >
                 Read The 14-Day Playbook
               </Link>

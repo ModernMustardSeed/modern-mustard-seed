@@ -42,7 +42,7 @@ export default function JoinHundredfold({ interviewId }: { interviewId?: string 
 
   return (
     <div>
-      <span className="block text-[9px] uppercase tracking-[0.4em] font-mono font-bold text-[#161616]/60 mb-4">
+      <span className="block text-[9px] uppercase tracking-[0.4em] font-mono font-bold text-[#0d0d0d]/60 mb-4">
         Join
       </span>
       <form onSubmit={go} className="grid sm:grid-cols-3 gap-3">
@@ -51,7 +51,7 @@ export default function JoinHundredfold({ interviewId }: { interviewId?: string 
           onChange={(e) => setName(e.target.value)}
           placeholder="Your name"
           aria-label="Your name"
-          className="bg-white border-2 border-[#161616] rounded-lg px-4 py-3 font-body text-sm focus:outline-none"
+          className="bg-white border-2 border-[#0d0d0d] rounded-lg px-4 py-3 font-body text-sm focus:outline-none"
         />
         <input
           type="email"
@@ -60,24 +60,24 @@ export default function JoinHundredfold({ interviewId }: { interviewId?: string 
           onChange={(e) => setEmail(e.target.value)}
           placeholder="you@yourbusiness.com"
           aria-label="Your email"
-          className="bg-white border-2 border-[#161616] rounded-lg px-4 py-3 font-body text-sm focus:outline-none"
+          className="bg-white border-2 border-[#0d0d0d] rounded-lg px-4 py-3 font-body text-sm focus:outline-none"
         />
         <input
           value={business}
           onChange={(e) => setBusiness(e.target.value)}
           placeholder="Business name"
           aria-label="Your business name"
-          className="bg-white border-2 border-[#161616] rounded-lg px-4 py-3 font-body text-sm focus:outline-none"
+          className="bg-white border-2 border-[#0d0d0d] rounded-lg px-4 py-3 font-body text-sm focus:outline-none"
         />
         <button
           type="submit"
           disabled={busy || !email.includes('@')}
-          className="sm:col-span-3 px-6 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-white bg-[#161616] rounded-xl border-2 border-[#161616] disabled:opacity-40 hover:-translate-y-0.5 transition-all"
+          className="sm:col-span-3 px-6 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-white bg-[#0d0d0d] rounded-xl border-2 border-[#0d0d0d] disabled:opacity-40 hover:-translate-y-0.5 transition-all"
         >
           {busy ? 'Opening checkout…' : `Start Hundredfold · ${money(HUNDREDFOLD.setupCents)} then ${money(HUNDREDFOLD.monthlyCents)}/mo`}
         </button>
       </form>
-      <p className="mt-3 text-[#161616]/65 text-xs font-body leading-relaxed">
+      <p className="mt-3 text-[#0d0d0d]/65 text-xs font-body leading-relaxed">
         {GUARANTEE.short} Month to month, thirty days notice, no exit fee.
       </p>
       {error && <p className="mt-3 text-[#C4160B] text-sm font-body font-bold">{error}</p>}

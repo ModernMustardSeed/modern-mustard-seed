@@ -58,7 +58,13 @@ html:not(.mm-js) .mm-r {
     --rust-glow: #ff5a45;
     --lake: #161616;
     --sage: #8fa98f;
-    --cream: #fbf6ea;
+    --cream: #f1ede4;
+    /* Graffiti Couture tokens (2026-09-26). */
+    --spray-yellow: #ffd400;
+    --spray-red: #ff3b2f;
+    --spray-butter: #ffe98a;
+    --spray-ink: #0d0d0d;
+    --spray-cream: #f1ede4;
     /* Pop palette tokens */
     --pop-yellow: #f5b700;
     --pop-red: #e0301e;
@@ -70,10 +76,10 @@ html:not(.mm-js) .mm-r {
   html, body {
     width: 100%;
     max-width: 100vw;
-    /* The pop-art ground: cream paper, ink type. Dark surfaces are bands a
+    /* The Graffiti Couture ground: concrete cream, ink type. Dark surfaces are bands a
        page paints on purpose, never the default. */
-    background-color: #fbf6ea;
-    color: #161616;
+    background-color: #f1ede4;
+    color: #0d0d0d;
     font-family: var(--font-body), system-ui, sans-serif;
     /* DM Sans merges "fi"/"fl" into ligature glyphs (the dotless-i "finally"
        problem). Keep letters as typed, sitewide. */
@@ -501,54 +507,54 @@ html:not(.mm-js) .mm-r {
   @apply rounded-xl border border-white/[0.05] my-8;
 }
 
-/* Light pop-art prose. Add alongside .mdx-prose on cream pages. */
+/* Light Graffiti Couture prose. Add alongside .mdx-prose on cream pages. */
 .mdx-prose-pop {
   color: #3a3733;
 }
 .mdx-prose-pop h1,
 .mdx-prose-pop h2,
 .mdx-prose-pop h3 {
-  color: #161616;
+  color: #0d0d0d;
 }
 .mdx-prose-pop a {
-  color: #e0301e;
-  text-decoration-color: rgba(224, 48, 30, 0.4);
+  color: #d0241b;
+  text-decoration-color: rgba(255, 59, 47, 0.55);
 }
 .mdx-prose-pop a:hover {
-  color: #161616;
+  color: #0d0d0d;
 }
 .mdx-prose-pop strong {
-  color: #161616;
+  color: #0d0d0d;
 }
 .mdx-prose-pop blockquote {
-  border-left-color: #f5b700;
+  border-left-color: #ffd400;
   color: #3a3733;
 }
 .mdx-prose-pop code {
   background: #fff;
-  border: 1px solid #161616;
-  color: #161616;
+  border: 1px solid #0d0d0d;
+  color: #0d0d0d;
 }
 .mdx-prose-pop pre {
-  background: #161616;
-  border: 2px solid #161616;
+  background: #0d0d0d;
+  border: 2px solid #0d0d0d;
 }
 .mdx-prose-pop pre code {
   background: transparent;
   border: 0;
-  color: #fbf6ea;
+  color: #f1ede4;
 }
 .mdx-prose-pop th {
-  color: #e0301e;
-  border-bottom-color: rgba(22, 22, 22, 0.15);
+  color: #d0241b;
+  border-bottom-color: rgba(13, 13, 13, 0.15);
 }
 .mdx-prose-pop td {
   color: #3a3733;
-  border-bottom-color: rgba(22, 22, 22, 0.08);
+  border-bottom-color: rgba(13, 13, 13, 0.08);
 }
 .mdx-prose-pop hr {
-  border-color: rgba(22, 22, 22, 0.12);
+  border-color: rgba(13, 13, 13, 0.12);
 }
 .mdx-prose-pop img {
-  border: 2px solid #161616;
+  border: 2px solid #0d0d0d;
 }

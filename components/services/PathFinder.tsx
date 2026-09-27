@@ -22,7 +22,7 @@ export default function PathFinder() {
   };
 
   return (
-    <div className="rounded-2xl border-2 border-[#161616] bg-white shadow-[8px_8px_0_0_#161616] p-6 md:p-8">
+    <div className="rounded-2xl border-2 border-[#0d0d0d] bg-white shadow-[8px_8px_0_0_#0d0d0d] p-6 md:p-8">
       <span className="font-mono font-bold text-[10px] uppercase tracking-[0.28em] text-[#C4160B] block">
         I want to…
       </span>
@@ -37,8 +37,8 @@ export default function PathFinder() {
               type="button"
               onClick={() => pick(idx)}
               aria-pressed={on}
-              className={`inline-flex items-center gap-2 rounded-full border-2 border-[#161616] px-4 py-2 text-[13px] font-sans font-bold transition-all ${
-                on ? 'bg-[#161616] text-[#F5B700] shadow-[3px_3px_0_0_#F5B700]' : 'bg-[#FBF6EA] text-[#161616] hover:-translate-y-0.5 hover:shadow-[2px_2px_0_0_#161616]'
+              className={`inline-flex items-center gap-2 rounded-full border-2 border-[#0d0d0d] px-4 py-2 text-[13px] font-sans font-bold transition-all ${
+                on ? 'bg-[#0d0d0d] text-[#ffd400] shadow-[3px_3px_0_0_#ffd400]' : 'bg-[#f1ede4] text-[#0d0d0d] hover:-translate-y-0.5 hover:shadow-[2px_2px_0_0_#0d0d0d]'
               }`}
             >
               <span aria-hidden>{g.emoji}</span> {g.label}
@@ -48,9 +48,9 @@ export default function PathFinder() {
       </div>
 
       {/* The recommendation */}
-      <div className="mt-7 border-t-2 border-dashed border-[#161616]/20 pt-6">
-        <p className="font-body text-[15px] text-[#161616]/80 leading-relaxed max-w-2xl">
-          <span className="font-bold text-[#161616]">Start here.</span> {goal.note}
+      <div className="mt-7 border-t-2 border-dashed border-[#0d0d0d]/20 pt-6">
+        <p className="font-body text-[15px] text-[#0d0d0d]/80 leading-relaxed max-w-2xl">
+          <span className="font-bold text-[#0d0d0d]">Start here.</span> {goal.note}
         </p>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-5">
           {depts.map((d) => (
@@ -58,13 +58,13 @@ export default function PathFinder() {
               key={d.key}
               href={d.href}
               onClick={() => track('services_pathfinder_dept', { dept: d.key })}
-              className="group flex flex-col rounded-2xl border-2 border-[#161616] bg-[#FBF6EA] p-5 shadow-[4px_4px_0_0_#161616] hover:-translate-y-1 hover:shadow-[6px_6px_0_0_#F5B700] transition-all animate-[pfIn_.4s_ease-out_both]"
+              className="group flex flex-col rounded-2xl border-2 border-[#0d0d0d] bg-[#f1ede4] p-5 shadow-[4px_4px_0_0_#0d0d0d] hover:-translate-y-1 hover:shadow-[6px_6px_0_0_#ffd400] transition-all animate-[pfIn_.4s_ease-out_both]"
             >
               <span className="text-2xl leading-none" aria-hidden>{d.icon}</span>
               <span className="font-mono text-[9px] uppercase tracking-[0.22em] font-bold text-[#C4160B] mt-2.5">{d.tag}</span>
-              <span className="font-display italic font-extrabold text-xl text-[#161616] mt-1 leading-tight">{d.name}</span>
-              <span className="font-body text-[12.5px] text-[#161616]/75 mt-2 leading-relaxed flex-1">{d.blurb}</span>
-              <span className="font-sans font-bold text-[11px] uppercase tracking-[0.14em] text-[#161616] mt-4 inline-flex items-center gap-1">
+              <span className="font-display italic font-extrabold text-xl text-[#0d0d0d] mt-1 leading-tight">{d.name}</span>
+              <span className="font-body text-[12.5px] text-[#0d0d0d]/75 mt-2 leading-relaxed flex-1">{d.blurb}</span>
+              <span className="font-sans font-bold text-[11px] uppercase tracking-[0.14em] text-[#0d0d0d] mt-4 inline-flex items-center gap-1">
                 Open it <span className="group-hover:translate-x-1 transition-transform" aria-hidden>→</span>
               </span>
             </Link>

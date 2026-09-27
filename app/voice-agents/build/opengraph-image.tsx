@@ -9,10 +9,10 @@ export const alt = 'The Voice Agent Build. Hear your own voice agent answer live
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
-const INK = '#161616';
-const CREAM = '#FBF6EA';
-const MUSTARD = '#F5B700';
-const RED = '#E0301E';
+const INK = '#0d0d0d';
+const CREAM = '#f1ede4';
+const MUSTARD = '#ffd400';
+const RED = '#ff3b2f';
 
 export default async function OpengraphImage() {
   const mascot = readFileSync(join(process.cwd(), 'public/brand/mascot.png'));

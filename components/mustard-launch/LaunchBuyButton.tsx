@@ -38,18 +38,18 @@ export default function LaunchBuyButton({
   }
 
   const base =
-    'inline-flex items-center justify-center gap-2 rounded-lg border-2 border-[#161616] px-6 py-3 font-sans font-bold transition-transform hover:translate-y-[2px] disabled:opacity-60';
+    'inline-flex items-center justify-center gap-2 rounded-lg border-2 border-[#0d0d0d] px-6 py-3 font-sans font-bold transition-transform hover:translate-y-[2px] disabled:opacity-60';
   const styles =
     variant === 'primary'
-      ? 'bg-[#F5B700] text-[#161616] shadow-[4px_4px_0_0_#161616] hover:shadow-[2px_2px_0_0_#161616]'
-      : 'bg-white text-[#161616] shadow-[4px_4px_0_0_#161616] hover:shadow-[2px_2px_0_0_#161616]';
+      ? 'bg-[#ffd400] text-[#0d0d0d] shadow-[4px_4px_0_0_#0d0d0d] hover:shadow-[2px_2px_0_0_#0d0d0d]'
+      : 'bg-white text-[#0d0d0d] shadow-[4px_4px_0_0_#0d0d0d] hover:shadow-[2px_2px_0_0_#0d0d0d]';
 
   return (
     <div>
       <button onClick={buy} disabled={loading} className={`${base} ${styles}`}>
         {loading ? 'Opening checkout…' : label}
       </button>
-      {err && <p className="mt-2 font-mono text-xs text-[#E0301E]">{err}</p>}
+      {err && <p className="mt-2 font-mono text-xs text-[#d0241b]">{err}</p>}
     </div>
   );
 }

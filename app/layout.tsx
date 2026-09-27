@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { DM_Sans, Playfair_Display, Cormorant_Garamond, JetBrains_Mono, Oswald, Anton, Permanent_Marker, Bangers } from 'next/font/google';
+import { DM_Sans, Playfair_Display, Cormorant_Garamond, JetBrains_Mono, Oswald, Anton, Permanent_Marker } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import Navbar from '@/components/Navbar';
@@ -15,39 +15,32 @@ import HydrationGate from '@/components/HydrationGate';
 import AppNavDock from '@/components/AppNavDock';
 import { JsonLd, siteGraphJsonLd } from '@/lib/jsonld';
 import { buildMetadata, SITE } from '@/lib/seo';
-import { readyArtStyles } from '@/lib/art-ready';
-import { ART_STORAGE_KEY } from '@/lib/art-styles';
 import './globals.css';
 import './studio-chrome.css';
-import './art-styles.css';
-import './comic-type.css';
-import ComicScope from '@/components/pop/ComicScope';
+import './graffiti-type.css';
+import GraffitiScope from '@/components/pop/GraffitiScope';
 
 const bodyFont = DM_Sans({ subsets: ['latin'], style: ['normal'], display: 'optional', variable: '--font-body' });
 const displayFont = Playfair_Display({ subsets: ['latin'], style: ['normal', 'italic'], display: 'optional', variable: '--font-display' });
 const serifFont = Cormorant_Garamond({ subsets: ['latin'], weight: ['300', '400', '500', '600'], style: ['normal', 'italic'], display: 'swap', preload: false, variable: '--font-serif' });
 const monoFont = JetBrains_Mono({ subsets: ['latin'], weight: ['400', '500', '700'], display: 'swap', preload: false, variable: '--font-mono' });
 const condensedFont = Oswald({ subsets: ['latin'], weight: ['400', '500', '600', '700'], display: 'swap', preload: false, variable: '--font-oswald' });
-// The artist dial's own hands (lib/art-styles.ts). Never preloaded: only a
-// visitor who turns the dial to these styles downloads them.
-// The pop hero's comic lettering (components/home/CardHero). It is on the
-// first screen, so it preloads.
-const comicFont = Bangers({ subsets: ['latin'], weight: ['400'], display: 'swap', variable: '--font-comic' });
-const posterFont = Anton({ subsets: ['latin'], weight: ['400'], display: 'swap', preload: false, variable: '--font-anton' });
-const markerFont = Permanent_Marker({ subsets: ['latin'], weight: ['400'], display: 'swap', preload: false, variable: '--font-marker' });
+// Graffiti Couture (2026-09-26): display type is Anton, the accent word is
+// Permanent Marker. Both are on the first screen of every page, so both preload.
+const posterFont = Anton({ subsets: ['latin'], weight: ['400'], display: 'swap', variable: '--font-anton' });
+const markerFont = Permanent_Marker({ subsets: ['latin'], weight: ['400'], display: 'swap', variable: '--font-marker' });
 
 export const metadata: Metadata = buildMetadata();
 
 export const viewport: Viewport = {
-  themeColor: '#F5B700',
+  themeColor: '#FFD400',
   width: 'device-width',
   initialScale: 1,
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const artReady = readyArtStyles();
   return (
-    <html lang="en" suppressHydrationWarning className={`${bodyFont.variable} ${displayFont.variable} ${serifFont.variable} ${monoFont.variable} ${condensedFont.variable} ${comicFont.variable} ${posterFont.variable} ${markerFont.variable}`}>
+    <html lang="en" suppressHydrationWarning className={`${bodyFont.variable} ${displayFont.variable} ${serifFont.variable} ${monoFont.variable} ${condensedFont.variable} ${posterFont.variable} ${markerFont.variable}`}>
       <head>
         <link rel="manifest" href="/site.webmanifest" />
         <JsonLd data={siteGraphJsonLd} />
@@ -67,13 +60,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               "(function(){var d=document.documentElement,done=0;d.className+=' mm-js';function live(){return d.getAttribute('data-mm-live')}function off(){if(done||live())return;done=1;d.className=d.className.replace(' mm-js','')}addEventListener('error',function(e){var t=e&&e.target;if(!t||t===window||t.nodeName==='SCRIPT')off()},true);setTimeout(off,6000)})();",
           }}
         />
-        {/* The artist dial: restore the visitor's last style before first paint,
-            but only a style whose art shipped (see lib/art-ready.ts). */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(){try{var a=localStorage.getItem(${JSON.stringify(ART_STORAGE_KEY)});if(a&&${JSON.stringify(artReady)}.indexOf(a)>-1)document.documentElement.setAttribute('data-art',a)}catch(e){}})();`,
-          }}
-        />
         {/* Google Consent Mode v2: default everything non-essential to denied
             until the visitor accepts. Belt-and-suspenders with the hard gate. */}
         <Script id="consent-default" strategy="beforeInteractive">
@@ -83,10 +69,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       {/* Ground and ink come from the base rule in globals.css, not utilities here:
           a utility would out-rank the admin and portal rule that keeps their
           old ink ground and white type. */}
-      <body className="selection:bg-[#F5B700] selection:text-[#161616]">
-        <ComicScope />
+      <body className="selection:bg-[#ffd400] selection:text-[#0d0d0d]">
+        <GraffitiScope />
         <div className="relative z-30">
-          <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[9999] focus:bg-[#F5B700] focus:text-[#161616] focus:px-5 focus:py-3">Skip to content</a>
+          <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[9999] focus:bg-[#ffd400] focus:text-[#0d0d0d] focus:px-5 focus:py-3">Skip to content</a>
           <Navbar />
           <main id="main-content" tabIndex={-1}>{children}</main>
           <HideOnAppShell>
@@ -111,9 +97,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Analytics />
         <SpeedInsights />
         <noscript>
-          <p style={{ padding: '2rem', textAlign: 'center', color: '#161616' }}>
+          <p style={{ padding: '2rem', textAlign: 'center', color: '#0d0d0d' }}>
             {SITE.name}. {SITE.description} Visit{' '}
-            <a href={SITE.url} style={{ color: '#B92417' }}>
+            <a href={SITE.url} style={{ color: '#c8201a' }}>
               {SITE.url}
             </a>{' '}
             for more.

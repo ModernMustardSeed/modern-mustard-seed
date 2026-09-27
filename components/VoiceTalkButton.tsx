@@ -103,14 +103,14 @@ export default function VoiceTalkButton() {
   const isConnecting = state === 'connecting';
 
   return (
-    <div className="rounded-2xl border-2 border-[#161616] bg-[#161616] text-[#FBF6EA] p-7 md:p-9 shadow-[6px_6px_0_0_#F5B700]">
+    <div className="rounded-2xl border-2 border-[#0d0d0d] bg-[#0d0d0d] text-[#f1ede4] p-7 md:p-9 shadow-[6px_6px_0_0_#ffd400]">
       <div className="flex flex-col sm:flex-row items-center gap-6">
         {/* Mic orb */}
         <div className="relative flex-shrink-0">
           {isLive && (
             <span
               aria-hidden="true"
-              className="absolute inset-0 rounded-full bg-[#F5B700] opacity-30 animate-ping"
+              className="absolute inset-0 rounded-full bg-[#ffd400] opacity-30 animate-ping"
               style={{ animationDuration: '1.6s' }}
             />
           )}
@@ -121,8 +121,8 @@ export default function VoiceTalkButton() {
             aria-label={isLive ? 'End the call' : 'Start a live call with Mr. Mustard'}
             className={`relative w-24 h-24 rounded-full border-[3px] flex items-center justify-center transition-all duration-300 ${
               isLive
-                ? 'bg-[#E0301E] border-white shadow-[0_0_40px_rgba(224,48,30,0.45)]'
-                : 'bg-[#F5B700] border-[#161616] shadow-[3px_3px_0_0_#FBF6EA] hover:-translate-y-0.5 hover:shadow-[4px_4px_0_0_#FBF6EA]'
+                ? 'bg-[#ff3b2f] border-white shadow-[0_0_40px_rgba(224,48,30,0.45)]'
+                : 'bg-[#ffd400] border-[#0d0d0d] shadow-[3px_3px_0_0_#f1ede4] hover:-translate-y-0.5 hover:shadow-[4px_4px_0_0_#f1ede4]'
             } ${isConnecting ? 'opacity-60 cursor-wait' : ''}`}
             style={
               isLive
@@ -136,15 +136,15 @@ export default function VoiceTalkButton() {
             ) : (
               // Mic glyph
               <svg width="34" height="34" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <rect x="9" y="3" width="6" height="11" rx="3" fill="#161616" />
+                <rect x="9" y="3" width="6" height="11" rx="3" fill="#0d0d0d" />
                 <path
                   d="M5 11a7 7 0 0 0 14 0"
-                  stroke="#161616"
+                  stroke="#0d0d0d"
                   strokeWidth="2.2"
                   strokeLinecap="round"
                   fill="none"
                 />
-                <path d="M12 18v3" stroke="#161616" strokeWidth="2.2" strokeLinecap="round" />
+                <path d="M12 18v3" stroke="#0d0d0d" strokeWidth="2.2" strokeLinecap="round" />
               </svg>
             )}
           </button>
@@ -152,7 +152,7 @@ export default function VoiceTalkButton() {
 
         {/* Status + copy */}
         <div className="flex-1 text-center sm:text-left">
-          <span className="text-[10px] uppercase tracking-[0.35em] text-[#F5B700] font-mono font-bold block mb-1.5">
+          <span className="text-[10px] uppercase tracking-[0.35em] text-[#ffd400] font-mono font-bold block mb-1.5">
             {isLive
               ? speaking
                 ? 'Mr. Mustard is talking'
@@ -170,7 +170,7 @@ export default function VoiceTalkButton() {
                 ? 'How did he do?'
                 : 'Talk to Mr. Mustard. Right now.'}
           </p>
-          <p className="text-[#FBF6EA]/65 text-sm font-body leading-relaxed max-w-md">
+          <p className="text-[#f1ede4]/65 text-sm font-body leading-relaxed max-w-md">
             {isLive
               ? 'Ask him anything. What we build, how it works, or book a real call with Sarah without hanging up.'
               : state === 'ended'
@@ -188,8 +188,8 @@ export default function VoiceTalkButton() {
               onClick={toggleMute}
               className={`px-5 py-2.5 rounded-full border-2 text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold transition-all ${
                 muted
-                  ? 'bg-[#F5B700] text-[#161616] border-[#F5B700]'
-                  : 'bg-transparent text-[#FBF6EA] border-[#FBF6EA]/40 hover:border-[#FBF6EA]'
+                  ? 'bg-[#ffd400] text-[#0d0d0d] border-[#ffd400]'
+                  : 'bg-transparent text-[#f1ede4] border-[#f1ede4]/40 hover:border-[#f1ede4]'
               }`}
             >
               {muted ? 'Unmute' : 'Mute'}
@@ -197,7 +197,7 @@ export default function VoiceTalkButton() {
             <button
               type="button"
               onClick={stop}
-              className="px-5 py-2.5 rounded-full border-2 border-[#E0301E] bg-[#E0301E] text-white text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold hover:bg-[#c22717] transition-all"
+              className="px-5 py-2.5 rounded-full border-2 border-[#ff3b2f] bg-[#ff3b2f] text-white text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold hover:bg-[#c22717] transition-all"
             >
               End call
             </button>
@@ -207,8 +207,8 @@ export default function VoiceTalkButton() {
 
       {/* Language picker: he speaks your customer's language */}
       {!isLive && !isConnecting && (
-        <div className="mt-6 pt-5 border-t border-[#FBF6EA]/15">
-          <p className="text-[9px] uppercase tracking-[0.3em] text-[#F5B700]/80 font-mono font-bold mb-2.5 text-center sm:text-left">
+        <div className="mt-6 pt-5 border-t border-[#f1ede4]/15">
+          <p className="text-[9px] uppercase tracking-[0.3em] text-[#ffd400]/80 font-mono font-bold mb-2.5 text-center sm:text-left">
             He speaks your customer&apos;s language. Pick one, then tap the mic.
           </p>
           <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
@@ -219,8 +219,8 @@ export default function VoiceTalkButton() {
                 onClick={() => setLang(l)}
                 className={`px-3.5 py-1.5 rounded-full border-2 text-xs font-sans font-bold transition-all ${
                   lang.code === l.code
-                    ? 'bg-[#F5B700] text-[#161616] border-[#F5B700]'
-                    : 'bg-transparent text-[#FBF6EA] border-[#FBF6EA]/30 hover:border-[#FBF6EA]'
+                    ? 'bg-[#ffd400] text-[#0d0d0d] border-[#ffd400]'
+                    : 'bg-transparent text-[#f1ede4] border-[#f1ede4]/30 hover:border-[#f1ede4]'
                 }`}
               >
                 <span className="mr-1" aria-hidden="true">{l.flag}</span>{l.label}

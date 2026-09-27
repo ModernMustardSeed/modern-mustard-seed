@@ -35,11 +35,11 @@ const FAQ = [
   },
 ];
 
-const MT_ALT = 'Pop-art screenprint: a Montana valley at sunrise with a lake and island, snow-capped peaks, a red barn, a grain elevator and a pickup on a country road';
+const MT_ALT = 'Graffiti couture painting: Mr. Mustard throws his arms wide from a red classic convertible parked over Flathead Lake at sunset, beside a railroad trestle painted in graffiti';
 
 export default function MontanaPage() {
   return (
-    <div className="bg-[#FBF6EA] text-[#161616]">
+    <div className="bg-[#f1ede4] text-[#0d0d0d]">
       <JsonLd
         data={[
           faqJsonLd(FAQ),
@@ -80,7 +80,7 @@ export default function MontanaPage() {
         </div>
       </PopPageHero>
 
-      <nav aria-label="Explore the studio" className="max-w-6xl mx-auto px-6 py-8 flex flex-wrap gap-6 font-bold text-[#B92417] underline underline-offset-4">
+      <nav aria-label="Explore the studio" className="max-w-6xl mx-auto px-6 py-8 flex flex-wrap gap-6 font-bold text-[#c8201a] underline underline-offset-4">
         <Link href="/agentic-websites">Agentic websites, explained</Link>
         <Link href="/montana/kalispell">Our home in Kalispell</Link>
         <Link href="/nationwide">Working with us from outside Montana</Link>
@@ -88,13 +88,13 @@ export default function MontanaPage() {
         <Link href="/work">What we have built</Link>
         <Link href="/about">Meet Sarah Scarano</Link>
       </nav>
-      <section className="border-b-2 border-[#161616] bg-white">
+      <section className="border-b-2 border-[#0d0d0d] bg-white">
         <div className="max-w-6xl mx-auto px-6 py-14 md:py-20">
           <p className="font-mono text-[11px] uppercase tracking-[0.3em] font-bold text-[#8f6600]">Pick Your Town</p>
           <h2 className="mt-2 font-display text-3xl md:text-4xl font-extrabold leading-[1.05]">
             Every town in the valley runs on a different clock.
           </h2>
-          <p className="mt-4 font-body text-[16px] text-[#161616]/70 max-w-2xl">
+          <p className="mt-4 font-body text-[16px] text-[#0d0d0d]/70 max-w-2xl">
             A gallery in Bigfork and a roofing crew in Kalispell miss calls for completely different reasons. Pick
             yours and we will show you the version that fits.
           </p>
@@ -103,14 +103,14 @@ export default function MontanaPage() {
               <Link
                 key={c.slug}
                 href={`/montana/${c.slug}`}
-                className="flex flex-col rounded-2xl border-2 border-[#161616] bg-[#FBF6EA] p-6 shadow-[5px_5px_0_0_#161616] transition-transform hover:-translate-y-1"
+                className="flex flex-col rounded-2xl border-2 border-[#0d0d0d] bg-[#f1ede4] p-6 shadow-[5px_5px_0_0_#0d0d0d] transition-transform hover:-translate-y-1"
               >
                 <h3 className="font-display text-2xl font-extrabold">{c.name}</h3>
                 <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.2em] text-[#8f6600] font-bold">
                   {c.alsoServes.slice(0, 3).join(' · ')}
                 </p>
                 <p className="mt-3 font-body text-sm text-[#3d382e] leading-relaxed">{c.locale}.</p>
-                <span className="mt-auto pt-5 font-sans font-bold text-sm text-[#B92417]">
+                <span className="mt-auto pt-5 font-sans font-bold text-sm text-[#c8201a]">
                   {c.name} businesses →
                 </span>
               </Link>
@@ -119,7 +119,7 @@ export default function MontanaPage() {
         </div>
       </section>
 
-      <section className="border-b-2 border-[#161616]">
+      <section className="border-b-2 border-[#0d0d0d]">
         <div className="max-w-4xl mx-auto px-6 py-14 md:py-20">
           <p className="font-mono text-[11px] uppercase tracking-[0.3em] font-bold text-[#8f6600]">Straight Answers</p>
           <h2 className="mt-2 font-display text-3xl md:text-4xl font-extrabold leading-[1.05]">
@@ -129,7 +129,7 @@ export default function MontanaPage() {
             {FAQ.map((f) => (
               <details
                 key={f.q}
-                className="group rounded-2xl border-2 border-[#161616] bg-white p-5 shadow-[4px_4px_0_0_#161616]"
+                className="group rounded-2xl border-2 border-[#0d0d0d] bg-white p-5 shadow-[4px_4px_0_0_#0d0d0d]"
               >
                 <summary className="cursor-pointer list-none font-sans font-bold text-[15px] flex items-start justify-between gap-4">
                   {f.q}

@@ -12,7 +12,7 @@ import { STAGES, type RoadmapReport } from '@/lib/roadmap-shape';
  *
  * Brand: pop-art cabin. Cream canvas, ink borders, hard offset sticker shadows,
  * mustard for the one thing the eye must hit. Small red type on cream uses
- * #C4160B (the bright #E0301E fails AA below large sizes).
+ * #C4160B (the bright #ff3b2f fails AA below large sizes).
  */
 
 const RED = '#C4160B';
@@ -60,11 +60,11 @@ function SectionTitle({
   return (
     <div className="mb-6">
       <Eyebrow className="mb-3">{kicker}</Eyebrow>
-      <h2 className="font-display text-3xl md:text-4xl font-black text-[#161616] tracking-tight leading-[1.05]">
+      <h2 className="font-display text-3xl md:text-4xl font-black text-[#0d0d0d] tracking-tight leading-[1.05]">
         {title}
       </h2>
       {lede && (
-        <p className="mt-3 text-[#161616]/70 font-body text-base leading-relaxed max-w-2xl">{lede}</p>
+        <p className="mt-3 text-[#0d0d0d]/70 font-body text-base leading-relaxed max-w-2xl">{lede}</p>
       )}
     </div>
   );
@@ -81,14 +81,14 @@ function StageLadder({ stage }: { stage: string }) {
         return (
           <div key={s} className="flex flex-col items-center gap-2 flex-1 min-w-0">
             <div
-              className={`w-full rounded-t-md border-2 border-[#161616] transition-all ${
-                active ? 'bg-[#F5B700]' : passed ? 'bg-[#161616]' : 'bg-white'
+              className={`w-full rounded-t-md border-2 border-[#0d0d0d] transition-all ${
+                active ? 'bg-[#ffd400]' : passed ? 'bg-[#0d0d0d]' : 'bg-white'
               }`}
               style={{ height: `${16 + i * 11}px` }}
             />
             <span
               className={`text-[8px] sm:text-[9px] uppercase tracking-[0.14em] font-mono font-bold truncate w-full text-center ${
-                active ? 'text-[#161616]' : 'text-[#161616]/45'
+                active ? 'text-[#0d0d0d]' : 'text-[#0d0d0d]/45'
               }`}
             >
               {s}
@@ -104,9 +104,9 @@ function StageLadder({ stage }: { stage: string }) {
 function LeverBar({ score }: { score: number }) {
   const pct = Math.max(0, Math.min(10, score)) * 10;
   return (
-    <div className="h-2.5 rounded-full bg-[#161616]/10 border border-[#161616]/20 overflow-hidden">
+    <div className="h-2.5 rounded-full bg-[#0d0d0d]/10 border border-[#0d0d0d]/20 overflow-hidden">
       <div
-        className={`h-full ${score >= 7 ? 'bg-[#2F7D32]' : score >= 4 ? 'bg-[#F5B700]' : 'bg-[#E0301E]'}`}
+        className={`h-full ${score >= 7 ? 'bg-[#2F7D32]' : score >= 4 ? 'bg-[#ffd400]' : 'bg-[#ff3b2f]'}`}
         style={{ width: `${pct}%` }}
       />
     </div>
@@ -155,19 +155,19 @@ export default function RoadmapDocument({
           <div className="flex flex-col lg:flex-row lg:items-start gap-8 lg:gap-12">
             <div className="flex-1 min-w-0">
               <Eyebrow className="mb-4">The Hundredfold Roadmap</Eyebrow>
-              <h1 className="font-display text-4xl md:text-6xl font-black text-[#161616] tracking-tight leading-[0.98]">
+              <h1 className="font-display text-4xl md:text-6xl font-black text-[#0d0d0d] tracking-tight leading-[0.98]">
                 {report.business_name}
               </h1>
-              <p className="mt-4 text-[#161616]/75 font-body text-lg md:text-xl leading-snug max-w-2xl">
+              <p className="mt-4 text-[#0d0d0d]/75 font-body text-lg md:text-xl leading-snug max-w-2xl">
                 {report.one_liner}
               </p>
-              <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-[10px] uppercase tracking-[0.3em] font-mono text-[#161616]/50">
+              <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-[10px] uppercase tracking-[0.3em] font-mono text-[#0d0d0d]/50">
                 {url ? (
                   <a
                     href={url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="hover:text-[#B92417] transition-colors"
+                    className="hover:text-[#c8201a] transition-colors"
                   >
                     {host}
                   </a>
@@ -181,17 +181,17 @@ export default function RoadmapDocument({
             {/* Score + stage */}
             <div className="lg:w-72 shrink-0">
               <div className="flex items-center gap-5">
-                <div className="w-28 h-28 md:w-32 md:h-32 rounded-full border-[3px] border-[#161616] bg-[#F5B700] shadow-[5px_5px_0_0_#161616] flex flex-col items-center justify-center shrink-0">
-                  <span className="font-display text-4xl md:text-5xl font-black text-[#161616] leading-none">
+                <div className="w-28 h-28 md:w-32 md:h-32 rounded-full border-[3px] border-[#0d0d0d] bg-[#ffd400] shadow-[5px_5px_0_0_#0d0d0d] flex flex-col items-center justify-center shrink-0">
+                  <span className="font-display text-4xl md:text-5xl font-black text-[#0d0d0d] leading-none">
                     {report.scale_score}
                   </span>
-                  <span className="text-[8px] uppercase tracking-[0.3em] text-[#161616]/65 font-mono mt-1">
+                  <span className="text-[8px] uppercase tracking-[0.3em] text-[#0d0d0d]/65 font-mono mt-1">
                     Scale score
                   </span>
                 </div>
                 <div className="min-w-0">
                   <Eyebrow className="mb-1.5">Stage</Eyebrow>
-                  <p className="font-display text-2xl md:text-3xl font-black text-[#161616] tracking-tight">
+                  <p className="font-display text-2xl md:text-3xl font-black text-[#0d0d0d] tracking-tight">
                     {report.stage}
                   </p>
                 </div>
@@ -202,7 +202,7 @@ export default function RoadmapDocument({
             </div>
           </div>
 
-          <p className="mt-9 pt-8 border-t-2 border-[#161616]/12 font-display italic text-2xl md:text-3xl font-black text-[#161616] leading-snug">
+          <p className="mt-9 pt-8 border-t-2 border-[#0d0d0d]/12 font-display italic text-2xl md:text-3xl font-black text-[#0d0d0d] leading-snug">
             &ldquo;{report.headline}&rdquo;
           </p>
         </div>
@@ -228,42 +228,42 @@ export default function RoadmapDocument({
         {/* Print variants throughout: browsers drop background graphics by
             default, so the ink card would print white text on white paper. On
             paper it becomes a bordered white card with ink text. */}
-        <div className="border-2 border-[#161616] rounded-2xl bg-[#161616] shadow-[7px_7px_0_0_#F5B700] overflow-hidden print:bg-white print:shadow-none">
+        <div className="border-2 border-[#0d0d0d] rounded-2xl bg-[#0d0d0d] shadow-[7px_7px_0_0_#ffd400] overflow-hidden print:bg-white print:shadow-none">
           <div className="p-7 md:p-11">
-            <span className="inline-block px-3 py-1 rounded-full border-2 border-[#F5B700] text-[#F5B700] text-[9px] uppercase tracking-[0.3em] font-mono font-bold print:text-[#8f6600] print:border-[#8f6600]">
+            <span className="inline-block px-3 py-1 rounded-full border-2 border-[#ffd400] text-[#ffd400] text-[9px] uppercase tracking-[0.3em] font-mono font-bold print:text-[#8f6600] print:border-[#8f6600]">
               {report.constraint.type}
             </span>
-            <h3 className="mt-5 font-display text-3xl md:text-5xl font-black text-[#FBF6EA] tracking-tight leading-[1.02] print:text-[#161616]">
+            <h3 className="mt-5 font-display text-3xl md:text-5xl font-black text-[#f1ede4] tracking-tight leading-[1.02] print:text-[#0d0d0d]">
               {report.constraint.title}
             </h3>
-            <p className="mt-3 text-[#F5B700] font-mono text-[11px] uppercase tracking-[0.22em] print:text-[#8f6600]">
+            <p className="mt-3 text-[#ffd400] font-mono text-[11px] uppercase tracking-[0.22em] print:text-[#8f6600]">
               {CONSTRAINT_LABELS[report.constraint.type] ?? report.constraint.type}
             </p>
 
             <div className="mt-8 grid md:grid-cols-2 gap-6 md:gap-8">
               <div>
-                <span className="block text-[9px] uppercase tracking-[0.4em] font-mono font-bold text-[#F5B700]/80 mb-2 print:text-[#8f6600]">
+                <span className="block text-[9px] uppercase tracking-[0.4em] font-mono font-bold text-[#ffd400]/80 mb-2 print:text-[#8f6600]">
                   What we see
                 </span>
-                <p className="text-[#FBF6EA]/85 font-body text-sm md:text-base leading-relaxed print:text-[#161616]">
+                <p className="text-[#f1ede4]/85 font-body text-sm md:text-base leading-relaxed print:text-[#0d0d0d]">
                   {report.constraint.evidence}
                 </p>
               </div>
               <div>
-                <span className="block text-[9px] uppercase tracking-[0.4em] font-mono font-bold text-[#F5B700]/80 mb-2 print:text-[#8f6600]">
+                <span className="block text-[9px] uppercase tracking-[0.4em] font-mono font-bold text-[#ffd400]/80 mb-2 print:text-[#8f6600]">
                   What it costs to ignore
                 </span>
-                <p className="text-[#FBF6EA]/85 font-body text-sm md:text-base leading-relaxed print:text-[#161616]">
+                <p className="text-[#f1ede4]/85 font-body text-sm md:text-base leading-relaxed print:text-[#0d0d0d]">
                   {report.constraint.cost_of_ignoring}
                 </p>
               </div>
             </div>
           </div>
-          <div className="bg-[#F5B700] border-t-2 border-[#161616] p-6 md:p-8">
-            <span className="block text-[9px] uppercase tracking-[0.4em] font-mono font-bold text-[#161616]/70 mb-2">
+          <div className="bg-[#ffd400] border-t-2 border-[#0d0d0d] p-6 md:p-8">
+            <span className="block text-[9px] uppercase tracking-[0.4em] font-mono font-bold text-[#0d0d0d]/70 mb-2">
               Your first move
             </span>
-            <p className="font-display text-xl md:text-2xl font-black text-[#161616] leading-snug">
+            <p className="font-display text-xl md:text-2xl font-black text-[#0d0d0d] leading-snug">
               {report.constraint.first_move}
             </p>
           </div>
@@ -281,17 +281,17 @@ export default function RoadmapDocument({
           {report.value_equation.map((lever) => (
             <div key={lever.lever} className="pop-card p-6 md:p-7">
               <div className="flex items-baseline justify-between gap-4 mb-3">
-                <h3 className="font-display text-xl font-black text-[#161616] tracking-tight">
+                <h3 className="font-display text-xl font-black text-[#0d0d0d] tracking-tight">
                   {lever.lever}
                 </h3>
-                <span className="font-display text-2xl font-black text-[#161616] shrink-0">
+                <span className="font-display text-2xl font-black text-[#0d0d0d] shrink-0">
                   {lever.score}
-                  <span className="text-sm text-[#161616]/45"> / 10</span>
+                  <span className="text-sm text-[#0d0d0d]/45"> / 10</span>
                 </span>
               </div>
               <LeverBar score={lever.score} />
               <p className="mt-4 text-[#3a3733] font-body text-sm leading-relaxed">{lever.note}</p>
-              <p className="mt-3 text-[#161616] font-body text-sm leading-relaxed">
+              <p className="mt-3 text-[#0d0d0d] font-body text-sm leading-relaxed">
                 <span className="font-mono font-bold text-[10px] uppercase tracking-[0.25em] mr-2" style={{ color: RED }}>
                   Fix
                 </span>
@@ -312,50 +312,50 @@ export default function RoadmapDocument({
 
         <div className="pop-card-yellow p-7 md:p-10">
           <Eyebrow className="mb-3">Call it this</Eyebrow>
-          <h3 className="font-display text-3xl md:text-4xl font-black text-[#161616] tracking-tight leading-tight">
+          <h3 className="font-display text-3xl md:text-4xl font-black text-[#0d0d0d] tracking-tight leading-tight">
             {report.offer.name}
           </h3>
-          <p className="mt-4 text-[#161616]/85 font-body text-base md:text-lg leading-relaxed max-w-3xl">
+          <p className="mt-4 text-[#0d0d0d]/85 font-body text-base md:text-lg leading-relaxed max-w-3xl">
             {report.offer.promise}
           </p>
-          <div className="mt-7 flex flex-wrap items-end gap-x-8 gap-y-4 pt-6 border-t-2 border-[#161616]/20">
+          <div className="mt-7 flex flex-wrap items-end gap-x-8 gap-y-4 pt-6 border-t-2 border-[#0d0d0d]/20">
             <div>
-              <span className="block text-[9px] uppercase tracking-[0.35em] font-mono font-bold text-[#161616]/60 mb-1">
+              <span className="block text-[9px] uppercase tracking-[0.35em] font-mono font-bold text-[#0d0d0d]/60 mb-1">
                 Price it at
               </span>
-              <p className="font-display text-3xl md:text-4xl font-black text-[#161616]">{report.offer.price}</p>
+              <p className="font-display text-3xl md:text-4xl font-black text-[#0d0d0d]">{report.offer.price}</p>
             </div>
             {total && (
               <div>
-                <span className="block text-[9px] uppercase tracking-[0.35em] font-mono font-bold text-[#161616]/60 mb-1">
+                <span className="block text-[9px] uppercase tracking-[0.35em] font-mono font-bold text-[#0d0d0d]/60 mb-1">
                   Stack value
                 </span>
-                <p className="font-display text-3xl md:text-4xl font-black text-[#161616]/45 line-through decoration-[3px]">
+                <p className="font-display text-3xl md:text-4xl font-black text-[#0d0d0d]/45 line-through decoration-[3px]">
                   {total}
                 </p>
               </div>
             )}
           </div>
-          <p className="mt-5 text-[#161616]/80 font-body text-sm leading-relaxed max-w-3xl">
+          <p className="mt-5 text-[#0d0d0d]/80 font-body text-sm leading-relaxed max-w-3xl">
             {report.offer.price_logic}
           </p>
         </div>
 
         <div className="mt-4 pop-card p-6 md:p-8">
           <Eyebrow className="mb-5">What is in it</Eyebrow>
-          <div className="divide-y divide-[#161616]/10">
+          <div className="divide-y divide-[#0d0d0d]/10">
             {report.offer_stack.map((item, i) => (
               <div key={i} className="py-4 first:pt-0 last:pb-0 flex items-start gap-4 md:gap-6">
-                <span className="font-mono text-[10px] text-[#161616]/35 pt-1.5 w-5 shrink-0">
+                <span className="font-mono text-[10px] text-[#0d0d0d]/35 pt-1.5 w-5 shrink-0">
                   {String(i + 1).padStart(2, '0')}
                 </span>
                 <div className="flex-1 min-w-0">
-                  <h4 className="font-sans font-extrabold text-[#161616] text-base leading-snug">
+                  <h4 className="font-sans font-extrabold text-[#0d0d0d] text-base leading-snug">
                     {item.item}
                   </h4>
                   <p className="mt-1 text-[#3a3733] font-body text-sm leading-relaxed">{item.why}</p>
                 </div>
-                <span className="font-display font-black text-[#161616] text-lg shrink-0 tabular-nums">
+                <span className="font-display font-black text-[#0d0d0d] text-lg shrink-0 tabular-nums">
                   {item.value}
                 </span>
               </div>
@@ -366,20 +366,20 @@ export default function RoadmapDocument({
         <div className="mt-4 grid md:grid-cols-2 gap-4">
           <div className="pop-card p-6 md:p-7">
             <Eyebrow className="mb-3">The guarantee</Eyebrow>
-            <p className="text-[#161616] font-body text-base leading-relaxed">{report.offer.guarantee}</p>
+            <p className="text-[#0d0d0d] font-body text-base leading-relaxed">{report.offer.guarantee}</p>
           </div>
           <div className="pop-card p-6 md:p-7">
             <Eyebrow className="mb-3">Why now, honestly</Eyebrow>
-            <p className="text-[#161616] font-body text-base leading-relaxed">{report.offer.urgency}</p>
+            <p className="text-[#0d0d0d] font-body text-base leading-relaxed">{report.offer.urgency}</p>
           </div>
         </div>
 
         {report.offer_cuts.length > 0 && (
-          <div className="mt-4 pop-card p-6 md:p-8 border-[#E0301E]">
+          <div className="mt-4 pop-card p-6 md:p-8 border-[#ff3b2f]">
             <Eyebrow className="mb-4">Cut these</Eyebrow>
             <ul className="space-y-2.5">
               {report.offer_cuts.map((cut, i) => (
-                <li key={i} className="flex items-start gap-3 text-[#161616] font-body text-sm md:text-base leading-relaxed">
+                <li key={i} className="flex items-start gap-3 text-[#0d0d0d] font-body text-sm md:text-base leading-relaxed">
                   <span className="font-mono font-black shrink-0 mt-0.5" style={{ color: RED }}>
                     &times;
                   </span>
@@ -408,27 +408,27 @@ export default function RoadmapDocument({
           ].map((rung, i) => (
             <div
               key={rung.label}
-              className={`border-2 border-[#161616] rounded-xl p-5 shadow-[4px_4px_0_0_#161616] ${
-                i === 1 ? 'bg-[#F5B700]' : 'bg-white'
+              className={`border-2 border-[#0d0d0d] rounded-xl p-5 shadow-[4px_4px_0_0_#0d0d0d] ${
+                i === 1 ? 'bg-[#ffd400]' : 'bg-white'
               }`}
             >
-              <span className="block text-[9px] uppercase tracking-[0.28em] font-mono font-bold text-[#161616]/60 mb-2.5">
+              <span className="block text-[9px] uppercase tracking-[0.28em] font-mono font-bold text-[#0d0d0d]/60 mb-2.5">
                 {rung.label}
               </span>
-              <p className="text-[#161616] font-body text-sm leading-relaxed">{rung.value}</p>
+              <p className="text-[#0d0d0d] font-body text-sm leading-relaxed">{rung.value}</p>
             </div>
           ))}
         </div>
         <div className="mt-4 grid md:grid-cols-2 gap-4">
           <div className="pop-card p-6 md:p-7">
             <Eyebrow className="mb-3">The cash rule</Eyebrow>
-            <p className="font-display text-lg md:text-xl font-black text-[#161616] leading-snug">
+            <p className="font-display text-lg md:text-xl font-black text-[#0d0d0d] leading-snug">
               {report.money_model.cash_rule}
             </p>
           </div>
           <div className="pop-card p-6 md:p-7">
             <Eyebrow className="mb-3">Lifetime profit to cost of a customer</Eyebrow>
-            <p className="text-[#161616] font-body text-base leading-relaxed">{report.money_model.ltgp_cac}</p>
+            <p className="text-[#0d0d0d] font-body text-base leading-relaxed">{report.money_model.ltgp_cac}</p>
           </div>
         </div>
       </section>
@@ -440,17 +440,17 @@ export default function RoadmapDocument({
           title="Your lead engine"
           lede="Four ways to get customers, and you only need one of them working. Pick the one your situation already favors, run it past the point of boredom, then add the next."
         />
-        <div className="border-2 border-[#161616] rounded-2xl bg-[#161616] shadow-[7px_7px_0_0_#161616] p-7 md:p-10 text-white print:bg-white print:text-[#161616] print:shadow-none">
+        <div className="border-2 border-[#0d0d0d] rounded-2xl bg-[#0d0d0d] shadow-[7px_7px_0_0_#0d0d0d] p-7 md:p-10 text-white print:bg-white print:text-[#0d0d0d] print:shadow-none">
           <span className="block text-[9px] uppercase tracking-[0.4em] font-mono font-bold text-white/70 mb-3 print:text-[#8f6600]">
             Run this one first
           </span>
           <h3 className="font-display text-3xl md:text-5xl font-black tracking-tight leading-none">
             {report.lead_engine.primary_channel}
           </h3>
-          <p className="mt-4 text-white/85 font-body text-base md:text-lg leading-relaxed max-w-3xl print:text-[#161616]">
+          <p className="mt-4 text-white/85 font-body text-base md:text-lg leading-relaxed max-w-3xl print:text-[#0d0d0d]">
             {report.lead_engine.why}
           </p>
-          <div className="mt-8 grid md:grid-cols-2 gap-6 pt-7 border-t border-white/25 print:border-[#161616]/25">
+          <div className="mt-8 grid md:grid-cols-2 gap-6 pt-7 border-t border-white/25 print:border-[#0d0d0d]/25">
             <div>
               <span className="block text-[9px] uppercase tracking-[0.35em] font-mono font-bold text-white/60 mb-2">
                 Your weekly number
@@ -463,7 +463,7 @@ export default function RoadmapDocument({
               <span className="block text-[9px] uppercase tracking-[0.35em] font-mono font-bold text-white/60 mb-2">
                 The thing you give away
               </span>
-              <p className="font-body text-sm md:text-base leading-relaxed text-white/90 print:text-[#161616]">
+              <p className="font-body text-sm md:text-base leading-relaxed text-white/90 print:text-[#0d0d0d]">
                 {report.lead_engine.lead_magnet}
               </p>
             </div>
@@ -474,19 +474,19 @@ export default function RoadmapDocument({
           {report.channel_plays.map((play, i) => (
             <div key={i} className="pop-card p-6 md:p-8">
               <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1 mb-3">
-                <h4 className="font-display text-xl md:text-2xl font-black text-[#161616] tracking-tight">
+                <h4 className="font-display text-xl md:text-2xl font-black text-[#0d0d0d] tracking-tight">
                   {play.channel}
                 </h4>
-                <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#161616]/50">
+                <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#0d0d0d]/50">
                   {play.cadence}
                 </span>
               </div>
               <p className="text-[#3a3733] font-body text-sm md:text-base leading-relaxed">{play.play}</p>
-              <div className="mt-4 border-l-4 border-[#F5B700] bg-[#FFFDF6] rounded-r-lg px-5 py-4">
-                <span className="block text-[9px] uppercase tracking-[0.3em] font-mono font-bold text-[#161616]/50 mb-1.5">
+              <div className="mt-4 border-l-4 border-[#ffd400] bg-[#FFFDF6] rounded-r-lg px-5 py-4">
+                <span className="block text-[9px] uppercase tracking-[0.3em] font-mono font-bold text-[#0d0d0d]/50 mb-1.5">
                   Say this
                 </span>
-                <p className="font-body text-[#161616] text-sm md:text-base italic leading-relaxed">
+                <p className="font-body text-[#0d0d0d] text-sm md:text-base italic leading-relaxed">
                   &ldquo;{play.hook}&rdquo;
                 </p>
               </div>
@@ -508,17 +508,17 @@ export default function RoadmapDocument({
               <div className="pop-card overflow-hidden">
                 <div className="flex flex-col md:flex-row">
                   {/* The rail */}
-                  <div className="md:w-52 shrink-0 bg-[#161616] p-6 md:p-7 flex md:flex-col items-center md:items-start gap-4 md:gap-3 print:bg-white print:border-b-2 print:border-[#161616]">
-                    <span className="font-display text-5xl md:text-6xl font-black text-[#F5B700] leading-none print:text-[#8f6600]">
+                  <div className="md:w-52 shrink-0 bg-[#0d0d0d] p-6 md:p-7 flex md:flex-col items-center md:items-start gap-4 md:gap-3 print:bg-white print:border-b-2 print:border-[#0d0d0d]">
+                    <span className="font-display text-5xl md:text-6xl font-black text-[#ffd400] leading-none print:text-[#8f6600]">
                       {String(i + 1).padStart(2, '0')}
                     </span>
-                    <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#FBF6EA]/70 print:text-[#161616]">
+                    <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#f1ede4]/70 print:text-[#0d0d0d]">
                       {phase.window}
                     </span>
                   </div>
 
                   <div className="flex-1 p-6 md:p-8 min-w-0">
-                    <h3 className="font-display text-2xl md:text-3xl font-black text-[#161616] tracking-tight leading-tight">
+                    <h3 className="font-display text-2xl md:text-3xl font-black text-[#0d0d0d] tracking-tight leading-tight">
                       {phase.title}
                     </h3>
                     <p className="mt-2 text-[#3a3733] font-body text-base leading-relaxed">{phase.goal}</p>
@@ -526,20 +526,20 @@ export default function RoadmapDocument({
                     <ul className="mt-5 space-y-2.5">
                       {phase.moves.map((move, j) => (
                         <li key={j} className="flex items-start gap-3">
-                          <span className="mt-[7px] w-2 h-2 rounded-full bg-[#F5B700] border border-[#161616] shrink-0" />
-                          <span className="text-[#161616] font-body text-sm md:text-base leading-relaxed">
+                          <span className="mt-[7px] w-2 h-2 rounded-full bg-[#ffd400] border border-[#0d0d0d] shrink-0" />
+                          <span className="text-[#0d0d0d] font-body text-sm md:text-base leading-relaxed">
                             {move}
                           </span>
                         </li>
                       ))}
                     </ul>
 
-                    <div className="mt-6 pt-5 border-t-2 border-[#161616]/12 grid sm:grid-cols-2 gap-5">
+                    <div className="mt-6 pt-5 border-t-2 border-[#0d0d0d]/12 grid sm:grid-cols-2 gap-5">
                       <div>
-                        <span className="block text-[9px] uppercase tracking-[0.35em] font-mono font-bold text-[#161616]/45 mb-1.5">
+                        <span className="block text-[9px] uppercase tracking-[0.35em] font-mono font-bold text-[#0d0d0d]/45 mb-1.5">
                           Watch this
                         </span>
-                        <p className="text-[#161616] font-body text-sm leading-relaxed">{phase.metric}</p>
+                        <p className="text-[#0d0d0d] font-body text-sm leading-relaxed">{phase.metric}</p>
                       </div>
                       <div>
                         <span
@@ -548,7 +548,7 @@ export default function RoadmapDocument({
                         >
                           Gate to the next window
                         </span>
-                        <p className="text-[#161616] font-body font-semibold text-sm leading-relaxed">
+                        <p className="text-[#0d0d0d] font-body font-semibold text-sm leading-relaxed">
                           {phase.gate}
                         </p>
                       </div>
@@ -572,7 +572,7 @@ export default function RoadmapDocument({
           <div className="overflow-x-auto">
             <table className="w-full min-w-[640px] text-left">
               <thead>
-                <tr className="bg-[#161616] text-[#FBF6EA] print:bg-white print:text-[#161616] print:border-b-2 print:border-[#161616]">
+                <tr className="bg-[#0d0d0d] text-[#f1ede4] print:bg-white print:text-[#0d0d0d] print:border-b-2 print:border-[#0d0d0d]">
                   <th className="px-5 py-3.5 text-[9px] uppercase tracking-[0.3em] font-mono font-bold">Metric</th>
                   <th className="px-5 py-3.5 text-[9px] uppercase tracking-[0.3em] font-mono font-bold">Why it matters</th>
                   <th className="px-5 py-3.5 text-[9px] uppercase tracking-[0.3em] font-mono font-bold whitespace-nowrap">Today</th>
@@ -581,11 +581,11 @@ export default function RoadmapDocument({
               </thead>
               <tbody>
                 {report.scoreboard.map((row, i) => (
-                  <tr key={i} className="border-t border-[#161616]/10 align-top">
-                    <td className="px-5 py-4 font-sans font-extrabold text-[#161616] text-sm">{row.metric}</td>
+                  <tr key={i} className="border-t border-[#0d0d0d]/10 align-top">
+                    <td className="px-5 py-4 font-sans font-extrabold text-[#0d0d0d] text-sm">{row.metric}</td>
                     <td className="px-5 py-4 text-[#3a3733] font-body text-sm leading-relaxed">{row.why}</td>
-                    <td className="px-5 py-4 text-[#161616]/60 font-mono text-xs whitespace-nowrap">{row.current}</td>
-                    <td className="px-5 py-4 font-mono text-xs font-bold text-[#161616] whitespace-nowrap bg-[#F5B700]/20">
+                    <td className="px-5 py-4 text-[#0d0d0d]/60 font-mono text-xs whitespace-nowrap">{row.current}</td>
+                    <td className="px-5 py-4 font-mono text-xs font-bold text-[#0d0d0d] whitespace-nowrap bg-[#ffd400]/20">
                       {row.target}
                     </td>
                   </tr>
@@ -608,7 +608,7 @@ export default function RoadmapDocument({
             const href = DEPARTMENTS[item.department];
             return (
               <div key={i} className="pop-card p-6 md:p-7 flex flex-col">
-                <h3 className="font-display text-xl md:text-2xl font-black text-[#161616] tracking-tight leading-snug">
+                <h3 className="font-display text-xl md:text-2xl font-black text-[#0d0d0d] tracking-tight leading-snug">
                   {item.title}
                 </h3>
                 <p className="mt-3 text-[#3a3733] font-body text-sm md:text-base leading-relaxed flex-1">
@@ -617,12 +617,12 @@ export default function RoadmapDocument({
                 {href ? (
                   <Link
                     href={href}
-                    className="mt-5 inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.25em] font-mono font-bold text-[#B92417] hover:text-[#161616] transition-colors"
+                    className="mt-5 inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.25em] font-mono font-bold text-[#c8201a] hover:text-[#0d0d0d] transition-colors"
                   >
                     {item.department} &rarr;
                   </Link>
                 ) : (
-                  <span className="mt-5 text-[10px] uppercase tracking-[0.25em] font-mono font-bold text-[#161616]/45">
+                  <span className="mt-5 text-[10px] uppercase tracking-[0.25em] font-mono font-bold text-[#0d0d0d]/45">
                     {item.department}
                   </span>
                 )}
@@ -640,11 +640,11 @@ export default function RoadmapDocument({
             <div key={i} className="pop-card p-6 md:p-7">
               <span
                 className="font-display text-5xl font-black leading-none block mb-4"
-                style={{ color: '#F5B700', WebkitTextStroke: '1.5px #161616' }}
+                style={{ color: '#ffd400', WebkitTextStroke: '1.5px #0d0d0d' }}
               >
                 {i + 1}
               </span>
-              <p className="text-[#161616] font-body text-base leading-relaxed">{move}</p>
+              <p className="text-[#0d0d0d] font-body text-base leading-relaxed">{move}</p>
             </div>
           ))}
         </div>
@@ -653,7 +653,7 @@ export default function RoadmapDocument({
           {report.angles.map((angle, i) => (
             <div key={i} className="pop-card-cream p-6 md:p-8">
               <Eyebrow className="mb-3">{i === 0 ? 'The opportunity' : 'The risk'}</Eyebrow>
-              <h3 className="font-display text-xl md:text-2xl font-black text-[#161616] tracking-tight mb-3 leading-snug">
+              <h3 className="font-display text-xl md:text-2xl font-black text-[#0d0d0d] tracking-tight mb-3 leading-snug">
                 {angle.title}
               </h3>
               <p className="text-[#3a3733] font-body text-sm md:text-base leading-relaxed">{angle.argument}</p>

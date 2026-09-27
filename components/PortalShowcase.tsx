@@ -47,12 +47,12 @@ export default function PortalShowcase() {
   return (
     <section className="max-w-6xl mx-auto px-6 md:px-8 py-20">
       <div className="text-center max-w-3xl mx-auto mb-12">
-        <span className="text-[10px] uppercase tracking-[0.4em] text-[#E0301E] font-mono font-bold mb-5 block">
+        <span className="text-[10px] uppercase tracking-[0.4em] text-[#d0241b] font-mono font-bold mb-5 block">
           What you actually get
         </span>
-        <h2 className="font-display text-3xl md:text-4xl font-black text-[#161616] tracking-tight mb-4">
+        <h2 className="font-display text-3xl md:text-4xl font-black text-[#0d0d0d] tracking-tight mb-4">
           Every client gets a{' '}
-          <span className="text-[#F5B700]" style={{ WebkitTextStroke: '1.5px #161616' }}>
+          <span className="text-[#ffd400]" style={{ WebkitTextStroke: '1.5px #0d0d0d' }}>
             portal
           </span>
           , not a folder of files
@@ -64,11 +64,11 @@ export default function PortalShowcase() {
 
       {/* Browser-chrome frame */}
       <div ref={wrapRef} className="pop-card overflow-hidden p-0">
-        <div className="flex items-center gap-2 px-4 py-3 border-b-2 border-[#161616] bg-[#FFFDF6]">
-          <span className="w-3 h-3 rounded-full bg-[#E0301E] border border-[#161616]" aria-hidden />
-          <span className="w-3 h-3 rounded-full bg-[#F5B700] border border-[#161616]" aria-hidden />
-          <span className="w-3 h-3 rounded-full bg-[#161616] border border-[#161616]" aria-hidden />
-          <span className="ml-3 inline-flex items-center px-3 py-1 rounded-full bg-white border-2 border-[#161616] text-[10px] md:text-[11px] font-mono text-[#161616]/70 tracking-tight">
+        <div className="flex items-center gap-2 px-4 py-3 border-b-2 border-[#0d0d0d] bg-[#FFFDF6]">
+          <span className="w-3 h-3 rounded-full bg-[#ff3b2f] border border-[#0d0d0d]" aria-hidden />
+          <span className="w-3 h-3 rounded-full bg-[#ffd400] border border-[#0d0d0d]" aria-hidden />
+          <span className="w-3 h-3 rounded-full bg-[#0d0d0d] border border-[#0d0d0d]" aria-hidden />
+          <span className="ml-3 inline-flex items-center px-3 py-1 rounded-full bg-white border-2 border-[#0d0d0d] text-[10px] md:text-[11px] font-mono text-[#0d0d0d]/70 tracking-tight">
             modernmustardseed.com/portal
           </span>
         </div>
@@ -92,7 +92,7 @@ export default function PortalShowcase() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8">
         {FEATURES.map((f) => (
           <div key={f.label} className="pop-card p-5">
-            <h3 className="font-display text-base font-black text-[#161616] tracking-tight mb-1.5">{f.label}</h3>
+            <h3 className="font-display text-base font-black text-[#0d0d0d] tracking-tight mb-1.5">{f.label}</h3>
             <p className="text-[#3a3733] text-sm font-body leading-6">{f.detail}</p>
           </div>
         ))}

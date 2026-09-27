@@ -5,13 +5,13 @@
    appointment card's sticky column keeps working. */
 
 .page {
-  --ink: #161616;
-  --ink2: #080c16;
-  --cream: #fbf6ea;
-  --mustard: #f5b700;
-  --red: #e0301e;
-  --brick: #b92417;
-  --butter: #f7dc8a;
+  --ink: #0d0d0d;
+  --ink2: #0d0d0d;
+  --cream: #f1ede4;
+  --mustard: #ffd400;
+  --red: #ff3b2f;
+  --brick: #c8201a;
+  --butter: #ffe98a;
   background: var(--cream);
   color: var(--ink);
   overflow-x: clip;
@@ -100,7 +100,7 @@
   display: block;
   width: 100%;
   height: auto;
-  filter: drop-shadow(6px 7px 0 #16161626);
+  filter: drop-shadow(6px 7px 0 #0d0d0d26);
 }
 
 /* ───── hero ───── */
@@ -191,7 +191,7 @@
   aspect-ratio: 1;
   translate: -50% -50%;
   border-radius: 50%;
-  background: radial-gradient(circle, #f5b70078 0, #f5b70030 34%, #f5b70000 64%);
+  background: radial-gradient(circle, #ffd40078 0, #ffd40030 34%, #ffd40000 64%);
   pointer-events: none;
 }
 .rays {
@@ -203,7 +203,7 @@
   aspect-ratio: 1;
   translate: -50% -50%;
   border-radius: 50%;
-  background: repeating-conic-gradient(from 0deg, #f5b70045 0 4deg, #f5b70000 4deg 12deg);
+  background: repeating-conic-gradient(from 0deg, #ffd40045 0 4deg, #ffd40000 4deg 12deg);
   -webkit-mask-image: radial-gradient(circle, #000 0, #000 18%, transparent 60%);
   mask-image: radial-gradient(circle, #000 0, #000 18%, transparent 60%);
   animation: spin 160s linear infinite;
@@ -238,8 +238,8 @@
   z-index: 2;
   width: 112px;
   height: 30px;
-  background: #f7dc8ad0;
-  border: 1.5px solid #16161630;
+  background: #ffe98ad0;
+  border: 1.5px solid #0d0d0d30;
   pointer-events: none;
 }
 .tapeL { top: -17px; left: 22px; rotate: -9deg; }
@@ -360,7 +360,7 @@
   position: absolute;
   z-index: -1;
   inset: 0;
-  background-image: radial-gradient(#b9241730 1.6px, transparent 1.8px);
+  background-image: radial-gradient(#c8201a30 1.6px, transparent 1.8px);
   background-size: 16px 16px;
   -webkit-mask-image: linear-gradient(180deg, #000 0, transparent 30%, transparent 70%, #000 100%);
   mask-image: linear-gradient(180deg, #000 0, transparent 30%, transparent 70%, #000 100%);
@@ -414,7 +414,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(#16161655 1px, transparent 1.4px);
+  background-image: radial-gradient(#0d0d0d55 1px, transparent 1.4px);
   background-size: 6px 6px;
   -webkit-mask-image: linear-gradient(0deg, #000, transparent 50%);
   mask-image: linear-gradient(0deg, #000, transparent 50%);
@@ -481,7 +481,7 @@
 .promiseDots {
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(#f5b70030 2px, transparent 2.2px);
+  background-image: radial-gradient(#ffd40030 2px, transparent 2.2px);
   background-size: 22px 22px;
   -webkit-mask-image: linear-gradient(270deg, #000, transparent 60%);
   mask-image: linear-gradient(270deg, #000, transparent 60%);
@@ -499,7 +499,7 @@
   text-transform: uppercase;
   color: var(--mustard);
 }
-.promiseText { position: relative; margin-top: 10px; max-width: 46rem; font-size: 18px; line-height: 1.6; color: #fbf6eae6; }
+.promiseText { position: relative; margin-top: 10px; max-width: 46rem; font-size: 18px; line-height: 1.6; color: #f1ede4e6; }
 .swear {
   position: absolute;
   z-index: 3;
@@ -556,7 +556,7 @@
   aspect-ratio: 1;
   translate: -50% -50%;
   border-radius: 50%;
-  background: repeating-conic-gradient(from 0deg, #fbf6ea66 0 5deg, #fbf6ea00 5deg 15deg);
+  background: repeating-conic-gradient(from 0deg, #f1ede466 0 5deg, #f1ede400 5deg 15deg);
   -webkit-mask-image: radial-gradient(circle, #000 0, #000 12%, transparent 55%);
   mask-image: radial-gradient(circle, #000 0, #000 12%, transparent 55%);
   animation: spin 220s linear infinite reverse;
@@ -575,7 +575,7 @@
 }
 .ticketInner { position: relative; max-width: 1152px; margin: 0 auto; }
 .ticketHead { position: relative; max-width: 42rem; margin-bottom: 120px; }
-.ticketSub { margin-top: 16px; font-size: 17px; line-height: 1.6; color: #161616e0; font-weight: 500; }
+.ticketSub { margin-top: 16px; font-size: 17px; line-height: 1.6; color: #0d0d0de0; font-weight: 500; }
 .bookWrap { position: relative; z-index: 1; }
 .peek {
   position: absolute;
@@ -611,7 +611,7 @@
   position: absolute;
   z-index: -1;
   inset: 0;
-  background-image: radial-gradient(#f5b7005c 1.6px, transparent 1.8px);
+  background-image: radial-gradient(#ffd4005c 1.6px, transparent 1.8px);
   background-size: 18px 18px;
   pointer-events: none;
 }
@@ -752,4 +752,247 @@
   .panel:hover .num { rotate: -10deg; }
   .cta:hover, .ctaAlt:hover, .q:hover { transform: none; translate: none; }
   .promise:hover .promiseMascot > picture { transform: none; }
+}
+
+/* ───── Graffiti Couture (2026-09-26) ─────
+   The same page, painted on the wall: display type in Anton, accents in
+   Permanent Marker, the art wheat-pasted with tape, spray-painted banners
+   with drips, sticker-cut buttons. Rules here override the ones above. */
+
+.page {
+  --concrete: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .08 0 0 0 0 .07 0 0 0 0 .06 0 0 0 .55 -.16'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  --drip: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 40' preserveAspectRatio='none'%3E%3Cpath d='M0 0H300V8C290 8 287 12 286 20 285 28 282 31 279 31 276 31 274 28 273 20 272 12 268 8 260 8H196C190 8 187 13 186 24 185 35 182 40 178 40 174 40 171 35 170 24 169 13 166 8 160 8H92C86 8 84 11 83 16 82 21 80 23 77 23 74 23 72 21 71 16 70 11 67 8 61 8H24C18 8 16 11 15 15 14 19 12 21 10 21 8 21 6 19 5 15 4 11 2 8 0 8Z'/%3E%3C/svg%3E");
+}
+
+/* Kickers: spray tags on yellow tape. */
+.caption {
+  position: relative;
+  background: var(--mustard);
+  border: 0;
+  box-shadow: 4px 4px 0 var(--ink);
+  font-family: var(--font-anton), Impact, sans-serif;
+  font-weight: 400;
+  font-size: 15px;
+  letter-spacing: .09em;
+  color: var(--ink);
+  transform: rotate(-2deg);
+}
+.caption::after {
+  content: '';
+  position: absolute;
+  left: 18px;
+  top: 100%;
+  width: 5px;
+  height: 12px;
+  border-radius: 0 0 5px 5px;
+  background: var(--mustard);
+  box-shadow: 34px -5px 0 -1px var(--mustard);
+}
+.ticket .caption { background: var(--ink); color: var(--mustard); box-shadow: 4px 4px 0 var(--red); }
+.ticket .caption::after { background: var(--ink); box-shadow: 34px -5px 0 -1px var(--ink); }
+
+/* Accent words: marker comes from app/graffiti-type.css; the old highlighter stripe goes. */
+.hl { white-space: normal; }
+.hl::after { display: none; }
+
+/* Speech tags, in marker. */
+.bubble {
+  background: var(--cream);
+  border-radius: 16px;
+  box-shadow: 4px 4px 0 var(--red);
+  font-family: var(--font-marker), cursive;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+}
+.bubble::after { background: var(--cream); }
+
+/* Hero: a concrete wall with a soft spray bloom and flicked paint. */
+.hero { background-color: #ebe6da; background-image: var(--concrete); }
+.heroDots {
+  opacity: 1;
+  background-image:
+    radial-gradient(circle at 8% 22%, var(--red) 0 5px, transparent 6px),
+    radial-gradient(circle at 11% 30%, var(--red) 0 2px, transparent 3px),
+    radial-gradient(circle at 92% 86%, var(--ink) 0 4px, transparent 5px),
+    radial-gradient(circle at 88% 80%, var(--mustard) 0 8px, transparent 9px),
+    radial-gradient(circle at 46% 92%, var(--red) 0 3px, transparent 4px);
+  background-size: auto;
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+.h1 { font-family: var(--font-anton), Impact, sans-serif; font-weight: 400; letter-spacing: .01em; line-height: .92; text-transform: uppercase; }
+.rays { display: none; }
+.glow { background: radial-gradient(circle, #ffd40066 0, #ffd40022 34%, #ffd40000 60%); }
+.cta, .ctaAlt { border-radius: 2px; }
+.cta { background: var(--ink); box-shadow: 6px 6px 0 var(--mustard); }
+.cta:hover { box-shadow: 9px 9px 0 var(--red); }
+.ctaAlt { background: var(--cream); box-shadow: 6px 6px 0 var(--red); }
+.note { color: #4f4a42; }
+
+/* The art, wheat-pasted: paper, tape, a hard ink shadow. */
+.frame {
+  background: #fbf9f3;
+  border: 0;
+  padding: 10px 10px 4px;
+  rotate: -1.8deg;
+  box-shadow: none;
+  filter: drop-shadow(12px 12px 0 var(--ink));
+}
+.frameImg { border: 0; }
+.frameCap {
+  font-family: var(--font-marker), cursive;
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: .01em;
+  text-transform: none;
+  color: var(--ink);
+}
+.tape { background: #ffd400d9; border: 0; clip-path: polygon(3% 12%, 10% 0, 22% 10%, 36% 2%, 50% 9%, 64% 0, 78% 8%, 91% 1%, 100% 14%, 97% 88%, 88% 100%, 74% 91%, 60% 100%, 46% 92%, 31% 100%, 18% 90%, 6% 99%, 0 86%); }
+.tapeR { bottom: auto; top: -14px; right: 20px; rotate: 8deg; }
+.sticker { width: 170px; aspect-ratio: 5 / 4; top: -34px; right: -16px; rotate: 10deg; }
+.sticker svg { filter: drop-shadow(4px 4px 0 var(--ink)); }
+.stickerText {
+  padding-top: 24%;
+  font-family: var(--font-marker), cursive;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 22px;
+  line-height: 1;
+  color: var(--mustard);
+  text-shadow: 2px 2px 0 var(--ink);
+  rotate: -6deg;
+}
+.heroBubble { left: -10px; bottom: 18px; rotate: -4deg; animation: fade .5s 1.4s both; }
+
+/* Spray-painted banners, with paint running off them. */
+.marquee {
+  background: var(--mustard);
+  color: var(--ink);
+  rotate: -1deg;
+  margin-inline: -20px;
+}
+.marquee::after, .tapeBand::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  height: 26px;
+  background: var(--mustard);
+  -webkit-mask: var(--drip) 0 0 / 300px 100% repeat-x;
+  mask: var(--drip) 0 0 / 300px 100% repeat-x;
+  pointer-events: none;
+}
+.marquee, .tapeBand { overflow: clip; overflow-clip-margin: 30px; }
+.mItem { font-family: var(--font-anton), Impact, sans-serif; font-weight: 400; font-size: 19px; letter-spacing: .06em; padding-block: 13px 12px; }
+.mItem i { font-size: 15px; color: var(--red); }
+.mItem:nth-child(3n + 2) i { color: var(--ink); }
+.tapeBand { background: var(--red); color: var(--cream); box-shadow: none; }
+.tapeBand::after { background: var(--red); }
+.tapeBand .mItem { font-size: 20px; }
+.tapeBand .mItem i { color: var(--mustard); }
+
+/* What happens: three posters pasted on a butter wall. */
+.steps { background-color: var(--butter); background-image: var(--concrete); }
+.stepsDots {
+  background-image:
+    radial-gradient(circle at 6% 12%, var(--red) 0 6px, transparent 7px),
+    radial-gradient(circle at 9% 18%, var(--red) 0 2px, transparent 3px),
+    radial-gradient(circle at 94% 8%, var(--ink) 0 4px, transparent 5px),
+    radial-gradient(circle at 96% 90%, var(--red) 0 5px, transparent 6px);
+  background-size: auto;
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+.h2 { font-family: var(--font-anton), Impact, sans-serif; font-weight: 400; letter-spacing: .01em; line-height: .96; text-transform: uppercase; }
+.panel { background: #fbf9f3; border: 0; box-shadow: none; filter: drop-shadow(8px 8px 0 var(--ink)); }
+.panel:hover { box-shadow: none; filter: drop-shadow(12px 12px 0 var(--ink)); }
+.panelArt { border: 0; }
+.panelArt::after { display: none; }
+.narr {
+  border: 0;
+  font-family: var(--font-anton), Impact, sans-serif;
+  font-weight: 400;
+  font-size: 13px;
+  letter-spacing: .08em;
+  left: 0;
+  bottom: 0;
+  padding: 6px 11px 5px;
+}
+.num svg { filter: drop-shadow(3px 3px 0 var(--ink)); }
+.num span { font-family: var(--font-anton), Impact, sans-serif; font-weight: 400; font-size: 24px; padding-top: 6px; }
+.panelTitle { font-family: var(--font-anton), Impact, sans-serif; font-weight: 400; font-size: 1.65rem; line-height: 1; letter-spacing: .01em; text-transform: uppercase; }
+.promise { background: var(--ink); box-shadow: 12px 12px 0 var(--mustard); border: 0; }
+.promiseDots {
+  background-image:
+    radial-gradient(circle at 88% 20%, var(--mustard) 0 7px, transparent 8px),
+    radial-gradient(circle at 92% 30%, var(--mustard) 0 3px, transparent 4px),
+    radial-gradient(circle at 96% 70%, var(--red) 0 5px, transparent 6px);
+  background-size: auto;
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+.promiseLabel { font-family: var(--font-anton), Impact, sans-serif; font-weight: 400; font-size: 15px; letter-spacing: .1em; }
+.swear {
+  background: var(--red);
+  color: var(--cream);
+  border: 0;
+  font-family: var(--font-marker), cursive;
+  font-size: 17px;
+  font-weight: 400;
+  letter-spacing: .01em;
+  text-transform: none;
+  padding: 6px 14px 7px;
+}
+
+/* The butter wall drips down onto the yellow one. */
+.zig { height: 30px; margin: 0 0 -30px; }
+.zig::before { display: none; }
+.zig::after {
+  top: 0;
+  height: 30px;
+  background: var(--butter);
+  -webkit-mask: var(--drip) 0 0 / 300px 100% repeat-x;
+  mask: var(--drip) 0 0 / 300px 100% repeat-x;
+}
+
+/* The appointment card, on a spray-yellow wall. */
+.ticket { background-color: var(--mustard); background-image: var(--concrete); }
+.ticketRays { display: none; }
+.ticketDots {
+  opacity: 1;
+  background-image:
+    radial-gradient(circle at 4% 30%, var(--ink) 0 5px, transparent 6px),
+    radial-gradient(circle at 7% 36%, var(--ink) 0 2px, transparent 3px),
+    radial-gradient(circle at 95% 14%, var(--red) 0 7px, transparent 8px),
+    radial-gradient(circle at 92% 20%, var(--red) 0 3px, transparent 4px);
+  background-size: auto;
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+.hlCream::after { display: none; }
+
+/* FAQ: stickers on the wall. */
+.faq { background-color: #ebe6da; background-image: var(--concrete); }
+.faqDots { display: none; }
+.faqBurst { animation: none; filter: blur(4px); opacity: .8; }
+.q { background: #fbf9f3; border: 2.5px solid var(--ink); border-radius: 3px; box-shadow: 5px 5px 0 var(--ink); }
+.q::after { display: none; }
+.q[open] { box-shadow: 8px 8px 0 var(--mustard), 8px 8px 0 2.5px var(--ink); }
+.q summary { border-radius: 0; font-family: var(--font-body), sans-serif; font-weight: 800; font-size: 1.12rem; letter-spacing: -.005em; }
+.toggle { border-radius: 2px; box-shadow: 2px 2px 0 var(--ink); }
+.faqBubble { font-family: var(--font-marker), cursive; }
+
+@media (max-width: 760px) {
+  .frame { padding: 7px 7px 2px; filter: drop-shadow(8px 8px 0 var(--ink)); box-shadow: none; }
+  .frameCap { font-size: 15px; letter-spacing: .01em; }
+  .sticker { width: 118px; top: -28px; right: -4px; }
+  .stickerText { font-size: 16px; }
+  .heroBubble { left: 0; bottom: 8px; font-size: 14px; }
+  .h1 { font-size: clamp(2.9rem, 13vw, 3.9rem); }
+  .marquee { margin-inline: -10px; }
+  .mItem { font-size: 16px; }
+  .tapeBand .mItem { font-size: 16px; }
+  .caption { font-size: 13px; }
 }

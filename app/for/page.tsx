@@ -37,7 +37,7 @@ const collectionJsonLd = {
   ],
 };
 
-const IND_ALT = 'Pop-art screenprint: a mountain-town main street of storefronts, a diner, a bakery, a hardware store and a salon, with a contractor pickup out front';
+const IND_ALT = 'Graffiti couture painting: Mr. Mustard waves from a mustard-yellow classic convertible cruising down a mountain-town main street of shops, under a railroad trestle painted in bright graffiti';
 
 export default function ForIndex() {
   return (
@@ -51,7 +51,7 @@ export default function ForIndex() {
           ]),
         ]}
       />
-      <div className="relative min-h-screen bg-[#FBF6EA] text-[#161616] overflow-x-clip">
+      <div className="relative min-h-screen bg-[#f1ede4] text-[#0d0d0d] overflow-x-clip">
         <PopPageHero
           eyebrow={<span>Industries</span>}
           title={<>Built for the work you{' '}<em>actually do</em></>}
@@ -71,18 +71,18 @@ export default function ForIndex() {
               <Link
                 key={i.slug}
                 href={`/for/${i.slug}`}
-                className="pop-card p-8 md:p-10 hover:-translate-y-1 hover:shadow-[7px_7px_0_0_#161616] transition-all duration-300 group"
+                className="pop-card p-8 md:p-10 hover:-translate-y-1 hover:shadow-[7px_7px_0_0_#0d0d0d] transition-all duration-300 group"
               >
-                <span className="text-[10px] uppercase tracking-[0.35em] text-[#B92417] font-mono font-bold mb-4 block">
+                <span className="text-[10px] uppercase tracking-[0.35em] text-[#c8201a] font-mono font-bold mb-4 block">
                   {i.eyebrow}
                 </span>
-                <h2 className="font-display text-xl md:text-2xl font-black text-[#161616] tracking-tight mb-4">
+                <h2 className="font-display text-xl md:text-2xl font-black text-[#0d0d0d] tracking-tight mb-4">
                   {i.name}
                 </h2>
                 <p className="text-[#3a3733] text-sm md:text-base font-body leading-7 mb-5">
                   {i.lede.split('. ').slice(0, 2).join('. ')}.
                 </p>
-                <span className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.25em] font-mono font-bold text-[#B92417] group-hover:text-[#E0301E] transition-colors">
+                <span className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.25em] font-mono font-bold text-[#c8201a] group-hover:text-[#d0241b] transition-colors">
                   Read the playbook
                   <span aria-hidden="true">→</span>
                 </span>
@@ -91,18 +91,18 @@ export default function ForIndex() {
 
             <Link
               href="/for/restaurants"
-              className="pop-card p-8 md:p-10 hover:-translate-y-1 hover:shadow-[7px_7px_0_0_#161616] transition-all duration-300 group"
+              className="pop-card p-8 md:p-10 hover:-translate-y-1 hover:shadow-[7px_7px_0_0_#0d0d0d] transition-all duration-300 group"
             >
-              <span className="text-[10px] uppercase tracking-[0.35em] text-[#B92417] font-mono font-bold mb-4 block">
+              <span className="text-[10px] uppercase tracking-[0.35em] text-[#c8201a] font-mono font-bold mb-4 block">
                 Agentic Systems for Restaurants
               </span>
-              <h2 className="font-display text-xl md:text-2xl font-black text-[#161616] tracking-tight mb-4">
+              <h2 className="font-display text-xl md:text-2xl font-black text-[#0d0d0d] tracking-tight mb-4">
                 Restaurants
               </h2>
               <p className="text-[#3a3733] text-sm md:text-base font-body leading-7 mb-5">
                 A voice agent that takes phone orders, books tables, and saves the dinner rush from voicemail. Fires orders to Toast, Square, or Clover, plus a commission-free ordering page.
               </p>
-              <span className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.25em] font-mono font-bold text-[#B92417] group-hover:text-[#E0301E] transition-colors">
+              <span className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.25em] font-mono font-bold text-[#c8201a] group-hover:text-[#d0241b] transition-colors">
                 Read the playbook
                 <span aria-hidden="true">→</span>
               </span>
@@ -112,7 +112,7 @@ export default function ForIndex() {
           <div className="text-center">
             <Link
               href="/audit"
-              className="inline-block px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all text-center text-[#161616] bg-[#F5B700]"
+              className="inline-block px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold rounded-full border-2 border-[#0d0d0d] shadow-[4px_4px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-all text-center text-[#0d0d0d] bg-[#ffd400]"
             >
               Not sure which fits? Run the Bottleneck Breaker.
             </Link>
