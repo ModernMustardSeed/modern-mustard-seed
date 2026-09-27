@@ -48,6 +48,7 @@ const STATIC_PATHS = [
   '/future-proof',
   '/for',
   '/for/restaurants',
+  '/for/contractors',
   '/montana',
   '/nationwide',
   '/marketing',
