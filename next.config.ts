@@ -224,6 +224,10 @@ const config: NextConfig = {
       // Sarah's own page: a self-contained, illustrated flip-book resume that
       // lives as one static HTML file in public/sarahscarano/. The rewrite lets
       // the clean URL serve it; the file is CDN-served, never traced.
+      // The wedding demo (Mara and Jonah) is one static page with its images
+      // beside it in public/demos/wedding/. Its image paths are absolute, so
+      // the page renders the same at the clean URL.
+      { source: '/demos/wedding', destination: '/demos/wedding/index.html' },
     ];
   },
   async redirects() {
