@@ -89,7 +89,6 @@ export const industries: Industry[] = [
       },
       {
         title: 'Agentic Virtual Staging',
-        caseStudySlug: 'luxe-design',
         body:
           'Empty room photos in, fully designed staging out in under a minute. Eight design styles, eight room types, instant download. Replaces a $3,000 traditional staging order with a sub-$100 subscription. Built for flippers who shoot listings on weekends and need to push to MLS by Monday.',
       },
@@ -181,7 +180,6 @@ export const industries: Industry[] = [
     builds: [
       {
         title: 'Agentic Virtual Staging',
-        caseStudySlug: 'luxe-design',
         body:
           'Empty listing photos in, fully designed staging in under a minute. Eight design styles, eight room types. Replaces a $3,000 traditional staging order with a $99 subscription. Agents use it on listings the seller will not pay to stage and on rentals where staging cost would never be recovered.',
       },
