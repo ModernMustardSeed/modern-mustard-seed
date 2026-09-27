@@ -236,6 +236,8 @@ const config: NextConfig = {
       // with absolute image paths, like the wedding demo.
       { source: '/demos/cairnfell', destination: '/demos/cairnfell/index.html' },
       { source: '/demos/cairnfell/portal', destination: '/demos/cairnfell/portal.html' },
+      // Wild Things Optometrists, the concept eyewear practice shown on /for/health.
+      { source: '/demos/wild-things', destination: '/demos/wild-things/index.html' },
     ];
   },
   async redirects() {
