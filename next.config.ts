@@ -228,6 +228,11 @@ const config: NextConfig = {
       // beside it in public/demos/wedding/. Its image paths are absolute, so
       // the page renders the same at the clean URL.
       { source: '/demos/wedding', destination: '/demos/wedding/index.html' },
+      // Cairnfell, the concept mountain-home builder shown on /for/contractors:
+      // the site and its owner portal, static pages in public/demos/cairnfell/
+      // with absolute image paths, like the wedding demo.
+      { source: '/demos/cairnfell', destination: '/demos/cairnfell/index.html' },
+      { source: '/demos/cairnfell/portal', destination: '/demos/cairnfell/portal.html' },
     ];
   },
   async redirects() {

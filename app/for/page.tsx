@@ -34,6 +34,13 @@ const collectionJsonLd = {
       description:
         'voice agents for restaurants that take phone orders, book tables, and save the dinner rush from voicemail. Integrates with Toast, Square, and Clover.',
     },
+    {
+      '@type': 'WebPage',
+      name: 'Websites, Owner Portals and Marketing Systems for Home Builders and Contractors',
+      url: `${SITE.url}/for/contractors`,
+      description:
+        'Websites Google and ChatGPT recommend, an owner portal for every build, and a studio that answers every lead and posts crew photos. Built for home builders and contractors.',
+    },
   ],
 };
 
@@ -101,6 +108,25 @@ export default function ForIndex() {
               </h2>
               <p className="text-[#3a3733] text-sm md:text-base font-body leading-7 mb-5">
                 A voice agent that takes phone orders, books tables, and saves the dinner rush from voicemail. Fires orders to Toast, Square, or Clover, plus a commission-free ordering page.
+              </p>
+              <span className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.25em] font-mono font-bold text-[#c8201a] group-hover:text-[#d0241b] transition-colors">
+                Read the playbook
+                <span aria-hidden="true">→</span>
+              </span>
+            </Link>
+
+            <Link
+              href="/for/contractors"
+              className="pop-card p-8 md:p-10 hover:-translate-y-1 hover:shadow-[7px_7px_0_0_#0d0d0d] transition-all duration-300 group"
+            >
+              <span className="text-[10px] uppercase tracking-[0.35em] text-[#c8201a] font-mono font-bold mb-4 block">
+                Websites and Systems for Builders
+              </span>
+              <h2 className="font-display text-xl md:text-2xl font-black text-[#0d0d0d] tracking-tight mb-4">
+                Contractors and Construction
+              </h2>
+              <p className="text-[#3a3733] text-sm md:text-base font-body leading-7 mb-5">
+                A website Google and ChatGPT recommend, an owner portal your clients check every Friday, and a studio that answers every lead and posts your crew photos.
               </p>
               <span className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.25em] font-mono font-bold text-[#c8201a] group-hover:text-[#d0241b] transition-colors">
                 Read the playbook

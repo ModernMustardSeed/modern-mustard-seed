@@ -20,9 +20,10 @@ const CUTS = [
 ];
 
 const DEMO = [
-  { href: `${BASE}/site/index.html`, label: 'Open the Cairnfell site' },
-  { href: `${BASE}/site/portal.html`, label: 'Open the owner portal' },
-  { href: `${BASE}/site/portal.html#studio`, label: 'Open the builder studio' },
+  { href: '/demos/cairnfell', label: 'Open the Cairnfell site' },
+  { href: '/demos/cairnfell/portal', label: 'Open the owner portal' },
+  { href: '/demos/cairnfell/portal#studio', label: 'Open the builder studio' },
+  { href: '/for/contractors', label: 'Open the contractors page' },
 ];
 
 const COPY: { title: string; text: string }[] = [

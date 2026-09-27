@@ -56,6 +56,7 @@ export default function Footer() {
         { label: 'Northwest Montana', href: '/montana' },
         { label: 'Kalispell', href: '/montana/kalispell' },
         { label: 'Industries We Build For', href: '/for' },
+        { label: 'For Builders and Contractors', href: '/for/contractors' },
         { label: 'Future-Proof Your Business', href: '/future-proof' },
         { label: 'Partner Program', href: '/partners' },
       ],
