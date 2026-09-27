@@ -18,16 +18,16 @@ export const metadata = buildMetadata({
    /api/book/slots, so they stay live even when this page is served from the CDN.
    Prerendering it drops the per-request server render (~730ms of TTFB). */
 
-/* Each step is a comic panel cut from the same screenprint as the hero: the
-   phone for the talking, the pen for the plan, the stamp for the next move.
-   s is the zoom, ox/oy the point it zooms into. */
+/* Each step is a poster cut from the same painting as the hero: Mr. Mustard
+   for the talking, the calendar on the drive-in screen for the plan, his
+   pointing glove for the next move. s is the zoom, ox/oy the point it zooms into. */
 const whatHappens = [
   {
     title: 'You talk, she listens',
     body: 'You walk her through what you are building and where it is stuck. She read your answers before the call, so you are not starting from zero.',
     narr: 'Meanwhile, on the call',
     bubble: 'Tell me everything.',
-    crop: { s: 2.0, ox: '80%', oy: '30%' },
+    crop: { s: 2.0, ox: '82%', oy: '38%' },
     tilt: '-1.4deg',
   },
   {
@@ -35,7 +35,7 @@ const whatHappens = [
     body: 'Straight read on the fastest path, what it takes, and what it costs. If software is the wrong answer, she says so on the call.',
     narr: 'Then',
     bubble: 'Here is the fast path.',
-    crop: { s: 2.5, ox: '14%', oy: '88%' },
+    crop: { s: 2.1, ox: '55%', oy: '26%' },
     tilt: '0.9deg',
   },
   {
@@ -43,7 +43,7 @@ const whatHappens = [
     body: 'A plan you can act on whether or not you hire her. Most people leave with something they can do that same week.',
     narr: 'And finally',
     bubble: 'Stamped. Your move.',
-    crop: { s: 1.9, ox: '44%', oy: '46%' },
+    crop: { s: 1.9, ox: '66%', oy: '56%' },
     tilt: '-0.7deg',
   },
 ];
@@ -59,18 +59,6 @@ const faq = [
 
 const DAYS = ['Tuesdays', 'Wednesdays', 'Thursdays', 'Fridays', '30 minutes', 'Free', 'No pitch'];
 const TAPE = ['Questions, answered plainly', 'Mountain Time', 'Tuesdays through Fridays', 'Reschedule any time', 'No intake bot'];
-
-/** A comic starburst as SVG polygon points, in a 100 by 100 box. */
-function burst(points: number, outer: number, inner: number): string {
-  return Array.from({ length: points * 2 }, (_, i) => {
-    const r = i % 2 === 0 ? outer : inner;
-    const a = (Math.PI * i) / points - Math.PI / 2;
-    return `${(50 + r * Math.cos(a)).toFixed(2)},${(50 + r * Math.sin(a)).toFixed(2)}`;
-  }).join(' ');
-}
-const BIG_BURST = burst(16, 50, 38);
-const INNER_BURST = burst(16, 41, 31);
-const NUM_BURST = burst(12, 50, 36);
 
 /** Mr. Mustard, waving. AVIF first, WebP next, the PNG for everything else. */
 function Mascot({ sizes, eager = false }: { sizes: string; eager?: boolean }) {
@@ -90,7 +78,7 @@ function Strip({ items, className }: { items: string[]; className: string }) {
         {[0, 1].map((k) => (
           <span key={k} className="inline-flex">
             {items.map((t) => (
-              <span key={t} className={s.mItem}>{t}<i>✦</i></span>
+              <span key={t} className={s.mItem}>{t}<i>★</i></span>
             ))}
           </span>
         ))}
@@ -121,7 +109,7 @@ export default function BookPage() {
         ]}
       />
 
-      {/* ───────────────  HERO: the desk, framed and hung  ─────────────── */}
+      {/* ───────────────  HERO: the drive-in, wheat-pasted on the wall  ─────────────── */}
       <section className={s.hero}>
         <div className={s.heroDots} aria-hidden="true" />
         <span className={`${s.spark} ${s.hs1}`} aria-hidden="true">✦</span>
@@ -132,7 +120,7 @@ export default function BookPage() {
 
         <div className={s.heroInner}>
           <div className={s.heroCopy}>
-            <span className="inline-flex items-center gap-2 font-mono text-[9.5px] sm:text-[10px] uppercase tracking-[0.1em] sm:tracking-[0.18em] font-bold bg-white text-[#B92417] border-2 border-[#161616] rounded-full px-3.5 py-1.5 shadow-[3px_3px_0_0_#161616]">
+            <span className="inline-flex items-center gap-2 font-mono text-[9.5px] sm:text-[10px] uppercase tracking-[0.1em] sm:tracking-[0.18em] font-bold bg-white text-[#c8201a] border-2 border-[#0d0d0d] rounded-full px-3.5 py-1.5 shadow-[3px_3px_0_0_#0d0d0d]">
               ☎ Tuesdays through Fridays · 30 minutes · free
             </span>
             <h1 className={s.h1}>
@@ -151,14 +139,14 @@ export default function BookPage() {
             </div>
             <p className={s.note}>
               Not ready to talk?{' '}
-              <Link href="/contact" className="font-bold text-[#B92417] underline decoration-2 underline-offset-2 hover:text-[#E0301E]">
+              <Link href="/contact" className="font-bold text-[#c8201a] underline decoration-2 underline-offset-2 hover:text-[#d0241b]">
                 Send a note instead
               </Link>{' '}
               and Sarah answers inside a day.
             </p>
           </div>
 
-          {/* The desk: her book is open, and you stamp your name into it. */}
+          {/* The drive-in: her book is up on the big screen, and you circle your day. */}
           <div className={s.stage}>
             <div className={s.glow} aria-hidden="true" />
             <div className={s.rays} aria-hidden="true" />
@@ -166,10 +154,10 @@ export default function BookPage() {
               <span className={`${s.tape} ${s.tapeL}`} aria-hidden="true" />
               <span className={`${s.tape} ${s.tapeR}`} aria-hidden="true" />
               <Image
-                src="/book/datebook-hero.jpg"
-                alt="Pop-art screenprint: a hand stamps an open appointment datebook on a desk beside a rotary telephone and a gold fountain pen"
+                src="/art/pages/book-1600.webp"
+                alt="Graffiti couture painting: Mr. Mustard in a gold puffer jacket points from a mustard-yellow classic convertible at a drive-in screen showing a big appointment calendar, one day circled in red spray paint, under graffiti-covered walls at sunset"
                 width={1600}
-                height={904}
+                height={1067}
                 priority
                 sizes="(min-width: 1024px) 600px, 92vw"
                 className={s.frameImg}
@@ -177,14 +165,10 @@ export default function BookPage() {
               <figcaption className={s.frameCap}>Her book is open · stamp your name in it</figcaption>
             </figure>
             <div className={s.sticker} aria-hidden="true">
-              <svg viewBox="0 0 100 100">
-                <polygon points={BIG_BURST} fill="#E0301E" stroke="#161616" strokeWidth="2.4" strokeLinejoin="round" />
-                <polygon points={INNER_BURST} fill="#F5B700" stroke="#161616" strokeWidth="1.6" strokeLinejoin="round" />
+              <svg viewBox="0 0 200 160">
+                <path d="M18 132 8 42 58 86 100 18 142 86 192 42 182 132Z" fill="#ff3b2f" />
               </svg>
               <span className={s.stickerText}>Ka-<br />chunk!</span>
-            </div>
-            <div className={s.heroMascot} aria-hidden="true">
-              <Mascot sizes="(max-width: 760px) 92px, 168px" eager />
             </div>
             <span className={`${s.bubble} ${s.heroBubble}`} aria-hidden="true">Your name goes here!</span>
           </div>
@@ -193,7 +177,7 @@ export default function BookPage() {
 
       <Strip items={DAYS} className={s.marquee} />
 
-      {/* ───────────────  WHAT HAPPENS ON IT: the comic strip  ─────────────── */}
+      {/* ───────────────  WHAT HAPPENS ON IT: three posters  ─────────────── */}
       <section id="what-happens" className={`scroll-mt-20 ${s.steps}`}>
         <div className={s.stepsDots} aria-hidden="true" />
         <div className={s.inner}>
@@ -212,7 +196,7 @@ export default function BookPage() {
               <article key={step.title} className={s.panel} style={{ '--tilt': step.tilt } as CSSProperties}>
                 <div className={s.num} aria-hidden="true">
                   <svg viewBox="0 0 100 100">
-                    <polygon points={NUM_BURST} fill="#F5B700" stroke="#161616" strokeWidth="3.2" strokeLinejoin="round" />
+                    <path d="M50 2 62 34 97 34 69 55 80 90 50 69 20 90 31 55 3 34 38 34Z" fill="#ffd400" />
                   </svg>
                   <span>{String(i + 1).padStart(2, '0')}</span>
                 </div>
@@ -221,7 +205,7 @@ export default function BookPage() {
                   style={{ '--s': step.crop.s, '--ox': step.crop.ox, '--oy': step.crop.oy } as CSSProperties}
                 >
                   {/* The crop zooms in about 2x, so ask for twice the pixels to stay sharp. */}
-                  <Image src="/book/datebook-hero.jpg" alt="" fill sizes="(min-width: 900px) 760px, 200vw" />
+                  <Image src="/art/pages/book-1600.webp" alt="" fill sizes="(min-width: 900px) 760px, 200vw" />
                   <span className={`${s.bubble} ${s.bubbleRight} ${s.panelBubble}`} aria-hidden="true">{step.bubble}</span>
                   <span className={s.narr} aria-hidden="true">{step.narr}</span>
                 </div>
@@ -248,7 +232,7 @@ export default function BookPage() {
       <div className={s.zig} aria-hidden="true" />
 
       {/* ───────────────  THE CARD + THE FORM (signature), on mustard  ─────────────── */}
-      <section className={s.ticket}>
+      <section className={s.ticket} data-ground="yellow">
         <div className={s.ticketRays} aria-hidden="true" />
         <div className={s.ticketDots} aria-hidden="true" />
         <span className={`${s.spark} ${s.ts1}`} aria-hidden="true">✦</span>
@@ -290,7 +274,7 @@ export default function BookPage() {
 
       <Strip items={TAPE} className={s.tapeBand} />
 
-      {/* ───────────────  FAQ: speech bubbles  ─────────────── */}
+      {/* ───────────────  FAQ: stickers on the wall  ─────────────── */}
       <section className={s.faq}>
         <div className={s.faqDots} aria-hidden="true" />
         <span className={`${s.spark} ${s.fs1}`} aria-hidden="true">✦</span>
@@ -301,7 +285,7 @@ export default function BookPage() {
             <div className={`${s.faqMascot} ${s.faqArt}`} aria-hidden="true">
               <div className={s.faqBurst}>
                 <svg viewBox="0 0 100 100">
-                  <polygon points={BIG_BURST} fill="#F5B700" stroke="#161616" strokeWidth="1.4" strokeLinejoin="round" />
+                  <circle cx="50" cy="50" r="46" fill="#ffd400" />
                 </svg>
               </div>
               <Mascot sizes="(min-width: 1024px) 200px, 84px" />
@@ -324,7 +308,7 @@ export default function BookPage() {
           </div>
           <p className={s.faqNote}>
             Would rather write it out?{' '}
-            <Link href="/contact" className="font-bold text-[#B92417] underline decoration-2 underline-offset-2 hover:text-[#E0301E]">
+            <Link href="/contact" className="font-bold text-[#c8201a] underline decoration-2 underline-offset-2 hover:text-[#d0241b]">
               Send a note instead
             </Link>
             .

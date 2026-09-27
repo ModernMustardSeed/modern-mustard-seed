@@ -1,0 +1,43 @@
+/* The homepage hero: Graffiti Couture, the wall dressed for the runway.
+   The painting fills the frame and the words sit in the calm left third the
+   painting was composed to leave open. */
+.hero{--t:#0d0d0d;--t2:#0d0d0dc8;--scrim:linear-gradient(90deg,#f1ede4f0 0,#f1ede4b8 34%,#f1ede400 60%);position:relative;display:flex;align-items:center;min-height:calc(100svh - 82px);overflow:hidden;padding:112px 6vw 72px;color:var(--t);isolation:isolate;border-bottom:3px solid var(--t)}
+.hero h1,.hero p{margin:0}
+.scene{position:absolute;inset:0;z-index:-4;overflow:hidden}
+.scene img{width:100%;height:100%;object-fit:cover;object-position:70% 50%;filter:blur(28px) saturate(1.05);transform:scale(1.12)}
+/* The whole painting, from under the nav (82px) to the floor, right-aligned. */
+.art{position:absolute;top:82px;right:0;bottom:0;left:0;z-index:-3}
+.art img{width:100%;height:100%;object-fit:contain;object-position:100% 50%;animation:sceneIn 1.6s cubic-bezier(.16,1,.3,1) both;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 9%);mask-image:linear-gradient(90deg,transparent 0,#000 9%)}
+@keyframes sceneIn{from{opacity:0;transform:scale(1.06)}to{opacity:1;transform:scale(1)}}
+.scrim{position:absolute;inset:0;z-index:-2;background:var(--scrim)}
+
+.copy{position:relative;max-width:620px}
+.copy>*{animation:rise 1.1s cubic-bezier(.16,1,.3,1) both}
+.copy>:nth-child(2){animation-delay:.12s}.copy>:nth-child(3){animation-delay:.24s}.copy>:nth-child(4){animation-delay:.34s}.copy>:nth-child(5){animation-delay:.44s}
+@keyframes rise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+
+/* The studio tag: yellow tape, sprayed on at an angle. */
+.credit{position:relative;display:inline-block;background:#ffd400;color:#0d0d0d;padding:6px 10px;transform:rotate(-2deg);font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase}
+.credit:after{content:'';position:absolute;left:18%;top:100%;width:5px;height:14px;border-radius:0 0 3px 3px;background:#ffd400;box-shadow:46px -4px 0 -1px #ffd400}
+.name{margin-top:18px!important;font-family:var(--font-anton),Impact,sans-serif;font-weight:400;font-size:clamp(64px,8.4vw,150px);line-height:.9;letter-spacing:.01em;text-transform:uppercase}
+.name>span:first-child{display:inline}
+.name em{display:inline-block;font-family:var(--font-marker),cursive;font-style:normal;text-transform:none;letter-spacing:.01em;color:#ff3b2f;transform:rotate(-6deg) translateY(-.04em);text-shadow:4px 4px 0 #ffd400}
+.line{margin-top:22px!important;font-family:var(--font-marker),cursive;font-style:normal;font-size:clamp(22px,2.2vw,32px);line-height:1.25;color:#0d0d0d}
+.what{max-width:470px;margin-top:16px!important;font-size:16px;line-height:1.65;color:var(--t2)}
+.actions{display:flex;flex-wrap:wrap;align-items:center;gap:14px 28px;margin-top:30px}
+.cta{display:inline-flex;align-items:center;gap:22px;min-height:56px;padding:0 26px;background:#0d0d0d;color:#f1ede4;font-size:15px;font-weight:700;border:2px solid #0d0d0d;box-shadow:6px 6px 0 #ffd400;transition:transform .25s,box-shadow .25s}
+.cta span{color:#ffd400}
+.cta:hover{transform:translate(-2px,-2px);box-shadow:8px 8px 0 #ff3b2f}
+.quiet{display:inline-flex;align-items:center;min-height:44px;font-size:15px;font-weight:700;border-bottom:2px solid currentColor}
+.cta:focus-visible,.quiet:focus-visible{outline:3px solid #ff3b2f;outline-offset:4px}
+
+@media(max-width:760px){
+  /* Phone: the painting sits whole across the top, the words below it. */
+  .hero{align-items:flex-end;min-height:calc(100svh - 70px);padding:calc(70px + 100vw / 1.5 - 20px) 6vw 110px;--scrim:linear-gradient(180deg,transparent 0,transparent calc(70px + 100vw / 1.5 - 40px),#f1ede4 calc(70px + 100vw / 1.5 + 20px))}
+  .art{top:70px;bottom:auto;height:calc(100vw / 1.5)}
+  .art img{object-position:50% 0;-webkit-mask-image:linear-gradient(0deg,transparent 0,#000 16%);mask-image:linear-gradient(0deg,transparent 0,#000 16%)}
+  .credit{font-size:9px;letter-spacing:.07em;padding:5px 8px}
+  .name{font-size:clamp(52px,15vw,80px)}
+  .cta{width:100%;justify-content:space-between}
+}
+@media(prefers-reduced-motion:reduce){.art img,.scene img,.copy>*{animation:none}.cta{transition:none}}

@@ -47,30 +47,30 @@ function TierCard({ tier }: { tier: LaunchFilmTier }) {
 
   return (
     <div
-      className={`relative flex flex-col rounded-2xl border-2 border-[#161616] p-7 shadow-[6px_6px_0_0_#161616] ${
-        tier.featured ? 'bg-[#F5B700] md:-translate-y-2' : 'bg-white'
+      className={`relative flex flex-col rounded-2xl border-2 border-[#0d0d0d] p-7 shadow-[6px_6px_0_0_#0d0d0d] ${
+        tier.featured ? 'bg-[#ffd400] md:-translate-y-2' : 'bg-white'
       }`}
     >
       {tier.featured && (
-        <span className="absolute -top-3.5 left-6 rounded-full border-2 border-[#161616] bg-[#E0301E] px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.25em] text-[#FBF6EA]">
+        <span className="absolute -top-3.5 left-6 rounded-full border-2 border-[#0d0d0d] bg-[#ff3b2f] px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.25em] text-[#f1ede4]">
           The one to book
         </span>
       )}
-      <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-[#161616]/60">{tier.chip}</p>
-      <h3 className="font-display text-2xl font-black tracking-tight text-[#161616] mt-2">{tier.name}</h3>
+      <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-[#0d0d0d]/60">{tier.chip}</p>
+      <h3 className="font-display text-2xl font-black tracking-tight text-[#0d0d0d] mt-2">{tier.name}</h3>
       <p className="mt-3">
-        <span className="block font-display text-[26px] font-black leading-tight tracking-tight text-[#161616]">
+        <span className="block font-display text-[26px] font-black leading-tight tracking-tight text-[#0d0d0d]">
           {PRICE_HEADLINE}
         </span>
-        <span className="mt-1 block font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-[#161616]/60">
+        <span className="mt-1 block font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-[#0d0d0d]/60">
           {priceCadence(tier.cadence)}
         </span>
       </p>
-      <p className="font-body text-sm leading-relaxed text-[#161616]/75 mt-3">{tier.pitch}</p>
+      <p className="font-body text-sm leading-relaxed text-[#0d0d0d]/75 mt-3">{tier.pitch}</p>
       <ul className="mt-5 space-y-2.5 flex-1">
         {tier.includes.map((line) => (
-          <li key={line} className="flex gap-2.5 font-body text-sm leading-snug text-[#161616]">
-            <span aria-hidden="true" className="mt-[3px] h-3.5 w-3.5 flex-shrink-0 rounded-sm border-2 border-[#161616] bg-[#FBF6EA]" />
+          <li key={line} className="flex gap-2.5 font-body text-sm leading-snug text-[#0d0d0d]">
+            <span aria-hidden="true" className="mt-[3px] h-3.5 w-3.5 flex-shrink-0 rounded-sm border-2 border-[#0d0d0d] bg-[#f1ede4]" />
             <span>{line}</span>
           </li>
         ))}
@@ -79,7 +79,7 @@ function TierCard({ tier }: { tier: LaunchFilmTier }) {
         type="button"
         onClick={buy}
         disabled={busy}
-        className="mt-7 w-full rounded-full border-2 border-[#161616] bg-[#161616] px-6 py-3.5 font-sans text-xs font-extrabold uppercase tracking-[0.18em] text-[#FBF6EA] shadow-[4px_4px_0_0_#F5B700] transition-all hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-wait"
+        className="mt-7 w-full rounded-full border-2 border-[#0d0d0d] bg-[#0d0d0d] px-6 py-3.5 font-sans text-xs font-extrabold uppercase tracking-[0.18em] text-[#f1ede4] shadow-[4px_4px_0_0_#ffd400] transition-all hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-wait"
       >
         {busy ? 'Opening checkout' : tier.cta}
       </button>
@@ -88,9 +88,9 @@ function TierCard({ tier }: { tier: LaunchFilmTier }) {
           {msg}
         </p>
       )}
-      <p className="mt-3 text-center font-body text-xs text-[#161616]/60">
+      <p className="mt-3 text-center font-body text-xs text-[#0d0d0d]/60">
         Rather talk first?{' '}
-        <Link href="/book" className="font-bold text-[#161616] underline underline-offset-4">
+        <Link href="/book" className="font-bold text-[#0d0d0d] underline underline-offset-4">
           Book a call
         </Link>
       </p>

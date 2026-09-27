@@ -114,7 +114,7 @@ export default function FieldGuidePage() {
 
       <ReadingProgress />
 
-      <div className="relative min-h-screen bg-[#FBF6EA] text-[#161616] pt-32 md:pt-40 pb-24">
+      <div className="relative min-h-screen bg-[#f1ede4] text-[#0d0d0d] pt-32 md:pt-40 pb-24">
         <div aria-hidden="true" className="absolute inset-0 halftone-bg opacity-50 pointer-events-none" />
 
         <div className="relative">
@@ -122,19 +122,19 @@ export default function FieldGuidePage() {
           <header className="max-w-[1180px] mx-auto px-6 md:px-8 mb-16 md:mb-24 xl:pl-[254px]">
           <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-14 lg:items-center">
           <div className="min-w-0">
-            <span className="block text-[10px] uppercase tracking-[0.4em] text-[#E0301E] font-mono font-bold mb-7">
+            <span className="block text-[10px] uppercase tracking-[0.4em] text-[#d0241b] font-mono font-bold mb-7">
               Free guide · Never built anything? Start here
             </span>
 
             {/* Each line is its own block with its own leading. Nothing here is
                 stroked, stacked, or absolutely positioned, so nothing can
                 overlap at any width. */}
-            <h1 className="font-display font-black text-[#161616] tracking-tight mb-8">
+            <h1 className="font-display font-black text-[#0d0d0d] tracking-tight mb-8">
               <span className="block text-[2.6rem] sm:text-6xl md:text-7xl leading-[1.06] pb-1">Claude Code,</span>
               <span className="block text-[2.6rem] sm:text-6xl md:text-7xl leading-[1.06] pb-1">
-                from <em className="italic text-[#E0301E]">zero</em>.
+                from <em className="italic text-[#d0241b]">zero</em>.
               </span>
-              <span className="block mt-5 text-[11px] sm:text-xs md:text-sm font-mono font-bold uppercase tracking-[0.32em] leading-[1.7] text-[#161616]/45">
+              <span className="block mt-5 text-[11px] sm:text-xs md:text-sm font-mono font-bold uppercase tracking-[0.32em] leading-[1.7] text-[#0d0d0d]/45">
                 The Field Guide
               </span>
             </h1>
@@ -145,7 +145,7 @@ export default function FieldGuidePage() {
               so they never cost you any.
             </p>
 
-            <p className="text-[#161616]/55 text-sm md:text-base font-body italic max-w-2xl mb-9">
+            <p className="text-[#0d0d0d]/55 text-sm md:text-base font-body italic max-w-2xl mb-9">
               Written by a self-taught engineer who has shipped 40+ products with this tool, for the friend who keeps
               saying they would build it if they knew how.
             </p>
@@ -153,19 +153,19 @@ export default function FieldGuidePage() {
             <div className="flex flex-wrap gap-3 mb-10">
               <a
                 href="#start"
-                className="px-7 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
+                className="px-7 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0d0d0d] bg-[#ffd400] rounded-full border-2 border-[#0d0d0d] shadow-[4px_4px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-all"
               >
                 Start at zero →
               </a>
               <a
                 href="#prompts"
-                className="px-7 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-white rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
+                className="px-7 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0d0d0d] bg-white rounded-full border-2 border-[#0d0d0d] shadow-[4px_4px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-all"
               >
                 Jump to the prompts
               </a>
               <a
                 href="/downloads/modern-mustard-seed-claude-code-field-guide.pdf"
-                className="px-7 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-white bg-[#161616] rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_rgba(22,22,22,0.3)] hover:-translate-y-0.5 transition-all"
+                className="px-7 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-white bg-[#0d0d0d] rounded-full border-2 border-[#0d0d0d] shadow-[4px_4px_0_0_rgba(13,13,13,0.3)] hover:-translate-y-0.5 transition-all"
               >
                 Print the field card
               </a>
@@ -176,7 +176,7 @@ export default function FieldGuidePage() {
                 (chip) => (
                   <span
                     key={chip}
-                    className="text-[10px] uppercase tracking-[0.15em] font-mono font-bold text-[#161616]/60 bg-white border-2 border-[#161616]/20 rounded-full px-3 py-1.5"
+                    className="text-[10px] uppercase tracking-[0.15em] font-mono font-bold text-[#0d0d0d]/60 bg-white border-2 border-[#0d0d0d]/20 rounded-full px-3 py-1.5"
                   >
                     {chip}
                   </span>
@@ -191,7 +191,7 @@ export default function FieldGuidePage() {
             this is for recognise the drive before they recognise the logo.
           */}
           <div className="hidden lg:block">
-            <div className="relative aspect-square rounded-full overflow-hidden border-[3px] border-[#161616] shadow-[10px_10px_0_0_#F5B700]">
+            <div className="relative aspect-square rounded-full overflow-hidden border-[3px] border-[#0d0d0d] shadow-[10px_10px_0_0_#ffd400]">
               <Image
                 src="/journey/poster-drive.jpg"
                 alt="Mr. and Mrs. Mustard driving a red convertible along Flathead Lake at sunset"
@@ -201,7 +201,7 @@ export default function FieldGuidePage() {
                 priority
               />
             </div>
-            <p className="mt-5 text-center text-[10px] uppercase tracking-[0.2em] font-mono font-bold text-[#161616]/45">
+            <p className="mt-5 text-center text-[10px] uppercase tracking-[0.2em] font-mono font-bold text-[#0d0d0d]/45">
               Kalispell, Montana
             </p>
           </div>
@@ -218,11 +218,11 @@ export default function FieldGuidePage() {
                 <span className="block text-[10px] uppercase tracking-[0.35em] text-[#8A1006] font-mono font-bold mb-4">
                   Understand this first
                 </span>
-                <p className="font-display text-xl md:text-3xl font-black text-[#161616] leading-[1.3] mb-5">
+                <p className="font-display text-xl md:text-3xl font-black text-[#0d0d0d] leading-[1.3] mb-5">
                   Claude Code is a very fast engineer who has read every manual ever written and knows nothing about you,
                   your project, or what you said yesterday.
                 </p>
-                <p className="text-[#161616]/75 text-sm md:text-base font-body font-medium leading-7 max-w-2xl">
+                <p className="text-[#0d0d0d]/75 text-sm md:text-base font-body font-medium leading-7 max-w-2xl">
                   It types faster than you and it will happily build the wrong thing at full speed. Every habit in this
                   guide fixes one half of that sentence: give it context, and make it prove the work. Do those two things
                   and it feels like a senior teammate. Skip them and it feels like a slot machine.
@@ -242,13 +242,13 @@ export default function FieldGuidePage() {
                   evening wasted by us.
                 */}
                 <div className="pop-card p-6 md:p-7 mb-6">
-                  <span className="block text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold mb-4">
+                  <span className="block text-[10px] uppercase tracking-[0.3em] text-[#d0241b] font-mono font-bold mb-4">
                     First, what you need
                   </span>
                   <dl className="grid md:grid-cols-3 gap-5">
                     {WHAT_YOU_NEED.map((item) => (
                       <div key={item.label}>
-                        <dt className="font-display text-base font-black text-[#161616] leading-snug mb-1.5">
+                        <dt className="font-display text-base font-black text-[#0d0d0d] leading-snug mb-1.5">
                           {item.label}
                         </dt>
                         <dd className="text-[#3a3733] text-[13.5px] font-body leading-6">{item.body}</dd>
@@ -262,17 +262,17 @@ export default function FieldGuidePage() {
                     <div key={s.n} className={`min-w-0 ${i === 3 ? 'pop-card-yellow p-6' : 'pop-card p-6'}`}>
                       <span
                         className={`block text-[11px] font-mono font-bold tracking-[0.16em] mb-2 ${
-                          i === 3 ? 'text-[#8A1006]' : 'text-[#E0301E]'
+                          i === 3 ? 'text-[#8A1006]' : 'text-[#d0241b]'
                         }`}
                       >
                         {s.n}
                       </span>
-                      <h3 className="font-display text-lg md:text-xl font-black text-[#161616] leading-snug mb-2.5">
+                      <h3 className="font-display text-lg md:text-xl font-black text-[#0d0d0d] leading-snug mb-2.5">
                         {s.title}
                       </h3>
                       <p
                         className={`text-sm font-body leading-7 ${
-                          i === 3 ? 'text-[#161616]/80 font-medium' : 'text-[#3a3733]'
+                          i === 3 ? 'text-[#0d0d0d]/80 font-medium' : 'text-[#3a3733]'
                         }`}
                       >
                         {s.body}
@@ -300,11 +300,11 @@ export default function FieldGuidePage() {
                       key={s.n}
                       className="pop-card p-5 md:p-6 grid grid-cols-[3rem_minmax(0,1fr)] md:grid-cols-[3.5rem_minmax(0,1fr)] gap-4 md:gap-6 items-start"
                     >
-                      <span className="grid place-items-center h-10 rounded-lg border-2 border-[#161616] bg-[#F5B700] font-mono font-bold text-[#161616]">
+                      <span className="grid place-items-center h-10 rounded-lg border-2 border-[#0d0d0d] bg-[#ffd400] font-mono font-bold text-[#0d0d0d]">
                         {s.n}
                       </span>
                       <div>
-                        <h3 className="font-display text-lg md:text-xl font-black text-[#161616] leading-snug mb-1.5">
+                        <h3 className="font-display text-lg md:text-xl font-black text-[#0d0d0d] leading-snug mb-1.5">
                           {s.title}
                         </h3>
                         <p className="text-[#3a3733] text-sm md:text-[15px] font-body leading-7">{s.body}</p>
@@ -355,8 +355,8 @@ export default function FieldGuidePage() {
                       <table className="w-full text-left">
                         <tbody>
                           {SLASH.map((r) => (
-                            <tr key={r.cmd} className="border-t border-[#161616]/10">
-                              <td className="py-2.5 px-5 font-mono text-[12.5px] font-bold text-[#161616] whitespace-nowrap align-top">
+                            <tr key={r.cmd} className="border-t border-[#0d0d0d]/10">
+                              <td className="py-2.5 px-5 font-mono text-[12.5px] font-bold text-[#0d0d0d] whitespace-nowrap align-top">
                                 {r.cmd}
                               </td>
                               <td className="py-2.5 px-5 text-[13px] font-body text-[#3a3733] leading-6">{r.when}</td>
@@ -373,8 +373,8 @@ export default function FieldGuidePage() {
                       <table className="w-full text-left">
                         <tbody>
                           {CLI.map((r) => (
-                            <tr key={r.cmd} className="border-t border-[#161616]/10">
-                              <td className="py-2.5 px-5 font-mono text-[12.5px] font-bold text-[#161616] whitespace-nowrap align-top">
+                            <tr key={r.cmd} className="border-t border-[#0d0d0d]/10">
+                              <td className="py-2.5 px-5 font-mono text-[12.5px] font-bold text-[#0d0d0d] whitespace-nowrap align-top">
                                 {r.cmd}
                               </td>
                               <td className="py-2.5 px-5 text-[13px] font-body text-[#3a3733] leading-6">{r.what}</td>
@@ -418,7 +418,7 @@ export default function FieldGuidePage() {
                     </div>
                     <div className="pop-card-yellow p-6">
                       <h3 className="font-display text-lg font-black mb-2">What never goes in it</h3>
-                      <p className="text-[#161616]/80 text-sm font-body font-medium leading-7">
+                      <p className="text-[#0d0d0d]/80 text-sm font-body font-medium leading-7">
                         No passwords, no API keys, no database addresses, no tokens. Ever. Secrets live in{' '}
                         <Code light>.env.local</Code>, and that file goes in <Code light>.gitignore</Code>. If you are
                         unsure whether something counts as a secret, it does.
@@ -484,9 +484,9 @@ export default function FieldGuidePage() {
                         ['Plan mode', 'It can read and think and cannot touch anything. Start every real task here.'],
                       ].map(([label, body]) => (
                         <li key={label} className="flex gap-3">
-                          <span className="mt-[7px] h-2 w-2 shrink-0 rounded-full bg-[#F5B700] border border-[#161616]" />
+                          <span className="mt-[7px] h-2 w-2 shrink-0 rounded-full bg-[#ffd400] border border-[#0d0d0d]" />
                           <span className="text-[13.5px] font-body leading-6 text-[#3a3733]">
-                            <strong className="text-[#161616]">{label}.</strong> {body}
+                            <strong className="text-[#0d0d0d]">{label}.</strong> {body}
                           </span>
                         </li>
                       ))}
@@ -534,7 +534,7 @@ export default function FieldGuidePage() {
                   </MiniCard>
                   <div className="pop-card-yellow p-6">
                     <h3 className="font-display text-lg font-black mb-2">Two terminals, two copies</h3>
-                    <p className="text-[#161616]/80 text-sm font-body font-medium leading-7">
+                    <p className="text-[#0d0d0d]/80 text-sm font-body font-medium leading-7">
                       Claude runs happily in several windows at once, and that is a real speed multiplier. One rule keeps
                       it from becoming a disaster: give each session its own branch or its own copy of the project. Two
                       sessions editing the same files will quietly overwrite each other, and you will find out later.
@@ -556,11 +556,11 @@ export default function FieldGuidePage() {
                       key={r.title}
                       className="pop-card p-4 md:p-5 grid grid-cols-[2rem_minmax(0,1fr)] gap-3.5 md:gap-5 items-baseline"
                     >
-                      <span className="font-mono font-bold text-sm text-[#E0301E] tabular-nums">
+                      <span className="font-mono font-bold text-sm text-[#d0241b] tabular-nums">
                         {String(i + 1).padStart(2, '0')}
                       </span>
                       <p className="text-[#3a3733] text-sm md:text-[15px] font-body leading-7">
-                        <strong className="text-[#161616] font-extrabold">{r.title}</strong> {r.body}
+                        <strong className="text-[#0d0d0d] font-extrabold">{r.title}</strong> {r.body}
                       </p>
                     </li>
                   ))}
@@ -578,11 +578,11 @@ export default function FieldGuidePage() {
                   <div className="overflow-x-auto">
                     <table className="w-full text-left min-w-[640px]">
                       <thead>
-                        <tr className="border-b-2 border-[#161616]">
+                        <tr className="border-b-2 border-[#0d0d0d]">
                           {['The symptom', 'What is actually happening', 'Do this'].map((h) => (
                             <th
                               key={h}
-                              className="py-3 px-5 text-[9px] uppercase tracking-[0.18em] font-mono font-bold text-[#161616]/50"
+                              className="py-3 px-5 text-[9px] uppercase tracking-[0.18em] font-mono font-bold text-[#0d0d0d]/50"
                             >
                               {h}
                             </th>
@@ -591,8 +591,8 @@ export default function FieldGuidePage() {
                       </thead>
                       <tbody>
                         {TRIAGE.map((r) => (
-                          <tr key={r.symptom} className="border-t border-[#161616]/10 align-top">
-                            <td className="py-3 px-5 text-[13.5px] font-body font-bold text-[#161616] leading-6">
+                          <tr key={r.symptom} className="border-t border-[#0d0d0d]/10 align-top">
+                            <td className="py-3 px-5 text-[13.5px] font-body font-bold text-[#0d0d0d] leading-6">
                               {r.symptom}
                             </td>
                             <td className="py-3 px-5 text-[13px] font-body text-[#3a3733] leading-6">{r.cause}</td>
@@ -615,11 +615,11 @@ export default function FieldGuidePage() {
                 <div className="grid md:grid-cols-3 gap-5">
                   {FIRST_BUILDS.map((b) => (
                     <div key={b.title} className="pop-card p-6 flex flex-col min-w-0">
-                      <h3 className="font-display text-lg font-black text-[#161616] leading-snug mb-2">{b.title}</h3>
-                      <p className="text-[11px] font-mono uppercase tracking-[0.1em] text-[#E0301E] font-bold mb-4 leading-5">
+                      <h3 className="font-display text-lg font-black text-[#0d0d0d] leading-snug mb-2">{b.title}</h3>
+                      <p className="text-[11px] font-mono uppercase tracking-[0.1em] text-[#d0241b] font-bold mb-4 leading-5">
                         {b.who}
                       </p>
-                      <p className="rounded-lg border-2 border-[#161616]/12 bg-[#FBF6EA] px-4 py-3.5 font-mono text-[12px] leading-[1.8] text-[#161616]/85 flex-1">
+                      <p className="rounded-lg border-2 border-[#0d0d0d]/12 bg-[#f1ede4] px-4 py-3.5 font-mono text-[12px] leading-[1.8] text-[#0d0d0d]/85 flex-1">
                         {b.prompt}
                       </p>
                     </div>
@@ -636,8 +636,8 @@ export default function FieldGuidePage() {
               >
                 <dl className="grid sm:grid-cols-2 gap-x-8 gap-y-5">
                   {GLOSSARY.map((g) => (
-                    <div key={g.term} className="border-l-2 border-[#F5B700] pl-4">
-                      <dt className="font-mono text-[11px] uppercase tracking-[0.14em] font-bold text-[#161616] mb-1">
+                    <div key={g.term} className="border-l-2 border-[#ffd400] pl-4">
+                      <dt className="font-mono text-[11px] uppercase tracking-[0.14em] font-bold text-[#0d0d0d] mb-1">
                         {g.term}
                       </dt>
                       <dd className="text-[#3a3733] text-[13.5px] font-body leading-7">{g.def}</dd>
@@ -651,11 +651,11 @@ export default function FieldGuidePage() {
                 <div className="grid gap-3">
                   {FAQ.map((f) => (
                     <details key={f.q} className="pop-card p-5 md:p-6 group">
-                      <summary className="cursor-pointer list-none flex items-start justify-between gap-4 font-display text-base md:text-lg font-black text-[#161616] leading-snug">
+                      <summary className="cursor-pointer list-none flex items-start justify-between gap-4 font-display text-base md:text-lg font-black text-[#0d0d0d] leading-snug">
                         {f.q}
                         <span
                           aria-hidden="true"
-                          className="shrink-0 mt-1 font-mono text-[#E0301E] transition-transform duration-200 group-open:rotate-45"
+                          className="shrink-0 mt-1 font-mono text-[#d0241b] transition-transform duration-200 group-open:rotate-45"
                         >
                           +
                         </span>
@@ -670,7 +670,7 @@ export default function FieldGuidePage() {
               <section id="help" className="scroll-mt-32">
                 <div className="pop-card-yellow p-7 md:p-11">
                   <div className="flex items-start gap-5 mb-4">
-                    <div className="relative h-16 w-16 shrink-0 rounded-full overflow-hidden border-[3px] border-[#161616] shadow-[4px_4px_0_0_#161616]">
+                    <div className="relative h-16 w-16 shrink-0 rounded-full overflow-hidden border-[3px] border-[#0d0d0d] shadow-[4px_4px_0_0_#0d0d0d]">
                       <Image
                         src="/journey/poster-orchard.jpg"
                         alt="Mr. and Mrs. Mustard picking cherries on the east shore"
@@ -683,10 +683,10 @@ export default function FieldGuidePage() {
                       Stuck, or would rather not
                     </span>
                   </div>
-                  <h2 className="font-display text-2xl md:text-4xl font-black text-[#161616] tracking-tight leading-[1.15] mb-5">
+                  <h2 className="font-display text-2xl md:text-4xl font-black text-[#0d0d0d] tracking-tight leading-[1.15] mb-5">
                     Two ways to get unstuck, and neither one costs you anything to start.
                   </h2>
-                  <p className="text-[#161616]/80 text-sm md:text-base font-body font-medium leading-7 max-w-2xl mb-8">
+                  <p className="text-[#0d0d0d]/80 text-sm md:text-base font-body font-medium leading-7 max-w-2xl mb-8">
                     Call the ranch line and Mr. Mustard picks up. He is our own voice agent, he is awake at 2am, and
                     he will talk you through what you are stuck on or take down what you are trying to build. If you want
                     a person, book thirty minutes with Sarah and bring whatever you have, including nothing but an idea.
@@ -695,20 +695,20 @@ export default function FieldGuidePage() {
                   <div className="flex flex-col sm:flex-row gap-3 mb-8">
                     <a
                       href={`tel:${SITE.phoneE164}`}
-                      className="px-7 py-4 text-center text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-white bg-[#161616] rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_rgba(22,22,22,0.28)] hover:-translate-y-0.5 transition-all"
+                      className="px-7 py-4 text-center text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-white bg-[#0d0d0d] rounded-full border-2 border-[#0d0d0d] shadow-[4px_4px_0_0_rgba(13,13,13,0.28)] hover:-translate-y-0.5 transition-all"
                     >
                       Call Mr. Mustard · {SITE.phone}
                     </a>
                     <Link
                       href="/book"
-                      className="px-7 py-4 text-center text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-white rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
+                      className="px-7 py-4 text-center text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0d0d0d] bg-white rounded-full border-2 border-[#0d0d0d] shadow-[4px_4px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-all"
                     >
                       Book a free call with Sarah
                     </Link>
                   </div>
 
-                  <div className="border-t-2 border-[#161616]/15 pt-7">
-                    <p className="text-[#161616]/80 text-sm md:text-base font-body font-medium leading-7 max-w-2xl mb-5">
+                  <div className="border-t-2 border-[#0d0d0d]/15 pt-7">
+                    <p className="text-[#0d0d0d]/80 text-sm md:text-base font-body font-medium leading-7 max-w-2xl mb-5">
                       And if you read all of this and thought <em>I would rather someone just built it</em>, that is what
                       we do. Modern Mustard Seed is a product studio in Kalispell, Montana. Custom apps, websites, and
                       voice agents, at set package prices, shipped in weeks. You own the code, the repo, and the deploys
@@ -717,25 +717,25 @@ export default function FieldGuidePage() {
                     <div className="flex flex-wrap gap-3">
                       <Link
                         href="/work-with-us"
-                        className="px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-white rounded-full border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-all"
+                        className="px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0d0d0d] bg-white rounded-full border-2 border-[#0d0d0d] shadow-[3px_3px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-all"
                       >
                         See how we work
                       </Link>
                       <Link
                         href="/work"
-                        className="px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-white rounded-full border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-all"
+                        className="px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0d0d0d] bg-white rounded-full border-2 border-[#0d0d0d] shadow-[3px_3px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-all"
                       >
                         See the work
                       </Link>
                       <Link
                         href="/mustard-mode"
-                        className="px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-white rounded-full border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-all"
+                        className="px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0d0d0d] bg-white rounded-full border-2 border-[#0d0d0d] shadow-[3px_3px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-all"
                       >
                         Learn it with a coach
                       </Link>
                       <a
                         href="/downloads/modern-mustard-seed-claude-code-field-guide.pdf"
-                        className="px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-white rounded-full border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-all"
+                        className="px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0d0d0d] bg-white rounded-full border-2 border-[#0d0d0d] shadow-[3px_3px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-all"
                       >
                         Print the field card
                       </a>
@@ -743,7 +743,7 @@ export default function FieldGuidePage() {
                   </div>
                 </div>
 
-                <p className="mt-6 text-center text-[12px] font-body italic text-[#161616]/45">
+                <p className="mt-6 text-center text-[12px] font-body italic text-[#0d0d0d]/45">
                   Free to share, print, and pass along. Send it to the friend who keeps saying they would build it if
                   they knew how.
                 </p>
@@ -782,11 +782,11 @@ function Section({
 }) {
   return (
     <section id={id} className="scroll-mt-32">
-      <div className="border-b-2 border-[#161616] pb-5 mb-8">
-        <span className="block text-[10px] uppercase tracking-[0.35em] text-[#E0301E] font-mono font-bold mb-3">
+      <div className="border-b-2 border-[#0d0d0d] pb-5 mb-8">
+        <span className="block text-[10px] uppercase tracking-[0.35em] text-[#d0241b] font-mono font-bold mb-3">
           {eyebrow}
         </span>
-        <h2 className="font-display text-2xl md:text-[2.4rem] font-black text-[#161616] tracking-tight leading-[1.2] pb-1">
+        <h2 className="font-display text-2xl md:text-[2.4rem] font-black text-[#0d0d0d] tracking-tight leading-[1.2] pb-1">
           {title}
         </h2>
         {lede ? (
@@ -801,7 +801,7 @@ function Section({
 function MiniCard({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="pop-card p-6">
-      <h3 className="font-display text-lg font-black text-[#161616] leading-snug mb-2">{title}</h3>
+      <h3 className="font-display text-lg font-black text-[#0d0d0d] leading-snug mb-2">{title}</h3>
       <p className="text-[#3a3733] text-sm font-body leading-7">{children}</p>
     </div>
   );
@@ -822,10 +822,10 @@ function KeyTable({
       <table className="w-full text-left">
         <tbody>
           {rows.map((r) => (
-            <tr key={r.key} className="border-t border-[#161616]/10 align-top">
+            <tr key={r.key} className="border-t border-[#0d0d0d]/10 align-top">
               <td className="py-3 px-5 whitespace-nowrap">
                 <span
-                  className={`inline-block rounded-md border-2 border-[#161616] bg-white shadow-[2px_2px_0_0_#161616] px-2 py-0.5 font-mono font-bold text-[#161616] ${
+                  className={`inline-block rounded-md border-2 border-[#0d0d0d] bg-white shadow-[2px_2px_0_0_#0d0d0d] px-2 py-0.5 font-mono font-bold text-[#0d0d0d] ${
                     mono ? 'text-base' : 'text-[11.5px]'
                   }`}
                 >
@@ -844,7 +844,7 @@ function KeyTable({
 function TableCap({ children }: { children: React.ReactNode }) {
   return (
     <div className="px-5 pt-4 pb-2.5">
-      <span className="text-[9px] uppercase tracking-[0.22em] font-mono font-bold text-[#161616]/45">{children}</span>
+      <span className="text-[9px] uppercase tracking-[0.22em] font-mono font-bold text-[#0d0d0d]/45">{children}</span>
     </div>
   );
 }
@@ -853,10 +853,10 @@ function Note({ children, tone = 'plain' }: { children: React.ReactNode; tone?: 
   return (
     <div
       className={`mt-6 rounded-xl border-2 px-5 py-4 flex flex-col sm:flex-row gap-2 sm:gap-4 ${
-        tone === 'warn' ? 'border-[#E0301E] bg-white' : 'border-[#161616]/20 bg-white'
+        tone === 'warn' ? 'border-[#ff3b2f] bg-white' : 'border-[#0d0d0d]/20 bg-white'
       }`}
     >
-      <span className="text-[9px] uppercase tracking-[0.22em] font-mono font-bold text-[#E0301E] shrink-0 pt-1">
+      <span className="text-[9px] uppercase tracking-[0.22em] font-mono font-bold text-[#d0241b] shrink-0 pt-1">
         {tone === 'warn' ? 'Hard rule' : 'Note'}
       </span>
       <p className="text-[13.5px] font-body text-[#3a3733] leading-7">{children}</p>
@@ -868,7 +868,7 @@ function Code({ children, light }: { children: React.ReactNode; light?: boolean 
   return (
     <code
       className={`font-mono text-[0.9em] rounded px-1.5 py-0.5 border ${
-        light ? 'bg-white/60 border-[#161616]/20 text-[#161616]' : 'bg-[#161616]/[0.06] border-[#161616]/12 text-[#161616]'
+        light ? 'bg-white/60 border-[#0d0d0d]/20 text-[#0d0d0d]' : 'bg-[#0d0d0d]/[0.06] border-[#0d0d0d]/12 text-[#0d0d0d]'
       }`}
     >
       {children}

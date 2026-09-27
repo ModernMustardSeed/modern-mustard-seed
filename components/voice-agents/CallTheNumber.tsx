@@ -32,7 +32,7 @@ const ASKS = [
  */
 function Plate({ text }: { text: string }) {
   return (
-    <span className="text-[#F5B700] transition-all duration-500 ease-out [text-shadow:-0.03em_-0.024em_0_#E0301E,0.03em_0.024em_0_#161616] group-hover:[text-shadow:-0.062em_-0.05em_0_#E0301E,0.062em_0.05em_0_#161616]">
+    <span className="text-[#ffd400] transition-all duration-500 ease-out [text-shadow:-0.03em_-0.024em_0_#ff3b2f,0.03em_0.024em_0_#0d0d0d] group-hover:[text-shadow:-0.062em_-0.05em_0_#ff3b2f,0.062em_0.05em_0_#0d0d0d]">
       {text}
     </span>
   );
@@ -64,15 +64,15 @@ export default function CallTheNumber({ location = 'voice-agents-hero' }: { loca
       </div>
 
       <div className="relative text-center">
-        <span className="inline-flex items-center gap-2.5 rounded-full border-2 border-[#F5B700] bg-[#F5B700]/10 px-4 py-1.5 font-mono text-[10px] md:text-[11px] font-bold uppercase tracking-[0.22em] text-[#F5B700]">
+        <span className="inline-flex items-center gap-2.5 rounded-full border-2 border-[#ffd400] bg-[#ffd400]/10 px-4 py-1.5 font-mono text-[10px] md:text-[11px] font-bold uppercase tracking-[0.22em] text-[#ffd400]">
           <span className="relative flex h-2.5 w-2.5">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#E0301E] opacity-80" />
-            <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[#E0301E]" />
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#ff3b2f] opacity-80" />
+            <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[#ff3b2f]" />
           </span>
           The Line Is Open. Right Now.
         </span>
 
-        <p className="mt-7 font-body text-base md:text-lg text-[#FBF6EA]/70">
+        <p className="mt-7 font-body text-base md:text-lg text-[#f1ede4]/70">
           Call it. Ask what he could do for your business.
         </p>
 
@@ -81,7 +81,7 @@ export default function CallTheNumber({ location = 'voice-agents-hero' }: { loca
           href={`tel:${DEMO_LINE.tel}`}
           onClick={() => trackEvent('call_the_number', { location, number: DEMO_LINE.display })}
           aria-label={`Call Mr. Mustard at ${DEMO_LINE.display}`}
-          className="group mt-3 block select-none focus:outline-none focus-visible:ring-4 focus-visible:ring-[#F5B700]/60 rounded-3xl"
+          className="group mt-3 block select-none focus:outline-none focus-visible:ring-4 focus-visible:ring-[#ffd400]/60 rounded-3xl"
         >
           <span className="block text-center font-display font-black leading-[0.9] tracking-[-0.02em] text-[clamp(3.75rem,11.5vw,9rem)] transition-transform duration-500 ease-out group-hover:-translate-y-1">
             <Plate text={DEMO_LINE.display} />
@@ -93,7 +93,7 @@ export default function CallTheNumber({ location = 'voice-agents-hero' }: { loca
           {[0.5, 0.9, 0.35, 1, 0.6, 0.85, 0.4, 0.95, 0.55, 0.75, 0.3, 0.9, 0.45, 0.7, 0.35].map((h, i) => (
             <span
               key={i}
-              className="w-[4px] rounded-full bg-[#F5B700]/75 origin-bottom animate-eq"
+              className="w-[4px] rounded-full bg-[#ffd400]/75 origin-bottom animate-eq"
               style={{ height: `${h * 36}px`, animationDelay: `${i * 0.09}s` }}
             />
           ))}
@@ -103,13 +103,13 @@ export default function CallTheNumber({ location = 'voice-agents-hero' }: { loca
           <a
             href={`tel:${DEMO_LINE.tel}`}
             onClick={() => trackEvent('call_the_number', { location: `${location}-button` })}
-            className="w-full sm:w-auto rounded-full border-2 border-[#161616] bg-[#F5B700] px-9 py-4 font-sans text-[12px] font-extrabold uppercase tracking-[0.18em] text-[#161616] shadow-[5px_5px_0_0_#FBF6EA] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#FBF6EA]"
+            className="w-full sm:w-auto rounded-full border-2 border-[#0d0d0d] bg-[#ffd400] px-9 py-4 font-sans text-[12px] font-extrabold uppercase tracking-[0.18em] text-[#0d0d0d] shadow-[5px_5px_0_0_#f1ede4] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#f1ede4]"
           >
             ☎ Tap To Call Him
           </a>
           <a
             href="#browser-demo"
-            className="w-full sm:w-auto rounded-full border-2 border-[#FBF6EA]/45 bg-transparent px-9 py-4 font-sans text-[12px] font-extrabold uppercase tracking-[0.18em] text-[#FBF6EA] transition-all hover:border-[#FBF6EA] hover:-translate-y-0.5"
+            className="w-full sm:w-auto rounded-full border-2 border-[#f1ede4]/45 bg-transparent px-9 py-4 font-sans text-[12px] font-extrabold uppercase tracking-[0.18em] text-[#f1ede4] transition-all hover:border-[#f1ede4] hover:-translate-y-0.5"
           >
             Or Talk In This Browser
           </a>
@@ -117,8 +117,8 @@ export default function CallTheNumber({ location = 'voice-agents-hero' }: { loca
 
         {/* Rotating "what to ask him" line */}
         <div className="mt-9 min-h-[3.5rem] flex items-start justify-center px-2">
-          <p className="max-w-lg font-body text-sm md:text-[15px] leading-relaxed text-[#FBF6EA]/60">
-            <span className="font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-[#F5B700] mr-2">
+          <p className="max-w-lg font-body text-sm md:text-[15px] leading-relaxed text-[#f1ede4]/60">
+            <span className="font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-[#ffd400] mr-2">
               Try This
             </span>
             <span key={ask} className="italic animate-fade-in">
@@ -127,7 +127,7 @@ export default function CallTheNumber({ location = 'voice-agents-hero' }: { loca
           </p>
         </div>
 
-        <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.2em] text-[#FBF6EA]/55">
+        <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.2em] text-[#f1ede4]/55">
           Free · No script · He tells you he is a voice agent in the first sentence
         </p>
       </div>

@@ -19,7 +19,7 @@ export default async function ProgramHQ({ slug }: { slug: ProgramSlug }) {
 
   if (!entitled) {
     return (
-      <div className="min-h-screen bg-[#080c16] text-white flex items-center justify-center px-6">
+      <div className="min-h-screen bg-[#0d0d0d] text-white flex items-center justify-center px-6">
         <div className="glass-card p-10 max-w-md text-center">
           <h1 className="font-display text-2xl font-semibold text-cream-50 mb-3">{assets.programName} HQ</h1>
           <p className="text-white/55 font-body text-sm mb-6">
@@ -34,8 +34,8 @@ export default async function ProgramHQ({ slug }: { slug: ProgramSlug }) {
   }
 
   return (
-    <div className="min-h-screen bg-[#080c16] text-white">
-      <header className="border-b border-white/[0.06] sticky top-0 z-30 bg-[#080c16]/90 backdrop-blur-md">
+    <div className="min-h-screen bg-[#0d0d0d] text-white">
+      <header className="border-b border-white/[0.06] sticky top-0 z-30 bg-[#0d0d0d]/90 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div>
             <span className="text-[10px] uppercase tracking-[0.4em] text-gold-light/80 font-mono font-bold block">{assets.programName} HQ</span>

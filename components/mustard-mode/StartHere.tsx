@@ -22,7 +22,7 @@ function CopyButton({ text }: { text: string }) {
         setCopied(true);
         setTimeout(() => setCopied(false), 1600);
       }}
-      className="font-mono font-bold text-[10px] uppercase tracking-wider bg-[#F5B700] text-[#161616] border border-[#161616] px-2.5 py-1.5 hover:translate-y-[1px] transition-transform shrink-0"
+      className="font-mono font-bold text-[10px] uppercase tracking-wider bg-[#ffd400] text-[#0d0d0d] border border-[#0d0d0d] px-2.5 py-1.5 hover:translate-y-[1px] transition-transform shrink-0"
     >
       {copied ? 'Copied ✓' : 'Copy'}
     </button>
@@ -97,7 +97,7 @@ const STEPS = [
 
 export default function StartHere() {
   return (
-    <div className="bg-[#FBF6EA] text-[#161616]">
+    <div className="bg-[#f1ede4] text-[#0d0d0d]">
       {/* Hero: the comic cover */}
       <PopPageHero
         eyebrow={<span>Free // No account needed to read this // Mr. Mustard&apos;s beginner brief</span>}
@@ -126,12 +126,12 @@ export default function StartHere() {
         <div className="max-w-4xl mx-auto px-6 space-y-10">
           {STEPS.map((s, i) => (
             <Reveal key={s.n} variant="rise" delay={i * 40} className="scroll-mt-24" >
-              <div id={`step-${s.n}`} className="bg-white border-2 border-[#161616] shadow-[6px_6px_0_0_#161616] p-7 md:p-8">
-                <span className="font-mono font-bold text-2xl text-[#F5B700]" style={{ textShadow: '1.5px 1.5px 0 #161616' }}>{s.n}</span>
-                <h2 className="font-display font-extrabold text-2xl md:text-3xl text-[#161616] mt-2">{s.title}</h2>
+              <div id={`step-${s.n}`} className="bg-white border-2 border-[#0d0d0d] shadow-[6px_6px_0_0_#0d0d0d] p-7 md:p-8">
+                <span className="font-mono font-bold text-2xl text-[#ffd400]" style={{ textShadow: '1.5px 1.5px 0 #0d0d0d' }}>{s.n}</span>
+                <h2 className="font-display font-extrabold text-2xl md:text-3xl text-[#0d0d0d] mt-2">{s.title}</h2>
                 <div className="mt-4 space-y-3">
                   {s.body.map((p, pi) => (
-                    <p key={pi} className="font-sans text-[15px] text-[#161616]/85 leading-relaxed">{p}</p>
+                    <p key={pi} className="font-sans text-[15px] text-[#0d0d0d]/85 leading-relaxed">{p}</p>
                   ))}
                 </div>
               </div>
@@ -140,7 +140,7 @@ export default function StartHere() {
 
           {/* Command cheat sheet */}
           <Reveal variant="rise">
-            <div className="bg-[#080C16] border-2 border-[#161616] shadow-[6px_6px_0_0_#161616] p-7 md:p-8">
+            <div className="bg-[#0d0d0d] border-2 border-[#0d0d0d] shadow-[6px_6px_0_0_#0d0d0d] p-7 md:p-8">
               <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#FFDD55] uppercase">The only 7 terminal commands you need on day one</p>
               <div className="mt-5 divide-y divide-white/10">
                 {COMMANDS.map((c) => (
@@ -162,16 +162,16 @@ export default function StartHere() {
               <div className="relative w-20 h-20 mx-auto mb-4">
                 <Image src="/brand/mascot.png" alt="Mr. Mustard" fill sizes="80px" className="object-contain" />
               </div>
-              <h3 className="font-display italic font-extrabold text-3xl md:text-4xl text-[#161616]">
+              <h3 className="font-display italic font-extrabold text-3xl md:text-4xl text-[#0d0d0d]">
                 That is the whole ramp.
               </h3>
-              <p className="font-sans text-[#161616]/75 max-w-xl mx-auto mt-3">
+              <p className="font-sans text-[#0d0d0d]/75 max-w-xl mx-auto mt-3">
                 You now know more about Claude than most people who have used it for a year. Mission one of
                 the Code track picks up exactly where this page ends, with real coaching and a real build.
               </p>
               <a
                 href="/mustard-mode#top"
-                className="inline-block mt-6 font-sans font-bold bg-[#F5B700] text-[#161616] border-2 border-[#161616] shadow-[5px_5px_0_0_#161616] px-7 py-3.5 hover:translate-y-[2px] hover:shadow-[3px_3px_0_0_#161616] transition-all"
+                className="inline-block mt-6 font-sans font-bold bg-[#ffd400] text-[#0d0d0d] border-2 border-[#0d0d0d] shadow-[5px_5px_0_0_#0d0d0d] px-7 py-3.5 hover:translate-y-[2px] hover:shadow-[3px_3px_0_0_#0d0d0d] transition-all"
               >
                 Play your free coaching session →
               </a>

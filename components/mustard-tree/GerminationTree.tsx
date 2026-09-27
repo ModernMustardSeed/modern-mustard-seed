@@ -37,7 +37,7 @@ function buildDots(): Dot[] {
       const d = rnd() * spread;
       const r = 5 + rnd() * 13;
       const roll = rnd();
-      const fill = roll > 0.93 ? '#E0301E' : roll > 0.86 ? '#161616' : '#F5B700';
+      const fill = roll > 0.93 ? '#ff3b2f' : roll > 0.86 ? '#0d0d0d' : '#ffd400';
       dots.push({
         cx: Math.round((tx + Math.cos(a) * d * 1.25) * 10) / 10,
         cy: Math.round((ty + Math.sin(a) * d) * 10) / 10,
@@ -65,7 +65,7 @@ export default function GerminationTree({ className = '' }: { className?: string
       style={{ animationDelay: `${delay}s` }}
       d={`M${x},${y} q${6 * s},${-9 * s} ${12 * s},0 q${6 * s},${-9 * s} ${12 * s},0`}
       fill="none"
-      stroke="#161616"
+      stroke="#0d0d0d"
       strokeWidth={4}
       strokeLinecap="round"
     />
@@ -108,7 +108,7 @@ export default function GerminationTree({ className = '' }: { className?: string
           pathLength={1}
           style={{ animationDelay: '0.15s' }}
           d={`M${FORK_X},${BASE_Y} C${FORK_X - 14},${BASE_Y - 110} ${FORK_X + 12},${FORK_Y + 90} ${FORK_X},${FORK_Y}`}
-          stroke="#161616"
+          stroke="#0d0d0d"
           strokeWidth={21}
           strokeLinecap="round"
           fill="none"
@@ -125,7 +125,7 @@ export default function GerminationTree({ className = '' }: { className?: string
               pathLength={1}
               style={{ animationDelay: `${0.7 + i * 0.12}s` }}
               d={`M${FORK_X},${FORK_Y} Q${cx},${cy} ${b.x},${b.y}`}
-              stroke="#161616"
+              stroke="#0d0d0d"
               strokeWidth={9}
               strokeLinecap="round"
               fill="none"
@@ -139,10 +139,10 @@ export default function GerminationTree({ className = '' }: { className?: string
         {bird(906, 268, 0.85, 2.8)}
 
         {/* ground + seed */}
-        <line className="mtree-limb" pathLength={1} style={{ animationDelay: '0s' }} x1={70} y1={BASE_Y} x2={1010} y2={BASE_Y} stroke="#161616" strokeWidth={5} strokeLinecap="round" />
+        <line className="mtree-limb" pathLength={1} style={{ animationDelay: '0s' }} x1={70} y1={BASE_Y} x2={1010} y2={BASE_Y} stroke="#0d0d0d" strokeWidth={5} strokeLinecap="round" />
         <g className="mtree-seedcap">
-          <path d={`M${FORK_X - 46},${BASE_Y} Q${FORK_X},${BASE_Y - 26} ${FORK_X + 46},${BASE_Y}`} fill="#FBF6EA" stroke="#161616" strokeWidth={5} />
-          <circle cx={FORK_X} cy={BASE_Y - 7} r={11} fill="#F5B700" stroke="#161616" strokeWidth={4} />
+          <path d={`M${FORK_X - 46},${BASE_Y} Q${FORK_X},${BASE_Y - 26} ${FORK_X + 46},${BASE_Y}`} fill="#f1ede4" stroke="#0d0d0d" strokeWidth={5} />
+          <circle cx={FORK_X} cy={BASE_Y - 7} r={11} fill="#ffd400" stroke="#0d0d0d" strokeWidth={4} />
         </g>
 
         {/* sticker tags on the branches */}
@@ -153,8 +153,8 @@ export default function GerminationTree({ className = '' }: { className?: string
           const y = b.y - 62;
           return (
             <g key={b.label} className="mtree-tag" style={{ animationDelay: `${1.5 + i * 0.12}s` }}>
-              <rect x={x + 4} y={y + 4} width={w} height={h} fill="#161616" />
-              <rect x={x} y={y} width={w} height={h} fill={b.gold ? '#F5B700' : '#FFFFFF'} stroke="#161616" strokeWidth={3} />
+              <rect x={x + 4} y={y + 4} width={w} height={h} fill="#0d0d0d" />
+              <rect x={x} y={y} width={w} height={h} fill={b.gold ? '#ffd400' : '#FFFFFF'} stroke="#0d0d0d" strokeWidth={3} />
               <text
                 x={x + w / 2}
                 y={y + h / 2 + 6}
@@ -163,7 +163,7 @@ export default function GerminationTree({ className = '' }: { className?: string
                 fontSize={19}
                 fontWeight={700}
                 letterSpacing="0.1em"
-                fill="#161616"
+                fill="#0d0d0d"
               >
                 {b.label}
               </text>

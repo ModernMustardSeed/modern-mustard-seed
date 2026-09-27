@@ -12,7 +12,7 @@
   aspect-ratio: 1;
   translate: -50% -50%;
   border-radius: 50%;
-  background: repeating-conic-gradient(from 0deg, #f5b70045 0 4deg, #f5b70000 4deg 12deg);
+  background: repeating-conic-gradient(from 0deg, #ffd40045 0 4deg, #ffd40000 4deg 12deg);
   -webkit-mask-image: radial-gradient(circle, #000 0, #000 18%, transparent 60%);
   mask-image: radial-gradient(circle, #000 0, #000 18%, transparent 60%);
   pointer-events: none;
@@ -21,11 +21,11 @@
 .tag {
   display: inline-block;
   padding: 6px 14px 5px;
-  background: #f5b700;
-  color: #161616;
-  border: 2.5px solid #161616;
-  box-shadow: 4px 4px 0 #161616;
-  font-family: var(--font-comic), sans-serif;
+  background: #ffd400;
+  color: #0d0d0d;
+  border: 2.5px solid #0d0d0d;
+  box-shadow: 4px 4px 0 #0d0d0d;
+  font-family: var(--font-anton), Impact, sans-serif;
   font-size: 18px;
   letter-spacing: .07em;
   line-height: 1.15;
@@ -37,7 +37,7 @@
 .frame { position: relative; animation: popIn .9s .1s cubic-bezier(.34, 1.56, .64, 1) both; }
 @keyframes popIn { from { opacity: 0; transform: scale(.9) rotate(-2deg); } to { opacity: 1; transform: none; } }
 
-.tape { position: absolute; z-index: 3; width: 112px; height: 30px; background: #f7dc8ad0; border: 1.5px solid #16161630; pointer-events: none; }
+.tape { position: absolute; z-index: 3; width: 112px; height: 30px; background: #ffe98ad0; border: 1.5px solid #0d0d0d30; pointer-events: none; }
 .tapeL { top: -14px; left: 28px; rotate: -9deg; }
 .tapeR { top: -12px; right: 36px; rotate: 7deg; }
 
@@ -51,21 +51,21 @@
   place-items: center;
   width: 130px;
   aspect-ratio: 1;
-  background: #e0301e;
+  background: #ff3b2f;
   clip-path: polygon(50% 0, 59% 22%, 80% 8%, 76% 32%, 100% 30%, 82% 48%, 100% 64%, 76% 66%, 84% 92%, 60% 78%, 50% 100%, 40% 78%, 16% 92%, 24% 66%, 0 64%, 18% 48%, 0 30%, 24% 32%, 20% 8%, 41% 22%);
-  filter: drop-shadow(5px 5px 0 #161616);
+  filter: drop-shadow(5px 5px 0 #0d0d0d);
   transform: rotate(10deg);
   animation: burst .55s .7s cubic-bezier(.3, 1.6, .5, 1) both;
 }
 .pow span {
   max-width: 70%;
   text-align: center;
-  font-family: var(--font-comic), sans-serif;
+  font-family: var(--font-anton), Impact, sans-serif;
   font-size: 24px;
   line-height: .95;
   letter-spacing: .03em;
-  color: #f5b700;
-  text-shadow: 3px 3px 0 #161616;
+  color: #ffd400;
+  text-shadow: 3px 3px 0 #0d0d0d;
   transform: rotate(-8deg);
 }
 @keyframes burst { from { opacity: 0; transform: rotate(-30deg) scale(.2); } to { opacity: 1; transform: rotate(10deg) scale(1); } }
@@ -79,7 +79,7 @@
   animation: mascotIn .9s 1s cubic-bezier(.34, 1.56, .64, 1) both;
 }
 .mascot picture, .mascot img { display: block; width: 100%; height: auto; }
-.mascot img { filter: drop-shadow(6px 7px 0 #16161626); }
+.mascot img { filter: drop-shadow(6px 7px 0 #0d0d0d26); }
 @keyframes mascotIn { from { opacity: 0; transform: translateY(60px) scale(.6) rotate(-14deg); } to { opacity: 1; transform: none; } }
 
 .bubble {
@@ -90,11 +90,11 @@
   max-width: 190px;
   padding: 7px 14px 8px;
   background: #fff;
-  color: #161616;
-  border: 2.5px solid #161616;
+  color: #0d0d0d;
+  border: 2.5px solid #0d0d0d;
   border-radius: 18px;
-  box-shadow: 3px 3px 0 #161616;
-  font-family: var(--font-comic), sans-serif;
+  box-shadow: 3px 3px 0 #0d0d0d;
+  font-family: var(--font-anton), Impact, sans-serif;
   font-size: 18px;
   line-height: 1.05;
   letter-spacing: .04em;
@@ -108,8 +108,8 @@
   width: 14px;
   height: 14px;
   background: #fff;
-  border-right: 2.5px solid #161616;
-  border-bottom: 2.5px solid #161616;
+  border-right: 2.5px solid #0d0d0d;
+  border-bottom: 2.5px solid #0d0d0d;
   transform: rotate(45deg) skew(12deg, 12deg);
 }
 

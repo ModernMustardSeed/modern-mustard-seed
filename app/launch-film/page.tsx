@@ -71,7 +71,7 @@ export default function LaunchFilmPage() {
   ];
 
   return (
-    <div id="top" className="bg-[#FBF6EA] text-[#161616]">
+    <div id="top" className="bg-[#f1ede4] text-[#0d0d0d]">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       {/* ─── THE PREMIERE ─── */}
@@ -93,7 +93,7 @@ export default function LaunchFilmPage() {
         </div>
       </PopPageHero>
 
-      <section className="border-b-2 border-[#161616]">
+      <section className="border-b-2 border-[#0d0d0d]">
         <div className="max-w-5xl mx-auto px-5 pb-14 md:pb-20">
           <div className="max-w-4xl mx-auto">
             <LaunchFilmPlayer
@@ -103,9 +103,9 @@ export default function LaunchFilmPage() {
               film="irl-wide"
               title={`the ${EXAMPLE_FILM.title} launch film`}
             />
-            <p className="font-body text-sm text-[#161616]/60 text-center mt-5">
+            <p className="font-body text-sm text-[#0d0d0d]/60 text-center mt-5">
               The launch film for{' '}
-              <a href={EXAMPLE_FILM.url} target="_blank" rel="noopener" className="font-bold text-[#161616] underline underline-offset-4">
+              <a href={EXAMPLE_FILM.url} target="_blank" rel="noopener" className="font-bold text-[#0d0d0d] underline underline-offset-4">
                 {EXAMPLE_FILM.client}
               </a>
               . Every place, address and forecast in it came out of the app, not a script.
@@ -116,12 +116,12 @@ export default function LaunchFilmPage() {
       </section>
 
       {/* ─── THE PROOF STRIP ─── */}
-      <section className="bg-[#161616] border-b-2 border-[#161616]" aria-label="What the example film measures">
+      <section className="bg-[#0d0d0d] border-b-2 border-[#0d0d0d]" aria-label="What the example film measures">
         <div className="max-w-5xl mx-auto px-5 py-8 md:py-10 grid grid-cols-3 md:grid-cols-6 gap-x-4 gap-y-7">
           {proof.map((p) => (
             <div key={p.label} className="text-center">
-              <p className="font-display text-3xl md:text-4xl font-black text-[#F5B700] tracking-tight leading-none">{p.n}</p>
-              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#FBF6EA]/70 mt-2 leading-snug">{p.label}</p>
+              <p className="font-display text-3xl md:text-4xl font-black text-[#ffd400] tracking-tight leading-none">{p.n}</p>
+              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#f1ede4]/70 mt-2 leading-snug">{p.label}</p>
             </div>
           ))}
         </div>
@@ -131,22 +131,22 @@ export default function LaunchFilmPage() {
       <section className="py-16 md:py-24" aria-labelledby="real-heading">
         <div className="max-w-5xl mx-auto px-5 grid md:grid-cols-[1.1fr_0.9fr] gap-10 md:gap-14 items-center">
           <div>
-            <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#E0301E] font-bold mb-3">[ Nothing on screen is invented ]</p>
-            <h2 id="real-heading" className="font-display text-3xl md:text-5xl font-black text-[#161616] tracking-tight leading-[1.05]">
+            <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#d0241b] font-bold mb-3">[ Nothing on screen is invented ]</p>
+            <h2 id="real-heading" className="font-display text-3xl md:text-5xl font-black text-[#0d0d0d] tracking-tight leading-[1.05]">
               Real screens. Real data. <em className="italic">Your</em> product.
             </h2>
-            <p className="font-body text-[#161616]/75 leading-relaxed mt-5">
+            <p className="font-body text-[#0d0d0d]/75 leading-relaxed mt-5">
               A launch film made of mockups sells a product that does not exist yet. This one is built the other way round. We run the product, keep what it makes, and cut the film from that. When the film says an address, the app found that address. When it shows the weather, the app checked.
             </p>
             <ul className="mt-6 space-y-2.5">
               {EXAMPLE_FILM.realThings.map((line) => (
-                <li key={line} className="flex gap-3 font-body text-sm text-[#161616]">
-                  <span aria-hidden="true" className="mt-[5px] h-3 w-3 flex-shrink-0 rounded-sm border-2 border-[#161616] bg-[#F5B700]" />
+                <li key={line} className="flex gap-3 font-body text-sm text-[#0d0d0d]">
+                  <span aria-hidden="true" className="mt-[5px] h-3 w-3 flex-shrink-0 rounded-sm border-2 border-[#0d0d0d] bg-[#ffd400]" />
                   <span>{line}</span>
                 </li>
               ))}
             </ul>
-            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#161616]/50 mt-6">Four things the IRL film says, all pulled out of the running app</p>
+            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#0d0d0d]/50 mt-6">Four things the IRL film says, all pulled out of the running app</p>
           </div>
           <div className="max-w-[300px] mx-auto w-full">
             <LaunchFilmPlayer
@@ -157,29 +157,29 @@ export default function LaunchFilmPage() {
               aspect="tall"
               title={`the ${EXAMPLE_FILM.title} launch film, vertical cut`}
             />
-            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#161616]/50 text-center mt-4">The same film, re-set for a phone</p>
+            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#0d0d0d]/50 text-center mt-4">The same film, re-set for a phone</p>
           </div>
         </div>
       </section>
 
       {/* ─── THE METHOD ─── */}
-      <section className="py-16 md:py-24 bg-white border-y-2 border-[#161616]" aria-labelledby="method-heading">
+      <section className="py-16 md:py-24 bg-white border-y-2 border-[#0d0d0d]" aria-labelledby="method-heading">
         <div className="max-w-5xl mx-auto px-5">
-          <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#E0301E] font-bold mb-3 text-center">[ The method ]</p>
-          <h2 id="method-heading" className="font-display text-3xl md:text-5xl font-black text-[#161616] tracking-tight text-center leading-[1.05]">
+          <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#d0241b] font-bold mb-3 text-center">[ The method ]</p>
+          <h2 id="method-heading" className="font-display text-3xl md:text-5xl font-black text-[#0d0d0d] tracking-tight text-center leading-[1.05]">
             Six steps. The same six, every film.
           </h2>
-          <p className="font-body text-[#161616]/70 text-center max-w-2xl mx-auto mt-4">
+          <p className="font-body text-[#0d0d0d]/70 text-center max-w-2xl mx-auto mt-4">
             A launch film here is engineered, not improvised. Every one is built on the same rig, which is why the second film costs the same as the first and ships just as fast.
           </p>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
             {launchFilmMethod.map((s) => (
-              <div key={s.n} className="rounded-2xl border-2 border-[#161616] bg-[#FBF6EA] p-7 shadow-[6px_6px_0_0_#161616]">
-                <p className="font-display italic text-4xl font-black text-[#F5B700]" aria-hidden="true">
+              <div key={s.n} className="rounded-2xl border-2 border-[#0d0d0d] bg-[#f1ede4] p-7 shadow-[6px_6px_0_0_#0d0d0d]">
+                <p className="font-display italic text-4xl font-black text-[#ffd400]" aria-hidden="true">
                   {s.n}
                 </p>
-                <h3 className="font-display text-xl font-black text-[#161616] mt-3">{s.title}</h3>
-                <p className="font-body text-sm text-[#161616]/70 leading-relaxed mt-2.5">{s.body}</p>
+                <h3 className="font-display text-xl font-black text-[#0d0d0d] mt-3">{s.title}</h3>
+                <p className="font-body text-sm text-[#0d0d0d]/70 leading-relaxed mt-2.5">{s.body}</p>
               </div>
             ))}
           </div>
@@ -187,13 +187,13 @@ export default function LaunchFilmPage() {
       </section>
 
       {/* ─── THE BODY OF WORK ─── */}
-      <section className="py-16 md:py-24 bg-[#161616]" aria-labelledby="reel-heading">
+      <section className="py-16 md:py-24 bg-[#0d0d0d]" aria-labelledby="reel-heading">
         <div className="max-w-6xl mx-auto px-5">
-          <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#F5B700] font-bold mb-3 text-center">[ The body of work ]</p>
-          <h2 id="reel-heading" className="font-display text-3xl md:text-5xl font-black text-[#FBF6EA] tracking-tight text-center leading-[1.05]">
+          <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#ffd400] font-bold mb-3 text-center">[ The body of work ]</p>
+          <h2 id="reel-heading" className="font-display text-3xl md:text-5xl font-black text-[#f1ede4] tracking-tight text-center leading-[1.05]">
             Three films. One rig.
           </h2>
-          <p className="font-body text-[#FBF6EA]/70 text-center max-w-2xl mx-auto mt-4">
+          <p className="font-body text-[#f1ede4]/70 text-center max-w-2xl mx-auto mt-4">
             A product, a studio and a storefront, each cut on the same engine. The numbers under each one are read from the delivered files.
           </p>
           <div className="grid md:grid-cols-3 gap-8 md:gap-6 mt-12">
@@ -206,21 +206,21 @@ export default function LaunchFilmPage() {
                   film={`reel-${f.slug}`}
                   title={`${f.title}, the film`}
                 />
-                <h3 className="font-display text-xl font-black text-[#FBF6EA] mt-5">{f.title}</h3>
-                <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#F5B700] mt-1">{f.for}</p>
-                <p className="font-body text-sm text-[#FBF6EA]/70 leading-relaxed mt-3">{f.note}</p>
-                <dl className="mt-4 grid grid-cols-3 gap-2 border-t-2 border-[#FBF6EA]/15 pt-4">
+                <h3 className="font-display text-xl font-black text-[#f1ede4] mt-5">{f.title}</h3>
+                <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#ffd400] mt-1">{f.for}</p>
+                <p className="font-body text-sm text-[#f1ede4]/70 leading-relaxed mt-3">{f.note}</p>
+                <dl className="mt-4 grid grid-cols-3 gap-2 border-t-2 border-[#f1ede4]/15 pt-4">
                   <div>
-                    <dt className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#FBF6EA]/50">Seconds</dt>
-                    <dd className="font-display text-2xl font-black text-[#FBF6EA]">{f.seconds}</dd>
+                    <dt className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#f1ede4]/50">Seconds</dt>
+                    <dd className="font-display text-2xl font-black text-[#f1ede4]">{f.seconds}</dd>
                   </div>
                   <div>
-                    <dt className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#FBF6EA]/50">Frames</dt>
-                    <dd className="font-display text-2xl font-black text-[#FBF6EA]">{f.frames.toLocaleString('en-US')}</dd>
+                    <dt className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#f1ede4]/50">Frames</dt>
+                    <dd className="font-display text-2xl font-black text-[#f1ede4]">{f.frames.toLocaleString('en-US')}</dd>
                   </div>
                   <div>
-                    <dt className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#FBF6EA]/50">Score</dt>
-                    <dd className="font-body text-sm font-bold text-[#FBF6EA] leading-tight mt-1">{f.score === 'synthesised' ? 'Original, synthesised' : 'Silent by design'}</dd>
+                    <dt className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#f1ede4]/50">Score</dt>
+                    <dd className="font-body text-sm font-bold text-[#f1ede4] leading-tight mt-1">{f.score === 'synthesised' ? 'Original, synthesised' : 'Silent by design'}</dd>
                   </div>
                 </dl>
               </article>
@@ -232,19 +232,19 @@ export default function LaunchFilmPage() {
       {/* ─── THE THREE FILMS ─── */}
       <section id="book" className="py-16 md:py-24 scroll-mt-20" aria-labelledby="book-heading">
         <div className="max-w-5xl mx-auto px-5">
-          <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#E0301E] font-bold mb-3 text-center">[ Set prices ]</p>
-          <h2 id="book-heading" className="font-display text-3xl md:text-5xl font-black text-[#161616] tracking-tight text-center leading-[1.05]">
+          <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#d0241b] font-bold mb-3 text-center">[ Set prices ]</p>
+          <h2 id="book-heading" className="font-display text-3xl md:text-5xl font-black text-[#0d0d0d] tracking-tight text-center leading-[1.05]">
             Three ways to book it.
           </h2>
-          <p className="font-body text-[#161616]/70 text-center max-w-2xl mx-auto mt-4">
+          <p className="font-body text-[#0d0d0d]/70 text-center max-w-2xl mx-auto mt-4">
             The price is the price. Changes to the film we built are included, and everything we make is yours: the files, the rights, and the rig that renders them.
           </p>
           <div className="mt-12">
             <LaunchFilmTiers />
           </div>
-          <p className="font-body text-sm text-[#161616]/60 text-center mt-8 max-w-2xl mx-auto">
+          <p className="font-body text-sm text-[#0d0d0d]/60 text-center mt-8 max-w-2xl mx-auto">
             A film for a product we are already building lives inside{' '}
-            <Link href="/the-system" className="font-bold text-[#161616] underline underline-offset-4">
+            <Link href="/the-system" className="font-bold text-[#0d0d0d] underline underline-offset-4">
               Idea to Product
             </Link>
             . Ask for it at the Launch tier and it is scoped in.
@@ -253,17 +253,17 @@ export default function LaunchFilmPage() {
       </section>
 
       {/* ─── THE TREATMENT COMES FIRST ─── */}
-      <section id="treatment" className="py-16 md:py-24 bg-[#F5B700] border-y-2 border-[#161616] scroll-mt-20" aria-labelledby="treatment-heading">
+      <section id="treatment" className="py-16 md:py-24 bg-[#ffd400] border-y-2 border-[#0d0d0d] scroll-mt-20" aria-labelledby="treatment-heading">
         <div className="max-w-5xl mx-auto px-5 grid md:grid-cols-2 gap-10 md:gap-14 items-center">
           <div>
-            <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#161616]/70 font-bold mb-3">[ The treatment, first ]</p>
-            <h2 id="treatment-heading" className="font-display text-3xl md:text-5xl font-black text-[#161616] tracking-tight leading-[1.05]">
+            <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#0d0d0d]/70 font-bold mb-3">[ The treatment, first ]</p>
+            <h2 id="treatment-heading" className="font-display text-3xl md:text-5xl font-black text-[#0d0d0d] tracking-tight leading-[1.05]">
               Send the product. Get the treatment.
             </h2>
-            <p className="font-body text-[#161616]/80 leading-relaxed mt-5">
+            <p className="font-body text-[#0d0d0d]/80 leading-relaxed mt-5">
               We run your product and write the treatment: the shot list, the length, the cut points, and which of the three films fits. It comes back within two business days, it costs nothing, and it is yours whether or not you book.
             </p>
-            <p className="font-body text-[#161616]/80 leading-relaxed mt-4">
+            <p className="font-body text-[#0d0d0d]/80 leading-relaxed mt-4">
               Most founders have never seen their product cut to a beat. That is usually the moment they decide.
             </p>
           </div>
@@ -274,20 +274,20 @@ export default function LaunchFilmPage() {
       {/* ─── FAQ ─── */}
       <section className="py-16 md:py-24" aria-labelledby="faq-heading">
         <div className="max-w-3xl mx-auto px-5">
-          <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#E0301E] font-bold mb-3 text-center">[ Questions ]</p>
-          <h2 id="faq-heading" className="font-display text-3xl md:text-5xl font-black text-[#161616] tracking-tight text-center leading-[1.05]">
+          <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#d0241b] font-bold mb-3 text-center">[ Questions ]</p>
+          <h2 id="faq-heading" className="font-display text-3xl md:text-5xl font-black text-[#0d0d0d] tracking-tight text-center leading-[1.05]">
             Before you book.
           </h2>
           <div className="mt-10 space-y-3">
             {launchFilmFaq.map((f) => (
-              <details key={f.q} className="group rounded-2xl border-2 border-[#161616] bg-white shadow-[4px_4px_0_0_#161616] open:shadow-[6px_6px_0_0_#F5B700]">
-                <summary className="cursor-pointer list-none px-6 py-4 font-display text-lg font-black text-[#161616] flex items-center justify-between gap-4">
+              <details key={f.q} className="group rounded-2xl border-2 border-[#0d0d0d] bg-white shadow-[4px_4px_0_0_#0d0d0d] open:shadow-[6px_6px_0_0_#ffd400]">
+                <summary className="cursor-pointer list-none px-6 py-4 font-display text-lg font-black text-[#0d0d0d] flex items-center justify-between gap-4">
                   <span>{f.q}</span>
-                  <span aria-hidden="true" className="font-mono text-xl leading-none text-[#F5B700] group-open:rotate-45 transition-transform">
+                  <span aria-hidden="true" className="font-mono text-xl leading-none text-[#ffd400] group-open:rotate-45 transition-transform">
                     +
                   </span>
                 </summary>
-                <p className="px-6 pb-5 font-body text-sm text-[#161616]/75 leading-relaxed">{f.a}</p>
+                <p className="px-6 pb-5 font-body text-sm text-[#0d0d0d]/75 leading-relaxed">{f.a}</p>
               </details>
             ))}
           </div>
@@ -295,25 +295,25 @@ export default function LaunchFilmPage() {
       </section>
 
       {/* ─── FINAL CTA ─── */}
-      <section className="py-16 md:py-24 bg-[#161616] border-t-2 border-[#161616]">
+      <section className="py-16 md:py-24 bg-[#0d0d0d] border-t-2 border-[#0d0d0d]">
         <div className="max-w-3xl mx-auto px-5 text-center">
-          <h2 className="font-display text-3xl md:text-5xl font-black text-[#FBF6EA] tracking-tight leading-[1.05]">
+          <h2 className="font-display text-3xl md:text-5xl font-black text-[#f1ede4] tracking-tight leading-[1.05]">
             You built the product.
             <br className="hidden md:block" /> Give it a premiere.
           </h2>
-          <p className="font-body text-[#FBF6EA]/70 mt-4 max-w-xl mx-auto">
+          <p className="font-body text-[#f1ede4]/70 mt-4 max-w-xl mx-auto">
             A set package price, {LAUNCH_FILM.delivery}. Or send the product first and read the treatment before you decide.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
             <a
               href="#book"
-              className="inline-block rounded-full bg-[#F5B700] border-2 border-[#F5B700] px-10 py-4 font-sans font-extrabold text-[#161616] text-sm uppercase tracking-[0.18em] shadow-[5px_5px_0_0_#FBF6EA] transition-all hover:-translate-y-0.5"
+              className="inline-block rounded-full bg-[#ffd400] border-2 border-[#ffd400] px-10 py-4 font-sans font-extrabold text-[#0d0d0d] text-sm uppercase tracking-[0.18em] shadow-[5px_5px_0_0_#f1ede4] transition-all hover:-translate-y-0.5"
             >
               Book the film
             </a>
             <Link
               href="/book"
-              className="inline-block rounded-full bg-transparent border-2 border-[#FBF6EA] px-10 py-4 font-sans font-extrabold text-[#FBF6EA] text-sm uppercase tracking-[0.18em] transition-all hover:-translate-y-0.5"
+              className="inline-block rounded-full bg-transparent border-2 border-[#f1ede4] px-10 py-4 font-sans font-extrabold text-[#f1ede4] text-sm uppercase tracking-[0.18em] transition-all hover:-translate-y-0.5"
             >
               Talk to Sarah first
             </Link>

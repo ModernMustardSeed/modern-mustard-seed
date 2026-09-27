@@ -64,7 +64,7 @@ export default function AiProofPage() {
           faqJsonLd(faq),
         ]}
       />
-      <div className="relative min-h-screen bg-[#FBF6EA] text-[#161616]">
+      <div className="relative min-h-screen bg-[#f1ede4] text-[#0d0d0d]">
         <PopPageHero
           eyebrow={<span>Future-Proof Your Business</span>}
           title={<>Defend the{' '}<em>Moat</em></>}
@@ -82,10 +82,10 @@ export default function AiProofPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20">
             {phases.map((p) => (
               <article key={p.title} className="pop-card p-8 md:p-10 hover:-translate-y-1 transition-transform duration-300">
-                <span className="text-[10px] uppercase tracking-[0.3em] text-[#E0301E] font-mono font-bold block mb-3">
+                <span className="text-[10px] uppercase tracking-[0.3em] text-[#d0241b] font-mono font-bold block mb-3">
                   {p.eyebrow}
                 </span>
-                <h2 className="font-display text-xl md:text-2xl font-black text-[#161616] tracking-tight mb-4 leading-snug">
+                <h2 className="font-display text-xl md:text-2xl font-black text-[#0d0d0d] tracking-tight mb-4 leading-snug">
                   {p.title}
                 </h2>
                 <p className="text-[#3a3733] text-sm md:text-base font-body leading-7">{p.body}</p>
@@ -94,17 +94,17 @@ export default function AiProofPage() {
           </div>
 
           <div className="pop-card-yellow p-10 mb-20">
-            <span className="text-[10px] uppercase tracking-[0.5em] text-[#161616] font-mono font-bold block mb-3 text-center">
+            <span className="text-[10px] uppercase tracking-[0.5em] text-[#0d0d0d] font-mono font-bold block mb-3 text-center">
               The premise
             </span>
-            <p className="text-[#161616] text-lg md:text-xl font-display font-bold leading-relaxed text-center max-w-3xl mx-auto italic">
+            <p className="text-[#0d0d0d] text-lg md:text-xl font-display font-bold leading-relaxed text-center max-w-3xl mx-auto italic">
               &ldquo;If agentic systems are going to reshape your industry, you have two choices. Build the agentic version of your business before someone else does. Or stand still while a competitor does it to you.&rdquo;
             </p>
           </div>
 
           <div className="max-w-3xl mx-auto mb-20">
             <div className="text-center mb-10">
-              <h2 className="font-display text-3xl md:text-4xl font-black text-[#161616] tracking-tight mb-3">
+              <h2 className="font-display text-3xl md:text-4xl font-black text-[#0d0d0d] tracking-tight mb-3">
                 Common{' '}
                 <em>Questions</em>
               </h2>
@@ -113,10 +113,10 @@ export default function AiProofPage() {
               {faq.map((item) => (
                 <details key={item.q} className="pop-card p-6 group cursor-pointer">
                   <summary className="flex justify-between items-start gap-4 list-none">
-                    <h3 className="font-display text-lg font-black text-[#161616] tracking-tight">
+                    <h3 className="font-display text-lg font-black text-[#0d0d0d] tracking-tight">
                       {item.q}
                     </h3>
-                    <span className="text-[#E0301E] text-2xl flex-shrink-0 transition-transform group-open:rotate-45 font-black">
+                    <span className="text-[#d0241b] text-2xl flex-shrink-0 transition-transform group-open:rotate-45 font-black">
                       +
                     </span>
                   </summary>
@@ -129,10 +129,10 @@ export default function AiProofPage() {
           </div>
 
           <div className="text-center pop-card-yellow p-10 mb-16">
-            <h3 className="font-display text-2xl md:text-3xl font-black text-[#161616] tracking-tight mb-4">
+            <h3 className="font-display text-2xl md:text-3xl font-black text-[#0d0d0d] tracking-tight mb-4">
               Ready to defend the moat?
             </h3>
-            <p className="text-[#161616]/75 text-base font-body font-medium mb-6 max-w-lg mx-auto">
+            <p className="text-[#0d0d0d]/75 text-base font-body font-medium mb-6 max-w-lg mx-auto">
               Book a 30-minute discovery call. One conversation, one scoped quote, no decks.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -140,13 +140,13 @@ export default function AiProofPage() {
                 href={bookingUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-white bg-[#161616] rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_rgba(22,22,22,0.3)] hover:-translate-y-0.5 transition-all"
+                className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-white bg-[#0d0d0d] rounded-full border-2 border-[#0d0d0d] shadow-[4px_4px_0_0_rgba(13,13,13,0.3)] hover:-translate-y-0.5 transition-all"
               >
                 Book a Discovery Call
               </a>
               <Link
                 href="/audit"
-                className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-white rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
+                className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0d0d0d] bg-white rounded-full border-2 border-[#0d0d0d] shadow-[4px_4px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-all"
               >
                 Read The Work First
               </Link>

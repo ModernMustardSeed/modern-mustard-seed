@@ -1,9 +1,9 @@
 /* The homepage medallion, sized for an inner-page hero: etched rays, a red
    offset disc, a cream plate with a Ben-Day edge, and Mr. Mustard in the
    middle. Wide screens only; below that the headline gets the whole band. */
-.art{--ink:#080c16;--cream:#fbf6ea;--mustard:#f5b700;--red:#e0301e;position:absolute;top:50%;right:max(24px,calc((100vw - 72rem)/2 + 24px));width:400px;aspect-ratio:1;translate:0 -46%;pointer-events:none;display:none}
+.art{--ink:#0d0d0d;--cream:#f1ede4;--mustard:#ffd400;--red:#ff3b2f;position:absolute;top:50%;right:max(24px,calc((100vw - 72rem)/2 + 24px));width:400px;aspect-ratio:1;translate:0 -46%;pointer-events:none;display:none}
 @media(min-width:1280px){.art{display:block}}
-.art i{position:absolute;inset:-24%;border-radius:50%;background:repeating-conic-gradient(from 0deg,#161616 0 .35deg,transparent .35deg 5deg);opacity:.2;mask-image:radial-gradient(circle,transparent 38%,#000 44%,transparent 72%);-webkit-mask-image:radial-gradient(circle,transparent 38%,#000 44%,transparent 72%)}
+.art i{position:absolute;inset:-24%;border-radius:50%;background:repeating-conic-gradient(from 0deg,#0d0d0d 0 .35deg,transparent .35deg 5deg);opacity:.2;mask-image:radial-gradient(circle,transparent 38%,#000 44%,transparent 72%);-webkit-mask-image:radial-gradient(circle,transparent 38%,#000 44%,transparent 72%)}
 .art:before{content:'';position:absolute;inset:0;border-radius:50%;background:var(--red);translate:14px 11px;opacity:.9}
 .art:after{content:'';position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 38% 34%,#fffaf0 0,var(--cream) 46%,#f3e7c9 100%);border:3px solid var(--ink)}
 .art b{position:absolute;inset:0;z-index:1;border-radius:50%;background-image:radial-gradient(var(--mustard) 2.2px,transparent 2.5px);background-size:10px 10px;mask-image:radial-gradient(circle at 32% 28%,transparent 40%,#000 88%);-webkit-mask-image:radial-gradient(circle at 32% 28%,transparent 40%,#000 88%)}

@@ -57,16 +57,16 @@ export default function BuyButton({
           className ||
           `px-9 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold rounded-full border-2 hover:-translate-y-0.5 transition-all disabled:opacity-50 ${
             tone === 'ink'
-              ? 'text-[#161616] bg-[#F5B700] border-[#FBF6EA] shadow-[4px_4px_0_0_#FBF6EA]'
+              ? 'text-[#0d0d0d] bg-[#ffd400] border-[#f1ede4] shadow-[4px_4px_0_0_#f1ede4]'
               : tone === 'onMustard'
-                ? 'text-[#FBF6EA] bg-[#161616] border-[#161616] shadow-[4px_4px_0_0_#FBF6EA]'
-                : 'text-[#161616] bg-[#F5B700] border-[#161616] shadow-[4px_4px_0_0_#161616]'
+                ? 'text-[#f1ede4] bg-[#0d0d0d] border-[#0d0d0d] shadow-[4px_4px_0_0_#f1ede4]'
+                : 'text-[#0d0d0d] bg-[#ffd400] border-[#0d0d0d] shadow-[4px_4px_0_0_#0d0d0d]'
           }`
         }
       >
         {loading ? 'Opening checkout...' : label}
       </button>
-      {error && <p className={`text-xs font-body font-semibold max-w-xs text-center ${tone === 'ink' ? 'text-[#F5B700]' : 'text-[#B92417]'}`}>{error}</p>}
+      {error && <p className={`text-xs font-body font-semibold max-w-xs text-center ${tone === 'ink' ? 'text-[#ffd400]' : 'text-[#c8201a]'}`}>{error}</p>}
     </div>
   );
 }

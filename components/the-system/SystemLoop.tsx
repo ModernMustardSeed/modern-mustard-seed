@@ -71,19 +71,19 @@ export default function SystemLoop() {
           {/* Outer halftone disc */}
           <defs>
             <pattern id="loop-dots" width="14" height="14" patternUnits="userSpaceOnUse">
-              <circle cx="7" cy="7" r="1.6" fill="#F5B700" opacity="0.55" />
+              <circle cx="7" cy="7" r="1.6" fill="#ffd400" opacity="0.55" />
             </pattern>
           </defs>
           <circle cx={CENTER} cy={CENTER} r={RADIUS + 58} fill="url(#loop-dots)" />
 
           {/* Track */}
-          <circle cx={CENTER} cy={CENTER} r={RADIUS} fill="none" stroke="#161616" strokeWidth="3" />
+          <circle cx={CENTER} cy={CENTER} r={RADIUS} fill="none" stroke="#0d0d0d" strokeWidth="3" />
           <circle
             cx={CENTER}
             cy={CENTER}
             r={RADIUS}
             fill="none"
-            stroke="#F5B700"
+            stroke="#ffd400"
             strokeWidth="10"
             strokeDasharray="14 10"
             strokeLinecap="round"
@@ -99,18 +99,18 @@ export default function SystemLoop() {
             const angle = (Math.atan2(next.y - mid.y, next.x - mid.x) * 180) / Math.PI;
             return (
               <g key={`arrow-${i}`} transform={`translate(${mid.x} ${mid.y}) rotate(${angle})`}>
-                <path d="M -7 -7 L 7 0 L -7 7 Z" fill="#161616" />
+                <path d="M -7 -7 L 7 0 L -7 7 Z" fill="#0d0d0d" />
               </g>
             );
           })}
 
           {/* Centre: one brain */}
-          <circle cx={CENTER} cy={CENTER} r={96} fill="#161616" />
-          <circle cx={CENTER} cy={CENTER} r={84} fill="none" stroke="#F5B700" strokeWidth="2" strokeDasharray="4 6" />
-          <text x={CENTER} y={CENTER - 14} textAnchor="middle" fontFamily="'JetBrains Mono', monospace" fontSize="11" fill="#F5B700" fontWeight="700" letterSpacing="3">
+          <circle cx={CENTER} cy={CENTER} r={96} fill="#0d0d0d" />
+          <circle cx={CENTER} cy={CENTER} r={84} fill="none" stroke="#ffd400" strokeWidth="2" strokeDasharray="4 6" />
+          <text x={CENTER} y={CENTER - 14} textAnchor="middle" fontFamily="'JetBrains Mono', monospace" fontSize="11" fill="#ffd400" fontWeight="700" letterSpacing="3">
             ONE BOARD
           </text>
-          <text x={CENTER} y={CENTER + 18} textAnchor="middle" fontFamily="'Playfair Display', Georgia, serif" fontSize="30" fontStyle="italic" fontWeight="800" fill="#FBF6EA">
+          <text x={CENTER} y={CENTER + 18} textAnchor="middle" fontFamily="'Playfair Display', Georgia, serif" fontSize="30" fontStyle="italic" fontWeight="800" fill="#f1ede4">
             one brain
           </text>
 
@@ -125,7 +125,7 @@ export default function SystemLoop() {
                 y1={CENTER}
                 x2={p.x}
                 y2={p.y}
-                stroke={isActive ? '#E0301E' : '#161616'}
+                stroke={isActive ? '#ff3b2f' : '#0d0d0d'}
                 strokeWidth={isActive ? 4 : 1.5}
                 strokeDasharray={isActive ? '0' : '3 7'}
                 opacity={isActive ? 1 : 0.35}
@@ -148,15 +148,15 @@ export default function SystemLoop() {
               onClick={() => setActive(i)}
               aria-pressed={isActive}
               aria-label={`Station ${s.code}, ${s.verb}`}
-              className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-[#161616] font-mono font-extrabold text-[11px] uppercase tracking-[0.12em] transition-all duration-300 focus:outline-none focus-visible:ring-4 focus-visible:ring-[#161616]/50"
+              className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-[#0d0d0d] font-mono font-extrabold text-[11px] uppercase tracking-[0.12em] transition-all duration-300 focus:outline-none focus-visible:ring-4 focus-visible:ring-[#0d0d0d]/50"
               style={{
                 left: `${(p.x / SIZE) * 100}%`,
                 top: `${(p.y / SIZE) * 100}%`,
                 width: `${((NODE * 2) / SIZE) * 100}%`,
                 aspectRatio: '1 / 1',
-                background: isActive ? '#E0301E' : '#FFFFFF',
-                color: isActive ? '#FBF6EA' : '#161616',
-                boxShadow: isActive ? '4px 4px 0 0 #161616' : '3px 3px 0 0 #161616',
+                background: isActive ? '#ff3b2f' : '#FFFFFF',
+                color: isActive ? '#f1ede4' : '#0d0d0d',
+                boxShadow: isActive ? '4px 4px 0 0 #0d0d0d' : '3px 3px 0 0 #0d0d0d',
                 transform: `translate(-50%, -50%) scale(${isActive ? 1.18 : 1})`,
               }}
             >
@@ -184,7 +184,7 @@ export default function SystemLoop() {
                 left: `${(p.x / SIZE) * 100}%`,
                 top: `${(p.y / SIZE) * 100}%`,
                 transform: translate,
-                color: isActive ? '#E0301E' : '#161616',
+                color: isActive ? '#ff3b2f' : '#0d0d0d',
               }}
             >
               {s.verb}
@@ -196,24 +196,24 @@ export default function SystemLoop() {
 
       {/* The reading panel */}
       <div className="pop-card p-7 md:p-9 relative min-h-[360px] flex flex-col" aria-live="polite">
-        <span className="absolute -top-4 left-6 inline-block bg-[#E0301E] text-[#FBF6EA] font-mono font-bold text-[10px] uppercase tracking-[0.25em] px-3 py-1.5 rounded-full border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] -rotate-2">
+        <span className="absolute -top-4 left-6 inline-block bg-[#ff3b2f] text-[#f1ede4] font-mono font-bold text-[10px] uppercase tracking-[0.25em] px-3 py-1.5 rounded-full border-2 border-[#0d0d0d] shadow-[3px_3px_0_0_#0d0d0d] -rotate-2">
           Station {station.code} of {count}
         </span>
         <div className="flex items-center gap-3 mt-2">
-          <span className="font-display italic font-extrabold text-5xl md:text-6xl text-[#F5B700]" style={{ WebkitTextStroke: '2px #161616' }}>
+          <span className="font-display italic font-extrabold text-5xl md:text-6xl text-[#ffd400]" style={{ WebkitTextStroke: '2px #0d0d0d' }}>
             {station.verb}
           </span>
         </div>
-        <h3 className="font-display font-extrabold text-2xl md:text-[1.75rem] leading-[1.1] mt-4 text-[#161616]">{station.title}</h3>
-        <p className="font-body text-[15px] leading-relaxed text-[#161616]/75 mt-4">{station.blurb}</p>
-        <dl className="mt-6 grid sm:grid-cols-2 gap-4 border-t-2 border-dashed border-[#161616]/20 pt-5">
+        <h3 className="font-display font-extrabold text-2xl md:text-[1.75rem] leading-[1.1] mt-4 text-[#0d0d0d]">{station.title}</h3>
+        <p className="font-body text-[15px] leading-relaxed text-[#0d0d0d]/75 mt-4">{station.blurb}</p>
+        <dl className="mt-6 grid sm:grid-cols-2 gap-4 border-t-2 border-dashed border-[#0d0d0d]/20 pt-5">
           <div>
             <dt className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#C4160B] font-bold">Runs on</dt>
-            <dd className="font-sans font-bold text-[14px] text-[#161616] mt-1">{station.runsOn}</dd>
+            <dd className="font-sans font-bold text-[14px] text-[#0d0d0d] mt-1">{station.runsOn}</dd>
           </div>
           <div>
             <dt className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#C4160B] font-bold">What you see</dt>
-            <dd className="font-sans text-[14px] text-[#161616]/80 mt-1">{station.proof}</dd>
+            <dd className="font-sans text-[14px] text-[#0d0d0d]/80 mt-1">{station.proof}</dd>
           </div>
         </dl>
         <div className="mt-auto pt-6 flex items-center justify-between gap-4">
@@ -221,8 +221,8 @@ export default function SystemLoop() {
             {STATIONS.map((s, i) => (
               <span
                 key={s.code}
-                className="h-2 rounded-full border border-[#161616] transition-all duration-300"
-                style={{ width: i === active ? 22 : 8, background: i === active ? '#E0301E' : '#FFFFFF' }}
+                className="h-2 rounded-full border border-[#0d0d0d] transition-all duration-300"
+                style={{ width: i === active ? 22 : 8, background: i === active ? '#ff3b2f' : '#FFFFFF' }}
               />
             ))}
           </div>
@@ -230,7 +230,7 @@ export default function SystemLoop() {
             <button
               type="button"
               onClick={() => setActive((a) => (a - 1 + count) % count)}
-              className="w-10 h-10 rounded-full bg-white border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] font-bold hover:-translate-y-0.5 transition-transform"
+              className="w-10 h-10 rounded-full bg-white border-2 border-[#0d0d0d] shadow-[3px_3px_0_0_#0d0d0d] font-bold hover:-translate-y-0.5 transition-transform"
               aria-label="Previous station"
             >
               ←
@@ -238,7 +238,7 @@ export default function SystemLoop() {
             <button
               type="button"
               onClick={() => setActive((a) => (a + 1) % count)}
-              className="w-10 h-10 rounded-full bg-[#F5B700] border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] font-bold hover:-translate-y-0.5 transition-transform"
+              className="w-10 h-10 rounded-full bg-[#ffd400] border-2 border-[#0d0d0d] shadow-[3px_3px_0_0_#0d0d0d] font-bold hover:-translate-y-0.5 transition-transform"
               aria-label="Next station"
             >
               →

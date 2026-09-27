@@ -48,7 +48,7 @@ const FAQ = [
 
 export default function ServicesPage() {
   return (
-    <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
+    <div className="min-h-screen bg-[#f1ede4] text-[#0d0d0d]">
       <JsonLd
         data={[
           breadcrumbJsonLd([
@@ -67,7 +67,7 @@ export default function ServicesPage() {
         issue={{ no: 'No.5', lines: ['Five disciplines', 'One standard'] }}
         art={{
           src: '/art/pages/services',
-          alt: 'Pop-art screenprint: a pegboard of neatly hung tools, a paintbrush, a wrench, a studio microphone and a telephone handset, over a workbench with a spirit level',
+          alt: 'Graffiti couture painting: Mr. Mustard with a spray can and a wrench beside the open trunk of a black classic convertible packed with tools, under a graffiti-covered railroad trestle',
           caption: 'Every tool, one bench',
         }}
         sticker="Level!"
@@ -97,7 +97,7 @@ export default function ServicesPage() {
           <h2 className="font-display italic font-extrabold text-4xl md:text-5xl mt-3 leading-[1.02] max-w-3xl">
             A website, a voice agent, and the brain that runs them.
           </h2>
-          <p className="font-body text-[15px] text-[#161616]/70 mt-4 max-w-2xl leading-relaxed">
+          <p className="font-body text-[15px] text-[#0d0d0d]/70 mt-4 max-w-2xl leading-relaxed">
             The three that work together. Commissioned as one engagement, they run off one brain, which
             is why the answers never drift apart.
           </p>
@@ -106,13 +106,13 @@ export default function ServicesPage() {
               <Link
                 key={d.key}
                 href={d.href}
-                className="group flex flex-col border-2 border-[#161616] bg-white rounded-2xl shadow-[6px_6px_0_0_#161616] p-7 hover:-translate-y-1 hover:shadow-[8px_8px_0_0_#F5B700] transition-all"
+                className="group flex flex-col border-2 border-[#0d0d0d] bg-white rounded-2xl shadow-[6px_6px_0_0_#0d0d0d] p-7 hover:-translate-y-1 hover:shadow-[8px_8px_0_0_#ffd400] transition-all"
               >
                 <span className="text-3xl leading-none" aria-hidden>{d.icon}</span>
                 <span className="font-mono text-[10px] uppercase tracking-[0.2em] font-bold text-[#C4160B] mt-3">{d.tag}</span>
                 <h3 className="font-display italic font-extrabold text-2xl mt-1">{d.name}</h3>
-                <p className="font-body text-[14px] text-[#161616]/75 mt-2.5 leading-relaxed flex-1">{d.blurb}</p>
-                <span className="font-sans font-bold text-[12px] uppercase tracking-[0.14em] text-[#161616] mt-5 inline-flex items-center gap-1.5">
+                <p className="font-body text-[14px] text-[#0d0d0d]/75 mt-2.5 leading-relaxed flex-1">{d.blurb}</p>
+                <span className="font-sans font-bold text-[12px] uppercase tracking-[0.14em] text-[#0d0d0d] mt-5 inline-flex items-center gap-1.5">
                   See it <span className="group-hover:translate-x-1 transition-transform" aria-hidden>→</span>
                 </span>
               </Link>
@@ -128,7 +128,7 @@ export default function ServicesPage() {
           <h2 className="font-display italic font-extrabold text-4xl md:text-5xl mt-3 leading-[1.02] max-w-3xl">
             Tell us what you want. We will point at the door.
           </h2>
-          <p className="font-body text-[15px] text-[#161616]/70 mt-4 max-w-2xl leading-relaxed mb-9">
+          <p className="font-body text-[15px] text-[#0d0d0d]/70 mt-4 max-w-2xl leading-relaxed mb-9">
             Skip the menu. Pick what you are actually trying to do and the right doors show up.
           </p>
           <PathFinder />
@@ -147,7 +147,7 @@ export default function ServicesPage() {
               <Link
                 key={d.key}
                 href={d.href}
-                className="group flex flex-col border-2 border-[#161616] bg-white rounded-2xl shadow-[5px_5px_0_0_#161616] p-6 hover:-translate-y-1 hover:shadow-[7px_7px_0_0_#F5B700] transition-all"
+                className="group flex flex-col border-2 border-[#0d0d0d] bg-white rounded-2xl shadow-[5px_5px_0_0_#0d0d0d] p-6 hover:-translate-y-1 hover:shadow-[7px_7px_0_0_#ffd400] transition-all"
               >
                 <div className="flex items-center gap-3">
                   <span className="text-2xl leading-none" aria-hidden>{d.icon}</span>
@@ -156,8 +156,8 @@ export default function ServicesPage() {
                     <h3 className="font-display italic font-extrabold text-xl leading-tight">{d.name}</h3>
                   </div>
                 </div>
-                <p className="font-body text-[13px] text-[#161616]/75 mt-3 leading-relaxed flex-1">{d.blurb}</p>
-                <span className="font-sans font-bold text-[11px] uppercase tracking-[0.14em] text-[#161616] mt-4 inline-flex items-center gap-1.5">
+                <p className="font-body text-[13px] text-[#0d0d0d]/75 mt-3 leading-relaxed flex-1">{d.blurb}</p>
+                <span className="font-sans font-bold text-[11px] uppercase tracking-[0.14em] text-[#0d0d0d] mt-4 inline-flex items-center gap-1.5">
                   Open it <span className="group-hover:translate-x-1 transition-transform" aria-hidden>→</span>
                 </span>
               </Link>
@@ -166,34 +166,34 @@ export default function ServicesPage() {
         </section>
 
         {/* ── Bespoke ── */}
-        <section className="bg-[#161616] border-2 border-[#161616] rounded-2xl shadow-[8px_8px_0_0_#F5B700] p-7 sm:p-10">
-          <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#F5B700] font-bold">Custom software // Built to spec</span>
-          <h2 className="font-display italic font-extrabold text-3xl md:text-4xl text-[#FBF6EA] mt-3 leading-[1.05] max-w-2xl">
+        <section className="bg-[#0d0d0d] border-2 border-[#0d0d0d] rounded-2xl shadow-[8px_8px_0_0_#ffd400] p-7 sm:p-10">
+          <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#ffd400] font-bold">Custom software // Built to spec</span>
+          <h2 className="font-display italic font-extrabold text-3xl md:text-4xl text-[#f1ede4] mt-3 leading-[1.05] max-w-2xl">
             When the answer is software nobody sells yet.
           </h2>
-          <p className="font-body text-[14px] text-[#FBF6EA]/70 mt-3 max-w-2xl leading-relaxed">
+          <p className="font-body text-[14px] text-[#f1ede4]/70 mt-3 max-w-2xl leading-relaxed">
             An application, a tool only your industry has, a store, or a system of agents. Same hand
             on it from first sketch to launch day, one set package price, and you own all of it.
           </p>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
             {BESPOKE.map((b) => (
-              <div key={b.name} className="rounded-2xl border-2 border-[#FBF6EA]/15 bg-[#1F1F1F] p-5">
+              <div key={b.name} className="rounded-2xl border-2 border-[#f1ede4]/15 bg-[#1F1F1F] p-5">
                 <span className="text-2xl leading-none" aria-hidden>{b.icon}</span>
-                <h3 className="font-display font-extrabold text-[17px] text-[#FBF6EA] mt-2.5">{b.name}</h3>
-                <p className="font-body text-[12.5px] text-[#FBF6EA]/70 mt-1.5 leading-relaxed">{b.desc}</p>
+                <h3 className="font-display font-extrabold text-[17px] text-[#f1ede4] mt-2.5">{b.name}</h3>
+                <p className="font-body text-[12.5px] text-[#f1ede4]/70 mt-1.5 leading-relaxed">{b.desc}</p>
               </div>
             ))}
           </div>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
               href="/book"
-              className="inline-block border-2 border-[#161616] bg-[#F5B700] text-[#161616] rounded-full px-7 py-3.5 font-sans font-extrabold text-[11px] uppercase tracking-[0.16em] shadow-[4px_4px_0_0_#000000] hover:-translate-y-0.5 transition-all"
+              className="inline-block border-2 border-[#0d0d0d] bg-[#ffd400] text-[#0d0d0d] rounded-full px-7 py-3.5 font-sans font-extrabold text-[11px] uppercase tracking-[0.16em] shadow-[4px_4px_0_0_#000000] hover:-translate-y-0.5 transition-all"
             >
               Scope a custom build
             </Link>
             <Link
               href="/work"
-              className="inline-flex items-center px-2 py-3.5 font-sans font-bold text-[11px] uppercase tracking-[0.14em] text-[#F5B700] hover:text-[#FBF6EA] transition-colors"
+              className="inline-flex items-center px-2 py-3.5 font-sans font-bold text-[11px] uppercase tracking-[0.14em] text-[#ffd400] hover:text-[#f1ede4] transition-colors"
             >
               See what we have shipped →
             </Link>
@@ -215,15 +215,15 @@ export default function ServicesPage() {
               ['Shipped end to end', 'The people who scope it are the people who build it. No strategy decks that never become products, and no handing your project to somebody who has not read it.'],
               ['You own it outright', 'The repo, the domain, the accounts, and every credential are yours on launch day. Keep us on a retainer or walk. No lock-in.'],
             ].map(([t, d]) => (
-              <div key={t} className="border-2 border-[#161616] bg-white rounded-2xl shadow-[5px_5px_0_0_#161616] p-6">
+              <div key={t} className="border-2 border-[#0d0d0d] bg-white rounded-2xl shadow-[5px_5px_0_0_#0d0d0d] p-6">
                 <h3 className="font-display font-extrabold text-lg leading-tight">{t}</h3>
-                <p className="font-body text-[13px] text-[#161616]/75 mt-2 leading-relaxed">{d}</p>
+                <p className="font-body text-[13px] text-[#0d0d0d]/75 mt-2 leading-relaxed">{d}</p>
               </div>
             ))}
           </div>
-          <p className="font-body text-[13px] text-[#161616]/70 mt-6">
+          <p className="font-body text-[13px] text-[#0d0d0d]/70 mt-6">
             The full engagement model lives on{' '}
-            <Link href="/work-with-us" className="font-bold text-[#B92417] underline underline-offset-4 hover:text-[#161616]">How It Works</Link>.
+            <Link href="/work-with-us" className="font-bold text-[#c8201a] underline underline-offset-4 hover:text-[#0d0d0d]">How It Works</Link>.
           </p>
         </section>
 
@@ -237,7 +237,7 @@ export default function ServicesPage() {
           </h2>
           <div className="mt-10 max-w-3xl mx-auto space-y-4">
             {FAQ.map((f) => (
-              <details key={f.q} className="group rounded-xl border-2 border-[#161616] bg-white p-5 open:shadow-[4px_4px_0_0_#F5B700] transition-shadow">
+              <details key={f.q} className="group rounded-xl border-2 border-[#0d0d0d] bg-white p-5 open:shadow-[4px_4px_0_0_#ffd400] transition-shadow">
                 <summary className="font-display text-lg font-bold cursor-pointer list-none flex items-center justify-between gap-4">
                   {f.q}
                   <span className="flex-shrink-0 text-[#C4160B] transition-transform group-open:rotate-45" aria-hidden>+</span>
@@ -249,18 +249,18 @@ export default function ServicesPage() {
         </section>
 
         {/* ── Close ── */}
-        <section className="relative halftone-bg border-2 border-[#161616] rounded-2xl bg-[#F5B700] p-10 md:p-14 text-center overflow-hidden">
+        <section className="relative halftone-bg border-2 border-[#0d0d0d] rounded-2xl bg-[#ffd400] p-10 md:p-14 text-center overflow-hidden">
           <div className="relative">
             <h2 className="font-display italic font-extrabold text-3xl md:text-5xl leading-[1.02]">
               Tell us which door you are standing at.
             </h2>
-            <p className="font-body text-[15px] text-[#161616]/80 mt-4 max-w-xl mx-auto leading-relaxed">
+            <p className="font-body text-[15px] text-[#0d0d0d]/80 mt-4 max-w-xl mx-auto leading-relaxed">
               Or say what you are trying to make happen and we will tell you which one it is. Sarah
               reads every inquiry herself and answers inside one business day.
             </p>
             <Link
               href="/book"
-              className="mt-7 inline-block border-2 border-[#161616] bg-[#161616] text-[#F5B700] rounded-full px-9 py-4 font-sans font-extrabold text-[12px] uppercase tracking-[0.16em] shadow-[5px_5px_0_0_rgba(22,22,22,0.3)] hover:-translate-y-0.5 transition-all"
+              className="mt-7 inline-block border-2 border-[#0d0d0d] bg-[#0d0d0d] text-[#ffd400] rounded-full px-9 py-4 font-sans font-extrabold text-[12px] uppercase tracking-[0.16em] shadow-[5px_5px_0_0_rgba(13,13,13,0.3)] hover:-translate-y-0.5 transition-all"
             >
               Begin an engagement →
             </Link>

@@ -90,7 +90,7 @@ function Footage({ src, poster, className = '', dim = 0.25, mediaClass = '' }: {
 /** Mono eyebrow chip in the pop chrome. */
 function Mile({ label, dark = false }: { label: string; dark?: boolean }) {
   return (
-    <span className={`inline-block font-mono font-bold text-[11px] tracking-[0.22em] uppercase border-2 border-[#161616] px-3 py-1 shadow-[3px_3px_0_0_#161616] ${dark ? 'bg-[#F5B700] text-[#161616]' : 'bg-white text-[#8f6600]'}`}>
+    <span className={`inline-block font-mono font-bold text-[11px] tracking-[0.22em] uppercase border-2 border-[#0d0d0d] px-3 py-1 shadow-[3px_3px_0_0_#0d0d0d] ${dark ? 'bg-[#ffd400] text-[#0d0d0d]' : 'bg-white text-[#8f6600]'}`}>
       {label}
     </span>
   );
@@ -146,13 +146,13 @@ export function JourneyHero() {
           </span>
           <h1
             className={`${anton.className} mt-3 sm:mt-4 uppercase leading-[0.92] text-transparent ${revealBase}`}
-            style={{ WebkitTextStroke: '2.5px #FBF6EA', fontSize: 'clamp(44px, 8.5vw, 136px)', transitionDelay: '120ms' }}
+            style={{ WebkitTextStroke: '2.5px #f1ede4', fontSize: 'clamp(44px, 8.5vw, 136px)', transitionDelay: '120ms' }}
           >
             Come For
             <br />
             A Drive
           </h1>
-          <p className={`mt-3 sm:mt-5 max-w-2xl lg:max-w-xl text-base sm:text-lg md:text-xl text-[#FBF6EA]/95 font-body ${revealBase}`} style={{ transitionDelay: '240ms' }}>
+          <p className={`mt-3 sm:mt-5 max-w-2xl lg:max-w-xl text-base sm:text-lg md:text-xl text-[#f1ede4]/95 font-body ${revealBase}`} style={{ transitionDelay: '240ms' }}>
             Modern Mustard Seed. A boutique design and agentic systems studio in Kalispell,
             Montana.
             <span className="hidden sm:inline"> This is the scenic route.</span>
@@ -160,20 +160,20 @@ export function JourneyHero() {
           <div className={`mt-4 sm:mt-6 flex flex-wrap items-center justify-center gap-4 lg:justify-end ${revealBase}`} style={{ transitionDelay: '360ms' }}>
             <a
               href="#tour-orchard"
-              className="bg-[#F5B700] text-[#161616] font-bold border-2 border-[#161616] px-7 py-3.5 shadow-[4px_4px_0_0_#161616] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#161616] transition-all"
+              className="bg-[#ffd400] text-[#0d0d0d] font-bold border-2 border-[#0d0d0d] px-7 py-3.5 shadow-[4px_4px_0_0_#0d0d0d] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#0d0d0d] transition-all"
               onClick={() => track('journey_start_drive')}
             >
               Start The Drive
             </a>
             <button
               onClick={() => openMustard('hero')}
-              className="hidden lg:inline-block bg-white/10 backdrop-blur text-[#FBF6EA] font-bold border-2 border-[#FBF6EA] px-7 py-3.5 hover:bg-white/20 transition-colors"
+              className="hidden lg:inline-block bg-white/10 backdrop-blur text-[#f1ede4] font-bold border-2 border-[#f1ede4] px-7 py-3.5 hover:bg-white/20 transition-colors"
             >
               Skip Ahead, Talk To Mr. Mustard
             </button>
           </div>
         </div>
-        <div className="absolute bottom-16 left-1/2 -translate-x-1/2 z-10 text-[#FBF6EA]/80 font-mono text-[11px] tracking-[0.3em] uppercase motion-reduce:hidden">
+        <div className="absolute bottom-16 left-1/2 -translate-x-1/2 z-10 text-[#f1ede4]/80 font-mono text-[11px] tracking-[0.3em] uppercase motion-reduce:hidden">
           <span className="inline-block animate-bounce">▼ Scroll</span>
         </div>
       </div>
@@ -200,10 +200,10 @@ export function JourneyRing() {
   return (
     <section
       id="tour-ring"
-      className="relative bg-[#F5B700] border-b-2 border-[#161616] py-14 md:py-20"
+      className="relative bg-[#ffd400] border-b-2 border-[#0d0d0d] py-14 md:py-20"
     >
       <div ref={ref} className="group mx-auto flex max-w-xl flex-col items-center px-6 text-center">
-        <span className={`${caveat.className} text-2xl md:text-3xl text-[#161616] rotate-[-1.5deg] ${revealBase}`}>
+        <span className={`${caveat.className} text-2xl md:text-3xl text-[#0d0d0d] rotate-[-1.5deg] ${revealBase}`}>
           the fastest way to hear one is to answer one
         </span>
         <div className={`mt-5 w-full ${revealBase}`} style={{ transitionDelay: '120ms' }}>
@@ -255,17 +255,17 @@ export function JourneyOrchard() {
       id="tour-orchard"
       data-journey-chapter="The Orchards"
       data-mile="MI 12"
-      className="relative bg-[#FBF6EA] border-y-2 border-[#161616] py-24 md:py-32 overflow-hidden"
+      className="relative bg-[#f1ede4] border-y-2 border-[#0d0d0d] py-24 md:py-32 overflow-hidden"
     >
       <div ref={ref} className="group mx-auto grid max-w-7xl items-center gap-12 px-6 lg:grid-cols-2">
         <div>
           <Mile label="MI 12 · The Orchards" />
-          <h2 className={`${anton.className} mt-5 uppercase text-[#161616] leading-[0.95] ${revealBase}`} style={{ fontSize: 'clamp(40px,5vw,72px)' }}>
+          <h2 className={`${anton.className} mt-5 uppercase text-[#0d0d0d] leading-[0.95] ${revealBase}`} style={{ fontSize: 'clamp(40px,5vw,72px)' }}>
             Four
             <br />
             Disciplines
           </h2>
-          <p className={`mt-5 max-w-xl text-lg text-[#161616]/80 ${revealBase}`} style={{ transitionDelay: '120ms' }}>
+          <p className={`mt-5 max-w-xl text-lg text-[#0d0d0d]/80 ${revealBase}`} style={{ transitionDelay: '120ms' }}>
             The orchards up here hang heavy every summer because somebody planted rows on
             purpose and then tended them. Same idea down at the studio. Four disciplines,
             practiced deliberately, and often more than one of them in a single engagement.
@@ -275,26 +275,26 @@ export function JourneyOrchard() {
               <Link
                 key={c.href}
                 href={c.href}
-                className={`group block border-2 border-[#161616] bg-white p-5 shadow-[4px_4px_0_0_#161616] hover:shadow-[6px_6px_0_0_#F5B700] hover:-translate-y-0.5 transition-all ${revealBase}`}
+                className={`group block border-2 border-[#0d0d0d] bg-white p-5 shadow-[4px_4px_0_0_#0d0d0d] hover:shadow-[6px_6px_0_0_#ffd400] hover:-translate-y-0.5 transition-all ${revealBase}`}
                 style={{ transitionDelay: `${180 + i * 90}ms` }}
               >
                 <div className="flex items-center justify-between gap-4">
-                  <span className="font-display text-xl font-extrabold text-[#161616]">{c.label}</span>
+                  <span className="font-display text-xl font-extrabold text-[#0d0d0d]">{c.label}</span>
                   <span className="font-mono text-[#C4160B] group-hover:translate-x-1 transition-transform" aria-hidden>
                     →
                   </span>
                 </div>
-                <p className="mt-1.5 text-[15px] leading-relaxed text-[#161616]/75">{c.line}</p>
+                <p className="mt-1.5 text-[15px] leading-relaxed text-[#0d0d0d]/75">{c.line}</p>
               </Link>
             ))}
           </div>
         </div>
         <div className={`relative ${revealBase}`} style={{ transitionDelay: '200ms' }}>
-          <div className="relative rotate-[1.6deg] border-2 border-[#161616] bg-white p-3 shadow-[8px_8px_0_0_#161616]">
+          <div className="relative rotate-[1.6deg] border-2 border-[#0d0d0d] bg-white p-3 shadow-[8px_8px_0_0_#0d0d0d]">
             <div className="relative aspect-video overflow-hidden">
               <Footage src="/journey/orchard.mp4" poster="/journey/poster-orchard.jpg" dim={0.05} />
             </div>
-            <p className={`${caveat.className} mt-3 text-center text-2xl text-[#161616]`}>cherry season on the east shore</p>
+            <p className={`${caveat.className} mt-3 text-center text-2xl text-[#0d0d0d]`}>cherry season on the east shore</p>
           </div>
         </div>
       </div>
@@ -348,10 +348,10 @@ export function JourneySigns() {
       <div ref={ref} className="group relative z-10 mx-auto max-w-7xl px-6">
         <div className="text-center">
           <Mile label="MI 31 · The Roadside" dark />
-          <h2 className={`${anton.className} mt-5 uppercase text-transparent leading-[0.95] ${revealBase}`} style={{ WebkitTextStroke: '2px #FBF6EA', fontSize: 'clamp(40px,6vw,88px)' }}>
+          <h2 className={`${anton.className} mt-5 uppercase text-transparent leading-[0.95] ${revealBase}`} style={{ WebkitTextStroke: '2px #f1ede4', fontSize: 'clamp(40px,6vw,88px)' }}>
             Watch The Roadside
           </h2>
-          <p className={`mx-auto mt-4 max-w-2xl text-lg text-[#FBF6EA]/90 ${revealBase}`} style={{ transitionDelay: '120ms' }}>
+          <p className={`mx-auto mt-4 max-w-2xl text-lg text-[#f1ede4]/90 ${revealBase}`} style={{ transitionDelay: '120ms' }}>
             Every sign on this road is real. Walk into any of them today.
           </p>
         </div>
@@ -361,17 +361,17 @@ export function JourneySigns() {
               key={s.href}
               href={s.href}
               onClick={() => track('journey_sign', { sign: s.href })}
-              className={`group relative flex flex-col border-2 border-[#161616] bg-[#FBF6EA] p-6 shadow-[6px_6px_0_0_#161616] hover:-translate-y-1 hover:shadow-[8px_8px_0_0_#F5B700] transition-all ${s.big ? 'md:col-span-2 lg:col-span-2 bg-[#F5B700]' : ''} ${!s.big && MD_ORPHAN && i === SIGNS.length - 1 ? 'md:col-span-2 lg:col-span-1' : ''} ${revealBase} ${i % 2 ? 'rotate-[0.6deg]' : 'rotate-[-0.6deg]'}`}
+              className={`group relative flex flex-col border-2 border-[#0d0d0d] bg-[#f1ede4] p-6 shadow-[6px_6px_0_0_#0d0d0d] hover:-translate-y-1 hover:shadow-[8px_8px_0_0_#ffd400] transition-all ${s.big ? 'md:col-span-2 lg:col-span-2 bg-[#ffd400]' : ''} ${!s.big && MD_ORPHAN && i === SIGNS.length - 1 ? 'md:col-span-2 lg:col-span-1' : ''} ${revealBase} ${i % 2 ? 'rotate-[0.6deg]' : 'rotate-[-0.6deg]'}`}
               style={{ transitionDelay: `${150 + i * 70}ms` }}
             >
               {s.big && (
-                <span className="absolute -top-3 right-6 bg-[#E0301E] text-white font-mono font-bold text-[10px] tracking-[0.18em] uppercase border-2 border-[#161616] px-2 py-0.5 shadow-[2px_2px_0_0_#161616]">
+                <span className="absolute -top-3 right-6 bg-[#ff3b2f] text-white font-mono font-bold text-[10px] tracking-[0.18em] uppercase border-2 border-[#0d0d0d] px-2 py-0.5 shadow-[2px_2px_0_0_#0d0d0d]">
                   The Flagship
                 </span>
               )}
-              <span className="font-display text-2xl font-extrabold text-[#161616]">{s.label}</span>
-              <p className="mt-2 flex-1 text-[15px] leading-relaxed text-[#161616]/80">{s.line}</p>
-              <span className="mt-4 font-mono font-bold text-[12px] tracking-[0.16em] uppercase text-[#C4160B] group-hover:text-[#161616] transition-colors">
+              <span className="font-display text-2xl font-extrabold text-[#0d0d0d]">{s.label}</span>
+              <p className="mt-2 flex-1 text-[15px] leading-relaxed text-[#0d0d0d]/80">{s.line}</p>
+              <span className="mt-4 font-mono font-bold text-[12px] tracking-[0.16em] uppercase text-[#C4160B] group-hover:text-[#0d0d0d] transition-colors">
                 {s.cta} →
               </span>
             </Link>
@@ -444,7 +444,7 @@ export function JourneySquare() {
       id="tour-square"
       data-journey-chapter="The Town Square"
       data-mile="MI 47"
-      className="relative bg-[#FBF6EA] border-y-2 border-[#161616] py-24 md:py-32 overflow-hidden"
+      className="relative bg-[#f1ede4] border-y-2 border-[#0d0d0d] py-24 md:py-32 overflow-hidden"
     >
       {/* Faint street grid, the square underfoot. */}
       <div
@@ -452,7 +452,7 @@ export function JourneySquare() {
         aria-hidden
         style={{
           backgroundImage:
-            'linear-gradient(#161616 1px, transparent 1px), linear-gradient(90deg, #161616 1px, transparent 1px)',
+            'linear-gradient(#0d0d0d 1px, transparent 1px), linear-gradient(90deg, #0d0d0d 1px, transparent 1px)',
           backgroundSize: '64px 64px',
         }}
       />
@@ -460,14 +460,14 @@ export function JourneySquare() {
         <div className="text-center">
           <Mile label="MI 47 · The Town Square" />
           <h2
-            className={`${anton.className} mt-5 uppercase text-[#161616] leading-[0.95] ${revealBase}`}
+            className={`${anton.className} mt-5 uppercase text-[#0d0d0d] leading-[0.95] ${revealBase}`}
             style={{ fontSize: 'clamp(38px,5.6vw,84px)' }}
           >
             Every Town Square
             <br />
             Moved Online
           </h2>
-          <p className={`mx-auto mt-5 max-w-2xl text-lg text-[#161616]/80 ${revealBase}`} style={{ transitionDelay: '110ms' }}>
+          <p className={`mx-auto mt-5 max-w-2xl text-lg text-[#0d0d0d]/80 ${revealBase}`} style={{ transitionDelay: '110ms' }}>
             There used to be one square where the whole town could see you. Now the square is the
             internet, everybody is standing in it holding a phone, and being findable there is its
             own trade. We do that trade. It comes inside the build.
@@ -477,25 +477,25 @@ export function JourneySquare() {
           {SQUARE.map((s, i) => (
             <div
               key={s.label}
-              className={`relative flex flex-col border-2 border-[#161616] bg-white p-6 shadow-[5px_5px_0_0_#161616] transition-all hover:-translate-y-1 hover:shadow-[7px_7px_0_0_#F5B700] ${revealBase}`}
+              className={`relative flex flex-col border-2 border-[#0d0d0d] bg-white p-6 shadow-[5px_5px_0_0_#0d0d0d] transition-all hover:-translate-y-1 hover:shadow-[7px_7px_0_0_#ffd400] ${revealBase}`}
               style={{ transitionDelay: `${150 + i * 80}ms` }}
             >
-              <span className="absolute -top-3 left-5 border-2 border-[#161616] bg-[#F5B700] px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-[#161616] shadow-[2px_2px_0_0_#161616]">
+              <span className="absolute -top-3 left-5 border-2 border-[#0d0d0d] bg-[#ffd400] px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-[#0d0d0d] shadow-[2px_2px_0_0_#0d0d0d]">
                 {s.tag}
               </span>
-              <span className="mt-2 font-display text-xl font-extrabold leading-tight text-[#161616]">{s.label}</span>
-              <p className="mt-2.5 flex-1 text-[15px] leading-relaxed text-[#161616]/75">{s.line}</p>
+              <span className="mt-2 font-display text-xl font-extrabold leading-tight text-[#0d0d0d]">{s.label}</span>
+              <p className="mt-2.5 flex-1 text-[15px] leading-relaxed text-[#0d0d0d]/75">{s.line}</p>
             </div>
           ))}
         </div>
         <div className={`mt-12 text-center ${revealBase}`} style={{ transitionDelay: '640ms' }}>
-          <p className={`${caveat.className} text-2xl text-[#161616]/80`}>
+          <p className={`${caveat.className} text-2xl text-[#0d0d0d]/80`}>
             all of it standard on a Talking Website, none of it a line item
           </p>
           <Link
             href="/talking-website"
             onClick={() => track('journey_square', { to: 'talking-website' })}
-            className="mt-5 inline-block border-2 border-[#161616] bg-[#F5B700] px-6 py-3 font-bold text-[#161616] shadow-[4px_4px_0_0_#161616] transition-all hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0_0_#161616]"
+            className="mt-5 inline-block border-2 border-[#0d0d0d] bg-[#ffd400] px-6 py-3 font-bold text-[#0d0d0d] shadow-[4px_4px_0_0_#0d0d0d] transition-all hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0_0_#0d0d0d]"
           >
             See What Is Baked In
           </Link>
@@ -525,10 +525,10 @@ export function JourneyGate() {
           <span className={`${caveat.className} text-2xl md:text-3xl text-[#FFDD55] rotate-[-1.5deg] ${revealBase}`}>
             mile 68, end of the pavement
           </span>
-          <h2 className={`${anton.className} mt-3 uppercase text-[#FBF6EA] leading-[0.95] drop-shadow-[3px_3px_0_rgba(22,22,22,0.9)] ${revealBase}`} style={{ fontSize: 'clamp(40px,6vw,84px)', transitionDelay: '120ms' }}>
+          <h2 className={`${anton.className} mt-3 uppercase text-[#f1ede4] leading-[0.95] drop-shadow-[3px_3px_0_rgba(13,13,13,0.9)] ${revealBase}`} style={{ fontSize: 'clamp(40px,6vw,84px)', transitionDelay: '120ms' }}>
             Welcome To The Ranch
           </h2>
-          <p className={`mt-4 max-w-2xl text-lg text-[#FBF6EA]/95 ${revealBase}`} style={{ transitionDelay: '240ms' }}>
+          <p className={`mt-4 max-w-2xl text-lg text-[#f1ede4]/95 ${revealBase}`} style={{ transitionDelay: '240ms' }}>
             Everything below this gate was grown here: real builds, real numbers, real owners who got their evenings back.
           </p>
         </div>
@@ -548,11 +548,11 @@ export function JourneyPlanting() {
       id="tour-planting"
       data-journey-chapter="The Planting"
       data-mile="MI 89"
-      className="relative bg-[#161616] py-24 md:py-32 overflow-hidden"
+      className="relative bg-[#0d0d0d] py-24 md:py-32 overflow-hidden"
     >
       <div ref={ref} className="group mx-auto grid max-w-7xl items-center gap-12 px-6 lg:grid-cols-2">
         <div className={`relative order-2 lg:order-1 ${revealBase}`} style={{ transitionDelay: '160ms' }}>
-          <div className="relative rotate-[-1.4deg] border-2 border-[#F5B700] bg-[#0B0B0B] p-3 shadow-[8px_8px_0_0_#F5B700]">
+          <div className="relative rotate-[-1.4deg] border-2 border-[#ffd400] bg-[#0B0B0B] p-3 shadow-[8px_8px_0_0_#ffd400]">
             <div className="relative aspect-video overflow-hidden">
               <Footage src="/journey/planting.mp4" poster="/journey/poster-planting.jpg" dim={0.05} />
             </div>
@@ -561,15 +561,15 @@ export function JourneyPlanting() {
         </div>
         <div className="order-1 lg:order-2">
           <Mile label="MI 89 · The Planting" dark />
-          <blockquote className={`mt-6 font-display italic text-2xl md:text-[28px] leading-snug text-[#FBF6EA] ${revealBase}`}>
+          <blockquote className={`mt-6 font-display italic text-2xl md:text-[28px] leading-snug text-[#f1ede4] ${revealBase}`}>
             &ldquo;The kingdom of heaven is like a grain of mustard seed... it is the smallest of all seeds, but when it
             has grown it is larger than all the garden plants and becomes a tree, so that the birds of the air come and
             make nests in its branches.&rdquo;
           </blockquote>
-          <p className={`mt-3 font-mono text-[12px] tracking-[0.2em] uppercase text-[#F5B700] ${revealBase}`} style={{ transitionDelay: '100ms' }}>
+          <p className={`mt-3 font-mono text-[12px] tracking-[0.2em] uppercase text-[#ffd400] ${revealBase}`} style={{ transitionDelay: '100ms' }}>
             Matthew 13:31&ndash;32
           </p>
-          <p className={`mt-6 max-w-xl text-lg text-[#FBF6EA]/80 ${revealBase}`} style={{ transitionDelay: '200ms' }}>
+          <p className={`mt-6 max-w-xl text-lg text-[#f1ede4]/80 ${revealBase}`} style={{ transitionDelay: '200ms' }}>
             That verse is the whole business plan. Every build here starts seed sized: one website and one voice agent
             for one owner. Then it gets tended every day until the branches can hold weight.
           </p>
@@ -598,13 +598,13 @@ export function JourneyTree() {
         <div ref={ref} className="group relative z-10 flex h-full flex-col items-center justify-center px-6 text-center">
           <h2
             className={`${anton.className} uppercase text-transparent leading-[0.92] ${revealBase}`}
-            style={{ WebkitTextStroke: '2.5px #FBF6EA', fontSize: 'clamp(52px,9vw,150px)' }}
+            style={{ WebkitTextStroke: '2.5px #f1ede4', fontSize: 'clamp(52px,9vw,150px)' }}
           >
             The Birds
             <br />
             Come Home
           </h2>
-          <p className={`mt-6 max-w-2xl text-lg md:text-xl text-[#FBF6EA]/95 ${revealBase}`} style={{ transitionDelay: '160ms' }}>
+          <p className={`mt-6 max-w-2xl text-lg md:text-xl text-[#f1ede4]/95 ${revealBase}`} style={{ transitionDelay: '160ms' }}>
             Your customers, your calls, your bookings. All finding their way back to you, day and night,
             because there is finally something sturdy to land on.
           </p>
@@ -662,15 +662,15 @@ export function JourneyDoors() {
       id="tour-doors"
       data-journey-chapter="Four Doors"
       data-mile="Arrival"
-      className="relative bg-[#FBF6EA] border-y-2 border-[#161616] py-24 md:py-32"
+      className="relative bg-[#f1ede4] border-y-2 border-[#0d0d0d] py-24 md:py-32"
     >
       <div ref={ref} className="group mx-auto max-w-7xl px-6 text-center">
         <Mile label="Arrival · The Ranch House" />
-        <h2 className={`${anton.className} mt-5 uppercase text-[#161616] leading-[0.95] ${revealBase}`} style={{ fontSize: 'clamp(40px,5.5vw,80px)' }}>
+        <h2 className={`${anton.className} mt-5 uppercase text-[#0d0d0d] leading-[0.95] ${revealBase}`} style={{ fontSize: 'clamp(40px,5.5vw,80px)' }}>
           Four Doors,
           <br className="md:hidden" /> All Open
         </h2>
-        <p className={`mx-auto mt-4 max-w-2xl text-lg text-[#161616]/80 ${revealBase}`} style={{ transitionDelay: '100ms' }}>
+        <p className={`mx-auto mt-4 max-w-2xl text-lg text-[#0d0d0d]/80 ${revealBase}`} style={{ transitionDelay: '100ms' }}>
           The drive is over. However you like to walk in, the same person answers.
         </p>
         <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -678,14 +678,14 @@ export function JourneyDoors() {
             const inner = (
               <>
                 <span className="font-mono font-bold text-[11px] tracking-[0.2em] uppercase text-[#C4160B]">Door {i + 1}</span>
-                <span className="mt-2 font-display text-xl font-extrabold text-[#161616] leading-tight">{d.label}</span>
-                <p className="mt-2 flex-1 text-[14px] leading-relaxed text-[#161616]/75">{d.line}</p>
-                <span className="mt-4 inline-block bg-[#F5B700] text-[#161616] font-bold text-sm border-2 border-[#161616] px-4 py-2 shadow-[3px_3px_0_0_#161616] group-hover:translate-x-[1px] group-hover:translate-y-[1px] group-hover:shadow-[2px_2px_0_0_#161616] transition-all">
+                <span className="mt-2 font-display text-xl font-extrabold text-[#0d0d0d] leading-tight">{d.label}</span>
+                <p className="mt-2 flex-1 text-[14px] leading-relaxed text-[#0d0d0d]/75">{d.line}</p>
+                <span className="mt-4 inline-block bg-[#ffd400] text-[#0d0d0d] font-bold text-sm border-2 border-[#0d0d0d] px-4 py-2 shadow-[3px_3px_0_0_#0d0d0d] group-hover:translate-x-[1px] group-hover:translate-y-[1px] group-hover:shadow-[2px_2px_0_0_#0d0d0d] transition-all">
                   {d.cta}
                 </span>
               </>
             );
-            const cls = `group flex h-full flex-col items-center text-center border-2 border-[#161616] bg-white p-6 shadow-[5px_5px_0_0_#161616] hover:-translate-y-1 hover:shadow-[7px_7px_0_0_#F5B700] transition-all ${revealBase}`;
+            const cls = `group flex h-full flex-col items-center text-center border-2 border-[#0d0d0d] bg-white p-6 shadow-[5px_5px_0_0_#0d0d0d] hover:-translate-y-1 hover:shadow-[7px_7px_0_0_#ffd400] transition-all ${revealBase}`;
             const delay = { transitionDelay: `${140 + i * 90}ms` };
             return d.action === 'voice' ? (
               <button key={d.key} onClick={() => openMustard('doors')} className={cls} style={delay}>
@@ -698,8 +698,8 @@ export function JourneyDoors() {
             );
           })}
         </div>
-        <p className={`${caveat.className} mt-10 text-2xl text-[#161616]/80 ${revealBase}`} style={{ transitionDelay: '400ms' }}>
-          or just call the ranch line: <a href="tel:+14063121223" className="underline decoration-[#F5B700] decoration-2 underline-offset-4">(406) 312-1223</a>. Mr. Mustard picks up.
+        <p className={`${caveat.className} mt-10 text-2xl text-[#0d0d0d]/80 ${revealBase}`} style={{ transitionDelay: '400ms' }}>
+          or just call the ranch line: <a href="tel:+14063121223" className="underline decoration-[#ffd400] decoration-2 underline-offset-4">(406) 312-1223</a>. Mr. Mustard picks up.
         </p>
       </div>
     </section>

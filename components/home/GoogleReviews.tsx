@@ -44,10 +44,10 @@ function Stars({ n }: { n: number }) {
   return (
     <span className="flex items-center gap-0.5" role="img" aria-label={`${n} out of 5 stars`}>
       {Array.from({ length: 5 }, (_, i) => (
-        <svg key={i} viewBox="0 0 24 24" className="h-5 w-5" fill={i < n ? '#F5B700' : '#161616'} aria-hidden="true">
+        <svg key={i} viewBox="0 0 24 24" className="h-5 w-5" fill={i < n ? '#ffd400' : '#0d0d0d'} aria-hidden="true">
           <path
             d="m12 2 2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8L12 2z"
-            stroke="#161616"
+            stroke="#0d0d0d"
             strokeWidth="1.4"
             strokeLinejoin="round"
             opacity={i < n ? 1 : 0.15}
@@ -67,16 +67,16 @@ export default function GoogleReviews() {
       id="tour-reviews"
       data-journey-chapter="The Word Around Town"
       data-mile="MI 94"
-      className="relative border-y-2 border-[#161616] bg-[#F5F0E8] py-24 md:py-28"
+      className="relative border-y-2 border-[#0d0d0d] bg-[#F5F0E8] py-24 md:py-28"
     >
       <div className="relative mx-auto max-w-5xl px-6">
         <div className="text-center">
-          <span className="inline-flex items-center gap-2 border-2 border-[#161616] bg-white px-3 py-1 font-mono text-[11px] font-bold uppercase tracking-[0.22em] text-[#8f6600] shadow-[3px_3px_0_0_#161616]">
+          <span className="inline-flex items-center gap-2 border-2 border-[#0d0d0d] bg-white px-3 py-1 font-mono text-[11px] font-bold uppercase tracking-[0.22em] text-[#8f6600] shadow-[3px_3px_0_0_#0d0d0d]">
             <GoogleMark className="h-3.5 w-3.5" />
             MI 94 · The Word Around Town
           </span>
           <h2
-            className={`${anton.className} mt-5 uppercase leading-[0.95] text-[#161616]`}
+            className={`${anton.className} mt-5 uppercase leading-[0.95] text-[#0d0d0d]`}
             style={{ fontSize: 'clamp(38px,5.4vw,78px)' }}
           >
             Straight From
@@ -84,9 +84,9 @@ export default function GoogleReviews() {
             Google
           </h2>
           <div className="mt-5 flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
-            <span className={`${anton.className} text-4xl leading-none text-[#161616]`}>{GOOGLE_PROFILE.rating}</span>
+            <span className={`${anton.className} text-4xl leading-none text-[#0d0d0d]`}>{GOOGLE_PROFILE.rating}</span>
             <Stars n={5} />
-            <span className="font-mono text-[12px] font-bold uppercase tracking-[0.16em] text-[#161616]/60">
+            <span className="font-mono text-[12px] font-bold uppercase tracking-[0.16em] text-[#0d0d0d]/60">
               {GOOGLE_PROFILE.count} {GOOGLE_PROFILE.count === 1 ? 'review' : 'reviews'} on Google
             </span>
           </div>
@@ -96,20 +96,20 @@ export default function GoogleReviews() {
           {GOOGLE_REVIEWS.map((r, i) => (
             <figure
               key={r.name + r.when}
-              className={`relative flex flex-col border-2 border-[#161616] bg-white p-7 shadow-[6px_6px_0_0_#161616] ${
+              className={`relative flex flex-col border-2 border-[#0d0d0d] bg-white p-7 shadow-[6px_6px_0_0_#0d0d0d] ${
                 i % 2 ? 'rotate-[0.5deg]' : 'rotate-[-0.5deg]'
               }`}
             >
-              <span className="absolute -top-3.5 right-6 flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#161616] bg-white shadow-[2px_2px_0_0_#161616]">
+              <span className="absolute -top-3.5 right-6 flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#0d0d0d] bg-white shadow-[2px_2px_0_0_#0d0d0d]">
                 <GoogleMark className="h-3.5 w-3.5" />
               </span>
               <Stars n={r.stars} />
-              <blockquote className="mt-4 flex-1 font-body text-[17px] leading-relaxed text-[#161616]/90 md:text-lg">
+              <blockquote className="mt-4 flex-1 font-body text-[17px] leading-relaxed text-[#0d0d0d]/90 md:text-lg">
                 “{r.text}”
               </blockquote>
-              <figcaption className="mt-5 flex items-baseline gap-3 border-t-2 border-dashed border-[#161616]/20 pt-4">
-                <span className="font-display text-lg font-extrabold text-[#161616]">{r.name}</span>
-                <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-[#161616]/50">{r.when}</span>
+              <figcaption className="mt-5 flex items-baseline gap-3 border-t-2 border-dashed border-[#0d0d0d]/20 pt-4">
+                <span className="font-display text-lg font-extrabold text-[#0d0d0d]">{r.name}</span>
+                <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-[#0d0d0d]/50">{r.when}</span>
               </figcaption>
             </figure>
           ))}
@@ -122,7 +122,7 @@ export default function GoogleReviews() {
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => track('google_reviews', { action: 'read' })}
-              className="inline-flex items-center gap-2 border-2 border-[#161616] bg-white px-5 py-3 font-bold text-[#161616] shadow-[4px_4px_0_0_#161616] transition-all hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0_0_#161616]"
+              className="inline-flex items-center gap-2 border-2 border-[#0d0d0d] bg-white px-5 py-3 font-bold text-[#0d0d0d] shadow-[4px_4px_0_0_#0d0d0d] transition-all hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0_0_#0d0d0d]"
             >
               <GoogleMark className="h-4 w-4" />
               {single ? 'Read It On Google' : 'Read Them On Google'}
@@ -132,14 +132,14 @@ export default function GoogleReviews() {
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => track('google_reviews', { action: 'write' })}
-              className="inline-flex items-center gap-2 border-2 border-[#161616] bg-[#F5B700] px-5 py-3 font-bold text-[#161616] shadow-[4px_4px_0_0_#161616] transition-all hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0_0_#161616]"
+              className="inline-flex items-center gap-2 border-2 border-[#0d0d0d] bg-[#ffd400] px-5 py-3 font-bold text-[#0d0d0d] shadow-[4px_4px_0_0_#0d0d0d] transition-all hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0_0_#0d0d0d]"
             >
               Worked With Us? Leave One
             </a>
           </div>
           {/* The soft sell for the section above it: this is the same review
               machine we install for clients, pointed at ourselves. */}
-          <p className={`${caveat.className} text-center text-2xl text-[#161616]/75`}>
+          <p className={`${caveat.className} text-center text-2xl text-[#0d0d0d]/75`}>
             the same review system we set up for you, running on us
           </p>
         </div>

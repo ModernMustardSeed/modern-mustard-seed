@@ -66,7 +66,7 @@ export default function PromptPlaybookPage() {
         ]}
       />
 
-      <div className="relative min-h-screen bg-[#FBF6EA] text-[#161616] pb-24 overflow-x-clip">
+      <div className="relative min-h-screen bg-[#f1ede4] text-[#0d0d0d] pb-24 overflow-x-clip">
         <PopPageHero
           eyebrow={<span>Free tool · Never used Claude or ChatGPT? Start here</span>}
           title={<>The{' '}<em>Prompt Playbook</em></>}
@@ -98,13 +98,13 @@ export default function PromptPlaybookPage() {
           {/* CTA to us */}
           <div className="max-w-4xl mx-auto px-6 md:px-8 mt-20">
             <div className="pop-card-yellow p-10 text-center">
-              <span className="text-[10px] uppercase tracking-[0.4em] text-[#161616] font-mono font-bold mb-4 block">
+              <span className="text-[10px] uppercase tracking-[0.4em] text-[#0d0d0d] font-mono font-bold mb-4 block">
                 Ready for agentic systems that work while you sleep?
               </span>
-              <h2 className="font-display text-2xl md:text-3xl font-black text-[#161616] tracking-tight mb-4">
+              <h2 className="font-display text-2xl md:text-3xl font-black text-[#0d0d0d] tracking-tight mb-4">
                 Prompts are step one. We build the whole engine.
               </h2>
-              <p className="text-[#161616]/75 text-base font-body font-medium mb-7 max-w-xl mx-auto">
+              <p className="text-[#0d0d0d]/75 text-base font-body font-medium mb-7 max-w-xl mx-auto">
                 Once you see what a good prompt can do, imagine an agent that answers your phone, books your
                 appointments, and follows up with every lead, around the clock. That is what we build, and it ships in
                 weeks, not months.
@@ -112,13 +112,13 @@ export default function PromptPlaybookPage() {
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Link
                   href="/voice-agents"
-                  className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-white rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
+                  className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0d0d0d] bg-white rounded-full border-2 border-[#0d0d0d] shadow-[4px_4px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-all"
                 >
                   Meet Mr. Mustard, our voice agent
                 </Link>
                 <Link
                   href="/work-with-us"
-                  className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-white bg-[#161616] rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_rgba(22,22,22,0.35)] hover:-translate-y-0.5 transition-all"
+                  className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-white bg-[#0d0d0d] rounded-full border-2 border-[#0d0d0d] shadow-[4px_4px_0_0_rgba(13,13,13,0.35)] hover:-translate-y-0.5 transition-all"
                 >
                   See how we work
                 </Link>
@@ -146,7 +146,7 @@ function CategoryPills() {
       {CATEGORIES.filter((c) => c.id !== 'start').map((c) => (
         <span
           key={c.id}
-          className="text-[10px] uppercase tracking-[0.15em] font-mono font-bold text-[#161616]/70 bg-white border-2 border-[#161616]/20 rounded-full px-3 py-1.5"
+          className="text-[10px] uppercase tracking-[0.15em] font-mono font-bold text-[#0d0d0d]/70 bg-white border-2 border-[#0d0d0d]/20 rounded-full px-3 py-1.5"
         >
           {c.title}
         </span>

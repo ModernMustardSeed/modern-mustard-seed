@@ -37,10 +37,10 @@ export default function SeedToSystemPage() {
   };
 
   return (
-    <div className="overflow-hidden bg-[#FBF6EA] text-[#161616]">
+    <div className="overflow-hidden bg-[#f1ede4] text-[#0d0d0d]">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
 
-      <section className="relative min-h-[90svh] border-b-2 border-[#161616]">
+      <section className="relative min-h-[90svh] border-b-2 border-[#0d0d0d]">
         <Image
           src="/home/studio-bench.jpg"
           alt="A working studio bench where one useful idea becomes a real business system"
@@ -49,15 +49,15 @@ export default function SeedToSystemPage() {
           sizes="100vw"
           className="object-cover object-center"
         />
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(22,22,22,.94)_0%,rgba(22,22,22,.8)_52%,rgba(22,22,22,.28)_100%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(13,13,13,.94)_0%,rgba(13,13,13,.8)_52%,rgba(13,13,13,.28)_100%)]" />
         <div className="relative z-10 mx-auto flex min-h-[90svh] max-w-7xl flex-col justify-end px-6 pb-12 pt-32 md:px-10 md:pb-16 lg:px-16">
           <div className="max-w-4xl">
-            <p className="font-mono text-[10px] font-bold uppercase tracking-[0.36em] text-[#F5B700]">
+            <p className="font-mono text-[10px] font-bold uppercase tracking-[0.36em] text-[#ffd400]">
               Founding cohort · {SEED_TO_SYSTEM.seats} working seats
             </p>
             <h1 className="mt-5 font-display text-6xl font-black leading-[0.9] text-white md:text-8xl lg:text-9xl">
               SEED TO
-              <span className="block text-[#F5B700]">SYSTEM</span>
+              <span className="block text-[#ffd400]">SYSTEM</span>
             </h1>
             <p className="mt-6 max-w-2xl font-display text-2xl font-bold leading-tight text-white md:text-3xl">
               {SEED_TO_SYSTEM.descriptor}
@@ -68,14 +68,14 @@ export default function SeedToSystemPage() {
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <a
                 href="#enroll"
-                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border-2 border-[#161616] bg-[#F5B700] px-7 py-3 font-sans text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#161616] shadow-[5px_5px_0_0_#FFFFFF] transition-transform hover:-translate-y-0.5"
+                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border-2 border-[#0d0d0d] bg-[#ffd400] px-7 py-3 font-sans text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#0d0d0d] shadow-[5px_5px_0_0_#FFFFFF] transition-transform hover:-translate-y-0.5"
               >
                 Take a founding seat
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </a>
               <a
                 href="#curriculum"
-                className="inline-flex min-h-12 items-center justify-center rounded-full border-2 border-white bg-[#161616]/65 px-7 py-3 font-sans text-[11px] font-extrabold uppercase tracking-[0.18em] text-white transition-colors hover:bg-[#161616]"
+                className="inline-flex min-h-12 items-center justify-center rounded-full border-2 border-white bg-[#0d0d0d]/65 px-7 py-3 font-sans text-[11px] font-extrabold uppercase tracking-[0.18em] text-white transition-colors hover:bg-[#0d0d0d]"
               >
                 See the six weeks
               </a>
@@ -83,26 +83,26 @@ export default function SeedToSystemPage() {
           </div>
           <div className="mt-10 grid max-w-3xl grid-cols-2 gap-3 border-t border-white/25 pt-5 text-white/75 md:grid-cols-4">
             <span className="inline-flex items-center gap-2 font-body text-xs md:text-sm">
-              <Clock3 className="h-4 w-4 shrink-0 text-[#F5B700]" aria-hidden="true" />
+              <Clock3 className="h-4 w-4 shrink-0 text-[#ffd400]" aria-hidden="true" />
               Six live weeks
             </span>
             <span className="inline-flex items-center gap-2 font-body text-xs md:text-sm">
-              <Users className="h-4 w-4 shrink-0 text-[#F5B700]" aria-hidden="true" />
+              <Users className="h-4 w-4 shrink-0 text-[#ffd400]" aria-hidden="true" />
               {SEED_TO_SYSTEM.seats} seats
             </span>
             <span className="inline-flex items-center gap-2 font-body text-xs md:text-sm">
-              <CircleDollarSign className="h-4 w-4 shrink-0 text-[#F5B700]" aria-hidden="true" />
+              <CircleDollarSign className="h-4 w-4 shrink-0 text-[#ffd400]" aria-hidden="true" />
               ${SEED_TO_SYSTEM.foundingPrice}
             </span>
             <span className="inline-flex items-center gap-2 font-body text-xs md:text-sm">
-              <ShieldCheck className="h-4 w-4 shrink-0 text-[#F5B700]" aria-hidden="true" />
+              <ShieldCheck className="h-4 w-4 shrink-0 text-[#ffd400]" aria-hidden="true" />
               Build It guarantee
             </span>
           </div>
         </div>
       </section>
 
-      <section className="border-b-2 border-[#161616] bg-white py-16 md:py-24">
+      <section className="border-b-2 border-[#0d0d0d] bg-white py-16 md:py-24">
         <div className="mx-auto max-w-7xl px-6 md:px-10 lg:px-16">
           <div className="grid gap-12 lg:grid-cols-[.9fr_1.1fr] lg:items-center">
             <div>
@@ -124,7 +124,7 @@ export default function SeedToSystemPage() {
               </p>
             </div>
           </div>
-          <div className="mt-14 grid gap-8 border-y-2 border-[#161616] py-9 md:grid-cols-3">
+          <div className="mt-14 grid gap-8 border-y-2 border-[#0d0d0d] py-9 md:grid-cols-3">
             <div>
               <Compass className="h-6 w-6 text-[#B62618]" aria-hidden="true" />
               <h3 className="mt-4 font-display text-xl font-black">One finish line</h3>
@@ -133,7 +133,7 @@ export default function SeedToSystemPage() {
               </p>
             </div>
             <div>
-              <Sparkles className="h-6 w-6 text-[#B92417]" aria-hidden="true" />
+              <Sparkles className="h-6 w-6 text-[#c8201a]" aria-hidden="true" />
               <h3 className="mt-4 font-display text-xl font-black">Agentic systems in their proper place</h3>
               <p className="mt-2 font-body text-sm leading-relaxed text-[#5C554A]">
                 The machine carries the repeatable middle. Your judgment, taste, and relationships stay human.
@@ -150,24 +150,24 @@ export default function SeedToSystemPage() {
         </div>
       </section>
 
-      <section id="curriculum" className="scroll-mt-24 border-b-2 border-[#161616] bg-[#F5B700] py-16 md:py-24">
+      <section id="curriculum" className="scroll-mt-24 border-b-2 border-[#0d0d0d] bg-[#ffd400] py-16 md:py-24">
         <div className="mx-auto max-w-7xl px-6 md:px-10 lg:px-16">
-          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.34em] text-[#161616]">
+          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.34em] text-[#0d0d0d]">
             Seven rooms. Six core missions.
           </p>
           <h2 className="mt-4 max-w-4xl font-display text-4xl font-black leading-tight md:text-6xl">
             From useful idea to open doors.
           </h2>
-          <div className="mt-12 divide-y-2 divide-[#161616] border-y-2 border-[#161616]">
+          <div className="mt-12 divide-y-2 divide-[#0d0d0d] border-y-2 border-[#0d0d0d]">
             {COURSE_WEEKS.map((week) => (
               <div
                 key={week.code}
                 className="grid gap-3 py-7 md:grid-cols-[80px_240px_1fr] md:items-start md:gap-8"
               >
-                <span className="font-mono text-sm font-bold text-[#161616]">{week.code}</span>
+                <span className="font-mono text-sm font-bold text-[#0d0d0d]">{week.code}</span>
                 <div>
                   <h3 className="font-display text-2xl font-black">{week.title}</h3>
-                  <p className="mt-2 font-body text-sm font-bold leading-relaxed text-[#161616]">{week.result}</p>
+                  <p className="mt-2 font-body text-sm font-bold leading-relaxed text-[#0d0d0d]">{week.result}</p>
                 </div>
                 <p className="font-body leading-relaxed text-[#3A3733]">{week.details}</p>
               </div>
@@ -176,10 +176,10 @@ export default function SeedToSystemPage() {
         </div>
       </section>
 
-      <section className="border-b-2 border-[#161616] bg-[#163B68] py-16 text-white md:py-24">
+      <section className="border-b-2 border-[#0d0d0d] bg-[#163B68] py-16 text-white md:py-24">
         <div className="mx-auto max-w-7xl px-6 md:px-10 lg:px-16">
           <div className="max-w-3xl">
-            <p className="font-mono text-[10px] font-bold uppercase tracking-[0.34em] text-[#F5B700]">
+            <p className="font-mono text-[10px] font-bold uppercase tracking-[0.34em] text-[#ffd400]">
               The programs become tools
             </p>
             <h2 className="mt-4 font-display text-4xl font-black leading-tight md:text-6xl">
@@ -193,7 +193,7 @@ export default function SeedToSystemPage() {
           <div className="mt-12 grid gap-x-12 gap-y-0 border-y border-white/30 md:grid-cols-2">
             {INCLUDED_ASSETS.map((asset) => (
               <div key={asset.title} className="flex gap-3 border-b border-white/20 py-6">
-                <Check className="mt-0.5 h-5 w-5 shrink-0 text-[#F5B700]" aria-hidden="true" />
+                <Check className="mt-0.5 h-5 w-5 shrink-0 text-[#ffd400]" aria-hidden="true" />
                 <div>
                   <h3 className="font-display text-xl font-black">{asset.title}</h3>
                   <p className="mt-2 font-body text-sm leading-relaxed text-white/70">{asset.detail}</p>
@@ -207,9 +207,9 @@ export default function SeedToSystemPage() {
         </div>
       </section>
 
-      <section className="border-b-2 border-[#161616] bg-white py-16 md:py-24">
+      <section className="border-b-2 border-[#0d0d0d] bg-white py-16 md:py-24">
         <div className="mx-auto grid max-w-7xl gap-12 px-6 md:px-10 lg:grid-cols-[1.05fr_.95fr] lg:items-center lg:px-16">
-          <div className="relative aspect-[4/3] overflow-hidden rounded-lg border-2 border-[#161616]">
+          <div className="relative aspect-[4/3] overflow-hidden rounded-lg border-2 border-[#0d0d0d]">
             <Image
               src="/work-shots/modern-mustard-seed.jpg"
               alt="Real Modern Mustard Seed products and systems shipped by Sarah"
@@ -238,7 +238,7 @@ export default function SeedToSystemPage() {
         </div>
       </section>
 
-      <section id="enroll" className="scroll-mt-24 border-b-2 border-[#161616] bg-[#FBF6EA] py-16 md:py-24">
+      <section id="enroll" className="scroll-mt-24 border-b-2 border-[#0d0d0d] bg-[#f1ede4] py-16 md:py-24">
         <div className="mx-auto max-w-5xl px-6 md:px-10">
           <div className="grid gap-10 lg:grid-cols-[1fr_400px] lg:items-start">
             <div>
@@ -261,7 +261,7 @@ export default function SeedToSystemPage() {
                 <p className="mt-2 font-body leading-relaxed text-[#3A3733]">{SEED_TO_SYSTEM.guarantee}</p>
               </div>
             </div>
-            <div className="rounded-lg border-2 border-[#161616] bg-white p-7 shadow-[6px_6px_0_0_#161616]">
+            <div className="rounded-lg border-2 border-[#0d0d0d] bg-white p-7 shadow-[6px_6px_0_0_#0d0d0d]">
               <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-[#B62618]">
                 Take a founding seat
               </p>
@@ -284,7 +284,7 @@ export default function SeedToSystemPage() {
         </div>
       </section>
 
-      <section className="border-b-2 border-[#161616] bg-white py-16 md:py-24">
+      <section className="border-b-2 border-[#0d0d0d] bg-white py-16 md:py-24">
         <div className="mx-auto max-w-5xl px-6 md:px-10">
           <p className="font-mono text-[10px] font-bold uppercase tracking-[0.34em] text-[#B62618]">
             Straight answers
@@ -292,7 +292,7 @@ export default function SeedToSystemPage() {
           <h2 className="mt-4 font-display text-4xl font-black leading-tight md:text-6xl">
             Before you take a seat.
           </h2>
-          <div className="mt-10 divide-y-2 divide-[#161616] border-y-2 border-[#161616]">
+          <div className="mt-10 divide-y-2 divide-[#0d0d0d] border-y-2 border-[#0d0d0d]">
             {SEED_FAQ.map((item) => (
               <details key={item.q} className="group py-5">
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-5 font-display text-xl font-black">

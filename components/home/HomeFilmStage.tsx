@@ -9,7 +9,7 @@ import HeroVideo from '@/components/HeroVideo';
  */
 export default function HomeFilmStage() {
   return (
-    <section className="relative halftone-bg border-b-2 border-[#161616] overflow-hidden">
+    <section className="relative halftone-bg border-b-2 border-[#0d0d0d] overflow-hidden">
       {/* Soft stage spotlight behind the film */}
       <div
         aria-hidden="true"
@@ -21,11 +21,11 @@ export default function HomeFilmStage() {
         <span className="font-mono font-bold text-[10px] uppercase tracking-[0.4em] text-[#C4160B] block">
           Now showing // The 24-second version
         </span>
-        <h2 className="font-display font-black tracking-tight leading-[1.02] text-[#161616] mt-4 text-[clamp(2.25rem,6vw,4rem)]">
+        <h2 className="font-display font-black tracking-tight leading-[1.02] text-[#0d0d0d] mt-4 text-[clamp(2.25rem,6vw,4rem)]">
           Watch a seed become a{' '}
           <span className="italic text-[#8f6600]">business.</span>
         </h2>
-        <p className="font-body text-base md:text-lg text-[#161616]/70 leading-relaxed mt-4 max-w-2xl mx-auto">
+        <p className="font-body text-base md:text-lg text-[#0d0d0d]/70 leading-relaxed mt-4 max-w-2xl mx-auto">
           Your idea, a few weeks, and a studio that ships. This is how it grows.
         </p>
 

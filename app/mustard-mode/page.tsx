@@ -51,7 +51,7 @@ export default function MustardModePage() {
   };
 
   return (
-    <div id="top" className="bg-[#FBF6EA] text-[#161616]">
+    <div id="top" className="bg-[#f1ede4] text-[#0d0d0d]">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       <MultiplierHero />
@@ -66,7 +66,7 @@ export default function MustardModePage() {
       <OfferGrid />
 
       {/* Closer */}
-      <section className="bg-[#080C16] border-t-2 border-[#161616] py-20">
+      <section className="bg-[#0d0d0d] border-t-2 border-[#0d0d0d] py-20">
         <div className="max-w-4xl mx-auto px-6 text-center">
           <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#FFDD55] uppercase">[ MUSTARD MODE: ON ]</p>
           <h2 className="font-display italic font-extrabold text-4xl md:text-6xl text-white mt-4 leading-[1.02]">
@@ -74,7 +74,7 @@ export default function MustardModePage() {
           </h2>
           <a
             href="#levels"
-            className="inline-block mt-8 font-sans font-bold bg-[#F5B700] text-[#161616] border-2 border-[#161616] shadow-[5px_5px_0_0_#FFDD55] px-8 py-4 hover:translate-y-[2px] hover:shadow-[3px_3px_0_0_#FFDD55] transition-all"
+            className="inline-block mt-8 font-sans font-bold bg-[#ffd400] text-[#0d0d0d] border-2 border-[#0d0d0d] shadow-[5px_5px_0_0_#FFDD55] px-8 py-4 hover:translate-y-[2px] hover:shadow-[3px_3px_0_0_#FFDD55] transition-all"
           >
             Choose your level
           </a>

@@ -191,8 +191,8 @@ export default function Navbar() {
     <>
       <nav
         data-studio-nav="true"
-        className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 bg-[#FBF6EA]/95 backdrop-blur-md border-b-2 border-[#161616] ${
-          scrolled ? 'shadow-[0_3px_0_0_rgba(22,22,22,0.12)]' : ''
+        className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 bg-[#f1ede4]/95 backdrop-blur-md border-b-2 border-[#0d0d0d] ${
+          scrolled ? 'shadow-[0_3px_0_0_rgba(13,13,13,0.12)]' : ''
         }`}
       >
         <div className="max-w-7xl mx-auto px-6 md:px-8 py-3.5 flex justify-between items-center gap-4">
@@ -206,7 +206,7 @@ export default function Navbar() {
               className="h-9 w-auto md:h-10"
               loading="eager"
             />
-            <span className="font-sans text-sm md:text-base tracking-[0.06em] text-[#161616] uppercase font-extrabold">
+            <span className="font-sans text-sm md:text-base tracking-[0.06em] text-[#0d0d0d] uppercase font-extrabold">
               Modern Mustard Seed
             </span>
           </Link>
@@ -220,20 +220,20 @@ export default function Navbar() {
                 <Link
                   key={link.label}
                   href={link.href}
-                  className="text-[11px] uppercase tracking-[0.2em] transition-colors font-body font-bold text-[#161616]/70 hover:text-[#E0301E]"
+                  className="text-[11px] uppercase tracking-[0.2em] transition-colors font-body font-bold text-[#0d0d0d]/70 hover:text-[#d0241b]"
                 >
                   {link.label}
                 </Link>
               ))}
               <Link
                 href="/portal"
-                className="px-4 py-2 text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-white rounded-full border-2 border-[#161616] hover:bg-[#FFF8E6] transition-all"
+                className="px-4 py-2 text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0d0d0d] bg-white rounded-full border-2 border-[#0d0d0d] hover:bg-[#FFF8E6] transition-all"
               >
                 Clients
               </Link>
               <Link
                 href="/book"
-                className="px-5 py-2.5 text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] rounded-full border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] hover:shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
+                className="px-5 py-2.5 text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0d0d0d] bg-[#ffd400] rounded-full border-2 border-[#0d0d0d] shadow-[3px_3px_0_0_#0d0d0d] hover:shadow-[4px_4px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-all"
               >
                 Book a Call
               </Link>
@@ -242,31 +242,31 @@ export default function Navbar() {
             {/* Between the phone and the full row, the inquiry is the door. */}
             <Link
               href="/book"
-              className="hidden sm:inline-flex xl:hidden items-center px-4 py-2.5 text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] rounded-full border-2 border-[#161616] shadow-[3px_3px_0_0_#161616] hover:shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
+              className="hidden sm:inline-flex xl:hidden items-center px-4 py-2.5 text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0d0d0d] bg-[#ffd400] rounded-full border-2 border-[#0d0d0d] shadow-[3px_3px_0_0_#0d0d0d] hover:shadow-[4px_4px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-all"
             >
               Book a Call
             </Link>
 
             {/* Hamburger: top right, ALL breakpoints, opens the full menu. */}
             <button
-              className="flex flex-col justify-center items-center w-10 h-10 gap-1.5 rounded-full border-2 border-[#161616] bg-white shadow-[2px_2px_0_0_#161616] hover:shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-all"
+              className="flex flex-col justify-center items-center w-10 h-10 gap-1.5 rounded-full border-2 border-[#0d0d0d] bg-white shadow-[2px_2px_0_0_#0d0d0d] hover:shadow-[3px_3px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-all"
               onClick={() => setMenuOpen((o) => !o)}
               aria-label={menuOpen ? 'Close menu' : 'Open menu'}
               aria-expanded={menuOpen}
               aria-controls="site-mega-menu"
             >
               <span
-                className={`block w-5 h-0.5 bg-[#161616] transition-all duration-300 ${
+                className={`block w-5 h-0.5 bg-[#0d0d0d] transition-all duration-300 ${
                   menuOpen ? 'rotate-45 translate-y-[4px]' : ''
                 }`}
               />
               <span
-                className={`block w-5 h-0.5 bg-[#161616] transition-all duration-300 ${
+                className={`block w-5 h-0.5 bg-[#0d0d0d] transition-all duration-300 ${
                   menuOpen ? 'opacity-0' : ''
                 }`}
               />
               <span
-                className={`block w-5 h-0.5 bg-[#161616] transition-all duration-300 ${
+                className={`block w-5 h-0.5 bg-[#0d0d0d] transition-all duration-300 ${
                   menuOpen ? '-rotate-45 -translate-y-[4px]' : ''
                 }`}
               />
@@ -291,14 +291,14 @@ export default function Navbar() {
       >
         {/* Backdrop */}
         <div
-          className="absolute inset-0 bg-[#161616]/40 backdrop-blur-sm"
+          className="absolute inset-0 bg-[#0d0d0d]/40 backdrop-blur-sm"
           onClick={() => setMenuOpen(false)}
           aria-hidden="true"
         />
 
         {/* Panel */}
         <div
-          className={`absolute right-0 top-0 h-full w-full sm:max-w-2xl bg-[#FBF6EA] border-l-2 border-[#161616] overflow-y-auto transition-transform duration-300 ${
+          className={`absolute right-0 top-0 h-full w-full sm:max-w-2xl bg-[#f1ede4] border-l-2 border-[#0d0d0d] overflow-y-auto transition-transform duration-300 ${
             menuOpen ? 'translate-x-0' : 'translate-x-full'
           }`}
         >
@@ -315,7 +315,7 @@ export default function Navbar() {
           <div className="relative z-10 px-7 md:px-10 py-7">
             {/* Header row */}
             <div className="flex items-center justify-between mb-9">
-              <span className="text-[10px] uppercase tracking-[0.4em] text-[#E0301E] font-mono font-bold">
+              <span className="text-[10px] uppercase tracking-[0.4em] text-[#d0241b] font-mono font-bold">
                 Menu
               </span>
               <button
@@ -323,7 +323,7 @@ export default function Navbar() {
                 type="button"
                 onClick={() => setMenuOpen(false)}
                 aria-label="Close menu"
-                className="w-10 h-10 rounded-full border-2 border-[#161616] bg-white text-[#161616] text-xl leading-none flex items-center justify-center shadow-[2px_2px_0_0_#161616] hover:shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-all"
+                className="w-10 h-10 rounded-full border-2 border-[#0d0d0d] bg-white text-[#0d0d0d] text-xl leading-none flex items-center justify-center shadow-[2px_2px_0_0_#0d0d0d] hover:shadow-[3px_3px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-all"
               >
                 ×
               </button>
@@ -334,25 +334,25 @@ export default function Navbar() {
             <Link
               href="/presence-audit"
               onClick={() => setMenuOpen(false)}
-              className="group block rounded-2xl border-2 border-[#161616] bg-[#F5B700] shadow-[5px_5px_0_0_#161616] p-5 md:p-6 mb-5 hover:-translate-y-0.5 transition-transform"
+              className="group block rounded-2xl border-2 border-[#0d0d0d] bg-[#ffd400] shadow-[5px_5px_0_0_#0d0d0d] p-5 md:p-6 mb-5 hover:-translate-y-0.5 transition-transform"
             >
-              <span className="block text-[10px] uppercase tracking-[0.32em] text-[#161616]/70 font-mono font-bold mb-1.5">
+              <span className="block text-[10px] uppercase tracking-[0.32em] text-[#0d0d0d]/70 font-mono font-bold mb-1.5">
                 Free · Three Pillars · No Card
               </span>
-              <span className="block font-display font-black text-2xl md:text-3xl tracking-tight text-[#161616] leading-snug">
+              <span className="block font-display font-black text-2xl md:text-3xl tracking-tight text-[#0d0d0d] leading-snug">
                 The free presence audit <span className="inline-block group-hover:translate-x-1 transition-transform">→</span>
               </span>
-              <span className="block font-body text-[13px] text-[#161616]/75 mt-1 leading-relaxed">
+              <span className="block font-body text-[13px] text-[#0d0d0d]/75 mt-1 leading-relaxed">
                 Your site, your Google profile and your reviews, graded and emailed to you. Yours to keep.
               </span>
             </Link>
 
             {/* Featured: Work With Us gets visual priority. */}
-            <div className="rounded-2xl border-2 border-[#161616] bg-white shadow-[5px_5px_0_0_#161616] p-6 md:p-7 mb-8">
-              <span className="block text-[11px] uppercase tracking-[0.32em] text-[#E0301E] font-mono font-bold mb-1.5">
+            <div className="rounded-2xl border-2 border-[#0d0d0d] bg-white shadow-[5px_5px_0_0_#0d0d0d] p-6 md:p-7 mb-8">
+              <span className="block text-[11px] uppercase tracking-[0.32em] text-[#d0241b] font-mono font-bold mb-1.5">
                 {MENU_GROUPS[0].heading}
               </span>
-              <p className="font-display italic font-bold text-[#161616] text-base md:text-lg leading-snug mb-5">
+              <p className="font-display italic font-bold text-[#0d0d0d] text-base md:text-lg leading-snug mb-5">
                 A boutique design and agentic systems studio. Five disciplines, one standard.
               </p>
               <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
@@ -364,7 +364,7 @@ export default function Navbar() {
                         href={link.href}
                         onClick={() => setMenuOpen(false)}
                         className={`font-display font-black text-xl md:text-2xl tracking-tight leading-snug transition-colors ${
-                          active ? 'text-[#E0301E]' : 'text-[#161616] hover:text-[#E0301E]'
+                          active ? 'text-[#d0241b]' : 'text-[#0d0d0d] hover:text-[#d0241b]'
                         }`}
                       >
                         {link.label}
@@ -379,7 +379,7 @@ export default function Navbar() {
             <div className="grid grid-cols-2 gap-x-6 gap-y-8">
               {MENU_GROUPS.slice(1).map((group) => (
                 <div key={group.heading}>
-                  <span className="block text-[10px] uppercase tracking-[0.3em] text-[#161616]/45 font-mono font-bold mb-3">
+                  <span className="block text-[10px] uppercase tracking-[0.3em] text-[#0d0d0d]/45 font-mono font-bold mb-3">
                     {group.heading}
                   </span>
                   <ul className="flex flex-col gap-2">
@@ -391,7 +391,7 @@ export default function Navbar() {
                             href={link.href}
                             onClick={() => setMenuOpen(false)}
                             className={`font-display font-black text-base md:text-lg tracking-tight leading-snug transition-colors ${
-                              active ? 'text-[#E0301E]' : 'text-[#161616] hover:text-[#E0301E]'
+                              active ? 'text-[#d0241b]' : 'text-[#0d0d0d] hover:text-[#d0241b]'
                             }`}
                           >
                             {link.label}
@@ -405,7 +405,7 @@ export default function Navbar() {
             </div>
 
             {/* The Studio Departments: the signature ink panel */}
-            <div className="relative mt-9 rounded-2xl border-2 border-[#161616] bg-[#161616] shadow-[5px_5px_0_0_#F5B700] overflow-hidden">
+            <div className="relative mt-9 rounded-2xl border-2 border-[#0d0d0d] bg-[#0d0d0d] shadow-[5px_5px_0_0_#ffd400] overflow-hidden">
               <div
                 aria-hidden="true"
                 className="absolute inset-0 pointer-events-none"
@@ -415,7 +415,7 @@ export default function Navbar() {
                 }}
               />
               <div className="relative p-6 md:p-7">
-                <span className="block text-[10px] uppercase tracking-[0.32em] text-[#F5B700] font-mono font-bold mb-4">
+                <span className="block text-[10px] uppercase tracking-[0.32em] text-[#ffd400] font-mono font-bold mb-4">
                   The Studio Departments
                 </span>
                 <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
@@ -430,12 +430,12 @@ export default function Navbar() {
                         >
                           <span
                             className={`block font-display font-black text-lg md:text-xl tracking-tight leading-snug transition-colors ${
-                              active ? 'text-[#F5B700]' : 'text-[#FBF6EA] group-hover:text-[#F5B700]'
+                              active ? 'text-[#ffd400]' : 'text-[#f1ede4] group-hover:text-[#ffd400]'
                             }`}
                           >
                             {d.name}
                           </span>
-                          <span className="block font-mono text-[9px] uppercase tracking-[0.24em] text-[#F5B700]/75 mt-0.5">
+                          <span className="block font-mono text-[9px] uppercase tracking-[0.24em] text-[#ffd400]/75 mt-0.5">
                             {d.tag}
                           </span>
                         </Link>
@@ -451,22 +451,22 @@ export default function Navbar() {
               <Link
                 href="/book"
                 onClick={() => setMenuOpen(false)}
-                className="flex-1 text-center px-6 py-4 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
+                className="flex-1 text-center px-6 py-4 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0d0d0d] bg-[#ffd400] rounded-full border-2 border-[#0d0d0d] shadow-[4px_4px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-all"
               >
                 Book a Call
               </Link>
               <Link
                 href="/presence-audit"
                 onClick={() => setMenuOpen(false)}
-                className="flex-1 text-center px-6 py-4 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-white rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all"
+                className="flex-1 text-center px-6 py-4 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0d0d0d] bg-white rounded-full border-2 border-[#0d0d0d] shadow-[4px_4px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-all"
               >
                 Get the Free Audit
               </Link>
             </div>
 
             {/* Socials */}
-            <div className="mt-9 pt-7 border-t-2 border-[#161616]/15">
-              <span className="block text-[10px] uppercase tracking-[0.3em] text-[#161616]/45 font-mono font-bold mb-3.5">
+            <div className="mt-9 pt-7 border-t-2 border-[#0d0d0d]/15">
+              <span className="block text-[10px] uppercase tracking-[0.3em] text-[#0d0d0d]/45 font-mono font-bold mb-3.5">
                 Follow
               </span>
               <div className="flex flex-wrap gap-2.5">
@@ -476,7 +476,7 @@ export default function Navbar() {
                     href={s.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-4 py-2 text-[10px] uppercase tracking-[0.2em] font-sans font-bold text-[#161616] bg-white rounded-full border-2 border-[#161616] hover:bg-[#FFF8E6] hover:-translate-y-0.5 transition-all"
+                    className="px-4 py-2 text-[10px] uppercase tracking-[0.2em] font-sans font-bold text-[#0d0d0d] bg-white rounded-full border-2 border-[#0d0d0d] hover:bg-[#FFF8E6] hover:-translate-y-0.5 transition-all"
                   >
                     {s.name}
                   </a>
@@ -485,11 +485,11 @@ export default function Navbar() {
             </div>
 
             {/* Team access */}
-            <div className="mt-7 pt-6 border-t-2 border-[#161616]/15 pb-2">
+            <div className="mt-7 pt-6 border-t-2 border-[#0d0d0d]/15 pb-2">
               <Link
                 href="/admin"
                 onClick={() => setMenuOpen(false)}
-                className="inline-flex items-center gap-2 px-5 py-2.5 text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-white rounded-full border-2 border-[#161616] shadow-[2px_2px_0_0_#161616] hover:shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-all"
+                className="inline-flex items-center gap-2 px-5 py-2.5 text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0d0d0d] bg-white rounded-full border-2 border-[#0d0d0d] shadow-[2px_2px_0_0_#0d0d0d] hover:shadow-[3px_3px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-all"
               >
                 <span aria-hidden="true">🔒</span> Admin Login
               </Link>

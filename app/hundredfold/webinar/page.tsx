@@ -43,7 +43,7 @@ export default function HundredfoldWebinarPage() {
   const { mp4, poster, shipped: hasFilm } = FILMS.webinar;
 
   return (
-    <div className="relative min-h-screen bg-[#FBF6EA] text-[#161616] overflow-hidden">
+    <div className="relative min-h-screen bg-[#f1ede4] text-[#0d0d0d] overflow-hidden">
       <PopPageHero
         eyebrow={<span>Starts when you press play // No registration</span>}
         title={<>How to scale a business that is{' '}<em>capped by you</em></>}
@@ -58,17 +58,17 @@ export default function HundredfoldWebinarPage() {
       </PopPageHero>
 
       {/* The screening room: an ink band holding the player and the ask */}
-      <section className="relative bg-[#161616] text-[#FBF6EA] border-y-2 border-[#161616] overflow-hidden">
+      <section className="relative bg-[#0d0d0d] text-[#f1ede4] border-y-2 border-[#0d0d0d] overflow-hidden">
         <div className="pointer-events-none absolute inset-0 halftone-ink" aria-hidden="true" />
         <div className="relative max-w-5xl mx-auto px-6 md:px-8 py-14 md:py-16">
-          <div className="border-2 border-[#FBF6EA] rounded-2xl overflow-hidden shadow-[8px_8px_0_0_#F5B700] bg-black">
+          <div className="border-2 border-[#f1ede4] rounded-2xl overflow-hidden shadow-[8px_8px_0_0_#ffd400] bg-black">
             {hasFilm ? (
               <video controls playsInline preload="metadata" poster={poster} className="w-full h-auto block">
                 <source src={mp4} type="video/mp4" />
               </video>
             ) : (
-              <div className="p-10 md:p-16 text-center bg-[#FBF6EA] text-[#161616]">
-                <p className="font-display italic font-black text-2xl md:text-3xl text-[#161616] leading-snug max-w-2xl mx-auto">
+              <div className="p-10 md:p-16 text-center bg-[#f1ede4] text-[#0d0d0d]">
+                <p className="font-display italic font-black text-2xl md:text-3xl text-[#0d0d0d] leading-snug max-w-2xl mx-auto">
                   The film is in the edit. The interview is not.
                 </p>
                 <p className="mt-4 text-[#3a3733] font-body text-base max-w-xl mx-auto leading-relaxed">
@@ -83,18 +83,18 @@ export default function HundredfoldWebinarPage() {
           <div className="mt-10 flex flex-col sm:flex-row justify-center gap-4">
             <Link
               href="/hundredfold#interview"
-              className="px-8 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-[#161616] bg-[#F5B700] rounded-full border-2 border-[#FBF6EA] shadow-[4px_4px_0_0_#FBF6EA] hover:-translate-y-0.5 transition-all text-center"
+              className="px-8 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-[#0d0d0d] bg-[#ffd400] rounded-full border-2 border-[#f1ede4] shadow-[4px_4px_0_0_#f1ede4] hover:-translate-y-0.5 transition-all text-center"
             >
               Get interviewed, free
             </Link>
             <Link
               href="/hundredfold#join"
-              className="px-8 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-[#161616] bg-[#FBF6EA] rounded-full border-2 border-[#FBF6EA] shadow-[4px_4px_0_0_#E0301E] hover:-translate-y-0.5 transition-all text-center"
+              className="px-8 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-[#0d0d0d] bg-[#f1ede4] rounded-full border-2 border-[#f1ede4] shadow-[4px_4px_0_0_#ff3b2f] hover:-translate-y-0.5 transition-all text-center"
             >
               Join HUNDREDFOLD
             </Link>
           </div>
-          <p className="mt-5 text-center font-mono text-[10px] uppercase tracking-[0.28em] text-[#FBF6EA]/70">
+          <p className="mt-5 text-center font-mono text-[10px] uppercase tracking-[0.28em] text-[#f1ede4]/70">
             {money(HUNDREDFOLD.setupCents)} to start, then {money(HUNDREDFOLD.monthlyCents)} a month · The
             interview is free either way
           </p>
@@ -105,10 +105,10 @@ export default function HundredfoldWebinarPage() {
         <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
           {CHAPTERS.map((c, i) => (
             <div key={c.t} className="pop-card p-5">
-              <span className="font-display text-3xl font-black text-[#B92417] leading-none">
+              <span className="font-display text-3xl font-black text-[#c8201a] leading-none">
                 {String(i + 1).padStart(2, '0')}
               </span>
-              <h2 className="mt-3 font-display font-black text-base text-[#161616] tracking-tight leading-snug">{c.t}</h2>
+              <h2 className="mt-3 font-display font-black text-base text-[#0d0d0d] tracking-tight leading-snug">{c.t}</h2>
               <p className="mt-2 text-[#3a3733] font-body text-xs leading-relaxed">{c.d}</p>
             </div>
           ))}

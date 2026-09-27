@@ -48,7 +48,7 @@ export default function SampleProposalPage() {
   const hasVariable = lines.some((l) => svc(l)?.variable);
 
   return (
-    <div className="relative min-h-screen bg-[#FBF6EA] text-[#161616] pt-28 pb-24 px-5 overflow-x-clip">
+    <div className="relative min-h-screen bg-[#f1ede4] text-[#0d0d0d] pt-28 pb-24 px-5 overflow-x-clip">
       <div aria-hidden="true" className={sp.rays} />
       <JsonLd data={breadcrumbJsonLd([{ name: 'Home', url: '/' }, { name: 'Sample Proposal', url: '/sample-proposal' }])} />
       <div aria-hidden="true" className="absolute inset-0 halftone-bg opacity-40 pointer-events-none" />
@@ -90,19 +90,19 @@ export default function SampleProposalPage() {
 
         {/* Sample sign/pay preview (disabled) */}
         <div className="mt-6 pop-card p-7 text-center">
-          <h2 className="font-display text-xl font-black text-[#161616] mb-1">On a real proposal, you sign and pay right here</h2>
+          <h2 className="font-display text-xl font-black text-[#0d0d0d] mb-1">On a real proposal, you sign and pay right here</h2>
           <p className="text-[#3a3733] text-sm font-body mb-5">
             Type your name to sign, pay the 50% deposit, and your project space goes live instantly. This is a sample, so the buttons are off.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center opacity-60 pointer-events-none mb-6">
-            <span className="px-6 py-3 rounded-lg text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] border-2 border-[#161616]">Sign and accept</span>
-            <span className="px-6 py-3 rounded-lg text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-white bg-[#161616] border-2 border-[#161616]">Pay deposit to begin</span>
+            <span className="px-6 py-3 rounded-lg text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0d0d0d] bg-[#ffd400] border-2 border-[#0d0d0d]">Sign and accept</span>
+            <span className="px-6 py-3 rounded-lg text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-white bg-[#0d0d0d] border-2 border-[#0d0d0d]">Pay deposit to begin</span>
           </div>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Link href="/work" className="px-7 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-[#F5B700] rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all">
+            <Link href="/work" className="px-7 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0d0d0d] bg-[#ffd400] rounded-full border-2 border-[#0d0d0d] shadow-[4px_4px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-all">
               See the work
             </Link>
-            <Link href="/book" className="px-7 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#161616] bg-white rounded-full border-2 border-[#161616] shadow-[4px_4px_0_0_#161616] hover:-translate-y-0.5 transition-all">
+            <Link href="/book" className="px-7 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0d0d0d] bg-white rounded-full border-2 border-[#0d0d0d] shadow-[4px_4px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-all">
               Get your own proposal
             </Link>
           </div>
