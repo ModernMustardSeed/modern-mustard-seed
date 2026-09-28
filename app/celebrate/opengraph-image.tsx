@@ -10,12 +10,12 @@ export const alt = 'Celebrate. Real cakes, fresh flowers, and handwritten cards 
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
-const INK = '#0d0d0d';
-const CREAM = '#f1ede4';
-const MUSTARD = '#ffd400';
-const RED = '#ff3b2f';
-const BLUE = '#0d0d0d';
-const CONFETTI = [MUSTARD, '#FFDD55', RED, BLUE, '#FFFFFF'];
+const INK = '#14110c';
+const CREAM = '#f6efe0';
+const MUSTARD = '#f5b700';
+const RED = '#b3261e';
+const BLUE = '#14110c';
+const CONFETTI = [MUSTARD, '#ffc933', RED, BLUE, '#FFFFFF'];
 
 export default async function OpengraphImage() {
   const mascot = readFileSync(join(process.cwd(), 'public/brand/mascot.png'));

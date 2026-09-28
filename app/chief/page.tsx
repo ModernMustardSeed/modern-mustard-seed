@@ -61,7 +61,7 @@ function chiefJsonLd() {
 
 export default function ChiefPage() {
   return (
-    <div className="min-h-screen bg-[#f1ede4] text-[#0d0d0d]">
+    <div className="min-h-screen bg-[#f6efe0] text-[#14110c]">
       <JsonLd data={chiefJsonLd()} />
 
       <section className={`${ps.hero} ${ps.withIssue}`}>
@@ -73,10 +73,10 @@ export default function ChiefPage() {
               <h1 className={ps.h1}>
                 Your chief of staff, <em>on call day and night.</em>
               </h1>
-              <p className="font-body text-[17px] text-[#0d0d0d]/75 mt-5 leading-relaxed max-w-xl">
+              <p className="font-body text-[17px] text-[#14110c]/75 mt-5 leading-relaxed max-w-xl">
                 {CHIEF.promise}
               </p>
-              <div className="mt-7 rounded-xl border-2 border-[#0d0d0d] bg-white shadow-[5px_5px_0_0_#ffd400] px-5 py-4 max-w-xl">
+              <div className="mt-7 rounded-xl border-2 border-[#14110c] bg-white shadow-[5px_5px_0_0_#f5b700] px-5 py-4 max-w-xl">
                 <p className="font-body text-[15px] leading-relaxed">
                   <strong className="font-display italic text-[1.15rem]">You thought a personal assistant was expensive.</strong>{' '}
                   A human chief of staff runs ${humanAssistantYear.low.toLocaleString()} to ${humanAssistantYear.high.toLocaleString()} a year.
@@ -97,38 +97,38 @@ export default function ChiefPage() {
                   Hear him: {PHONE_DISPLAY}
                 </a>
               </div>
-              <p className="font-body text-[13px] text-[#0d0d0d]/70 mt-4">
+              <p className="font-body text-[13px] text-[#14110c]/70 mt-4">
                 Call and talk to Mr. Mustard yourself. The demo is the trial. No card, no meeting.
               </p>
             </div>
 
             {/* Hero visual: a text from your Chief (CSS phone, no external art) */}
             <div className={ps.stage}>
-              <div className="mr-auto ml-2 md:ml-10 w-[250px] md:w-[268px] rounded-[2.2rem] border-[6px] border-[#0d0d0d] bg-[#0d0d0d] shadow-[8px_8px_0_0_#0d0d0d] p-3 pt-6 rotate-[2deg]">
+              <div className="mr-auto ml-2 md:ml-10 w-[250px] md:w-[268px] rounded-[2.2rem] border-[6px] border-[#14110c] bg-[#14110c] shadow-[8px_8px_0_0_#14110c] p-3 pt-6 rotate-[2deg]">
                 <div className="rounded-[1.5rem] bg-[#eef1f6] overflow-hidden">
-                  <div className="bg-[#0d0d0d] text-[#f1ede4] px-4 py-2.5 flex items-center gap-2">
-                    <span className="w-8 h-8 rounded-full bg-[#ffd400] border-2 border-[#f1ede4] flex items-center justify-center text-[15px]" aria-hidden>🌱</span>
+                  <div className="bg-[#14110c] text-[#f6efe0] px-4 py-2.5 flex items-center gap-2">
+                    <span className="w-8 h-8 rounded-full bg-[#f5b700] border-2 border-[#f6efe0] flex items-center justify-center text-[15px]" aria-hidden>🌱</span>
                     <div className="leading-tight">
                       <p className="font-sans font-bold text-[12px]">The Chief</p>
-                      <p className="font-mono text-[9px] text-[#f1ede4]/60">6:31 AM</p>
+                      <p className="font-mono text-[9px] text-[#f6efe0]/60">6:31 AM</p>
                     </div>
                   </div>
                   <div className="p-3.5 space-y-2.5">
                     <div className="max-w-[85%] rounded-2xl rounded-tl-md bg-white border border-black/5 px-3.5 py-2.5 shadow-sm">
-                      <p className="font-body text-[12.5px] leading-snug text-[#0d0d0d]">
+                      <p className="font-body text-[12.5px] leading-snug text-[#14110c]">
                         Morning. Verse of the day, 58° and clear, and the 3 things that matter before noon. Coffee first.
                       </p>
                     </div>
                     <div className="max-w-[85%] rounded-2xl rounded-tl-md bg-white border border-black/5 px-3.5 py-2.5 shadow-sm">
-                      <p className="font-body text-[12.5px] leading-snug text-[#0d0d0d]">
+                      <p className="font-body text-[12.5px] leading-snug text-[#14110c]">
                         Drafted your reply to the Hendricks proposal. Want me to send it, or read it to you?
                       </p>
                     </div>
-                    <div className="ml-auto max-w-[70%] rounded-2xl rounded-tr-md bg-[#ffd400] border-2 border-[#0d0d0d] px-3.5 py-2 shadow-[2px_2px_0_0_#0d0d0d]">
-                      <p className="font-body font-semibold text-[12.5px] leading-snug text-[#0d0d0d]">Send it. And book me 30 min with Sarah.</p>
+                    <div className="ml-auto max-w-[70%] rounded-2xl rounded-tr-md bg-[#f5b700] border-2 border-[#14110c] px-3.5 py-2 shadow-[2px_2px_0_0_#14110c]">
+                      <p className="font-body font-semibold text-[12.5px] leading-snug text-[#14110c]">Send it. And book me 30 min with Sarah.</p>
                     </div>
                     <div className="max-w-[85%] rounded-2xl rounded-tl-md bg-white border border-black/5 px-3.5 py-2.5 shadow-sm">
-                      <p className="font-body text-[12.5px] leading-snug text-[#0d0d0d]">Sent, and you’re booked Thursday at 10. Done. 👊</p>
+                      <p className="font-body text-[12.5px] leading-snug text-[#14110c]">Sent, and you’re booked Thursday at 10. Done. 👊</p>
                     </div>
                   </div>
                 </div>
@@ -150,25 +150,25 @@ export default function ChiefPage() {
       <div className="max-w-6xl mx-auto px-6 py-16 lg:py-20 space-y-20 lg:space-y-24">
         {/* ── The wedge: Voice Agent answers your customers. The Chief works for you. ── */}
         <section className="grid sm:grid-cols-2 gap-5">
-          <div className="flex flex-col border-2 border-[#0d0d0d] bg-white rounded-2xl shadow-[6px_6px_0_0_#0d0d0d] p-7">
-            <span className="font-mono font-bold text-[10px] uppercase tracking-[0.2em] text-[#0d0d0d]/55">The Voice Agent</span>
+          <div className="flex flex-col border-2 border-[#14110c] bg-white rounded-2xl shadow-[6px_6px_0_0_#14110c] p-7">
+            <span className="font-mono font-bold text-[10px] uppercase tracking-[0.2em] text-[#14110c]/55">The Voice Agent</span>
             <h3 className="font-display italic font-extrabold text-2xl mt-2">Answers your customers.</h3>
-            <p className="font-body text-[14px] text-[#0d0d0d]/70 mt-2.5 leading-relaxed flex-1">
+            <p className="font-body text-[14px] text-[#14110c]/70 mt-2.5 leading-relaxed flex-1">
               An inbound agentic front desk. It picks up your phone when the world calls in, books appointments, and takes
               clean messages 24/7.
             </p>
-            <Link href="/voice-agents" className="mt-4 font-sans font-bold text-[12px] uppercase tracking-[0.14em] text-[#c8201a] hover:underline underline-offset-4">
+            <Link href="/voice-agents" className="mt-4 font-sans font-bold text-[12px] uppercase tracking-[0.14em] text-[#8f1d22] hover:underline underline-offset-4">
               Meet the Voice Agent →
             </Link>
           </div>
-          <div className="flex flex-col border-2 border-[#0d0d0d] bg-[#ffd400] rounded-2xl shadow-[6px_6px_0_0_#0d0d0d] p-7">
-            <span className="font-mono font-bold text-[10px] uppercase tracking-[0.2em] text-[#0d0d0d]">The Chief</span>
+          <div className="flex flex-col border-2 border-[#14110c] bg-[#f5b700] rounded-2xl shadow-[6px_6px_0_0_#14110c] p-7">
+            <span className="font-mono font-bold text-[10px] uppercase tracking-[0.2em] text-[#14110c]">The Chief</span>
             <h3 className="font-display italic font-extrabold text-2xl mt-2">Works for you.</h3>
-            <p className="font-body text-[14px] text-[#0d0d0d]/80 mt-2.5 leading-relaxed flex-1">
+            <p className="font-body text-[14px] text-[#14110c]/80 mt-2.5 leading-relaxed flex-1">
               Your outbound, proactive right hand. He runs your calendar, your email, your calls, your research, your
               prep, and your morning. One picks up when the world calls in. The other runs your week.
             </p>
-            <span className="mt-4 font-sans font-bold text-[12px] uppercase tracking-[0.14em] text-[#0d0d0d]">You are here ↓</span>
+            <span className="mt-4 font-sans font-bold text-[12px] uppercase tracking-[0.14em] text-[#14110c]">You are here ↓</span>
           </div>
         </section>
 
@@ -180,11 +180,11 @@ export default function ChiefPage() {
           <h2 className="font-display italic font-extrabold text-4xl md:text-5xl mt-3 leading-[1.02] max-w-3xl">
             This is The Chief.
           </h2>
-          <p className="font-body text-[15px] text-[#0d0d0d]/70 mt-4 max-w-2xl leading-relaxed mb-9">
+          <p className="font-body text-[15px] text-[#14110c]/70 mt-4 max-w-2xl leading-relaxed mb-9">
             He runs your calendar, your inbox, and your calls, and preps your pitch before the big one. Thirty seconds
             with the assistant who works while you sleep.
           </p>
-          <div className="rounded-2xl border-2 border-[#0d0d0d] bg-[#0d0d0d] shadow-[8px_8px_0_0_#0d0d0d] overflow-hidden">
+          <div className="rounded-2xl border-2 border-[#14110c] bg-[#14110c] shadow-[8px_8px_0_0_#14110c] overflow-hidden">
             <video
               className="block w-full h-auto"
               controls
@@ -205,7 +205,7 @@ export default function ChiefPage() {
           <h2 className="font-display italic font-extrabold text-4xl md:text-5xl mt-3 leading-[1.02] max-w-3xl">
             One day. Everything he quietly handled.
           </h2>
-          <p className="font-body text-[15px] text-[#0d0d0d]/70 mt-4 max-w-2xl leading-relaxed mb-9">
+          <p className="font-body text-[15px] text-[#14110c]/70 mt-4 max-w-2xl leading-relaxed mb-9">
             From the wake-up call to the wind-down. Drag through a single day and watch the small stuff, and the big
             stuff, get taken care of before you had to ask.
           </p>
@@ -224,50 +224,50 @@ export default function ChiefPage() {
             {chiefCapabilities.map((c) => (
               <div
                 key={c.name}
-                className="flex flex-col border-2 border-[#0d0d0d] bg-white rounded-2xl shadow-[5px_5px_0_0_#0d0d0d] p-5 transition-transform hover:-translate-y-1"
+                className="flex flex-col border-2 border-[#14110c] bg-white rounded-2xl shadow-[5px_5px_0_0_#14110c] p-5 transition-transform hover:-translate-y-1"
               >
                 <span className="text-2xl leading-none" aria-hidden>{c.icon}</span>
                 <h3 className="font-display font-extrabold text-lg mt-2.5">{c.name}</h3>
-                <p className="font-body text-[13px] text-[#0d0d0d]/70 mt-1.5 leading-relaxed">{c.desc}</p>
+                <p className="font-body text-[13px] text-[#14110c]/70 mt-1.5 leading-relaxed">{c.desc}</p>
               </div>
             ))}
           </div>
         </section>
 
         {/* ── The anchor math ── */}
-        <section className="bg-[#0d0d0d] border-2 border-[#0d0d0d] rounded-2xl shadow-[8px_8px_0_0_#ffd400] p-7 sm:p-10 overflow-hidden">
-          <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#ffd400] font-bold">The math // The part that stings</span>
-          <h2 className="font-display italic font-extrabold text-3xl md:text-[2.8rem] mt-3 leading-[1.03] text-[#f1ede4] max-w-3xl">
+        <section className="bg-[#14110c] border-2 border-[#14110c] rounded-2xl shadow-[8px_8px_0_0_#f5b700] p-7 sm:p-10 overflow-hidden">
+          <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#f5b700] font-bold">The math // The part that stings</span>
+          <h2 className="font-display italic font-extrabold text-3xl md:text-[2.8rem] mt-3 leading-[1.03] text-[#f6efe0] max-w-3xl">
             A human assistant costs a salary. Yours costs a subscription.
           </h2>
           <div className="mt-8 space-y-5">
             <div>
               <div className="flex items-baseline justify-between gap-4">
-                <span className="font-sans font-bold text-[13px] uppercase tracking-[0.14em] text-[#f1ede4]/70">Human executive assistant</span>
-                <span className="font-mono font-bold text-[15px] text-[#f1ede4] tabular-nums whitespace-nowrap">
+                <span className="font-sans font-bold text-[13px] uppercase tracking-[0.14em] text-[#f6efe0]/70">Human executive assistant</span>
+                <span className="font-mono font-bold text-[15px] text-[#f6efe0] tabular-nums whitespace-nowrap">
                   ${humanAssistantYear.low.toLocaleString()}–${humanAssistantYear.high.toLocaleString()}/yr
                 </span>
               </div>
-              <div className="mt-2 h-6 rounded-full bg-[#f1ede4]/10 overflow-hidden border border-[#f1ede4]/15">
-                <div className="h-full rounded-full bg-[#ff3b2f]" style={{ width: '100%' }} />
+              <div className="mt-2 h-6 rounded-full bg-[#f6efe0]/10 overflow-hidden border border-[#f6efe0]/15">
+                <div className="h-full rounded-full bg-[#b3261e]" style={{ width: '100%' }} />
               </div>
             </div>
             <div>
               <div className="flex items-baseline justify-between gap-4">
-                <span className="font-sans font-bold text-[13px] uppercase tracking-[0.14em] text-[#ffd400]">The Chief</span>
-                <span className="font-mono font-bold text-[15px] text-[#ffd400] tabular-nums whitespace-nowrap">
+                <span className="font-sans font-bold text-[13px] uppercase tracking-[0.14em] text-[#f5b700]">The Chief</span>
+                <span className="font-mono font-bold text-[15px] text-[#f5b700] tabular-nums whitespace-nowrap">
                   ${chiefYear.toLocaleString()}/yr
                 </span>
               </div>
-              <div className="mt-2 h-6 rounded-full bg-[#f1ede4]/10 overflow-hidden border border-[#f1ede4]/15">
+              <div className="mt-2 h-6 rounded-full bg-[#f6efe0]/10 overflow-hidden border border-[#f6efe0]/15">
                 <div
-                  className="h-full rounded-full bg-[#ffd400]"
+                  className="h-full rounded-full bg-[#f5b700]"
                   style={{ width: `${Math.max(6, Math.round((chiefYear / humanAssistantYear.high) * 100))}%` }}
                 />
               </div>
             </div>
           </div>
-          <p className="font-body text-[15px] text-[#f1ede4]/75 mt-7 max-w-2xl leading-relaxed">
+          <p className="font-body text-[15px] text-[#f6efe0]/75 mt-7 max-w-2xl leading-relaxed">
             He works every hour, never calls in sick, and remembers everything. Most owners keep tens of
             thousands of dollars against a human hire and still get more done.
           </p>
@@ -281,7 +281,7 @@ export default function ChiefPage() {
           <h2 className="font-display italic font-extrabold text-4xl md:text-5xl mt-3 leading-[1.02] max-w-3xl">
             Pick how much of your life he runs.
           </h2>
-          <p className="font-body text-[15px] text-[#0d0d0d]/70 mt-4 max-w-2xl leading-relaxed">
+          <p className="font-body text-[15px] text-[#14110c]/70 mt-4 max-w-2xl leading-relaxed">
             Every plan is hard-capped on voice minutes and never overages. Hit the cap and he keeps going on text, chat,
             and email. Scoped with you first, then quoted privately as one set package price.
           </p>
@@ -292,29 +292,29 @@ export default function ChiefPage() {
               return (
                 <div
                   key={tier.slug}
-                  className={`relative flex flex-col border-2 border-[#0d0d0d] rounded-2xl p-7 ${
-                    featured ? 'bg-[#ffd400] shadow-[8px_8px_0_0_#0d0d0d]' : 'bg-white shadow-[6px_6px_0_0_#0d0d0d]'
+                  className={`relative flex flex-col border-2 border-[#14110c] rounded-2xl p-7 ${
+                    featured ? 'bg-[#f5b700] shadow-[8px_8px_0_0_#14110c]' : 'bg-white shadow-[6px_6px_0_0_#14110c]'
                   }`}
                 >
                   {featured && (
                     <span
                       aria-hidden
-                      className="absolute -top-4 -right-3 rotate-[8deg] bg-[#C4160B] text-[#f1ede4] font-mono font-extrabold text-[10px] uppercase tracking-[0.14em] px-3 py-1.5 border-2 border-[#0d0d0d] shadow-[3px_3px_0_0_#0d0d0d]"
+                      className="absolute -top-4 -right-3 rotate-[8deg] bg-[#C4160B] text-[#f6efe0] font-mono font-extrabold text-[10px] uppercase tracking-[0.14em] px-3 py-1.5 border-2 border-[#14110c] shadow-[3px_3px_0_0_#14110c]"
                     >
                       Most hire this
                     </span>
                   )}
-                  <span className={`font-mono font-bold text-[10px] uppercase tracking-[0.2em] ${featured ? 'text-[#0d0d0d]' : 'text-[#C4160B]'}`}>
+                  <span className={`font-mono font-bold text-[10px] uppercase tracking-[0.2em] ${featured ? 'text-[#14110c]' : 'text-[#C4160B]'}`}>
                     {tier.chip}
                   </span>
                   <h3 className="font-display italic font-extrabold text-2xl mt-2">{tier.name}</h3>
                   <p className="mt-3">
                     <span className="block font-display text-[22px] font-extrabold leading-tight">{PRICE_HEADLINE}</span>
-                    <span className={`mt-1 block font-mono text-[10px] font-bold uppercase tracking-[0.2em] ${featured ? 'text-[#0d0d0d]/70' : 'text-[#0d0d0d]/60'}`}>
+                    <span className={`mt-1 block font-mono text-[10px] font-bold uppercase tracking-[0.2em] ${featured ? 'text-[#14110c]/70' : 'text-[#14110c]/60'}`}>
                       {PRICE_CADENCE_MONTHLY}
                     </span>
                   </p>
-                  <p className={`font-body text-[13.5px] mt-3 leading-relaxed ${featured ? 'text-[#0d0d0d]/80' : 'text-[#0d0d0d]/70'}`}>
+                  <p className={`font-body text-[13.5px] mt-3 leading-relaxed ${featured ? 'text-[#14110c]/80' : 'text-[#14110c]/70'}`}>
                     {tier.pitch}
                   </p>
                   <ul className="mt-5 space-y-2 flex-1">
@@ -327,10 +327,10 @@ export default function ChiefPage() {
                   </ul>
                   <ChiefCheckoutButton
                     tier={tier.slug}
-                    className={`mt-6 w-full text-center border-2 border-[#0d0d0d] rounded-full px-5 py-3.5 font-sans font-extrabold text-[11px] uppercase tracking-[0.16em] transition-all hover:-translate-y-0.5 disabled:opacity-60 ${
+                    className={`mt-6 w-full text-center border-2 border-[#14110c] rounded-full px-5 py-3.5 font-sans font-extrabold text-[11px] uppercase tracking-[0.16em] transition-all hover:-translate-y-0.5 disabled:opacity-60 ${
                       featured
-                        ? 'bg-[#0d0d0d] text-[#ffd400] shadow-[4px_4px_0_0_#f1ede4]'
-                        : 'bg-[#ffd400] text-[#0d0d0d] shadow-[4px_4px_0_0_#0d0d0d]'
+                        ? 'bg-[#14110c] text-[#f5b700] shadow-[4px_4px_0_0_#f6efe0]'
+                        : 'bg-[#f5b700] text-[#14110c] shadow-[4px_4px_0_0_#14110c]'
                     }`}
                   >
                     {tier.cta}
@@ -339,14 +339,14 @@ export default function ChiefPage() {
               );
             })}
           </div>
-          <p className="font-body text-[13px] text-[#0d0d0d]/70 mt-6 text-center">
+          <p className="font-body text-[13px] text-[#14110c]/70 mt-6 text-center">
             The setup fee is one time and covers the hand-training that makes him yours. Live within 7 days. Cancel anytime.
           </p>
         </section>
 
         {/* ── How it works ── */}
-        <section className="bg-[#0d0d0d] border-2 border-[#0d0d0d] rounded-2xl shadow-[8px_8px_0_0_#ffd400] p-7 sm:p-10">
-          <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#ffd400] font-bold">How it works</span>
+        <section className="bg-[#14110c] border-2 border-[#14110c] rounded-2xl shadow-[8px_8px_0_0_#f5b700] p-7 sm:p-10">
+          <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#f5b700] font-bold">How it works</span>
           <div className="grid sm:grid-cols-3 gap-8 sm:gap-6 mt-6">
             {[
               ['1', 'Meet him', `Call ${PHONE_DISPLAY} and talk to Mr. Mustard yourself. He answers for this studio, so the call is the standard of the work rather than a description of it.`],
@@ -354,10 +354,10 @@ export default function ChiefPage() {
               ['3', 'He runs your week', 'He calls you awake, drafts your email, books your day, preps your meetings, and follows up on your leads. You just say the word.'],
             ].map(([n, t, d]) => (
               <div key={n} className="flex gap-4 sm:block">
-                <span className="font-display text-5xl font-bold text-[#ffd400] leading-none shrink-0">{n}</span>
+                <span className="font-display text-5xl font-bold text-[#f5b700] leading-none shrink-0">{n}</span>
                 <div className="sm:mt-3">
-                  <h3 className="font-display font-bold text-lg text-[#f1ede4] leading-tight">{t}</h3>
-                  <p className="font-body text-[13.5px] text-[#f1ede4]/65 mt-1.5 leading-relaxed">{d}</p>
+                  <h3 className="font-display font-bold text-lg text-[#f6efe0] leading-tight">{t}</h3>
+                  <p className="font-body text-[13.5px] text-[#f6efe0]/65 mt-1.5 leading-relaxed">{d}</p>
                 </div>
               </div>
             ))}
@@ -366,7 +366,7 @@ export default function ChiefPage() {
 
         {/* ── Boundaries: the honesty section ── */}
         <section className="grid md:grid-cols-2 gap-6">
-          <div className="border-2 border-[#0d0d0d] bg-white rounded-2xl shadow-[6px_6px_0_0_#0d0d0d] p-7">
+          <div className="border-2 border-[#14110c] bg-white rounded-2xl shadow-[6px_6px_0_0_#14110c] p-7">
             <p className="font-mono font-bold text-[10px] uppercase tracking-[0.2em] text-[#8f6600]">What he handles</p>
             <ul className="mt-4 space-y-3">
               {chiefBoundaries.handles.map((line) => (
@@ -377,7 +377,7 @@ export default function ChiefPage() {
               ))}
             </ul>
           </div>
-          <div className="border-2 border-[#0d0d0d] bg-white rounded-2xl shadow-[6px_6px_0_0_#0d0d0d] p-7">
+          <div className="border-2 border-[#14110c] bg-white rounded-2xl shadow-[6px_6px_0_0_#14110c] p-7">
             <p className="font-mono font-bold text-[10px] uppercase tracking-[0.2em] text-[#C4160B]">Where he draws the line</p>
             <ul className="mt-4 space-y-3">
               {chiefBoundaries.wont.map((line) => (
@@ -400,7 +400,7 @@ export default function ChiefPage() {
           </h2>
           <div className="mt-10 max-w-3xl mx-auto space-y-4">
             {chiefFaq.map((f) => (
-              <details key={f.q} className="group rounded-xl border-2 border-[#0d0d0d] bg-white p-5 open:shadow-[4px_4px_0_0_#ffd400] transition-shadow">
+              <details key={f.q} className="group rounded-xl border-2 border-[#14110c] bg-white p-5 open:shadow-[4px_4px_0_0_#f5b700] transition-shadow">
                 <summary className="font-display text-lg font-bold cursor-pointer list-none flex items-center justify-between gap-4">
                   {f.q}
                   <span className="flex-shrink-0 text-[#C4160B] transition-transform group-open:rotate-45" aria-hidden>+</span>
@@ -412,25 +412,25 @@ export default function ChiefPage() {
         </section>
 
         {/* ── Close ── */}
-        <section className="relative halftone-bg border-2 border-[#0d0d0d] rounded-2xl bg-[#ffd400] p-10 md:p-14 text-center overflow-hidden">
+        <section className="relative halftone-bg border-2 border-[#14110c] rounded-2xl bg-[#f5b700] p-10 md:p-14 text-center overflow-hidden">
           <div className="relative">
             <h2 className="font-display italic font-extrabold text-3xl md:text-5xl leading-[1.02]">
               Stop doing it all yourself.
             </h2>
-            <p className="font-body text-[15px] text-[#0d0d0d]/80 mt-4 max-w-xl mx-auto leading-relaxed">
+            <p className="font-body text-[15px] text-[#14110c]/80 mt-4 max-w-xl mx-auto leading-relaxed">
               Hear him first at {PHONE_DISPLAY}, or bring him on and have your own Chief on the line this week.
               A set package price, quoted privately, and a fraction of a human assistant.
             </p>
             <div className="mt-7 flex flex-wrap gap-3 justify-center">
               <Link
                 href="#pricing"
-                className="inline-block border-2 border-[#0d0d0d] bg-[#0d0d0d] text-[#ffd400] rounded-full px-9 py-4 font-sans font-extrabold text-[12px] uppercase tracking-[0.16em] shadow-[5px_5px_0_0_rgba(13,13,13,0.3)] hover:-translate-y-0.5 transition-all"
+                className="inline-block border-2 border-[#14110c] bg-[#14110c] text-[#f5b700] rounded-full px-9 py-4 font-sans font-extrabold text-[12px] uppercase tracking-[0.16em] shadow-[5px_5px_0_0_rgba(20,17,12,0.3)] hover:-translate-y-0.5 transition-all"
               >
                 Hire your Chief →
               </Link>
               <a
                 href={`tel:${PHONE_TEL}`}
-                className="inline-block border-2 border-[#0d0d0d] bg-white text-[#0d0d0d] rounded-full px-9 py-4 font-sans font-extrabold text-[12px] uppercase tracking-[0.16em] shadow-[5px_5px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-all"
+                className="inline-block border-2 border-[#14110c] bg-white text-[#14110c] rounded-full px-9 py-4 font-sans font-extrabold text-[12px] uppercase tracking-[0.16em] shadow-[5px_5px_0_0_#14110c] hover:-translate-y-0.5 transition-all"
               >
                 Call and hear him
               </a>

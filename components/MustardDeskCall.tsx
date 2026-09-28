@@ -131,25 +131,25 @@ export default function MustardDeskCall({
   return (
     <div className={`fixed ${positionClass} z-50 flex flex-col items-end gap-2`}>
       {state === 'live' ? (
-        <div className="bg-[#0d0d0d] border-2 border-[#ffd400] rounded-2xl shadow-[4px_4px_0_0_rgba(0,0,0,0.45)] pl-3 pr-4 py-3 flex items-center gap-3">
+        <div className="bg-[#14110c] border-2 border-[#f5b700] rounded-2xl shadow-[4px_4px_0_0_rgba(0,0,0,0.45)] pl-3 pr-4 py-3 flex items-center gap-3">
           <div
             className="relative flex items-center justify-center transition-transform duration-100"
             style={{ transform: `scale(${1 + Math.min(volume, 1) * 0.35})` }}
           >
             {speaking && (
-              <span className="absolute inline-flex h-9 w-9 rounded-full bg-[#ffd400]/30 animate-ping" />
+              <span className="absolute inline-flex h-9 w-9 rounded-full bg-[#f5b700]/30 animate-ping" />
             )}
             <Image src="/brand/mascot.png" alt="" width={885} height={1180} className="relative h-8 w-auto" />
           </div>
           <div className="text-left">
-            <p className="font-sans font-bold uppercase tracking-[0.1em] text-[11px] text-[#f1ede4]">
+            <p className="font-sans font-bold uppercase tracking-[0.1em] text-[11px] text-[#f6efe0]">
               {speaking ? 'Mr. Mustard is talking' : `Live · ${mmss}`}
             </p>
-            {sublabel && <p className="font-body text-[11px] text-[#f1ede4]/60">{sublabel}</p>}
+            {sublabel && <p className="font-body text-[11px] text-[#f6efe0]/60">{sublabel}</p>}
           </div>
           <button
             onClick={stop}
-            className="ml-1 bg-[#ff3b2f] text-white border-2 border-[#0d0d0d] rounded-lg px-3 py-1.5 font-sans font-bold uppercase tracking-[0.08em] text-[11px]"
+            className="ml-1 bg-[#b3261e] text-white border-2 border-[#14110c] rounded-lg px-3 py-1.5 font-sans font-bold uppercase tracking-[0.08em] text-[11px]"
           >
             Hang up
           </button>
@@ -158,7 +158,7 @@ export default function MustardDeskCall({
         <button
           onClick={() => void start()}
           disabled={busy}
-          className="group flex items-center gap-2.5 pl-2.5 pr-5 py-2.5 bg-[#ffd400] text-[#0d0d0d] border-2 border-[#0d0d0d] rounded-full shadow-[3px_3px_0_0_#0d0d0d] hover:shadow-[5px_5px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-all disabled:opacity-70 disabled:cursor-wait"
+          className="group flex items-center gap-2.5 pl-2.5 pr-5 py-2.5 bg-[#f5b700] text-[#14110c] border-2 border-[#14110c] rounded-full shadow-[3px_3px_0_0_#14110c] hover:shadow-[5px_5px_0_0_#14110c] hover:-translate-y-0.5 transition-all disabled:opacity-70 disabled:cursor-wait"
         >
           <Image src="/brand/mascot.png" alt="" width={885} height={1180} className="h-7 w-auto" />
           <span className="text-left">
@@ -166,7 +166,7 @@ export default function MustardDeskCall({
               {state === 'forging' ? 'One second…' : state === 'connecting' ? 'Ringing him…' : state === 'ended' ? 'Talk again' : label}
             </span>
             {sublabel && state === 'idle' && (
-              <span className="block font-mono text-[9px] uppercase tracking-[0.22em] text-[#0d0d0d]/60 leading-tight mt-0.5">
+              <span className="block font-mono text-[9px] uppercase tracking-[0.22em] text-[#14110c]/60 leading-tight mt-0.5">
                 {sublabel}
               </span>
             )}
@@ -174,7 +174,7 @@ export default function MustardDeskCall({
         </button>
       )}
       {error && (
-        <p className="bg-white border-2 border-[#0d0d0d] rounded-lg px-3 py-1.5 font-body text-[11px] text-[#d0241b] font-semibold text-right max-w-[240px]">
+        <p className="bg-white border-2 border-[#14110c] rounded-lg px-3 py-1.5 font-body text-[11px] text-[#8f1d22] font-semibold text-right max-w-[240px]">
           {error}
         </p>
       )}

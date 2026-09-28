@@ -18,12 +18,12 @@ export default async function GeoPackPage({ searchParams }: { searchParams: Prom
   const sessionId = (session_id || '').trim();
 
   const fail = (title: string, body: string) => (
-    <div className="bg-[#f1ede4] text-[#0d0d0d] min-h-screen flex items-center justify-center px-5">
-      <div className="max-w-md text-center rounded-2xl border-2 border-[#0d0d0d] bg-white p-8 shadow-[6px_6px_0_0_#0d0d0d]">
-        <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#d0241b] font-bold mb-3">[ GEO DESK ]</p>
+    <div className="bg-[#f6efe0] text-[#14110c] min-h-screen flex items-center justify-center px-5">
+      <div className="max-w-md text-center rounded-2xl border-2 border-[#14110c] bg-white p-8 shadow-[6px_6px_0_0_#14110c]">
+        <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#8f1d22] font-bold mb-3">[ GEO DESK ]</p>
         <h1 className="font-display text-2xl font-black">{title}</h1>
-        <p className="font-body text-sm text-[#0d0d0d]/70 mt-3 leading-relaxed">{body}</p>
-        <Link href="/website-audit" className="inline-block mt-5 font-sans font-extrabold text-xs uppercase tracking-[0.18em] text-[#c8201a] underline underline-offset-4">
+        <p className="font-body text-sm text-[#14110c]/70 mt-3 leading-relaxed">{body}</p>
+        <Link href="/website-audit" className="inline-block mt-5 font-sans font-extrabold text-xs uppercase tracking-[0.18em] text-[#8f1d22] underline underline-offset-4">
           Back to the audit →
         </Link>
       </div>
@@ -59,14 +59,14 @@ export default async function GeoPackPage({ searchParams }: { searchParams: Prom
   // carries a multi-minute pipeline (ship-gate blocker fix).
   if (!pack) {
     return (
-      <div className="bg-[#f1ede4] text-[#0d0d0d] min-h-screen">
+      <div className="bg-[#f6efe0] text-[#14110c] min-h-screen">
         <PackGenerating sessionId={sessionId} />
       </div>
     );
   }
 
   return (
-    <div className="bg-[#f1ede4] text-[#0d0d0d] min-h-screen">
+    <div className="bg-[#f6efe0] text-[#14110c] min-h-screen">
       <PackViewer sessionId={sessionId} pack={pack} />
     </div>
   );

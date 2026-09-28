@@ -156,7 +156,7 @@ function PopKey({
       onClick={onClick}
       aria-label={label}
       style={style}
-      className={`select-none rounded-xl border-2 border-[#0d0d0d] font-mono font-bold leading-none shadow-[0_5px_0_0_#0d0d0d] transition-[transform,box-shadow] duration-75 hover:-translate-y-[1px] hover:shadow-[0_6px_0_0_#0d0d0d] active:translate-y-[4px] active:shadow-[0_1px_0_0_#0d0d0d] motion-reduce:transition-none motion-reduce:hover:translate-y-0 ${className}`}
+      className={`select-none rounded-xl border-2 border-[#14110c] font-mono font-bold leading-none shadow-[0_5px_0_0_#14110c] transition-[transform,box-shadow] duration-75 hover:-translate-y-[1px] hover:shadow-[0_6px_0_0_#14110c] active:translate-y-[4px] active:shadow-[0_1px_0_0_#14110c] motion-reduce:transition-none motion-reduce:hover:translate-y-0 ${className}`}
     >
       {children}
     </button>
@@ -283,25 +283,25 @@ export default function JourneyCalculator() {
       id="tour-calculator"
       data-journey-chapter="The Leak"
       data-mile="MI 19"
-      className="relative overflow-hidden border-b-2 border-[#0d0d0d] bg-[#f1ede4] py-24 md:py-32"
+      className="relative overflow-hidden border-b-2 border-[#14110c] bg-[#f6efe0] py-24 md:py-32"
     >
       <div className="halftone-bg pointer-events-none absolute inset-0 opacity-70" aria-hidden />
 
       <div className="relative mx-auto max-w-7xl px-6">
         {/* ── The header ── */}
         <div className="max-w-3xl">
-          <span className="inline-block border-2 border-[#0d0d0d] bg-white px-3 py-1 font-mono text-[11px] font-bold uppercase tracking-[0.22em] text-[#8f6600] shadow-[3px_3px_0_0_#0d0d0d]">
+          <span className="inline-block border-2 border-[#14110c] bg-white px-3 py-1 font-mono text-[11px] font-bold uppercase tracking-[0.22em] text-[#8f6600] shadow-[3px_3px_0_0_#14110c]">
             MI 19 · The Leak
           </span>
           <h2
-            className={`${anton.className} mt-5 uppercase leading-[0.95] text-[#0d0d0d]`}
+            className={`${anton.className} mt-5 uppercase leading-[0.95] text-[#14110c]`}
             style={{ fontSize: 'clamp(40px,5.4vw,78px)' }}
           >
             Do The Math
             <br />
             On The Quiet
           </h2>
-          <p className="mt-5 text-lg leading-relaxed text-[#0d0d0d]/80">
+          <p className="mt-5 text-lg leading-relaxed text-[#14110c]/80">
             A website that just sits there and a phone nobody answers are the same problem wearing two
             hats. Both of them let a ready buyer walk. Here is what that is worth in your business,
             counted out loud.
@@ -313,19 +313,19 @@ export default function JourneyCalculator() {
           {PROOF.map((p, i) => {
             const tone =
               p.tone === 'yellow'
-                ? 'bg-[#ffd400] text-[#0d0d0d]'
+                ? 'bg-[#f5b700] text-[#14110c]'
                 : p.tone === 'red'
-                  ? 'bg-[#C4160B] text-[#f1ede4]'
+                  ? 'bg-[#C4160B] text-[#f6efe0]'
                   : p.tone === 'ink'
-                    ? 'bg-[#0d0d0d] text-[#f1ede4]'
-                    : 'bg-[#0d0d0d] text-[#f1ede4]';
+                    ? 'bg-[#14110c] text-[#f6efe0]'
+                    : 'bg-[#14110c] text-[#f6efe0]';
             return (
               <div
                 key={p.stat}
-                className={`flex flex-col rounded-2xl border-2 border-[#0d0d0d] p-6 shadow-[6px_6px_0_0_#0d0d0d] ${tone}`}
+                className={`flex flex-col rounded-2xl border-2 border-[#14110c] p-6 shadow-[6px_6px_0_0_#14110c] ${tone}`}
                 style={{ transform: `rotate(${i % 2 === 0 ? -0.7 : 0.7}deg)` }}
               >
-                <span className="self-start rounded-full border-2 border-[#0d0d0d] bg-[#f1ede4] px-2.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-[#0d0d0d]">
+                <span className="self-start rounded-full border-2 border-[#14110c] bg-[#f6efe0] px-2.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-[#14110c]">
                   {p.tag}
                 </span>
                 <span
@@ -344,18 +344,18 @@ export default function JourneyCalculator() {
         </div>
 
         {/* ── The closer stat ── */}
-        <div className="halftone-ink mt-6 flex flex-col items-center gap-4 rounded-2xl border-2 border-[#0d0d0d] bg-[#0d0d0d] p-7 text-center shadow-[6px_6px_0_0_#ffd400] sm:flex-row sm:text-left md:p-9">
+        <div className="halftone-ink mt-6 flex flex-col items-center gap-4 rounded-2xl border-2 border-[#14110c] bg-[#14110c] p-7 text-center shadow-[6px_6px_0_0_#f5b700] sm:flex-row sm:text-left md:p-9">
           <span
-            className={`${anton.className} shrink-0 leading-none text-[#ffd400]`}
+            className={`${anton.className} shrink-0 leading-none text-[#f5b700]`}
             style={{ fontSize: 'clamp(56px,7vw,92px)' }}
           >
             21x
           </span>
-          <p className="text-[15px] leading-relaxed text-[#f1ede4]/90 md:text-lg">
+          <p className="text-[15px] leading-relaxed text-[#f6efe0]/90 md:text-lg">
             More likely to qualify a lead when it is answered inside five minutes instead of thirty. Not
             a better pitch, not a bigger budget. Speed. That is the entire advantage a talking website
             and a voice agent hand you, and they hold it at two in the morning.
-            <span className="mt-2 block font-mono text-[11px] uppercase tracking-[0.14em] text-[#ffd400]/70">
+            <span className="mt-2 block font-mono text-[11px] uppercase tracking-[0.14em] text-[#f5b700]/70">
               MIT and InsideSales Lead Response Management Study, Harvard Business Review
             </span>
           </p>
@@ -368,31 +368,31 @@ export default function JourneyCalculator() {
         <div className="mx-auto mt-16 flex max-w-5xl flex-col items-center gap-10 xl:flex-row xl:items-start xl:gap-10">
           <div className="w-full min-w-0 xl:flex-1">
             <p
-              className={`${caveat.className} mb-3 ml-2 rotate-[-2deg] text-2xl text-[#0d0d0d]/70 md:text-3xl`}
+              className={`${caveat.className} mb-3 ml-2 rotate-[-2deg] text-2xl text-[#14110c]/70 md:text-3xl`}
             >
               go ahead, punch in your own numbers
             </p>
 
             <div
-              className="rounded-[22px] border-[3px] border-[#0d0d0d] bg-[#ffd400] p-3.5 shadow-[10px_10px_0_0_#0d0d0d] sm:p-5 md:p-6"
+              className="rounded-[22px] border-[3px] border-[#14110c] bg-[#f5b700] p-3.5 shadow-[10px_10px_0_0_#14110c] sm:p-5 md:p-6"
               style={{ transform: 'rotate(-0.6deg)' }}
             >
               {/* Brand plate */}
               <div className="mb-3 flex items-center justify-between gap-4">
                 <div>
-                  <span className="block font-mono text-[10px] font-bold uppercase tracking-[0.26em] text-[#0d0d0d]">
+                  <span className="block font-mono text-[10px] font-bold uppercase tracking-[0.26em] text-[#14110c]">
                     Modern Mustard Seed
                   </span>
-                  <span className="block font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-[#0d0d0d]/75">
+                  <span className="block font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-[#14110c]/75">
                     Model RR-1 · Revenue Recovery
                   </span>
                 </div>
                 <div
-                  className="flex items-center gap-1 rounded-md border-2 border-[#0d0d0d] bg-[#0d0d0d] px-1.5 py-1"
+                  className="flex items-center gap-1 rounded-md border-2 border-[#14110c] bg-[#14110c] px-1.5 py-1"
                   aria-hidden
                 >
                   {[0, 1, 2, 3].map((i) => (
-                    <span key={i} className="block h-4 w-3 rounded-[2px] bg-[#0d0d0d]/70" />
+                    <span key={i} className="block h-4 w-3 rounded-[2px] bg-[#14110c]/70" />
                   ))}
                 </div>
               </div>
@@ -401,9 +401,9 @@ export default function JourneyCalculator() {
               {/* Background rides inline, not on a class: two arbitrary bg-[] classes
                   would race in the stylesheet and the flash would land at random. */}
               <div
-                className="relative overflow-hidden rounded-xl border-2 border-[#0d0d0d] p-4 transition-[background-color,filter] duration-150 motion-reduce:transition-none sm:p-5"
+                className="relative overflow-hidden rounded-xl border-2 border-[#14110c] p-4 transition-[background-color,filter] duration-150 motion-reduce:transition-none sm:p-5"
                 style={{
-                  backgroundColor: flash ? '#17301F' : '#0d0d0d',
+                  backgroundColor: flash ? '#17301F' : '#14110c',
                   filter: flash ? 'brightness(1.25)' : 'none',
                   boxShadow: 'inset 0 4px 14px rgba(0,0,0,0.75)',
                 }}
@@ -417,10 +417,10 @@ export default function JourneyCalculator() {
                   }}
                 />
                 <div className="relative flex items-center justify-between gap-3">
-                  <span className="font-mono text-[10px] font-bold uppercase tracking-[0.26em] text-[#ffd400]/70">
+                  <span className="font-mono text-[10px] font-bold uppercase tracking-[0.26em] text-[#f5b700]/70">
                     Recovered Revenue
                   </span>
-                  <span className="flex items-center gap-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-[#d0241b]">
+                  <span className="flex items-center gap-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-[#8f1d22]">
                     <span className="block h-2 w-2 rounded-full bg-[#C4160B]" aria-hidden />
                     Live
                   </span>
@@ -429,13 +429,13 @@ export default function JourneyCalculator() {
                 <div className="relative mt-3 text-right">
                   <span
                     aria-hidden
-                    className="pointer-events-none absolute inset-0 select-none font-mono font-bold tabular-nums text-[#ffd400] opacity-[0.045]"
+                    className="pointer-events-none absolute inset-0 select-none font-mono font-bold tabular-nums text-[#f5b700] opacity-[0.045]"
                     style={{ fontSize: 'clamp(30px,4.6vw,54px)', lineHeight: 1 }}
                   >
                     $888,888
                   </span>
                   <span
-                    className="relative block font-mono font-bold tabular-nums text-[#FFDD55]"
+                    className="relative block font-mono font-bold tabular-nums text-[#ffc933]"
                     style={{
                       fontSize: 'clamp(30px,4.6vw,54px)',
                       lineHeight: 1,
@@ -444,22 +444,22 @@ export default function JourneyCalculator() {
                   >
                     {usd(monthlyShown)}
                   </span>
-                  <span className="mt-1 block font-mono text-[11px] font-bold uppercase tracking-[0.22em] text-[#ffd400]/70">
+                  <span className="mt-1 block font-mono text-[11px] font-bold uppercase tracking-[0.22em] text-[#f5b700]/70">
                     Per Month
                   </span>
                 </div>
 
-                <div className="relative mt-4 grid grid-cols-3 gap-2 border-t border-[#ffd400]/20 pt-3 text-center">
+                <div className="relative mt-4 grid grid-cols-3 gap-2 border-t border-[#f5b700]/20 pt-3 text-center">
                   {[
                     { k: 'From The Site', v: usd(math.siteMonthly) },
                     { k: 'From The Phone', v: usd(math.phoneMonthly) },
                     { k: 'Per Year', v: usd(annualShown) },
                   ].map((r) => (
                     <div key={r.k}>
-                      <span className="block font-mono text-[9px] font-bold uppercase tracking-[0.16em] text-[#ffd400]/60">
+                      <span className="block font-mono text-[9px] font-bold uppercase tracking-[0.16em] text-[#f5b700]/60">
                         {r.k}
                       </span>
-                      <span className="mt-1 block font-mono text-xs font-bold tabular-nums text-[#f1ede4] sm:text-base">
+                      <span className="mt-1 block font-mono text-xs font-bold tabular-nums text-[#f6efe0] sm:text-base">
                         {r.v}
                       </span>
                     </div>
@@ -470,8 +470,8 @@ export default function JourneyCalculator() {
               {/* Slots and keypad */}
               <div className="mt-4 grid gap-4 lg:grid-cols-[1.05fr_1fr] lg:gap-5">
                 {/* Input slots */}
-                <div className="rounded-xl border-2 border-[#0d0d0d] bg-[#FFFDF6] p-3.5 sm:p-4">
-                  <span className="mb-3 block font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-[#0d0d0d]/75">
+                <div className="rounded-xl border-2 border-[#14110c] bg-[#FFFDF6] p-3.5 sm:p-4">
+                  <span className="mb-3 block font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-[#14110c]/75">
                     Your Numbers
                   </span>
                   <div className="flex flex-col gap-2">
@@ -483,18 +483,18 @@ export default function JourneyCalculator() {
                           htmlFor={`rr-${f.key}`}
                           className={`block cursor-text rounded-lg border-2 px-3 py-2 transition-colors ${
                             on
-                              ? 'border-[#0d0d0d] bg-[#ffd400] shadow-[3px_3px_0_0_#0d0d0d]'
-                              : 'border-[#0d0d0d]/25 bg-white hover:border-[#0d0d0d]/60'
+                              ? 'border-[#14110c] bg-[#f5b700] shadow-[3px_3px_0_0_#14110c]'
+                              : 'border-[#14110c]/25 bg-white hover:border-[#14110c]/60'
                           }`}
                         >
                           <span className="flex items-center justify-between gap-3">
                             <span className="min-w-0">
-                              <span className="block font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-[#0d0d0d]">
+                              <span className="block font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-[#14110c]">
                                 {f.label}
                               </span>
-                              <span className="block truncate text-[11px] text-[#0d0d0d]/75">{f.hint}</span>
+                              <span className="block truncate text-[11px] text-[#14110c]/75">{f.hint}</span>
                             </span>
-                            <span className="flex shrink-0 items-baseline font-mono text-base font-bold tabular-nums text-[#0d0d0d] sm:text-lg">
+                            <span className="flex shrink-0 items-baseline font-mono text-base font-bold tabular-nums text-[#14110c] sm:text-lg">
                               {f.prefix}
                               <input
                                 id={`rr-${f.key}`}
@@ -508,7 +508,7 @@ export default function JourneyCalculator() {
                                 value={String(vals[f.key])}
                                 onFocus={() => setActive(f.key)}
                                 onChange={(e) => set(f.key, Number(e.target.value))}
-                                className="w-[5.5ch] bg-transparent text-right font-mono text-lg font-bold tabular-nums text-[#0d0d0d] outline-none focus:underline focus:decoration-[#C4160B] focus:decoration-2 focus:underline-offset-4 sm:text-xl [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                                className="w-[5.5ch] bg-transparent text-right font-mono text-lg font-bold tabular-nums text-[#14110c] outline-none focus:underline focus:decoration-[#C4160B] focus:decoration-2 focus:underline-offset-4 sm:text-xl [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                                 style={{ MozAppearance: 'textfield' }}
                               />
                               {f.suffix}
@@ -518,7 +518,7 @@ export default function JourneyCalculator() {
                       );
                     })}
                   </div>
-                  <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.14em] text-[#0d0d0d]/75">
+                  <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.14em] text-[#14110c]/75">
                     Type here, or use the keys
                   </p>
                 </div>
@@ -526,46 +526,46 @@ export default function JourneyCalculator() {
                 {/* Keypad */}
                 <div className="grid grid-cols-4 gap-2">
                   {['7', '8', '9'].map((d) => (
-                    <PopKey key={d} label={`Digit ${d}`} onClick={() => digit(d)} className="bg-white py-3 text-lg text-[#0d0d0d] sm:py-3.5 sm:text-xl">
+                    <PopKey key={d} label={`Digit ${d}`} onClick={() => digit(d)} className="bg-white py-3 text-lg text-[#14110c] sm:py-3.5 sm:text-xl">
                       {d}
                     </PopKey>
                   ))}
-                  <PopKey label="Clear this field" onClick={clearKey} className="bg-[#C4160B] py-3 text-sm text-[#f1ede4] sm:py-3.5">
+                  <PopKey label="Clear this field" onClick={clearKey} className="bg-[#C4160B] py-3 text-sm text-[#f6efe0] sm:py-3.5">
                     C
                   </PopKey>
 
                   {['4', '5', '6'].map((d) => (
-                    <PopKey key={d} label={`Digit ${d}`} onClick={() => digit(d)} className="bg-white py-3 text-lg text-[#0d0d0d] sm:py-3.5 sm:text-xl">
+                    <PopKey key={d} label={`Digit ${d}`} onClick={() => digit(d)} className="bg-white py-3 text-lg text-[#14110c] sm:py-3.5 sm:text-xl">
                       {d}
                     </PopKey>
                   ))}
-                  <PopKey label="Delete last digit" onClick={backspace} className="bg-[#0d0d0d] py-3 text-base text-[#f1ede4] sm:py-3.5">
+                  <PopKey label="Delete last digit" onClick={backspace} className="bg-[#14110c] py-3 text-base text-[#f6efe0] sm:py-3.5">
                     <span aria-hidden>⌫</span>
                   </PopKey>
 
                   {['1', '2', '3'].map((d) => (
-                    <PopKey key={d} label={`Digit ${d}`} onClick={() => digit(d)} className="bg-white py-3 text-lg text-[#0d0d0d] sm:py-3.5 sm:text-xl">
+                    <PopKey key={d} label={`Digit ${d}`} onClick={() => digit(d)} className="bg-white py-3 text-lg text-[#14110c] sm:py-3.5 sm:text-xl">
                       {d}
                     </PopKey>
                   ))}
-                  <PopKey label="Next field" onClick={nextField} className="bg-[#0d0d0d] py-3 text-[10px] uppercase tracking-[0.1em] text-[#f1ede4] sm:py-3.5">
+                  <PopKey label="Next field" onClick={nextField} className="bg-[#14110c] py-3 text-[10px] uppercase tracking-[0.1em] text-[#f6efe0] sm:py-3.5">
                     Next
                   </PopKey>
 
-                  <PopKey label="Digit 0" onClick={() => digit('0')} className="col-span-2 bg-white py-3 text-lg text-[#0d0d0d] sm:py-3.5 sm:text-xl">
+                  <PopKey label="Digit 0" onClick={() => digit('0')} className="col-span-2 bg-white py-3 text-lg text-[#14110c] sm:py-3.5 sm:text-xl">
                     0
                   </PopKey>
-                  <PopKey label="Double zero" onClick={() => digit('00')} className="bg-white py-3 text-lg text-[#0d0d0d] sm:py-3.5 sm:text-xl">
+                  <PopKey label="Double zero" onClick={() => digit('00')} className="bg-white py-3 text-lg text-[#14110c] sm:py-3.5 sm:text-xl">
                     00
                   </PopKey>
-                  <PopKey label="Total it up" onClick={equals} className="bg-[#0d0d0d] py-3 text-xl text-[#ffd400] sm:py-3.5">
+                  <PopKey label="Total it up" onClick={equals} className="bg-[#14110c] py-3 text-xl text-[#f5b700] sm:py-3.5">
                     =
                   </PopKey>
 
                   <Link
                     href={buildHref}
                     onClick={() => onBuild('keypad')}
-                    className="col-span-4 mt-1 flex select-none items-center justify-center gap-2 rounded-xl border-2 border-[#0d0d0d] bg-[#C4160B] py-4 font-sans text-xs font-extrabold uppercase tracking-[0.18em] text-[#f1ede4] shadow-[0_5px_0_0_#0d0d0d] transition-[transform,box-shadow] duration-75 hover:-translate-y-[1px] hover:shadow-[0_6px_0_0_#0d0d0d] active:translate-y-[4px] active:shadow-[0_1px_0_0_#0d0d0d] motion-reduce:transition-none sm:text-sm"
+                    className="col-span-4 mt-1 flex select-none items-center justify-center gap-2 rounded-xl border-2 border-[#14110c] bg-[#C4160B] py-4 font-sans text-xs font-extrabold uppercase tracking-[0.18em] text-[#f6efe0] shadow-[0_5px_0_0_#14110c] transition-[transform,box-shadow] duration-75 hover:-translate-y-[1px] hover:shadow-[0_6px_0_0_#14110c] active:translate-y-[4px] active:shadow-[0_1px_0_0_#14110c] motion-reduce:transition-none sm:text-sm"
                   >
                     Build My Demo
                     <span aria-hidden>→</span>
@@ -583,7 +583,7 @@ export default function JourneyCalculator() {
             <div
               style={{
                 transform: 'rotate(1.4deg)',
-                filter: 'drop-shadow(7px 7px 0 rgba(13,13,13,0.16)) drop-shadow(0 0 1px rgba(13,13,13,0.45))',
+                filter: 'drop-shadow(7px 7px 0 rgba(20,17,12,0.16)) drop-shadow(0 0 1px rgba(20,17,12,0.45))',
               }}
             >
               {/* Torn edges. The height has to equal the tile height or the teeth
@@ -600,15 +600,15 @@ export default function JourneyCalculator() {
                 }}
               />
               <div className="bg-white px-6 py-5">
-                <div className="text-center font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-[#0d0d0d]">
+                <div className="text-center font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-[#14110c]">
                   Modern Mustard Seed
                 </div>
-                <div className="mt-0.5 text-center font-mono text-[9px] uppercase tracking-[0.16em] text-[#0d0d0d]/75">
+                <div className="mt-0.5 text-center font-mono text-[9px] uppercase tracking-[0.16em] text-[#14110c]/75">
                   Revenue Recovery · RR-1
                 </div>
-                <div className="my-3 border-t-2 border-dashed border-[#0d0d0d]/25" />
+                <div className="my-3 border-t-2 border-dashed border-[#14110c]/25" />
 
-                <dl className="space-y-1.5 font-mono text-[11px] tabular-nums text-[#0d0d0d]/85">
+                <dl className="space-y-1.5 font-mono text-[11px] tabular-nums text-[#14110c]/85">
                   {[
                     ['Visitors / mo', num(vals.visitors)],
                     ['Leads today', num(math.baselineLeads)],
@@ -620,7 +620,7 @@ export default function JourneyCalculator() {
                       <dd className="font-bold">{v}</dd>
                     </div>
                   ))}
-                  <div className="!my-2.5 border-t border-dashed border-[#0d0d0d]/25" />
+                  <div className="!my-2.5 border-t border-dashed border-[#14110c]/25" />
                   {[
                     ['Missed calls / mo', num(math.missedPerMonth)],
                     ['Answered by agent', num(math.missedPerMonth)],
@@ -632,7 +632,7 @@ export default function JourneyCalculator() {
                       <dd className="font-bold">{v}</dd>
                     </div>
                   ))}
-                  <div className="!my-2.5 border-t-2 border-[#0d0d0d]" />
+                  <div className="!my-2.5 border-t-2 border-[#14110c]" />
                   {[
                     ['New customers / mo', num(math.newCustomers)],
                     ['From the site', usd(math.siteMonthly)],
@@ -643,8 +643,8 @@ export default function JourneyCalculator() {
                       <dd className="font-bold">{v}</dd>
                     </div>
                   ))}
-                  <div className="!my-2.5 border-t-2 border-[#0d0d0d]" />
-                  <div className="flex justify-between gap-3 text-[13px] font-bold text-[#0d0d0d]">
+                  <div className="!my-2.5 border-t-2 border-[#14110c]" />
+                  <div className="flex justify-between gap-3 text-[13px] font-bold text-[#14110c]">
                     <dt className="uppercase tracking-[0.06em]">Total / mo</dt>
                     <dd>{usd(math.monthly)}</dd>
                   </div>
@@ -654,8 +654,8 @@ export default function JourneyCalculator() {
                   </div>
                 </dl>
 
-                <div className="my-3 border-t-2 border-dashed border-[#0d0d0d]/25" />
-                <p className="text-center font-mono text-[10px] uppercase tracking-[0.18em] text-[#0d0d0d]/70">
+                <div className="my-3 border-t-2 border-dashed border-[#14110c]/25" />
+                <p className="text-center font-mono text-[10px] uppercase tracking-[0.18em] text-[#14110c]/70">
                   Thank you
                   <br />
                   Now go build yours
@@ -665,7 +665,7 @@ export default function JourneyCalculator() {
                   className="mx-auto mt-3 h-8 w-full"
                   style={{
                     backgroundImage:
-                      'repeating-linear-gradient(90deg, #0d0d0d 0 2px, transparent 2px 4px, #0d0d0d 4px 5px, transparent 5px 9px, #0d0d0d 9px 12px, transparent 12px 14px)',
+                      'repeating-linear-gradient(90deg, #14110c 0 2px, transparent 2px 4px, #14110c 4px 5px, transparent 5px 9px, #14110c 9px 12px, transparent 12px 14px)',
                   }}
                 />
               </div>
@@ -686,14 +686,14 @@ export default function JourneyCalculator() {
         {/* ── Take the tape with you. The cheap ask, ahead of the Build ask. ── */}
         <div className="mx-auto mt-14 max-w-3xl">
           {status === 'done' ? (
-            <div className="rounded-2xl border-2 border-[#0d0d0d] bg-[#ffd400] p-8 text-center shadow-[6px_6px_0_0_#0d0d0d] md:p-10">
+            <div className="rounded-2xl border-2 border-[#14110c] bg-[#f5b700] p-8 text-center shadow-[6px_6px_0_0_#14110c] md:p-10">
               <span className="font-mono text-[11px] font-bold uppercase tracking-[0.24em] text-[#C4160B]">
                 Printed and sent
               </span>
-              <h3 className="mt-3 font-display text-2xl font-black leading-tight text-[#0d0d0d] md:text-3xl">
+              <h3 className="mt-3 font-display text-2xl font-black leading-tight text-[#14110c] md:text-3xl">
                 On its way. Check your inbox.
               </h3>
-              <p className="mx-auto mt-3 max-w-xl text-[15px] leading-relaxed text-[#0d0d0d]/80">
+              <p className="mx-auto mt-3 max-w-xl text-[15px] leading-relaxed text-[#14110c]/80">
                 Your breakdown is coming from me, with the sources behind every number and what
                 plugging the leak actually looks like in your business. While you wait, go see the
                 thing itself.
@@ -701,7 +701,7 @@ export default function JourneyCalculator() {
               <Link
                 href={buildHref}
                 onClick={() => onBuild('receipt-success')}
-                className="mt-6 inline-flex items-center gap-2 border-2 border-[#0d0d0d] bg-[#0d0d0d] px-8 py-4 font-sans text-sm font-extrabold uppercase tracking-[0.14em] text-[#ffd400] shadow-[5px_5px_0_0_#f1ede4] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#f1ede4]"
+                className="mt-6 inline-flex items-center gap-2 border-2 border-[#14110c] bg-[#14110c] px-8 py-4 font-sans text-sm font-extrabold uppercase tracking-[0.14em] text-[#f5b700] shadow-[5px_5px_0_0_#f6efe0] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#f6efe0]"
               >
                 Build My Demo Free
                 <span aria-hidden>→</span>
@@ -710,15 +710,15 @@ export default function JourneyCalculator() {
           ) : (
             <form
               onSubmit={sendReceipt}
-              className="rounded-2xl border-2 border-[#0d0d0d] bg-white p-7 shadow-[6px_6px_0_0_#0d0d0d] md:p-9"
+              className="rounded-2xl border-2 border-[#14110c] bg-white p-7 shadow-[6px_6px_0_0_#14110c] md:p-9"
             >
               <span className="font-mono text-[11px] font-bold uppercase tracking-[0.24em] text-[#C4160B]">
                 Take The Tape With You
               </span>
-              <h3 className="mt-2 font-display text-2xl font-black leading-tight text-[#0d0d0d] md:text-3xl">
+              <h3 className="mt-2 font-display text-2xl font-black leading-tight text-[#14110c] md:text-3xl">
                 Want this receipt in writing?
               </h3>
-              <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-[#0d0d0d]/75">
+              <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-[#14110c]/75">
                 I will send the breakdown, the source behind every number on this page, and what
                 plugging the leak looks like in your business. One reply from me, not a sequence.
               </p>
@@ -732,7 +732,7 @@ export default function JourneyCalculator() {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="First name (optional)"
-                  className="rounded-full border-2 border-[#0d0d0d] bg-[#FFFDF6] px-5 py-3.5 font-body text-sm text-[#0d0d0d] transition-all placeholder:text-[#0d0d0d]/40 focus:outline-none focus:shadow-[3px_3px_0_0_#0d0d0d] sm:w-48"
+                  className="rounded-full border-2 border-[#14110c] bg-[#FFFDF6] px-5 py-3.5 font-body text-sm text-[#14110c] transition-all placeholder:text-[#14110c]/40 focus:outline-none focus:shadow-[3px_3px_0_0_#14110c] sm:w-48"
                 />
                 <label htmlFor="rr-email" className="sr-only">
                   Email address
@@ -744,18 +744,18 @@ export default function JourneyCalculator() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@business.com"
-                  className="flex-1 rounded-full border-2 border-[#0d0d0d] bg-[#FFFDF6] px-5 py-3.5 font-body text-sm text-[#0d0d0d] transition-all placeholder:text-[#0d0d0d]/40 focus:outline-none focus:shadow-[3px_3px_0_0_#0d0d0d]"
+                  className="flex-1 rounded-full border-2 border-[#14110c] bg-[#FFFDF6] px-5 py-3.5 font-body text-sm text-[#14110c] transition-all placeholder:text-[#14110c]/40 focus:outline-none focus:shadow-[3px_3px_0_0_#14110c]"
                 />
                 <button
                   type="submit"
                   disabled={status === 'sending' || !email.trim()}
-                  className="whitespace-nowrap rounded-full border-2 border-[#0d0d0d] bg-[#ffd400] px-7 py-3.5 font-sans text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#0d0d0d] shadow-[4px_4px_0_0_#0d0d0d] transition-all hover:-translate-y-0.5 disabled:opacity-50 disabled:hover:translate-y-0"
+                  className="whitespace-nowrap rounded-full border-2 border-[#14110c] bg-[#f5b700] px-7 py-3.5 font-sans text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#14110c] shadow-[4px_4px_0_0_#14110c] transition-all hover:-translate-y-0.5 disabled:opacity-50 disabled:hover:translate-y-0"
                 >
                   {status === 'sending' ? 'Sending' : 'Send My Receipt →'}
                 </button>
               </div>
               {error && <p className="mt-3 font-mono text-xs text-[#C4160B]">{error}</p>}
-              <p className="mt-3 font-body text-[11px] text-[#0d0d0d]/75">
+              <p className="mt-3 font-body text-[11px] text-[#14110c]/75">
                 No spam. One reply from a real person. Unsubscribe anytime.
               </p>
             </form>
@@ -763,29 +763,29 @@ export default function JourneyCalculator() {
         </div>
 
         {/* ── How the math works, so nobody has to guess ── */}
-        <p className="mx-auto mt-8 max-w-3xl text-center font-mono text-[11px] leading-relaxed text-[#0d0d0d]/75">
+        <p className="mx-auto mt-8 max-w-3xl text-center font-mono text-[11px] leading-relaxed text-[#14110c]/75">
           The web line applies a 30% conversion lift to a 2.35% baseline, the conservative floor of the
           documented range. The phone line assumes the agent answers every call you currently miss. Your
           close rate is applied to both. {PROOF_SOURCES}
         </p>
 
         {/* ── The ask ── */}
-        <div className="relative mt-14 overflow-hidden rounded-2xl border-[3px] border-[#0d0d0d] bg-[#0d0d0d] p-8 shadow-[10px_10px_0_0_#ffd400] md:p-12">
+        <div className="relative mt-14 overflow-hidden rounded-2xl border-[3px] border-[#14110c] bg-[#14110c] p-8 shadow-[10px_10px_0_0_#f5b700] md:p-12">
           <div className="halftone-ink pointer-events-none absolute inset-0" aria-hidden />
           <div className="relative mx-auto max-w-3xl text-center">
-            <span className="inline-flex items-center gap-2 rounded-full border-2 border-[#ffd400] px-4 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-[#ffd400]">
+            <span className="inline-flex items-center gap-2 rounded-full border-2 border-[#f5b700] px-4 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-[#f5b700]">
               <span className="block h-2 w-2 rounded-full bg-[#C4160B]" aria-hidden />
               The Demo Build · Free
             </span>
             <h3
-              className={`${anton.className} mt-5 uppercase leading-[0.95] text-[#f1ede4]`}
+              className={`${anton.className} mt-5 uppercase leading-[0.95] text-[#f6efe0]`}
               style={{ fontSize: 'clamp(34px,4.4vw,64px)' }}
             >
               Stop Estimating.
               <br />
               Go See Yours Built.
             </h3>
-            <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-[#f1ede4]/85 md:text-lg">
+            <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-[#f6efe0]/85 md:text-lg">
               That number stays a guess until it is your website and your phone number. Tell us your
               trade and your town, and we build your talking website and your voice agent while you
               watch. No card, no call, nothing to cancel.
@@ -794,7 +794,7 @@ export default function JourneyCalculator() {
               <Link
                 href={buildHref}
                 onClick={() => onBuild('cta')}
-                className="inline-flex items-center gap-2 border-2 border-[#0d0d0d] bg-[#ffd400] px-8 py-4 font-sans text-sm font-extrabold uppercase tracking-[0.14em] text-[#0d0d0d] shadow-[5px_5px_0_0_#f1ede4] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#f1ede4]"
+                className="inline-flex items-center gap-2 border-2 border-[#14110c] bg-[#f5b700] px-8 py-4 font-sans text-sm font-extrabold uppercase tracking-[0.14em] text-[#14110c] shadow-[5px_5px_0_0_#f6efe0] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#f6efe0]"
               >
                 Build My Demo Free
                 <span aria-hidden>→</span>
@@ -809,12 +809,12 @@ export default function JourneyCalculator() {
                     }),
                   );
                 }}
-                className="inline-flex items-center gap-2 border-2 border-[#f1ede4] bg-white/10 px-8 py-4 font-sans text-sm font-extrabold uppercase tracking-[0.14em] text-[#f1ede4] backdrop-blur transition-colors hover:bg-white/20"
+                className="inline-flex items-center gap-2 border-2 border-[#f6efe0] bg-white/10 px-8 py-4 font-sans text-sm font-extrabold uppercase tracking-[0.14em] text-[#f6efe0] backdrop-blur transition-colors hover:bg-white/20"
               >
                 Ask Mr. Mustard About It
               </button>
             </div>
-            <p className="mt-5 font-mono text-[11px] uppercase tracking-[0.16em] text-[#ffd400]/60">
+            <p className="mt-5 font-mono text-[11px] uppercase tracking-[0.16em] text-[#f5b700]/60">
               Built before you pay a cent
             </p>
           </div>

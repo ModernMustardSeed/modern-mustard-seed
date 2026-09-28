@@ -30,28 +30,28 @@ export default function BroadcastHero() {
   };
 
   return (
-    <section className="halftone-bg border-b-2 border-[#0d0d0d]">
+    <section className="halftone-bg border-b-2 border-[#14110c]">
       <div className="max-w-6xl mx-auto px-5 pt-16 md:pt-24 pb-16 md:pb-20">
         <div className="text-center mb-10 md:mb-12">
           <Reveal variant="eyebrow">
-            <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#d0241b] font-bold mb-4">{BROADCAST.wordmark}</p>
+            <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#8f1d22] font-bold mb-4">{BROADCAST.wordmark}</p>
           </Reveal>
           <Reveal variant="slam">
-            <h1 className="font-display text-4xl md:text-6xl lg:text-[4.6rem] font-black text-[#0d0d0d] tracking-tight leading-[1.02]">
+            <h1 className="font-display text-4xl md:text-6xl lg:text-[4.6rem] font-black text-[#14110c] tracking-tight leading-[1.02]">
               We make the commercial.
               <br />
               We run the ads.
               <br />
               <span className="relative inline-block pb-3 md:pb-4">
                 You answer the phone.
-                <svg className="absolute bottom-0 left-0 w-full h-2 md:h-2.5 text-[#ffd400]" viewBox="0 0 300 10" preserveAspectRatio="none" aria-hidden="true">
+                <svg className="absolute bottom-0 left-0 w-full h-2 md:h-2.5 text-[#f5b700]" viewBox="0 0 300 10" preserveAspectRatio="none" aria-hidden="true">
                   <path d="M3,6 C60,2 240,2 297,6" fill="none" stroke="currentColor" strokeWidth="5" strokeLinecap="round" />
                 </svg>
               </span>
             </h1>
           </Reveal>
           <Reveal variant="rise" delay={120}>
-            <p className="font-body text-base md:text-lg text-[#0d0d0d]/70 max-w-2xl mx-auto mt-6 leading-relaxed">
+            <p className="font-body text-base md:text-lg text-[#14110c]/70 max-w-2xl mx-auto mt-6 leading-relaxed">
               Done-for-you advertising for local businesses. A cinematic commercial produced for you, launched on Facebook, Instagram, and Google, managed every week, reported in plain English every month.
             </p>
           </Reveal>
@@ -59,13 +59,13 @@ export default function BroadcastHero() {
             <div className="flex flex-wrap items-center justify-center gap-4 mt-8">
               <a
                 href="#packages"
-                className="rounded-full bg-[#ffd400] border-2 border-[#0d0d0d] px-8 py-3.5 font-sans font-extrabold text-[#0d0d0d] text-sm uppercase tracking-[0.16em] shadow-[4px_4px_0_0_#0d0d0d] transition-all hover:-translate-y-0.5"
+                className="rounded-full bg-[#f5b700] border-2 border-[#14110c] px-8 py-3.5 font-sans font-extrabold text-[#14110c] text-sm uppercase tracking-[0.16em] shadow-[4px_4px_0_0_#14110c] transition-all hover:-translate-y-0.5"
               >
                 See The Packages
               </a>
               <a
                 href="#planner"
-                className="rounded-full bg-white border-2 border-[#0d0d0d] px-8 py-3.5 font-sans font-bold text-[#0d0d0d] text-sm uppercase tracking-[0.16em] shadow-[4px_4px_0_0_#0d0d0d] transition-all hover:-translate-y-0.5"
+                className="rounded-full bg-white border-2 border-[#14110c] px-8 py-3.5 font-sans font-bold text-[#14110c] text-sm uppercase tracking-[0.16em] shadow-[4px_4px_0_0_#14110c] transition-all hover:-translate-y-0.5"
               >
                 Plan My Budget
               </a>
@@ -76,16 +76,16 @@ export default function BroadcastHero() {
         {/* The broadcast monitor */}
         <Reveal variant="rise" delay={150}>
           <div className="max-w-4xl mx-auto md:rotate-[-0.6deg]">
-            <div className="rounded-2xl bg-[#0d0d0d] border-2 border-[#0d0d0d] shadow-[10px_10px_0_0_#ffd400] overflow-hidden">
-              <div className="flex items-center justify-between px-4 py-2.5 bg-[#0d0d0d]">
+            <div className="rounded-2xl bg-[#14110c] border-2 border-[#14110c] shadow-[10px_10px_0_0_#f5b700] overflow-hidden">
+              <div className="flex items-center justify-between px-4 py-2.5 bg-[#14110c]">
                 <div className="flex items-center gap-1.5" aria-hidden="true">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#ff3b2f] inline-block" />
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#ffd400] inline-block" />
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#0d0d0d] inline-block" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#b3261e] inline-block" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#f5b700] inline-block" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#14110c] inline-block" />
                 </div>
-                <p className="font-mono text-[10px] md:text-[11px] uppercase tracking-[0.3em] text-[#f1ede4]/80">Mustard Network · CH 01 · Ironwood Roofing Co.</p>
-                <p className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.2em] text-[#d0241b] font-bold">
-                  <span className="w-2 h-2 rounded-full bg-[#ff3b2f] animate-pulse inline-block" aria-hidden="true" />
+                <p className="font-mono text-[10px] md:text-[11px] uppercase tracking-[0.3em] text-[#f6efe0]/80">Mustard Network · CH 01 · Ironwood Roofing Co.</p>
+                <p className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.2em] text-[#8f1d22] font-bold">
+                  <span className="w-2 h-2 rounded-full bg-[#b3261e] animate-pulse inline-block" aria-hidden="true" />
                   On Air
                 </p>
               </div>
@@ -101,14 +101,14 @@ export default function BroadcastHero() {
                 preload="metadata"
                 aria-label="Demo commercial for Ironwood Roofing Co., a fictional roofing company"
               />
-              <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 bg-[#0d0d0d] border-t border-[#f1ede4]/15">
-                <p className="font-mono text-[10px] md:text-[11px] uppercase tracking-[0.18em] text-[#f1ede4]/60">
+              <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 bg-[#14110c] border-t border-[#f6efe0]/15">
+                <p className="font-mono text-[10px] md:text-[11px] uppercase tracking-[0.18em] text-[#f6efe0]/60">
                   Written, filmed, scored, and cut by the studio in one afternoon
                 </p>
                 <button
                   type="button"
                   onClick={toggleSound}
-                  className="rounded-full bg-[#ffd400] border-2 border-[#ffd400] px-4 py-1.5 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-[#0d0d0d] transition-all hover:-translate-y-0.5"
+                  className="rounded-full bg-[#f5b700] border-2 border-[#f5b700] px-4 py-1.5 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-[#14110c] transition-all hover:-translate-y-0.5"
                 >
                   {muted ? '► Watch With Sound' : '❚❚ Mute'}
                 </button>

@@ -42,9 +42,9 @@ export default function NewsletterSignup({
   };
 
   const inputCls =
-    'flex-1 bg-white border-2 border-[#0d0d0d] rounded-lg px-4 py-3 text-base sm:text-sm text-[#0d0d0d] font-body placeholder-[#0d0d0d]/40 focus:outline-none focus:shadow-[3px_3px_0_0_#0d0d0d] transition-shadow';
+    'flex-1 bg-white border-2 border-[#14110c] rounded-lg px-4 py-3 text-base sm:text-sm text-[#14110c] font-body placeholder-[#14110c]/40 focus:outline-none focus:shadow-[3px_3px_0_0_#14110c] transition-shadow';
   const btnCls =
-    'px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0d0d0d] bg-[#ffd400] rounded-lg border-2 border-[#0d0d0d] shadow-[3px_3px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-all disabled:opacity-50';
+    'px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#14110c] bg-[#f5b700] rounded-lg border-2 border-[#14110c] shadow-[3px_3px_0_0_#14110c] hover:-translate-y-0.5 transition-all disabled:opacity-50';
 
   if (variant === 'inline') {
     return (
@@ -61,7 +61,7 @@ export default function NewsletterSignup({
           {status === 'sending' ? 'Sending...' : 'Subscribe'}
         </button>
         {message && (
-          <p className={`text-sm font-body font-bold ${status === 'success' ? 'text-[#c8201a]' : 'text-[#d0241b]'}`}>
+          <p className={`text-sm font-body font-bold ${status === 'success' ? 'text-[#8f1d22]' : 'text-[#8f1d22]'}`}>
             {message}
           </p>
         )}
@@ -72,10 +72,10 @@ export default function NewsletterSignup({
   return (
     <div className="pop-card p-8 md:p-10 max-w-2xl mx-auto">
       <div className="text-center mb-6">
-        <span className="text-[10px] uppercase tracking-[0.4em] text-[#d0241b] font-mono font-bold block mb-3">
+        <span className="text-[10px] uppercase tracking-[0.4em] text-[#8f1d22] font-mono font-bold block mb-3">
           Newsletter
         </span>
-        <h3 className="font-display text-2xl md:text-3xl font-black text-[#0d0d0d] tracking-tight mb-3">
+        <h3 className="font-display text-2xl md:text-3xl font-black text-[#14110c] tracking-tight mb-3">
           {headline}
         </h3>
         <p className="text-[#3a3733] text-sm font-body leading-relaxed">{subhead}</p>
@@ -96,7 +96,7 @@ export default function NewsletterSignup({
       {message && (
         <p
           className={`text-sm font-body font-bold text-center mt-4 ${
-            status === 'success' ? 'text-[#c8201a]' : 'text-[#d0241b]'
+            status === 'success' ? 'text-[#8f1d22]' : 'text-[#8f1d22]'
           }`}
         >
           {message}

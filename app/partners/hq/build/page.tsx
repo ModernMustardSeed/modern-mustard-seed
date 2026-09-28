@@ -22,13 +22,13 @@ export default async function PartnerBuildPage() {
   const isPartner = affiliate && affiliate.status === 'approved' && affiliate.code;
 
   return (
-    <div className="min-h-screen bg-[#f1ede4] text-[#0d0d0d]">
-      <header className="halftone-bg border-b-2 border-[#0d0d0d]">
+    <div className="min-h-screen bg-[#f6efe0] text-[#14110c]">
+      <header className="halftone-bg border-b-2 border-[#14110c]">
         <div className="max-w-3xl mx-auto px-6 pt-10 pb-10">
-          <Link href="/partners/hq" className="text-[10px] uppercase tracking-[0.25em] font-mono font-bold text-[#0d0d0d]/60 hover:text-[#0d0d0d]">
+          <Link href="/partners/hq" className="text-[10px] uppercase tracking-[0.25em] font-mono font-bold text-[#14110c]/60 hover:text-[#14110c]">
             ← Partner HQ
           </Link>
-          <span className="block text-[10px] uppercase tracking-[0.4em] text-[#d0241b] font-mono font-bold mt-4">Build under your flag</span>
+          <span className="block text-[10px] uppercase tracking-[0.4em] text-[#8f1d22] font-mono font-bold mt-4">Build under your flag</span>
           <h1 className="font-display text-4xl md:text-5xl font-bold mt-3 leading-tight">
             Know a business that needs this? Build theirs.
           </h1>
@@ -40,7 +40,7 @@ export default async function PartnerBuildPage() {
 
       <main className="max-w-3xl mx-auto px-6 py-10">
         {!isPartner ? (
-          <div className="bg-white border-2 border-[#0d0d0d] rounded-2xl shadow-[4px_4px_0_0_#0d0d0d] p-8 text-center">
+          <div className="bg-white border-2 border-[#14110c] rounded-2xl shadow-[4px_4px_0_0_#14110c] p-8 text-center">
             <h2 className="font-display text-2xl font-bold">This build belongs to partners</h2>
             <p className="font-body text-[#3A3733] mt-3">
               {affiliate?.status === 'pending'
@@ -49,7 +49,7 @@ export default async function PartnerBuildPage() {
             </p>
             <Link
               href="/partners"
-              className="inline-block mt-5 px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-[#0d0d0d] bg-[#ffd400] border-2 border-[#0d0d0d] rounded-full shadow-[3px_3px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-transform"
+              className="inline-block mt-5 px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-[#14110c] bg-[#f5b700] border-2 border-[#14110c] rounded-full shadow-[3px_3px_0_0_#14110c] hover:-translate-y-0.5 transition-transform"
             >
               About the partner program
             </Link>
@@ -58,7 +58,7 @@ export default async function PartnerBuildPage() {
           <BuildMintForm endpoint="/api/partners/build" variant="partner" />
         )}
 
-        <p className="font-body text-xs text-[#0d0d0d]/50 mt-8">
+        <p className="font-body text-xs text-[#14110c]/50 mt-8">
           The fine print lives on one page:{' '}
           <a href="/downloads/mms-partner-build-agreement.pdf" target="_blank" rel="noopener noreferrer" className="text-[#1E50C8] underline underline-offset-2">
             Partner Demo Agreement (PDF)

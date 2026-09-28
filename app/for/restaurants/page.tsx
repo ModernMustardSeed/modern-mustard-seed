@@ -116,7 +116,7 @@ export default function RestaurantsPage() {
           ]),
         ]}
       />
-      <div className="relative min-h-screen bg-[#f1ede4] text-[#0d0d0d]">
+      <div className="relative min-h-screen bg-[#f6efe0] text-[#14110c]">
         <PopPageHero
           eyebrow={
             <>
@@ -127,7 +127,7 @@ export default function RestaurantsPage() {
             </>
           }
           title={<>Stop losing the rush to{' '}<em>voicemail</em></>}
-          art={{ src: '/art/pages/industries', alt: 'Graffiti couture painting: Mr. Mustard waves from a mustard-yellow classic convertible cruising down a mountain-town main street of shops, under a railroad trestle painted in bright graffiti', caption: 'The dinner rush, answered', focus: '30% 60%' }}
+          art={{ src: '/art/pages/industries', alt: 'Painting: Mr. Mustard in a boater hat presents miniature businesses under glass bell jars, a bakery, a barber shop, a garage and a construction site, in a World’s Fair hall inside the tower', caption: 'The dinner rush, answered', focus: '30% 60%' }}
           sticker="Order up!"
           mascot={{ bubble: 'Table for four? Done!' }}
         >
@@ -149,7 +149,7 @@ export default function RestaurantsPage() {
               Trained on your menu, your hours, and the questions your callers actually ask.{' '}
               <Link
                 href="/book"
-                className="text-[#c8201a] font-semibold underline underline-offset-2 hover:text-[#d0241b] transition-colors"
+                className="text-[#8f1d22] font-semibold underline underline-offset-2 hover:text-[#8f1d22] transition-colors"
               >
                 Tell us about your restaurant.
               </Link>
@@ -160,16 +160,16 @@ export default function RestaurantsPage() {
         <div className="relative max-w-5xl mx-auto px-6 md:px-8">
 
           {/* Hear it live: the studio line, which is the standard of the work */}
-          <div className="pop-card p-8 md:p-10 bg-[#ffd400] mb-24">
+          <div className="pop-card p-8 md:p-10 bg-[#f5b700] mb-24">
             <div className="flex flex-col md:flex-row md:items-center gap-6">
               <div className="flex-1">
-                <span className="text-[10px] uppercase tracking-[0.4em] text-[#d0241b] font-mono font-bold block mb-3">
+                <span className="text-[10px] uppercase tracking-[0.4em] text-[#8f1d22] font-mono font-bold block mb-3">
                   New · Hear it first
                 </span>
-                <h2 className="font-display text-3xl md:text-4xl font-black text-[#0d0d0d] tracking-tight leading-[1.1] mb-3">
+                <h2 className="font-display text-3xl md:text-4xl font-black text-[#14110c] tracking-tight leading-[1.1] mb-3">
                   Hear one trained on your restaurant.
                 </h2>
-                <p className="text-[#0d0d0d]/75 text-base font-body leading-7 max-w-xl">
+                <p className="text-[#14110c]/75 text-base font-body leading-7 max-w-xl">
                   Your host is trained on your restaurant: the menu, the hours, the catering questions,
                   and the way your regulars ask for things. It answers in your voice and fires the order
                   straight through. Tell us the restaurant and we will tell you exactly what it would do.
@@ -177,7 +177,7 @@ export default function RestaurantsPage() {
               </div>
               <Link
                 href="/book"
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full border-2 border-[#0d0d0d] bg-[#0d0d0d] text-[12px] uppercase tracking-[0.18em] font-sans font-extrabold text-[#f1ede4] shadow-[4px_4px_0_0_#f1ede4] hover:-translate-y-0.5 transition-all whitespace-nowrap"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full border-2 border-[#14110c] bg-[#14110c] text-[12px] uppercase tracking-[0.18em] font-sans font-extrabold text-[#f6efe0] shadow-[4px_4px_0_0_#f6efe0] hover:-translate-y-0.5 transition-all whitespace-nowrap"
               >
                 Start a rollout →
               </Link>
@@ -189,23 +189,23 @@ export default function RestaurantsPage() {
 
           {/* Works with your POS */}
           <div className="pop-card p-8 md:p-10 mb-24 text-center">
-            <span className="text-[10px] uppercase tracking-[0.4em] text-[#d0241b] font-mono font-bold block mb-3">
+            <span className="text-[10px] uppercase tracking-[0.4em] text-[#8f1d22] font-mono font-bold block mb-3">
               Plugs into what you already run
             </span>
-            <h2 className="font-display text-2xl md:text-3xl font-black text-[#0d0d0d] tracking-tight mb-6">
+            <h2 className="font-display text-2xl md:text-3xl font-black text-[#14110c] tracking-tight mb-6">
               Works with your POS and ordering stack
             </h2>
             <div className="flex flex-wrap justify-center gap-2.5">
               {posSystems.map((p) => (
                 <span
                   key={p}
-                  className="px-5 py-2.5 text-sm font-sans font-bold text-[#0d0d0d] bg-white rounded-full border-2 border-[#0d0d0d] shadow-[3px_3px_0_0_#0d0d0d]"
+                  className="px-5 py-2.5 text-sm font-sans font-bold text-[#14110c] bg-white rounded-full border-2 border-[#14110c] shadow-[3px_3px_0_0_#14110c]"
                 >
                   {p}
                 </span>
               ))}
             </div>
-            <p className="text-[#0d0d0d]/55 text-sm font-body mt-6 max-w-xl mx-auto">
+            <p className="text-[#14110c]/55 text-sm font-body mt-6 max-w-xl mx-auto">
               Already on a different system? If it has an API or an order inbox, the agent connects to
               it. We confirm your exact setup on the discovery call.
             </p>
@@ -219,12 +219,12 @@ export default function RestaurantsPage() {
           {/* What we build */}
           <div className="mb-24">
             <div className="text-center mb-12">
-              <span className="text-[10px] uppercase tracking-[0.5em] text-[#d0241b] font-mono font-bold mb-5 block">
+              <span className="text-[10px] uppercase tracking-[0.5em] text-[#8f1d22] font-mono font-bold mb-5 block">
                 What we build
               </span>
-              <h2 className="font-display text-3xl md:text-5xl font-black text-[#0d0d0d] tracking-tight leading-[1.1]">
+              <h2 className="font-display text-3xl md:text-5xl font-black text-[#14110c] tracking-tight leading-[1.1]">
                 The full restaurant{' '}
-                <span className="text-[#ffd400]" style={{ WebkitTextStroke: '1.5px #0d0d0d' }}>
+                <span className="text-[#f5b700]" style={{ WebkitTextStroke: '1.5px #14110c' }}>
                   phone stack
                 </span>
               </h2>
@@ -232,7 +232,7 @@ export default function RestaurantsPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               {builds.map((b) => (
                 <article key={b.title} className="pop-card p-7 md:p-8 hover:-translate-y-1 transition-transform duration-300">
-                  <h3 className="font-display text-xl font-black text-[#0d0d0d] tracking-tight mb-2 leading-snug">
+                  <h3 className="font-display text-xl font-black text-[#14110c] tracking-tight mb-2 leading-snug">
                     {b.title}
                   </h3>
                   <p className="text-[#3a3733] text-sm md:text-base font-body leading-7">{b.body}</p>
@@ -244,12 +244,12 @@ export default function RestaurantsPage() {
           {/* Franchises & multi-unit operators (the conquest layer) */}
           <div className="mb-24">
             <div className="text-center mb-12">
-              <span className="text-[10px] uppercase tracking-[0.5em] text-[#d0241b] font-mono font-bold mb-5 block">
+              <span className="text-[10px] uppercase tracking-[0.5em] text-[#8f1d22] font-mono font-bold mb-5 block">
                 Franchises &amp; multi-unit operators
               </span>
-              <h2 className="font-display text-3xl md:text-5xl font-black text-[#0d0d0d] tracking-tight leading-[1.1]">
+              <h2 className="font-display text-3xl md:text-5xl font-black text-[#14110c] tracking-tight leading-[1.1]">
                 Run more than one location? Plug the leak across{' '}
-                <span className="text-[#ffd400]" style={{ WebkitTextStroke: '1.5px #0d0d0d' }}>
+                <span className="text-[#f5b700]" style={{ WebkitTextStroke: '1.5px #14110c' }}>
                   all of them
                 </span>
               </h2>
@@ -280,7 +280,7 @@ export default function RestaurantsPage() {
                 },
               ].map((c) => (
                 <article key={c.title} className="pop-card p-7 md:p-8 hover:-translate-y-1 transition-transform duration-300">
-                  <h3 className="font-display text-xl font-black text-[#0d0d0d] tracking-tight mb-2 leading-snug">
+                  <h3 className="font-display text-xl font-black text-[#14110c] tracking-tight mb-2 leading-snug">
                     {c.title}
                   </h3>
                   <p className="text-[#3a3733] text-sm md:text-base font-body leading-7">{c.body}</p>
@@ -288,7 +288,7 @@ export default function RestaurantsPage() {
               ))}
             </div>
             <div className="pop-card-yellow p-8 md:p-10 text-center">
-              <p className="text-[#0d0d0d]/80 text-base md:text-lg font-body font-medium max-w-2xl mx-auto mb-6">
+              <p className="text-[#14110c]/80 text-base md:text-lg font-body font-medium max-w-2xl mx-auto mb-6">
                 Say a single store leaks about <span className="font-black">$1,900 a month</span> to
                 missed calls. Ten locations is over <span className="font-black">$225,000 a year</span>{' '}
                 ringing out to the place down the street. Recover a third of it and the rollout has paid
@@ -297,13 +297,13 @@ export default function RestaurantsPage() {
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Link
                   href="/book"
-                  className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#f1ede4] bg-[#0d0d0d] rounded-full border-2 border-[#0d0d0d] shadow-[4px_4px_0_0_rgba(13,13,13,0.3)] hover:-translate-y-0.5 transition-all"
+                  className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#f6efe0] bg-[#14110c] rounded-full border-2 border-[#14110c] shadow-[4px_4px_0_0_rgba(20,17,12,0.3)] hover:-translate-y-0.5 transition-all"
                 >
                   Start a rollout →
                 </Link>
                 <Link
                   href="/book"
-                  className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0d0d0d] bg-white rounded-full border-2 border-[#0d0d0d] shadow-[4px_4px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-all"
+                  className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#14110c] bg-white rounded-full border-2 border-[#14110c] shadow-[4px_4px_0_0_#14110c] hover:-translate-y-0.5 transition-all"
                 >
                   Talk multi-unit rollout
                 </Link>
@@ -314,12 +314,12 @@ export default function RestaurantsPage() {
           {/* Pricing: the order-taking concierge system, priced per store */}
           <div className="mb-24">
             <div className="text-center mb-10">
-              <span className="text-[10px] uppercase tracking-[0.5em] text-[#d0241b] font-mono font-bold mb-5 block">
+              <span className="text-[10px] uppercase tracking-[0.5em] text-[#8f1d22] font-mono font-bold mb-5 block">
                 How a rollout is scoped
               </span>
-              <h2 className="font-display text-3xl md:text-5xl font-black text-[#0d0d0d] tracking-tight leading-[1.1]">
+              <h2 className="font-display text-3xl md:text-5xl font-black text-[#14110c] tracking-tight leading-[1.1]">
                 The order-taking system,{' '}
-                <span className="text-[#ffd400]" style={{ WebkitTextStroke: '1.5px #0d0d0d' }}>
+                <span className="text-[#f5b700]" style={{ WebkitTextStroke: '1.5px #14110c' }}>
                   scoped per store
                 </span>
               </h2>
@@ -382,23 +382,23 @@ export default function RestaurantsPage() {
               ].map((t) => (
                 <div
                   key={t.name}
-                  className={`rounded-2xl border-2 border-[#0d0d0d] p-7 flex flex-col ${
-                    t.featured ? 'bg-[#ffd400] shadow-[6px_6px_0_0_#0d0d0d]' : 'bg-white shadow-[4px_4px_0_0_#0d0d0d]'
+                  className={`rounded-2xl border-2 border-[#14110c] p-7 flex flex-col ${
+                    t.featured ? 'bg-[#f5b700] shadow-[6px_6px_0_0_#14110c]' : 'bg-white shadow-[4px_4px_0_0_#14110c]'
                   }`}
                 >
-                  <span className="text-[10px] uppercase tracking-[0.3em] text-[#0d0d0d]/55 font-mono font-bold block mb-1">
+                  <span className="text-[10px] uppercase tracking-[0.3em] text-[#14110c]/55 font-mono font-bold block mb-1">
                     {t.note}
                   </span>
-                  <h3 className="font-display text-2xl font-black text-[#0d0d0d] mb-3">{t.name}</h3>
+                  <h3 className="font-display text-2xl font-black text-[#14110c] mb-3">{t.name}</h3>
                   <div className="mb-1">
-                    <span className="font-display text-3xl font-black text-[#0d0d0d] tracking-tight">{t.price}</span>
-                    {t.cadence && <span className="font-mono text-sm text-[#0d0d0d]/60 ml-1">{t.cadence}</span>}
+                    <span className="font-display text-3xl font-black text-[#14110c] tracking-tight">{t.price}</span>
+                    {t.cadence && <span className="font-mono text-sm text-[#14110c]/60 ml-1">{t.cadence}</span>}
                   </div>
-                  <span className="text-[#0d0d0d]/60 text-xs font-body block mb-5">{t.setup}</span>
+                  <span className="text-[#14110c]/60 text-xs font-body block mb-5">{t.setup}</span>
                   <ul className="flex flex-col gap-2.5">
                     {t.includes.map((inc) => (
-                      <li key={inc} className="flex items-start gap-2 text-[#0d0d0d]/80 text-sm font-body leading-snug">
-                        <span className="text-[#d0241b] font-black mt-px" aria-hidden="true">
+                      <li key={inc} className="flex items-start gap-2 text-[#14110c]/80 text-sm font-body leading-snug">
+                        <span className="text-[#8f1d22] font-black mt-px" aria-hidden="true">
                           ✓
                         </span>
                         <span>{inc}</span>
@@ -408,7 +408,7 @@ export default function RestaurantsPage() {
                 </div>
               ))}
             </div>
-            <p className="text-center text-[#0d0d0d]/55 text-sm font-body mt-6 max-w-2xl mx-auto">
+            <p className="text-center text-[#14110c]/55 text-sm font-body mt-6 max-w-2xl mx-auto">
               One recovered catering order a month more than covers a store. Every quote is one set
               package price, fixed and in writing, and the thirty-day pilot proves the number on your
               own phones before you roll out the fleet.
@@ -416,13 +416,13 @@ export default function RestaurantsPage() {
             <div className="mt-7 flex flex-col sm:flex-row gap-3 justify-center">
               <Link
                 href="/voice-agents"
-                className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0d0d0d] bg-[#ffd400] rounded-full border-2 border-[#0d0d0d] shadow-[4px_4px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-all text-center"
+                className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#14110c] bg-[#f5b700] rounded-full border-2 border-[#14110c] shadow-[4px_4px_0_0_#14110c] hover:-translate-y-0.5 transition-all text-center"
               >
                 Hear one answer →
               </Link>
               <Link
                 href="/book"
-                className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-white bg-[#0d0d0d] rounded-full border-2 border-[#0d0d0d] shadow-[4px_4px_0_0_rgba(13,13,13,0.3)] hover:-translate-y-0.5 transition-all text-center"
+                className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-white bg-[#14110c] rounded-full border-2 border-[#14110c] shadow-[4px_4px_0_0_rgba(20,17,12,0.3)] hover:-translate-y-0.5 transition-all text-center"
               >
                 Start a rollout →
               </Link>
@@ -430,7 +430,7 @@ export default function RestaurantsPage() {
             <p className="text-center mt-6">
               <Link
                 href="/voice-agents"
-                className="text-[11px] uppercase tracking-[0.2em] font-mono font-bold text-[#c8201a] hover:text-[#d0241b] transition-colors"
+                className="text-[11px] uppercase tracking-[0.2em] font-mono font-bold text-[#8f1d22] hover:text-[#8f1d22] transition-colors"
               >
                 See how the voice agent works →
               </Link>
@@ -440,9 +440,9 @@ export default function RestaurantsPage() {
           {/* FAQ */}
           <div className="max-w-3xl mx-auto mb-24">
             <div className="text-center mb-10">
-              <h2 className="font-display text-3xl md:text-4xl font-black text-[#0d0d0d] tracking-tight">
+              <h2 className="font-display text-3xl md:text-4xl font-black text-[#14110c] tracking-tight">
                 Common{' '}
-                <span className="text-[#ffd400]" style={{ WebkitTextStroke: '1.5px #0d0d0d' }}>
+                <span className="text-[#f5b700]" style={{ WebkitTextStroke: '1.5px #14110c' }}>
                   Questions
                 </span>
               </h2>
@@ -451,10 +451,10 @@ export default function RestaurantsPage() {
               {faqs.map((item) => (
                 <details key={item.q} className="pop-card p-6 group cursor-pointer">
                   <summary className="flex justify-between items-start gap-4 list-none">
-                    <h3 className="font-display text-lg font-black text-[#0d0d0d] tracking-tight">
+                    <h3 className="font-display text-lg font-black text-[#14110c] tracking-tight">
                       {item.q}
                     </h3>
-                    <span className="text-[#d0241b] text-2xl flex-shrink-0 transition-transform group-open:rotate-45 font-black">
+                    <span className="text-[#8f1d22] text-2xl flex-shrink-0 transition-transform group-open:rotate-45 font-black">
                       +
                     </span>
                   </summary>
@@ -466,10 +466,10 @@ export default function RestaurantsPage() {
 
           {/* Final CTA */}
           <div className="text-center pop-card-yellow p-10">
-            <h2 className="font-display text-2xl md:text-3xl font-black text-[#0d0d0d] tracking-tight mb-4">
+            <h2 className="font-display text-2xl md:text-3xl font-black text-[#14110c] tracking-tight mb-4">
               Answer every order this month
             </h2>
-            <p className="text-[#0d0d0d]/75 text-base font-body font-medium mb-6 max-w-lg mx-auto">
+            <p className="text-[#14110c]/75 text-base font-body font-medium mb-6 max-w-lg mx-auto">
               One discovery call. We scope your phone agent to your menu and your POS, and you stop
               sending takeout orders, tables, and catering jobs to voicemail. Your number, your brand,
               your kitchen.
@@ -477,13 +477,13 @@ export default function RestaurantsPage() {
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link
                 href="/book"
-                className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0d0d0d] bg-white rounded-full border-2 border-[#0d0d0d] shadow-[4px_4px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-all"
+                className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#14110c] bg-white rounded-full border-2 border-[#14110c] shadow-[4px_4px_0_0_#14110c] hover:-translate-y-0.5 transition-all"
               >
                 Book a Discovery Call
               </Link>
               <Link
                 href="/book"
-                className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0d0d0d] bg-[#ffd400] rounded-full border-2 border-[#0d0d0d] shadow-[4px_4px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-all"
+                className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#14110c] bg-[#f5b700] rounded-full border-2 border-[#14110c] shadow-[4px_4px_0_0_#14110c] hover:-translate-y-0.5 transition-all"
               >
                 Begin an Engagement
               </Link>

@@ -47,20 +47,20 @@ export default function PackGenerating({ sessionId }: { sessionId: string }) {
 
   return (
     <div className="max-w-xl mx-auto px-5 py-24 text-center">
-      <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#d0241b] font-bold mb-3">[ THE DESK IS WORKING ]</p>
+      <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#8f1d22] font-bold mb-3">[ THE DESK IS WORKING ]</p>
       <h1 className="font-display text-3xl md:text-4xl font-black tracking-tight leading-[1.05]">
         Your Fix Pack is being written.
       </h1>
-      <p className="font-body text-[#0d0d0d]/65 mt-3">Personalized from your live site. Takes about a minute; this page opens it automatically.</p>
-      <div className="mt-8 rounded-2xl border-2 border-[#0d0d0d] bg-[#0d0d0d] p-6 text-left shadow-[6px_6px_0_0_#ffd400]">
-        <p className="font-mono text-[13px] leading-7 text-[#f1ede4]/90">
+      <p className="font-body text-[#14110c]/65 mt-3">Personalized from your live site. Takes about a minute; this page opens it automatically.</p>
+      <div className="mt-8 rounded-2xl border-2 border-[#14110c] bg-[#14110c] p-6 text-left shadow-[6px_6px_0_0_#f5b700]">
+        <p className="font-mono text-[13px] leading-7 text-[#f6efe0]/90">
           {STAGES.slice(0, stage + 1).map((s, i) => (
             <span key={i} className="block">&gt; {s}</span>
           ))}
-          <span className="inline-block w-2.5 h-4 bg-[#ffd400] align-middle ml-0.5 animate-pulse" />
+          <span className="inline-block w-2.5 h-4 bg-[#f5b700] align-middle ml-0.5 animate-pulse" />
         </p>
       </div>
-      {error && <p className="mt-5 text-[#d0241b] font-body text-sm font-semibold">{error}</p>}
+      {error && <p className="mt-5 text-[#8f1d22] font-body text-sm font-semibold">{error}</p>}
     </div>
   );
 }

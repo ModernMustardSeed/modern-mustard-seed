@@ -1,0 +1,250 @@
+/* THE MUSTARD BUILDING (2026-09-27): a Roaring Twenties office sixty floors
+   over the city. Every public page letters its display type the way the
+   homepage hero does: headings in Limelight, the theatre-marquee face of the
+   Deco years; the accent word in Playfair italic, oxblood on ivory and gold
+   leaf on black lacquer; kickers in Josefin Sans capitals, tracked wide and
+   set off with a gold diamond and a hairline. Body copy stays DM Sans.
+
+   Scope: only while components/pop/DecoScope has put its marker in the
+   document (public pages; never the admin, portal, client desk, office,
+   program HQs, built demos, booths or private documents).
+
+   It works by pointing --font-display at Limelight, so the ~200 places that
+   set type with font-display follow without a per-file edit, then by evening
+   out case, weight and tracking on headings. */
+
+html:has([data-deco-page]) {
+  --font-display: var(--font-deco), 'Limelight', Georgia, serif;
+  --deco-ink: #14110c;
+  --deco-ivory: #f6efe0;
+  --deco-gold: #f5b700;
+  --deco-gilt: #d9a300;
+  --deco-oxblood: #8f1d22;
+  --deco-lacquer: #b3261e;
+  --deco-emerald: #0f4a3c;
+  --deco-champagne: #f3dc9b;
+  /* Limelight has one weight. Never smear it into a fake bold. */
+  font-synthesis-weight: none;
+}
+
+/* Ivory stock under every public page: a fine paper grain, painted once as a
+   background, never over the type. */
+html:has([data-deco-page]) body {
+  background-color: #f6efe0;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .25 0 0 0 0 .08 0 0 0 .38 -.14'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ---------- Headings: the marquee face ---------- */
+html:has([data-deco-page]) main :is(h1, h2):not(#studio-heading, .sr-only),
+html:has([data-deco-page]) main :is(h3, h4, h5, h6, dt, strong, span, div, a, button, li, label, figcaption, summary).font-display,
+html:has([data-deco-page]) main :is(h3, h4).font-serif {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-style: normal;
+  letter-spacing: .004em;
+  text-transform: none;
+  font-synthesis: none;
+}
+html:has([data-deco-page]) main :is(h1, h2):not(#studio-heading, .sr-only) {
+  line-height: 1.04;
+}
+/* Card titles run to three lines on a phone; they get a little more air. */
+html:has([data-deco-page]) main h3:not(.sr-only),
+html:has([data-deco-page]) main :is(article, li, a) h2 {
+  line-height: 1.12;
+}
+html:has([data-deco-page]) main h1:not(#studio-heading) {
+  text-wrap: balance;
+}
+/* Pull quotes and long display paragraphs read in the accent italic, never
+   in the marquee face: a paragraph should still read like one. */
+html:has([data-deco-page]) main :is(p, blockquote, q, figcaption):is(.font-display, .font-serif),
+html:has([data-deco-page]) main :is(p, blockquote, q, figcaption) :is(p, span, div).font-display {
+  font-family: var(--font-accent), Georgia, serif;
+  font-weight: 500;
+  font-style: italic;
+  text-transform: none;
+  letter-spacing: 0;
+  line-height: 1.34;
+}
+/* Quotes set through a module: the real italic, never a synthetic one. */
+html:has([data-deco-page]) main :is(blockquote, blockquote p, q) {
+  font-synthesis: none;
+}
+
+/* ---------- The accent word: Playfair italic with a gold-leaf underline ---------- */
+html:has([data-deco-page]) main :is(h1, h2, h3, h4, .font-display):not(#studio-heading) :is(em, i, .italic) {
+  font-family: var(--font-accent), Georgia, serif;
+  font-weight: 500;
+  font-style: italic;
+  text-transform: none;
+  letter-spacing: -.005em;
+  font-synthesis: none;
+  color: var(--deco-oxblood);
+  text-shadow: none;
+  transform: none;
+  background: linear-gradient(90deg, var(--deco-gold), var(--deco-champagne) 50%, var(--deco-gold)) 0 92% / 100% .07em no-repeat;
+  padding-bottom: .04em;
+  -webkit-text-fill-color: currentColor;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+/* On black lacquer, emerald or oxblood: gold-leaf letters, champagne rule.
+   The :not(#studio-heading) matches the base rule's weight, so the ground wins. */
+html:has([data-deco-page]) main :is([class*='bg-[#14110c]'], [class*='bg-[#14110C]'], [class*='bg-[#0e1614]'], [class*='bg-[#0f4a3c]'], [class*='bg-[#8f1d22]'], [class*='bg-[#b3261e]'], [data-ground='ink'], [data-ground='emerald'], [data-ground='red']) :is(h1, h2, h3, h4, .font-display):not(#studio-heading) :is(em, i, .italic) {
+  color: var(--deco-gold);
+  background-image: linear-gradient(90deg, #f3dc9b00, var(--deco-champagne) 30%, var(--deco-champagne) 70%, #f3dc9b00);
+}
+/* On a gold ground: ink letters, an ink rule. */
+html:has([data-deco-page]) main :is([class*='bg-[#f5b700]'], [class*='bg-[#F5B700]'], [data-ground='yellow'], [data-ground='gold']) :is(h1, h2, h3, h4, .font-display):not(#studio-heading) :is(em, i, .italic) {
+  color: var(--deco-ink);
+  background-image: linear-gradient(var(--deco-ink), var(--deco-ink));
+}
+
+/* ---------- Kickers: tracked capitals with a gold diamond and a hairline ---------- */
+html:has([data-deco-page]) :is(main, footer) .font-mono.uppercase:not(input, textarea, select, code, pre, kbd, samp, td, th) {
+  font-family: var(--font-caps), 'Josefin Sans', sans-serif;
+  font-weight: 600;
+  font-size: 12.5px;
+  line-height: 1.35;
+  letter-spacing: .22em;
+  font-synthesis: none;
+}
+/* A kicker that sits right over a heading gets the building's mark. */
+html:has([data-deco-page]) main :is(p, span, div).font-mono.uppercase:has(+ :is(h1, h2, h3)) {
+  display: inline-flex;
+  align-items: center;
+  gap: .75em;
+  width: auto;
+  max-width: 100%;
+  background: none;
+  border: 0;
+  box-shadow: none;
+  transform: none;
+}
+html:has([data-deco-page]) main :is(p, span, div).font-mono.uppercase:has(+ :is(h1, h2, h3))::before {
+  content: '';
+  flex: none;
+  width: .62em;
+  height: .62em;
+  background: var(--deco-gold);
+  transform: rotate(45deg);
+  box-shadow: 0 0 0 2px #f5b70033;
+}
+html:has([data-deco-page]) main :is(p, span, div).font-mono.uppercase:has(+ :is(h1, h2, h3))::after {
+  content: '';
+  flex: none;
+  width: 34px;
+  height: 1px;
+  background: linear-gradient(90deg, var(--deco-gold), #f5b70000);
+}
+
+/* ---------- Buttons: squared like a brass plate, never a pill ---------- */
+html:has([data-deco-page]) main :is(a, button)[class*='rounded-full'][class*='px-'][class*='shadow-['] {
+  border-radius: 0;
+}
+
+/* ---------- Phones: long headings stay easy to read ---------- */
+@media (max-width: 760px) {
+  html:has([data-deco-page]) main :is(h1, h2):not(#studio-heading) {
+    overflow-wrap: break-word;
+    letter-spacing: 0;
+  }
+  html:has([data-deco-page]) :is(main, footer) .font-mono.uppercase:not(input, textarea, select, code, pre, kbd, samp, td, th) {
+    font-size: 12px;
+    letter-spacing: .18em;
+  }
+}
+
+/* ---------- Shared chrome: nav and footer ---------- */
+html:has([data-deco-page]) nav[data-studio-nav] > div > div a,
+html:has([data-deco-page]) nav[data-studio-nav] a[href='/book'] {
+  font-family: var(--font-caps), 'Josefin Sans', sans-serif;
+  font-weight: 600;
+  font-size: 13.5px;
+  letter-spacing: .16em;
+  font-synthesis: none;
+}
+html:has([data-deco-page]) nav[data-studio-nav] > div > a > span {
+  font-family: var(--font-deco), Georgia, serif;
+  font-weight: 400;
+  font-size: 21px;
+  letter-spacing: .01em;
+  text-transform: none;
+  font-synthesis: none;
+}
+html:has([data-deco-page]) .studio-footer-brand {
+  font-family: var(--font-deco), Georgia, serif;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  line-height: 1;
+  font-synthesis: none;
+}
+html:has([data-deco-page]) .studio-footer-brand em {
+  display: inline-block;
+  font-family: var(--font-accent), Georgia, serif;
+  font-style: italic;
+  font-weight: 500;
+  text-transform: none;
+  color: #f5b700;
+  margin-top: .04em;
+}
+html:has([data-deco-page]) .studio-footer-links h2 {
+  font-family: var(--font-caps), 'Josefin Sans', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: .2em;
+  font-synthesis: none;
+}
+html:has([data-deco-page]) .studio-footer-seed p {
+  font-family: var(--font-accent), Georgia, serif;
+  font-style: italic;
+}
+@media (max-width: 760px) {
+  html:has([data-deco-page]) .studio-footer-links h2 { font-size: 13px; }
+  html:has([data-deco-page]) nav[data-studio-nav] > div > a > span { font-size: 15.5px; white-space: nowrap; }
+}
+
+/* The mega menu's section titles and cards. */
+html:has([data-deco-page]) #site-mega-menu .font-display {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-style: normal;
+  letter-spacing: .005em;
+  text-transform: none;
+  font-synthesis: none;
+}
+html:has([data-deco-page]) #site-mega-menu .font-mono.uppercase {
+  font-family: var(--font-caps), 'Josefin Sans', sans-serif;
+  font-weight: 600;
+  font-size: 12.5px;
+  letter-spacing: .2em;
+}
+
+/* ---------- Paintings hung by a page itself, outside the page hero ----------
+   Any figure holding one of the building's paintings (public/art/pages) is
+   rehung the Deco way: level, on an ink mat, in a double gilt rule. The page
+   hero's own frame is left alone. */
+html:has([data-deco-page]) main figure:has(img:is([src*='/art/pages/'], [src*='art%2Fpages%2F'])):not([class*='poster']) {
+  transform: none;
+  rotate: none;
+  border: 1px solid #f5b700;
+  border-radius: 0;
+  background: #14110c;
+  padding: 12px;
+  box-shadow: inset 0 0 0 6px #14110c, inset 0 0 0 7px #f5b70066, 0 30px 50px -30px #14110caa;
+}
+html:has([data-deco-page]) main figure:has(img:is([src*='/art/pages/'], [src*='art%2Fpages%2F'])):not([class*='poster']) img {
+  border: 0;
+}
+html:has([data-deco-page]) main figure:has(img:is([src*='/art/pages/'], [src*='art%2Fpages%2F'])):not([class*='poster']) figcaption {
+  font-family: var(--font-accent), Georgia, serif;
+  font-style: italic;
+  font-weight: 500;
+  font-size: 17px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: #f3dc9b;
+}

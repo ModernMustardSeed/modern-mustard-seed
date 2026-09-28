@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: { params: Promise<{ city: str
   });
 }
 
-const MT_ALT = 'Graffiti couture painting: Mr. Mustard throws his arms wide from a red classic convertible parked over Flathead Lake at sunset, beside a railroad trestle painted in graffiti';
+const MT_ALT = 'Painting: Mr. and Mrs. Mustard wave from the observation platform of a 1920s streamlined railcar gliding past Flathead Lake and the peaks of Glacier National Park at golden hour';
 
 export default async function CityPage({ params }: { params: Promise<{ city: string }> }) {
   const { city: slug } = await params;
@@ -42,7 +42,7 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
   });
 
   return (
-    <div className="bg-[#f1ede4] text-[#0d0d0d]">
+    <div className="bg-[#f6efe0] text-[#14110c]">
       <JsonLd
         data={[
           localForCity,
@@ -79,19 +79,19 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
       </PopPageHero>
 
       {/* The local truth card. This is what makes the page about THIS town. */}
-      <section className="border-b-2 border-[#0d0d0d] bg-[#f1ede4]">
+      <section className="border-b-2 border-[#14110c] bg-[#f6efe0]">
         <div className="max-w-6xl mx-auto px-6 pb-12">
-          <div className="max-w-3xl rounded-2xl border-[3px] border-[#0d0d0d] bg-[#0d0d0d] p-6 md:p-8 shadow-[9px_9px_0_0_#ffd400]">
-            <p className="font-mono text-[10px] uppercase tracking-[0.24em] font-bold text-[#ffd400]">
+          <div className="max-w-3xl rounded-2xl border-[3px] border-[#14110c] bg-[#14110c] p-6 md:p-8 shadow-[9px_9px_0_0_#f5b700]">
+            <p className="font-mono text-[10px] uppercase tracking-[0.24em] font-bold text-[#f5b700]">
               Why the phone gets missed here
             </p>
-            <p className="mt-4 font-body text-[15px] text-[#f1ede4]/85 leading-relaxed">{city.phoneProblem}</p>
+            <p className="mt-4 font-body text-[15px] text-[#f6efe0]/85 leading-relaxed">{city.phoneProblem}</p>
           </div>
         </div>
       </section>
 
       {/* ─────────────── THE TOWN ─────────────── */}
-      <section className="border-b-2 border-[#0d0d0d] bg-[#ffd400]">
+      <section className="border-b-2 border-[#14110c] bg-[#f5b700]">
         <div className="max-w-6xl mx-auto px-6 py-12">
           <h2 className="font-display text-3xl font-extrabold">A front door connected to the work behind it.</h2>
           <p className="mt-4 max-w-3xl leading-relaxed">{city.slug === 'kalispell'
@@ -108,7 +108,7 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
         </div>
       </section>
 
-      <section className="border-b-2 border-[#0d0d0d] bg-white">
+      <section className="border-b-2 border-[#14110c] bg-white">
         <div className="max-w-6xl mx-auto px-6 py-14 md:py-20 grid lg:grid-cols-2 gap-10 lg:gap-14">
           <div>
             <p className="font-mono text-[11px] uppercase tracking-[0.3em] font-bold text-[#8f6600]">
@@ -118,8 +118,8 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
               {city.name} is {city.locale}.
             </h2>
             <p className="mt-5 font-body text-[17px] text-[#3d382e] leading-relaxed">{city.economy}</p>
-            <p className="mt-4 font-body text-[15px] text-[#0d0d0d]/70 leading-relaxed">{city.season}</p>
-            <p className="mt-6 font-body text-[15px] text-[#0d0d0d]/70">
+            <p className="mt-4 font-body text-[15px] text-[#14110c]/70 leading-relaxed">{city.season}</p>
+            <p className="mt-6 font-body text-[15px] text-[#14110c]/70">
               We also serve {city.alsoServes.join(', ')}.
             </p>
           </div>
@@ -134,15 +134,15 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
               {city.fits.map((f) => (
                 <li
                   key={f}
-                  className="flex items-start gap-3 rounded-xl border-2 border-[#0d0d0d] bg-[#f1ede4] p-4 shadow-[3px_3px_0_0_#0d0d0d]"
+                  className="flex items-start gap-3 rounded-xl border-2 border-[#14110c] bg-[#f6efe0] p-4 shadow-[3px_3px_0_0_#14110c]"
                 >
                   <span
                     aria-hidden
-                    className="mt-[2px] shrink-0 grid place-items-center h-5 w-5 rounded-md bg-[#ffd400] border-2 border-[#0d0d0d] text-[11px] font-bold leading-none"
+                    className="mt-[2px] shrink-0 grid place-items-center h-5 w-5 rounded-md bg-[#f5b700] border-2 border-[#14110c] text-[11px] font-bold leading-none"
                   >
                     ✓
                   </span>
-                  <span className="font-body text-[15px] text-[#0d0d0d]/85">{f}</span>
+                  <span className="font-body text-[15px] text-[#14110c]/85">{f}</span>
                 </li>
               ))}
             </ul>
@@ -151,12 +151,12 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
       </section>
 
       {/* ─────────────── WHAT YOU GET ─────────────── */}
-      <section className="border-b-2 border-[#0d0d0d] bg-[#ffd400]">
+      <section className="border-b-2 border-[#14110c] bg-[#f5b700]">
         <div className="max-w-6xl mx-auto px-6 py-14 md:py-20">
           <h2 className="font-display text-3xl md:text-4xl font-extrabold leading-[1.05]">
             What we build for {city.name}.
           </h2>
-          <p className="mt-3 font-body text-[16px] text-[#0d0d0d]/80 max-w-2xl">
+          <p className="mt-3 font-body text-[16px] text-[#14110c]/80 max-w-2xl">
             Same prices everywhere. We do not quote by zip code.
           </p>
           <div className="mt-8 grid md:grid-cols-3 gap-6">
@@ -177,7 +177,7 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
               <Link
                 key={c.t}
                 href={c.href}
-                className="flex flex-col rounded-2xl border-2 border-[#0d0d0d] bg-white p-6 shadow-[5px_5px_0_0_#0d0d0d] transition-transform hover:-translate-y-1"
+                className="flex flex-col rounded-2xl border-2 border-[#14110c] bg-white p-6 shadow-[5px_5px_0_0_#14110c] transition-transform hover:-translate-y-1"
               >
                 <h3 className="font-display text-xl font-extrabold">{c.t}</h3>
                 <p className="mt-2 font-body text-sm text-[#3d382e] leading-relaxed">{c.b}</p>
@@ -189,7 +189,7 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
       </section>
 
       {/* ─────────────── FAQ ─────────────── */}
-      <section className="border-b-2 border-[#0d0d0d]">
+      <section className="border-b-2 border-[#14110c]">
         <div className="max-w-4xl mx-auto px-6 py-14 md:py-20">
           <p className="font-mono text-[11px] uppercase tracking-[0.3em] font-bold text-[#8f6600]">Straight Answers</p>
           <h2 className="mt-2 font-display text-3xl md:text-4xl font-extrabold leading-[1.05]">
@@ -199,7 +199,7 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
             {faqs.map((f) => (
               <details
                 key={f.q}
-                className="group rounded-2xl border-2 border-[#0d0d0d] bg-white p-5 shadow-[4px_4px_0_0_#0d0d0d]"
+                className="group rounded-2xl border-2 border-[#14110c] bg-white p-5 shadow-[4px_4px_0_0_#14110c]"
               >
                 <summary className="cursor-pointer list-none font-sans font-bold text-[15px] flex items-start justify-between gap-4">
                   {f.q}
@@ -213,7 +213,7 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
       </section>
 
       {/* ─────────────── NEARBY ─────────────── */}
-      <section className="border-b-2 border-[#0d0d0d] bg-white">
+      <section className="border-b-2 border-[#14110c] bg-white">
         <div className="max-w-6xl mx-auto px-6 py-12">
           <p className="font-mono text-[11px] uppercase tracking-[0.3em] font-bold text-[#8f6600]">Also In The Valley</p>
           <div className="mt-5 flex flex-wrap gap-3">
@@ -221,7 +221,7 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
               <Link
                 key={o.slug}
                 href={`/montana/${o.slug}`}
-                className="rounded-full border-2 border-[#0d0d0d] bg-[#f1ede4] px-5 py-2.5 font-sans font-bold text-sm shadow-[3px_3px_0_0_#0d0d0d] transition-transform hover:-translate-y-0.5"
+                className="rounded-full border-2 border-[#14110c] bg-[#f6efe0] px-5 py-2.5 font-sans font-bold text-sm shadow-[3px_3px_0_0_#14110c] transition-transform hover:-translate-y-0.5"
               >
                 {o.name}
               </Link>
@@ -242,13 +242,13 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link
               href="/book"
-              className="rounded-full border-2 border-[#0d0d0d] bg-[#ffd400] px-9 py-4 font-sans font-extrabold text-sm uppercase tracking-[0.14em] shadow-[5px_5px_0_0_#0d0d0d] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#0d0d0d]"
+              className="rounded-full border-2 border-[#14110c] bg-[#f5b700] px-9 py-4 font-sans font-extrabold text-sm uppercase tracking-[0.14em] shadow-[5px_5px_0_0_#14110c] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#14110c]"
             >
               Begin An Engagement
             </Link>
             <a
               href={`tel:${SITE.phoneE164}`}
-              className="rounded-full border-2 border-[#0d0d0d] bg-white px-9 py-4 font-sans font-extrabold text-sm uppercase tracking-[0.14em] shadow-[5px_5px_0_0_#0d0d0d] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#0d0d0d]"
+              className="rounded-full border-2 border-[#14110c] bg-white px-9 py-4 font-sans font-extrabold text-sm uppercase tracking-[0.14em] shadow-[5px_5px_0_0_#14110c] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#14110c]"
             >
               Call {SITE.phone}
             </a>

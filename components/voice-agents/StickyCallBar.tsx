@@ -29,13 +29,13 @@ export default function StickyCallBar() {
       <a
         href={`tel:${DEMO_LINE.tel}`}
         onClick={() => trackEvent('call_the_number', { location: 'sticky-bar' })}
-        className="flex items-center justify-center gap-3 rounded-full border-2 border-[#0d0d0d] bg-[#ffd400] px-6 py-3.5 shadow-[0_6px_22px_rgba(13,13,13,0.35)]"
+        className="flex items-center justify-center gap-3 rounded-full border-2 border-[#14110c] bg-[#f5b700] px-6 py-3.5 shadow-[0_6px_22px_rgba(20,17,12,0.35)]"
       >
         <span className="relative flex h-2.5 w-2.5">
-          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#ff3b2f] opacity-75" />
-          <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[#ff3b2f]" />
+          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#b3261e] opacity-75" />
+          <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[#b3261e]" />
         </span>
-        <span className="font-sans text-[13px] font-extrabold uppercase tracking-[0.12em] text-[#0d0d0d]">
+        <span className="font-sans text-[13px] font-extrabold uppercase tracking-[0.12em] text-[#14110c]">
           Call Him · {DEMO_LINE.display}
         </span>
       </a>

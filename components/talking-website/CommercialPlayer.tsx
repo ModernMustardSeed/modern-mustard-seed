@@ -33,7 +33,7 @@ export default function CommercialPlayer({
   }
 
   return (
-    <div className="relative aspect-video bg-[#0d0d0d]">
+    <div className="relative aspect-video bg-[#14110c]">
       {!started && (
         <>
           <Image
@@ -52,15 +52,15 @@ export default function CommercialPlayer({
           <button
             type="button"
             onClick={start}
-            className="group absolute inset-0 focus:outline-none focus-visible:ring-4 focus-visible:ring-inset focus-visible:ring-[#ffd400]"
+            className="group absolute inset-0 focus:outline-none focus-visible:ring-4 focus-visible:ring-inset focus-visible:ring-[#f5b700]"
             aria-label={`Play with sound: ${label}`}
           >
-            <span className="absolute inset-0 bg-[#0d0d0d]/10 transition-colors group-hover:bg-transparent" aria-hidden />
-            <span className="absolute bottom-4 left-4 flex items-center gap-2.5 rounded-full border-2 border-[#0d0d0d] bg-[#ffd400] pl-4 pr-5 py-2.5 shadow-[4px_4px_0_0_#0d0d0d] transition-transform group-hover:-translate-y-0.5">
-              <svg className="h-3.5 w-3.5 text-[#0d0d0d]" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+            <span className="absolute inset-0 bg-[#14110c]/10 transition-colors group-hover:bg-transparent" aria-hidden />
+            <span className="absolute bottom-4 left-4 flex items-center gap-2.5 rounded-full border-2 border-[#14110c] bg-[#f5b700] pl-4 pr-5 py-2.5 shadow-[4px_4px_0_0_#14110c] transition-transform group-hover:-translate-y-0.5">
+              <svg className="h-3.5 w-3.5 text-[#14110c]" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
                 <path d="M8 5v14l11-7z" />
               </svg>
-              <span className="font-sans text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#0d0d0d]">
+              <span className="font-sans text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#14110c]">
                 Play with sound
               </span>
             </span>

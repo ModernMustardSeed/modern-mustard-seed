@@ -7,7 +7,7 @@ import s from './InquiryPopup.module.css';
 
 /**
  * "What are you building?" After fifteen seconds on the site (counted across
- * pages, per visit) a small graffiti card asks the visitor what they are
+ * pages, per visit) a small calling card asks the visitor what they are
  * building. It posts to /api/contact like the /inquire form, so it lands as a
  * lead in the admin and in Sarah's inbox (Sarah, 2026-09-26).
  *

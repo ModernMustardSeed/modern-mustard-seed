@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { DM_Sans, Playfair_Display, Cormorant_Garamond, JetBrains_Mono, Oswald, Anton, Permanent_Marker } from 'next/font/google';
+import { DM_Sans, Playfair_Display, Cormorant_Garamond, JetBrains_Mono, Oswald, Limelight, Josefin_Sans } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import Navbar from '@/components/Navbar';
@@ -18,30 +18,32 @@ import { JsonLd, siteGraphJsonLd } from '@/lib/jsonld';
 import { buildMetadata, SITE } from '@/lib/seo';
 import './globals.css';
 import './studio-chrome.css';
-import './graffiti-type.css';
-import GraffitiScope from '@/components/pop/GraffitiScope';
+import './deco-type.css';
+import DecoScope from '@/components/pop/DecoScope';
 
 const bodyFont = DM_Sans({ subsets: ['latin'], style: ['normal'], display: 'optional', variable: '--font-body' });
 const displayFont = Playfair_Display({ subsets: ['latin'], style: ['normal', 'italic'], display: 'optional', variable: '--font-display' });
 const serifFont = Cormorant_Garamond({ subsets: ['latin'], weight: ['300', '400', '500', '600'], style: ['normal', 'italic'], display: 'swap', preload: false, variable: '--font-serif' });
 const monoFont = JetBrains_Mono({ subsets: ['latin'], weight: ['400', '500', '700'], display: 'swap', preload: false, variable: '--font-mono' });
 const condensedFont = Oswald({ subsets: ['latin'], weight: ['400', '500', '600', '700'], display: 'swap', preload: false, variable: '--font-oswald' });
-// Graffiti Couture (2026-09-26): display type is Anton, the accent word is
-// Permanent Marker. Both are on the first screen of every page, so both preload.
-const posterFont = Anton({ subsets: ['latin'], weight: ['400'], display: 'swap', variable: '--font-anton' });
-const markerFont = Permanent_Marker({ subsets: ['latin'], weight: ['400'], display: 'swap', variable: '--font-marker' });
+// The Mustard Building (2026-09-27): a Roaring Twenties office. Headings in
+// Limelight, kickers and nav in Josefin Sans capitals, the accent word in
+// Playfair italic. All three are on the first screen of every page, so all preload.
+const decoFont = Limelight({ subsets: ['latin'], weight: ['400'], display: 'swap', variable: '--font-deco' });
+const capsFont = Josefin_Sans({ subsets: ['latin'], weight: ['400', '600', '700'], display: 'swap', variable: '--font-caps' });
+const accentFont = Playfair_Display({ subsets: ['latin'], weight: ['400', '500', '600'], style: ['italic'], display: 'swap', variable: '--font-accent' });
 
 export const metadata: Metadata = buildMetadata();
 
 export const viewport: Viewport = {
-  themeColor: '#FFD400',
+  themeColor: '#14110C',
   width: 'device-width',
   initialScale: 1,
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${bodyFont.variable} ${displayFont.variable} ${serifFont.variable} ${monoFont.variable} ${condensedFont.variable} ${posterFont.variable} ${markerFont.variable}`}>
+    <html lang="en" suppressHydrationWarning className={`${bodyFont.variable} ${displayFont.variable} ${serifFont.variable} ${monoFont.variable} ${condensedFont.variable} ${decoFont.variable} ${capsFont.variable} ${accentFont.variable}`}>
       <head>
         <link rel="manifest" href="/site.webmanifest" />
         <JsonLd data={siteGraphJsonLd} />
@@ -70,10 +72,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       {/* Ground and ink come from the base rule in globals.css, not utilities here:
           a utility would out-rank the admin and portal rule that keeps their
           old ink ground and white type. */}
-      <body className="selection:bg-[#ffd400] selection:text-[#0d0d0d]">
-        <GraffitiScope />
+      <body className="selection:bg-[#f5b700] selection:text-[#14110c]">
+        <DecoScope />
         <div className="relative z-30">
-          <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[9999] focus:bg-[#ffd400] focus:text-[#0d0d0d] focus:px-5 focus:py-3">Skip to content</a>
+          <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[9999] focus:bg-[#f5b700] focus:text-[#14110c] focus:px-5 focus:py-3">Skip to content</a>
           <Navbar />
           <main id="main-content" tabIndex={-1}>{children}</main>
           <HideOnAppShell>
@@ -101,9 +103,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Analytics />
         <SpeedInsights />
         <noscript>
-          <p style={{ padding: '2rem', textAlign: 'center', color: '#0d0d0d' }}>
+          <p style={{ padding: '2rem', textAlign: 'center', color: '#14110c' }}>
             {SITE.name}. {SITE.description} Visit{' '}
-            <a href={SITE.url} style={{ color: '#c8201a' }}>
+            <a href={SITE.url} style={{ color: '#8f1d22' }}>
               {SITE.url}
             </a>{' '}
             for more.

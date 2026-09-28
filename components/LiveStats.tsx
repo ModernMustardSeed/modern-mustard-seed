@@ -39,10 +39,10 @@ function StatCard({ stat, active }: { stat: Stat; active: boolean }) {
   const displayed = useCountUp(stat.value, 1600, active, stat.decimals ?? 0);
   return (
     <div className="text-center">
-      <div className="font-display text-4xl md:text-6xl font-black text-[#d0241b] tracking-tight tabular-nums">
+      <div className="font-display text-4xl md:text-6xl font-black text-[#8f1d22] tracking-tight tabular-nums">
         {stat.prefix}{displayed}{stat.suffix}
       </div>
-      <div className="text-[10px] md:text-xs uppercase tracking-[0.3em] text-[#0d0d0d]/55 font-mono font-bold mt-3">
+      <div className="text-[10px] md:text-xs uppercase tracking-[0.3em] text-[#14110c]/55 font-mono font-bold mt-3">
         {stat.label}
       </div>
     </div>
@@ -71,7 +71,7 @@ export default function LiveStats() {
   }, []);
 
   return (
-    <section ref={ref} className="w-full px-6 md:px-16 lg:px-24 xl:px-32 py-16 border-y-2 border-[#0d0d0d]/10">
+    <section ref={ref} className="w-full px-6 md:px-16 lg:px-24 xl:px-32 py-16 border-y-2 border-[#14110c]/10">
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 md:gap-12 max-w-4xl mx-auto">
         {STATS.map((s) => (
           <StatCard key={s.label} stat={s} active={active} />

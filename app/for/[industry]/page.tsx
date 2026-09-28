@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: { params: Params }) {
   });
 }
 
-const IND_ALT = 'Graffiti couture painting: Mr. Mustard waves from a mustard-yellow classic convertible cruising down a mountain-town main street of shops, under a railroad trestle painted in bright graffiti';
+const IND_ALT = 'Painting: Mr. Mustard in a boater hat presents miniature businesses under glass bell jars, a bakery, a barber shop, a garage and a construction site, in a World’s Fair hall inside the tower';
 
 export default async function IndustryPage({ params }: { params: Params }) {
   const { industry } = await params;
@@ -73,7 +73,7 @@ export default async function IndustryPage({ params }: { params: Params }) {
           ]),
         ]}
       />
-      <article className="relative min-h-screen bg-[#f1ede4] text-[#0d0d0d] overflow-x-clip">
+      <article className="relative min-h-screen bg-[#f6efe0] text-[#14110c] overflow-x-clip">
 
         <PopPageHero
           eyebrow={
@@ -107,10 +107,10 @@ export default async function IndustryPage({ params }: { params: Params }) {
         {/* Builds */}
         <section className="relative max-w-6xl mx-auto px-6 md:px-8 py-12">
           <div className="relative text-center max-w-3xl mx-auto mb-12">
-            <span className="text-[10px] uppercase tracking-[0.4em] text-[#c8201a] font-mono font-bold mb-5 block">
+            <span className="text-[10px] uppercase tracking-[0.4em] text-[#8f1d22] font-mono font-bold mb-5 block">
               What gets built
             </span>
-            <h2 className="font-display text-3xl md:text-5xl font-black text-[#0d0d0d] tracking-tight leading-[1.1]">
+            <h2 className="font-display text-3xl md:text-5xl font-black text-[#14110c] tracking-tight leading-[1.1]">
               {i.buildsHeadline}
             </h2>
           </div>
@@ -121,7 +121,7 @@ export default async function IndustryPage({ params }: { params: Params }) {
                 key={b.title}
                 className="pop-card p-7 hover:-translate-y-1 transition-transform duration-300"
               >
-                <h3 className="font-display text-lg md:text-xl font-black text-[#0d0d0d] tracking-tight mb-3">
+                <h3 className="font-display text-lg md:text-xl font-black text-[#14110c] tracking-tight mb-3">
                   {b.title}
                 </h3>
                 <p className="text-[#3a3733] text-sm font-body leading-7 mb-4">
@@ -130,7 +130,7 @@ export default async function IndustryPage({ params }: { params: Params }) {
                 {b.caseStudySlug && (
                   <Link
                     href={`/work/${b.caseStudySlug}`}
-                    className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.25em] font-mono font-bold text-[#c8201a] hover:text-[#d0241b] transition-colors"
+                    className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.25em] font-mono font-bold text-[#8f1d22] hover:text-[#8f1d22] transition-colors"
                   >
                     See the case study
                     <span aria-hidden="true">→</span>
@@ -142,25 +142,25 @@ export default async function IndustryPage({ params }: { params: Params }) {
         </section>
 
         {/* Featured Receipt: the ink band */}
-        <section className="relative mt-16 bg-[#0d0d0d] text-[#f1ede4] border-y-2 border-[#0d0d0d] overflow-hidden">
+        <section className="relative mt-16 bg-[#14110c] text-[#f6efe0] border-y-2 border-[#14110c] overflow-hidden">
           <div className="pointer-events-none absolute inset-0 halftone-ink" aria-hidden="true" />
           <div className="relative max-w-5xl mx-auto px-6 md:px-8 py-20">
           <div className="text-center max-w-3xl mx-auto mb-10">
-            <span className="text-[10px] uppercase tracking-[0.4em] text-[#ffd400] font-mono font-bold mb-5 block">
+            <span className="text-[10px] uppercase tracking-[0.4em] text-[#f5b700] font-mono font-bold mb-5 block">
               Real receipts
             </span>
-            <h2 className="font-display text-3xl md:text-5xl font-black text-[#f1ede4] tracking-tight leading-[1.1]">
+            <h2 className="font-display text-3xl md:text-5xl font-black text-[#f6efe0] tracking-tight leading-[1.1]">
               {i.receipt.headline}
             </h2>
           </div>
 
-          <div className="relative pop-card-cream p-8 md:p-12 text-[#0d0d0d] shadow-[6px_6px_0_0_#ffd400] border-[#f1ede4]">
+          <div className="relative pop-card-cream p-8 md:p-12 text-[#14110c] shadow-[6px_6px_0_0_#f5b700] border-[#f6efe0]">
             <div className="relative">
-              <div className="mb-6 pb-6 border-b-2 border-[#0d0d0d]/10">
-                <span className="text-[10px] uppercase tracking-[0.3em] text-[#c8201a] font-mono font-bold block mb-2">
+              <div className="mb-6 pb-6 border-b-2 border-[#14110c]/10">
+                <span className="text-[10px] uppercase tracking-[0.3em] text-[#8f1d22] font-mono font-bold block mb-2">
                   Featured case study
                 </span>
-                <h3 className="font-display text-2xl md:text-3xl font-black text-[#0d0d0d] tracking-tight">
+                <h3 className="font-display text-2xl md:text-3xl font-black text-[#14110c] tracking-tight">
                   {i.receipt.caseStudyTitle}
                 </h3>
               </div>
@@ -172,11 +172,11 @@ export default async function IndustryPage({ params }: { params: Params }) {
               {i.receipt.metrics && (
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
                   {i.receipt.metrics.map((m) => (
-                    <div key={m.label} className="p-4 rounded-xl border-2 border-[#0d0d0d] bg-[#ffd400] shadow-[3px_3px_0_0_#0d0d0d]">
-                      <span className="text-[9px] uppercase tracking-[0.3em] font-mono font-bold text-[#0d0d0d]/75 block mb-2">
+                    <div key={m.label} className="p-4 rounded-xl border-2 border-[#14110c] bg-[#f5b700] shadow-[3px_3px_0_0_#14110c]">
+                      <span className="text-[9px] uppercase tracking-[0.3em] font-mono font-bold text-[#14110c]/75 block mb-2">
                         {m.label}
                       </span>
-                      <span className="font-display text-xl md:text-2xl font-black text-[#0d0d0d] tracking-tight">
+                      <span className="font-display text-xl md:text-2xl font-black text-[#14110c] tracking-tight">
                         {m.value}
                       </span>
                     </div>
@@ -186,7 +186,7 @@ export default async function IndustryPage({ params }: { params: Params }) {
 
               <Link
                 href={`/work/${i.receipt.caseStudySlug}`}
-                className="inline-flex items-center gap-2 px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#f1ede4] bg-[#0d0d0d] rounded-full border-2 border-[#0d0d0d] shadow-[4px_4px_0_0_#ffd400] hover:-translate-y-0.5 transition-all"
+                className="inline-flex items-center gap-2 px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#f6efe0] bg-[#14110c] rounded-full border-2 border-[#14110c] shadow-[4px_4px_0_0_#f5b700] hover:-translate-y-0.5 transition-all"
               >
                 Read the full case study
                 <span aria-hidden="true">→</span>
@@ -199,25 +199,25 @@ export default async function IndustryPage({ params }: { params: Params }) {
         {/* Pricing */}
         <section className="max-w-4xl mx-auto px-6 md:px-8 pt-20 pb-16">
           <div className="pop-card-yellow p-8 md:p-12">
-            <span className="text-[10px] uppercase tracking-[0.4em] text-[#0d0d0d] font-mono font-bold mb-5 block">
+            <span className="text-[10px] uppercase tracking-[0.4em] text-[#14110c] font-mono font-bold mb-5 block">
               What this costs
             </span>
-            <h2 className="font-display text-2xl md:text-4xl font-black text-[#0d0d0d] tracking-tight mb-3">
+            <h2 className="font-display text-2xl md:text-4xl font-black text-[#14110c] tracking-tight mb-3">
               {i.pricing.typicalRange}
             </h2>
-            <p className="text-[#0d0d0d]/85 text-base font-body leading-7">
+            <p className="text-[#14110c]/85 text-base font-body leading-7">
               {i.pricing.body}
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
                 href="/work-with-us"
-                className="px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold rounded-full border-2 border-[#0d0d0d] shadow-[4px_4px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-all text-center text-[#0d0d0d] bg-white"
+                className="px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold rounded-full border-2 border-[#14110c] shadow-[4px_4px_0_0_#14110c] hover:-translate-y-0.5 transition-all text-center text-[#14110c] bg-white"
               >
                 See all engagements
               </Link>
               <Link
                 href="/audit"
-                className="px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#f1ede4] bg-[#0d0d0d] rounded-full border-2 border-[#0d0d0d] shadow-[4px_4px_0_0_#f1ede4] hover:-translate-y-0.5 transition-all text-center"
+                className="px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#f6efe0] bg-[#14110c] rounded-full border-2 border-[#14110c] shadow-[4px_4px_0_0_#f6efe0] hover:-translate-y-0.5 transition-all text-center"
               >
                 Bottleneck Breaker
               </Link>
@@ -228,11 +228,11 @@ export default async function IndustryPage({ params }: { params: Params }) {
         {/* FAQ */}
         <section className="max-w-4xl mx-auto px-6 md:px-8 py-16">
           <div className="text-center mb-10">
-            <span className="text-[10px] uppercase tracking-[0.4em] text-[#c8201a] font-mono font-bold mb-4 block">
+            <span className="text-[10px] uppercase tracking-[0.4em] text-[#8f1d22] font-mono font-bold mb-4 block">
               FAQ
             </span>
-            <h2 className="font-display text-3xl md:text-5xl font-black text-[#0d0d0d] tracking-tight leading-[1.1]">
-              Common <span className="italic text-[#c8201a]">questions</span>
+            <h2 className="font-display text-3xl md:text-5xl font-black text-[#14110c] tracking-tight leading-[1.1]">
+              Common <span className="italic text-[#8f1d22]">questions</span>
             </h2>
           </div>
           <div className="space-y-3">
@@ -242,10 +242,10 @@ export default async function IndustryPage({ params }: { params: Params }) {
                 className="pop-card p-6 group cursor-pointer"
               >
                 <summary className="flex justify-between items-start gap-4 list-none">
-                  <h3 className="font-display text-base md:text-lg font-black text-[#0d0d0d] tracking-tight">
+                  <h3 className="font-display text-base md:text-lg font-black text-[#14110c] tracking-tight">
                     {item.q}
                   </h3>
-                  <span className="text-[#d0241b] text-2xl font-black flex-shrink-0 transition-transform group-open:rotate-45 leading-none">
+                  <span className="text-[#8f1d22] text-2xl font-black flex-shrink-0 transition-transform group-open:rotate-45 leading-none">
                     +
                   </span>
                 </summary>
@@ -260,31 +260,31 @@ export default async function IndustryPage({ params }: { params: Params }) {
         {/* Final CTA */}
         <section className="max-w-4xl mx-auto px-6 md:px-8 pt-12 pb-24 text-center">
           <div className="pop-card-cream halftone-bg p-10 md:p-14">
-            <h2 className="font-display text-3xl md:text-5xl font-black text-[#0d0d0d] tracking-tight leading-[1.1] mb-5">
+            <h2 className="font-display text-3xl md:text-5xl font-black text-[#14110c] tracking-tight leading-[1.1] mb-5">
               {i.cta.headline}
             </h2>
             <p className="text-[#3a3733] text-base md:text-lg font-body leading-relaxed mb-8 max-w-2xl mx-auto">
               {i.cta.body}
             </p>
-            <p className="text-[#0d0d0d]/60 text-sm font-body leading-relaxed mb-7 max-w-xl mx-auto">
+            <p className="text-[#14110c]/60 text-sm font-body leading-relaxed mb-7 max-w-xl mx-auto">
               {i.build.blurb}
             </p>
             <div className="flex flex-col sm:flex-row flex-wrap gap-3 justify-center">
               <Link
                 href={i.build.href}
-                className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold rounded-full border-2 border-[#0d0d0d] shadow-[4px_4px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-all text-center text-[#0d0d0d] bg-[#ffd400]"
+                className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold rounded-full border-2 border-[#14110c] shadow-[4px_4px_0_0_#14110c] hover:-translate-y-0.5 transition-all text-center text-[#14110c] bg-[#f5b700]"
               >
                 {i.build.label}
               </Link>
               <Link
                 href="/audit"
-                className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold rounded-full border-2 border-[#0d0d0d] shadow-[4px_4px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-all text-center text-[#0d0d0d] bg-white"
+                className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold rounded-full border-2 border-[#14110c] shadow-[4px_4px_0_0_#14110c] hover:-translate-y-0.5 transition-all text-center text-[#14110c] bg-white"
               >
                 Run the Bottleneck Breaker
               </Link>
               <Link
                 href="/book"
-                className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold rounded-full border-2 border-[#0d0d0d] shadow-[4px_4px_0_0_#ffd400] hover:-translate-y-0.5 transition-all text-center text-[#f1ede4] bg-[#0d0d0d]"
+                className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold rounded-full border-2 border-[#14110c] shadow-[4px_4px_0_0_#f5b700] hover:-translate-y-0.5 transition-all text-center text-[#f6efe0] bg-[#14110c]"
               >
                 Begin an Engagement
               </Link>

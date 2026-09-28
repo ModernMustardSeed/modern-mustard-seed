@@ -429,7 +429,7 @@ export function useBoothCamera(apiBase: string) {
 export type BoothCamera = ReturnType<typeof useBoothCamera>;
 
 /** Signal colors, not brand colors: these mean the same thing in every studio. */
-const DANGER = '#ff3b2f';
+const DANGER = '#b3261e';
 const SENT = '#2c7a4b';
 
 export function SelfView({ booth, visible, theme }: { booth: BoothCamera; visible: boolean; theme: StudioTheme }) {
@@ -617,7 +617,7 @@ export function TakesDrawer({
                       void booth.deleteTake(t.id).then((ok) => setDeleteFailed(ok ? null : t.id));
                     }}
                     className="ml-auto font-mono text-[10px] font-bold uppercase underline"
-                    style={{ color: '#ff3b2f' }}
+                    style={{ color: '#b3261e' }}
                   >
                     Really delete?
                   </button>
@@ -632,7 +632,7 @@ export function TakesDrawer({
                   </button>
                 )}
                 {deleteFailed === t.id && (
-                  <span className="font-mono text-[9px] uppercase" style={{ color: '#ff3b2f' }}>
+                  <span className="font-mono text-[9px] uppercase" style={{ color: '#b3261e' }}>
                     Delete failed, try again
                   </span>
                 )}
@@ -656,7 +656,7 @@ export function TakesDrawer({
           </button>
         </div>
         {booth.libError && (
-          <p className="mb-3 font-mono text-[10px] uppercase" style={{ color: '#ff3b2f' }}>
+          <p className="mb-3 font-mono text-[10px] uppercase" style={{ color: '#b3261e' }}>
             {booth.libError}
           </p>
         )}
@@ -705,7 +705,7 @@ export function TakesDrawer({
                     void booth.deleteSaved(s.scriptId, s.fileName).then((ok) => setDeleteFailed(ok ? null : s.path));
                   }}
                   className="ml-auto font-mono text-[10px] font-bold uppercase underline"
-                  style={{ color: '#ff3b2f' }}
+                  style={{ color: '#b3261e' }}
                 >
                   Really delete?
                 </button>
@@ -720,7 +720,7 @@ export function TakesDrawer({
                 </button>
               )}
               {deleteFailed === s.path && (
-                <span className="font-mono text-[9px] uppercase" style={{ color: '#ff3b2f' }}>
+                <span className="font-mono text-[9px] uppercase" style={{ color: '#b3261e' }}>
                   Delete failed, try again
                 </span>
               )}

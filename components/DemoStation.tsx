@@ -109,22 +109,22 @@ export default function DemoStation() {
 
   if (phase === 'forging') {
     return (
-      <div className="bg-[#0d0d0d] border-2 border-[#0d0d0d] rounded-2xl shadow-[8px_8px_0_0_#ffd400] p-8 text-center">
+      <div className="bg-[#14110c] border-2 border-[#14110c] rounded-2xl shadow-[8px_8px_0_0_#f5b700] p-8 text-center">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/brand/mascot.png" alt="" width={84} height={84} className="mx-auto animate-[stationHammer_.9s_ease-in-out_infinite]" />
         <style>{`@keyframes stationHammer{0%,100%{transform:rotate(-6deg) translateY(0)}50%{transform:rotate(6deg) translateY(-6px)}}`}</style>
-        <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#ffd400] font-bold mt-5">The build is hot</p>
+        <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#f5b700] font-bold mt-5">The build is hot</p>
         <div className="mt-4 space-y-2 text-left max-w-sm mx-auto">
           {BUILD_LINES.map((l, i) => (
             <p
               key={l}
-              className={`font-mono text-[13px] transition-opacity ${i < line ? 'text-[#f1ede4]/45' : i === line ? 'text-[#f1ede4]' : 'text-[#f1ede4]/15'}`}
+              className={`font-mono text-[13px] transition-opacity ${i < line ? 'text-[#f6efe0]/45' : i === line ? 'text-[#f6efe0]' : 'text-[#f6efe0]/15'}`}
             >
               {i < line ? '✓' : i === line ? '▸' : '·'} {l}
             </p>
           ))}
         </div>
-        <p className="font-body text-[13px] text-[#f1ede4]/55 mt-5">
+        <p className="font-body text-[13px] text-[#f6efe0]/55 mt-5">
           Your website keeps building after this, then we record you a walkthrough of it. Your preview and your free
           audit land within 24 hours, at your hub, on their own.
         </p>
@@ -133,14 +133,14 @@ export default function DemoStation() {
   }
 
   const inputCls =
-    'mt-1.5 w-full rounded-xl border-2 border-[#0d0d0d] bg-[#f1ede4] px-3.5 py-2.5 font-body text-[15px] text-[#0d0d0d] placeholder:text-[#0d0d0d]/35 focus:outline-none focus:ring-2 focus:ring-[#ffd400]';
-  const labelCls = 'font-sans text-[11px] uppercase tracking-[0.14em] font-bold text-[#0d0d0d]';
+    'mt-1.5 w-full rounded-xl border-2 border-[#14110c] bg-[#f6efe0] px-3.5 py-2.5 font-body text-[15px] text-[#14110c] placeholder:text-[#14110c]/35 focus:outline-none focus:ring-2 focus:ring-[#f5b700]';
+  const labelCls = 'font-sans text-[11px] uppercase tracking-[0.14em] font-bold text-[#14110c]';
 
   return (
-    <form onSubmit={submit} className="bg-white border-2 border-[#0d0d0d] rounded-2xl shadow-[8px_8px_0_0_#0d0d0d] p-6 sm:p-8">
+    <form onSubmit={submit} className="bg-white border-2 border-[#14110c] rounded-2xl shadow-[8px_8px_0_0_#14110c] p-6 sm:p-8">
       {referrer && (
         <div className="mb-6 flex flex-wrap items-center gap-x-4 gap-y-2">
-          <span className="inline-block -rotate-2 bg-[#ff3b2f] text-[#f1ede4] border-2 border-[#0d0d0d] rounded-md px-3 py-1.5 text-[11px] uppercase tracking-[0.2em] font-mono font-bold shadow-[3px_3px_0_0_#0d0d0d]">
+          <span className="inline-block -rotate-2 bg-[#b3261e] text-[#f6efe0] border-2 border-[#14110c] rounded-md px-3 py-1.5 text-[11px] uppercase tracking-[0.2em] font-mono font-bold shadow-[3px_3px_0_0_#14110c]">
             {referrer} sent you
           </span>
           <p className="font-body text-[14px] text-[#3a3733]">Your preview is on us. Nothing to pay, nothing to schedule.</p>
@@ -226,7 +226,7 @@ export default function DemoStation() {
       <label className="block mt-4">
         <span className={labelCls}>
           A site or two you love the look of
-          <span className="ml-2 normal-case tracking-normal font-body font-normal text-[#0d0d0d]/70">Optional. We match the style, never copy it</span>
+          <span className="ml-2 normal-case tracking-normal font-body font-normal text-[#14110c]/70">Optional. We match the style, never copy it</span>
         </span>
         <input
           type="text"
@@ -242,7 +242,7 @@ export default function DemoStation() {
       <label className="block mt-4">
         <span className={labelCls}>
           Anything we should know?
-          <span className="ml-2 normal-case tracking-normal font-body font-normal text-[#0d0d0d]/70">
+          <span className="ml-2 normal-case tracking-normal font-body font-normal text-[#14110c]/70">
             We build your preview from this
           </span>
         </span>
@@ -254,7 +254,7 @@ export default function DemoStation() {
           placeholder="What you actually do, what you want to be known for, your hours, the jobs you want more of, anything you hate about your current setup. The more you tell us, the more it looks like yours."
           className={`${inputCls} resize-y min-h-[104px] leading-relaxed`}
         />
-        <span className="mt-1 block font-body text-[11.5px] text-[#0d0d0d]/70">
+        <span className="mt-1 block font-body text-[11.5px] text-[#14110c]/70">
           {(values.notes || '').length}/600. Optional, but this is what makes the demos feel personal.
         </span>
       </label>
@@ -264,12 +264,12 @@ export default function DemoStation() {
 
       <button
         type="submit"
-        className="mt-7 w-full bg-[#ffd400] text-[#0d0d0d] border-2 border-[#0d0d0d] rounded-xl px-7 py-4 font-sans font-bold uppercase tracking-[0.1em] text-[15px] shadow-[5px_5px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-transform"
+        className="mt-7 w-full bg-[#f5b700] text-[#14110c] border-2 border-[#14110c] rounded-xl px-7 py-4 font-sans font-bold uppercase tracking-[0.1em] text-[15px] shadow-[5px_5px_0_0_#14110c] hover:-translate-y-0.5 transition-transform"
       >
         Build my website preview, free →
       </button>
       {phase === 'error' && error ? <p className="font-body text-[13px] text-[#C4160B] text-center mt-3">{error}</p> : null}
-      <p className="font-body text-[12px] text-[#0d0d0d]/70 text-center mt-3.5 leading-relaxed">
+      <p className="font-body text-[12px] text-[#14110c]/70 text-center mt-3.5 leading-relaxed">
         No card, no meeting, no strings. If you love it, keep the website from{' '}
         {formatUsd(DEMO_PRODUCTS.site.monthlyCents)}/mo, month to month, or work with us on the bespoke one.
       </p>

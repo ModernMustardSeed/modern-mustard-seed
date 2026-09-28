@@ -9,16 +9,16 @@ export default function PricingCard({ pkg }: { pkg: Engagement }) {
 
   return (
     <div
-      className={`relative p-8 md:p-10 flex flex-col overflow-hidden h-full rounded-2xl border-2 border-[#0d0d0d] transition-transform duration-300 hover:-translate-y-1 ${
+      className={`relative p-8 md:p-10 flex flex-col overflow-hidden h-full rounded-2xl border-2 border-[#14110c] transition-transform duration-300 hover:-translate-y-1 ${
         pkg.highlighted
-          ? 'bg-[#ffd400] shadow-[6px_6px_0_0_#0d0d0d]'
-          : 'bg-white shadow-[5px_5px_0_0_#0d0d0d]'
+          ? 'bg-[#f5b700] shadow-[6px_6px_0_0_#14110c]'
+          : 'bg-white shadow-[5px_5px_0_0_#14110c]'
       }`}
     >
       <div className="relative flex flex-col flex-1">
         {pkg.highlighted ? (
           <div className="mb-6 self-start">
-            <span className="px-3 py-1 text-[9px] uppercase tracking-[0.25em] font-mono font-bold text-white bg-[#0d0d0d] rounded-full">
+            <span className="px-3 py-1 text-[9px] uppercase tracking-[0.25em] font-mono font-bold text-white bg-[#14110c] rounded-full">
               Where most start
             </span>
           </div>
@@ -31,14 +31,14 @@ export default function PricingCard({ pkg }: { pkg: Engagement }) {
         )}
 
         {/* Identical top block: name, tagline, timeline */}
-        <div className="mb-6 pb-6 border-b-2 border-[#0d0d0d]/15">
-          <h3 className="font-display text-2xl md:text-3xl font-black text-[#0d0d0d] tracking-tight mb-2">
+        <div className="mb-6 pb-6 border-b-2 border-[#14110c]/15">
+          <h3 className="font-display text-2xl md:text-3xl font-black text-[#14110c] tracking-tight mb-2">
             {pkg.name}
           </h3>
-          <p className="text-[#0d0d0d]/70 text-sm font-body font-medium tracking-wide mb-4 min-h-[42px]">
+          <p className="text-[#14110c]/70 text-sm font-body font-medium tracking-wide mb-4 min-h-[42px]">
             {pkg.tagline}
           </p>
-          <p className="text-[10px] uppercase tracking-[0.25em] text-[#0d0d0d]/45 font-mono font-bold">
+          <p className="text-[10px] uppercase tracking-[0.25em] text-[#14110c]/45 font-mono font-bold">
             Timeline: {pkg.timeline}
           </p>
         </div>
@@ -56,18 +56,18 @@ export default function PricingCard({ pkg }: { pkg: Engagement }) {
         >
           <div className="overflow-hidden">
             {pkg.ideal && (
-              <p className="text-[#0d0d0d]/55 text-xs font-body italic leading-relaxed mb-5">
+              <p className="text-[#14110c]/55 text-xs font-body italic leading-relaxed mb-5">
                 Ideal for: {pkg.ideal}
               </p>
             )}
             <div className="space-y-2 mb-2">
-              <span className="text-[9px] uppercase tracking-[0.3em] text-[#0d0d0d]/45 font-mono font-bold block mb-2">
+              <span className="text-[9px] uppercase tracking-[0.3em] text-[#14110c]/45 font-mono font-bold block mb-2">
                 What you get
               </span>
               {pkg.deliverables.map((d) => (
                 <div key={d} className="flex items-start gap-2.5">
                   <svg
-                    className="w-4 h-4 text-[#d0241b] flex-shrink-0 mt-0.5"
+                    className="w-4 h-4 text-[#8f1d22] flex-shrink-0 mt-0.5"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -86,7 +86,7 @@ export default function PricingCard({ pkg }: { pkg: Engagement }) {
         <button
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
-          className="mb-6 text-left text-[10px] uppercase tracking-[0.3em] font-mono font-bold text-[#d0241b] hover:text-[#0d0d0d] transition-colors inline-flex items-center gap-2"
+          className="mb-6 text-left text-[10px] uppercase tracking-[0.3em] font-mono font-bold text-[#8f1d22] hover:text-[#14110c] transition-colors inline-flex items-center gap-2"
         >
           <span>{open ? 'Hide details' : 'Read details'}</span>
           <span className={`inline-block transition-transform duration-300 ${open ? 'rotate-180' : ''}`}>↓</span>
@@ -95,10 +95,10 @@ export default function PricingCard({ pkg }: { pkg: Engagement }) {
         {/* CTA always at the bottom */}
         <Link
           href={pkg.ctaHref ?? '/contact'}
-          className={`mt-auto w-full text-center py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold rounded-lg border-2 border-[#0d0d0d] transition-all duration-300 hover:-translate-y-0.5 ${
+          className={`mt-auto w-full text-center py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold rounded-lg border-2 border-[#14110c] transition-all duration-300 hover:-translate-y-0.5 ${
             pkg.highlighted
-              ? 'text-white bg-[#0d0d0d] shadow-[4px_4px_0_0_rgba(13,13,13,0.3)]'
-              : 'text-[#0d0d0d] bg-[#ffd400] shadow-[4px_4px_0_0_#0d0d0d]'
+              ? 'text-white bg-[#14110c] shadow-[4px_4px_0_0_rgba(20,17,12,0.3)]'
+              : 'text-[#14110c] bg-[#f5b700] shadow-[4px_4px_0_0_#14110c]'
           }`}
         >
           {pkg.cta}

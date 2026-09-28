@@ -77,10 +77,10 @@ export default function BuildQueueForm() {
     return (
       <div className="pop-card-yellow p-10 md:p-14 text-center">
         <div className="text-5xl mb-6">🌱</div>
-        <h2 className="font-display text-3xl md:text-4xl font-black text-[#0d0d0d] tracking-tight mb-4">
+        <h2 className="font-display text-3xl md:text-4xl font-black text-[#14110c] tracking-tight mb-4">
           You&rsquo;re on the list
         </h2>
-        <p className="text-[#0d0d0d]/80 text-base md:text-lg font-body font-medium max-w-md mx-auto leading-relaxed">
+        <p className="text-[#14110c]/80 text-base md:text-lg font-body font-medium max-w-md mx-auto leading-relaxed">
           Sarah reviews every entry personally and gets back to you fast, usually the same day.
         </p>
       </div>
@@ -91,7 +91,7 @@ export default function BuildQueueForm() {
     <form onSubmit={handleSubmit} className="pop-card p-8 md:p-10 space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label className="text-[9px] uppercase tracking-[0.3em] text-[#0d0d0d]/45 font-mono font-bold block mb-2">
+          <label className="text-[9px] uppercase tracking-[0.3em] text-[#14110c]/45 font-mono font-bold block mb-2">
             Name
           </label>
           <input
@@ -99,12 +99,12 @@ export default function BuildQueueForm() {
             type="text"
             value={form.name}
             onChange={(e) => update('name', e.target.value)}
-            className="w-full bg-white border-2 border-[#0d0d0d] rounded-lg px-4 py-3 text-sm text-[#0d0d0d] font-body placeholder-[#0d0d0d]/35 focus:outline-none focus:shadow-[3px_3px_0_0_#0d0d0d] transition-shadow"
+            className="w-full bg-white border-2 border-[#14110c] rounded-lg px-4 py-3 text-sm text-[#14110c] font-body placeholder-[#14110c]/35 focus:outline-none focus:shadow-[3px_3px_0_0_#14110c] transition-shadow"
             placeholder="Your name"
           />
         </div>
         <div>
-          <label className="text-[9px] uppercase tracking-[0.3em] text-[#0d0d0d]/45 font-mono font-bold block mb-2">
+          <label className="text-[9px] uppercase tracking-[0.3em] text-[#14110c]/45 font-mono font-bold block mb-2">
             Email
           </label>
           <input
@@ -112,27 +112,27 @@ export default function BuildQueueForm() {
             type="email"
             value={form.email}
             onChange={(e) => update('email', e.target.value)}
-            className="w-full bg-white border-2 border-[#0d0d0d] rounded-lg px-4 py-3 text-sm text-[#0d0d0d] font-body placeholder-[#0d0d0d]/35 focus:outline-none focus:shadow-[3px_3px_0_0_#0d0d0d] transition-shadow"
+            className="w-full bg-white border-2 border-[#14110c] rounded-lg px-4 py-3 text-sm text-[#14110c] font-body placeholder-[#14110c]/35 focus:outline-none focus:shadow-[3px_3px_0_0_#14110c] transition-shadow"
             placeholder="you@company.com"
           />
         </div>
       </div>
 
       <div>
-        <label className="text-[9px] uppercase tracking-[0.3em] text-[#0d0d0d]/45 font-mono font-bold block mb-2">
+        <label className="text-[9px] uppercase tracking-[0.3em] text-[#14110c]/45 font-mono font-bold block mb-2">
           Business or idea name (optional)
         </label>
         <input
           type="text"
           value={form.businessName}
           onChange={(e) => update('businessName', e.target.value)}
-          className="w-full bg-white border-2 border-[#0d0d0d] rounded-lg px-4 py-3 text-sm text-[#0d0d0d] font-body placeholder-[#0d0d0d]/35 focus:outline-none focus:shadow-[3px_3px_0_0_#0d0d0d] transition-shadow"
+          className="w-full bg-white border-2 border-[#14110c] rounded-lg px-4 py-3 text-sm text-[#14110c] font-body placeholder-[#14110c]/35 focus:outline-none focus:shadow-[3px_3px_0_0_#14110c] transition-shadow"
           placeholder="What it&rsquo;s called, or what you&rsquo;d call it"
         />
       </div>
 
       <div>
-        <label className="text-[9px] uppercase tracking-[0.3em] text-[#0d0d0d]/45 font-mono font-bold block mb-2">
+        <label className="text-[9px] uppercase tracking-[0.3em] text-[#14110c]/45 font-mono font-bold block mb-2">
           One-line description of what you want built
         </label>
         <textarea
@@ -140,23 +140,23 @@ export default function BuildQueueForm() {
           rows={3}
           value={form.ideaDescription}
           onChange={(e) => update('ideaDescription', e.target.value)}
-          className="w-full bg-white border-2 border-[#0d0d0d] rounded-lg px-4 py-3 text-sm text-[#0d0d0d] font-body placeholder-[#0d0d0d]/35 focus:outline-none focus:shadow-[3px_3px_0_0_#0d0d0d] transition-shadow resize-none"
+          className="w-full bg-white border-2 border-[#14110c] rounded-lg px-4 py-3 text-sm text-[#14110c] font-body placeholder-[#14110c]/35 focus:outline-none focus:shadow-[3px_3px_0_0_#14110c] transition-shadow resize-none"
           placeholder="The shortest version of what this thing is and who it&rsquo;s for."
         />
       </div>
 
-      <p className="border-t-2 border-dashed border-[#0d0d0d]/20 pt-5 text-[12px] font-body text-[#5c554a]">
+      <p className="border-t-2 border-dashed border-[#14110c]/20 pt-5 text-[12px] font-body text-[#5c554a]">
         Optional, but 30 more seconds here helps Sarah prep your scope before she replies.
       </p>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label className="text-[9px] uppercase tracking-[0.3em] text-[#0d0d0d]/45 font-mono font-bold block mb-2">
+          <label className="text-[9px] uppercase tracking-[0.3em] text-[#14110c]/45 font-mono font-bold block mb-2">
             Current revenue range (optional)
           </label>
           <select
             value={form.revenueRange}
             onChange={(e) => update('revenueRange', e.target.value)}
-            className="w-full bg-white border-2 border-[#0d0d0d] rounded-lg px-4 py-3 text-sm text-[#0d0d0d] font-body focus:outline-none focus:shadow-[3px_3px_0_0_#0d0d0d] transition-shadow"
+            className="w-full bg-white border-2 border-[#14110c] rounded-lg px-4 py-3 text-sm text-[#14110c] font-body focus:outline-none focus:shadow-[3px_3px_0_0_#14110c] transition-shadow"
           >
             <option value="">Select range</option>
             {REVENUE_OPTIONS.map((o) => (
@@ -167,13 +167,13 @@ export default function BuildQueueForm() {
           </select>
         </div>
         <div>
-          <label className="text-[9px] uppercase tracking-[0.3em] text-[#0d0d0d]/45 font-mono font-bold block mb-2">
+          <label className="text-[9px] uppercase tracking-[0.3em] text-[#14110c]/45 font-mono font-bold block mb-2">
             Timeline urgency (optional)
           </label>
           <select
             value={form.timeline}
             onChange={(e) => update('timeline', e.target.value)}
-            className="w-full bg-white border-2 border-[#0d0d0d] rounded-lg px-4 py-3 text-sm text-[#0d0d0d] font-body focus:outline-none focus:shadow-[3px_3px_0_0_#0d0d0d] transition-shadow"
+            className="w-full bg-white border-2 border-[#14110c] rounded-lg px-4 py-3 text-sm text-[#14110c] font-body focus:outline-none focus:shadow-[3px_3px_0_0_#14110c] transition-shadow"
           >
             <option value="">Select urgency</option>
             {TIMELINE_OPTIONS.map((o) => (
@@ -186,18 +186,18 @@ export default function BuildQueueForm() {
       </div>
 
       {errorMsg && (
-        <p className="text-[#d0241b] text-sm font-body font-bold text-center">{errorMsg}</p>
+        <p className="text-[#8f1d22] text-sm font-body font-bold text-center">{errorMsg}</p>
       )}
 
       <button
         type="submit"
         disabled={status === 'sending'}
-        className="w-full py-4 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0d0d0d] bg-[#ffd400] rounded-lg border-2 border-[#0d0d0d] shadow-[4px_4px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-all disabled:opacity-50"
+        className="w-full py-4 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#14110c] bg-[#f5b700] rounded-lg border-2 border-[#14110c] shadow-[4px_4px_0_0_#14110c] hover:-translate-y-0.5 transition-all disabled:opacity-50"
       >
         {status === 'sending' ? 'Sending...' : 'Join the Build Queue'}
       </button>
 
-      <p className="text-center text-[#0d0d0d]/45 text-xs font-body italic">
+      <p className="text-center text-[#14110c]/45 text-xs font-body italic">
         Sarah reviews every entry personally and replies fast, usually the same day.
       </p>
     </form>

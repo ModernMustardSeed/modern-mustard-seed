@@ -50,7 +50,7 @@ export function ReadingProgress() {
       className="fixed top-0 left-0 right-0 z-[60] h-[3px] bg-transparent print:hidden pointer-events-none"
     >
       <div
-        className="h-full bg-[#ffd400] border-b border-[#0d0d0d]/20 transition-[width] duration-150 ease-out"
+        className="h-full bg-[#f5b700] border-b border-[#14110c]/20 transition-[width] duration-150 ease-out"
         style={{ width: `${pct}%` }}
       />
     </div>
@@ -96,10 +96,10 @@ export function SectionRail({ items }: { items: RailItem[] }) {
   return (
     <nav aria-label="Field guide sections" className="hidden xl:block print:hidden">
       <div className="sticky top-32">
-        <span className="block text-[9px] uppercase tracking-[0.3em] font-mono font-bold text-[#d0241b] mb-4">
+        <span className="block text-[9px] uppercase tracking-[0.3em] font-mono font-bold text-[#8f1d22] mb-4">
           The Guide
         </span>
-        <ol className="space-y-0.5 border-l-2 border-[#0d0d0d]/15">
+        <ol className="space-y-0.5 border-l-2 border-[#14110c]/15">
           {items.map((item, i) => {
             const on = active === item.id;
             return (
@@ -110,8 +110,8 @@ export function SectionRail({ items }: { items: RailItem[] }) {
                   className={[
                     'group flex items-baseline gap-2.5 -ml-[2px] border-l-2 pl-3 py-[7px] text-[12px] leading-tight font-sans transition-all duration-200',
                     on
-                      ? 'border-[#ffd400] text-[#0d0d0d] font-extrabold'
-                      : 'border-transparent text-[#0d0d0d]/45 hover:text-[#0d0d0d] hover:border-[#0d0d0d]/30 font-medium',
+                      ? 'border-[#f5b700] text-[#14110c] font-extrabold'
+                      : 'border-transparent text-[#14110c]/45 hover:text-[#14110c] hover:border-[#14110c]/30 font-medium',
                   ].join(' ')}
                 >
                   <span className="font-mono text-[9px] tabular-nums pt-[2px] opacity-60">
@@ -178,10 +178,10 @@ export function CopyButton({
       className={[
         'shrink-0 inline-flex items-center gap-1.5 rounded-full border-2 px-3 py-1.5 text-[9px] uppercase tracking-[0.16em] font-mono font-bold transition-all duration-200 print:hidden',
         copied
-          ? 'bg-[#ffd400] border-[#0d0d0d] text-[#0d0d0d] shadow-[2px_2px_0_0_#0d0d0d]'
+          ? 'bg-[#f5b700] border-[#14110c] text-[#14110c] shadow-[2px_2px_0_0_#14110c]'
           : tone === 'dark'
-            ? 'bg-transparent border-white/25 text-white/70 hover:text-[#0d0d0d] hover:bg-[#ffd400] hover:border-[#ffd400]'
-            : 'bg-white border-[#0d0d0d] text-[#0d0d0d] shadow-[2px_2px_0_0_#0d0d0d] hover:-translate-y-0.5',
+            ? 'bg-transparent border-white/25 text-white/70 hover:text-[#14110c] hover:bg-[#f5b700] hover:border-[#f5b700]'
+            : 'bg-white border-[#14110c] text-[#14110c] shadow-[2px_2px_0_0_#14110c] hover:-translate-y-0.5',
       ].join(' ')}
     >
       {copied ? 'Copied' : label}
@@ -192,7 +192,7 @@ export function CopyButton({
 /** A terminal-looking block with a copy button in the chrome. */
 export function CodeBlock({ code, caption }: { code: string; caption?: string }) {
   return (
-    <div className="rounded-xl border-2 border-[#0d0d0d] bg-[#16161A] shadow-[4px_4px_0_0_#0d0d0d] overflow-hidden min-w-0">
+    <div className="rounded-xl border-2 border-[#14110c] bg-[#16161A] shadow-[4px_4px_0_0_#14110c] overflow-hidden min-w-0">
       <div className="flex items-center justify-between gap-3 px-4 py-2 border-b border-white/10 bg-white/[0.04]">
         <span className="text-[9px] uppercase tracking-[0.2em] font-mono font-bold text-white/40">
           {caption ?? 'Terminal'}
@@ -232,8 +232,8 @@ export function PromptLibrary() {
               className={[
                 'rounded-full border-2 px-4 py-2 text-[10px] uppercase tracking-[0.18em] font-mono font-bold transition-all duration-200',
                 on
-                  ? 'bg-[#0d0d0d] border-[#0d0d0d] text-white shadow-[3px_3px_0_0_#ffd400]'
-                  : 'bg-white border-[#0d0d0d]/25 text-[#0d0d0d]/60 hover:border-[#0d0d0d] hover:text-[#0d0d0d]',
+                  ? 'bg-[#14110c] border-[#14110c] text-white shadow-[3px_3px_0_0_#f5b700]'
+                  : 'bg-white border-[#14110c]/25 text-[#14110c]/60 hover:border-[#14110c] hover:text-[#14110c]',
               ].join(' ')}
             >
               {g.label}
@@ -250,21 +250,21 @@ export function PromptLibrary() {
           <article key={p.id} className="pop-card p-5 md:p-6 min-w-0">
             <div className="flex items-start justify-between gap-4 mb-2">
               <div>
-                <h3 className="font-display text-lg md:text-xl font-black text-[#0d0d0d] leading-snug">{p.title}</h3>
-                <p className="text-[11px] font-mono uppercase tracking-[0.12em] text-[#d0241b] font-bold mt-1.5">
+                <h3 className="font-display text-lg md:text-xl font-black text-[#14110c] leading-snug">{p.title}</h3>
+                <p className="text-[11px] font-mono uppercase tracking-[0.12em] text-[#8f1d22] font-bold mt-1.5">
                   {p.when}
                 </p>
               </div>
               <CopyButton text={p.text} label="Copy prompt" />
             </div>
-            <p className="mt-3 rounded-lg border-2 border-[#0d0d0d]/12 bg-[#f1ede4] px-4 py-3.5 font-mono text-[12.5px] leading-[1.85] text-[#0d0d0d]/85 whitespace-pre-wrap">
+            <p className="mt-3 rounded-lg border-2 border-[#14110c]/12 bg-[#f6efe0] px-4 py-3.5 font-mono text-[12.5px] leading-[1.85] text-[#14110c]/85 whitespace-pre-wrap">
               {p.text}
             </p>
           </article>
         ))}
       </div>
 
-      <p className="mt-5 text-[12px] font-body italic text-[#0d0d0d]/45">
+      <p className="mt-5 text-[12px] font-body italic text-[#14110c]/45">
         Anything in [BRACKETS] is yours to replace. That is the only editing these need.
       </p>
     </div>
@@ -277,9 +277,9 @@ export function PromptLibrary() {
 
 export function TemplateBlock({ template }: { template: string }) {
   return (
-    <div className="rounded-xl border-2 border-[#0d0d0d] bg-[#16161A] shadow-[5px_5px_0_0_#0d0d0d] overflow-hidden min-w-0">
+    <div className="rounded-xl border-2 border-[#14110c] bg-[#16161A] shadow-[5px_5px_0_0_#14110c] overflow-hidden min-w-0">
       <div className="flex items-center justify-between gap-3 px-4 py-2.5 border-b border-white/10 bg-white/[0.04]">
-        <span className="text-[10px] font-mono font-bold text-[#ffd400] tracking-wide">CLAUDE.md</span>
+        <span className="text-[10px] font-mono font-bold text-[#f5b700] tracking-wide">CLAUDE.md</span>
         <CopyButton text={template} label="Copy the file" tone="dark" />
       </div>
       <pre className="px-4 py-4 overflow-x-auto text-[12px] leading-[1.75] font-mono text-[#F3EEE1] whitespace-pre">

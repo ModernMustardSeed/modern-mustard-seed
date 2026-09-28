@@ -39,12 +39,12 @@ export default function AppNavDock() {
   if (!standalone) return null;
 
   const btn =
-    'grid h-10 w-10 place-items-center rounded-full border-2 border-[#0d0d0d] bg-white text-[#0d0d0d] text-base font-bold transition-transform active:scale-90 hover:-translate-y-0.5';
+    'grid h-10 w-10 place-items-center rounded-full border-2 border-[#14110c] bg-white text-[#14110c] text-base font-bold transition-transform active:scale-90 hover:-translate-y-0.5';
 
   return (
     <nav
       aria-label="App navigation"
-      className="fixed bottom-4 left-4 z-[70] flex items-center gap-1.5 rounded-full border-2 border-[#0d0d0d] bg-[#f1ede4]/95 backdrop-blur-sm p-1.5 shadow-[4px_4px_0_0_#0d0d0d]"
+      className="fixed bottom-4 left-4 z-[70] flex items-center gap-1.5 rounded-full border-2 border-[#14110c] bg-[#f6efe0]/95 backdrop-blur-sm p-1.5 shadow-[4px_4px_0_0_#14110c]"
     >
       <button type="button" aria-label="Go back" onClick={() => router.back()} className={btn}>
         <span aria-hidden>←</span>
@@ -53,7 +53,7 @@ export default function AppNavDock() {
         type="button"
         aria-label="Go to home screen"
         onClick={() => router.push(shellHome(pathname))}
-        className="grid h-10 w-10 place-items-center rounded-full border-2 border-[#0d0d0d] bg-[#ffd400] transition-transform active:scale-90 hover:-translate-y-0.5"
+        className="grid h-10 w-10 place-items-center rounded-full border-2 border-[#14110c] bg-[#f5b700] transition-transform active:scale-90 hover:-translate-y-0.5"
       >
         <span className="relative h-6 w-6">
           <Image src="/brand/mascot.png" alt="" fill sizes="24px" className="object-contain" />
