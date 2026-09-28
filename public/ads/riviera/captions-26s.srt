@@ -1,0 +1,43 @@
+1
+00:00:00,500 --> 00:00:01,150
+Call answered. A new customer, by Mr. Mustard.
+
+2
+00:00:01,150 --> 00:00:02,000
+Job booked. Thursday, 9:00 am.
+
+3
+00:00:04,000 --> 00:00:06,000
+Your business is working.
+
+4
+00:00:06,000 --> 00:00:08,000
+You don't have to be.
+
+5
+00:00:08,000 --> 00:00:10,000
+We build websites
+
+6
+00:00:10,000 --> 00:00:12,000
+and agentic systems
+
+7
+00:00:12,000 --> 00:00:14,000
+that run your business.
+
+8
+00:00:16,000 --> 00:00:18,000
+So you can
+
+9
+00:00:18,000 --> 00:00:20,000
+So you can run your life.
+
+10
+00:00:20,500 --> 00:00:21,500
+Modern Mustard Seed. We build it. You live it.
+
+11
+00:00:21,500 --> 00:00:26,000
+Websites. Agentic systems. AI voice agents. Custom software. modernmustardseed.com
