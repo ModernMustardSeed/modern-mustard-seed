@@ -29,6 +29,7 @@ const MENU_GROUPS = [
   {
     heading: 'Disciplines',
     links: [
+      { label: 'AI For Your Business', href: '/ai' },
       { label: 'Websites And Brand', href: '/websites' },
       { label: 'Brand / Rebrand', href: '/brand' },
       { label: 'Voice Agents', href: '/voice-agents' },
@@ -99,6 +100,7 @@ const MENU_GROUPS = [
 // industries, partner-swipe, jsonld, and comic entries, drop the noindex flag on
 // app/voice-agents/build/page.tsx, and repoint the cross-sell CTAs.
 const DEPARTMENTS = [
+  { name: 'AI For Your Business', tag: 'AI WEBSITES, AI RECEPTIONISTS, AI AGENTS', href: '/ai' },
   { name: 'The Talking Website', tag: 'A SITE THAT ANSWERS ITS OWN PHONE', href: '/talking-website' },
   { name: 'Websites And Brand', tag: 'DESIGN-LED, BUILT TO BE FOUND', href: '/websites' },
   { name: 'Brand / Rebrand', tag: 'A NEW MARK ON EVERY SURFACE', href: '/brand' },

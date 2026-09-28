@@ -33,6 +33,7 @@ const STATIC_PATHS = [
   '/the-system',
   '/talking-website',
   '/websites',
+  '/ai',
   '/agentic-websites',
   '/brand',
   '/voice-agents',

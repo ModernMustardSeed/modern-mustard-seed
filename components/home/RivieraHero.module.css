@@ -18,29 +18,28 @@
 
 .copy{position:relative;max-width:680px}
 .copy>:not(h1){animation:rise 1.2s cubic-bezier(.16,1,.3,1) both}
-.copy>:nth-child(1){animation-delay:.1s}.copy>:nth-child(3){animation-delay:.95s}.copy>:nth-child(4){animation-delay:1.1s}.copy>:nth-child(5){animation-delay:1.25s}
+.copy>:nth-child(1){animation-delay:.1s}.copy>:nth-child(3){animation-delay:.95s}.copy>:nth-child(4){animation-delay:1.1s}.copy>:nth-child(5){animation-delay:1.2s}.copy>:nth-child(6){animation-delay:1.3s}
 @keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 
 .credit{display:block;position:relative;padding-left:22px;font-family:var(--font-caps),sans-serif;font-size:12.5px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--lagoon)}
 .credit:before{content:'';position:absolute;left:0;top:.2em;width:11px;height:11px;border-radius:50%;background:var(--mustard);box-shadow:0 0 0 4px #f5b70030}
 .credit i{font-style:normal;margin:0 .45em;color:var(--mustard)}
 
-/* The name, as a masthead. Each letter rolls in on its own delay, a wave
-   passing along the line. */
-.name{margin-top:20px!important;font-family:var(--font-riviera),'Bodoni Moda',Georgia,serif;font-weight:500;font-size:clamp(64px,7.6vw,140px);line-height:.88;letter-spacing:-.04em;font-optical-sizing:auto;color:var(--sea)}
-.row{display:block;white-space:nowrap}
-.ch{display:inline-block;animation:roll 1.1s cubic-bezier(.2,.9,.25,1.2) both;animation-delay:calc(.25s + var(--i) * 45ms)}
-@keyframes roll{0%{opacity:0;transform:translateY(.42em) rotate(6deg);filter:blur(6px)}60%{opacity:1;filter:blur(0)}100%{opacity:1;transform:none;filter:none}}
-.name em{font-style:italic;font-weight:400;letter-spacing:-.03em;color:var(--lagoon);padding-right:.04em}
-.name em .ch{animation-name:rollItalic}
-@keyframes rollItalic{0%{opacity:0;transform:translateY(.42em) rotate(-8deg);filter:blur(6px)}60%{opacity:1;filter:blur(0)}100%{opacity:1;transform:none;filter:none}}
+/* The headline says what we build, the first thing anyone reads. Each word
+   rolls in on its own delay, a wave passing along the line. */
+.name{margin-top:18px!important;font-family:var(--font-riviera),Georgia,serif;font-weight:500;font-size:clamp(44px,4.9vw,86px);line-height:1;letter-spacing:-.03em;font-optical-sizing:auto;color:var(--sea);text-wrap:balance}
+.word{display:inline-block;white-space:pre;animation:roll 1s cubic-bezier(.2,.9,.25,1.15) both;animation-delay:calc(.2s + var(--i) * 70ms)}
+@keyframes roll{0%{opacity:0;transform:translateY(.5em) rotate(4deg);filter:blur(6px)}60%{opacity:1;filter:blur(0)}100%{opacity:1;transform:none;filter:none}}
+.name em{font-style:italic;font-weight:400;color:var(--lagoon)}
 
-.line{margin-top:18px!important;font-family:var(--font-riviera),Georgia,serif;font-weight:500;font-size:clamp(28px,2.7vw,46px);line-height:1.08;letter-spacing:-.02em;color:var(--sea)}
+.line{margin-top:16px!important;font-family:var(--font-riviera),Georgia,serif;font-weight:500;font-size:clamp(24px,2.2vw,36px);line-height:1.08;letter-spacing:-.02em;color:var(--sea)}
 .line em{font-style:italic;font-weight:400;color:var(--lagoon);background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 8'%3E%3Cpath d='M0 4c5 0 5-3 10-3s5 3 10 3 5-3 10-3 5 3 10 3' fill='none' stroke='%23f5b700' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E") 0 100%/.8em .2em repeat-x;padding-bottom:.12em}
-/* What the studio does: the most important sentence on the page (Sarah,
-   2026-09-26), so it reads big, the services marked in Tiffany. */
-.what{max-width:600px;margin-top:22px!important;font-family:var(--font-caps),sans-serif;font-size:clamp(18px,1.5vw,22px);line-height:1.55;font-weight:450;color:#123f48}
-.what strong{font-weight:650;color:var(--sea);background:linear-gradient(transparent 60%,#81d8d0b3 60%,#81d8d0b3 92%,transparent 92%);-webkit-box-decoration-break:clone;box-decoration-break:clone;padding:0 .08em}
+/* The services, named on sight: a chip for each, each one a door to its page. */
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0 0;padding:0;list-style:none}
+.chips a{display:inline-flex;align-items:center;min-height:40px;padding:0 16px;border-radius:999px;background:#fff;color:var(--sea);font-family:var(--font-caps),sans-serif;font-size:15px;font-weight:600;box-shadow:inset 0 0 0 1.5px #81d8d0,0 8px 18px -12px #0b3b4466;transition:background .2s,transform .2s}
+.chips a:hover{background:#d8f3f0;transform:translateY(-1px)}
+.chips a:focus-visible{outline:2px solid var(--lagoon);outline-offset:3px}
+.what{max-width:560px;margin-top:18px!important;font-family:var(--font-caps),sans-serif;font-size:16px;line-height:1.55;font-weight:500;color:#2c4c52}
 .actions{display:flex;flex-wrap:wrap;align-items:center;gap:14px 30px;margin-top:32px}
 .cta{display:inline-flex;align-items:center;gap:18px;min-height:58px;padding:0 30px;border-radius:999px;background:var(--sea);color:#fff;font-family:var(--font-caps),sans-serif;font-size:15px;font-weight:600;letter-spacing:.01em;box-shadow:0 16px 34px -14px #0b3b44cc;transition:transform .3s cubic-bezier(.2,.8,.2,1),background .3s,box-shadow .3s}
 .cta span{display:grid;place-items:center;width:30px;height:30px;margin-right:-14px;border-radius:50%;background:var(--mustard);color:var(--sea);font-size:15px;transition:transform .3s}
@@ -70,12 +69,13 @@
   .scrim{background:linear-gradient(180deg,#fbf5ea00 0,#fbf5ea00 calc(70px + 100vw * .8 - 90px),#fbf5ea calc(70px + 100vw * .8 - 2px))}
   .glare{display:none}
   .credit{font-size:10.5px;letter-spacing:.16em;line-height:1.7;padding-left:19px}
-  .name{font-size:clamp(54px,16vw,80px);letter-spacing:-.035em}
+  .name{font-size:clamp(36px,10.2vw,52px);letter-spacing:-.025em}
+  .chips a{font-size:14px;min-height:38px;padding:0 13px}
   .line{font-size:clamp(26px,7.4vw,34px)}
-  .what{font-size:18px}
+  .what{font-size:15px}
   .cta{width:100%;justify-content:space-between}
   .item{font-size:17px;padding-block:12px 11px}
   .awning{background:repeating-linear-gradient(90deg,#81d8d0 0 30px,#ffffff 30px 60px);padding-bottom:10px}
   .awning:after{height:10px;-webkit-mask-size:30px 10px;mask-size:30px 10px;-webkit-mask-image:radial-gradient(circle at 15px 0,#000 14.5px,transparent 15px);mask-image:radial-gradient(circle at 15px 0,#000 14.5px,transparent 15px);background:repeating-linear-gradient(90deg,#81d8d0 0 30px,#ffffff 30px 60px)}
 }
-@media(prefers-reduced-motion:reduce){.art img,.copy>*,.ch,.glare,.tape>div{animation:none}.cta,.cta span{transition:none}}
+@media(prefers-reduced-motion:reduce){.art img,.copy>*,.word,.glare,.tape>div{animation:none}.cta,.cta span{transition:none}}

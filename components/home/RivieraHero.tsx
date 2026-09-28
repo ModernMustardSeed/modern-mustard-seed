@@ -9,17 +9,22 @@ import s from './RivieraHero.module.css';
  * yacht offshore. The agentic systems do the work; the family lives.
  *
  * The painting runs edge to edge and keeps the open sea on the left for the
- * words. The name is set huge in Bodoni Moda, each letter rolling in like a
- * wave; the promise follows in the italic. A striped awning with a scalloped
+ * words. The first thing anyone reads is what we build (Sarah, 2026-09-27:
+ * "so you know what we're doing right when you get to the page"), each word
+ * rolling in like a wave; the promise follows, then a chip for each service,
+ * each one a link to its page. A striped awning with a scalloped
  * edge runs the services underneath. On a phone the painting sits across the
  * top and the words sit below it on sand.
  */
 const SCENE = '/art/hero/riviera';
-const LINE = 'We build it. You live it.';
+const HEADLINE = 'We build websites and agentic systems that run your business.';
+const LINE = 'So you can run your life.';
+const CHIPS: [string, string][] = [['Websites', '/websites'], ['Agentic systems', '/agentic-native'], ['AI voice agents', '/voice-agents'], ['Custom software', '/services'], ['AI for your business', '/ai']];
 const TICKER = ['Websites', 'Custom software', 'Voice agents', 'Agentic systems', 'Brand & identity', 'Marketing', 'Advisory'];
 
-function Rolling({ text, from }: { text: string; from: number }) {
-  return <>{[...text].map((ch, i) => <span key={i} className={s.ch} style={{ ['--i' as string]: from + i }}>{ch === ' ' ? ' ' : ch}</span>)}</>;
+/** The headline, word by word, each on its own delay: a wave passing along the line. */
+function Rolling({ text, from = 0 }: { text: string; from?: number }) {
+  return <>{text.split(' ').map((w, i) => <span key={i} className={s.word} style={{ ['--i' as string]: from + i }}>{w}{' '}</span>)}</>;
 }
 
 export default function RivieraHero() {
@@ -33,14 +38,14 @@ export default function RivieraHero() {
       <div className={s.glare} aria-hidden="true" />
       <div className={s.scrim} aria-hidden="true" />
       <div className={s.copy}>
-        <p className={s.credit}>Design &amp; agentic systems studio <i>·</i> Kalispell, Montana</p>
+        <p className={s.credit}>Modern Mustard Seed <i>·</i> Design &amp; agentic systems studio <i>·</i> Kalispell, Montana</p>
         <h1 id="studio-heading" className={s.name}>
-          <span className="sr-only">Modern Mustard Seed. {LINE}</span>
-          <span aria-hidden="true" className={s.row}><Rolling text="Modern" from={0} /></span>
-          <span aria-hidden="true" className={s.row}><Rolling text="Mustard" from={6} /> <em><Rolling text="Seed" from={13} /></em></span>
+          <span className="sr-only">{HEADLINE} {LINE} Modern Mustard Seed.</span>
+          <span aria-hidden="true"><Rolling text="We build websites and" /><em><Rolling text="agentic systems" from={4} /></em><Rolling text="that run your business." from={6} /></span>
         </h1>
-        <p className={s.line} aria-hidden="true">We build it. <em>You live it.</em></p>
-        <p className={s.what}><strong>Websites, custom software, and agentic systems,</strong> designed and built by Sarah Scarano in Kalispell, Montana. They run the business, so you can run your life.</p>
+        <p className={s.line} aria-hidden="true">So you can <em>run your life.</em></p>
+        <ul className={s.chips} aria-label="What we build">{CHIPS.map(([label, href]) => <li key={href}><Link href={href}>{label}</Link></li>)}</ul>
+        <p className={s.what}>Designed and built by Sarah Scarano in Kalispell, Montana, at set package prices. You own everything.</p>
         <div className={s.actions}>
           <Link href="/inquire" className={s.cta}>Tell us what you have in mind <span aria-hidden="true">↗</span></Link>
           <a href="#selected-work" className={s.quiet}>See the work</a>
