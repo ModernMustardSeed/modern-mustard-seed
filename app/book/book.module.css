@@ -845,7 +845,7 @@
 }
 .tape { display: none; }
 /* The postage stamp. */
-.sticker { width: 118px; aspect-ratio: 4 / 5; top: -18px; right: -12px; rotate: 6deg; border-radius: 0; background: var(--mustard); box-shadow: none; filter: drop-shadow(0 12px 14px #0b3b4440); -webkit-mask: radial-gradient(circle at 50% 50%, transparent 3.2px, #000 3.6px) -4px -4px / 9px 9px, linear-gradient(#000 0 0) 5px 5px / calc(100% - 10px) calc(100% - 10px) no-repeat; mask: radial-gradient(circle at 50% 50%, transparent 3.2px, #000 3.6px) -4px -4px / 9px 9px, linear-gradient(#000 0 0) 5px 5px / calc(100% - 10px) calc(100% - 10px) no-repeat; }
+.sticker { width: 64px; aspect-ratio: 4 / 5; top: -10px; right: -6px; rotate: 6deg; border-radius: 0; background: var(--mustard); box-shadow: none; filter: drop-shadow(0 6px 8px #0b3b4433); -webkit-mask: radial-gradient(circle at 50% 50%, transparent 2.1px, #000 2.5px) -3px -3px / 6px 6px, linear-gradient(#000 0 0) 3px 3px / calc(100% - 6px) calc(100% - 6px) no-repeat; mask: radial-gradient(circle at 50% 50%, transparent 2.1px, #000 2.5px) -3px -3px / 6px 6px, linear-gradient(#000 0 0) 3px 3px / calc(100% - 6px) calc(100% - 6px) no-repeat; }
 .sticker svg { display: none; }
 .stickerText {
   padding-top: 0;
@@ -853,7 +853,7 @@
   font-family: var(--font-caps), sans-serif;
   font-style: italic;
   font-weight: 500;
-  font-size: 19px;
+  font-size: 12px;
   letter-spacing: -.01em;
   text-transform: none;
   line-height: 1.05;
@@ -958,8 +958,8 @@
 @media (max-width: 760px) {
   .frame { padding: 8px 8px 8px; border-radius: 16px; }
   .frameCap { font-size: 15px; }
-  .sticker { width: 88px; top: -14px; right: -4px; }
-  .stickerText { font-size: 14px; }
+  .sticker { width: 52px; top: -8px; right: -2px; }
+  .stickerText { font-size: 10px; }
   .heroBubble { left: 0; bottom: 8px; font-size: 14px; }
   .h1 { font-size: clamp(2.1rem, 9.4vw, 2.9rem); }
   .marquee { margin-inline: -10px; }

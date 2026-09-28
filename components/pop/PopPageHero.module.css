@@ -257,29 +257,29 @@
 .sticker {
   position: absolute;
   z-index: 4;
-  top: -14px;
-  right: -8px;
+  top: -10px;
+  right: -6px;
   margin: 0;
   display: grid;
   place-items: center;
-  width: clamp(108px, 9vw, 132px);
+  width: clamp(64px, 5vw, 74px);
   aspect-ratio: 4 / 5;
-  padding: 10px;
+  padding: 6px;
   background: var(--mustard);
-  -webkit-mask: radial-gradient(circle at 50% 50%, transparent 3.2px, #000 3.6px) -4px -4px / 9px 9px, linear-gradient(#000 0 0) 5px 5px / calc(100% - 10px) calc(100% - 10px) no-repeat;
-  mask: radial-gradient(circle at 50% 50%, transparent 3.2px, #000 3.6px) -4px -4px / 9px 9px, linear-gradient(#000 0 0) 5px 5px / calc(100% - 10px) calc(100% - 10px) no-repeat;
+  -webkit-mask: radial-gradient(circle at 50% 50%, transparent 2.1px, #000 2.5px) -3px -3px / 6px 6px, linear-gradient(#000 0 0) 3px 3px / calc(100% - 6px) calc(100% - 6px) no-repeat;
+  mask: radial-gradient(circle at 50% 50%, transparent 2.1px, #000 2.5px) -3px -3px / 6px 6px, linear-gradient(#000 0 0) 3px 3px / calc(100% - 6px) calc(100% - 6px) no-repeat;
   rotate: 6deg;
-  filter: drop-shadow(0 12px 14px #0b3b4440);
+  filter: drop-shadow(0 6px 8px #0b3b4433);
   animation: stampIn .6s .8s cubic-bezier(.3, 1.5, .5, 1) both;
 }
-.sticker::before { content: ''; position: absolute; inset: 14px; border: 1.5px solid #0b3b4455; border-radius: 4px; }
+.sticker::before { content: ''; position: absolute; inset: 6px; border: 1px solid #0b3b4455; border-radius: 3px; }
 .sticker span {
   position: relative;
-  max-width: 80%;
+  max-width: 94%;
   text-align: center;
   font-family: var(--font-caps), sans-serif;
   font-style: italic;
-  font-size: clamp(17px, 1.5vw, 22px);
+  font-size: clamp(10.5px, .8vw, 12px);
   font-weight: 500;
   line-height: 1.05;
   letter-spacing: -.01em;
@@ -378,8 +378,8 @@
   .stage { padding: 14px 4px 24px; }
   .paper { padding: 8px 8px 10px; border-radius: 16px; }
   .posterCap { font-size: 16px; }
-  .sticker { width: 92px; top: -12px; right: 0; }
-  .sticker span { font-size: 15px; }
+  .sticker { width: 58px; top: -8px; right: 0; }
+  .sticker span { font-size: 9.5px; }
   .bubble { font-size: 15px; max-width: 190px; left: -2px; top: 22px; }
   .banner { margin: 0 -16px 34px; background: repeating-linear-gradient(90deg, var(--tiffany) 0 28px, #fff 28px 56px); }
   .banner::after { background: repeating-linear-gradient(90deg, var(--tiffany) 0 28px, #fff 28px 56px); -webkit-mask: radial-gradient(circle at 14px 0, #000 13.5px, transparent 14px) 0 0 / 28px 14px repeat-x; mask: radial-gradient(circle at 14px 0, #000 13.5px, transparent 14px) 0 0 / 28px 14px repeat-x; }
