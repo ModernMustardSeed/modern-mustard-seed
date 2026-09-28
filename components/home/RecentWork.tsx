@@ -44,15 +44,6 @@ const WORK: Work[] = [
     tilt: 'rotate-[0.8deg]',
   },
   {
-    name: 'Fiat Lux Design',
-    domain: 'fiatluxdesign.co',
-    url: 'https://fiatluxdesign.co',
-    tag: 'Agentic interior staging',
-    desc: 'An agentic studio that stages any empty room for listing photos in seconds, built for realtors and designers.',
-    shot: '/home/work/fiat-lux.jpg',
-    tilt: '-rotate-[0.8deg]',
-  },
-  {
     name: 'Lago Society',
     domain: 'lagosociety.com',
     url: 'https://lagosociety.com',
