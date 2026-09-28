@@ -150,18 +150,18 @@ export default function ForIndex() {
 
             <Link
               href="/for/health"
-              className="pop-card p-8 md:p-10 hover:-translate-y-1 hover:shadow-[7px_7px_0_0_#0d0d0d] transition-all duration-300 group"
+              className="pop-card p-8 md:p-10 hover:-translate-y-1 hover:shadow-[7px_7px_0_0_#14110c] transition-all duration-300 group"
             >
-              <span className="text-[10px] uppercase tracking-[0.35em] text-[#c8201a] font-mono font-bold mb-4 block">
+              <span className="text-[10px] uppercase tracking-[0.35em] text-[#8f1d22] font-mono font-bold mb-4 block">
                 Websites and Front Desks for Practices
               </span>
-              <h2 className="font-display text-xl md:text-2xl font-black text-[#0d0d0d] tracking-tight mb-4">
+              <h2 className="font-display text-xl md:text-2xl font-black text-[#14110c] tracking-tight mb-4">
                 Health Practices
               </h2>
               <p className="text-[#3a3733] text-sm md:text-base font-body leading-7 mb-5">
                 Optometrists, dentists, med spas, clinics and therapists: a site patients choose, booking that works at midnight, and a front desk that answers every call.
               </p>
-              <span className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.25em] font-mono font-bold text-[#c8201a] group-hover:text-[#d0241b] transition-colors">
+              <span className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.25em] font-mono font-bold text-[#8f1d22] group-hover:text-[#8f1d22] transition-colors">
                 Read the playbook
                 <span aria-hidden="true">→</span>
               </span>

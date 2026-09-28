@@ -134,7 +134,7 @@ export default function HealthPage() {
           ]),
         ]}
       />
-      <div className="relative min-h-screen bg-[#f1ede4] text-[#0d0d0d] overflow-x-clip">
+      <div className="relative min-h-screen bg-[#f6efe0] text-[#14110c] overflow-x-clip">
         <PopPageHero
           eyebrow={
             <>
@@ -145,7 +145,7 @@ export default function HealthPage() {
             </>
           }
           title={<>Be the practice patients{' '}<em>find first</em></>}
-          art={{ src: '/art/pages/industries', alt: 'Graffiti couture painting: Mr. Mustard waves from a mustard-yellow classic convertible cruising down a mountain-town main street of shops, under a railroad trestle painted in bright graffiti', caption: 'Built for the people who care for people', focus: '30% 60%' }}
+          art={{ src: '/art/pages/industries', alt: 'Painting: Mr. Mustard in a boater hat presents miniature businesses under glass bell jars, a bakery, a barber shop, a garage and a construction site, in a World’s Fair hall inside the tower', caption: 'Built for the people who care for people', focus: '30% 60%' }}
           sticker="Say ahh!"
           mascot={{ bubble: 'Your 3:00 is here!' }}
         >
@@ -164,7 +164,7 @@ export default function HealthPage() {
           </div>
           <p className={pop.note}>
             Or{' '}
-            <a href={bookingUrl} target="_blank" rel="noopener noreferrer" className="text-[#c8201a] font-semibold underline underline-offset-2 hover:text-[#d0241b] transition-colors">
+            <a href={bookingUrl} target="_blank" rel="noopener noreferrer" className="text-[#8f1d22] font-semibold underline underline-offset-2 hover:text-[#8f1d22] transition-colors">
               book a call
             </a>{' '}
             and we’ll walk you through it with your own practice on screen.
@@ -172,18 +172,18 @@ export default function HealthPage() {
         </PopPageHero>
 
         {/* The film: the ink band */}
-        <section className="relative mt-4 bg-[#0d0d0d] text-[#f1ede4] border-y-2 border-[#0d0d0d] overflow-hidden" aria-labelledby="film-h">
+        <section className="relative mt-4 bg-[#14110c] text-[#f6efe0] border-y-2 border-[#14110c] overflow-hidden" aria-labelledby="film-h">
           <div className="pointer-events-none absolute inset-0 halftone-ink" aria-hidden="true" />
           <div className="relative max-w-6xl mx-auto px-6 md:px-8 py-16 md:py-20">
             <div className="text-center max-w-3xl mx-auto mb-10">
-              <span className="text-[10px] uppercase tracking-[0.4em] text-[#ffd400] font-mono font-bold mb-5 block">
+              <span className="text-[10px] uppercase tracking-[0.4em] text-[#f5b700] font-mono font-bold mb-5 block">
                 Watch it · 64 seconds
               </span>
-              <h2 id="film-h" className="font-display text-3xl md:text-5xl font-black text-[#f1ede4] tracking-tight leading-[1.1]">
+              <h2 id="film-h" className="font-display text-3xl md:text-5xl font-black text-[#f6efe0] tracking-tight leading-[1.1]">
                 Serious eye care. Ridiculous frames.
               </h2>
             </div>
-            <div className="border-2 border-[#f1ede4] shadow-[6px_6px_0_0_#ffd400] bg-black">
+            <div className="border-2 border-[#f6efe0] shadow-[6px_6px_0_0_#f5b700] bg-black">
               <video
                 controls
                 playsInline
@@ -199,7 +199,7 @@ export default function HealthPage() {
                 <a href="/ads/wild-things/frames-that-roar-16x9.mp4">Download the film</a>.
               </video>
             </div>
-            <p className="mt-5 text-center text-sm text-[#f1ede4]/75 font-body">
+            <p className="mt-5 text-center text-sm text-[#f6efe0]/75 font-body">
               Wild Things Optometrists is a concept practice. Every screen in the film is its real website, and you can open it below.
             </p>
           </div>
@@ -208,25 +208,25 @@ export default function HealthPage() {
         {/* The work */}
         <section className="relative max-w-6xl mx-auto px-6 md:px-8 py-16 md:py-24" aria-labelledby="work-h">
           <div className="text-center max-w-3xl mx-auto mb-12">
-            <span className="text-[10px] uppercase tracking-[0.4em] text-[#c8201a] font-mono font-bold mb-5 block">
+            <span className="text-[10px] uppercase tracking-[0.4em] text-[#8f1d22] font-mono font-bold mb-5 block">
               Click through all of it
             </span>
-            <h2 id="work-h" className="font-display text-3xl md:text-5xl font-black text-[#0d0d0d] tracking-tight leading-[1.1]">
+            <h2 id="work-h" className="font-display text-3xl md:text-5xl font-black text-[#14110c] tracking-tight leading-[1.1]">
               What we’ve built for health.
             </h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {work.map((w) => (
               <article key={w.href} className="pop-card overflow-hidden flex flex-col">
-                <a href={w.href} {...(w.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})} className="block border-b-2 border-[#0d0d0d] bg-[#0d0d0d]" aria-label={`${w.cta}: ${w.title}`}>
+                <a href={w.href} {...(w.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})} className="block border-b-2 border-[#14110c] bg-[#14110c]" aria-label={`${w.cta}: ${w.title}`}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={w.shot} alt={w.alt} width={1200} height={750} loading="lazy" className="block w-full h-auto" />
                 </a>
                 <div className="p-7 md:p-8 flex flex-col flex-1">
-                  <span className="text-[10px] uppercase tracking-[0.35em] text-[#c8201a] font-mono font-bold mb-3 block">{w.kicker}</span>
-                  <h3 className="font-display text-2xl md:text-3xl font-black text-[#0d0d0d] tracking-tight leading-[1.1] mb-4">{w.title}</h3>
+                  <span className="text-[10px] uppercase tracking-[0.35em] text-[#8f1d22] font-mono font-bold mb-3 block">{w.kicker}</span>
+                  <h3 className="font-display text-2xl md:text-3xl font-black text-[#14110c] tracking-tight leading-[1.1] mb-4">{w.title}</h3>
                   <p className="text-[#3a3733] text-base font-body leading-7 mb-6 flex-1">{w.body}</p>
-                  <a href={w.href} {...(w.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})} className="self-start inline-flex items-center gap-2 px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0d0d0d] bg-[#ffd400] rounded-full border-2 border-[#0d0d0d] shadow-[4px_4px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-all">
+                  <a href={w.href} {...(w.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})} className="self-start inline-flex items-center gap-2 px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#14110c] bg-[#f5b700] rounded-full border-2 border-[#14110c] shadow-[4px_4px_0_0_#14110c] hover:-translate-y-0.5 transition-all">
                     {w.cta} <span aria-hidden="true">→</span>
                   </a>
                 </div>
@@ -238,17 +238,17 @@ export default function HealthPage() {
         {/* What gets built */}
         <section className="relative max-w-6xl mx-auto px-6 md:px-8 pb-16 md:pb-24" aria-labelledby="builds-h">
           <div className="text-center max-w-3xl mx-auto mb-12">
-            <span className="text-[10px] uppercase tracking-[0.4em] text-[#c8201a] font-mono font-bold mb-5 block">
+            <span className="text-[10px] uppercase tracking-[0.4em] text-[#8f1d22] font-mono font-bold mb-5 block">
               What gets built
             </span>
-            <h2 id="builds-h" className="font-display text-3xl md:text-5xl font-black text-[#0d0d0d] tracking-tight leading-[1.1]">
+            <h2 id="builds-h" className="font-display text-3xl md:text-5xl font-black text-[#14110c] tracking-tight leading-[1.1]">
               Four pieces. One practice that never misses a patient.
             </h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {builds.map((b) => (
               <article key={b.title} className="pop-card p-7">
-                <h3 className="font-display text-lg md:text-xl font-black text-[#0d0d0d] tracking-tight mb-3">{b.title}</h3>
+                <h3 className="font-display text-lg md:text-xl font-black text-[#14110c] tracking-tight mb-3">{b.title}</h3>
                 <p className="text-[#3a3733] text-sm md:text-base font-body leading-7">{b.body}</p>
               </article>
             ))}
@@ -257,36 +257,36 @@ export default function HealthPage() {
 
         {/* The checks */}
         <section className="relative max-w-5xl mx-auto px-6 md:px-8 pb-16 md:pb-24" aria-labelledby="grade-h">
-          <div className="pop-card p-8 md:p-12 bg-[#ffd400] grid grid-cols-1 md:grid-cols-[auto_1fr] gap-8 items-center">
-            <div className="font-display text-[110px] md:text-[150px] leading-none font-black text-[#0d0d0d]" aria-hidden="true">A+</div>
+          <div className="pop-card p-8 md:p-12 bg-[#f5b700] grid grid-cols-1 md:grid-cols-[auto_1fr] gap-8 items-center">
+            <div className="font-display text-[110px] md:text-[150px] leading-none font-black text-[#14110c]" aria-hidden="true">A+</div>
             <div>
-              <h2 id="grade-h" className="font-display text-2xl md:text-4xl font-black text-[#0d0d0d] tracking-tight leading-[1.1] mb-5">
+              <h2 id="grade-h" className="font-display text-2xl md:text-4xl font-black text-[#14110c] tracking-tight leading-[1.1] mb-5">
                 What AI reads before it names a practice.
               </h2>
               <ul className="grid gap-2.5">
                 {checks.map((c) => (
-                  <li key={c} className="flex gap-3 text-[#0d0d0d] font-body text-base leading-6">
-                    <span className="font-mono font-bold text-[#c8201a]" aria-hidden="true">✓</span>
+                  <li key={c} className="flex gap-3 text-[#14110c] font-body text-base leading-6">
+                    <span className="font-mono font-bold text-[#8f1d22]" aria-hidden="true">✓</span>
                     {c}
                   </li>
                 ))}
               </ul>
-              <p className="mt-5 text-sm text-[#0d0d0d]/75 font-body">These are the six things our presence audit grades. Want to know where your practice stands? <Link href="/presence-audit" className="font-semibold underline underline-offset-2">Run the free presence audit</Link>.</p>
+              <p className="mt-5 text-sm text-[#14110c]/75 font-body">These are the six things our presence audit grades. Want to know where your practice stands? <Link href="/presence-audit" className="font-semibold underline underline-offset-2">Run the free presence audit</Link>.</p>
             </div>
           </div>
         </section>
 
         {/* Questions */}
         <section className="relative max-w-4xl mx-auto px-6 md:px-8 pb-16 md:pb-24" aria-labelledby="faq-h">
-          <h2 id="faq-h" className="font-display text-3xl md:text-5xl font-black text-[#0d0d0d] tracking-tight leading-[1.1] mb-10 text-center">
+          <h2 id="faq-h" className="font-display text-3xl md:text-5xl font-black text-[#14110c] tracking-tight leading-[1.1] mb-10 text-center">
             Practices ask us
           </h2>
           <div className="grid gap-4">
             {faqs.map((f) => (
               <details key={f.q} className="pop-card p-6 md:p-7 group">
-                <summary className="cursor-pointer list-none flex justify-between gap-4 font-display text-lg md:text-xl font-black text-[#0d0d0d] tracking-tight">
+                <summary className="cursor-pointer list-none flex justify-between gap-4 font-display text-lg md:text-xl font-black text-[#14110c] tracking-tight">
                   {f.q}
-                  <span className="font-mono text-[#c8201a] group-open:rotate-45 transition-transform" aria-hidden="true">+</span>
+                  <span className="font-mono text-[#8f1d22] group-open:rotate-45 transition-transform" aria-hidden="true">+</span>
                 </summary>
                 <p className="mt-4 text-[#3a3733] text-base font-body leading-7">{f.a}</p>
               </details>
@@ -297,7 +297,7 @@ export default function HealthPage() {
         {/* Close */}
         <section className="relative max-w-4xl mx-auto px-6 md:px-8 pb-24">
           <div className="pop-card p-8 md:p-12 text-center">
-            <h2 className="font-display text-3xl md:text-5xl font-black text-[#0d0d0d] tracking-tight leading-[1.1] mb-4">
+            <h2 className="font-display text-3xl md:text-5xl font-black text-[#14110c] tracking-tight leading-[1.1] mb-4">
               See your own practice in this style.
             </h2>
             <p className="text-[#3a3733] text-base md:text-lg font-body leading-relaxed max-w-2xl mx-auto mb-8">
