@@ -34,7 +34,7 @@ export type ArchivePost = {
 };
 
 /** Where a contact or post came from, in words a person reads. */
-export const ORIGIN_LABEL: Record<string, string> = { 'web-express': 'Web Express', portal: 'Added here' };
+export const ORIGIN_LABEL: Record<string, string> = { 'web-express': 'Web Express', portal: 'Added here', website: 'Website' };
 
 type ContactRow = {
   id: string; name: string | null; phone: string | null; email: string | null; company: string | null;
@@ -121,4 +121,60 @@ export async function addContact(
   if (error || !data) return { ok: false, error: 'That did not save. Try once more.' };
   const r = data as ContactRow;
   return { ok: true, contact: { id: r.id, name: r.name, phone: r.phone, email: r.email, company: r.company, tags: r.tags ?? [], source: r.source, origin: r.origin, firstSeen: r.first_seen, notes: r.notes } };
+}
+
+const phoneDigits = (v: unknown) => String(v ?? '').replace(/\D/g, '').replace(/^1(?=\d{10}$)/, '');
+
+/**
+ * A website lead joins the contact book the moment it arrives, so the person
+ * is in the book, the tags and the campaigns without anyone copying them over.
+ * Matched on email or phone digits: someone already in the book only gains
+ * the facts it was missing, never loses one. Best effort: by the time this
+ * runs the lead is saved, and a book that could not be written is caught up
+ * by hand, never a lead refused.
+ */
+export async function fileLeadInBook(
+  sb: SupabaseClient,
+  clientEmail: string,
+  lead: { name?: string | null; phone?: string | null; email?: string | null; town?: string | null; projectType?: string | null; note?: string | null; source: string },
+): Promise<void> {
+  const email = lead.email?.trim().toLowerCase() || null;
+  const digits = phoneDigits(lead.phone);
+  if (!email && digits.length < 7) return;
+  try {
+    const { data: book } = await sb.from('client_contacts').select('id, name, phone, email, tags, notes').eq('client_email', clientEmail.toLowerCase());
+    const match = (book ?? []).find(
+      (c) => (email && String(c.email ?? '').toLowerCase() === email) || (digits.length >= 7 && phoneDigits(c.phone) === digits),
+    );
+    // A bare zip is not a place anyone filters by; a town is.
+    const tags = [lead.town && !/^zip\b/i.test(lead.town) ? lead.town : null, lead.projectType]
+      .filter((t): t is string => !!t)
+      .map((t) => t.slice(0, 40));
+    if (match) {
+      const patch: Record<string, unknown> = {};
+      if (!match.name && lead.name) patch.name = lead.name;
+      if (!match.email && email) patch.email = email;
+      if (!match.phone && lead.phone) patch.phone = lead.phone;
+      const have = (match.tags as string[] | null) ?? [];
+      const more = tags.filter((t) => !have.includes(t));
+      if (more.length) patch.tags = [...have, ...more].slice(0, 8);
+      if (!match.notes && lead.note) patch.notes = lead.note.slice(0, 2000);
+      if (Object.keys(patch).length) await sb.from('client_contacts').update({ ...patch, updated_at: new Date().toISOString() }).eq('id', match.id);
+      return;
+    }
+    await sb.from('client_contacts').insert({
+      client_email: clientEmail.toLowerCase(),
+      name: lead.name || email || lead.phone,
+      phone: lead.phone || null,
+      email,
+      tags,
+      notes: lead.note?.slice(0, 2000) || null,
+      origin: 'website',
+      source: lead.source,
+      first_seen: new Date().toLocaleDateString('en-CA', { timeZone: 'America/Denver' }),
+      import_key: `site:${(lead.name ?? '').toLowerCase()}|${digits || email}`,
+    });
+  } catch {
+    /* the lead is saved; the book is caught up by hand */
+  }
 }
