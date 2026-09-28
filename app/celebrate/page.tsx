@@ -109,11 +109,11 @@ export default function CelebratePage() {
   };
 
   return (
-    <div id="top" className="bg-[#f1ede4] text-[#0d0d0d]">
+    <div id="top" className="bg-[#fbf5ea] text-[#0b3b44]">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       {/* ─── HERO ─── */}
-      <section className="relative halftone-bg border-b-2 border-[#0d0d0d] overflow-hidden">
+      <section className="relative halftone-bg border-b-2 border-[#0b3b44] overflow-hidden">
         <ConfettiField count={30} seed={7} />
         <div className="relative max-w-6xl mx-auto px-5 pt-16 md:pt-24 pb-14 md:pb-20">
           <div className="grid lg:grid-cols-[1.2fr_0.8fr] gap-10 items-center">
@@ -124,27 +124,27 @@ export default function CelebratePage() {
               <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-black tracking-tight leading-[0.98]">
                 Turn your calendar into a parade.
               </h1>
-              <p className="font-body text-base md:text-lg text-[#0d0d0d]/70 max-w-xl mt-5 leading-relaxed">
+              <p className="font-body text-base md:text-lg text-[#0b3b44]/70 max-w-xl mt-5 leading-relaxed">
                 {CELEBRATE.promise}
               </p>
               <div className="flex flex-wrap items-center gap-4 mt-8">
                 <a
                   href="#countdown"
-                  className="bg-[#ffd400] text-[#0d0d0d] font-bold text-base rounded-full px-8 py-4 border-2 border-[#0d0d0d] shadow-[4px_4px_0_0_#0d0d0d] hover:translate-y-[1px] hover:shadow-[3px_3px_0_0_#0d0d0d] transition"
+                  className="bg-[#f5b700] text-[#0b3b44] font-bold text-base rounded-full px-8 py-4 border-2 border-[#0b3b44] shadow-[4px_4px_0_0_#0b3b44] hover:translate-y-[1px] hover:shadow-[3px_3px_0_0_#0b3b44] transition"
                 >
                   {days > 0 ? `Hold your spot (${days} days)` : 'Open your account'}
                 </a>
-                <Link href="/book" className="font-bold text-[#c8201a] underline underline-offset-4">
+                <Link href="/book" className="font-bold text-[#0a7c78] underline underline-offset-4">
                   or book a corporate pilot
                 </Link>
               </div>
-              <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-[#0d0d0d]/70 mt-6">
+              <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-[#0b3b44]/70 mt-6">
                 {days > 0 ? `Doors open ${CELEBRATE_LAUNCH.label}. ` : ''}
                 {CELEBRATE.foundingRoute}
               </p>
             </div>
             <div className="hidden lg:block relative">
-              <div className="relative aspect-[4/5] border-2 border-[#0d0d0d] rounded-xl overflow-hidden shadow-[6px_6px_0_0_#0d0d0d] rotate-2">
+              <div className="relative aspect-[4/5] border-2 border-[#0b3b44] rounded-xl overflow-hidden shadow-[6px_6px_0_0_#0b3b44] rotate-2">
                 <Image
                   src="/images/celebrate/cake.png"
                   alt="Funfetti layer cake with one slice pulled, on a mustard yellow background"
@@ -154,7 +154,7 @@ export default function CelebratePage() {
                   className="object-cover"
                 />
               </div>
-              <span className="absolute -bottom-3 left-6 font-mono text-[10px] uppercase tracking-[0.2em] bg-[#FFDD55] border-2 border-[#0d0d0d] rounded-lg px-2.5 py-1.5 rotate-[-2deg]">
+              <span className="absolute -bottom-3 left-6 font-mono text-[10px] uppercase tracking-[0.2em] bg-[#ffc933] border-2 border-[#0b3b44] rounded-lg px-2.5 py-1.5 rotate-[-2deg]">
                 Baked the morning it arrives
               </span>
             </div>
@@ -173,7 +173,7 @@ export default function CelebratePage() {
         <h2 className="font-display text-3xl md:text-5xl font-black text-center tracking-tight mt-3">
           See your whole year of celebration.
         </h2>
-        <p className="font-body text-base text-[#0d0d0d]/70 max-w-xl mx-auto text-center mt-4 mb-8">
+        <p className="font-body text-base text-[#0b3b44]/70 max-w-xl mx-auto text-center mt-4 mb-8">
           Add a few people you love. Watch the year compose itself. Saving your parade puts you on the
           waitlist with your dates already loaded.
         </p>

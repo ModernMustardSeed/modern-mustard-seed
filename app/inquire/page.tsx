@@ -64,7 +64,7 @@ const PROCESS = [
 
 export default function InquirePage() {
   return (
-    <div data-studio-page="inquire" className="min-h-screen bg-[#f1ede4] text-[#0d0d0d]">
+    <div data-studio-page="inquire" className="min-h-screen bg-[#fbf5ea] text-[#0b3b44]">
       <JsonLd
         data={[
           breadcrumbJsonLd([
@@ -90,8 +90,8 @@ export default function InquirePage() {
         title={<>Tell us what you are{' '}<em>building</em>.</>}
         issue={{ no: 'No.1', lines: ['Private inquiry', 'Kalispell, Montana'] }}
         art={{
-          src: '/art/pages/inquire',
-          alt: 'Graffiti couture painting: Mr. Mustard leans out of a cherry-red classic convertible to post a wax-sealed letter into a graffiti-painted mailbox, a painted railroad bridge behind him',
+          src: '/art/riviera/inquire',
+          alt: 'Painting: at the end of a wooden dock over clear turquoise water, Mr. Mustard sweeps an arm out in welcome beside a wooden tender with Tiffany-blue cushions, the family already aboard and waving, a white yacht beyond',
           caption: 'Write us a real note',
         }}
         sticker="Dear Sarah!"
@@ -114,13 +114,13 @@ export default function InquirePage() {
           <InquiryForm />
 
           <div className="lg:pt-4">
-            <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-[#c8201a]">
+            <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-[#0a7c78]">
               What we are engaged for
             </p>
             <div className="mt-6 space-y-6">
               {DISCIPLINES.map((d) => (
-                <div key={d.name} className="min-w-0 border-l-2 border-[#ffd400] pl-5">
-                  <h2 className="font-display text-xl font-extrabold leading-snug text-[#0d0d0d]">
+                <div key={d.name} className="min-w-0 border-l-2 border-[#f5b700] pl-5">
+                  <h2 className="font-display text-xl font-extrabold leading-snug text-[#0b3b44]">
                     {d.name}
                   </h2>
                   <p className="mt-1.5 font-body text-[15px] leading-relaxed text-[#5c554a]">
@@ -129,7 +129,7 @@ export default function InquirePage() {
                   {d.href && (
                     <Link
                       href={d.href}
-                      className="mt-2 inline-block font-sans text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#C4160B] transition-colors hover:text-[#0d0d0d]"
+                      className="mt-2 inline-block font-sans text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#C4160B] transition-colors hover:text-[#0b3b44]"
                     >
                       Read the argument →
                     </Link>
@@ -138,16 +138,16 @@ export default function InquirePage() {
               ))}
             </div>
 
-            <div className="mt-10 rounded-2xl border-2 border-[#0d0d0d] bg-[#0d0d0d] p-6 md:p-7">
-              <p className="font-mono text-[10px] font-bold uppercase tracking-[0.28em] text-[#ffd400]">
+            <div className="mt-10 rounded-2xl border-2 border-[#0b3b44] bg-[#0b3b44] p-6 md:p-7">
+              <p className="font-mono text-[10px] font-bold uppercase tracking-[0.28em] text-[#f5b700]">
                 Two things we hold to
               </p>
-              <p className="mt-4 font-body text-[15px] leading-relaxed text-[#f1ede4]/85">
+              <p className="mt-4 font-body text-[15px] leading-relaxed text-[#fbf5ea]/85">
                 Scope is fixed before work starts, so the number you agree to is the number you
                 pay. And changes to what we built are included, permanently, with no change order
                 and no second invoice.
               </p>
-              <p className="mt-4 font-body text-[15px] leading-relaxed text-[#f1ede4]/85">
+              <p className="mt-4 font-body text-[15px] leading-relaxed text-[#fbf5ea]/85">
                 You own everything at the end: the repository, the deployment, the accounts, and
                 the documentation to run it without us.
               </p>
@@ -157,13 +157,13 @@ export default function InquirePage() {
       </section>
 
       {/* ─────────────── How an engagement runs ─────────────── */}
-      <section className="border-y-2 border-[#0d0d0d] bg-[#F5F0E8] py-16 md:py-24">
+      <section className="border-y-2 border-[#0b3b44] bg-[#F5F0E8] py-16 md:py-24">
         <div className="mx-auto max-w-6xl px-6">
           <div className="max-w-2xl">
-            <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-[#c8201a]">
+            <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-[#0a7c78]">
               How it runs
             </p>
-            <h2 className="mt-4 font-display text-4xl font-extrabold leading-[1.02] tracking-tight text-[#0d0d0d] md:text-5xl">
+            <h2 className="mt-4 font-display text-4xl font-extrabold leading-[1.02] tracking-tight text-[#0b3b44] md:text-5xl">
               Four steps, and you meet the same person at every one.
             </h2>
           </div>
@@ -171,12 +171,12 @@ export default function InquirePage() {
             {PROCESS.map((p) => (
               <div
                 key={p.step}
-                className="flex flex-col rounded-2xl border-2 border-[#0d0d0d] bg-white p-6 shadow-[5px_5px_0_0_#0d0d0d]"
+                className="flex flex-col rounded-2xl border-2 border-[#0b3b44] bg-white p-6 shadow-[5px_5px_0_0_#0b3b44]"
               >
                 <span className="font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-[#C4160B]">
                   {p.step}
                 </span>
-                <h3 className="mt-2 font-display text-xl font-extrabold leading-tight text-[#0d0d0d]">
+                <h3 className="mt-2 font-display text-xl font-extrabold leading-tight text-[#0b3b44]">
                   {p.name}
                 </h3>
                 <p className="mt-2.5 flex-1 font-body text-[14px] leading-relaxed text-[#5c554a]">
@@ -191,7 +191,7 @@ export default function InquirePage() {
       {/* ─────────────── The quiet close ─────────────── */}
       <section className="py-16 md:py-24">
         <div className="mx-auto max-w-3xl px-6 text-center">
-          <p className="font-display text-2xl font-bold italic leading-snug text-[#0d0d0d] md:text-3xl">
+          <p className="font-display text-2xl font-bold italic leading-snug text-[#0b3b44] md:text-3xl">
             &ldquo;Every build here starts seed sized. Then it gets tended every day until the
             branches can hold weight.&rdquo;
           </p>
@@ -203,7 +203,7 @@ export default function InquirePage() {
             <br className="hidden sm:block" />{' '}
             <a
               href={`mailto:${SITE.email}`}
-              className="font-bold text-[#c8201a] underline decoration-2 underline-offset-2 hover:text-[#c8201a]"
+              className="font-bold text-[#0a7c78] underline decoration-2 underline-offset-2 hover:text-[#0a7c78]"
             >
               {SITE.email}
             </a>

@@ -16,7 +16,7 @@ export const metadata = buildMetadata({
 export default function SuperNomadPrivacyPage() {
   return (
     <>
-      <div className="relative min-h-screen bg-[#f1ede4] text-[#0d0d0d] overflow-x-clip">
+      <div className="relative min-h-screen bg-[#fbf5ea] text-[#0b3b44] overflow-x-clip">
         <PopPageHero
           eyebrow={
             <div className="flex flex-wrap gap-3">
@@ -26,8 +26,8 @@ export default function SuperNomadPrivacyPage() {
           }
           title={<>Privacy <em>Policy</em></>}
           art={{
-            src: '/art/pages/legal',
-            alt: 'Graffiti couture painting: Mr. Mustard holds up a gold key in a cream classic convertible chained and padlocked under a graffiti-covered bridge at sunset',
+            src: '/art/riviera/legal',
+            alt: 'Painting: Mr. Mustard relaxes in a white hammock between two palm trees on a quiet beach, his phone resting on his chest and the seed dog asleep in the shade',
           }}
           mascot
         />

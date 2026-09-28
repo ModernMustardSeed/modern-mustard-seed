@@ -110,20 +110,20 @@ export default function MustardNetworkTV() {
   const ch = CHANNELS[active];
 
   return (
-    <section id="network" className="py-16 md:py-24 bg-[#0d0d0d] border-b-2 border-[#0d0d0d] overflow-hidden">
+    <section id="network" className="py-16 md:py-24 bg-[#0b3b44] border-b-2 border-[#0b3b44] overflow-hidden">
       <div className="max-w-6xl mx-auto px-5">
         <div className="text-center mb-10 md:mb-14">
           <Reveal variant="eyebrow">
-            <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#ffd400] font-bold mb-4">[ THE MUSTARD NETWORK ]</p>
+            <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#f5b700] font-bold mb-4">[ THE MUSTARD NETWORK ]</p>
           </Reveal>
           <Reveal variant="slam">
-            <h2 className="font-display text-3xl md:text-5xl font-black text-[#f1ede4] tracking-tight leading-[1.05]">
+            <h2 className="font-display text-3xl md:text-5xl font-black text-[#fbf5ea] tracking-tight leading-[1.05]">
               Change the channel.
               <br className="hidden md:block" /> It is all us.
             </h2>
           </Reveal>
           <Reveal variant="rise" delay={100}>
-            <p className="font-body text-[#f1ede4]/65 max-w-2xl mx-auto mt-4">
+            <p className="font-body text-[#fbf5ea]/65 max-w-2xl mx-auto mt-4">
               Every film on this set was written, shot, scored, and cut by the studio that will make yours. No stock footage on any channel.
             </p>
           </Reveal>
@@ -132,8 +132,8 @@ export default function MustardNetworkTV() {
         <Reveal variant="rise" delay={120}>
           <div className="grid lg:grid-cols-[1fr_260px] gap-6 items-start max-w-5xl mx-auto">
             {/* The set */}
-            <div className="rounded-[1.75rem] bg-[#f1ede4] border-2 border-[#0d0d0d] shadow-[10px_10px_0_0_#ff3b2f] p-4 md:p-6">
-              <div className="relative rounded-xl overflow-hidden border-2 border-[#0d0d0d] bg-black">
+            <div className="rounded-[1.75rem] bg-[#fbf5ea] border-2 border-[#0b3b44] shadow-[10px_10px_0_0_#ff6f59] p-4 md:p-6">
+              <div className="relative rounded-xl overflow-hidden border-2 border-[#0b3b44] bg-black">
                 <video
                   key={ch.src}
                   ref={videoRef}
@@ -164,18 +164,18 @@ export default function MustardNetworkTV() {
               </div>
               <div className="flex flex-wrap items-center justify-between gap-3 mt-4 px-1">
                 <div>
-                  <p className="font-sans font-extrabold text-[#0d0d0d]">{ch.title}</p>
-                  <p className="font-body text-sm text-[#0d0d0d]/65 max-w-md">{ch.note}</p>
+                  <p className="font-sans font-extrabold text-[#0b3b44]">{ch.title}</p>
+                  <p className="font-body text-sm text-[#0b3b44]/65 max-w-md">{ch.note}</p>
                 </div>
                 {/* The dial */}
                 <div className="hidden md:flex flex-col items-center gap-1" aria-hidden="true">
                   <div
-                    className="w-14 h-14 rounded-full bg-[#0d0d0d] border-2 border-[#0d0d0d] shadow-[3px_3px_0_0_#ffd400] flex items-center justify-center transition-transform duration-300"
+                    className="w-14 h-14 rounded-full bg-[#0b3b44] border-2 border-[#0b3b44] shadow-[3px_3px_0_0_#f5b700] flex items-center justify-center transition-transform duration-300"
                     style={{ transform: `rotate(${active * 65}deg)` }}
                   >
-                    <div className="w-1.5 h-5 bg-[#ffd400] rounded-full -translate-y-2.5" />
+                    <div className="w-1.5 h-5 bg-[#f5b700] rounded-full -translate-y-2.5" />
                   </div>
-                  <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#0d0d0d]/50">Dial</p>
+                  <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#0b3b44]/50">Dial</p>
                 </div>
               </div>
             </div>
@@ -188,10 +188,10 @@ export default function MustardNetworkTV() {
                   type="button"
                   onClick={() => flip(i)}
                   aria-pressed={i === active}
-                  className={`text-left rounded-xl border-2 border-[#0d0d0d] px-4 py-3 transition-all hover:-translate-y-0.5 ${
+                  className={`text-left rounded-xl border-2 border-[#0b3b44] px-4 py-3 transition-all hover:-translate-y-0.5 ${
                     i === active
-                      ? 'bg-[#ffd400] shadow-[4px_4px_0_0_#f1ede4] text-[#0d0d0d]'
-                      : 'bg-[#f1ede4] shadow-[4px_4px_0_0_#ffd400] text-[#0d0d0d]'
+                      ? 'bg-[#f5b700] shadow-[4px_4px_0_0_#fbf5ea] text-[#0b3b44]'
+                      : 'bg-[#fbf5ea] shadow-[4px_4px_0_0_#f5b700] text-[#0b3b44]'
                   }`}
                 >
                   <p className="font-mono text-[10px] uppercase tracking-[0.25em] font-bold">CH {c.n}</p>

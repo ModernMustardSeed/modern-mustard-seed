@@ -60,7 +60,7 @@ export default function LaunchChecklistTool() {
     <div className="max-w-5xl mx-auto px-6 md:px-8">
       {/* Industry selector */}
       <div className="mb-10">
-        <span className="text-[10px] uppercase tracking-[0.4em] text-[#d0241b] font-mono font-bold mb-4 block text-center">
+        <span className="text-[10px] uppercase tracking-[0.4em] text-[#0a7c78] font-mono font-bold mb-4 block text-center">
           Step 1. Pick your field
         </span>
         <div className="flex flex-wrap justify-center gap-3">
@@ -74,8 +74,8 @@ export default function LaunchChecklistTool() {
                 aria-pressed={isActive}
                 className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-full border-2 text-sm font-sans font-bold transition-all ${
                   isActive
-                    ? 'bg-[#ffd400] text-[#0d0d0d] border-[#0d0d0d] shadow-[3px_3px_0_0_#0d0d0d]'
-                    : 'bg-white text-[#0d0d0d]/70 border-[#0d0d0d]/25 hover:border-[#0d0d0d] hover:text-[#0d0d0d]'
+                    ? 'bg-[#f5b700] text-[#0b3b44] border-[#0b3b44] shadow-[3px_3px_0_0_#0b3b44]'
+                    : 'bg-white text-[#0b3b44]/70 border-[#0b3b44]/25 hover:border-[#0b3b44] hover:text-[#0b3b44]'
                 }`}
               >
                 <span aria-hidden className="text-base">{v.emoji}</span>
@@ -85,13 +85,13 @@ export default function LaunchChecklistTool() {
           })}
         </div>
         <p className="text-center text-[#3A3733] font-body text-sm mt-5 max-w-xl mx-auto">
-          {active.blurb} <span className="text-[#0d0d0d]/45">({active.examples})</span>
+          {active.blurb} <span className="text-[#0b3b44]/45">({active.examples})</span>
         </p>
       </div>
 
       {/* Live checklist */}
       <div className="text-center mb-6">
-        <span className="inline-block pop-card-yellow px-5 py-2 text-[11px] uppercase tracking-[0.2em] font-mono font-bold text-[#0d0d0d]">
+        <span className="inline-block pop-card-yellow px-5 py-2 text-[11px] uppercase tracking-[0.2em] font-mono font-bold text-[#0b3b44]">
           {total} steps tailored to {active.label}
         </span>
       </div>
@@ -100,16 +100,16 @@ export default function LaunchChecklistTool() {
         {phases.map((phase) => (
           <div key={phase.id} className="pop-card p-6 md:p-7">
             <div className="flex items-baseline gap-3 mb-1">
-              <span className="text-[10px] uppercase tracking-[0.3em] text-[#d0241b] font-mono font-bold shrink-0">
+              <span className="text-[10px] uppercase tracking-[0.3em] text-[#0a7c78] font-mono font-bold shrink-0">
                 {phase.eyebrow}
               </span>
-              <h3 className="font-display text-xl md:text-2xl font-black text-[#0d0d0d] tracking-tight">
+              <h3 className="font-display text-xl md:text-2xl font-black text-[#0b3b44] tracking-tight">
                 {phase.title}
               </h3>
             </div>
             <p className="text-[#3A3733] font-body text-sm leading-relaxed mb-4">{phase.blurb}</p>
 
-            <ul className="divide-y divide-[#0d0d0d]/10">
+            <ul className="divide-y divide-[#0b3b44]/10">
               {phase.items.map((item) => {
                 const isExp = !!expanded[item.id];
                 const isTicked = !!ticked[item.id];
@@ -122,13 +122,13 @@ export default function LaunchChecklistTool() {
                         aria-checked={isTicked}
                         aria-label={`Mark ${item.title}`}
                         onClick={() => setTicked((t) => ({ ...t, [item.id]: !isTicked }))}
-                        className={`mt-0.5 w-5 h-5 rounded-md border-2 border-[#0d0d0d] flex items-center justify-center shrink-0 transition-colors ${
-                          isTicked ? 'bg-[#0d0d0d]' : 'bg-white hover:bg-[#FFF8E6]'
+                        className={`mt-0.5 w-5 h-5 rounded-md border-2 border-[#0b3b44] flex items-center justify-center shrink-0 transition-colors ${
+                          isTicked ? 'bg-[#0b3b44]' : 'bg-white hover:bg-[#FFF8E6]'
                         }`}
                       >
                         {isTicked && (
                           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden>
-                            <path d="M5 13l4 4L19 7" stroke="#ffd400" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" />
+                            <path d="M5 13l4 4L19 7" stroke="#f5b700" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" />
                           </svg>
                         )}
                       </button>
@@ -141,7 +141,7 @@ export default function LaunchChecklistTool() {
                             aria-expanded={isExp}
                             className="text-left min-w-0"
                           >
-                            <span className={`font-sans font-bold text-[15px] tracking-tight ${isTicked ? 'text-[#0d0d0d]/40 line-through' : 'text-[#0d0d0d]'}`}>
+                            <span className={`font-sans font-bold text-[15px] tracking-tight ${isTicked ? 'text-[#0b3b44]/40 line-through' : 'text-[#0b3b44]'}`}>
                               {item.title}
                             </span>
                           </button>
@@ -149,7 +149,7 @@ export default function LaunchChecklistTool() {
                             type="button"
                             onClick={() => setExpanded((x) => ({ ...x, [item.id]: !isExp }))}
                             aria-label={isExp ? 'Hide details' : 'Show how-to'}
-                            className="text-[10px] uppercase tracking-[0.15em] font-mono font-bold text-[#c8201a] hover:text-[#0d0d0d] shrink-0 mt-0.5"
+                            className="text-[10px] uppercase tracking-[0.15em] font-mono font-bold text-[#0a7c78] hover:text-[#0b3b44] shrink-0 mt-0.5"
                           >
                             {isExp ? 'Hide' : 'How to'}
                           </button>
@@ -160,10 +160,10 @@ export default function LaunchChecklistTool() {
                         {(item.time || item.cost) && (
                           <div className="flex flex-wrap gap-1.5 mt-2">
                             {item.time && (
-                              <span className="text-[10px] font-mono text-[#0d0d0d]/55 bg-[#0d0d0d]/[0.05] px-2 py-0.5 rounded-full">{item.time}</span>
+                              <span className="text-[10px] font-mono text-[#0b3b44]/55 bg-[#0b3b44]/[0.05] px-2 py-0.5 rounded-full">{item.time}</span>
                             )}
                             {item.cost && (
-                              <span className="text-[10px] font-mono text-[#0d0d0d]/55 bg-[#0d0d0d]/[0.05] px-2 py-0.5 rounded-full">{item.cost}</span>
+                              <span className="text-[10px] font-mono text-[#0b3b44]/55 bg-[#0b3b44]/[0.05] px-2 py-0.5 rounded-full">{item.cost}</span>
                             )}
                           </div>
                         )}
@@ -174,18 +174,18 @@ export default function LaunchChecklistTool() {
                               <ul className="space-y-1.5">
                                 {item.steps.map((s, i) => (
                                   <li key={i} className="flex gap-2 text-[13px] text-[#3A3733] font-body leading-5">
-                                    <span className="text-[#ffd400] font-bold shrink-0" aria-hidden>•</span>
+                                    <span className="text-[#f5b700] font-bold shrink-0" aria-hidden>•</span>
                                     <span>{s}</span>
                                   </li>
                                 ))}
                               </ul>
                             )}
                             {item.note && (
-                              <div className="bg-[#FFF8E6] border border-[#0d0d0d]/15 rounded-lg px-3 py-2">
-                                <span className="text-[9px] uppercase tracking-[0.2em] text-[#d0241b] font-mono font-bold block mb-0.5">
+                              <div className="bg-[#FFF8E6] border border-[#0b3b44]/15 rounded-lg px-3 py-2">
+                                <span className="text-[9px] uppercase tracking-[0.2em] text-[#0a7c78] font-mono font-bold block mb-0.5">
                                   For {active.label}
                                 </span>
-                                <p className="text-[13px] text-[#0d0d0d]/80 font-body leading-5">{item.note}</p>
+                                <p className="text-[13px] text-[#0b3b44]/80 font-body leading-5">{item.note}</p>
                               </div>
                             )}
                             {item.links && item.links.length > 0 && (
@@ -196,7 +196,7 @@ export default function LaunchChecklistTool() {
                                     href={l.url}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-[12px] font-sans font-semibold text-[#c8201a] hover:text-[#0d0d0d] underline decoration-[#c8201a]/30 underline-offset-2"
+                                    className="text-[12px] font-sans font-semibold text-[#0a7c78] hover:text-[#0b3b44] underline decoration-[#0a7c78]/30 underline-offset-2"
                                   >
                                     {l.label} ↗
                                   </a>
@@ -206,7 +206,7 @@ export default function LaunchChecklistTool() {
                             {item.mms && (
                               <Link
                                 href={item.mms.href}
-                                className="inline-flex items-center gap-1.5 text-[12px] font-sans font-extrabold text-[#0d0d0d] hover:text-[#d0241b]"
+                                className="inline-flex items-center gap-1.5 text-[12px] font-sans font-extrabold text-[#0b3b44] hover:text-[#0a7c78]"
                               >
                                 {item.mms.label} →
                               </Link>
@@ -227,13 +227,13 @@ export default function LaunchChecklistTool() {
       <div id="get-it" className="mt-10 scroll-mt-28">
         {done ? (
           <div className="pop-card-yellow p-8 md:p-10 text-center">
-            <span className="text-[10px] uppercase tracking-[0.4em] text-[#0d0d0d] font-mono font-bold block mb-3">
+            <span className="text-[10px] uppercase tracking-[0.4em] text-[#0b3b44] font-mono font-bold block mb-3">
               Your checklist is ready
             </span>
-            <h3 className="font-display text-2xl md:text-3xl font-black text-[#0d0d0d] tracking-tight mb-3">
+            <h3 className="font-display text-2xl md:text-3xl font-black text-[#0b3b44] tracking-tight mb-3">
               Check your email, and grab the PDF
             </h3>
-            <p className="text-[#0d0d0d]/75 font-body mb-7 max-w-lg mx-auto">
+            <p className="text-[#0b3b44]/75 font-body mb-7 max-w-lg mx-auto">
               We sent your tailored checklist to {email}. Download the printable one-pager below, then keep it handy as you build.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -241,13 +241,13 @@ export default function LaunchChecklistTool() {
                 href={pdfUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0d0d0d] bg-white rounded-full border-2 border-[#0d0d0d] shadow-[4px_4px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-all"
+                className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0b3b44] bg-white rounded-full border-2 border-[#0b3b44] shadow-[4px_4px_0_0_#0b3b44] hover:-translate-y-0.5 transition-all"
               >
                 Download the PDF
               </a>
               <Link
                 href="/work-with-us"
-                className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-white bg-[#0d0d0d] rounded-full border-2 border-[#0d0d0d] shadow-[4px_4px_0_0_rgba(13,13,13,0.35)] hover:-translate-y-0.5 transition-all"
+                className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-white bg-[#0b3b44] rounded-full border-2 border-[#0b3b44] shadow-[4px_4px_0_0_rgba(11,59,68,0.35)] hover:-translate-y-0.5 transition-all"
               >
                 Have us set it all up
               </Link>
@@ -256,12 +256,12 @@ export default function LaunchChecklistTool() {
         ) : (
           <form onSubmit={submit} className="pop-card p-8 md:p-10">
             <div className="text-center mb-6">
-              <span className="text-[10px] uppercase tracking-[0.4em] text-[#d0241b] font-mono font-bold mb-3 block">
+              <span className="text-[10px] uppercase tracking-[0.4em] text-[#0a7c78] font-mono font-bold mb-3 block">
                 Step 2. Get the printable one-pager
               </span>
-              <h3 className="font-display text-2xl md:text-3xl font-black text-[#0d0d0d] tracking-tight">
+              <h3 className="font-display text-2xl md:text-3xl font-black text-[#0b3b44] tracking-tight">
                 Send me the{' '}
-                <span className="text-[#ffd400]" style={{ WebkitTextStroke: '1.5px #0d0d0d' }}>
+                <span className="text-[#f5b700]" style={{ WebkitTextStroke: '1.5px #0b3b44' }}>
                   full checklist
                 </span>
               </h3>
@@ -278,7 +278,7 @@ export default function LaunchChecklistTool() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@yourbusiness.com"
                 aria-label="Email"
-                className="w-full bg-white border-2 border-[#0d0d0d] rounded-lg px-4 py-3 text-[#0d0d0d] font-body placeholder-[#0d0d0d]/30 focus:outline-none focus:ring-2 focus:ring-[#ffd400]"
+                className="w-full bg-white border-2 border-[#0b3b44] rounded-lg px-4 py-3 text-[#0b3b44] font-body placeholder-[#0b3b44]/30 focus:outline-none focus:ring-2 focus:ring-[#f5b700]"
               />
               <input
                 type="tel"
@@ -286,7 +286,7 @@ export default function LaunchChecklistTool() {
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="Phone (optional, for a quick fit-check)"
                 aria-label="Phone (optional)"
-                className="w-full bg-white border-2 border-[#0d0d0d] rounded-lg px-4 py-3 text-[#0d0d0d] font-body placeholder-[#0d0d0d]/30 focus:outline-none focus:ring-2 focus:ring-[#ffd400]"
+                className="w-full bg-white border-2 border-[#0b3b44] rounded-lg px-4 py-3 text-[#0b3b44] font-body placeholder-[#0b3b44]/30 focus:outline-none focus:ring-2 focus:ring-[#f5b700]"
               />
               {/* honeypot */}
               <input
@@ -298,15 +298,15 @@ export default function LaunchChecklistTool() {
                 className="hidden"
                 aria-hidden
               />
-              {error && <p className="text-[#d0241b] text-sm font-body text-center">{error}</p>}
+              {error && <p className="text-[#b3261e] text-sm font-body text-center">{error}</p>}
               <button
                 type="submit"
                 disabled={sending || !email.trim()}
-                className="w-full px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0d0d0d] bg-[#ffd400] rounded-full border-2 border-[#0d0d0d] shadow-[4px_4px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:hover:translate-y-0"
+                className="w-full px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0b3b44] bg-[#f5b700] rounded-full border-2 border-[#0b3b44] shadow-[4px_4px_0_0_#0b3b44] hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:hover:translate-y-0"
               >
                 {sending ? 'Sending...' : 'Email me the checklist'}
               </button>
-              <p className="text-[#0d0d0d]/45 font-body text-[11px] text-center">
+              <p className="text-[#0b3b44]/45 font-body text-[11px] text-center">
                 Free. Unsubscribe any time. We never sell your info.
               </p>
             </div>

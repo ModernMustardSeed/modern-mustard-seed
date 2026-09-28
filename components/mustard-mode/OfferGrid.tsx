@@ -41,13 +41,13 @@ export default function OfferGrid() {
   };
 
   return (
-    <section id="levels" className="bg-[#f1ede4] py-20 md:py-28 scroll-mt-16">
+    <section id="levels" className="bg-[#fbf5ea] py-20 md:py-28 scroll-mt-16">
       <div className="max-w-6xl mx-auto px-6">
         <Reveal variant="eyebrow">
-          <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#d0241b] uppercase">Choose your level // Lifetime access on 01 and 02</p>
+          <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#0a7c78] uppercase">Choose your level // Lifetime access on 01 and 02</p>
         </Reveal>
         <Reveal variant="slam" delay={120}>
-          <h2 className="font-display italic font-extrabold text-4xl md:text-6xl text-[#0d0d0d] mt-3 leading-[1.02]">
+          <h2 className="font-display italic font-extrabold text-4xl md:text-6xl text-[#0b3b44] mt-3 leading-[1.02]">
             Insert coin.
           </h2>
         </Reveal>
@@ -60,28 +60,28 @@ export default function OfferGrid() {
             return (
               <Reveal key={l.slug} variant="drop" delay={160 + li * 140} className="h-full">
               <div
-                className={`relative flex flex-col h-full border-2 border-[#0d0d0d] p-7 ${
+                className={`relative flex flex-col h-full border-2 border-[#0b3b44] p-7 ${
                   hot
-                    ? 'bg-[#0d0d0d] text-white shadow-[8px_8px_0_0_#ffd400] md:scale-[1.04]'
-                    : 'bg-white text-[#0d0d0d] shadow-[6px_6px_0_0_#0d0d0d]'
+                    ? 'bg-[#0b3b44] text-white shadow-[8px_8px_0_0_#f5b700] md:scale-[1.04]'
+                    : 'bg-white text-[#0b3b44] shadow-[6px_6px_0_0_#0b3b44]'
                 }`}
               >
                 {hot && (
-                  <span className="absolute -top-4 -right-3 rotate-6 bg-[#ffd400] border-2 border-[#0d0d0d] font-mono font-bold text-[10px] px-2.5 py-1.5 text-[#0d0d0d]">
+                  <span className="absolute -top-4 -right-3 rotate-6 bg-[#f5b700] border-2 border-[#0b3b44] font-mono font-bold text-[10px] px-2.5 py-1.5 text-[#0b3b44]">
                     MOST PICKED
                   </span>
                 )}
-                <span className={`font-mono font-bold text-[11px] tracking-[0.14em] ${hot ? 'text-[#FFDD55]' : 'text-[#d0241b]'}`}>{l.chip}</span>
+                <span className={`font-mono font-bold text-[11px] tracking-[0.14em] ${hot ? 'text-[#ffc933]' : 'text-[#0a7c78]'}`}>{l.chip}</span>
                 <h3 className="font-display font-extrabold text-2xl mt-2">{l.name}</h3>
                 <div className="font-mono font-bold text-4xl mt-2">
-                  <span className={hot ? 'text-[#ffd400]' : ''}>${l.priceUsd}</span>
+                  <span className={hot ? 'text-[#f5b700]' : ''}>${l.priceUsd}</span>
                   {l.cadence === 'monthly' && <span className="text-base opacity-70">/mo</span>}
                 </div>
-                <p className={`font-sans text-sm mt-2 ${hot ? 'text-white/70' : 'text-[#0d0d0d]/70'}`}>{l.pitch}</p>
+                <p className={`font-sans text-sm mt-2 ${hot ? 'text-white/70' : 'text-[#0b3b44]/70'}`}>{l.pitch}</p>
                 <ul className="mt-5 space-y-2 flex-1">
                   {l.includes.map((inc) => (
-                    <li key={inc} className={`font-sans text-[13px] leading-snug flex gap-2 ${hot ? 'text-white/80' : 'text-[#0d0d0d]/80'}`}>
-                      <span className="text-[#ffd400] font-mono text-[10px] mt-1">■</span>
+                    <li key={inc} className={`font-sans text-[13px] leading-snug flex gap-2 ${hot ? 'text-white/80' : 'text-[#0b3b44]/80'}`}>
+                      <span className="text-[#f5b700] font-mono text-[10px] mt-1">■</span>
                       {inc}
                     </li>
                   ))}
@@ -89,10 +89,10 @@ export default function OfferGrid() {
                 <button
                   onClick={() => void checkout(l.slug)}
                   disabled={busy !== null}
-                  className={`mt-7 font-sans font-bold border-2 border-[#0d0d0d] px-6 py-3 transition-all disabled:opacity-50 ${
+                  className={`mt-7 font-sans font-bold border-2 border-[#0b3b44] px-6 py-3 transition-all disabled:opacity-50 ${
                     hot
-                      ? 'bg-[#ffd400] text-[#0d0d0d] shadow-[4px_4px_0_0_#FFDD55] hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#FFDD55]'
-                      : 'bg-[#f1ede4] text-[#0d0d0d] shadow-[4px_4px_0_0_#0d0d0d] hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#0d0d0d]'
+                      ? 'bg-[#f5b700] text-[#0b3b44] shadow-[4px_4px_0_0_#ffc933] hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#ffc933]'
+                      : 'bg-[#fbf5ea] text-[#0b3b44] shadow-[4px_4px_0_0_#0b3b44] hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#0b3b44]'
                   }`}
                 >
                   {busy === l.slug ? 'Opening checkout…' : l.cta}
@@ -103,17 +103,17 @@ export default function OfferGrid() {
           })}
         </div>
 
-        {err && <p className="font-mono text-[12px] text-[#d0241b] mt-4">{err}</p>}
+        {err && <p className="font-mono text-[12px] text-[#0a7c78] mt-4">{err}</p>}
 
         {/* Level 0 bar */}
-        <div className="mt-8 border-2 border-[#0d0d0d] bg-white shadow-[5px_5px_0_0_#0d0d0d] px-5 py-4 flex flex-col md:flex-row md:items-center gap-3 md:justify-between">
-          <p className="font-mono font-bold text-[12px] text-[#0d0d0d]">
-            <span className="text-[#d0241b]">{free.chip}</span> FREE PLAY. {free.pitch}
+        <div className="mt-8 border-2 border-[#0b3b44] bg-white shadow-[5px_5px_0_0_#0b3b44] px-5 py-4 flex flex-col md:flex-row md:items-center gap-3 md:justify-between">
+          <p className="font-mono font-bold text-[12px] text-[#0b3b44]">
+            <span className="text-[#0a7c78]">{free.chip}</span> FREE PLAY. {free.pitch}
           </p>
           <a
             href="#top"
             onClick={() => track('mustard_freeplay_scroll')}
-            className="font-mono font-bold text-[12px] text-[#c8201a] underline underline-offset-4 shrink-0"
+            className="font-mono font-bold text-[12px] text-[#0a7c78] underline underline-offset-4 shrink-0"
           >
             PLAY YOUR FREE CREDIT ↑
           </a>
@@ -121,31 +121,31 @@ export default function OfferGrid() {
 
         {/* Guarantee */}
         <div className="mt-10 grid md:grid-cols-2 gap-6">
-          <div className="border-2 border-[#0d0d0d] bg-[#FFFDF6] p-6">
-            <p className="font-mono font-bold text-[11px] tracking-wider text-[#d0241b] uppercase">The guarantee, printed in mono</p>
-            <p className="font-sans text-sm text-[#0d0d0d]/80 mt-2 leading-relaxed">{MUSTARD.guarantee}</p>
+          <div className="border-2 border-[#0b3b44] bg-[#FFFDF6] p-6">
+            <p className="font-mono font-bold text-[11px] tracking-wider text-[#0a7c78] uppercase">The guarantee, printed in mono</p>
+            <p className="font-sans text-sm text-[#0b3b44]/80 mt-2 leading-relaxed">{MUSTARD.guarantee}</p>
           </div>
-          <div className="border-2 border-[#0d0d0d] bg-[#FFFDF6] p-6">
-            <p className="font-mono font-bold text-[11px] tracking-wider text-[#d0241b] uppercase">Price check</p>
-            <p className="font-sans text-sm text-[#0d0d0d]/80 mt-2 leading-relaxed">{MUSTARD.priceFraming}</p>
+          <div className="border-2 border-[#0b3b44] bg-[#FFFDF6] p-6">
+            <p className="font-mono font-bold text-[11px] tracking-wider text-[#0a7c78] uppercase">Price check</p>
+            <p className="font-sans text-sm text-[#0b3b44]/80 mt-2 leading-relaxed">{MUSTARD.priceFraming}</p>
           </div>
         </div>
 
         {/* FAQ */}
         <div className="mt-16 max-w-3xl">
-          <h3 className="font-display italic font-extrabold text-3xl text-[#0d0d0d]">Player questions</h3>
-          <div className="mt-6 border-2 border-[#0d0d0d] bg-white divide-y-2 divide-[#0d0d0d]">
+          <h3 className="font-display italic font-extrabold text-3xl text-[#0b3b44]">Player questions</h3>
+          <div className="mt-6 border-2 border-[#0b3b44] bg-white divide-y-2 divide-[#0b3b44]">
             {mustardFaq.map((f) => (
               <details
                 key={f.q}
                 className="group"
                 onToggle={(e) => { if ((e.target as HTMLDetailsElement).open) track('mustard_faq_open', { q: f.q.slice(0, 40) }); }}
               >
-                <summary className="cursor-pointer list-none px-5 py-4 flex items-center justify-between gap-4 font-sans font-bold text-sm text-[#0d0d0d] hover:bg-[#f1ede4]">
+                <summary className="cursor-pointer list-none px-5 py-4 flex items-center justify-between gap-4 font-sans font-bold text-sm text-[#0b3b44] hover:bg-[#fbf5ea]">
                   {f.q}
-                  <span className="font-mono text-[#ffd400] text-lg group-open:rotate-45 transition-transform" style={{ textShadow: '1px 1px 0 #0d0d0d' }}>+</span>
+                  <span className="font-mono text-[#f5b700] text-lg group-open:rotate-45 transition-transform" style={{ textShadow: '1px 1px 0 #0b3b44' }}>+</span>
                 </summary>
-                <p className="px-5 pb-5 font-sans text-sm text-[#0d0d0d]/75 leading-relaxed">{f.a}</p>
+                <p className="px-5 pb-5 font-sans text-sm text-[#0b3b44]/75 leading-relaxed">{f.a}</p>
               </details>
             ))}
           </div>

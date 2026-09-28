@@ -38,7 +38,7 @@ export default function EngineToggle() {
     <div className="grid lg:grid-cols-5 gap-6 items-start">
       {/* The real site, framed */}
       <div className="lg:col-span-3">
-        <div className="inline-flex items-center rounded-full border-2 border-[#0d0d0d] bg-white p-1 shadow-[3px_3px_0_0_#0d0d0d] mb-5">
+        <div className="inline-flex items-center rounded-full border-2 border-[#0b3b44] bg-white p-1 shadow-[3px_3px_0_0_#0b3b44] mb-5">
           {(['brochure', 'engine'] as const).map((m) => (
             <button
               key={m}
@@ -46,7 +46,7 @@ export default function EngineToggle() {
               onClick={() => set(m)}
               aria-pressed={mode === m}
               className={`px-5 py-2 rounded-full text-[11px] font-sans font-extrabold uppercase tracking-[0.14em] transition-colors ${
-                mode === m ? 'bg-[#0d0d0d] text-[#ffd400]' : 'text-[#0d0d0d]/60 hover:text-[#0d0d0d]'
+                mode === m ? 'bg-[#0b3b44] text-[#f5b700]' : 'text-[#0b3b44]/60 hover:text-[#0b3b44]'
               }`}
             >
               {m === 'brochure' ? 'Just a brochure' : 'A working engine'}
@@ -54,15 +54,15 @@ export default function EngineToggle() {
           ))}
         </div>
 
-        <div className="rounded-2xl border-2 border-[#0d0d0d] bg-white shadow-[8px_8px_0_0_#0d0d0d] overflow-hidden">
+        <div className="rounded-2xl border-2 border-[#0b3b44] bg-white shadow-[8px_8px_0_0_#0b3b44] overflow-hidden">
           {/* browser chrome */}
-          <div className="flex items-center gap-2 px-4 h-10 border-b-2 border-[#0d0d0d] bg-[#f1ede4]">
+          <div className="flex items-center gap-2 px-4 h-10 border-b-2 border-[#0b3b44] bg-[#fbf5ea]">
             <span className="flex gap-1.5">
-              {['#ff3b2f', '#ffd400', '#0d0d0d'].map((c) => (
-                <span key={c} className="h-3 w-3 rounded-full border border-[#0d0d0d]" style={{ background: c }} />
+              {['#ff6f59', '#f5b700', '#0b3b44'].map((c) => (
+                <span key={c} className="h-3 w-3 rounded-full border border-[#0b3b44]" style={{ background: c }} />
               ))}
             </span>
-            <span className="ml-2 flex-1 truncate rounded-full border border-[#0d0d0d]/30 bg-white px-3 py-1 font-mono text-[11px] text-[#0d0d0d]/60">
+            <span className="ml-2 flex-1 truncate rounded-full border border-[#0b3b44]/30 bg-white px-3 py-1 font-mono text-[11px] text-[#0b3b44]/60">
               {DOMAIN}
             </span>
           </div>
@@ -81,20 +81,20 @@ export default function EngineToggle() {
 
             {/* Engine: the site is working. */}
             {engine ? (
-              <div className="absolute top-3 right-3 max-w-[62%] rounded-xl border-2 border-[#0d0d0d] bg-[#0d0d0d] px-3.5 py-2.5 shadow-[3px_3px_0_0_#ffd400] animate-[etIn_.45s_ease-out_both]">
-                <p className="font-mono text-[8.5px] uppercase tracking-[0.18em] text-[#ffd400] font-bold">New lead captured</p>
-                <p className="font-sans text-[12px] font-bold text-[#f1ede4] mt-0.5 leading-snug">Filed, and in your inbox</p>
+              <div className="absolute top-3 right-3 max-w-[62%] rounded-xl border-2 border-[#0b3b44] bg-[#0b3b44] px-3.5 py-2.5 shadow-[3px_3px_0_0_#f5b700] animate-[etIn_.45s_ease-out_both]">
+                <p className="font-mono text-[8.5px] uppercase tracking-[0.18em] text-[#f5b700] font-bold">New lead captured</p>
+                <p className="font-sans text-[12px] font-bold text-[#fbf5ea] mt-0.5 leading-snug">Filed, and in your inbox</p>
               </div>
             ) : (
-              <div className="absolute inset-0 flex items-center justify-center bg-[#0d0d0d]/10">
-                <span className="rotate-[-4deg] rounded-lg border-2 border-[#0d0d0d] bg-[#f1ede4] px-4 py-2 font-mono text-[12px] font-extrabold uppercase tracking-[0.12em] text-[#0d0d0d] shadow-[3px_3px_0_0_#0d0d0d]">
+              <div className="absolute inset-0 flex items-center justify-center bg-[#0b3b44]/10">
+                <span className="rotate-[-4deg] rounded-lg border-2 border-[#0b3b44] bg-[#fbf5ea] px-4 py-2 font-mono text-[12px] font-extrabold uppercase tracking-[0.12em] text-[#0b3b44] shadow-[3px_3px_0_0_#0b3b44]">
                   Pretty. And asleep.
                 </span>
               </div>
             )}
           </div>
         </div>
-        <p className="font-body text-[12px] text-[#0d0d0d]/70 mt-3 text-center">
+        <p className="font-body text-[12px] text-[#0b3b44]/70 mt-3 text-center">
           A real site we built for {SITE.name}. Flip it to see the difference.
         </p>
         <style>{`@keyframes etIn{from{opacity:0;transform:translateY(8px) scale(.96)}to{opacity:1;transform:none}}`}</style>
@@ -103,24 +103,24 @@ export default function EngineToggle() {
       {/* The read-out */}
       <div className="lg:col-span-2 lg:sticky lg:top-24">
         <div
-          className="rounded-2xl border-2 border-[#0d0d0d] p-6 md:p-7 transition-colors"
-          style={{ background: engine ? '#0d0d0d' : '#FFFFFF', boxShadow: engine ? '6px 6px 0 0 #ffd400' : '6px 6px 0 0 #0d0d0d' }}
+          className="rounded-2xl border-2 border-[#0b3b44] p-6 md:p-7 transition-colors"
+          style={{ background: engine ? '#0b3b44' : '#FFFFFF', boxShadow: engine ? '6px 6px 0 0 #f5b700' : '6px 6px 0 0 #0b3b44' }}
         >
-          <span className={`font-mono font-bold text-[10px] uppercase tracking-[0.24em] block ${engine ? 'text-[#ffd400]' : 'text-[#C4160B]'}`}>
+          <span className={`font-mono font-bold text-[10px] uppercase tracking-[0.24em] block ${engine ? 'text-[#f5b700]' : 'text-[#C4160B]'}`}>
             {engine ? 'Engine mode' : 'Brochure mode'}
           </span>
-          <h3 className={`font-display italic font-extrabold text-2xl mt-2 leading-tight ${engine ? 'text-[#f1ede4]' : 'text-[#0d0d0d]'}`}>
+          <h3 className={`font-display italic font-extrabold text-2xl mt-2 leading-tight ${engine ? 'text-[#fbf5ea]' : 'text-[#0b3b44]'}`}>
             {engine ? 'Every visitor is money you keep.' : 'Every visitor is money you lose.'}
           </h3>
           <ul className="mt-4 space-y-2.5">
             {(engine ? ENGINE_NOTES : BROCHURE_NOTES).map((n) => (
-              <li key={n} className={`flex items-start gap-2.5 font-body text-[13.5px] ${engine ? 'text-[#f1ede4]/85' : 'text-[#0d0d0d]/80'}`}>
-                <span className={`mt-px font-black ${engine ? 'text-[#ffd400]' : 'text-[#C4160B]'}`} aria-hidden>{engine ? '✓' : '✕'}</span>
+              <li key={n} className={`flex items-start gap-2.5 font-body text-[13.5px] ${engine ? 'text-[#fbf5ea]/85' : 'text-[#0b3b44]/80'}`}>
+                <span className={`mt-px font-black ${engine ? 'text-[#f5b700]' : 'text-[#C4160B]'}`} aria-hidden>{engine ? '✓' : '✕'}</span>
                 {n}
               </li>
             ))}
           </ul>
-          <p className={`mt-5 font-body text-[12.5px] leading-relaxed ${engine ? 'text-[#f1ede4]/70' : 'text-[#0d0d0d]/70'}`}>
+          <p className={`mt-5 font-body text-[12.5px] leading-relaxed ${engine ? 'text-[#fbf5ea]/70' : 'text-[#0b3b44]/70'}`}>
             {engine
               ? 'This is what we build. The same beautiful site, wired to capture, follow up, and file every lead on its own.'
               : 'Most small-business sites stop here. Pretty, and completely asleep.'}

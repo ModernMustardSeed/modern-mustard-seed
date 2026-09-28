@@ -1,6 +1,6 @@
-/* The sample proposal, dressed as a comic page: mustard rays behind the
-   document, the document taped up like a print, a POW sticker, and
-   Mr. Mustard pointing at it. The document itself is untouched. All motion is
+/* The sample proposal, on the beach-club table: a soft sunburst behind the
+   document, Tiffany corner marks, a postage stamp, and Mr. Mustard pointing
+   at it. The document itself is untouched. All motion is
    entrance only and stands still under prefers-reduced-motion. */
 
 .rays {
@@ -12,7 +12,7 @@
   aspect-ratio: 1;
   translate: -50% -50%;
   border-radius: 50%;
-  background: repeating-conic-gradient(from 0deg, #ffd40045 0 4deg, #ffd40000 4deg 12deg);
+  background: repeating-conic-gradient(from 0deg, #f5b70045 0 4deg, #f5b70000 4deg 12deg);
   -webkit-mask-image: radial-gradient(circle, #000 0, #000 18%, transparent 60%);
   mask-image: radial-gradient(circle, #000 0, #000 18%, transparent 60%);
   pointer-events: none;
@@ -20,55 +20,59 @@
 
 .tag {
   display: inline-block;
-  padding: 6px 14px 5px;
-  background: #ffd400;
-  color: #0d0d0d;
-  border: 2.5px solid #0d0d0d;
-  box-shadow: 4px 4px 0 #0d0d0d;
-  font-family: var(--font-anton), Impact, sans-serif;
-  font-size: 18px;
-  letter-spacing: .07em;
-  line-height: 1.15;
+  padding: 8px 16px 7px;
+  background: #0b3b44;
+  color: #fff;
+  border: 0;
+  border-radius: 999px;
+  box-shadow: none;
+  font-family: var(--font-caps), sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: .22em;
+  line-height: 1.2;
   text-transform: uppercase;
   font-synthesis: none;
-  transform: rotate(-1.5deg);
 }
 
 .frame { position: relative; animation: popIn .9s .1s cubic-bezier(.34, 1.56, .64, 1) both; }
-@keyframes popIn { from { opacity: 0; transform: scale(.9) rotate(-2deg); } to { opacity: 1; transform: none; } }
+@keyframes popIn { from { opacity: 0; transform: translateY(16px) scale(.97); } to { opacity: 1; transform: none; } }
 
-.tape { position: absolute; z-index: 3; width: 112px; height: 30px; background: #ffe98ad0; border: 1.5px solid #0d0d0d30; pointer-events: none; }
-.tapeL { top: -14px; left: 28px; rotate: -9deg; }
-.tapeR { top: -12px; right: 36px; rotate: 7deg; }
+/* Gilt corner brackets where the tape used to be. */
+.tape { position: absolute; z-index: 3; width: 34px; height: 34px; border: 2px solid #81d8d0; pointer-events: none; }
+.tapeL { top: -10px; left: -10px; border-right: 0; border-bottom: 0; }
+.tapeR { top: -10px; right: -10px; border-left: 0; border-bottom: 0; }
 
 .pow {
   position: absolute;
   z-index: 4;
-  top: -46px;
-  right: -40px;
+  top: -40px;
+  right: -34px;
   margin: 0;
   display: grid;
   place-items: center;
-  width: 130px;
-  aspect-ratio: 1;
-  background: #ff3b2f;
-  clip-path: polygon(50% 0, 59% 22%, 80% 8%, 76% 32%, 100% 30%, 82% 48%, 100% 64%, 76% 66%, 84% 92%, 60% 78%, 50% 100%, 40% 78%, 16% 92%, 24% 66%, 0 64%, 18% 48%, 0 30%, 24% 32%, 20% 8%, 41% 22%);
-  filter: drop-shadow(5px 5px 0 #0d0d0d);
-  transform: rotate(10deg);
+  width: 116px;
+  aspect-ratio: 4 / 5;
+  background: #f5b700;
+  -webkit-mask: radial-gradient(circle at 50% 50%, transparent 3.2px, #000 3.6px) -4px -4px / 9px 9px, linear-gradient(#000 0 0) 5px 5px / calc(100% - 10px) calc(100% - 10px) no-repeat;
+  mask: radial-gradient(circle at 50% 50%, transparent 3.2px, #000 3.6px) -4px -4px / 9px 9px, linear-gradient(#000 0 0) 5px 5px / calc(100% - 10px) calc(100% - 10px) no-repeat;
+  rotate: 6deg;
+  filter: drop-shadow(0 12px 14px #0b3b4440);
   animation: burst .55s .7s cubic-bezier(.3, 1.6, .5, 1) both;
 }
 .pow span {
-  max-width: 70%;
+  max-width: 76%;
   text-align: center;
-  font-family: var(--font-anton), Impact, sans-serif;
-  font-size: 24px;
-  line-height: .95;
-  letter-spacing: .03em;
-  color: #ffd400;
-  text-shadow: 3px 3px 0 #0d0d0d;
-  transform: rotate(-8deg);
+  font-family: var(--font-caps), sans-serif;
+  font-style: italic;
+  font-weight: 500;
+  font-size: 19px;
+  line-height: 1.05;
+  letter-spacing: -.01em;
+  text-transform: none;
+  color: #0b3b44;
 }
-@keyframes burst { from { opacity: 0; transform: rotate(-30deg) scale(.2); } to { opacity: 1; transform: rotate(10deg) scale(1); } }
+@keyframes burst { from { opacity: 0; transform: rotate(-90deg) scale(.4); } to { opacity: 1; transform: none; } }
 
 .mascot {
   position: absolute;
@@ -79,7 +83,7 @@
   animation: mascotIn .9s 1s cubic-bezier(.34, 1.56, .64, 1) both;
 }
 .mascot picture, .mascot img { display: block; width: 100%; height: auto; }
-.mascot img { filter: drop-shadow(6px 7px 0 #0d0d0d26); }
+.mascot img { filter: drop-shadow(6px 7px 0 #0b3b4426); }
 @keyframes mascotIn { from { opacity: 0; transform: translateY(60px) scale(.6) rotate(-14deg); } to { opacity: 1; transform: none; } }
 
 .bubble {
@@ -88,30 +92,19 @@
   left: 0;
   width: max-content;
   max-width: 190px;
-  padding: 7px 14px 8px;
-  background: #fff;
-  color: #0d0d0d;
-  border: 2.5px solid #0d0d0d;
-  border-radius: 18px;
-  box-shadow: 3px 3px 0 #0d0d0d;
-  font-family: var(--font-anton), Impact, sans-serif;
+  padding: 9px 15px 10px;
+  background: #fbf5ea;
+  color: #0b3b44;
+  border: 0;
+  border-radius: 20px 20px 20px 6px;
+  box-shadow: 0 16px 30px -16px #0b3b44aa, 0 0 0 1px #0b3b4412;
+  font-family: var(--font-caps), sans-serif;
+  font-style: italic;
+  font-weight: 500;
   font-size: 18px;
-  line-height: 1.05;
-  letter-spacing: .04em;
-  rotate: -4deg;
+  line-height: 1.15;
 }
-.bubble::after {
-  content: '';
-  position: absolute;
-  bottom: -9px;
-  left: 30px;
-  width: 14px;
-  height: 14px;
-  background: #fff;
-  border-right: 2.5px solid #0d0d0d;
-  border-bottom: 2.5px solid #0d0d0d;
-  transform: rotate(45deg) skew(12deg, 12deg);
-}
+.bubble::after { display: none; }
 
 /* Below the wide desktop, Mr. Mustard steps inside the page edge. */
 @media (max-width: 1180px) {
@@ -119,14 +112,14 @@
   .bubble { left: auto; right: 0; font-size: 16px; }
   .bubble::after { left: auto; right: 30px; }
   .pow { right: -10px; top: -52px; width: 104px; }
-  .pow span { font-size: 19px; }
+  .pow span { font-size: 16px; }
 }
 @media (max-width: 760px) {
-  .tape { width: 80px; height: 24px; }
+  .tape { width: 24px; height: 24px; }
   .mascot { width: 80px; right: -6px; bottom: -40px; }
   .bubble { font-size: 14px; max-width: 140px; }
   .pow { width: 92px; right: -4px; }
-  .pow span { font-size: 17px; }
+  .pow span { font-size: 14px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

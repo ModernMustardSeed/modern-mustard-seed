@@ -11,10 +11,10 @@ export default function PricingTable() {
     <section className="w-full py-20">
       {/* Scroll hint */}
       <div className="max-w-7xl mx-auto px-6 md:px-16 lg:px-24 xl:px-32 mb-5 flex items-center justify-between">
-        <span className="text-[10px] uppercase tracking-[0.3em] text-[#0d0d0d]/45 font-mono font-bold">
+        <span className="text-[10px] uppercase tracking-[0.3em] text-[#0b3b44]/45 font-mono font-bold">
           {packages.length} engagements
         </span>
-        <span className="text-[10px] uppercase tracking-[0.3em] text-[#d0241b] font-mono font-bold inline-flex items-center gap-2">
+        <span className="text-[10px] uppercase tracking-[0.3em] text-[#0a7c78] font-mono font-bold inline-flex items-center gap-2">
           Scroll
           <span aria-hidden="true" className="text-sm leading-none">&rarr;</span>
         </span>

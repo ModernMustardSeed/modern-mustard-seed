@@ -16,15 +16,15 @@ export default async function PlaybookPage() {
 
   if (!affiliate || affiliate.status !== 'approved' || !affiliate.code) {
     return (
-      <div className="min-h-screen bg-[#f1ede4] halftone-bg text-[#0d0d0d] flex items-center justify-center px-6">
-        <div className="bg-white border-2 border-[#0d0d0d] rounded-2xl shadow-[6px_6px_0_0_#0d0d0d] p-10 max-w-md text-center">
-          <h1 className="font-display text-2xl font-semibold text-[#0d0d0d] mb-3">The Outreach Playbook</h1>
+      <div className="min-h-screen bg-[#fbf5ea] halftone-bg text-[#0b3b44] flex items-center justify-center px-6">
+        <div className="bg-white border-2 border-[#0b3b44] rounded-2xl shadow-[6px_6px_0_0_#0b3b44] p-10 max-w-md text-center">
+          <h1 className="font-display text-2xl font-semibold text-[#0b3b44] mb-3">The Outreach Playbook</h1>
           <p className="text-[#3A3733] font-body text-sm mb-6">
             {affiliate?.status === 'pending'
               ? 'Your application is in. The moment Sarah approves you, your personalized playbook and booking link unlock right here.'
               : `You are signed in as ${session.email}, but this account is not a partner yet.`}
           </p>
-          <Link href="/partners" className="inline-block px-7 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0d0d0d] bg-[#ffd400] border-2 border-[#0d0d0d] rounded-full shadow-[3px_3px_0_0_#0d0d0d] hover:shadow-[4px_4px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-all">
+          <Link href="/partners" className="inline-block px-7 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0b3b44] bg-[#f5b700] border-2 border-[#0b3b44] rounded-full shadow-[3px_3px_0_0_#0b3b44] hover:shadow-[4px_4px_0_0_#0b3b44] hover:-translate-y-0.5 transition-all">
             Apply to partner
           </Link>
         </div>

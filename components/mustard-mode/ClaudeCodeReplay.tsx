@@ -86,16 +86,16 @@ export default function ClaudeCodeReplay() {
   }, [visibleLines, charCount]);
 
   const color = (k: Line['kind']) =>
-    k === 'user' ? 'text-white' : k === 'think' ? 'text-[#f1ede4]/60 italic' : k === 'ok' ? 'text-[#ffe98a]' : k === 'claude' ? 'text-[#FFDD55]' : 'text-[#9A958A]';
+    k === 'user' ? 'text-white' : k === 'think' ? 'text-[#fbf5ea]/60 italic' : k === 'ok' ? 'text-[#d8f3f0]' : k === 'claude' ? 'text-[#ffc933]' : 'text-[#9A958A]';
 
   return (
-    <div ref={wrapRef} className="bg-[#0d0d0d] border-2 border-[#0d0d0d] shadow-[8px_8px_0_0_#0d0d0d] overflow-hidden">
+    <div ref={wrapRef} className="bg-[#0b3b44] border-2 border-[#0b3b44] shadow-[8px_8px_0_0_#0b3b44] overflow-hidden">
       <div className="flex items-center gap-2 bg-[#1F1F1F] px-4 py-2.5 border-b border-white/10">
-        <span className="w-2.5 h-2.5 rounded-full bg-[#ff3b2f]" />
-        <span className="w-2.5 h-2.5 rounded-full bg-[#ffd400]" />
-        <span className="w-2.5 h-2.5 rounded-full bg-[#f1ede4]" />
+        <span className="w-2.5 h-2.5 rounded-full bg-[#ff6f59]" />
+        <span className="w-2.5 h-2.5 rounded-full bg-[#f5b700]" />
+        <span className="w-2.5 h-2.5 rounded-full bg-[#fbf5ea]" />
         <span className="font-mono text-[10px] text-[#9A958A] ml-2">claude · a real session, replayed</span>
-        <span className="ml-auto font-mono text-[9px] font-bold text-[#d0241b] tracking-widest">● REC</span>
+        <span className="ml-auto font-mono text-[9px] font-bold text-[#0a7c78] tracking-widest">● REC</span>
       </div>
       <div className="p-5 md:p-6 font-mono text-[12px] md:text-[13px] leading-[1.9] min-h-[340px]">
         {SESSION.slice(0, visibleLines).map((l, i) => (
@@ -104,7 +104,7 @@ export default function ClaudeCodeReplay() {
         {visibleLines < SESSION.length && started && (
           <div className={color(SESSION[visibleLines].kind)}>
             {SESSION[visibleLines].text.slice(0, charCount)}
-            <span className="inline-block w-2 h-4 bg-[#ffd400] align-[-2px] animate-pulse ml-0.5" />
+            <span className="inline-block w-2 h-4 bg-[#f5b700] align-[-2px] animate-pulse ml-0.5" />
           </div>
         )}
       </div>

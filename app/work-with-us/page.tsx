@@ -32,7 +32,7 @@ export const metadata = buildMetadata({
  */
 export default function WorkWithUsPage() {
   return (
-    <div className="min-h-screen bg-[#f1ede4] text-[#0d0d0d]">
+    <div className="min-h-screen bg-[#fbf5ea] text-[#0b3b44]">
       <JsonLd
         data={[
           breadcrumbJsonLd([
@@ -98,17 +98,17 @@ export default function WorkWithUsPage() {
             <li key={s.n} className="relative md:grid md:grid-cols-[auto_1fr] md:gap-10">
               {/* The rail */}
               <div className="hidden md:flex md:flex-col md:items-center">
-                <span className="grid h-16 w-16 shrink-0 place-items-center rounded-full border-2 border-[#0d0d0d] bg-[#ffd400] font-display text-xl font-black shadow-[4px_4px_0_0_#0d0d0d]">
+                <span className="grid h-16 w-16 shrink-0 place-items-center rounded-full border-2 border-[#0b3b44] bg-[#f5b700] font-display text-xl font-black shadow-[4px_4px_0_0_#0b3b44]">
                   {s.n}
                 </span>
                 {i < STEPS.length - 1 && (
-                  <span aria-hidden className="mt-3 w-[2px] flex-1 bg-[#0d0d0d]/20" />
+                  <span aria-hidden className="mt-3 w-[2px] flex-1 bg-[#0b3b44]/20" />
                 )}
               </div>
 
               <div className={`min-w-0 ${i < STEPS.length - 1 ? 'md:pb-14' : ''}`}>
                 <div className="flex items-center gap-4 md:hidden">
-                  <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full border-2 border-[#0d0d0d] bg-[#ffd400] font-display text-base font-black shadow-[3px_3px_0_0_#0d0d0d]">
+                  <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full border-2 border-[#0b3b44] bg-[#f5b700] font-display text-base font-black shadow-[3px_3px_0_0_#0b3b44]">
                     {s.n}
                   </span>
                   <span className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-[#8f6600]">
@@ -122,7 +122,7 @@ export default function WorkWithUsPage() {
                 <p className="mt-2 font-display text-xl font-bold italic leading-snug text-[#C4160B] md:text-2xl">
                   {s.promise}
                 </p>
-                <p className="mt-4 max-w-2xl font-body text-[15px] leading-relaxed text-[#0d0d0d]/75 md:text-base">
+                <p className="mt-4 max-w-2xl font-body text-[15px] leading-relaxed text-[#0b3b44]/75 md:text-base">
                   {s.body}
                 </p>
 
@@ -134,12 +134,12 @@ export default function WorkWithUsPage() {
                   ].map((d) => (
                     <div
                       key={d.t}
-                      className="min-w-0 rounded-xl border-2 border-[#0d0d0d] bg-white p-4 shadow-[4px_4px_0_0_#0d0d0d]"
+                      className="min-w-0 rounded-xl border-2 border-[#0b3b44] bg-white p-4 shadow-[4px_4px_0_0_#0b3b44]"
                     >
                       <dt className="font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-[#8f6600]">
                         {d.t}
                       </dt>
-                      <dd className="mt-1.5 font-body text-[13.5px] leading-relaxed text-[#0d0d0d]/80">
+                      <dd className="mt-1.5 font-body text-[13.5px] leading-relaxed text-[#0b3b44]/80">
                         {d.v}
                       </dd>
                     </div>
@@ -152,31 +152,31 @@ export default function WorkWithUsPage() {
       </section>
 
       {/* ─────────────── The terms ─────────────── */}
-      <section className="border-y-2 border-[#0d0d0d] bg-[#0d0d0d] py-16 md:py-24">
+      <section className="border-y-2 border-[#0b3b44] bg-[#0b3b44] py-16 md:py-24">
         <div className="mx-auto max-w-6xl px-6">
           <div className="max-w-2xl">
-            <p className="font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-[#ffd400]">
+            <p className="font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-[#f5b700]">
               The terms // The same for everybody, every time
             </p>
-            <h2 className="mt-3 font-display text-4xl font-extrabold italic leading-[1.02] text-[#f1ede4] md:text-5xl">
+            <h2 className="mt-3 font-display text-4xl font-extrabold italic leading-[1.02] text-[#fbf5ea] md:text-5xl">
               These are not values. They are the deal.
             </h2>
-            <p className="mt-4 font-body text-[15px] leading-relaxed text-[#f1ede4]/70">
+            <p className="mt-4 font-body text-[15px] leading-relaxed text-[#fbf5ea]/70">
               Every one of these is something you could hold up later and point at. That is the only
               kind worth printing.
             </p>
           </div>
 
-          <div className="mt-12 grid gap-px overflow-hidden rounded-2xl border-2 border-[#ffd400] bg-[#ffd400]/40 md:grid-cols-2">
+          <div className="mt-12 grid gap-px overflow-hidden rounded-2xl border-2 border-[#f5b700] bg-[#f5b700]/40 md:grid-cols-2">
             {TERMS.map((t, i) => (
-              <div key={t.title} className="min-w-0 bg-[#0d0d0d] p-7 md:p-8">
-                <span className="font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-[#ffd400]">
+              <div key={t.title} className="min-w-0 bg-[#0b3b44] p-7 md:p-8">
+                <span className="font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-[#f5b700]">
                   {String(i + 1).padStart(2, '0')}
                 </span>
-                <h3 className="mt-2 font-display text-xl font-extrabold leading-tight text-[#f1ede4] md:text-2xl">
+                <h3 className="mt-2 font-display text-xl font-extrabold leading-tight text-[#fbf5ea] md:text-2xl">
                   {t.title}
                 </h3>
-                <p className="mt-3 font-body text-[14px] leading-relaxed text-[#f1ede4]/70">{t.body}</p>
+                <p className="mt-3 font-body text-[14px] leading-relaxed text-[#fbf5ea]/70">{t.body}</p>
               </div>
             ))}
           </div>
@@ -193,33 +193,33 @@ export default function WorkWithUsPage() {
             <h2 className="mt-3 font-display text-4xl font-extrabold italic leading-[1.02] md:text-5xl">
               There is no price list, and that is not coyness.
             </h2>
-            <p className="mt-5 max-w-xl font-body text-[15px] leading-relaxed text-[#0d0d0d]/75">
+            <p className="mt-5 max-w-xl font-body text-[15px] leading-relaxed text-[#0b3b44]/75">
               A focused site for one town and a full operating system with booking, a store, and a
               back office are not the same piece of work, and pricing them as though they were only
               ever serves the one that is cheaper to build.
             </p>
-            <p className="mt-4 max-w-xl font-body text-[15px] leading-relaxed text-[#0d0d0d]/75">
+            <p className="mt-4 max-w-xl font-body text-[15px] leading-relaxed text-[#0b3b44]/75">
               So the quote comes after the working session, when we both know what is actually being
               made. It is one set package price for a written scope, it is agreed before anything is
               built, and it does not move afterwards.
             </p>
           </div>
 
-          <div className="min-w-0 rounded-2xl border-2 border-[#0d0d0d] bg-[#ffd400] p-7 shadow-[8px_8px_0_0_#0d0d0d] md:p-9">
-            <p className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-[#0d0d0d]">
+          <div className="min-w-0 rounded-2xl border-2 border-[#0b3b44] bg-[#f5b700] p-7 shadow-[8px_8px_0_0_#0b3b44] md:p-9">
+            <p className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-[#0b3b44]">
               Where to start
             </p>
             <p className="mt-3 font-display text-[1.7rem] font-extrabold italic leading-[1.1] md:text-[2rem]">
               Start with the audit, not the sales call.
             </p>
-            <p className="mt-4 font-body text-[14px] leading-relaxed text-[#0d0d0d]/80">
+            <p className="mt-4 font-body text-[14px] leading-relaxed text-[#0b3b44]/80">
               Sixty seconds, no card. It names the one thing quietly costing you the most, and the
               answer is yours to keep whether or not we ever work together. Most engagements begin
               there, because it is easier to decide what to build once you can see what is leaking.
             </p>
             <Link
               href="/presence-audit"
-              className="mt-7 inline-block rounded-full border-2 border-[#0d0d0d] bg-[#0d0d0d] px-7 py-3.5 font-sans text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#ffd400] shadow-[4px_4px_0_0_#f1ede4] transition-transform hover:-translate-y-0.5"
+              className="mt-7 inline-block rounded-full border-2 border-[#0b3b44] bg-[#0b3b44] px-7 py-3.5 font-sans text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#f5b700] shadow-[4px_4px_0_0_#fbf5ea] transition-transform hover:-translate-y-0.5"
             >
               Run the free audit
             </Link>
@@ -228,7 +228,7 @@ export default function WorkWithUsPage() {
       </section>
 
       {/* ─────────────── Fit ─────────────── */}
-      <section className="border-y-2 border-[#0d0d0d] bg-[#F5F0E8] py-16 md:py-24">
+      <section className="border-y-2 border-[#0b3b44] bg-[#F5F0E8] py-16 md:py-24">
         <div className="mx-auto max-w-6xl px-6">
           <div className="max-w-2xl">
             <p className="font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-[#C4160B]">
@@ -239,23 +239,23 @@ export default function WorkWithUsPage() {
             </h2>
           </div>
           <div className="mt-12 grid gap-6 md:grid-cols-2">
-            <div className="min-w-0 rounded-2xl border-2 border-[#0d0d0d] bg-white p-7 shadow-[6px_6px_0_0_#0d0d0d] md:p-8">
-              <span className="font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-[#c8201a]">
+            <div className="min-w-0 rounded-2xl border-2 border-[#0b3b44] bg-white p-7 shadow-[6px_6px_0_0_#0b3b44] md:p-8">
+              <span className="font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-[#0a7c78]">
                 We are probably a fit
               </span>
               <ul className="mt-5 space-y-3.5">
                 {GOOD_FIT.map((f) => (
                   <li
                     key={f}
-                    className="flex min-w-0 items-start gap-3 font-body text-[14.5px] leading-relaxed text-[#0d0d0d]/80"
+                    className="flex min-w-0 items-start gap-3 font-body text-[14.5px] leading-relaxed text-[#0b3b44]/80"
                   >
-                    <span aria-hidden className="mt-[9px] h-1.5 w-1.5 shrink-0 rounded-full bg-[#0d0d0d]" />
+                    <span aria-hidden className="mt-[9px] h-1.5 w-1.5 shrink-0 rounded-full bg-[#0b3b44]" />
                     {f}
                   </li>
                 ))}
               </ul>
             </div>
-            <div className="min-w-0 rounded-2xl border-2 border-[#0d0d0d] bg-[#f1ede4] p-7 shadow-[6px_6px_0_0_#0d0d0d] md:p-8">
+            <div className="min-w-0 rounded-2xl border-2 border-[#0b3b44] bg-[#fbf5ea] p-7 shadow-[6px_6px_0_0_#0b3b44] md:p-8">
               <span className="font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-[#C4160B]">
                 We are probably not
               </span>
@@ -263,7 +263,7 @@ export default function WorkWithUsPage() {
                 {POOR_FIT.map((f) => (
                   <li
                     key={f}
-                    className="flex min-w-0 items-start gap-3 font-body text-[14.5px] leading-relaxed text-[#0d0d0d]/75"
+                    className="flex min-w-0 items-start gap-3 font-body text-[14.5px] leading-relaxed text-[#0b3b44]/75"
                   >
                     <span aria-hidden className="mt-[9px] h-1.5 w-1.5 shrink-0 rounded-full bg-[#C4160B]" />
                     {f}
@@ -287,7 +287,7 @@ export default function WorkWithUsPage() {
           {ENGAGEMENT_FAQ.map((f) => (
             <details
               key={f.q}
-              className="group rounded-xl border-2 border-[#0d0d0d] bg-white p-5 transition-shadow open:shadow-[4px_4px_0_0_#ffd400]"
+              className="group rounded-xl border-2 border-[#0b3b44] bg-white p-5 transition-shadow open:shadow-[4px_4px_0_0_#f5b700]"
             >
               <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-display text-lg font-bold">
                 {f.q}
@@ -303,32 +303,32 @@ export default function WorkWithUsPage() {
 
       {/* ─────────────── Close ─────────────── */}
       <section className="mx-auto max-w-6xl px-6 pb-20 md:pb-28">
-        <div className="relative overflow-hidden rounded-2xl border-2 border-[#0d0d0d] bg-[#ffd400] p-10 text-center shadow-[8px_8px_0_0_#0d0d0d] md:p-14">
-          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-[#0d0d0d]/70">
+        <div className="relative overflow-hidden rounded-2xl border-2 border-[#0b3b44] bg-[#f5b700] p-10 text-center shadow-[8px_8px_0_0_#0b3b44] md:p-14">
+          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-[#0b3b44]/70">
             Step one · Answered inside one business day
           </p>
           <h2 className="mt-4 font-display text-3xl font-extrabold italic leading-[1.02] md:text-5xl">
             Tell us what you are building.
           </h2>
-          <p className="mx-auto mt-5 max-w-xl font-body text-[15px] leading-relaxed text-[#0d0d0d]/80">
+          <p className="mx-auto mt-5 max-w-xl font-body text-[15px] leading-relaxed text-[#0b3b44]/80">
             The business, the problem, and what a good outcome looks like. You will get a straight
             answer on fit, whether or not it is one.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link
               href="/book"
-              className="rounded-full border-2 border-[#0d0d0d] bg-[#0d0d0d] px-9 py-4 font-sans text-[12px] font-extrabold uppercase tracking-[0.16em] text-[#ffd400] shadow-[5px_5px_0_0_rgba(13,13,13,0.3)] transition-transform hover:-translate-y-0.5"
+              className="rounded-full border-2 border-[#0b3b44] bg-[#0b3b44] px-9 py-4 font-sans text-[12px] font-extrabold uppercase tracking-[0.16em] text-[#f5b700] shadow-[5px_5px_0_0_rgba(11,59,68,0.3)] transition-transform hover:-translate-y-0.5"
             >
               Begin an engagement →
             </Link>
             <Link
               href="/work"
-              className="rounded-full border-2 border-[#0d0d0d] bg-white px-9 py-4 font-sans text-[12px] font-extrabold uppercase tracking-[0.16em] text-[#0d0d0d] shadow-[5px_5px_0_0_rgba(13,13,13,0.3)] transition-transform hover:-translate-y-0.5"
+              className="rounded-full border-2 border-[#0b3b44] bg-white px-9 py-4 font-sans text-[12px] font-extrabold uppercase tracking-[0.16em] text-[#0b3b44] shadow-[5px_5px_0_0_rgba(11,59,68,0.3)] transition-transform hover:-translate-y-0.5"
             >
               See the work
             </Link>
           </div>
-          <p className="mt-7 font-body text-[13px] text-[#0d0d0d]/60">
+          <p className="mt-7 font-body text-[13px] text-[#0b3b44]/60">
             {SITE.city}, {SITE.regionName}. Working with clients nationwide.
           </p>
         </div>

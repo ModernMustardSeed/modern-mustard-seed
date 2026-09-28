@@ -55,7 +55,7 @@ export default function SuccessClient({ slug }: { slug: string }) {
 
   return (
     <section className="pop-card p-8 md:p-10 mb-12">
-      <span className="text-[10px] uppercase tracking-[0.45em] text-[#c8201a] font-mono font-bold mb-5 block">
+      <span className="text-[10px] uppercase tracking-[0.45em] text-[#0a7c78] font-mono font-bold mb-5 block">
         Your download{state.status === 'ready' && state.downloads.length > 1 ? 's' : ''}
       </span>
 
@@ -70,7 +70,7 @@ export default function SuccessClient({ slug }: { slug: string }) {
           </p>
           <button
             onClick={() => window.location.reload()}
-            className="text-[11px] uppercase tracking-[0.22em] font-mono font-bold text-[#c8201a] hover:text-[#d0241b] transition-colors"
+            className="text-[11px] uppercase tracking-[0.22em] font-mono font-bold text-[#0a7c78] hover:text-[#0a7c78] transition-colors"
           >
             Refresh →
           </button>
@@ -80,7 +80,7 @@ export default function SuccessClient({ slug }: { slug: string }) {
       {state.status === 'error' && (
         <p className="text-[#3a3733] text-sm font-body leading-relaxed">
           {state.message} If you have not received an email within 5 minutes, contact sarah@modernmustardseed.com with your order ID:{' '}
-          <code className="text-[#0d0d0d] font-bold font-mono text-xs">{sessionId}</code>
+          <code className="text-[#0b3b44] font-bold font-mono text-xs">{sessionId}</code>
         </p>
       )}
 
@@ -93,23 +93,23 @@ export default function SuccessClient({ slug }: { slug: string }) {
                 href={d.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-between gap-4 p-5 rounded-xl border-2 border-[#0d0d0d] bg-[#FFFDF6] shadow-[4px_4px_0_0_#0d0d0d] hover:-translate-y-0.5 hover:bg-[#ffd400] transition-all group"
+                className="flex items-center justify-between gap-4 p-5 rounded-xl border-2 border-[#0b3b44] bg-[#FFFDF6] shadow-[4px_4px_0_0_#0b3b44] hover:-translate-y-0.5 hover:bg-[#f5b700] transition-all group"
               >
                 <div>
-                  <p className="font-display text-base md:text-lg text-[#0d0d0d] font-black tracking-tight leading-snug mb-1">
+                  <p className="font-display text-base md:text-lg text-[#0b3b44] font-black tracking-tight leading-snug mb-1">
                     {d.name}
                   </p>
-                  <p className="text-[#0d0d0d]/60 text-[10px] font-mono uppercase tracking-[0.25em]">PDF · 24h signed link</p>
+                  <p className="text-[#0b3b44]/60 text-[10px] font-mono uppercase tracking-[0.25em]">PDF · 24h signed link</p>
                 </div>
-                <span className="text-[11px] uppercase tracking-[0.22em] font-mono font-bold text-[#c8201a] group-hover:text-[#0d0d0d] flex-shrink-0">
+                <span className="text-[11px] uppercase tracking-[0.22em] font-mono font-bold text-[#0a7c78] group-hover:text-[#0b3b44] flex-shrink-0">
                   Download →
                 </span>
               </a>
             ))}
           </div>
-          <p className="text-[#0d0d0d]/60 text-xs font-mono uppercase tracking-[0.22em]">
+          <p className="text-[#0b3b44]/60 text-xs font-mono uppercase tracking-[0.22em]">
             Receipt and download links also sent to{' '}
-            {state.email ? <span className="text-[#0d0d0d] font-bold normal-case">{state.email}</span> : 'your email'}
+            {state.email ? <span className="text-[#0b3b44] font-bold normal-case">{state.email}</span> : 'your email'}
           </p>
         </div>
       )}

@@ -21,6 +21,7 @@ export default function Footer() {
     {
       title: 'Disciplines',
       links: [
+        { label: 'AI for Your Business', href: '/ai' },
         { label: 'The Talking Website', href: '/talking-website' },
         { label: 'Websites And Brand', href: '/websites' },
         { label: 'Brand / Rebrand', href: '/brand' },

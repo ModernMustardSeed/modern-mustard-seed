@@ -23,14 +23,14 @@ export default function BlogIndex() {
           { name: 'Blog', url: '/blog' },
         ])}
       />
-      <div className="relative min-h-screen bg-[#f1ede4] text-[#0d0d0d]">
+      <div className="relative min-h-screen bg-[#fbf5ea] text-[#0b3b44]">
         <PopPageHero
           eyebrow={<span>Insights</span>}
           title={<>Thinking Out{' '}<em>Loud</em></>}
           issue={{ no: 'No.7', lines: ['The journal', 'New posts most weeks'] }}
           art={{
-            src: '/art/pages/blog',
-            alt: 'Graffiti couture painting: Mr. Mustard sits cross-legged on the hood of a mustard-yellow classic convertible, typing on a vintage typewriter under a graffiti-painted bridge as blank pages drift by',
+            src: '/art/riviera/blog',
+            alt: 'Painting: at a beach bar, Mrs. Mustard in her big straw hat writes postcards while Mr. Mustard reads the news on his tablet and the kids hold dripping gelato cones under Tiffany-blue umbrellas',
             caption: 'Hot off the typewriter',
           }}
           sticker="Idea!"
@@ -44,7 +44,7 @@ export default function BlogIndex() {
         <div aria-hidden="true" className="absolute inset-0 halftone-bg opacity-50 pointer-events-none" />
         <div className="relative max-w-5xl mx-auto px-6 md:px-8">
           {posts.length === 0 ? (
-            <p className="text-center text-[#0d0d0d]/40 font-body italic">
+            <p className="text-center text-[#0b3b44]/40 font-body italic">
               First posts shipping shortly. Subscribe below to be notified.
             </p>
           ) : (
@@ -57,22 +57,22 @@ export default function BlogIndex() {
                 >
                   <div className="flex items-center gap-3 mb-4">
                     {post.tag && (
-                      <span className="text-[8px] uppercase tracking-[0.18em] font-mono font-bold text-[#0d0d0d] bg-[#ffd400] border-2 border-[#0d0d0d] rounded-full px-2.5 py-1">
+                      <span className="text-[8px] uppercase tracking-[0.18em] font-mono font-bold text-[#0b3b44] bg-[#f5b700] border-2 border-[#0b3b44] rounded-full px-2.5 py-1">
                         {post.tag}
                       </span>
                     )}
-                    <span className="text-[10px] text-[#0d0d0d]/40 font-mono">
+                    <span className="text-[10px] text-[#0b3b44]/40 font-mono">
                       {new Date(post.date).toLocaleDateString('en-US', {
                         month: 'short',
                         day: 'numeric',
                         year: 'numeric',
                       })}
                     </span>
-                    <span className="text-[10px] text-[#0d0d0d]/40 font-mono">
+                    <span className="text-[10px] text-[#0b3b44]/40 font-mono">
                       {post.readingTime}
                     </span>
                   </div>
-                  <h2 className="font-display text-xl md:text-2xl font-black text-[#0d0d0d] tracking-tight mb-3 leading-snug">
+                  <h2 className="font-display text-xl md:text-2xl font-black text-[#0b3b44] tracking-tight mb-3 leading-snug">
                     {post.title}
                   </h2>
                   <p className="text-[#3a3733] text-sm md:text-base font-body leading-7">

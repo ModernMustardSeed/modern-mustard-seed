@@ -6,11 +6,11 @@ import PopPageHero, { pop } from '@/components/pop/PopPageHero';
 
 const description = 'Agentic website design from Kalispell, Montana. Custom websites, shared-brain voice agents and answer engine foundations for businesses nationwide.';
 export const metadata = buildMetadata({ title: 'Agentic Website Design in Montana, Built in Kalispell', description, path: '/agentic-websites' });
-const linkStyle = 'font-bold text-[#c8201a] underline decoration-2 underline-offset-4';
+const linkStyle = 'font-bold text-[#0a7c78] underline decoration-2 underline-offset-4';
 
 export default function AIWebsitesPage() {
   return (
-    <article className="bg-[#f1ede4] text-[#0d0d0d] pb-20 overflow-x-clip">
+    <article className="bg-[#fbf5ea] text-[#0b3b44] pb-20 overflow-x-clip">
       <JsonLd data={[
         webPageJsonLd({ path: '/agentic-websites', name: 'Agentic Website Design in Montana', description }),
         serviceJsonLd({ path: '/agentic-websites', name: 'Agentic website design and development', description }),
@@ -21,8 +21,8 @@ export default function AIWebsitesPage() {
         title={<>An agentic website should<br /><em>carry its share.</em></>}
         issue={{ no: 'No.6', lines: ['Agentic websites', 'Found, understood, chosen'] }}
         art={{
-          src: '/art/pages/system',
-          alt: 'Graffiti couture painting: Mr. Mustard drives a black classic convertible through a graffiti-painted underpass: loose papers swirl in on one side and neat yellow boxes roll out on the other',
+          src: '/art/riviera/system',
+          alt: 'Painting: at a cliffside villa, Mr. Mustard sits at the edge of a turquoise infinity pool smiling at his phone while Mrs. Mustard floats in her big hat and the kids and the seed dog splash, the Mediterranean below',
           caption: 'The enquiry, all the way to the job',
         }}
         sticker="Handoff!"
@@ -41,7 +41,7 @@ export default function AIWebsitesPage() {
         </aside>
       </div>
 
-      <section className="border-y-2 border-[#0d0d0d] bg-white py-14">
+      <section className="border-y-2 border-[#0b3b44] bg-white py-14">
         <div className="max-w-6xl mx-auto px-6">
           <h2 className="font-display text-3xl md:text-4xl font-black">Two meanings. Both need doing properly.</h2>
           <div className="grid md:grid-cols-2 gap-8 mt-8">
@@ -54,10 +54,10 @@ export default function AIWebsitesPage() {
 
       <section className="max-w-6xl mx-auto px-6 py-16 grid lg:grid-cols-2 gap-12">
         <div><p className="font-mono text-xs font-bold text-[#C4160B] uppercase">The Talking Website</p><h2 className="font-display text-3xl md:text-4xl font-black mt-3">The page and the phone should agree.</h2><p className="mt-5 leading-relaxed">Change a service area once. The website should describe the same boundary the receptionist uses to qualify a caller. Change a booking rule once. Both channels should hand the customer to the same process.</p><p className="mt-4 leading-relaxed"><Link href="/talking-website" className={linkStyle}>The Talking Website</Link> combines a custom site and a voice agent around one shared business brain. It connects the answers people read with the answers callers hear. The <Link href="/voice-agents" className={linkStyle}>voice agent</Link> can also be a separate product for a business with an existing website.</p></div>
-        <div className="bg-[#0d0d0d] text-[#f1ede4] p-8 rounded-2xl border-2 border-[#0d0d0d] shadow-[6px_6px_0_0_#ffd400]"><h3 className="font-display text-2xl font-bold">One brain needs boundaries.</h3><p className="mt-5 leading-relaxed">An answer about your published services is different from a promise that a crew will arrive tomorrow. We scope which facts the assistant can quote, which systems it can read, which actions it can take and when it must hand off to a person.</p><p className="mt-4 leading-relaxed">A booking only counts when the booking system confirms it. A lead only counts when it is saved. The conversation is the front end. The verified action is the product.</p></div>
+        <div className="bg-[#0b3b44] text-[#fbf5ea] p-8 rounded-2xl border-2 border-[#0b3b44] shadow-[6px_6px_0_0_#f5b700]"><h3 className="font-display text-2xl font-bold">One brain needs boundaries.</h3><p className="mt-5 leading-relaxed">An answer about your published services is different from a promise that a crew will arrive tomorrow. We scope which facts the assistant can quote, which systems it can read, which actions it can take and when it must hand off to a person.</p><p className="mt-4 leading-relaxed">A booking only counts when the booking system confirms it. A lead only counts when it is saved. The conversation is the front end. The verified action is the product.</p></div>
       </section>
 
-      <section className="border-y-2 border-[#0d0d0d] bg-white py-16">
+      <section className="border-y-2 border-[#0b3b44] bg-white py-16">
         <div className="max-w-6xl mx-auto px-6"><h2 className="font-display text-3xl md:text-4xl font-black">Found, understood, then chosen.</h2><p className="mt-5 max-w-3xl leading-relaxed">GEO means generative engine optimization. AEO means answer engine optimization. Both concern how a business becomes understandable in answer-based search. Our work starts with ordinary engineering and useful evidence, not a special file that makes an assistant recommend you.</p>
           <ol className="mt-8 grid md:grid-cols-2 gap-6 list-decimal list-inside">
             {[
@@ -83,7 +83,7 @@ export default function AIWebsitesPage() {
         <div><h2 className="font-display text-3xl font-black">Built for owners with work to do.</h2><p className="mt-5 leading-relaxed">Service businesses, hospitality operators, retailers and founders with a defined customer problem. Especially the operator building a second business who needs the product built without assembling an engineering team. Explore the <Link href="/for" className={linkStyle}>industries we build for</Link>.</p><p className="mt-4 leading-relaxed">Productized websites usually go live about a week after kickoff. Custom builds have a scoped delivery schedule. You receive the repository, accounts and documentation. Changes to what we built are included. A new deliverable is a separately scoped engagement.</p></div>
         <div><h2 className="font-display text-3xl font-black">Meet the builder. Inspect the work.</h2><p className="mt-5 leading-relaxed"><Link href="/about" className={linkStyle}>Sarah Scarano</Link> founded MMS and builds from <Link href="/montana/kalispell" className={linkStyle}>Kalispell</Link>. We serve <Link href="/montana" className={linkStyle}>Northwest Montana</Link> and work remotely with clients nationwide.</p><p className="mt-4 leading-relaxed">The <Link href="/work/cross-and-covenant" className={linkStyle}>Cross + Covenant storefront</Link> shows commerce and brand work. The <Link href="/work/wild-daisy-command-center" className={linkStyle}>Wild Daisy build record</Link> describes an operations system. Read the scope and evidence in <Link href="/work" className={linkStyle}>our work</Link>, then judge a demo built for your business.</p></div>
       </section>
-      <section className="bg-[#ffd400] border-y-2 border-[#0d0d0d] px-6 py-14 text-center"><h2 className="font-display text-3xl md:text-4xl font-black">Put your business in the driver&apos;s seat.</h2><p className="mt-4">Tell us what the page and the phone have to do, and Sarah answers inside one business day.</p><div className="mt-7 flex flex-wrap justify-center gap-4"><Link href="/book" className="pop-card px-7 py-4 font-bold">Begin an Engagement</Link><a href={`tel:${SITE.phoneE164}`} className="pop-card px-7 py-4 font-bold">Call {SITE.phone}</a></div></section>
+      <section className="bg-[#f5b700] border-y-2 border-[#0b3b44] px-6 py-14 text-center"><h2 className="font-display text-3xl md:text-4xl font-black">Put your business in the driver&apos;s seat.</h2><p className="mt-4">Tell us what the page and the phone have to do, and Sarah answers inside one business day.</p><div className="mt-7 flex flex-wrap justify-center gap-4"><Link href="/book" className="pop-card px-7 py-4 font-bold">Begin an Engagement</Link><a href={`tel:${SITE.phoneE164}`} className="pop-card px-7 py-4 font-bold">Call {SITE.phone}</a></div></section>
     </article>
   );
 }

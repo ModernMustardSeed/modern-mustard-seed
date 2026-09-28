@@ -11,10 +11,10 @@ import PopPageHero from '@/components/pop/PopPageHero';
  * services). Reuses the /api/audit engine. Pop-art, on-brand, no dashboard.
  */
 
-const INK = '#0d0d0d';
-const YELLOW = '#ffd400';
-const RED = '#ff3b2f';
-const BLUE = '#0d0d0d';
+const INK = '#0b3b44';
+const YELLOW = '#f5b700';
+const RED = '#ff6f59';
+const BLUE = '#0b3b44';
 
 type AuditResult = {
   error?: boolean;
@@ -39,11 +39,11 @@ function ScoreRing({ score }: { score: number }) {
   return (
     <div
       className="relative h-24 w-24 flex-shrink-0 rounded-full"
-      style={{ background: `conic-gradient(${YELLOW} ${v * 3.6}deg, rgba(13,13,13,0.08) 0deg)` }}
+      style={{ background: `conic-gradient(${YELLOW} ${v * 3.6}deg, rgba(11,59,68,0.08) 0deg)` }}
     >
-      <div className="absolute inset-[6px] rounded-full bg-white border-2 border-[#0d0d0d] flex flex-col items-center justify-center">
-        <span className="font-display text-3xl font-black text-[#0d0d0d] leading-none">{v}</span>
-        <span className="text-[8px] uppercase tracking-[0.2em] font-mono text-[#0d0d0d]/50 mt-0.5">leverage</span>
+      <div className="absolute inset-[6px] rounded-full bg-white border-2 border-[#0b3b44] flex flex-col items-center justify-center">
+        <span className="font-display text-3xl font-black text-[#0b3b44] leading-none">{v}</span>
+        <span className="text-[8px] uppercase tracking-[0.2em] font-mono text-[#0b3b44]/50 mt-0.5">leverage</span>
       </div>
     </div>
   );
@@ -119,7 +119,7 @@ export default function BottleneckBreaker() {
   };
 
   const inp =
-    'w-full bg-white border-2 border-[#0d0d0d] rounded-lg px-4 py-3 text-[#0d0d0d] font-body placeholder-[#0d0d0d]/40 focus:outline-none focus:shadow-[3px_3px_0_0_#0d0d0d] transition-shadow';
+    'w-full bg-white border-2 border-[#0b3b44] rounded-lg px-4 py-3 text-[#0b3b44] font-body placeholder-[#0b3b44]/40 focus:outline-none focus:shadow-[3px_3px_0_0_#0b3b44] transition-shadow';
 
   return (
     <>
@@ -127,8 +127,8 @@ export default function BottleneckBreaker() {
       eyebrow={<span>Free · 60 seconds · No fluff</span>}
       title={<>Bottleneck{' '}<em>Breaker</em></>}
       art={{
-        src: '/art/pages/audit',
-        alt: 'Graffiti couture painting: Mr. Mustard stands on the back seat of a cream classic convertible and inspects a graffiti mural on a bridge pillar through a giant brass magnifying glass',
+        src: '/art/riviera/audit',
+        alt: 'Painting: on the flybridge of a white yacht, Mr. Mustard scans the coastline through brass binoculars while a seed kid copies him with a toy spyglass and the dog peeks over the rail',
         caption: 'Found it',
       }}
       sticker="Break it!"
@@ -138,7 +138,7 @@ export default function BottleneckBreaker() {
         Every business has one thing quietly costing it the most. Drop your site, and we will find your biggest bottleneck and show you exactly how to break it.
       </p>
     </PopPageHero>
-    <section className="relative bg-[#f1ede4] text-[#0d0d0d] pt-4 md:pt-8 pb-24 px-6 overflow-hidden">
+    <section className="relative bg-[#fbf5ea] text-[#0b3b44] pt-4 md:pt-8 pb-24 px-6 overflow-hidden">
       <div aria-hidden className="absolute inset-0 z-0 pointer-events-none" style={{ backgroundImage: 'radial-gradient(rgba(245,183,0,0.28) 1.5px, transparent 1.6px)', backgroundSize: '20px 20px' }} />
 
       <div className="relative z-10 max-w-3xl mx-auto">
@@ -150,26 +150,26 @@ export default function BottleneckBreaker() {
               <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder="your@email.com" className={inp} />
               <input value={url} onChange={(e) => setUrl(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && run()} placeholder="yourbusiness.com" spellCheck={false} autoCapitalize="none" className={inp} />
             </div>
-            {error && <p className="text-[#d0241b] font-body font-bold text-sm mt-3">{error}</p>}
+            {error && <p className="text-[#b3261e] font-body font-bold text-sm mt-3">{error}</p>}
             <button
               onClick={run}
               disabled={!name.trim() || !email.includes('@') || !url.trim()}
-              className="mt-5 w-full py-4 text-[13px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0d0d0d] bg-[#ffd400] rounded-lg border-2 border-[#0d0d0d] shadow-[4px_4px_0_0_#0d0d0d] hover:-translate-y-0.5 hover:shadow-[6px_6px_0_0_#0d0d0d] disabled:opacity-40 disabled:hover:translate-y-0 transition-all"
+              className="mt-5 w-full py-4 text-[13px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0b3b44] bg-[#f5b700] rounded-lg border-2 border-[#0b3b44] shadow-[4px_4px_0_0_#0b3b44] hover:-translate-y-0.5 hover:shadow-[6px_6px_0_0_#0b3b44] disabled:opacity-40 disabled:hover:translate-y-0 transition-all"
             >
               Break my bottleneck →
             </button>
-            <p className="text-[#0d0d0d]/40 text-[11px] font-body text-center mt-3">Free. No credit card. You see the result on screen.</p>
+            <p className="text-[#0b3b44]/40 text-[11px] font-body text-center mt-3">Free. No credit card. You see the result on screen.</p>
           </div>
         )}
 
         {/* Loading */}
         {loading && (
           <div className="pop-card p-10 max-w-xl mx-auto text-center">
-            <div className="inline-block h-12 w-12 rounded-full border-4 border-[#0d0d0d]/15 border-t-[#ffd400] animate-spin mb-6" />
+            <div className="inline-block h-12 w-12 rounded-full border-4 border-[#0b3b44]/15 border-t-[#f5b700] animate-spin mb-6" />
             <p className="font-display text-2xl font-black">{PHASES[phase]}…</p>
             <div className="flex gap-1.5 justify-center mt-5">
               {PHASES.map((_, i) => (
-                <div key={i} className="h-1.5 w-10 rounded-full" style={{ background: i <= phase ? YELLOW : 'rgba(13,13,13,0.1)' }} />
+                <div key={i} className="h-1.5 w-10 rounded-full" style={{ background: i <= phase ? YELLOW : 'rgba(11,59,68,0.1)' }} />
               ))}
             </div>
           </div>
@@ -183,7 +183,7 @@ export default function BottleneckBreaker() {
               <div className="flex items-center gap-5">
                 <ScoreRing score={result.score} />
                 <div className="min-w-0">
-                  <span className="text-[10px] uppercase tracking-[0.3em] text-[#d0241b] font-mono font-bold block mb-1">{result.businessName} · Your #1 bottleneck</span>
+                  <span className="text-[10px] uppercase tracking-[0.3em] text-[#0a7c78] font-mono font-bold block mb-1">{result.businessName} · Your #1 bottleneck</span>
                   <p className="font-display text-xl md:text-2xl font-black leading-snug">{result.headlineBottleneck || result.competitiveEdge}</p>
                 </div>
               </div>
@@ -196,24 +196,24 @@ export default function BottleneckBreaker() {
                 {result.gaps.map((g, i) => (
                   <li key={i} className="flex items-start gap-3">
                     <span className="mt-1.5 h-2 w-2 rounded-full flex-shrink-0" style={{ background: RED }} />
-                    <span className="font-body text-[#0d0d0d]">{g}</span>
+                    <span className="font-body text-[#0b3b44]">{g}</span>
                   </li>
                 ))}
               </ul>
-              {result.riskOfInaction && <p className="mt-4 pt-4 border-t-2 border-[#0d0d0d]/10 font-body text-sm text-[#3a3733] italic">{result.riskOfInaction}</p>}
+              {result.riskOfInaction && <p className="mt-4 pt-4 border-t-2 border-[#0b3b44]/10 font-body text-sm text-[#3a3733] italic">{result.riskOfInaction}</p>}
             </div>
 
             {/* How we break it (the services) */}
             <div>
-              <span className="text-[10px] uppercase tracking-[0.3em] text-[#0d0d0d]/50 font-mono font-bold block mb-4">How we break it</span>
+              <span className="text-[10px] uppercase tracking-[0.3em] text-[#0b3b44]/50 font-mono font-bold block mb-4">How we break it</span>
               <div className="grid sm:grid-cols-2 gap-4">
                 {result.topTools.map((t, i) => (
                   <div key={i} className="pop-card p-5">
                     <div className="flex items-center justify-between gap-3 mb-2">
-                      <span className="font-sans font-extrabold text-[#0d0d0d]">{t.name}</span>
-                      <span className="text-[9px] uppercase tracking-[0.15em] font-mono font-bold text-[#0d0d0d] bg-[#ffd400] border-2 border-[#0d0d0d] rounded-full px-2 py-0.5">{t.impact}%</span>
+                      <span className="font-sans font-extrabold text-[#0b3b44]">{t.name}</span>
+                      <span className="text-[9px] uppercase tracking-[0.15em] font-mono font-bold text-[#0b3b44] bg-[#f5b700] border-2 border-[#0b3b44] rounded-full px-2 py-0.5">{t.impact}%</span>
                     </div>
-                    <div className="h-2 rounded-full bg-[#0d0d0d]/[0.06] mb-3 overflow-hidden">
+                    <div className="h-2 rounded-full bg-[#0b3b44]/[0.06] mb-3 overflow-hidden">
                       <div className="h-full rounded-full" style={{ width: `${t.impact}%`, background: YELLOW }} />
                     </div>
                     <p className="font-body text-sm text-[#3a3733] leading-relaxed">{t.reason}</p>
@@ -225,8 +225,8 @@ export default function BottleneckBreaker() {
             {/* What it's worth */}
             <div className="grid grid-cols-2 gap-4">
               <div className="pop-card-yellow p-6 text-center">
-                <div className="font-display text-4xl font-black text-[#0d0d0d]">{result.monthlyTimeSaved}<span className="text-xl"> hrs</span></div>
-                <div className="text-[10px] uppercase tracking-[0.2em] font-mono font-bold text-[#0d0d0d]/60 mt-1">saved / month</div>
+                <div className="font-display text-4xl font-black text-[#0b3b44]">{result.monthlyTimeSaved}<span className="text-xl"> hrs</span></div>
+                <div className="text-[10px] uppercase tracking-[0.2em] font-mono font-bold text-[#0b3b44]/60 mt-1">saved / month</div>
               </div>
               <div className="pop-card p-6 text-center" style={{ background: BLUE }}>
                 <div className="font-display text-4xl font-black text-white">${result.estimatedROI.toLocaleString()}</div>
@@ -237,12 +237,12 @@ export default function BottleneckBreaker() {
             {/* Quick wins */}
             {result.quickWins?.length > 0 && (
               <div className="pop-card p-6 md:p-8">
-                <span className="text-[10px] uppercase tracking-[0.3em] text-[#0d0d0d]/50 font-mono font-bold block mb-4">Start here</span>
+                <span className="text-[10px] uppercase tracking-[0.3em] text-[#0b3b44]/50 font-mono font-bold block mb-4">Start here</span>
                 <ul className="space-y-2.5">
                   {result.quickWins.map((w, i) => (
                     <li key={i} className="flex items-start gap-3">
-                      <span className="mt-0.5 h-5 w-5 rounded-full flex-shrink-0 flex items-center justify-center text-[11px] font-bold text-[#0d0d0d] bg-[#ffd400] border-2 border-[#0d0d0d]">{i + 1}</span>
-                      <span className="font-body text-[#0d0d0d]">{w}</span>
+                      <span className="mt-0.5 h-5 w-5 rounded-full flex-shrink-0 flex items-center justify-center text-[11px] font-bold text-[#0b3b44] bg-[#f5b700] border-2 border-[#0b3b44]">{i + 1}</span>
+                      <span className="font-body text-[#0b3b44]">{w}</span>
                     </li>
                   ))}
                 </ul>
@@ -252,27 +252,27 @@ export default function BottleneckBreaker() {
             {/* What's working (small) */}
             {result.strengths?.length > 0 && (
               <p className="font-body text-sm text-[#3a3733] text-center">
-                <span className="font-bold text-[#0d0d0d]">Already working for you:</span> {result.strengths.join(' · ')}
+                <span className="font-bold text-[#0b3b44]">Already working for you:</span> {result.strengths.join(' · ')}
               </p>
             )}
 
             {/* CTA */}
             <div className="pop-card-yellow p-8 text-center">
               <h3 className="font-display text-2xl md:text-3xl font-black mb-3">Want us to break it for you?</h3>
-              <p className="text-[#0d0d0d]/75 font-body mb-6 max-w-lg mx-auto">Book a free call and we will turn this into a fixed plan, scope, and price. Or have it emailed to you to sit with.</p>
+              <p className="text-[#0b3b44]/75 font-body mb-6 max-w-lg mx-auto">Book a free call and we will turn this into a fixed plan, scope, and price. Or have it emailed to you to sit with.</p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                <Link href="/?book=1" className="px-8 py-4 text-[12px] uppercase tracking-[0.18em] font-sans font-extrabold text-white bg-[#0d0d0d] rounded-full border-2 border-[#0d0d0d] shadow-[4px_4px_0_0_rgba(13,13,13,0.3)] hover:-translate-y-0.5 transition-all">
+                <Link href="/?book=1" className="px-8 py-4 text-[12px] uppercase tracking-[0.18em] font-sans font-extrabold text-white bg-[#0b3b44] rounded-full border-2 border-[#0b3b44] shadow-[4px_4px_0_0_rgba(11,59,68,0.3)] hover:-translate-y-0.5 transition-all">
                   Break it with us
                 </Link>
                 <button
                   onClick={emailReport}
                   disabled={reportSent}
-                  className="px-8 py-4 text-[12px] uppercase tracking-[0.18em] font-sans font-extrabold text-[#0d0d0d] bg-white rounded-full border-2 border-[#0d0d0d] shadow-[4px_4px_0_0_#0d0d0d] hover:-translate-y-0.5 disabled:opacity-60 transition-all"
+                  className="px-8 py-4 text-[12px] uppercase tracking-[0.18em] font-sans font-extrabold text-[#0b3b44] bg-white rounded-full border-2 border-[#0b3b44] shadow-[4px_4px_0_0_#0b3b44] hover:-translate-y-0.5 disabled:opacity-60 transition-all"
                 >
                   {reportSent ? 'Sent to your inbox ✓' : 'Email me this'}
                 </button>
               </div>
-              <button onClick={reset} className="mt-5 text-[10px] uppercase tracking-[0.25em] font-mono text-[#0d0d0d]/40 hover:text-[#0d0d0d]">Break another →</button>
+              <button onClick={reset} className="mt-5 text-[10px] uppercase tracking-[0.25em] font-mono text-[#0b3b44]/40 hover:text-[#0b3b44]">Break another →</button>
             </div>
           </div>
         )}

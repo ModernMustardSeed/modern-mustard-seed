@@ -16,7 +16,7 @@ function RotatingWord() {
     return () => clearInterval(id);
   }, []);
   return (
-    <span key={i} className="inline-block font-display italic font-black text-[#ffd400] text-2xl md:text-3xl tracking-tight">
+    <span key={i} className="inline-block font-display italic font-black text-[#f5b700] text-2xl md:text-3xl tracking-tight">
       {ERA_WORDS[i]}
     </span>
   );
@@ -26,13 +26,13 @@ function RotatingWord() {
 export function Ticker({ reverse = false }: { reverse?: boolean }) {
   const line = 'SHIP MORE // DESIGN MORE // IDEATE MORE // COWORK WITH CLAUDE // ';
   return (
-    <div className="relative overflow-hidden border-y-2 border-[#0d0d0d] bg-[#ffd400] py-2.5 select-none" aria-hidden>
+    <div className="relative overflow-hidden border-y-2 border-[#0b3b44] bg-[#f5b700] py-2.5 select-none" aria-hidden>
       <style>{`
         @keyframes mm-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
         @media (prefers-reduced-motion: reduce) { .mm-marquee { animation: none !important; } }
       `}</style>
       <div
-        className="mm-marquee whitespace-nowrap font-mono font-bold text-[13px] tracking-[0.12em] text-[#0d0d0d]"
+        className="mm-marquee whitespace-nowrap font-mono font-bold text-[13px] tracking-[0.12em] text-[#0b3b44]"
         style={{ animation: `mm-marquee 28s linear infinite${reverse ? ' reverse' : ''}`, width: 'max-content' }}
       >
         {line.repeat(8)}
@@ -49,13 +49,13 @@ export function MethodSection() {
     { n: '03', title: 'You keep the multiplier', body: 'XP and streaks are the game. The prize is the skill: after four tracks you run Claude like the studio does, on everything, forever.' },
   ];
   return (
-    <section className="bg-[#f1ede4] py-20 md:py-28">
+    <section className="bg-[#fbf5ea] py-20 md:py-28">
       <div className="max-w-6xl mx-auto px-6">
         <Reveal variant="eyebrow">
-          <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#d0241b] uppercase">The method // How it plays</p>
+          <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#0a7c78] uppercase">The method // How it plays</p>
         </Reveal>
         <Reveal variant="slam" delay={120}>
-          <h2 className="font-display italic font-extrabold text-4xl md:text-6xl text-[#0d0d0d] mt-3 max-w-3xl leading-[1.02]">
+          <h2 className="font-display italic font-extrabold text-4xl md:text-6xl text-[#0b3b44] mt-3 max-w-3xl leading-[1.02]">
             A coach, a game, and a machine that builds.
           </h2>
         </Reveal>
@@ -63,9 +63,9 @@ export function MethodSection() {
           {beats.map((b, i) => (
             <Reveal key={b.n} variant="rise" delay={160 + i * 120}>
               <div className="pop-card p-7 rounded-none h-full">
-                <span className="font-mono font-bold text-2xl text-[#ffd400]" style={{ textShadow: '1.5px 1.5px 0 #0d0d0d' }}>{b.n}</span>
-                <h3 className="font-display font-extrabold text-xl text-[#0d0d0d] mt-3">{b.title}</h3>
-                <p className="font-sans text-sm text-[#0d0d0d]/75 mt-2 leading-relaxed">{b.body}</p>
+                <span className="font-mono font-bold text-2xl text-[#f5b700]" style={{ textShadow: '1.5px 1.5px 0 #0b3b44' }}>{b.n}</span>
+                <h3 className="font-display font-extrabold text-xl text-[#0b3b44] mt-3">{b.title}</h3>
+                <p className="font-sans text-sm text-[#0b3b44]/75 mt-2 leading-relaxed">{b.body}</p>
               </div>
             </Reveal>
           ))}
@@ -78,13 +78,13 @@ export function MethodSection() {
 /** The machine, running: a real Claude Code session replayed in a midnight pane. */
 export function ReplaySection() {
   return (
-    <section className="bg-[#f1ede4] pb-20 md:pb-28">
+    <section className="bg-[#fbf5ea] pb-20 md:pb-28">
       <div className="max-w-4xl mx-auto px-6">
         <Reveal variant="eyebrow">
-          <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#d0241b] uppercase">The machine // A real session, replayed</p>
+          <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#0a7c78] uppercase">The machine // A real session, replayed</p>
         </Reveal>
         <Reveal variant="slam" delay={120}>
-          <h2 className="font-display italic font-extrabold text-4xl md:text-6xl text-[#0d0d0d] mt-3 leading-[1.02] mb-10">
+          <h2 className="font-display italic font-extrabold text-4xl md:text-6xl text-[#0b3b44] mt-3 leading-[1.02] mb-10">
             This is what an evening looks like.
           </h2>
         </Reveal>
@@ -99,46 +99,46 @@ export function ReplaySection() {
 /** The four track cabinet cards. Desktop: snap rail bleeding right. Mobile: stack. */
 export function TrackRail() {
   return (
-    <section className="bg-[#f1ede4] pb-20 md:pb-28 overflow-hidden">
+    <section className="bg-[#fbf5ea] pb-20 md:pb-28 overflow-hidden">
       <div className="max-w-6xl mx-auto px-6">
         <Reveal variant="eyebrow">
-          <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#d0241b] uppercase">Four tracks // 28 missions // 4 boss fights</p>
+          <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#0a7c78] uppercase">Four tracks // 28 missions // 4 boss fights</p>
         </Reveal>
         <Reveal variant="slam" delay={120}>
-          <h2 className="font-display italic font-extrabold text-4xl md:text-6xl text-[#0d0d0d] mt-3 leading-[1.02]">Pick your cabinet.</h2>
+          <h2 className="font-display italic font-extrabold text-4xl md:text-6xl text-[#0b3b44] mt-3 leading-[1.02]">Pick your cabinet.</h2>
         </Reveal>
       </div>
       <div className="mt-10 md:pl-[max(1.5rem,calc((100vw-72rem)/2+1.5rem))]">
         <div className="flex flex-col md:flex-row gap-6 px-6 md:px-0 md:overflow-x-auto md:snap-x md:snap-mandatory md:pb-6 md:pr-12 mm-rail">
           <style>{`
             .mm-rail::-webkit-scrollbar { height: 8px; }
-            .mm-rail::-webkit-scrollbar-track { background: #0d0d0d22; }
-            .mm-rail::-webkit-scrollbar-thumb { background: #ffd400; border: 1px solid #0d0d0d; }
+            .mm-rail::-webkit-scrollbar-track { background: #0b3b4422; }
+            .mm-rail::-webkit-scrollbar-thumb { background: #f5b700; border: 1px solid #0b3b44; }
           `}</style>
           {tracks.map((t, i) => (
             <div
               key={t.slug}
-              className="md:snap-start md:shrink-0 md:w-[380px] bg-white border-2 border-[#0d0d0d] shadow-[6px_6px_0_0_#0d0d0d] p-7 flex flex-col"
+              className="md:snap-start md:shrink-0 md:w-[380px] bg-white border-2 border-[#0b3b44] shadow-[6px_6px_0_0_#0b3b44] p-7 flex flex-col"
             >
               <div className="flex items-center justify-between">
-                <span className="font-mono font-bold text-[11px] tracking-[0.14em]" style={{ color: t.color === '#ffd400' ? '#8A6A00' : t.color }}>
+                <span className="font-mono font-bold text-[11px] tracking-[0.14em]" style={{ color: t.color === '#f5b700' ? '#8A6A00' : t.color }}>
                   [ TRACK 0{i + 1}/04 ]
                 </span>
-                <span className="font-mono font-bold text-[10px] text-[#0d0d0d]/50">{t.missions.length} MISSIONS</span>
+                <span className="font-mono font-bold text-[10px] text-[#0b3b44]/50">{t.missions.length} MISSIONS</span>
               </div>
-              <h3 className="font-display italic font-extrabold text-3xl text-[#0d0d0d] mt-4">{t.name}</h3>
-              <p className="font-sans text-sm text-[#0d0d0d]/75 mt-2 leading-relaxed flex-1">{t.tagline}</p>
-              <div className="mt-6 border-t-2 border-dashed border-[#0d0d0d]/20 pt-4">
-                <p className="font-mono font-bold text-[10px] tracking-wider text-[#d0241b] uppercase">Boss mission</p>
-                <p className="font-sans text-sm font-medium text-[#0d0d0d] mt-1">{t.bossMission}</p>
+              <h3 className="font-display italic font-extrabold text-3xl text-[#0b3b44] mt-4">{t.name}</h3>
+              <p className="font-sans text-sm text-[#0b3b44]/75 mt-2 leading-relaxed flex-1">{t.tagline}</p>
+              <div className="mt-6 border-t-2 border-dashed border-[#0b3b44]/20 pt-4">
+                <p className="font-mono font-bold text-[10px] tracking-wider text-[#0a7c78] uppercase">Boss mission</p>
+                <p className="font-sans text-sm font-medium text-[#0b3b44] mt-1">{t.bossMission}</p>
               </div>
               <div className="mt-5 flex flex-wrap gap-2">
                 {t.missions.slice(0, 3).map((m) => (
-                  <span key={m.id} className="font-mono text-[10px] font-bold text-[#0d0d0d] border border-[#0d0d0d] px-2 py-1 bg-[#f1ede4]">
+                  <span key={m.id} className="font-mono text-[10px] font-bold text-[#0b3b44] border border-[#0b3b44] px-2 py-1 bg-[#fbf5ea]">
                     {m.title}
                   </span>
                 ))}
-                <span className="font-mono text-[10px] font-bold px-2 py-1 text-[#0d0d0d]/50">+{t.missions.length - 3} more</span>
+                <span className="font-mono text-[10px] font-bold px-2 py-1 text-[#0b3b44]/50">+{t.missions.length - 3} more</span>
               </div>
             </div>
           ))}
@@ -157,19 +157,19 @@ export function TrackRail() {
  */
 export function EraOfEntrepreneur() {
   return (
-    <section className="relative bg-[#0d0d0d] border-y-2 border-[#0d0d0d] py-24 md:py-32 overflow-hidden">
+    <section className="relative bg-[#0b3b44] border-y-2 border-[#0b3b44] py-24 md:py-32 overflow-hidden">
       <div
         className="absolute inset-0 opacity-[0.14]"
-        style={{ backgroundImage: 'radial-gradient(#ffd400 1.6px, transparent 1.8px)', backgroundSize: '20px 20px' }}
+        style={{ backgroundImage: 'radial-gradient(#f5b700 1.6px, transparent 1.8px)', backgroundSize: '20px 20px' }}
         aria-hidden
       />
       <div className="relative max-w-4xl mx-auto px-6 text-center">
         <Reveal variant="eyebrow">
-          <p className="font-mono font-bold text-[11px] tracking-[0.28em] text-[#d0241b] uppercase">A manifesto</p>
+          <p className="font-mono font-bold text-[11px] tracking-[0.28em] text-[#0a7c78] uppercase">A manifesto</p>
         </Reveal>
         <Reveal variant="slam" delay={100}>
           <h2 className="font-display italic font-extrabold text-white leading-[0.98] tracking-tight text-4xl md:text-6xl lg:text-7xl mt-5">
-            The <span className="text-[#ffd400]">era</span> of the <span className="text-[#ffd400]">entrepreneur</span>
+            The <span className="text-[#f5b700]">era</span> of the <span className="text-[#f5b700]">entrepreneur</span>
           </h2>
         </Reveal>
         <Reveal variant="rise" delay={220}>
@@ -191,7 +191,7 @@ export function EraOfEntrepreneur() {
         <Reveal variant="drop" delay={440}>
           <a
             href="#levels"
-            className="inline-block mt-10 font-sans font-bold bg-[#ffd400] text-[#0d0d0d] border-2 border-[#0d0d0d] shadow-[5px_5px_0_0_#FFDD55] px-8 py-3.5 hover:translate-y-[2px] hover:shadow-[3px_3px_0_0_#FFDD55] transition-all"
+            className="inline-block mt-10 font-sans font-bold bg-[#f5b700] text-[#0b3b44] border-2 border-[#0b3b44] shadow-[5px_5px_0_0_#ffc933] px-8 py-3.5 hover:translate-y-[2px] hover:shadow-[3px_3px_0_0_#ffc933] transition-all"
           >
             Get your tools
           </a>
@@ -221,18 +221,18 @@ export function IntegritySection() {
     },
   ];
   return (
-    <section className="bg-[#f1ede4] py-20 md:py-24">
+    <section className="bg-[#fbf5ea] py-20 md:py-24">
       <div className="max-w-5xl mx-auto px-6">
         <Reveal variant="eyebrow">
-          <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#d0241b] uppercase">Where we stand</p>
+          <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#0a7c78] uppercase">Where we stand</p>
         </Reveal>
         <Reveal variant="slam" delay={100}>
-          <h2 className="font-display italic font-extrabold text-4xl md:text-5xl text-[#0d0d0d] mt-3 max-w-2xl leading-[1.05]">
+          <h2 className="font-display italic font-extrabold text-4xl md:text-5xl text-[#0b3b44] mt-3 max-w-2xl leading-[1.05]">
             Integrity with agentic tools is not a footnote here.
           </h2>
         </Reveal>
         <Reveal variant="rise" delay={200}>
-          <p className="font-sans text-[#0d0d0d]/75 max-w-2xl mt-5 leading-relaxed">
+          <p className="font-sans text-[#0b3b44]/75 max-w-2xl mt-5 leading-relaxed">
             A coach who only cared about speed would teach you shortcuts. Ours cares about the name on the
             work. MUSTARD MODE is built on three rules that do not bend, whether you are shipping a hobby
             project or something your business depends on.
@@ -242,9 +242,9 @@ export function IntegritySection() {
           {principles.map((p, i) => (
             <Reveal key={p.t} variant="rise" delay={260 + i * 120}>
               <div className="pop-card rounded-none p-6 h-full">
-                <span className="font-mono font-bold text-[10px] tracking-wider text-[#c8201a]">[ 0{i + 1} ]</span>
-                <h3 className="font-display font-extrabold text-lg text-[#0d0d0d] mt-2">{p.t}</h3>
-                <p className="font-sans text-[13px] text-[#0d0d0d]/75 mt-2 leading-relaxed">{p.d}</p>
+                <span className="font-mono font-bold text-[10px] tracking-wider text-[#0a7c78]">[ 0{i + 1} ]</span>
+                <h3 className="font-display font-extrabold text-lg text-[#0b3b44] mt-2">{p.t}</h3>
+                <p className="font-sans text-[13px] text-[#0b3b44]/75 mt-2 leading-relaxed">{p.d}</p>
               </div>
             </Reveal>
           ))}
@@ -262,12 +262,12 @@ export function ProofSection() {
     { n: '1', label: 'method. The one Modern Mustard Seed runs every single day. Now with a coach.' },
   ];
   return (
-    <section className="bg-[#0d0d0d] py-20 md:py-28 border-y-2 border-[#0d0d0d]">
+    <section className="bg-[#0b3b44] py-20 md:py-28 border-y-2 border-[#0b3b44]">
       <div className="max-w-6xl mx-auto px-6">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
           <div>
             <Reveal variant="eyebrow">
-              <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#FFDD55] uppercase">Proof // Not theory</p>
+              <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#ffc933] uppercase">Proof // Not theory</p>
             </Reveal>
             <Reveal variant="slam" delay={120}>
               <h2 className="font-display italic font-extrabold text-4xl md:text-6xl text-white mt-3 leading-[1.02] max-w-2xl">
@@ -288,7 +288,7 @@ export function ProofSection() {
         <div className="grid md:grid-cols-3 gap-6 mt-12">
           {stats.map((s) => (
             <div key={s.label} className="border-2 border-white/15 bg-[#1F1F1F] p-6">
-              <span className="font-mono font-bold text-5xl text-[#ffd400]">{s.n}</span>
+              <span className="font-mono font-bold text-5xl text-[#f5b700]">{s.n}</span>
               <p className="font-sans text-sm text-white/65 mt-3 leading-relaxed">{s.label}</p>
             </div>
           ))}

@@ -111,7 +111,7 @@ function websitesJsonLd() {
 
 export default function WebsitesPage() {
   return (
-    <div className="min-h-screen bg-[#f1ede4] text-[#0d0d0d]">
+    <div className="min-h-screen bg-[#fbf5ea] text-[#0b3b44]">
       <JsonLd data={websitesJsonLd()} />
 
       <section className={`${ps.hero} ${ps.withIssue}`}>
@@ -124,7 +124,7 @@ export default function WebsitesPage() {
                 Not a brochure. A website that <em>works.</em>
               </h1>
             <p className="mt-5 font-body text-base leading-relaxed">Designed and built by Modern Mustard Seed, a boutique design and agentic systems studio in Kalispell, Montana, working with clients nationwide. <Link href="/agentic-websites" className="underline font-bold">See how our agentic websites connect the page and the business.</Link></p>
-              <p className="font-body text-[17px] text-[#0d0d0d]/75 mt-5 leading-relaxed">
+              <p className="font-body text-[17px] text-[#0b3b44]/75 mt-5 leading-relaxed">
                 Identity and art direction, funnels and SEO baked in, your domain and hosting handled.
                 It captures the lead and follows up while you sleep, and it answers the phone too the
                 day you commission the voice agent. You own every line of it.
@@ -143,21 +143,21 @@ export default function WebsitesPage() {
                   See the work
                 </Link>
               </div>
-              <p className="font-body text-[13px] text-[#0d0d0d]/70 mt-4">
+              <p className="font-body text-[13px] text-[#0b3b44]/70 mt-4">
                 A boutique design and agentic systems studio in Kalispell, Montana. Every inquiry is answered personally, inside one business day.
               </p>
             </div>
 
             {/* Hero visual: a REAL site we built, in living color. */}
             <div className={ps.stage}>
-              <div className="rounded-2xl border-2 border-[#0d0d0d] bg-white shadow-[8px_8px_0_0_#0d0d0d] overflow-hidden">
-                <div className="flex items-center gap-2 px-4 h-10 border-b-2 border-[#0d0d0d] bg-[#f1ede4]">
+              <div className="rounded-2xl border-2 border-[#0b3b44] bg-white shadow-[8px_8px_0_0_#0b3b44] overflow-hidden">
+                <div className="flex items-center gap-2 px-4 h-10 border-b-2 border-[#0b3b44] bg-[#fbf5ea]">
                   <span className="flex gap-1.5">
-                    {['#ff3b2f', '#ffd400', '#0d0d0d'].map((c) => (
-                      <span key={c} className="h-3 w-3 rounded-full border border-[#0d0d0d]" style={{ background: c }} />
+                    {['#ff6f59', '#f5b700', '#0b3b44'].map((c) => (
+                      <span key={c} className="h-3 w-3 rounded-full border border-[#0b3b44]" style={{ background: c }} />
                     ))}
                   </span>
-                  <span className="ml-2 flex-1 truncate rounded-full border border-[#0d0d0d]/30 bg-white px-3 py-1 font-mono text-[11px] text-[#0d0d0d]/65">
+                  <span className="ml-2 flex-1 truncate rounded-full border border-[#0b3b44]/30 bg-white px-3 py-1 font-mono text-[11px] text-[#0b3b44]/65">
                     {HERO_FILM.host}
                   </span>
                 </div>
@@ -170,13 +170,13 @@ export default function WebsitesPage() {
                     poster={HERO_FILM.poster}
                     alt={`The homepage of ${HERO_FILM.brand}, a honey company website designed and built from scratch by Modern Mustard Seed, scrolling from the hero through the shelf to the booking form`}
                   />
-                  <div className="absolute top-3 right-3 max-w-[62%] rounded-xl border-2 border-[#0d0d0d] bg-[#f1ede4] px-3.5 py-2 shadow-[3px_3px_0_0_#ffd400]">
+                  <div className="absolute top-3 right-3 max-w-[62%] rounded-xl border-2 border-[#0b3b44] bg-[#fbf5ea] px-3.5 py-2 shadow-[3px_3px_0_0_#f5b700]">
                     <p className="font-mono text-[8px] uppercase tracking-[0.16em] text-[#C4160B] font-bold">What it does</p>
-                    <p className="font-sans text-[11.5px] font-bold text-[#0d0d0d] mt-0.5 leading-snug">Ends on a booking form, not a phone number</p>
+                    <p className="font-sans text-[11.5px] font-bold text-[#0b3b44] mt-0.5 leading-snug">Ends on a booking form, not a phone number</p>
                   </div>
                 </div>
               </div>
-              <p className="font-body text-[13px] text-[#0d0d0d]/70 mt-3 pr-24 md:pr-32">
+              <p className="font-body text-[13px] text-[#0b3b44]/70 mt-3 pr-24 md:pr-32">
                 {HERO_FILM.brand}, designed and built from scratch. Every scroll, every reveal, and the
                 booking form at the end.
               </p>
@@ -203,7 +203,7 @@ export default function WebsitesPage() {
           <h2 className="font-display italic font-extrabold text-4xl md:text-5xl mt-3 leading-[1.02] max-w-3xl">
             The same site, dead or alive.
           </h2>
-          <p className="font-body text-[15px] text-[#0d0d0d]/70 mt-4 max-w-2xl leading-relaxed mb-9">
+          <p className="font-body text-[15px] text-[#0b3b44]/70 mt-4 max-w-2xl leading-relaxed mb-9">
             Most small-business websites are a pretty brochure. Ours is the same beauty, wired to work. Flip the switch.
           </p>
           <EngineToggle />
@@ -221,11 +221,11 @@ export default function WebsitesPage() {
             {INCLUDED.map((m) => (
               <div
                 key={m.name}
-                className="flex flex-col border-2 border-[#0d0d0d] bg-white rounded-2xl shadow-[5px_5px_0_0_#0d0d0d] p-6 transition-transform hover:-translate-y-1"
+                className="flex flex-col border-2 border-[#0b3b44] bg-white rounded-2xl shadow-[5px_5px_0_0_#0b3b44] p-6 transition-transform hover:-translate-y-1"
               >
                 <span className="text-2xl leading-none" aria-hidden>{m.icon}</span>
                 <h3 className="font-display font-extrabold text-lg mt-2.5">{m.name}</h3>
-                <p className="font-body text-[13px] text-[#0d0d0d]/70 mt-1.5 leading-relaxed">{m.desc}</p>
+                <p className="font-body text-[13px] text-[#0b3b44]/70 mt-1.5 leading-relaxed">{m.desc}</p>
               </div>
             ))}
           </div>
@@ -233,15 +233,15 @@ export default function WebsitesPage() {
 
         {/* ── The voice agent is its own product, not part of the site ── */}
         <section>
-          <div className="grid lg:grid-cols-12 gap-8 lg:gap-10 items-center border-2 border-[#0d0d0d] bg-[#0d0d0d] rounded-2xl shadow-[8px_8px_0_0_#ffd400] p-7 sm:p-10">
+          <div className="grid lg:grid-cols-12 gap-8 lg:gap-10 items-center border-2 border-[#0b3b44] bg-[#0b3b44] rounded-2xl shadow-[8px_8px_0_0_#f5b700] p-7 sm:p-10">
             <div className="lg:col-span-7">
-              <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#ffd400] uppercase">
+              <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#f5b700] uppercase">
                 A second discipline // Commissioned separately
               </p>
-              <h2 className="font-display italic font-extrabold text-3xl md:text-[2.75rem] mt-3 leading-[1.04] text-[#f1ede4]">
+              <h2 className="font-display italic font-extrabold text-3xl md:text-[2.75rem] mt-3 leading-[1.04] text-[#fbf5ea]">
                 Want it to answer the phone? Add the voice agent.
               </h2>
-              <p className="font-body text-[15px] text-[#f1ede4]/75 mt-4 leading-relaxed">
+              <p className="font-body text-[15px] text-[#fbf5ea]/75 mt-4 leading-relaxed">
                 Straight answer: the voice agent is not part of the website. It is its own product, and it bolts onto
                 any site. It answers your calls 24/7, qualifies the caller, books the job, and texts you the
                 details before you have put your phone down.
@@ -253,8 +253,8 @@ export default function WebsitesPage() {
                   'Keeps the number you already have',
                   'Commission both and they are built as one thing',
                 ].map((f) => (
-                  <li key={f} className="flex items-start gap-2.5 font-body text-[13.5px] text-[#f1ede4]/85">
-                    <span className="mt-[7px] h-1.5 w-1.5 rounded-full bg-[#ffd400] shrink-0" aria-hidden />
+                  <li key={f} className="flex items-start gap-2.5 font-body text-[13.5px] text-[#fbf5ea]/85">
+                    <span className="mt-[7px] h-1.5 w-1.5 rounded-full bg-[#f5b700] shrink-0" aria-hidden />
                     {f}
                   </li>
                 ))}
@@ -262,29 +262,29 @@ export default function WebsitesPage() {
             </div>
 
             <div className="lg:col-span-5">
-              <div className="border-2 border-[#0d0d0d] bg-[#f1ede4] rounded-2xl shadow-[5px_5px_0_0_#C4160B] p-6">
+              <div className="border-2 border-[#0b3b44] bg-[#fbf5ea] rounded-2xl shadow-[5px_5px_0_0_#C4160B] p-6">
                 <span className="font-mono font-bold text-[10px] uppercase tracking-[0.2em] text-[#C4160B]">
                   The Voice Agent
                 </span>
-                <p className="font-display italic font-extrabold text-[22px] mt-2.5 text-[#0d0d0d] leading-tight">
+                <p className="font-display italic font-extrabold text-[22px] mt-2.5 text-[#0b3b44] leading-tight">
                   It answers, it qualifies, it books.
                 </p>
-                <p className="font-body text-[12.5px] text-[#0d0d0d]/70 mt-2 leading-relaxed">
+                <p className="font-body text-[12.5px] text-[#0b3b44]/70 mt-2 leading-relaxed">
                   Trained on your services, your hours, your pricing, and the questions your callers
                   actually ask. It keeps the number you already have.
                 </p>
-                <div className="mt-4 pt-4 border-t-2 border-dashed border-[#0d0d0d]/25">
+                <div className="mt-4 pt-4 border-t-2 border-dashed border-[#0b3b44]/25">
                   <p className="font-mono font-bold text-[10px] uppercase tracking-[0.16em] text-[#8f6600]">
                     Commissioned together
                   </p>
-                  <p className="font-body text-[13px] text-[#0d0d0d]/80 mt-1.5 leading-relaxed">
+                  <p className="font-body text-[13px] text-[#0b3b44]/80 mt-1.5 leading-relaxed">
                     Site and agent built off one brain becomes the Talking Website. The answer a visitor
                     reads is the answer a midnight caller hears.
                   </p>
                 </div>
                 <Link
                   href="/voice-agents"
-                  className="mt-5 block text-center border-2 border-[#0d0d0d] bg-[#ffd400] text-[#0d0d0d] rounded-full px-5 py-3.5 font-sans font-extrabold text-[11px] uppercase tracking-[0.16em] shadow-[4px_4px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-all"
+                  className="mt-5 block text-center border-2 border-[#0b3b44] bg-[#f5b700] text-[#0b3b44] rounded-full px-5 py-3.5 font-sans font-extrabold text-[11px] uppercase tracking-[0.16em] shadow-[4px_4px_0_0_#0b3b44] hover:-translate-y-0.5 transition-all"
                 >
                   Hear it answer
                 </Link>
@@ -303,7 +303,7 @@ export default function WebsitesPage() {
               <h2 className="font-display italic font-extrabold text-4xl md:text-5xl mt-3 leading-[1.02]">
                 Need to sell? We build the whole store.
               </h2>
-              <p className="font-body text-[15px] text-[#0d0d0d]/75 mt-4 leading-relaxed">
+              <p className="font-body text-[15px] text-[#0b3b44]/75 mt-4 leading-relaxed">
                 A real online store, not a plugin bolted onto a template. Full catalog, cart, and secure checkout,
                 inventory and shipping wired up, and an orders board that shows every sale the moment it lands.
                 Designed to look like the brand, built to actually sell.
@@ -317,24 +317,24 @@ export default function WebsitesPage() {
                   'Discounts, email, abandoned-cart',
                   'You own the store and the data',
                 ].map((f) => (
-                  <li key={f} className="flex items-start gap-2.5 font-body text-[13.5px] text-[#0d0d0d]/80">
+                  <li key={f} className="flex items-start gap-2.5 font-body text-[13.5px] text-[#0b3b44]/80">
                     <span className="mt-[7px] h-1.5 w-1.5 rounded-full bg-[#C4160B] shrink-0" aria-hidden />
                     {f}
                   </li>
                 ))}
               </ul>
-              <div className="mt-7 flex items-center gap-3 border-2 border-[#0d0d0d] bg-white rounded-xl px-4 py-3 shadow-[4px_4px_0_0_#0d0d0d] max-w-md">
+              <div className="mt-7 flex items-center gap-3 border-2 border-[#0b3b44] bg-white rounded-xl px-4 py-3 shadow-[4px_4px_0_0_#0b3b44] max-w-md">
                 <span className="font-mono font-bold text-[10px] uppercase tracking-[0.16em] text-[#C4160B] shrink-0">
                   Its own engagement
                 </span>
-                <span className="font-body text-[12.5px] text-[#0d0d0d]/75 leading-snug">
+                <span className="font-body text-[12.5px] text-[#0b3b44]/75 leading-snug">
                   More than a site. Scoped around your catalog and quoted privately.
                 </span>
               </div>
               <div className="mt-7">
                 <Link
                   href="/book"
-                  className="inline-flex items-center gap-2 bg-[#0d0d0d] text-[#ffd400] border-2 border-[#0d0d0d] rounded-full px-7 py-4 font-sans font-bold uppercase tracking-[0.14em] text-[12px] shadow-[5px_5px_0_0_#ffd400] hover:-translate-y-0.5 transition-transform"
+                  className="inline-flex items-center gap-2 bg-[#0b3b44] text-[#f5b700] border-2 border-[#0b3b44] rounded-full px-7 py-4 font-sans font-bold uppercase tracking-[0.14em] text-[12px] shadow-[5px_5px_0_0_#f5b700] hover:-translate-y-0.5 transition-transform"
                 >
                   Scope my store →
                 </Link>
@@ -343,14 +343,14 @@ export default function WebsitesPage() {
 
             {/* The store, in living color (display only) */}
             <div className="order-1 lg:order-2">
-              <div className="rounded-2xl border-2 border-[#0d0d0d] bg-white shadow-[8px_8px_0_0_#0d0d0d] overflow-hidden">
-                <div className="flex items-center gap-2 px-4 h-10 border-b-2 border-[#0d0d0d] bg-[#f1ede4]">
+              <div className="rounded-2xl border-2 border-[#0b3b44] bg-white shadow-[8px_8px_0_0_#0b3b44] overflow-hidden">
+                <div className="flex items-center gap-2 px-4 h-10 border-b-2 border-[#0b3b44] bg-[#fbf5ea]">
                   <span className="flex gap-1.5">
-                    {['#ff3b2f', '#ffd400', '#0d0d0d'].map((c) => (
-                      <span key={c} className="h-3 w-3 rounded-full border border-[#0d0d0d]" style={{ background: c }} />
+                    {['#ff6f59', '#f5b700', '#0b3b44'].map((c) => (
+                      <span key={c} className="h-3 w-3 rounded-full border border-[#0b3b44]" style={{ background: c }} />
                     ))}
                   </span>
-                  <span className="ml-2 flex-1 truncate rounded-full border border-[#0d0d0d]/30 bg-white px-3 py-1 font-mono text-[11px] text-[#0d0d0d]/65">
+                  <span className="ml-2 flex-1 truncate rounded-full border border-[#0b3b44]/30 bg-white px-3 py-1 font-mono text-[11px] text-[#0b3b44]/65">
                     crossandcovenant.co
                   </span>
                 </div>
@@ -363,13 +363,13 @@ export default function WebsitesPage() {
                     sizes="(min-width: 1024px) 50vw, 100vw"
                     className="block w-full h-auto"
                   />
-                  <div className="absolute top-3 right-3 max-w-[62%] rounded-xl border-2 border-[#0d0d0d] bg-[#f1ede4] px-3.5 py-2 shadow-[3px_3px_0_0_#ffd400]">
+                  <div className="absolute top-3 right-3 max-w-[62%] rounded-xl border-2 border-[#0b3b44] bg-[#fbf5ea] px-3.5 py-2 shadow-[3px_3px_0_0_#f5b700]">
                     <p className="font-mono text-[8px] uppercase tracking-[0.16em] text-[#C4160B] font-bold">New order</p>
-                    <p className="font-sans text-[11.5px] font-bold text-[#0d0d0d] mt-0.5 leading-snug">Filed to your orders board</p>
+                    <p className="font-sans text-[11.5px] font-bold text-[#0b3b44] mt-0.5 leading-snug">Filed to your orders board</p>
                   </div>
                 </div>
               </div>
-              <p className="font-body text-[13px] text-[#0d0d0d]/70 mt-3">
+              <p className="font-body text-[13px] text-[#0b3b44]/70 mt-3">
                 A real store we built for Cross + Covenant. 80+ pieces, cart to checkout, every order on one board.
               </p>
             </div>
@@ -389,7 +389,7 @@ export default function WebsitesPage() {
           <h2 className="font-display italic font-extrabold text-4xl md:text-5xl mt-3 leading-[1.02] max-w-3xl">
             One price, agreed in writing, before anything is built.
           </h2>
-          <p className="font-body text-[15px] text-[#0d0d0d]/70 mt-4 max-w-2xl leading-relaxed">
+          <p className="font-body text-[15px] text-[#0b3b44]/70 mt-4 max-w-2xl leading-relaxed">
             There is no price list here, because a focused site for one town and a full engine with
             booking, a CRM, and a store are not the same piece of work. What follows instead is
             exactly how the quote gets made.
@@ -415,32 +415,32 @@ export default function WebsitesPage() {
             ].map((c) => (
               <div
                 key={c.k}
-                className="flex flex-col border-2 border-[#0d0d0d] bg-white rounded-2xl shadow-[6px_6px_0_0_#0d0d0d] p-7 md:p-8"
+                className="flex flex-col border-2 border-[#0b3b44] bg-white rounded-2xl shadow-[6px_6px_0_0_#0b3b44] p-7 md:p-8"
               >
                 <span className="font-mono font-bold text-[10px] uppercase tracking-[0.2em] text-[#C4160B]">{c.k}</span>
                 <h3 className="font-display italic font-extrabold text-2xl mt-2 leading-tight">{c.h}</h3>
-                <p className="font-body text-[13.5px] text-[#0d0d0d]/75 mt-3 leading-relaxed flex-1">{c.d}</p>
+                <p className="font-body text-[13.5px] text-[#0b3b44]/75 mt-3 leading-relaxed flex-1">{c.d}</p>
               </div>
             ))}
           </div>
 
-          <div className="mt-8 border-2 border-[#0d0d0d] bg-[#ffd400] rounded-2xl shadow-[8px_8px_0_0_#0d0d0d] p-7 md:p-9">
+          <div className="mt-8 border-2 border-[#0b3b44] bg-[#f5b700] rounded-2xl shadow-[8px_8px_0_0_#0b3b44] p-7 md:p-9">
             <div className="flex flex-col md:flex-row md:items-center gap-6 md:gap-10">
               <div className="flex-1">
-                <p className="font-mono font-bold text-[10px] uppercase tracking-[0.2em] text-[#0d0d0d]">
+                <p className="font-mono font-bold text-[10px] uppercase tracking-[0.2em] text-[#0b3b44]">
                   Start here
                 </p>
-                <p className="font-display italic font-extrabold text-2xl md:text-[1.9rem] mt-2 leading-[1.1] text-[#0d0d0d]">
+                <p className="font-display italic font-extrabold text-2xl md:text-[1.9rem] mt-2 leading-[1.1] text-[#0b3b44]">
                   See what your site is costing you first.
                 </p>
-                <p className="font-body text-[13.5px] text-[#0d0d0d]/80 mt-3 leading-relaxed max-w-xl">
+                <p className="font-body text-[13.5px] text-[#0b3b44]/80 mt-3 leading-relaxed max-w-xl">
                   The audit takes sixty seconds, names the one thing quietly leaking the most, and
                   the answer is yours whether or not you ever hire us.
                 </p>
               </div>
               <Link
                 href="/book"
-                className="shrink-0 text-center border-2 border-[#0d0d0d] bg-[#0d0d0d] text-[#ffd400] rounded-full px-8 py-4 font-sans font-extrabold text-[11px] uppercase tracking-[0.16em] shadow-[4px_4px_0_0_#f1ede4] hover:-translate-y-0.5 transition-all"
+                className="shrink-0 text-center border-2 border-[#0b3b44] bg-[#0b3b44] text-[#f5b700] rounded-full px-8 py-4 font-sans font-extrabold text-[11px] uppercase tracking-[0.16em] shadow-[4px_4px_0_0_#fbf5ea] hover:-translate-y-0.5 transition-all"
               >
                 Begin an engagement
               </Link>
@@ -449,8 +449,8 @@ export default function WebsitesPage() {
         </section>
 
         {/* ── How it works ── */}
-        <section className="bg-[#0d0d0d] border-2 border-[#0d0d0d] rounded-2xl shadow-[8px_8px_0_0_#ffd400] p-7 sm:p-10">
-          <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#ffd400] font-bold">How it works</span>
+        <section className="bg-[#0b3b44] border-2 border-[#0b3b44] rounded-2xl shadow-[8px_8px_0_0_#f5b700] p-7 sm:p-10">
+          <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#f5b700] font-bold">How it works</span>
           <div className="grid sm:grid-cols-3 gap-8 sm:gap-6 mt-6">
             {[
               ['1', 'The conversation', 'You write, Sarah answers herself, and one working session maps the outcome and the constraints. Then a written scope with a set package price and a fixed timeline.'],
@@ -458,16 +458,16 @@ export default function WebsitesPage() {
               ['3', 'Own it, and grow', 'You get the repo, the domain, and every account. Commission the voice agent whenever you want it answering the phone. Changes stay included, permanently.'],
             ].map(([n, t, d]) => (
               <div key={n} className="flex gap-4 sm:block">
-                <span className="font-display text-5xl font-bold text-[#ffd400] leading-none shrink-0">{n}</span>
+                <span className="font-display text-5xl font-bold text-[#f5b700] leading-none shrink-0">{n}</span>
                 <div className="sm:mt-3">
-                  <h3 className="font-display font-bold text-lg text-[#f1ede4] leading-tight">{t}</h3>
-                  <p className="font-body text-[13.5px] text-[#f1ede4]/70 mt-1.5 leading-relaxed">{d}</p>
+                  <h3 className="font-display font-bold text-lg text-[#fbf5ea] leading-tight">{t}</h3>
+                  <p className="font-body text-[13.5px] text-[#fbf5ea]/70 mt-1.5 leading-relaxed">{d}</p>
                 </div>
               </div>
             ))}
           </div>
           <div className="mt-8">
-            <Link href="/work" className="font-sans font-bold text-[12px] uppercase tracking-[0.14em] text-[#ffd400] hover:text-[#f1ede4] transition-colors">
+            <Link href="/work" className="font-sans font-bold text-[12px] uppercase tracking-[0.14em] text-[#f5b700] hover:text-[#fbf5ea] transition-colors">
               See the sites we have shipped →
             </Link>
           </div>
@@ -481,7 +481,7 @@ export default function WebsitesPage() {
           <h2 className="font-display italic font-extrabold text-4xl md:text-5xl mt-3 leading-[1.02] max-w-3xl">
             We build on Next.js. Here is what that gets you.
           </h2>
-          <p className="font-body text-[15px] text-[#0d0d0d]/70 mt-4 max-w-2xl leading-relaxed">
+          <p className="font-body text-[15px] text-[#0b3b44]/70 mt-4 max-w-2xl leading-relaxed">
             The platform question usually stands in for four real ones. Can I keep the tools I use, do I own it, can I
             change it, and can I leave. Yes to all four.
           </p>
@@ -492,13 +492,13 @@ export default function WebsitesPage() {
               ['Change it', 'Edits to what we built are included, before launch and forever after. Send the change, we ship it. No ticket and no charge.'],
               ['Leave whenever', 'No theme license, no plugin subscription, no login of ours to get past. Any developer who works in JavaScript can pick the repo up the day you hand it over.'],
             ].map(([t, d]) => (
-              <div key={t} className="border-2 border-[#0d0d0d] bg-white rounded-2xl shadow-[5px_5px_0_0_#0d0d0d] p-6">
+              <div key={t} className="border-2 border-[#0b3b44] bg-white rounded-2xl shadow-[5px_5px_0_0_#0b3b44] p-6">
                 <h3 className="font-display font-extrabold text-lg leading-tight">{t}</h3>
-                <p className="font-body text-[13px] text-[#0d0d0d]/75 mt-2 leading-relaxed">{d}</p>
+                <p className="font-body text-[13px] text-[#0b3b44]/75 mt-2 leading-relaxed">{d}</p>
               </div>
             ))}
           </div>
-          <p className="font-body text-[13px] text-[#0d0d0d]/70 mt-6">
+          <p className="font-body text-[13px] text-[#0b3b44]/70 mt-6">
             Already on WordPress or Webflow? We move the content over. We do not rebuild inside those tools.
           </p>
         </section>
@@ -513,7 +513,7 @@ export default function WebsitesPage() {
           </h2>
           <div className="mt-10 max-w-3xl mx-auto space-y-4">
             {FAQ.map((f) => (
-              <details key={f.q} className="group rounded-xl border-2 border-[#0d0d0d] bg-white p-5 open:shadow-[4px_4px_0_0_#ffd400] transition-shadow">
+              <details key={f.q} className="group rounded-xl border-2 border-[#0b3b44] bg-white p-5 open:shadow-[4px_4px_0_0_#f5b700] transition-shadow">
                 <summary className="font-display text-lg font-bold cursor-pointer list-none flex items-center justify-between gap-4">
                   {f.q}
                   <span className="flex-shrink-0 text-[#C4160B] transition-transform group-open:rotate-45" aria-hidden>+</span>
@@ -531,18 +531,18 @@ export default function WebsitesPage() {
 
       {/* ── Close ── */}
       <div className="max-w-6xl mx-auto px-6 py-16 lg:py-20">
-        <section className="relative halftone-bg border-2 border-[#0d0d0d] rounded-2xl bg-[#ffd400] p-10 md:p-14 text-center overflow-hidden">
+        <section className="relative halftone-bg border-2 border-[#0b3b44] rounded-2xl bg-[#f5b700] p-10 md:p-14 text-center overflow-hidden">
           <div className="relative">
             <h2 className="font-display italic font-extrabold text-3xl md:text-5xl leading-[1.02]">
               Tell us what you are building.
             </h2>
-            <p className="font-body text-[15px] text-[#0d0d0d]/80 mt-4 max-w-xl mx-auto leading-relaxed">
+            <p className="font-body text-[15px] text-[#0b3b44]/80 mt-4 max-w-xl mx-auto leading-relaxed">
               The business, the problem, and what a good outcome looks like. Sarah reads every inquiry
               herself and answers inside one business day, whether or not it is a fit.
             </p>
             <Link
               href="/book"
-              className="mt-7 inline-block border-2 border-[#0d0d0d] bg-[#0d0d0d] text-[#ffd400] rounded-full px-9 py-4 font-sans font-extrabold text-[12px] uppercase tracking-[0.16em] shadow-[5px_5px_0_0_rgba(13,13,13,0.3)] hover:-translate-y-0.5 transition-all"
+              className="mt-7 inline-block border-2 border-[#0b3b44] bg-[#0b3b44] text-[#f5b700] rounded-full px-9 py-4 font-sans font-extrabold text-[12px] uppercase tracking-[0.16em] shadow-[5px_5px_0_0_rgba(11,59,68,0.3)] hover:-translate-y-0.5 transition-all"
             >
               Begin an engagement →
             </Link>

@@ -21,20 +21,20 @@ function CopyCard({ title, note, content }: { title: string; note?: string; cont
     } catch { /* clipboard blocked */ }
   };
   return (
-    <div className="rounded-2xl border-2 border-[#0d0d0d] bg-white shadow-[5px_5px_0_0_#0d0d0d] overflow-hidden">
-      <div className="flex items-center justify-between gap-3 px-5 py-3 border-b-2 border-[#0d0d0d] bg-[#f1ede4]">
+    <div className="rounded-2xl border-2 border-[#0b3b44] bg-white shadow-[5px_5px_0_0_#0b3b44] overflow-hidden">
+      <div className="flex items-center justify-between gap-3 px-5 py-3 border-b-2 border-[#0b3b44] bg-[#fbf5ea]">
         <div>
-          <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-[#d0241b] font-bold">{title}</p>
-          {note && <p className="font-body text-[11px] text-[#0d0d0d]/55">{note}</p>}
+          <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-[#0a7c78] font-bold">{title}</p>
+          {note && <p className="font-body text-[11px] text-[#0b3b44]/55">{note}</p>}
         </div>
         <button
           onClick={copy}
-          className="shrink-0 text-[10px] uppercase tracking-[0.18em] font-sans font-extrabold text-[#0d0d0d] px-4 py-2 border-2 border-[#0d0d0d] bg-[#ffd400] shadow-[2px_2px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-transform"
+          className="shrink-0 text-[10px] uppercase tracking-[0.18em] font-sans font-extrabold text-[#0b3b44] px-4 py-2 border-2 border-[#0b3b44] bg-[#f5b700] shadow-[2px_2px_0_0_#0b3b44] hover:-translate-y-0.5 transition-transform"
         >
           {done ? 'Copied!' : 'Copy'}
         </button>
       </div>
-      <pre className="p-5 font-mono text-[12px] leading-relaxed text-[#0d0d0d]/85 whitespace-pre-wrap max-h-72 overflow-y-auto">{content}</pre>
+      <pre className="p-5 font-mono text-[12px] leading-relaxed text-[#0b3b44]/85 whitespace-pre-wrap max-h-72 overflow-y-auto">{content}</pre>
     </div>
   );
 }
@@ -72,11 +72,11 @@ export default function PackViewer({ sessionId, pack: initial }: { sessionId: st
   return (
     <div className="max-w-3xl mx-auto px-5 py-14 md:py-20">
       <div className="text-center mb-10">
-        <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#d0241b] font-bold mb-3">[ YOUR GEO FIX PACK ]</p>
+        <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#0a7c78] font-bold mb-3">[ YOUR GEO FIX PACK ]</p>
         <h1 className="font-display text-3xl md:text-5xl font-black tracking-tight leading-[1.02]">
           {pack.business}
         </h1>
-        <p className="font-body text-[#0d0d0d]/65 mt-3">
+        <p className="font-body text-[#0b3b44]/65 mt-3">
           {pack.url} · platform detected: <strong>{pack.artifacts.platform}</strong>
           {pack.lastGrade ? <> · current grade <strong>{pack.lastGrade} ({pack.lastScore}/100)</strong></> : null}
         </p>
@@ -84,12 +84,12 @@ export default function PackViewer({ sessionId, pack: initial }: { sessionId: st
           <button
             onClick={rescan}
             disabled={scanning || rescansLeft <= 0}
-            className="rounded-full bg-[#0d0d0d] border-2 border-[#0d0d0d] px-6 py-3 font-sans font-extrabold text-[#f1ede4] text-xs uppercase tracking-[0.18em] shadow-[3px_3px_0_0_#ffd400] transition-all hover:-translate-y-0.5 disabled:opacity-50"
+            className="rounded-full bg-[#0b3b44] border-2 border-[#0b3b44] px-6 py-3 font-sans font-extrabold text-[#fbf5ea] text-xs uppercase tracking-[0.18em] shadow-[3px_3px_0_0_#f5b700] transition-all hover:-translate-y-0.5 disabled:opacity-50"
           >
             {scanning ? 'Re-grading…' : `Re-scan + regenerate (${rescansLeft} left)`}
           </button>
         </div>
-        {msg && <p className="mt-3 font-body text-sm font-semibold text-[#0d0d0d]/80">{msg}</p>}
+        {msg && <p className="mt-3 font-body text-sm font-semibold text-[#0b3b44]/80">{msg}</p>}
       </div>
 
       <div className="space-y-6">
@@ -106,22 +106,22 @@ export default function PackViewer({ sessionId, pack: initial }: { sessionId: st
         <CopyCard title="Citable FAQ block" note="Add as a visible section (answer engines quote what humans can read)" content={pack.artifacts.faqBlock} />
       </div>
 
-      <div className="mt-10 rounded-2xl border-2 border-[#0d0d0d] bg-[#0d0d0d] text-[#f1ede4] p-7">
-        <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#ffd400] font-bold mb-4">Install guide · {pack.artifacts.platform}</p>
-        <ol className="space-y-3 list-decimal pl-5 font-body text-sm leading-relaxed text-[#f1ede4]/85">
+      <div className="mt-10 rounded-2xl border-2 border-[#0b3b44] bg-[#0b3b44] text-[#fbf5ea] p-7">
+        <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#f5b700] font-bold mb-4">Install guide · {pack.artifacts.platform}</p>
+        <ol className="space-y-3 list-decimal pl-5 font-body text-sm leading-relaxed text-[#fbf5ea]/85">
           {pack.artifacts.installSteps.map((s, i) => (
             <li key={i}>{s}</li>
           ))}
         </ol>
         {pack.artifacts.notes && (
-          <p className="mt-5 pt-4 border-t border-[#f1ede4]/15 font-body text-sm text-[#ffd400]">{pack.artifacts.notes}</p>
+          <p className="mt-5 pt-4 border-t border-[#fbf5ea]/15 font-body text-sm text-[#f5b700]">{pack.artifacts.notes}</p>
         )}
-        <p className="mt-4 font-body text-xs text-[#f1ede4]/50">
+        <p className="mt-4 font-body text-xs text-[#fbf5ea]/50">
           Stuck on an install step? Reply to your receipt email; it reaches Sarah directly. Want it all installed for you? Ask about white glove.
         </p>
       </div>
 
-      <p className="text-center mt-8 font-body text-sm text-[#0d0d0d]/60">
+      <p className="text-center mt-8 font-body text-sm text-[#0b3b44]/60">
         Bookmark this page; it rebuilds from your receipt anytime. Print it for your web person.
       </p>
     </div>

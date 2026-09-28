@@ -71,7 +71,7 @@ export default function MountainRange({
       aria-hidden="true"
     >
       {/* Layer 0: midnight plate */}
-      <div className="absolute inset-0 z-0 bg-[#0d0d0d]" />
+      <div className="absolute inset-0 z-0 bg-[#0b3b44]" />
 
       {/* Layer 1: real alpine footage, color-graded */}
       <video
@@ -82,7 +82,7 @@ export default function MountainRange({
         playsInline
         preload="metadata"
         style={{
-          backgroundColor: '#0d0d0d',
+          backgroundColor: '#0b3b44',
           filter: 'brightness(0.7) contrast(1.05) saturate(0.78) sepia(0.15)',
         }}
       >
@@ -91,7 +91,7 @@ export default function MountainRange({
 
       {/* Layer 2: midnight wash to push the footage into the brand */}
       <div
-        className="absolute inset-0 z-[1] bg-[#0d0d0d]/55 mix-blend-multiply pointer-events-none"
+        className="absolute inset-0 z-[1] bg-[#0b3b44]/55 mix-blend-multiply pointer-events-none"
       />
 
       {/* Layer 3: brass + ember radial halo where the sun belongs */}
@@ -122,8 +122,8 @@ export default function MountainRange({
       <div className="absolute inset-0 z-[1] bg-[radial-gradient(ellipse_at_center,transparent_0%,transparent_40%,rgba(8,12,22,0.65)_88%,rgba(8,12,22,0.92)_100%)] pointer-events-none" />
 
       {/* Layer 6: top and bottom fades so the banner blends into surrounding sections */}
-      <div className="absolute inset-x-0 top-0 h-1/4 z-[1] bg-gradient-to-b from-[#0d0d0d] via-[#0d0d0d]/40 to-transparent pointer-events-none" />
-      <div className="absolute inset-x-0 bottom-0 h-1/3 z-[1] bg-gradient-to-t from-[#0d0d0d] via-[#0d0d0d]/60 to-transparent pointer-events-none" />
+      <div className="absolute inset-x-0 top-0 h-1/4 z-[1] bg-gradient-to-b from-[#0b3b44] via-[#0b3b44]/40 to-transparent pointer-events-none" />
+      <div className="absolute inset-x-0 bottom-0 h-1/3 z-[1] bg-gradient-to-t from-[#0b3b44] via-[#0b3b44]/60 to-transparent pointer-events-none" />
 
       {/* Layer 7: sun disk (drawn as a soft circle, parallax with scroll) */}
       {showSun && (

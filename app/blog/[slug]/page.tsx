@@ -60,7 +60,7 @@ export default async function BlogPost({ params }: { params: Params }) {
           ...(post.meta.faq?.length ? [faqJsonLd(post.meta.faq)] : []),
         ]}
       />
-      <article className="relative min-h-screen bg-[#f1ede4] text-[#0d0d0d] pb-20 overflow-x-clip">
+      <article className="relative min-h-screen bg-[#fbf5ea] text-[#0b3b44] pb-20 overflow-x-clip">
         <div aria-hidden="true" className="absolute inset-0 halftone-bg opacity-40 pointer-events-none" />
         <PopPageHero
           eyebrow={
@@ -111,14 +111,14 @@ export default async function BlogPost({ params }: { params: Params }) {
           {/* Visible FAQ, rendered from the same frontmatter that feeds the
               FAQPage schema, so markup and page content never drift apart. */}
           {post.meta.faq && post.meta.faq.length > 0 && (
-            <section className="mt-14 pt-10 border-t-2 border-[#0d0d0d]/10">
-              <span className="text-[10px] uppercase tracking-[0.3em] text-[#d0241b] font-mono font-bold block mb-6">
+            <section className="mt-14 pt-10 border-t-2 border-[#0b3b44]/10">
+              <span className="text-[10px] uppercase tracking-[0.3em] text-[#0a7c78] font-mono font-bold block mb-6">
                 Questions, answered
               </span>
               <div className="space-y-5">
                 {post.meta.faq.map((f) => (
-                  <div key={f.q} className="bg-white border-2 border-[#0d0d0d] rounded-2xl shadow-[4px_4px_0_0_#0d0d0d] p-6">
-                    <h2 className="font-sans text-lg font-bold text-[#0d0d0d] mb-2">{f.q}</h2>
+                  <div key={f.q} className="bg-white border-2 border-[#0b3b44] rounded-2xl shadow-[4px_4px_0_0_#0b3b44] p-6">
+                    <h2 className="font-sans text-lg font-bold text-[#0b3b44] mb-2">{f.q}</h2>
                     <p className="text-[#3a3733] font-body leading-relaxed">{f.a}</p>
                   </div>
                 ))}

@@ -73,7 +73,7 @@ function PopKey({
       type="button"
       onClick={onClick}
       aria-label={label}
-      className={`select-none rounded-lg border-2 border-[#0d0d0d] font-mono font-bold leading-none shadow-[0_4px_0_0_#0d0d0d] transition-[transform,box-shadow] duration-75 hover:-translate-y-[1px] hover:shadow-[0_5px_0_0_#0d0d0d] active:translate-y-[3px] active:shadow-[0_1px_0_0_#0d0d0d] motion-reduce:transition-none motion-reduce:hover:translate-y-0 ${className}`}
+      className={`select-none rounded-lg border-2 border-[#0b3b44] font-mono font-bold leading-none shadow-[0_4px_0_0_#0b3b44] transition-[transform,box-shadow] duration-75 hover:-translate-y-[1px] hover:shadow-[0_5px_0_0_#0b3b44] active:translate-y-[3px] active:shadow-[0_1px_0_0_#0b3b44] motion-reduce:transition-none motion-reduce:hover:translate-y-0 ${className}`}
     >
       {children}
     </button>
@@ -200,41 +200,41 @@ export default function RecoveryMachine({
 
   return (
     <div
-      className="mx-auto w-full max-w-xl rounded-[18px] border-[3px] border-[#0d0d0d] bg-[#ffd400] p-3 shadow-[8px_8px_0_0_#0d0d0d] sm:p-4"
+      className="mx-auto w-full max-w-xl rounded-[18px] border-[3px] border-[#0b3b44] bg-[#f5b700] p-3 shadow-[8px_8px_0_0_#0b3b44] sm:p-4"
       style={{ transform: 'rotate(-0.5deg)' }}
     >
       {/* Brand plate */}
       <div className="mb-2.5 flex items-center justify-between gap-3">
         <div>
-          <span className="block font-mono text-[9px] font-bold uppercase tracking-[0.24em] text-[#0d0d0d]">
+          <span className="block font-mono text-[9px] font-bold uppercase tracking-[0.24em] text-[#0b3b44]">
             Modern Mustard Seed
           </span>
-          <span className="block font-mono text-[8px] font-bold uppercase tracking-[0.18em] text-[#0d0d0d]/75">
+          <span className="block font-mono text-[8px] font-bold uppercase tracking-[0.18em] text-[#0b3b44]/75">
             Model RR-1 · Revenue Recovery
           </span>
         </div>
-        <div className="flex items-center gap-1 rounded-md border-2 border-[#0d0d0d] bg-[#0d0d0d] px-1.5 py-0.5" aria-hidden>
+        <div className="flex items-center gap-1 rounded-md border-2 border-[#0b3b44] bg-[#0b3b44] px-1.5 py-0.5" aria-hidden>
           {[0, 1, 2].map((i) => (
-            <span key={i} className="block h-3 w-2.5 rounded-[2px] bg-[#0d0d0d]/70" />
+            <span key={i} className="block h-3 w-2.5 rounded-[2px] bg-[#0b3b44]/70" />
           ))}
         </div>
       </div>
 
       {/* The paper label: what the research noticed about this exact business. */}
       {noticedLine && (
-        <div className="mb-2.5 rounded-lg border-2 border-dashed border-[#0d0d0d]/50 bg-[#FFFDF6] px-3 py-2" style={{ transform: 'rotate(0.4deg)' }}>
+        <div className="mb-2.5 rounded-lg border-2 border-dashed border-[#0b3b44]/50 bg-[#FFFDF6] px-3 py-2" style={{ transform: 'rotate(0.4deg)' }}>
           <span className="block font-mono text-[8px] font-bold uppercase tracking-[0.2em] text-[#C4160B]">
             What We Noticed Before We Built This
           </span>
-          <span className="mt-0.5 block font-body text-[12.5px] leading-snug text-[#0d0d0d]/85">{noticedLine}</span>
+          <span className="mt-0.5 block font-body text-[12.5px] leading-snug text-[#0b3b44]/85">{noticedLine}</span>
         </div>
       )}
 
       {/* LCD. Background rides inline so the equals flash can't race a class. */}
       <div
-        className="relative overflow-hidden rounded-lg border-2 border-[#0d0d0d] p-3 transition-[background-color,filter] duration-150 motion-reduce:transition-none sm:p-4"
+        className="relative overflow-hidden rounded-lg border-2 border-[#0b3b44] p-3 transition-[background-color,filter] duration-150 motion-reduce:transition-none sm:p-4"
         style={{
-          backgroundColor: flash ? '#17301F' : '#0d0d0d',
+          backgroundColor: flash ? '#17301F' : '#0b3b44',
           filter: flash ? 'brightness(1.25)' : 'none',
           boxShadow: 'inset 0 3px 12px rgba(0,0,0,0.75)',
         }}
@@ -247,29 +247,29 @@ export default function RecoveryMachine({
           }}
         />
         <div className="relative flex items-center justify-between gap-3">
-          <span className="font-mono text-[9px] font-bold uppercase tracking-[0.22em] text-[#ffd400]/70">
+          <span className="font-mono text-[9px] font-bold uppercase tracking-[0.22em] text-[#f5b700]/70">
             Leaking Every Month
           </span>
-          <span className="flex items-center gap-1.5 font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-[#d0241b]">
-            <span className="block h-1.5 w-1.5 rounded-full bg-[#ff3b2f]" aria-hidden />
+          <span className="flex items-center gap-1.5 font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-[#0a7c78]">
+            <span className="block h-1.5 w-1.5 rounded-full bg-[#ff6f59]" aria-hidden />
             Live
           </span>
         </div>
         <div className="relative mt-2 text-right">
           <span
             aria-hidden
-            className="pointer-events-none absolute inset-0 select-none font-mono font-bold tabular-nums text-[#ffd400] opacity-[0.045]"
+            className="pointer-events-none absolute inset-0 select-none font-mono font-bold tabular-nums text-[#f5b700] opacity-[0.045]"
             style={{ fontSize: 'clamp(26px,4.4vw,42px)', lineHeight: 1 }}
           >
             $88,888
           </span>
           <span
-            className="relative block font-mono font-bold tabular-nums text-[#FFDD55]"
+            className="relative block font-mono font-bold tabular-nums text-[#ffc933]"
             style={{ fontSize: 'clamp(26px,4.4vw,42px)', lineHeight: 1, textShadow: '0 0 18px rgba(245,183,0,0.45)' }}
           >
             {usd(shown)}
           </span>
-          <span className="mt-1 block font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-[#ffd400]/70">
+          <span className="mt-1 block font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-[#f5b700]/70">
             {usd(annualShown)} A Year
           </span>
         </div>
@@ -277,7 +277,7 @@ export default function RecoveryMachine({
 
       {/* Slots and keypad */}
       <div className="mt-3 grid gap-3 sm:grid-cols-[1.1fr_1fr]">
-        <div className="rounded-lg border-2 border-[#0d0d0d] bg-[#FFFDF6] p-2.5">
+        <div className="rounded-lg border-2 border-[#0b3b44] bg-[#FFFDF6] p-2.5">
           <div className="flex flex-col gap-1.5">
             {FIELDS.map((f) => {
               const on = active === f.key;
@@ -286,15 +286,15 @@ export default function RecoveryMachine({
                   key={f.key}
                   htmlFor={`rm-${f.key}`}
                   className={`block cursor-text rounded-md border-2 px-2.5 py-1.5 transition-colors ${
-                    on ? 'border-[#0d0d0d] bg-[#ffd400] shadow-[2px_2px_0_0_#0d0d0d]' : 'border-[#0d0d0d]/25 bg-white hover:border-[#0d0d0d]/60'
+                    on ? 'border-[#0b3b44] bg-[#f5b700] shadow-[2px_2px_0_0_#0b3b44]' : 'border-[#0b3b44]/25 bg-white hover:border-[#0b3b44]/60'
                   }`}
                 >
                   <span className="flex items-center justify-between gap-2">
                     <span className="min-w-0">
-                      <span className="block font-mono text-[9px] font-bold uppercase tracking-[0.14em] text-[#0d0d0d]">{f.label}</span>
-                      <span className="block truncate text-[10px] text-[#0d0d0d]/75">{f.hint}</span>
+                      <span className="block font-mono text-[9px] font-bold uppercase tracking-[0.14em] text-[#0b3b44]">{f.label}</span>
+                      <span className="block truncate text-[10px] text-[#0b3b44]/75">{f.hint}</span>
                     </span>
-                    <span className="flex shrink-0 items-baseline font-mono text-sm font-bold tabular-nums text-[#0d0d0d]">
+                    <span className="flex shrink-0 items-baseline font-mono text-sm font-bold tabular-nums text-[#0b3b44]">
                       {f.prefix}
                       <input
                         id={`rm-${f.key}`}
@@ -308,7 +308,7 @@ export default function RecoveryMachine({
                         value={String(vals[f.key])}
                         onFocus={() => setActive(f.key)}
                         onChange={(e) => set(f.key, Number(e.target.value))}
-                        className="w-[5ch] bg-transparent text-right font-mono text-base font-bold tabular-nums text-[#0d0d0d] outline-none focus:underline focus:decoration-[#C4160B] focus:decoration-2 focus:underline-offset-4 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                        className="w-[5ch] bg-transparent text-right font-mono text-base font-bold tabular-nums text-[#0b3b44] outline-none focus:underline focus:decoration-[#C4160B] focus:decoration-2 focus:underline-offset-4 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                         style={{ MozAppearance: 'textfield' }}
                       />
                       {f.suffix}
@@ -318,41 +318,41 @@ export default function RecoveryMachine({
               );
             })}
           </div>
-          <p className="mt-2 font-mono text-[8px] uppercase tracking-[0.14em] text-[#0d0d0d]/75">Type here, or use the keys</p>
+          <p className="mt-2 font-mono text-[8px] uppercase tracking-[0.14em] text-[#0b3b44]/75">Type here, or use the keys</p>
         </div>
 
         <div className="grid grid-cols-4 gap-1.5 self-start">
           {['7', '8', '9'].map((d) => (
-            <PopKey key={d} label={`Digit ${d}`} onClick={() => digit(d)} className="bg-white py-2.5 text-base text-[#0d0d0d]">
+            <PopKey key={d} label={`Digit ${d}`} onClick={() => digit(d)} className="bg-white py-2.5 text-base text-[#0b3b44]">
               {d}
             </PopKey>
           ))}
-          <PopKey label="Clear this field" onClick={clearKey} className="bg-[#ff3b2f] py-2.5 text-xs text-[#f1ede4]">
+          <PopKey label="Clear this field" onClick={clearKey} className="bg-[#ff6f59] py-2.5 text-xs text-[#fbf5ea]">
             C
           </PopKey>
           {['4', '5', '6'].map((d) => (
-            <PopKey key={d} label={`Digit ${d}`} onClick={() => digit(d)} className="bg-white py-2.5 text-base text-[#0d0d0d]">
+            <PopKey key={d} label={`Digit ${d}`} onClick={() => digit(d)} className="bg-white py-2.5 text-base text-[#0b3b44]">
               {d}
             </PopKey>
           ))}
-          <PopKey label="Delete last digit" onClick={backspace} className="bg-[#0d0d0d] py-2.5 text-sm text-[#f1ede4]">
+          <PopKey label="Delete last digit" onClick={backspace} className="bg-[#0b3b44] py-2.5 text-sm text-[#fbf5ea]">
             <span aria-hidden>⌫</span>
           </PopKey>
           {['1', '2', '3'].map((d) => (
-            <PopKey key={d} label={`Digit ${d}`} onClick={() => digit(d)} className="bg-white py-2.5 text-base text-[#0d0d0d]">
+            <PopKey key={d} label={`Digit ${d}`} onClick={() => digit(d)} className="bg-white py-2.5 text-base text-[#0b3b44]">
               {d}
             </PopKey>
           ))}
-          <PopKey label="Next field" onClick={nextField} className="bg-[#0d0d0d] py-2.5 text-[8px] uppercase tracking-[0.08em] text-[#f1ede4]">
+          <PopKey label="Next field" onClick={nextField} className="bg-[#0b3b44] py-2.5 text-[8px] uppercase tracking-[0.08em] text-[#fbf5ea]">
             Next
           </PopKey>
-          <PopKey label="Digit 0" onClick={() => digit('0')} className="col-span-2 bg-white py-2.5 text-base text-[#0d0d0d]">
+          <PopKey label="Digit 0" onClick={() => digit('0')} className="col-span-2 bg-white py-2.5 text-base text-[#0b3b44]">
             0
           </PopKey>
-          <PopKey label="Double zero" onClick={() => digit('00')} className="bg-white py-2.5 text-base text-[#0d0d0d]">
+          <PopKey label="Double zero" onClick={() => digit('00')} className="bg-white py-2.5 text-base text-[#0b3b44]">
             00
           </PopKey>
-          <PopKey label="Total it up" onClick={equals} className="bg-[#0d0d0d] py-2.5 text-lg text-[#ffd400]">
+          <PopKey label="Total it up" onClick={equals} className="bg-[#0b3b44] py-2.5 text-lg text-[#f5b700]">
             =
           </PopKey>
         </div>

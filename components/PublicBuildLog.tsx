@@ -12,7 +12,7 @@ import type { BuildLogSnapshot, Category } from '@/lib/build-log';
 
 const CAT_META: Record<Category, { label: string; fg: string }> = {
   new: { label: 'New', fg: '#2E7D4F' },
-  fix: { label: 'Fix', fg: '#c8201a' },
+  fix: { label: 'Fix', fg: '#0a7c78' },
   perf: { label: 'Perf', fg: '#B4501F' },
   polish: { label: 'Polish', fg: '#4F6272' },
   docs: { label: 'Docs', fg: '#2E6274' },
@@ -31,8 +31,8 @@ function ymd(y: number, m: number, d: number) {
 function partsOf(s: string) { const [y, m, d] = s.split('-').map(Number); return { y, m: m - 1, d }; }
 function intensity(n: number) { if (n >= 25) return 0.6; if (n >= 15) return 0.42; if (n >= 7) return 0.26; if (n >= 1) return 0.12; return 0; }
 
-const CARD = 'bg-white border-2 border-[#0d0d0d] rounded-2xl shadow-[4px_4px_0_0_#0d0d0d]';
-const EYEBROW = 'text-[10px] uppercase tracking-[0.3em] text-[#d0241b] font-mono font-bold';
+const CARD = 'bg-white border-2 border-[#0b3b44] rounded-2xl shadow-[4px_4px_0_0_#0b3b44]';
+const EYEBROW = 'text-[10px] uppercase tracking-[0.3em] text-[#0a7c78] font-mono font-bold';
 
 export default function PublicBuildLog({ snap }: { snap: BuildLogSnapshot }) {
   const { totals, projectTotals, catTotals, dayCounts, minDate, maxDate, publishedAt } = snap;
@@ -84,16 +84,16 @@ export default function PublicBuildLog({ snap }: { snap: BuildLogSnapshot }) {
   const sp = selected ? partsOf(selected) : null;
 
   return (
-    <div className="min-h-screen bg-[#f1ede4] text-[#0d0d0d]">
+    <div className="min-h-screen bg-[#fbf5ea] text-[#0b3b44]">
       {/* public header */}
-      <header className="border-b-2 border-[#0d0d0d] bg-[#f1ede4]">
+      <header className="border-b-2 border-[#0b3b44] bg-[#fbf5ea]">
         <div className="max-w-5xl mx-auto px-5 md:px-6 py-4 flex items-center justify-between gap-3">
           <a href="https://modernmustardseed.com" className="flex items-center gap-2.5" rel="noopener noreferrer">
             <Image src="/brand/mascot.png" alt="" width={885} height={1180} className="h-9 w-auto" priority />
-            <span className="text-[9px] uppercase tracking-[0.4em] text-[#d0241b] font-mono font-bold">Modern Mustard Seed</span>
+            <span className="text-[9px] uppercase tracking-[0.4em] text-[#0a7c78] font-mono font-bold">Modern Mustard Seed</span>
           </a>
           <a href="https://modernmustardseed.com"
-            className="text-[11px] uppercase tracking-[0.12em] font-sans font-semibold px-3 py-2 rounded-lg border-2 border-[#0d0d0d] bg-[#ffd400] shadow-[2px_2px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-transform"
+            className="text-[11px] uppercase tracking-[0.12em] font-sans font-semibold px-3 py-2 rounded-lg border-2 border-[#0b3b44] bg-[#f5b700] shadow-[2px_2px_0_0_#0b3b44] hover:-translate-y-0.5 transition-transform"
             rel="noopener noreferrer">
             modernmustardseed.com
           </a>
@@ -104,7 +104,7 @@ export default function PublicBuildLog({ snap }: { snap: BuildLogSnapshot }) {
         <div className="mb-7">
           <span className={EYEBROW}>Build Log{range ? ` · ${range}` : ''}</span>
           <h1 className="font-display text-4xl md:text-5xl font-bold tracking-tight mt-1.5">What we&rsquo;re building</h1>
-          <p className="text-[#0d0d0d]/70 mt-2 max-w-2xl text-lg">A live look at the pace and shape of the work across every venture, straight from our commit history.</p>
+          <p className="text-[#0b3b44]/70 mt-2 max-w-2xl text-lg">A live look at the pace and shape of the work across every venture, straight from our commit history.</p>
         </div>
 
         {/* ribbon */}
@@ -117,7 +117,7 @@ export default function PublicBuildLog({ snap }: { snap: BuildLogSnapshot }) {
           ].map((s) => (
             <div key={s.k} className={`${CARD} p-5`}>
               <div className="font-mono text-4xl font-bold tabular-nums leading-none">{s.n}</div>
-              <div className="text-[10px] uppercase tracking-[0.12em] text-[#0d0d0d]/55 mt-2 font-sans font-semibold">{s.k}</div>
+              <div className="text-[10px] uppercase tracking-[0.12em] text-[#0b3b44]/55 mt-2 font-sans font-semibold">{s.k}</div>
             </div>
           ))}
         </div>
@@ -129,14 +129,14 @@ export default function PublicBuildLog({ snap }: { snap: BuildLogSnapshot }) {
               <div className="font-display text-xl font-bold">{MO[view.m]} {view.y}</div>
               <div className="flex gap-1.5">
                 <button onClick={() => stepMonth(-1)} disabled={atMin} aria-label="Previous month"
-                  className="w-8 h-8 grid place-items-center rounded-lg border-2 border-[#0d0d0d] bg-[#f1ede4] disabled:opacity-30 disabled:cursor-default hover:bg-[#ffd400] transition-colors font-mono">‹</button>
+                  className="w-8 h-8 grid place-items-center rounded-lg border-2 border-[#0b3b44] bg-[#fbf5ea] disabled:opacity-30 disabled:cursor-default hover:bg-[#f5b700] transition-colors font-mono">‹</button>
                 <button onClick={() => stepMonth(1)} disabled={atMax} aria-label="Next month"
-                  className="w-8 h-8 grid place-items-center rounded-lg border-2 border-[#0d0d0d] bg-[#f1ede4] disabled:opacity-30 disabled:cursor-default hover:bg-[#ffd400] transition-colors font-mono">›</button>
+                  className="w-8 h-8 grid place-items-center rounded-lg border-2 border-[#0b3b44] bg-[#fbf5ea] disabled:opacity-30 disabled:cursor-default hover:bg-[#f5b700] transition-colors font-mono">›</button>
               </div>
             </div>
             <div className="grid grid-cols-7 gap-1 mb-1.5">
               {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d, i) => (
-                <span key={i} className="text-center text-[10px] font-mono text-[#0d0d0d]/40 uppercase">{d}</span>
+                <span key={i} className="text-center text-[10px] font-mono text-[#0b3b44]/40 uppercase">{d}</span>
               ))}
             </div>
             <div className="grid grid-cols-7 gap-1">
@@ -146,20 +146,20 @@ export default function PublicBuildLog({ snap }: { snap: BuildLogSnapshot }) {
                 const dc = dayCounts[key];
                 const n = dc ? dc.total : 0;
                 const isSel = key === selected;
-                if (n === 0) return <div key={key} className="aspect-square rounded-lg flex items-center justify-center font-mono text-[13px] text-[#0d0d0d]/35 tabular-nums">{d}</div>;
+                if (n === 0) return <div key={key} className="aspect-square rounded-lg flex items-center justify-center font-mono text-[13px] text-[#0b3b44]/35 tabular-nums">{d}</div>;
                 return (
                   <button key={key} onClick={() => setSelected(key)} aria-label={`${MO[view.m]} ${d}, ${n} updates`}
                     className="aspect-square rounded-lg flex flex-col items-center justify-center gap-0.5 font-mono text-[13px] tabular-nums border-2 transition-transform hover:-translate-y-0.5"
                     style={isSel
-                      ? { background: '#ffd400', borderColor: '#0d0d0d', color: '#0d0d0d', boxShadow: '2px 2px 0 0 #0d0d0d' }
-                      : { background: `rgba(245,183,0,${intensity(n)})`, borderColor: 'transparent', color: '#0d0d0d' }}>
+                      ? { background: '#f5b700', borderColor: '#0b3b44', color: '#0b3b44', boxShadow: '2px 2px 0 0 #0b3b44' }
+                      : { background: `rgba(245,183,0,${intensity(n)})`, borderColor: 'transparent', color: '#0b3b44' }}>
                     <span>{d}</span>
-                    <span className="text-[9px] font-bold leading-none" style={{ color: isSel ? 'rgba(13,13,13,0.7)' : '#C4160B' }}>{n}</span>
+                    <span className="text-[9px] font-bold leading-none" style={{ color: isSel ? 'rgba(11,59,68,0.7)' : '#C4160B' }}>{n}</span>
                   </button>
                 );
               })}
             </div>
-            <div className="flex items-center gap-2 mt-4 pt-3 border-t border-[#0d0d0d]/10 text-[10.5px] font-mono text-[#0d0d0d]/45">
+            <div className="flex items-center gap-2 mt-4 pt-3 border-t border-[#0b3b44]/10 text-[10.5px] font-mono text-[#0b3b44]/45">
               <span>Quiet</span>
               <span className="inline-flex gap-1">
                 {[0.12, 0.26, 0.42, 0.6].map((o) => <i key={o} className="w-3.5 h-2.5 rounded-sm block" style={{ background: `rgba(245,183,0,${o})` }} />)}
@@ -173,23 +173,23 @@ export default function PublicBuildLog({ snap }: { snap: BuildLogSnapshot }) {
             {selDay && sp ? (
               <>
                 <h2 className="font-display text-2xl md:text-[28px] font-bold leading-tight">{WD[new Date(sp.y, sp.m, sp.d).getDay()]} · {MO[sp.m]} {sp.d}</h2>
-                <p className="font-mono text-[13px] text-[#0d0d0d]/60 mt-1.5"><b className="text-[#C4160B]">{selDay.total}</b> update{selDay.total > 1 ? 's' : ''} across {selDay.byProject.length} venture{selDay.byProject.length > 1 ? 's' : ''}</p>
+                <p className="font-mono text-[13px] text-[#0b3b44]/60 mt-1.5"><b className="text-[#C4160B]">{selDay.total}</b> update{selDay.total > 1 ? 's' : ''} across {selDay.byProject.length} venture{selDay.byProject.length > 1 ? 's' : ''}</p>
                 <div className="mt-5 space-y-4">
                   {selDay.byProject.map(([proj, n]) => (
                     <div key={proj}>
                       <div className="flex justify-between items-baseline mb-1.5">
                         <span className="font-display text-base font-bold">{proj}</span>
-                        <span className="font-mono text-[12px] text-[#0d0d0d]/55 tabular-nums">{n} update{n > 1 ? 's' : ''}</span>
+                        <span className="font-mono text-[12px] text-[#0b3b44]/55 tabular-nums">{n} update{n > 1 ? 's' : ''}</span>
                       </div>
-                      <div className="h-2.5 bg-[#f1ede4] border border-[#0d0d0d]/10 rounded-full overflow-hidden">
-                        <span className="block h-full rounded-full" style={{ width: `${Math.round((n / selDay.total) * 100)}%`, background: 'linear-gradient(90deg,#ffd400,#FFD23F)' }} />
+                      <div className="h-2.5 bg-[#fbf5ea] border border-[#0b3b44]/10 rounded-full overflow-hidden">
+                        <span className="block h-full rounded-full" style={{ width: `${Math.round((n / selDay.total) * 100)}%`, background: 'linear-gradient(90deg,#f5b700,#FFD23F)' }} />
                       </div>
                     </div>
                   ))}
                 </div>
               </>
             ) : (
-              <div className="text-center font-display text-lg text-[#0d0d0d]/40 mt-20">Pick a highlighted day to see the shape of the work.</div>
+              <div className="text-center font-display text-lg text-[#0b3b44]/40 mt-20">Pick a highlighted day to see the shape of the work.</div>
             )}
           </section>
         </div>
@@ -202,28 +202,28 @@ export default function PublicBuildLog({ snap }: { snap: BuildLogSnapshot }) {
               <div key={p}>
                 <div className="flex justify-between items-baseline mb-1.5">
                   <span className="text-[13.5px] font-medium">{p}</span>
-                  <span className="font-mono text-[12px] text-[#0d0d0d]/55 tabular-nums">{n}</span>
+                  <span className="font-mono text-[12px] text-[#0b3b44]/55 tabular-nums">{n}</span>
                 </div>
-                <div className="h-2.5 bg-[#f1ede4] border border-[#0d0d0d]/10 rounded-full overflow-hidden">
-                  <span className="block h-full rounded-full" style={{ width: `${Math.max(4, Math.round(Math.sqrt(n / projMax) * 100))}%`, background: 'linear-gradient(90deg,#ffd400,#FFD23F)' }} />
+                <div className="h-2.5 bg-[#fbf5ea] border border-[#0b3b44]/10 rounded-full overflow-hidden">
+                  <span className="block h-full rounded-full" style={{ width: `${Math.max(4, Math.round(Math.sqrt(n / projMax) * 100))}%`, background: 'linear-gradient(90deg,#f5b700,#FFD23F)' }} />
                 </div>
               </div>
             ))}
           </div>
           {catTotals.length > 0 && (
-            <div className="flex flex-wrap gap-x-4 gap-y-2 mt-6 pt-4 border-t border-[#0d0d0d]/10">
+            <div className="flex flex-wrap gap-x-4 gap-y-2 mt-6 pt-4 border-t border-[#0b3b44]/10">
               {catTotals.map(([k, n]) => (
-                <span key={k} className="inline-flex items-center gap-1.5 font-mono text-[11px] text-[#0d0d0d]/70">
+                <span key={k} className="inline-flex items-center gap-1.5 font-mono text-[11px] text-[#0b3b44]/70">
                   <span className="w-2 h-2 rounded-sm" style={{ background: CAT_META[k].fg }} />
-                  {CAT_META[k].label} <b className="text-[#0d0d0d]">{n}</b>
+                  {CAT_META[k].label} <b className="text-[#0b3b44]">{n}</b>
                 </span>
               ))}
             </div>
           )}
         </section>
 
-        <p className="text-center font-mono text-[11px] text-[#0d0d0d]/45 mt-8">
-          Snapshot as of {asOf} Pacific · <a href="https://modernmustardseed.com" className="underline decoration-[#ffd400] decoration-2 underline-offset-2" rel="noopener noreferrer">modernmustardseed.com</a>
+        <p className="text-center font-mono text-[11px] text-[#0b3b44]/45 mt-8">
+          Snapshot as of {asOf} Pacific · <a href="https://modernmustardseed.com" className="underline decoration-[#f5b700] decoration-2 underline-offset-2" rel="noopener noreferrer">modernmustardseed.com</a>
         </p>
       </main>
     </div>

@@ -8,7 +8,7 @@ import { trackEvent } from '@/lib/analytics';
  * of it stands still under prefers-reduced-motion and none of it holds content.
  */
 
-const CONFETTI = ['#ffd400', '#ff3b2f', '#f1ede4', '#0d0d0d'];
+const CONFETTI = ['#f5b700', '#ff6f59', '#fbf5ea', '#0b3b44'];
 
 /**
  * Mr. Mustard leans and turns a few degrees toward the cursor. Tap him five

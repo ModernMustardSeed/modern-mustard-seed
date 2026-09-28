@@ -8,10 +8,10 @@ export const alt = 'Agentic Native by Modern Mustard Seed. Your company, running
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
-const INK = '#0d0d0d';
-const CREAM = '#f1ede4';
-const MUSTARD = '#ffd400';
-const RED = '#ff3b2f';
+const INK = '#0b3b44';
+const CREAM = '#fbf5ea';
+const MUSTARD = '#f5b700';
+const RED = '#ff6f59';
 
 export default async function OpengraphImage() {
   return new ImageResponse(

@@ -19,10 +19,10 @@ const NIGHT = [
 ];
 
 const TAG_COLOR: Record<string, string> = {
-  Booked: '#0d0d0d',
-  Reserved: '#0d0d0d',
-  Fired: '#0d0d0d',
-  Escalated: '#ff3b2f',
+  Booked: '#0b3b44',
+  Reserved: '#0b3b44',
+  Fired: '#0b3b44',
+  Escalated: '#ff6f59',
   Answered: '#8f6600',
   Qualified: '#8f6600',
   Logged: '#8f6600',
@@ -30,12 +30,12 @@ const TAG_COLOR: Record<string, string> = {
 
 function Row({ item }: { item: (typeof NIGHT)[number] }) {
   return (
-    <div className="flex items-center gap-3 whitespace-nowrap border-r-2 border-[#0d0d0d]/12 px-6 py-4">
-      <span className="font-mono text-[11px] font-bold tabular-nums text-[#0d0d0d]/70">{item.time}</span>
-      <span className="font-body text-sm md:text-[15px] text-[#0d0d0d]">{item.line}</span>
+    <div className="flex items-center gap-3 whitespace-nowrap border-r-2 border-[#0b3b44]/12 px-6 py-4">
+      <span className="font-mono text-[11px] font-bold tabular-nums text-[#0b3b44]/70">{item.time}</span>
+      <span className="font-body text-sm md:text-[15px] text-[#0b3b44]">{item.line}</span>
       <span
-        className="rounded-full border-2 border-[#0d0d0d] bg-white px-2.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-[0.16em]"
-        style={{ color: TAG_COLOR[item.tag] ?? '#0d0d0d' }}
+        className="rounded-full border-2 border-[#0b3b44] bg-white px-2.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-[0.16em]"
+        style={{ color: TAG_COLOR[item.tag] ?? '#0b3b44' }}
       >
         {item.tag}
       </span>
@@ -45,7 +45,7 @@ function Row({ item }: { item: (typeof NIGHT)[number] }) {
 
 export default function CallTicker() {
   return (
-    <div className="relative overflow-hidden border-y-2 border-[#0d0d0d] bg-[#ffd400]">
+    <div className="relative overflow-hidden border-y-2 border-[#0b3b44] bg-[#f5b700]">
       <div className="marquee-track">
         {[0, 1].map((copy) => (
           <div key={copy} className="flex" aria-hidden={copy === 1 ? 'true' : undefined}>
@@ -58,11 +58,11 @@ export default function CallTicker() {
       {/* Edge fades so the loop never shows a seam */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-[#ffd400] to-transparent"
+        className="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-[#f5b700] to-transparent"
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-[#ffd400] to-transparent"
+        className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-[#f5b700] to-transparent"
       />
     </div>
   );

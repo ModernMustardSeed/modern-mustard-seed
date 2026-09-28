@@ -40,10 +40,10 @@ export default function EmailPlaybookCTA({ slug, title }: { slug: string; title:
     <div className="pop-card-yellow p-6 md:p-8 max-w-3xl mx-auto my-12">
       <div className="md:flex md:items-center md:justify-between gap-6">
         <div className="mb-4 md:mb-0 md:flex-1">
-          <span className="text-[10px] uppercase tracking-[0.3em] text-[#d0241b] font-mono font-bold block mb-2">
+          <span className="text-[10px] uppercase tracking-[0.3em] text-[#0a7c78] font-mono font-bold block mb-2">
             Keep this playbook
           </span>
-          <h3 className="font-display text-xl md:text-2xl font-black text-[#0d0d0d] tracking-tight leading-tight">
+          <h3 className="font-display text-xl md:text-2xl font-black text-[#0b3b44] tracking-tight leading-tight">
             Email this to me
           </h3>
           <p className="text-[#3a3733] text-sm font-body mt-1.5">
@@ -52,7 +52,7 @@ export default function EmailPlaybookCTA({ slug, title }: { slug: string; title:
         </div>
 
         {status === 'success' ? (
-          <p className="md:flex-1 text-[#c8201a] font-body font-bold text-sm md:text-right">{message}</p>
+          <p className="md:flex-1 text-[#0a7c78] font-body font-bold text-sm md:text-right">{message}</p>
         ) : (
           <form onSubmit={send} className="md:flex-1 flex flex-col sm:flex-row gap-3">
             <input
@@ -62,19 +62,19 @@ export default function EmailPlaybookCTA({ slug, title }: { slug: string; title:
               onChange={(e) => setEmail(e.target.value)}
               placeholder="your@email.com"
               aria-label={`Email me the playbook: ${title}`}
-              className="flex-1 bg-white border-2 border-[#0d0d0d] rounded-lg px-4 py-3 text-sm text-[#0d0d0d] font-body placeholder-[#0d0d0d]/40 focus:outline-none focus:shadow-[3px_3px_0_0_#0d0d0d] transition-shadow"
+              className="flex-1 bg-white border-2 border-[#0b3b44] rounded-lg px-4 py-3 text-sm text-[#0b3b44] font-body placeholder-[#0b3b44]/40 focus:outline-none focus:shadow-[3px_3px_0_0_#0b3b44] transition-shadow"
             />
             <button
               type="submit"
               disabled={status === 'sending'}
-              className="px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0d0d0d] bg-white rounded-lg border-2 border-[#0d0d0d] shadow-[3px_3px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-all disabled:opacity-50 whitespace-nowrap"
+              className="px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0b3b44] bg-white rounded-lg border-2 border-[#0b3b44] shadow-[3px_3px_0_0_#0b3b44] hover:-translate-y-0.5 transition-all disabled:opacity-50 whitespace-nowrap"
             >
               {status === 'sending' ? 'Sending...' : 'Email it to me'}
             </button>
           </form>
         )}
       </div>
-      {status === 'error' && <p className="text-[#d0241b] font-body font-bold text-sm mt-3">{message}</p>}
+      {status === 'error' && <p className="text-[#b3261e] font-body font-bold text-sm mt-3">{message}</p>}
     </div>
   );
 }

@@ -39,7 +39,7 @@ const NOT_FOR = [
   'You have an idea and no company yet. That is Idea to Product.',
 ];
 
-const SYS_ALT = 'Graffiti couture painting: Mr. Mustard drives a black classic convertible through a graffiti-painted underpass: loose papers swirl in on one side and neat yellow boxes roll out on the other';
+const SYS_ALT = 'Painting: at a cliffside villa, Mr. Mustard sits at the edge of a turquoise infinity pool smiling at his phone while Mrs. Mustard floats in her big hat and the kids and the seed dog splash, the Mediterranean below';
 
 export default function AiNativePage() {
   const jsonLd = {
@@ -76,14 +76,14 @@ export default function AiNativePage() {
   };
 
   return (
-    <div id="top" className="bg-[#f1ede4] text-[#0d0d0d]">
+    <div id="top" className="bg-[#fbf5ea] text-[#0b3b44]">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       {/* ─── THE DOOR ─── */}
       <PopPageHero
         eyebrow={<span>{AI_NATIVE.wordmark}</span>}
         title={<>Your company, running on agentic systems.<br />Your team, <em>running it</em>.</>}
-        art={{ src: '/art/pages/system', alt: SYS_ALT, caption: 'Your workflows, on the machine' }}
+        art={{ src: '/art/riviera/system', alt: SYS_ALT, caption: 'Your workflows, on the machine' }}
         sticker="8 weeks!"
       >
         <p>{AI_NATIVE.promise}</p>
@@ -97,24 +97,24 @@ export default function AiNativePage() {
         </div>
         <p className={pop.note}>
           Built and coached by Sarah Scarano.{' '}
-          <Link href={PORTFOLIO_PATH} className="font-bold text-[#0d0d0d] underline underline-offset-4 decoration-[#ffd400] decoration-2 hover:decoration-[#0d0d0d]">
+          <Link href={PORTFOLIO_PATH} className="font-bold text-[#0b3b44] underline underline-offset-4 decoration-[#f5b700] decoration-2 hover:decoration-[#0b3b44]">
             See the portfolio
           </Link>
         </p>
       </PopPageHero>
 
       {/* ─── THE PROOF STRIP ─── */}
-      <section className="bg-[#0d0d0d] border-b-2 border-[#0d0d0d]" aria-label="How the studio itself runs">
+      <section className="bg-[#0b3b44] border-b-2 border-[#0b3b44]" aria-label="How the studio itself runs">
         <div className="max-w-5xl mx-auto px-5 py-8 md:py-10">
           <div className="grid grid-cols-2 sm:grid-cols-5 gap-x-4 gap-y-7">
             {STUDIO_PROOF.map((p) => (
               <div key={p.label} className="text-center">
-                <p className="font-display text-3xl md:text-4xl font-black text-[#ffd400] tracking-tight leading-none">{p.n}</p>
-                <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#f1ede4]/70 mt-2 leading-snug">{p.label}</p>
+                <p className="font-display text-3xl md:text-4xl font-black text-[#f5b700] tracking-tight leading-none">{p.n}</p>
+                <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#fbf5ea]/70 mt-2 leading-snug">{p.label}</p>
               </div>
             ))}
           </div>
-          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#f1ede4]/50 text-center mt-7">How this studio runs today. The company we help you become is the one we already are.</p>
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#fbf5ea]/50 text-center mt-7">How this studio runs today. The company we help you become is the one we already are.</p>
         </div>
       </section>
 
@@ -122,71 +122,71 @@ export default function AiNativePage() {
       <section className="py-16 md:py-24" aria-labelledby="native-heading">
         <div className="max-w-5xl mx-auto px-5 grid md:grid-cols-[1.05fr_0.95fr] gap-10 md:gap-14 items-start">
           <div>
-            <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#d0241b] font-bold mb-3">[ We run this way ourselves ]</p>
-            <h2 id="native-heading" className="font-display text-3xl md:text-5xl font-black text-[#0d0d0d] tracking-tight leading-[1.05]">
+            <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#0a7c78] font-bold mb-3">[ We run this way ourselves ]</p>
+            <h2 id="native-heading" className="font-display text-3xl md:text-5xl font-black text-[#0b3b44] tracking-tight leading-[1.05]">
               One person. Seventeen agents. <em className="italic">A whole company.</em>
             </h2>
-            <p className="font-body text-[#0d0d0d]/75 leading-relaxed mt-5">
+            <p className="font-body text-[#0b3b44]/75 leading-relaxed mt-5">
               Modern Mustard Seed is a product studio run by one person and a back office of agents. The leads are found by the machine, the demo sites are built by it, the follow-up is sent by it, and the books are kept by it. The person at the desk decides, designs and talks to clients. That is what agentic native means here, and it is the same shape we build inside your company.
             </p>
-            <p className="font-body text-[#0d0d0d]/75 leading-relaxed mt-4">
+            <p className="font-body text-[#0b3b44]/75 leading-relaxed mt-4">
               Nothing on this page is theory. Every workflow we move onto agentic systems for you is one we moved first for ourselves, and the portfolio is the receipt.
             </p>
             <div className="mt-7 flex flex-col sm:flex-row gap-3">
               <Link
                 href={PORTFOLIO_PATH}
-                className="inline-flex items-center justify-center rounded-full bg-[#ffd400] border-2 border-[#0d0d0d] px-7 py-3 font-sans font-extrabold text-[#0d0d0d] text-xs uppercase tracking-[0.18em] shadow-[4px_4px_0_0_#0d0d0d] transition-all hover:-translate-y-0.5"
+                className="inline-flex items-center justify-center rounded-full bg-[#f5b700] border-2 border-[#0b3b44] px-7 py-3 font-sans font-extrabold text-[#0b3b44] text-xs uppercase tracking-[0.18em] shadow-[4px_4px_0_0_#0b3b44] transition-all hover:-translate-y-0.5"
               >
                 See the portfolio
               </Link>
               <Link
                 href="/work"
-                className="inline-flex items-center justify-center rounded-full bg-white border-2 border-[#0d0d0d] px-7 py-3 font-sans font-extrabold text-[#0d0d0d] text-xs uppercase tracking-[0.18em] shadow-[4px_4px_0_0_#0d0d0d] transition-all hover:-translate-y-0.5"
+                className="inline-flex items-center justify-center rounded-full bg-white border-2 border-[#0b3b44] px-7 py-3 font-sans font-extrabold text-[#0b3b44] text-xs uppercase tracking-[0.18em] shadow-[4px_4px_0_0_#0b3b44] transition-all hover:-translate-y-0.5"
               >
                 Read the case studies
               </Link>
             </div>
-            <p className="font-body text-sm text-[#0d0d0d]/60 mt-5">
+            <p className="font-body text-sm text-[#0b3b44]/60 mt-5">
               The machine itself is drawn out on{' '}
-              <Link href="/the-system" className="font-bold text-[#0d0d0d] underline underline-offset-4">
+              <Link href="/the-system" className="font-bold text-[#0b3b44] underline underline-offset-4">
                 The System
               </Link>
               , one running loop from lead to delivery.
             </p>
           </div>
-          <div className="rounded-2xl border-2 border-[#0d0d0d] bg-white p-7 shadow-[6px_6px_0_0_#0d0d0d]">
-            <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-[#d0241b]">[ An ordinary Tuesday, native ]</p>
+          <div className="rounded-2xl border-2 border-[#0b3b44] bg-white p-7 shadow-[6px_6px_0_0_#0b3b44]">
+            <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-[#0a7c78]">[ An ordinary Tuesday, native ]</p>
             <ul className="mt-4 space-y-3">
               {TUESDAY.map((line) => (
-                <li key={line} className="flex gap-3 font-body text-sm text-[#0d0d0d] leading-snug">
-                  <span aria-hidden="true" className="mt-[4px] h-3 w-3 flex-shrink-0 rounded-sm border-2 border-[#0d0d0d] bg-[#ffd400]" />
+                <li key={line} className="flex gap-3 font-body text-sm text-[#0b3b44] leading-snug">
+                  <span aria-hidden="true" className="mt-[4px] h-3 w-3 flex-shrink-0 rounded-sm border-2 border-[#0b3b44] bg-[#f5b700]" />
                   <span>{line}</span>
                 </li>
               ))}
             </ul>
-            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#0d0d0d]/50 mt-5">What the first five workflows usually buy back</p>
+            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#0b3b44]/50 mt-5">What the first five workflows usually buy back</p>
           </div>
         </div>
       </section>
 
       {/* ─── THE METHOD ─── */}
-      <section className="py-16 md:py-24 bg-white border-y-2 border-[#0d0d0d]" aria-labelledby="method-heading">
+      <section className="py-16 md:py-24 bg-white border-y-2 border-[#0b3b44]" aria-labelledby="method-heading">
         <div className="max-w-5xl mx-auto px-5">
-          <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#d0241b] font-bold mb-3 text-center">[ The method ]</p>
-          <h2 id="method-heading" className="font-display text-3xl md:text-5xl font-black text-[#0d0d0d] tracking-tight text-center leading-[1.05]">
+          <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#0a7c78] font-bold mb-3 text-center">[ The method ]</p>
+          <h2 id="method-heading" className="font-display text-3xl md:text-5xl font-black text-[#0b3b44] tracking-tight text-center leading-[1.05]">
             Six steps. The same six, every company.
           </h2>
-          <p className="font-body text-[#0d0d0d]/70 text-center max-w-2xl mx-auto mt-4">
+          <p className="font-body text-[#0b3b44]/70 text-center max-w-2xl mx-auto mt-4">
             Going native is engineered, not improvised. The map decides the order, the build happens in your accounts, and the sessions happen on your real work, which is why the price is set before the first call.
           </p>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
             {aiNativeMethod.map((s) => (
-              <div key={s.n} className="rounded-2xl border-2 border-[#0d0d0d] bg-[#f1ede4] p-7 shadow-[6px_6px_0_0_#0d0d0d]">
-                <p className="font-display italic text-4xl font-black text-[#ffd400]" aria-hidden="true">
+              <div key={s.n} className="rounded-2xl border-2 border-[#0b3b44] bg-[#fbf5ea] p-7 shadow-[6px_6px_0_0_#0b3b44]">
+                <p className="font-display italic text-4xl font-black text-[#f5b700]" aria-hidden="true">
                   {s.n}
                 </p>
-                <h3 className="font-display text-xl font-black text-[#0d0d0d] mt-3">{s.title}</h3>
-                <p className="font-body text-sm text-[#0d0d0d]/70 leading-relaxed mt-2.5">{s.body}</p>
+                <h3 className="font-display text-xl font-black text-[#0b3b44] mt-3">{s.title}</h3>
+                <p className="font-body text-sm text-[#0b3b44]/70 leading-relaxed mt-2.5">{s.body}</p>
               </div>
             ))}
           </div>
@@ -196,42 +196,42 @@ export default function AiNativePage() {
       {/* ─── FOR / NOT FOR ─── */}
       <section className="py-16 md:py-24" aria-labelledby="fit-heading">
         <div className="max-w-5xl mx-auto px-5">
-          <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#d0241b] font-bold mb-3 text-center">[ The fit ]</p>
-          <h2 id="fit-heading" className="font-display text-3xl md:text-5xl font-black text-[#0d0d0d] tracking-tight text-center leading-[1.05]">
+          <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#0a7c78] font-bold mb-3 text-center">[ The fit ]</p>
+          <h2 id="fit-heading" className="font-display text-3xl md:text-5xl font-black text-[#0b3b44] tracking-tight text-center leading-[1.05]">
             For a company that already works.
           </h2>
           <div className="grid md:grid-cols-2 gap-6 mt-12">
-            <div className="rounded-2xl border-2 border-[#0d0d0d] bg-[#ffd400] p-7 shadow-[6px_6px_0_0_#0d0d0d]">
-              <h3 className="font-display text-xl font-black text-[#0d0d0d]">This is your door if</h3>
+            <div className="rounded-2xl border-2 border-[#0b3b44] bg-[#f5b700] p-7 shadow-[6px_6px_0_0_#0b3b44]">
+              <h3 className="font-display text-xl font-black text-[#0b3b44]">This is your door if</h3>
               <ul className="mt-4 space-y-3">
                 {FOR.map((line) => (
-                  <li key={line} className="flex gap-3 font-body text-sm text-[#0d0d0d] leading-snug">
-                    <span aria-hidden="true" className="mt-[4px] h-3 w-3 flex-shrink-0 rounded-sm border-2 border-[#0d0d0d] bg-[#f1ede4]" />
+                  <li key={line} className="flex gap-3 font-body text-sm text-[#0b3b44] leading-snug">
+                    <span aria-hidden="true" className="mt-[4px] h-3 w-3 flex-shrink-0 rounded-sm border-2 border-[#0b3b44] bg-[#fbf5ea]" />
                     <span>{line}</span>
                   </li>
                 ))}
               </ul>
             </div>
-            <div className="rounded-2xl border-2 border-[#0d0d0d] bg-white p-7 shadow-[6px_6px_0_0_#0d0d0d]">
-              <h3 className="font-display text-xl font-black text-[#0d0d0d]">This is a different door if</h3>
+            <div className="rounded-2xl border-2 border-[#0b3b44] bg-white p-7 shadow-[6px_6px_0_0_#0b3b44]">
+              <h3 className="font-display text-xl font-black text-[#0b3b44]">This is a different door if</h3>
               <ul className="mt-4 space-y-3">
                 {NOT_FOR.map((line) => (
-                  <li key={line} className="flex gap-3 font-body text-sm text-[#0d0d0d] leading-snug">
-                    <span aria-hidden="true" className="mt-[4px] h-3 w-3 flex-shrink-0 rounded-sm border-2 border-[#0d0d0d] bg-[#f1ede4]" />
+                  <li key={line} className="flex gap-3 font-body text-sm text-[#0b3b44] leading-snug">
+                    <span aria-hidden="true" className="mt-[4px] h-3 w-3 flex-shrink-0 rounded-sm border-2 border-[#0b3b44] bg-[#fbf5ea]" />
                     <span>{line}</span>
                   </li>
                 ))}
               </ul>
-              <p className="font-body text-sm text-[#0d0d0d]/60 mt-5">
-                <Link href="/hundredfold" className="font-bold text-[#0d0d0d] underline underline-offset-4">
+              <p className="font-body text-sm text-[#0b3b44]/60 mt-5">
+                <Link href="/hundredfold" className="font-bold text-[#0b3b44] underline underline-offset-4">
                   HUNDREDFOLD
                 </Link>
                 {' · '}
-                <Link href="/the-system" className="font-bold text-[#0d0d0d] underline underline-offset-4">
+                <Link href="/the-system" className="font-bold text-[#0b3b44] underline underline-offset-4">
                   Idea to Product
                 </Link>
                 {' · '}
-                <Link href="/future-proof" className="font-bold text-[#0d0d0d] underline underline-offset-4">
+                <Link href="/future-proof" className="font-bold text-[#0b3b44] underline underline-offset-4">
                   Future-Proof Your Business
                 </Link>
               </p>
@@ -241,36 +241,36 @@ export default function AiNativePage() {
       </section>
 
       {/* ─── THE THREE DOORS ─── */}
-      <section id="book" className="py-16 md:py-24 bg-white border-y-2 border-[#0d0d0d] scroll-mt-20" aria-labelledby="book-heading">
+      <section id="book" className="py-16 md:py-24 bg-white border-y-2 border-[#0b3b44] scroll-mt-20" aria-labelledby="book-heading">
         <div className="max-w-5xl mx-auto px-5">
-          <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#d0241b] font-bold mb-3 text-center">[ Set prices ]</p>
-          <h2 id="book-heading" className="font-display text-3xl md:text-5xl font-black text-[#0d0d0d] tracking-tight text-center leading-[1.05]">
+          <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#0a7c78] font-bold mb-3 text-center">[ Set prices ]</p>
+          <h2 id="book-heading" className="font-display text-3xl md:text-5xl font-black text-[#0b3b44] tracking-tight text-center leading-[1.05]">
             Three ways in.
           </h2>
-          <p className="font-body text-[#0d0d0d]/70 text-center max-w-2xl mx-auto mt-4">
+          <p className="font-body text-[#0b3b44]/70 text-center max-w-2xl mx-auto mt-4">
             The price is the price. Changes to what we built are included, and everything we set up is in your name: the accounts, the keys, the playbook and the habit.
           </p>
           <div className="mt-12">
             <AiNativeTiers />
           </div>
-          <p className="font-body text-sm text-[#0d0d0d]/60 text-center mt-8 max-w-2xl mx-auto">
+          <p className="font-body text-sm text-[#0b3b44]/60 text-center mt-8 max-w-2xl mx-auto">
             The map credits in full toward the build within ninety days, so starting small costs nothing extra.
           </p>
         </div>
       </section>
 
       {/* ─── THE READ COMES FIRST ─── */}
-      <section id="read" className="py-16 md:py-24 bg-[#ffd400] border-b-2 border-[#0d0d0d] scroll-mt-20" aria-labelledby="read-heading">
+      <section id="read" className="py-16 md:py-24 bg-[#f5b700] border-b-2 border-[#0b3b44] scroll-mt-20" aria-labelledby="read-heading">
         <div className="max-w-5xl mx-auto px-5 grid md:grid-cols-2 gap-10 md:gap-14 items-center">
           <div>
-            <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#0d0d0d]/70 font-bold mb-3">[ The read, first ]</p>
-            <h2 id="read-heading" className="font-display text-3xl md:text-5xl font-black text-[#0d0d0d] tracking-tight leading-[1.05]">
+            <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#0b3b44]/70 font-bold mb-3">[ The read, first ]</p>
+            <h2 id="read-heading" className="font-display text-3xl md:text-5xl font-black text-[#0b3b44] tracking-tight leading-[1.05]">
               Send the business. Get the Agentic Read.
             </h2>
-            <p className="font-body text-[#0d0d0d]/80 leading-relaxed mt-5">
+            <p className="font-body text-[#0b3b44]/80 leading-relaxed mt-5">
               We read your business the way we would on day one of the map and send back one page: the three agentic moves that pay first in your company, what each one costs to run, and which of the three doors fits. It comes back {AI_NATIVE.readDelivery}, it costs nothing, and it is yours whether or not you book.
             </p>
-            <p className="font-body text-[#0d0d0d]/80 leading-relaxed mt-4">
+            <p className="font-body text-[#0b3b44]/80 leading-relaxed mt-4">
               Most owners have never seen their own week written down as workflows with a price on each one. That is usually the moment they decide.
             </p>
           </div>
@@ -281,20 +281,20 @@ export default function AiNativePage() {
       {/* ─── FAQ ─── */}
       <section className="py-16 md:py-24" aria-labelledby="faq-heading">
         <div className="max-w-3xl mx-auto px-5">
-          <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#d0241b] font-bold mb-3 text-center">[ Questions ]</p>
-          <h2 id="faq-heading" className="font-display text-3xl md:text-5xl font-black text-[#0d0d0d] tracking-tight text-center leading-[1.05]">
+          <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#0a7c78] font-bold mb-3 text-center">[ Questions ]</p>
+          <h2 id="faq-heading" className="font-display text-3xl md:text-5xl font-black text-[#0b3b44] tracking-tight text-center leading-[1.05]">
             Before you book.
           </h2>
           <div className="mt-10 space-y-3">
             {aiNativeFaq.map((f) => (
-              <details key={f.q} className="group rounded-2xl border-2 border-[#0d0d0d] bg-white shadow-[4px_4px_0_0_#0d0d0d] open:shadow-[6px_6px_0_0_#ffd400]">
-                <summary className="cursor-pointer list-none px-6 py-4 font-display text-lg font-black text-[#0d0d0d] flex items-center justify-between gap-4">
+              <details key={f.q} className="group rounded-2xl border-2 border-[#0b3b44] bg-white shadow-[4px_4px_0_0_#0b3b44] open:shadow-[6px_6px_0_0_#f5b700]">
+                <summary className="cursor-pointer list-none px-6 py-4 font-display text-lg font-black text-[#0b3b44] flex items-center justify-between gap-4">
                   <span>{f.q}</span>
-                  <span aria-hidden="true" className="font-mono text-xl leading-none text-[#ffd400] group-open:rotate-45 transition-transform">
+                  <span aria-hidden="true" className="font-mono text-xl leading-none text-[#f5b700] group-open:rotate-45 transition-transform">
                     +
                   </span>
                 </summary>
-                <p className="px-6 pb-5 font-body text-sm text-[#0d0d0d]/75 leading-relaxed">{f.a}</p>
+                <p className="px-6 pb-5 font-body text-sm text-[#0b3b44]/75 leading-relaxed">{f.a}</p>
               </details>
             ))}
           </div>
@@ -302,32 +302,32 @@ export default function AiNativePage() {
       </section>
 
       {/* ─── FINAL CTA ─── */}
-      <section className="py-16 md:py-24 bg-[#0d0d0d] border-t-2 border-[#0d0d0d]">
+      <section className="py-16 md:py-24 bg-[#0b3b44] border-t-2 border-[#0b3b44]">
         <div className="max-w-3xl mx-auto px-5 text-center">
-          <h2 className="font-display text-3xl md:text-5xl font-black text-[#f1ede4] tracking-tight leading-[1.05]">
+          <h2 className="font-display text-3xl md:text-5xl font-black text-[#fbf5ea] tracking-tight leading-[1.05]">
             You built the company.
             <br className="hidden md:block" /> Now let it run on agentic systems.
           </h2>
-          <p className="font-body text-[#f1ede4]/70 mt-4 max-w-xl mx-auto">
+          <p className="font-body text-[#fbf5ea]/70 mt-4 max-w-xl mx-auto">
             A set package price, {AI_NATIVE.mapDelivery}. Or send the business first and read the Agentic Read before you decide.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
             <a
               href="#book"
-              className="inline-block rounded-full bg-[#ffd400] border-2 border-[#ffd400] px-10 py-4 font-sans font-extrabold text-[#0d0d0d] text-sm uppercase tracking-[0.18em] shadow-[5px_5px_0_0_#f1ede4] transition-all hover:-translate-y-0.5"
+              className="inline-block rounded-full bg-[#f5b700] border-2 border-[#f5b700] px-10 py-4 font-sans font-extrabold text-[#0b3b44] text-sm uppercase tracking-[0.18em] shadow-[5px_5px_0_0_#fbf5ea] transition-all hover:-translate-y-0.5"
             >
               Book the map
             </a>
             <Link
               href="/book"
-              className="inline-block rounded-full bg-transparent border-2 border-[#f1ede4] px-10 py-4 font-sans font-extrabold text-[#f1ede4] text-sm uppercase tracking-[0.18em] transition-all hover:-translate-y-0.5"
+              className="inline-block rounded-full bg-transparent border-2 border-[#fbf5ea] px-10 py-4 font-sans font-extrabold text-[#fbf5ea] text-sm uppercase tracking-[0.18em] transition-all hover:-translate-y-0.5"
             >
               Talk to Sarah first
             </Link>
           </div>
-          <p className="font-body text-sm text-[#f1ede4]/60 mt-8">
+          <p className="font-body text-sm text-[#fbf5ea]/60 mt-8">
             Who you would be working with:{' '}
-            <Link href={PORTFOLIO_PATH} className="font-bold text-[#f1ede4] underline underline-offset-4 decoration-[#ffd400] decoration-2">
+            <Link href={PORTFOLIO_PATH} className="font-bold text-[#fbf5ea] underline underline-offset-4 decoration-[#f5b700] decoration-2">
               the portfolio
             </Link>
             .

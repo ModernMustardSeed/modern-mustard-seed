@@ -17,7 +17,7 @@ const LADDER = [
   {
     rung: '01',
     rate: `${m.pct}%`,
-    accent: '#ffd400',
+    accent: '#f5b700',
     label: `Every month, for ${m.months} months`,
     detail: `Send a business. If they keep ${m.talkingWebsite.name} you earn ${$(m.talkingWebsite.perMonth)} a month, ${$(m.talkingWebsite.year)} over the year, per business. A ${m.voice.name} alone pays ${$(m.voice.perMonth)} a month. Ten kept Talking Websites is ${$(m.tenTalkingWebsites.perMonth)} a month to you.`,
     tag: 'The part that compounds',
@@ -25,7 +25,7 @@ const LADDER = [
   {
     rung: '02',
     rate: `${m.buildPct} to ${m.producerPct}%`,
-    accent: '#ff3b2f',
+    accent: '#ff6f59',
     label: 'On custom builds',
     detail: `Send a business that needs a real build (a store, an app, an agentic system) and earn ${m.buildPct}% of the project. Once you are closing them regularly we move you to Producer rates, ${m.producerPct}%.`,
     tag: 'The biggest checks',
@@ -33,7 +33,7 @@ const LADDER = [
   {
     rung: '03',
     rate: `${m.productPct}%`,
-    accent: '#ff3b2f',
+    accent: '#ff6f59',
     label: 'On every playbook',
     detail: `Share a playbook or bundle and earn half the moment someone buys. Every one of them is yours free, so you only ever recommend what you have used.`,
     tag: 'The easy front door',
@@ -71,22 +71,22 @@ const DAY_ONE = [
 
 export default function PartnersPage() {
   return (
-    <div className="bg-[#f1ede4] text-[#0d0d0d]">
+    <div className="bg-[#fbf5ea] text-[#0b3b44]">
       {/* Hero */}
       <section className="relative px-6 pt-36 pb-16 overflow-hidden halftone-bg">
         <div className="relative z-10 max-w-4xl mx-auto text-center">
-          <span className="text-[10px] uppercase tracking-[0.4em] text-[#d0241b] font-mono font-bold block mb-6">The Partner Program</span>
-          <h1 className="font-display text-5xl md:text-7xl font-bold tracking-tight leading-[1.02] text-[#0d0d0d]">
+          <span className="text-[10px] uppercase tracking-[0.4em] text-[#0a7c78] font-mono font-bold block mb-6">The Partner Program</span>
+          <h1 className="font-display text-5xl md:text-7xl font-bold tracking-tight leading-[1.02] text-[#0b3b44]">
             Send us a business.<br className="hidden sm:block" /> Get paid for a year.
           </h1>
           <p className="mt-7 text-[#3A3733] text-lg font-body font-light max-w-2xl mx-auto leading-relaxed">
             You introduce. We build them a free demo: their own site and a voice agent built to their trade. If they keep it, you earn {m.pct}% of every monthly invoice for {m.months} months. That is {$(m.talkingWebsite.year)} per Talking Website. No selling, no quota, no cap.
           </p>
           <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-4">
-            <a href="#apply" className="inline-block px-9 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-[#0d0d0d] bg-[#ffd400] border-2 border-[#0d0d0d] rounded-full shadow-[4px_4px_0_0_#0d0d0d] hover:shadow-[6px_6px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-all">
+            <a href="#apply" className="inline-block px-9 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-[#0b3b44] bg-[#f5b700] border-2 border-[#0b3b44] rounded-full shadow-[4px_4px_0_0_#0b3b44] hover:shadow-[6px_6px_0_0_#0b3b44] hover:-translate-y-0.5 transition-all">
               Apply to partner
             </a>
-            <a href="#math" className="text-[12px] uppercase tracking-[0.18em] font-mono font-bold text-[#0d0d0d]/70 hover:text-[#0d0d0d] transition-colors underline underline-offset-4 decoration-[#ffd400] decoration-2">
+            <a href="#math" className="text-[12px] uppercase tracking-[0.18em] font-mono font-bold text-[#0b3b44]/70 hover:text-[#0b3b44] transition-colors underline underline-offset-4 decoration-[#f5b700] decoration-2">
               Run your numbers
             </a>
           </div>
@@ -94,7 +94,7 @@ export default function PartnersPage() {
 
         {/* The partner-recruiting spot, framed. */}
         <div className="relative z-10 max-w-4xl mx-auto mt-14">
-          <div className="rounded-3xl overflow-hidden border-[3px] border-[#0d0d0d] bg-[#0d0d0d] shadow-[10px_10px_0_0_#0d0d0d]">
+          <div className="rounded-3xl overflow-hidden border-[3px] border-[#0b3b44] bg-[#0b3b44] shadow-[10px_10px_0_0_#0b3b44]">
             <video
               className="w-full aspect-video object-cover block"
               autoPlay
@@ -104,7 +104,7 @@ export default function PartnersPage() {
               preload="metadata"
               poster="/ads/partner-yacht-poster.png"
               aria-hidden="true"
-              style={{ backgroundColor: '#0d0d0d' }}
+              style={{ backgroundColor: '#0b3b44' }}
             >
               <source src="/ads/partner-yacht-16x9.mp4" type="video/mp4" />
             </video>
@@ -115,18 +115,18 @@ export default function PartnersPage() {
       {/* The ladder */}
       <section className="max-w-6xl mx-auto px-6 py-16">
         <div className="text-center mb-10">
-          <span className="text-[10px] uppercase tracking-[0.4em] text-[#d0241b] font-mono font-bold block mb-3">Three ways to earn, one honest program</span>
-          <h2 className="font-display text-4xl font-semibold text-[#0d0d0d]">The recurring piece is the whole point.</h2>
+          <span className="text-[10px] uppercase tracking-[0.4em] text-[#0a7c78] font-mono font-bold block mb-3">Three ways to earn, one honest program</span>
+          <h2 className="font-display text-4xl font-semibold text-[#0b3b44]">The recurring piece is the whole point.</h2>
         </div>
         <div className="grid md:grid-cols-3 gap-5">
           {LADDER.map((r) => (
-            <div key={r.rung} className="bg-white border-2 border-[#0d0d0d] rounded-2xl shadow-[5px_5px_0_0_#0d0d0d] p-7 flex flex-col">
+            <div key={r.rung} className="bg-white border-2 border-[#0b3b44] rounded-2xl shadow-[5px_5px_0_0_#0b3b44] p-7 flex flex-col">
               <div className="flex items-center justify-between mb-5">
-                <span className="font-mono text-xs font-bold text-[#0d0d0d]/40 tracking-[0.2em]">{r.rung}</span>
-                <span className="text-[9px] uppercase tracking-[0.2em] font-mono font-bold px-2.5 py-1 rounded-full border-2 border-[#0d0d0d]" style={{ background: r.accent, color: r.accent === '#ffd400' ? '#0d0d0d' : '#f1ede4' }}>{r.tag}</span>
+                <span className="font-mono text-xs font-bold text-[#0b3b44]/40 tracking-[0.2em]">{r.rung}</span>
+                <span className="text-[9px] uppercase tracking-[0.2em] font-mono font-bold px-2.5 py-1 rounded-full border-2 border-[#0b3b44]" style={{ background: r.accent, color: r.accent === '#f5b700' ? '#0b3b44' : '#fbf5ea' }}>{r.tag}</span>
               </div>
-              <div className="font-display text-5xl sm:text-6xl font-bold text-[#0d0d0d] leading-none mb-1">{r.rate}</div>
-              <div className="text-[11px] uppercase tracking-[0.2em] text-[#0d0d0d]/60 font-mono font-bold mb-4">{r.label}</div>
+              <div className="font-display text-5xl sm:text-6xl font-bold text-[#0b3b44] leading-none mb-1">{r.rate}</div>
+              <div className="text-[11px] uppercase tracking-[0.2em] text-[#0b3b44]/60 font-mono font-bold mb-4">{r.label}</div>
               <p className="text-[#3A3733] font-body text-sm leading-relaxed">{r.detail}</p>
             </div>
           ))}
@@ -136,14 +136,14 @@ export default function PartnersPage() {
       {/* Who this is for */}
       <section className="max-w-6xl mx-auto px-6 pb-16">
         <div className="text-center mb-8">
-          <span className="text-[10px] uppercase tracking-[0.4em] text-[#d0241b] font-mono font-bold block mb-3">Who this is for</span>
-          <h2 className="font-display text-3xl sm:text-4xl font-semibold text-[#0d0d0d]">Anyone a business owner already trusts.</h2>
+          <span className="text-[10px] uppercase tracking-[0.4em] text-[#0a7c78] font-mono font-bold block mb-3">Who this is for</span>
+          <h2 className="font-display text-3xl sm:text-4xl font-semibold text-[#0b3b44]">Anyone a business owner already trusts.</h2>
         </div>
         <div className="grid md:grid-cols-3 gap-5">
           {KINDS.map((k) => (
-            <div key={k.t} className="bg-[#0d0d0d] text-[#f1ede4] border-2 border-[#0d0d0d] rounded-2xl p-7">
-              <h3 className="font-display text-2xl font-semibold mb-3 text-[#ffd400]">{k.t}</h3>
-              <p className="font-body text-sm leading-relaxed text-[#f1ede4]/85">{k.d}</p>
+            <div key={k.t} className="bg-[#0b3b44] text-[#fbf5ea] border-2 border-[#0b3b44] rounded-2xl p-7">
+              <h3 className="font-display text-2xl font-semibold mb-3 text-[#f5b700]">{k.t}</h3>
+              <p className="font-body text-sm leading-relaxed text-[#fbf5ea]/85">{k.d}</p>
             </div>
           ))}
         </div>
@@ -151,15 +151,15 @@ export default function PartnersPage() {
 
       {/* How it works */}
       <section className="max-w-5xl mx-auto px-6 pb-16">
-        <div className="bg-white border-2 border-[#0d0d0d] rounded-3xl shadow-[6px_6px_0_0_#0d0d0d] p-8 md:p-12">
-          <span className="text-[10px] uppercase tracking-[0.4em] text-[#d0241b] font-mono font-bold block mb-3">How it works</span>
-          <h2 className="font-display text-3xl font-semibold text-[#0d0d0d] mb-8">Four steps, and you only do one of them.</h2>
+        <div className="bg-white border-2 border-[#0b3b44] rounded-3xl shadow-[6px_6px_0_0_#0b3b44] p-8 md:p-12">
+          <span className="text-[10px] uppercase tracking-[0.4em] text-[#0a7c78] font-mono font-bold block mb-3">How it works</span>
+          <h2 className="font-display text-3xl font-semibold text-[#0b3b44] mb-8">Four steps, and you only do one of them.</h2>
           <ol className="grid sm:grid-cols-2 gap-x-8 gap-y-6">
             {STEPS.map((s) => (
               <li key={s.n} className="flex gap-4">
-                <span className="shrink-0 w-10 h-10 grid place-items-center rounded-full bg-[#ffd400] border-2 border-[#0d0d0d] font-display font-bold text-lg">{s.n}</span>
+                <span className="shrink-0 w-10 h-10 grid place-items-center rounded-full bg-[#f5b700] border-2 border-[#0b3b44] font-display font-bold text-lg">{s.n}</span>
                 <div>
-                  <h3 className="font-sans font-bold text-[#0d0d0d] mb-1 text-[15px]">{s.t}</h3>
+                  <h3 className="font-sans font-bold text-[#0b3b44] mb-1 text-[15px]">{s.t}</h3>
                   <p className="text-[#3A3733] font-body text-sm leading-relaxed">{s.d}</p>
                 </div>
               </li>
@@ -182,20 +182,20 @@ export default function PartnersPage() {
 
       {/* What you get day one */}
       <section className="max-w-5xl mx-auto px-6 pb-16">
-        <div className="bg-white border-2 border-[#0d0d0d] rounded-3xl shadow-[6px_6px_0_0_#0d0d0d] p-8 md:p-12">
+        <div className="bg-white border-2 border-[#0b3b44] rounded-3xl shadow-[6px_6px_0_0_#0b3b44] p-8 md:p-12">
           <div className="flex flex-col md:flex-row md:items-center gap-8">
             <div className="shrink-0 mx-auto md:mx-0">
               <Image src="/brand/mascot.png" alt="The Modern Mustard Seed mascot" width={885} height={1180} className="h-40 w-auto" />
             </div>
             <div className="flex-1">
-              <span className="text-[10px] uppercase tracking-[0.4em] text-[#d0241b] font-mono font-bold block mb-3">What you get on day one</span>
-              <h2 className="font-display text-3xl font-semibold text-[#0d0d0d] mb-6">A whole field guide, not just a link</h2>
+              <span className="text-[10px] uppercase tracking-[0.4em] text-[#0a7c78] font-mono font-bold block mb-3">What you get on day one</span>
+              <h2 className="font-display text-3xl font-semibold text-[#0b3b44] mb-6">A whole field guide, not just a link</h2>
               <div className="grid sm:grid-cols-2 gap-x-6 gap-y-5">
                 {DAY_ONE.map((x) => (
                   <div key={x.t} className="flex gap-3">
-                    <span className="text-[#ffd400] text-lg leading-none mt-0.5">●</span>
+                    <span className="text-[#f5b700] text-lg leading-none mt-0.5">●</span>
                     <div>
-                      <h3 className="font-sans font-bold text-[#0d0d0d] mb-1 text-[15px]">{x.t}</h3>
+                      <h3 className="font-sans font-bold text-[#0b3b44] mb-1 text-[15px]">{x.t}</h3>
                       <p className="text-[#3A3733] font-body text-sm leading-relaxed">{x.d}</p>
                     </div>
                   </div>
@@ -208,7 +208,7 @@ export default function PartnersPage() {
 
       {/* The real why */}
       <section className="max-w-3xl mx-auto px-6 pb-16 text-center">
-        <h2 className="font-display text-3xl font-semibold text-[#0d0d0d] mb-4">The real why</h2>
+        <h2 className="font-display text-3xl font-semibold text-[#0b3b44] mb-4">The real why</h2>
         <p className="text-[#3A3733] font-body leading-relaxed text-lg">
           Every business we build for gets a site they own and a phone that gets answered, at a set price, with every edit included forever. The people who send them to us should be paid the same way we price: one structure for everyone, written down, no fine print. You tell people the truth, including that you earn a commission, and everyone wins.
         </p>
@@ -217,8 +217,8 @@ export default function PartnersPage() {
       {/* Apply */}
       <section id="apply" className="px-6 py-16 scroll-mt-20 halftone-bg">
         <div className="text-center mb-8">
-          <span className="text-[10px] uppercase tracking-[0.4em] text-[#d0241b] font-mono font-bold block mb-3">Apply</span>
-          <h2 className="font-display text-4xl font-semibold text-[#0d0d0d]">Tell us a little about you</h2>
+          <span className="text-[10px] uppercase tracking-[0.4em] text-[#0a7c78] font-mono font-bold block mb-3">Apply</span>
+          <h2 className="font-display text-4xl font-semibold text-[#0b3b44]">Tell us a little about you</h2>
           <p className="text-[#3A3733] font-body mt-3 max-w-xl mx-auto">Sarah reviews every application personally. Approved partners get their link, free access, and the field guide the same day.</p>
         </div>
         <PartnersApply />

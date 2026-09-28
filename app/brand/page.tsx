@@ -58,30 +58,30 @@ export default function BrandPage() {
   };
 
   return (
-    <div id="top" className="bg-[#f1ede4] text-[#0d0d0d]">
+    <div id="top" className="bg-[#fbf5ea] text-[#0b3b44]">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       {/* ─── HERO ─── */}
-      <section className="halftone-bg border-b-2 border-[#0d0d0d]">
+      <section className="halftone-bg border-b-2 border-[#0b3b44]">
         <div className="max-w-5xl mx-auto px-5 pt-16 md:pt-24 pb-16 md:pb-24">
           <div className="text-center">
-            <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#d0241b] font-bold mb-4">{BRAND.eyebrow}</p>
+            <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#0a7c78] font-bold mb-4">{BRAND.eyebrow}</p>
             <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-black tracking-tight leading-[0.98]">
               A logo file is <em className="not-italic md:italic">not</em> a brand.
             </h1>
-            <p className="font-body text-base md:text-lg text-[#0d0d0d]/70 max-w-2xl mx-auto mt-6 leading-relaxed">{BRAND.promise}</p>
+            <p className="font-body text-base md:text-lg text-[#0b3b44]/70 max-w-2xl mx-auto mt-6 leading-relaxed">{BRAND.promise}</p>
             <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
                 href={BOOK_HREF}
-                className="inline-block rounded-full bg-[#0d0d0d] border-2 border-[#0d0d0d] px-9 py-4 font-sans font-extrabold text-[#f1ede4] text-sm uppercase tracking-[0.18em] shadow-[5px_5px_0_0_#ffd400] transition-all hover:-translate-y-0.5"
+                className="inline-block rounded-full bg-[#0b3b44] border-2 border-[#0b3b44] px-9 py-4 font-sans font-extrabold text-[#fbf5ea] text-sm uppercase tracking-[0.18em] shadow-[5px_5px_0_0_#f5b700] transition-all hover:-translate-y-0.5"
               >
                 Book the discovery call
               </Link>
-              <a href="#tiers" className="font-mono text-[11px] uppercase tracking-[0.25em] text-[#0d0d0d]/60 underline underline-offset-4">
+              <a href="#tiers" className="font-mono text-[11px] uppercase tracking-[0.25em] text-[#0b3b44]/60 underline underline-offset-4">
                 See the three packages
               </a>
             </div>
-            <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-[#0d0d0d]/50 mt-6">
+            <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-[#0b3b44]/50 mt-6">
               Set prices · Three weeks · Changes included · You own every file
             </p>
           </div>
@@ -89,59 +89,59 @@ export default function BrandPage() {
       </section>
 
       {/* ─── TWO WAYS IN ─── */}
-      <section className="py-16 md:py-20 border-b-2 border-[#0d0d0d]">
+      <section className="py-16 md:py-20 border-b-2 border-[#0b3b44]">
         <div className="max-w-5xl mx-auto px-5">
           <div className="grid md:grid-cols-2 gap-6">
             <div className="pop-card p-7 md:p-9">
-              <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#d0241b] font-bold">Brand</p>
+              <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#0a7c78] font-bold">Brand</p>
               <h2 className="font-display text-3xl md:text-4xl font-black mt-2 leading-tight">Starting from a blank page.</h2>
-              <p className="font-body text-[#0d0d0d]/75 mt-4 leading-relaxed">
+              <p className="font-body text-[#0b3b44]/75 mt-4 leading-relaxed">
                 A new company, a second venture from an operator who already runs one, or a product line that needs its own name.
                 Naming is included. Week one is discovery of a business that is about to exist.
               </p>
             </div>
             <div className="pop-card pop-card-yellow p-7 md:p-9">
-              <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#0d0d0d] font-bold">Rebrand</p>
+              <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#0b3b44] font-bold">Rebrand</p>
               <h2 className="font-display text-3xl md:text-4xl font-black mt-2 leading-tight">Starting from what works.</h2>
-              <p className="font-body text-[#0d0d0d]/80 mt-4 leading-relaxed">
+              <p className="font-body text-[#0b3b44]/80 mt-4 leading-relaxed">
                 A company whose work is better than its brand. Keep the name or change it; either way the old URLs, listings, and
                 search history hand off cleanly. Week one is discovery of a business that already exists.
               </p>
             </div>
           </div>
-          <p className="font-body text-center text-[#0d0d0d]/60 mt-8 max-w-2xl mx-auto">
+          <p className="font-body text-center text-[#0b3b44]/60 mt-8 max-w-2xl mx-auto">
             Same deliverables, same prices. The only thing that changes is where the first week starts.
           </p>
         </div>
       </section>
 
       {/* ─── THE NINETY SECONDS ─── */}
-      <section className="py-16 md:py-24 bg-[#0d0d0d] text-[#f1ede4] border-b-2 border-[#0d0d0d]">
+      <section className="py-16 md:py-24 bg-[#0b3b44] text-[#fbf5ea] border-b-2 border-[#0b3b44]">
         <div className="max-w-5xl mx-auto px-5">
-          <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#ffd400] font-bold mb-4 text-center">The first ninety seconds</p>
+          <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#f5b700] font-bold mb-4 text-center">The first ninety seconds</p>
           <h2 className="font-display text-3xl md:text-5xl font-black text-center leading-[1.05] max-w-3xl mx-auto">
             A customer meets your brand three ways. We ship all three.
           </h2>
           <div className="grid md:grid-cols-3 gap-6 mt-12">
             {SURFACES.map((s) => (
-              <div key={s.verb} className="border-2 border-[#ffd400] p-6 md:p-7 rounded-2xl shadow-[5px_5px_0_0_#ffd400]">
-                <p className="font-display text-3xl font-black text-[#ffd400]">{s.verb}</p>
-                <p className="font-body text-[#f1ede4]/80 mt-3 leading-relaxed">{s.what}</p>
+              <div key={s.verb} className="border-2 border-[#f5b700] p-6 md:p-7 rounded-2xl shadow-[5px_5px_0_0_#f5b700]">
+                <p className="font-display text-3xl font-black text-[#f5b700]">{s.verb}</p>
+                <p className="font-body text-[#fbf5ea]/80 mt-3 leading-relaxed">{s.what}</p>
               </div>
             ))}
           </div>
 
           <div className="mt-14 md:mt-16 max-w-3xl mx-auto">
-            <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#f1ede4]/50 text-center mb-5">How the market sells it</p>
-            <ul className="divide-y divide-[#f1ede4]/15 border-y border-[#f1ede4]/15">
+            <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#fbf5ea]/50 text-center mb-5">How the market sells it</p>
+            <ul className="divide-y divide-[#fbf5ea]/15 border-y border-[#fbf5ea]/15">
               {MARKET.map((m) => (
                 <li key={m.who} className="flex items-baseline justify-between py-3 font-body">
-                  <span className={m.who === 'Nobody' ? 'text-[#ffd400] font-bold' : 'text-[#f1ede4]/80'}>{m.who}</span>
-                  <span className={m.who === 'Nobody' ? 'text-[#ffd400] font-bold' : 'text-[#f1ede4]/60'}>sells {m.sells}</span>
+                  <span className={m.who === 'Nobody' ? 'text-[#f5b700] font-bold' : 'text-[#fbf5ea]/80'}>{m.who}</span>
+                  <span className={m.who === 'Nobody' ? 'text-[#f5b700] font-bold' : 'text-[#fbf5ea]/60'}>sells {m.sells}</span>
                 </li>
               ))}
             </ul>
-            <p className="font-body text-[#f1ede4]/70 mt-6 text-center leading-relaxed">
+            <p className="font-body text-[#fbf5ea]/70 mt-6 text-center leading-relaxed">
               Five vendors, six months, and the mark, the site, and the way the phone gets answered never agree with each other.
               Here it is one identity, decided once, pushed into every surface in the same three weeks.
             </p>
@@ -150,12 +150,12 @@ export default function BrandPage() {
       </section>
 
       {/* ─── TIERS ─── */}
-      <section id="tiers" className="py-16 md:py-24 border-b-2 border-[#0d0d0d] scroll-mt-20">
+      <section id="tiers" className="py-16 md:py-24 border-b-2 border-[#0b3b44] scroll-mt-20">
         <div className="max-w-6xl mx-auto px-5">
           <div className="text-center mb-12">
-            <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#d0241b] font-bold mb-4">Three packages</p>
+            <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#0a7c78] font-bold mb-4">Three packages</p>
             <h2 className="font-display text-3xl md:text-5xl font-black leading-[1.05]">Each one contains the one before it.</h2>
-            <p className="font-body text-[#0d0d0d]/70 mt-4 max-w-2xl mx-auto">
+            <p className="font-body text-[#0b3b44]/70 mt-4 max-w-2xl mx-auto">
               Fixed before work starts. Half to begin, half on delivery. Changes to anything we built are included, with no change order, ever.
             </p>
           </div>
@@ -166,26 +166,26 @@ export default function BrandPage() {
                 key={t.key}
                 className={
                   t.halo
-                    ? 'rounded-2xl border-2 border-[#0d0d0d] bg-[#0d0d0d] text-[#f1ede4] p-7 shadow-[6px_6px_0_0_#ffd400] lg:-mt-4'
+                    ? 'rounded-2xl border-2 border-[#0b3b44] bg-[#0b3b44] text-[#fbf5ea] p-7 shadow-[6px_6px_0_0_#f5b700] lg:-mt-4'
                     : 'pop-card p-7'
                 }
               >
                 {t.halo && (
-                  <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#ffd400] font-bold mb-3">The one most owners choose</p>
+                  <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#f5b700] font-bold mb-3">The one most owners choose</p>
                 )}
                 <h3 className="font-display text-3xl font-black">{t.name}</h3>
-                <p className={`font-sans text-[26px] font-extrabold leading-tight tracking-tight mt-3 ${t.halo ? 'text-[#ffd400]' : ''}`}>
+                <p className={`font-sans text-[26px] font-extrabold leading-tight tracking-tight mt-3 ${t.halo ? 'text-[#f5b700]' : ''}`}>
                   {PRICE_HEADLINE}
                 </p>
-                <p className={`font-mono text-[11px] uppercase tracking-[0.2em] mt-1 ${t.halo ? 'text-[#f1ede4]/60' : 'text-[#0d0d0d]/55'}`}>
+                <p className={`font-mono text-[11px] uppercase tracking-[0.2em] mt-1 ${t.halo ? 'text-[#fbf5ea]/60' : 'text-[#0b3b44]/55'}`}>
                   {PRICE_CADENCE_ONCE}
                 </p>
-                <p className={`font-mono text-[11px] uppercase tracking-[0.2em] mt-3 ${t.halo ? 'text-[#ffd400]' : 'text-[#d0241b]'}`}>{t.timeline}</p>
-                <p className={`font-body mt-4 leading-relaxed ${t.halo ? 'text-[#f1ede4]/85' : 'text-[#0d0d0d]/75'}`}>{t.lede}</p>
-                <ul className={`mt-5 space-y-2 font-body text-sm leading-relaxed ${t.halo ? 'text-[#f1ede4]/85' : 'text-[#0d0d0d]/80'}`}>
+                <p className={`font-mono text-[11px] uppercase tracking-[0.2em] mt-3 ${t.halo ? 'text-[#f5b700]' : 'text-[#0a7c78]'}`}>{t.timeline}</p>
+                <p className={`font-body mt-4 leading-relaxed ${t.halo ? 'text-[#fbf5ea]/85' : 'text-[#0b3b44]/75'}`}>{t.lede}</p>
+                <ul className={`mt-5 space-y-2 font-body text-sm leading-relaxed ${t.halo ? 'text-[#fbf5ea]/85' : 'text-[#0b3b44]/80'}`}>
                   {t.includes.map((line) => (
                     <li key={line} className="flex gap-2">
-                      <span className={`shrink-0 font-bold ${t.halo ? 'text-[#ffd400]' : 'text-[#d0241b]'}`}>+</span>
+                      <span className={`shrink-0 font-bold ${t.halo ? 'text-[#f5b700]' : 'text-[#0a7c78]'}`}>+</span>
                       <span>{line}</span>
                     </li>
                   ))}
@@ -194,8 +194,8 @@ export default function BrandPage() {
                   href={BOOK_HREF}
                   className={
                     t.halo
-                      ? 'mt-7 block text-center rounded-full bg-[#ffd400] border-2 border-[#ffd400] px-6 py-3.5 font-sans font-extrabold text-[#0d0d0d] text-xs uppercase tracking-[0.18em] shadow-[4px_4px_0_0_#f1ede4] transition-all hover:-translate-y-0.5'
-                      : 'mt-7 block text-center rounded-full bg-[#0d0d0d] border-2 border-[#0d0d0d] px-6 py-3.5 font-sans font-extrabold text-[#f1ede4] text-xs uppercase tracking-[0.18em] shadow-[4px_4px_0_0_#ffd400] transition-all hover:-translate-y-0.5'
+                      ? 'mt-7 block text-center rounded-full bg-[#f5b700] border-2 border-[#f5b700] px-6 py-3.5 font-sans font-extrabold text-[#0b3b44] text-xs uppercase tracking-[0.18em] shadow-[4px_4px_0_0_#fbf5ea] transition-all hover:-translate-y-0.5'
+                      : 'mt-7 block text-center rounded-full bg-[#0b3b44] border-2 border-[#0b3b44] px-6 py-3.5 font-sans font-extrabold text-[#fbf5ea] text-xs uppercase tracking-[0.18em] shadow-[4px_4px_0_0_#f5b700] transition-all hover:-translate-y-0.5'
                   }
                 >
                   Start with {t.name}
@@ -204,26 +204,26 @@ export default function BrandPage() {
             ))}
           </div>
 
-          <p className="font-body text-center text-[#0d0d0d]/60 mt-10 max-w-2xl mx-auto text-sm">
+          <p className="font-body text-center text-[#0b3b44]/60 mt-10 max-w-2xl mx-auto text-sm">
             Presence and Whole Company hand off into{' '}
-            <Link href="/talking-website" className="underline underline-offset-4 text-[#0d0d0d]">The Talking Website</Link>: your site and your
+            <Link href="/talking-website" className="underline underline-offset-4 text-[#0b3b44]">The Talking Website</Link>: your site and your
             voice agent off one brain. The setup fee is waived because the brand build covered it. Never the monthly.
           </p>
         </div>
       </section>
 
       {/* ─── THE THREE WEEKS ─── */}
-      <section className="py-16 md:py-24 border-b-2 border-[#0d0d0d] halftone-bg">
+      <section className="py-16 md:py-24 border-b-2 border-[#0b3b44] halftone-bg">
         <div className="max-w-4xl mx-auto px-5">
-          <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#d0241b] font-bold mb-4 text-center">How the three weeks run</p>
+          <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#0a7c78] font-bold mb-4 text-center">How the three weeks run</p>
           <h2 className="font-display text-3xl md:text-5xl font-black text-center leading-[1.05]">Designed once. Live everywhere.</h2>
           <ol className="mt-12 space-y-4">
             {brandWeeks.map((w) => (
               <li key={w.label} className="pop-card p-6 md:p-7 grid md:grid-cols-[110px_1fr] gap-3 md:gap-6">
-                <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#d0241b] font-bold pt-1">{w.label}</p>
+                <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#0a7c78] font-bold pt-1">{w.label}</p>
                 <div>
                   <p className="font-display text-xl md:text-2xl font-black">{w.title}</p>
-                  <p className="font-body text-[#0d0d0d]/75 mt-2 leading-relaxed">{w.body}</p>
+                  <p className="font-body text-[#0b3b44]/75 mt-2 leading-relaxed">{w.body}</p>
                 </div>
               </li>
             ))}
@@ -232,18 +232,18 @@ export default function BrandPage() {
       </section>
 
       {/* ─── FAQ ─── */}
-      <section className="py-16 md:py-24 border-b-2 border-[#0d0d0d]">
+      <section className="py-16 md:py-24 border-b-2 border-[#0b3b44]">
         <div className="max-w-3xl mx-auto px-5">
-          <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#d0241b] font-bold mb-4 text-center">Questions owners ask</p>
+          <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#0a7c78] font-bold mb-4 text-center">Questions owners ask</p>
           <h2 className="font-display text-3xl md:text-4xl font-black text-center leading-[1.05]">Straight answers.</h2>
-          <div className="mt-10 divide-y-2 divide-[#0d0d0d]/10">
+          <div className="mt-10 divide-y-2 divide-[#0b3b44]/10">
             {brandFaq.map((f) => (
               <details key={f.q} className="group py-5">
                 <summary className="cursor-pointer list-none flex items-start justify-between gap-4 font-display text-lg md:text-xl font-bold">
                   <span>{f.q}</span>
-                  <span className="font-mono text-[#d0241b] shrink-0 transition-transform group-open:rotate-45">+</span>
+                  <span className="font-mono text-[#0a7c78] shrink-0 transition-transform group-open:rotate-45">+</span>
                 </summary>
-                <p className="font-body text-[#0d0d0d]/75 mt-3 leading-relaxed">{f.a}</p>
+                <p className="font-body text-[#0b3b44]/75 mt-3 leading-relaxed">{f.a}</p>
               </details>
             ))}
           </div>
@@ -251,21 +251,21 @@ export default function BrandPage() {
       </section>
 
       {/* ─── FINAL CTA ─── */}
-      <section className="py-16 md:py-24 bg-[#ffd400] border-t-2 border-[#0d0d0d]">
+      <section className="py-16 md:py-24 bg-[#f5b700] border-t-2 border-[#0b3b44]">
         <div className="max-w-3xl mx-auto px-5 text-center">
           <h2 className="font-display text-3xl md:text-5xl font-black tracking-tight leading-[1.05]">
             Your work is better than your brand.<br className="hidden md:block" /> Fix that in three weeks.
           </h2>
-          <p className="font-body text-[#0d0d0d]/75 mt-4 max-w-xl mx-auto">
+          <p className="font-body text-[#0b3b44]/75 mt-4 max-w-xl mx-auto">
             A 30-minute discovery call. You tell us what the business is and where it is going. We tell you which package it is and the exact price. No line of work starts before you see the number.
           </p>
           <Link
             href={BOOK_HREF}
-            className="inline-block mt-8 rounded-full bg-[#0d0d0d] border-2 border-[#0d0d0d] px-10 py-4 font-sans font-extrabold text-[#f1ede4] text-sm uppercase tracking-[0.18em] shadow-[5px_5px_0_0_#f1ede4] transition-all hover:-translate-y-0.5"
+            className="inline-block mt-8 rounded-full bg-[#0b3b44] border-2 border-[#0b3b44] px-10 py-4 font-sans font-extrabold text-[#fbf5ea] text-sm uppercase tracking-[0.18em] shadow-[5px_5px_0_0_#fbf5ea] transition-all hover:-translate-y-0.5"
           >
             Book the discovery call
           </Link>
-          <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-[#0d0d0d]/60 mt-6">
+          <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-[#0b3b44]/60 mt-6">
             Or call the ranch line, {SITE.phone ?? '(406) 312-1223'}. Mr. Mustard answers.
           </p>
         </div>

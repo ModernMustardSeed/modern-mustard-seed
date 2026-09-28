@@ -30,7 +30,7 @@ export default async function SeedToSystemWelcomePage({
   }
 
   return (
-    <main className="min-h-screen bg-[#f1ede4] px-6 py-28 text-[#0d0d0d]">
+    <main className="min-h-screen bg-[#fbf5ea] px-6 py-28 text-[#0b3b44]">
       <div className="mx-auto max-w-2xl">
         <Sprout className="h-10 w-10 text-[#167D56]" aria-hidden="true" />
         <p className="mt-8 font-mono text-[10px] font-bold uppercase tracking-[0.34em] text-[#B62618]">
@@ -42,7 +42,7 @@ export default async function SeedToSystemWelcomePage({
 
         {paid ? (
           <>
-            <div className="mt-8 border-y-2 border-[#0d0d0d] py-7">
+            <div className="mt-8 border-y-2 border-[#0b3b44] py-7">
               <div className="flex gap-3">
                 <Check className="mt-0.5 h-6 w-6 shrink-0 text-[#167D56]" aria-hidden="true" />
                 <p className="font-body text-lg leading-relaxed">
@@ -56,7 +56,7 @@ export default async function SeedToSystemWelcomePage({
             </p>
           </>
         ) : (
-          <div className="mt-8 border-y-2 border-[#0d0d0d] py-7">
+          <div className="mt-8 border-y-2 border-[#0b3b44] py-7">
             <p className="font-body text-lg leading-relaxed">
               This page could not verify a completed Stripe payment. Check your receipt, or email Sarah so she can
               look up the enrollment.
@@ -67,14 +67,14 @@ export default async function SeedToSystemWelcomePage({
         <div className="mt-10 flex flex-col gap-3 sm:flex-row">
           <a
             href="mailto:sarah@modernmustardseed.com?subject=SEED%20TO%20SYSTEM%20enrollment"
-            className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border-2 border-[#0d0d0d] bg-[#ffd400] px-6 py-3 font-sans text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#0d0d0d] shadow-[4px_4px_0_0_#0d0d0d]"
+            className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border-2 border-[#0b3b44] bg-[#f5b700] px-6 py-3 font-sans text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#0b3b44] shadow-[4px_4px_0_0_#0b3b44]"
           >
             <Mail className="h-4 w-4" aria-hidden="true" />
             Email Sarah
           </a>
           <Link
             href="/"
-            className="inline-flex min-h-12 items-center justify-center rounded-full border-2 border-[#0d0d0d] bg-white px-6 py-3 font-sans text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#0d0d0d]"
+            className="inline-flex min-h-12 items-center justify-center rounded-full border-2 border-[#0b3b44] bg-white px-6 py-3 font-sans text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#0b3b44]"
           >
             Back to Modern Mustard Seed
           </Link>

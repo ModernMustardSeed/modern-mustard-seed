@@ -128,15 +128,15 @@ export default function BookCall() {
       <div className="max-w-xl mx-auto text-center">
         <StampStyles />
         <AppointmentCard name={form.name} business={form.business} focus={form.focus} timeLabel={done} stamp="booked" />
-        <h2 className="mt-10 font-display text-3xl md:text-4xl font-extrabold text-[#0d0d0d] leading-[1.05]">
+        <h2 className="mt-10 font-display text-3xl md:text-4xl font-extrabold text-[#0b3b44] leading-[1.05]">
           You are on the book.
         </h2>
-        <p className="mt-3 text-[#0d0d0d]/85 font-body leading-relaxed">
+        <p className="mt-3 text-[#0b3b44]/85 font-body leading-relaxed">
           A calendar invite with the video link is on its way to your inbox. Sarah reads every answer before the call, so you can skip the throat-clearing and get right to it.
         </p>
-        <p className="mt-5 font-mono text-[11px] uppercase tracking-[0.2em] text-[#0d0d0d]/85">
+        <p className="mt-5 font-mono text-[11px] uppercase tracking-[0.2em] text-[#0b3b44]/85">
           Something come up?{' '}
-          <a href="mailto:sarah@modernmustardseed.com" className="font-bold text-[#c8201a] underline decoration-2 underline-offset-2 hover:text-[#d0241b]">
+          <a href="mailto:sarah@modernmustardseed.com" className="font-bold text-[#0a7c78] underline decoration-2 underline-offset-2 hover:text-[#0a7c78]">
             Email Sarah
           </a>
         </p>
@@ -151,8 +151,8 @@ export default function BookCall() {
 
         {/* ───── Left: the questions, then the times ───── */}
         <div className="min-w-0 space-y-6">
-          <div className="rounded-2xl border-2 border-[#0d0d0d] bg-white p-6 md:p-8 shadow-[5px_5px_0_0_#0d0d0d] space-y-4">
-            <span className="font-mono text-[10px] uppercase tracking-[0.3em] font-bold text-[#d0241b] block">
+          <div className="rounded-2xl border-2 border-[#0b3b44] bg-white p-6 md:p-8 shadow-[5px_5px_0_0_#0b3b44] space-y-4">
+            <span className="font-mono text-[10px] uppercase tracking-[0.3em] font-bold text-[#0a7c78] block">
               A little prep, so we make the most of it
             </span>
             <div className="grid sm:grid-cols-2 gap-4">
@@ -172,8 +172,8 @@ export default function BookCall() {
           </div>
 
           {/* Slot picker */}
-          <div id="pick" className="scroll-mt-24 rounded-2xl border-2 border-[#0d0d0d] bg-white p-6 md:p-8 shadow-[5px_5px_0_0_#0d0d0d]">
-            <span className="font-mono text-[10px] uppercase tracking-[0.3em] font-bold text-[#d0241b] block mb-1">
+          <div id="pick" className="scroll-mt-24 rounded-2xl border-2 border-[#0b3b44] bg-white p-6 md:p-8 shadow-[5px_5px_0_0_#0b3b44]">
+            <span className="font-mono text-[10px] uppercase tracking-[0.3em] font-bold text-[#0a7c78] block mb-1">
               Pick a day and time
             </span>
             <p className="text-[#5c554a] font-body text-sm mb-5">
@@ -185,10 +185,10 @@ export default function BookCall() {
                 <span className="sr-only">Loading open times</span>
                 {[0, 1].map((g) => (
                   <div key={g}>
-                    <div className="h-2.5 w-28 rounded-full bg-[#0d0d0d]/10 mb-3" />
+                    <div className="h-2.5 w-28 rounded-full bg-[#0b3b44]/10 mb-3" />
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
                       {[0, 1, 2].map((i) => (
-                        <div key={i} className="h-12 rounded-xl border-2 border-[#0d0d0d]/15 bg-[#F5F0E8] bc-pulse" />
+                        <div key={i} className="h-12 rounded-xl border-2 border-[#0b3b44]/15 bg-[#F5F0E8] bc-pulse" />
                       ))}
                     </div>
                   </div>
@@ -201,7 +201,7 @@ export default function BookCall() {
                 ) : (
                   <>
                     Nothing open right now. Email{' '}
-                    <a href="mailto:sarah@modernmustardseed.com" className="font-bold text-[#c8201a] underline decoration-2 underline-offset-2 hover:text-[#d0241b]">
+                    <a href="mailto:sarah@modernmustardseed.com" className="font-bold text-[#0a7c78] underline decoration-2 underline-offset-2 hover:text-[#0a7c78]">
                       sarah@modernmustardseed.com
                     </a>{' '}
                     and we will find a time that works.
@@ -211,7 +211,7 @@ export default function BookCall() {
             ) : (
               <div className="space-y-5">
                 {from && (
-                  <p className="font-mono text-[10px] uppercase tracking-[0.2em] font-bold text-[#c8201a]" aria-live="polite">
+                  <p className="font-mono text-[10px] uppercase tracking-[0.2em] font-bold text-[#0a7c78]" aria-live="polite">
                     Showing times from {prettyDate(from)}
                   </p>
                 )}
@@ -227,10 +227,10 @@ export default function BookCall() {
                             key={s.startIso}
                             aria-pressed={active}
                             onClick={() => { setForm((f) => ({ ...f, startIso: s.startIso })); setError(''); }}
-                            className={`rounded-xl border-2 border-[#0d0d0d] px-3 py-3 font-mono text-sm font-bold transition-all ${
+                            className={`rounded-xl border-2 border-[#0b3b44] px-3 py-3 font-mono text-sm font-bold transition-all ${
                               active
-                                ? 'bg-[#ffd400] text-[#0d0d0d] shadow-[3px_3px_0_0_#0d0d0d] -translate-y-0.5'
-                                : 'bg-white text-[#0d0d0d] hover:-translate-y-0.5 hover:shadow-[3px_3px_0_0_#0d0d0d]'
+                                ? 'bg-[#f5b700] text-[#0b3b44] shadow-[3px_3px_0_0_#0b3b44] -translate-y-0.5'
+                                : 'bg-white text-[#0b3b44] hover:-translate-y-0.5 hover:shadow-[3px_3px_0_0_#0b3b44]'
                             }`}
                           >
                             {s.timeLabel}
@@ -249,7 +249,7 @@ export default function BookCall() {
             )}
 
             {/* Book ahead: jump the spread to any week within the window. */}
-            <div className="mt-6 border-t-2 border-dashed border-[#0d0d0d]/25 pt-5">
+            <div className="mt-6 border-t-2 border-dashed border-[#0b3b44]/25 pt-5">
               <span className="font-mono text-[9px] uppercase tracking-[0.3em] font-bold text-[#5c554a] block mb-2">
                 Planning ahead? Jump to a date
               </span>
@@ -265,13 +265,13 @@ export default function BookCall() {
                     setFrom(v);
                     if (v) loadSlots(v);
                   }}
-                  className="rounded-lg border-2 border-[#0d0d0d] bg-white px-3 py-2 font-mono text-sm font-bold text-[#0d0d0d] focus:outline-none focus:shadow-[3px_3px_0_0_#0d0d0d] transition-shadow"
+                  className="rounded-lg border-2 border-[#0b3b44] bg-white px-3 py-2 font-mono text-sm font-bold text-[#0b3b44] focus:outline-none focus:shadow-[3px_3px_0_0_#0b3b44] transition-shadow"
                 />
                 {from && (
                   <button
                     type="button"
                     onClick={() => { setFrom(''); loadSlots(); }}
-                    className="rounded-full border-2 border-[#0d0d0d] bg-white px-4 py-2 font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-[#0d0d0d] transition-all hover:-translate-y-0.5 hover:shadow-[3px_3px_0_0_#0d0d0d]"
+                    className="rounded-full border-2 border-[#0b3b44] bg-white px-4 py-2 font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-[#0b3b44] transition-all hover:-translate-y-0.5 hover:shadow-[3px_3px_0_0_#0b3b44]"
                   >
                     Back to soonest
                   </button>
@@ -290,16 +290,16 @@ export default function BookCall() {
 
           <div className="mt-8">
             {error && (
-              <p role="alert" className="mb-4 rounded-xl border-2 border-[#0d0d0d] bg-[#f1ede4] px-4 py-2.5 text-center font-body text-sm font-bold text-[#c8201a] shadow-[3px_3px_0_0_#0d0d0d]">{error}</p>
+              <p role="alert" className="mb-4 rounded-xl border-2 border-[#0b3b44] bg-[#fbf5ea] px-4 py-2.5 text-center font-body text-sm font-bold text-[#b3261e] shadow-[3px_3px_0_0_#0b3b44]">{error}</p>
             )}
             <button
               type="submit"
               disabled={submitting || (!slotsLoading && slots.length === 0)}
-              className="w-full min-h-[58px] rounded-full border-[2.5px] border-[#0d0d0d] bg-[#0d0d0d] px-8 py-4 font-sans text-sm font-extrabold uppercase tracking-[0.14em] text-[#f1ede4] shadow-[6px_6px_0_0_#f1ede4,6px_6px_0_2.5px_#0d0d0d] transition-all hover:-translate-y-0.5 hover:shadow-[8px_8px_0_0_#f1ede4,8px_8px_0_2.5px_#0d0d0d] motion-reduce:transition-none motion-reduce:hover:translate-y-0 disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:shadow-[6px_6px_0_0_#f1ede4,6px_6px_0_2.5px_#0d0d0d]"
+              className="w-full min-h-[58px] rounded-full border-[2.5px] border-[#0b3b44] bg-[#0b3b44] px-8 py-4 font-sans text-sm font-extrabold uppercase tracking-[0.14em] text-[#fbf5ea] shadow-[6px_6px_0_0_#fbf5ea,6px_6px_0_2.5px_#0b3b44] transition-all hover:-translate-y-0.5 hover:shadow-[8px_8px_0_0_#fbf5ea,8px_8px_0_2.5px_#0b3b44] motion-reduce:transition-none motion-reduce:hover:translate-y-0 disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:shadow-[6px_6px_0_0_#fbf5ea,6px_6px_0_2.5px_#0b3b44]"
             >
               {submitting ? 'Booking...' : 'Stamp it and book'}
             </button>
-            <p className="mt-4 text-center font-body text-[13px] font-semibold leading-relaxed text-[#0d0d0d]/85">
+            <p className="mt-4 text-center font-body text-[13px] font-semibold leading-relaxed text-[#0b3b44]/85">
               Free, 30 minutes, no pitch. You will get a calendar invite with the video link the moment you book.
             </p>
           </div>
@@ -319,14 +319,14 @@ function AppointmentCard({
   name, business, focus, timeLabel, stamp,
 }: { name: string; business: string; focus: string; timeLabel: string; stamp: StampState }) {
   return (
-    <figure className="relative mx-auto w-full min-w-0 max-w-md rotate-[-1deg] sm:rotate-[-1.5deg] rounded-2xl border-2 border-[#0d0d0d] bg-white p-5 md:p-6 pb-16 sm:pb-5 md:pb-6 shadow-[4px_4px_0_0_#0d0d0d] sm:shadow-[7px_7px_0_0_#0d0d0d]">
-      <div className="flex items-start justify-between gap-3 border-b-2 border-[#0d0d0d] pb-3">
+    <figure className="relative mx-auto w-full min-w-0 max-w-md rotate-[-1deg] sm:rotate-[-1.5deg] rounded-2xl border-2 border-[#0b3b44] bg-white p-5 md:p-6 pb-16 sm:pb-5 md:pb-6 shadow-[4px_4px_0_0_#0b3b44] sm:shadow-[7px_7px_0_0_#0b3b44]">
+      <div className="flex items-start justify-between gap-3 border-b-2 border-[#0b3b44] pb-3">
         <div>
           <p className="font-mono text-[8px] font-bold uppercase tracking-[0.24em] text-[#5c554a]">Modern Mustard Seed</p>
-          <p className="mt-0.5 font-display text-xl font-extrabold leading-none text-[#0d0d0d]">Appointment Card</p>
+          <p className="mt-0.5 font-display text-xl font-extrabold leading-none text-[#0b3b44]">Appointment Card</p>
           <p className="mt-1 font-mono text-[9px] uppercase tracking-[0.16em] text-[#5c554a]">Kalispell, Montana</p>
         </div>
-        <span className="relative h-11 w-11 flex-shrink-0 overflow-hidden rounded-full border-2 border-[#0d0d0d] bg-[#ffd400]">
+        <span className="relative h-11 w-11 flex-shrink-0 overflow-hidden rounded-full border-2 border-[#0b3b44] bg-[#f5b700]">
           <Image src="/brand/mascot.png" alt="" fill sizes="44px" className="object-contain p-[3px]" />
         </span>
       </div>
@@ -354,11 +354,11 @@ function AppointmentCard({
         <div
           key={stamp}
           aria-hidden="true"
-          className={`bc-stamp absolute bottom-3 right-4 sm:-bottom-3 sm:-right-2 rotate-[-13deg] rounded-lg border-[3px] bg-[#f1ede4]/85 px-3 py-1 ${
-            stamp === 'booked' ? 'border-[#ff3b2f]' : 'border-[#0d0d0d]'
+          className={`bc-stamp absolute bottom-3 right-4 sm:-bottom-3 sm:-right-2 rotate-[-13deg] rounded-lg border-[3px] bg-[#fbf5ea]/85 px-3 py-1 ${
+            stamp === 'booked' ? 'border-[#ff6f59]' : 'border-[#0b3b44]'
           }`}
         >
-          <p className={`font-mono text-[17px] font-bold tracking-[0.14em] ${stamp === 'booked' ? 'text-[#d0241b]' : 'text-[#c8201a]'}`}>
+          <p className={`font-mono text-[17px] font-bold tracking-[0.14em] ${stamp === 'booked' ? 'text-[#0a7c78]' : 'text-[#0a7c78]'}`}>
             {stamp === 'booked' ? 'BOOKED' : 'HELD'}
           </p>
         </div>
@@ -376,9 +376,9 @@ function CardRow({ label, value, ghost, clamp, mono }: { label: string; value: s
     <div className="min-w-0">
       <p className="font-mono text-[8px] font-bold uppercase tracking-[0.2em] text-[#5c554a]">{label}</p>
       <p
-        className={`mt-1 min-h-[22px] border-b border-dashed border-[#0d0d0d]/30 pb-1 text-[15px] leading-snug transition-colors ${
+        className={`mt-1 min-h-[22px] border-b border-dashed border-[#0b3b44]/30 pb-1 text-[15px] leading-snug transition-colors ${
           mono ? 'font-mono text-[13px]' : 'font-body'
-        } ${filled ? 'font-semibold text-[#0d0d0d]' : 'italic text-[#767066]'} ${clamp ? 'line-clamp-2' : 'truncate'}`}
+        } ${filled ? 'font-semibold text-[#0b3b44]' : 'italic text-[#767066]'} ${clamp ? 'line-clamp-2' : 'truncate'}`}
       >
         {filled ? value : ghost}
       </p>
@@ -426,7 +426,7 @@ function StampStyles() {
 }
 
 const cls =
-  'w-full bg-white border-2 border-[#0d0d0d] rounded-lg px-4 py-2.5 text-sm text-[#0d0d0d] font-body placeholder-[#767066] focus:outline-none focus:shadow-[3px_3px_0_0_#0d0d0d] transition-shadow resize-none';
+  'w-full bg-white border-2 border-[#0b3b44] rounded-lg px-4 py-2.5 text-sm text-[#0b3b44] font-body placeholder-[#767066] focus:outline-none focus:shadow-[3px_3px_0_0_#0b3b44] transition-shadow resize-none';
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (

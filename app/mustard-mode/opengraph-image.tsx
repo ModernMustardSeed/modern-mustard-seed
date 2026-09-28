@@ -9,10 +9,10 @@ export const alt = 'MUSTARD MODE. One seed, 100x the output. Learn Claude with y
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
-const INK = '#0d0d0d';
-const CREAM = '#f1ede4';
-const MUSTARD = '#ffd400';
-const MIDNIGHT = '#0d0d0d';
+const INK = '#0b3b44';
+const CREAM = '#fbf5ea';
+const MUSTARD = '#f5b700';
+const MIDNIGHT = '#0b3b44';
 
 export default async function OpengraphImage() {
   const mascot = readFileSync(join(process.cwd(), 'public/brand/mascot.png'));
@@ -50,7 +50,7 @@ export default async function OpengraphImage() {
             style={{
               display: 'flex',
               background: MIDNIGHT,
-              color: '#FFDD55',
+              color: '#ffc933',
               fontSize: 26,
               fontWeight: 700,
               padding: '10px 18px',
@@ -81,7 +81,7 @@ export default async function OpengraphImage() {
           <span style={{ fontSize: 28, color: '#3a3733', marginTop: 30, lineHeight: 1.4 }}>
             Your own agentic coach. Four tracks. 28 missions. Nothing but your Claude subscription.
           </span>
-          <span style={{ fontSize: 22, color: '#ff3b2f', fontWeight: 700, marginTop: 26, letterSpacing: 3 }}>
+          <span style={{ fontSize: 22, color: '#ff6f59', fontWeight: 700, marginTop: 26, letterSpacing: 3 }}>
             MODERNMUSTARDSEED.COM/MUSTARD-MODE
           </span>
         </div>

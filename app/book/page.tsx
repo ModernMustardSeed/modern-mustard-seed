@@ -120,7 +120,7 @@ export default function BookPage() {
 
         <div className={s.heroInner}>
           <div className={s.heroCopy}>
-            <span className="inline-flex items-center gap-2 font-mono text-[9.5px] sm:text-[10px] uppercase tracking-[0.1em] sm:tracking-[0.18em] font-bold bg-white text-[#c8201a] border-2 border-[#0d0d0d] rounded-full px-3.5 py-1.5 shadow-[3px_3px_0_0_#0d0d0d]">
+            <span className="inline-flex items-center gap-2 font-mono text-[9.5px] sm:text-[10px] uppercase tracking-[0.1em] sm:tracking-[0.18em] font-bold bg-white text-[#0a7c78] border-2 border-[#0b3b44] rounded-full px-3.5 py-1.5 shadow-[3px_3px_0_0_#0b3b44]">
               ☎ Tuesdays through Fridays · 30 minutes · free
             </span>
             <h1 className={s.h1}>
@@ -139,7 +139,7 @@ export default function BookPage() {
             </div>
             <p className={s.note}>
               Not ready to talk?{' '}
-              <Link href="/contact" className="font-bold text-[#c8201a] underline decoration-2 underline-offset-2 hover:text-[#d0241b]">
+              <Link href="/contact" className="font-bold text-[#0a7c78] underline decoration-2 underline-offset-2 hover:text-[#0a7c78]">
                 Send a note instead
               </Link>{' '}
               and Sarah answers inside a day.
@@ -154,8 +154,8 @@ export default function BookPage() {
               <span className={`${s.tape} ${s.tapeL}`} aria-hidden="true" />
               <span className={`${s.tape} ${s.tapeR}`} aria-hidden="true" />
               <Image
-                src="/art/pages/book-1600.webp"
-                alt="Graffiti couture painting: Mr. Mustard in a gold puffer jacket points from a mustard-yellow classic convertible at a drive-in screen showing a big appointment calendar, one day circled in red spray paint, under graffiti-covered walls at sunset"
+                src="/art/riviera/book-1600.webp"
+                alt="Painting: a sesame-seed host with a leather reservation book welcomes the Mustard family to a beach club of Tiffany-blue umbrellas, Mr. Mustard showing the booking on his phone as the kids and dog run for the sand"
                 width={1600}
                 height={1067}
                 priority
@@ -166,7 +166,7 @@ export default function BookPage() {
             </figure>
             <div className={s.sticker} aria-hidden="true">
               <svg viewBox="0 0 200 160">
-                <path d="M18 132 8 42 58 86 100 18 142 86 192 42 182 132Z" fill="#ff3b2f" />
+                <path d="M18 132 8 42 58 86 100 18 142 86 192 42 182 132Z" fill="#ff6f59" />
               </svg>
               <span className={s.stickerText}>Ka-<br />chunk!</span>
             </div>
@@ -196,7 +196,7 @@ export default function BookPage() {
               <article key={step.title} className={s.panel} style={{ '--tilt': step.tilt } as CSSProperties}>
                 <div className={s.num} aria-hidden="true">
                   <svg viewBox="0 0 100 100">
-                    <path d="M50 2 62 34 97 34 69 55 80 90 50 69 20 90 31 55 3 34 38 34Z" fill="#ffd400" />
+                    <path d="M50 2 62 34 97 34 69 55 80 90 50 69 20 90 31 55 3 34 38 34Z" fill="#f5b700" />
                   </svg>
                   <span>{String(i + 1).padStart(2, '0')}</span>
                 </div>
@@ -205,7 +205,7 @@ export default function BookPage() {
                   style={{ '--s': step.crop.s, '--ox': step.crop.ox, '--oy': step.crop.oy } as CSSProperties}
                 >
                   {/* The crop zooms in about 2x, so ask for twice the pixels to stay sharp. */}
-                  <Image src="/art/pages/book-1600.webp" alt="" fill sizes="(min-width: 900px) 760px, 200vw" />
+                  <Image src="/art/riviera/book-1600.webp" alt="" fill sizes="(min-width: 900px) 760px, 200vw" />
                   <span className={`${s.bubble} ${s.bubbleRight} ${s.panelBubble}`} aria-hidden="true">{step.bubble}</span>
                   <span className={s.narr} aria-hidden="true">{step.narr}</span>
                 </div>
@@ -285,7 +285,7 @@ export default function BookPage() {
             <div className={`${s.faqMascot} ${s.faqArt}`} aria-hidden="true">
               <div className={s.faqBurst}>
                 <svg viewBox="0 0 100 100">
-                  <circle cx="50" cy="50" r="46" fill="#ffd400" />
+                  <circle cx="50" cy="50" r="46" fill="#f5b700" />
                 </svg>
               </div>
               <Mascot sizes="(min-width: 1024px) 200px, 84px" />
@@ -308,7 +308,7 @@ export default function BookPage() {
           </div>
           <p className={s.faqNote}>
             Would rather write it out?{' '}
-            <Link href="/contact" className="font-bold text-[#c8201a] underline decoration-2 underline-offset-2 hover:text-[#d0241b]">
+            <Link href="/contact" className="font-bold text-[#0a7c78] underline decoration-2 underline-offset-2 hover:text-[#0a7c78]">
               Send a note instead
             </Link>
             .

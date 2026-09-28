@@ -9,7 +9,7 @@ import {
 
 /** Deterministic confetti sprinkle so server and client render identically. */
 export function confettiPieces(count: number, seed: number) {
-  const colors = ['#ffd400', '#FFDD55', '#ff3b2f', '#0d0d0d', '#FFFFFF'];
+  const colors = ['#f5b700', '#ffc933', '#ff6f59', '#0b3b44', '#FFFFFF'];
   let s = seed * 9301 + 49297;
   const rnd = () => {
     s = (s * 9301 + 49297) % 233280;
@@ -65,17 +65,17 @@ export function GoodsGallery() {
       <h2 className="font-display text-3xl md:text-5xl font-black text-center tracking-tight mt-3">
         Fresh joy cannot be warehoused.
       </h2>
-      <p className="font-body text-base text-[#0d0d0d]/70 max-w-2xl mx-auto text-center mt-4">
+      <p className="font-body text-base text-[#0b3b44]/70 max-w-2xl mx-auto text-center mt-4">
         National gifting platforms ship a box of swag from a shelf. Celebrate dispatches the things people
         actually want on their day, made by local shops the same morning they arrive.
       </p>
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 md:gap-7 mt-10">
         {GOODS.map((g) => (
           <figure key={g.src} className={`${g.rotate}`}>
-            <div className="relative aspect-[4/5] border-2 border-[#0d0d0d] rounded-xl overflow-hidden shadow-[5px_5px_0_0_#ffd400]">
+            <div className="relative aspect-[4/5] border-2 border-[#0b3b44] rounded-xl overflow-hidden shadow-[5px_5px_0_0_#f5b700]">
               <Image src={g.src} alt={g.alt} fill sizes="(max-width: 1024px) 45vw, 280px" className="object-cover" />
             </div>
-            <figcaption className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#0d0d0d]/70 mt-2.5 text-center">
+            <figcaption className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#0b3b44]/70 mt-2.5 text-center">
               {g.caption}
             </figcaption>
           </figure>
@@ -105,7 +105,7 @@ const STEPS = [
 
 export function HowItWorks() {
   return (
-    <section className="border-y-2 border-[#0d0d0d] bg-white">
+    <section className="border-y-2 border-[#0b3b44] bg-white">
       <div className="max-w-6xl mx-auto px-5 py-14 md:py-20">
         <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#C4160B] font-bold text-center">
           [ How It Works ]
@@ -115,10 +115,10 @@ export function HowItWorks() {
         </h2>
         <div className="grid md:grid-cols-3 gap-6 mt-10">
           {STEPS.map((s) => (
-            <div key={s.n} className="bg-[#f1ede4] border-2 border-[#0d0d0d] rounded-2xl p-6 shadow-[4px_4px_0_0_#0d0d0d]">
+            <div key={s.n} className="bg-[#fbf5ea] border-2 border-[#0b3b44] rounded-2xl p-6 shadow-[4px_4px_0_0_#0b3b44]">
               <span className="font-mono font-bold text-sm text-[#8f6600]">{s.n}</span>
               <h3 className="font-display font-black text-xl mt-2">{s.title}</h3>
-              <p className="font-body text-sm text-[#0d0d0d]/70 mt-2 leading-relaxed">{s.body}</p>
+              <p className="font-body text-sm text-[#0b3b44]/70 mt-2 leading-relaxed">{s.body}</p>
             </div>
           ))}
         </div>
@@ -131,7 +131,7 @@ export function LocalMakers() {
   return (
     <section className="max-w-6xl mx-auto px-5 py-14 md:py-20">
       <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
-        <div className="relative aspect-[4/5] max-w-md border-2 border-[#0d0d0d] rounded-xl overflow-hidden shadow-[6px_6px_0_0_#0d0d0d] rotate-[-1deg]">
+        <div className="relative aspect-[4/5] max-w-md border-2 border-[#0b3b44] rounded-xl overflow-hidden shadow-[6px_6px_0_0_#0b3b44] rotate-[-1deg]">
           <Image
             src="/images/celebrate/baker.png"
             alt="A baker's flour-dusted hands tying twine around a white cake box"
@@ -147,14 +147,14 @@ export function LocalMakers() {
           <h2 className="font-display text-3xl md:text-4xl font-black tracking-tight mt-3">
             Made down the street, not shipped from a shelf.
           </h2>
-          <p className="font-body text-base text-[#0d0d0d]/70 mt-4 leading-relaxed">
+          <p className="font-body text-base text-[#0b3b44]/70 mt-4 leading-relaxed">
             Celebrate opens in the Flathead Valley first: Kalispell, Whitefish, Columbia Falls, and Bigfork
             bakeries, florists, and makers, dispatched by us, delivered fresh. Every gift also puts money in a
             local shop&apos;s register, which is the kind of gifting worth automating.
           </p>
-          <p className="font-body text-base text-[#0d0d0d]/70 mt-3 leading-relaxed">
+          <p className="font-body text-base text-[#0b3b44]/70 mt-3 leading-relaxed">
             Own a bakery, flower shop, or board studio on the route?{' '}
-            <Link href="/contact" className="font-bold text-[#c8201a] underline underline-offset-4">
+            <Link href="/contact" className="font-bold text-[#0a7c78] underline underline-offset-4">
               Join as a founding maker
             </Link>{' '}
             and we bring you steady weekday orders with zero marketing spend.
@@ -167,15 +167,15 @@ export function LocalMakers() {
 
 export function PricingStubs() {
   return (
-    <section id="pricing" className="border-y-2 border-[#0d0d0d] bg-[#FFDD55]">
+    <section id="pricing" className="border-y-2 border-[#0b3b44] bg-[#ffc933]">
       <div className="max-w-6xl mx-auto px-5 py-14 md:py-20">
-        <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#0d0d0d] font-bold text-center">
+        <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#0b3b44] font-bold text-center">
           [ Admit Your Whole Team ]
         </p>
         <h2 className="font-display text-3xl md:text-5xl font-black text-center tracking-tight mt-3">
           Pricing rides a ticket stub.
         </h2>
-        <p className="font-body text-base text-[#0d0d0d]/80 max-w-2xl mx-auto text-center mt-4">
+        <p className="font-body text-base text-[#0b3b44]/80 max-w-2xl mx-auto text-center mt-4">
           One flat monthly for the autopilot, plus gifts at local-shop prices (from ${celebrateUsd(celebrateGiftFloorCents)}),
           inside a budget you cap. No setup fee during the founding route. No free trials, no surprise bills, ever.
         </p>
@@ -183,17 +183,17 @@ export function PricingStubs() {
           {celebrateTiers.map((t, i) => (
             <div
               key={t.slug}
-              className={`bg-white border-2 border-[#0d0d0d] rounded-2xl p-6 shadow-[5px_5px_0_0_#0d0d0d] ${i % 2 ? 'rotate-1' : '-rotate-1'}`}
+              className={`bg-white border-2 border-[#0b3b44] rounded-2xl p-6 shadow-[5px_5px_0_0_#0b3b44] ${i % 2 ? 'rotate-1' : '-rotate-1'}`}
             >
-              <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-[#c8201a] font-bold">{t.chip}</p>
+              <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-[#0a7c78] font-bold">{t.chip}</p>
               <div className="flex items-baseline justify-between mt-2">
                 <h3 className="font-display font-black text-2xl">{t.name}</h3>
                 <p className="font-display font-black text-3xl text-[#C4160B]">
                   ${celebrateUsd(t.monthlyCents)}
-                  <span className="font-body font-bold text-sm text-[#0d0d0d]/70">/mo</span>
+                  <span className="font-body font-bold text-sm text-[#0b3b44]/70">/mo</span>
                 </p>
               </div>
-              <p className="font-body text-sm text-[#0d0d0d]/70 mt-2">{t.pitch}</p>
+              <p className="font-body text-sm text-[#0b3b44]/70 mt-2">{t.pitch}</p>
               <ul className="mt-4 space-y-2">
                 {t.includes.map((line) => (
                   <li key={line} className="font-body text-sm flex gap-2">
@@ -204,14 +204,14 @@ export function PricingStubs() {
               </ul>
               <a
                 href="#parade"
-                className="inline-block mt-5 bg-[#ffd400] text-[#0d0d0d] font-bold rounded-full px-6 py-3 border-2 border-[#0d0d0d] shadow-[3px_3px_0_0_#0d0d0d] hover:translate-y-[1px] hover:shadow-[2px_2px_0_0_#0d0d0d] transition"
+                className="inline-block mt-5 bg-[#f5b700] text-[#0b3b44] font-bold rounded-full px-6 py-3 border-2 border-[#0b3b44] shadow-[3px_3px_0_0_#0b3b44] hover:translate-y-[1px] hover:shadow-[2px_2px_0_0_#0b3b44] transition"
               >
                 Join the waitlist
               </a>
             </div>
           ))}
         </div>
-        <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#0d0d0d]/70 text-center mt-8">
+        <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#0b3b44]/70 text-center mt-8">
           Families: the family plan follows the founding route. Build your parade above and you are first in line.
         </p>
       </div>
@@ -230,12 +230,12 @@ export function CelebrateFaqSection() {
       </h2>
       <div className="space-y-4">
         {celebrateFaq.map((f) => (
-          <details key={f.q} className="group bg-white border-2 border-[#0d0d0d] rounded-xl shadow-[3px_3px_0_0_#0d0d0d]">
+          <details key={f.q} className="group bg-white border-2 border-[#0b3b44] rounded-xl shadow-[3px_3px_0_0_#0b3b44]">
             <summary className="cursor-pointer list-none p-4 md:p-5 font-display font-black text-base md:text-lg flex justify-between items-center gap-4">
               {f.q}
               <span className="font-mono text-[#8f6600] group-open:rotate-45 transition-transform" aria-hidden>+</span>
             </summary>
-            <p className="font-body text-sm text-[#0d0d0d]/70 leading-relaxed px-4 md:px-5 pb-5 -mt-1">{f.a}</p>
+            <p className="font-body text-sm text-[#0b3b44]/70 leading-relaxed px-4 md:px-5 pb-5 -mt-1">{f.a}</p>
           </details>
         ))}
       </div>
@@ -245,26 +245,26 @@ export function CelebrateFaqSection() {
 
 export function FinalCta() {
   return (
-    <section className="relative border-t-2 border-[#0d0d0d] bg-[#ffd400] halftone-bg overflow-hidden">
+    <section className="relative border-t-2 border-[#0b3b44] bg-[#f5b700] halftone-bg overflow-hidden">
       <ConfettiField count={22} seed={19} />
       <div className="relative max-w-4xl mx-auto px-5 py-16 md:py-24 text-center">
         <h2 className="font-display text-3xl md:text-5xl font-black tracking-tight">
           Someone you love has a birthday coming.
         </h2>
-        <p className="font-body text-base text-[#0d0d0d]/80 max-w-xl mx-auto mt-4">
+        <p className="font-body text-base text-[#0b3b44]/80 max-w-xl mx-auto mt-4">
           Put the whole year on the route in five minutes. If you run a team, book a pilot and we will run your
           next 60 days of celebrations for you, delivery photos included.
         </p>
         <div className="flex flex-wrap justify-center gap-4 mt-8">
           <a
             href="#parade"
-            className="bg-[#0d0d0d] text-[#FFDD55] font-bold rounded-full px-8 py-4 border-2 border-[#0d0d0d] shadow-[4px_4px_0_0_rgba(0,0,0,0.25)] hover:translate-y-[1px] transition"
+            className="bg-[#0b3b44] text-[#ffc933] font-bold rounded-full px-8 py-4 border-2 border-[#0b3b44] shadow-[4px_4px_0_0_rgba(0,0,0,0.25)] hover:translate-y-[1px] transition"
           >
             Roll your year&apos;s parade
           </a>
           <Link
             href="/book"
-            className="bg-white text-[#0d0d0d] font-bold rounded-full px-8 py-4 border-2 border-[#0d0d0d] shadow-[4px_4px_0_0_#0d0d0d] hover:translate-y-[1px] hover:shadow-[3px_3px_0_0_#0d0d0d] transition"
+            className="bg-white text-[#0b3b44] font-bold rounded-full px-8 py-4 border-2 border-[#0b3b44] shadow-[4px_4px_0_0_#0b3b44] hover:translate-y-[1px] hover:shadow-[3px_3px_0_0_#0b3b44] transition"
           >
             Book a corporate pilot
           </Link>

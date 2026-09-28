@@ -10,13 +10,13 @@ export const metadata = buildMetadata({
 export default function TermsPage() {
   return (
     <>
-      <div className="relative min-h-screen bg-[#f1ede4] text-[#0d0d0d] overflow-x-clip">
+      <div className="relative min-h-screen bg-[#fbf5ea] text-[#0b3b44] overflow-x-clip">
         <PopPageHero
           eyebrow={<span>Last updated: 2026-07-20</span>}
           title={<>Terms of <em>Service</em></>}
           art={{
-            src: '/art/pages/legal',
-            alt: 'Graffiti couture painting: Mr. Mustard holds up a gold key in a cream classic convertible chained and padlocked under a graffiti-covered bridge at sunset',
+            src: '/art/riviera/legal',
+            alt: 'Painting: Mr. Mustard relaxes in a white hammock between two palm trees on a quiet beach, his phone resting on his chest and the seed dog asleep in the shade',
           }}
           mascot={{ bubble: 'Plain words!' }}
         />

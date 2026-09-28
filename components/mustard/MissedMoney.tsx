@@ -52,7 +52,7 @@ export default function MissedMoney({
         ticketLabel="Average Job Value"
         typedKey={typedKey}
       />
-      <p className="mt-4 text-[13.5px] leading-relaxed text-[#0d0d0d]/60">
+      <p className="mt-4 text-[13.5px] leading-relaxed text-[#0b3b44]/60">
         Your numbers, not ours. Punch in your week. He costs {monthlyPrice} a month and answers every one of those calls.
       </p>
     </div>

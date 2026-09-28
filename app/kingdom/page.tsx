@@ -72,7 +72,7 @@ const FAQ = [
 
 export default function KingdomPage() {
   return (
-    <div className="bg-[#f1ede4] text-[#0d0d0d]">
+    <div className="bg-[#fbf5ea] text-[#0b3b44]">
       <JsonLd
         data={[
           breadcrumbJsonLd([{ name: 'Services', url: '/services' }, { name: 'For the Kingdom', url: '/kingdom' }]),
@@ -81,16 +81,16 @@ export default function KingdomPage() {
         ]}
       />
 
-      <section className="relative overflow-hidden border-b-2 border-[#0d0d0d] bg-[#ffe98a]">
+      <section className="relative overflow-hidden border-b-2 border-[#0b3b44] bg-[#d8f3f0]">
         <PressMedallion />
-        <div aria-hidden="true" className="absolute inset-0 opacity-[0.14] [background-image:radial-gradient(#0d0d0d_1.3px,transparent_1.5px)] [background-size:11px_11px] [mask-image:linear-gradient(115deg,transparent_35%,#000_80%)]" />
+        <div aria-hidden="true" className="absolute inset-0 opacity-[0.14] [background-image:radial-gradient(#0b3b44_1.3px,transparent_1.5px)] [background-size:11px_11px] [mask-image:linear-gradient(115deg,transparent_35%,#000_80%)]" />
         <div className="relative max-w-6xl mx-auto px-6 pt-28 md:pt-36 pb-14 md:pb-20 xl:pr-[460px]">
-          <span className="inline-block -rotate-1 bg-[#0d0d0d] text-[#ffd400] px-3 py-1.5 font-sans text-[11px] font-bold uppercase tracking-[0.16em]">
+          <span className="inline-block -rotate-1 bg-[#0b3b44] text-[#f5b700] px-3 py-1.5 font-sans text-[11px] font-bold uppercase tracking-[0.16em]">
             For the Kingdom · Ministry pricing
           </span>
           <h1 className="mt-6 flex flex-col items-start font-sans font-extrabold leading-[0.95] tracking-[-0.045em] text-[2.3rem] sm:text-5xl md:text-6xl lg:text-[5rem]">
             <span>Build what the calling needs.</span>{' '}
-            <span className="my-[0.12em] -rotate-2 border-[3px] border-[#0d0d0d] bg-[#f1ede4] px-[0.18em] pb-[0.08em] font-display italic font-medium tracking-[-0.03em] shadow-[7px_7px_0_0_#ff3b2f]">
+            <span className="my-[0.12em] -rotate-2 border-[3px] border-[#0b3b44] bg-[#fbf5ea] px-[0.18em] pb-[0.08em] font-display italic font-medium tracking-[-0.03em] shadow-[7px_7px_0_0_#ff6f59]">
               Until all have heard.
             </span>
           </h1>
@@ -98,33 +98,33 @@ export default function KingdomPage() {
             Design, technology and marketing for ministries, churches, charities and organizations that serve the Kingdom, at ministry pricing. Modern Mustard Seed and Cross + Covenant work side by side: curated merch collections, stores, the systems to run it all, and the launch that shares it with the world.
           </p>
           <div className="mt-9 flex flex-wrap gap-4">
-            <Link href="/inquire?kind=kingdom" className="inline-flex items-center gap-5 border-2 border-[#0d0d0d] bg-[#0d0d0d] px-7 py-4 font-sans font-bold text-sm text-[#f1ede4] shadow-[5px_5px_0_0_#f1ede4] transition-transform hover:-translate-x-0.5 hover:-translate-y-0.5">
-              Tell Us About Your Ministry <span aria-hidden="true" className="text-[#ffd400] text-lg">↗</span>
+            <Link href="/inquire?kind=kingdom" className="inline-flex items-center gap-5 border-2 border-[#0b3b44] bg-[#0b3b44] px-7 py-4 font-sans font-bold text-sm text-[#fbf5ea] shadow-[5px_5px_0_0_#fbf5ea] transition-transform hover:-translate-x-0.5 hover:-translate-y-0.5">
+              Tell Us About Your Ministry <span aria-hidden="true" className="text-[#f5b700] text-lg">↗</span>
             </Link>
-            <a href="https://crossandcovenant.co/kingdom" target="_blank" rel="noopener noreferrer" className="inline-flex items-center border-2 border-[#0d0d0d] bg-[#f1ede4] px-7 py-4 font-sans font-bold text-sm shadow-[5px_5px_0_0_#0d0d0d] transition-transform hover:-translate-y-0.5">
+            <a href="https://crossandcovenant.co/kingdom" target="_blank" rel="noopener noreferrer" className="inline-flex items-center border-2 border-[#0b3b44] bg-[#fbf5ea] px-7 py-4 font-sans font-bold text-sm shadow-[5px_5px_0_0_#0b3b44] transition-transform hover:-translate-y-0.5">
               See it on Cross + Covenant
             </a>
           </div>
         </div>
       </section>
 
-      <section className="border-b-2 border-[#0d0d0d]">
+      <section className="border-b-2 border-[#0b3b44]">
         <div className="max-w-6xl mx-auto px-6 py-16 md:py-24">
-          <p className="font-sans text-[11px] uppercase tracking-[0.22em] font-bold text-[#c8201a]">What we build together</p>
+          <p className="font-sans text-[11px] uppercase tracking-[0.22em] font-bold text-[#0a7c78]">What we build together</p>
           <h2 className="mt-3 font-display text-4xl md:text-5xl leading-[1.02] tracking-[-0.03em]">
             One mission, <em>four ways in.</em>
           </h2>
           <div className="mt-11 grid sm:grid-cols-2 gap-7">
             {PILLARS.map((p) => (
-              <div key={p.name} className="flex flex-col border-2 border-[#0d0d0d] bg-white p-7 shadow-[6px_6px_0_0_#0d0d0d]">
-                <span className="self-start bg-[#ffd400] border border-[#0d0d0d] px-2 py-1 font-sans text-[10px] font-bold tracking-[0.16em]">{p.mark}</span>
+              <div key={p.name} className="flex flex-col border-2 border-[#0b3b44] bg-white p-7 shadow-[6px_6px_0_0_#0b3b44]">
+                <span className="self-start bg-[#f5b700] border border-[#0b3b44] px-2 py-1 font-sans text-[10px] font-bold tracking-[0.16em]">{p.mark}</span>
                 <h3 className="mt-4 font-display text-2xl md:text-3xl tracking-[-0.02em]">{p.name}</h3>
                 <p className="mt-3 font-body text-[15px] text-[#3d382e] leading-relaxed">{p.text}</p>
                 {p.link ? (
                   p.link.href.startsWith('http') ? (
-                    <a href={p.link.href} target="_blank" rel="noopener noreferrer" className="mt-auto pt-5 font-sans text-sm font-bold text-[#c8201a]">{p.link.label} <span aria-hidden="true">↗</span></a>
+                    <a href={p.link.href} target="_blank" rel="noopener noreferrer" className="mt-auto pt-5 font-sans text-sm font-bold text-[#0a7c78]">{p.link.label} <span aria-hidden="true">↗</span></a>
                   ) : (
-                    <Link href={p.link.href} className="mt-auto pt-5 font-sans text-sm font-bold text-[#c8201a]">{p.link.label} <span aria-hidden="true">↗</span></Link>
+                    <Link href={p.link.href} className="mt-auto pt-5 font-sans text-sm font-bold text-[#0a7c78]">{p.link.label} <span aria-hidden="true">↗</span></Link>
                   )
                 ) : null}
               </div>
@@ -133,45 +133,45 @@ export default function KingdomPage() {
         </div>
       </section>
 
-      <section className="border-b-2 border-[#0d0d0d] bg-[#0d0d0d] text-[#f1ede4]">
+      <section className="border-b-2 border-[#0b3b44] bg-[#0b3b44] text-[#fbf5ea]">
         <div className="max-w-6xl mx-auto px-6 py-16 md:py-24 grid md:grid-cols-[1fr_1fr] gap-10 md:gap-16 items-start">
           <div>
-            <p className="font-sans text-[11px] uppercase tracking-[0.22em] font-bold text-[#ffd400]">Two studios, one mission</p>
+            <p className="font-sans text-[11px] uppercase tracking-[0.22em] font-bold text-[#f5b700]">Two studios, one mission</p>
             <h2 className="mt-3 font-display text-4xl md:text-5xl leading-[1.02] tracking-[-0.03em]">
-              Made for impact, <em className="text-[#ffd400]">not for margin.</em>
+              Made for impact, <em className="text-[#f5b700]">not for margin.</em>
             </h2>
           </div>
           <div className="space-y-5 font-body text-[16px] leading-relaxed text-[#d9d7cc]">
-            <p><strong className="text-[#f1ede4]">Modern Mustard Seed</strong> is the design, creative and engineering studio: the brand, the store, the systems and the launch.</p>
-            <p><strong className="text-[#f1ede4]">Cross + Covenant</strong> is the Christian apparel brand that designs, produces and ships your collection, made to order, and puts 10% of the profit on every order toward our Charity of the Month.</p>
+            <p><strong className="text-[#fbf5ea]">Modern Mustard Seed</strong> is the design, creative and engineering studio: the brand, the store, the systems and the launch.</p>
+            <p><strong className="text-[#fbf5ea]">Cross + Covenant</strong> is the Christian apparel brand that designs, produces and ships your collection, made to order, and puts 10% of the profit on every order toward our Charity of the Month.</p>
             <p>Same founder, same conviction: the good news belongs in every place people look, and the ministries carrying it deserve work as beautiful as the message.</p>
           </div>
         </div>
       </section>
 
-      <section className="border-b-2 border-[#0d0d0d] bg-[#ffd400]">
+      <section className="border-b-2 border-[#0b3b44] bg-[#f5b700]">
         <div className="max-w-4xl mx-auto px-6 py-14 md:py-20 text-center">
           <p className="font-sans text-[11px] uppercase tracking-[0.22em] font-bold">Ministry pricing</p>
           <h2 className="mt-3 font-display text-3xl md:text-5xl leading-[1.05] tracking-[-0.03em]">Set packages, at a <em>reduced rate for Kingdom work.</em></h2>
           <p className="mt-5 max-w-2xl mx-auto font-body text-[16px] leading-relaxed">
             Scoped in one conversation, quoted as a set package price in writing before work starts, and it does not move. Changes to what we build are included. You own all of it.
           </p>
-          <Link href="/inquire?kind=kingdom" className="mt-8 inline-flex items-center gap-5 border-2 border-[#0d0d0d] bg-[#0d0d0d] px-7 py-4 font-sans font-bold text-sm text-[#f1ede4] shadow-[5px_5px_0_0_#f1ede4]">
-            Start the conversation <span aria-hidden="true" className="text-[#ffd400] text-lg">↗</span>
+          <Link href="/inquire?kind=kingdom" className="mt-8 inline-flex items-center gap-5 border-2 border-[#0b3b44] bg-[#0b3b44] px-7 py-4 font-sans font-bold text-sm text-[#fbf5ea] shadow-[5px_5px_0_0_#fbf5ea]">
+            Start the conversation <span aria-hidden="true" className="text-[#f5b700] text-lg">↗</span>
           </Link>
         </div>
       </section>
 
       <section>
         <div className="max-w-4xl mx-auto px-6 py-16 md:py-24">
-          <p className="font-sans text-[11px] uppercase tracking-[0.22em] font-bold text-[#c8201a]">Straight Answers</p>
+          <p className="font-sans text-[11px] uppercase tracking-[0.22em] font-bold text-[#0a7c78]">Straight Answers</p>
           <h2 className="mt-3 font-display text-3xl md:text-4xl leading-[1.05] tracking-[-0.03em]">Questions from ministries.</h2>
           <div className="mt-8 space-y-4">
             {FAQ.map((f) => (
-              <details key={f.q} className="group border-2 border-[#0d0d0d] bg-white p-5 shadow-[4px_4px_0_0_#0d0d0d]">
+              <details key={f.q} className="group border-2 border-[#0b3b44] bg-white p-5 shadow-[4px_4px_0_0_#0b3b44]">
                 <summary className="cursor-pointer list-none font-sans font-bold text-[15px] flex items-start justify-between gap-4">
                   {f.q}
-                  <span aria-hidden="true" className="text-[#c8201a] group-open:rotate-45 transition-transform">+</span>
+                  <span aria-hidden="true" className="text-[#0a7c78] group-open:rotate-45 transition-transform">+</span>
                 </summary>
                 <p className="mt-3 font-body text-sm text-[#3d382e] leading-relaxed">{f.a}</p>
               </details>

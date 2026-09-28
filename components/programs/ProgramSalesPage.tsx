@@ -44,27 +44,27 @@ export default function ProgramSalesPage({ program }: { program: Program }) {
   };
 
   return (
-    <div className="bg-[#f1ede4] text-[#0d0d0d]">
+    <div className="bg-[#fbf5ea] text-[#0b3b44]">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       {/* Hero: an ink band with the halftone and the program's brand accent */}
-      <section className="relative isolate min-h-[88vh] flex flex-col items-center justify-center px-6 pt-36 pb-20 text-center overflow-hidden bg-[#0d0d0d] text-[#f1ede4] border-b-2 border-[#0d0d0d]">
-        <div className="absolute inset-0 z-0" style={{ background: `radial-gradient(ellipse at top, ${program.accent}55 0%, #0d0d0d 62%)` }} aria-hidden />
+      <section className="relative isolate min-h-[88vh] flex flex-col items-center justify-center px-6 pt-36 pb-20 text-center overflow-hidden bg-[#0b3b44] text-[#fbf5ea] border-b-2 border-[#0b3b44]">
+        <div className="absolute inset-0 z-0" style={{ background: `radial-gradient(ellipse at top, ${program.accent}55 0%, #0b3b44 62%)` }} aria-hidden />
         <div className="absolute inset-0 z-0 halftone-ink opacity-80" aria-hidden />
         <div className="relative z-10 max-w-3xl mx-auto">
-          <span className="inline-flex items-center gap-2.5 px-4 py-1.5 mb-8 rounded-full border-2 border-[#f1ede4] bg-[#0d0d0d] shadow-[3px_3px_0_0_#ffd400]">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#ffd400]" />
-            <span className="text-[10px] tracking-[0.3em] uppercase text-[#f1ede4] font-mono font-bold">Modern Mustard Seed</span>
+          <span className="inline-flex items-center gap-2.5 px-4 py-1.5 mb-8 rounded-full border-2 border-[#fbf5ea] bg-[#0b3b44] shadow-[3px_3px_0_0_#f5b700]">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#f5b700]" />
+            <span className="text-[10px] tracking-[0.3em] uppercase text-[#fbf5ea] font-mono font-bold">Modern Mustard Seed</span>
           </span>
-          <h1 className="font-display text-5xl md:text-7xl font-black tracking-tight leading-[1.02] text-[#f1ede4]">
+          <h1 className="font-display text-5xl md:text-7xl font-black tracking-tight leading-[1.02] text-[#fbf5ea]">
             {program.tagline}
           </h1>
-          <p className="mt-7 text-[#f1ede4]/85 text-lg md:text-xl font-body max-w-2xl mx-auto leading-relaxed">
+          <p className="mt-7 text-[#fbf5ea]/85 text-lg md:text-xl font-body max-w-2xl mx-auto leading-relaxed">
             {program.promise}
           </p>
           <div className="mt-10 flex flex-col items-center gap-3">
             <BuyButton slug={program.slug} label={`Get ${program.name} . $${program.priceUsd}`} tone="ink" />
-            <span className="text-[#f1ede4]/60 font-mono text-[11px] tracking-wider">One time . Lifetime access . 14 day guarantee</span>
+            <span className="text-[#fbf5ea]/60 font-mono text-[11px] tracking-wider">One time . Lifetime access . 14 day guarantee</span>
           </div>
         </div>
       </section>
@@ -75,7 +75,7 @@ export default function ProgramSalesPage({ program }: { program: Program }) {
           <div className="grid sm:grid-cols-2 gap-5">
             {program.whoFor.map((w) => (
               <div key={w.title} className="pop-card p-6">
-                <h3 className="font-display text-lg font-black text-[#0d0d0d] tracking-tight mb-1.5">{w.title}</h3>
+                <h3 className="font-display text-lg font-black text-[#0b3b44] tracking-tight mb-1.5">{w.title}</h3>
                 <p className="text-[#3a3733] font-body text-sm leading-relaxed">{w.detail}</p>
               </div>
             ))}
@@ -87,17 +87,17 @@ export default function ProgramSalesPage({ program }: { program: Program }) {
           <div className="space-y-4">
             {program.valueStack.map((v, i) => (
               <div key={v.title} className="flex gap-4 pop-card p-6">
-                <span className="font-display text-2xl text-[#c8201a] font-black w-8 flex-shrink-0">{String(i + 1).padStart(2, '0')}</span>
+                <span className="font-display text-2xl text-[#0a7c78] font-black w-8 flex-shrink-0">{String(i + 1).padStart(2, '0')}</span>
                 <div>
-                  <h3 className="font-display text-lg font-black text-[#0d0d0d] tracking-tight mb-1">{v.title}</h3>
+                  <h3 className="font-display text-lg font-black text-[#0b3b44] tracking-tight mb-1">{v.title}</h3>
                   <p className="text-[#3a3733] font-body text-sm leading-relaxed">{v.detail}</p>
                 </div>
               </div>
             ))}
           </div>
           <div className="mt-7 pop-card-yellow p-6">
-            <span className="text-[10px] uppercase tracking-[0.3em] text-[#0d0d0d] font-mono font-bold block mb-2">{program.toolName}</span>
-            <p className="text-[#0d0d0d] font-body text-sm leading-relaxed">{program.toolBlurb}</p>
+            <span className="text-[10px] uppercase tracking-[0.3em] text-[#0b3b44] font-mono font-bold block mb-2">{program.toolName}</span>
+            <p className="text-[#0b3b44] font-body text-sm leading-relaxed">{program.toolBlurb}</p>
           </div>
         </Section>
 
@@ -105,8 +105,8 @@ export default function ProgramSalesPage({ program }: { program: Program }) {
         <Section eyebrow="The method">
           <div className="grid sm:grid-cols-2 gap-5">
             {program.method.map((m) => (
-              <div key={m.label} className="border-l-4 border-[#ffd400] pl-4 py-1">
-                <h3 className="font-display italic text-xl text-[#0d0d0d] mb-1">{m.label}</h3>
+              <div key={m.label} className="border-l-4 border-[#f5b700] pl-4 py-1">
+                <h3 className="font-display italic text-xl text-[#0b3b44] mb-1">{m.label}</h3>
                 <p className="text-[#3a3733] font-body text-sm leading-relaxed">{m.detail}</p>
               </div>
             ))}
@@ -116,7 +116,7 @@ export default function ProgramSalesPage({ program }: { program: Program }) {
         {/* Guarantee + price */}
         <Section eyebrow="The guarantee">
           <div className="pop-card-cream halftone-bg p-8 text-center">
-            <p className="font-display italic text-xl md:text-2xl text-[#0d0d0d] leading-snug mb-4">{program.guarantee}</p>
+            <p className="font-display italic text-xl md:text-2xl text-[#0b3b44] leading-snug mb-4">{program.guarantee}</p>
             <p className="text-[#3a3733] font-body text-sm leading-relaxed max-w-xl mx-auto">{program.priceFraming}</p>
           </div>
         </Section>
@@ -124,13 +124,13 @@ export default function ProgramSalesPage({ program }: { program: Program }) {
         {/* Companion / bundle */}
         <Section eyebrow="The pairing">
           <div className="pop-card p-8 text-center">
-            <p className="text-[#0d0d0d] font-body font-medium mb-2">{program.companion.line}</p>
+            <p className="text-[#0b3b44] font-body font-medium mb-2">{program.companion.line}</p>
             <p className="text-[#3a3733] font-body text-sm mb-6 max-w-xl mx-auto">{programBundle.pitch}</p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
-              <Link href={program.companion.href} className="px-7 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0d0d0d] bg-white rounded-full border-2 border-[#0d0d0d] shadow-[4px_4px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-all">
+              <Link href={program.companion.href} className="px-7 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0b3b44] bg-white rounded-full border-2 border-[#0b3b44] shadow-[4px_4px_0_0_#0b3b44] hover:-translate-y-0.5 transition-all">
                 {program.companion.label}
               </Link>
-              <BuyButton slug={programBundle.slug} label="Get both . The Zero to One Bundle" className="px-7 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#f1ede4] bg-[#0d0d0d] rounded-full border-2 border-[#0d0d0d] shadow-[4px_4px_0_0_#ffd400] hover:-translate-y-0.5 transition-all disabled:opacity-50" />
+              <BuyButton slug={programBundle.slug} label="Get both . The Zero to One Bundle" className="px-7 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#fbf5ea] bg-[#0b3b44] rounded-full border-2 border-[#0b3b44] shadow-[4px_4px_0_0_#f5b700] hover:-translate-y-0.5 transition-all disabled:opacity-50" />
             </div>
           </div>
         </Section>
@@ -140,7 +140,7 @@ export default function ProgramSalesPage({ program }: { program: Program }) {
           <div className="space-y-4">
             {program.faq.map((f) => (
               <div key={f.q} className="pop-card p-6">
-                <h3 className="font-display text-lg font-black text-[#0d0d0d] tracking-tight mb-1.5">{f.q}</h3>
+                <h3 className="font-display text-lg font-black text-[#0b3b44] tracking-tight mb-1.5">{f.q}</h3>
                 <p className="text-[#3a3733] font-body text-sm leading-relaxed">{f.a}</p>
               </div>
             ))}
@@ -149,13 +149,13 @@ export default function ProgramSalesPage({ program }: { program: Program }) {
       </div>
 
       {/* Final CTA: the mustard close band */}
-      <section className="relative bg-[#ffd400] border-t-2 border-[#0d0d0d] px-6 py-20 text-center overflow-hidden">
+      <section className="relative bg-[#f5b700] border-t-2 border-[#0b3b44] px-6 py-20 text-center overflow-hidden">
         <div className="absolute inset-0 stripe-ink opacity-[0.06]" aria-hidden />
         <div className="relative max-w-3xl mx-auto">
-          <h2 className="font-display text-3xl md:text-5xl font-black tracking-tight text-[#0d0d0d] mb-8">{program.tagline}</h2>
+          <h2 className="font-display text-3xl md:text-5xl font-black tracking-tight text-[#0b3b44] mb-8">{program.tagline}</h2>
           <div className="flex flex-col items-center gap-3">
             <BuyButton slug={program.slug} label={`Get ${program.name} . $${program.priceUsd}`} tone="onMustard" />
-            <span className="text-[#0d0d0d]/75 font-mono text-[11px] tracking-wider">One time . Lifetime access . 14 day guarantee</span>
+            <span className="text-[#0b3b44]/75 font-mono text-[11px] tracking-wider">One time . Lifetime access . 14 day guarantee</span>
           </div>
         </div>
       </section>
@@ -166,7 +166,7 @@ export default function ProgramSalesPage({ program }: { program: Program }) {
 function Section({ eyebrow, children }: { eyebrow: string; children: React.ReactNode }) {
   return (
     <section>
-      <span className="text-[10px] uppercase tracking-[0.4em] text-[#c8201a] font-mono font-bold block mb-6 text-center">{eyebrow}</span>
+      <span className="text-[10px] uppercase tracking-[0.4em] text-[#0a7c78] font-mono font-bold block mb-6 text-center">{eyebrow}</span>
       {children}
     </section>
   );

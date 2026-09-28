@@ -31,15 +31,15 @@ export default async function PartnerHQ() {
 
   if (!affiliate || affiliate.status !== 'approved' || !affiliate.code) {
     return (
-      <div className="min-h-screen bg-[#f1ede4] halftone-bg text-[#0d0d0d] flex items-center justify-center px-6">
-        <div className="bg-white border-2 border-[#0d0d0d] rounded-2xl shadow-[6px_6px_0_0_#0d0d0d] p-10 max-w-md text-center">
-          <h1 className="font-display text-2xl font-semibold text-[#0d0d0d] mb-3">Partner dashboard</h1>
+      <div className="min-h-screen bg-[#fbf5ea] halftone-bg text-[#0b3b44] flex items-center justify-center px-6">
+        <div className="bg-white border-2 border-[#0b3b44] rounded-2xl shadow-[6px_6px_0_0_#0b3b44] p-10 max-w-md text-center">
+          <h1 className="font-display text-2xl font-semibold text-[#0b3b44] mb-3">Partner dashboard</h1>
           <p className="text-[#3A3733] font-body text-sm mb-6">
             {affiliate?.status === 'pending'
               ? 'Your application is in. Sarah reviews every one personally and you will get a warm welcome the moment you are approved.'
               : `You are signed in as ${session.email}, but this account is not a partner yet.`}
           </p>
-          <Link href="/partners" className="inline-block px-7 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0d0d0d] bg-[#ffd400] border-2 border-[#0d0d0d] rounded-full shadow-[3px_3px_0_0_#0d0d0d] hover:shadow-[4px_4px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-all">Apply to partner</Link>
+          <Link href="/partners" className="inline-block px-7 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0b3b44] bg-[#f5b700] border-2 border-[#0b3b44] rounded-full shadow-[3px_3px_0_0_#0b3b44] hover:shadow-[4px_4px_0_0_#0b3b44] hover:-translate-y-0.5 transition-all">Apply to partner</Link>
         </div>
       </div>
     );
@@ -77,96 +77,96 @@ export default async function PartnerHQ() {
   const firstName = affiliate.name?.split(' ')[0] || 'partner';
 
   return (
-    <div className="min-h-screen bg-[#f1ede4] text-[#0d0d0d]">
+    <div className="min-h-screen bg-[#fbf5ea] text-[#0b3b44]">
       <MustardDeskCall endpoint="/api/partners/desk-call" sublabel="Your partner desk, live" />
       <DeskWelcome surface="partner" name={affiliate.name} email={session.email} />
-      <header className="border-b-2 border-[#0d0d0d] sticky top-0 z-30 bg-[#f1ede4]/95 backdrop-blur-md">
+      <header className="border-b-2 border-[#0b3b44] sticky top-0 z-30 bg-[#fbf5ea]/95 backdrop-blur-md">
         <div className="max-w-5xl mx-auto px-6 py-5 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <Image src="/brand/mascot.png" alt="" width={885} height={1180} className="h-9 w-auto" priority />
             <div>
-              <span className="text-[10px] uppercase tracking-[0.4em] text-[#d0241b] font-mono font-bold block">Modern Mustard Seed</span>
-              <h1 className="font-sans text-xl font-bold text-[#0d0d0d] tracking-tight mt-1">Partner Dashboard</h1>
+              <span className="text-[10px] uppercase tracking-[0.4em] text-[#0a7c78] font-mono font-bold block">Modern Mustard Seed</span>
+              <h1 className="font-sans text-xl font-bold text-[#0b3b44] tracking-tight mt-1">Partner Dashboard</h1>
             </div>
           </div>
           <div className="flex items-center gap-3">
             <HelpGuide guide={PARTNER_HELP} nudge={{ storageKey: 'mms_partner_tour_v1', text: 'New here? See how your dashboard works.' }} />
-            <span className="font-mono text-[#d0241b] text-sm">{code}</span>
+            <span className="font-mono text-[#0a7c78] text-sm">{code}</span>
           </div>
         </div>
       </header>
 
       <main className="max-w-5xl mx-auto px-6 py-8">
-        <h2 className="font-display text-3xl font-semibold text-[#0d0d0d] mb-1">Welcome, {firstName}.</h2>
+        <h2 className="font-display text-3xl font-semibold text-[#0b3b44] mb-1">Welcome, {firstName}.</h2>
         <p className="text-[#3A3733] font-body mb-6">Share the playbooks, earn half on every sale, and keep earning every month a business you refer stays on. We are rooting for you.</p>
 
         {/* Start-here tools: the promo kit (copy-paste posts) and the field guide */}
         <div className="grid md:grid-cols-2 gap-4 mb-8">
           <Link href="/partners/promote" className="block group">
-            <div className="h-full bg-[#ffd400] border-2 border-[#0d0d0d] rounded-2xl shadow-[6px_6px_0_0_#0d0d0d] p-6 transition-all group-hover:shadow-[8px_8px_0_0_#0d0d0d] group-hover:-translate-y-0.5">
-              <span className="text-[10px] uppercase tracking-[0.4em] text-[#d0241b] font-mono font-bold block mb-2">Fastest start</span>
-              <h3 className="font-display text-2xl font-semibold text-[#0d0d0d]">Your Promo Kit</h3>
-              <p className="text-[#0d0d0d]/70 font-body text-sm mt-1">Ready-to-post copy for every offer, your link already baked in. Copy, reword, post.</p>
-              <span className="inline-block mt-4 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0d0d0d] border-b-2 border-[#0d0d0d]">Open the kit →</span>
+            <div className="h-full bg-[#f5b700] border-2 border-[#0b3b44] rounded-2xl shadow-[6px_6px_0_0_#0b3b44] p-6 transition-all group-hover:shadow-[8px_8px_0_0_#0b3b44] group-hover:-translate-y-0.5">
+              <span className="text-[10px] uppercase tracking-[0.4em] text-[#0a7c78] font-mono font-bold block mb-2">Fastest start</span>
+              <h3 className="font-display text-2xl font-semibold text-[#0b3b44]">Your Promo Kit</h3>
+              <p className="text-[#0b3b44]/70 font-body text-sm mt-1">Ready-to-post copy for every offer, your link already baked in. Copy, reword, post.</p>
+              <span className="inline-block mt-4 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0b3b44] border-b-2 border-[#0b3b44]">Open the kit →</span>
             </div>
           </Link>
           <Link href="/partners/playbook" className="block group">
-            <div className="h-full bg-[#0d0d0d] rounded-2xl shadow-[6px_6px_0_0_#ffd400] p-6 transition-all group-hover:shadow-[8px_8px_0_0_#ffd400] group-hover:-translate-y-0.5">
-              <span className="text-[10px] uppercase tracking-[0.4em] text-[#ffd400] font-mono font-bold block mb-2">Go deeper</span>
-              <h3 className="font-display text-2xl font-semibold text-[#f1ede4]">The Outreach Playbook</h3>
-              <p className="text-[#f1ede4]/65 font-body text-sm mt-1">Where to find buyers, a full phone script, and a social strategy. Every script pre-filled with your link.</p>
-              <span className="inline-block mt-4 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#ffd400] border-b-2 border-[#ffd400]">Open the playbook →</span>
+            <div className="h-full bg-[#0b3b44] rounded-2xl shadow-[6px_6px_0_0_#f5b700] p-6 transition-all group-hover:shadow-[8px_8px_0_0_#f5b700] group-hover:-translate-y-0.5">
+              <span className="text-[10px] uppercase tracking-[0.4em] text-[#f5b700] font-mono font-bold block mb-2">Go deeper</span>
+              <h3 className="font-display text-2xl font-semibold text-[#fbf5ea]">The Outreach Playbook</h3>
+              <p className="text-[#fbf5ea]/65 font-body text-sm mt-1">Where to find buyers, a full phone script, and a social strategy. Every script pre-filled with your link.</p>
+              <span className="inline-block mt-4 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#f5b700] border-b-2 border-[#f5b700]">Open the playbook →</span>
             </div>
           </Link>
         </div>
 
         {guide && (
           <Link href="/partners/hq/guide" className="block group mb-8">
-            <div className="bg-white border-2 border-[#0d0d0d] rounded-2xl shadow-[6px_6px_0_0_#0d0d0d] p-6 transition-all group-hover:shadow-[8px_8px_0_0_#0d0d0d] group-hover:-translate-y-0.5 flex flex-wrap items-center justify-between gap-4">
+            <div className="bg-white border-2 border-[#0b3b44] rounded-2xl shadow-[6px_6px_0_0_#0b3b44] p-6 transition-all group-hover:shadow-[8px_8px_0_0_#0b3b44] group-hover:-translate-y-0.5 flex flex-wrap items-center justify-between gap-4">
               <div>
-                <span className="text-[10px] uppercase tracking-[0.4em] text-[#d0241b] font-mono font-bold block mb-2">Your territory</span>
-                <h3 className="font-display text-2xl font-semibold text-[#0d0d0d]">{guide.title}</h3>
-                <p className="text-[#0d0d0d]/70 font-body text-sm mt-1">Where to walk in, which rooms are worth your time, the dated events with a vendor floor, and the ninety-second play. Written for you.</p>
+                <span className="text-[10px] uppercase tracking-[0.4em] text-[#0a7c78] font-mono font-bold block mb-2">Your territory</span>
+                <h3 className="font-display text-2xl font-semibold text-[#0b3b44]">{guide.title}</h3>
+                <p className="text-[#0b3b44]/70 font-body text-sm mt-1">Where to walk in, which rooms are worth your time, the dated events with a vendor floor, and the ninety-second play. Written for you.</p>
               </div>
-              <span className="inline-block text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0d0d0d] border-b-2 border-[#0d0d0d] whitespace-nowrap">Open the guide →</span>
+              <span className="inline-block text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0b3b44] border-b-2 border-[#0b3b44] whitespace-nowrap">Open the guide →</span>
             </div>
           </Link>
         )}
 
         {/* The free audit: the thing a partner can hand to anyone, pitch or no pitch */}
-        <section aria-label="The free audit to hand out" className="bg-[#ffd400] border-2 border-[#0d0d0d] rounded-2xl shadow-[6px_6px_0_0_#0d0d0d] p-6 mb-8">
+        <section aria-label="The free audit to hand out" className="bg-[#f5b700] border-2 border-[#0b3b44] rounded-2xl shadow-[6px_6px_0_0_#0b3b44] p-6 mb-8">
           <div className="md:flex md:items-start md:justify-between md:gap-6">
             <div className="min-w-0">
               <span className="text-[10px] uppercase tracking-[0.4em] text-[#C4160B] font-mono font-bold block mb-2">Hand it to anyone</span>
-              <h3 className="font-display text-2xl font-semibold text-[#0d0d0d]">The Free Online Presence Audit</h3>
-              <p className="text-[#0d0d0d]/80 font-body text-sm mt-1 max-w-xl">
+              <h3 className="font-display text-2xl font-semibold text-[#0b3b44]">The Free Online Presence Audit</h3>
+              <p className="text-[#0b3b44]/80 font-body text-sm mt-1 max-w-xl">
                 Their website on seven categories, their Google profile on eight checks, and their reviews against their trade. They leave an email, the full report lands in their inbox, and the request is filed under your name.
               </p>
             </div>
             {/* The bare page, not their link: a partner previewing it should not count as their own click. */}
-            <a href="/presence-audit" target="_blank" rel="noopener noreferrer" className="inline-block mt-4 md:mt-0 shrink-0 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0d0d0d] border-b-2 border-[#0d0d0d] whitespace-nowrap">
+            <a href="/presence-audit" target="_blank" rel="noopener noreferrer" className="inline-block mt-4 md:mt-0 shrink-0 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0b3b44] border-b-2 border-[#0b3b44] whitespace-nowrap">
               See what they see ↗
             </a>
           </div>
           <div className="mt-5">
             <AffiliateLinks links={[{ label: 'Your personal audit link', url: auditUrl }]} />
           </div>
-          <p className="text-[#0d0d0d]/75 font-body text-[13px] mt-3">
+          <p className="text-[#0b3b44]/75 font-body text-[13px] mt-3">
             Say it this way: have you ever seen how your business looks to somebody searching for it? Then text them the link.
           </p>
         </section>
 
         {/* The build: the strongest play a partner has */}
         <Link href="/partners/hq/build" className="block group mb-8">
-          <div className="halftone-bg bg-white border-2 border-[#0d0d0d] rounded-2xl shadow-[6px_6px_0_0_#0d0d0d] p-6 transition-all group-hover:shadow-[8px_8px_0_0_#0d0d0d] group-hover:-translate-y-0.5 md:flex md:items-center md:justify-between md:gap-6">
+          <div className="halftone-bg bg-white border-2 border-[#0b3b44] rounded-2xl shadow-[6px_6px_0_0_#0b3b44] p-6 transition-all group-hover:shadow-[8px_8px_0_0_#0b3b44] group-hover:-translate-y-0.5 md:flex md:items-center md:justify-between md:gap-6">
             <div>
-              <span className="text-[10px] uppercase tracking-[0.4em] text-[#d0241b] font-mono font-bold block mb-2">Build under your flag</span>
-              <h3 className="font-display text-2xl font-semibold text-[#0d0d0d]">Mint a demo suite for a business you know</h3>
-              <p className="text-[#0d0d0d]/70 font-body text-sm mt-1 max-w-xl">
+              <span className="text-[10px] uppercase tracking-[0.4em] text-[#0a7c78] font-mono font-bold block mb-2">Build under your flag</span>
+              <h3 className="font-display text-2xl font-semibold text-[#0b3b44]">Mint a demo suite for a business you know</h3>
+              <p className="text-[#0b3b44]/70 font-body text-sm mt-1 max-w-xl">
                 Give us their name and website; we build their voice agent and a designed-from-scratch site, presented by you. If they buy, your commission records itself.
               </p>
             </div>
-            <span className="inline-block mt-4 md:mt-0 shrink-0 px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-[#0d0d0d] bg-[#ffd400] border-2 border-[#0d0d0d] rounded-full shadow-[3px_3px_0_0_#0d0d0d]">
+            <span className="inline-block mt-4 md:mt-0 shrink-0 px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-[#0b3b44] bg-[#f5b700] border-2 border-[#0b3b44] rounded-full shadow-[3px_3px_0_0_#0b3b44]">
               ⚒ Open the build
             </span>
           </div>
@@ -179,48 +179,48 @@ export default async function PartnerHQ() {
             { label: 'Payable now', value: money(earn.payable) },
             { label: 'Earned all time', value: money(earn.pending + earn.payable + earn.paid) },
           ].map((s) => (
-            <div key={s.label} className="bg-white border-2 border-[#0d0d0d] rounded-2xl shadow-[4px_4px_0_0_#0d0d0d] p-4">
-              <div className="text-[9px] uppercase tracking-[0.3em] text-[#0d0d0d]/50 font-mono">{s.label}</div>
-              <div className="font-sans text-2xl font-semibold text-[#0d0d0d] mt-1">{s.value}</div>
+            <div key={s.label} className="bg-white border-2 border-[#0b3b44] rounded-2xl shadow-[4px_4px_0_0_#0b3b44] p-4">
+              <div className="text-[9px] uppercase tracking-[0.3em] text-[#0b3b44]/50 font-mono">{s.label}</div>
+              <div className="font-sans text-2xl font-semibold text-[#0b3b44] mt-1">{s.value}</div>
             </div>
           ))}
         </div>
 
         <div className="grid lg:grid-cols-2 gap-6">
-          <div className="bg-white border-2 border-[#0d0d0d] rounded-2xl shadow-[4px_4px_0_0_#0d0d0d] p-6">
-            <span className="text-[10px] uppercase tracking-[0.3em] text-[#d0241b] font-mono font-bold block mb-4">Your links</span>
+          <div className="bg-white border-2 border-[#0b3b44] rounded-2xl shadow-[4px_4px_0_0_#0b3b44] p-6">
+            <span className="text-[10px] uppercase tracking-[0.3em] text-[#0a7c78] font-mono font-bold block mb-4">Your links</span>
             <AffiliateLinks links={links} />
-            <p className="text-[#0d0d0d]/60 font-body text-xs mt-4">Add <span className="font-mono text-[#d0241b]">?ref={code}</span> to any page to track it. Last touch within 60 days wins.</p>
+            <p className="text-[#0b3b44]/60 font-body text-xs mt-4">Add <span className="font-mono text-[#0a7c78]">?ref={code}</span> to any page to track it. Last touch within 60 days wins.</p>
             <div className="mt-6">
               <MarketingKit code={code} firstName={firstName} siteUrl={SITE.url} primaryUrl={`${SITE.url}/book?ref=${code}`} />
             </div>
           </div>
 
           <div className="space-y-6">
-            <div className="bg-white border-2 border-[#0d0d0d] rounded-2xl shadow-[4px_4px_0_0_#0d0d0d] p-6">
-              <span className="text-[10px] uppercase tracking-[0.3em] text-[#d0241b] font-mono font-bold block mb-3">Earnings</span>
+            <div className="bg-white border-2 border-[#0b3b44] rounded-2xl shadow-[4px_4px_0_0_#0b3b44] p-6">
+              <span className="text-[10px] uppercase tracking-[0.3em] text-[#0a7c78] font-mono font-bold block mb-3">Earnings</span>
               <div className="space-y-2.5">
                 <Row label="Pending (within refund window)" value={money(earn.pending)} />
                 <Row label="Payable (ready to pay out)" value={money(earn.payable)} accent />
                 <Row label="Paid" value={money(earn.paid)} />
               </div>
             </div>
-            <div className="bg-white border-2 border-[#0d0d0d] rounded-2xl shadow-[4px_4px_0_0_#0d0d0d] p-6">
-              <span className="text-[10px] uppercase tracking-[0.3em] text-[#d0241b] font-mono font-bold block mb-3">Free access to everything</span>
+            <div className="bg-white border-2 border-[#0b3b44] rounded-2xl shadow-[4px_4px_0_0_#0b3b44] p-6">
+              <span className="text-[10px] uppercase tracking-[0.3em] text-[#0a7c78] font-mono font-bold block mb-3">Free access to everything</span>
               <p className="text-[#3A3733] font-body text-sm mb-4">Every product is yours, free, so you can learn them and speak to them honestly.</p>
               <div className="mb-4">
-                <span className="text-[9px] uppercase tracking-[0.25em] text-[#0d0d0d]/50 font-mono block mb-2">Programs (live tools)</span>
+                <span className="text-[9px] uppercase tracking-[0.25em] text-[#0b3b44]/50 font-mono block mb-2">Programs (live tools)</span>
                 <div className="flex flex-wrap gap-2">
-                  <Link href="/the-terminal/hq" className="px-4 py-2 text-[10px] uppercase tracking-[0.2em] font-sans font-semibold text-[#0d0d0d] bg-white border-2 border-[#0d0d0d] rounded-full hover:bg-[#FFF8E6] transition-all">The Terminal HQ</Link>
-                  <Link href="/idea-to-spec/hq" className="px-4 py-2 text-[10px] uppercase tracking-[0.2em] font-sans font-semibold text-[#0d0d0d] bg-white border-2 border-[#0d0d0d] rounded-full hover:bg-[#FFF8E6] transition-all">Idea to Spec HQ</Link>
+                  <Link href="/the-terminal/hq" className="px-4 py-2 text-[10px] uppercase tracking-[0.2em] font-sans font-semibold text-[#0b3b44] bg-white border-2 border-[#0b3b44] rounded-full hover:bg-[#FFF8E6] transition-all">The Terminal HQ</Link>
+                  <Link href="/idea-to-spec/hq" className="px-4 py-2 text-[10px] uppercase tracking-[0.2em] font-sans font-semibold text-[#0b3b44] bg-white border-2 border-[#0b3b44] rounded-full hover:bg-[#FFF8E6] transition-all">Idea to Spec HQ</Link>
                 </div>
               </div>
               <div>
-                <span className="text-[9px] uppercase tracking-[0.25em] text-[#0d0d0d]/50 font-mono block mb-2">Playbooks (download)</span>
+                <span className="text-[9px] uppercase tracking-[0.25em] text-[#0b3b44]/50 font-mono block mb-2">Playbooks (download)</span>
                 <div className="space-y-1">
                   {products.map((p) => (
-                    <a key={p.slug} href={`/api/programs/download/${p.slug}`} className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-[#0d0d0d]/[0.04] border border-transparent hover:border-[#0d0d0d]/15 transition-colors group">
-                      <span className="text-[#0d0d0d]/80 font-body text-sm group-hover:text-[#0d0d0d]">{p.name}</span>
+                    <a key={p.slug} href={`/api/programs/download/${p.slug}`} className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-[#0b3b44]/[0.04] border border-transparent hover:border-[#0b3b44]/15 transition-colors group">
+                      <span className="text-[#0b3b44]/80 font-body text-sm group-hover:text-[#0b3b44]">{p.name}</span>
                       <span className="text-[9px] uppercase tracking-[0.2em] text-[#1E50C8] font-mono">PDF ↓</span>
                     </a>
                   ))}
@@ -230,8 +230,8 @@ export default async function PartnerHQ() {
           </div>
         </div>
 
-        <div id="get-paid" className="bg-white border-2 border-[#0d0d0d] rounded-2xl shadow-[4px_4px_0_0_#0d0d0d] p-6 mt-6">
-          <span className="text-[10px] uppercase tracking-[0.3em] text-[#d0241b] font-mono font-bold block mb-3">How you get paid</span>
+        <div id="get-paid" className="bg-white border-2 border-[#0b3b44] rounded-2xl shadow-[4px_4px_0_0_#0b3b44] p-6 mt-6">
+          <span className="text-[10px] uppercase tracking-[0.3em] text-[#0a7c78] font-mono font-bold block mb-3">How you get paid</span>
           <div className="mb-5">
             <PayoutForm method={affiliate.payout_method ?? null} details={affiliate.payout_details ?? null} />
           </div>
@@ -254,7 +254,7 @@ function Row({ label, value, accent }: { label: string; value: string; accent?: 
   return (
     <div className="flex items-center justify-between gap-3">
       <span className="text-[#3A3733] font-body text-sm min-w-0 pr-3">{label}</span>
-      <span className={`font-mono text-sm font-semibold shrink-0 whitespace-nowrap ${accent ? 'text-[#c8201a]' : 'text-[#0d0d0d]/80'}`}>{value}</span>
+      <span className={`font-mono text-sm font-semibold shrink-0 whitespace-nowrap ${accent ? 'text-[#0a7c78]' : 'text-[#0b3b44]/80'}`}>{value}</span>
     </div>
   );
 }

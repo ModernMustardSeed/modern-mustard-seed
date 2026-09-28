@@ -30,21 +30,21 @@ export default function GreenlitPage() {
   ];
 
   return (
-    <div className="bg-[#f1ede4] text-[#0d0d0d] min-h-screen">
-      <section className="halftone-bg border-b-2 border-[#0d0d0d]">
+    <div className="bg-[#fbf5ea] text-[#0b3b44] min-h-screen">
+      <section className="halftone-bg border-b-2 border-[#0b3b44]">
         <div className="max-w-2xl mx-auto px-5 py-16 md:py-24 text-center">
           <Image
             src="/brand/mascot.png"
             alt="Mr. Mustard"
             width={84}
             height={84}
-            className="mx-auto rounded-full border-2 border-[#0d0d0d] bg-[#ffd400] shadow-[4px_4px_0_0_#0d0d0d]"
+            className="mx-auto rounded-full border-2 border-[#0b3b44] bg-[#f5b700] shadow-[4px_4px_0_0_#0b3b44]"
           />
-          <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#d0241b] font-bold mt-6 mb-3">[ GREENLIT ]</p>
+          <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#0a7c78] font-bold mt-6 mb-3">[ GREENLIT ]</p>
           <h1 className="font-display text-4xl md:text-5xl font-black tracking-tight leading-[1.02]">
             Lights. Camera. Yours.
           </h1>
-          <p className="font-body text-[#0d0d0d]/70 mt-4 max-w-md mx-auto leading-relaxed">
+          <p className="font-body text-[#0b3b44]/70 mt-4 max-w-md mx-auto leading-relaxed">
             Order confirmed, receipt on its way from Stripe, and a note from Sarah is landing in your inbox. Here is what happens next.
           </p>
         </div>
@@ -53,25 +53,25 @@ export default function GreenlitPage() {
       <section className="max-w-2xl mx-auto px-5 py-14">
         <div className="space-y-4">
           {steps.map((s) => (
-            <div key={s.n} className="rounded-2xl border-2 border-[#0d0d0d] bg-white p-6 shadow-[5px_5px_0_0_#0d0d0d] flex gap-5">
-              <span className="font-display italic text-3xl font-black text-[#ffd400] leading-none" aria-hidden="true">{s.n}</span>
+            <div key={s.n} className="rounded-2xl border-2 border-[#0b3b44] bg-white p-6 shadow-[5px_5px_0_0_#0b3b44] flex gap-5">
+              <span className="font-display italic text-3xl font-black text-[#f5b700] leading-none" aria-hidden="true">{s.n}</span>
               <div>
                 <h2 className="font-display text-lg font-black leading-tight">{s.title}</h2>
-                <p className="font-body text-sm text-[#0d0d0d]/70 leading-relaxed mt-1.5">{s.body}</p>
+                <p className="font-body text-sm text-[#0b3b44]/70 leading-relaxed mt-1.5">{s.body}</p>
               </div>
             </div>
           ))}
         </div>
 
-        <div className="rounded-2xl border-2 border-[#0d0d0d] bg-[#0d0d0d] text-[#f1ede4] p-6 mt-8 text-center">
-          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#ffd400] font-bold mb-2">A must-have detail?</p>
+        <div className="rounded-2xl border-2 border-[#0b3b44] bg-[#0b3b44] text-[#fbf5ea] p-6 mt-8 text-center">
+          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#f5b700] font-bold mb-2">A must-have detail?</p>
           <p className="font-body text-sm leading-relaxed">
             A phone number that has to appear, a color that IS the brand, the dog who greets every customer: reply to Sarah&apos;s email and it goes in the film.
           </p>
         </div>
 
         <p className="text-center mt-10">
-          <Link href="/" className="font-sans font-extrabold text-xs uppercase tracking-[0.18em] text-[#c8201a] underline underline-offset-4">
+          <Link href="/" className="font-sans font-extrabold text-xs uppercase tracking-[0.18em] text-[#0a7c78] underline underline-offset-4">
             Back to Modern Mustard Seed →
           </Link>
         </p>

@@ -34,13 +34,13 @@ const AUDIT_DIMENSIONS = ['Brand', 'Trust', 'SEO', 'GEO', 'Agentic Features', 'C
 
 export default function ThreeDoors() {
   return (
-    <section className="relative bg-[#f1ede4] py-20 md:py-28 overflow-hidden">
+    <section className="relative bg-[#fbf5ea] py-20 md:py-28 overflow-hidden">
       <div aria-hidden="true" className="absolute inset-0 halftone-bg opacity-50 pointer-events-none" />
       <div className="relative max-w-6xl mx-auto px-6">
         <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#C4160B] uppercase">
           Two doors // One studio
         </p>
-        <h2 className="font-display italic font-extrabold text-4xl md:text-6xl text-[#0d0d0d] mt-3 leading-[1.02] max-w-3xl">
+        <h2 className="font-display italic font-extrabold text-4xl md:text-6xl text-[#0b3b44] mt-3 leading-[1.02] max-w-3xl">
           We build it.<br />Or you learn it.
         </h2>
 
@@ -48,26 +48,26 @@ export default function ThreeDoors() {
           {DOORS.map((d) => (
             <div
               key={d.name}
-              className={`flex flex-col border-2 border-[#0d0d0d] p-7 ${
+              className={`flex flex-col border-2 border-[#0b3b44] p-7 ${
                 d.featured
-                  ? 'bg-[#ffd400] shadow-[8px_8px_0_0_#0d0d0d]'
-                  : 'bg-white shadow-[6px_6px_0_0_#0d0d0d]'
+                  ? 'bg-[#f5b700] shadow-[8px_8px_0_0_#0b3b44]'
+                  : 'bg-white shadow-[6px_6px_0_0_#0b3b44]'
               }`}
             >
               <span
                 className={`font-mono font-bold text-[11px] tracking-[0.14em] ${
-                  d.featured ? 'text-[#0d0d0d]' : 'text-[#C4160B]'
+                  d.featured ? 'text-[#0b3b44]' : 'text-[#C4160B]'
                 }`}
               >
                 {d.chip}
               </span>
-              <h3 className="font-display italic font-extrabold text-2xl md:text-3xl text-[#0d0d0d] mt-4">
+              <h3 className="font-display italic font-extrabold text-2xl md:text-3xl text-[#0b3b44] mt-4">
                 {d.name}
               </h3>
-              <p className="font-sans text-sm text-[#0d0d0d]/80 mt-3 leading-relaxed">{d.pitch}</p>
+              <p className="font-sans text-sm text-[#0b3b44]/80 mt-3 leading-relaxed">{d.pitch}</p>
               <ul className="mt-5 space-y-2 flex-1">
                 {d.points.map((p) => (
-                  <li key={p} className="flex items-start gap-2 font-sans text-[13px] font-medium text-[#0d0d0d]">
+                  <li key={p} className="flex items-start gap-2 font-sans text-[13px] font-medium text-[#0b3b44]">
                     <span className="text-[#C4160B] font-black mt-px" aria-hidden="true">✦</span>
                     {p}
                   </li>
@@ -75,10 +75,10 @@ export default function ThreeDoors() {
               </ul>
               <Link
                 href={d.href}
-                className={`mt-7 text-center font-sans font-bold text-sm border-2 border-[#0d0d0d] px-5 py-3.5 transition-all hover:translate-y-[2px] ${
+                className={`mt-7 text-center font-sans font-bold text-sm border-2 border-[#0b3b44] px-5 py-3.5 transition-all hover:translate-y-[2px] ${
                   d.featured
-                    ? 'bg-[#0d0d0d] text-[#f1ede4] shadow-[4px_4px_0_0_#f1ede4] hover:shadow-[2px_2px_0_0_#f1ede4]'
-                    : 'bg-[#ffd400] text-[#0d0d0d] shadow-[4px_4px_0_0_#0d0d0d] hover:shadow-[2px_2px_0_0_#0d0d0d]'
+                    ? 'bg-[#0b3b44] text-[#fbf5ea] shadow-[4px_4px_0_0_#fbf5ea] hover:shadow-[2px_2px_0_0_#fbf5ea]'
+                    : 'bg-[#f5b700] text-[#0b3b44] shadow-[4px_4px_0_0_#0b3b44] hover:shadow-[2px_2px_0_0_#0b3b44]'
                 }`}
               >
                 {d.cta}
@@ -88,22 +88,22 @@ export default function ThreeDoors() {
         </div>
 
         {/* Free audit strip: the no-risk first step */}
-        <div className="mt-10 border-2 border-[#0d0d0d] bg-white shadow-[6px_6px_0_0_#0d0d0d] p-7 md:p-8 md:flex md:items-center md:justify-between gap-8">
+        <div className="mt-10 border-2 border-[#0b3b44] bg-white shadow-[6px_6px_0_0_#0b3b44] p-7 md:p-8 md:flex md:items-center md:justify-between gap-8">
           <div className="md:flex-1">
             <span className="font-mono font-bold text-[10px] uppercase tracking-[0.35em] text-[#C4160B] block">
               Not sure which door? Start here. Free. 60 seconds.
             </span>
-            <h3 className="font-display italic font-extrabold text-2xl md:text-3xl text-[#0d0d0d] mt-2">
+            <h3 className="font-display italic font-extrabold text-2xl md:text-3xl text-[#0b3b44] mt-2">
               The free Website Audit
             </h3>
-            <p className="font-sans text-sm text-[#0d0d0d]/75 mt-2 leading-relaxed max-w-xl">
+            <p className="font-sans text-sm text-[#0b3b44]/75 mt-2 leading-relaxed max-w-xl">
               Drop your URL, get a letter grade and a prioritized to-do list you can act on today.
             </p>
             <div className="flex flex-wrap gap-2 mt-4">
               {AUDIT_DIMENSIONS.map((dim) => (
                 <span
                   key={dim}
-                  className="font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-[#0d0d0d] border border-[#0d0d0d] px-2 py-1 bg-[#f1ede4]"
+                  className="font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-[#0b3b44] border border-[#0b3b44] px-2 py-1 bg-[#fbf5ea]"
                 >
                   {dim}
                 </span>
@@ -113,24 +113,24 @@ export default function ThreeDoors() {
           <div className="mt-6 md:mt-0 flex flex-col gap-3 shrink-0">
             <Link
               href="/website-audit"
-              className="text-center px-8 py-4 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-white bg-[#0d0d0d] rounded-full border-2 border-[#0d0d0d] shadow-[4px_4px_0_0_rgba(13,13,13,0.35)] hover:-translate-y-0.5 transition-all"
+              className="text-center px-8 py-4 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-white bg-[#0b3b44] rounded-full border-2 border-[#0b3b44] shadow-[4px_4px_0_0_rgba(11,59,68,0.35)] hover:-translate-y-0.5 transition-all"
             >
               Audit my website
             </Link>
             <Link
               href="/book"
-              className="text-center px-8 py-4 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0d0d0d] bg-white rounded-full border-2 border-[#0d0d0d] shadow-[4px_4px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-all"
+              className="text-center px-8 py-4 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0b3b44] bg-white rounded-full border-2 border-[#0b3b44] shadow-[4px_4px_0_0_#0b3b44] hover:-translate-y-0.5 transition-all"
             >
               Book a Free Call
             </Link>
           </div>
         </div>
 
-        <p className="text-center text-[#0d0d0d]/70 font-body text-sm mt-8">
+        <p className="text-center text-[#0b3b44]/70 font-body text-sm mt-8">
           Rather build it yourself, self-paced? The flagship programs{' '}
-          <span className="font-bold text-[#0d0d0d]">Idea to Spec</span> and{' '}
-          <span className="font-bold text-[#0d0d0d]">The Terminal</span> ($497 each) live in the{' '}
-          <Link href="/store" className="text-[#C4160B] font-bold underline underline-offset-4 hover:text-[#0d0d0d]">
+          <span className="font-bold text-[#0b3b44]">Idea to Spec</span> and{' '}
+          <span className="font-bold text-[#0b3b44]">The Terminal</span> ($497 each) live in the{' '}
+          <Link href="/store" className="text-[#C4160B] font-bold underline underline-offset-4 hover:text-[#0b3b44]">
             store
           </Link>
           .
