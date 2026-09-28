@@ -73,7 +73,7 @@ export default async function ProofBand() {
   const marqueeItems = [...RESULTS, ...RESULTS];
 
   return (
-    <section className="relative bg-[#14110c] py-20 md:py-28 border-b-2 border-[#14110c] overflow-hidden">
+    <section className="relative bg-[#0b3b44] py-20 md:py-28 border-b-2 border-[#0b3b44] overflow-hidden">
       {/* Dim halftone texture */}
       <div
         aria-hidden="true"
@@ -108,12 +108,12 @@ export default async function ProofBand() {
         <div
           aria-hidden="true"
           className="absolute left-0 top-0 bottom-0 w-24 z-10 pointer-events-none"
-          style={{ background: 'linear-gradient(to right, #14110c, transparent)' }}
+          style={{ background: 'linear-gradient(to right, #0b3b44, transparent)' }}
         />
         <div
           aria-hidden="true"
           className="absolute right-0 top-0 bottom-0 w-24 z-10 pointer-events-none"
-          style={{ background: 'linear-gradient(to left, #14110c, transparent)' }}
+          style={{ background: 'linear-gradient(to left, #0b3b44, transparent)' }}
         />
         <div className="mm-proof-track">
           {marqueeItems.map((r, i) => (
@@ -143,7 +143,7 @@ export default async function ProofBand() {
                   &ldquo;{r.quote}&rdquo;
                 </blockquote>
                 {r.outcome && (
-                  <p className="mt-4 inline-block self-start text-[10px] uppercase tracking-[0.15em] font-mono font-bold text-[#14110c] bg-[#f5b700] border border-[#14110c] px-3 py-1">
+                  <p className="mt-4 inline-block self-start text-[10px] uppercase tracking-[0.15em] font-mono font-bold text-[#0b3b44] bg-[#f5b700] border border-[#0b3b44] px-3 py-1">
                     {r.outcome}
                   </p>
                 )}

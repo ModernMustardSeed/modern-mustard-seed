@@ -80,12 +80,12 @@ export default function LaunchDeck({
   const daysToLaunch = launchDate ? Math.ceil((new Date(launchDate).getTime() - Date.now()) / 86400000) : null;
 
   return (
-    <div className="min-h-screen bg-[#f6efe0] text-[#14110c]">
+    <div className="min-h-screen bg-[#fbf5ea] text-[#0b3b44]">
       {/* Top HUD bar */}
-      <header className="sticky top-0 z-20 bg-[#14110c] text-[#f6efe0] border-b-2 border-[#14110c]">
+      <header className="sticky top-0 z-20 bg-[#0b3b44] text-[#fbf5ea] border-b-2 border-[#0b3b44]">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3 min-w-0">
-            <span className="inline-grid place-items-center w-8 h-8 rounded-[50%_50%_50%_6px] bg-[#f5b700] border-2 border-[#14110c] -rotate-6 text-[#14110c] text-xs font-bold shrink-0">▲</span>
+            <span className="inline-grid place-items-center w-8 h-8 rounded-[50%_50%_50%_6px] bg-[#f5b700] border-2 border-[#0b3b44] -rotate-6 text-[#0b3b44] text-xs font-bold shrink-0">▲</span>
             <div className="min-w-0">
               <p className="font-mono text-[10px] tracking-[0.16em] text-[#f5b700] uppercase">Launch Deck</p>
               <p className="font-sans text-sm truncate">{savedOneLiner || savedIdea || 'Your launch'}</p>
@@ -93,10 +93,10 @@ export default function LaunchDeck({
           </div>
           <div className="flex items-center gap-3 shrink-0">
             <div className="text-right hidden sm:block">
-              <p className="font-mono text-[10px] text-[#f6efe0]/60 uppercase tracking-wider">Launch progress</p>
+              <p className="font-mono text-[10px] text-[#fbf5ea]/60 uppercase tracking-wider">Launch progress</p>
               <p className="font-mono font-bold text-[#7CFF9B] text-sm">{pct}% · {doneCount}/{allKeys.length}</p>
             </div>
-            <span className="font-mono text-[10px] uppercase tracking-wider bg-[#f5b700] text-[#14110c] border border-[#14110c] rounded px-2 py-1">
+            <span className="font-mono text-[10px] uppercase tracking-wider bg-[#f5b700] text-[#0b3b44] border border-[#0b3b44] rounded px-2 py-1">
               {tier === 'room' ? 'Room' : 'Kit'}
             </span>
           </div>
@@ -108,7 +108,7 @@ export default function LaunchDeck({
               key={t}
               onClick={() => setTab(t)}
               className={`font-mono text-xs uppercase tracking-[0.12em] px-4 py-2.5 border-t-2 border-x-2 rounded-t-md -mb-[2px] transition-colors ${
-                tab === t ? 'bg-[#f6efe0] text-[#14110c] border-[#14110c]' : 'bg-transparent text-[#f6efe0]/60 border-transparent hover:text-[#f6efe0]'
+                tab === t ? 'bg-[#fbf5ea] text-[#0b3b44] border-[#0b3b44]' : 'bg-transparent text-[#fbf5ea]/60 border-transparent hover:text-[#fbf5ea]'
               }`}
             >
               {t === 'deck' ? 'Mission Deck' : t === 'kit' ? 'Launch Kit' : 'Coach'}
@@ -123,8 +123,8 @@ export default function LaunchDeck({
             {/* Launch Day */}
             <div className="pop-card p-5 sm:p-6 mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
-                <p className="font-mono text-[10px] font-bold tracking-[0.16em] text-[#8f1d22] uppercase">Target Launch Day</p>
-                <h2 className="font-display font-extrabold text-2xl text-[#14110c] mt-1">
+                <p className="font-mono text-[10px] font-bold tracking-[0.16em] text-[#0a7c78] uppercase">Target Launch Day</p>
+                <h2 className="font-display font-extrabold text-2xl text-[#0b3b44] mt-1">
                   {daysToLaunch === null ? 'Set your launch date' : daysToLaunch > 0 ? `T minus ${daysToLaunch} days` : daysToLaunch === 0 ? 'Launch Day is today. Go.' : 'You are past your date. Reset it and push.'}
                 </h2>
               </div>
@@ -132,13 +132,13 @@ export default function LaunchDeck({
                 type="date"
                 value={launchDate}
                 onChange={(e) => setDate(e.target.value)}
-                className="rounded-lg border-2 border-[#14110c] bg-white px-4 py-2.5 font-mono text-sm shadow-[3px_3px_0_0_#14110c]"
+                className="rounded-lg border-2 border-[#0b3b44] bg-white px-4 py-2.5 font-mono text-sm shadow-[3px_3px_0_0_#0b3b44]"
               />
             </div>
 
             {/* Progress bar */}
             <div className="mb-6">
-              <div className="h-3 w-full rounded-full border-2 border-[#14110c] bg-white overflow-hidden">
+              <div className="h-3 w-full rounded-full border-2 border-[#0b3b44] bg-white overflow-hidden">
                 <div className="h-full bg-[#f5b700] transition-all duration-500" style={{ width: `${pct}%` }} />
               </div>
             </div>
@@ -152,21 +152,21 @@ export default function LaunchDeck({
                 return (
                   <div key={phase.id} className={`pop-card p-5 ${complete ? 'bg-[#f5b700]/10' : ''}`}>
                     <div className="flex items-center gap-2 mb-3">
-                      <span className="font-mono text-xs font-bold bg-[#14110c] text-[#f5b700] border border-[#14110c] rounded px-2 py-0.5">{phase.code}</span>
-                      <span className="font-mono text-[10px] tracking-[0.12em] text-[#8f1d22] uppercase font-bold">{phase.system}</span>
-                      <span className="ml-auto font-mono text-[11px] text-[#14110c]/50">{phaseDone}/{phaseKeys.length}{complete ? ' · GO ✓' : ''}</span>
+                      <span className="font-mono text-xs font-bold bg-[#0b3b44] text-[#f5b700] border border-[#0b3b44] rounded px-2 py-0.5">{phase.code}</span>
+                      <span className="font-mono text-[10px] tracking-[0.12em] text-[#0a7c78] uppercase font-bold">{phase.system}</span>
+                      <span className="ml-auto font-mono text-[11px] text-[#0b3b44]/50">{phaseDone}/{phaseKeys.length}{complete ? ' · GO ✓' : ''}</span>
                     </div>
-                    <h3 className="font-display font-bold text-xl text-[#14110c]">{phase.title}</h3>
+                    <h3 className="font-display font-bold text-xl text-[#0b3b44]">{phase.title}</h3>
                     <ul className="mt-3 space-y-2">
                       {missions.map((m, i) => {
                         const key = `${phase.id}:${i}`;
                         return (
                           <li key={key}>
                             <button onClick={() => toggle(key)} className="flex items-start gap-3 text-left w-full group">
-                              <span className={`mt-0.5 shrink-0 w-5 h-5 rounded border-2 border-[#14110c] grid place-items-center text-xs font-bold transition-colors ${done[key] ? 'bg-[#f5b700] text-[#14110c]' : 'bg-white text-transparent group-hover:bg-[#f5b700]/20'}`}>
+                              <span className={`mt-0.5 shrink-0 w-5 h-5 rounded border-2 border-[#0b3b44] grid place-items-center text-xs font-bold transition-colors ${done[key] ? 'bg-[#f5b700] text-[#0b3b44]' : 'bg-white text-transparent group-hover:bg-[#f5b700]/20'}`}>
                                 ✓
                               </span>
-                              <span className={`font-sans text-[15px] ${done[key] ? 'text-[#14110c]/45 line-through' : 'text-[#14110c]/85'}`}>{m}</span>
+                              <span className={`font-sans text-[15px] ${done[key] ? 'text-[#0b3b44]/45 line-through' : 'text-[#0b3b44]/85'}`}>{m}</span>
                             </button>
                           </li>
                         );
@@ -225,24 +225,24 @@ function KitPane({ tier, hasKit, savedIdea }: { tier: LaunchTier; hasKit: boolea
     }
   }
 
-  if (!loaded) return <p className="font-mono text-sm text-[#14110c]/60">Loading your Kit…</p>;
+  if (!loaded) return <p className="font-mono text-sm text-[#0b3b44]/60">Loading your Kit…</p>;
 
   if (!kit) {
     return (
       <div className="pop-card p-8 text-center max-w-xl mx-auto">
-        <p className="font-mono text-[10px] font-bold tracking-[0.16em] text-[#8f1d22] uppercase">Your Launch Kit</p>
-        <h2 className="font-display font-extrabold text-3xl text-[#14110c] mt-2">Generate your whole launch package</h2>
-        <p className="font-sans text-[#14110c]/70 mt-3">
+        <p className="font-mono text-[10px] font-bold tracking-[0.16em] text-[#0a7c78] uppercase">Your Launch Kit</p>
+        <h2 className="font-display font-extrabold text-3xl text-[#0b3b44] mt-2">Generate your whole launch package</h2>
+        <p className="font-sans text-[#0b3b44]/70 mt-3">
           {savedIdea ? `Mr. Mustard will build it from your idea: "${savedIdea.slice(0, 80)}${savedIdea.length > 80 ? '…' : ''}".` : 'Run a free Blueprint first so Mr. Mustard knows what you are launching, or he will ask.'}
         </p>
         <button
           onClick={() => generate(false)}
           disabled={loading}
-          className="mt-6 inline-flex items-center gap-2 rounded-lg border-2 border-[#14110c] bg-[#f5b700] px-6 py-3 font-sans font-bold text-[#14110c] shadow-[4px_4px_0_0_#14110c] transition-transform hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#14110c] disabled:opacity-60"
+          className="mt-6 inline-flex items-center gap-2 rounded-lg border-2 border-[#0b3b44] bg-[#f5b700] px-6 py-3 font-sans font-bold text-[#0b3b44] shadow-[4px_4px_0_0_#0b3b44] transition-transform hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#0b3b44] disabled:opacity-60"
         >
           {loading ? 'Assembling your Kit…' : '▲ Generate my Launch Kit'}
         </button>
-        {err && <p className="mt-3 font-mono text-xs text-[#8f1d22]">{err}</p>}
+        {err && <p className="mt-3 font-mono text-xs text-[#0a7c78]">{err}</p>}
       </div>
     );
   }
@@ -250,9 +250,9 @@ function KitPane({ tier, hasKit, savedIdea }: { tier: LaunchTier; hasKit: boolea
   return (
     <div className="space-y-5">
       <div className="flex items-center justify-between">
-        <h2 className="font-display font-extrabold text-2xl text-[#14110c]">Your Launch Kit</h2>
+        <h2 className="font-display font-extrabold text-2xl text-[#0b3b44]">Your Launch Kit</h2>
         {tier === 'room' && (
-          <button onClick={() => generate(true)} disabled={loading} className="font-mono text-xs text-[#8f1d22] underline underline-offset-4 disabled:opacity-50">
+          <button onClick={() => generate(true)} disabled={loading} className="font-mono text-xs text-[#0a7c78] underline underline-offset-4 disabled:opacity-50">
             {loading ? 'regenerating…' : 'regenerate'}
           </button>
         )}
@@ -262,9 +262,9 @@ function KitPane({ tier, hasKit, savedIdea }: { tier: LaunchTier; hasKit: boolea
         <KitCard title="Name directions">
           <div className="grid sm:grid-cols-3 gap-3">
             {kit.names.map((n, i) => (
-              <div key={i} className="rounded-lg border-2 border-[#14110c] bg-white p-3">
+              <div key={i} className="rounded-lg border-2 border-[#0b3b44] bg-white p-3">
                 <p className="font-display font-bold text-lg">{n.name}</p>
-                <p className="font-sans text-xs text-[#14110c]/65 mt-1">{n.rationale}</p>
+                <p className="font-sans text-xs text-[#0b3b44]/65 mt-1">{n.rationale}</p>
               </div>
             ))}
           </div>
@@ -273,20 +273,20 @@ function KitPane({ tier, hasKit, savedIdea }: { tier: LaunchTier; hasKit: boolea
 
       {(kit.positioning || kit.oneLiner) && (
         <KitCard title="Positioning">
-          {kit.oneLiner && <p className="font-serif italic text-xl text-[#14110c]">“{kit.oneLiner}”</p>}
-          {kit.positioning && <p className="font-sans text-[#14110c]/80 mt-2">{kit.positioning}</p>}
+          {kit.oneLiner && <p className="font-serif italic text-xl text-[#0b3b44]">“{kit.oneLiner}”</p>}
+          {kit.positioning && <p className="font-sans text-[#0b3b44]/80 mt-2">{kit.positioning}</p>}
         </KitCard>
       )}
 
       {kit.offer?.name && (
         <KitCard title="Your first offer">
-          <p className="font-display font-bold text-lg">{kit.offer.name} <span className="font-mono text-sm text-[#8f1d22]">{kit.offer.price}</span></p>
+          <p className="font-display font-bold text-lg">{kit.offer.name} <span className="font-mono text-sm text-[#0a7c78]">{kit.offer.price}</span></p>
           <ul className="mt-2 space-y-1">
             {kit.offer.whatYouGet.map((w, i) => (
-              <li key={i} className="flex gap-2 font-sans text-[15px] text-[#14110c]/80"><span className="text-[#f5b700]">✦</span>{w}</li>
+              <li key={i} className="flex gap-2 font-sans text-[15px] text-[#0b3b44]/80"><span className="text-[#f5b700]">✦</span>{w}</li>
             ))}
           </ul>
-          {kit.offer.rationale && <p className="font-sans text-sm text-[#14110c]/60 mt-2">{kit.offer.rationale}</p>}
+          {kit.offer.rationale && <p className="font-sans text-sm text-[#0b3b44]/60 mt-2">{kit.offer.rationale}</p>}
         </KitCard>
       )}
 
@@ -294,12 +294,12 @@ function KitPane({ tier, hasKit, savedIdea }: { tier: LaunchTier; hasKit: boolea
         <KitCard title="Your 30 / 60 / 90 plan">
           <div className="grid sm:grid-cols-3 gap-3">
             {kit.plan.map((p, i) => (
-              <div key={i} className="rounded-lg border-2 border-[#14110c] bg-white p-3">
-                <p className="font-mono text-[10px] font-bold tracking-[0.12em] text-[#8f1d22] uppercase">{p.window}</p>
+              <div key={i} className="rounded-lg border-2 border-[#0b3b44] bg-white p-3">
+                <p className="font-mono text-[10px] font-bold tracking-[0.12em] text-[#0a7c78] uppercase">{p.window}</p>
                 <p className="font-sans font-bold text-sm mt-1">{p.focus}</p>
                 <ul className="mt-2 space-y-1">
                   {p.moves.map((m, j) => (
-                    <li key={j} className="font-sans text-[13px] text-[#14110c]/75">• {m}</li>
+                    <li key={j} className="font-sans text-[13px] text-[#0b3b44]/75">• {m}</li>
                   ))}
                 </ul>
               </div>
@@ -323,7 +323,7 @@ function KitPane({ tier, hasKit, savedIdea }: { tier: LaunchTier; hasKit: boolea
 function KitCard({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="pop-card p-5">
-      <p className="font-mono text-[10px] font-bold tracking-[0.16em] text-[#8f1d22] uppercase mb-3">{title}</p>
+      <p className="font-mono text-[10px] font-bold tracking-[0.16em] text-[#0a7c78] uppercase mb-3">{title}</p>
       {children}
     </div>
   );
@@ -335,15 +335,15 @@ function CopyBlock({ label, text }: { label: string; text: string }) {
   return (
     <div className="mt-3 first:mt-0">
       <div className="flex items-center justify-between">
-        <p className="font-sans font-bold text-sm text-[#14110c]">{label}</p>
+        <p className="font-sans font-bold text-sm text-[#0b3b44]">{label}</p>
         <button
           onClick={() => { navigator.clipboard?.writeText(text); setCopied(true); setTimeout(() => setCopied(false), 1500); }}
-          className="font-mono text-[10px] uppercase tracking-wider text-[#8f1d22] hover:underline"
+          className="font-mono text-[10px] uppercase tracking-wider text-[#0a7c78] hover:underline"
         >
           {copied ? 'copied ✓' : 'copy'}
         </button>
       </div>
-      <p className="font-sans text-[14px] text-[#14110c]/80 mt-1 whitespace-pre-wrap rounded-lg border border-[#14110c]/15 bg-white/60 p-3">{text}</p>
+      <p className="font-sans text-[14px] text-[#0b3b44]/80 mt-1 whitespace-pre-wrap rounded-lg border border-[#0b3b44]/15 bg-white/60 p-3">{text}</p>
     </div>
   );
 }
@@ -365,14 +365,14 @@ function CoachPane({ tier, savedIdea }: { tier: LaunchTier; savedIdea: string | 
   if (tier !== 'room') {
     return (
       <div className="pop-card p-8 text-center max-w-xl mx-auto">
-        <p className="font-mono text-[10px] font-bold tracking-[0.16em] text-[#8f1d22] uppercase">The live coach</p>
-        <h2 className="font-display font-extrabold text-3xl text-[#14110c] mt-2">Mr. Mustard, live, in the Launch Room</h2>
-        <p className="font-sans text-[#14110c]/70 mt-3">
+        <p className="font-mono text-[10px] font-bold tracking-[0.16em] text-[#0a7c78] uppercase">The live coach</p>
+        <h2 className="font-display font-extrabold text-3xl text-[#0b3b44] mt-2">Mr. Mustard, live, in the Launch Room</h2>
+        <p className="font-sans text-[#0b3b44]/70 mt-3">
           The live coach is part of the Launch Room. Open the Room and Mr. Mustard works your launch with you, mission by mission, regenerating assets as it takes shape.
         </p>
         <Link
           href="/mustard-launch#ladder"
-          className="mt-6 inline-flex items-center gap-2 rounded-lg border-2 border-[#14110c] bg-[#f5b700] px-6 py-3 font-sans font-bold text-[#14110c] shadow-[4px_4px_0_0_#14110c] transition-transform hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#14110c]"
+          className="mt-6 inline-flex items-center gap-2 rounded-lg border-2 border-[#0b3b44] bg-[#f5b700] px-6 py-3 font-sans font-bold text-[#0b3b44] shadow-[4px_4px_0_0_#0b3b44] transition-transform hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#0b3b44]"
         >
           Open the Launch Room
         </Link>
@@ -412,21 +412,21 @@ function CoachPane({ tier, savedIdea }: { tier: LaunchTier; savedIdea: string | 
       <div ref={scrollRef} className="flex-1 overflow-y-auto p-5 space-y-4">
         {messages.map((m, i) => (
           <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-            <div className={`max-w-[85%] rounded-2xl px-4 py-2.5 font-sans text-[15px] ${m.role === 'user' ? 'bg-[#14110c] text-[#f6efe0]' : 'bg-[#f5b700]/15 border border-[#14110c]/15 text-[#14110c]'}`}>
+            <div className={`max-w-[85%] rounded-2xl px-4 py-2.5 font-sans text-[15px] ${m.role === 'user' ? 'bg-[#0b3b44] text-[#fbf5ea]' : 'bg-[#f5b700]/15 border border-[#0b3b44]/15 text-[#0b3b44]'}`}>
               {m.content}
             </div>
           </div>
         ))}
-        {sending && <p className="font-mono text-xs text-[#14110c]/50">Mr. Mustard is thinking…</p>}
+        {sending && <p className="font-mono text-xs text-[#0b3b44]/50">Mr. Mustard is thinking…</p>}
       </div>
-      <form onSubmit={send} className="border-t-2 border-[#14110c] p-3 flex gap-2 bg-white">
+      <form onSubmit={send} className="border-t-2 border-[#0b3b44] p-3 flex gap-2 bg-white">
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Ask your coach anything, or say what's next…"
-          className="flex-1 rounded-lg border-2 border-[#14110c] px-3.5 py-2.5 font-sans text-sm focus:outline-none"
+          className="flex-1 rounded-lg border-2 border-[#0b3b44] px-3.5 py-2.5 font-sans text-sm focus:outline-none"
         />
-        <button type="submit" disabled={sending} className="rounded-lg border-2 border-[#14110c] bg-[#f5b700] px-5 py-2.5 font-sans font-bold text-[#14110c] shadow-[3px_3px_0_0_#14110c] disabled:opacity-60">
+        <button type="submit" disabled={sending} className="rounded-lg border-2 border-[#0b3b44] bg-[#f5b700] px-5 py-2.5 font-sans font-bold text-[#0b3b44] shadow-[3px_3px_0_0_#0b3b44] disabled:opacity-60">
           Send
         </button>
       </form>

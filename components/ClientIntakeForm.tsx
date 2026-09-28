@@ -103,16 +103,16 @@ function rid() {
 /* ── Reusable bits ── */
 
 const inputCls =
-  'w-full bg-white border-2 border-[#14110c] rounded-lg px-4 py-3 text-sm text-[#14110c] font-body placeholder-[#14110c]/35 focus:outline-none focus:shadow-[3px_3px_0_0_#14110c] transition-shadow';
+  'w-full bg-white border-2 border-[#0b3b44] rounded-lg px-4 py-3 text-sm text-[#0b3b44] font-body placeholder-[#0b3b44]/35 focus:outline-none focus:shadow-[3px_3px_0_0_#0b3b44] transition-shadow';
 const labelCls =
-  'text-[9px] uppercase tracking-[0.3em] text-[#14110c]/45 font-mono font-bold block mb-2';
+  'text-[9px] uppercase tracking-[0.3em] text-[#0b3b44]/45 font-mono font-bold block mb-2';
 
 function Field({ label, children, hint }: { label: string; children: React.ReactNode; hint?: string }) {
   return (
     <div>
       <label className={labelCls}>{label}</label>
       {children}
-      {hint && <p className="mt-1.5 text-[11px] text-[#14110c]/45 font-body italic">{hint}</p>}
+      {hint && <p className="mt-1.5 text-[11px] text-[#0b3b44]/45 font-body italic">{hint}</p>}
     </div>
   );
 }
@@ -135,10 +135,10 @@ function Chips({
             key={o}
             type="button"
             onClick={() => onToggle(o)}
-            className={`px-3.5 py-2 rounded-full border-2 border-[#14110c] text-xs font-body font-bold transition-all ${
+            className={`px-3.5 py-2 rounded-full border-2 border-[#0b3b44] text-xs font-body font-bold transition-all ${
               on
-                ? 'bg-[#f5b700] text-[#14110c] shadow-[2px_2px_0_0_#14110c]'
-                : 'bg-white text-[#14110c]/70 hover:-translate-y-0.5'
+                ? 'bg-[#f5b700] text-[#0b3b44] shadow-[2px_2px_0_0_#0b3b44]'
+                : 'bg-white text-[#0b3b44]/70 hover:-translate-y-0.5'
             }`}
           >
             {o}
@@ -163,14 +163,14 @@ function SectionCard({
   return (
     <section className="pop-card p-7 md:p-9 space-y-6">
       <div className="flex items-start gap-4">
-        <span className="shrink-0 w-9 h-9 rounded-full bg-[#14110c] text-[#f5b700] font-display font-black text-base flex items-center justify-center">
+        <span className="shrink-0 w-9 h-9 rounded-full bg-[#0b3b44] text-[#f5b700] font-display font-black text-base flex items-center justify-center">
           {n}
         </span>
         <div>
-          <h2 className="font-display text-2xl md:text-3xl font-black text-[#14110c] tracking-tight leading-tight">
+          <h2 className="font-display text-2xl md:text-3xl font-black text-[#0b3b44] tracking-tight leading-tight">
             {title}
           </h2>
-          <p className="text-[#14110c]/55 text-sm font-body mt-1">{blurb}</p>
+          <p className="text-[#0b3b44]/55 text-sm font-body mt-1">{blurb}</p>
         </div>
       </div>
       <div className="space-y-5">{children}</div>
@@ -315,14 +315,14 @@ export default function ClientIntakeForm({ brandName = '', ownerName = '', email
     return (
       <div className="pop-card-yellow p-10 md:p-14 text-center">
         <div className="text-5xl mb-6">🤍</div>
-        <h2 className="font-display text-3xl md:text-5xl font-black text-[#14110c] tracking-tight mb-4">
+        <h2 className="font-display text-3xl md:text-5xl font-black text-[#0b3b44] tracking-tight mb-4">
           Thank you, {form.ownerName.split(' ')[0] || 'friend'}
         </h2>
-        <p className="text-[#14110c]/80 text-base md:text-lg font-body font-medium max-w-lg mx-auto leading-relaxed mb-2">
+        <p className="text-[#0b3b44]/80 text-base md:text-lg font-body font-medium max-w-lg mx-auto leading-relaxed mb-2">
           Everything is in. I am going to design three directions for your store, then send you a
           moodboard to choose from before a single page is built.
         </p>
-        <p className="text-[#14110c]/60 text-sm font-body max-w-md mx-auto leading-relaxed">
+        <p className="text-[#0b3b44]/60 text-sm font-body max-w-md mx-auto leading-relaxed">
           Check your inbox for a note from me. Remembered something or found more photos? Just reply
           and send them over.
         </p>
@@ -523,17 +523,17 @@ export default function ClientIntakeForm({ brandName = '', ownerName = '', email
       </SectionCard>
 
       {errorMsg && (
-        <p className="text-[#8f1d22] text-sm font-body font-bold text-center pop-card-cream p-4">{errorMsg}</p>
+        <p className="text-[#0a7c78] text-sm font-body font-bold text-center pop-card-cream p-4">{errorMsg}</p>
       )}
 
       <button
         type="submit"
         disabled={status === 'sending' || anyUploading}
-        className="w-full py-5 text-xs uppercase tracking-[0.25em] font-sans font-extrabold text-[#14110c] bg-[#f5b700] rounded-xl border-2 border-[#14110c] shadow-[5px_5px_0_0_#14110c] hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:translate-y-0"
+        className="w-full py-5 text-xs uppercase tracking-[0.25em] font-sans font-extrabold text-[#0b3b44] bg-[#f5b700] rounded-xl border-2 border-[#0b3b44] shadow-[5px_5px_0_0_#0b3b44] hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:translate-y-0"
       >
         {status === 'sending' ? 'Sending...' : anyUploading ? 'Finishing uploads...' : 'Send it in'}
       </button>
-      <p className="text-center text-[#14110c]/45 text-xs font-body italic">
+      <p className="text-center text-[#0b3b44]/45 text-xs font-body italic">
         You will hear from Sarah personally, usually the same day.
       </p>
     </form>
@@ -572,7 +572,7 @@ function UploadButton({
       <button
         type="button"
         onClick={() => inputRef.current?.click()}
-        className="inline-flex items-center gap-2 px-5 py-3 rounded-lg border-2 border-dashed border-[#14110c]/40 bg-white text-[#14110c]/70 text-sm font-body font-bold hover:border-[#14110c] hover:text-[#14110c] transition-colors"
+        className="inline-flex items-center gap-2 px-5 py-3 rounded-lg border-2 border-dashed border-[#0b3b44]/40 bg-white text-[#0b3b44]/70 text-sm font-body font-bold hover:border-[#0b3b44] hover:text-[#0b3b44] transition-colors"
       >
         <span className="text-lg leading-none">+</span> {label}
       </button>
@@ -585,23 +585,23 @@ function Thumb({ item, onRemove }: { item: Uploaded; onRemove: () => void }) {
     <div className="mt-3 flex items-center gap-3 pop-card-cream p-3">
       {item.preview ? (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={item.preview} alt="" className="w-12 h-12 object-contain rounded bg-white border border-[#14110c]/20" />
+        <img src={item.preview} alt="" className="w-12 h-12 object-contain rounded bg-white border border-[#0b3b44]/20" />
       ) : (
-        <span className="w-12 h-12 rounded bg-white border border-[#14110c]/20 flex items-center justify-center text-lg">📄</span>
+        <span className="w-12 h-12 rounded bg-white border border-[#0b3b44]/20 flex items-center justify-center text-lg">📄</span>
       )}
       <div className="flex-1 min-w-0">
-        <p className="text-xs font-body font-bold text-[#14110c] truncate">{item.name}</p>
+        <p className="text-xs font-body font-bold text-[#0b3b44] truncate">{item.name}</p>
         <p className="text-[11px] font-mono">
           {item.uploading ? (
-            <span className="text-[#8f1d22]">Uploading...</span>
+            <span className="text-[#0a7c78]">Uploading...</span>
           ) : item.error ? (
-            <span className="text-[#8f1d22]">{item.error}</span>
+            <span className="text-[#0a7c78]">{item.error}</span>
           ) : (
             <span className="text-[#2e7d32]">✓ Uploaded</span>
           )}
         </p>
       </div>
-      <button type="button" onClick={onRemove} className="text-[#14110c]/40 hover:text-[#8f1d22] text-lg leading-none px-1">
+      <button type="button" onClick={onRemove} className="text-[#0b3b44]/40 hover:text-[#0a7c78] text-lg leading-none px-1">
         ×
       </button>
     </div>
@@ -610,7 +610,7 @@ function Thumb({ item, onRemove }: { item: Uploaded; onRemove: () => void }) {
 
 function PhotoTile({ item, onRemove }: { item: Uploaded; onRemove: () => void }) {
   return (
-    <div className="relative aspect-square rounded-lg overflow-hidden border-2 border-[#14110c] bg-white">
+    <div className="relative aspect-square rounded-lg overflow-hidden border-2 border-[#0b3b44] bg-white">
       {item.preview ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img src={item.preview} alt="" className="w-full h-full object-cover" />
@@ -618,19 +618,19 @@ function PhotoTile({ item, onRemove }: { item: Uploaded; onRemove: () => void })
         <div className="w-full h-full flex items-center justify-center text-2xl">🖼️</div>
       )}
       {item.uploading && (
-        <div className="absolute inset-0 bg-white/70 flex items-center justify-center text-[10px] font-mono font-bold text-[#8f1d22]">
+        <div className="absolute inset-0 bg-white/70 flex items-center justify-center text-[10px] font-mono font-bold text-[#0a7c78]">
           Uploading...
         </div>
       )}
       {item.error && (
-        <div className="absolute inset-0 bg-[#b3261e]/85 flex items-center justify-center text-[10px] font-mono font-bold text-white px-1 text-center">
+        <div className="absolute inset-0 bg-[#ff6f59]/85 flex items-center justify-center text-[10px] font-mono font-bold text-white px-1 text-center">
           Failed
         </div>
       )}
       <button
         type="button"
         onClick={onRemove}
-        className="absolute top-1 right-1 w-6 h-6 rounded-full bg-[#14110c] text-white text-sm leading-none flex items-center justify-center hover:bg-[#b3261e]"
+        className="absolute top-1 right-1 w-6 h-6 rounded-full bg-[#0b3b44] text-white text-sm leading-none flex items-center justify-center hover:bg-[#ff6f59]"
       >
         ×
       </button>

@@ -64,11 +64,11 @@ export default function StackCalculator() {
   return (
     <div className="grid lg:grid-cols-5 gap-6 items-start">
       {/* The tool list */}
-      <div className="lg:col-span-3 rounded-2xl border-2 border-[#14110c] bg-white shadow-[6px_6px_0_0_#14110c] p-6 md:p-7">
+      <div className="lg:col-span-3 rounded-2xl border-2 border-[#0b3b44] bg-white shadow-[6px_6px_0_0_#0b3b44] p-6 md:p-7">
         <span className="font-mono font-bold text-[10px] uppercase tracking-[0.28em] text-[#C4160B] block">
           What are you paying for right now?
         </span>
-        <p className="font-body text-[14px] text-[#14110c]/70 mt-2 mb-5 leading-relaxed">
+        <p className="font-body text-[14px] text-[#0b3b44]/70 mt-2 mb-5 leading-relaxed">
           Tap the tools your business already pays a monthly for. The command center does all of it, on one board.
         </p>
         <div className="space-y-2.5">
@@ -81,44 +81,44 @@ export default function StackCalculator() {
                 onClick={() => toggle(t.key)}
                 aria-pressed={active}
                 className={`w-full text-left rounded-xl border-2 p-3.5 flex items-center gap-3.5 transition-all ${
-                  active ? 'border-[#14110c] bg-[#f6efe0]' : 'border-[#14110c]/20 bg-white opacity-60 hover:opacity-100'
+                  active ? 'border-[#0b3b44] bg-[#fbf5ea]' : 'border-[#0b3b44]/20 bg-white opacity-60 hover:opacity-100'
                 }`}
               >
                 <span
                   aria-hidden
                   className={`h-6 w-6 shrink-0 rounded-md border-2 flex items-center justify-center font-bold text-[13px] ${
-                    active ? 'bg-[#f5b700] border-[#14110c] text-[#14110c]' : 'border-[#14110c]/40 text-transparent'
+                    active ? 'bg-[#f5b700] border-[#0b3b44] text-[#0b3b44]' : 'border-[#0b3b44]/40 text-transparent'
                   }`}
                 >
                   ✓
                 </span>
                 <span className="flex-1 min-w-0">
-                  <span className="block font-sans font-bold text-[14px] text-[#14110c]">{t.label}</span>
-                  <span className="block font-body text-[12px] text-[#14110c]/70">{t.sub}</span>
+                  <span className="block font-sans font-bold text-[14px] text-[#0b3b44]">{t.label}</span>
+                  <span className="block font-body text-[12px] text-[#0b3b44]/70">{t.sub}</span>
                 </span>
-                <span className={`font-mono font-bold text-[13px] whitespace-nowrap ${active ? 'text-[#14110c]' : 'text-[#14110c]/40'}`}>
+                <span className={`font-mono font-bold text-[13px] whitespace-nowrap ${active ? 'text-[#0b3b44]' : 'text-[#0b3b44]/40'}`}>
                   ${t.cost}/mo
                 </span>
               </button>
             );
           })}
         </div>
-        <p className="font-body text-[11px] text-[#14110c]/70 mt-4 leading-relaxed">
+        <p className="font-body text-[11px] text-[#0b3b44]/70 mt-4 leading-relaxed">
           Typical small-business software prices. Your real bill is probably higher once you count the seats.
         </p>
       </div>
 
       {/* The payoff */}
       <div className="lg:col-span-2 lg:sticky lg:top-24">
-        <div className="rounded-2xl border-2 border-[#14110c] bg-[#14110c] shadow-[6px_6px_0_0_#f5b700] p-6 md:p-7 text-center">
-          <span className="font-mono font-bold text-[10px] uppercase tracking-[0.24em] text-[#f6efe0]/60 block">
+        <div className="rounded-2xl border-2 border-[#0b3b44] bg-[#0b3b44] shadow-[6px_6px_0_0_#f5b700] p-6 md:p-7 text-center">
+          <span className="font-mono font-bold text-[10px] uppercase tracking-[0.24em] text-[#fbf5ea]/60 block">
             Your stack today, {count} {count === 1 ? 'tool' : 'tools'}
           </span>
-          <p className="font-display font-extrabold text-[#f6efe0] mt-1 leading-none tabular-nums" style={{ fontSize: 'clamp(2.75rem, 8vw, 3.75rem)' }}>
+          <p className="font-display font-extrabold text-[#fbf5ea] mt-1 leading-none tabular-nums" style={{ fontSize: 'clamp(2.75rem, 8vw, 3.75rem)' }}>
             ${shownTotal.toLocaleString()}<span className="text-2xl">/mo</span>
           </p>
 
-          <div className="my-5 h-px w-full bg-[#f6efe0]/15" />
+          <div className="my-5 h-px w-full bg-[#fbf5ea]/15" />
 
           <span className="font-mono font-bold text-[10px] uppercase tracking-[0.24em] text-[#f5b700] block">
             One command center
@@ -126,12 +126,12 @@ export default function StackCalculator() {
           <p className="font-display font-extrabold text-[#f5b700] mt-1 leading-none tabular-nums" style={{ fontSize: 'clamp(2.75rem, 8vw, 3.75rem)' }}>
             ${ccMonthly}<span className="text-2xl">/mo</span>
           </p>
-          <p className="font-body text-[12.5px] text-[#f6efe0]/70 mt-2 leading-relaxed">
+          <p className="font-body text-[12.5px] text-[#fbf5ea]/70 mt-2 leading-relaxed">
             Every call transcribed, your website traffic, customers, reviews, invoices, and reports, wired together.
           </p>
 
           {savings > 0 ? (
-            <p className="mt-4 rounded-xl border-2 border-[#f5b700] bg-[#f5b700] px-4 py-2.5 font-sans text-[14px] font-extrabold text-[#14110c]">
+            <p className="mt-4 rounded-xl border-2 border-[#f5b700] bg-[#f5b700] px-4 py-2.5 font-sans text-[14px] font-extrabold text-[#0b3b44]">
               You would save {formatUsd(savings * 100)}/mo, on one board instead of five logins.
             </p>
           ) : (
@@ -143,7 +143,7 @@ export default function StackCalculator() {
           <Link
             href="/demos"
             onClick={() => track('command_center_calc_cta')}
-            className="mt-5 block text-center rounded-full border-2 border-[#14110c] bg-[#f5b700] text-[#14110c] px-6 py-3.5 font-sans font-extrabold text-[11px] uppercase tracking-[0.16em] shadow-[4px_4px_0_0_#000000] hover:-translate-y-0.5 transition-all"
+            className="mt-5 block text-center rounded-full border-2 border-[#0b3b44] bg-[#f5b700] text-[#0b3b44] px-6 py-3.5 font-sans font-extrabold text-[11px] uppercase tracking-[0.16em] shadow-[4px_4px_0_0_#000000] hover:-translate-y-0.5 transition-all"
           >
             Build mine free →
           </Link>

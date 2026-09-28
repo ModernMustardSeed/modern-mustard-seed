@@ -118,7 +118,7 @@ export default function ContractorsPage() {
           ]),
         ]}
       />
-      <div className="relative min-h-screen bg-[#f6efe0] text-[#14110c] overflow-x-clip">
+      <div className="relative min-h-screen bg-[#fbf5ea] text-[#0b3b44] overflow-x-clip">
         <PopPageHero
           eyebrow={
             <>
@@ -129,7 +129,7 @@ export default function ContractorsPage() {
             </>
           }
           title={<>Be the builder Google and ChatGPT{' '}<em>suggest</em></>}
-          art={{ src: '/art/pages/industries', alt: 'Painting: Mr. Mustard in a boater hat presents miniature businesses under glass bell jars, a bakery, a barber shop, a garage and a construction site, in a World’s Fair hall inside the tower', caption: 'Built for the builders', focus: '30% 60%' }}
+          art={{ src: '/art/riviera/industries', alt: 'Painting: Mr. Mustard strolls a sunny seaside promenade of little shops with Tiffany-blue and coral awnings, a bakery, a gelato stand, a surf rental and a boat charter, the family with gelato and the sea at the end of the street', caption: 'Built for the builders', focus: '30% 60%' }}
           sticker="Break ground!"
           mascot={{ bubble: 'Hard hats on!' }}
         >
@@ -148,7 +148,7 @@ export default function ContractorsPage() {
           </div>
           <p className={pop.note}>
             Or{' '}
-            <a href={bookingUrl} target="_blank" rel="noopener noreferrer" className="text-[#8f1d22] font-semibold underline underline-offset-2 hover:text-[#8f1d22] transition-colors">
+            <a href={bookingUrl} target="_blank" rel="noopener noreferrer" className="text-[#0a7c78] font-semibold underline underline-offset-2 hover:text-[#0a7c78] transition-colors">
               book a call
             </a>{' '}
             and we’ll walk you through it with your own homes on screen.
@@ -156,18 +156,18 @@ export default function ContractorsPage() {
         </PopPageHero>
 
         {/* The film: the ink band */}
-        <section className="relative mt-4 bg-[#14110c] text-[#f6efe0] border-y-2 border-[#14110c] overflow-hidden" aria-labelledby="film-h">
+        <section className="relative mt-4 bg-[#0b3b44] text-[#fbf5ea] border-y-2 border-[#0b3b44] overflow-hidden" aria-labelledby="film-h">
           <div className="pointer-events-none absolute inset-0 halftone-ink" aria-hidden="true" />
           <div className="relative max-w-6xl mx-auto px-6 md:px-8 py-16 md:py-20">
             <div className="text-center max-w-3xl mx-auto mb-10">
               <span className="text-[10px] uppercase tracking-[0.4em] text-[#f5b700] font-mono font-bold mb-5 block">
                 Watch it · 64 seconds
               </span>
-              <h2 id="film-h" className="font-display text-3xl md:text-5xl font-black text-[#f6efe0] tracking-tight leading-[1.1]">
+              <h2 id="film-h" className="font-display text-3xl md:text-5xl font-black text-[#fbf5ea] tracking-tight leading-[1.1]">
                 One builder, from the first search to the front door.
               </h2>
             </div>
-            <div className="border-2 border-[#f6efe0] shadow-[6px_6px_0_0_#f5b700] bg-black">
+            <div className="border-2 border-[#fbf5ea] shadow-[6px_6px_0_0_#f5b700] bg-black">
               <video
                 controls
                 playsInline
@@ -183,7 +183,7 @@ export default function ContractorsPage() {
                 <a href="/ads/cairnfell/cairnfell-16x9.mp4">Download the film</a>.
               </video>
             </div>
-            <p className="mt-5 text-center text-sm text-[#f6efe0]/75 font-body">
+            <p className="mt-5 text-center text-sm text-[#fbf5ea]/75 font-body">
               Cairnfell is a concept builder. The website, the portal and the studio in the film are real, and you can click through every one of them below.
             </p>
           </div>
@@ -192,25 +192,25 @@ export default function ContractorsPage() {
         {/* The three pieces */}
         <section className="relative max-w-6xl mx-auto px-6 md:px-8 py-16 md:py-24" aria-labelledby="pieces-h">
           <div className="text-center max-w-3xl mx-auto mb-12">
-            <span className="text-[10px] uppercase tracking-[0.4em] text-[#8f1d22] font-mono font-bold mb-5 block">
+            <span className="text-[10px] uppercase tracking-[0.4em] text-[#0a7c78] font-mono font-bold mb-5 block">
               Click through all of it
             </span>
-            <h2 id="pieces-h" className="font-display text-3xl md:text-5xl font-black text-[#14110c] tracking-tight leading-[1.1]">
+            <h2 id="pieces-h" className="font-display text-3xl md:text-5xl font-black text-[#0b3b44] tracking-tight leading-[1.1]">
               Three pieces. One system.
             </h2>
           </div>
           <div className="grid grid-cols-1 gap-8">
             {pieces.map((p, i) => (
               <article key={p.href} className={`pop-card overflow-hidden grid grid-cols-1 md:grid-cols-2 ${i % 2 ? 'md:[&>*:first-child]:order-2' : ''}`}>
-                <a href={p.href} className="block border-b-2 md:border-b-0 border-[#14110c] bg-[#0E1411]" aria-label={`${p.cta}: ${p.kicker}`}>
+                <a href={p.href} className="block border-b-2 md:border-b-0 border-[#0b3b44] bg-[#0E1411]" aria-label={`${p.cta}: ${p.kicker}`}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={p.shot} alt={p.alt} width={1200} height={750} loading="lazy" className="block w-full h-auto" />
                 </a>
                 <div className="p-7 md:p-10 flex flex-col justify-center">
-                  <span className="text-[10px] uppercase tracking-[0.35em] text-[#8f1d22] font-mono font-bold mb-3 block">{p.kicker}</span>
-                  <h3 className="font-display text-2xl md:text-3xl font-black text-[#14110c] tracking-tight leading-[1.1] mb-4">{p.title}</h3>
+                  <span className="text-[10px] uppercase tracking-[0.35em] text-[#0a7c78] font-mono font-bold mb-3 block">{p.kicker}</span>
+                  <h3 className="font-display text-2xl md:text-3xl font-black text-[#0b3b44] tracking-tight leading-[1.1] mb-4">{p.title}</h3>
                   <p className="text-[#3a3733] text-base font-body leading-7 mb-6">{p.body}</p>
-                  <a href={p.href} className="self-start inline-flex items-center gap-2 px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#14110c] bg-[#f5b700] rounded-full border-2 border-[#14110c] shadow-[4px_4px_0_0_#14110c] hover:-translate-y-0.5 transition-all">
+                  <a href={p.href} className="self-start inline-flex items-center gap-2 px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0b3b44] bg-[#f5b700] rounded-full border-2 border-[#0b3b44] shadow-[4px_4px_0_0_#0b3b44] hover:-translate-y-0.5 transition-all">
                     {p.cta} <span aria-hidden="true">→</span>
                   </a>
                 </div>
@@ -222,29 +222,29 @@ export default function ContractorsPage() {
         {/* The A+ checks */}
         <section className="relative max-w-5xl mx-auto px-6 md:px-8 pb-16 md:pb-24" aria-labelledby="grade-h">
           <div className="pop-card p-8 md:p-12 bg-[#f5b700] grid grid-cols-1 md:grid-cols-[auto_1fr] gap-8 items-center">
-            <div className="font-display text-[110px] md:text-[150px] leading-none font-black text-[#14110c]" aria-hidden="true">A+</div>
+            <div className="font-display text-[110px] md:text-[150px] leading-none font-black text-[#0b3b44]" aria-hidden="true">A+</div>
             <div>
-              <h2 id="grade-h" className="font-display text-2xl md:text-4xl font-black text-[#14110c] tracking-tight leading-[1.1] mb-5">
+              <h2 id="grade-h" className="font-display text-2xl md:text-4xl font-black text-[#0b3b44] tracking-tight leading-[1.1] mb-5">
                 What AI reads before it names a builder.
               </h2>
               <ul className="grid gap-2.5">
                 {checks.map((c) => (
-                  <li key={c} className="flex gap-3 text-[#14110c] font-body text-base leading-6">
-                    <span className="font-mono font-bold text-[#8f1d22]" aria-hidden="true">✓</span>
+                  <li key={c} className="flex gap-3 text-[#0b3b44] font-body text-base leading-6">
+                    <span className="font-mono font-bold text-[#0a7c78]" aria-hidden="true">✓</span>
                     {c}
                   </li>
                 ))}
               </ul>
-              <p className="mt-5 text-sm text-[#14110c]/75 font-body">These are the six things our presence audit grades. Want to know where your site stands? <Link href="/presence-audit" className="font-semibold underline underline-offset-2">Run the free presence audit</Link>.</p>
+              <p className="mt-5 text-sm text-[#0b3b44]/75 font-body">These are the six things our presence audit grades. Want to know where your site stands? <Link href="/presence-audit" className="font-semibold underline underline-offset-2">Run the free presence audit</Link>.</p>
             </div>
           </div>
         </section>
 
         {/* The real one */}
-        <section className="relative bg-[#14110c] text-[#f6efe0] border-y-2 border-[#14110c] overflow-hidden" aria-labelledby="brim-h">
+        <section className="relative bg-[#0b3b44] text-[#fbf5ea] border-y-2 border-[#0b3b44] overflow-hidden" aria-labelledby="brim-h">
           <div className="pointer-events-none absolute inset-0 halftone-ink" aria-hidden="true" />
           <div className="relative max-w-6xl mx-auto px-6 md:px-8 py-16 md:py-20 grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
-            <div className="border-2 border-[#f6efe0] shadow-[6px_6px_0_0_#f5b700] bg-black">
+            <div className="border-2 border-[#fbf5ea] shadow-[6px_6px_0_0_#f5b700] bg-black">
               <video
                 autoPlay
                 muted
@@ -261,10 +261,10 @@ export default function ContractorsPage() {
               <span className="text-[10px] uppercase tracking-[0.4em] text-[#f5b700] font-mono font-bold mb-5 block">
                 A real builder · Client
               </span>
-              <h2 id="brim-h" className="font-display text-3xl md:text-5xl font-black text-[#f6efe0] tracking-tight leading-[1.1] mb-5">
+              <h2 id="brim-h" className="font-display text-3xl md:text-5xl font-black text-[#fbf5ea] tracking-tight leading-[1.1] mb-5">
                 Built Right in Montana
               </h2>
-              <p className="text-[#f6efe0]/85 text-base md:text-lg font-body leading-relaxed mb-7">
+              <p className="text-[#fbf5ea]/85 text-base md:text-lg font-body leading-relaxed mb-7">
                 A Flathead Valley custom home builder’s website, with a project showcase and a direct path to a
                 build conversation. Built for the way Montana lives.
               </p>
@@ -272,7 +272,7 @@ export default function ContractorsPage() {
                 href="https://builtrightinmontana.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#14110c] bg-[#f5b700] rounded-full border-2 border-[#f6efe0] shadow-[4px_4px_0_0_#f6efe0] hover:-translate-y-0.5 transition-all"
+                className="inline-flex items-center gap-2 px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0b3b44] bg-[#f5b700] rounded-full border-2 border-[#fbf5ea] shadow-[4px_4px_0_0_#fbf5ea] hover:-translate-y-0.5 transition-all"
               >
                 Visit builtrightinmontana.com <span aria-hidden="true">→</span>
               </a>
@@ -282,15 +282,15 @@ export default function ContractorsPage() {
 
         {/* Questions */}
         <section className="relative max-w-4xl mx-auto px-6 md:px-8 py-16 md:py-24" aria-labelledby="faq-h">
-          <h2 id="faq-h" className="font-display text-3xl md:text-5xl font-black text-[#14110c] tracking-tight leading-[1.1] mb-10 text-center">
+          <h2 id="faq-h" className="font-display text-3xl md:text-5xl font-black text-[#0b3b44] tracking-tight leading-[1.1] mb-10 text-center">
             Builders ask us
           </h2>
           <div className="grid gap-4">
             {faqs.map((f) => (
               <details key={f.q} className="pop-card p-6 md:p-7 group">
-                <summary className="cursor-pointer list-none flex justify-between gap-4 font-display text-lg md:text-xl font-black text-[#14110c] tracking-tight">
+                <summary className="cursor-pointer list-none flex justify-between gap-4 font-display text-lg md:text-xl font-black text-[#0b3b44] tracking-tight">
                   {f.q}
-                  <span className="font-mono text-[#8f1d22] group-open:rotate-45 transition-transform" aria-hidden="true">+</span>
+                  <span className="font-mono text-[#0a7c78] group-open:rotate-45 transition-transform" aria-hidden="true">+</span>
                 </summary>
                 <p className="mt-4 text-[#3a3733] text-base font-body leading-7">{f.a}</p>
               </details>
@@ -301,7 +301,7 @@ export default function ContractorsPage() {
         {/* Close */}
         <section className="relative max-w-4xl mx-auto px-6 md:px-8 pb-24">
           <div className="pop-card p-8 md:p-12 text-center">
-            <h2 className="font-display text-3xl md:text-5xl font-black text-[#14110c] tracking-tight leading-[1.1] mb-4">
+            <h2 className="font-display text-3xl md:text-5xl font-black text-[#0b3b44] tracking-tight leading-[1.1] mb-4">
               See your own homes in this style.
             </h2>
             <p className="text-[#3a3733] text-base md:text-lg font-body leading-relaxed max-w-2xl mx-auto mb-8">

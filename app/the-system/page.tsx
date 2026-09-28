@@ -58,11 +58,11 @@ const DOORS = [
   },
 ];
 
-const SYS_ALT = 'Painting: Mr. Mustard in a mechanic’s apron pulls a big brass lever in the engine room of the tower, gears turning, gauges climbing and steam rising as the whole crew keeps the machine running';
+const SYS_ALT = 'Painting: at a cliffside villa, Mr. Mustard sits at the edge of a turquoise infinity pool smiling at his phone while Mrs. Mustard floats in her big hat and the kids and the seed dog splash, the Mediterranean below';
 
 export default function TheSystemPage() {
   return (
-    <div className="min-h-screen bg-[#f6efe0] text-[#14110c]">
+    <div className="min-h-screen bg-[#fbf5ea] text-[#0b3b44]">
       <JsonLd
         data={[
           breadcrumbJsonLd([
@@ -93,7 +93,7 @@ export default function TheSystemPage() {
         eyebrow={<span>The system // One brain, every door</span>}
         title={<>Your whole company,<br /><em>agentic.</em></>}
         issue={{ no: 'No.8', lines: ['The system', 'One brain, every door'] }}
-        art={{ src: '/art/pages/system', alt: SYS_ALT, caption: 'In one side, out the other' }}
+        art={{ src: '/art/riviera/system', alt: SYS_ALT, caption: 'In one side, out the other' }}
         sticker="Whirr!"
       >
         <p>
@@ -107,7 +107,7 @@ export default function TheSystemPage() {
             See The Work
           </Link>
         </div>
-        <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#14110c]/60 mt-5">
+        <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#0b3b44]/60 mt-5">
           Set package prices. Changes included. You own it on launch day.
         </p>
       </PopPageHero>
@@ -127,11 +127,11 @@ export default function TheSystemPage() {
             </p>
             <p className="font-display font-extrabold text-xl leading-tight mt-1">Proposal signed and paid. Deal marked won.</p>
           </div>
-          <div className="relative bg-[#14110c] text-[#f6efe0] border-2 border-[#14110c] rounded-2xl shadow-[5px_5px_0_0_#f5b700] px-5 py-4 -rotate-2 w-[260px]">
+          <div className="relative bg-[#0b3b44] text-[#fbf5ea] border-2 border-[#0b3b44] rounded-2xl shadow-[5px_5px_0_0_#f5b700] px-5 py-4 -rotate-2 w-[260px]">
             <p className="font-mono text-[10px] uppercase tracking-[0.25em] font-bold text-[#f5b700]">6:30 PM</p>
             <p className="font-display font-extrabold text-xl leading-tight mt-1">Job closed. Review asked. Next lead already found.</p>
           </div>
-          <span className="absolute right-2 -top-5 bg-[#b3261e] text-[#f6efe0] font-mono font-bold text-[10px] uppercase tracking-[0.25em] px-3 py-1.5 rounded-full border-2 border-[#14110c] shadow-[3px_3px_0_0_#14110c] rotate-6">
+          <span className="absolute right-2 -top-5 bg-[#ff6f59] text-[#fbf5ea] font-mono font-bold text-[10px] uppercase tracking-[0.25em] px-3 py-1.5 rounded-full border-2 border-[#0b3b44] shadow-[3px_3px_0_0_#0b3b44] rotate-6">
             One Tuesday
           </span>
         </div>
@@ -147,7 +147,7 @@ export default function TheSystemPage() {
           <h2 className="font-display italic font-extrabold text-4xl md:text-5xl mt-3 leading-[1.02] max-w-3xl">
             Watch one lead go all the way around.
           </h2>
-          <p className="font-body text-[15px] text-[#14110c]/70 mt-4 max-w-2xl leading-relaxed">
+          <p className="font-body text-[15px] text-[#0b3b44]/70 mt-4 max-w-2xl leading-relaxed">
             Every station below is a real part of the system. Hover a number to read it. The ring advances on its own because that is the point: it runs whether or not you are watching.
           </p>
           <div className="mt-12">
@@ -156,14 +156,14 @@ export default function TheSystemPage() {
         </section>
 
         {/* ── Marquee band ── */}
-        <div className="bg-[#14110c] border-y-2 border-[#14110c] py-4 overflow-hidden" aria-hidden="true">
+        <div className="bg-[#0b3b44] border-y-2 border-[#0b3b44] py-4 overflow-hidden" aria-hidden="true">
           <div className="marquee-track flex whitespace-nowrap font-sans font-extrabold uppercase tracking-[0.2em] text-[13px] text-[#f5b700]">
             {[0, 1].map((rep) => (
               <div key={rep} className="flex shrink-0">
                 {STATIONS.map((s) => (
                   <span key={`${rep}-${s.code}`} className="px-6 flex items-center gap-6">
                     {s.verb}
-                    <span className="text-[#f6efe0]/40">◆</span>
+                    <span className="text-[#fbf5ea]/40">◆</span>
                   </span>
                 ))}
               </div>
@@ -182,7 +182,7 @@ export default function TheSystemPage() {
                 Everything the loop runs on.
               </h2>
             </div>
-            <p className="font-body text-[15px] text-[#14110c]/70 max-w-md leading-relaxed">
+            <p className="font-body text-[15px] text-[#0b3b44]/70 max-w-md leading-relaxed">
               Each one is a door you can open on its own. Together, they are one machine that reports to one board.
             </p>
           </div>
@@ -190,7 +190,7 @@ export default function TheSystemPage() {
             {CAPABILITIES.map((c, i) => (
               <div
                 key={c.name}
-                className={`group flex flex-col border-2 border-[#14110c] rounded-2xl shadow-[5px_5px_0_0_#14110c] p-6 hover:-translate-y-1 hover:shadow-[7px_7px_0_0_#f5b700] transition-all ${
+                className={`group flex flex-col border-2 border-[#0b3b44] rounded-2xl shadow-[5px_5px_0_0_#0b3b44] p-6 hover:-translate-y-1 hover:shadow-[7px_7px_0_0_#f5b700] transition-all ${
                   i % 5 === 2 ? 'bg-[#f5b700]' : 'bg-white'
                 }`}
               >
@@ -198,12 +198,12 @@ export default function TheSystemPage() {
                   <span className="text-3xl" aria-hidden="true">
                     {c.icon}
                   </span>
-                  <span className="font-mono text-[10px] font-bold tracking-[0.2em] text-[#14110c]/50">{String(i + 1).padStart(2, '0')}</span>
+                  <span className="font-mono text-[10px] font-bold tracking-[0.2em] text-[#0b3b44]/50">{String(i + 1).padStart(2, '0')}</span>
                 </div>
                 <h3 className="font-display font-extrabold text-2xl mt-4 leading-tight">{c.name}</h3>
-                <p className="font-body text-[14.5px] leading-relaxed text-[#14110c]/75 mt-2">{c.what}</p>
+                <p className="font-body text-[14.5px] leading-relaxed text-[#0b3b44]/75 mt-2">{c.what}</p>
                 <p className="mt-auto pt-5 font-mono text-[10.5px] uppercase tracking-[0.15em] font-bold" style={{ color: RED }}>
-                  Replaces: <span className="text-[#14110c]/70 normal-case tracking-normal font-sans font-semibold">{c.replaces}</span>
+                  Replaces: <span className="text-[#0b3b44]/70 normal-case tracking-normal font-sans font-semibold">{c.replaces}</span>
                 </p>
               </div>
             ))}
@@ -211,7 +211,7 @@ export default function TheSystemPage() {
         </section>
 
         {/* ── A day on the system ── */}
-        <section id="a-day" className="bg-[#14110c] text-[#f6efe0] halftone-ink border-y-2 border-[#14110c]">
+        <section id="a-day" className="bg-[#0b3b44] text-[#fbf5ea] halftone-ink border-y-2 border-[#0b3b44]">
           <div className="max-w-6xl mx-auto px-6 py-16 lg:py-24">
             <p className="font-mono font-bold text-[11px] tracking-[0.18em] uppercase text-[#f5b700]">
               One day, illustrated // The loop with a clock on it
@@ -219,25 +219,25 @@ export default function TheSystemPage() {
             <h2 className="font-display italic font-extrabold text-4xl md:text-5xl mt-3 leading-[1.02] max-w-3xl">
               A Tuesday, running on the system.
             </h2>
-            <p className="font-body text-[15px] text-[#f6efe0]/70 mt-4 max-w-2xl leading-relaxed">
+            <p className="font-body text-[15px] text-[#fbf5ea]/70 mt-4 max-w-2xl leading-relaxed">
               You touched it twice: one sales call and one question to the board. Everything else happened because the stations were wired to each other.
             </p>
             <ol className="mt-12 grid md:grid-cols-2 gap-x-10 gap-y-0 relative">
               {A_DAY.map((d, i) => (
-                <li key={d.time} className="relative flex gap-5 py-5 border-b border-dashed border-[#f6efe0]/15">
-                  <div className="shrink-0 w-[52px] h-[52px] rounded-full bg-[#f5b700] border-2 border-[#f6efe0] text-[#14110c] font-mono font-extrabold text-[12px] flex items-center justify-center shadow-[3px_3px_0_0_#f6efe0]">
+                <li key={d.time} className="relative flex gap-5 py-5 border-b border-dashed border-[#fbf5ea]/15">
+                  <div className="shrink-0 w-[52px] h-[52px] rounded-full bg-[#f5b700] border-2 border-[#fbf5ea] text-[#0b3b44] font-mono font-extrabold text-[12px] flex items-center justify-center shadow-[3px_3px_0_0_#fbf5ea]">
                     {d.station}
                   </div>
                   <div>
                     <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-[#f5b700] font-bold">
-                      {d.time} <span className="text-[#f6efe0]/40">{`// ${STATIONS[i].verb}`}</span>
+                      {d.time} <span className="text-[#fbf5ea]/40">{`// ${STATIONS[i].verb}`}</span>
                     </p>
-                    <p className="font-body text-[15px] leading-relaxed text-[#f6efe0]/85 mt-1.5">{d.beat}</p>
+                    <p className="font-body text-[15px] leading-relaxed text-[#fbf5ea]/85 mt-1.5">{d.beat}</p>
                   </div>
                 </li>
               ))}
             </ol>
-            <p className="font-mono text-[10.5px] uppercase tracking-[0.18em] text-[#f6efe0]/45 mt-8">
+            <p className="font-mono text-[10.5px] uppercase tracking-[0.18em] text-[#fbf5ea]/45 mt-8">
               Illustrative day. Your stations, your trade, your clock.
             </p>
           </div>
@@ -253,10 +253,10 @@ export default function TheSystemPage() {
               <h2 className="font-display italic font-extrabold text-4xl md:text-5xl mt-3 leading-[1.02]">
                 One digital architect. One agentic engineer. Same person.
               </h2>
-              <p className="font-body text-[15px] text-[#14110c]/75 mt-5 leading-relaxed">
+              <p className="font-body text-[15px] text-[#0b3b44]/75 mt-5 leading-relaxed">
 Sarah Scarano, self-taught full-stack engineer and agentic systems architect, Kalispell, Montana. Forty plus shipped products and four ventures running on this exact system. The people who draw the blueprint are the people who pour the foundation and hand you the keys.
               </p>
-              <p className="font-body text-[15px] text-[#14110c]/75 mt-4 leading-relaxed">
+              <p className="font-body text-[15px] text-[#0b3b44]/75 mt-4 leading-relaxed">
                 Off-the-shelf software makes you bend your business around it. Custom infrastructure bends around you: your intake, your pricing, your crew, your customer. That is the difference between a tool you rent and an asset you own.
               </p>
               <ul className="mt-6 space-y-2.5">
@@ -267,14 +267,14 @@ Sarah Scarano, self-taught full-stack engineer and agentic systems architect, Ka
                   'Changes included. No change orders, ever',
                 ].map((line) => (
                   <li key={line} className="flex items-start gap-3 font-sans font-semibold text-[14.5px]">
-                    <span className="shrink-0 mt-0.5 w-5 h-5 rounded-full bg-[#f5b700] border-2 border-[#14110c] text-[10px] flex items-center justify-center font-bold">✓</span>
+                    <span className="shrink-0 mt-0.5 w-5 h-5 rounded-full bg-[#f5b700] border-2 border-[#0b3b44] text-[10px] flex items-center justify-center font-bold">✓</span>
                     {line}
                   </li>
                 ))}
               </ul>
               <Link
                 href="/about"
-                className="inline-block mt-7 px-5 py-2.5 text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#14110c] bg-white rounded-full border-2 border-[#14110c] shadow-[3px_3px_0_0_#14110c] hover:-translate-y-0.5 transition-all"
+                className="inline-block mt-7 px-5 py-2.5 text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0b3b44] bg-white rounded-full border-2 border-[#0b3b44] shadow-[3px_3px_0_0_#0b3b44] hover:-translate-y-0.5 transition-all"
               >
                 Meet the architect →
               </Link>
@@ -282,25 +282,25 @@ Sarah Scarano, self-taught full-stack engineer and agentic systems architect, Ka
 
             {/* Blueprint card */}
             <div className="relative">
-              <span className="absolute -top-4 left-6 z-10 inline-block bg-[#14110c] text-[#f6efe0] font-mono font-bold text-[10px] uppercase tracking-[0.25em] px-3 py-1.5 rounded-full border-2 border-[#14110c] shadow-[3px_3px_0_0_#14110c] -rotate-2">
+              <span className="absolute -top-4 left-6 z-10 inline-block bg-[#0b3b44] text-[#fbf5ea] font-mono font-bold text-[10px] uppercase tracking-[0.25em] px-3 py-1.5 rounded-full border-2 border-[#0b3b44] shadow-[3px_3px_0_0_#0b3b44] -rotate-2">
                 Blueprint // Standard stack
               </span>
               <div className="pop-card-cream p-7 md:p-8">
-                <div className="flex items-baseline justify-between border-b-2 border-[#14110c] pb-3">
+                <div className="flex items-baseline justify-between border-b-2 border-[#0b3b44] pb-3">
                   <span className="font-display italic font-extrabold text-2xl">Spec sheet</span>
-                  <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#14110c]/60">Rev. 2026</span>
+                  <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#0b3b44]/60">Rev. 2026</span>
                 </div>
-                <dl className="mt-4 divide-y divide-dashed divide-[#14110c]/20">
+                <dl className="mt-4 divide-y divide-dashed divide-[#0b3b44]/20">
                   {ARCHITECT_SPEC.map(([k, v]) => (
                     <div key={k} className="grid grid-cols-[110px_1fr] gap-4 py-3">
                       <dt className="font-mono text-[10.5px] uppercase tracking-[0.2em] font-bold pt-0.5" style={{ color: RED }}>
                         {k}
                       </dt>
-                      <dd className="font-sans text-[14px] font-semibold text-[#14110c]">{v}</dd>
+                      <dd className="font-sans text-[14px] font-semibold text-[#0b3b44]">{v}</dd>
                     </div>
                   ))}
                 </dl>
-                <p className="font-body text-[12.5px] text-[#14110c]/60 mt-4 leading-relaxed">
+                <p className="font-body text-[12.5px] text-[#0b3b44]/60 mt-4 leading-relaxed">
                   Swapped for your existing tools when you already have them. The standard is a default, not a lock-in.
                 </p>
               </div>
@@ -309,7 +309,7 @@ Sarah Scarano, self-taught full-stack engineer and agentic systems architect, Ka
         </section>
 
         {/* ── The offer ── */}
-        <section id="offer" className="bg-[#f5b700] border-y-2 border-[#14110c]">
+        <section id="offer" className="bg-[#f5b700] border-y-2 border-[#0b3b44]">
           <div className="max-w-6xl mx-auto px-6 py-16 lg:py-24">
             <p className="font-mono font-bold text-[11px] tracking-[0.18em] uppercase" style={{ color: RED }}>
               The offer // See it built before you pay for it
@@ -317,22 +317,22 @@ Sarah Scarano, self-taught full-stack engineer and agentic systems architect, Ka
             <h2 className="font-display italic font-extrabold text-4xl md:text-5xl mt-3 leading-[1.02] max-w-3xl">
               Start at any station. The loop is one system, however you enter it.
             </h2>
-            <p className="font-body text-[15px] text-[#14110c]/75 mt-4 max-w-2xl leading-relaxed">
+            <p className="font-body text-[15px] text-[#0b3b44]/75 mt-4 max-w-2xl leading-relaxed">
               We build your demo first, for your trade, with your name on it. You see the loop running before a card is on the table. Then you pick the door.
             </p>
             <div className="grid lg:grid-cols-3 gap-6 mt-12 items-stretch">
               {DOORS.map((d) => (
-                <div key={d.name} className={`${d.tone === 'yellow' ? 'bg-[#14110c] text-[#f6efe0]' : 'bg-white text-[#14110c]'} border-2 border-[#14110c] rounded-2xl shadow-[6px_6px_0_0_#14110c] p-7 flex flex-col`}>
+                <div key={d.name} className={`${d.tone === 'yellow' ? 'bg-[#0b3b44] text-[#fbf5ea]' : 'bg-white text-[#0b3b44]'} border-2 border-[#0b3b44] rounded-2xl shadow-[6px_6px_0_0_#0b3b44] p-7 flex flex-col`}>
                   <span className={`font-mono text-[10px] uppercase tracking-[0.25em] font-bold ${d.tone === 'yellow' ? 'text-[#f5b700]' : ''}`} style={d.tone === 'yellow' ? undefined : { color: RED }}>
                     {d.eyebrow}
                   </span>
                   <h3 className="font-display font-extrabold text-3xl mt-3 leading-tight">{d.name}</h3>
                   <p className={`font-mono font-bold text-[13px] mt-2 ${d.tone === 'yellow' ? 'text-[#f5b700]' : 'text-[#8f6600]'}`}>{d.price}</p>
-                  <p className={`font-body text-[14.5px] leading-relaxed mt-4 ${d.tone === 'yellow' ? 'text-[#f6efe0]/80' : 'text-[#14110c]/75'}`}>{d.body}</p>
+                  <p className={`font-body text-[14.5px] leading-relaxed mt-4 ${d.tone === 'yellow' ? 'text-[#fbf5ea]/80' : 'text-[#0b3b44]/75'}`}>{d.body}</p>
                   <Link
                     href={d.href}
-                    className={`mt-auto pt-6 inline-flex self-start items-center gap-2 rounded-full px-6 py-3.5 font-sans font-bold uppercase tracking-[0.14em] text-[11px] border-2 border-[#14110c] hover:-translate-y-0.5 transition-transform ${
-                      d.tone === 'yellow' ? 'bg-[#f5b700] text-[#14110c] shadow-[4px_4px_0_0_#f6efe0]' : 'bg-[#14110c] text-[#f6efe0] shadow-[4px_4px_0_0_#f5b700]'
+                    className={`mt-auto pt-6 inline-flex self-start items-center gap-2 rounded-full px-6 py-3.5 font-sans font-bold uppercase tracking-[0.14em] text-[11px] border-2 border-[#0b3b44] hover:-translate-y-0.5 transition-transform ${
+                      d.tone === 'yellow' ? 'bg-[#f5b700] text-[#0b3b44] shadow-[4px_4px_0_0_#fbf5ea]' : 'bg-[#0b3b44] text-[#fbf5ea] shadow-[4px_4px_0_0_#f5b700]'
                     }`}
                     style={{ marginTop: 'auto' }}
                   >
@@ -347,9 +347,9 @@ Sarah Scarano, self-taught full-stack engineer and agentic systems architect, Ka
                 ['Changes are included', 'Adjust, refine, rework what we built. No change orders.'],
                 ['Yours on launch day', 'Repo, deploys, number, docs, keys. Stewardship, not extraction.'],
               ].map(([t, b]) => (
-                <div key={t} className="bg-[#f6efe0] border-2 border-[#14110c] rounded-xl p-4 shadow-[4px_4px_0_0_#14110c]">
+                <div key={t} className="bg-[#fbf5ea] border-2 border-[#0b3b44] rounded-xl p-4 shadow-[4px_4px_0_0_#0b3b44]">
                   <p className="font-sans font-extrabold text-[14px]">{t}</p>
-                  <p className="font-body text-[13px] text-[#14110c]/70 mt-1">{b}</p>
+                  <p className="font-body text-[13px] text-[#0b3b44]/70 mt-1">{b}</p>
                 </div>
               ))}
             </div>
@@ -367,11 +367,11 @@ Sarah Scarano, self-taught full-stack engineer and agentic systems architect, Ka
               <details key={f.q} className="group pop-card px-6 py-5 open:bg-[#FFFDF6]">
                 <summary className="cursor-pointer list-none flex items-center justify-between gap-4 font-display font-extrabold text-lg md:text-xl">
                   {f.q}
-                  <span className="shrink-0 w-8 h-8 rounded-full bg-[#f5b700] border-2 border-[#14110c] flex items-center justify-center font-bold text-sm transition-transform group-open:rotate-45" aria-hidden="true">
+                  <span className="shrink-0 w-8 h-8 rounded-full bg-[#f5b700] border-2 border-[#0b3b44] flex items-center justify-center font-bold text-sm transition-transform group-open:rotate-45" aria-hidden="true">
                     +
                   </span>
                 </summary>
-                <p className="font-body text-[15px] leading-relaxed text-[#14110c]/75 mt-4">{f.a}</p>
+                <p className="font-body text-[15px] leading-relaxed text-[#0b3b44]/75 mt-4">{f.a}</p>
               </details>
             ))}
           </div>
@@ -386,7 +386,7 @@ Sarah Scarano, self-taught full-stack engineer and agentic systems architect, Ka
             <h2 className="font-display italic font-extrabold text-4xl md:text-5xl mt-3 leading-[1.02]">
               Hear station 03 for yourself.
             </h2>
-            <p className="font-body text-[15px] text-[#14110c]/70 mt-4 max-w-xl mx-auto leading-relaxed">
+            <p className="font-body text-[15px] text-[#0b3b44]/70 mt-4 max-w-xl mx-auto leading-relaxed">
               Mr. Mustard runs this exact system for the studio. Talk to him, ask him anything about the loop, and let him book the call.
             </p>
           </div>

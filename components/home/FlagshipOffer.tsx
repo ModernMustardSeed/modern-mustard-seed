@@ -42,16 +42,16 @@ const priceLine = (key: 'voice' | 'site') => {
 
 export default function FlagshipOffer() {
   return (
-    <section className="relative bg-[#f6efe0] py-20 md:py-28 overflow-hidden">
+    <section className="relative bg-[#fbf5ea] py-20 md:py-28 overflow-hidden">
       <div aria-hidden="true" className="absolute inset-0 halftone-bg opacity-50 pointer-events-none" />
       <div className="relative max-w-6xl mx-auto px-6">
         <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#C4160B] uppercase">
           Our flagship // Built free before you pay a cent
         </p>
-        <h2 className="font-display italic font-extrabold text-4xl md:text-6xl text-[#14110c] mt-3 leading-[1.02] max-w-3xl">
+        <h2 className="font-display italic font-extrabold text-4xl md:text-6xl text-[#0b3b44] mt-3 leading-[1.02] max-w-3xl">
           A voice agent and a website,<br />built off one brain.
         </h2>
-        <p className="font-body text-[15px] md:text-[17px] text-[#14110c]/75 mt-5 max-w-2xl leading-relaxed">
+        <p className="font-body text-[15px] md:text-[17px] text-[#0b3b44]/75 mt-5 max-w-2xl leading-relaxed">
           Tell us your business and we build both, free, in about a minute. Keep what you love. Take the website
           and the voice agent together and they are built as one thing, for less than the two apart.
         </p>
@@ -59,26 +59,26 @@ export default function FlagshipOffer() {
         <div className="grid md:grid-cols-2 gap-6 mt-12 items-stretch">
           {PIECES.map((c) => {
             const inkCard = c.tone === 'ink';
-            const bodyColor = inkCard ? 'text-[#f6efe0]/75' : 'text-[#14110c]/75';
+            const bodyColor = inkCard ? 'text-[#fbf5ea]/75' : 'text-[#0b3b44]/75';
             return (
               <div
                 key={c.key}
-                className={`relative flex flex-col border-2 border-[#14110c] p-7 transition-transform hover:-translate-y-1 ${
+                className={`relative flex flex-col border-2 border-[#0b3b44] p-7 transition-transform hover:-translate-y-1 ${
                   inkCard
-                    ? 'bg-[#14110c] shadow-[6px_6px_0_0_#f5b700]'
-                    : 'bg-[#f5b700] shadow-[6px_6px_0_0_#14110c]'
+                    ? 'bg-[#0b3b44] shadow-[6px_6px_0_0_#f5b700]'
+                    : 'bg-[#f5b700] shadow-[6px_6px_0_0_#0b3b44]'
                 }`}
               >
                 <span className="text-3xl leading-none" aria-hidden>{c.icon}</span>
-                <h3 className={`font-display italic font-extrabold text-2xl mt-3 ${inkCard ? 'text-[#f6efe0]' : 'text-[#14110c]'}`}>
+                <h3 className={`font-display italic font-extrabold text-2xl mt-3 ${inkCard ? 'text-[#fbf5ea]' : 'text-[#0b3b44]'}`}>
                   {c.name}
                 </h3>
                 <p className={`font-body text-[14px] mt-3 leading-relaxed ${bodyColor}`}>{c.desc}</p>
 
                 {/* Price pill pinned to a common baseline (mt-auto). */}
                 <div className="mt-auto pt-6">
-                  <p className={`font-mono text-[13px] font-bold ${inkCard ? 'text-[#f5b700]' : 'text-[#14110c]'}`}>
-                    <span className={`block text-[10px] uppercase tracking-[0.14em] ${inkCard ? 'text-[#f6efe0]/50' : 'text-[#14110c]/55'}`}>
+                  <p className={`font-mono text-[13px] font-bold ${inkCard ? 'text-[#f5b700]' : 'text-[#0b3b44]'}`}>
+                    <span className={`block text-[10px] uppercase tracking-[0.14em] ${inkCard ? 'text-[#fbf5ea]/50' : 'text-[#0b3b44]/55'}`}>
                       Free demo, then
                     </span>
                     {priceLine(c.key)}
@@ -90,15 +90,15 @@ export default function FlagshipOffer() {
         </div>
 
         {/* Whole-system callout + the build CTA. */}
-        <div className="mt-8 border-2 border-[#14110c] bg-white shadow-[6px_6px_0_0_#14110c] p-7 md:p-8 md:flex md:items-center md:justify-between gap-8">
+        <div className="mt-8 border-2 border-[#0b3b44] bg-white shadow-[6px_6px_0_0_#0b3b44] p-7 md:p-8 md:flex md:items-center md:justify-between gap-8">
           <div className="md:flex-1">
             <span className="font-mono font-bold text-[10px] uppercase tracking-[0.3em] text-[#C4160B] block">
               The first of its kind
             </span>
-            <h3 className="font-display italic font-extrabold text-2xl md:text-3xl text-[#14110c] mt-2">
+            <h3 className="font-display italic font-extrabold text-2xl md:text-3xl text-[#0b3b44] mt-2">
               {DEMO_BUNDLE.name}: a website that answers its own phone
             </h3>
-            <p className="font-body text-[14px] text-[#14110c]/75 mt-2 leading-relaxed max-w-xl">
+            <p className="font-body text-[14px] text-[#0b3b44]/75 mt-2 leading-relaxed max-w-xl">
               Your site and your voice agent built as one thing, off one brain, so the answer a
               visitor reads is the answer a caller hears. From {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo +{' '}
               {formatUsd(DEMO_BUNDLE.setupCents)} setup, in three sizes: 5, 20, or 50 pages. That is{' '}
@@ -117,13 +117,13 @@ export default function FlagshipOffer() {
           <div className="mt-6 md:mt-0 flex flex-col gap-3 shrink-0">
             <Link
               href="/demos"
-              className="text-center px-8 py-4 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#14110c] bg-[#f5b700] rounded-full border-2 border-[#14110c] shadow-[4px_4px_0_0_#14110c] hover:-translate-y-0.5 transition-all"
+              className="text-center px-8 py-4 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0b3b44] bg-[#f5b700] rounded-full border-2 border-[#0b3b44] shadow-[4px_4px_0_0_#0b3b44] hover:-translate-y-0.5 transition-all"
             >
               Build my demos, free →
             </Link>
             <Link
               href="/book"
-              className="text-center px-8 py-4 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#14110c] bg-white rounded-full border-2 border-[#14110c] shadow-[4px_4px_0_0_rgba(20,17,12,0.25)] hover:-translate-y-0.5 transition-all"
+              className="text-center px-8 py-4 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0b3b44] bg-white rounded-full border-2 border-[#0b3b44] shadow-[4px_4px_0_0_rgba(11,59,68,0.25)] hover:-translate-y-0.5 transition-all"
             >
               Book a free call
             </Link>

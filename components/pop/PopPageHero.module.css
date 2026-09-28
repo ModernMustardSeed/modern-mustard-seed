@@ -1,112 +1,120 @@
-/* The Mustard Building page hero. Black lacquer, ivory, champagne, gold
-   leaf, oxblood and emerald. Display type in Limelight, the accent word in
-   Playfair italic, labels in Josefin Sans capitals; no outlined or stroked
-   type, no blue. Motion is the entrance and the ticker only, all of it off
-   under prefers-reduced-motion. The panel stays light: pages hand in their
-   own lead and note colors, which are set for ivory. */
+/* The Riviera page hero. Sand, deep sea, Tiffany blue, lagoon, mustard and
+   coral. Display type in Bodoni Moda with the italic accent, labels and
+   reading type in Instrument Sans; no outlined or stroked type, no cobalt.
+   Motion is the entrance and the ticker only, all of it off under
+   prefers-reduced-motion. The card stays light: pages hand in their own lead
+   and note colors, which are set for sand. */
 
 .hero {
-  --ink: #14110c;
-  --ivory: #f6efe0;
-  --panel: #f1e7d0;
-  --gold: #f5b700;
-  --gilt: #d9a300;
-  --champagne: #f3dc9b;
-  --oxblood: #8f1d22;
-  --emerald: #0f4a3c;
-  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .25 0 0 0 0 .08 0 0 0 .4 -.14'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  --step: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 30'%3E%3Cpath d='M0 0H60V12H52V18H44V24H16V18H8V12H0Z'/%3E%3C/svg%3E");
+  --ink: #0b3b44;
+  --sand: #fbf5ea;
+  --card: #fffaf1;
+  --tiffany: #81d8d0;
+  --lagoon: #0a7c78;
+  --mustard: #f5b700;
+  --coral: #ff6f59;
+  --wave: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 8'%3E%3Cpath d='M0 4c5 0 5-3 10-3s5 3 10 3 5-3 10-3 5 3 10 3' fill='none' stroke='%2381d8d0' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E");
   position: relative;
   isolation: isolate;
   overflow-x: clip;
   padding: 112px 6vw 0;
   background: transparent;
   color: var(--ink);
-  font-family: var(--font-body), sans-serif;
+  font-family: var(--font-caps), sans-serif;
 }
 
-/* ---------- The panel: an ivory lobby wall in a double gilt frame ---------- */
+/* ---------- The card, under its awning ---------- */
 .panel {
   position: relative;
   max-width: 1280px;
-  margin: 0 auto 60px;
+  margin: 0 auto 70px;
   display: grid;
   grid-template-columns: minmax(0, 1.02fr) minmax(0, .98fr);
-  gap: 52px;
+  gap: 56px;
   align-items: center;
-  padding: 84px 56px 64px;
-  background-color: var(--panel);
-  background-image: var(--grain);
-  border: 1px solid var(--ink);
-  box-shadow: inset 0 0 0 8px var(--panel), inset 0 0 0 9px var(--gilt), inset 0 0 0 13px var(--panel), inset 0 0 0 14px #d9a30066, 0 30px 60px -36px #14110c80;
+  padding: 104px 60px 64px;
+  background: var(--card);
+  border-radius: 34px;
+  box-shadow: 0 40px 80px -48px #0b3b4480, 0 0 0 1px #0b3b4410;
   animation: panelIn .8s cubic-bezier(.2, .8, .2, 1) both;
 }
 @keyframes panelIn { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
 
-/* The stepped cornice across the top edge. */
+/* The striped awning across the top of the card, its scalloped edge hanging over. */
 .cornice {
   position: absolute;
   z-index: 1;
   top: 0;
   left: 0;
   right: 0;
-  height: 22px;
-  background: var(--ink);
-  -webkit-mask: linear-gradient(#000 0 0) 0 0/100% 38% no-repeat,var(--step) 0 0 / 48px 100% repeat-x;
-  mask: linear-gradient(#000 0 0) 0 0/100% 38% no-repeat,var(--step) 0 0 / 48px 100% repeat-x;
+  height: 38px;
+  border-radius: 34px 34px 0 0;
+  background: repeating-linear-gradient(90deg, var(--tiffany) 0 40px, #fff 40px 80px);
   pointer-events: none;
 }
+.cornice::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  height: 16px;
+  background: repeating-linear-gradient(90deg, var(--tiffany) 0 40px, #fff 40px 80px);
+  -webkit-mask: radial-gradient(circle at 20px 0, #000 19.5px, transparent 20px) 0 0 / 40px 16px repeat-x;
+  mask: radial-gradient(circle at 20px 0, #000 19.5px, transparent 20px) 0 0 / 40px 16px repeat-x;
+  filter: drop-shadow(0 4px 3px #0b3b4414);
+}
 
-.ground { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.ground { position: absolute; inset: 0; overflow: hidden; border-radius: 34px; pointer-events: none; }
 .ground i { position: absolute; display: block; }
-/* A champagne sunburst rising behind the painting. */
+/* A low sun rising behind the postcard. */
 .bloom {
-  right: -12%;
-  bottom: -30%;
-  width: 78%;
+  right: -8%;
+  bottom: -36%;
+  width: 64%;
   aspect-ratio: 1;
-  background: repeating-conic-gradient(from 0deg, #f5b70038 0 5deg, transparent 5deg 12deg);
-  -webkit-mask-image: radial-gradient(circle, #000 0, #000 30%, transparent 68%);
-  mask-image: radial-gradient(circle, #000 0, #000 30%, transparent 68%);
+  border-radius: 50%;
+  background: radial-gradient(circle, #f5b70040 0, #f5b70018 36%, transparent 64%);
 }
-/* A Deco fan in the lower-left corner. */
+/* A line of waves along the bottom of the card. */
 .splat {
-  left: 14px;
-  bottom: 14px;
-  width: 120px;
-  height: 60px;
-  background: repeating-conic-gradient(from -90deg at 0 100%, #d9a30066 0 6deg, transparent 6deg 15deg);
-  -webkit-mask-image: radial-gradient(circle at 0 100%, #000 0 58px, transparent 59px);
-  mask-image: radial-gradient(circle at 0 100%, #000 0 58px, transparent 59px);
+  left: 0;
+  right: 0;
+  bottom: 22px;
+  height: 10px;
+  background: var(--wave) 0 50% / 22px 10px repeat-x;
+  opacity: .8;
 }
 
-/* The brass floor plaque. */
+/* The luggage tag. */
 .issue {
   position: absolute;
   z-index: 3;
-  top: 38px;
-  left: 34px;
+  top: 66px;
+  left: 40px;
   margin: 0;
   display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 10px 16px 11px;
+  align-items: baseline;
+  gap: 12px;
+  padding: 9px 18px 9px 30px;
   background: var(--ink);
-  color: var(--champagne);
-  box-shadow: inset 0 0 0 3px var(--ink), inset 0 0 0 4px var(--gold);
+  color: #fff;
+  border-radius: 8px 999px 999px 8px;
   animation: dropIn .6s .45s cubic-bezier(.3, 1.3, .5, 1) both;
 }
-.issue b { font-family: var(--font-deco), Georgia, serif; font-weight: 400; font-size: 32px; line-height: .95; color: var(--gold); }
-.issue span { font-family: var(--font-caps), sans-serif; font-size: 9.5px; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; }
-@keyframes dropIn { from { opacity: 0; transform: translateY(-18px); } to { opacity: 1; transform: none; } }
+.issue::before { content: ''; position: absolute; left: 11px; top: 50%; width: 9px; height: 9px; margin-top: -4.5px; border-radius: 50%; background: var(--card); }
+.issue b { font-family: var(--font-riviera), Georgia, serif; font-style: italic; font-weight: 500; font-size: 26px; line-height: 1; color: var(--mustard); }
+.issue span { font-family: var(--font-caps), sans-serif; font-size: 10px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; }
+.issue span + span::before { content: '· '; color: var(--tiffany); }
+@keyframes dropIn { from { opacity: 0; transform: translateY(-14px); } to { opacity: 1; transform: none; } }
 
-/* With a plaque on the wall, the copy starts under it. */
-.withIssue .panel { padding-top: 140px; }
+/* With a tag on the card, the copy starts under it. */
+.withIssue .panel { padding-top: 150px; }
 
 /* ---------- The copy: the page's own words, dressed ---------- */
 .copy { position: relative; z-index: 2; min-width: 0; }
 .eyebrow { margin-bottom: 24px; }
-/* The eyebrow: tracked capitals, a gold diamond and a hairline. */
+/* The eyebrow: tracked capitals after a little sun, a wave behind. */
 .pill,
 .eyebrow > span:only-child,
 .eyebrow > p:only-child {
@@ -117,13 +125,13 @@
   margin: 0;
   padding: 0;
   background: none;
-  color: var(--oxblood);
+  color: var(--lagoon);
   box-shadow: none;
   font-family: var(--font-caps), sans-serif;
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 600;
   line-height: 1.3;
-  letter-spacing: .24em;
+  letter-spacing: .22em;
   text-transform: uppercase;
   font-synthesis: none;
   transform: none;
@@ -133,10 +141,11 @@
 .eyebrow > p:only-child::before {
   content: '';
   flex: none;
-  width: 8px;
-  height: 8px;
-  background: var(--gold);
-  transform: rotate(45deg);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--mustard);
+  box-shadow: 0 0 0 3px #f5b70030;
 }
 .pill::after,
 .eyebrow > span:only-child::after,
@@ -144,8 +153,8 @@
   content: '';
   flex: none;
   width: 34px;
-  height: 1px;
-  background: linear-gradient(90deg, var(--gold), transparent);
+  height: 8px;
+  background: var(--wave) 0 50% / 17px 8px repeat-x;
 }
 .eyebrow:has(.back) { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 18px; }
 .back {
@@ -155,138 +164,143 @@
   font-family: var(--font-caps), sans-serif;
   font-size: 13px;
   font-weight: 600;
-  letter-spacing: .2em;
+  letter-spacing: .14em;
   text-transform: uppercase;
   color: var(--ink);
-  border-bottom: 1px solid var(--gilt);
+  border-bottom: 2px solid var(--tiffany);
   line-height: 1;
   font-synthesis: none;
 }
-.back:hover { color: var(--oxblood); border-color: var(--oxblood); }
+.back:hover { color: var(--lagoon); }
 /* Beats the editorial [data-studio-page] h1 rule so every page sets the same.
-   Face and the accent come from app/deco-type.css. */
+   The accent comes from app/riviera-type.css. */
 .hero .h1 {
   margin: 0;
-  font-family: var(--font-deco), Georgia, serif;
-  font-weight: 400;
-  font-size: clamp(2.8rem, 5.2vw, 5.1rem);
-  line-height: 1.03;
-  letter-spacing: 0;
+  font-family: var(--font-riviera), 'Bodoni Moda', Georgia, serif;
+  font-weight: 500;
+  font-size: clamp(3rem, 5.6vw, 5.6rem);
+  line-height: .98;
+  letter-spacing: -.035em;
   text-transform: none;
   color: var(--ink);
   text-wrap: balance;
+  font-optical-sizing: auto;
 }
 .lead,
 .copy > p {
-  margin: 22px 0 0;
+  margin: 24px 0 0;
   max-width: 36rem;
   font-size: 18px;
-  line-height: 1.64;
-  font-weight: 500;
-  color: #3b342b;
+  line-height: 1.65;
+  font-weight: 450;
+  color: #2c4c52;
 }
 .copy > p + p { margin-top: 14px; }
-.note { font-size: 15px !important; color: #555049 !important; }
-.actions { margin-top: 32px; display: flex; flex-wrap: wrap; gap: 16px 18px; }
+.note { font-size: 15px !important; color: #4c6266 !important; }
+.actions { margin-top: 34px; display: flex; flex-wrap: wrap; gap: 14px 16px; }
 .cta,
 .ctaAlt {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 16px;
+  gap: 14px;
   min-height: 56px;
-  padding: 0 26px;
+  padding: 0 28px;
   border: 0;
-  border-radius: 0;
+  border-radius: 999px;
   font-family: var(--font-caps), sans-serif;
-  font-size: 13.5px;
-  font-weight: 700;
-  letter-spacing: .14em;
-  text-transform: uppercase;
-  transition: transform .2s, box-shadow .2s, filter .2s;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: .01em;
+  text-transform: none;
+  transition: transform .25s, box-shadow .25s, background .25s;
 }
-.cta { background: linear-gradient(180deg, #ffd24d, #f5b700 55%, #dc9f00); color: var(--ink); box-shadow: inset 0 0 0 3px var(--gold), inset 0 0 0 4px var(--ink), 0 10px 24px -10px #14110c99; }
-.cta span { color: var(--ink); }
-.ctaAlt { background: var(--ink); color: var(--ivory); box-shadow: inset 0 0 0 3px var(--ink), inset 0 0 0 4px #f5b700aa; }
-.ctaAlt span { color: var(--gold); }
-.cta:hover { transform: translateY(-2px); filter: brightness(1.06); }
-.ctaAlt:hover { transform: translateY(-2px); box-shadow: inset 0 0 0 3px var(--ink), inset 0 0 0 4px var(--gold), 0 10px 24px -10px #14110c99; }
+.cta { background: var(--ink); color: #fff; box-shadow: 0 14px 30px -14px #0b3b44cc; }
+.cta span { color: var(--mustard); }
+.ctaAlt { background: #fff; color: var(--ink); box-shadow: inset 0 0 0 1.5px #0b3b4433; }
+.ctaAlt span { color: var(--lagoon); }
+.cta:hover { transform: translateY(-2px); background: #0e4b56; }
+.ctaAlt:hover { transform: translateY(-2px); box-shadow: inset 0 0 0 2px var(--tiffany); }
 .cta:focus-visible,
-.ctaAlt:focus-visible { outline: 2px solid var(--oxblood); outline-offset: 4px; }
+.ctaAlt:focus-visible { outline: 2px solid var(--lagoon); outline-offset: 4px; }
 
-/* ---------- The painting: hung in a stepped gilt frame on an ink mat ---------- */
-.stage { position: relative; z-index: 1; padding: 20px 16px 26px; }
+/* ---------- The painting, on a postcard ---------- */
+.stage { position: relative; z-index: 1; padding: 22px 18px 30px; }
 .poster {
   position: relative;
   margin: 0;
-  animation: hangIn 1s .15s cubic-bezier(.2, .9, .3, 1) both;
+  rotate: 1.4deg;
+  animation: postIn 1s .15s cubic-bezier(.2, .9, .3, 1) both;
 }
 .paper {
-  --notch: 16px;
   position: relative;
-  padding: 12px;
-  background: var(--ink);
-  clip-path: polygon(var(--notch) 0, calc(100% - var(--notch)) 0, calc(100% - var(--notch)) 6px, calc(100% - 6px) 6px, calc(100% - 6px) var(--notch), 100% var(--notch), 100% calc(100% - var(--notch)), calc(100% - 6px) calc(100% - var(--notch)), calc(100% - 6px) calc(100% - 6px), calc(100% - var(--notch)) calc(100% - 6px), calc(100% - var(--notch)) 100%, var(--notch) 100%, var(--notch) calc(100% - 6px), 6px calc(100% - 6px), 6px calc(100% - var(--notch)), 0 calc(100% - var(--notch)), 0 var(--notch), 6px var(--notch), 6px 6px, var(--notch) 6px);
-  box-shadow: inset 0 0 0 8px var(--ink), inset 0 0 0 9px var(--gold), inset 0 0 0 11px var(--ink), inset 0 0 0 12px #f5b70066;
+  padding: 12px 12px 14px;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 40px 70px -40px #0b3b4499, 0 0 0 1px #0b3b4410;
 }
-.paper picture { display: block; position: relative; }
+.paper picture { display: block; position: relative; overflow: hidden; border-radius: 12px; }
 .posterImg { display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; }
 .posterCap {
-  padding: 12px 6px 2px;
+  padding: 12px 6px 0;
   text-align: center;
-  font-family: var(--font-accent), Georgia, serif;
+  font-family: var(--font-riviera), Georgia, serif;
   font-style: italic;
-  font-weight: 500;
+  font-weight: 400;
   font-size: 19px;
   line-height: 1.2;
-  color: var(--champagne);
+  color: var(--ink);
 }
-@keyframes hangIn { from { opacity: 0; transform: translateY(-14px) scale(.97); } to { opacity: 1; transform: none; } }
+@keyframes postIn { from { opacity: 0; transform: translateY(-14px) rotate(-3deg); } to { opacity: 1; transform: none; } }
 
-/* The brass medallion: a sunburst coin with its word. */
+/* The postage stamp: perforated edges, a word in the italic. */
 .sticker {
   position: absolute;
   z-index: 4;
-  top: -22px;
-  right: -14px;
+  top: -14px;
+  right: -8px;
   margin: 0;
   display: grid;
   place-items: center;
-  width: clamp(112px, 9.6vw, 142px);
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: radial-gradient(circle, #ffd24d 0 46%, transparent 47%), repeating-conic-gradient(from 0deg, #f5b700 0 7.5deg, #dc9f00 7.5deg 15deg);
-  box-shadow: 0 0 0 2px var(--ink), 0 0 0 5px var(--ivory), 0 0 0 6px var(--gilt), 0 14px 28px -10px #14110caa;
-  animation: coin .6s .8s cubic-bezier(.3, 1.5, .5, 1) both;
+  width: clamp(108px, 9vw, 132px);
+  aspect-ratio: 4 / 5;
+  padding: 10px;
+  background: var(--mustard);
+  -webkit-mask: radial-gradient(circle at 50% 50%, transparent 3.2px, #000 3.6px) -4px -4px / 9px 9px, linear-gradient(#000 0 0) 5px 5px / calc(100% - 10px) calc(100% - 10px) no-repeat;
+  mask: radial-gradient(circle at 50% 50%, transparent 3.2px, #000 3.6px) -4px -4px / 9px 9px, linear-gradient(#000 0 0) 5px 5px / calc(100% - 10px) calc(100% - 10px) no-repeat;
+  rotate: 6deg;
+  filter: drop-shadow(0 12px 14px #0b3b4440);
+  animation: stampIn .6s .8s cubic-bezier(.3, 1.5, .5, 1) both;
 }
+.sticker::before { content: ''; position: absolute; inset: 14px; border: 1.5px solid #0b3b4455; border-radius: 4px; }
 .sticker span {
-  max-width: 62%;
+  position: relative;
+  max-width: 80%;
   text-align: center;
-  font-family: var(--font-caps), sans-serif;
-  font-size: clamp(12px, 1vw, 14px);
-  font-weight: 700;
-  line-height: 1.15;
-  letter-spacing: .14em;
-  text-transform: uppercase;
+  font-family: var(--font-riviera), Georgia, serif;
+  font-style: italic;
+  font-size: clamp(17px, 1.5vw, 22px);
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: -.01em;
   color: var(--ink);
 }
-@keyframes coin { from { opacity: 0; transform: rotate(-90deg) scale(.4); } to { opacity: 1; transform: none; } }
+@keyframes stampIn { from { opacity: 0; transform: scale(1.6) rotate(-10deg); } to { opacity: 1; transform: none; } }
 
-/* Mr. Mustard's line, on an ivory calling card over the frame's top corner,
-   clear of the caption along the bottom. */
+/* Mr. Mustard's line, in a speech bubble over the postcard's top corner. */
 .bubble {
   position: absolute;
   z-index: 4;
-  left: -26px;
-  top: 30px;
+  left: -18px;
+  top: 34px;
   width: max-content;
   max-width: 240px;
-  padding: 10px 16px 11px;
-  background: var(--ivory);
+  padding: 11px 18px 12px;
+  background: #fff;
   color: var(--ink);
-  border: 1px solid var(--ink);
-  box-shadow: inset 0 0 0 3px var(--ivory), inset 0 0 0 4px var(--gilt), 0 10px 22px -10px #14110c99;
-  font-family: var(--font-accent), Georgia, serif;
+  border-radius: 20px 20px 20px 6px;
+  box-shadow: 0 16px 30px -16px #0b3b44aa, 0 0 0 1px #0b3b4412;
+  font-family: var(--font-riviera), Georgia, serif;
   font-style: italic;
   font-weight: 500;
   font-size: 18px;
@@ -295,69 +309,82 @@
 }
 @keyframes fade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
 
-/* ---------- Ticker tape ---------- */
+/* ---------- The awning ticker ---------- */
 .banner {
   position: relative;
   z-index: 2;
-  margin: 0 -6vw 24px;
+  margin: 0 -6vw 40px;
+  padding-bottom: 12px;
+  background: repeating-linear-gradient(90deg, var(--tiffany) 0 40px, #fff 40px 80px);
 }
-.stripAlone { margin: 18px 0 30px; }
+.banner::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  height: 14px;
+  background: repeating-linear-gradient(90deg, var(--tiffany) 0 40px, #fff 40px 80px);
+  -webkit-mask: radial-gradient(circle at 20px 0, #000 19.5px, transparent 20px) 0 0 / 40px 14px repeat-x;
+  mask: radial-gradient(circle at 20px 0, #000 19.5px, transparent 20px) 0 0 / 40px 14px repeat-x;
+}
+.stripAlone { margin: 18px 0 44px; }
 .marquee {
   position: relative;
   background: var(--ink);
-  color: var(--ivory);
+  color: var(--sand);
   overflow: hidden;
   white-space: nowrap;
-  border-block: 1px solid var(--gold);
-  box-shadow: inset 0 3px 0 -1px var(--ink), inset 0 4px 0 -1px #f5b70066, inset 0 -3px 0 -1px var(--ink), inset 0 -4px 0 -1px #f5b70066;
 }
-.marquee > div { display: inline-flex; animation: slide 44s linear infinite; }
+.marquee > div { display: inline-flex; animation: slide 46s linear infinite; }
 .mRun { display: inline-flex; }
 .mItem {
   display: inline-flex;
   align-items: center;
   gap: 24px;
-  padding: 15px 24px 13px 0;
-  font-family: var(--font-caps), sans-serif;
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: .24em;
-  text-transform: uppercase;
+  padding: 14px 24px 13px 0;
+  font-family: var(--font-riviera), Georgia, serif;
+  font-style: italic;
+  font-size: 20px;
+  font-weight: 400;
+  letter-spacing: -.005em;
 }
-.mItem i { font-style: normal; font-size: 10px; color: var(--gold); }
+.mItem i { display: block; width: 7px; height: 7px; border-radius: 50%; background: var(--mustard); }
 @keyframes slide { to { transform: translateX(-50%); } }
 
-/* ---------- Tablet: the painting hangs under the copy ---------- */
+/* ---------- Tablet: the postcard sits under the copy ---------- */
 @media (max-width: 1023px) {
-  .panel { grid-template-columns: minmax(0, 1fr); gap: 40px; padding: 76px 40px 52px; }
+  .panel { grid-template-columns: minmax(0, 1fr); gap: 40px; padding: 96px 40px 56px; }
   .stage { max-width: 640px; width: 100%; justify-self: center; }
 }
 
 /* ---------- Phone ---------- */
 @media (max-width: 760px) {
   .hero { padding: 92px 16px 0; }
-  .panel { gap: 30px; padding: 60px 22px 34px; margin-bottom: 40px; box-shadow: inset 0 0 0 6px var(--panel), inset 0 0 0 7px var(--gilt), 0 24px 44px -30px #14110c80; }
-  .cornice { height: 16px; -webkit-mask-size: 100% 38%, 34px 100%; mask-size: 100% 38%, 34px 100%; }
-  .splat { display: none; }
-  .issue { top: 30px; left: 18px; padding: 8px 12px 9px; }
-  .withIssue .panel { padding-top: 118px; }
-  .issue b { font-size: 25px; }
-  .issue span { font-size: 8.5px; }
+  .panel { gap: 30px; padding: 80px 22px 44px; margin-bottom: 52px; border-radius: 26px; }
+  .cornice { height: 28px; border-radius: 26px 26px 0 0; background-size: auto; background: repeating-linear-gradient(90deg, var(--tiffany) 0 28px, #fff 28px 56px); }
+  .cornice::after { height: 12px; background: repeating-linear-gradient(90deg, var(--tiffany) 0 28px, #fff 28px 56px); -webkit-mask: radial-gradient(circle at 14px 0, #000 13.5px, transparent 14px) 0 0 / 28px 12px repeat-x; mask: radial-gradient(circle at 14px 0, #000 13.5px, transparent 14px) 0 0 / 28px 12px repeat-x; }
+  .ground { border-radius: 26px; }
+  .issue { top: 54px; left: 18px; padding: 7px 14px 7px 26px; }
+  .withIssue .panel { padding-top: 124px; }
+  .issue b { font-size: 21px; }
+  .issue span { font-size: 9px; }
   .eyebrow { margin-bottom: 18px; }
-  .pill, .eyebrow > span:only-child, .eyebrow > p:only-child { font-size: 11.5px; letter-spacing: .18em; }
-  .hero .h1 { font-size: clamp(2.4rem, 11vw, 3.3rem); line-height: 1.05; }
+  .pill, .eyebrow > span:only-child, .eyebrow > p:only-child { font-size: 11.5px; letter-spacing: .16em; }
+  .hero .h1 { font-size: clamp(2.6rem, 12vw, 3.6rem); line-height: 1; }
   .lead, .copy > p { font-size: 16.5px; }
   .actions { flex-direction: column; align-items: stretch; }
-  .cta, .ctaAlt { justify-content: space-between; padding: 0 20px; font-size: 12.5px; }
+  .cta, .ctaAlt { justify-content: space-between; padding: 0 24px; }
   .stage { padding: 14px 4px 24px; }
-  .paper { --notch: 12px; padding: 9px; }
+  .paper { padding: 8px 8px 10px; border-radius: 16px; }
   .posterCap { font-size: 16px; }
-  .sticker { width: 96px; top: -18px; right: -4px; }
-  .sticker span { font-size: 10.5px; letter-spacing: .1em; }
+  .sticker { width: 92px; top: -12px; right: 0; }
+  .sticker span { font-size: 15px; }
   .bubble { font-size: 15px; max-width: 190px; left: -2px; top: 22px; }
-  .banner { margin: 0 -16px 20px; }
-  .stripAlone { margin: 14px 0 26px; }
-  .mItem { font-size: 12.5px; padding-block: 12px 10px; }
+  .banner { margin: 0 -16px 34px; background: repeating-linear-gradient(90deg, var(--tiffany) 0 28px, #fff 28px 56px); }
+  .banner::after { background: repeating-linear-gradient(90deg, var(--tiffany) 0 28px, #fff 28px 56px); -webkit-mask: radial-gradient(circle at 14px 0, #000 13.5px, transparent 14px) 0 0 / 28px 14px repeat-x; mask: radial-gradient(circle at 14px 0, #000 13.5px, transparent 14px) 0 0 / 28px 14px repeat-x; }
+  .stripAlone { margin: 14px 0 36px; }
+  .mItem { font-size: 17px; padding-block: 11px 10px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -48,20 +48,20 @@ function Dial({ p, phase, delay }: { p: (typeof SAMPLE.pillars)[number]; phase: 
   const v = useCountUp(p.score, mine);
   const color = COLOR(p.score);
   return (
-    <div className="min-w-0 rounded-2xl border-2 border-[#14110c] bg-white p-4">
+    <div className="min-w-0 rounded-2xl border-2 border-[#0b3b44] bg-white p-4">
       <div className="flex items-center justify-between gap-2">
-        <span className="truncate font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-[#14110c]/55">{p.label}</span>
-        <span className="shrink-0 font-mono text-[9px] uppercase tracking-[0.14em] text-[#14110c]/40">{p.weight}%</span>
+        <span className="truncate font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-[#0b3b44]/55">{p.label}</span>
+        <span className="shrink-0 font-mono text-[9px] uppercase tracking-[0.14em] text-[#0b3b44]/40">{p.weight}%</span>
       </div>
       <div className="mt-2 flex items-baseline gap-2">
         <span className="font-display text-4xl font-black leading-none tabular-nums" style={{ color }}>
           {v}
         </span>
-        <span className="rounded-md border-2 border-[#14110c] px-1.5 py-0.5 font-mono text-[11px] font-bold text-white" style={{ background: color }}>
+        <span className="rounded-md border-2 border-[#0b3b44] px-1.5 py-0.5 font-mono text-[11px] font-bold text-white" style={{ background: color }}>
           {p.letter}
         </span>
       </div>
-      <div className="mt-2.5 h-2.5 w-full overflow-hidden rounded-full border-2 border-[#14110c] bg-[#f6efe0]">
+      <div className="mt-2.5 h-2.5 w-full overflow-hidden rounded-full border-2 border-[#0b3b44] bg-[#fbf5ea]">
         <div
           className="h-full rounded-full transition-[width] duration-[1300ms] ease-out motion-reduce:transition-none"
           style={{ width: `${mine === 'armed' ? 0 : p.score}%`, background: color }}
@@ -102,23 +102,23 @@ export default function SampleScorecard() {
 
   return (
     <div ref={ref} className="relative">
-      <span className="absolute -top-4 left-6 z-10 rotate-[-4deg] rounded-full border-2 border-[#14110c] bg-[#14110c] px-4 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-white shadow-[3px_3px_0_0_#14110c]">
+      <span className="absolute -top-4 left-6 z-10 rotate-[-4deg] rounded-full border-2 border-[#0b3b44] bg-[#0b3b44] px-4 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-white shadow-[3px_3px_0_0_#0b3b44]">
         Sample report
       </span>
-      <div className="rounded-3xl border-2 border-[#14110c] bg-[#FFFDF6] p-5 shadow-[8px_8px_0_0_#14110c] md:p-7">
+      <div className="rounded-3xl border-2 border-[#0b3b44] bg-[#FFFDF6] p-5 shadow-[8px_8px_0_0_#0b3b44] md:p-7">
         {/* the headline number */}
-        <div className="rounded-2xl border-2 border-[#14110c] bg-[#f5b700] p-5 md:p-6">
-          <p className="font-mono text-[9px] font-bold uppercase tracking-[0.28em] text-[#14110c]/70">
+        <div className="rounded-2xl border-2 border-[#0b3b44] bg-[#f5b700] p-5 md:p-6">
+          <p className="font-mono text-[9px] font-bold uppercase tracking-[0.28em] text-[#0b3b44]/70">
             Online Presence Audit · {SAMPLE.business}
           </p>
           <div className="mt-2 flex flex-wrap items-end gap-x-4 gap-y-2">
-            <span className="font-display text-7xl font-black leading-[0.85] tabular-nums text-[#14110c] md:text-8xl">{overall}</span>
-            <span className="mb-1.5 font-mono text-sm font-bold text-[#14110c]/60">/ 100</span>
-            <span className="mb-1 rounded-lg border-2 border-[#14110c] bg-[#14110c] px-3 py-1 font-display text-2xl font-black italic text-[#f5b700]">
+            <span className="font-display text-7xl font-black leading-[0.85] tabular-nums text-[#0b3b44] md:text-8xl">{overall}</span>
+            <span className="mb-1.5 font-mono text-sm font-bold text-[#0b3b44]/60">/ 100</span>
+            <span className="mb-1 rounded-lg border-2 border-[#0b3b44] bg-[#0b3b44] px-3 py-1 font-display text-2xl font-black italic text-[#f5b700]">
               {SAMPLE.letter}
             </span>
           </div>
-          <p className="mt-3 font-display text-xl font-bold italic leading-snug text-[#14110c] md:text-2xl">&ldquo;{SAMPLE.headline}&rdquo;</p>
+          <p className="mt-3 font-display text-xl font-bold italic leading-snug text-[#0b3b44] md:text-2xl">&ldquo;{SAMPLE.headline}&rdquo;</p>
         </div>
 
         {/* three dials */}
@@ -130,27 +130,27 @@ export default function SampleScorecard() {
 
         {/* a slice of the checks, and the first fix */}
         <div className="mt-4 grid gap-3 md:grid-cols-[1.15fr_1fr]">
-          <ul className="rounded-2xl border-2 border-[#14110c] bg-white p-4">
-            <li className="mb-2 font-mono text-[9px] font-bold uppercase tracking-[0.22em] text-[#8f1d22]">Google profile · 4 of 8 checks</li>
+          <ul className="rounded-2xl border-2 border-[#0b3b44] bg-white p-4">
+            <li className="mb-2 font-mono text-[9px] font-bold uppercase tracking-[0.22em] text-[#0a7c78]">Google profile · 4 of 8 checks</li>
             {SAMPLE.checks.map((c) => (
-              <li key={c.label} className="flex items-center gap-2.5 border-b border-[#14110c]/10 py-1.5 last:border-0">
+              <li key={c.label} className="flex items-center gap-2.5 border-b border-[#0b3b44]/10 py-1.5 last:border-0">
                 <span
-                  className="grid h-5 w-5 shrink-0 place-items-center rounded-md border-2 border-[#14110c] font-mono text-[10px] font-bold text-white"
+                  className="grid h-5 w-5 shrink-0 place-items-center rounded-md border-2 border-[#0b3b44] font-mono text-[10px] font-bold text-white"
                   style={{ background: c.passed ? '#1E7A3C' : '#C4160B' }}
                   aria-label={c.passed ? 'Pass' : 'Missing'}
                 >
                   {c.passed ? '✓' : '✕'}
                 </span>
-                <span className="min-w-0 flex-1 font-body text-[12.5px] leading-snug text-[#14110c]">{c.label}</span>
-                <span className="shrink-0 font-mono text-[10px] font-bold tabular-nums text-[#14110c]/45">{c.pts}</span>
+                <span className="min-w-0 flex-1 font-body text-[12.5px] leading-snug text-[#0b3b44]">{c.label}</span>
+                <span className="shrink-0 font-mono text-[10px] font-bold tabular-nums text-[#0b3b44]/45">{c.pts}</span>
               </li>
             ))}
           </ul>
-          <div className="flex flex-col rounded-2xl border-2 border-[#14110c] bg-[#14110c] p-4 text-[#f6efe0]">
+          <div className="flex flex-col rounded-2xl border-2 border-[#0b3b44] bg-[#0b3b44] p-4 text-[#fbf5ea]">
             <span className="font-mono text-[9px] font-bold uppercase tracking-[0.22em] text-[#f5b700]">Fix number one</span>
             <p className="mt-2 font-display text-lg font-bold leading-snug">{SAMPLE.fix.title}</p>
-            <p className="mt-1.5 flex-1 font-body text-[12.5px] leading-relaxed text-[#f6efe0]/70">{SAMPLE.fix.why}</p>
-            <span className="mt-3 font-mono text-[9px] uppercase tracking-[0.18em] text-[#f6efe0]/40">Free fixes rank first</span>
+            <p className="mt-1.5 flex-1 font-body text-[12.5px] leading-relaxed text-[#fbf5ea]/70">{SAMPLE.fix.why}</p>
+            <span className="mt-3 font-mono text-[9px] uppercase tracking-[0.18em] text-[#fbf5ea]/40">Free fixes rank first</span>
           </div>
         </div>
       </div>

@@ -103,12 +103,12 @@ export default function RingMeNow({
 
   return (
     <div
-      className={`relative w-full max-w-xl rounded-2xl border-[3px] border-[#14110c] bg-[#f6efe0] p-5 text-left shadow-[7px_7px_0_0_#14110c] sm:p-6 ${className}`}
+      className={`relative w-full max-w-xl rounded-2xl border-[3px] border-[#0b3b44] bg-[#fbf5ea] p-5 text-left shadow-[7px_7px_0_0_#0b3b44] sm:p-6 ${className}`}
     >
       {state === 'ringing' ? (
         <div aria-live="polite">
           <div className="flex items-center gap-3.5">
-            <span className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-2 border-[#14110c] bg-[#f5b700]">
+            <span className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-2 border-[#0b3b44] bg-[#f5b700]">
               <span
                 aria-hidden="true"
                 className="absolute inset-0 rounded-full bg-[#f5b700] opacity-50 motion-safe:animate-ping"
@@ -117,14 +117,14 @@ export default function RingMeNow({
               <Image src="/brand/mascot.png" alt="" width={885} height={1180} className="relative h-9 w-auto" />
             </span>
             <div>
-              <p className="font-display text-xl font-black leading-tight text-[#14110c] sm:text-2xl">
+              <p className="font-display text-xl font-black leading-tight text-[#0b3b44] sm:text-2xl">
                 Answer your phone.
               </p>
               <p className="font-body text-sm leading-snug text-[#3a3733]">
                 {seconds > 0 ? (
                   <>
                     Mr. Mustard is dialing {formatPhone(phone)} in about{' '}
-                    <span className="font-mono font-bold text-[#14110c]">{seconds}s</span>.
+                    <span className="font-mono font-bold text-[#0b3b44]">{seconds}s</span>.
                   </>
                 ) : (
                   <>He is calling {formatPhone(phone)} right now. It shows up as {DEMO_LINE.display}.</>
@@ -132,7 +132,7 @@ export default function RingMeNow({
               </p>
             </div>
           </div>
-          <p className="mt-4 border-t-2 border-dashed border-[#14110c]/20 pt-3 font-body text-[12px] leading-relaxed text-[#5c554a]">
+          <p className="mt-4 border-t-2 border-dashed border-[#0b3b44]/20 pt-3 font-body text-[12px] leading-relaxed text-[#5c554a]">
             He will ask what your business is and tell you exactly what your own voice agent would
             answer. If you miss it, call him back at{' '}
             <a href={`tel:${DEMO_LINE.tel}`} className="font-bold text-[#C2261A] underline underline-offset-2">
@@ -143,11 +143,11 @@ export default function RingMeNow({
         </div>
       ) : (
         <>
-          <span className="inline-block border-2 border-[#14110c] bg-[#f5b700] px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-[#14110c] shadow-[3px_3px_0_0_#14110c]">
+          <span className="inline-block border-2 border-[#0b3b44] bg-[#f5b700] px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-[#0b3b44] shadow-[3px_3px_0_0_#0b3b44]">
             Your phone, ten seconds
           </span>
 
-          <p className="mt-3.5 font-display text-[26px] font-black leading-[1.05] tracking-tight text-[#14110c] sm:text-[32px]">
+          <p className="mt-3.5 font-display text-[26px] font-black leading-[1.05] tracking-tight text-[#0b3b44] sm:text-[32px]">
             Hear your own voice agent.
           </p>
           <p className="mt-2 max-w-md font-body text-sm leading-relaxed text-[#3a3733] sm:text-base">
@@ -170,13 +170,13 @@ export default function RingMeNow({
                 }}
                 placeholder="(406) 555-0134"
                 aria-invalid={state === 'error'}
-                className="h-[52px] w-full rounded-xl border-2 border-[#14110c] bg-white px-4 font-mono text-lg font-bold tracking-wide text-[#14110c] outline-none placeholder:text-[#14110c]/25 focus:shadow-[0_0_0_3px_#f5b700]"
+                className="h-[52px] w-full rounded-xl border-2 border-[#0b3b44] bg-white px-4 font-mono text-lg font-bold tracking-wide text-[#0b3b44] outline-none placeholder:text-[#0b3b44]/25 focus:shadow-[0_0_0_3px_#f5b700]"
               />
             </label>
             <button
               type="submit"
               disabled={!ready || state === 'dialing'}
-              className="h-[52px] shrink-0 rounded-xl border-2 border-[#14110c] bg-[#f5b700] px-6 font-sans text-[12px] font-extrabold uppercase tracking-[0.16em] text-[#14110c] shadow-[4px_4px_0_0_#14110c] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#14110c] disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:translate-x-0 disabled:hover:translate-y-0 disabled:hover:shadow-[4px_4px_0_0_#14110c]"
+              className="h-[52px] shrink-0 rounded-xl border-2 border-[#0b3b44] bg-[#f5b700] px-6 font-sans text-[12px] font-extrabold uppercase tracking-[0.16em] text-[#0b3b44] shadow-[4px_4px_0_0_#0b3b44] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#0b3b44] disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:translate-x-0 disabled:hover:translate-y-0 disabled:hover:shadow-[4px_4px_0_0_#0b3b44]"
             >
               {state === 'dialing' ? 'Dialing…' : 'Call Me Now'}
             </button>

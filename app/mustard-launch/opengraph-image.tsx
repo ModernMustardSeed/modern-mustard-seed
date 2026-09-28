@@ -9,10 +9,10 @@ export const alt = 'Mustard Launch. Your agentic launch coach, from idea to open
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
-const INK = '#14110c';
-const CREAM = '#f6efe0';
+const INK = '#0b3b44';
+const CREAM = '#fbf5ea';
 const MUSTARD = '#f5b700';
-const MIDNIGHT = '#14110c';
+const MIDNIGHT = '#0b3b44';
 
 export default async function OpengraphImage() {
   const mascot = readFileSync(join(process.cwd(), 'public/brand/mascot.png'));
@@ -68,7 +68,7 @@ export default async function OpengraphImage() {
           <span style={{ fontSize: 27, color: '#3a3733', marginTop: 28, lineHeight: 1.4 }}>
             Type your idea. Mr. Mustard builds your whole launch and counts you down to open. The Blueprint is free.
           </span>
-          <span style={{ fontSize: 21, color: '#b3261e', fontWeight: 700, marginTop: 24, letterSpacing: 3 }}>
+          <span style={{ fontSize: 21, color: '#ff6f59', fontWeight: 700, marginTop: 24, letterSpacing: 3 }}>
             MODERNMUSTARDSEED.COM/MUSTARD-LAUNCH
           </span>
         </div>

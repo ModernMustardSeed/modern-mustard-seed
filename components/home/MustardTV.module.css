@@ -1,4 +1,4 @@
-.wrap{--ink:#14110c;--cream:#f6efe0;--mustard:#f5b700;--red:#b3261e;--brick:#8f1d22;max-width:1040px;margin:0 auto}
+.wrap{--ink:#0b3b44;--cream:#fbf5ea;--mustard:#f5b700;--red:#ff6f59;--brick:#0a7c78;max-width:1040px;margin:0 auto}
 
 /* The set: antenna, cabinet, feet. */
 .set{position:relative;padding-top:74px}
@@ -39,7 +39,7 @@
 .duo button{flex:1;min-height:36px;border:2px solid var(--ink);border-radius:10px;background:#fff;color:var(--ink);font-size:var(--t-label);font-weight:800;letter-spacing:.08em;text-transform:uppercase;box-shadow:2px 2px 0 var(--ink);cursor:pointer}
 .duo button[aria-pressed=true]{background:var(--ink);color:var(--mustard)}
 .duo button:focus-visible{outline:3px solid var(--red);outline-offset:3px}
-.video::cue{background:rgba(8,12,22,.82);color:#f6efe0;font-family:var(--font-body),sans-serif;font-size:.95em;line-height:1.35}
+.video::cue{background:rgba(8,12,22,.82);color:#fbf5ea;font-family:var(--font-body),sans-serif;font-size:.95em;line-height:1.35}
 .sound[aria-pressed=true]{background:var(--red);color:#fff;box-shadow:3px 3px 0 var(--ink)}
 .grille{flex:1;min-height:60px;width:100%;border-radius:12px;background:repeating-linear-gradient(0deg,var(--ink) 0 3px,transparent 3px 8px);opacity:.75}
 

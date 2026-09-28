@@ -58,7 +58,7 @@ const auditServiceJsonLd = {
   areaServed: 'Worldwide',
 };
 
-const AUD_ALT = 'Painting: Mr. Mustard in a green eyeshade studies a scale model of a small-town storefront through a giant brass magnifying glass while the sesame seed runs the adding machine';
+const AUD_ALT = 'Painting: on the flybridge of a white yacht, Mr. Mustard scans the coastline through brass binoculars while a seed kid copies him with a toy spyglass and the dog peeks over the rail';
 
 export default function WebsiteAuditPage() {
   return (
@@ -78,13 +78,13 @@ export default function WebsiteAuditPage() {
           ]),
         ]}
       />
-      <article className="relative min-h-screen bg-[#f6efe0] text-[#14110c] pb-24 overflow-x-clip">
+      <article className="relative min-h-screen bg-[#fbf5ea] text-[#0b3b44] pb-24 overflow-x-clip">
         <div aria-hidden="true" className="absolute inset-0 halftone-bg opacity-50 pointer-events-none" />
         <div className="relative">
         <PopPageHero
           eyebrow={<span>Free Website Audit</span>}
           title={<>Get a real grade on your{' '}<em>website</em></>}
-          art={{ src: '/art/pages/audit', alt: AUD_ALT, caption: 'Graded, then fixed' }}
+          art={{ src: '/art/riviera/audit', alt: AUD_ALT, caption: 'Graded, then fixed' }}
           sticker="Grade A?"
           mascot={{ bubble: 'Drop your URL below!' }}
         >
@@ -106,18 +106,18 @@ export default function WebsiteAuditPage() {
             proposal. */}
         <section className="max-w-5xl mx-auto px-6 py-10 mb-12">
           <h2 className="font-display text-3xl font-bold">Know what the grade is telling you.</h2>
-          <p className="mt-4 leading-relaxed">Read our <Link href="/resources" className="text-[#8f1d22] underline font-bold">Answer Engine Field Notes</Link> for the technical checks and measurement behind this work. <Link href="/blog/geo-vs-seo-montana" className="text-[#8f1d22] underline font-bold">GEO and SEO share a foundation</Link>: accessible pages, useful information and evidence. Modern Mustard Seed builds that foundation from Kalispell for businesses nationwide.</p>
+          <p className="mt-4 leading-relaxed">Read our <Link href="/resources" className="text-[#0a7c78] underline font-bold">Answer Engine Field Notes</Link> for the technical checks and measurement behind this work. <Link href="/blog/geo-vs-seo-montana" className="text-[#0a7c78] underline font-bold">GEO and SEO share a foundation</Link>: accessible pages, useful information and evidence. Modern Mustard Seed builds that foundation from Kalispell for businesses nationwide.</p>
         </section>
 
         {/* What we score */}
         <section className="max-w-5xl mx-auto px-6 md:px-8 mb-24">
           <div className="text-center mb-10">
-            <span className="text-[10px] uppercase tracking-[0.45em] text-[#8f1d22] font-mono font-bold mb-5 block">
+            <span className="text-[10px] uppercase tracking-[0.45em] text-[#0a7c78] font-mono font-bold mb-5 block">
               What we score
             </span>
-            <h2 className="font-display text-3xl md:text-4xl font-black text-[#14110c] tracking-tight">
+            <h2 className="font-display text-3xl md:text-4xl font-black text-[#0b3b44] tracking-tight">
               Seven categories{' '}
-              <span className="text-[#f5b700]" style={{ WebkitTextStroke: '1.5px #14110c' }}>
+              <span className="text-[#f5b700]" style={{ WebkitTextStroke: '1.5px #0b3b44' }}>
                 no vibes
               </span>
             </h2>
@@ -154,7 +154,7 @@ export default function WebsiteAuditPage() {
               },
             ].map((c) => (
               <div key={c.t} className="pop-card p-7">
-                <h3 className="font-display text-xl text-[#14110c] font-black tracking-tight mb-2">
+                <h3 className="font-display text-xl text-[#0b3b44] font-black tracking-tight mb-2">
                   {c.t}
                 </h3>
                 <p className="text-[#3a3733] text-sm font-body leading-relaxed">{c.d}</p>
@@ -166,39 +166,39 @@ export default function WebsiteAuditPage() {
         {/* From C to A */}
         <section className="max-w-4xl mx-auto px-6 md:px-8 mb-24">
           <div className="pop-card-yellow p-8 md:p-12">
-            <span className="text-[10px] uppercase tracking-[0.45em] text-[#14110c] font-mono font-bold mb-5 block">
+            <span className="text-[10px] uppercase tracking-[0.45em] text-[#0b3b44] font-mono font-bold mb-5 block">
               From C to A
             </span>
-            <h2 className="font-display text-3xl md:text-4xl font-black text-[#14110c] tracking-tight mb-4">
+            <h2 className="font-display text-3xl md:text-4xl font-black text-[#0b3b44] tracking-tight mb-4">
               Want us to build the{' '}
-              <span className="text-white" style={{ WebkitTextStroke: '2px #14110c' }}>
+              <span className="text-white" style={{ WebkitTextStroke: '2px #0b3b44' }}>
                 A version
               </span>
               ?
             </h2>
-            <p className="text-[#14110c]/80 text-base md:text-lg font-body font-medium leading-relaxed mb-7">
+            <p className="text-[#0b3b44]/80 text-base md:text-lg font-body font-medium leading-relaxed mb-7">
               The audit shows you exactly what to fix. We can ship the fixed version for you. Two engagement paths depending on where you want to land.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-7">
-              <div className="p-5 rounded-xl border-2 border-[#14110c] bg-white">
-                <p className="font-display text-lg text-[#14110c] font-black tracking-tight mb-2">
+              <div className="p-5 rounded-xl border-2 border-[#0b3b44] bg-white">
+                <p className="font-display text-lg text-[#0b3b44] font-black tracking-tight mb-2">
                   Seed Site
                 </p>
                 <p className="text-[#3a3733] text-sm font-body leading-relaxed mb-3">
                   Beautiful, fast, brand-aligned site. Loads in under two seconds. Looks like a real business.
                 </p>
-                <p className="text-[#14110c]/75 text-[11px] uppercase tracking-[0.25em] font-mono font-bold">
+                <p className="text-[#0b3b44]/75 text-[11px] uppercase tracking-[0.25em] font-mono font-bold">
                   About a week · quoted after a free call
                 </p>
               </div>
-              <div className="p-5 rounded-xl border-2 border-[#14110c] bg-white shadow-[4px_4px_0_0_#14110c]">
-                <p className="font-display text-lg text-[#14110c] font-black tracking-tight mb-2">
+              <div className="p-5 rounded-xl border-2 border-[#0b3b44] bg-white shadow-[4px_4px_0_0_#0b3b44]">
+                <p className="font-display text-lg text-[#0b3b44] font-black tracking-tight mb-2">
                   Full-Service Business Build
                 </p>
                 <p className="text-[#3a3733] text-sm font-body leading-relaxed mb-3">
                   Site + bespoke booking with CRM + agentic SDR + funnels + back office + embedded agents. The engine.
                 </p>
-                <p className="text-[#14110c]/75 text-[11px] uppercase tracking-[0.25em] font-mono font-bold">
+                <p className="text-[#0b3b44]/75 text-[11px] uppercase tracking-[0.25em] font-mono font-bold">
                   1 to 2 weeks · quoted after a free call
                 </p>
               </div>
@@ -206,13 +206,13 @@ export default function WebsiteAuditPage() {
             <div className="flex flex-col sm:flex-row gap-3">
               <Link
                 href="/work-with-us"
-                className="px-7 py-3.5 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-white bg-[#14110c] rounded-full border-2 border-[#14110c] shadow-[4px_4px_0_0_rgba(20,17,12,0.3)] hover:-translate-y-0.5 transition-all text-center"
+                className="px-7 py-3.5 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-white bg-[#0b3b44] rounded-full border-2 border-[#0b3b44] shadow-[4px_4px_0_0_rgba(11,59,68,0.3)] hover:-translate-y-0.5 transition-all text-center"
               >
                 See engagements
               </Link>
               <Link
                 href="/book"
-                className="px-7 py-3.5 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-[#14110c] bg-white rounded-full border-2 border-[#14110c] shadow-[4px_4px_0_0_#14110c] hover:-translate-y-0.5 transition-all text-center"
+                className="px-7 py-3.5 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-[#0b3b44] bg-white rounded-full border-2 border-[#0b3b44] shadow-[4px_4px_0_0_#0b3b44] hover:-translate-y-0.5 transition-all text-center"
               >
                 Book a free call
               </Link>
@@ -223,12 +223,12 @@ export default function WebsiteAuditPage() {
         {/* FAQ */}
         <section className="max-w-3xl mx-auto px-6 md:px-8">
           <div className="text-center mb-10">
-            <span className="text-[10px] uppercase tracking-[0.45em] text-[#8f1d22] font-mono font-bold mb-5 block">
+            <span className="text-[10px] uppercase tracking-[0.45em] text-[#0a7c78] font-mono font-bold mb-5 block">
               FAQ
             </span>
-            <h2 className="font-display text-3xl md:text-4xl font-black text-[#14110c] tracking-tight">
+            <h2 className="font-display text-3xl md:text-4xl font-black text-[#0b3b44] tracking-tight">
               Common{' '}
-              <span className="text-[#f5b700]" style={{ WebkitTextStroke: '1.5px #14110c' }}>
+              <span className="text-[#f5b700]" style={{ WebkitTextStroke: '1.5px #0b3b44' }}>
                 questions
               </span>
             </h2>
@@ -237,10 +237,10 @@ export default function WebsiteAuditPage() {
             {FAQS.map((item) => (
               <details key={item.q} className="pop-card p-6 group cursor-pointer">
                 <summary className="flex justify-between items-start gap-4 list-none">
-                  <h3 className="font-display text-lg md:text-xl text-[#14110c] font-black tracking-tight">
+                  <h3 className="font-display text-lg md:text-xl text-[#0b3b44] font-black tracking-tight">
                     {item.q}
                   </h3>
-                  <span className="text-[#8f1d22] text-2xl flex-shrink-0 transition-transform group-open:rotate-45 leading-none font-black">
+                  <span className="text-[#0a7c78] text-2xl flex-shrink-0 transition-transform group-open:rotate-45 leading-none font-black">
                     +
                   </span>
                 </summary>

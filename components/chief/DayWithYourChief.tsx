@@ -25,7 +25,7 @@ const SKY: Record<ChiefMoment['prop'], string> = {
   calendar: 'linear-gradient(180deg,#6ea8de 0%,#bcd9ec 55%,#f3ead0 100%)',
   research: 'linear-gradient(180deg,#5a9fda 0%,#bfe0ef 58%,#eef4f2 100%)',
   followup: 'linear-gradient(180deg,#4f9bdc 0%,#cfe8f2 58%,#f4f4e6 100%)',
-  roleplay: 'linear-gradient(180deg,#3f92dc 0%,#cfe9f4 54%,#f6efe0 100%)',
+  roleplay: 'linear-gradient(180deg,#3f92dc 0%,#cfe9f4 54%,#fbf5ea 100%)',
   leads: 'linear-gradient(180deg,#5a9fd6 0%,#d7e6ea 55%,#f6e9c8 100%)',
   errand: 'linear-gradient(180deg,#7a9fc4 0%,#e2c79f 68%,#f4c98a 100%)',
   brief: 'linear-gradient(180deg,#8a5a86 0%,#d97b4a 54%,#f4b25f 100%)',
@@ -105,7 +105,7 @@ export default function DayWithYourChief() {
   return (
     <div
       ref={region}
-      className="relative overflow-hidden rounded-2xl border-2 border-[#14110c] shadow-[8px_8px_0_0_#14110c]"
+      className="relative overflow-hidden rounded-2xl border-2 border-[#0b3b44] shadow-[8px_8px_0_0_#0b3b44]"
     >
       {/* ── Sky: stacked gradients, crossfaded by opacity ── */}
       <div className="relative h-[300px] sm:h-[360px]">
@@ -153,13 +153,13 @@ export default function DayWithYourChief() {
 
         {/* Rolling hills, so the sun sets behind a horizon */}
         <svg aria-hidden className="absolute bottom-0 left-0 w-full" viewBox="0 0 1200 120" preserveAspectRatio="none" style={{ height: 90 }}>
-          <path d="M0,70 C220,20 380,96 620,70 C820,48 1000,104 1200,66 L1200,120 L0,120 Z" fill="#14110c" opacity="0.92" />
-          <path d="M0,96 C260,64 520,112 760,90 C980,70 1080,104 1200,92 L1200,120 L0,120 Z" fill="#14110c" />
+          <path d="M0,70 C220,20 380,96 620,70 C820,48 1000,104 1200,66 L1200,120 L0,120 Z" fill="#0b3b44" opacity="0.92" />
+          <path d="M0,96 C260,64 520,112 760,90 C980,70 1080,104 1200,92 L1200,120 L0,120 Z" fill="#0b3b44" />
         </svg>
 
         {/* Time-of-day chip, top-left */}
         <div className="absolute left-4 top-4">
-          <span className="font-mono font-bold text-[11px] uppercase tracking-[0.2em] text-white/95 bg-[#14110c]/45 backdrop-blur-sm rounded-full px-3 py-1.5 border border-white/25">
+          <span className="font-mono font-bold text-[11px] uppercase tracking-[0.2em] text-white/95 bg-[#0b3b44]/45 backdrop-blur-sm rounded-full px-3 py-1.5 border border-white/25">
             {/* eslint-disable-next-line react/jsx-no-comment-textnodes -- a terminal-style // separator, not a comment */}
             {m.time} // {m.tag}
           </span>
@@ -167,10 +167,10 @@ export default function DayWithYourChief() {
       </div>
 
       {/* ── The moment card ── */}
-      <div className="bg-[#f6efe0] border-t-2 border-[#14110c] px-5 py-6 sm:px-8 sm:py-7">
+      <div className="bg-[#fbf5ea] border-t-2 border-[#0b3b44] px-5 py-6 sm:px-8 sm:py-7">
         <div key={m.time} className="cxc-fade min-h-[128px] sm:min-h-[112px]">
           <h3 className="font-display italic font-extrabold text-2xl sm:text-[1.9rem] leading-[1.05]">{m.title}</h3>
-          <p className="font-body text-[14.5px] sm:text-[15px] text-[#14110c]/75 mt-2.5 leading-relaxed max-w-2xl">{m.line}</p>
+          <p className="font-body text-[14.5px] sm:text-[15px] text-[#0b3b44]/75 mt-2.5 leading-relaxed max-w-2xl">{m.line}</p>
         </div>
 
         {/* Scrubber */}
@@ -202,16 +202,16 @@ export default function DayWithYourChief() {
                 className="group flex flex-col items-center gap-1.5 py-1"
               >
                 <span
-                  className="block rounded-full border-2 border-[#14110c] transition-all"
+                  className="block rounded-full border-2 border-[#0b3b44] transition-all"
                   style={{
                     width: idx === i ? 13 : 9,
                     height: idx === i ? 13 : 9,
-                    background: idx === i ? '#f5b700' : idx < i ? '#14110c' : '#f6efe0',
+                    background: idx === i ? '#f5b700' : idx < i ? '#0b3b44' : '#fbf5ea',
                   }}
                 />
                 <span
                   className={`font-mono text-[9px] sm:text-[10px] tracking-tight tabular-nums transition-colors ${
-                    idx === i ? 'text-[#14110c] font-bold' : 'text-[#14110c]/40 group-hover:text-[#14110c]/70'
+                    idx === i ? 'text-[#0b3b44] font-bold' : 'text-[#0b3b44]/40 group-hover:text-[#0b3b44]/70'
                   }`}
                 >
                   {moment.time}
@@ -247,8 +247,8 @@ export default function DayWithYourChief() {
           appearance: none;
           height: 6px;
           border-radius: 9999px;
-          background: #14110c22;
-          border: 2px solid #14110c;
+          background: #0b3b4422;
+          border: 2px solid #0b3b44;
           outline-offset: 3px;
           cursor: pointer;
         }
@@ -259,8 +259,8 @@ export default function DayWithYourChief() {
           height: 26px;
           border-radius: 9999px;
           background: #f5b700;
-          border: 2px solid #14110c;
-          box-shadow: 3px 3px 0 0 #14110c;
+          border: 2px solid #0b3b44;
+          box-shadow: 3px 3px 0 0 #0b3b44;
           cursor: grab;
           margin-top: -1px;
         }
@@ -272,8 +272,8 @@ export default function DayWithYourChief() {
           height: 26px;
           border-radius: 9999px;
           background: #f5b700;
-          border: 2px solid #14110c;
-          box-shadow: 3px 3px 0 0 #14110c;
+          border: 2px solid #0b3b44;
+          box-shadow: 3px 3px 0 0 #0b3b44;
           cursor: grab;
         }
         @media (prefers-reduced-motion: reduce) {

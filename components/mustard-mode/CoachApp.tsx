@@ -65,7 +65,7 @@ function MarkdownLite({ body }: { body: string }) {
       out.push(
         <ul key={`ul-${key}`} className="list-none space-y-1.5 my-3">
           {list.map((li, i) => (
-            <li key={i} className="font-sans text-sm text-[#14110c]/85 flex gap-2">
+            <li key={i} className="font-sans text-sm text-[#0b3b44]/85 flex gap-2">
               <span className="text-[#f5b700] font-mono text-[10px] mt-1.5">■</span>
               <span dangerouslySetInnerHTML={{ __html: inlineMd(li) }} />
             </li>
@@ -79,14 +79,14 @@ function MarkdownLite({ body }: { body: string }) {
     s
       .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
       .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-      .replace(/`([^`]+)`/g, '<code class="font-mono text-[12px] bg-[#f6efe0] border border-[#14110c]/20 px-1">$1</code>');
+      .replace(/`([^`]+)`/g, '<code class="font-mono text-[12px] bg-[#fbf5ea] border border-[#0b3b44]/20 px-1">$1</code>');
 
   blocks.forEach((line, i) => {
     const key = String(i);
     if (line.trim().startsWith('```')) {
       if (inCode) {
         out.push(
-          <pre key={`code-${key}`} className="bg-[#14110c] text-[#EDE6D6] font-mono text-[12px] p-4 my-3 overflow-x-auto border-2 border-[#14110c]">
+          <pre key={`code-${key}`} className="bg-[#0b3b44] text-[#EDE6D6] font-mono text-[12px] p-4 my-3 overflow-x-auto border-2 border-[#0b3b44]">
             {code.join('\n')}
           </pre>
         );
@@ -101,11 +101,11 @@ function MarkdownLite({ body }: { body: string }) {
     if (inCode) { code.push(line); return; }
     if (line.startsWith('- ') || line.startsWith('* ')) { list.push(line.slice(2)); return; }
     flushList(key);
-    if (line.startsWith('### ')) out.push(<h5 key={key} className="font-display font-extrabold text-base text-[#14110c] mt-5 mb-1">{line.slice(4)}</h5>);
-    else if (line.startsWith('## ')) out.push(<h4 key={key} className="font-display font-extrabold text-lg text-[#14110c] mt-6 mb-1">{line.slice(3)}</h4>);
-    else if (line.startsWith('# ')) out.push(<h3 key={key} className="font-display italic font-extrabold text-xl text-[#14110c] mt-6 mb-2">{line.slice(2)}</h3>);
+    if (line.startsWith('### ')) out.push(<h5 key={key} className="font-display font-extrabold text-base text-[#0b3b44] mt-5 mb-1">{line.slice(4)}</h5>);
+    else if (line.startsWith('## ')) out.push(<h4 key={key} className="font-display font-extrabold text-lg text-[#0b3b44] mt-6 mb-1">{line.slice(3)}</h4>);
+    else if (line.startsWith('# ')) out.push(<h3 key={key} className="font-display italic font-extrabold text-xl text-[#0b3b44] mt-6 mb-2">{line.slice(2)}</h3>);
     else if (line.trim() === '') out.push(<div key={key} className="h-2" />);
-    else out.push(<p key={key} className="font-sans text-sm text-[#14110c]/85 leading-relaxed" dangerouslySetInnerHTML={{ __html: inlineMd(line) }} />);
+    else out.push(<p key={key} className="font-sans text-sm text-[#0b3b44]/85 leading-relaxed" dangerouslySetInnerHTML={{ __html: inlineMd(line) }} />);
   });
   flushList('end');
   return <div>{out}</div>;
@@ -120,7 +120,7 @@ function CopyButton({ text, label = 'Copy' }: { text: string; label?: string }) 
         setCopied(true);
         setTimeout(() => setCopied(false), 1600);
       }}
-      className="font-mono font-bold text-[10px] uppercase tracking-wider bg-[#f5b700] text-[#14110c] border border-[#14110c] px-2.5 py-1.5 hover:translate-y-[1px] transition-transform shrink-0"
+      className="font-mono font-bold text-[10px] uppercase tracking-wider bg-[#f5b700] text-[#0b3b44] border border-[#0b3b44] px-2.5 py-1.5 hover:translate-y-[1px] transition-transform shrink-0"
     >
       {copied ? 'Copied ✓' : label}
     </button>
@@ -217,9 +217,9 @@ export default function CoachApp({ tier, email, savedRun }: { tier: Tier; email:
   ];
 
   return (
-    <div className="min-h-screen bg-[#f6efe0] text-[#14110c]">
+    <div className="min-h-screen bg-[#fbf5ea] text-[#0b3b44]">
       {/* Top bar */}
-      <header className="sticky top-0 z-40 bg-[#14110c] border-b-2 border-[#14110c]">
+      <header className="sticky top-0 z-40 bg-[#0b3b44] border-b-2 border-[#0b3b44]">
         <div className="max-w-6xl mx-auto px-4 md:px-6 py-3 flex items-center justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
             <div className="relative w-9 h-9 shrink-0">
@@ -244,12 +244,12 @@ export default function CoachApp({ tier, email, savedRun }: { tier: Tier; email:
               onClick={() => { setTab(t.key); if (t.key !== 'tracks') { setActiveMission(null); } }}
               className={`font-mono font-bold text-[11px] uppercase tracking-wider px-4 py-2.5 border-t-2 border-x-2 whitespace-nowrap ${
                 tab === t.key
-                  ? 'bg-[#f6efe0] text-[#14110c] border-[#14110c] translate-y-[2px]'
+                  ? 'bg-[#fbf5ea] text-[#0b3b44] border-[#0b3b44] translate-y-[2px]'
                   : 'bg-transparent text-white/50 border-transparent hover:text-white'
               }`}
             >
               {t.label}
-              {t.key === 'vault' && tier === 'player' && <span className="text-[#8f1d22] ml-1">▲</span>}
+              {t.key === 'vault' && tier === 'player' && <span className="text-[#0a7c78] ml-1">▲</span>}
             </button>
           ))}
         </nav>
@@ -259,14 +259,14 @@ export default function CoachApp({ tier, email, savedRun }: { tier: Tier; email:
         {welcome && (
           <div className="pop-card-yellow rounded-none p-5 mb-8 flex items-start justify-between gap-4">
             <div>
-              <p className="font-mono font-bold text-[11px] uppercase tracking-wider text-[#14110c]">Player registered // Welcome to the cabinet</p>
-              <p className="font-sans text-sm text-[#14110c]/85 mt-1">
+              <p className="font-mono font-bold text-[11px] uppercase tracking-wider text-[#0b3b44]">Player registered // Welcome to the cabinet</p>
+              <p className="font-sans text-sm text-[#0b3b44]/85 mt-1">
                 {savedRun
                   ? `Your free-play run is loaded ("${savedRun.slice(0, 80)}"). Mr. Mustard remembers. Open the Coach tab and pick it up, or start Mission 01.`
                   : 'Your coach is live and your first mission is ready. Start on the HUD, or say hi in the Coach tab.'}
               </p>
             </div>
-            <button onClick={() => setWelcome(false)} className="font-mono font-bold text-[#14110c] text-sm shrink-0">✕</button>
+            <button onClick={() => setWelcome(false)} className="font-mono font-bold text-[#0b3b44] text-sm shrink-0">✕</button>
           </div>
         )}
 
@@ -322,28 +322,28 @@ function HudTab({
       <div className="grid md:grid-cols-3 gap-6">
         {/* Rank card */}
         <div className="pop-card rounded-none p-6 md:col-span-2">
-          <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#8f1d22] uppercase">Player HUD</p>
+          <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#0a7c78] uppercase">Player HUD</p>
           <div className="flex items-end justify-between mt-3 gap-4 flex-wrap">
             <div>
-              <span className="font-mono font-bold text-5xl text-[#f5b700]" style={{ textShadow: '2px 2px 0 #14110c' }}>{progress.xp}</span>
-              <span className="font-mono font-bold text-lg text-[#14110c] ml-2">XP</span>
+              <span className="font-mono font-bold text-5xl text-[#f5b700]" style={{ textShadow: '2px 2px 0 #0b3b44' }}>{progress.xp}</span>
+              <span className="font-mono font-bold text-lg text-[#0b3b44] ml-2">XP</span>
             </div>
             <div className="text-right">
-              <p className="font-display italic font-extrabold text-2xl text-[#14110c]">{rank}</p>
-              {nextRank && <p className="font-mono text-[10px] text-[#14110c]/60">{nextRank.at - progress.xp} XP TO {nextRank.name}</p>}
+              <p className="font-display italic font-extrabold text-2xl text-[#0b3b44]">{rank}</p>
+              {nextRank && <p className="font-mono text-[10px] text-[#0b3b44]/60">{nextRank.at - progress.xp} XP TO {nextRank.name}</p>}
             </div>
           </div>
-          <div className="mt-4 h-4 border-2 border-[#14110c] bg-[#f6efe0]">
+          <div className="mt-4 h-4 border-2 border-[#0b3b44] bg-[#fbf5ea]">
             <div className="h-full bg-[#f5b700] transition-all duration-700" style={{ width: `${pct}%` }} />
           </div>
-          <p className="font-mono text-[11px] text-[#14110c]/60 mt-3">
+          <p className="font-mono text-[11px] text-[#0b3b44]/60 mt-3">
             {completedCount}/{totalMissions} MISSIONS SHIPPED · {totalXp} XP IN THE GAME
-            {tier !== 'player' && <span className="text-[#8f1d22]"> · FOUNDING {tier.toUpperCase()}</span>}
+            {tier !== 'player' && <span className="text-[#0a7c78]"> · FOUNDING {tier.toUpperCase()}</span>}
           </p>
         </div>
 
         {/* Next mission */}
-        <div className="bg-[#14110c] border-2 border-[#14110c] shadow-[5px_5px_0_0_#14110c] p-6 flex flex-col">
+        <div className="bg-[#0b3b44] border-2 border-[#0b3b44] shadow-[5px_5px_0_0_#0b3b44] p-6 flex flex-col">
           <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#ffc933] uppercase">Next mission</p>
           {nextMission ? (
             <>
@@ -356,7 +356,7 @@ function HudTab({
               </p>
               <button
                 onClick={() => onOpenMission(nextMission.track, nextMission.mission)}
-                className="mt-4 font-sans font-bold bg-[#f5b700] text-[#14110c] border-2 border-[#14110c] px-5 py-2.5 text-sm hover:translate-y-[1px] transition-transform"
+                className="mt-4 font-sans font-bold bg-[#f5b700] text-[#0b3b44] border-2 border-[#0b3b44] px-5 py-2.5 text-sm hover:translate-y-[1px] transition-transform"
               >
                 Start mission →
               </button>
@@ -364,7 +364,7 @@ function HudTab({
           ) : (
             <>
               <h3 className="font-display font-extrabold text-xl text-white mt-3 flex-1">All 28 missions shipped. Hundredfold.</h3>
-              <button onClick={onCoach} className="mt-4 font-sans font-bold bg-[#f5b700] text-[#14110c] border-2 border-[#14110c] px-5 py-2.5 text-sm">
+              <button onClick={onCoach} className="mt-4 font-sans font-bold bg-[#f5b700] text-[#0b3b44] border-2 border-[#0b3b44] px-5 py-2.5 text-sm">
                 Tell the coach →
               </button>
             </>
@@ -377,12 +377,12 @@ function HudTab({
         {tracks.map((t) => {
           const done = t.missions.filter((m) => progress.completed[m.id]).length;
           return (
-            <div key={t.slug} className="border-2 border-[#14110c] bg-white p-4">
+            <div key={t.slug} className="border-2 border-[#0b3b44] bg-white p-4">
               <p className="font-mono font-bold text-[10px] tracking-wider" style={{ color: t.color === '#f5b700' ? '#8A6A00' : t.color }}>{t.name.toUpperCase()}</p>
-              <div className="mt-2 h-2.5 border border-[#14110c] bg-[#f6efe0]">
+              <div className="mt-2 h-2.5 border border-[#0b3b44] bg-[#fbf5ea]">
                 <div className="h-full" style={{ width: `${(done / t.missions.length) * 100}%`, background: t.color }} />
               </div>
-              <p className="font-mono text-[10px] text-[#14110c]/60 mt-1.5">{done}/{t.missions.length}</p>
+              <p className="font-mono text-[10px] text-[#0b3b44]/60 mt-1.5">{done}/{t.missions.length}</p>
             </div>
           );
         })}
@@ -453,11 +453,11 @@ function CoachTab({ savedRun, activeTrack, activeMission }: { savedRun: string |
 
   return (
     <div className="max-w-3xl">
-      <div className="bg-[#14110c] border-2 border-[#14110c] shadow-[6px_6px_0_0_#14110c]">
+      <div className="bg-[#0b3b44] border-2 border-[#0b3b44] shadow-[6px_6px_0_0_#0b3b44]">
         <div className="flex items-center gap-2 bg-[#1F1F1F] px-4 py-2.5 border-b border-white/10">
-          <span className="w-2.5 h-2.5 rounded-full bg-[#b3261e]" />
+          <span className="w-2.5 h-2.5 rounded-full bg-[#ff6f59]" />
           <span className="w-2.5 h-2.5 rounded-full bg-[#f5b700]" />
-          <span className="w-2.5 h-2.5 rounded-full bg-[#f6efe0]" />
+          <span className="w-2.5 h-2.5 rounded-full bg-[#fbf5ea]" />
           <span className="font-mono text-[10px] text-[#9A958A] ml-2">
             mr-mustard · live coach{activeMission ? ` · ${activeMission.title}` : ''}
           </span>
@@ -473,7 +473,7 @@ function CoachTab({ savedRun, activeTrack, activeMission }: { savedRun: string |
           )}
           {messages.map((m, i) => (
             <div key={i} className="mt-4 text-[#EDE6D6]">
-              <span className={`font-bold ${m.role === 'user' ? 'text-[#f3dc9b]' : 'text-[#ffc933]'}`}>
+              <span className={`font-bold ${m.role === 'user' ? 'text-[#d8f3f0]' : 'text-[#ffc933]'}`}>
                 {m.role === 'user' ? 'YOU: ' : 'MR.MUSTARD: '}
               </span>
               <span className="whitespace-pre-wrap">{m.content}</span>
@@ -498,7 +498,7 @@ function CoachTab({ savedRun, activeTrack, activeMission }: { savedRun: string |
           <button
             type="submit"
             disabled={busy || !input.trim()}
-            className="font-mono font-bold text-[11px] uppercase tracking-wider bg-[#f5b700] text-[#14110c] border border-[#14110c] px-3 py-1.5 disabled:opacity-40"
+            className="font-mono font-bold text-[11px] uppercase tracking-wider bg-[#f5b700] text-[#0b3b44] border border-[#0b3b44] px-3 py-1.5 disabled:opacity-40"
           >
             Send
           </button>
@@ -510,7 +510,7 @@ function CoachTab({ savedRun, activeTrack, activeMission }: { savedRun: string |
             key={s}
             onClick={() => void send(s)}
             disabled={busy}
-            className="font-mono text-[11px] font-bold border-2 border-[#14110c] bg-white px-3 py-1.5 hover:bg-[#f5b700] transition-colors disabled:opacity-40 text-left"
+            className="font-mono text-[11px] font-bold border-2 border-[#0b3b44] bg-white px-3 py-1.5 hover:bg-[#f5b700] transition-colors disabled:opacity-40 text-left"
           >
             {s.length > 64 ? `${s.slice(0, 64)}…` : s}
           </button>
@@ -539,7 +539,7 @@ function TracksTab({
       <div className="max-w-3xl">
         <button
           onClick={() => setActiveMission(null)}
-          className="font-mono font-bold text-[11px] text-[#8f1d22] uppercase tracking-wider"
+          className="font-mono font-bold text-[11px] text-[#0a7c78] uppercase tracking-wider"
         >
           ← {activeTrack.name} missions
         </button>
@@ -548,29 +548,29 @@ function TracksTab({
             <span className="font-mono font-bold text-[11px] tracking-wider" style={{ color: activeTrack.color }}>
               [ MISSION {String(idx + 1).padStart(2, '0')}/{String(activeTrack.missions.length).padStart(2, '0')} ]
             </span>
-            <span className="font-mono text-[11px] font-bold text-[#14110c]/60">~{activeMission.minutes} MIN · +{activeMission.xp} XP</span>
+            <span className="font-mono text-[11px] font-bold text-[#0b3b44]/60">~{activeMission.minutes} MIN · +{activeMission.xp} XP</span>
           </div>
-          <h2 className="font-display italic font-extrabold text-3xl text-[#14110c] mt-3">{activeMission.title}</h2>
+          <h2 className="font-display italic font-extrabold text-3xl text-[#0b3b44] mt-3">{activeMission.title}</h2>
 
-          <div className="mt-4 bg-[#f6efe0] border-2 border-[#14110c] p-4 flex gap-3 items-start">
+          <div className="mt-4 bg-[#fbf5ea] border-2 border-[#0b3b44] p-4 flex gap-3 items-start">
             <div className="relative w-10 h-10 shrink-0">
               <Image src="/brand/mascot.png" alt="" fill sizes="40px" className="object-contain" />
             </div>
-            <p className="font-sans text-sm font-medium text-[#14110c] italic">&ldquo;{activeMission.coachCue}&rdquo;</p>
+            <p className="font-sans text-sm font-medium text-[#0b3b44] italic">&ldquo;{activeMission.coachCue}&rdquo;</p>
           </div>
 
           <div className="mt-6 space-y-4">
             {activeMission.lesson.map((p, i) => (
-              <p key={i} className="font-sans text-[15px] text-[#14110c]/85 leading-relaxed">{p}</p>
+              <p key={i} className="font-sans text-[15px] text-[#0b3b44]/85 leading-relaxed">{p}</p>
             ))}
           </div>
 
           {activeMission.prompts.length > 0 && (
             <div className="mt-8">
-              <p className="font-mono font-bold text-[11px] tracking-wider text-[#8f1d22] uppercase">Run these</p>
+              <p className="font-mono font-bold text-[11px] tracking-wider text-[#0a7c78] uppercase">Run these</p>
               <div className="space-y-3 mt-3">
                 {activeMission.prompts.map((pr) => (
-                  <div key={pr.label} className="border-2 border-[#14110c] bg-[#14110c]">
+                  <div key={pr.label} className="border-2 border-[#0b3b44] bg-[#0b3b44]">
                     <div className="flex items-center justify-between px-4 py-2 border-b border-white/10">
                       <span className="font-mono font-bold text-[11px] text-[#ffc933]">{pr.label}</span>
                       <CopyButton text={pr.text} />
@@ -582,27 +582,27 @@ function TracksTab({
             </div>
           )}
 
-          <div className="mt-8 border-2 border-dashed border-[#14110c]/40 p-5">
-            <p className="font-mono font-bold text-[11px] tracking-wider text-[#8f1d22] uppercase">Your assignment</p>
-            <p className="font-sans text-[15px] text-[#14110c] mt-2 leading-relaxed">{activeMission.assignment}</p>
-            <p className="font-mono text-[11px] text-[#14110c]/60 mt-3">DONE = {activeMission.proof}</p>
+          <div className="mt-8 border-2 border-dashed border-[#0b3b44]/40 p-5">
+            <p className="font-mono font-bold text-[11px] tracking-wider text-[#0a7c78] uppercase">Your assignment</p>
+            <p className="font-sans text-[15px] text-[#0b3b44] mt-2 leading-relaxed">{activeMission.assignment}</p>
+            <p className="font-mono text-[11px] text-[#0b3b44]/60 mt-3">DONE = {activeMission.proof}</p>
           </div>
 
           <div className="mt-7 flex flex-wrap gap-3">
             <button
               onClick={() => completeMission(activeMission)}
               disabled={done}
-              className={`font-sans font-bold border-2 border-[#14110c] px-6 py-3 transition-all ${
+              className={`font-sans font-bold border-2 border-[#0b3b44] px-6 py-3 transition-all ${
                 done
-                  ? 'bg-white text-[#14110c]/50'
-                  : 'bg-[#f5b700] text-[#14110c] shadow-[4px_4px_0_0_#14110c] hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#14110c]'
+                  ? 'bg-white text-[#0b3b44]/50'
+                  : 'bg-[#f5b700] text-[#0b3b44] shadow-[4px_4px_0_0_#0b3b44] hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#0b3b44]'
               }`}
             >
               {done ? `Shipped ✓ (+${activeMission.xp} XP banked)` : `Mark shipped (+${activeMission.xp} XP)`}
             </button>
             <button
               onClick={askCoach}
-              className="font-sans font-bold bg-white text-[#14110c] border-2 border-[#14110c] shadow-[4px_4px_0_0_#14110c] px-6 py-3 hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#14110c] transition-all"
+              className="font-sans font-bold bg-white text-[#0b3b44] border-2 border-[#0b3b44] shadow-[4px_4px_0_0_#0b3b44] px-6 py-3 hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#0b3b44] transition-all"
             >
               Coach me through it
             </button>
@@ -615,11 +615,11 @@ function TracksTab({
   if (activeTrack) {
     return (
       <div className="max-w-3xl">
-        <button onClick={() => setActiveTrack(null)} className="font-mono font-bold text-[11px] text-[#8f1d22] uppercase tracking-wider">
+        <button onClick={() => setActiveTrack(null)} className="font-mono font-bold text-[11px] text-[#0a7c78] uppercase tracking-wider">
           ← All tracks
         </button>
-        <h2 className="font-display italic font-extrabold text-4xl text-[#14110c] mt-3">{activeTrack.name}</h2>
-        <p className="font-sans text-[#14110c]/70 mt-1">{activeTrack.tagline}</p>
+        <h2 className="font-display italic font-extrabold text-4xl text-[#0b3b44] mt-3">{activeTrack.name}</h2>
+        <p className="font-sans text-[#0b3b44]/70 mt-1">{activeTrack.tagline}</p>
         <div className="mt-6 space-y-3">
           {activeTrack.missions.map((m, i) => {
             const done = Boolean(progress.completed[m.id]);
@@ -628,22 +628,22 @@ function TracksTab({
               <button
                 key={m.id}
                 onClick={() => setActiveMission(m)}
-                className={`w-full text-left border-2 border-[#14110c] p-4 flex items-center gap-4 transition-all hover:translate-x-1 ${
-                  done ? 'bg-[#f6efe0]' : boss ? 'bg-[#14110c]' : 'bg-white'
+                className={`w-full text-left border-2 border-[#0b3b44] p-4 flex items-center gap-4 transition-all hover:translate-x-1 ${
+                  done ? 'bg-[#fbf5ea]' : boss ? 'bg-[#0b3b44]' : 'bg-white'
                 }`}
               >
                 <span
-                  className={`font-mono font-bold text-sm w-9 h-9 grid place-items-center border-2 border-[#14110c] shrink-0 ${
-                    done ? 'bg-[#f5b700]' : boss ? 'bg-[#b3261e] text-white' : 'bg-[#f6efe0]'
+                  className={`font-mono font-bold text-sm w-9 h-9 grid place-items-center border-2 border-[#0b3b44] shrink-0 ${
+                    done ? 'bg-[#f5b700]' : boss ? 'bg-[#ff6f59] text-white' : 'bg-[#fbf5ea]'
                   }`}
                 >
                   {done ? '✓' : boss ? '★' : String(i + 1).padStart(2, '0')}
                 </span>
                 <span className="flex-1 min-w-0">
-                  <span className={`font-sans font-bold text-sm block truncate ${boss && !done ? 'text-white' : 'text-[#14110c]'}`}>
+                  <span className={`font-sans font-bold text-sm block truncate ${boss && !done ? 'text-white' : 'text-[#0b3b44]'}`}>
                     {m.title}{boss ? ' (BOSS)' : ''}
                   </span>
-                  <span className={`font-mono text-[10px] ${boss && !done ? 'text-white/50' : 'text-[#14110c]/50'}`}>
+                  <span className={`font-mono text-[10px] ${boss && !done ? 'text-white/50' : 'text-[#0b3b44]/50'}`}>
                     ~{m.minutes} MIN · +{m.xp} XP
                   </span>
                 </span>
@@ -667,11 +667,11 @@ function TracksTab({
           >
             <div className="flex items-center justify-between">
               <span className="font-mono font-bold text-[11px] tracking-wider" style={{ color: t.color === '#f5b700' ? '#8A6A00' : t.color }}>[ TRACK 0{i + 1} ]</span>
-              <span className="font-mono font-bold text-[10px] text-[#14110c]/50">{done}/{t.missions.length}</span>
+              <span className="font-mono font-bold text-[10px] text-[#0b3b44]/50">{done}/{t.missions.length}</span>
             </div>
-            <h3 className="font-display italic font-extrabold text-2xl text-[#14110c] mt-3">{t.name}</h3>
-            <p className="font-sans text-sm text-[#14110c]/70 mt-1">{t.tagline}</p>
-            <div className="mt-4 h-2.5 border border-[#14110c] bg-[#f6efe0]">
+            <h3 className="font-display italic font-extrabold text-2xl text-[#0b3b44] mt-3">{t.name}</h3>
+            <p className="font-sans text-sm text-[#0b3b44]/70 mt-1">{t.tagline}</p>
+            <div className="mt-4 h-2.5 border border-[#0b3b44] bg-[#fbf5ea]">
               <div className="h-full" style={{ width: `${(done / t.missions.length) * 100}%`, background: t.color }} />
             </div>
           </button>
@@ -695,7 +695,7 @@ function PromptsTab() {
       <div className="flex flex-wrap items-center gap-2">
         <button
           onClick={() => setCat('all')}
-          className={`font-mono font-bold text-[11px] uppercase border-2 border-[#14110c] px-3 py-1.5 ${cat === 'all' ? 'bg-[#14110c] text-white' : 'bg-white'}`}
+          className={`font-mono font-bold text-[11px] uppercase border-2 border-[#0b3b44] px-3 py-1.5 ${cat === 'all' ? 'bg-[#0b3b44] text-white' : 'bg-white'}`}
         >
           All {promptCards.length}
         </button>
@@ -703,7 +703,7 @@ function PromptsTab() {
           <button
             key={c.key}
             onClick={() => setCat(c.key)}
-            className={`font-mono font-bold text-[11px] uppercase border-2 border-[#14110c] px-3 py-1.5 ${cat === c.key ? 'bg-[#f5b700]' : 'bg-white'}`}
+            className={`font-mono font-bold text-[11px] uppercase border-2 border-[#0b3b44] px-3 py-1.5 ${cat === c.key ? 'bg-[#f5b700]' : 'bg-white'}`}
           >
             {c.label}
           </button>
@@ -712,7 +712,7 @@ function PromptsTab() {
           value={q}
           onChange={(e) => setQ(e.target.value)}
           placeholder="Search the library…"
-          className="ml-auto font-sans text-sm border-2 border-[#14110c] bg-white px-3 py-1.5 outline-none focus:bg-[#FFFDF6] min-w-[200px]"
+          className="ml-auto font-sans text-sm border-2 border-[#0b3b44] bg-white px-3 py-1.5 outline-none focus:bg-[#FFFDF6] min-w-[200px]"
         />
       </div>
       <div className="grid md:grid-cols-2 gap-5 mt-6">
@@ -720,18 +720,18 @@ function PromptsTab() {
           <div key={c.id} className="pop-card rounded-none p-5 flex flex-col">
             <div className="flex items-start justify-between gap-3">
               <div>
-                <span className="font-mono font-bold text-[10px] uppercase tracking-wider text-[#8f1d22]">[{c.category}]</span>
-                <h3 className="font-display font-extrabold text-lg text-[#14110c] mt-1">{c.title}</h3>
+                <span className="font-mono font-bold text-[10px] uppercase tracking-wider text-[#0a7c78]">[{c.category}]</span>
+                <h3 className="font-display font-extrabold text-lg text-[#0b3b44] mt-1">{c.title}</h3>
               </div>
               <CopyButton text={c.text} />
             </div>
-            <p className="font-sans text-[12px] text-[#14110c]/60 mt-1">{c.whenToUse}</p>
-            <pre className="mt-3 font-mono text-[11.5px] text-[#14110c]/85 whitespace-pre-wrap leading-relaxed bg-[#f6efe0] border border-[#14110c]/25 p-3 max-h-44 overflow-y-auto flex-1">{c.text}</pre>
-            {c.proTip && <p className="font-mono text-[10px] font-bold text-[#8f1d22] mt-2">PRO TIP: {c.proTip}</p>}
+            <p className="font-sans text-[12px] text-[#0b3b44]/60 mt-1">{c.whenToUse}</p>
+            <pre className="mt-3 font-mono text-[11.5px] text-[#0b3b44]/85 whitespace-pre-wrap leading-relaxed bg-[#fbf5ea] border border-[#0b3b44]/25 p-3 max-h-44 overflow-y-auto flex-1">{c.text}</pre>
+            {c.proTip && <p className="font-mono text-[10px] font-bold text-[#0a7c78] mt-2">PRO TIP: {c.proTip}</p>}
           </div>
         ))}
       </div>
-      {cards.length === 0 && <p className="font-mono text-sm text-[#14110c]/50 mt-8">No prompts match. Loosen the search.</p>}
+      {cards.length === 0 && <p className="font-mono text-sm text-[#0b3b44]/50 mt-8">No prompts match. Loosen the search.</p>}
     </div>
   );
 }
@@ -761,7 +761,7 @@ function VaultTab({ tier }: { tier: Tier }) {
   if (locked) {
     return (
       <div className="max-w-xl">
-        <div className="bg-[#14110c] border-2 border-[#14110c] shadow-[6px_6px_0_0_#f5b700] p-8">
+        <div className="bg-[#0b3b44] border-2 border-[#0b3b44] shadow-[6px_6px_0_0_#f5b700] p-8">
           <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#ffc933] uppercase">[ Level 02 territory ]</p>
           <h2 className="font-display italic font-extrabold text-3xl text-white mt-3">The Builder vault is locked</h2>
           <p className="font-sans text-sm text-white/70 mt-3 leading-relaxed">
@@ -772,7 +772,7 @@ function VaultTab({ tier }: { tier: Tier }) {
           <button
             onClick={() => void upgrade()}
             disabled={busy}
-            className="mt-6 font-sans font-bold bg-[#f5b700] text-[#14110c] border-2 border-[#14110c] px-6 py-3 hover:translate-y-[1px] transition-transform disabled:opacity-50"
+            className="mt-6 font-sans font-bold bg-[#f5b700] text-[#0b3b44] border-2 border-[#0b3b44] px-6 py-3 hover:translate-y-[1px] transition-transform disabled:opacity-50"
           >
             {busy ? 'Opening checkout…' : 'Unlock the vault'}
           </button>
@@ -787,14 +787,14 @@ function VaultTab({ tier }: { tier: Tier }) {
   if (open) {
     return (
       <div className="max-w-3xl">
-        <button onClick={() => setOpen(null)} className="font-mono font-bold text-[11px] text-[#8f1d22] uppercase tracking-wider">
+        <button onClick={() => setOpen(null)} className="font-mono font-bold text-[11px] text-[#0a7c78] uppercase tracking-wider">
           ← Vault
         </button>
         <div className="pop-card rounded-none p-7 mt-4">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <span className="font-mono font-bold text-[10px] uppercase tracking-wider text-[#8f1d22]">[{open.kind}]</span>
-              <h2 className="font-display italic font-extrabold text-3xl text-[#14110c] mt-1">{open.name}</h2>
+              <span className="font-mono font-bold text-[10px] uppercase tracking-wider text-[#0a7c78]">[{open.kind}]</span>
+              <h2 className="font-display italic font-extrabold text-3xl text-[#0b3b44] mt-1">{open.name}</h2>
             </div>
             <CopyButton text={open.body} label="Copy all" />
           </div>
@@ -807,12 +807,12 @@ function VaultTab({ tier }: { tier: Tier }) {
   return (
     <div>
       <div className="pop-card-yellow rounded-none p-5 mb-6 flex items-center justify-between gap-4 flex-wrap">
-        <p className="font-sans text-sm font-bold text-[#14110c]">
+        <p className="font-sans text-sm font-bold text-[#0b3b44]">
           Ship-off: finished a boss mission? Send it in for your personal studio review.
         </p>
         <a
           href={`mailto:sarah@modernmustardseed.com?subject=${encodeURIComponent('MUSTARD MODE ship-off review')}&body=${encodeURIComponent('Coach, here is my boss mission build:\n\nLink: \nTrack: \nWhat I want eyes on: ')}`}
-          className="font-mono font-bold text-[11px] uppercase tracking-wider bg-[#14110c] text-white px-4 py-2 shrink-0"
+          className="font-mono font-bold text-[11px] uppercase tracking-wider bg-[#0b3b44] text-white px-4 py-2 shrink-0"
         >
           Submit for review →
         </a>
@@ -820,9 +820,9 @@ function VaultTab({ tier }: { tier: Tier }) {
       <div className="grid md:grid-cols-3 gap-5">
         {blueprints.map((b) => (
           <button key={b.id} onClick={() => setOpen(b)} className="text-left pop-card rounded-none p-5 hover:-translate-y-1 transition-transform">
-            <span className="font-mono font-bold text-[10px] uppercase tracking-wider text-[#8f1d22]">[{b.kind}]</span>
-            <h3 className="font-display font-extrabold text-lg text-[#14110c] mt-1">{b.name}</h3>
-            <p className="font-sans text-[12px] text-[#14110c]/65 mt-1.5">{b.description}</p>
+            <span className="font-mono font-bold text-[10px] uppercase tracking-wider text-[#0a7c78]">[{b.kind}]</span>
+            <h3 className="font-display font-extrabold text-lg text-[#0b3b44] mt-1">{b.name}</h3>
+            <p className="font-sans text-[12px] text-[#0b3b44]/65 mt-1.5">{b.description}</p>
           </button>
         ))}
       </div>

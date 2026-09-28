@@ -130,7 +130,7 @@ export default async function StoreItemPage({
   const configured = !!item.stripePriceId && !isComingSoon(slug);
 
   return (
-    <div className="relative min-h-screen bg-[#f6efe0] text-[#14110c] overflow-x-clip">
+    <div className="relative min-h-screen bg-[#fbf5ea] text-[#0b3b44] overflow-x-clip">
       <JsonLd data={jsonLd} />
 
       <div aria-hidden="true" className="absolute inset-0 halftone-bg opacity-40 pointer-events-none" />
@@ -152,8 +152,8 @@ export default async function StoreItemPage({
         }
         title={item.name}
         art={{
-          src: '/art/pages/store',
-          alt: 'Painting: Mr. Mustard tips his fedora at a glamorous Art Deco department store counter stacked with gift boxes in gold ribbon, as Mrs. Mustard hands a package across the glass',
+          src: '/art/riviera/store',
+          alt: 'Painting: on a sunny Riviera boutique street, Mrs. Mustard in her big hat carries striped shopping bags from a shop with a Tiffany-blue awning while Mr. Mustard carries the rest and taps his phone, the kids window-shopping',
           caption: 'Straight off the shelf',
         }}
       >
@@ -169,16 +169,16 @@ export default async function StoreItemPage({
           <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-8 items-center">
             <div>
               <div className="flex items-baseline gap-4 mb-3">
-                <span className="font-display text-5xl md:text-6xl font-black text-[#14110c] tracking-tight">
+                <span className="font-display text-5xl md:text-6xl font-black text-[#0b3b44] tracking-tight">
                   ${item.priceUsd}
                 </span>
                 {!isProductItem && (
-                  <span className="text-[#14110c]/55 text-base font-mono line-through">
+                  <span className="text-[#0b3b44]/55 text-base font-mono line-through">
                     ${item.individualTotal}
                   </span>
                 )}
               </div>
-              <p className="text-[#14110c]/75 text-sm font-body font-medium leading-relaxed">
+              <p className="text-[#0b3b44]/75 text-sm font-body font-medium leading-relaxed">
                 {isProductItem ? (
                   <>
                     {item.pages} pages · PDF · Instant download · Lifetime access · Free updates
@@ -199,7 +199,7 @@ export default async function StoreItemPage({
 
         {/* What's inside */}
         <section className="mb-16">
-          <span className="text-[10px] uppercase tracking-[0.45em] text-[#8f1d22] font-mono font-bold mb-5 block">
+          <span className="text-[10px] uppercase tracking-[0.45em] text-[#0a7c78] font-mono font-bold mb-5 block">
             What is inside
           </span>
           <p className="text-[#3a3733] text-base md:text-lg font-body leading-relaxed max-w-3xl">
@@ -210,7 +210,7 @@ export default async function StoreItemPage({
         {/* Bundle: list included products */}
         {!isProductItem && (
           <section className="mb-16">
-            <span className="text-[10px] uppercase tracking-[0.45em] text-[#8f1d22] font-mono font-bold mb-7 block">
+            <span className="text-[10px] uppercase tracking-[0.45em] text-[#0a7c78] font-mono font-bold mb-7 block">
               What is included
             </span>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -218,23 +218,23 @@ export default async function StoreItemPage({
                 <Link
                   key={p.slug}
                   href={`/store/${p.slug}`}
-                  className="group bg-white border-2 border-[#14110c] rounded-2xl p-6 transition-transform duration-300 hover:-translate-y-1 flex flex-col"
-                  style={{ boxShadow: `inset 5px 0 0 0 ${p.accentColor}, 4px 4px 0 0 #14110c` }}
+                  className="group bg-white border-2 border-[#0b3b44] rounded-2xl p-6 transition-transform duration-300 hover:-translate-y-1 flex flex-col"
+                  style={{ boxShadow: `inset 5px 0 0 0 ${p.accentColor}, 4px 4px 0 0 #0b3b44` }}
                 >
-                  <span className="text-[9px] uppercase tracking-[0.3em] text-[#8f1d22] font-mono font-bold mb-2">
+                  <span className="text-[9px] uppercase tracking-[0.3em] text-[#0a7c78] font-mono font-bold mb-2">
                     {p.category}
                   </span>
-                  <h3 className="font-display text-lg md:text-xl text-[#14110c] font-black tracking-tight leading-snug mb-2">
+                  <h3 className="font-display text-lg md:text-xl text-[#0b3b44] font-black tracking-tight leading-snug mb-2">
                     {p.name}
                   </h3>
                   <p className="text-[#3a3733] text-sm font-body leading-relaxed mb-3 flex-1">
                     {p.pitch}
                   </p>
                   <div className="flex justify-between items-baseline">
-                    <span className="text-[#14110c]/45 text-xs font-mono uppercase tracking-[0.22em]">
+                    <span className="text-[#0b3b44]/45 text-xs font-mono uppercase tracking-[0.22em]">
                       {p.pages} pages
                     </span>
-                    <span className="text-[#14110c] text-sm font-mono font-bold">${p.priceUsd}</span>
+                    <span className="text-[#0b3b44] text-sm font-mono font-bold">${p.priceUsd}</span>
                   </div>
                 </Link>
               ))}
@@ -245,7 +245,7 @@ export default async function StoreItemPage({
         {/* Table of contents */}
         {isProductItem && (
           <section className="mb-16">
-            <span className="text-[10px] uppercase tracking-[0.45em] text-[#8f1d22] font-mono font-bold mb-7 block">
+            <span className="text-[10px] uppercase tracking-[0.45em] text-[#0a7c78] font-mono font-bold mb-7 block">
               Table of contents
             </span>
             <ol className="space-y-3 max-w-3xl">
@@ -254,11 +254,11 @@ export default async function StoreItemPage({
                 const body = rest.join('.').trim();
                 return (
                   <li key={i} className="flex items-start gap-5 pop-card p-5">
-                    <span className="font-display text-xl md:text-2xl text-[#f5b700] font-black tracking-tight flex-shrink-0 min-w-[2ch]" style={{ WebkitTextStroke: '1px #14110c' }}>
+                    <span className="font-display text-xl md:text-2xl text-[#f5b700] font-black tracking-tight flex-shrink-0 min-w-[2ch]" style={{ WebkitTextStroke: '1px #0b3b44' }}>
                       {String(i + 1).padStart(2, '0')}
                     </span>
                     <div>
-                      <h3 className="font-display text-base md:text-lg text-[#14110c] font-black tracking-tight leading-snug mb-1">
+                      <h3 className="font-display text-base md:text-lg text-[#0b3b44] font-black tracking-tight leading-snug mb-1">
                         {title.trim()}
                       </h3>
                       {body && (
@@ -269,27 +269,27 @@ export default async function StoreItemPage({
                 );
               })}
               <li className="flex items-start gap-5 pop-card-yellow p-5">
-                <span className="font-display text-xl md:text-2xl text-[#14110c] font-black tracking-tight flex-shrink-0 min-w-[2ch]">
+                <span className="font-display text-xl md:text-2xl text-[#0b3b44] font-black tracking-tight flex-shrink-0 min-w-[2ch]">
                   +
                 </span>
                 <div>
-                  <h3 className="font-display text-base md:text-lg text-[#14110c] font-black tracking-tight leading-snug mb-1">
+                  <h3 className="font-display text-base md:text-lg text-[#0b3b44] font-black tracking-tight leading-snug mb-1">
                     Builder Letter from Sarah Scarano
                   </h3>
-                  <p className="text-[#14110c]/75 text-sm font-body font-medium leading-relaxed">
+                  <p className="text-[#0b3b44]/75 text-sm font-body font-medium leading-relaxed">
                     The why behind the playbook and how to actually run it.
                   </p>
                 </div>
               </li>
               <li className="flex items-start gap-5 pop-card-yellow p-5">
-                <span className="font-display text-xl md:text-2xl text-[#14110c] font-black tracking-tight flex-shrink-0 min-w-[2ch]">
+                <span className="font-display text-xl md:text-2xl text-[#0b3b44] font-black tracking-tight flex-shrink-0 min-w-[2ch]">
                   +
                 </span>
                 <div>
-                  <h3 className="font-display text-base md:text-lg text-[#14110c] font-black tracking-tight leading-snug mb-1">
+                  <h3 className="font-display text-base md:text-lg text-[#0b3b44] font-black tracking-tight leading-snug mb-1">
                     The 10x Companion
                   </h3>
-                  <p className="text-[#14110c]/75 text-sm font-body font-medium leading-relaxed">
+                  <p className="text-[#0b3b44]/75 text-sm font-body font-medium leading-relaxed">
                     Upload your completed PDF to Claude for personalized coaching tuned to your business.
                   </p>
                 </div>
@@ -303,13 +303,13 @@ export default async function StoreItemPage({
           <section className="mb-16">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div className="pop-card p-7">
-                <span className="text-[10px] uppercase tracking-[0.45em] text-[#8f1d22] font-mono font-bold mb-4 block">
+                <span className="text-[10px] uppercase tracking-[0.45em] text-[#0a7c78] font-mono font-bold mb-4 block">
                   Built for
                 </span>
                 <p className="text-[#3a3733] text-base font-body leading-relaxed">{item.idealBuyer}</p>
               </div>
               <div className="pop-card p-7">
-                <span className="text-[10px] uppercase tracking-[0.45em] text-[#8f1d22] font-mono font-bold mb-4 block">
+                <span className="text-[10px] uppercase tracking-[0.45em] text-[#0a7c78] font-mono font-bold mb-4 block">
                   Where it fits
                 </span>
                 <p className="text-[#3a3733] text-base font-body leading-relaxed">{item.funnelRole}</p>
@@ -320,17 +320,17 @@ export default async function StoreItemPage({
 
         {/* FAQ */}
         <section className="mb-20">
-          <span className="text-[10px] uppercase tracking-[0.45em] text-[#8f1d22] font-mono font-bold mb-7 block">
+          <span className="text-[10px] uppercase tracking-[0.45em] text-[#0a7c78] font-mono font-bold mb-7 block">
             Common questions
           </span>
           <div className="space-y-3">
             {faqs.map((item) => (
               <details key={item.q} className="pop-card p-6 group cursor-pointer">
                 <summary className="flex justify-between items-start gap-4 list-none">
-                  <h3 className="font-display text-base md:text-lg text-[#14110c] font-black tracking-tight">
+                  <h3 className="font-display text-base md:text-lg text-[#0b3b44] font-black tracking-tight">
                     {item.q}
                   </h3>
-                  <span className="text-[#8f1d22] text-2xl flex-shrink-0 transition-transform group-open:rotate-45 leading-none font-black">
+                  <span className="text-[#0a7c78] text-2xl flex-shrink-0 transition-transform group-open:rotate-45 leading-none font-black">
                     +
                   </span>
                 </summary>
@@ -343,25 +343,25 @@ export default async function StoreItemPage({
         {/* Cross-sell to engagements */}
         <section className="mb-24">
           <div className="pop-card-yellow p-8 md:p-12">
-            <span className="text-[10px] uppercase tracking-[0.45em] text-[#14110c] font-mono font-bold mb-5 block">
+            <span className="text-[10px] uppercase tracking-[0.45em] text-[#0b3b44] font-mono font-bold mb-5 block">
               Want us to build it for you instead?
             </span>
-            <h2 className="font-display text-2xl md:text-4xl font-black text-[#14110c] tracking-tight mb-4">
+            <h2 className="font-display text-2xl md:text-4xl font-black text-[#0b3b44] tracking-tight mb-4">
               Your ${item.priceUsd} credits toward any engagement
             </h2>
-            <p className="text-[#14110c]/80 text-base font-body font-medium leading-relaxed mb-7 max-w-2xl">
+            <p className="text-[#0b3b44]/80 text-base font-body font-medium leading-relaxed mb-7 max-w-2xl">
               Read the playbook, run the worksheets, decide what you want to ship. Then if you would rather have us build the system for you, every dollar you spent here comes off the engagement. Mention it on your discovery call.
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
               <Link
                 href="/work-with-us"
-                className="px-7 py-3.5 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-white bg-[#14110c] rounded-full border-2 border-[#14110c] shadow-[4px_4px_0_0_rgba(20,17,12,0.3)] hover:-translate-y-0.5 transition-all text-center"
+                className="px-7 py-3.5 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-white bg-[#0b3b44] rounded-full border-2 border-[#0b3b44] shadow-[4px_4px_0_0_rgba(11,59,68,0.3)] hover:-translate-y-0.5 transition-all text-center"
               >
                 See engagements
               </Link>
               <Link
                 href="/book"
-                className="px-7 py-3.5 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-[#14110c] bg-white rounded-full border-2 border-[#14110c] shadow-[4px_4px_0_0_#14110c] hover:-translate-y-0.5 transition-all text-center"
+                className="px-7 py-3.5 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-[#0b3b44] bg-white rounded-full border-2 border-[#0b3b44] shadow-[4px_4px_0_0_#0b3b44] hover:-translate-y-0.5 transition-all text-center"
               >
                 Book a free call
               </Link>

@@ -16,7 +16,7 @@ export default function WorkShowcase() {
   const row = [...WORK_SITES, ...WORK_SITES];
 
   return (
-    <section aria-labelledby="work-showcase" className="relative bg-[#f6efe0] border-t-2 border-[#14110c] py-16 md:py-20 overflow-hidden">
+    <section aria-labelledby="work-showcase" className="relative bg-[#fbf5ea] border-t-2 border-[#0b3b44] py-16 md:py-20 overflow-hidden">
       <div aria-hidden="true" className="absolute inset-0 halftone-bg opacity-40 pointer-events-none" />
       <div className="relative max-w-6xl mx-auto px-6">
         <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#C4160B] uppercase">
@@ -25,7 +25,7 @@ export default function WorkShowcase() {
         <h2 id="work-showcase" className="font-display italic font-extrabold text-4xl md:text-5xl mt-3 leading-[1.02] max-w-3xl">
           {WORK_SITES.length} builds. Zero templates.
         </h2>
-        <p className="font-body text-[15px] text-[#14110c]/70 mt-4 max-w-2xl leading-relaxed">
+        <p className="font-body text-[15px] text-[#0b3b44]/70 mt-4 max-w-2xl leading-relaxed">
           Laundromats, landscapers, a lakeside retreat, a seafood wholesaler, a full apparel store. Every one designed
           from scratch by the studio for that business and nobody else. Hover to slow the reel down.
         </p>
@@ -40,8 +40,8 @@ export default function WorkShowcase() {
               aria-hidden={i >= WORK_SITES.length ? true : undefined}
               className="wsx-card shrink-0 w-[300px] sm:w-[380px]"
             >
-              <div className="rounded-2xl border-2 border-[#14110c] bg-white shadow-[6px_6px_0_0_#14110c] overflow-hidden">
-                <div className="relative aspect-[16/10] bg-[#14110c]">
+              <div className="rounded-2xl border-2 border-[#0b3b44] bg-white shadow-[6px_6px_0_0_#0b3b44] overflow-hidden">
+                <div className="relative aspect-[16/10] bg-[#0b3b44]">
                   <Image
                     src={s.img}
                     alt={`${s.name}, a ${s.trade.toLowerCase()} website built by Modern Mustard Seed`}
@@ -50,8 +50,8 @@ export default function WorkShowcase() {
                     className="object-cover object-top"
                   />
                 </div>
-                <div className="px-4 py-3 border-t-2 border-[#14110c]">
-                  <p className="font-display italic font-extrabold text-[15px] text-[#14110c] truncate">{s.name}</p>
+                <div className="px-4 py-3 border-t-2 border-[#0b3b44]">
+                  <p className="font-display italic font-extrabold text-[15px] text-[#0b3b44] truncate">{s.name}</p>
                   <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-[#8f6600] truncate">{s.trade} · {s.place}</p>
                 </div>
               </div>

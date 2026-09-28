@@ -38,7 +38,7 @@ const ENGAGEMENTS = [
 ];
 
 const inputCls =
-  'w-full rounded-lg border-2 border-[#14110c] bg-[#f6efe0] px-4 py-3 font-body text-[15px] text-[#14110c] placeholder:text-[#14110c]/35 outline-none transition-shadow focus:shadow-[3px_3px_0_0_#f5b700]';
+  'w-full rounded-lg border-2 border-[#0b3b44] bg-[#fbf5ea] px-4 py-3 font-body text-[15px] text-[#0b3b44] placeholder:text-[#0b3b44]/35 outline-none transition-shadow focus:shadow-[3px_3px_0_0_#f5b700]';
 
 const labelCls =
   'mb-2 block font-mono text-[9px] font-bold uppercase tracking-[0.3em] text-[#5c554a]';
@@ -116,12 +116,12 @@ export default function InquiryForm() {
 
   if (submitted) {
     return (
-      <div className="rounded-2xl border-2 border-[#14110c] bg-white p-8 md:p-12 shadow-[7px_7px_0_0_#14110c]">
+      <div className="rounded-2xl border-2 border-[#0b3b44] bg-white p-8 md:p-12 shadow-[7px_7px_0_0_#0b3b44]">
         <div className="mx-auto max-w-md text-center">
-          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-[#8f1d22]">
+          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-[#0a7c78]">
             Received
           </p>
-          <h2 className="mt-4 font-display text-3xl font-extrabold leading-tight text-[#14110c]">
+          <h2 className="mt-4 font-display text-3xl font-extrabold leading-tight text-[#0b3b44]">
             Thank you. It is with Sarah.
           </h2>
           <p className="mt-4 font-body text-[15px] leading-relaxed text-[#5c554a]">
@@ -133,7 +133,7 @@ export default function InquiryForm() {
             Anything urgent goes to{' '}
             <a
               href="mailto:sarah@modernmustardseed.com"
-              className="font-bold text-[#8f1d22] underline decoration-2 underline-offset-2 hover:text-[#8f1d22]"
+              className="font-bold text-[#0a7c78] underline decoration-2 underline-offset-2 hover:text-[#0a7c78]"
             >
               sarah@modernmustardseed.com
             </a>
@@ -145,12 +145,12 @@ export default function InquiryForm() {
   }
 
   return (
-    <div className="rounded-2xl border-2 border-[#14110c] bg-white p-6 md:p-10 shadow-[7px_7px_0_0_#14110c]">
-      <div className="border-b-2 border-[#14110c] pb-5">
-        <p className="font-mono text-[9px] font-bold uppercase tracking-[0.26em] text-[#8f1d22]">
+    <div className="rounded-2xl border-2 border-[#0b3b44] bg-white p-6 md:p-10 shadow-[7px_7px_0_0_#0b3b44]">
+      <div className="border-b-2 border-[#0b3b44] pb-5">
+        <p className="font-mono text-[9px] font-bold uppercase tracking-[0.26em] text-[#0a7c78]">
           Private Inquiry
         </p>
-        <p className="mt-2 font-display text-2xl font-extrabold leading-none text-[#14110c]">
+        <p className="mt-2 font-display text-2xl font-extrabold leading-none text-[#0b3b44]">
           Modern Mustard Seed
         </p>
         <p className="mt-2 font-mono text-[9px] uppercase tracking-[0.16em] text-[#5c554a]">
@@ -176,10 +176,10 @@ export default function InquiryForm() {
                   type="button"
                   aria-pressed={active}
                   onClick={() => setKind(x.id)}
-                  className={`rounded-full border-2 border-[#14110c] px-4 py-2 font-mono text-[10px] font-bold uppercase tracking-[0.14em] transition-all ${
+                  className={`rounded-full border-2 border-[#0b3b44] px-4 py-2 font-mono text-[10px] font-bold uppercase tracking-[0.14em] transition-all ${
                     active
-                      ? '-translate-y-0.5 bg-[#f5b700] text-[#14110c] shadow-[2px_2px_0_0_#14110c]'
-                      : 'bg-white text-[#14110c] hover:-translate-y-0.5 hover:shadow-[2px_2px_0_0_#14110c]'
+                      ? '-translate-y-0.5 bg-[#f5b700] text-[#0b3b44] shadow-[2px_2px_0_0_#0b3b44]'
+                      : 'bg-white text-[#0b3b44] hover:-translate-y-0.5 hover:shadow-[2px_2px_0_0_#0b3b44]'
                   }`}
                 >
                   {x.label}
@@ -293,16 +293,16 @@ export default function InquiryForm() {
         {/* This used to carry a five-figure floor next to a budget dropdown.
             Both came off on 2026-09-16 (Sarah): the numbers read as a gate, and
             the plan is to lead with value rather than qualify at the door. */}
-        <p className="rounded-lg border-2 border-dashed border-[#14110c]/30 bg-[#f6efe0] px-4 py-3 font-body text-[13px] leading-relaxed text-[#5c554a]">
+        <p className="rounded-lg border-2 border-dashed border-[#0b3b44]/30 bg-[#fbf5ea] px-4 py-3 font-body text-[13px] leading-relaxed text-[#5c554a]">
           Would rather just pick a time?{' '}
-          <a href="/book" className="font-bold text-[#8f1d22] underline decoration-2 underline-offset-2 hover:text-[#8f1d22]">
+          <a href="/book" className="font-bold text-[#0a7c78] underline decoration-2 underline-offset-2 hover:text-[#0a7c78]">
             Book a call
           </a>{' '}
           and put yourself straight on the calendar. This form is for when writing it out is easier.
         </p>
 
         {error && (
-          <p className="rounded-lg border-2 border-[#b3261e] bg-[#FDECEA] px-4 py-3 font-body text-sm text-[#8a1c10]">
+          <p className="rounded-lg border-2 border-[#ff6f59] bg-[#FDECEA] px-4 py-3 font-body text-sm text-[#8a1c10]">
             {error}
           </p>
         )}
@@ -310,7 +310,7 @@ export default function InquiryForm() {
         <button
           type="submit"
           disabled={sending}
-          className="w-full rounded-full border-2 border-[#14110c] bg-[#14110c] px-8 py-4 font-sans text-[11px] font-extrabold uppercase tracking-[0.22em] text-[#f6efe0] shadow-[4px_4px_0_0_#f5b700] transition-all hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
+          className="w-full rounded-full border-2 border-[#0b3b44] bg-[#0b3b44] px-8 py-4 font-sans text-[11px] font-extrabold uppercase tracking-[0.22em] text-[#fbf5ea] shadow-[4px_4px_0_0_#f5b700] transition-all hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {sending ? 'Sending…' : 'Send the inquiry'}
         </button>

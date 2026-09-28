@@ -73,7 +73,7 @@ function PopKey({
       type="button"
       onClick={onClick}
       aria-label={label}
-      className={`select-none rounded-lg border-2 border-[#14110c] font-mono font-bold leading-none shadow-[0_4px_0_0_#14110c] transition-[transform,box-shadow] duration-75 hover:-translate-y-[1px] hover:shadow-[0_5px_0_0_#14110c] active:translate-y-[3px] active:shadow-[0_1px_0_0_#14110c] motion-reduce:transition-none motion-reduce:hover:translate-y-0 ${className}`}
+      className={`select-none rounded-lg border-2 border-[#0b3b44] font-mono font-bold leading-none shadow-[0_4px_0_0_#0b3b44] transition-[transform,box-shadow] duration-75 hover:-translate-y-[1px] hover:shadow-[0_5px_0_0_#0b3b44] active:translate-y-[3px] active:shadow-[0_1px_0_0_#0b3b44] motion-reduce:transition-none motion-reduce:hover:translate-y-0 ${className}`}
     >
       {children}
     </button>
@@ -200,41 +200,41 @@ export default function RecoveryMachine({
 
   return (
     <div
-      className="mx-auto w-full max-w-xl rounded-[18px] border-[3px] border-[#14110c] bg-[#f5b700] p-3 shadow-[8px_8px_0_0_#14110c] sm:p-4"
+      className="mx-auto w-full max-w-xl rounded-[18px] border-[3px] border-[#0b3b44] bg-[#f5b700] p-3 shadow-[8px_8px_0_0_#0b3b44] sm:p-4"
       style={{ transform: 'rotate(-0.5deg)' }}
     >
       {/* Brand plate */}
       <div className="mb-2.5 flex items-center justify-between gap-3">
         <div>
-          <span className="block font-mono text-[9px] font-bold uppercase tracking-[0.24em] text-[#14110c]">
+          <span className="block font-mono text-[9px] font-bold uppercase tracking-[0.24em] text-[#0b3b44]">
             Modern Mustard Seed
           </span>
-          <span className="block font-mono text-[8px] font-bold uppercase tracking-[0.18em] text-[#14110c]/75">
+          <span className="block font-mono text-[8px] font-bold uppercase tracking-[0.18em] text-[#0b3b44]/75">
             Model RR-1 · Revenue Recovery
           </span>
         </div>
-        <div className="flex items-center gap-1 rounded-md border-2 border-[#14110c] bg-[#14110c] px-1.5 py-0.5" aria-hidden>
+        <div className="flex items-center gap-1 rounded-md border-2 border-[#0b3b44] bg-[#0b3b44] px-1.5 py-0.5" aria-hidden>
           {[0, 1, 2].map((i) => (
-            <span key={i} className="block h-3 w-2.5 rounded-[2px] bg-[#14110c]/70" />
+            <span key={i} className="block h-3 w-2.5 rounded-[2px] bg-[#0b3b44]/70" />
           ))}
         </div>
       </div>
 
       {/* The paper label: what the research noticed about this exact business. */}
       {noticedLine && (
-        <div className="mb-2.5 rounded-lg border-2 border-dashed border-[#14110c]/50 bg-[#FFFDF6] px-3 py-2" style={{ transform: 'rotate(0.4deg)' }}>
+        <div className="mb-2.5 rounded-lg border-2 border-dashed border-[#0b3b44]/50 bg-[#FFFDF6] px-3 py-2" style={{ transform: 'rotate(0.4deg)' }}>
           <span className="block font-mono text-[8px] font-bold uppercase tracking-[0.2em] text-[#C4160B]">
             What We Noticed Before We Built This
           </span>
-          <span className="mt-0.5 block font-body text-[12.5px] leading-snug text-[#14110c]/85">{noticedLine}</span>
+          <span className="mt-0.5 block font-body text-[12.5px] leading-snug text-[#0b3b44]/85">{noticedLine}</span>
         </div>
       )}
 
       {/* LCD. Background rides inline so the equals flash can't race a class. */}
       <div
-        className="relative overflow-hidden rounded-lg border-2 border-[#14110c] p-3 transition-[background-color,filter] duration-150 motion-reduce:transition-none sm:p-4"
+        className="relative overflow-hidden rounded-lg border-2 border-[#0b3b44] p-3 transition-[background-color,filter] duration-150 motion-reduce:transition-none sm:p-4"
         style={{
-          backgroundColor: flash ? '#17301F' : '#14110c',
+          backgroundColor: flash ? '#17301F' : '#0b3b44',
           filter: flash ? 'brightness(1.25)' : 'none',
           boxShadow: 'inset 0 3px 12px rgba(0,0,0,0.75)',
         }}
@@ -250,8 +250,8 @@ export default function RecoveryMachine({
           <span className="font-mono text-[9px] font-bold uppercase tracking-[0.22em] text-[#f5b700]/70">
             Leaking Every Month
           </span>
-          <span className="flex items-center gap-1.5 font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-[#8f1d22]">
-            <span className="block h-1.5 w-1.5 rounded-full bg-[#b3261e]" aria-hidden />
+          <span className="flex items-center gap-1.5 font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-[#0a7c78]">
+            <span className="block h-1.5 w-1.5 rounded-full bg-[#ff6f59]" aria-hidden />
             Live
           </span>
         </div>
@@ -277,7 +277,7 @@ export default function RecoveryMachine({
 
       {/* Slots and keypad */}
       <div className="mt-3 grid gap-3 sm:grid-cols-[1.1fr_1fr]">
-        <div className="rounded-lg border-2 border-[#14110c] bg-[#FFFDF6] p-2.5">
+        <div className="rounded-lg border-2 border-[#0b3b44] bg-[#FFFDF6] p-2.5">
           <div className="flex flex-col gap-1.5">
             {FIELDS.map((f) => {
               const on = active === f.key;
@@ -286,15 +286,15 @@ export default function RecoveryMachine({
                   key={f.key}
                   htmlFor={`rm-${f.key}`}
                   className={`block cursor-text rounded-md border-2 px-2.5 py-1.5 transition-colors ${
-                    on ? 'border-[#14110c] bg-[#f5b700] shadow-[2px_2px_0_0_#14110c]' : 'border-[#14110c]/25 bg-white hover:border-[#14110c]/60'
+                    on ? 'border-[#0b3b44] bg-[#f5b700] shadow-[2px_2px_0_0_#0b3b44]' : 'border-[#0b3b44]/25 bg-white hover:border-[#0b3b44]/60'
                   }`}
                 >
                   <span className="flex items-center justify-between gap-2">
                     <span className="min-w-0">
-                      <span className="block font-mono text-[9px] font-bold uppercase tracking-[0.14em] text-[#14110c]">{f.label}</span>
-                      <span className="block truncate text-[10px] text-[#14110c]/75">{f.hint}</span>
+                      <span className="block font-mono text-[9px] font-bold uppercase tracking-[0.14em] text-[#0b3b44]">{f.label}</span>
+                      <span className="block truncate text-[10px] text-[#0b3b44]/75">{f.hint}</span>
                     </span>
-                    <span className="flex shrink-0 items-baseline font-mono text-sm font-bold tabular-nums text-[#14110c]">
+                    <span className="flex shrink-0 items-baseline font-mono text-sm font-bold tabular-nums text-[#0b3b44]">
                       {f.prefix}
                       <input
                         id={`rm-${f.key}`}
@@ -308,7 +308,7 @@ export default function RecoveryMachine({
                         value={String(vals[f.key])}
                         onFocus={() => setActive(f.key)}
                         onChange={(e) => set(f.key, Number(e.target.value))}
-                        className="w-[5ch] bg-transparent text-right font-mono text-base font-bold tabular-nums text-[#14110c] outline-none focus:underline focus:decoration-[#C4160B] focus:decoration-2 focus:underline-offset-4 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                        className="w-[5ch] bg-transparent text-right font-mono text-base font-bold tabular-nums text-[#0b3b44] outline-none focus:underline focus:decoration-[#C4160B] focus:decoration-2 focus:underline-offset-4 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                         style={{ MozAppearance: 'textfield' }}
                       />
                       {f.suffix}
@@ -318,41 +318,41 @@ export default function RecoveryMachine({
               );
             })}
           </div>
-          <p className="mt-2 font-mono text-[8px] uppercase tracking-[0.14em] text-[#14110c]/75">Type here, or use the keys</p>
+          <p className="mt-2 font-mono text-[8px] uppercase tracking-[0.14em] text-[#0b3b44]/75">Type here, or use the keys</p>
         </div>
 
         <div className="grid grid-cols-4 gap-1.5 self-start">
           {['7', '8', '9'].map((d) => (
-            <PopKey key={d} label={`Digit ${d}`} onClick={() => digit(d)} className="bg-white py-2.5 text-base text-[#14110c]">
+            <PopKey key={d} label={`Digit ${d}`} onClick={() => digit(d)} className="bg-white py-2.5 text-base text-[#0b3b44]">
               {d}
             </PopKey>
           ))}
-          <PopKey label="Clear this field" onClick={clearKey} className="bg-[#b3261e] py-2.5 text-xs text-[#f6efe0]">
+          <PopKey label="Clear this field" onClick={clearKey} className="bg-[#ff6f59] py-2.5 text-xs text-[#fbf5ea]">
             C
           </PopKey>
           {['4', '5', '6'].map((d) => (
-            <PopKey key={d} label={`Digit ${d}`} onClick={() => digit(d)} className="bg-white py-2.5 text-base text-[#14110c]">
+            <PopKey key={d} label={`Digit ${d}`} onClick={() => digit(d)} className="bg-white py-2.5 text-base text-[#0b3b44]">
               {d}
             </PopKey>
           ))}
-          <PopKey label="Delete last digit" onClick={backspace} className="bg-[#14110c] py-2.5 text-sm text-[#f6efe0]">
+          <PopKey label="Delete last digit" onClick={backspace} className="bg-[#0b3b44] py-2.5 text-sm text-[#fbf5ea]">
             <span aria-hidden>⌫</span>
           </PopKey>
           {['1', '2', '3'].map((d) => (
-            <PopKey key={d} label={`Digit ${d}`} onClick={() => digit(d)} className="bg-white py-2.5 text-base text-[#14110c]">
+            <PopKey key={d} label={`Digit ${d}`} onClick={() => digit(d)} className="bg-white py-2.5 text-base text-[#0b3b44]">
               {d}
             </PopKey>
           ))}
-          <PopKey label="Next field" onClick={nextField} className="bg-[#14110c] py-2.5 text-[8px] uppercase tracking-[0.08em] text-[#f6efe0]">
+          <PopKey label="Next field" onClick={nextField} className="bg-[#0b3b44] py-2.5 text-[8px] uppercase tracking-[0.08em] text-[#fbf5ea]">
             Next
           </PopKey>
-          <PopKey label="Digit 0" onClick={() => digit('0')} className="col-span-2 bg-white py-2.5 text-base text-[#14110c]">
+          <PopKey label="Digit 0" onClick={() => digit('0')} className="col-span-2 bg-white py-2.5 text-base text-[#0b3b44]">
             0
           </PopKey>
-          <PopKey label="Double zero" onClick={() => digit('00')} className="bg-white py-2.5 text-base text-[#14110c]">
+          <PopKey label="Double zero" onClick={() => digit('00')} className="bg-white py-2.5 text-base text-[#0b3b44]">
             00
           </PopKey>
-          <PopKey label="Total it up" onClick={equals} className="bg-[#14110c] py-2.5 text-lg text-[#f5b700]">
+          <PopKey label="Total it up" onClick={equals} className="bg-[#0b3b44] py-2.5 text-lg text-[#f5b700]">
             =
           </PopKey>
         </div>

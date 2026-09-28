@@ -32,7 +32,7 @@ export default function GlacialLake({ variant = 'dawn', className = '' }: Props)
             {isDawn ? (
               <>
                 <stop offset="0%" stopColor="#04060d" />
-                <stop offset="35%" stopColor="#14110c" />
+                <stop offset="35%" stopColor="#0b3b44" />
                 <stop offset="62%" stopColor="#1A1A2E" />
                 <stop offset="82%" stopColor="#3B6B8A" />
                 <stop offset="92%" stopColor="#C8964E" />
@@ -41,7 +41,7 @@ export default function GlacialLake({ variant = 'dawn', className = '' }: Props)
             ) : (
               <>
                 <stop offset="0%" stopColor="#04060d" />
-                <stop offset="60%" stopColor="#14110c" />
+                <stop offset="60%" stopColor="#0b3b44" />
                 <stop offset="100%" stopColor="#1A1A2E" />
               </>
             )}

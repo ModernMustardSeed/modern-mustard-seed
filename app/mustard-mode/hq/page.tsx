@@ -17,16 +17,16 @@ export default async function MustardModeHQ() {
 
   if (tier === 'none') {
     return (
-      <div className="min-h-screen bg-[#f6efe0] halftone-bg flex items-center justify-center px-6">
+      <div className="min-h-screen bg-[#fbf5ea] halftone-bg flex items-center justify-center px-6">
         <div className="pop-card rounded-none p-10 max-w-md text-center">
-          <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#8f1d22] uppercase">[ Access check ]</p>
-          <h1 className="font-display italic font-extrabold text-3xl text-[#14110c] mt-3">No credits on this account yet</h1>
-          <p className="font-sans text-sm text-[#14110c]/70 mt-3">
+          <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#0a7c78] uppercase">[ Access check ]</p>
+          <h1 className="font-display italic font-extrabold text-3xl text-[#0b3b44] mt-3">No credits on this account yet</h1>
+          <p className="font-sans text-sm text-[#0b3b44]/70 mt-3">
             You are signed in as {session.email}, but MUSTARD MODE is not switched on for this email yet.
           </p>
           <Link
             href="/mustard-mode#levels"
-            className="inline-block mt-6 font-sans font-bold bg-[#f5b700] text-[#14110c] border-2 border-[#14110c] shadow-[4px_4px_0_0_#14110c] px-6 py-3 hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#14110c] transition-all"
+            className="inline-block mt-6 font-sans font-bold bg-[#f5b700] text-[#0b3b44] border-2 border-[#0b3b44] shadow-[4px_4px_0_0_#0b3b44] px-6 py-3 hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#0b3b44] transition-all"
           >
             Choose your level
           </Link>

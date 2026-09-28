@@ -12,10 +12,10 @@ export const alt =
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
-const INK = '#14110c';
-const CREAM = '#f6efe0';
+const INK = '#0b3b44';
+const CREAM = '#fbf5ea';
 const MUSTARD = '#f5b700';
-const RED = '#b3261e';
+const RED = '#ff6f59';
 
 export default function OpengraphImage() {
   return new ImageResponse(

@@ -46,18 +46,18 @@ export default function WhitepaperGate() {
   };
 
   const inp =
-    'w-full bg-white border-2 border-[#14110c] rounded-lg px-3.5 py-2.5 text-sm text-[#14110c] placeholder-[#14110c]/35 focus:outline-none focus:ring-2 focus:ring-[#f5b700]';
+    'w-full bg-white border-2 border-[#0b3b44] rounded-lg px-3.5 py-2.5 text-sm text-[#0b3b44] placeholder-[#0b3b44]/35 focus:outline-none focus:ring-2 focus:ring-[#f5b700]';
 
   if (state === 'done') {
     return (
       <div className="pop-card p-6 text-center">
-        <p className="font-display text-xl font-black text-[#14110c] mb-1.5">Check your inbox.</p>
+        <p className="font-display text-xl font-black text-[#0b3b44] mb-1.5">Check your inbox.</p>
         <p className="text-[#3a3733] text-sm font-body mb-4">It is on its way, and it just opened in a new tab.</p>
         <a
           href={pdfUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-block px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#14110c] bg-[#f5b700] rounded-full border-2 border-[#14110c] shadow-[3px_3px_0_0_#14110c] hover:-translate-y-0.5 transition-all"
+          className="inline-block px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0b3b44] bg-[#f5b700] rounded-full border-2 border-[#0b3b44] shadow-[3px_3px_0_0_#0b3b44] hover:-translate-y-0.5 transition-all"
         >
           Open the PDF again
         </a>
@@ -67,10 +67,10 @@ export default function WhitepaperGate() {
 
   return (
     <form onSubmit={submit} className="pop-card p-6">
-      <span className="text-[10px] uppercase tracking-[0.3em] text-[#8f1d22] font-mono font-bold block mb-1.5">
+      <span className="text-[10px] uppercase tracking-[0.3em] text-[#0a7c78] font-mono font-bold block mb-1.5">
         Free whitepaper
       </span>
-      <p className="font-display text-xl font-black text-[#14110c] mb-3 leading-snug">Get the PDF</p>
+      <p className="font-display text-xl font-black text-[#0b3b44] mb-3 leading-snug">Get the PDF</p>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-2.5">
         <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" className={inp} autoComplete="name" />
         <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" required placeholder="Email" className={inp} autoComplete="email" />
@@ -80,12 +80,12 @@ export default function WhitepaperGate() {
       <button
         type="submit"
         disabled={state === 'sending'}
-        className="w-full px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#14110c] bg-[#f5b700] rounded-full border-2 border-[#14110c] shadow-[3px_3px_0_0_#14110c] hover:-translate-y-0.5 transition-all disabled:opacity-60"
+        className="w-full px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0b3b44] bg-[#f5b700] rounded-full border-2 border-[#0b3b44] shadow-[3px_3px_0_0_#0b3b44] hover:-translate-y-0.5 transition-all disabled:opacity-60"
       >
         {state === 'sending' ? 'Sending...' : 'Send me the whitepaper'}
       </button>
       {error && <p className="text-[#9B3022] text-xs font-mono mt-2">{error}</p>}
-      <p className="text-[#14110c]/45 text-[11px] font-body mt-2">No spam. The PDF, and the occasional play worth stealing.</p>
+      <p className="text-[#0b3b44]/45 text-[11px] font-body mt-2">No spam. The PDF, and the occasional play worth stealing.</p>
     </form>
   );
 }

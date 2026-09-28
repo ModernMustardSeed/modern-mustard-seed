@@ -56,13 +56,13 @@ export default function MissedCallMath({
   const labelCls = 'font-mono text-[10px] uppercase tracking-[0.18em] font-bold text-[#8f6600]';
 
   return (
-    <div className="rounded-2xl border-2 border-[#14110c] bg-white shadow-[6px_6px_0_0_#14110c] overflow-hidden">
+    <div className="rounded-2xl border-2 border-[#0b3b44] bg-white shadow-[6px_6px_0_0_#0b3b44] overflow-hidden">
       <div className="grid md:grid-cols-2">
         <div className="p-6 md:p-8 space-y-6">
           <div>
             <div className="flex items-baseline justify-between gap-4">
               <span className={labelCls}>Calls Missed Per Week</span>
-              <span className="font-mono font-bold text-[#14110c]">{missed}</span>
+              <span className="font-mono font-bold text-[#0b3b44]">{missed}</span>
             </div>
             <input
               type="range"
@@ -77,7 +77,7 @@ export default function MissedCallMath({
           <div>
             <div className="flex items-baseline justify-between gap-4">
               <span className={labelCls}>Close Rate</span>
-              <span className="font-mono font-bold text-[#14110c]">{closeRate}%</span>
+              <span className="font-mono font-bold text-[#0b3b44]">{closeRate}%</span>
             </div>
             <input
               type="range"
@@ -93,7 +93,7 @@ export default function MissedCallMath({
           <div>
             <div className="flex items-baseline justify-between gap-4">
               <span className={labelCls}>Average {ticketWord.charAt(0).toUpperCase() + ticketWord.slice(1)}</span>
-              <span className="font-mono font-bold text-[#14110c]">${ticket.toLocaleString()}</span>
+              <span className="font-mono font-bold text-[#0b3b44]">${ticket.toLocaleString()}</span>
             </div>
             <input
               type="range"
@@ -110,14 +110,14 @@ export default function MissedCallMath({
             </p>
           </div>
         </div>
-        <div className="bg-[#14110c] p-6 md:p-8 flex flex-col justify-center">
+        <div className="bg-[#0b3b44] p-6 md:p-8 flex flex-col justify-center">
           <p className="font-mono text-[10px] uppercase tracking-[0.24em] font-bold text-[#f5b700]">
             Walking Out The Door Every Month
           </p>
-          <p className="mt-3 font-display font-extrabold text-5xl md:text-6xl text-[#f6efe0] tabular-nums">
+          <p className="mt-3 font-display font-extrabold text-5xl md:text-6xl text-[#fbf5ea] tabular-nums">
             ${shown.toLocaleString()}
           </p>
-          <p className="mt-4 font-body text-sm text-[#f6efe0]/75 leading-relaxed">
+          <p className="mt-4 font-body text-sm text-[#fbf5ea]/75 leading-relaxed">
             Your numbers, your math: {missed} missed calls a week, a {closeRate}% close rate, and a $
             {ticket.toLocaleString()} average {ticketWord}. The voice agent answers every one of those calls for
             ${ENTRY_MONTHLY} a month.

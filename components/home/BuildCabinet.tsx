@@ -19,7 +19,7 @@ const CABINETS = [
   {
     key: 'site',
     name: 'Websites',
-    color: '#b3261e',
+    color: '#ff6f59',
     pitch:
       'Not a brochure, a working engine. Elite design, funnels and a lead magnet live on day one, an agentic concierge trained on your business, SEO and GEO baked in.',
     chips: ['Funnels day one', 'Agentic concierge', 'SEO + GEO'],
@@ -39,7 +39,7 @@ const CABINETS = [
   {
     key: 'command',
     name: 'Command Centers',
-    color: '#b3261e',
+    color: '#ff6f59',
     pitch:
       'Your whole operation on one screen: leads, jobs, follow-ups, and the agents that work them while you sleep. Built around how you actually run the day.',
     chips: ['Ops on one screen', 'Agents built in', 'Replaces the spreadsheet'],
@@ -50,30 +50,30 @@ const CABINETS = [
 
 export default function BuildCabinet() {
   return (
-    <section className="bg-[#f6efe0] py-20 md:py-28 overflow-hidden">
+    <section className="bg-[#fbf5ea] py-20 md:py-28 overflow-hidden">
       <div className="max-w-6xl mx-auto px-6 grid lg:grid-cols-[1.05fr_.95fr] gap-10 lg:gap-14 items-center">
         <div>
           <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#C4160B] uppercase">
             What we build // Pick your cabinet
           </p>
-          <h2 className="font-display italic font-extrabold text-4xl md:text-6xl text-[#14110c] mt-3 leading-[1.02]">
+          <h2 className="font-display italic font-extrabold text-4xl md:text-6xl text-[#0b3b44] mt-3 leading-[1.02]">
             One studio. Three machines.
           </h2>
-          <p className="font-sans text-base text-[#14110c]/75 mt-5 max-w-xl">
+          <p className="font-sans text-base text-[#0b3b44]/75 mt-5 max-w-xl">
             Websites, voice agents, and command centers go live in about a week. Fixed scope, fixed
             quote, no surprises. You do not need to know agentic systems. You do not need a technical co-founder.
           </p>
         </div>
 
         {/* The studio bench: where the seed ships. */}
-        <figure className="relative rotate-[1.5deg] rounded-2xl border-[3px] border-[#14110c] bg-white p-2.5 shadow-[9px_9px_0_0_#f5b700] max-w-[520px] w-full mx-auto lg:mx-0 lg:ml-auto">
+        <figure className="relative rotate-[1.5deg] rounded-2xl border-[3px] border-[#0b3b44] bg-white p-2.5 shadow-[9px_9px_0_0_#f5b700] max-w-[520px] w-full mx-auto lg:mx-0 lg:ml-auto">
           <Image
             src="/home/studio-bench.jpg"
             alt="Pop-art screenprint of the studio bench where an idea becomes a shipped product: a glowing monitor, blueprints, a rotary telephone, and a mustard seedling sprouting on the desk"
             width={1600}
             height={1200}
             sizes="(min-width: 1024px) 40vw, 92vw"
-            className="rounded-xl border-2 border-[#14110c] w-full h-auto"
+            className="rounded-xl border-2 border-[#0b3b44] w-full h-auto"
           />
           <figcaption className="px-2 pt-2 pb-1 font-mono text-[10px] uppercase tracking-[0.22em] text-[#5c554a] text-center">
             The bench where the seed ships
@@ -88,7 +88,7 @@ export default function BuildCabinet() {
           return (
             <div
               key={c.key}
-              className="bg-white border-2 border-[#14110c] shadow-[6px_6px_0_0_#14110c] p-7 flex flex-col"
+              className="bg-white border-2 border-[#0b3b44] shadow-[6px_6px_0_0_#0b3b44] p-7 flex flex-col"
             >
               <div className="flex items-center justify-between gap-3">
                 <span
@@ -99,13 +99,13 @@ export default function BuildCabinet() {
                 </span>
                 <span className="font-mono font-bold text-[10px] text-[#5c554a]">LIVE IN ABOUT A WEEK</span>
               </div>
-              <h3 className="font-display italic font-extrabold text-3xl text-[#14110c] mt-4">{c.name}</h3>
-              <p className="font-sans text-sm text-[#14110c]/75 mt-2 leading-relaxed flex-1">{c.pitch}</p>
+              <h3 className="font-display italic font-extrabold text-3xl text-[#0b3b44] mt-4">{c.name}</h3>
+              <p className="font-sans text-sm text-[#0b3b44]/75 mt-2 leading-relaxed flex-1">{c.pitch}</p>
               <div className="mt-5 flex flex-wrap gap-2">
                 {c.chips.map((chip) => (
                   <span
                     key={chip}
-                    className="font-mono text-[10px] font-bold text-[#14110c] border border-[#14110c] px-2 py-1 bg-[#f6efe0]"
+                    className="font-mono text-[10px] font-bold text-[#0b3b44] border border-[#0b3b44] px-2 py-1 bg-[#fbf5ea]"
                   >
                     {chip}
                   </span>
@@ -114,12 +114,12 @@ export default function BuildCabinet() {
               {receipt && metric && (
                 <Link
                   href={`/work/${c.receiptSlug}`}
-                  className="group mt-6 block border-t-2 border-dashed border-[#14110c]/20 pt-4"
+                  className="group mt-6 block border-t-2 border-dashed border-[#0b3b44]/20 pt-4"
                 >
                   <p className="font-mono font-bold text-[10px] tracking-wider text-[#C4160B] uppercase">
                     The receipt
                   </p>
-                  <p className="font-display font-black text-lg text-[#14110c] mt-1 group-hover:text-[#C4160B] transition-colors">
+                  <p className="font-display font-black text-lg text-[#0b3b44] mt-1 group-hover:text-[#C4160B] transition-colors">
                     {metric.value}
                   </p>
                   <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#5c554a] mt-0.5">
@@ -129,7 +129,7 @@ export default function BuildCabinet() {
               )}
               <Link
                 href={c.href}
-                className="mt-5 text-center font-sans font-bold text-sm bg-[#f5b700] text-[#14110c] border-2 border-[#14110c] shadow-[4px_4px_0_0_#14110c] px-5 py-3 hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#14110c] transition-all"
+                className="mt-5 text-center font-sans font-bold text-sm bg-[#f5b700] text-[#0b3b44] border-2 border-[#0b3b44] shadow-[4px_4px_0_0_#0b3b44] px-5 py-3 hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#0b3b44] transition-all"
               >
                 Start this build
               </Link>
@@ -139,15 +139,15 @@ export default function BuildCabinet() {
       </div>
 
       <div className="max-w-6xl mx-auto px-6 mt-8 flex flex-col md:flex-row md:items-center gap-4 md:gap-8">
-        <p className="font-sans text-sm text-[#14110c]/70 max-w-xl">
-          <span className="font-bold text-[#14110c]">Bigger seed?</span> Custom software, full apps,
+        <p className="font-sans text-sm text-[#0b3b44]/70 max-w-xl">
+          <span className="font-bold text-[#0b3b44]">Bigger seed?</span> Custom software, full apps,
           and online stores are the deeper builds. They take more than a week, and they are worth
           it. Same promise either way: fixed quote before work starts, and on launch day you own it
           all, the repo, the database, the deploy, every account.
         </p>
         <Link
           href="/work"
-          className="inline-flex items-center gap-2 font-mono font-bold text-[11px] uppercase tracking-[0.2em] text-[#14110c] hover:text-[#C4160B] transition-colors shrink-0"
+          className="inline-flex items-center gap-2 font-mono font-bold text-[11px] uppercase tracking-[0.2em] text-[#0b3b44] hover:text-[#C4160B] transition-colors shrink-0"
         >
           See all the work →
         </Link>

@@ -41,9 +41,9 @@ export default function RestaurantVoiceSection() {
         <span className="text-[10px] uppercase tracking-[0.5em] text-[#C4160B] font-mono font-bold mb-5 block">
           For restaurants
         </span>
-        <h2 className="font-display text-3xl md:text-5xl font-black text-[#14110c] tracking-tight leading-[1.1]">
+        <h2 className="font-display text-3xl md:text-5xl font-black text-[#0b3b44] tracking-tight leading-[1.1]">
           Every call during the rush is an{' '}
-          <span className="text-[#f5b700]" style={{ WebkitTextStroke: '1.5px #14110c' }}>
+          <span className="text-[#f5b700]" style={{ WebkitTextStroke: '1.5px #0b3b44' }}>
             order
           </span>{' '}
           on the line
@@ -58,7 +58,7 @@ export default function RestaurantVoiceSection() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {restaurantHandles.map((h) => (
           <article key={h.title} className="pop-card p-7 md:p-8 hover:-translate-y-1 transition-transform duration-300">
-            <h3 className="font-display text-xl font-black text-[#14110c] tracking-tight mb-2 leading-snug">
+            <h3 className="font-display text-xl font-black text-[#0b3b44] tracking-tight mb-2 leading-snug">
               {h.title}
             </h3>
             <p className="text-[#3a3733] text-sm md:text-base font-body leading-7">{h.body}</p>
@@ -68,7 +68,7 @@ export default function RestaurantVoiceSection() {
 
       {/* Rush-hour missed-call math, restaurant-framed */}
       <div className="pop-card-yellow p-8 md:p-10 mt-8">
-        <span className="text-[10px] uppercase tracking-[0.3em] text-[#14110c] font-mono font-bold block mb-5 text-center">
+        <span className="text-[10px] uppercase tracking-[0.3em] text-[#0b3b44] font-mono font-bold block mb-5 text-center">
           Do the rush-hour math
         </span>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-7">
@@ -78,14 +78,14 @@ export default function RestaurantVoiceSection() {
             { figure: '$1,900+', label: 'walking out the door a month' },
           ].map((m) => (
             <div key={m.label} className="text-center">
-              <span className="font-display text-4xl md:text-5xl font-black text-[#14110c] tracking-tight block mb-2">
+              <span className="font-display text-4xl md:text-5xl font-black text-[#0b3b44] tracking-tight block mb-2">
                 {m.figure}
               </span>
-              <span className="text-[#14110c]/70 text-sm font-body leading-snug block">{m.label}</span>
+              <span className="text-[#0b3b44]/70 text-sm font-body leading-snug block">{m.label}</span>
             </div>
           ))}
         </div>
-        <p className="text-[#14110c]/75 text-base font-body font-medium text-center max-w-xl mx-auto mb-6">
+        <p className="text-[#0b3b44]/75 text-base font-body font-medium text-center max-w-xl mx-auto mb-6">
           That is one slow week. Every unanswered call during the rush is an order, a table, or a
           catering job you already paid to ring the phone. The agent puts that revenue back on the
           line.
@@ -93,13 +93,13 @@ export default function RestaurantVoiceSection() {
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <a
             href="#calculator"
-            className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#14110c] bg-white rounded-full border-2 border-[#14110c] shadow-[4px_4px_0_0_#14110c] hover:-translate-y-0.5 transition-all"
+            className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0b3b44] bg-white rounded-full border-2 border-[#0b3b44] shadow-[4px_4px_0_0_#0b3b44] hover:-translate-y-0.5 transition-all"
           >
             Calculate Your Leak
           </a>
           <Link
             href="/book"
-            className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-white bg-[#14110c] rounded-full border-2 border-[#14110c] shadow-[4px_4px_0_0_rgba(20,17,12,0.3)] hover:-translate-y-0.5 transition-all"
+            className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-white bg-[#0b3b44] rounded-full border-2 border-[#0b3b44] shadow-[4px_4px_0_0_rgba(11,59,68,0.3)] hover:-translate-y-0.5 transition-all"
           >
             Book a Call
           </Link>

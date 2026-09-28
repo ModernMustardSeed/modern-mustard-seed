@@ -95,29 +95,29 @@ export default function ContactForm({ defaultPackage, defaultMessage }: Props) {
         {/* ───── The reply card ───── */}
         <div className="relative">
           {/* Perforated tear line, so the card reads as torn from the magazine. */}
-          <div aria-hidden="true" className="absolute -top-[3px] left-6 right-6 border-t-[3px] border-dashed border-[#14110c]/35" />
+          <div aria-hidden="true" className="absolute -top-[3px] left-6 right-6 border-t-[3px] border-dashed border-[#0b3b44]/35" />
 
-          <div className="relative rounded-2xl border-2 border-[#14110c] bg-white p-6 md:p-9 shadow-[7px_7px_0_0_#14110c]">
-            <div className="flex items-start justify-between gap-4 border-b-2 border-[#14110c] pb-4">
+          <div className="relative rounded-2xl border-2 border-[#0b3b44] bg-white p-6 md:p-9 shadow-[7px_7px_0_0_#0b3b44]">
+            <div className="flex items-start justify-between gap-4 border-b-2 border-[#0b3b44] pb-4">
               <div>
-                <p className="font-mono text-[9px] font-bold uppercase tracking-[0.24em] text-[#8f1d22]">Business Reply Card</p>
-                <p className="mt-1 font-display text-2xl font-extrabold leading-none text-[#14110c]">Modern Mustard Seed</p>
+                <p className="font-mono text-[9px] font-bold uppercase tracking-[0.24em] text-[#0a7c78]">Business Reply Card</p>
+                <p className="mt-1 font-display text-2xl font-extrabold leading-none text-[#0b3b44]">Modern Mustard Seed</p>
                 <p className="mt-1.5 font-mono text-[9px] uppercase tracking-[0.16em] text-[#5c554a]">Kalispell, Montana · no postage necessary</p>
               </div>
 
               {/* The mascot IS the postage. The postmark cancels it on send. */}
               <div className="relative flex-shrink-0">
-                <div className="postage relative grid h-[74px] w-[64px] place-items-center rounded-[3px] border-2 border-[#14110c] bg-[#f5b700]">
+                <div className="postage relative grid h-[74px] w-[64px] place-items-center rounded-[3px] border-2 border-[#0b3b44] bg-[#f5b700]">
                   <span className="relative h-9 w-9">
                     <Image src="/brand/mascot.png" alt="" fill sizes="36px" className="object-contain" />
                   </span>
-                  <p className="absolute bottom-1 font-mono text-[6px] font-bold tracking-[0.1em] text-[#14110c]">MMS · 1¢</p>
+                  <p className="absolute bottom-1 font-mono text-[6px] font-bold tracking-[0.1em] text-[#0b3b44]">MMS · 1¢</p>
                 </div>
                 {submitted && (
                   <div aria-hidden="true" className="cf-postmark pointer-events-none absolute -inset-3 grid place-items-center">
-                    <div className="h-[76px] w-[76px] rounded-full border-[3px] border-[#b3261e] opacity-70" />
-                    <div className="absolute h-[52px] w-[52px] rounded-full border-2 border-[#b3261e] opacity-60" />
-                    <p className="absolute rotate-[-12deg] font-mono text-[7px] font-bold uppercase tracking-[0.08em] text-[#8f1d22]">
+                    <div className="h-[76px] w-[76px] rounded-full border-[3px] border-[#ff6f59] opacity-70" />
+                    <div className="absolute h-[52px] w-[52px] rounded-full border-2 border-[#ff6f59] opacity-60" />
+                    <p className="absolute rotate-[-12deg] font-mono text-[7px] font-bold uppercase tracking-[0.08em] text-[#0a7c78]">
                       Received
                     </p>
                   </div>
@@ -130,13 +130,13 @@ export default function ContactForm({ defaultPackage, defaultMessage }: Props) {
                 <div className="cf-land relative h-16 w-16">
                   <Image src="/brand/mascot.png" alt="" fill sizes="64px" className="object-contain" />
                 </div>
-                <h2 className="mt-5 font-display text-2xl font-extrabold text-[#14110c]">In the mail.</h2>
+                <h2 className="mt-5 font-display text-2xl font-extrabold text-[#0b3b44]">In the mail.</h2>
                 <p className="mt-2 max-w-sm font-body text-[15px] leading-relaxed text-[#5c554a]">
                   Your note is stamped, cancelled, and sitting in Sarah&rsquo;s inbox. She answers inside a day, and it will be her, not a template.
                 </p>
                 <p className="mt-5 font-body text-sm text-[#5c554a]">
                   In a hurry?{' '}
-                  <Link href="/inquire" className="font-bold text-[#8f1d22] underline decoration-2 underline-offset-2 hover:text-[#8f1d22]">
+                  <Link href="/inquire" className="font-bold text-[#0a7c78] underline decoration-2 underline-offset-2 hover:text-[#0a7c78]">
                     Start an inquiry instead
                   </Link>
                   .
@@ -155,10 +155,10 @@ export default function ContactForm({ defaultPackage, defaultMessage }: Props) {
                           type="button"
                           aria-pressed={active}
                           onClick={() => pickTopic(t)}
-                          className={`rounded-full border-2 border-[#14110c] px-3.5 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.14em] transition-all ${
+                          className={`rounded-full border-2 border-[#0b3b44] px-3.5 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.14em] transition-all ${
                             active
-                              ? 'bg-[#f5b700] text-[#14110c] shadow-[2px_2px_0_0_#14110c] -translate-y-0.5'
-                              : 'bg-white text-[#14110c] hover:-translate-y-0.5 hover:shadow-[2px_2px_0_0_#14110c]'
+                              ? 'bg-[#f5b700] text-[#0b3b44] shadow-[2px_2px_0_0_#0b3b44] -translate-y-0.5'
+                              : 'bg-white text-[#0b3b44] hover:-translate-y-0.5 hover:shadow-[2px_2px_0_0_#0b3b44]'
                           }`}
                         >
                           {t.label}
@@ -236,7 +236,7 @@ export default function ContactForm({ defaultPackage, defaultMessage }: Props) {
                   </label>
 
                   {error && (
-                    <p role="alert" className="text-center font-body text-sm font-bold text-[#8f1d22]">
+                    <p role="alert" className="text-center font-body text-sm font-bold text-[#0a7c78]">
                       {error}
                     </p>
                   )}
@@ -244,7 +244,7 @@ export default function ContactForm({ defaultPackage, defaultMessage }: Props) {
                   <button
                     type="submit"
                     disabled={sending}
-                    className="w-full rounded-full border-2 border-[#14110c] bg-[#f5b700] py-4 font-sans text-sm font-extrabold uppercase tracking-[0.16em] text-[#14110c] shadow-[5px_5px_0_0_#14110c] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#14110c] disabled:opacity-50 disabled:hover:translate-y-0"
+                    className="w-full rounded-full border-2 border-[#0b3b44] bg-[#f5b700] py-4 font-sans text-sm font-extrabold uppercase tracking-[0.16em] text-[#0b3b44] shadow-[5px_5px_0_0_#0b3b44] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#0b3b44] disabled:opacity-50 disabled:hover:translate-y-0"
                   >
                     {sending ? 'Mailing...' : 'Mail it'}
                   </button>
@@ -259,25 +259,25 @@ export default function ContactForm({ defaultPackage, defaultMessage }: Props) {
 
         {/* ───── The direct lines ───── */}
         <div className="space-y-6">
-          <div className="rounded-2xl border-2 border-[#14110c] bg-[#f5b700] p-7 shadow-[5px_5px_0_0_#14110c]">
-            <span className="mb-3 block font-mono text-[9px] font-bold uppercase tracking-[0.3em] text-[#14110c]/70">Here to build something?</span>
-            <h2 className="font-display text-xl font-extrabold text-[#14110c]">Start an inquiry instead.</h2>
-            <p className="mt-2 mb-5 font-body text-[15px] font-medium leading-relaxed text-[#14110c]/80">
+          <div className="rounded-2xl border-2 border-[#0b3b44] bg-[#f5b700] p-7 shadow-[5px_5px_0_0_#0b3b44]">
+            <span className="mb-3 block font-mono text-[9px] font-bold uppercase tracking-[0.3em] text-[#0b3b44]/70">Here to build something?</span>
+            <h2 className="font-display text-xl font-extrabold text-[#0b3b44]">Start an inquiry instead.</h2>
+            <p className="mt-2 mb-5 font-body text-[15px] font-medium leading-relaxed text-[#0b3b44]/80">
               Tell us what you are building, what it has to do, and when you need it. Sarah reads every one herself and answers inside one business day.
             </p>
             <Link
               href="/inquire"
-              className="block w-full rounded-lg border-2 border-[#14110c] bg-[#14110c] py-3 text-center font-sans text-[10px] font-extrabold uppercase tracking-[0.2em] text-[#f5b700] transition-all hover:-translate-y-0.5 hover:shadow-[3px_3px_0_0_rgba(20,17,12,.35)]"
+              className="block w-full rounded-lg border-2 border-[#0b3b44] bg-[#0b3b44] py-3 text-center font-sans text-[10px] font-extrabold uppercase tracking-[0.2em] text-[#f5b700] transition-all hover:-translate-y-0.5 hover:shadow-[3px_3px_0_0_rgba(11,59,68,.35)]"
             >
               Begin an engagement
             </Link>
           </div>
 
-          <div className="rounded-2xl border-2 border-[#14110c] bg-white p-7 shadow-[5px_5px_0_0_#14110c]">
-            <span className="mb-3 block font-mono text-[9px] font-bold uppercase tracking-[0.3em] text-[#8f1d22]">Direct</span>
+          <div className="rounded-2xl border-2 border-[#0b3b44] bg-white p-7 shadow-[5px_5px_0_0_#0b3b44]">
+            <span className="mb-3 block font-mono text-[9px] font-bold uppercase tracking-[0.3em] text-[#0a7c78]">Direct</span>
             <a
               href="mailto:sarah@modernmustardseed.com"
-              className="font-body text-sm font-bold text-[#8f1d22] transition-colors hover:text-[#8f1d22]"
+              className="font-body text-sm font-bold text-[#0a7c78] transition-colors hover:text-[#0a7c78]"
             >
               sarah@modernmustardseed.com
             </a>
@@ -286,8 +286,8 @@ export default function ContactForm({ defaultPackage, defaultMessage }: Props) {
             </p>
           </div>
 
-          <div className="rounded-2xl border-2 border-[#14110c] bg-white p-7 shadow-[5px_5px_0_0_#14110c]">
-            <span className="mb-3 block font-mono text-[9px] font-bold uppercase tracking-[0.3em] text-[#8f1d22]">Connect</span>
+          <div className="rounded-2xl border-2 border-[#0b3b44] bg-white p-7 shadow-[5px_5px_0_0_#0b3b44]">
+            <span className="mb-3 block font-mono text-[9px] font-bold uppercase tracking-[0.3em] text-[#0a7c78]">Connect</span>
             <div className="flex flex-wrap gap-2.5">
               {socials.map((social) => (
                 <a
@@ -295,7 +295,7 @@ export default function ContactForm({ defaultPackage, defaultMessage }: Props) {
                   href={social.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="rounded-full border-2 border-[#14110c] bg-white px-4 py-2 font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-[#14110c] transition-all hover:-translate-y-0.5 hover:bg-[#f5b700] hover:shadow-[2px_2px_0_0_#14110c]"
+                  className="rounded-full border-2 border-[#0b3b44] bg-white px-4 py-2 font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-[#0b3b44] transition-all hover:-translate-y-0.5 hover:bg-[#f5b700] hover:shadow-[2px_2px_0_0_#0b3b44]"
                 >
                   {social.name}
                 </a>
@@ -309,7 +309,7 @@ export default function ContactForm({ defaultPackage, defaultMessage }: Props) {
 }
 
 const inputCls =
-  'w-full resize-none rounded-lg border-2 border-[#14110c] bg-white px-4 py-3 font-body text-sm text-[#14110c] placeholder-[#767066] transition-shadow focus:outline-none focus:shadow-[3px_3px_0_0_#14110c]';
+  'w-full resize-none rounded-lg border-2 border-[#0b3b44] bg-white px-4 py-3 font-body text-sm text-[#0b3b44] placeholder-[#767066] transition-shadow focus:outline-none focus:shadow-[3px_3px_0_0_#0b3b44]';
 
 /** The postmark rotates down and cancels the stamp. Static for reduced-motion readers. */
 function PostmarkStyles() {

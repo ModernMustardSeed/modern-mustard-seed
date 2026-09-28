@@ -61,16 +61,16 @@ export default function HelpGuide({
       <span className="relative inline-flex">
         <button
           onClick={() => { dismissNudge(); setOpen(true); }}
-          className="inline-flex items-center gap-1.5 whitespace-nowrap text-[11px] uppercase tracking-[0.18em] font-sans font-semibold px-3 py-1.5 rounded-full border-2 border-[#14110c] bg-white text-[#14110c] hover:bg-[#FFF8E6] transition-colors"
+          className="inline-flex items-center gap-1.5 whitespace-nowrap text-[11px] uppercase tracking-[0.18em] font-sans font-semibold px-3 py-1.5 rounded-full border-2 border-[#0b3b44] bg-white text-[#0b3b44] hover:bg-[#FFF8E6] transition-colors"
           aria-haspopup="dialog"
         >
-          <span className="inline-flex items-center justify-center h-4 w-4 rounded-full border border-[#14110c]/60 text-[10px] leading-none">?</span>
+          <span className="inline-flex items-center justify-center h-4 w-4 rounded-full border border-[#0b3b44]/60 text-[10px] leading-none">?</span>
           {label}
         </button>
         {showNudge && nudge && (
-          <span className="absolute right-0 top-[calc(100%+10px)] z-50 w-60 rounded-xl border-2 border-[#14110c] bg-[#f5b700] text-[#14110c] shadow-[4px_4px_0_0_#14110c] px-3.5 py-2.5">
-            <span className="absolute -top-1.5 right-7 h-3 w-3 rotate-45 bg-[#f5b700] border-l-2 border-t-2 border-[#14110c]" />
-            <button onClick={dismissNudge} aria-label="Dismiss" className="absolute top-1.5 right-2 text-[#14110c]/50 hover:text-[#14110c] text-sm leading-none">×</button>
+          <span className="absolute right-0 top-[calc(100%+10px)] z-50 w-60 rounded-xl border-2 border-[#0b3b44] bg-[#f5b700] text-[#0b3b44] shadow-[4px_4px_0_0_#0b3b44] px-3.5 py-2.5">
+            <span className="absolute -top-1.5 right-7 h-3 w-3 rotate-45 bg-[#f5b700] border-l-2 border-t-2 border-[#0b3b44]" />
+            <button onClick={dismissNudge} aria-label="Dismiss" className="absolute top-1.5 right-2 text-[#0b3b44]/50 hover:text-[#0b3b44] text-sm leading-none">×</button>
             <button onClick={() => { dismissNudge(); setOpen(true); }} className="block text-left">
               <span className="block font-sans font-extrabold text-[12px] leading-snug pr-3">{nudge.text}</span>
               <span className="block text-[10px] uppercase tracking-[0.15em] font-mono font-bold mt-1 underline">Open the guide →</span>
@@ -86,16 +86,16 @@ export default function HelpGuide({
           aria-modal="true"
           aria-label={guide.title}
         >
-          <div className="absolute inset-0 bg-[#14110c]/40 backdrop-blur-sm" onClick={() => setOpen(false)} />
-          <div className="relative w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-2xl bg-white border-2 border-[#14110c] shadow-[6px_6px_0_0_#14110c]">
-            <div className="sticky top-0 bg-white/95 backdrop-blur-md border-b-2 border-[#14110c] px-6 py-5 flex items-start justify-between gap-4">
+          <div className="absolute inset-0 bg-[#0b3b44]/40 backdrop-blur-sm" onClick={() => setOpen(false)} />
+          <div className="relative w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-2xl bg-white border-2 border-[#0b3b44] shadow-[6px_6px_0_0_#0b3b44]">
+            <div className="sticky top-0 bg-white/95 backdrop-blur-md border-b-2 border-[#0b3b44] px-6 py-5 flex items-start justify-between gap-4">
               <div>
-                <span className="text-[10px] uppercase tracking-[0.3em] text-[#8f1d22] font-mono font-bold block mb-1">Guide</span>
-                <h2 className="font-sans text-xl font-bold text-[#14110c] tracking-tight">{guide.title}</h2>
+                <span className="text-[10px] uppercase tracking-[0.3em] text-[#0a7c78] font-mono font-bold block mb-1">Guide</span>
+                <h2 className="font-sans text-xl font-bold text-[#0b3b44] tracking-tight">{guide.title}</h2>
               </div>
               <button
                 onClick={() => setOpen(false)}
-                className="text-[#14110c]/45 hover:text-[#14110c] text-2xl leading-none w-8 h-8 flex items-center justify-center flex-shrink-0"
+                className="text-[#0b3b44]/45 hover:text-[#0b3b44] text-2xl leading-none w-8 h-8 flex items-center justify-center flex-shrink-0"
                 aria-label="Close"
               >
                 ×
@@ -107,7 +107,7 @@ export default function HelpGuide({
               <div className="space-y-6">
                 {guide.sections.map((s, i) => (
                   <div key={i}>
-                    <h3 className="text-[10px] uppercase tracking-[0.25em] text-[#8f1d22] font-mono font-bold mb-2.5">{s.title}</h3>
+                    <h3 className="text-[10px] uppercase tracking-[0.25em] text-[#0a7c78] font-mono font-bold mb-2.5">{s.title}</h3>
                     <ul className="space-y-2">
                       {s.items.map((it, j) => (
                         <li key={j} className="flex items-start gap-2.5">

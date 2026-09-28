@@ -170,7 +170,7 @@ function demosJsonLd() {
 
 export default function DemosPage() {
   return (
-    <div className="min-h-screen bg-[#f6efe0] text-[#14110c]">
+    <div className="min-h-screen bg-[#fbf5ea] text-[#0b3b44]">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(demosJsonLd()) }}
@@ -181,7 +181,7 @@ export default function DemosPage() {
            phone and desktop, 84px at ~1024, 102px around 768 where it wraps), so
            hero padding must clear the worst case before it starts breathing.
            Measured: this keeps a 64-96px gap under the nav at every breakpoint. */}
-      <header className="halftone-bg border-b-2 border-[#14110c]">
+      <header className="halftone-bg border-b-2 border-[#0b3b44]">
         <div className="max-w-6xl mx-auto px-6 pt-32 pb-14 md:pt-40 lg:pb-20">
           <div className="grid grid-cols-1 [&>*]:min-w-0 lg:grid-cols-12 gap-10 lg:gap-12 items-start">
             {/* The pitch */}
@@ -193,7 +193,7 @@ export default function DemosPage() {
                 We sketch your{' '}
                 <em className="italic text-[#C4160B]">new website.</em> Free.
               </h1>
-              <p className="font-body text-[17px] text-[#14110c]/70 mt-5 leading-relaxed">
+              <p className="font-body text-[17px] text-[#0b3b44]/70 mt-5 leading-relaxed">
                 A website preview with your name on the door, sketched from scratch in your look, plus a free audit
                 of the site, Google profile and reviews you have now. {PREVIEW.short}
               </p>
@@ -204,10 +204,10 @@ export default function DemosPage() {
                   'Your preview and your audit are with you within 24 hours.',
                   `Keep what you love from ${formatUsd(DEMO_PRODUCTS.site.monthlyCents)}/mo. Or keep nothing.`,
                 ].map((t) => (
-                  <li key={t} className="flex items-start gap-2.5 font-body text-[15px] text-[#14110c]/80">
+                  <li key={t} className="flex items-start gap-2.5 font-body text-[15px] text-[#0b3b44]/80">
                     <span
                       aria-hidden
-                      className="mt-[3px] shrink-0 grid place-items-center h-5 w-5 rounded-md bg-[#f5b700] border-2 border-[#14110c] text-[11px] font-bold leading-none"
+                      className="mt-[3px] shrink-0 grid place-items-center h-5 w-5 rounded-md bg-[#f5b700] border-2 border-[#0b3b44] text-[11px] font-bold leading-none"
                     >
                       ✓
                     </span>
@@ -218,7 +218,7 @@ export default function DemosPage() {
 
               <a
                 href="#build"
-                className="mt-8 inline-flex items-center gap-2 bg-[#14110c] text-[#f6efe0] border-2 border-[#14110c] rounded-xl px-7 py-4 font-sans font-bold uppercase tracking-[0.1em] text-sm shadow-[5px_5px_0_0_#f5b700] hover:-translate-y-0.5 transition-transform lg:hidden"
+                className="mt-8 inline-flex items-center gap-2 bg-[#0b3b44] text-[#fbf5ea] border-2 border-[#0b3b44] rounded-xl px-7 py-4 font-sans font-bold uppercase tracking-[0.1em] text-sm shadow-[5px_5px_0_0_#f5b700] hover:-translate-y-0.5 transition-transform lg:hidden"
               >
                 Build my preview →
               </a>
@@ -231,18 +231,18 @@ export default function DemosPage() {
                 from the 3.4MB web cut, not the 23MB master: this page is the
                 landing pad for paid mobile traffic. */}
             <div className="lg:col-span-6 xl:col-span-7">
-              <div className="bg-white border-2 border-[#14110c] rounded-2xl shadow-[8px_8px_0_0_#14110c] overflow-hidden">
+              <div className="bg-white border-2 border-[#0b3b44] rounded-2xl shadow-[8px_8px_0_0_#0b3b44] overflow-hidden">
                 <video
                   controls
                   preload="metadata"
                   poster="/video/tv/make-it-real.webp"
                   src="/video/tv/make-it-real.mp4"
-                  className="w-full aspect-video bg-[#14110c]"
+                  className="w-full aspect-video bg-[#0b3b44]"
                 />
-                <div className="flex items-center gap-3 px-4 py-3 border-t-2 border-[#14110c]">
+                <div className="flex items-center gap-3 px-4 py-3 border-t-2 border-[#0b3b44]">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src="/brand/mascot.png" alt="" width={34} height={34} className="shrink-0" />
-                  <p className="font-body text-[13px] text-[#14110c]/70 leading-snug">
+                  <p className="font-body text-[13px] text-[#0b3b44]/70 leading-snug">
                     Make It Real: forty seconds on what we build, and who it is for.
                   </p>
                 </div>
@@ -260,24 +260,24 @@ export default function DemosPage() {
             <h2 className="font-display text-3xl sm:text-4xl font-bold mt-3 leading-[1.08]">
               One short form from you. Then the build does the rest.
             </h2>
-            <p className="font-body text-[15px] text-[#14110c]/70 mt-4 leading-relaxed">
+            <p className="font-body text-[15px] text-[#0b3b44]/70 mt-4 leading-relaxed">
               Your phone number goes on your preview site and is how we reach you about the build, nothing more.
               Nothing is charged and nobody calls you unless you ask.
             </p>
-            <div className="mt-6 bg-[#14110c] rounded-2xl border-2 border-[#14110c] shadow-[6px_6px_0_0_#f5b700] p-5">
+            <div className="mt-6 bg-[#0b3b44] rounded-2xl border-2 border-[#0b3b44] shadow-[6px_6px_0_0_#f5b700] p-5">
               <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#f5b700] font-bold">What lands, and when</p>
               <ul className="mt-3 space-y-2">
                 {[
                   ['Within 24 hours', 'Your website preview, designed from scratch (not a template), with a recorded walkthrough of it.'],
                   ['Alongside it', 'Your free audit: your site, your Google profile and your reviews, graded, with the fixes in order.'],
                 ].map(([when, what]) => (
-                  <li key={when} className="font-body text-[14px] text-[#f6efe0]/80 leading-relaxed">
+                  <li key={when} className="font-body text-[14px] text-[#fbf5ea]/80 leading-relaxed">
                     <span className="font-sans font-bold uppercase tracking-[0.08em] text-[11px] text-[#f5b700] block">{when}</span>
                     {what}
                   </li>
                 ))}
               </ul>
-              <p className="font-body text-[12.5px] text-[#f6efe0]/55 mt-3 leading-relaxed">
+              <p className="font-body text-[12.5px] text-[#fbf5ea]/55 mt-3 leading-relaxed">
                 Close the tab if you like. We email you the second the website lands.
               </p>
             </div>
@@ -290,26 +290,26 @@ export default function DemosPage() {
         {/* ── The three pieces. Flex columns, pills pinned to one baseline. ── */}
         <section>
           <h2 className="font-display text-3xl sm:text-4xl font-bold">What actually shows up</h2>
-          <p className="font-body text-[15px] text-[#14110c]/70 mt-2 max-w-2xl">
+          <p className="font-body text-[15px] text-[#0b3b44]/70 mt-2 max-w-2xl">
             Two things with your name on them. Keep the website, keep the audit either way.
           </p>
           <div className="grid sm:grid-cols-2 gap-5 mt-7">
             {PIECES.map((c) => (
               <div
                 key={c.title}
-                className={`flex flex-col border-2 border-[#14110c] rounded-2xl shadow-[6px_6px_0_0_#14110c] p-6 ${
+                className={`flex flex-col border-2 border-[#0b3b44] rounded-2xl shadow-[6px_6px_0_0_#0b3b44] p-6 ${
                   c.tone === 'ink'
-                    ? 'bg-[#14110c] text-[#f6efe0]'
+                    ? 'bg-[#0b3b44] text-[#fbf5ea]'
                     : c.tone === 'gold'
-                      ? 'bg-[#f5b700] text-[#14110c]'
-                      : 'bg-white text-[#14110c]'
+                      ? 'bg-[#f5b700] text-[#0b3b44]'
+                      : 'bg-white text-[#0b3b44]'
                 }`}
               >
                 <span className="text-3xl leading-none">{c.icon}</span>
                 <h3 className="font-display text-xl font-bold mt-3 leading-tight">{c.title}</h3>
                 <p
                   className={`font-body text-[13.5px] mt-2 leading-relaxed ${
-                    c.tone === 'ink' ? 'text-[#f6efe0]/70' : 'text-[#14110c]/70'
+                    c.tone === 'ink' ? 'text-[#fbf5ea]/70' : 'text-[#0b3b44]/70'
                   }`}
                 >
                   {c.desc}
@@ -317,7 +317,7 @@ export default function DemosPage() {
                 {/* mt-auto is the fix for the ragged buttons: every pill sits on one line. */}
                 <p
                   className={`mt-auto pt-5 font-mono text-[12px] font-bold ${
-                    c.tone === 'gold' ? 'text-[#14110c]' : c.tone === 'ink' ? 'text-[#f5b700]' : 'text-[#14110c]'
+                    c.tone === 'gold' ? 'text-[#0b3b44]' : c.tone === 'ink' ? 'text-[#f5b700]' : 'text-[#0b3b44]'
                   }`}
                 >
                   {c.pill}
@@ -328,7 +328,7 @@ export default function DemosPage() {
         </section>
 
         {/* ── How it works ── */}
-        <section className="bg-[#14110c] border-2 border-[#14110c] rounded-2xl shadow-[8px_8px_0_0_#f5b700] p-7 sm:p-10">
+        <section className="bg-[#0b3b44] border-2 border-[#0b3b44] rounded-2xl shadow-[8px_8px_0_0_#f5b700] p-7 sm:p-10">
           <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#f5b700] font-bold">How it works</span>
           <div className="grid sm:grid-cols-3 gap-8 sm:gap-6 mt-6">
             {[
@@ -343,8 +343,8 @@ export default function DemosPage() {
               <div key={s.n} className="flex gap-4 sm:block">
                 <span className="font-display text-5xl font-bold text-[#f5b700] leading-none shrink-0">{s.n}</span>
                 <div className="sm:mt-3">
-                  <h3 className="font-display text-lg font-bold text-[#f6efe0] leading-tight">{s.t}</h3>
-                  <p className="font-body text-[13.5px] text-[#f6efe0]/65 mt-1.5 leading-relaxed">{s.d}</p>
+                  <h3 className="font-display text-lg font-bold text-[#fbf5ea] leading-tight">{s.t}</h3>
+                  <p className="font-body text-[13.5px] text-[#fbf5ea]/65 mt-1.5 leading-relaxed">{s.d}</p>
                 </div>
               </div>
             ))}
@@ -355,9 +355,9 @@ export default function DemosPage() {
         <section className="grid grid-cols-1 [&>*]:min-w-0 lg:grid-cols-12 gap-8">
           <div className="lg:col-span-4">
             <h2 className="font-display text-3xl font-bold">Fair questions</h2>
-            <p className="font-body text-[14px] text-[#14110c]/60 mt-3">
+            <p className="font-body text-[14px] text-[#0b3b44]/60 mt-3">
               Still stuck? Call us at{' '}
-              <a href="tel:+14063121223" className="font-bold text-[#8f1d22] underline underline-offset-2">
+              <a href="tel:+14063121223" className="font-bold text-[#0a7c78] underline underline-offset-2">
                 (406) 312-1223
               </a>
               . Yes, a voice agent answers our phone too. Try to stump it.
@@ -365,18 +365,18 @@ export default function DemosPage() {
           </div>
           <div className="lg:col-span-8 space-y-3">
             {FAQ.map((f) => (
-              <details key={f.q} className="bg-white border-2 border-[#14110c] rounded-2xl shadow-[4px_4px_0_0_#14110c] p-5 group">
+              <details key={f.q} className="bg-white border-2 border-[#0b3b44] rounded-2xl shadow-[4px_4px_0_0_#0b3b44] p-5 group">
                 <summary className="font-sans font-bold cursor-pointer list-none flex justify-between items-center gap-4">
                   {f.q}
                   <span className="text-[#C4160B] group-open:rotate-45 transition-transform text-xl leading-none shrink-0">+</span>
                 </summary>
-                <p className="font-body text-[14px] text-[#14110c]/70 mt-3 leading-relaxed">{f.a}</p>
+                <p className="font-body text-[14px] text-[#0b3b44]/70 mt-3 leading-relaxed">{f.a}</p>
               </details>
             ))}
           </div>
         </section>
 
-        <p className="font-mono text-[11px] text-[#14110c]/70 text-center pb-4">
+        <p className="font-mono text-[11px] text-[#0b3b44]/70 text-center pb-4">
           Modern Mustard Seed · Kalispell, MT · Mr. Mustard (406) 312-1223 · Sarah (406) 250-6076
         </p>
       </div>

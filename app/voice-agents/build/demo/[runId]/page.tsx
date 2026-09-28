@@ -21,15 +21,15 @@ export default async function DemoAgentDemoPage({ params }: { params: Promise<{ 
 
   if (!sb || !run) {
     return (
-      <div className="min-h-screen bg-[#f6efe0] flex items-center justify-center px-6">
-        <div className="max-w-md text-center bg-white border-2 border-[#14110c] rounded-2xl shadow-[6px_6px_0_0_#14110c] p-8">
-          <h1 className="font-display text-3xl font-bold text-[#14110c]">This demo has moved on</h1>
-          <p className="font-body text-[#14110c]/70 mt-3">
+      <div className="min-h-screen bg-[#fbf5ea] flex items-center justify-center px-6">
+        <div className="max-w-md text-center bg-white border-2 border-[#0b3b44] rounded-2xl shadow-[6px_6px_0_0_#0b3b44] p-8">
+          <h1 className="font-display text-3xl font-bold text-[#0b3b44]">This demo has moved on</h1>
+          <p className="font-body text-[#0b3b44]/70 mt-3">
             We could not find that voice agent demo. Want one built for your business?
           </p>
           <Link
             href="/voice-agents/build"
-            className="inline-block mt-5 bg-[#f5b700] text-[#14110c] border-2 border-[#14110c] rounded-xl px-6 py-3 font-sans font-bold uppercase tracking-[0.1em] text-sm shadow-[3px_3px_0_0_#14110c]"
+            className="inline-block mt-5 bg-[#f5b700] text-[#0b3b44] border-2 border-[#0b3b44] rounded-xl px-6 py-3 font-sans font-bold uppercase tracking-[0.1em] text-sm shadow-[3px_3px_0_0_#0b3b44]"
           >
             Build mine now
           </Link>

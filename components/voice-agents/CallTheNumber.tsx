@@ -32,7 +32,7 @@ const ASKS = [
  */
 function Plate({ text }: { text: string }) {
   return (
-    <span className="text-[#f5b700] transition-all duration-500 ease-out [text-shadow:-0.03em_-0.024em_0_#b3261e,0.03em_0.024em_0_#14110c] group-hover:[text-shadow:-0.062em_-0.05em_0_#b3261e,0.062em_0.05em_0_#14110c]">
+    <span className="text-[#f5b700] transition-all duration-500 ease-out [text-shadow:-0.03em_-0.024em_0_#ff6f59,0.03em_0.024em_0_#0b3b44] group-hover:[text-shadow:-0.062em_-0.05em_0_#ff6f59,0.062em_0.05em_0_#0b3b44]">
       {text}
     </span>
   );
@@ -66,13 +66,13 @@ export default function CallTheNumber({ location = 'voice-agents-hero' }: { loca
       <div className="relative text-center">
         <span className="inline-flex items-center gap-2.5 rounded-full border-2 border-[#f5b700] bg-[#f5b700]/10 px-4 py-1.5 font-mono text-[10px] md:text-[11px] font-bold uppercase tracking-[0.22em] text-[#f5b700]">
           <span className="relative flex h-2.5 w-2.5">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#b3261e] opacity-80" />
-            <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[#b3261e]" />
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#ff6f59] opacity-80" />
+            <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[#ff6f59]" />
           </span>
           The Line Is Open. Right Now.
         </span>
 
-        <p className="mt-7 font-body text-base md:text-lg text-[#f6efe0]/70">
+        <p className="mt-7 font-body text-base md:text-lg text-[#fbf5ea]/70">
           Call it. Ask what he could do for your business.
         </p>
 
@@ -103,13 +103,13 @@ export default function CallTheNumber({ location = 'voice-agents-hero' }: { loca
           <a
             href={`tel:${DEMO_LINE.tel}`}
             onClick={() => trackEvent('call_the_number', { location: `${location}-button` })}
-            className="w-full sm:w-auto rounded-full border-2 border-[#14110c] bg-[#f5b700] px-9 py-4 font-sans text-[12px] font-extrabold uppercase tracking-[0.18em] text-[#14110c] shadow-[5px_5px_0_0_#f6efe0] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#f6efe0]"
+            className="w-full sm:w-auto rounded-full border-2 border-[#0b3b44] bg-[#f5b700] px-9 py-4 font-sans text-[12px] font-extrabold uppercase tracking-[0.18em] text-[#0b3b44] shadow-[5px_5px_0_0_#fbf5ea] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#fbf5ea]"
           >
             ☎ Tap To Call Him
           </a>
           <a
             href="#browser-demo"
-            className="w-full sm:w-auto rounded-full border-2 border-[#f6efe0]/45 bg-transparent px-9 py-4 font-sans text-[12px] font-extrabold uppercase tracking-[0.18em] text-[#f6efe0] transition-all hover:border-[#f6efe0] hover:-translate-y-0.5"
+            className="w-full sm:w-auto rounded-full border-2 border-[#fbf5ea]/45 bg-transparent px-9 py-4 font-sans text-[12px] font-extrabold uppercase tracking-[0.18em] text-[#fbf5ea] transition-all hover:border-[#fbf5ea] hover:-translate-y-0.5"
           >
             Or Talk In This Browser
           </a>
@@ -117,7 +117,7 @@ export default function CallTheNumber({ location = 'voice-agents-hero' }: { loca
 
         {/* Rotating "what to ask him" line */}
         <div className="mt-9 min-h-[3.5rem] flex items-start justify-center px-2">
-          <p className="max-w-lg font-body text-sm md:text-[15px] leading-relaxed text-[#f6efe0]/60">
+          <p className="max-w-lg font-body text-sm md:text-[15px] leading-relaxed text-[#fbf5ea]/60">
             <span className="font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-[#f5b700] mr-2">
               Try This
             </span>
@@ -127,7 +127,7 @@ export default function CallTheNumber({ location = 'voice-agents-hero' }: { loca
           </p>
         </div>
 
-        <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.2em] text-[#f6efe0]/55">
+        <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.2em] text-[#fbf5ea]/55">
           Free · No script · He tells you he is a voice agent in the first sentence
         </p>
       </div>

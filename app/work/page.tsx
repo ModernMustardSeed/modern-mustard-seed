@@ -22,14 +22,14 @@ export default function WorkIndex() {
           { name: 'Work', url: '/work' },
         ])}
       />
-      <div data-studio-page="work" className="relative min-h-screen bg-[#f6efe0] text-[#14110c]">
+      <div data-studio-page="work" className="relative min-h-screen bg-[#fbf5ea] text-[#0b3b44]">
         <PopPageHero
           eyebrow={<span>The Work</span>}
           title={<>Real Products{' '}<em>Real Receipts</em></>}
           issue={{ no: 'No.2', lines: ['Case files', 'Shipped and working'] }}
           art={{
-            src: '/art/pages/work',
-            alt: 'Painting: Mr. Mustard in a tuxedo presents the studio’s work at an evening gallery opening, where walnut 1920s television cabinets glow with website layouts and guests in evening wear admire them',
+            src: '/art/riviera/work',
+            alt: 'Painting: at a lantern-lit beachside dinner, Mr. Mustard shows friends a tablet of website layouts while Mrs. Mustard raises a glass, the kids wave sparklers and a lit-up yacht sits on the water behind',
             caption: 'Ka-ching! It shipped',
           }}
           sticker="Sold!"
@@ -52,17 +52,17 @@ export default function WorkIndex() {
                 >
                   <div className="flex items-center gap-3 mb-5">
                     {s.tag && (
-                      <span className="text-[8px] uppercase tracking-[0.18em] font-mono font-bold text-[#14110c] bg-[#f5b700] border-2 border-[#14110c] rounded-full px-2.5 py-1">
+                      <span className="text-[8px] uppercase tracking-[0.18em] font-mono font-bold text-[#0b3b44] bg-[#f5b700] border-2 border-[#0b3b44] rounded-full px-2.5 py-1">
                         {s.tag}
                       </span>
                     )}
                     {s.client && (
-                      <span className="text-[10px] uppercase tracking-[0.2em] text-[#14110c]/40 font-mono">
+                      <span className="text-[10px] uppercase tracking-[0.2em] text-[#0b3b44]/40 font-mono">
                         {s.client}
                       </span>
                     )}
                   </div>
-                  <h2 className="font-display text-2xl font-black text-[#14110c] tracking-tight mb-3 leading-snug">
+                  <h2 className="font-display text-2xl font-black text-[#0b3b44] tracking-tight mb-3 leading-snug">
                     {s.title}
                   </h2>
                   <p className="text-[#3a3733] text-sm font-body leading-7 mb-5">
@@ -73,13 +73,13 @@ export default function WorkIndex() {
                       straight out of the card. The cells shrink and the values
                       wrap now instead of spilling. */}
                   {s.metrics && (
-                    <div className="grid grid-cols-3 gap-3 pt-5 border-t-2 border-[#14110c]/10">
+                    <div className="grid grid-cols-3 gap-3 pt-5 border-t-2 border-[#0b3b44]/10">
                       {s.metrics.slice(0, 3).map((m) => (
                         <div key={m.label} className="min-w-0">
-                          <div className="font-display text-[15px] sm:text-lg font-black leading-tight text-[#8f1d22] break-words hyphens-auto">
+                          <div className="font-display text-[15px] sm:text-lg font-black leading-tight text-[#0a7c78] break-words hyphens-auto">
                             {m.value}
                           </div>
-                          <div className="text-[9px] uppercase tracking-[0.2em] text-[#14110c]/40 font-mono mt-1 break-words">
+                          <div className="text-[9px] uppercase tracking-[0.2em] text-[#0b3b44]/40 font-mono mt-1 break-words">
                             {m.label}
                           </div>
                         </div>
@@ -90,21 +90,21 @@ export default function WorkIndex() {
               ))}
             </div>
           ) : (
-            <p className="text-center text-[#14110c]/40 font-body italic mb-12">
+            <p className="text-center text-[#0b3b44]/40 font-body italic mb-12">
               New case studies shipping shortly.
             </p>
           )}
 
           <div className="text-center pop-card-yellow p-10 max-w-3xl mx-auto">
-            <h3 className="font-display text-2xl md:text-3xl font-black text-[#14110c] tracking-tight mb-4">
+            <h3 className="font-display text-2xl md:text-3xl font-black text-[#0b3b44] tracking-tight mb-4">
               Want this for your venture?
             </h3>
-            <p className="text-[#14110c]/75 text-base font-body font-medium mb-6 max-w-lg mx-auto">
+            <p className="text-[#0b3b44]/75 text-base font-body font-medium mb-6 max-w-lg mx-auto">
               Now booking new builds. Drop your idea and Sarah will review it personally.
             </p>
             <Link
               href="/book"
-              className="inline-block px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-white bg-[#14110c] rounded-full border-2 border-[#14110c] shadow-[4px_4px_0_0_rgba(20,17,12,0.35)] hover:-translate-y-0.5 transition-all"
+              className="inline-block px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-white bg-[#0b3b44] rounded-full border-2 border-[#0b3b44] shadow-[4px_4px_0_0_rgba(11,59,68,0.35)] hover:-translate-y-0.5 transition-all"
             >
               Begin an Engagement
             </Link>

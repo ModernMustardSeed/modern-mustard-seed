@@ -10,7 +10,7 @@ import NewsletterSignup from '@/components/NewsletterSignup';
  */
 export default function TheClose() {
   return (
-    <section className="relative bg-[#14110c] border-t-4 border-[#14110c] overflow-hidden">
+    <section className="relative bg-[#0b3b44] border-t-4 border-[#0b3b44] overflow-hidden">
       {/* Halftone + warm glow */}
       <div
         aria-hidden="true"
@@ -34,14 +34,14 @@ export default function TheClose() {
         </span>
 
         {/* The crescendo: the one headline on the page allowed to go huge. */}
-        <h2 className="font-display italic font-extrabold tracking-tight leading-[1.02] text-[#f6efe0] mt-7 text-[clamp(3rem,9vw,7.5rem)]">
+        <h2 className="font-display italic font-extrabold tracking-tight leading-[1.02] text-[#fbf5ea] mt-7 text-[clamp(3rem,9vw,7.5rem)]">
           Your idea deserves to{' '}
-          <span className="not-italic font-mono inline-block rotate-[-2deg] bg-[#f5b700] text-[#14110c] px-4 md:px-6 border-2 border-[#14110c] shadow-[6px_6px_0_0_rgba(251,246,234,0.35)]">
+          <span className="not-italic font-mono inline-block rotate-[-2deg] bg-[#f5b700] text-[#0b3b44] px-4 md:px-6 border-2 border-[#0b3b44] shadow-[6px_6px_0_0_rgba(251,246,234,0.35)]">
             ship
           </span>
         </h2>
 
-        <p className="font-sans text-base md:text-lg text-[#f6efe0]/80 leading-relaxed mt-8 max-w-2xl mx-auto">
+        <p className="font-sans text-base md:text-lg text-[#fbf5ea]/80 leading-relaxed mt-8 max-w-2xl mx-auto">
           One person with the right tools can now build what used to take a team of fifty. That is
           the era we are in. No co-founder, no perfect timing required. Bring the seed you have. We
           will build the rest.
@@ -52,13 +52,13 @@ export default function TheClose() {
           <span className="font-mono font-bold text-[9px] uppercase tracking-[0.4em] text-[#f5b700] block mb-3">
             The name on the door
           </span>
-          <p className="font-display text-lg md:text-2xl italic text-[#f6efe0] leading-relaxed">
+          <p className="font-display text-lg md:text-2xl italic text-[#fbf5ea] leading-relaxed">
             &ldquo;If you have faith as small as a{' '}
             <span className="text-[#f5b700] not-italic font-bold">mustard seed</span>, nothing will
             be impossible for you.&rdquo;
           </p>
           <p className="mt-2 font-mono text-[9px] uppercase tracking-[0.4em] text-[#f5b700]/70">Matthew 17:20</p>
-          <p className="mt-4 font-body text-sm text-[#f6efe0]/70 leading-relaxed">
+          <p className="mt-4 font-body text-sm text-[#fbf5ea]/70 leading-relaxed">
             The studio is named for this. Every build here starts seed-sized. That is not the
             limitation, that is the plan.
           </p>
@@ -67,13 +67,13 @@ export default function TheClose() {
         <div className="flex flex-col sm:flex-row gap-3 justify-center mt-12">
           <Link
             href="/book"
-            className="px-9 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-[#14110c] bg-[#f5b700] rounded-full border-2 border-[#14110c] shadow-[4px_4px_0_0_rgba(251,246,234,0.4)] hover:-translate-y-0.5 transition-all"
+            className="px-9 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-[#0b3b44] bg-[#f5b700] rounded-full border-2 border-[#0b3b44] shadow-[4px_4px_0_0_rgba(251,246,234,0.4)] hover:-translate-y-0.5 transition-all"
           >
             Book a Free Call
           </Link>
           <Link
             href="/work"
-            className="px-9 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-[#f6efe0] bg-transparent border-2 border-[#f6efe0] rounded-full hover:bg-[#f6efe0]/10 transition-all"
+            className="px-9 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-[#fbf5ea] bg-transparent border-2 border-[#fbf5ea] rounded-full hover:bg-[#fbf5ea]/10 transition-all"
           >
             See The Work
           </Link>

@@ -120,7 +120,7 @@ export default function BookPage() {
 
         <div className={s.heroInner}>
           <div className={s.heroCopy}>
-            <span className="inline-flex items-center gap-2 font-mono text-[9.5px] sm:text-[10px] uppercase tracking-[0.1em] sm:tracking-[0.18em] font-bold bg-white text-[#8f1d22] border-2 border-[#14110c] rounded-full px-3.5 py-1.5 shadow-[3px_3px_0_0_#14110c]">
+            <span className="inline-flex items-center gap-2 font-mono text-[9.5px] sm:text-[10px] uppercase tracking-[0.1em] sm:tracking-[0.18em] font-bold bg-white text-[#0a7c78] border-2 border-[#0b3b44] rounded-full px-3.5 py-1.5 shadow-[3px_3px_0_0_#0b3b44]">
               ☎ Tuesdays through Fridays · 30 minutes · free
             </span>
             <h1 className={s.h1}>
@@ -139,7 +139,7 @@ export default function BookPage() {
             </div>
             <p className={s.note}>
               Not ready to talk?{' '}
-              <Link href="/contact" className="font-bold text-[#8f1d22] underline decoration-2 underline-offset-2 hover:text-[#8f1d22]">
+              <Link href="/contact" className="font-bold text-[#0a7c78] underline decoration-2 underline-offset-2 hover:text-[#0a7c78]">
                 Send a note instead
               </Link>{' '}
               and Sarah answers inside a day.
@@ -154,8 +154,8 @@ export default function BookPage() {
               <span className={`${s.tape} ${s.tapeL}`} aria-hidden="true" />
               <span className={`${s.tape} ${s.tapeR}`} aria-hidden="true" />
               <Image
-                src="/art/pages/book-1600.webp"
-                alt="Painting: Mrs. Mustard writes in a leather appointment book at a curved mahogany front desk under a gold sunburst ceiling while Mr. Mustard, in a fedora, arrives to greet a guest by the brass elevator"
+                src="/art/riviera/book-1600.webp"
+                alt="Painting: a sesame-seed host with a leather reservation book welcomes the Mustard family to a beach club of Tiffany-blue umbrellas, Mr. Mustard showing the booking on his phone as the kids and dog run for the sand"
                 width={1600}
                 height={1067}
                 priority
@@ -166,7 +166,7 @@ export default function BookPage() {
             </figure>
             <div className={s.sticker} aria-hidden="true">
               <svg viewBox="0 0 200 160">
-                <path d="M18 132 8 42 58 86 100 18 142 86 192 42 182 132Z" fill="#b3261e" />
+                <path d="M18 132 8 42 58 86 100 18 142 86 192 42 182 132Z" fill="#ff6f59" />
               </svg>
               <span className={s.stickerText}>Ka-<br />chunk!</span>
             </div>
@@ -205,7 +205,7 @@ export default function BookPage() {
                   style={{ '--s': step.crop.s, '--ox': step.crop.ox, '--oy': step.crop.oy } as CSSProperties}
                 >
                   {/* The crop zooms in about 2x, so ask for twice the pixels to stay sharp. */}
-                  <Image src="/art/pages/book-1600.webp" alt="" fill sizes="(min-width: 900px) 760px, 200vw" />
+                  <Image src="/art/riviera/book-1600.webp" alt="" fill sizes="(min-width: 900px) 760px, 200vw" />
                   <span className={`${s.bubble} ${s.bubbleRight} ${s.panelBubble}`} aria-hidden="true">{step.bubble}</span>
                   <span className={s.narr} aria-hidden="true">{step.narr}</span>
                 </div>
@@ -308,7 +308,7 @@ export default function BookPage() {
           </div>
           <p className={s.faqNote}>
             Would rather write it out?{' '}
-            <Link href="/contact" className="font-bold text-[#8f1d22] underline decoration-2 underline-offset-2 hover:text-[#8f1d22]">
+            <Link href="/contact" className="font-bold text-[#0a7c78] underline decoration-2 underline-offset-2 hover:text-[#0a7c78]">
               Send a note instead
             </Link>
             .

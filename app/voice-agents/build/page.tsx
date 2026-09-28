@@ -68,7 +68,7 @@ export default function DemoAgentPage() {
   };
 
   return (
-    <div id="top" className="bg-[#f6efe0] text-[#14110c]">
+    <div id="top" className="bg-[#fbf5ea] text-[#0b3b44]">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       {/* ─── HERO: the comic cover, then THE BUILD ─── */}
@@ -85,7 +85,7 @@ export default function DemoAgentPage() {
           Free · No card · He talks to you live
         </p>
       </PopPageHero>
-      <section className="halftone-bg border-b-2 border-[#14110c]">
+      <section className="halftone-bg border-b-2 border-[#0b3b44]">
         <div className="max-w-5xl mx-auto px-5 pb-16 md:pb-24">
           <div className="max-w-2xl mx-auto">
             <BuildExperience />
@@ -101,17 +101,17 @@ export default function DemoAgentPage() {
       <CrossSell />
 
       {/* ─── FINAL CTA ─── */}
-      <section className="py-16 md:py-24 bg-[#f5b700] border-t-2 border-[#14110c]">
+      <section className="py-16 md:py-24 bg-[#f5b700] border-t-2 border-[#0b3b44]">
         <div className="max-w-3xl mx-auto px-5 text-center">
-          <h2 className="font-display text-3xl md:text-5xl font-black text-[#14110c] tracking-tight leading-[1.05]">
+          <h2 className="font-display text-3xl md:text-5xl font-black text-[#0b3b44] tracking-tight leading-[1.05]">
             Every call he answers is money<br className="hidden md:block" /> you stopped losing.
           </h2>
-          <p className="font-body text-[#14110c]/75 mt-4 max-w-xl mx-auto">
+          <p className="font-body text-[#0b3b44]/75 mt-4 max-w-xl mx-auto">
             The average missed call is a customer who dialed the next name on the list. Build your Voice Agent, hear him take one, and do the math yourself.
           </p>
           <a
             href="#top"
-            className="inline-block mt-8 rounded-full bg-[#14110c] border-2 border-[#14110c] px-10 py-4 font-sans font-extrabold text-[#f6efe0] text-sm uppercase tracking-[0.18em] shadow-[5px_5px_0_0_#f6efe0] transition-all hover:-translate-y-0.5"
+            className="inline-block mt-8 rounded-full bg-[#0b3b44] border-2 border-[#0b3b44] px-10 py-4 font-sans font-extrabold text-[#fbf5ea] text-sm uppercase tracking-[0.18em] shadow-[5px_5px_0_0_#fbf5ea] transition-all hover:-translate-y-0.5"
           >
             Build mine, free
           </a>

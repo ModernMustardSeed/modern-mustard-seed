@@ -52,11 +52,11 @@ const cents = (c: number) => `$${(c / 100).toLocaleString('en-US', { minimumFrac
 
 function Stepper({ label, hint, value, onChange, accent }: { label: string; hint: string; value: number; onChange: (n: number) => void; accent: string }) {
   return (
-    <div className="bg-[#f6efe0] border-2 border-[#14110c] rounded-2xl p-4 sm:p-5">
+    <div className="bg-[#fbf5ea] border-2 border-[#0b3b44] rounded-2xl p-4 sm:p-5">
       <div className="flex items-start justify-between gap-3 mb-4">
         <div className="min-w-0">
-          <div className="font-sans font-bold text-[#14110c] text-sm leading-tight">{label}</div>
-          <div className="text-[#14110c]/55 font-body text-xs mt-1 leading-snug">{hint}</div>
+          <div className="font-sans font-bold text-[#0b3b44] text-sm leading-tight">{label}</div>
+          <div className="text-[#0b3b44]/55 font-body text-xs mt-1 leading-snug">{hint}</div>
         </div>
         <span className="shrink-0 w-2.5 h-2.5 rounded-full mt-1" style={{ background: accent }} aria-hidden />
       </div>
@@ -65,16 +65,16 @@ function Stepper({ label, hint, value, onChange, accent }: { label: string; hint
           type="button"
           aria-label={`Fewer ${label}`}
           onClick={() => onChange(Math.max(0, value - 1))}
-          className="w-11 h-11 shrink-0 grid place-items-center bg-white border-2 border-[#14110c] rounded-full text-xl font-bold text-[#14110c] shadow-[2px_2px_0_0_#14110c] hover:shadow-[3px_3px_0_0_#14110c] hover:-translate-y-0.5 active:translate-y-0 transition-all"
+          className="w-11 h-11 shrink-0 grid place-items-center bg-white border-2 border-[#0b3b44] rounded-full text-xl font-bold text-[#0b3b44] shadow-[2px_2px_0_0_#0b3b44] hover:shadow-[3px_3px_0_0_#0b3b44] hover:-translate-y-0.5 active:translate-y-0 transition-all"
         >
           −
         </button>
-        <div className="font-display text-4xl font-semibold text-[#14110c] tabular-nums w-16 text-center">{value}</div>
+        <div className="font-display text-4xl font-semibold text-[#0b3b44] tabular-nums w-16 text-center">{value}</div>
         <button
           type="button"
           aria-label={`More ${label}`}
           onClick={() => onChange(Math.min(99, value + 1))}
-          className="w-11 h-11 shrink-0 grid place-items-center bg-[#f5b700] border-2 border-[#14110c] rounded-full text-xl font-bold text-[#14110c] shadow-[2px_2px_0_0_#14110c] hover:shadow-[3px_3px_0_0_#14110c] hover:-translate-y-0.5 active:translate-y-0 transition-all"
+          className="w-11 h-11 shrink-0 grid place-items-center bg-[#f5b700] border-2 border-[#0b3b44] rounded-full text-xl font-bold text-[#0b3b44] shadow-[2px_2px_0_0_#0b3b44] hover:shadow-[3px_3px_0_0_#0b3b44] hover:-translate-y-0.5 active:translate-y-0 transition-all"
         >
           +
         </button>
@@ -101,36 +101,36 @@ export default function PartnerEarningsCalculator({ pct, months, talkingWebsiteC
   const shownRecurring = useCountUp(recurringYear);
 
   return (
-    <div className="bg-white border-2 border-[#14110c] rounded-3xl shadow-[8px_8px_0_0_#14110c] overflow-hidden">
+    <div className="bg-white border-2 border-[#0b3b44] rounded-3xl shadow-[8px_8px_0_0_#0b3b44] overflow-hidden">
       <div className="grid lg:grid-cols-[1.05fr_0.95fr]">
         {/* Levers */}
-        <div className="p-6 sm:p-8 border-b-2 lg:border-b-0 lg:border-r-2 border-[#14110c]">
-          <span className="text-[10px] uppercase tracking-[0.35em] text-[#8f1d22] font-mono font-bold block mb-2">Run your numbers</span>
-          <h3 className="font-display text-2xl font-semibold text-[#14110c] mb-5">What could a month look like?</h3>
+        <div className="p-6 sm:p-8 border-b-2 lg:border-b-0 lg:border-r-2 border-[#0b3b44]">
+          <span className="text-[10px] uppercase tracking-[0.35em] text-[#0a7c78] font-mono font-bold block mb-2">Run your numbers</span>
+          <h3 className="font-display text-2xl font-semibold text-[#0b3b44] mb-5">What could a month look like?</h3>
           <div className="space-y-3">
             <Stepper label="Talking Websites kept" hint={`${cents(talkingWebsiteCents)} a month each, for ${months} months`} value={sites} onChange={setSites} accent="#f5b700" />
-            <Stepper label="Voice Agents kept" hint={`${cents(voiceCents)} a month each, for ${months} months`} value={voices} onChange={setVoices} accent="#b3261e" />
-            <Stepper label="Builds you send our way" hint={`${buildPct}% of the project. A ${money(BUILD_BLEND)} build pays ${money(buildCut)}`} value={builds} onChange={setBuilds} accent="#b3261e" />
-            <Stepper label="Playbooks you sell" hint={`${productPct}% of every sale, paid the moment they buy. About ${money(productCut)} each`} value={products} onChange={setProducts} accent="#14110c" />
+            <Stepper label="Voice Agents kept" hint={`${cents(voiceCents)} a month each, for ${months} months`} value={voices} onChange={setVoices} accent="#ff6f59" />
+            <Stepper label="Builds you send our way" hint={`${buildPct}% of the project. A ${money(BUILD_BLEND)} build pays ${money(buildCut)}`} value={builds} onChange={setBuilds} accent="#ff6f59" />
+            <Stepper label="Playbooks you sell" hint={`${productPct}% of every sale, paid the moment they buy. About ${money(productCut)} each`} value={products} onChange={setProducts} accent="#0b3b44" />
           </div>
         </div>
 
         {/* Payout */}
-        <div className="p-6 sm:p-8 bg-[#14110c] flex flex-col justify-center relative overflow-hidden">
+        <div className="p-6 sm:p-8 bg-[#0b3b44] flex flex-col justify-center relative overflow-hidden">
           <div className="absolute inset-0 opacity-[0.06]" style={{ backgroundImage: 'radial-gradient(#f5b700 1.4px, transparent 1.4px)', backgroundSize: '14px 14px' }} aria-hidden />
           <div className="relative">
             <span className="text-[10px] uppercase tracking-[0.35em] text-[#f5b700] font-mono font-bold block mb-3">You earn</span>
-            <div className="font-display text-6xl sm:text-7xl font-bold text-[#f6efe0] leading-none tabular-nums">
+            <div className="font-display text-6xl sm:text-7xl font-bold text-[#fbf5ea] leading-none tabular-nums">
               {money(shownMonthly)}
-              <span className="font-sans text-lg font-medium text-[#f6efe0]/50 tracking-tight">/mo</span>
+              <span className="font-sans text-lg font-medium text-[#fbf5ea]/50 tracking-tight">/mo</span>
             </div>
-            <div className="mt-5 flex items-start gap-3 bg-[#f5b700] border-2 border-[#14110c] rounded-xl p-4">
+            <div className="mt-5 flex items-start gap-3 bg-[#f5b700] border-2 border-[#0b3b44] rounded-xl p-4">
               <span className="text-lg leading-none" aria-hidden>↻</span>
-              <p className="font-body text-sm text-[#14110c] leading-snug">
+              <p className="font-body text-sm text-[#0b3b44] leading-snug">
                 <span className="font-bold">{money(shownRecurring)} of that is locked in for the year</span> from the sites and voice agents alone. {pct}% of every monthly invoice keeps paying while you go find the next one.
               </p>
             </div>
-            <p className="text-[#f6efe0]/45 font-body text-[11px] mt-4 leading-relaxed">
+            <p className="text-[#fbf5ea]/45 font-body text-[11px] mt-4 leading-relaxed">
               Sites and voice agents are the real rates on the real prices. Builds and playbooks use the blended averages stated on the levers. Your link, your real numbers, no cap on any of it.
             </p>
           </div>

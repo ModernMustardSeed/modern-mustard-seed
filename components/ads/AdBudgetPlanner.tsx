@@ -54,19 +54,19 @@ export default function AdBudgetPlanner() {
   };
 
   return (
-    <section id="planner" className="py-16 md:py-24 halftone-bg border-b-2 border-[#14110c]">
+    <section id="planner" className="py-16 md:py-24 halftone-bg border-b-2 border-[#0b3b44]">
       <div className="max-w-6xl mx-auto px-5">
         <div className="text-center mb-10">
           <Reveal variant="eyebrow">
-            <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#8f1d22] font-bold mb-4">[ THE AD BUDGET PLANNER ]</p>
+            <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#0a7c78] font-bold mb-4">[ THE AD BUDGET PLANNER ]</p>
           </Reveal>
           <Reveal variant="slam">
-            <h2 className="font-display text-3xl md:text-5xl font-black text-[#14110c] tracking-tight leading-[1.05]">
+            <h2 className="font-display text-3xl md:text-5xl font-black text-[#0b3b44] tracking-tight leading-[1.05]">
               What should you actually spend?
             </h2>
           </Reveal>
           <Reveal variant="rise" delay={100}>
-            <p className="font-body text-[#14110c]/70 max-w-2xl mx-auto mt-4">
+            <p className="font-body text-[#0b3b44]/70 max-w-2xl mx-auto mt-4">
               Honest planning ranges from typical local campaigns. Estimates, not promises: anyone promising exact results is selling you something.
             </p>
           </Reveal>
@@ -75,13 +75,13 @@ export default function AdBudgetPlanner() {
         <Reveal variant="rise" delay={140}>
           <div className="grid lg:grid-cols-2 gap-6 max-w-4xl mx-auto items-start">
             {/* Controls */}
-            <div className="rounded-2xl bg-white border-2 border-[#14110c] shadow-[6px_6px_0_0_#14110c] p-6 md:p-7">
+            <div className="rounded-2xl bg-white border-2 border-[#0b3b44] shadow-[6px_6px_0_0_#0b3b44] p-6 md:p-7">
               <label className="block">
-                <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#14110c]/70 font-bold">Your Trade</span>
+                <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#0b3b44]/70 font-bold">Your Trade</span>
                 <select
                   value={verticalId}
                   onChange={(e) => pickVertical(e.target.value)}
-                  className="mt-2 w-full rounded-lg border-2 border-[#14110c] bg-[#f6efe0] px-3 py-2.5 font-body text-sm text-[#14110c] focus:outline-none focus:ring-2 focus:ring-[#f5b700]"
+                  className="mt-2 w-full rounded-lg border-2 border-[#0b3b44] bg-[#fbf5ea] px-3 py-2.5 font-body text-sm text-[#0b3b44] focus:outline-none focus:ring-2 focus:ring-[#f5b700]"
                 >
                   {plannerVerticals.map((pv) => (
                     <option key={pv.id} value={pv.id}>
@@ -93,8 +93,8 @@ export default function AdBudgetPlanner() {
 
               <label className="block mt-6">
                 <span className="flex items-baseline justify-between">
-                  <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#14110c]/70 font-bold">Daily Budget</span>
-                  <span className="font-display text-2xl font-black text-[#14110c]">${daily}/day</span>
+                  <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#0b3b44]/70 font-bold">Daily Budget</span>
+                  <span className="font-display text-2xl font-black text-[#0b3b44]">${daily}/day</span>
                 </span>
                 <input
                   type="range"
@@ -105,7 +105,7 @@ export default function AdBudgetPlanner() {
                   onChange={(e) => setDaily(Number(e.target.value))}
                   className="mt-2 w-full accent-[#f5b700]"
                 />
-                <span className="flex justify-between font-mono text-[10px] text-[#14110c]/50">
+                <span className="flex justify-between font-mono text-[10px] text-[#0b3b44]/50">
                   <span>$5</span>
                   <span>$100</span>
                 </span>
@@ -113,8 +113,8 @@ export default function AdBudgetPlanner() {
 
               <label className="block mt-6">
                 <span className="flex items-baseline justify-between">
-                  <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#14110c]/70 font-bold">Average Customer Value</span>
-                  <span className="font-display text-2xl font-black text-[#14110c]">${jobValue.toLocaleString()}</span>
+                  <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#0b3b44]/70 font-bold">Average Customer Value</span>
+                  <span className="font-display text-2xl font-black text-[#0b3b44]">${jobValue.toLocaleString()}</span>
                 </span>
                 <input
                   type="range"
@@ -125,7 +125,7 @@ export default function AdBudgetPlanner() {
                   onChange={(e) => setJobValue(Number(e.target.value))}
                   className="mt-2 w-full accent-[#f5b700]"
                 />
-                <span className="flex justify-between font-mono text-[10px] text-[#14110c]/50">
+                <span className="flex justify-between font-mono text-[10px] text-[#0b3b44]/50">
                   <span>$25</span>
                   <span>$10,000</span>
                 </span>
@@ -133,27 +133,27 @@ export default function AdBudgetPlanner() {
             </div>
 
             {/* The receipt */}
-            <div className="rounded-2xl bg-[#14110c] border-2 border-[#14110c] shadow-[6px_6px_0_0_#f5b700] p-6 md:p-7 lg:rotate-[0.5deg]">
+            <div className="rounded-2xl bg-[#0b3b44] border-2 border-[#0b3b44] shadow-[6px_6px_0_0_#f5b700] p-6 md:p-7 lg:rotate-[0.5deg]">
               <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#f5b700] font-bold">Your Starting Plan</p>
-              <dl className="mt-4 space-y-3 font-mono text-sm text-[#f6efe0]">
-                <div className="flex justify-between gap-4 border-b border-dashed border-[#f6efe0]/25 pb-2">
-                  <dt className="text-[#f6efe0]/65">Monthly ad spend (your card)</dt>
+              <dl className="mt-4 space-y-3 font-mono text-sm text-[#fbf5ea]">
+                <div className="flex justify-between gap-4 border-b border-dashed border-[#fbf5ea]/25 pb-2">
+                  <dt className="text-[#fbf5ea]/65">Monthly ad spend (your card)</dt>
                   <dd className="font-bold">${plan.monthly.toLocaleString()}</dd>
                 </div>
-                <div className="flex justify-between gap-4 border-b border-dashed border-[#f6efe0]/25 pb-2">
-                  <dt className="text-[#f6efe0]/65">Typical cost per lead</dt>
+                <div className="flex justify-between gap-4 border-b border-dashed border-[#fbf5ea]/25 pb-2">
+                  <dt className="text-[#fbf5ea]/65">Typical cost per lead</dt>
                   <dd className="font-bold">${v.cplLow} to ${v.cplHigh}</dd>
                 </div>
-                <div className="flex justify-between gap-4 border-b border-dashed border-[#f6efe0]/25 pb-2">
-                  <dt className="text-[#f6efe0]/65">Estimated inquiries / month</dt>
+                <div className="flex justify-between gap-4 border-b border-dashed border-[#fbf5ea]/25 pb-2">
+                  <dt className="text-[#fbf5ea]/65">Estimated inquiries / month</dt>
                   <dd className="font-bold">{plan.leadsLow} to {plan.leadsHigh}</dd>
                 </div>
-                <div className="flex justify-between gap-4 border-b border-dashed border-[#f6efe0]/25 pb-2">
-                  <dt className="text-[#f6efe0]/65">New customers (close 1 in 3)</dt>
+                <div className="flex justify-between gap-4 border-b border-dashed border-[#fbf5ea]/25 pb-2">
+                  <dt className="text-[#fbf5ea]/65">New customers (close 1 in 3)</dt>
                   <dd className="font-bold">{plan.closedLow} to {plan.closedHigh}</dd>
                 </div>
                 <div className="flex justify-between gap-4">
-                  <dt className="text-[#f6efe0]/65">Jobs to cover ads + ON AIR</dt>
+                  <dt className="text-[#fbf5ea]/65">Jobs to cover ads + ON AIR</dt>
                   <dd className="font-bold text-[#f5b700]">
                     {plan.breakEvenJobs} {plan.breakEvenJobs === 1 ? 'job' : 'jobs'}
                   </dd>
@@ -161,14 +161,14 @@ export default function AdBudgetPlanner() {
               </dl>
 
               {state === 'sent' ? (
-                <p className="mt-6 rounded-lg bg-[#f5b700] border-2 border-[#f5b700] px-4 py-3 font-sans font-bold text-sm text-[#14110c]">
+                <p className="mt-6 rounded-lg bg-[#f5b700] border-2 border-[#f5b700] px-4 py-3 font-sans font-bold text-sm text-[#0b3b44]">
                   Sent. Your plan is in your inbox (Sarah reads replies personally).
                 </p>
               ) : (
                 <form onSubmit={send} className="mt-6">
                   <input type="text" name="company" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" />
                   <label className="block">
-                    <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#f6efe0]/60">Email me this plan</span>
+                    <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#fbf5ea]/60">Email me this plan</span>
                     <div className="flex gap-2 mt-2">
                       <input
                         type="email"
@@ -176,12 +176,12 @@ export default function AdBudgetPlanner() {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="you@yourbusiness.com"
-                        className="flex-1 min-w-0 rounded-lg border-2 border-[#f6efe0]/30 bg-[#f6efe0] px-3 py-2.5 font-body text-sm text-[#14110c] placeholder:text-[#14110c]/40 focus:outline-none focus:ring-2 focus:ring-[#f5b700]"
+                        className="flex-1 min-w-0 rounded-lg border-2 border-[#fbf5ea]/30 bg-[#fbf5ea] px-3 py-2.5 font-body text-sm text-[#0b3b44] placeholder:text-[#0b3b44]/40 focus:outline-none focus:ring-2 focus:ring-[#f5b700]"
                       />
                       <button
                         type="submit"
                         disabled={state === 'sending'}
-                        className="shrink-0 rounded-lg bg-[#f5b700] border-2 border-[#f5b700] px-4 py-2.5 font-sans font-extrabold text-xs uppercase tracking-[0.14em] text-[#14110c] transition-all hover:-translate-y-0.5 disabled:opacity-60"
+                        className="shrink-0 rounded-lg bg-[#f5b700] border-2 border-[#f5b700] px-4 py-2.5 font-sans font-extrabold text-xs uppercase tracking-[0.14em] text-[#0b3b44] transition-all hover:-translate-y-0.5 disabled:opacity-60"
                       >
                         {state === 'sending' ? 'Sending…' : 'Send It'}
                       </button>

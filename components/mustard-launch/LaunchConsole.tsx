@@ -116,7 +116,7 @@ export default function LaunchConsole() {
   const igniting = running && tick >= SYSTEMS.length;
 
   return (
-    <div className="relative overflow-hidden rounded-2xl border-2 border-[#14110c] bg-[radial-gradient(120%_130%_at_78%_8%,#2A2A2A,#14110c_60%)] text-[#f6efe0] shadow-[8px_8px_0_0_#14110c]">
+    <div className="relative overflow-hidden rounded-2xl border-2 border-[#0b3b44] bg-[radial-gradient(120%_130%_at_78%_8%,#2A2A2A,#0b3b44_60%)] text-[#fbf5ea] shadow-[8px_8px_0_0_#0b3b44]">
       {/* halftone starfield */}
       <div
         className="pointer-events-none absolute inset-0 opacity-90"
@@ -130,7 +130,7 @@ export default function LaunchConsole() {
           <span className="font-mono text-[10px] sm:text-[11px] tracking-[0.18em] text-[#f5b700] uppercase">
             ◉ Mustard Launch · Mission Control
           </span>
-          <span className="hidden sm:block font-mono text-[10px] tracking-[0.16em] text-[#f6efe0]/60 uppercase truncate max-w-[46%]">
+          <span className="hidden sm:block font-mono text-[10px] tracking-[0.16em] text-[#fbf5ea]/60 uppercase truncate max-w-[46%]">
             {idea ? `MISSION: "${idea.slice(0, 40)}"` : 'MISSION: STANDBY'}
           </span>
         </div>
@@ -151,7 +151,7 @@ export default function LaunchConsole() {
                   <p className="font-mono font-bold text-2xl sm:text-3xl text-[#ffc933] tracking-wider">
                     {igniting ? 'T - 00 : 00 : 00 · IGNITION' : `T - 00 : 00 : 0${SYSTEMS.length - tick}`}
                   </p>
-                  <p className="font-sans text-[#f6efe0]/80 mt-3 max-w-sm">
+                  <p className="font-sans text-[#fbf5ea]/80 mt-3 max-w-sm">
                     {igniting ? 'Cleared for launch. Assembling your Blueprint.' : 'Standby. Mr. Mustard is building your launch, phase by phase.'}
                   </p>
                   <div className="mt-4 h-1.5 w-full max-w-sm rounded-full bg-white/10 overflow-hidden">
@@ -160,7 +160,7 @@ export default function LaunchConsole() {
                 </div>
               ) : (
                 <form onSubmit={ignite} className="mt-6 space-y-3 max-w-md">
-                  <p className="font-sans text-[#f6efe0]/82 text-[15px]">
+                  <p className="font-sans text-[#fbf5ea]/82 text-[15px]">
                     Tell Mr. Mustard what you are starting. He builds your whole launch: brand, offer, money, presence, first customers, and counts you down to open.
                   </p>
                   <textarea
@@ -169,7 +169,7 @@ export default function LaunchConsole() {
                     rows={2}
                     maxLength={400}
                     placeholder="What are you launching? (e.g. a hand-poured candle studio, a budgeting app, a bookkeeping service)"
-                    className="w-full resize-none rounded-lg border border-[#f5b700]/40 bg-white/[0.06] px-3.5 py-3 font-mono text-sm text-[#f6efe0] placeholder:text-[#f6efe0]/40 focus:outline-none focus:border-[#f5b700]"
+                    className="w-full resize-none rounded-lg border border-[#f5b700]/40 bg-white/[0.06] px-3.5 py-3 font-mono text-sm text-[#fbf5ea] placeholder:text-[#fbf5ea]/40 focus:outline-none focus:border-[#f5b700]"
                   />
                   {/* honeypot */}
                   <input
@@ -187,17 +187,17 @@ export default function LaunchConsole() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="you@business.com"
-                      className="flex-1 rounded-lg border border-[#f5b700]/40 bg-white/[0.06] px-3.5 py-3 font-mono text-sm text-[#f6efe0] placeholder:text-[#f6efe0]/40 focus:outline-none focus:border-[#f5b700]"
+                      className="flex-1 rounded-lg border border-[#f5b700]/40 bg-white/[0.06] px-3.5 py-3 font-mono text-sm text-[#fbf5ea] placeholder:text-[#fbf5ea]/40 focus:outline-none focus:border-[#f5b700]"
                     />
                     <button
                       type="submit"
-                      className="shrink-0 inline-flex items-center justify-center gap-2 rounded-lg border-2 border-[#14110c] bg-[#f5b700] px-5 py-3 font-mono text-sm font-bold uppercase tracking-wider text-[#14110c] shadow-[4px_4px_0_0_#000] transition-transform hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#000]"
+                      className="shrink-0 inline-flex items-center justify-center gap-2 rounded-lg border-2 border-[#0b3b44] bg-[#f5b700] px-5 py-3 font-mono text-sm font-bold uppercase tracking-wider text-[#0b3b44] shadow-[4px_4px_0_0_#000] transition-transform hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#000]"
                     >
                       ▲ Ignite
                     </button>
                   </div>
                   {phase === 'error' && <p className="font-mono text-xs text-[#FF8550]">{errMsg}</p>}
-                  <p className="font-mono text-[10px] text-[#f6efe0]/45">We save your mission and send the Blueprint PDF. No spam, unsubscribe anytime.</p>
+                  <p className="font-mono text-[10px] text-[#fbf5ea]/45">We save your mission and send the Blueprint PDF. No spam, unsubscribe anytime.</p>
                 </form>
               )}
             </div>
@@ -211,10 +211,10 @@ export default function LaunchConsole() {
                   const arming = running && i === tick;
                   return (
                     <li key={s.id} className="flex items-center justify-between font-mono text-[12px] py-[6px] border-b border-dotted border-white/10 last:border-0">
-                      <span className="text-[#f6efe0]/85">
+                      <span className="text-[#fbf5ea]/85">
                         {String(i + 1).padStart(2, '0')} · {s.label}
                       </span>
-                      <span className={online ? 'font-bold text-[#7CFF9B]' : arming ? 'font-bold text-[#ffc933]' : 'text-[#f6efe0]/40'}>
+                      <span className={online ? 'font-bold text-[#7CFF9B]' : arming ? 'font-bold text-[#ffc933]' : 'text-[#fbf5ea]/40'}>
                         {online ? 'GO ✓' : arming ? 'ARMING…' : 'STANDBY'}
                       </span>
                     </li>
@@ -231,7 +231,7 @@ export default function LaunchConsole() {
                   />
                 ))}
               </div>
-              <p className="font-mono text-[10px] text-[#f6efe0]/55 mt-2">
+              <p className="font-mono text-[10px] text-[#fbf5ea]/55 mt-2">
                 {running ? `Plan assembling · ${Math.min(tick, SYSTEMS.length)} of ${SYSTEMS.length} phases locked in` : `${SYSTEMS.length}-phase launch sequence`}
               </p>
             </div>
@@ -248,14 +248,14 @@ function BlueprintReveal({ blueprint, runId, onReset }: { blueprint: Blueprint; 
   return (
     <div className="pt-6 animate-[fadeUp_0.5s_ease]">
       <p className="font-mono text-[11px] tracking-[0.16em] text-[#7CFF9B] uppercase">✓ Cleared for launch · your Blueprint is live</p>
-      <h2 className="font-display font-extrabold text-3xl sm:text-4xl mt-2 text-[#f6efe0]">{blueprint.businessName}</h2>
+      <h2 className="font-display font-extrabold text-3xl sm:text-4xl mt-2 text-[#fbf5ea]">{blueprint.businessName}</h2>
       <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-[#f5b700] mt-1">{blueprint.category}</p>
-      {blueprint.oneLiner && <p className="font-serif italic text-lg sm:text-xl text-[#f6efe0]/90 mt-3 max-w-2xl">{blueprint.oneLiner}</p>}
+      {blueprint.oneLiner && <p className="font-serif italic text-lg sm:text-xl text-[#fbf5ea]/90 mt-3 max-w-2xl">{blueprint.oneLiner}</p>}
 
       {blueprint.signatureMove && (
         <div className="mt-4 rounded-lg border-2 border-[#f5b700] bg-[#f5b700]/10 p-4 max-w-2xl">
           <p className="font-mono text-[10px] font-bold tracking-[0.16em] text-[#ffc933] uppercase">★ Your signature first move</p>
-          <p className="font-sans text-[#f6efe0] mt-1.5">{blueprint.signatureMove}</p>
+          <p className="font-sans text-[#fbf5ea] mt-1.5">{blueprint.signatureMove}</p>
         </div>
       )}
 
@@ -270,16 +270,16 @@ function BlueprintReveal({ blueprint, runId, onReset }: { blueprint: Blueprint; 
               style={{ animationDelay: `${i * 90}ms`, animationFillMode: 'forwards' }}
             >
               <div className="flex items-center gap-2">
-                <span className="font-mono text-[10px] font-bold bg-[#14110c] text-[#f5b700] border border-[#f5b700]/40 rounded px-1.5 py-0.5">{phase.code}</span>
-                <span className="font-mono text-[10px] tracking-[0.12em] text-[#8f1d22] uppercase font-bold">{phase.system}</span>
+                <span className="font-mono text-[10px] font-bold bg-[#0b3b44] text-[#f5b700] border border-[#f5b700]/40 rounded px-1.5 py-0.5">{phase.code}</span>
+                <span className="font-mono text-[10px] tracking-[0.12em] text-[#0a7c78] uppercase font-bold">{phase.system}</span>
               </div>
               <ul className="mt-2.5 space-y-2">
                 {bpPhase.missions.map((m, mi) => (
                   <li key={mi} className="flex gap-2">
                     <span className="text-[#f5b700] shrink-0">✦</span>
                     <span>
-                      <span className="font-sans font-bold text-[#f6efe0] text-[13.5px]">{m.title}. </span>
-                      <span className="font-sans text-[#f6efe0]/70 text-[13px]">{m.detail}</span>
+                      <span className="font-sans font-bold text-[#fbf5ea] text-[13.5px]">{m.title}. </span>
+                      <span className="font-sans text-[#fbf5ea]/70 text-[13px]">{m.detail}</span>
                     </span>
                   </li>
                 ))}
@@ -295,7 +295,7 @@ function BlueprintReveal({ blueprint, runId, onReset }: { blueprint: Blueprint; 
             href={`/api/mustard-launch/pdf?runId=${runId}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-lg border-2 border-[#14110c] bg-[#f5b700] px-5 py-3 font-sans font-bold text-[#14110c] shadow-[4px_4px_0_0_#000] transition-transform hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#000]"
+            className="inline-flex items-center gap-2 rounded-lg border-2 border-[#0b3b44] bg-[#f5b700] px-5 py-3 font-sans font-bold text-[#0b3b44] shadow-[4px_4px_0_0_#000] transition-transform hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#000]"
           >
             ⬇ Download my Blueprint PDF
           </a>
@@ -306,7 +306,7 @@ function BlueprintReveal({ blueprint, runId, onReset }: { blueprint: Blueprint; 
         >
           Build the whole launch →
         </a>
-        <button onClick={onReset} className="font-mono text-xs text-[#f6efe0]/50 underline underline-offset-4 hover:text-[#f6efe0]/80">
+        <button onClick={onReset} className="font-mono text-xs text-[#fbf5ea]/50 underline underline-offset-4 hover:text-[#fbf5ea]/80">
           run another
         </button>
       </div>
@@ -323,7 +323,7 @@ function SeedConfetti() {
         const delay = (i % 6) * 60;
         const dur = 900 + ((i * 53) % 700);
         const size = 6 + (i % 4) * 2;
-        const color = i % 3 === 0 ? '#b3261e' : i % 3 === 1 ? '#f5b700' : '#ffc933';
+        const color = i % 3 === 0 ? '#ff6f59' : i % 3 === 1 ? '#f5b700' : '#ffc933';
         return (
           <span
             key={i}

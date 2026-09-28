@@ -29,7 +29,7 @@ import { hatcheryTiers } from '@/data/hatchery';
 import { mustardLevels } from '@/data/mustard-mode/offer';
 import { products } from '@/data/products';
 
-const INK = '#14110c';
+const INK = '#0b3b44';
 const GOLD = '#f5b700';
 const usd = (cents: number) => `$${demoAgentUsd(cents)}`;
 
@@ -113,15 +113,15 @@ function Bubble({
 }) {
   return (
     <div className={`mlc-pop relative ${className}`} style={{ transitionDelay: `${delay}ms` }}>
-      <div className="relative rounded-2xl border-2 border-[#14110c] bg-white px-5 py-4 shadow-[4px_4px_0_0_#14110c]">
+      <div className="relative rounded-2xl border-2 border-[#0b3b44] bg-white px-5 py-4 shadow-[4px_4px_0_0_#0b3b44]">
         {who && (
-          <p className="font-mono text-[9px] font-bold uppercase tracking-[0.3em] text-[#8f1d22] mb-1.5">{who}</p>
+          <p className="font-mono text-[9px] font-bold uppercase tracking-[0.3em] text-[#0a7c78] mb-1.5">{who}</p>
         )}
-        <p className="font-display text-lg md:text-xl font-bold leading-snug text-[#14110c]">{children}</p>
+        <p className="font-display text-lg md:text-xl font-bold leading-snug text-[#0b3b44]">{children}</p>
         {tail !== 'none' && (
           <span
             aria-hidden
-            className={`absolute -bottom-[13px] h-6 w-6 rotate-45 border-b-2 border-r-2 border-[#14110c] bg-white ${
+            className={`absolute -bottom-[13px] h-6 w-6 rotate-45 border-b-2 border-r-2 border-[#0b3b44] bg-white ${
               tail === 'left' ? 'left-8' : 'right-8'
             }`}
           />
@@ -146,18 +146,18 @@ function PriceTag({
 }) {
   return (
     <div
-      className={`mlc-pop mlc-tag relative rounded-xl border-2 border-[#14110c] px-4 py-3 ${
-        featured ? 'bg-[#f5b700] shadow-[4px_4px_0_0_#14110c]' : 'bg-white shadow-[4px_4px_0_0_#f5b700]'
+      className={`mlc-pop mlc-tag relative rounded-xl border-2 border-[#0b3b44] px-4 py-3 ${
+        featured ? 'bg-[#f5b700] shadow-[4px_4px_0_0_#0b3b44]' : 'bg-white shadow-[4px_4px_0_0_#f5b700]'
       }`}
       style={{ transitionDelay: `${delay}ms` }}
     >
       <span
         aria-hidden
-        className="absolute -top-2 left-4 h-4 w-10 rounded-[3px] border border-[#14110c]/30 bg-[#f6efe0]/80 rotate-[-4deg]"
+        className="absolute -top-2 left-4 h-4 w-10 rounded-[3px] border border-[#0b3b44]/30 bg-[#fbf5ea]/80 rotate-[-4deg]"
       />
-      <p className="font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-[#14110c]">{name}</p>
-      <p className="font-display text-2xl font-black leading-none text-[#14110c] mt-1">{price}</p>
-      {note && <p className="font-body text-[11px] leading-snug text-[#14110c]/70 mt-1.5">{note}</p>}
+      <p className="font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-[#0b3b44]">{name}</p>
+      <p className="font-display text-2xl font-black leading-none text-[#0b3b44] mt-1">{price}</p>
+      {note && <p className="font-body text-[11px] leading-snug text-[#0b3b44]/70 mt-1.5">{note}</p>}
     </div>
   );
 }
@@ -166,8 +166,8 @@ function Cta({ href, children, solid = false }: { href: string; children: React.
   return (
     <Link
       href={href}
-      className={`inline-flex items-center gap-2 rounded-full border-2 border-[#14110c] px-6 py-3 font-sans text-[11px] font-extrabold uppercase tracking-[0.18em] transition-all hover:-translate-y-0.5 hover:shadow-[5px_5px_0_0_#14110c] shadow-[3px_3px_0_0_#14110c] ${
-        solid ? 'bg-[#14110c] text-[#f5b700] hover:shadow-[5px_5px_0_0_rgba(20,17,12,0.35)] shadow-[3px_3px_0_0_rgba(20,17,12,0.35)]' : 'bg-[#f5b700] text-[#14110c]'
+      className={`inline-flex items-center gap-2 rounded-full border-2 border-[#0b3b44] px-6 py-3 font-sans text-[11px] font-extrabold uppercase tracking-[0.18em] transition-all hover:-translate-y-0.5 hover:shadow-[5px_5px_0_0_#0b3b44] shadow-[3px_3px_0_0_#0b3b44] ${
+        solid ? 'bg-[#0b3b44] text-[#f5b700] hover:shadow-[5px_5px_0_0_rgba(11,59,68,0.35)] shadow-[3px_3px_0_0_rgba(11,59,68,0.35)]' : 'bg-[#f5b700] text-[#0b3b44]'
       }`}
     >
       {children}
@@ -179,9 +179,9 @@ function Cta({ href, children, solid = false }: { href: string; children: React.
 function PageRule({ page, title }: { page: string; title: string }) {
   return (
     <div className="flex items-center gap-4 mb-8">
-      <span className="font-mono text-[10px] font-bold uppercase tracking-[0.35em] text-[#8f1d22]">{title}</span>
-      <span className="h-[2px] flex-1 bg-[#14110c]/15" />
-      <span className="font-mono text-[10px] font-bold tracking-[0.3em] text-[#14110c]/50">MUSTARD LIFE · {page}</span>
+      <span className="font-mono text-[10px] font-bold uppercase tracking-[0.35em] text-[#0a7c78]">{title}</span>
+      <span className="h-[2px] flex-1 bg-[#0b3b44]/15" />
+      <span className="font-mono text-[10px] font-bold tracking-[0.3em] text-[#0b3b44]/50">MUSTARD LIFE · {page}</span>
     </div>
   );
 }
@@ -203,7 +203,7 @@ function Art({
 }) {
   return (
     <div
-      className="mlc-pop relative overflow-hidden rounded-2xl border-2 border-[#14110c] bg-[#14110c] shadow-[8px_8px_0_0_#14110c]"
+      className="mlc-pop relative overflow-hidden rounded-2xl border-2 border-[#0b3b44] bg-[#0b3b44] shadow-[8px_8px_0_0_#0b3b44]"
       style={{ aspectRatio: aspect, transform: tilt ? `rotate(${tilt}deg)` : undefined }}
     >
       <Image src={src} alt={alt} fill priority={priority} sizes={sizes} className="object-cover" />
@@ -220,7 +220,7 @@ export default function MustardLifeComic() {
   usePops(rootRef);
 
   return (
-    <div ref={rootRef} className="relative bg-[#f6efe0] text-[#14110c]">
+    <div ref={rootRef} className="relative bg-[#fbf5ea] text-[#0b3b44]">
       <style>{`
         .mlc-ready .mlc-pop { opacity: 0; transform: translateY(18px) scale(0.97); transition: opacity .55s cubic-bezier(.2,.9,.3,1.2), transform .55s cubic-bezier(.2,.9,.3,1.2); }
         .mlc-ready .mlc-pop.in { opacity: 1; transform: translateY(0) scale(1); }
@@ -234,7 +234,7 @@ export default function MustardLifeComic() {
       `}</style>
 
       {/* ════════════════ THE COVER ════════════════ */}
-      <section className="relative min-h-[100svh] overflow-hidden border-b-2 border-[#14110c]">
+      <section className="relative min-h-[100svh] overflow-hidden border-b-2 border-[#0b3b44]">
         <div className="absolute inset-0">
           <Image
             src="/comic/cover.webp"
@@ -245,24 +245,24 @@ export default function MustardLifeComic() {
             sizes="100vw"
             className="object-cover object-[50%_38%]"
           />
-          <div aria-hidden className="absolute inset-x-0 top-0 h-64 bg-gradient-to-b from-[#f6efe0]/70 via-[#f6efe0]/20 to-transparent" />
-          <div aria-hidden className="absolute inset-x-0 bottom-0 h-56 bg-gradient-to-t from-[#14110c]/60 via-[#14110c]/15 to-transparent" />
+          <div aria-hidden className="absolute inset-x-0 top-0 h-64 bg-gradient-to-b from-[#fbf5ea]/70 via-[#fbf5ea]/20 to-transparent" />
+          <div aria-hidden className="absolute inset-x-0 bottom-0 h-56 bg-gradient-to-t from-[#0b3b44]/60 via-[#0b3b44]/15 to-transparent" />
         </div>
 
         <div className="relative z-[2] mx-auto flex min-h-[100svh] max-w-6xl flex-col px-5 md:px-8 pt-20 md:pt-24 pb-6">
           {/* Masthead */}
           <header className="text-center">
-            <p className="font-mono text-[9px] md:text-[10px] font-bold uppercase tracking-[0.5em] text-[#14110c]/80">
+            <p className="font-mono text-[9px] md:text-[10px] font-bold uppercase tracking-[0.5em] text-[#0b3b44]/80">
               The World&rsquo;s Most Trusted Publication About One Family
             </p>
             <h1
-              className="font-display font-black italic leading-[0.85] tracking-tight text-[#14110c] text-[19vw] md:text-[9.5rem] lg:text-[11rem]"
+              className="font-display font-black italic leading-[0.85] tracking-tight text-[#0b3b44] text-[19vw] md:text-[9.5rem] lg:text-[11rem]"
               style={{ textShadow: `4px 4px 0 ${GOLD}` }}
             >
               Mustard Life
             </h1>
-            <div className="mt-2 inline-flex items-center gap-3 rounded-full border-2 border-[#14110c] bg-[#f5b700] px-5 py-1.5 shadow-[3px_3px_0_0_#14110c]">
-              <span className="font-mono text-[10px] md:text-[11px] font-extrabold uppercase tracking-[0.3em] text-[#14110c]">
+            <div className="mt-2 inline-flex items-center gap-3 rounded-full border-2 border-[#0b3b44] bg-[#f5b700] px-5 py-1.5 shadow-[3px_3px_0_0_#0b3b44]">
+              <span className="font-mono text-[10px] md:text-[11px] font-extrabold uppercase tracking-[0.3em] text-[#0b3b44]">
                 The Family Business Issue
               </span>
             </div>
@@ -277,23 +277,23 @@ export default function MustardLifeComic() {
             ].map((l, i) => (
               <div
                 key={l.t}
-                className="mlc-pop mlc-coverline w-fit rounded-lg border-2 border-[#14110c] bg-white/95 px-4 py-2.5 shadow-[4px_4px_0_0_#14110c]"
+                className="mlc-pop mlc-coverline w-fit rounded-lg border-2 border-[#0b3b44] bg-white/95 px-4 py-2.5 shadow-[4px_4px_0_0_#0b3b44]"
                 style={{ transform: `rotate(${l.r}deg)`, transitionDelay: `${200 + i * 130}ms` }}
               >
                 <p className="font-display text-sm md:text-base font-extrabold leading-tight">
-                  {l.t} <span className="font-mono text-[10px] font-bold text-[#8f1d22]">{l.p}</span>
+                  {l.t} <span className="font-mono text-[10px] font-bold text-[#0a7c78]">{l.p}</span>
                 </p>
               </div>
             ))}
             <div className="flex items-end justify-between gap-4">
-              <div className="mlc-pop rounded-lg border-2 border-[#14110c] bg-[#14110c] px-4 py-2 shadow-[4px_4px_0_0_#f5b700]" style={{ transitionDelay: '620ms' }}>
+              <div className="mlc-pop rounded-lg border-2 border-[#0b3b44] bg-[#0b3b44] px-4 py-2 shadow-[4px_4px_0_0_#f5b700]" style={{ transitionDelay: '620ms' }}>
                 <p className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-[#f5b700]">
                   Free. The Magazine, Not the Yacht.
                 </p>
               </div>
-              <div aria-hidden className="hidden sm:flex h-10 items-end gap-[2px] rounded-sm border-2 border-[#14110c] bg-white px-1.5 pt-1.5">
+              <div aria-hidden className="hidden sm:flex h-10 items-end gap-[2px] rounded-sm border-2 border-[#0b3b44] bg-white px-1.5 pt-1.5">
                 {[3, 1, 2, 1, 3, 2, 1, 3, 1, 2, 3, 1, 2, 1, 3].map((w, i) => (
-                  <span key={i} className="bg-[#14110c]" style={{ width: w, height: '100%' }} />
+                  <span key={i} className="bg-[#0b3b44]" style={{ width: w, height: '100%' }} />
                 ))}
               </div>
             </div>
@@ -302,14 +302,14 @@ export default function MustardLifeComic() {
       </section>
 
       {/* ════════════════ EDITOR'S LETTER + IN THIS ISSUE ════════════════ */}
-      <section id="contents" className="relative border-b-2 border-[#14110c]">
+      <section id="contents" className="relative border-b-2 border-[#0b3b44]">
         <div aria-hidden className="absolute inset-0 halftone-bg opacity-40 pointer-events-none" />
         <div className="relative mx-auto max-w-6xl px-5 md:px-8 py-16 md:py-24">
           <PageRule page="p. 02" title="From the Editor's Desk" />
           <div className="grid gap-10 lg:grid-cols-[1fr_1.3fr]">
             <div className="mlc-pop">
-              <div className="rounded-2xl border-2 border-[#14110c] bg-white p-7 shadow-[6px_6px_0_0_#14110c] -rotate-[0.6deg]">
-                <p className="font-serif text-xl md:text-2xl italic leading-relaxed text-[#14110c]">
+              <div className="rounded-2xl border-2 border-[#0b3b44] bg-white p-7 shadow-[6px_6px_0_0_#0b3b44] -rotate-[0.6deg]">
+                <p className="font-serif text-xl md:text-2xl italic leading-relaxed text-[#0b3b44]">
                   &ldquo;People keep asking how our family is always on the water while every phone gets answered,
                   every website gets built, and every ad gets run. This issue is our answer. It is also, and we
                   want to be honest about this, thirty pages of shameless advertising.&rdquo;
@@ -325,11 +325,11 @@ export default function MustardLifeComic() {
 
             {/* In This Issue: the whole catalog, one glance */}
             <div className="mlc-pop" style={{ transitionDelay: '120ms' }}>
-              <div className="rounded-2xl border-2 border-[#14110c] bg-[#f6efe0] shadow-[6px_6px_0_0_#f5b700] overflow-hidden">
-                <div className="border-b-2 border-[#14110c] bg-[#14110c] px-6 py-3">
+              <div className="rounded-2xl border-2 border-[#0b3b44] bg-[#fbf5ea] shadow-[6px_6px_0_0_#f5b700] overflow-hidden">
+                <div className="border-b-2 border-[#0b3b44] bg-[#0b3b44] px-6 py-3">
                   <p className="font-mono text-[11px] font-bold uppercase tracking-[0.4em] text-[#f5b700]">In This Issue</p>
                 </div>
-                <ul className="divide-y divide-dashed divide-[#14110c]/20 px-6 py-2">
+                <ul className="divide-y divide-dashed divide-[#0b3b44]/20 px-6 py-2">
                   {[
                     { p: '04', label: 'The Voice Agent Build', note: `voice agent, from ${usd(P.voiceAgent.setupCents)} + ${usd(P.voiceAgent.monthlyCents)}/mo`, href: '#voice-agent' },
                     { p: '06', label: 'Websites and The Talking Website', note: `from ${usd(P.site.setupCents)} + ${usd(P.site.monthlyCents)}/mo`, href: '#websites' },
@@ -343,11 +343,11 @@ export default function MustardLifeComic() {
                   ].map((row) => (
                     <li key={row.p}>
                       <a href={row.href} className="group flex items-baseline gap-3 py-3">
-                        <span className="font-mono text-[11px] font-bold text-[#8f1d22]">{row.p}</span>
-                        <span className="font-display text-base md:text-lg font-extrabold group-hover:text-[#8f1d22] transition-colors">
+                        <span className="font-mono text-[11px] font-bold text-[#0a7c78]">{row.p}</span>
+                        <span className="font-display text-base md:text-lg font-extrabold group-hover:text-[#0a7c78] transition-colors">
                           {row.label}
                         </span>
-                        <span aria-hidden className="mx-1 flex-1 border-b-2 border-dotted border-[#14110c]/25 translate-y-[-4px]" />
+                        <span aria-hidden className="mx-1 flex-1 border-b-2 border-dotted border-[#0b3b44]/25 translate-y-[-4px]" />
                         <span className="font-body text-[12px] text-[#5c554a] text-right">{row.note}</span>
                       </a>
                     </li>
@@ -360,7 +360,7 @@ export default function MustardLifeComic() {
       </section>
 
       {/* ════════════════ p.04 THE DEMO_AGENT ════════════════ */}
-      <section id="demo-agent" className="relative border-b-2 border-[#14110c]">
+      <section id="demo-agent" className="relative border-b-2 border-[#0b3b44]">
         <div className="mx-auto max-w-6xl px-5 md:px-8 py-16 md:py-24">
           <PageRule page="p. 04" title="Cover Story" />
           <h2 className="font-display text-4xl md:text-6xl font-black italic leading-[0.95] mb-3">
@@ -410,7 +410,7 @@ export default function MustardLifeComic() {
               <div className="mlc-pop flex flex-col gap-3 pt-2" style={{ transitionDelay: '220ms' }}>
                 <Cta href="/demos" solid>Build Yours Free</Cta>
                 <p className="font-mono text-[11px] text-[#5c554a] leading-relaxed">
-                  Or call Mr. Mustard himself: <a className="font-bold text-[#8f1d22]" href="tel:+14063121223">{DEMO_AGENT.phoneLine}</a>. He loves visitors.
+                  Or call Mr. Mustard himself: <a className="font-bold text-[#0a7c78]" href="tel:+14063121223">{DEMO_AGENT.phoneLine}</a>. He loves visitors.
                 </p>
               </div>
             </div>
@@ -419,7 +419,7 @@ export default function MustardLifeComic() {
       </section>
 
       {/* ════════════════ p.06 WEBSITES + p.08 COMMAND ════════════════ */}
-      <section id="websites" className="relative border-b-2 border-[#14110c]">
+      <section id="websites" className="relative border-b-2 border-[#0b3b44]">
         <div aria-hidden className="absolute inset-0 halftone-bg opacity-30 pointer-events-none" />
         <div className="relative mx-auto max-w-6xl px-5 md:px-8 py-16 md:py-24">
           <PageRule page="p. 06" title="Home and Office" />
@@ -475,7 +475,7 @@ export default function MustardLifeComic() {
               </div>
             </div>
             <div className="space-y-4">
-              <p className="font-mono text-[10px] font-bold uppercase tracking-[0.35em] text-[#8f1d22]">p. 08 · The Bridge</p>
+              <p className="font-mono text-[10px] font-bold uppercase tracking-[0.35em] text-[#0a7c78]">p. 08 · The Bridge</p>
               {/*
                 NO COMMAND CENTER PRICE TAG. It had one here, and a paragraph
                 pitching it, until Sarah said on 2026-08-25: "I am not pushing
@@ -502,7 +502,7 @@ export default function MustardLifeComic() {
       </section>
 
       {/* ════════════════ p.10 PICTURES + BROADCAST ════════════════ */}
-      <section id="pictures" className="relative border-b-2 border-[#14110c]">
+      <section id="pictures" className="relative border-b-2 border-[#0b3b44]">
         <div className="mx-auto max-w-6xl px-5 md:px-8 py-16 md:py-24">
           <PageRule page="p. 10" title="The Arts Section" />
           <h2 className="font-display text-4xl md:text-6xl font-black italic leading-[0.95] mb-10">
@@ -532,7 +532,7 @@ export default function MustardLifeComic() {
             </div>
 
             <div className="space-y-4">
-              <div className="mlc-pop rounded-2xl border-2 border-[#14110c] bg-[#f5b700] p-7"><h3 className="font-display text-3xl font-bold">Your story. Its audience.</h3><p className="mt-4 font-body text-base leading-relaxed">Tell us what you want to put into the world. We will shape the film and the campaign around it.</p></div>
+              <div className="mlc-pop rounded-2xl border-2 border-[#0b3b44] bg-[#f5b700] p-7"><h3 className="font-display text-3xl font-bold">Your story. Its audience.</h3><p className="mt-4 font-body text-base leading-relaxed">Tell us what you want to put into the world. We will shape the film and the campaign around it.</p></div>
               <div className="mlc-pop flex flex-wrap gap-3 pt-2">
                 <Cta href="/pictures">Explore Mustard Pictures</Cta>
                 <Cta href="/inquire" solid>Reach Out</Cta>
@@ -547,7 +547,7 @@ export default function MustardLifeComic() {
           the press entry (art /comic/press.webp, P.piece + P.handPress tags,
           CTA /press), set the grid back to md:grid-cols-3, and rename the
           section id back to "press" to bring the feature back. */}
-      <section id="launch" className="relative border-b-2 border-[#14110c]">
+      <section id="launch" className="relative border-b-2 border-[#0b3b44]">
         <div aria-hidden className="absolute inset-0 halftone-bg opacity-30 pointer-events-none" />
         <div className="relative mx-auto max-w-6xl px-5 md:px-8 py-16 md:py-24">
           <PageRule page="p. 12" title="Two Short Features" />
@@ -595,7 +595,7 @@ export default function MustardLifeComic() {
       </section>
 
       {/* ════════════════ p.14 SWITCHBOARD ════════════════ */}
-      <section id="switchboard" className="relative border-b-2 border-[#14110c]">
+      <section id="switchboard" className="relative border-b-2 border-[#0b3b44]">
         <div className="mx-auto max-w-6xl px-5 md:px-8 py-16 md:py-24">
           <PageRule page="p. 14" title="Society Pages" />
           <div className="grid gap-8 lg:grid-cols-[1fr_1.5fr] items-start">
@@ -639,7 +639,7 @@ export default function MustardLifeComic() {
           P.spotlight tags, CTA /hatchery), put the wrapper back to
           "grid gap-10 lg:grid-cols-2", and rename the section id back to
           "hatchery" to bring the announcement back. */}
-      <section id="night-school" className="relative border-b-2 border-[#14110c]">
+      <section id="night-school" className="relative border-b-2 border-[#0b3b44]">
         <div aria-hidden className="absolute inset-0 halftone-bg opacity-30 pointer-events-none" />
         <div className="relative mx-auto max-w-6xl px-5 md:px-8 py-16 md:py-24">
           <PageRule page="p. 16" title="Family Announcements" />
@@ -672,7 +672,7 @@ export default function MustardLifeComic() {
       </section>
 
       {/* ════════════════ p.18 THE CUSTOM SHOP ════════════════ */}
-      <section id="builds" className="relative border-b-2 border-[#14110c]">
+      <section id="builds" className="relative border-b-2 border-[#0b3b44]">
         <div className="mx-auto max-w-6xl px-5 md:px-8 py-16 md:py-24">
           <PageRule page="p. 18" title="The Custom Shop" />
           <div className="grid gap-8 lg:grid-cols-[1.5fr_1fr] items-start">
@@ -711,7 +711,7 @@ export default function MustardLifeComic() {
       </section>
 
       {/* ════════════════ p.20 CLASSIFIEDS + SUBSCRIBE ════════════════ */}
-      <section id="classifieds" className="relative border-b-2 border-[#14110c]">
+      <section id="classifieds" className="relative border-b-2 border-[#0b3b44]">
         <div aria-hidden className="absolute inset-0 halftone-bg opacity-30 pointer-events-none" />
         <div className="relative mx-auto max-w-6xl px-5 md:px-8 py-16 md:py-24">
           <PageRule page="p. 20" title="The Mustard Classifieds" />
@@ -734,11 +734,11 @@ export default function MustardLifeComic() {
               <Link
                 key={c.label}
                 href={c.href}
-                className="mlc-pop group rounded-xl border-2 border-[#14110c] bg-white p-4 shadow-[3px_3px_0_0_#14110c] transition-all hover:-translate-y-1 hover:shadow-[5px_5px_0_0_#f5b700]"
+                className="mlc-pop group rounded-xl border-2 border-[#0b3b44] bg-white p-4 shadow-[3px_3px_0_0_#0b3b44] transition-all hover:-translate-y-1 hover:shadow-[5px_5px_0_0_#f5b700]"
                 style={{ transitionDelay: `${(i % 4) * 70}ms` }}
               >
-                <p className="font-mono text-[9px] font-bold uppercase tracking-[0.25em] text-[#8f1d22] mb-1.5">Free · No Card</p>
-                <p className="font-display text-lg font-extrabold leading-tight group-hover:text-[#8f1d22] transition-colors">{c.label}</p>
+                <p className="font-mono text-[9px] font-bold uppercase tracking-[0.25em] text-[#0a7c78] mb-1.5">Free · No Card</p>
+                <p className="font-display text-lg font-extrabold leading-tight group-hover:text-[#0a7c78] transition-colors">{c.label}</p>
                 <p className="font-body text-[12px] leading-snug text-[#5c554a] mt-1.5">{c.note}</p>
               </Link>
             ))}
@@ -762,13 +762,13 @@ export default function MustardLifeComic() {
             sizes="100vw"
             className="object-cover"
           />
-          <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-[#14110c]/80 via-[#14110c]/25 to-transparent" />
+          <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-[#0b3b44]/80 via-[#0b3b44]/25 to-transparent" />
         </div>
         <div className="relative z-[2] mx-auto flex min-h-[92svh] max-w-5xl flex-col items-center justify-end px-5 md:px-8 pb-16 pt-40 text-center">
           <p className="mlc-pop font-mono text-[10px] font-bold uppercase tracking-[0.45em] text-[#f5b700]">
             p. 22 · A Word From Our Sponsor (Us)
           </p>
-          <h2 className="mlc-pop mt-4 font-display text-5xl md:text-7xl font-black italic leading-[0.92] text-white" style={{ transitionDelay: '100ms', textShadow: '3px 3px 0 rgba(20,17,12,0.8)' }}>
+          <h2 className="mlc-pop mt-4 font-display text-5xl md:text-7xl font-black italic leading-[0.92] text-white" style={{ transitionDelay: '100ms', textShadow: '3px 3px 0 rgba(11,59,68,0.8)' }}>
             Find your horizon.
           </h2>
           <p className="mlc-pop mt-5 max-w-2xl font-body text-[15px] md:text-base leading-relaxed text-white/90" style={{ transitionDelay: '200ms' }}>
@@ -816,18 +816,18 @@ function SubscribeCard() {
   };
 
   return (
-    <div className="relative rotate-[-1.2deg] rounded-2xl border-2 border-[#14110c] bg-[#f5b700] p-7 shadow-[8px_8px_0_0_#14110c]">
-      <span aria-hidden className="absolute -top-3 left-1/2 h-6 w-24 -translate-x-1/2 rotate-[2deg] rounded-[3px] border border-[#14110c]/25 bg-[#f6efe0]/85" />
-      <p className="font-mono text-[10px] font-bold uppercase tracking-[0.35em] text-[#14110c]/70">Subscription Card · Do Not Lose This</p>
-      <h3 className="mt-2 font-display text-3xl font-black italic leading-tight text-[#14110c]">
+    <div className="relative rotate-[-1.2deg] rounded-2xl border-2 border-[#0b3b44] bg-[#f5b700] p-7 shadow-[8px_8px_0_0_#0b3b44]">
+      <span aria-hidden className="absolute -top-3 left-1/2 h-6 w-24 -translate-x-1/2 rotate-[2deg] rounded-[3px] border border-[#0b3b44]/25 bg-[#fbf5ea]/85" />
+      <p className="font-mono text-[10px] font-bold uppercase tracking-[0.35em] text-[#0b3b44]/70">Subscription Card · Do Not Lose This</p>
+      <h3 className="mt-2 font-display text-3xl font-black italic leading-tight text-[#0b3b44]">
         Subscribe to Mustard Life.
       </h3>
-      <p className="mt-2 font-body text-[13px] leading-relaxed text-[#14110c]/80">
+      <p className="mt-2 font-body text-[13px] leading-relaxed text-[#0b3b44]/80">
         One short email a week: real plays from the studio, new issues first, zero fluff. Cancel anytime,
         though the Mustards will wonder what they did wrong.
       </p>
       {status === 'success' ? (
-        <p className="mt-5 rounded-xl border-2 border-[#14110c] bg-white px-5 py-4 font-display text-lg font-bold text-[#14110c]">
+        <p className="mt-5 rounded-xl border-2 border-[#0b3b44] bg-white px-5 py-4 font-display text-lg font-bold text-[#0b3b44]">
           Welcome to the family. Your first issue is on its way.
         </p>
       ) : (
@@ -840,19 +840,19 @@ function SubscribeCard() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="you@yourbusiness.com"
-            className="w-full flex-1 rounded-full border-2 border-[#14110c] bg-white px-5 py-3 font-body text-sm text-[#14110c] placeholder:text-[#14110c]/40 focus:outline-none focus:ring-2 focus:ring-[#14110c]"
+            className="w-full flex-1 rounded-full border-2 border-[#0b3b44] bg-white px-5 py-3 font-body text-sm text-[#0b3b44] placeholder:text-[#0b3b44]/40 focus:outline-none focus:ring-2 focus:ring-[#0b3b44]"
           />
           <button
             type="submit"
             disabled={status === 'sending'}
-            className="rounded-full border-2 border-[#14110c] bg-[#14110c] px-7 py-3 font-sans text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#f5b700] transition-all hover:-translate-y-0.5 disabled:opacity-60"
+            className="rounded-full border-2 border-[#0b3b44] bg-[#0b3b44] px-7 py-3 font-sans text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#f5b700] transition-all hover:-translate-y-0.5 disabled:opacity-60"
           >
             {status === 'sending' ? 'Delivering...' : 'Deliver It'}
           </button>
         </form>
       )}
       {status === 'error' && (
-        <p className="mt-3 font-mono text-[11px] font-bold text-[#8f1d22]">
+        <p className="mt-3 font-mono text-[11px] font-bold text-[#0a7c78]">
           The mailroom hiccuped. Try once more?
         </p>
       )}

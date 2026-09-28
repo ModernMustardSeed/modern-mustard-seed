@@ -40,7 +40,7 @@ export default async function TradePage({ params }: { params: Promise<{ trade: s
   const faqs = tradeFaqs(forWord, services, preset.avgTicket, ticketWord);
 
   return (
-    <div className="bg-[#f6efe0] text-[#14110c]">
+    <div className="bg-[#fbf5ea] text-[#0b3b44]">
       <JsonLd
         data={[
           serviceJsonLd({
@@ -57,11 +57,11 @@ export default async function TradePage({ params }: { params: Promise<{ trade: s
       />
 
       {/* ─────────────── HERO ─────────────── */}
-      <section className="relative overflow-hidden border-b-2 border-[#14110c] halftone-bg">
+      <section className="relative overflow-hidden border-b-2 border-[#0b3b44] halftone-bg">
         <div className="relative z-[2] max-w-6xl mx-auto px-6 pt-20 md:pt-28 pb-14 md:pb-20">
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-8 items-center">
             <div className="lg:col-span-7">
-              <span className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.18em] font-bold bg-white text-[#8f1d22] border-2 border-[#14110c] rounded-full px-3.5 py-1.5 shadow-[3px_3px_0_0_#14110c]">
+              <span className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.18em] font-bold bg-white text-[#0a7c78] border-2 border-[#0b3b44] rounded-full px-3.5 py-1.5 shadow-[3px_3px_0_0_#0b3b44]">
                 ☎ Built For {forWord}
               </span>
               <h1 className="mt-6 font-display font-extrabold leading-[0.98] tracking-tight text-5xl md:text-6xl lg:text-[4.4rem]">
@@ -74,13 +74,13 @@ export default async function TradePage({ params }: { params: Promise<{ trade: s
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link
                   href="/book"
-                  className="rounded-full border-2 border-[#14110c] bg-[#f5b700] text-[#14110c] px-8 py-4 font-sans font-extrabold text-sm uppercase tracking-[0.14em] shadow-[5px_5px_0_0_#14110c] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#14110c]"
+                  className="rounded-full border-2 border-[#0b3b44] bg-[#f5b700] text-[#0b3b44] px-8 py-4 font-sans font-extrabold text-sm uppercase tracking-[0.14em] shadow-[5px_5px_0_0_#0b3b44] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#0b3b44]"
                 >
                   Begin An Engagement
                 </Link>
                 <a
                   href={`tel:${DEMO_LINE.tel}`}
-                  className="rounded-full border-2 border-[#14110c] bg-white px-8 py-4 font-sans font-extrabold text-sm uppercase tracking-[0.14em] shadow-[5px_5px_0_0_#14110c] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#14110c]"
+                  className="rounded-full border-2 border-[#0b3b44] bg-white px-8 py-4 font-sans font-extrabold text-sm uppercase tracking-[0.14em] shadow-[5px_5px_0_0_#0b3b44] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#0b3b44]"
                 >
                   Hear It: {DEMO_LINE.display}
                 </a>
@@ -91,15 +91,15 @@ export default async function TradePage({ params }: { params: Promise<{ trade: s
               </p>
             </div>
             <div className="lg:col-span-5">
-              <figure className="relative rotate-[-1.5deg] rounded-[2px] border-[3px] border-[#14110c] bg-white p-2.5 shadow-[9px_9px_0_0_#f5b700]">
+              <figure className="relative rotate-[-1.5deg] rounded-[2px] border-[3px] border-[#0b3b44] bg-white p-2.5 shadow-[9px_9px_0_0_#f5b700]">
                 <Image
-                  src="/art/pages/voice-1600.webp"
-                  alt="Painting: Mr. Mustard in a tuxedo speaks into a chrome ribbon microphone in a 1920s radio studio while the pea works the dials at the control desk and the band waits for its cue"
+                  src="/art/riviera/voice-1600.webp"
+                  alt="Painting: on the stern of a yacht in late afternoon light, Mr. Mustard laughs into a small earpiece while fishing with a seed kid, his phone glowing on the teak beside him and the dog watching the line"
                   width={1600}
                   height={1067}
                   priority
                   sizes="(min-width: 1024px) 40vw, 92vw"
-                  className="border-2 border-[#14110c] w-full h-auto"
+                  className="border-2 border-[#0b3b44] w-full h-auto"
                 />
                 <figcaption className="px-2 pt-2 pb-1 font-mono text-[10px] uppercase tracking-[0.22em] text-[#5c554a] text-center">
                   The bench phone never rings unanswered again
@@ -111,7 +111,7 @@ export default async function TradePage({ params }: { params: Promise<{ trade: s
       </section>
 
       {/* ─────────────── MISSED-CALL MATH ─────────────── */}
-      <section className="border-b-2 border-[#14110c]">
+      <section className="border-b-2 border-[#0b3b44]">
         <div className="max-w-5xl mx-auto px-6 py-14 md:py-20">
           <p className="font-mono text-[11px] uppercase tracking-[0.3em] font-bold text-[#8f6600]">
             Run Your Own Numbers
@@ -126,7 +126,7 @@ export default async function TradePage({ params }: { params: Promise<{ trade: s
       </section>
 
       {/* ─────────────── WHAT IT HANDLES + A SAMPLE NIGHT ─────────────── */}
-      <section className="border-b-2 border-[#14110c] bg-white">
+      <section className="border-b-2 border-[#0b3b44] bg-white">
         <div className="max-w-6xl mx-auto px-6 py-14 md:py-20 grid lg:grid-cols-2 gap-10">
           <div>
             <p className="font-mono text-[11px] uppercase tracking-[0.3em] font-bold text-[#8f6600]">
@@ -140,7 +140,7 @@ export default async function TradePage({ params }: { params: Promise<{ trade: s
               Booked jobs land on your schedule, every caller gets a text confirmation, and you get the summary
               the moment each call ends. Emergencies get flagged so the right ones wake you up.
             </p>
-            <div className="mt-8 rounded-2xl border-2 border-[#14110c] bg-[#f6efe0] p-5 shadow-[4px_4px_0_0_#14110c]">
+            <div className="mt-8 rounded-2xl border-2 border-[#0b3b44] bg-[#fbf5ea] p-5 shadow-[4px_4px_0_0_#0b3b44]">
               <p className="font-mono text-[10px] uppercase tracking-[0.2em] font-bold text-[#8f6600]">
                 Your Command Board
               </p>
@@ -154,28 +154,28 @@ export default async function TradePage({ params }: { params: Promise<{ trade: s
             </div>
           </div>
           <div>
-            <div className="rounded-2xl border-2 border-[#14110c] bg-[#14110c] p-6 shadow-[6px_6px_0_0_#f5b700]">
+            <div className="rounded-2xl border-2 border-[#0b3b44] bg-[#0b3b44] p-6 shadow-[6px_6px_0_0_#f5b700]">
               <div className="flex items-center justify-between">
                 <p className="font-mono text-[10px] uppercase tracking-[0.24em] font-bold text-[#f5b700]">
                   While You Slept
                 </p>
-                <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-[#f6efe0]/50">
+                <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-[#fbf5ea]/50">
                   Sample Night
                 </span>
               </div>
               <ul className="mt-5 space-y-4">
                 {preset.overnightCalls.map((c) => (
-                  <li key={c.time} className="border-b border-[#f6efe0]/15 pb-4 last:border-0 last:pb-0">
+                  <li key={c.time} className="border-b border-[#fbf5ea]/15 pb-4 last:border-0 last:pb-0">
                     <div className="flex items-baseline justify-between gap-3">
-                      <span className="font-sans font-bold text-[#f6efe0]">{c.caller}</span>
+                      <span className="font-sans font-bold text-[#fbf5ea]">{c.caller}</span>
                       <span className="font-mono text-xs text-[#f5b700]">{c.time}</span>
                     </div>
-                    <p className="mt-1 font-body text-sm text-[#f6efe0]/70">“{c.need}”</p>
+                    <p className="mt-1 font-body text-sm text-[#fbf5ea]/70">“{c.need}”</p>
                     <p className="mt-1 font-body text-sm text-[#f5b700]">→ {c.outcome}</p>
                   </li>
                 ))}
               </ul>
-              <p className="mt-5 font-body text-xs text-[#f6efe0]/50">
+              <p className="mt-5 font-body text-xs text-[#fbf5ea]/50">
                 Sample calls showing real product behavior for this trade.
               </p>
             </div>
@@ -199,7 +199,7 @@ export default async function TradePage({ params }: { params: Promise<{ trade: s
            Rendered defensively. Five of the 28 presets lack customers/todayJobs,
            and a missing field must not 404 a live page. */}
       {preset.customers?.length ? (
-        <section className="border-b-2 border-[#14110c]">
+        <section className="border-b-2 border-[#0b3b44]">
           <div className="max-w-6xl mx-auto px-6 py-14 md:py-20 grid lg:grid-cols-2 gap-10 lg:gap-14">
             <div>
               <p className="font-mono text-[11px] uppercase tracking-[0.3em] font-bold text-[#8f6600]">
@@ -217,7 +217,7 @@ export default async function TradePage({ params }: { params: Promise<{ trade: s
                 {preset.customers.slice(0, 4).map((c) => (
                   <div
                     key={c.name}
-                    className="rounded-xl border-2 border-[#14110c] bg-white p-4 shadow-[3px_3px_0_0_#14110c]"
+                    className="rounded-xl border-2 border-[#0b3b44] bg-white p-4 shadow-[3px_3px_0_0_#0b3b44]"
                   >
                     <div className="flex items-baseline justify-between gap-3">
                       <span className="font-sans font-bold text-[15px]">{c.name}</span>
@@ -226,13 +226,13 @@ export default async function TradePage({ params }: { params: Promise<{ trade: s
                       </span>
                     </div>
                     <p className="mt-1 font-body text-[14px] text-[#3d382e]">{c.need}</p>
-                    <p className="mt-1.5 font-mono text-[10px] uppercase tracking-[0.16em] text-[#14110c]/60">
+                    <p className="mt-1.5 font-mono text-[10px] uppercase tracking-[0.16em] text-[#0b3b44]/60">
                       {preset.stages?.[c.stage] ?? 'In progress'}
                     </p>
                   </div>
                 ))}
               </div>
-              <p className="mt-4 font-body text-xs text-[#14110c]/60">
+              <p className="mt-4 font-body text-xs text-[#0b3b44]/60">
                 Sample pipeline for this trade, showing real product behavior.
               </p>
             </div>
@@ -249,22 +249,22 @@ export default async function TradePage({ params }: { params: Promise<{ trade: s
                 still on the phone, which is the only moment they are guaranteed to still be yours.
               </p>
               {preset.todayJobs?.length ? (
-                <div className="mt-7 rounded-2xl border-2 border-[#14110c] bg-[#14110c] p-6 shadow-[6px_6px_0_0_#f5b700]">
+                <div className="mt-7 rounded-2xl border-2 border-[#0b3b44] bg-[#0b3b44] p-6 shadow-[6px_6px_0_0_#f5b700]">
                   <p className="font-mono text-[10px] uppercase tracking-[0.24em] font-bold text-[#f5b700]">
                     Today
                   </p>
                   <ul className="mt-4 space-y-4">
                     {preset.todayJobs.map((j) => (
-                      <li key={j.time} className="flex gap-4 border-b border-[#f6efe0]/15 pb-4 last:border-0 last:pb-0">
+                      <li key={j.time} className="flex gap-4 border-b border-[#fbf5ea]/15 pb-4 last:border-0 last:pb-0">
                         <span className="font-mono text-sm font-bold text-[#f5b700] shrink-0 w-12">{j.time}</span>
                         <div>
-                          <p className="font-sans font-bold text-[#f6efe0] text-[15px]">{j.title}</p>
-                          <p className="font-body text-sm text-[#f6efe0]/60">{j.who}</p>
+                          <p className="font-sans font-bold text-[#fbf5ea] text-[15px]">{j.title}</p>
+                          <p className="font-body text-sm text-[#fbf5ea]/60">{j.who}</p>
                         </div>
                       </li>
                     ))}
                   </ul>
-                  <p className="mt-5 font-body text-xs text-[#f6efe0]/50">
+                  <p className="mt-5 font-body text-xs text-[#fbf5ea]/50">
                     Sample schedule for this trade.
                   </p>
                 </div>
@@ -280,7 +280,7 @@ export default async function TradePage({ params }: { params: Promise<{ trade: s
            gets anything close. Present on all 28 presets and, until now, never
            rendered on the page that most needed it. */}
       {preset.extraAutomations?.length ? (
-        <section className="border-b-2 border-[#14110c] bg-white">
+        <section className="border-b-2 border-[#0b3b44] bg-white">
           <div className="max-w-5xl mx-auto px-6 py-14 md:py-20">
             <p className="font-mono text-[11px] uppercase tracking-[0.3em] font-bold text-[#8f6600]">
               Beyond The Phone
@@ -296,7 +296,7 @@ export default async function TradePage({ params }: { params: Promise<{ trade: s
               {preset.extraAutomations.map((a) => (
                 <div
                   key={a.title}
-                  className="rounded-2xl border-2 border-[#14110c] bg-[#f6efe0] p-6 shadow-[5px_5px_0_0_#14110c]"
+                  className="rounded-2xl border-2 border-[#0b3b44] bg-[#fbf5ea] p-6 shadow-[5px_5px_0_0_#0b3b44]"
                 >
                   <h3 className="font-display text-lg font-extrabold leading-tight">{a.title}</h3>
                   <p className="mt-2.5 font-body text-sm text-[#3d382e] leading-relaxed">{a.desc}</p>
@@ -308,7 +308,7 @@ export default async function TradePage({ params }: { params: Promise<{ trade: s
       ) : null}
 
       {/* ─────────────── HOW IT STARTS ─────────────── */}
-      <section className="border-b-2 border-[#14110c] bg-[#f5b700]">
+      <section className="border-b-2 border-[#0b3b44] bg-[#f5b700]">
         <div className="max-w-6xl mx-auto px-6 py-14 md:py-20">
           <h2 className="font-display text-3xl md:text-4xl font-extrabold leading-[1.05]">
             Hear it before you ever pay for it.
@@ -331,7 +331,7 @@ export default async function TradePage({ params }: { params: Promise<{ trade: s
                 b: `A human at Modern Mustard Seed wires it to your real line, services, hours, and booking flow. Plans from $${demoAgentUsd(demoAgentTiers[0].monthlyCents)} a month, hard caps, no trial games.`,
               },
             ].map((s) => (
-              <div key={s.n} className="rounded-2xl border-2 border-[#14110c] bg-white p-6 shadow-[5px_5px_0_0_#14110c]">
+              <div key={s.n} className="rounded-2xl border-2 border-[#0b3b44] bg-white p-6 shadow-[5px_5px_0_0_#0b3b44]">
                 <p className="font-mono font-bold text-sm text-[#8f6600]">{s.n}</p>
                 <h3 className="mt-2 font-sans font-extrabold text-lg">{s.t}</h3>
                 <p className="mt-2 font-body text-sm text-[#3d382e] leading-relaxed">{s.b}</p>
@@ -342,7 +342,7 @@ export default async function TradePage({ params }: { params: Promise<{ trade: s
       </section>
 
       {/* ─────────────── FAQ ─────────────── */}
-      <section className="border-b-2 border-[#14110c]">
+      <section className="border-b-2 border-[#0b3b44]">
         <div className="max-w-4xl mx-auto px-6 py-14 md:py-20">
           <p className="font-mono text-[11px] uppercase tracking-[0.3em] font-bold text-[#8f6600]">
             Straight Answers
@@ -354,7 +354,7 @@ export default async function TradePage({ params }: { params: Promise<{ trade: s
             {faqs.map((f) => (
               <details
                 key={f.q}
-                className="group rounded-2xl border-2 border-[#14110c] bg-white p-5 shadow-[4px_4px_0_0_#14110c]"
+                className="group rounded-2xl border-2 border-[#0b3b44] bg-white p-5 shadow-[4px_4px_0_0_#0b3b44]"
               >
                 <summary className="cursor-pointer list-none font-sans font-bold text-[15px] flex items-start justify-between gap-4">
                   {f.q}
@@ -379,13 +379,13 @@ export default async function TradePage({ params }: { params: Promise<{ trade: s
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link
               href="/book"
-              className="rounded-full border-2 border-[#14110c] bg-[#f5b700] px-9 py-4 font-sans font-extrabold text-sm uppercase tracking-[0.14em] shadow-[5px_5px_0_0_#14110c] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#14110c]"
+              className="rounded-full border-2 border-[#0b3b44] bg-[#f5b700] px-9 py-4 font-sans font-extrabold text-sm uppercase tracking-[0.14em] shadow-[5px_5px_0_0_#0b3b44] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#0b3b44]"
             >
               Begin An Engagement
             </Link>
             <a
               href={`tel:${DEMO_LINE.tel}`}
-              className="rounded-full border-2 border-[#14110c] bg-white px-9 py-4 font-sans font-extrabold text-sm uppercase tracking-[0.14em] shadow-[5px_5px_0_0_#14110c] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#14110c]"
+              className="rounded-full border-2 border-[#0b3b44] bg-white px-9 py-4 font-sans font-extrabold text-sm uppercase tracking-[0.14em] shadow-[5px_5px_0_0_#0b3b44] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#0b3b44]"
             >
               Call The Demo Line
             </a>

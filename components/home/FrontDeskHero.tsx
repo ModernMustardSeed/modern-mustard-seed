@@ -256,7 +256,7 @@ export default function FrontDeskHero() {
   return (
     <section
       ref={wrapRef}
-      className="relative overflow-hidden bg-[#f6efe0] border-b-4 border-[#14110c]"
+      className="relative overflow-hidden bg-[#fbf5ea] border-b-4 border-[#0b3b44]"
       aria-label="Modern Mustard Seed. You bring the seed, we build the tree."
     >
       {/* Static halftone under everything (the only layer when reduced motion) */}
@@ -283,17 +283,17 @@ export default function FrontDeskHero() {
             width={1000}
             height={1093}
             priority
-            className="relative w-full h-auto drop-shadow-[5px_5px_0_rgba(20,17,12,0.14)]"
+            className="relative w-full h-auto drop-shadow-[5px_5px_0_rgba(11,59,68,0.14)]"
           />
         </div>
 
         {/* Now booking pill */}
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border-2 border-[#14110c] bg-white self-start">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border-2 border-[#0b3b44] bg-white self-start">
           <span className="relative flex h-2 w-2">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#b3261e] opacity-70" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-[#b3261e]" />
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#ff6f59] opacity-70" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-[#ff6f59]" />
           </span>
-          <span className="text-[10px] tracking-[0.25em] uppercase font-mono font-bold text-[#14110c]">
+          <span className="text-[10px] tracking-[0.25em] uppercase font-mono font-bold text-[#0b3b44]">
             Now booking new builds
           </span>
         </div>
@@ -301,7 +301,7 @@ export default function FrontDeskHero() {
         {/* One size for both states: the old font-size swap reflowed the whole
             column the moment a visitor pressed Enter. */}
         <h1
-          className="font-display italic font-extrabold text-[#14110c] leading-[0.98] tracking-tight mt-6 max-w-4xl text-4xl sm:text-5xl md:text-6xl xl:text-7xl"
+          className="font-display italic font-extrabold text-[#0b3b44] leading-[0.98] tracking-tight mt-6 max-w-4xl text-4xl sm:text-5xl md:text-6xl xl:text-7xl"
           aria-live="polite"
         >
           {headlineThing ? (
@@ -313,7 +313,7 @@ export default function FrontDeskHero() {
               We build the{' '}
               <span
                 className="not-italic font-mono text-[#f5b700]"
-                style={{ textShadow: '3px 3px 0 #14110c, -1px -1px 0 #14110c, 1px -1px 0 #14110c, -1px 1px 0 #14110c' }}
+                style={{ textShadow: '3px 3px 0 #0b3b44, -1px -1px 0 #0b3b44, 1px -1px 0 #0b3b44, -1px 1px 0 #0b3b44' }}
               >
                 tree
               </span>
@@ -322,7 +322,7 @@ export default function FrontDeskHero() {
           )}
         </h1>
 
-        <p className="font-sans text-base md:text-lg text-[#14110c]/80 max-w-2xl mt-6">
+        <p className="font-sans text-base md:text-lg text-[#0b3b44]/80 max-w-2xl mt-6">
           Websites, voice agents, command centers, and custom apps for founders, operators, and
           small business owners. Live in as little as a week. You own it all.
         </p>
@@ -333,9 +333,9 @@ export default function FrontDeskHero() {
             phase === 'terminal' ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6 pointer-events-none'
           }`}
         >
-          <div className="bg-[#14110c] border-2 border-[#14110c] shadow-[6px_6px_0_0_#14110c] overflow-hidden">
+          <div className="bg-[#0b3b44] border-2 border-[#0b3b44] shadow-[6px_6px_0_0_#0b3b44] overflow-hidden">
             <div className="flex items-center gap-2 bg-[#0F1422] px-4 py-2.5 border-b border-white/10">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#b3261e]" />
+              <span className="w-2.5 h-2.5 rounded-full bg-[#ff6f59]" />
               <span className="w-2.5 h-2.5 rounded-full bg-[#f5b700]" />
               <span className="w-2.5 h-2.5 rounded-full bg-[#3fbf6b]" />
               <span className="font-mono text-[10px] text-[#5C7188] ml-2">mr-mustard · front desk</span>
@@ -366,7 +366,7 @@ export default function FrontDeskHero() {
                   <button
                     type="submit"
                     disabled={idea.trim().length < 3 || play === 'typing'}
-                    className="min-h-[44px] font-mono font-bold text-[11px] uppercase tracking-wider bg-[#f5b700] text-[#14110c] border border-[#14110c] px-3 py-1.5 disabled:opacity-40 hover:translate-y-[1px] transition-transform"
+                    className="min-h-[44px] font-mono font-bold text-[11px] uppercase tracking-wider bg-[#f5b700] text-[#0b3b44] border border-[#0b3b44] px-3 py-1.5 disabled:opacity-40 hover:translate-y-[1px] transition-transform"
                   >
                     Enter
                   </button>
@@ -395,7 +395,7 @@ export default function FrontDeskHero() {
                           <Link
                             href={intentCta.href}
                             onClick={() => track('front_desk_route', { route: 'tool' })}
-                            className="min-h-[44px] inline-flex items-center font-sans font-bold bg-[#f5b700] text-[#14110c] border-2 border-[#14110c] shadow-[4px_4px_0_0_#f5b700] px-5 py-2.5 text-sm hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#f5b700] transition-all"
+                            className="min-h-[44px] inline-flex items-center font-sans font-bold bg-[#f5b700] text-[#0b3b44] border-2 border-[#0b3b44] shadow-[4px_4px_0_0_#f5b700] px-5 py-2.5 text-sm hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#f5b700] transition-all"
                           >
                             {intentCta.label} →
                           </Link>
@@ -406,7 +406,7 @@ export default function FrontDeskHero() {
                           className={`min-h-[44px] inline-flex items-center font-sans font-bold border-2 px-5 py-2.5 text-sm transition-all ${
                             intentCta
                               ? 'bg-transparent text-white border-white/40 hover:border-[#ffc933] hover:text-[#ffc933]'
-                              : 'bg-[#f5b700] text-[#14110c] border-[#14110c] shadow-[4px_4px_0_0_#f5b700] hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#f5b700]'
+                              : 'bg-[#f5b700] text-[#0b3b44] border-[#0b3b44] shadow-[4px_4px_0_0_#f5b700] hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#f5b700]'
                           }`}
                         >
                           Build it for me →
@@ -433,11 +433,11 @@ export default function FrontDeskHero() {
                             onChange={(e) => setEmail(e.target.value)}
                             placeholder="you@yourbusiness.com"
                             aria-label="Email for your personal scope"
-                            className="flex-1 bg-[#14110c] border border-white/20 px-3 py-2.5 outline-none text-base sm:text-sm text-white placeholder:text-[#5C7188]/70 focus:border-[#f5b700]"
+                            className="flex-1 bg-[#0b3b44] border border-white/20 px-3 py-2.5 outline-none text-base sm:text-sm text-white placeholder:text-[#5C7188]/70 focus:border-[#f5b700]"
                           />
                           <button
                             type="submit"
-                            className="min-h-[44px] w-full sm:w-auto whitespace-nowrap font-mono font-bold text-[11px] uppercase tracking-wider bg-[#f5b700] text-[#14110c] border border-[#14110c] px-4 py-2"
+                            className="min-h-[44px] w-full sm:w-auto whitespace-nowrap font-mono font-bold text-[11px] uppercase tracking-wider bg-[#f5b700] text-[#0b3b44] border border-[#0b3b44] px-4 py-2"
                           >
                             Send my scope
                           </button>
@@ -472,7 +472,7 @@ export default function FrontDeskHero() {
             {['40+ products shipped', 'Fixed quote before work starts', 'You own the code'].map((chip) => (
               <span
                 key={chip}
-                className="font-mono text-[10px] uppercase tracking-[0.12em] font-bold text-[#14110c] bg-white border-2 border-[#14110c] rounded-full px-3 py-1.5 shadow-[2px_2px_0_0_#14110c]"
+                className="font-mono text-[10px] uppercase tracking-[0.12em] font-bold text-[#0b3b44] bg-white border-2 border-[#0b3b44] rounded-full px-3 py-1.5 shadow-[2px_2px_0_0_#0b3b44]"
               >
                 {chip}
               </span>
@@ -485,13 +485,13 @@ export default function FrontDeskHero() {
         <div className={`mt-8 flex-col sm:flex-row gap-3.5 ${play === 'idle' || play === 'typing' ? 'flex' : 'hidden sm:flex'}`}>
           <Link
             href="/book"
-            className="text-center px-8 py-4 text-[12px] uppercase tracking-[0.18em] font-sans font-extrabold text-[#14110c] bg-[#f5b700] rounded-full border-2 border-[#14110c] shadow-[4px_4px_0_0_#14110c] hover:shadow-[6px_6px_0_0_#14110c] hover:-translate-y-0.5 transition-all"
+            className="text-center px-8 py-4 text-[12px] uppercase tracking-[0.18em] font-sans font-extrabold text-[#0b3b44] bg-[#f5b700] rounded-full border-2 border-[#0b3b44] shadow-[4px_4px_0_0_#0b3b44] hover:shadow-[6px_6px_0_0_#0b3b44] hover:-translate-y-0.5 transition-all"
           >
             Book a Free Call
           </Link>
           <Link
             href="/demos"
-            className="text-center px-8 py-4 text-[12px] uppercase tracking-[0.18em] font-sans font-extrabold text-[#14110c] bg-white rounded-full border-2 border-[#14110c] shadow-[4px_4px_0_0_#14110c] hover:shadow-[6px_6px_0_0_#14110c] hover:-translate-y-0.5 transition-all"
+            className="text-center px-8 py-4 text-[12px] uppercase tracking-[0.18em] font-sans font-extrabold text-[#0b3b44] bg-white rounded-full border-2 border-[#0b3b44] shadow-[4px_4px_0_0_#0b3b44] hover:shadow-[6px_6px_0_0_#0b3b44] hover:-translate-y-0.5 transition-all"
           >
             See Free Demos
           </Link>
@@ -500,13 +500,13 @@ export default function FrontDeskHero() {
         <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-1">
           <Link
             href="/work"
-            className="inline-flex items-center min-h-[44px] font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-[#14110c]/70 hover:text-[#C4160B] transition-colors"
+            className="inline-flex items-center min-h-[44px] font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-[#0b3b44]/70 hover:text-[#C4160B] transition-colors"
           >
             See the Work →
           </Link>
           <Link
             href="/voice-agents"
-            className="inline-flex items-center gap-2 min-h-[44px] font-mono text-[11px] font-bold text-[#14110c]/70 hover:text-[#C4160B] transition-colors"
+            className="inline-flex items-center gap-2 min-h-[44px] font-mono text-[11px] font-bold text-[#0b3b44]/70 hover:text-[#C4160B] transition-colors"
           >
             <span aria-hidden="true">◐</span> Our voice agents speak 100+ languages. Hear one →
           </Link>
@@ -529,7 +529,7 @@ export default function FrontDeskHero() {
             width={1000}
             height={1093}
             priority
-            className="relative w-full h-auto drop-shadow-[8px_8px_0_rgba(20,17,12,0.14)]"
+            className="relative w-full h-auto drop-shadow-[8px_8px_0_rgba(11,59,68,0.14)]"
           />
         </div>
       </div>

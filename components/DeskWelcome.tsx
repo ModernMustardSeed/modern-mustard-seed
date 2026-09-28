@@ -17,10 +17,10 @@ import { properName } from '@/lib/business-name';
  * height-capped flex column so it never clips its top on a short screen.
  */
 
-const INK = '#14110c';
-const CREAM = '#f6efe0';
+const INK = '#0b3b44';
+const CREAM = '#fbf5ea';
 const GOLD = '#f5b700';
-const RED = '#b3261e';
+const RED = '#ff6f59';
 
 type Step = { badge: string; title: string; body: string };
 
@@ -101,7 +101,7 @@ export default function DeskWelcome({
       aria-label="Welcome"
       onClick={dismiss}
       className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
-      style={{ background: 'rgba(20,17,12,0.55)', backdropFilter: 'blur(2px)' }}
+      style={{ background: 'rgba(11,59,68,0.55)', backdropFilter: 'blur(2px)' }}
     >
       <div
         onClick={(e) => e.stopPropagation()}
@@ -127,17 +127,17 @@ export default function DeskWelcome({
               <span
                 key={i}
                 className="h-[5px] flex-1 rounded-full transition-colors"
-                style={{ background: i <= step ? RED : 'rgba(20,17,12,0.14)' }}
+                style={{ background: i <= step ? RED : 'rgba(11,59,68,0.14)' }}
               />
             ))}
           </div>
         </div>
 
-        <div className="shrink-0 flex items-center justify-between gap-3 px-6 py-4 sm:px-7 border-t-2" style={{ borderColor: 'rgba(20,17,12,0.1)' }}>
+        <div className="shrink-0 flex items-center justify-between gap-3 px-6 py-4 sm:px-7 border-t-2" style={{ borderColor: 'rgba(11,59,68,0.1)' }}>
           <button
             onClick={dismiss}
             className="font-mono uppercase tracking-[0.08em] text-[12px] px-1 py-2"
-            style={{ color: 'rgba(20,17,12,0.55)' }}
+            style={{ color: 'rgba(11,59,68,0.55)' }}
           >
             Skip
           </button>

@@ -32,7 +32,7 @@ const OFFERINGS: { t: string; d: string }[] = [
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <span className="text-[10px] uppercase tracking-[0.4em] text-[#8f1d22] font-mono font-bold block mb-3">
+    <span className="text-[10px] uppercase tracking-[0.4em] text-[#0a7c78] font-mono font-bold block mb-3">
       {children}
     </span>
   );
@@ -50,14 +50,14 @@ export default function AboutPage() {
           ]),
         ]}
       />
-      <div data-studio-page="about" className="relative min-h-screen bg-[#f6efe0] text-[#14110c] overflow-x-clip">
+      <div data-studio-page="about" className="relative min-h-screen bg-[#fbf5ea] text-[#0b3b44] overflow-x-clip">
         <PopPageHero
           eyebrow={<span>About</span>}
           title={<>Faith Meets{' '}<em>Function</em></>}
           issue={{ no: 'No.1', lines: ['The studio', 'Kalispell, Montana'] }}
           art={{
-            src: '/art/pages/about',
-            alt: 'Painting: Mr. Mustard at his walnut desk in a 1920s corner office at dusk, sketching a building plan under a green banker’s lamp while his family and friends gather round, the city skyline glowing through the windows',
+            src: '/art/riviera/about',
+            alt: 'Painting: Mr. and Mrs. Mustard at a marble table on a Riviera café terrace under a Tiffany-blue awning, espresso and croissants, he smiles at his phone while the kids share a pastry with the seed dog and white yachts sit in the marina behind',
             caption: 'Made in Kalispell, Montana',
           }}
           sticker="Built here!"
@@ -82,14 +82,14 @@ export default function AboutPage() {
           </div>
 
           {/* ─── The signature "why" band ─── */}
-          <div className="relative mt-16 bg-[#14110c] text-[#f6efe0] border-2 border-[#14110c] rounded-3xl shadow-[6px_6px_0_0_#f5b700] overflow-hidden">
+          <div className="relative mt-16 bg-[#0b3b44] text-[#fbf5ea] border-2 border-[#0b3b44] rounded-3xl shadow-[6px_6px_0_0_#f5b700] overflow-hidden">
             <div aria-hidden className="absolute inset-0 halftone-bg opacity-[0.15]" />
             <div className="relative p-8 md:p-12">
               <SectionLabel>Why we do this</SectionLabel>
               <p className="font-display text-2xl md:text-4xl font-black tracking-tight leading-[1.12]">
                 Good software was priced out of reach for too long. We are here to end that.
               </p>
-              <p className="mt-5 text-[#f6efe0]/80 font-body text-[16px] leading-relaxed max-w-2xl">
+              <p className="mt-5 text-[#fbf5ea]/80 font-body text-[16px] leading-relaxed max-w-2xl">
                 The corner shop. The founder with one real shot. The operator drowning in busywork. They were all told that serious tools were for companies with serious budgets. That is over. Putting an elite product in the hands of someone who was never supposed to be able to afford one is the work we love most. It is the reason we do any of this.
               </p>
             </div>
@@ -98,10 +98,10 @@ export default function AboutPage() {
           {/* ─── Faith posture ─── */}
           <div className="mt-16 text-center max-w-2xl mx-auto">
             <SectionLabel>The posture</SectionLabel>
-            <p className="font-serif italic text-2xl md:text-3xl font-medium text-[#14110c] leading-snug">
+            <p className="font-serif italic text-2xl md:text-3xl font-medium text-[#0b3b44] leading-snug">
               &ldquo;The smallest of all seeds, yet when it is planted it grows into the largest of garden plants.&rdquo;
             </p>
-            <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#14110c]/50 mt-3">Matthew 13:31-32</p>
+            <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#0b3b44]/50 mt-3">Matthew 13:31-32</p>
             <p className="font-body text-[16px] text-[#3A3733] leading-relaxed mt-5">
               Small beginnings, outsized outcomes. Faith and execution in the same hand. That is how we approach every project, every client, and every line of code.
             </p>
@@ -111,12 +111,12 @@ export default function AboutPage() {
           <div className="mt-20">
             <div className="text-center mb-8">
               <SectionLabel>The standard we hold</SectionLabel>
-              <h2 className="font-display text-3xl md:text-4xl font-black text-[#14110c] tracking-tight">Excellence, every time</h2>
+              <h2 className="font-display text-3xl md:text-4xl font-black text-[#0b3b44] tracking-tight">Excellence, every time</h2>
             </div>
             <div className="grid sm:grid-cols-2 gap-4">
               {STANDARD.map((s) => (
                 <div key={s.k} className="pop-card p-6">
-                  <h3 className="font-display text-lg font-black text-[#14110c] mb-1.5">{s.k}</h3>
+                  <h3 className="font-display text-lg font-black text-[#0b3b44] mb-1.5">{s.k}</h3>
                   <p className="font-body text-[15px] text-[#3A3733] leading-relaxed">{s.v}</p>
                 </div>
               ))}
@@ -127,14 +127,14 @@ export default function AboutPage() {
           <div className="mt-16">
             <div className="text-center mb-6">
               <SectionLabel>The tools we build on</SectionLabel>
-              <h2 className="font-display text-3xl md:text-4xl font-black text-[#14110c] tracking-tight">One stack, sharpened weekly</h2>
+              <h2 className="font-display text-3xl md:text-4xl font-black text-[#0b3b44] tracking-tight">One stack, sharpened weekly</h2>
             </div>
             <div className="pop-card p-7 md:p-8">
               <div className="flex flex-wrap justify-center gap-2.5">
                 {STACK.map((tool) => (
                   <span
                     key={tool}
-                    className="font-mono text-[13px] font-semibold text-[#14110c] bg-[#f6efe0] border-2 border-[#14110c] rounded-full px-3.5 py-1.5"
+                    className="font-mono text-[13px] font-semibold text-[#0b3b44] bg-[#fbf5ea] border-2 border-[#0b3b44] rounded-full px-3.5 py-1.5"
                   >
                     {tool}
                   </span>
@@ -150,16 +150,16 @@ export default function AboutPage() {
           <div className="mt-16">
             <div className="text-center mb-8">
               <SectionLabel>What we build</SectionLabel>
-              <h2 className="font-display text-3xl md:text-4xl font-black text-[#14110c] tracking-tight">The work we offer</h2>
+              <h2 className="font-display text-3xl md:text-4xl font-black text-[#0b3b44] tracking-tight">The work we offer</h2>
             </div>
             <div className="space-y-3">
               {OFFERINGS.map((o, i) => (
                 <div key={o.t} className="pop-card p-6 flex items-start gap-4">
-                  <span className="shrink-0 font-mono text-sm font-bold text-[#14110c] bg-[#f5b700] border-2 border-[#14110c] rounded-lg w-9 h-9 flex items-center justify-center">
+                  <span className="shrink-0 font-mono text-sm font-bold text-[#0b3b44] bg-[#f5b700] border-2 border-[#0b3b44] rounded-lg w-9 h-9 flex items-center justify-center">
                     {String(i + 1).padStart(2, '0')}
                   </span>
                   <div>
-                    <h3 className="font-display text-lg font-black text-[#14110c] mb-1">{o.t}</h3>
+                    <h3 className="font-display text-lg font-black text-[#0b3b44] mb-1">{o.t}</h3>
                     <p className="font-body text-[15px] text-[#3A3733] leading-relaxed">{o.d}</p>
                   </div>
                 </div>
@@ -182,32 +182,32 @@ export default function AboutPage() {
                 <path
                   d="M100 165 C 55 130, 18 96, 18 58 C 18 32, 41 16, 65 22 C 83 27, 95 43, 100 59 C 105 43, 117 27, 135 22 C 159 16, 182 32, 182 58 C 182 96, 145 130, 100 165 Z"
                   fill="#FFFFFF"
-                  stroke="#14110c"
+                  stroke="#0b3b44"
                   strokeWidth="6"
                   strokeLinejoin="round"
                 />
               </svg>
-              <span className="font-serif italic text-4xl font-bold text-[#14110c] pb-3">, Sarah</span>
+              <span className="font-serif italic text-4xl font-bold text-[#0b3b44] pb-3">, Sarah</span>
             </div>
-            <p className="font-body text-sm text-[#14110c]/70 mt-2">Modern Mustard Seed</p>
+            <p className="font-body text-sm text-[#0b3b44]/70 mt-2">Modern Mustard Seed</p>
           </div>
 
           {/* ─── CTAs ─── */}
           <p className="mt-12 font-body leading-relaxed text-center">
-            <Link href="/sarahscarano" className="text-[#8f1d22] underline">Explore Sarah&apos;s portfolio</Link>, read our <Link href="/resources" className="text-[#8f1d22] underline">technical field notes</Link>, or see how we build <Link href="/agentic-websites" className="text-[#8f1d22] underline">agentic websites</Link> from our <Link href="/montana/kalispell" className="text-[#8f1d22] underline">Kalispell studio</Link>.
+            <Link href="/sarahscarano" className="text-[#0a7c78] underline">Explore Sarah&apos;s portfolio</Link>, read our <Link href="/resources" className="text-[#0a7c78] underline">technical field notes</Link>, or see how we build <Link href="/agentic-websites" className="text-[#0a7c78] underline">agentic websites</Link> from our <Link href="/montana/kalispell" className="text-[#0a7c78] underline">Kalispell studio</Link>.
           </p>
           <div className="mt-16 grid grid-cols-1 sm:grid-cols-3 gap-4">
             <Link href="/work" className="pop-card p-6 hover:-translate-y-1 transition-transform text-center">
-              <span className="block text-[10px] uppercase tracking-[0.3em] text-[#8f1d22] font-mono font-bold mb-2">Work</span>
-              <span className="font-display text-base font-black text-[#14110c]">See the case studies</span>
+              <span className="block text-[10px] uppercase tracking-[0.3em] text-[#0a7c78] font-mono font-bold mb-2">Work</span>
+              <span className="font-display text-base font-black text-[#0b3b44]">See the case studies</span>
             </Link>
             <Link href="/work-with-us" className="pop-card p-6 hover:-translate-y-1 transition-transform text-center">
-              <span className="block text-[10px] uppercase tracking-[0.3em] text-[#8f1d22] font-mono font-bold mb-2">Engage</span>
-              <span className="font-display text-base font-black text-[#14110c]">How we work</span>
+              <span className="block text-[10px] uppercase tracking-[0.3em] text-[#0a7c78] font-mono font-bold mb-2">Engage</span>
+              <span className="font-display text-base font-black text-[#0b3b44]">How we work</span>
             </Link>
             <Link href="/contact" className="pop-card p-6 hover:-translate-y-1 transition-transform text-center">
-              <span className="block text-[10px] uppercase tracking-[0.3em] text-[#8f1d22] font-mono font-bold mb-2">Talk</span>
-              <span className="font-display text-base font-black text-[#14110c]">Book a call</span>
+              <span className="block text-[10px] uppercase tracking-[0.3em] text-[#0a7c78] font-mono font-bold mb-2">Talk</span>
+              <span className="font-display text-base font-black text-[#0b3b44]">Book a call</span>
             </Link>
           </div>
         </div>

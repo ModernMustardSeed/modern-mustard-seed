@@ -180,7 +180,7 @@ export default function MultiplierHero() {
           if (data[i + 3] > 140) {
             const rC = data[i], gC = data[i + 1], bC = data[i + 2];
             const dark = rC + gC + bC < 260;
-            targets.push({ x: ox + xx * scale, y: oy + yy * scale, color: dark ? '#14110c' : '#f5b700' });
+            targets.push({ x: ox + xx * scale, y: oy + yy * scale, color: dark ? '#0b3b44' : '#f5b700' });
           }
         }
       }
@@ -383,7 +383,7 @@ export default function MultiplierHero() {
   const headline = headlineThing;
 
   return (
-    <section ref={wrapRef} className="relative overflow-hidden bg-[#f6efe0] border-b-2 border-[#14110c]" aria-label="MUSTARD MODE. One seed, 100x the output.">
+    <section ref={wrapRef} className="relative overflow-hidden bg-[#fbf5ea] border-b-2 border-[#0b3b44]" aria-label="MUSTARD MODE. One seed, 100x the output.">
       {/* Static halftone under everything (the only layer when reduced motion) */}
       <div className="absolute inset-0 halftone-bg opacity-60" aria-hidden />
       {!reduced && <canvas ref={canvasRef} className="absolute inset-0" aria-hidden />}
@@ -419,7 +419,7 @@ export default function MultiplierHero() {
             width={885}
             height={1180}
             priority={false}
-            className="w-full h-auto drop-shadow-[10px_10px_0_rgba(20,17,12,0.85)]"
+            className="w-full h-auto drop-shadow-[10px_10px_0_rgba(11,59,68,0.85)]"
           />
         </div>
       )}
@@ -427,23 +427,23 @@ export default function MultiplierHero() {
       <div className="relative max-w-6xl mx-auto px-4 md:px-6 pt-24 pb-12 md:pt-32 md:pb-16 min-h-[92vh] flex flex-col justify-center">
         {/* The comic cover panel: ink border, hard shadow, rays and a red halftone
             corner, translucent so the living dots still show through. */}
-        <div className="relative border-[3px] md:border-4 border-[#14110c] bg-[#fff7de]/75 shadow-[6px_6px_0_0_#14110c] md:shadow-[10px_10px_0_0_#14110c] px-5 pt-16 pb-9 md:px-12 md:pt-20 md:pb-12">
+        <div className="relative border-[3px] md:border-4 border-[#0b3b44] bg-[#fff7de]/75 shadow-[6px_6px_0_0_#0b3b44] md:shadow-[10px_10px_0_0_#0b3b44] px-5 pt-16 pb-9 md:px-12 md:pt-20 md:pb-12">
         <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
           <i className="absolute left-[78%] top-1/2 block aspect-square w-[170%] -translate-x-1/2 -translate-y-1/2" style={{ background: 'repeating-conic-gradient(from 0deg, #f5b70047 0 5deg, #f5b70000 5deg 12deg)', maskImage: 'radial-gradient(circle, #000 0, #000 22%, transparent 62%)', WebkitMaskImage: 'radial-gradient(circle, #000 0, #000 22%, transparent 62%)' }} />
-          <i className="absolute inset-0 block opacity-25" style={{ backgroundImage: 'radial-gradient(#b3261e 2px, transparent 2.3px)', backgroundSize: '13px 13px', maskImage: 'linear-gradient(135deg, transparent 64%, #000 100%)', WebkitMaskImage: 'linear-gradient(135deg, transparent 64%, #000 100%)' }} />
+          <i className="absolute inset-0 block opacity-25" style={{ backgroundImage: 'radial-gradient(#ff6f59 2px, transparent 2.3px)', backgroundSize: '13px 13px', maskImage: 'linear-gradient(135deg, transparent 64%, #000 100%)', WebkitMaskImage: 'linear-gradient(135deg, transparent 64%, #000 100%)' }} />
         </div>
-        <p className="absolute -top-5 left-5 md:left-7 z-[2] m-0 flex -rotate-3 flex-col gap-0.5 border-[3px] border-[#14110c] bg-[#14110c] px-3 pb-2 pt-1.5 text-[#f6efe0] shadow-[5px_5px_0_0_#b3261e]" aria-hidden>
-          <b className="text-[28px] md:text-[34px] font-normal leading-[.9] tracking-[.02em] text-[#f5b700]" style={{ fontFamily: 'var(--font-deco), Georgia, serif' }}>No.1</b>
+        <p className="absolute -top-5 left-5 md:left-7 z-[2] m-0 flex -rotate-3 flex-col gap-0.5 border-[3px] border-[#0b3b44] bg-[#0b3b44] px-3 pb-2 pt-1.5 text-[#fbf5ea] shadow-[5px_5px_0_0_#ff6f59]" aria-hidden>
+          <b className="text-[28px] md:text-[34px] font-normal leading-[.9] tracking-[.02em] text-[#f5b700]" style={{ fontFamily: 'var(--font-riviera), Georgia, serif' }}>No.1</b>
           <span className="text-[9px] font-bold uppercase tracking-[.18em]">Mustard Mode</span>
           <span className="text-[9px] font-bold uppercase tracking-[.18em]">1 free credit</span>
         </p>
         <div className="relative">
-        <p className="font-mono font-bold text-[11px] md:text-xs tracking-[0.18em] text-[#8f1d22] uppercase">
+        <p className="font-mono font-bold text-[11px] md:text-xs tracking-[0.18em] text-[#0a7c78] uppercase">
           Mr. Mustard presents // Insert ambition to play // 1 free credit
         </p>
 
         <h1
-          className={`font-display italic font-extrabold text-[#14110c] leading-[0.98] tracking-tight mt-4 max-w-4xl ${
+          className={`font-display italic font-extrabold text-[#0b3b44] leading-[0.98] tracking-tight mt-4 max-w-4xl ${
             headline ? 'text-4xl md:text-5xl lg:text-6xl' : 'text-5xl md:text-7xl lg:text-8xl'
           }`}
         >
@@ -453,7 +453,7 @@ export default function MultiplierHero() {
                 <span key={i}>
                   {part}
                   {i < arr.length - 1 && (
-                    <span className="not-italic text-[#8f1d22]" style={{ textShadow: '2px 2px 0 #14110c' }}>
+                    <span className="not-italic text-[#0a7c78]" style={{ textShadow: '2px 2px 0 #0b3b44' }}>
                       100x
                     </span>
                   )}
@@ -465,8 +465,8 @@ export default function MultiplierHero() {
               One seed.{' '}
               <span
                 ref={counterElRef}
-                className="not-italic text-[#8f1d22] tabular-nums"
-                style={{ textShadow: '3px 3px 0 #14110c' }}
+                className="not-italic text-[#0a7c78] tabular-nums"
+                style={{ textShadow: '3px 3px 0 #0b3b44' }}
               >
                 {reduced || phase !== 'attract' ? '100x' : '1x'}
               </span>{' '}
@@ -475,7 +475,7 @@ export default function MultiplierHero() {
           )}
         </h1>
 
-        <p className="font-sans text-base md:text-lg text-[#14110c]/80 max-w-2xl mt-6">
+        <p className="font-sans text-base md:text-lg text-[#0b3b44]/80 max-w-2xl mt-6">
           A personal agentic coach, a four-track curriculum, and the exact prompts to ship software, design,
           and ideas with nothing but your Claude subscription. Mr. Mustard trains you. Claude does the
           reps. Your first coaching session starts on this page, free.
@@ -485,11 +485,11 @@ export default function MultiplierHero() {
         <div
           className={`mt-10 max-w-2xl transition-all duration-700 ${phase === 'terminal' ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6 pointer-events-none'}`}
         >
-          <div className="bg-[#14110c] border-2 border-[#14110c] shadow-[6px_6px_0_0_#14110c] rounded-none overflow-hidden">
+          <div className="bg-[#0b3b44] border-2 border-[#0b3b44] shadow-[6px_6px_0_0_#0b3b44] rounded-none overflow-hidden">
             <div className="flex items-center gap-2 bg-[#1F1F1F] px-4 py-2.5 border-b border-white/10">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#b3261e]" />
+              <span className="w-2.5 h-2.5 rounded-full bg-[#ff6f59]" />
               <span className="w-2.5 h-2.5 rounded-full bg-[#f5b700]" />
-              <span className="w-2.5 h-2.5 rounded-full bg-[#f6efe0]" />
+              <span className="w-2.5 h-2.5 rounded-full bg-[#fbf5ea]" />
               <span className="font-mono text-[10px] text-[#9A958A] ml-2">mr-mustard · coach session 001</span>
             </div>
             <div className="p-5 font-mono text-[13px] md:text-sm leading-relaxed text-[#EDE6D6]">
@@ -499,7 +499,7 @@ export default function MultiplierHero() {
                 {/* eslint-disable-next-line react/jsx-no-comment-textnodes -- a terminal-style // separator, not a comment */}
                 <span className="text-[#9A958A]"> // 1 free credit</span>
               </div>
-              <div className="mt-1 text-[#f3dc9b]">INSERT AMBITION TO PLAY. What do you want to build?</div>
+              <div className="mt-1 text-[#d8f3f0]">INSERT AMBITION TO PLAY. What do you want to build?</div>
 
               {play === 'idle' || play === 'typing' ? (
                 <form
@@ -518,7 +518,7 @@ export default function MultiplierHero() {
                   <button
                     type="submit"
                     disabled={ambition.trim().length < 3 || play === 'typing'}
-                    className="font-mono font-bold text-[11px] uppercase tracking-wider bg-[#f5b700] text-[#14110c] border border-[#14110c] px-3 py-1.5 disabled:opacity-40 hover:translate-y-[1px] transition-transform"
+                    className="font-mono font-bold text-[11px] uppercase tracking-wider bg-[#f5b700] text-[#0b3b44] border border-[#0b3b44] px-3 py-1.5 disabled:opacity-40 hover:translate-y-[1px] transition-transform"
                   >
                     Enter
                   </button>
@@ -542,7 +542,7 @@ export default function MultiplierHero() {
                 <div className="mt-4">
                   {play === 'emailGate' ? (
                     <form
-                      className="border border-[#b3261e]/70 bg-[#b3261e]/10 p-3"
+                      className="border border-[#ff6f59]/70 bg-[#ff6f59]/10 p-3"
                       onSubmit={(e) => { e.preventDefault(); void submitEmail(); }}
                     >
                       <p className="text-[#ff6b5e] font-bold text-[12px] uppercase tracking-wider">[ Save your run to continue ]</p>
@@ -564,12 +564,12 @@ export default function MultiplierHero() {
                           onChange={(e) => setEmail(e.target.value)}
                           placeholder="you@buildsomething.com"
                           aria-label="Email to save your run"
-                          className="flex-1 bg-[#14110c] border border-white/20 px-3 py-2 outline-none text-white placeholder:text-[#9A958A]/70 focus:border-[#f5b700]"
+                          className="flex-1 bg-[#0b3b44] border border-white/20 px-3 py-2 outline-none text-white placeholder:text-[#9A958A]/70 focus:border-[#f5b700]"
                         />
                         <button
                           type="submit"
                           disabled={busy}
-                          className="font-mono font-bold text-[11px] uppercase tracking-wider bg-[#f5b700] text-[#14110c] border border-[#14110c] px-3 py-2 disabled:opacity-40"
+                          className="font-mono font-bold text-[11px] uppercase tracking-wider bg-[#f5b700] text-[#0b3b44] border border-[#0b3b44] px-3 py-2 disabled:opacity-40"
                         >
                           {busy ? '...' : 'Save run'}
                         </button>
@@ -593,7 +593,7 @@ export default function MultiplierHero() {
                           <a
                             href="#levels"
                             onClick={() => track('mustard_hero_levelup_click')}
-                            className="font-sans font-bold bg-[#f5b700] text-[#14110c] border-2 border-[#14110c] shadow-[4px_4px_0_0_#f5b700] px-5 py-2.5 text-sm hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#f5b700] transition-all"
+                            className="font-sans font-bold bg-[#f5b700] text-[#0b3b44] border-2 border-[#0b3b44] shadow-[4px_4px_0_0_#f5b700] px-5 py-2.5 text-sm hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#f5b700] transition-all"
                           >
                             Level up. Keep this coach →
                           </a>
@@ -606,9 +606,9 @@ export default function MultiplierHero() {
               )}
             </div>
           </div>
-          <p className="font-mono text-[10px] text-[#14110c]/50 mt-2 tracking-wide">
+          <p className="font-mono text-[10px] text-[#0b3b44]/50 mt-2 tracking-wide">
             FREE PLAY = 1 LIVE COACHING RUN + THE STARTER PROMPT SAMPLER. NO CARD.{' '}
-            <a href="/mustard-mode/start-here" className="underline underline-offset-2 hover:text-[#8f1d22]">
+            <a href="/mustard-mode/start-here" className="underline underline-offset-2 hover:text-[#0a7c78]">
               NEVER USED CLAUDE OR A TERMINAL? START HERE FIRST →
             </a>
           </p>
@@ -617,7 +617,7 @@ export default function MultiplierHero() {
         {/* Pre-terminal CTA (visible during attract/face so there is always an action) */}
         {phase !== 'terminal' && (
           <div className="mt-10 flex gap-4">
-            <a href="#levels" className="font-sans font-bold bg-[#f5b700] text-[#14110c] border-2 border-[#14110c] shadow-[5px_5px_0_0_#14110c] px-6 py-3 hover:translate-y-[2px] hover:shadow-[3px_3px_0_0_#14110c] transition-all">
+            <a href="#levels" className="font-sans font-bold bg-[#f5b700] text-[#0b3b44] border-2 border-[#0b3b44] shadow-[5px_5px_0_0_#0b3b44] px-6 py-3 hover:translate-y-[2px] hover:shadow-[3px_3px_0_0_#0b3b44] transition-all">
               See the levels
             </a>
           </div>

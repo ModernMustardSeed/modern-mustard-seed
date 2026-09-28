@@ -10,11 +10,11 @@ export const alt = 'Celebrate. Real cakes, fresh flowers, and handwritten cards 
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
-const INK = '#14110c';
-const CREAM = '#f6efe0';
+const INK = '#0b3b44';
+const CREAM = '#fbf5ea';
 const MUSTARD = '#f5b700';
-const RED = '#b3261e';
-const BLUE = '#14110c';
+const RED = '#ff6f59';
+const BLUE = '#0b3b44';
 const CONFETTI = [MUSTARD, '#ffc933', RED, BLUE, '#FFFFFF'];
 
 export default async function OpengraphImage() {

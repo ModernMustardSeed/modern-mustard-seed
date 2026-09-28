@@ -66,7 +66,7 @@ export default function LaunchChecklistPage() {
         ]}
       />
 
-      <div className="relative min-h-screen bg-[#f6efe0] text-[#14110c] pb-24 overflow-x-clip">
+      <div className="relative min-h-screen bg-[#fbf5ea] text-[#0b3b44] pb-24 overflow-x-clip">
         <PopPageHero
           eyebrow={<span>Free tool for new business owners</span>}
           title={<>The New Business{' '}<em>Launch Checklist</em></>}
@@ -95,25 +95,25 @@ export default function LaunchChecklistPage() {
           {/* Reassurance / CTA to us */}
           <div className="max-w-4xl mx-auto px-6 md:px-8 mt-20">
             <div className="pop-card-yellow p-10 text-center">
-              <span className="text-[10px] uppercase tracking-[0.4em] text-[#14110c] font-mono font-bold mb-4 block">
+              <span className="text-[10px] uppercase tracking-[0.4em] text-[#0b3b44] font-mono font-bold mb-4 block">
                 Rather not do it all yourself?
               </span>
-              <h2 className="font-display text-2xl md:text-3xl font-black text-[#14110c] tracking-tight mb-4">
+              <h2 className="font-display text-2xl md:text-3xl font-black text-[#0b3b44] tracking-tight mb-4">
                 We build the digital half for you
               </h2>
-              <p className="text-[#14110c]/75 text-base font-body font-medium mb-7 max-w-xl mx-auto">
+              <p className="text-[#0b3b44]/75 text-base font-body font-medium mb-7 max-w-xl mx-auto">
                 Website, CRM, voice and chat agents, automations, funnels, and ads. The whole stack the checklist describes, built right and shipped in weeks, not months. You get the basics in place. We handle the engine.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Link
                   href="/work-with-us"
-                  className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#14110c] bg-white rounded-full border-2 border-[#14110c] shadow-[4px_4px_0_0_#14110c] hover:-translate-y-0.5 transition-all"
+                  className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0b3b44] bg-white rounded-full border-2 border-[#0b3b44] shadow-[4px_4px_0_0_#0b3b44] hover:-translate-y-0.5 transition-all"
                 >
                   See how we work
                 </Link>
                 <Link
                   href="/book"
-                  className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-white bg-[#14110c] rounded-full border-2 border-[#14110c] shadow-[4px_4px_0_0_rgba(20,17,12,0.35)] hover:-translate-y-0.5 transition-all"
+                  className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-white bg-[#0b3b44] rounded-full border-2 border-[#0b3b44] shadow-[4px_4px_0_0_rgba(11,59,68,0.35)] hover:-translate-y-0.5 transition-all"
                 >
                   Tell us what you are building
                 </Link>

@@ -7,14 +7,14 @@ import { SITE } from '@/lib/seo';
 export const runtime = 'nodejs';
 
 export const alt =
-  'Modern Mustard Seed. Mr. Mustard and his family at work in a 1920s penthouse office over the city at night, with the studio name in gold.';
+  'Modern Mustard Seed. Mr. Mustard works from his phone under a Tiffany-blue umbrella on a French Riviera beach while his family plays at the water.';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
 /**
- * The homepage share card: the Mustard Building card rendered once as a JPG
- * (public/brand/mr-mustard-social-20260927.jpg, the same file SITE.ogImage
- * points at), so every share of the root shows the same penthouse.
+ * The homepage share card: the Riviera card rendered once as a JPG
+ * (public/brand/mr-mustard-social-riviera.jpg, the same file SITE.ogImage
+ * points at), so every share of the root shows the same beach.
  */
 export default async function OpengraphImage() {
   const card = readFileSync(join(process.cwd(), 'public', SITE.ogImage.replace(/^\//, '')));

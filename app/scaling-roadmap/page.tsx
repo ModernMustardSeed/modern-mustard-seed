@@ -164,7 +164,7 @@ export default async function ScalingRoadmapPage() {
         ]}
       />
 
-      <article className="relative min-h-screen bg-[#f6efe0] text-[#14110c] pb-24 overflow-x-clip">
+      <article className="relative min-h-screen bg-[#fbf5ea] text-[#0b3b44] pb-24 overflow-x-clip">
         <PopPageHero
           eyebrow={<span>The Hundredfold Roadmap</span>}
           title={<>The plan to scale{' '}<em>your business</em></>}
@@ -196,7 +196,7 @@ export default async function ScalingRoadmapPage() {
               <span className="text-[10px] uppercase tracking-[0.45em] text-[#C4160B] font-mono font-bold mb-5 block">
                 What is inside
               </span>
-              <h2 className="font-display text-3xl md:text-4xl font-black text-[#14110c] tracking-tight">
+              <h2 className="font-display text-3xl md:text-4xl font-black text-[#0b3b44] tracking-tight">
                 Eight sections,{' '}
                 <em>no filler</em>
               </h2>
@@ -204,7 +204,7 @@ export default async function ScalingRoadmapPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               {INSIDE.map((c) => (
                 <div key={c.t} className="pop-card p-7">
-                  <h3 className="font-display text-xl text-[#14110c] font-black tracking-tight mb-2">{c.t}</h3>
+                  <h3 className="font-display text-xl text-[#0b3b44] font-black tracking-tight mb-2">{c.t}</h3>
                   <p className="text-[#3a3733] text-sm font-body leading-relaxed">{c.d}</p>
                 </div>
               ))}
@@ -218,9 +218,9 @@ export default async function ScalingRoadmapPage() {
                 <span className="text-[10px] uppercase tracking-[0.45em] text-[#C4160B] font-mono font-bold mb-5 block">
                   See a real one
                 </span>
-                <h2 className="font-display text-3xl md:text-4xl font-black text-[#14110c] tracking-tight mb-3">
+                <h2 className="font-display text-3xl md:text-4xl font-black text-[#0b3b44] tracking-tight mb-3">
                   We ran it on{' '}
-                  <span className="text-[#f5b700]" style={{ WebkitTextStroke: '1.5px #14110c' }}>
+                  <span className="text-[#f5b700]" style={{ WebkitTextStroke: '1.5px #0b3b44' }}>
                     ourselves
                   </span>{' '}
                   first
@@ -237,20 +237,20 @@ export default async function ScalingRoadmapPage() {
                     className="pop-card p-7 hover:-translate-y-1 transition-transform block"
                   >
                     <div className="flex items-baseline justify-between gap-3 mb-3">
-                      <span className="text-[9px] uppercase tracking-[0.3em] font-mono font-bold text-[#14110c]/50 truncate">
+                      <span className="text-[9px] uppercase tracking-[0.3em] font-mono font-bold text-[#0b3b44]/50 truncate">
                         {r.host}
                       </span>
-                      <span className="font-display text-2xl font-black text-[#14110c] shrink-0">
+                      <span className="font-display text-2xl font-black text-[#0b3b44] shrink-0">
                         {r.scale_score}
                       </span>
                     </div>
-                    <h3 className="font-display text-lg text-[#14110c] font-black tracking-tight leading-snug mb-3">
+                    <h3 className="font-display text-lg text-[#0b3b44] font-black tracking-tight leading-snug mb-3">
                       {r.business_name}
                     </h3>
                     <p className="text-[#3a3733] text-sm font-body italic leading-relaxed">
                       &ldquo;{r.headline}&rdquo;
                     </p>
-                    <span className="mt-5 block text-[10px] uppercase tracking-[0.25em] font-mono font-bold text-[#8f1d22]">
+                    <span className="mt-5 block text-[10px] uppercase tracking-[0.25em] font-mono font-bold text-[#0a7c78]">
                       Read the roadmap &rarr;
                     </span>
                   </Link>
@@ -265,7 +265,7 @@ export default async function ScalingRoadmapPage() {
               <span className="text-[10px] uppercase tracking-[0.45em] text-[#C4160B] font-mono font-bold mb-5 block">
                 How it works
               </span>
-              <h2 className="font-display text-3xl md:text-4xl font-black text-[#14110c] tracking-tight">
+              <h2 className="font-display text-3xl md:text-4xl font-black text-[#0b3b44] tracking-tight">
                 Four steps
               </h2>
             </div>
@@ -274,12 +274,12 @@ export default async function ScalingRoadmapPage() {
                 <div key={s.n} id={`step-${i + 1}`} className="pop-card p-7 flex gap-5 scroll-mt-28">
                   <span
                     className="font-display text-4xl font-black leading-none shrink-0"
-                    style={{ color: '#f5b700', WebkitTextStroke: '1.5px #14110c' }}
+                    style={{ color: '#f5b700', WebkitTextStroke: '1.5px #0b3b44' }}
                   >
                     {s.n}
                   </span>
                   <div>
-                    <h3 className="font-display text-xl text-[#14110c] font-black tracking-tight mb-2">{s.t}</h3>
+                    <h3 className="font-display text-xl text-[#0b3b44] font-black tracking-tight mb-2">{s.t}</h3>
                     <p className="text-[#3a3733] text-sm font-body leading-relaxed">{s.d}</p>
                   </div>
                 </div>
@@ -290,17 +290,17 @@ export default async function ScalingRoadmapPage() {
           {/* The offer to build it with them */}
           <section className="max-w-4xl mx-auto px-6 md:px-8 mb-24">
             <div className="pop-card-yellow p-8 md:p-12">
-              <span className="text-[10px] uppercase tracking-[0.45em] text-[#14110c] font-mono font-bold mb-5 block">
+              <span className="text-[10px] uppercase tracking-[0.45em] text-[#0b3b44] font-mono font-bold mb-5 block">
                 After the roadmap
               </span>
-              <h2 className="font-display text-3xl md:text-4xl font-black text-[#14110c] tracking-tight mb-4">
+              <h2 className="font-display text-3xl md:text-4xl font-black text-[#0b3b44] tracking-tight mb-4">
                 Want help{' '}
-                <span className="text-white" style={{ WebkitTextStroke: '2px #14110c' }}>
+                <span className="text-white" style={{ WebkitTextStroke: '2px #0b3b44' }}>
                   running it
                 </span>
                 ?
               </h2>
-              <p className="text-[#14110c]/80 text-base md:text-lg font-body font-medium leading-relaxed mb-7">
+              <p className="text-[#0b3b44]/80 text-base md:text-lg font-body font-medium leading-relaxed mb-7">
                 The roadmap is yours either way. But most of phase one is work a machine should be doing:
                 answering the phone, following up, keeping the pipeline warm, making the pictures, getting
                 found. That is the whole job here. Bring the roadmap to a free call and we will tell you
@@ -309,13 +309,13 @@ export default async function ScalingRoadmapPage() {
               <div className="flex flex-wrap gap-3">
                 <Link
                   href="/book"
-                  className="px-7 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-white bg-[#14110c] rounded-xl border-2 border-[#14110c] hover:-translate-y-0.5 transition-all"
+                  className="px-7 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-white bg-[#0b3b44] rounded-xl border-2 border-[#0b3b44] hover:-translate-y-0.5 transition-all"
                 >
                   Book a free call
                 </Link>
                 <Link
                   href="/demos"
-                  className="px-7 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-[#14110c] bg-white rounded-xl border-2 border-[#14110c] shadow-[4px_4px_0_0_#14110c] hover:-translate-y-0.5 transition-all"
+                  className="px-7 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-[#0b3b44] bg-white rounded-xl border-2 border-[#0b3b44] shadow-[4px_4px_0_0_#0b3b44] hover:-translate-y-0.5 transition-all"
                 >
                   See the free demos
                 </Link>
@@ -329,16 +329,16 @@ export default async function ScalingRoadmapPage() {
               <span className="text-[10px] uppercase tracking-[0.45em] text-[#C4160B] font-mono font-bold mb-5 block">
                 Questions
               </span>
-              <h2 className="font-display text-3xl md:text-4xl font-black text-[#14110c] tracking-tight">
+              <h2 className="font-display text-3xl md:text-4xl font-black text-[#0b3b44] tracking-tight">
                 Before you run it
               </h2>
             </div>
             <div className="space-y-4">
               {FAQS.map((f) => (
                 <details key={f.q} className="pop-card p-6 group">
-                  <summary className="font-display text-lg md:text-xl text-[#14110c] font-black tracking-tight cursor-pointer list-none flex items-start justify-between gap-4">
+                  <summary className="font-display text-lg md:text-xl text-[#0b3b44] font-black tracking-tight cursor-pointer list-none flex items-start justify-between gap-4">
                     {f.q}
-                    <span className="text-[#f5b700] font-mono text-xl leading-none shrink-0 group-open:rotate-45 transition-transform" style={{ WebkitTextStroke: '1px #14110c' }}>
+                    <span className="text-[#f5b700] font-mono text-xl leading-none shrink-0 group-open:rotate-45 transition-transform" style={{ WebkitTextStroke: '1px #0b3b44' }}>
                       +
                     </span>
                   </summary>

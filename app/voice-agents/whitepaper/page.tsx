@@ -44,7 +44,7 @@ export default function WhitepaperPage() {
           articleJsonLd,
         ]}
       />
-      <div className="relative min-h-screen bg-[#f6efe0] text-[#14110c]">
+      <div className="relative min-h-screen bg-[#fbf5ea] text-[#0b3b44]">
         <PopPageHero
           eyebrow={<span>Whitepaper</span>}
           title={WP.title}
@@ -53,7 +53,7 @@ export default function WhitepaperPage() {
           mascot={{ bubble: 'I never miss a call!' }}
         >
           <p>{WP.subtitle}</p>
-          <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] font-mono uppercase tracking-[0.18em] text-[#14110c]/60">
+          <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] font-mono uppercase tracking-[0.18em] text-[#0b3b44]/60">
             <span>{WP.author}</span>
             <span aria-hidden="true">·</span>
             <span>{WP.dateLabel}</span>
@@ -62,9 +62,9 @@ export default function WhitepaperPage() {
           </div>
           <div className="mt-7 max-w-md">
             <WhitepaperGate />
-            <p className="text-center mt-3 text-sm font-body text-[#14110c]/60">
+            <p className="text-center mt-3 text-sm font-body text-[#0b3b44]/60">
               or{' '}
-              <Link href="/book" className="text-[#8f1d22] font-bold underline underline-offset-2">
+              <Link href="/book" className="text-[#0a7c78] font-bold underline underline-offset-2">
                 book a call
               </Link>{' '}
               and we will walk you through it.
@@ -75,7 +75,7 @@ export default function WhitepaperPage() {
         <div aria-hidden="true" className="absolute inset-0 halftone-bg opacity-40 pointer-events-none" />
         <article className="relative max-w-3xl mx-auto px-6 md:px-8">
           {/* Intro */}
-          <p className="font-serif text-xl md:text-2xl italic text-[#14110c] leading-relaxed mb-12 pb-12 border-b-2 border-[#14110c]/10">
+          <p className="font-serif text-xl md:text-2xl italic text-[#0b3b44] leading-relaxed mb-12 pb-12 border-b-2 border-[#0b3b44]/10">
             {WP.intro}
           </p>
 
@@ -83,7 +83,7 @@ export default function WhitepaperPage() {
           {WP.sections.map((s, i) => (
             <section key={s.heading} className="mb-12">
               <h2 className="font-display text-2xl md:text-3xl font-black tracking-tight mb-4 leading-snug">
-                <span className="text-[#8f1d22] font-mono text-base mr-2">
+                <span className="text-[#0a7c78] font-mono text-base mr-2">
                   {String(i + 1).padStart(2, '0')}
                 </span>
                 {s.heading}
@@ -107,7 +107,7 @@ export default function WhitepaperPage() {
               {/* Drop the live demo right after "Meet the agent" */}
               {i === 1 && (
                 <div className="mt-8">
-                  <p className="text-center text-[10px] uppercase tracking-[0.4em] text-[#8f1d22] font-mono font-bold mb-4">
+                  <p className="text-center text-[10px] uppercase tracking-[0.4em] text-[#0a7c78] font-mono font-bold mb-4">
                     Proof, not a pitch. Pick a language and say hi.
                   </p>
                   <VoiceTalkButton />
@@ -119,17 +119,17 @@ export default function WhitepaperPage() {
           {/* CTA */}
           <div className="text-center pop-card-yellow p-10 mb-12">
             <h2 className="font-display text-2xl md:text-3xl font-black tracking-tight mb-3">{WP.cta.heading}</h2>
-            <p className="text-[#14110c]/75 text-base font-body font-medium mb-6 max-w-lg mx-auto">{WP.cta.body}</p>
+            <p className="text-[#0b3b44]/75 text-base font-body font-medium mb-6 max-w-lg mx-auto">{WP.cta.body}</p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link
                 href="/voice-agents"
-                className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#14110c] bg-white rounded-full border-2 border-[#14110c] shadow-[4px_4px_0_0_#14110c] hover:-translate-y-0.5 transition-all"
+                className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0b3b44] bg-white rounded-full border-2 border-[#0b3b44] shadow-[4px_4px_0_0_#0b3b44] hover:-translate-y-0.5 transition-all"
               >
                 Try the Live Demo
               </Link>
               <Link
                 href="/book"
-                className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-white bg-[#14110c] rounded-full border-2 border-[#14110c] shadow-[4px_4px_0_0_rgba(20,17,12,0.3)] hover:-translate-y-0.5 transition-all"
+                className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-white bg-[#0b3b44] rounded-full border-2 border-[#0b3b44] shadow-[4px_4px_0_0_rgba(11,59,68,0.3)] hover:-translate-y-0.5 transition-all"
               >
                 Book a Discovery Call
               </Link>

@@ -3,18 +3,18 @@ import { Marquee } from '@/components/home/HeroMotion';
 import s from './PopPageHero.module.css';
 
 /**
- * The Mustard Building page hero, carried onto the inner pages. The homepage
- * hero sets the language: a black-lacquer panel under a gold stepped cornice,
- * the page's painting hung in a gilt arch with a champagne sunburst behind
- * it, a brass medallion with a short word, a floor plaque, and ticker tape
- * that runs underneath. Every page keeps its own eyebrow, h1, lead and
+ * The Riviera page hero, carried onto the inner pages. The homepage sets the
+ * language: a sand-white card under a striped Tiffany awning with a
+ * scalloped edge, the page's painting on a postcard, a perforated postage
+ * stamp with a short word, a luggage tag for the issue, and the awning's
+ * ticker running underneath. Every page keeps its own eyebrow, h1, lead and
  * actions; this only dresses them. Everything decorative is aria-hidden, the
  * only motion is the entrance and the ticker, and it all stands still under
  * prefers-reduced-motion.
  */
 
 export type PopArt = {
-  /** Path without size and extension, e.g. /art/pages/inquire. Needs -960 and -1600 in .avif and .webp. */
+  /** Path without size and extension, e.g. /art/riviera/inquire. Needs -960 and -1600 in .avif and .webp. */
   src: string;
   alt: string;
   /** Short caption written under the poster, decorative. */
@@ -31,28 +31,28 @@ type Props = {
   titleId?: string;
   /** Lead paragraphs and anything else under the h1 (actions, notes). */
   children?: ReactNode;
-  /** The painting in the gilt frame. Without it, the studio's night-drive painting hangs instead. */
+  /** The painting on the postcard. Without it, the studio's coast-road painting goes up instead. */
   art?: PopArt;
   /** A speech tag on the poster, from Mr. Mustard (he is in the art). */
   mascot?: boolean | { bubble?: string };
-  /** A brass floor plaque: a big number and up to two small lines. */
+  /** A luggage tag: a big number and up to two small lines. */
   issue?: { no: string; lines?: string[] };
-  /** The brass medallion, one or two short words. */
+  /** The postage stamp, one or two short words. */
   sticker?: string;
-  /** Ticker tape under the panel. */
+  /** The awning ticker under the card. */
   marquee?: string[];
   /** Kept for the pages that pass it; the copy always reads left-aligned. */
   align?: 'left' | 'center';
   className?: string;
 };
 
-/** The studio's night-drive painting: Mr. Mustard's roadster on a Deco boulevard. */
-const ROAD: PopArt = { src: '/art/pages/road', alt: '' };
+/** The studio's coast-road painting: the family in a Tiffany-blue convertible above the sea. */
+const ROAD: PopArt = { src: '/art/riviera/road', alt: '' };
 
 /** Class names for the actions a page passes in, so its links wear the house buttons. */
 export const pop = { cta: s.cta, ctaAlt: s.ctaAlt, lead: s.lead, note: s.note, actions: s.actions, pill: s.pill, back: s.back };
 
-/** The gold stepped cornice along the top edge of the panel. */
+/** The striped awning with its scalloped edge along the top of the card. */
 export function Drips({ className }: { className?: string }) {
   return <span className={[s.cornice, className ?? ''].join(' ')} aria-hidden="true" />;
 }
@@ -116,7 +116,7 @@ function Banner({ items, className }: { items: string[]; className?: string }) {
         <div>
           {[0, 1].map((k) => (
             <span key={k} className={s.mRun}>
-              {items.map((t) => <span key={t} className={s.mItem}>{t}<i>◆</i></span>)}
+              {items.map((t) => <span key={t} className={s.mItem}>{t}<i /></span>)}
             </span>
           ))}
         </div>
@@ -126,7 +126,7 @@ function Banner({ items, className }: { items: string[]; className?: string }) {
 }
 
 /**
- * A ticker-tape moment for below the fold: the tape on its own.
+ * An awning moment for below the fold: the ticker on its own.
  * One per long page, never a stack.
  */
 export function PopStrip({ items, className }: { items: string[]; className?: string }) {

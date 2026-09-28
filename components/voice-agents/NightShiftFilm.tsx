@@ -21,7 +21,7 @@ export default function NightShiftFilm() {
 
   return (
     <figure className="relative rotate-[-0.8deg]">
-      <div className="relative overflow-hidden rounded-2xl border-[3px] border-[#14110c] bg-[#14110c] shadow-[10px_10px_0_0_#f5b700]">
+      <div className="relative overflow-hidden rounded-2xl border-[3px] border-[#0b3b44] bg-[#0b3b44] shadow-[10px_10px_0_0_#f5b700]">
         <video
           ref={videoRef}
           className="block w-full h-auto"
@@ -39,17 +39,17 @@ export default function NightShiftFilm() {
             type="button"
             onClick={play}
             aria-label="Play the Night Shift commercial"
-            className="group absolute inset-0 flex items-center justify-center bg-[#14110c]/25 transition-colors hover:bg-[#14110c]/10"
+            className="group absolute inset-0 flex items-center justify-center bg-[#0b3b44]/25 transition-colors hover:bg-[#0b3b44]/10"
           >
-            <span className="flex h-20 w-20 items-center justify-center rounded-full border-[3px] border-[#14110c] bg-[#f5b700] shadow-[4px_4px_0_0_#14110c] transition-transform duration-300 group-hover:scale-110">
+            <span className="flex h-20 w-20 items-center justify-center rounded-full border-[3px] border-[#0b3b44] bg-[#f5b700] shadow-[4px_4px_0_0_#0b3b44] transition-transform duration-300 group-hover:scale-110">
               <svg width="26" height="30" viewBox="0 0 26 30" aria-hidden="true">
-                <path d="M2 2.5 24 15 2 27.5Z" fill="#14110c" />
+                <path d="M2 2.5 24 15 2 27.5Z" fill="#0b3b44" />
               </svg>
             </span>
           </button>
         )}
       </div>
-      <figcaption className="mt-3 text-center font-mono text-[10px] uppercase tracking-[0.22em] text-[#f6efe0]/70">
+      <figcaption className="mt-3 text-center font-mono text-[10px] uppercase tracking-[0.22em] text-[#fbf5ea]/70">
         The Night Shift · 60 seconds · sound on
       </figcaption>
     </figure>

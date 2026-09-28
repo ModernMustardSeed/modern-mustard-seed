@@ -5,13 +5,13 @@
    appointment card's sticky column keeps working. */
 
 .page {
-  --ink: #14110c;
-  --ink2: #14110c;
-  --cream: #f6efe0;
+  --ink: #0b3b44;
+  --ink2: #0b3b44;
+  --cream: #fbf5ea;
   --mustard: #f5b700;
-  --red: #b3261e;
-  --brick: #8f1d22;
-  --butter: #f3dc9b;
+  --red: #ff6f59;
+  --brick: #0a7c78;
+  --butter: #d8f3f0;
   background: var(--cream);
   color: var(--ink);
   overflow-x: clip;
@@ -100,7 +100,7 @@
   display: block;
   width: 100%;
   height: auto;
-  filter: drop-shadow(6px 7px 0 #14110c26);
+  filter: drop-shadow(6px 7px 0 #0b3b4426);
 }
 
 /* ───── hero ───── */
@@ -238,8 +238,8 @@
   z-index: 2;
   width: 112px;
   height: 30px;
-  background: #f3dc9bd0;
-  border: 1.5px solid #14110c30;
+  background: #d8f3f0d0;
+  border: 1.5px solid #0b3b4430;
   pointer-events: none;
 }
 .tapeL { top: -17px; left: 22px; rotate: -9deg; }
@@ -360,7 +360,7 @@
   position: absolute;
   z-index: -1;
   inset: 0;
-  background-image: radial-gradient(#8f1d2230 1.6px, transparent 1.8px);
+  background-image: radial-gradient(#0a7c7830 1.6px, transparent 1.8px);
   background-size: 16px 16px;
   -webkit-mask-image: linear-gradient(180deg, #000 0, transparent 30%, transparent 70%, #000 100%);
   mask-image: linear-gradient(180deg, #000 0, transparent 30%, transparent 70%, #000 100%);
@@ -414,7 +414,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(#14110c55 1px, transparent 1.4px);
+  background-image: radial-gradient(#0b3b4455 1px, transparent 1.4px);
   background-size: 6px 6px;
   -webkit-mask-image: linear-gradient(0deg, #000, transparent 50%);
   mask-image: linear-gradient(0deg, #000, transparent 50%);
@@ -499,7 +499,7 @@
   text-transform: uppercase;
   color: var(--mustard);
 }
-.promiseText { position: relative; margin-top: 10px; max-width: 46rem; font-size: 18px; line-height: 1.6; color: #f6efe0e6; }
+.promiseText { position: relative; margin-top: 10px; max-width: 46rem; font-size: 18px; line-height: 1.6; color: #fbf5eae6; }
 .swear {
   position: absolute;
   z-index: 3;
@@ -556,7 +556,7 @@
   aspect-ratio: 1;
   translate: -50% -50%;
   border-radius: 50%;
-  background: repeating-conic-gradient(from 0deg, #f6efe066 0 5deg, #f6efe000 5deg 15deg);
+  background: repeating-conic-gradient(from 0deg, #fbf5ea66 0 5deg, #fbf5ea00 5deg 15deg);
   -webkit-mask-image: radial-gradient(circle, #000 0, #000 12%, transparent 55%);
   mask-image: radial-gradient(circle, #000 0, #000 12%, transparent 55%);
   animation: spin 220s linear infinite reverse;
@@ -575,7 +575,7 @@
 }
 .ticketInner { position: relative; max-width: 1152px; margin: 0 auto; }
 .ticketHead { position: relative; max-width: 42rem; margin-bottom: 120px; }
-.ticketSub { margin-top: 16px; font-size: 17px; line-height: 1.6; color: #14110ce0; font-weight: 500; }
+.ticketSub { margin-top: 16px; font-size: 17px; line-height: 1.6; color: #0b3b44e0; font-weight: 500; }
 .bookWrap { position: relative; z-index: 1; }
 .peek {
   position: absolute;
@@ -754,20 +754,26 @@
   .promise:hover .promiseMascot > picture { transform: none; }
 }
 
-/* ───── The Mustard Building (2026-09-27) ─────
-   The same page, in the penthouse: display type in Limelight, accents in
-   Playfair italic, labels in Josefin capitals, the art hung in a gilt frame,
-   ticker tape for banners, brass plates for buttons, sunbursts and stepped
-   cornices for ornament. Rules here override the ones above. */
+/* ───── The Riviera (2026-09-27) ─────
+   The same page, at the beach club: display type in Bodoni Moda with its
+   italic, labels and reading type in Instrument Sans, the art on a postcard,
+   the awning ticker for banners, deep-sea and mustard pills for buttons,
+   scallops and waves for ornament. Rules here override the ones above. */
 
 .page {
-  --gilt: #d9a300;
-  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .25 0 0 0 0 .08 0 0 0 .4 -.14'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  --step: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 30'%3E%3Cpath d='M0 0H60V12H52V18H44V24H16V18H8V12H0Z'/%3E%3C/svg%3E");
-  --sun: repeating-conic-gradient(from 0deg, #f5b70030 0 5deg, transparent 5deg 12deg);
+  --ink: #0b3b44;
+  --cream: #fbf5ea;
+  --mustard: #f5b700;
+  --tiffany: #81d8d0;
+  --lagoon: #0a7c78;
+  --deep: #0e5f63;
+  --wave: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 8'%3E%3Cpath d='M0 4c5 0 5-3 10-3s5 3 10 3 5-3 10-3 5 3 10 3' fill='none' stroke='%2381d8d0' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E");
+  --stripes: repeating-linear-gradient(90deg, #81d8d0 0 40px, #fff 40px 80px);
+  --scallop: radial-gradient(circle at 20px 0, #000 19.5px, transparent 20px) 0 0 / 40px 14px repeat-x;
+  font-family: var(--font-caps), sans-serif;
 }
 
-/* Kickers: tracked capitals with a gold diamond. */
+/* Kickers: tracked capitals after a little sun. */
 .caption {
   position: relative;
   display: inline-block;
@@ -778,183 +784,185 @@
   line-height: 1.6;
   font-family: var(--font-caps), sans-serif;
   font-weight: 600;
-  font-size: 13px;
-  letter-spacing: .24em;
-  color: var(--oxblood, #8f1d22);
+  font-size: 12.5px;
+  letter-spacing: .22em;
+  color: var(--lagoon);
   transform: none;
 }
-.caption::before { content: ''; position: absolute; left: 1px; top: .5em; width: 8px; height: 8px; background: var(--mustard); transform: rotate(45deg); }
-.caption::after { content: ''; position: static; display: inline-block; vertical-align: middle; width: 34px; height: 1px; margin-left: 12px; border-radius: 0; background: linear-gradient(90deg, var(--mustard), transparent); box-shadow: none; }
+.caption::before { content: ''; position: absolute; left: 0; top: .42em; width: 10px; height: 10px; border-radius: 50%; background: var(--mustard); box-shadow: 0 0 0 3px #f5b70030; transform: none; }
+.caption::after { content: ''; position: static; display: inline-block; vertical-align: middle; width: 34px; height: 8px; margin-left: 12px; border-radius: 0; background: var(--wave) 0 50% / 17px 8px repeat-x; box-shadow: none; }
 .ticket .caption { color: var(--ink); }
-.ticket .caption::before { background: var(--ink); }
-.ticket .caption::after { background: linear-gradient(90deg, var(--ink), transparent); }
+.ticket .caption::before { background: var(--ink); box-shadow: none; }
 
-/* Accent words take their italic from app/deco-type.css; the old highlighter stripe goes. */
+/* Accent words take their italic and wave from app/riviera-type.css. */
 .hl { white-space: normal; }
 .hl::after { display: none; }
 
-/* Speech lines on ivory calling cards. */
+/* Speech bubbles. */
 .bubble {
-  background: var(--cream);
-  border: 1px solid var(--ink);
-  border-radius: 0;
-  box-shadow: inset 0 0 0 3px var(--cream), inset 0 0 0 4px var(--gilt), 0 10px 22px -10px #14110c99;
-  font-family: var(--font-accent), Georgia, serif;
+  background: #fff;
+  border: 0;
+  border-radius: 20px 20px 20px 6px;
+  box-shadow: 0 16px 30px -16px #0b3b44aa, 0 0 0 1px #0b3b4412;
+  font-family: var(--font-riviera), Georgia, serif;
   font-style: italic;
   font-weight: 500;
   font-size: 16px;
 }
 .bubble::after { display: none; }
 
-/* Hero: the lobby wall, a sunburst rising behind the painting. */
-.hero { background-color: #f1e7d0; background-image: var(--grain); }
-.heroDots { opacity: 1; background: var(--sun); background-size: auto; -webkit-mask-image: radial-gradient(circle at 78% 70%, #000 0, transparent 55%); mask-image: radial-gradient(circle at 78% 70%, #000 0, transparent 55%); }
-.h1 { font-family: var(--font-deco), Georgia, serif; font-weight: 400; letter-spacing: 0; line-height: 1.02; text-transform: none; }
+/* Hero: sand with a low sun behind the postcard. */
+.hero { background: transparent; }
+.heroDots { opacity: 1; background: radial-gradient(circle at 80% 78%, #f5b70038 0, #f5b70014 26%, transparent 50%); background-size: auto; -webkit-mask-image: none; mask-image: none; }
+.h1 { font-family: var(--font-riviera), Georgia, serif; font-weight: 500; letter-spacing: -.035em; line-height: .98; text-transform: none; }
 .rays { display: none; }
-.glow { background: radial-gradient(circle, #f5b70055 0, #f5b7001a 34%, #f5b70000 60%); }
-.cta, .ctaAlt { border: 0; border-radius: 0; font-family: var(--font-caps), sans-serif; letter-spacing: .14em; }
-.cta { background: linear-gradient(180deg, #ffd24d, #f5b700 55%, #dc9f00); color: var(--ink); box-shadow: inset 0 0 0 3px var(--mustard), inset 0 0 0 4px var(--ink), 0 10px 24px -10px #14110c99; }
-.cta:hover { box-shadow: inset 0 0 0 3px var(--mustard), inset 0 0 0 4px var(--ink), 0 14px 28px -10px #14110c99; filter: brightness(1.06); }
-.ctaAlt { background: var(--ink); color: var(--cream); box-shadow: inset 0 0 0 3px var(--ink), inset 0 0 0 4px #f5b700aa; }
-.note { color: #555049; }
+.glow { background: radial-gradient(circle, #81d8d055 0, #81d8d01a 34%, #81d8d000 60%); }
+.cta, .ctaAlt { border: 0; border-radius: 999px; font-family: var(--font-caps), sans-serif; font-weight: 600; letter-spacing: .01em; text-transform: none; }
+.cta { background: var(--ink); color: #fff; box-shadow: 0 14px 30px -14px #0b3b44cc; }
+.cta:hover { background: #0e4b56; box-shadow: 0 18px 34px -14px #0b3b44cc; }
+.ctaAlt { background: #fff; color: var(--ink); box-shadow: inset 0 0 0 1.5px #0b3b4433; }
+.note { color: #4c6266; }
 
-/* The art, hung in a gilt frame on an ink mat. */
+/* The art, on a postcard. */
 .frame {
-  background: var(--ink);
+  background: #fff;
   border: 0;
-  padding: 12px 12px 6px;
-  rotate: 0deg;
-  box-shadow: inset 0 0 0 8px var(--ink), inset 0 0 0 9px var(--mustard), inset 0 0 0 11px var(--ink), inset 0 0 0 12px #f5b70066, 0 30px 50px -30px #14110caa;
+  border-radius: 20px;
+  padding: 12px 12px 10px;
+  rotate: 1.4deg;
+  box-shadow: 0 40px 70px -40px #0b3b4499, 0 0 0 1px #0b3b4410;
   filter: none;
 }
-.frameImg { border: 0; }
+.frameImg { border: 0; border-radius: 12px; }
 .frameCap {
-  font-family: var(--font-accent), Georgia, serif;
+  font-family: var(--font-riviera), Georgia, serif;
   font-style: italic;
   font-size: 18px;
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: 0;
   text-transform: none;
-  color: var(--butter, #f3dc9b);
+  color: var(--ink);
 }
 .tape { display: none; }
-/* The brass medallion. */
-.sticker { width: 132px; aspect-ratio: 1; top: -28px; right: -16px; rotate: 0deg; border-radius: 50%; background: radial-gradient(circle, #ffd24d 0 46%, transparent 47%), repeating-conic-gradient(from 0deg, #f5b700 0 7.5deg, #dc9f00 7.5deg 15deg); box-shadow: 0 0 0 2px var(--ink), 0 0 0 5px var(--cream), 0 0 0 6px var(--gilt), 0 14px 28px -10px #14110caa; }
+/* The postage stamp. */
+.sticker { width: 118px; aspect-ratio: 4 / 5; top: -18px; right: -12px; rotate: 6deg; border-radius: 0; background: var(--mustard); box-shadow: none; filter: drop-shadow(0 12px 14px #0b3b4440); -webkit-mask: radial-gradient(circle at 50% 50%, transparent 3.2px, #000 3.6px) -4px -4px / 9px 9px, linear-gradient(#000 0 0) 5px 5px / calc(100% - 10px) calc(100% - 10px) no-repeat; mask: radial-gradient(circle at 50% 50%, transparent 3.2px, #000 3.6px) -4px -4px / 9px 9px, linear-gradient(#000 0 0) 5px 5px / calc(100% - 10px) calc(100% - 10px) no-repeat; }
 .sticker svg { display: none; }
 .stickerText {
   padding-top: 0;
-  max-width: 64%;
-  font-family: var(--font-caps), sans-serif;
-  font-style: normal;
-  font-weight: 700;
-  font-size: 13px;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  line-height: 1.15;
+  max-width: 76%;
+  font-family: var(--font-riviera), Georgia, serif;
+  font-style: italic;
+  font-weight: 500;
+  font-size: 19px;
+  letter-spacing: -.01em;
+  text-transform: none;
+  line-height: 1.05;
   color: var(--ink);
   text-shadow: none;
   rotate: 0deg;
 }
 .heroBubble { left: -10px; bottom: 18px; rotate: 0deg; animation: fade .5s 1.4s both; }
 
-/* Ticker tape for banners. */
+/* The awning ticker for banners. */
 .marquee {
   background: var(--ink);
   color: var(--cream);
   rotate: 0deg;
   margin-inline: -20px;
-  border-block: 1px solid var(--mustard);
-  box-shadow: inset 0 3px 0 -1px var(--ink), inset 0 4px 0 -1px #f5b70066, inset 0 -3px 0 -1px var(--ink), inset 0 -4px 0 -1px #f5b70066;
+  border: 0;
+  box-shadow: none;
 }
 .marquee::after, .tapeBand::after { display: none; }
 .marquee, .tapeBand { overflow: hidden; }
-.mItem { font-family: var(--font-caps), sans-serif; font-weight: 600; font-size: 14px; letter-spacing: .24em; padding-block: 15px 13px; }
+.mItem { font-family: var(--font-riviera), Georgia, serif; font-style: italic; font-weight: 400; font-size: 20px; letter-spacing: -.005em; text-transform: none; padding-block: 14px 13px; }
 .mItem i { font-size: 10px; color: var(--mustard); }
-.mItem:nth-child(3n + 2) i { color: var(--mustard); }
-.tapeBand { background: var(--emerald, #0f4a3c); color: var(--cream); rotate: 0deg; border-block: 1px solid var(--mustard); box-shadow: none; }
-.tapeBand .mItem { font-size: 14px; }
+.mItem:nth-child(3n + 2) i { color: var(--tiffany); }
+.tapeBand { background: var(--deep); color: var(--cream); rotate: 0deg; border: 0; box-shadow: none; }
+.tapeBand .mItem { font-size: 20px; }
 .tapeBand .mItem i { color: var(--mustard); }
 
-/* What happens: three paintings in gilt frames on champagne stock. */
-.steps { background-color: #f3e5c0; background-image: var(--grain); }
-.stepsDots { background: none; }
-.h2 { font-family: var(--font-deco), Georgia, serif; font-weight: 400; letter-spacing: 0; line-height: 1.03; text-transform: none; }
-.panel { background: var(--cream); border: 1px solid var(--ink); box-shadow: inset 0 0 0 5px var(--cream), inset 0 0 0 6px #d9a30088, 0 24px 40px -28px #14110c99; filter: none; rotate: 0deg; }
-.panel:hover { rotate: 0deg; translate: 0 -4px; box-shadow: inset 0 0 0 5px var(--cream), inset 0 0 0 6px var(--mustard), 0 30px 46px -26px #14110c99; filter: none; }
-.panelArt { border: 0; border-bottom: 1px solid var(--ink); }
+/* What happens: three postcards on a sea-foam band. */
+.steps { background: #e6f7f5; }
+.stepsDots { background: var(--wave) 0 30px / 22px 10px repeat-x; opacity: .7; -webkit-mask-image: none; mask-image: none; }
+.h2 { font-family: var(--font-riviera), Georgia, serif; font-weight: 500; letter-spacing: -.03em; line-height: 1; text-transform: none; }
+.panel { background: #fff; border: 0; border-radius: 24px; box-shadow: 0 30px 60px -36px #0b3b4480, 0 0 0 1px #0b3b4410; filter: none; rotate: 0deg; }
+.panel:hover { rotate: 0deg; translate: 0 -4px; box-shadow: 0 36px 64px -32px #0b3b4499, 0 0 0 1px var(--tiffany); filter: none; }
+.panelArt { border: 0; border-radius: 16px; overflow: hidden; }
 .panelArt::after { display: none; }
 .narr {
   border: 0;
+  border-radius: 999px;
   background: var(--ink);
-  color: var(--mustard);
+  color: #fff;
   font-family: var(--font-caps), sans-serif;
   font-weight: 600;
   font-size: 11.5px;
-  letter-spacing: .2em;
-  left: 0;
-  bottom: 0;
-  padding: 7px 12px 6px;
+  letter-spacing: .14em;
+  left: 10px;
+  bottom: 10px;
+  padding: 7px 14px 6px;
 }
 .num { rotate: 0deg; }
 .panel:hover .num { rotate: 0deg; }
 .num svg { filter: none; }
-.num span { font-family: var(--font-deco), Georgia, serif; font-weight: 400; font-size: 24px; padding-top: 4px; }
-.panelTitle { font-family: var(--font-deco), Georgia, serif; font-weight: 400; font-size: 1.6rem; line-height: 1.08; letter-spacing: 0; text-transform: none; }
-.promise { background: var(--ink); border: 0; box-shadow: inset 0 0 0 6px var(--ink), inset 0 0 0 7px #f5b70099, 0 30px 50px -30px #14110caa; }
-.promiseDots { background: var(--sun); background-size: auto; -webkit-mask-image: radial-gradient(circle at 90% 100%, #000 0, transparent 60%); mask-image: radial-gradient(circle at 90% 100%, #000 0, transparent 60%); }
-.promiseLabel { font-family: var(--font-caps), sans-serif; font-weight: 600; font-size: 13px; letter-spacing: .22em; }
+.num span { font-family: var(--font-riviera), Georgia, serif; font-style: italic; font-weight: 500; font-size: 24px; padding-top: 2px; }
+.panelTitle { font-family: var(--font-riviera), Georgia, serif; font-weight: 600; font-size: 1.7rem; line-height: 1.05; letter-spacing: -.02em; text-transform: none; }
+.promise { background: var(--ink); border: 0; border-radius: 28px; box-shadow: 0 40px 70px -40px #0b3b44cc; }
+.promiseDots { background: var(--wave) 0 calc(100% - 20px) / 22px 10px repeat-x; background-size: 22px 10px; opacity: .5; -webkit-mask-image: none; mask-image: none; }
+.promiseLabel { font-family: var(--font-caps), sans-serif; font-weight: 600; font-size: 12.5px; letter-spacing: .2em; }
 .swear {
-  background: var(--oxblood, #8f1d22);
-  color: var(--cream);
+  background: var(--mustard);
+  color: var(--ink);
   border: 0;
-  font-family: var(--font-accent), Georgia, serif;
+  border-radius: 999px;
+  font-family: var(--font-riviera), Georgia, serif;
   font-style: italic;
   font-size: 17px;
   font-weight: 500;
   letter-spacing: 0;
   text-transform: none;
-  padding: 6px 14px 7px;
+  padding: 6px 16px 7px;
   rotate: 0deg;
 }
 
-/* A stepped cornice between the champagne band and the gold one. */
-.zig { height: 22px; margin: 0; }
+/* A scalloped awning edge between the sea-foam band and the mustard one. */
+.zig { height: 14px; margin: 0; }
 .zig::before { display: none; }
 .zig::after {
   top: 0;
-  height: 22px;
-  background: #f3e5c0;
-  -webkit-mask: linear-gradient(#000 0 0) 0 0/100% 38% no-repeat,var(--step) 0 0 / 48px 100% repeat-x;
-  mask: linear-gradient(#000 0 0) 0 0/100% 38% no-repeat,var(--step) 0 0 / 48px 100% repeat-x;
+  height: 14px;
+  background: #e6f7f5;
+  -webkit-mask: var(--scallop);
+  mask: var(--scallop);
 }
 
-/* The appointment card, on gold leaf. */
-.ticket { background: linear-gradient(180deg, #f7c52e, #f5b700 60%, #e9a900); }
-.ticketRays { display: block; background: repeating-conic-gradient(from 0deg at 50% 100%, #14110c0f 0 5deg, transparent 5deg 12deg); }
+/* The appointment card, on mustard. */
+.ticket { background: var(--mustard); }
+.ticketRays { display: block; background: radial-gradient(circle at 50% 110%, #ffffff55 0, transparent 60%); }
 .ticketDots { display: none; }
 .hlCream::after { display: none; }
 
-/* FAQ: ivory calling cards on the lobby wall. */
-.faq { background-color: #f1e7d0; background-image: var(--grain); }
+/* FAQ: white cards on sand. */
+.faq { background: transparent; }
 .faqDots { display: none; }
-.faqBurst { animation: none; filter: none; opacity: .7; }
-.q { background: var(--cream); border: 1px solid var(--ink); border-radius: 0; box-shadow: inset 0 0 0 4px var(--cream), inset 0 0 0 5px #d9a30055; rotate: 0deg; }
+.faqBurst { animation: none; filter: none; opacity: .6; }
+.q { background: #fff; border: 0; border-radius: 20px; box-shadow: 0 18px 40px -30px #0b3b4480, 0 0 0 1px #0b3b4410; rotate: 0deg; }
 .q::after { display: none; }
-.q[open] { box-shadow: inset 0 0 0 4px var(--cream), inset 0 0 0 5px var(--mustard), 0 18px 30px -24px #14110c99; }
-.q summary { border-radius: 0; font-family: var(--font-body), sans-serif; font-weight: 700; font-size: 1.12rem; letter-spacing: -.005em; }
-.toggle { border-radius: 0; box-shadow: none; border: 1px solid var(--gilt); background: transparent; color: var(--oxblood, #8f1d22); }
+.q[open] { box-shadow: 0 24px 48px -30px #0b3b4499, 0 0 0 1.5px var(--tiffany); }
+.q summary { border-radius: 20px; font-family: var(--font-caps), sans-serif; font-weight: 600; font-size: 1.1rem; letter-spacing: -.005em; }
+.toggle { border-radius: 50%; box-shadow: none; border: 0; background: var(--tiffany); color: var(--ink); }
 .q[open] .toggle { background: var(--ink); color: var(--mustard); }
-.faqBubble { font-family: var(--font-accent), Georgia, serif; font-style: italic; }
+.faqBubble { font-family: var(--font-riviera), Georgia, serif; font-style: italic; }
 .faqMascot { rotate: 0deg; }
 
 @media (max-width: 760px) {
-  .frame { padding: 9px 9px 4px; }
+  .frame { padding: 8px 8px 8px; border-radius: 16px; }
   .frameCap { font-size: 15px; }
-  .sticker { width: 100px; top: -22px; right: -4px; }
-  .stickerText { font-size: 10.5px; }
+  .sticker { width: 88px; top: -14px; right: -4px; }
+  .stickerText { font-size: 14px; }
   .heroBubble { left: 0; bottom: 8px; font-size: 14px; }
-  .h1 { font-size: clamp(2.6rem, 11.5vw, 3.5rem); }
+  .h1 { font-size: clamp(2.8rem, 12.5vw, 3.8rem); }
   .marquee { margin-inline: -10px; }
-  .mItem, .tapeBand .mItem { font-size: 12.5px; }
-  .caption { font-size: 11.5px; letter-spacing: .18em; }
+  .mItem, .tapeBand .mItem { font-size: 17px; }
+  .caption { font-size: 11.5px; letter-spacing: .16em; }
 }

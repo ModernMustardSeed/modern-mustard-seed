@@ -8,11 +8,11 @@ import { treeStaff } from '@/data/mustard-tree';
 
 function Bust({ color, title }: { color: string; title: string }) {
   return (
-    <svg viewBox="0 0 100 100" role="img" aria-label={`Portrait mark for ${title}`} className="w-full h-auto block bg-[#f6efe0] border-2 border-[#14110c]">
+    <svg viewBox="0 0 100 100" role="img" aria-label={`Portrait mark for ${title}`} className="w-full h-auto block bg-[#fbf5ea] border-2 border-[#0b3b44]">
       <rect x="0" y="0" width="100" height="100" fill={color} opacity="0.13" />
       <circle cx="50" cy="36" r="17.5" fill="none" stroke={color} strokeWidth="3.5" opacity="0.85" />
-      <circle cx="50" cy="36" r="13" fill="#14110c" />
-      <path d="M19,92 Q50,56 81,92 L81,100 L19,100 Z" fill="#14110c" />
+      <circle cx="50" cy="36" r="13" fill="#0b3b44" />
+      <path d="M19,92 Q50,56 81,92 L81,100 L19,100 Z" fill="#0b3b44" />
     </svg>
   );
 }
@@ -23,21 +23,21 @@ export default function StaffWall() {
       {treeStaff.map((s, i) => (
         <div
           key={s.role}
-          className={`relative bg-white border-2 border-[#14110c] shadow-[5px_5px_0_0_#14110c] p-3.5 pb-4 ${i % 2 === 0 ? 'rotate-[-0.6deg]' : 'rotate-[0.6deg]'}`}
+          className={`relative bg-white border-2 border-[#0b3b44] shadow-[5px_5px_0_0_#0b3b44] p-3.5 pb-4 ${i % 2 === 0 ? 'rotate-[-0.6deg]' : 'rotate-[0.6deg]'}`}
         >
           {i === 0 && (
             <svg viewBox="0 0 24 24" aria-hidden="true" className="absolute -top-3.5 -right-3 w-9 h-9 z-10">
               <polygon
                 points="12,1 15,8.5 23,9 17,14 19,22 12,17.5 5,22 7,14 1,9 9,8.5"
                 fill="#f5b700"
-                stroke="#14110c"
+                stroke="#0b3b44"
                 strokeWidth="1.6"
               />
             </svg>
           )}
           <Bust color={s.color} title={s.role} />
           <p className="font-mono text-[12px] font-bold uppercase tracking-[0.14em] text-center mt-3">{s.role}</p>
-          <p className="font-body text-[13px] leading-snug text-[#14110c]/70 text-center mt-1.5">{s.job}</p>
+          <p className="font-body text-[13px] leading-snug text-[#0b3b44]/70 text-center mt-1.5">{s.job}</p>
         </div>
       ))}
     </div>

@@ -252,7 +252,7 @@ export default function TheInterview({
         <span className="block text-[9px] uppercase tracking-[0.4em] font-mono font-bold text-[#C4160B] mb-4">
           The Interview
         </span>
-        <h2 className="font-display text-3xl md:text-4xl font-black text-[#14110c] tracking-tight leading-tight">
+        <h2 className="font-display text-3xl md:text-4xl font-black text-[#0b3b44] tracking-tight leading-tight">
           Mr. Mustard has about thirty questions for you
         </h2>
         <p className="mt-4 text-[#3a3733] font-body text-base leading-relaxed">
@@ -263,18 +263,18 @@ export default function TheInterview({
 
         <div className="mt-7 grid sm:grid-cols-2 gap-3">
           <label>
-            <span className="block text-[9px] uppercase tracking-[0.28em] font-mono font-bold text-[#14110c]/60 mb-1.5">
+            <span className="block text-[9px] uppercase tracking-[0.28em] font-mono font-bold text-[#0b3b44]/60 mb-1.5">
               Your name
             </span>
             <input
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Dana Whitaker"
-              className="w-full bg-white border-2 border-[#14110c] rounded-lg px-4 py-3 font-body text-sm focus:outline-none focus:shadow-[3px_3px_0_0_#14110c] transition-shadow"
+              className="w-full bg-white border-2 border-[#0b3b44] rounded-lg px-4 py-3 font-body text-sm focus:outline-none focus:shadow-[3px_3px_0_0_#0b3b44] transition-shadow"
             />
           </label>
           <label>
-            <span className="block text-[9px] uppercase tracking-[0.28em] font-mono font-bold text-[#14110c]/60 mb-1.5">
+            <span className="block text-[9px] uppercase tracking-[0.28em] font-mono font-bold text-[#0b3b44]/60 mb-1.5">
               Email
             </span>
             <input
@@ -282,22 +282,22 @@ export default function TheInterview({
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@yourbusiness.com"
-              className="w-full bg-white border-2 border-[#14110c] rounded-lg px-4 py-3 font-body text-sm focus:outline-none focus:shadow-[3px_3px_0_0_#14110c] transition-shadow"
+              className="w-full bg-white border-2 border-[#0b3b44] rounded-lg px-4 py-3 font-body text-sm focus:outline-none focus:shadow-[3px_3px_0_0_#0b3b44] transition-shadow"
             />
           </label>
           <label>
-            <span className="block text-[9px] uppercase tracking-[0.28em] font-mono font-bold text-[#14110c]/60 mb-1.5">
+            <span className="block text-[9px] uppercase tracking-[0.28em] font-mono font-bold text-[#0b3b44]/60 mb-1.5">
               Business
             </span>
             <input
               value={biz}
               onChange={(e) => setBiz(e.target.value)}
               placeholder={host ?? 'Whitaker Med Spa'}
-              className="w-full bg-white border-2 border-[#14110c] rounded-lg px-4 py-3 font-body text-sm focus:outline-none focus:shadow-[3px_3px_0_0_#14110c] transition-shadow"
+              className="w-full bg-white border-2 border-[#0b3b44] rounded-lg px-4 py-3 font-body text-sm focus:outline-none focus:shadow-[3px_3px_0_0_#0b3b44] transition-shadow"
             />
           </label>
           <label>
-            <span className="block text-[9px] uppercase tracking-[0.28em] font-mono font-bold text-[#14110c]/60 mb-1.5">
+            <span className="block text-[9px] uppercase tracking-[0.28em] font-mono font-bold text-[#0b3b44]/60 mb-1.5">
               Phone (optional)
             </span>
             <input
@@ -305,7 +305,7 @@ export default function TheInterview({
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               placeholder="(406) 555 0142"
-              className="w-full bg-white border-2 border-[#14110c] rounded-lg px-4 py-3 font-body text-sm focus:outline-none focus:shadow-[3px_3px_0_0_#14110c] transition-shadow"
+              className="w-full bg-white border-2 border-[#0b3b44] rounded-lg px-4 py-3 font-body text-sm focus:outline-none focus:shadow-[3px_3px_0_0_#0b3b44] transition-shadow"
             />
           </label>
         </div>
@@ -315,7 +315,7 @@ export default function TheInterview({
             type="button"
             disabled={!canStart || starting}
             onClick={() => start('web')}
-            className="flex-1 px-6 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-white bg-[#14110c] rounded-xl border-2 border-[#14110c] disabled:opacity-40 hover:-translate-y-0.5 transition-all"
+            className="flex-1 px-6 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-white bg-[#0b3b44] rounded-xl border-2 border-[#0b3b44] disabled:opacity-40 hover:-translate-y-0.5 transition-all"
           >
             {starting ? 'One moment…' : 'Talk to him now'}
           </button>
@@ -323,12 +323,12 @@ export default function TheInterview({
             type="button"
             disabled={!canStart || starting}
             onClick={() => start('typed')}
-            className="flex-1 px-6 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-[#14110c] bg-white rounded-xl border-2 border-[#14110c] shadow-[4px_4px_0_0_#14110c] disabled:opacity-40 hover:-translate-y-0.5 transition-all"
+            className="flex-1 px-6 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-[#0b3b44] bg-white rounded-xl border-2 border-[#0b3b44] shadow-[4px_4px_0_0_#0b3b44] disabled:opacity-40 hover:-translate-y-0.5 transition-all"
           >
             I would rather type
           </button>
         </div>
-        <p className="mt-4 text-[#14110c]/55 text-xs font-body">
+        <p className="mt-4 text-[#0b3b44]/55 text-xs font-body">
           Talking takes about twenty minutes. Typing takes longer but you can do it in pieces.
         </p>
         {error && <p className="mt-4 text-[#C4160B] text-sm font-body font-bold">{error}</p>}
@@ -339,18 +339,18 @@ export default function TheInterview({
   if (stage === 'done') {
     return (
       <div className="pop-card-yellow p-8 md:p-12 max-w-2xl mx-auto text-center">
-        <span className="block text-[9px] uppercase tracking-[0.4em] font-mono font-bold text-[#14110c] mb-4">
+        <span className="block text-[9px] uppercase tracking-[0.4em] font-mono font-bold text-[#0b3b44] mb-4">
           That is the interview
         </span>
-        <h2 className="font-display text-3xl md:text-4xl font-black text-[#14110c] tracking-tight leading-tight">
+        <h2 className="font-display text-3xl md:text-4xl font-black text-[#0b3b44] tracking-tight leading-tight">
           Now the work starts on our side
         </h2>
-        <p className="mt-4 text-[#14110c]/80 font-body text-base leading-relaxed">
+        <p className="mt-4 text-[#0b3b44]/80 font-body text-base leading-relaxed">
           Sarah reads every word of this herself. Your roadmap and your offer get built from your answers,
           not from a template, and she will bring them to you along with what it would take to run the
           whole thing together. Check your email.
         </p>
-        <p className="mt-6 text-[#14110c]/60 text-xs font-mono uppercase tracking-[0.25em]">
+        <p className="mt-6 text-[#0b3b44]/60 text-xs font-mono uppercase tracking-[0.25em]">
           {turns.filter((t) => t.role === 'owner').length} answers on the record
         </p>
       </div>
@@ -368,10 +368,10 @@ export default function TheInterview({
           const pct = keys.length ? hit / keys.length : 0;
           return (
             <div key={arc.key} className="flex-1" title={arc.label}>
-              <div className="h-1.5 rounded-full bg-[#14110c]/12 overflow-hidden border border-[#14110c]/15">
+              <div className="h-1.5 rounded-full bg-[#0b3b44]/12 overflow-hidden border border-[#0b3b44]/15">
                 <div className="h-full bg-[#f5b700] transition-all duration-500" style={{ width: `${pct * 100}%` }} />
               </div>
-              <span className="mt-1.5 block text-[7px] sm:text-[8px] uppercase tracking-[0.1em] font-mono text-[#14110c]/45 truncate">
+              <span className="mt-1.5 block text-[7px] sm:text-[8px] uppercase tracking-[0.1em] font-mono text-[#0b3b44]/45 truncate">
                 {arc.label}
               </span>
             </div>
@@ -381,7 +381,7 @@ export default function TheInterview({
 
       <div className="pop-card overflow-hidden">
         {/* Header */}
-        <div className="bg-[#14110c] px-5 py-3.5 flex items-center justify-between gap-4">
+        <div className="bg-[#0b3b44] px-5 py-3.5 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3 min-w-0">
             <span
               className={`w-2.5 h-2.5 rounded-full shrink-0 ${
@@ -394,7 +394,7 @@ export default function TheInterview({
                   : 'bg-[#f5b700]'
               }`}
             />
-            <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#f6efe0] truncate">
+            <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#fbf5ea] truncate">
               {stage === 'voice'
                 ? voice === 'connecting'
                   ? 'Connecting'
@@ -404,7 +404,7 @@ export default function TheInterview({
                 : 'Mr. Mustard'}
             </span>
           </div>
-          <span className="font-mono text-[10px] text-[#f6efe0]/50 shrink-0">
+          <span className="font-mono text-[10px] text-[#fbf5ea]/50 shrink-0">
             {progress}/{QUESTIONS.length}
           </span>
         </div>
@@ -412,17 +412,17 @@ export default function TheInterview({
         {/* Transcript */}
         <div ref={scrollRef} className="max-h-[52vh] overflow-y-auto px-5 py-5 space-y-4 bg-[#FFFDF6]">
           {turns.length === 0 && (
-            <p className="text-[#14110c]/45 font-body text-sm italic py-8 text-center">
+            <p className="text-[#0b3b44]/45 font-body text-sm italic py-8 text-center">
               {stage === 'voice' ? 'Say hello when he starts talking.' : 'He is thinking of where to start…'}
             </p>
           )}
           {turns.map((t, i) => (
             <div key={i} className={t.role === 'coach' ? '' : 'flex justify-end'}>
               <div
-                className={`max-w-[85%] px-4 py-3 rounded-2xl border-2 border-[#14110c] font-body text-sm leading-relaxed ${
+                className={`max-w-[85%] px-4 py-3 rounded-2xl border-2 border-[#0b3b44] font-body text-sm leading-relaxed ${
                   t.role === 'coach'
-                    ? 'bg-white text-[#14110c] rounded-tl-sm'
-                    : 'bg-[#f5b700] text-[#14110c] rounded-tr-sm ml-auto'
+                    ? 'bg-white text-[#0b3b44] rounded-tl-sm'
+                    : 'bg-[#f5b700] text-[#0b3b44] rounded-tr-sm ml-auto'
                 }`}
               >
                 {t.text}
@@ -430,12 +430,12 @@ export default function TheInterview({
             </div>
           ))}
           {thinking && (
-            <div className="max-w-[85%] px-4 py-3 rounded-2xl rounded-tl-sm border-2 border-[#14110c] bg-white">
+            <div className="max-w-[85%] px-4 py-3 rounded-2xl rounded-tl-sm border-2 border-[#0b3b44] bg-white">
               <span className="inline-flex gap-1">
                 {[0, 1, 2].map((d) => (
                   <span
                     key={d}
-                    className="w-1.5 h-1.5 rounded-full bg-[#14110c]/40 animate-bounce"
+                    className="w-1.5 h-1.5 rounded-full bg-[#0b3b44]/40 animate-bounce"
                     style={{ animationDelay: `${d * 120}ms` }}
                   />
                 ))}
@@ -445,14 +445,14 @@ export default function TheInterview({
         </div>
 
         {/* Controls */}
-        <div className="border-t-2 border-[#14110c] p-4 bg-white">
+        <div className="border-t-2 border-[#0b3b44] p-4 bg-white">
           {stage === 'voice' ? (
             <div className="flex flex-wrap items-center gap-3">
               {voice === 'live' || voice === 'connecting' ? (
                 <button
                   type="button"
                   onClick={hangUp}
-                  className="px-6 py-3 text-[10px] uppercase tracking-[0.22em] font-sans font-extrabold text-white bg-[#C4160B] rounded-lg border-2 border-[#14110c]"
+                  className="px-6 py-3 text-[10px] uppercase tracking-[0.22em] font-sans font-extrabold text-white bg-[#C4160B] rounded-lg border-2 border-[#0b3b44]"
                 >
                   End the interview
                 </button>
@@ -460,7 +460,7 @@ export default function TheInterview({
                 <button
                   type="button"
                   onClick={() => session && finish(session, turns)}
-                  className="px-6 py-3 text-[10px] uppercase tracking-[0.22em] font-sans font-extrabold text-white bg-[#14110c] rounded-lg border-2 border-[#14110c]"
+                  className="px-6 py-3 text-[10px] uppercase tracking-[0.22em] font-sans font-extrabold text-white bg-[#0b3b44] rounded-lg border-2 border-[#0b3b44]"
                 >
                   Send it to Sarah
                 </button>
@@ -472,7 +472,7 @@ export default function TheInterview({
                   setStage('typed');
                   void typedTurn('');
                 }}
-                className="text-[10px] uppercase tracking-[0.22em] font-mono font-bold text-[#14110c]/55 hover:text-[#14110c]"
+                className="text-[10px] uppercase tracking-[0.22em] font-mono font-bold text-[#0b3b44]/55 hover:text-[#0b3b44]"
               >
                 Finish by typing instead
               </button>
@@ -485,12 +485,12 @@ export default function TheInterview({
                 disabled={thinking}
                 placeholder="Answer him straight…"
                 autoFocus
-                className="flex-1 bg-white border-2 border-[#14110c] rounded-lg px-4 py-3 font-body text-sm focus:outline-none disabled:opacity-50"
+                className="flex-1 bg-white border-2 border-[#0b3b44] rounded-lg px-4 py-3 font-body text-sm focus:outline-none disabled:opacity-50"
               />
               <button
                 type="submit"
                 disabled={thinking || !reply.trim()}
-                className="px-5 py-3 text-[10px] uppercase tracking-[0.22em] font-sans font-extrabold text-white bg-[#14110c] rounded-lg border-2 border-[#14110c] disabled:opacity-40"
+                className="px-5 py-3 text-[10px] uppercase tracking-[0.22em] font-sans font-extrabold text-white bg-[#0b3b44] rounded-lg border-2 border-[#0b3b44] disabled:opacity-40"
               >
                 Send
               </button>

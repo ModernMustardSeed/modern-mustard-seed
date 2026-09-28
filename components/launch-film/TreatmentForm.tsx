@@ -50,10 +50,10 @@ export default function TreatmentForm() {
 
   if (done) {
     return (
-      <div className="rounded-2xl border-2 border-[#14110c] bg-white p-7 shadow-[6px_6px_0_0_#14110c] text-center">
-        <p className="font-mono text-[11px] font-bold uppercase tracking-[0.3em] text-[#8f1d22]">[ RECEIVED ]</p>
-        <h3 className="font-display text-2xl font-black tracking-tight text-[#14110c] mt-2">The product is in the queue.</h3>
-        <p className="font-body text-sm leading-relaxed text-[#14110c]/75 mt-3">
+      <div className="rounded-2xl border-2 border-[#0b3b44] bg-white p-7 shadow-[6px_6px_0_0_#0b3b44] text-center">
+        <p className="font-mono text-[11px] font-bold uppercase tracking-[0.3em] text-[#0a7c78]">[ RECEIVED ]</p>
+        <h3 className="font-display text-2xl font-black tracking-tight text-[#0b3b44] mt-2">The product is in the queue.</h3>
+        <p className="font-body text-sm leading-relaxed text-[#0b3b44]/75 mt-3">
           We run it, write the treatment, and send it back within two business days: the shot list, the length, the cut points and which tier fits. No charge, and the treatment is yours either way.
         </p>
       </div>
@@ -61,44 +61,44 @@ export default function TreatmentForm() {
   }
 
   return (
-    <form onSubmit={submit} className="rounded-2xl border-2 border-[#14110c] bg-white p-6 md:p-7 shadow-[6px_6px_0_0_#14110c]">
+    <form onSubmit={submit} className="rounded-2xl border-2 border-[#0b3b44] bg-white p-6 md:p-7 shadow-[6px_6px_0_0_#0b3b44]">
       <div className="grid sm:grid-cols-2 gap-4">
         <label className="block">
-          <span className="font-mono text-[10px] font-bold uppercase tracking-[0.25em] text-[#14110c]/60">Your name</span>
+          <span className="font-mono text-[10px] font-bold uppercase tracking-[0.25em] text-[#0b3b44]/60">Your name</span>
           <input
             value={name}
             onChange={(e) => setName(e.target.value)}
             autoComplete="name"
-            className="mt-1.5 w-full rounded-lg border-2 border-[#14110c] bg-[#f6efe0] px-3.5 py-2.5 font-body text-sm text-[#14110c] outline-none focus:bg-white focus:shadow-[3px_3px_0_0_#f5b700]"
+            className="mt-1.5 w-full rounded-lg border-2 border-[#0b3b44] bg-[#fbf5ea] px-3.5 py-2.5 font-body text-sm text-[#0b3b44] outline-none focus:bg-white focus:shadow-[3px_3px_0_0_#f5b700]"
           />
         </label>
         <label className="block">
-          <span className="font-mono text-[10px] font-bold uppercase tracking-[0.25em] text-[#14110c]/60">Email</span>
+          <span className="font-mono text-[10px] font-bold uppercase tracking-[0.25em] text-[#0b3b44]/60">Email</span>
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             autoComplete="email"
-            className="mt-1.5 w-full rounded-lg border-2 border-[#14110c] bg-[#f6efe0] px-3.5 py-2.5 font-body text-sm text-[#14110c] outline-none focus:bg-white focus:shadow-[3px_3px_0_0_#f5b700]"
+            className="mt-1.5 w-full rounded-lg border-2 border-[#0b3b44] bg-[#fbf5ea] px-3.5 py-2.5 font-body text-sm text-[#0b3b44] outline-none focus:bg-white focus:shadow-[3px_3px_0_0_#f5b700]"
           />
         </label>
       </div>
       <label className="block mt-4">
-        <span className="font-mono text-[10px] font-bold uppercase tracking-[0.25em] text-[#14110c]/60">The product (a link, or a TestFlight, or a name)</span>
+        <span className="font-mono text-[10px] font-bold uppercase tracking-[0.25em] text-[#0b3b44]/60">The product (a link, or a TestFlight, or a name)</span>
         <input
           value={product}
           onChange={(e) => setProduct(e.target.value)}
           placeholder="https://"
-          className="mt-1.5 w-full rounded-lg border-2 border-[#14110c] bg-[#f6efe0] px-3.5 py-2.5 font-body text-sm text-[#14110c] outline-none placeholder:text-[#14110c]/35 focus:bg-white focus:shadow-[3px_3px_0_0_#f5b700]"
+          className="mt-1.5 w-full rounded-lg border-2 border-[#0b3b44] bg-[#fbf5ea] px-3.5 py-2.5 font-body text-sm text-[#0b3b44] outline-none placeholder:text-[#0b3b44]/35 focus:bg-white focus:shadow-[3px_3px_0_0_#f5b700]"
         />
       </label>
       <label className="block mt-4">
-        <span className="font-mono text-[10px] font-bold uppercase tracking-[0.25em] text-[#14110c]/60">What is launching, and when</span>
+        <span className="font-mono text-[10px] font-bold uppercase tracking-[0.25em] text-[#0b3b44]/60">What is launching, and when</span>
         <textarea
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
           rows={3}
-          className="mt-1.5 w-full rounded-lg border-2 border-[#14110c] bg-[#f6efe0] px-3.5 py-2.5 font-body text-sm text-[#14110c] outline-none focus:bg-white focus:shadow-[3px_3px_0_0_#f5b700]"
+          className="mt-1.5 w-full rounded-lg border-2 border-[#0b3b44] bg-[#fbf5ea] px-3.5 py-2.5 font-body text-sm text-[#0b3b44] outline-none focus:bg-white focus:shadow-[3px_3px_0_0_#f5b700]"
         />
       </label>
       {error && (
@@ -109,11 +109,11 @@ export default function TreatmentForm() {
       <button
         type="submit"
         disabled={busy}
-        className="mt-5 w-full rounded-full border-2 border-[#14110c] bg-[#f5b700] px-6 py-3.5 font-sans text-xs font-extrabold uppercase tracking-[0.18em] text-[#14110c] shadow-[4px_4px_0_0_#14110c] transition-all hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-wait"
+        className="mt-5 w-full rounded-full border-2 border-[#0b3b44] bg-[#f5b700] px-6 py-3.5 font-sans text-xs font-extrabold uppercase tracking-[0.18em] text-[#0b3b44] shadow-[4px_4px_0_0_#0b3b44] transition-all hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-wait"
       >
         {busy ? 'Sending' : 'Send the product, get the treatment'}
       </button>
-      <p className="mt-3 text-center font-mono text-[10px] uppercase tracking-[0.2em] text-[#14110c]/50">Free · No card · The treatment is yours to keep</p>
+      <p className="mt-3 text-center font-mono text-[10px] uppercase tracking-[0.2em] text-[#0b3b44]/50">Free · No card · The treatment is yours to keep</p>
     </form>
   );
 }

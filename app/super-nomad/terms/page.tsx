@@ -15,7 +15,7 @@ export const metadata = buildMetadata({
 export default function SuperNomadTermsPage() {
   return (
     <>
-      <div className="relative min-h-screen bg-[#f6efe0] text-[#14110c] overflow-x-clip">
+      <div className="relative min-h-screen bg-[#fbf5ea] text-[#0b3b44] overflow-x-clip">
         <PopPageHero
           eyebrow={
             <div className="flex flex-wrap gap-3">
@@ -25,8 +25,8 @@ export default function SuperNomadTermsPage() {
           }
           title={<>Terms of <em>Use</em></>}
           art={{
-            src: '/art/pages/legal',
-            alt: 'Painting: Mr. Mustard signs with a fountain pen and a wink while the sesame seed presses a wax seal, in a two-story Art Deco law library of walnut shelves and green lamps',
+            src: '/art/riviera/legal',
+            alt: 'Painting: Mr. Mustard relaxes in a white hammock between two palm trees on a quiet beach, his phone resting on his chest and the seed dog asleep in the shade',
           }}
           mascot
         />

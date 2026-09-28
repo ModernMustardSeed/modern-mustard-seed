@@ -110,10 +110,10 @@ export default function SwitchboardCable() {
     <div aria-hidden className="pointer-events-none absolute inset-0 z-[1] hidden xl:block" style={{ overflow: 'hidden' }}>
       <svg width={size.w} height={size.h} viewBox={`0 0 ${size.w} ${size.h}`} className="absolute inset-0">
         {/* jack the cable leaves from */}
-        <circle cx={path.split(' ')[1]} cy={path.split(' ')[2]} r="13" fill="#14110c" />
-        <circle cx={path.split(' ')[1]} cy={path.split(' ')[2]} r="8" fill="#f5b700" stroke="#14110c" strokeWidth="2.5" />
+        <circle cx={path.split(' ')[1]} cy={path.split(' ')[2]} r="13" fill="#0b3b44" />
+        <circle cx={path.split(' ')[1]} cy={path.split(' ')[2]} r="8" fill="#f5b700" stroke="#0b3b44" strokeWidth="2.5" />
         {/* cable: ink casing, gold core, bright highlight */}
-        <path d={path} pathLength={1} fill="none" stroke="#14110c" strokeWidth="11" strokeLinecap="round"
+        <path d={path} pathLength={1} fill="none" stroke="#0b3b44" strokeWidth="11" strokeLinecap="round"
           strokeDasharray="1" strokeDashoffset={off} />
         <path d={path} pathLength={1} fill="none" stroke="#f5b700" strokeWidth="6.5" strokeLinecap="round"
           strokeDasharray="1" strokeDashoffset={off} />
@@ -122,10 +122,10 @@ export default function SwitchboardCable() {
         {/* the plug at the end, revealed once the cable is nearly drawn */}
         {plug && progress > 0.96 && (
           <g transform={`translate(${plug.x}, ${plug.y})`}>
-            <rect x="-13" y="0" width="26" height="20" rx="4" fill="#14110c" />
-            <rect x="-9" y="4" width="18" height="12" rx="2" fill="#f5b700" stroke="#14110c" strokeWidth="2" />
-            <rect x="-6" y="20" width="4" height="9" fill="#14110c" />
-            <rect x="2" y="20" width="4" height="9" fill="#14110c" />
+            <rect x="-13" y="0" width="26" height="20" rx="4" fill="#0b3b44" />
+            <rect x="-9" y="4" width="18" height="12" rx="2" fill="#f5b700" stroke="#0b3b44" strokeWidth="2" />
+            <rect x="-6" y="20" width="4" height="9" fill="#0b3b44" />
+            <rect x="2" y="20" width="4" height="9" fill="#0b3b44" />
           </g>
         )}
       </svg>

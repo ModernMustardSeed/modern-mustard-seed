@@ -56,8 +56,8 @@ const NICHES = [
 ] as const;
 
 const inputCls =
-  'w-full bg-white border-2 border-[#14110c] rounded-xl px-3.5 py-2.5 font-body text-[15px] text-[#14110c] placeholder:text-[#14110c]/35 focus:outline-none focus:ring-2 focus:ring-[#f5b700] focus:ring-offset-1';
-const labelCls = 'block text-[9px] uppercase tracking-[0.25em] text-[#8f1d22] font-mono font-bold mb-1.5';
+  'w-full bg-white border-2 border-[#0b3b44] rounded-xl px-3.5 py-2.5 font-body text-[15px] text-[#0b3b44] placeholder:text-[#0b3b44]/35 focus:outline-none focus:ring-2 focus:ring-[#f5b700] focus:ring-offset-1';
+const labelCls = 'block text-[9px] uppercase tracking-[0.25em] text-[#0a7c78] font-mono font-bold mb-1.5';
 
 export default function BuildMintForm({ endpoint, variant }: { endpoint: string; variant: Variant }) {
   const [station, setStation] = useState<StationState | null>(null);
@@ -124,13 +124,13 @@ export default function BuildMintForm({ endpoint, variant }: { endpoint: string;
   }
 
   if (loading) {
-    return <div className="bg-white border-2 border-[#14110c] rounded-2xl shadow-[4px_4px_0_0_#14110c] p-8 text-center font-mono text-xs uppercase tracking-[0.3em] text-[#14110c]/50">Warming the build…</div>;
+    return <div className="bg-white border-2 border-[#0b3b44] rounded-2xl shadow-[4px_4px_0_0_#0b3b44] p-8 text-center font-mono text-xs uppercase tracking-[0.3em] text-[#0b3b44]/50">Warming the build…</div>;
   }
 
   if (variant === 'partner' && station && station.canBuild === false) {
     return (
-      <div className="bg-white border-2 border-[#14110c] rounded-2xl shadow-[4px_4px_0_0_#14110c] p-8 text-center">
-        <span className="text-[9px] uppercase tracking-[0.3em] text-[#8f1d22] font-mono font-bold">Invite only</span>
+      <div className="bg-white border-2 border-[#0b3b44] rounded-2xl shadow-[4px_4px_0_0_#0b3b44] p-8 text-center">
+        <span className="text-[9px] uppercase tracking-[0.3em] text-[#0a7c78] font-mono font-bold">Invite only</span>
         <h3 className="font-display text-2xl font-bold mt-2">The build is not lit for you yet</h3>
         <p className="font-body text-[#3A3733] mt-3 max-w-md mx-auto">
           Minting a demo suite spends real build time, so we grant it partner by partner. Reply to any email from Sarah and ask for build access; most partners get it after their first conversation.
@@ -154,19 +154,19 @@ export default function BuildMintForm({ endpoint, variant }: { endpoint: string;
       {/* Slots strip */}
       {(remainingToday != null || remainingWeek != null) && (
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-[9px] uppercase tracking-[0.25em] font-mono font-bold text-[#14110c]/60">Build slots</span>
+          <span className="text-[9px] uppercase tracking-[0.25em] font-mono font-bold text-[#0b3b44]/60">Build slots</span>
           {remainingToday != null && (
-            <span className={`text-[10px] uppercase tracking-[0.15em] font-mono font-bold border-2 border-[#14110c] rounded-full px-2.5 py-0.5 shadow-[2px_2px_0_0_#14110c] ${remainingToday > 0 ? 'bg-[#f5b700] text-[#14110c]' : 'bg-[#14110c] text-[#f6efe0]'}`}>
+            <span className={`text-[10px] uppercase tracking-[0.15em] font-mono font-bold border-2 border-[#0b3b44] rounded-full px-2.5 py-0.5 shadow-[2px_2px_0_0_#0b3b44] ${remainingToday > 0 ? 'bg-[#f5b700] text-[#0b3b44]' : 'bg-[#0b3b44] text-[#fbf5ea]'}`}>
               {remainingToday} of {station?.dailyCap} today
             </span>
           )}
           {remainingWeek != null && (
-            <span className={`text-[10px] uppercase tracking-[0.15em] font-mono font-bold border-2 border-[#14110c] rounded-full px-2.5 py-0.5 shadow-[2px_2px_0_0_#14110c] ${remainingWeek > 0 ? 'bg-white text-[#14110c]' : 'bg-[#14110c] text-[#f6efe0]'}`}>
+            <span className={`text-[10px] uppercase tracking-[0.15em] font-mono font-bold border-2 border-[#0b3b44] rounded-full px-2.5 py-0.5 shadow-[2px_2px_0_0_#0b3b44] ${remainingWeek > 0 ? 'bg-white text-[#0b3b44]' : 'bg-[#0b3b44] text-[#fbf5ea]'}`}>
               {remainingWeek} of {station?.weeklyCap} this week
             </span>
           )}
           {variant === 'partner' && station?.qaLift != null && (station?.qaApproved ?? 0) < station.qaLift && (
-            <span className="text-[10px] uppercase tracking-[0.15em] font-mono font-bold border-2 border-[#14110c] rounded-full px-2.5 py-0.5 bg-white text-[#14110c]/70">
+            <span className="text-[10px] uppercase tracking-[0.15em] font-mono font-bold border-2 border-[#0b3b44] rounded-full px-2.5 py-0.5 bg-white text-[#0b3b44]/70">
               First {station.qaLift} mints get a human polish pass
             </span>
           )}
@@ -177,37 +177,37 @@ export default function BuildMintForm({ endpoint, variant }: { endpoint: string;
       {ticket && (
         <div className="relative" aria-live="polite">
           <div
-            className="mx-auto max-w-md bg-[#f5b700] border-2 border-[#14110c] rounded-2xl shadow-[6px_6px_0_0_#14110c] px-6 py-5 animate-[ticketOut_.7s_cubic-bezier(.2,.9,.3,1.2)_both]"
+            className="mx-auto max-w-md bg-[#f5b700] border-2 border-[#0b3b44] rounded-2xl shadow-[6px_6px_0_0_#0b3b44] px-6 py-5 animate-[ticketOut_.7s_cubic-bezier(.2,.9,.3,1.2)_both]"
             style={{
               backgroundImage:
-                'radial-gradient(circle at 0 50%, #f6efe0 9px, transparent 10px), radial-gradient(circle at 100% 50%, #f6efe0 9px, transparent 10px)',
+                'radial-gradient(circle at 0 50%, #fbf5ea 9px, transparent 10px), radial-gradient(circle at 100% 50%, #fbf5ea 9px, transparent 10px)',
             }}
           >
-            <div className="flex items-center justify-between gap-3 border-b-2 border-dashed border-[#14110c]/50 pb-3">
-              <span className="text-[9px] uppercase tracking-[0.3em] font-mono font-bold text-[#14110c]/70">
+            <div className="flex items-center justify-between gap-3 border-b-2 border-dashed border-[#0b3b44]/50 pb-3">
+              <span className="text-[9px] uppercase tracking-[0.3em] font-mono font-bold text-[#0b3b44]/70">
                 {ticket.duplicate ? 'Already claimed' : 'Build ticket'}
               </span>
-              <span className="text-[9px] uppercase tracking-[0.3em] font-mono font-bold text-[#8f1d22]">№ {new Date().getFullYear()}</span>
+              <span className="text-[9px] uppercase tracking-[0.3em] font-mono font-bold text-[#0a7c78]">№ {new Date().getFullYear()}</span>
             </div>
             <p className="font-display text-2xl font-bold mt-3 leading-tight">{ticket.business}</p>
             {ticket.duplicate ? (
-              <p className="font-body text-sm text-[#14110c]/80 mt-2">{ticket.message}</p>
+              <p className="font-body text-sm text-[#0b3b44]/80 mt-2">{ticket.message}</p>
             ) : ticket.qaHeld ? (
-              <p className="font-body text-sm text-[#14110c]/80 mt-2">
+              <p className="font-body text-sm text-[#0b3b44]/80 mt-2">
                 In the build now. Your first mints get a human polish pass; the hand-off email lands in your inbox the moment this one clears (usually same day).
               </p>
             ) : (
-              <p className="font-body text-sm text-[#14110c]/80 mt-2">
+              <p className="font-body text-sm text-[#0b3b44]/80 mt-2">
                 In the build now. The voice agent is live in about a minute; the website lands at the same hub in roughly twenty. Your hand-off email is on its way.
               </p>
             )}
             <div className="flex items-center justify-between mt-4">
-              <span className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] font-mono font-bold text-[#14110c]">
-                <span className="w-2 h-2 rounded-full bg-[#b3261e] animate-[buildGlow_1.4s_ease-in-out_infinite]" />
+              <span className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] font-mono font-bold text-[#0b3b44]">
+                <span className="w-2 h-2 rounded-full bg-[#ff6f59] animate-[buildGlow_1.4s_ease-in-out_infinite]" />
                 {ticket.duplicate ? 'On the floor' : 'In the build'}
               </span>
               {ticket.hubUrl && (
-                <a href={ticket.hubUrl} target="_blank" rel="noopener noreferrer" className="text-[11px] font-sans font-bold uppercase tracking-[0.15em] text-[#14110c] underline underline-offset-4 decoration-2">
+                <a href={ticket.hubUrl} target="_blank" rel="noopener noreferrer" className="text-[11px] font-sans font-bold uppercase tracking-[0.15em] text-[#0b3b44] underline underline-offset-4 decoration-2">
                   Open the suite
                 </a>
               )}
@@ -215,7 +215,7 @@ export default function BuildMintForm({ endpoint, variant }: { endpoint: string;
           </div>
           <button
             onClick={() => setTicket(null)}
-            className="block mx-auto mt-3 text-[10px] uppercase tracking-[0.2em] font-mono font-bold text-[#14110c]/50 hover:text-[#14110c]"
+            className="block mx-auto mt-3 text-[10px] uppercase tracking-[0.2em] font-mono font-bold text-[#0b3b44]/50 hover:text-[#0b3b44]"
           >
             Build another
           </button>
@@ -224,7 +224,7 @@ export default function BuildMintForm({ endpoint, variant }: { endpoint: string;
 
       {/* The form */}
       {!ticket && (
-        <form onSubmit={mint} className={`bg-white border-2 border-[#14110c] rounded-2xl shadow-[5px_5px_0_0_#14110c] p-6 md:p-8 ${minting ? 'animate-[buildStamp_.5s_ease-out_both]' : ''}`}>
+        <form onSubmit={mint} className={`bg-white border-2 border-[#0b3b44] rounded-2xl shadow-[5px_5px_0_0_#0b3b44] p-6 md:p-8 ${minting ? 'animate-[buildStamp_.5s_ease-out_both]' : ''}`}>
           <div className="grid sm:grid-cols-2 gap-4">
             <div className="sm:col-span-2">
               <label className={labelCls} htmlFor="ff-business">Business name (as on their sign)</label>
@@ -267,11 +267,11 @@ export default function BuildMintForm({ endpoint, variant }: { endpoint: string;
           </div>
 
           {needsAgreement && (
-            <label className="flex items-start gap-3 mt-5 bg-[#f6efe0] border-2 border-[#14110c] rounded-xl p-4 cursor-pointer">
+            <label className="flex items-start gap-3 mt-5 bg-[#fbf5ea] border-2 border-[#0b3b44] rounded-xl p-4 cursor-pointer">
               <input type="checkbox" checked={agree} onChange={(e) => setAgree(e.target.checked)} className="mt-0.5 w-4 h-4 accent-[#f5b700]" />
               <span className="font-body text-sm text-[#3A3733]">
                 I have read the{' '}
-                <a href="/downloads/mms-partner-build-agreement.pdf" target="_blank" rel="noopener noreferrer" className="text-[#8f1d22] underline underline-offset-2">
+                <a href="/downloads/mms-partner-build-agreement.pdf" target="_blank" rel="noopener noreferrer" className="text-[#0a7c78] underline underline-offset-2">
                   Partner Demo Agreement
                 </a>{' '}
                 (one page): demos carry the Modern Mustard Seed mark, commissions follow the posted schedule, and either of us can end this anytime.
@@ -280,17 +280,17 @@ export default function BuildMintForm({ endpoint, variant }: { endpoint: string;
           )}
 
           {error && (
-            <p className="mt-4 font-body text-sm text-[#8f1d22] bg-[#b3261e]/5 border-2 border-[#b3261e]/30 rounded-xl px-4 py-3" role="alert">{error}</p>
+            <p className="mt-4 font-body text-sm text-[#0a7c78] bg-[#ff6f59]/5 border-2 border-[#ff6f59]/30 rounded-xl px-4 py-3" role="alert">{error}</p>
           )}
 
           <button
             type="submit"
             disabled={minting || outOfSlots || (needsAgreement && !agree)}
-            className="mt-6 w-full sm:w-auto px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-[#14110c] bg-[#f5b700] border-2 border-[#14110c] rounded-full shadow-[3px_3px_0_0_#14110c] hover:-translate-y-0.5 transition-transform disabled:opacity-40 disabled:hover:translate-y-0"
+            className="mt-6 w-full sm:w-auto px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-[#0b3b44] bg-[#f5b700] border-2 border-[#0b3b44] rounded-full shadow-[3px_3px_0_0_#0b3b44] hover:-translate-y-0.5 transition-transform disabled:opacity-40 disabled:hover:translate-y-0"
           >
             {minting ? 'Building…' : outOfSlots ? 'Out of build slots' : 'Build their suite'}
           </button>
-          <p className="font-body text-xs text-[#14110c]/50 mt-3">
+          <p className="font-body text-xs text-[#0b3b44]/50 mt-3">
             Free for them, no strings. The suite is real: a voice agent that answers as their business and a designed-from-scratch website.
           </p>
         </form>
@@ -299,15 +299,15 @@ export default function BuildMintForm({ endpoint, variant }: { endpoint: string;
       {/* Minted history */}
       {station?.mints && station.mints.length > 0 && (
         <div>
-          <h3 className="text-[9px] uppercase tracking-[0.3em] text-[#8f1d22] font-mono font-bold mb-3">
+          <h3 className="text-[9px] uppercase tracking-[0.3em] text-[#0a7c78] font-mono font-bold mb-3">
             {variant === 'partner' ? 'Your mints' : 'Team mints'}
           </h3>
           <div className="grid sm:grid-cols-2 gap-3">
             {station.mints.map((m) => (
-              <div key={m.id} className="bg-white border-2 border-[#14110c] rounded-2xl shadow-[3px_3px_0_0_#14110c] p-4">
+              <div key={m.id} className="bg-white border-2 border-[#0b3b44] rounded-2xl shadow-[3px_3px_0_0_#0b3b44] p-4">
                 <div className="flex items-start justify-between gap-2">
                   <p className="font-display text-lg font-semibold leading-tight">{m.business}</p>
-                  <span className={`shrink-0 text-[9px] uppercase tracking-[0.15em] font-mono font-bold border-2 border-[#14110c] rounded-full px-2 py-0.5 ${m.qaPending ? 'bg-white text-[#14110c]/60' : m.siteStatus === 'ready' ? 'bg-[#f5b700]' : 'bg-[#f6efe0]'}`}>
+                  <span className={`shrink-0 text-[9px] uppercase tracking-[0.15em] font-mono font-bold border-2 border-[#0b3b44] rounded-full px-2 py-0.5 ${m.qaPending ? 'bg-white text-[#0b3b44]/60' : m.siteStatus === 'ready' ? 'bg-[#f5b700]' : 'bg-[#fbf5ea]'}`}>
                     {m.qaPending ? 'Polish pass' : m.siteStatus === 'ready' ? 'Suite live' : 'Building'}
                   </span>
                 </div>
@@ -316,7 +316,7 @@ export default function BuildMintForm({ endpoint, variant }: { endpoint: string;
                   {m.mintedBy ? ` · by ${m.mintedBy}` : ''}
                 </p>
                 {m.hubUrl && (
-                  <a href={m.hubUrl} target="_blank" rel="noopener noreferrer" className="inline-block mt-2 text-[10px] font-sans font-bold uppercase tracking-[0.15em] text-[#8f1d22] underline underline-offset-4 decoration-2">
+                  <a href={m.hubUrl} target="_blank" rel="noopener noreferrer" className="inline-block mt-2 text-[10px] font-sans font-bold uppercase tracking-[0.15em] text-[#0a7c78] underline underline-offset-4 decoration-2">
                     Open suite
                   </a>
                 )}

@@ -103,7 +103,7 @@ export default function VoiceTalkButton() {
   const isConnecting = state === 'connecting';
 
   return (
-    <div className="rounded-2xl border-2 border-[#14110c] bg-[#14110c] text-[#f6efe0] p-7 md:p-9 shadow-[6px_6px_0_0_#f5b700]">
+    <div className="rounded-2xl border-2 border-[#0b3b44] bg-[#0b3b44] text-[#fbf5ea] p-7 md:p-9 shadow-[6px_6px_0_0_#f5b700]">
       <div className="flex flex-col sm:flex-row items-center gap-6">
         {/* Mic orb */}
         <div className="relative flex-shrink-0">
@@ -121,8 +121,8 @@ export default function VoiceTalkButton() {
             aria-label={isLive ? 'End the call' : 'Start a live call with Mr. Mustard'}
             className={`relative w-24 h-24 rounded-full border-[3px] flex items-center justify-center transition-all duration-300 ${
               isLive
-                ? 'bg-[#b3261e] border-white shadow-[0_0_40px_rgba(224,48,30,0.45)]'
-                : 'bg-[#f5b700] border-[#14110c] shadow-[3px_3px_0_0_#f6efe0] hover:-translate-y-0.5 hover:shadow-[4px_4px_0_0_#f6efe0]'
+                ? 'bg-[#ff6f59] border-white shadow-[0_0_40px_rgba(224,48,30,0.45)]'
+                : 'bg-[#f5b700] border-[#0b3b44] shadow-[3px_3px_0_0_#fbf5ea] hover:-translate-y-0.5 hover:shadow-[4px_4px_0_0_#fbf5ea]'
             } ${isConnecting ? 'opacity-60 cursor-wait' : ''}`}
             style={
               isLive
@@ -136,15 +136,15 @@ export default function VoiceTalkButton() {
             ) : (
               // Mic glyph
               <svg width="34" height="34" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <rect x="9" y="3" width="6" height="11" rx="3" fill="#14110c" />
+                <rect x="9" y="3" width="6" height="11" rx="3" fill="#0b3b44" />
                 <path
                   d="M5 11a7 7 0 0 0 14 0"
-                  stroke="#14110c"
+                  stroke="#0b3b44"
                   strokeWidth="2.2"
                   strokeLinecap="round"
                   fill="none"
                 />
-                <path d="M12 18v3" stroke="#14110c" strokeWidth="2.2" strokeLinecap="round" />
+                <path d="M12 18v3" stroke="#0b3b44" strokeWidth="2.2" strokeLinecap="round" />
               </svg>
             )}
           </button>
@@ -170,7 +170,7 @@ export default function VoiceTalkButton() {
                 ? 'How did he do?'
                 : 'Talk to Mr. Mustard. Right now.'}
           </p>
-          <p className="text-[#f6efe0]/65 text-sm font-body leading-relaxed max-w-md">
+          <p className="text-[#fbf5ea]/65 text-sm font-body leading-relaxed max-w-md">
             {isLive
               ? 'Ask him anything. What we build, how it works, or book a real call with Sarah without hanging up.'
               : state === 'ended'
@@ -188,8 +188,8 @@ export default function VoiceTalkButton() {
               onClick={toggleMute}
               className={`px-5 py-2.5 rounded-full border-2 text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold transition-all ${
                 muted
-                  ? 'bg-[#f5b700] text-[#14110c] border-[#f5b700]'
-                  : 'bg-transparent text-[#f6efe0] border-[#f6efe0]/40 hover:border-[#f6efe0]'
+                  ? 'bg-[#f5b700] text-[#0b3b44] border-[#f5b700]'
+                  : 'bg-transparent text-[#fbf5ea] border-[#fbf5ea]/40 hover:border-[#fbf5ea]'
               }`}
             >
               {muted ? 'Unmute' : 'Mute'}
@@ -197,7 +197,7 @@ export default function VoiceTalkButton() {
             <button
               type="button"
               onClick={stop}
-              className="px-5 py-2.5 rounded-full border-2 border-[#b3261e] bg-[#b3261e] text-white text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold hover:bg-[#c22717] transition-all"
+              className="px-5 py-2.5 rounded-full border-2 border-[#ff6f59] bg-[#ff6f59] text-white text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold hover:bg-[#c22717] transition-all"
             >
               End call
             </button>
@@ -207,7 +207,7 @@ export default function VoiceTalkButton() {
 
       {/* Language picker: he speaks your customer's language */}
       {!isLive && !isConnecting && (
-        <div className="mt-6 pt-5 border-t border-[#f6efe0]/15">
+        <div className="mt-6 pt-5 border-t border-[#fbf5ea]/15">
           <p className="text-[9px] uppercase tracking-[0.3em] text-[#f5b700]/80 font-mono font-bold mb-2.5 text-center sm:text-left">
             He speaks your customer&apos;s language. Pick one, then tap the mic.
           </p>
@@ -219,8 +219,8 @@ export default function VoiceTalkButton() {
                 onClick={() => setLang(l)}
                 className={`px-3.5 py-1.5 rounded-full border-2 text-xs font-sans font-bold transition-all ${
                   lang.code === l.code
-                    ? 'bg-[#f5b700] text-[#14110c] border-[#f5b700]'
-                    : 'bg-transparent text-[#f6efe0] border-[#f6efe0]/30 hover:border-[#f6efe0]'
+                    ? 'bg-[#f5b700] text-[#0b3b44] border-[#f5b700]'
+                    : 'bg-transparent text-[#fbf5ea] border-[#fbf5ea]/30 hover:border-[#fbf5ea]'
                 }`}
               >
                 <span className="mr-1" aria-hidden="true">{l.flag}</span>{l.label}

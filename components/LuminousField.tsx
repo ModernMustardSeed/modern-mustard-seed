@@ -20,7 +20,7 @@ export default function LuminousField() {
     const renderer = new THREE.WebGLRenderer({ antialias: false, alpha: false, powerPreference: 'low-power' });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
-    renderer.setClearColor(new THREE.Color('#14110c'), 1);
+    renderer.setClearColor(new THREE.Color('#0b3b44'), 1);
     container.appendChild(renderer.domElement);
 
     const scene = new THREE.Scene();
@@ -107,7 +107,7 @@ export default function LuminousField() {
           light.x *= aspect;
 
           // Base midnight void
-          vec3 col = vec3(0.031, 0.047, 0.086);  // #14110c
+          vec3 col = vec3(0.031, 0.047, 0.086);  // #0b3b44
 
           // Domain warp gives the blooms an organic motion
           vec2 q = vec2(

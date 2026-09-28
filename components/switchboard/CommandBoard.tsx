@@ -135,7 +135,7 @@ export default function CommandBoard() {
   };
 
   return (
-    <div className="rounded-2xl border-2 border-[#14110c] bg-[#14110c] text-[#f6efe0] p-5 md:p-8 shadow-[8px_8px_0_0_#f5b700] relative overflow-hidden">
+    <div className="rounded-2xl border-2 border-[#0b3b44] bg-[#0b3b44] text-[#fbf5ea] p-5 md:p-8 shadow-[8px_8px_0_0_#f5b700] relative overflow-hidden">
       {/* faint operations grid behind the board */}
       <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.06]" style={{ backgroundImage: 'linear-gradient(#f5b700 1px, transparent 1px), linear-gradient(90deg, #f5b700 1px, transparent 1px)', backgroundSize: '28px 28px' }} />
 
@@ -143,11 +143,11 @@ export default function CommandBoard() {
       <div className="relative flex items-center justify-between gap-3 mb-5 flex-wrap">
         <div className="flex items-center gap-3">
           <span className="flex items-center gap-1.5" aria-hidden="true">
-            <span className="h-2.5 w-2.5 rounded-full bg-[#b3261e] border border-black/40" />
+            <span className="h-2.5 w-2.5 rounded-full bg-[#ff6f59] border border-black/40" />
             <span className="h-2.5 w-2.5 rounded-full bg-[#f5b700] border border-black/40" />
             <span className="h-2.5 w-2.5 rounded-full bg-[#3ddc84] border border-black/40" />
           </span>
-          <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-[#f6efe0]/50 font-bold hidden sm:inline">The Switchboard · Unit 001</span>
+          <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-[#fbf5ea]/50 font-bold hidden sm:inline">The Switchboard · Unit 001</span>
         </div>
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
@@ -157,7 +157,7 @@ export default function CommandBoard() {
             </span>
             <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-[#3ddc84] font-bold">Live · every location answering</span>
           </div>
-          <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-[#f6efe0]/45 tabular-nums">
+          <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-[#fbf5ea]/45 tabular-nums">
             {answeredToday.toLocaleString()} answered this session
           </span>
         </div>
@@ -171,7 +171,7 @@ export default function CommandBoard() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Sunrise Plumbing"
-            className="w-full rounded-lg border-2 border-[#f6efe0]/25 bg-[#0f1626] px-3 py-2.5 text-[#f6efe0] placeholder-[#f6efe0]/35 focus:outline-none focus:border-[#f5b700]"
+            className="w-full rounded-lg border-2 border-[#fbf5ea]/25 bg-[#0f1626] px-3 py-2.5 text-[#fbf5ea] placeholder-[#fbf5ea]/35 focus:outline-none focus:border-[#f5b700]"
           />
         </label>
         <label className="block">
@@ -182,7 +182,7 @@ export default function CommandBoard() {
             max={9999}
             value={locations}
             onChange={(e) => setLocations(Math.max(1, Number(e.target.value) || 1))}
-            className="w-full rounded-lg border-2 border-[#f6efe0]/25 bg-[#0f1626] px-3 py-2.5 text-[#f6efe0] font-mono focus:outline-none focus:border-[#f5b700]"
+            className="w-full rounded-lg border-2 border-[#fbf5ea]/25 bg-[#0f1626] px-3 py-2.5 text-[#fbf5ea] font-mono focus:outline-none focus:border-[#f5b700]"
           />
         </label>
         <label className="block">
@@ -193,7 +193,7 @@ export default function CommandBoard() {
             step={10}
             value={ticket}
             onChange={(e) => setTicket(Math.max(20, Number(e.target.value) || 20))}
-            className="w-full rounded-lg border-2 border-[#f6efe0]/25 bg-[#0f1626] px-3 py-2.5 text-[#f6efe0] font-mono focus:outline-none focus:border-[#f5b700]"
+            className="w-full rounded-lg border-2 border-[#fbf5ea]/25 bg-[#0f1626] px-3 py-2.5 text-[#fbf5ea] font-mono focus:outline-none focus:border-[#f5b700]"
           />
         </label>
       </div>
@@ -207,7 +207,7 @@ export default function CommandBoard() {
           <p className="font-display font-extrabold text-white leading-none mt-2 tabular-nums" style={{ fontSize: 'clamp(2.4rem,7vw,3.8rem)' }}>
             {usd(shownRecovered)}
           </p>
-          <p className="text-[#f6efe0]/55 text-sm mt-1.5">
+          <p className="text-[#fbf5ea]/55 text-sm mt-1.5">
             {(locations * MISSED_PER_LOC_MO).toLocaleString()} after-hours calls answered a month, {Math.round(locations * MISSED_PER_LOC_MO * CLOSE_RATE).toLocaleString()} booked at {usd(ticket)} each. Estimate.
           </p>
 
@@ -226,7 +226,7 @@ export default function CommandBoard() {
                   className="aspect-square rounded-[5px] border grid place-items-center font-mono text-[9px] transition-all duration-300"
                   style={{
                     background: isPinged ? '#3ddc84' : bg,
-                    color: isPinged ? '#04140b' : h === 3 ? '#14110c' : 'rgba(251,246,234,.7)',
+                    color: isPinged ? '#04140b' : h === 3 ? '#0b3b44' : 'rgba(251,246,234,.7)',
                     fontWeight: isPinged || h === 3 ? 700 : 400,
                     borderColor: isPinged ? '#3ddc84' : 'rgba(251,246,234,.10)',
                     transform: isPinged ? 'scale(1.14)' : 'scale(1)',
@@ -238,12 +238,12 @@ export default function CommandBoard() {
               );
             })}
             {overflow > 0 && (
-              <div className="aspect-square rounded-[5px] border border-[#f6efe0]/10 grid place-items-center font-mono text-[9px] text-[#f6efe0]/60">
+              <div className="aspect-square rounded-[5px] border border-[#fbf5ea]/10 grid place-items-center font-mono text-[9px] text-[#fbf5ea]/60">
                 +{overflow}
               </div>
             )}
           </div>
-          <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#f6efe0]/40 mt-2">Every location, one glance · green = answering now</p>
+          <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#fbf5ea]/40 mt-2">Every location, one glance · green = answering now</p>
         </div>
 
         {/* the quote + the live feed */}
@@ -251,23 +251,23 @@ export default function CommandBoard() {
           <div className="rounded-xl border-2 border-[#f5b700] bg-[#0f1626] p-5">
             <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[#f5b700] font-bold">Your Switchboard</p>
             <div className="mt-3 space-y-2.5 text-sm">
-              <div className="flex justify-between"><span className="text-[#f6efe0]/70">Per location</span><span className="font-mono">{usd(quote.perLocationUsd)}/mo</span></div>
-              <div className="flex justify-between"><span className="text-[#f6efe0]/70">All {locations} locations</span><span className="font-mono text-[#f5b700] font-bold">{usd(quote.monthlyUsd)}/mo</span></div>
-              <div className="flex justify-between text-[#f6efe0]/60"><span>Per year</span><span className="font-mono">{usd(quote.annualUsd)}</span></div>
-              <div className="flex justify-between text-[#f6efe0]/60 pt-2 border-t border-[#f6efe0]/10"><span>One-time build</span><span className="font-mono">{usd(quote.buildUsd)}</span></div>
+              <div className="flex justify-between"><span className="text-[#fbf5ea]/70">Per location</span><span className="font-mono">{usd(quote.perLocationUsd)}/mo</span></div>
+              <div className="flex justify-between"><span className="text-[#fbf5ea]/70">All {locations} locations</span><span className="font-mono text-[#f5b700] font-bold">{usd(quote.monthlyUsd)}/mo</span></div>
+              <div className="flex justify-between text-[#fbf5ea]/60"><span>Per year</span><span className="font-mono">{usd(quote.annualUsd)}</span></div>
+              <div className="flex justify-between text-[#fbf5ea]/60 pt-2 border-t border-[#fbf5ea]/10"><span>One-time build</span><span className="font-mono">{usd(quote.buildUsd)}</span></div>
             </div>
             <div className="mt-4 rounded-lg bg-[#1C2333] border border-[#f5b700] p-3">
-              <p className="text-[13px] text-[#f6efe0]/80 leading-snug">
+              <p className="text-[13px] text-[#fbf5ea]/80 leading-snug">
                 You spend <b className="text-[#f5b700]">{usd(quote.monthlyUsd)}</b> and recover an estimated <b className="text-white">{usd(recoveredMonthly)}</b> a month.
               </p>
             </div>
           </div>
 
           {/* live event feed */}
-          <div className="rounded-xl border border-[#f6efe0]/12 bg-[#0b1120] p-4 min-h-[132px]">
-            <p className="font-mono text-[9px] uppercase tracking-[0.24em] text-[#f6efe0]/45 mb-2.5">The floor, right now</p>
+          <div className="rounded-xl border border-[#fbf5ea]/12 bg-[#0b1120] p-4 min-h-[132px]">
+            <p className="font-mono text-[9px] uppercase tracking-[0.24em] text-[#fbf5ea]/45 mb-2.5">The floor, right now</p>
             {events.length === 0 ? (
-              <p className="font-mono text-[11px] text-[#f6efe0]/40">{reduced ? 'Every location, answered around the clock.' : 'Listening for after-hours calls…'}</p>
+              <p className="font-mono text-[11px] text-[#fbf5ea]/40">{reduced ? 'Every location, answered around the clock.' : 'Listening for after-hours calls…'}</p>
             ) : (
               <ul className="space-y-1.5">
                 {events.map((ev) => (
@@ -275,13 +275,13 @@ export default function CommandBoard() {
                     {ev.booked ? (
                       <>
                         <span className="text-[#f5b700]">✓</span>
-                        <span className="text-[#f6efe0]/85">Location {String(ev.loc).padStart(2, '0')} booked</span>
+                        <span className="text-[#fbf5ea]/85">Location {String(ev.loc).padStart(2, '0')} booked</span>
                         <span className="ml-auto text-[#3ddc84] font-bold tabular-nums">+{usd(ev.amt)}</span>
                       </>
                     ) : (
                       <>
                         <span className="text-[#3ddc84]">●</span>
-                        <span className="text-[#f6efe0]/70">Location {String(ev.loc).padStart(2, '0')} · call answered</span>
+                        <span className="text-[#fbf5ea]/70">Location {String(ev.loc).padStart(2, '0')} · call answered</span>
                       </>
                     )}
                   </li>
@@ -296,7 +296,7 @@ export default function CommandBoard() {
       {state === 'done' ? (
         <div className="relative mt-6 rounded-xl border-2 border-[#f5b700] bg-[#1C2333] p-5 text-center">
           <p className="font-display text-xl font-bold text-white">Your projection is on its way.</p>
-          <p className="text-[#f6efe0]/70 text-sm mt-1">{msg} Sarah will reach out to walk your team through the Command Board with your real locations.</p>
+          <p className="text-[#fbf5ea]/70 text-sm mt-1">{msg} Sarah will reach out to walk your team through the Command Board with your real locations.</p>
         </div>
       ) : (
         <form onSubmit={submit} className="relative mt-6 flex flex-col sm:flex-row gap-3">
@@ -306,12 +306,12 @@ export default function CommandBoard() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="you@yourbrand.com"
-            className="flex-1 rounded-full border-2 border-[#f6efe0]/25 bg-[#0f1626] px-5 py-3 text-[#f6efe0] placeholder-[#f6efe0]/35 focus:outline-none focus:border-[#f5b700]"
+            className="flex-1 rounded-full border-2 border-[#fbf5ea]/25 bg-[#0f1626] px-5 py-3 text-[#fbf5ea] placeholder-[#fbf5ea]/35 focus:outline-none focus:border-[#f5b700]"
           />
           <button
             type="submit"
             disabled={state === 'sending'}
-            className="rounded-full border-2 border-[#14110c] bg-[#f5b700] text-[#14110c] px-7 py-3 font-sans font-extrabold text-sm uppercase tracking-[0.12em] shadow-[4px_4px_0_0_#14110c] transition-all hover:-translate-y-0.5 disabled:opacity-60"
+            className="rounded-full border-2 border-[#0b3b44] bg-[#f5b700] text-[#0b3b44] px-7 py-3 font-sans font-extrabold text-sm uppercase tracking-[0.12em] shadow-[4px_4px_0_0_#0b3b44] transition-all hover:-translate-y-0.5 disabled:opacity-60"
           >
             {state === 'sending' ? 'Sending…' : 'Send my projection'}
           </button>

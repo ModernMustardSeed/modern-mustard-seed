@@ -80,14 +80,14 @@ export default function CoachPanel({
 
   return (
     <div className="pop-card overflow-hidden">
-      <div className="bg-[#14110c] px-5 py-3.5 flex items-center justify-between gap-4">
+      <div className="bg-[#0b3b44] px-5 py-3.5 flex items-center justify-between gap-4">
         <div className="flex items-center gap-3 min-w-0">
           <span className="w-2.5 h-2.5 rounded-full bg-[#f5b700] shrink-0" />
-          <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#f6efe0] truncate">
+          <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#fbf5ea] truncate">
             Mr. Mustard · your coach
           </span>
         </div>
-        <span className="font-mono text-[10px] text-[#f6efe0]/45 shrink-0 hidden sm:block">
+        <span className="font-mono text-[10px] text-[#fbf5ea]/45 shrink-0 hidden sm:block">
           {windowTitle ? windowTitle.slice(0, 32) : 'Any hour'}
         </span>
       </div>
@@ -95,7 +95,7 @@ export default function CoachPanel({
       <div ref={scrollRef} className="max-h-[46vh] min-h-[240px] overflow-y-auto px-5 py-5 space-y-4 bg-[#FFFDF6]">
         {turns.length === 0 && (
           <div className="py-4">
-            <p className="font-body text-[#14110c] text-sm md:text-base leading-relaxed">
+            <p className="font-body text-[#0b3b44] text-sm md:text-base leading-relaxed">
               {firstName ? `${firstName}, I` : 'I'} have read your whole plan, so you do not have to catch me
               up. Ask me anything about your business, or tell me what is stuck. If the answer is something
               that needs building, I will file it and it will show up in your arsenal.
@@ -106,7 +106,7 @@ export default function CoachPanel({
                   key={o}
                   type="button"
                   onClick={() => void send(o)}
-                  className="px-3 py-2 rounded-lg border-2 border-[#14110c]/25 bg-white text-[#14110c] font-body text-xs hover:border-[#14110c] transition-colors text-left"
+                  className="px-3 py-2 rounded-lg border-2 border-[#0b3b44]/25 bg-white text-[#0b3b44] font-body text-xs hover:border-[#0b3b44] transition-colors text-left"
                 >
                   {o}
                 </button>
@@ -118,10 +118,10 @@ export default function CoachPanel({
         {turns.map((t, i) => (
           <div key={i} className={t.role === 'assistant' ? '' : 'flex justify-end'}>
             <div
-              className={`max-w-[88%] px-4 py-3 rounded-2xl border-2 border-[#14110c] font-body text-sm leading-relaxed whitespace-pre-line ${
+              className={`max-w-[88%] px-4 py-3 rounded-2xl border-2 border-[#0b3b44] font-body text-sm leading-relaxed whitespace-pre-line ${
                 t.role === 'assistant'
-                  ? 'bg-white text-[#14110c] rounded-tl-sm'
-                  : 'bg-[#f5b700] text-[#14110c] rounded-tr-sm ml-auto'
+                  ? 'bg-white text-[#0b3b44] rounded-tl-sm'
+                  : 'bg-[#f5b700] text-[#0b3b44] rounded-tr-sm ml-auto'
               }`}
             >
               {t.text}
@@ -130,12 +130,12 @@ export default function CoachPanel({
         ))}
 
         {busy && (
-          <div className="max-w-[88%] px-4 py-3 rounded-2xl rounded-tl-sm border-2 border-[#14110c] bg-white">
+          <div className="max-w-[88%] px-4 py-3 rounded-2xl rounded-tl-sm border-2 border-[#0b3b44] bg-white">
             <span className="inline-flex gap-1">
               {[0, 1, 2].map((d) => (
                 <span
                   key={d}
-                  className="w-1.5 h-1.5 rounded-full bg-[#14110c]/40 animate-bounce"
+                  className="w-1.5 h-1.5 rounded-full bg-[#0b3b44]/40 animate-bounce"
                   style={{ animationDelay: `${d * 120}ms` }}
                 />
               ))}
@@ -145,15 +145,15 @@ export default function CoachPanel({
       </div>
 
       {filed.length > 0 && (
-        <div className="border-t-2 border-[#14110c] px-5 py-3.5 bg-[#FFF8E6]">
+        <div className="border-t-2 border-[#0b3b44] px-5 py-3.5 bg-[#FFF8E6]">
           <span className="block text-[9px] uppercase tracking-[0.3em] font-mono font-bold text-[#8f6600] mb-2">
             Filed in this conversation
           </span>
           <ul className="space-y-1">
             {filed.map((f, i) => (
-              <li key={i} className="font-body text-xs text-[#14110c]">
+              <li key={i} className="font-body text-xs text-[#0b3b44]">
                 <span className="font-extrabold">{f.name}</span>{' '}
-                <span className="text-[#14110c]/60">
+                <span className="text-[#0b3b44]/60">
                   {f.approval ? '· waiting on your yes, it spends money' : f.studio ? '· queued with the studio' : '· queued, yours to deploy'}
                 </span>
               </li>
@@ -162,18 +162,18 @@ export default function CoachPanel({
         </div>
       )}
 
-      <form onSubmit={submit} className="border-t-2 border-[#14110c] p-4 bg-white flex gap-2">
+      <form onSubmit={submit} className="border-t-2 border-[#0b3b44] p-4 bg-white flex gap-2">
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
           disabled={busy}
           placeholder="Ask him anything, or tell him what is stuck…"
-          className="flex-1 bg-white border-2 border-[#14110c] rounded-lg px-4 py-3 font-body text-sm focus:outline-none disabled:opacity-50"
+          className="flex-1 bg-white border-2 border-[#0b3b44] rounded-lg px-4 py-3 font-body text-sm focus:outline-none disabled:opacity-50"
         />
         <button
           type="submit"
           disabled={busy || !input.trim()}
-          className="px-5 py-3 text-[10px] uppercase tracking-[0.22em] font-sans font-extrabold text-white bg-[#14110c] rounded-lg border-2 border-[#14110c] disabled:opacity-40"
+          className="px-5 py-3 text-[10px] uppercase tracking-[0.22em] font-sans font-extrabold text-white bg-[#0b3b44] rounded-lg border-2 border-[#0b3b44] disabled:opacity-40"
         >
           Send
         </button>

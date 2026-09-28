@@ -155,7 +155,7 @@ const FAQ = [
 
 export default function MarketingPage() {
   return (
-    <div className="bg-[#f6efe0] text-[#14110c]">
+    <div className="bg-[#fbf5ea] text-[#0b3b44]">
       <JsonLd
         data={[
           breadcrumbJsonLd([{ name: 'Services', url: '/services' }, { name: 'Marketing', url: '/marketing' }]),
@@ -164,16 +164,16 @@ export default function MarketingPage() {
         ]}
       />
 
-      <section className="relative overflow-hidden border-b-2 border-[#14110c] bg-[#f3dc9b]">
+      <section className="relative overflow-hidden border-b-2 border-[#0b3b44] bg-[#d8f3f0]">
         <PressMedallion />
-        <div aria-hidden="true" className="absolute inset-0 opacity-[0.14] [background-image:radial-gradient(#14110c_1.3px,transparent_1.5px)] [background-size:11px_11px] [mask-image:linear-gradient(115deg,transparent_35%,#000_80%)]" />
+        <div aria-hidden="true" className="absolute inset-0 opacity-[0.14] [background-image:radial-gradient(#0b3b44_1.3px,transparent_1.5px)] [background-size:11px_11px] [mask-image:linear-gradient(115deg,transparent_35%,#000_80%)]" />
         <div className="relative max-w-6xl mx-auto px-6 pt-28 md:pt-36 pb-14 md:pb-20 xl:pr-[460px]">
-          <span className="inline-block -rotate-1 bg-[#14110c] text-[#f5b700] px-3 py-1.5 font-sans text-[11px] font-bold uppercase tracking-[0.16em]">
+          <span className="inline-block -rotate-1 bg-[#0b3b44] text-[#f5b700] px-3 py-1.5 font-sans text-[11px] font-bold uppercase tracking-[0.16em]">
             Marketing
           </span>
           <h1 className="mt-6 flex flex-col items-start font-sans font-extrabold leading-[0.95] tracking-[-0.045em] text-[2.4rem] sm:text-5xl md:text-6xl lg:text-[5.2rem]">
             <span>We build it.</span>{' '}
-            <span className="my-[0.12em] -rotate-2 border-[3px] border-[#14110c] bg-[#f6efe0] px-[0.18em] pb-[0.08em] font-display italic font-medium tracking-[-0.03em] shadow-[7px_7px_0_0_#b3261e]">
+            <span className="my-[0.12em] -rotate-2 border-[3px] border-[#0b3b44] bg-[#fbf5ea] px-[0.18em] pb-[0.08em] font-display italic font-medium tracking-[-0.03em] shadow-[7px_7px_0_0_#ff6f59]">
               Then we get it seen.
             </span>
           </h1>
@@ -181,31 +181,31 @@ export default function MarketingPage() {
             Marketing from the same studio that built the site. Social posts and short video, managed ads, articles, and email, written in your voice and published on a steady schedule, so the right people keep hearing from you.
           </p>
           <div className="mt-9 flex flex-wrap gap-4">
-            <Link href="/inquire" className="inline-flex items-center gap-5 border-2 border-[#14110c] bg-[#14110c] px-7 py-4 font-sans font-bold text-sm text-[#f6efe0] shadow-[5px_5px_0_0_#f6efe0] transition-transform hover:-translate-x-0.5 hover:-translate-y-0.5">
+            <Link href="/inquire" className="inline-flex items-center gap-5 border-2 border-[#0b3b44] bg-[#0b3b44] px-7 py-4 font-sans font-bold text-sm text-[#fbf5ea] shadow-[5px_5px_0_0_#fbf5ea] transition-transform hover:-translate-x-0.5 hover:-translate-y-0.5">
               Tell Us What You Have In Mind <span aria-hidden="true" className="text-[#f5b700] text-lg">↗</span>
             </Link>
-            <a href="#packages" className="inline-flex items-center border-2 border-[#14110c] bg-[#f6efe0] px-7 py-4 font-sans font-bold text-sm shadow-[5px_5px_0_0_#14110c] transition-transform hover:-translate-y-0.5">
+            <a href="#packages" className="inline-flex items-center border-2 border-[#0b3b44] bg-[#fbf5ea] px-7 py-4 font-sans font-bold text-sm shadow-[5px_5px_0_0_#0b3b44] transition-transform hover:-translate-y-0.5">
               See The Packages
             </a>
           </div>
         </div>
       </section>
 
-      <section className="border-b-2 border-[#14110c]">
+      <section className="border-b-2 border-[#0b3b44]">
         <div className="max-w-6xl mx-auto px-6 py-16 md:py-24">
-          <p className="font-sans text-[11px] uppercase tracking-[0.22em] font-bold text-[#8f1d22]">What we handle</p>
+          <p className="font-sans text-[11px] uppercase tracking-[0.22em] font-bold text-[#0a7c78]">What we handle</p>
           <h2 className="mt-3 font-display text-4xl md:text-5xl leading-[1.02] tracking-[-0.03em]">
             Every channel, <em>one voice.</em>
           </h2>
           <div className="mt-11 grid sm:grid-cols-2 lg:grid-cols-3 gap-7">
             {SERVICES.map((s) => {
               const card = <>
-                <span className="self-start bg-[#f5b700] border border-[#14110c] px-2 py-1 font-sans text-[10px] font-bold tracking-[0.16em]">{s.mark}</span>
+                <span className="self-start bg-[#f5b700] border border-[#0b3b44] px-2 py-1 font-sans text-[10px] font-bold tracking-[0.16em]">{s.mark}</span>
                 <h3 className="mt-4 font-display text-2xl tracking-[-0.02em]">{s.name}</h3>
                 <p className="mt-2 font-body text-sm text-[#3d382e] leading-relaxed">{s.text}</p>
-                {s.href ? <span className="mt-auto pt-5 font-sans text-sm font-bold text-[#8f1d22]">Mustard Pictures <span aria-hidden="true">↗</span></span> : null}
+                {s.href ? <span className="mt-auto pt-5 font-sans text-sm font-bold text-[#0a7c78]">Mustard Pictures <span aria-hidden="true">↗</span></span> : null}
               </>;
-              const cls = 'flex flex-col border-2 border-[#14110c] bg-white p-6 shadow-[6px_6px_0_0_#14110c]';
+              const cls = 'flex flex-col border-2 border-[#0b3b44] bg-white p-6 shadow-[6px_6px_0_0_#0b3b44]';
               return s.href
                 ? <Link key={s.name} href={s.href} className={cls + ' transition-transform hover:-translate-y-1'}>{card}</Link>
                 : <div key={s.name} className={cls}>{card}</div>;
@@ -214,9 +214,9 @@ export default function MarketingPage() {
         </div>
       </section>
 
-      <section id="packages" className="scroll-mt-20 border-b-2 border-[#14110c] bg-[#F3EBD6]">
+      <section id="packages" className="scroll-mt-20 border-b-2 border-[#0b3b44] bg-[#F3EBD6]">
         <div className="max-w-6xl mx-auto px-6 py-16 md:py-24">
-          <p className="font-sans text-[11px] uppercase tracking-[0.22em] font-bold text-[#8f1d22]">The packages</p>
+          <p className="font-sans text-[11px] uppercase tracking-[0.22em] font-bold text-[#0a7c78]">The packages</p>
           <h2 className="mt-3 font-display text-4xl md:text-5xl leading-[1.02] tracking-[-0.03em]">
             Start with one channel. <em>Grow into all of them.</em>
           </h2>
@@ -228,26 +228,26 @@ export default function MarketingPage() {
               <div
                 key={p.name}
                 className={
-                  'flex flex-col border-2 border-[#14110c] p-6 ' +
+                  'flex flex-col border-2 border-[#0b3b44] p-6 ' +
                   (p.featured
-                    ? 'bg-[#14110c] text-[#f6efe0] shadow-[6px_6px_0_0_#b3261e] md:col-span-2'
-                    : 'bg-white shadow-[6px_6px_0_0_#14110c]')
+                    ? 'bg-[#0b3b44] text-[#fbf5ea] shadow-[6px_6px_0_0_#ff6f59] md:col-span-2'
+                    : 'bg-white shadow-[6px_6px_0_0_#0b3b44]')
                 }
               >
-                <span className={'self-start border px-2 py-1 font-sans text-[10px] font-bold uppercase tracking-[0.16em] ' + (p.featured ? 'border-[#f5b700] text-[#f5b700]' : 'border-[#14110c] bg-[#f5b700]')}>
+                <span className={'self-start border px-2 py-1 font-sans text-[10px] font-bold uppercase tracking-[0.16em] ' + (p.featured ? 'border-[#f5b700] text-[#f5b700]' : 'border-[#0b3b44] bg-[#f5b700]')}>
                   {p.chip}
                 </span>
                 <h3 className="mt-4 font-display text-2xl tracking-[-0.02em]">{p.name}</h3>
-                <p className={'mt-2 font-body text-sm italic leading-relaxed ' + (p.featured ? 'text-[#f3dc9b]' : 'text-[#3d382e]')}>{p.fit}</p>
+                <p className={'mt-2 font-body text-sm italic leading-relaxed ' + (p.featured ? 'text-[#d8f3f0]' : 'text-[#3d382e]')}>{p.fit}</p>
                 <ul className="mt-5 mb-6 space-y-2.5">
                   {p.points.map((pt) => (
                     <li key={pt} className={'flex gap-3 font-body text-sm leading-relaxed ' + (p.featured ? 'text-[#d9d7cc]' : 'text-[#3d382e]')}>
-                      <span aria-hidden="true" className={p.featured ? 'text-[#f5b700]' : 'text-[#8f1d22]'}>+</span>
+                      <span aria-hidden="true" className={p.featured ? 'text-[#f5b700]' : 'text-[#0a7c78]'}>+</span>
                       <span>{pt}</span>
                     </li>
                   ))}
                 </ul>
-                <Link href="/inquire" className={'mt-auto font-sans text-sm font-bold ' + (p.featured ? 'text-[#f5b700]' : 'text-[#8f1d22]')}>
+                <Link href="/inquire" className={'mt-auto font-sans text-sm font-bold ' + (p.featured ? 'text-[#f5b700]' : 'text-[#0a7c78]')}>
                   Ask About {p.name} <span aria-hidden="true">↗</span>
                 </Link>
               </div>
@@ -256,14 +256,14 @@ export default function MarketingPage() {
         </div>
       </section>
 
-      <section className="border-b-2 border-[#14110c]">
+      <section className="border-b-2 border-[#0b3b44]">
         <div className="max-w-6xl mx-auto px-6 py-16 md:py-24 grid gap-14 lg:grid-cols-2">
           <div>
-            <p className="font-sans text-[11px] uppercase tracking-[0.22em] font-bold text-[#8f1d22]">A month on Social Studio</p>
+            <p className="font-sans text-[11px] uppercase tracking-[0.22em] font-bold text-[#0a7c78]">A month on Social Studio</p>
             <h2 className="mt-3 font-display text-4xl leading-[1.02] tracking-[-0.03em]">What actually goes out.</h2>
             <dl className="mt-9 grid grid-cols-2 gap-5">
               {MONTH.map((m) => (
-                <div key={m.label} className="border-2 border-[#14110c] bg-white p-5 shadow-[4px_4px_0_0_#14110c]">
+                <div key={m.label} className="border-2 border-[#0b3b44] bg-white p-5 shadow-[4px_4px_0_0_#0b3b44]">
                   <dt className="font-display text-5xl leading-none tracking-[-0.04em]">{m.n}</dt>
                   <dd className="mt-3 font-body text-sm text-[#3d382e] leading-snug">{m.label}</dd>
                 </div>
@@ -271,12 +271,12 @@ export default function MarketingPage() {
             </dl>
           </div>
           <div>
-            <p className="font-sans text-[11px] uppercase tracking-[0.22em] font-bold text-[#8f1d22]">What we need from you</p>
+            <p className="font-sans text-[11px] uppercase tracking-[0.22em] font-bold text-[#0a7c78]">What we need from you</p>
             <h2 className="mt-3 font-display text-4xl leading-[1.02] tracking-[-0.03em]">Less than you think.</h2>
             <ol className="mt-9 space-y-5">
               {NEED.map((n, i) => (
-                <li key={n.title} className="flex gap-5 border-b-2 border-[#14110c]/15 pb-5">
-                  <span className="shrink-0 grid h-9 w-9 place-items-center bg-[#14110c] font-sans text-xs font-bold text-[#f5b700]">0{i + 1}</span>
+                <li key={n.title} className="flex gap-5 border-b-2 border-[#0b3b44]/15 pb-5">
+                  <span className="shrink-0 grid h-9 w-9 place-items-center bg-[#0b3b44] font-sans text-xs font-bold text-[#f5b700]">0{i + 1}</span>
                   <div>
                     <h3 className="font-sans text-lg font-bold">{n.title}</h3>
                     <p className="mt-1 font-body text-sm text-[#3d382e] leading-relaxed">{n.text}</p>
@@ -288,7 +288,7 @@ export default function MarketingPage() {
         </div>
       </section>
 
-      <section className="border-b-2 border-[#14110c] bg-[#14110c] text-[#f6efe0]">
+      <section className="border-b-2 border-[#0b3b44] bg-[#0b3b44] text-[#fbf5ea]">
         <div className="max-w-6xl mx-auto px-6 py-16 md:py-24">
           <p className="font-sans text-[11px] uppercase tracking-[0.22em] font-bold text-[#f5b700]">How it runs</p>
           <h2 className="mt-3 font-display text-4xl md:text-5xl leading-[1.02] tracking-[-0.03em]">
@@ -296,7 +296,7 @@ export default function MarketingPage() {
           </h2>
           <ol className="mt-11 grid md:grid-cols-3 gap-6">
             {STEPS.map((s, i) => (
-              <li key={s.title} className="border-2 border-[#f6efe0] p-6 shadow-[6px_6px_0_0_#f5b700]">
+              <li key={s.title} className="border-2 border-[#fbf5ea] p-6 shadow-[6px_6px_0_0_#f5b700]">
                 <span className="font-sans text-xs font-bold text-[#f5b700]">0{i + 1}</span>
                 <h3 className="mt-3 font-sans text-lg font-bold">{s.title}</h3>
                 <p className="mt-2 font-body text-sm text-[#d9d7cc] leading-relaxed">{s.text}</p>
@@ -309,7 +309,7 @@ export default function MarketingPage() {
         </div>
       </section>
 
-      <nav aria-label="Explore the studio" className="max-w-6xl mx-auto px-6 py-8 flex flex-wrap gap-6 font-bold text-[#8f1d22] underline underline-offset-4">
+      <nav aria-label="Explore the studio" className="max-w-6xl mx-auto px-6 py-8 flex flex-wrap gap-6 font-bold text-[#0a7c78] underline underline-offset-4">
         <Link href="/services">All services</Link>
         <Link href="/pictures">Commercials and ads</Link>
         <Link href="/websites">Websites and brand</Link>
@@ -318,14 +318,14 @@ export default function MarketingPage() {
 
       <section>
         <div className="max-w-4xl mx-auto px-6 pb-16 md:pb-24">
-          <p className="font-sans text-[11px] uppercase tracking-[0.22em] font-bold text-[#8f1d22]">Straight Answers</p>
+          <p className="font-sans text-[11px] uppercase tracking-[0.22em] font-bold text-[#0a7c78]">Straight Answers</p>
           <h2 className="mt-3 font-display text-3xl md:text-4xl leading-[1.05] tracking-[-0.03em]">Questions about marketing.</h2>
           <div className="mt-8 space-y-4">
             {FAQ.map((f) => (
-              <details key={f.q} className="group border-2 border-[#14110c] bg-white p-5 shadow-[4px_4px_0_0_#14110c]">
+              <details key={f.q} className="group border-2 border-[#0b3b44] bg-white p-5 shadow-[4px_4px_0_0_#0b3b44]">
                 <summary className="cursor-pointer list-none font-sans font-bold text-[15px] flex items-start justify-between gap-4">
                   {f.q}
-                  <span aria-hidden="true" className="text-[#8f1d22] group-open:rotate-45 transition-transform">+</span>
+                  <span aria-hidden="true" className="text-[#0a7c78] group-open:rotate-45 transition-transform">+</span>
                 </summary>
                 <p className="mt-3 font-body text-sm text-[#3d382e] leading-relaxed">{f.a}</p>
               </details>

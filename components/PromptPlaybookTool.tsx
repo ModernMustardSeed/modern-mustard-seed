@@ -72,7 +72,7 @@ export default function PromptPlaybookTool() {
     <div className="max-w-5xl mx-auto px-6 md:px-8">
       {/* Niche selector */}
       <div className="mb-10">
-        <span className="text-[10px] uppercase tracking-[0.4em] text-[#8f1d22] font-mono font-bold mb-4 block text-center">
+        <span className="text-[10px] uppercase tracking-[0.4em] text-[#0a7c78] font-mono font-bold mb-4 block text-center">
           Step 1. Pick your niche
         </span>
         <div className="flex flex-wrap justify-center gap-3">
@@ -86,8 +86,8 @@ export default function PromptPlaybookTool() {
                 aria-pressed={isActive}
                 className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-full border-2 text-sm font-sans font-bold transition-all ${
                   isActive
-                    ? 'bg-[#f5b700] text-[#14110c] border-[#14110c] shadow-[3px_3px_0_0_#14110c]'
-                    : 'bg-white text-[#14110c]/70 border-[#14110c]/25 hover:border-[#14110c] hover:text-[#14110c]'
+                    ? 'bg-[#f5b700] text-[#0b3b44] border-[#0b3b44] shadow-[3px_3px_0_0_#0b3b44]'
+                    : 'bg-white text-[#0b3b44]/70 border-[#0b3b44]/25 hover:border-[#0b3b44] hover:text-[#0b3b44]'
                 }`}
               >
                 <span aria-hidden className="text-base">{n.emoji}</span>
@@ -97,48 +97,48 @@ export default function PromptPlaybookTool() {
           })}
         </div>
         <p className="text-center text-[#3A3733] font-body text-sm mt-5 max-w-xl mx-auto">
-          {active.blurb} <span className="text-[#14110c]/45">({active.examples})</span>
+          {active.blurb} <span className="text-[#0b3b44]/45">({active.examples})</span>
         </p>
       </div>
 
       {/* Never used AI? Two-minute primer */}
       <div className="pop-card-yellow p-6 md:p-8 mb-8">
-        <span className="text-[10px] uppercase tracking-[0.3em] text-[#14110c] font-mono font-bold block mb-3">
+        <span className="text-[10px] uppercase tracking-[0.3em] text-[#0b3b44] font-mono font-bold block mb-3">
           Never used ChatGPT or Claude before? Read this first
         </span>
         <div className="grid md:grid-cols-2 gap-6">
           <div>
-            <h3 className="font-display text-xl font-black text-[#14110c] tracking-tight mb-2">
+            <h3 className="font-display text-xl font-black text-[#0b3b44] tracking-tight mb-2">
               It is just a chat box. And it is free.
             </h3>
-            <p className="text-[#14110c]/80 font-body text-sm leading-relaxed">
+            <p className="text-[#0b3b44]/80 font-body text-sm leading-relaxed">
               Open{' '}
-              <a href="https://claude.ai" target="_blank" rel="noopener noreferrer" className="font-bold underline decoration-[#14110c]/30 underline-offset-2 hover:text-[#8f1d22]">
+              <a href="https://claude.ai" target="_blank" rel="noopener noreferrer" className="font-bold underline decoration-[#0b3b44]/30 underline-offset-2 hover:text-[#0a7c78]">
                 claude.ai
               </a>{' '}
               or{' '}
-              <a href="https://chatgpt.com" target="_blank" rel="noopener noreferrer" className="font-bold underline decoration-[#14110c]/30 underline-offset-2 hover:text-[#8f1d22]">
+              <a href="https://chatgpt.com" target="_blank" rel="noopener noreferrer" className="font-bold underline decoration-[#0b3b44]/30 underline-offset-2 hover:text-[#0a7c78]">
                 chatgpt.com
               </a>
               . Both have a free version, no credit card needed. Paste one of the prompts below into the message box, press enter, and read what comes back. That is the whole thing. You genuinely cannot break it.
             </p>
           </div>
           <div>
-            <h3 className="font-display text-xl font-black text-[#14110c] tracking-tight mb-2">
+            <h3 className="font-display text-xl font-black text-[#0b3b44] tracking-tight mb-2">
               Every great prompt has 4 parts
             </h3>
             <ul className="space-y-1.5">
               {PROMPT_FORMULA.map((f) => (
                 <li key={f.part} className="text-sm font-body leading-snug">
-                  <span className="font-mono font-bold text-[#14110c] text-[11px] uppercase tracking-wide">{f.part}.</span>{' '}
-                  <span className="text-[#14110c]/80">{f.tell}</span>{' '}
-                  <span className="text-[#14110c]/50 italic">{f.example}</span>
+                  <span className="font-mono font-bold text-[#0b3b44] text-[11px] uppercase tracking-wide">{f.part}.</span>{' '}
+                  <span className="text-[#0b3b44]/80">{f.tell}</span>{' '}
+                  <span className="text-[#0b3b44]/50 italic">{f.example}</span>
                 </li>
               ))}
             </ul>
           </div>
         </div>
-        <p className="text-[#14110c]/70 font-body text-xs mt-5 leading-relaxed">
+        <p className="text-[#0b3b44]/70 font-body text-xs mt-5 leading-relaxed">
           The prompts below already do all four for you. If an answer is not quite right, just tell it: &ldquo;make it
           shorter,&rdquo; &ldquo;more casual,&rdquo; &ldquo;try again.&rdquo; It never gets tired and it never judges you.
         </p>
@@ -146,7 +146,7 @@ export default function PromptPlaybookTool() {
 
       {/* Live prompt count */}
       <div className="text-center mb-6">
-        <span className="inline-block pop-card-yellow px-5 py-2 text-[11px] uppercase tracking-[0.2em] font-mono font-bold text-[#14110c]">
+        <span className="inline-block pop-card-yellow px-5 py-2 text-[11px] uppercase tracking-[0.2em] font-mono font-bold text-[#0b3b44]">
           {total} prompts written for {active.label}
         </span>
       </div>
@@ -156,10 +156,10 @@ export default function PromptPlaybookTool() {
         {categories.map((cat) => (
           <div key={cat.id} className="pop-card p-6 md:p-7">
             <div className="flex items-baseline gap-3 mb-1">
-              <span className="text-[10px] uppercase tracking-[0.3em] text-[#8f1d22] font-mono font-bold shrink-0">
+              <span className="text-[10px] uppercase tracking-[0.3em] text-[#0a7c78] font-mono font-bold shrink-0">
                 {cat.eyebrow}
               </span>
-              <h3 className="font-display text-xl md:text-2xl font-black text-[#14110c] tracking-tight">{cat.title}</h3>
+              <h3 className="font-display text-xl md:text-2xl font-black text-[#0b3b44] tracking-tight">{cat.title}</h3>
             </div>
             <p className="text-[#3A3733] font-body text-sm leading-relaxed mb-5">{cat.blurb}</p>
 
@@ -167,20 +167,20 @@ export default function PromptPlaybookTool() {
               {cat.prompts.map((p) => {
                 const isCopied = copiedId === p.id;
                 return (
-                  <div key={p.id} className="border-2 border-[#14110c]/12 rounded-xl overflow-hidden bg-[#FFFDF6]">
+                  <div key={p.id} className="border-2 border-[#0b3b44]/12 rounded-xl overflow-hidden bg-[#FFFDF6]">
                     <div className="flex items-start justify-between gap-3 px-4 pt-4">
                       <div className="min-w-0">
-                        <h4 className="font-sans font-extrabold text-[15px] tracking-tight text-[#14110c]">{p.title}</h4>
+                        <h4 className="font-sans font-extrabold text-[15px] tracking-tight text-[#0b3b44]">{p.title}</h4>
                         <p className="text-[#3A3733] font-body text-[13px] leading-5 mt-0.5">{p.what}</p>
                       </div>
                       <button
                         type="button"
                         onClick={() => copy(p)}
                         aria-label={`Copy the ${p.title} prompt`}
-                        className={`shrink-0 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full border-2 border-[#14110c] text-[10px] uppercase tracking-[0.15em] font-mono font-bold transition-all ${
+                        className={`shrink-0 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full border-2 border-[#0b3b44] text-[10px] uppercase tracking-[0.15em] font-mono font-bold transition-all ${
                           isCopied
-                            ? 'bg-[#14110c] text-[#f6efe0]'
-                            : 'bg-[#f5b700] text-[#14110c] shadow-[2px_2px_0_0_#14110c] hover:-translate-y-0.5'
+                            ? 'bg-[#0b3b44] text-[#fbf5ea]'
+                            : 'bg-[#f5b700] text-[#0b3b44] shadow-[2px_2px_0_0_#0b3b44] hover:-translate-y-0.5'
                         }`}
                       >
                         {isCopied ? (
@@ -195,13 +195,13 @@ export default function PromptPlaybookTool() {
                         )}
                       </button>
                     </div>
-                    <pre className="mt-3 px-4 pb-4 whitespace-pre-wrap font-mono text-[12.5px] leading-[1.6] text-[#14110c]/85 select-all">
+                    <pre className="mt-3 px-4 pb-4 whitespace-pre-wrap font-mono text-[12.5px] leading-[1.6] text-[#0b3b44]/85 select-all">
                       {p.text}
                     </pre>
                     {p.tip && (
-                      <div className="bg-[#FFF8E6] border-t border-[#14110c]/12 px-4 py-2.5">
-                        <span className="text-[9px] uppercase tracking-[0.2em] text-[#8f1d22] font-mono font-bold mr-2">Tip</span>
-                        <span className="text-[12.5px] text-[#14110c]/75 font-body leading-5">{p.tip}</span>
+                      <div className="bg-[#FFF8E6] border-t border-[#0b3b44]/12 px-4 py-2.5">
+                        <span className="text-[9px] uppercase tracking-[0.2em] text-[#0a7c78] font-mono font-bold mr-2">Tip</span>
+                        <span className="text-[12.5px] text-[#0b3b44]/75 font-body leading-5">{p.tip}</span>
                       </div>
                     )}
                   </div>
@@ -216,13 +216,13 @@ export default function PromptPlaybookTool() {
       <div id="get-it" className="mt-10 scroll-mt-28">
         {done ? (
           <div className="pop-card-yellow p-8 md:p-10 text-center">
-            <span className="text-[10px] uppercase tracking-[0.4em] text-[#14110c] font-mono font-bold block mb-3">
+            <span className="text-[10px] uppercase tracking-[0.4em] text-[#0b3b44] font-mono font-bold block mb-3">
               Your playbook is ready
             </span>
-            <h3 className="font-display text-2xl md:text-3xl font-black text-[#14110c] tracking-tight mb-3">
+            <h3 className="font-display text-2xl md:text-3xl font-black text-[#0b3b44] tracking-tight mb-3">
               Check your email, and grab the PDF
             </h3>
-            <p className="text-[#14110c]/75 font-body mb-7 max-w-lg mx-auto">
+            <p className="text-[#0b3b44]/75 font-body mb-7 max-w-lg mx-auto">
               We sent your Prompt Playbook to {email}, tailored for {active.label}. Download the PDF below, keep it next
               to your keyboard, and start pasting.
             </p>
@@ -231,13 +231,13 @@ export default function PromptPlaybookTool() {
                 href={pdfUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#14110c] bg-white rounded-full border-2 border-[#14110c] shadow-[4px_4px_0_0_#14110c] hover:-translate-y-0.5 transition-all"
+                className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0b3b44] bg-white rounded-full border-2 border-[#0b3b44] shadow-[4px_4px_0_0_#0b3b44] hover:-translate-y-0.5 transition-all"
               >
                 Download the PDF
               </a>
               <Link
                 href="/work-with-us"
-                className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-white bg-[#14110c] rounded-full border-2 border-[#14110c] shadow-[4px_4px_0_0_rgba(20,17,12,0.35)] hover:-translate-y-0.5 transition-all"
+                className="px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-white bg-[#0b3b44] rounded-full border-2 border-[#0b3b44] shadow-[4px_4px_0_0_rgba(11,59,68,0.35)] hover:-translate-y-0.5 transition-all"
               >
                 Have us build agentic systems into your business
               </Link>
@@ -246,12 +246,12 @@ export default function PromptPlaybookTool() {
         ) : (
           <form onSubmit={submit} className="pop-card p-8 md:p-10">
             <div className="text-center mb-6">
-              <span className="text-[10px] uppercase tracking-[0.4em] text-[#8f1d22] font-mono font-bold mb-3 block">
+              <span className="text-[10px] uppercase tracking-[0.4em] text-[#0a7c78] font-mono font-bold mb-3 block">
                 Step 2. Email yourself the whole playbook
               </span>
-              <h3 className="font-display text-2xl md:text-3xl font-black text-[#14110c] tracking-tight">
+              <h3 className="font-display text-2xl md:text-3xl font-black text-[#0b3b44] tracking-tight">
                 Send me the{' '}
-                <span className="text-[#f5b700]" style={{ WebkitTextStroke: '1.5px #14110c' }}>
+                <span className="text-[#f5b700]" style={{ WebkitTextStroke: '1.5px #0b3b44' }}>
                   full playbook
                 </span>
               </h3>
@@ -269,7 +269,7 @@ export default function PromptPlaybookTool() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@yourbusiness.com"
                 aria-label="Email"
-                className="w-full bg-white border-2 border-[#14110c] rounded-lg px-4 py-3 text-[#14110c] font-body placeholder-[#14110c]/30 focus:outline-none focus:ring-2 focus:ring-[#f5b700]"
+                className="w-full bg-white border-2 border-[#0b3b44] rounded-lg px-4 py-3 text-[#0b3b44] font-body placeholder-[#0b3b44]/30 focus:outline-none focus:ring-2 focus:ring-[#f5b700]"
               />
               <input
                 type="tel"
@@ -277,7 +277,7 @@ export default function PromptPlaybookTool() {
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="Phone (optional, if you want a hand getting started)"
                 aria-label="Phone (optional)"
-                className="w-full bg-white border-2 border-[#14110c] rounded-lg px-4 py-3 text-[#14110c] font-body placeholder-[#14110c]/30 focus:outline-none focus:ring-2 focus:ring-[#f5b700]"
+                className="w-full bg-white border-2 border-[#0b3b44] rounded-lg px-4 py-3 text-[#0b3b44] font-body placeholder-[#0b3b44]/30 focus:outline-none focus:ring-2 focus:ring-[#f5b700]"
               />
               {/* honeypot */}
               <input
@@ -289,15 +289,15 @@ export default function PromptPlaybookTool() {
                 className="hidden"
                 aria-hidden
               />
-              {error && <p className="text-[#8f1d22] text-sm font-body text-center">{error}</p>}
+              {error && <p className="text-[#0a7c78] text-sm font-body text-center">{error}</p>}
               <button
                 type="submit"
                 disabled={sending || !email.trim()}
-                className="w-full px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#14110c] bg-[#f5b700] rounded-full border-2 border-[#14110c] shadow-[4px_4px_0_0_#14110c] hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:hover:translate-y-0"
+                className="w-full px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0b3b44] bg-[#f5b700] rounded-full border-2 border-[#0b3b44] shadow-[4px_4px_0_0_#0b3b44] hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:hover:translate-y-0"
               >
                 {sending ? 'Sending...' : 'Email me the playbook'}
               </button>
-              <p className="text-[#14110c]/45 font-body text-[11px] text-center">
+              <p className="text-[#0b3b44]/45 font-body text-[11px] text-center">
                 Free. Unsubscribe any time. We never sell your info.
               </p>
             </div>

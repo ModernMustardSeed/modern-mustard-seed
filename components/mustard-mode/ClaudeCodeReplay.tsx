@@ -86,16 +86,16 @@ export default function ClaudeCodeReplay() {
   }, [visibleLines, charCount]);
 
   const color = (k: Line['kind']) =>
-    k === 'user' ? 'text-white' : k === 'think' ? 'text-[#f6efe0]/60 italic' : k === 'ok' ? 'text-[#f3dc9b]' : k === 'claude' ? 'text-[#ffc933]' : 'text-[#9A958A]';
+    k === 'user' ? 'text-white' : k === 'think' ? 'text-[#fbf5ea]/60 italic' : k === 'ok' ? 'text-[#d8f3f0]' : k === 'claude' ? 'text-[#ffc933]' : 'text-[#9A958A]';
 
   return (
-    <div ref={wrapRef} className="bg-[#14110c] border-2 border-[#14110c] shadow-[8px_8px_0_0_#14110c] overflow-hidden">
+    <div ref={wrapRef} className="bg-[#0b3b44] border-2 border-[#0b3b44] shadow-[8px_8px_0_0_#0b3b44] overflow-hidden">
       <div className="flex items-center gap-2 bg-[#1F1F1F] px-4 py-2.5 border-b border-white/10">
-        <span className="w-2.5 h-2.5 rounded-full bg-[#b3261e]" />
+        <span className="w-2.5 h-2.5 rounded-full bg-[#ff6f59]" />
         <span className="w-2.5 h-2.5 rounded-full bg-[#f5b700]" />
-        <span className="w-2.5 h-2.5 rounded-full bg-[#f6efe0]" />
+        <span className="w-2.5 h-2.5 rounded-full bg-[#fbf5ea]" />
         <span className="font-mono text-[10px] text-[#9A958A] ml-2">claude · a real session, replayed</span>
-        <span className="ml-auto font-mono text-[9px] font-bold text-[#8f1d22] tracking-widest">● REC</span>
+        <span className="ml-auto font-mono text-[9px] font-bold text-[#0a7c78] tracking-widest">● REC</span>
       </div>
       <div className="p-5 md:p-6 font-mono text-[12px] md:text-[13px] leading-[1.9] min-h-[340px]">
         {SESSION.slice(0, visibleLines).map((l, i) => (

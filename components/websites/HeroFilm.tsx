@@ -108,7 +108,7 @@ export default function HeroFilm({
           onClick={toggle}
           aria-pressed={!playing}
           aria-label={playing ? 'Pause the site walkthrough' : 'Play the site walkthrough'}
-          className="group absolute bottom-3 left-3 inline-flex items-center gap-2 rounded-full border-2 border-[#14110c] bg-[#f5b700] px-3 py-1.5 text-[#14110c] shadow-[2px_2px_0_0_#14110c] transition-colors hover:bg-[#FFC400]"
+          className="group absolute bottom-3 left-3 inline-flex items-center gap-2 rounded-full border-2 border-[#0b3b44] bg-[#f5b700] px-3 py-1.5 text-[#0b3b44] shadow-[2px_2px_0_0_#0b3b44] transition-colors hover:bg-[#FFC400]"
         >
           {playing ? (
             <svg className="h-3 w-3" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">

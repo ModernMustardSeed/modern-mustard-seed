@@ -19,7 +19,7 @@ export default async function ContactPage({ searchParams }: { searchParams: Sear
   const pkg = params.package;
 
   return (
-    <div className="min-h-screen bg-[#f6efe0] text-[#14110c]">
+    <div className="min-h-screen bg-[#fbf5ea] text-[#0b3b44]">
       <JsonLd
         data={[
           breadcrumbJsonLd([
@@ -31,23 +31,23 @@ export default async function ContactPage({ searchParams }: { searchParams: Sear
       />
 
       {/* ───────────────  HERO: the mailbox  ─────────────── */}
-      <section className="relative overflow-hidden border-b-2 border-[#14110c] halftone-bg">
+      <section className="relative overflow-hidden border-b-2 border-[#0b3b44] halftone-bg">
         <div className="relative z-[2] max-w-6xl mx-auto px-6 pt-28 md:pt-36 pb-14 md:pb-20">
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-8 items-center">
             <div className="lg:col-span-6">
-              <span className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.18em] font-bold bg-white text-[#8f1d22] border-2 border-[#14110c] rounded-full px-3.5 py-1.5 shadow-[3px_3px_0_0_#14110c]">
+              <span className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.18em] font-bold bg-white text-[#0a7c78] border-2 border-[#0b3b44] rounded-full px-3.5 py-1.5 shadow-[3px_3px_0_0_#0b3b44]">
                 ✉ No postage necessary
               </span>
-              <h1 className="mt-6 font-display font-extrabold leading-[0.98] tracking-tight text-5xl md:text-6xl lg:text-[4.6rem] text-[#14110c]">
+              <h1 className="mt-6 font-display font-extrabold leading-[0.98] tracking-tight text-5xl md:text-6xl lg:text-[4.6rem] text-[#0b3b44]">
                 Drop us a <em className="italic text-[#B48600]">line</em>.
               </h1>
               <p className="mt-6 max-w-xl text-lg md:text-xl text-[#3d382e] font-body leading-relaxed">
                 A build, a partnership, a question, or just hello. Tear off the card, fill it in, and mail it. It lands in Sarah&rsquo;s inbox and a human answers inside a day.
               </p>
-              <p className="mt-5 font-body leading-relaxed">Based in {SITE.city}, {SITE.regionName}. Serving Northwest Montana and clients nationwide. Sarah <a href={`tel:${SITE.sarahPhoneE164}`} className="font-bold text-[#8f1d22] underline">{SITE.sarahPhone}</a> &middot; Mr. Mustard <a href={`tel:${SITE.phoneE164}`} className="font-bold text-[#8f1d22] underline">{SITE.phone}</a> &middot; <a href={`mailto:${SITE.email}`} className="text-[#8f1d22] underline">{SITE.email}</a></p>
+              <p className="mt-5 font-body leading-relaxed">Based in {SITE.city}, {SITE.regionName}. Serving Northwest Montana and clients nationwide. Sarah <a href={`tel:${SITE.sarahPhoneE164}`} className="font-bold text-[#0a7c78] underline">{SITE.sarahPhone}</a> &middot; Mr. Mustard <a href={`tel:${SITE.phoneE164}`} className="font-bold text-[#0a7c78] underline">{SITE.phone}</a> &middot; <a href={`mailto:${SITE.email}`} className="text-[#0a7c78] underline">{SITE.email}</a></p>
               <p className="mt-6 font-body text-[15px] text-[#5c554a]">
                 Here to build something?{' '}
-                <Link href="/inquire" className="font-bold text-[#8f1d22] underline decoration-2 underline-offset-2 hover:text-[#8f1d22]">
+                <Link href="/inquire" className="font-bold text-[#0a7c78] underline decoration-2 underline-offset-2 hover:text-[#0a7c78]">
                   Start an inquiry
                 </Link>{' '}
                 and Sarah answers inside one business day.
@@ -55,15 +55,15 @@ export default async function ContactPage({ searchParams }: { searchParams: Sear
             </div>
 
             <div className="lg:col-span-6">
-              <figure className="relative rotate-[1.5deg] rounded-[2px] border-[3px] border-[#14110c] bg-white p-2.5 shadow-[9px_9px_0_0_#f5b700]">
+              <figure className="relative rotate-[1.5deg] rounded-[2px] border-[3px] border-[#0b3b44] bg-white p-2.5 shadow-[9px_9px_0_0_#f5b700]">
                 <Image
-                  src="/art/pages/contact-1600.webp"
-                  alt="Painting: Mr. Mustard waves and takes a call on a candlestick telephone in the studio’s switchboard room, where Mrs. Mustard and the pea plug in lines and pneumatic tubes carry messages overhead"
+                  src="/art/riviera/contact-1600.webp"
+                  alt="Painting: Mr. Mustard stands on a paddleboard in turquoise water taking a phone call and waving hello, the seed dog riding the front of the board and the family paddling a clear kayak beside him"
                   width={1600}
                   height={1067}
                   priority
                   sizes="(min-width: 1024px) 48vw, 92vw"
-                  className="border-2 border-[#14110c] w-full h-auto"
+                  className="border-2 border-[#0b3b44] w-full h-auto"
                 />
                 <figcaption className="px-2 pt-2 pb-1 font-mono text-[10px] uppercase tracking-[0.22em] text-[#5c554a] text-center">
                   Fill it in · mail it · a human answers

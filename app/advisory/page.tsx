@@ -32,7 +32,7 @@ export const metadata = buildMetadata({
  */
 export default function AdvisoryPage() {
   return (
-    <div className="min-h-screen bg-[#f6efe0] text-[#14110c]">
+    <div className="min-h-screen bg-[#fbf5ea] text-[#0b3b44]">
       <JsonLd
         data={[
           breadcrumbJsonLd([
@@ -59,8 +59,8 @@ export default function AdvisoryPage() {
         title={<>Almost nobody loses money on agentic systems by picking the{' '}<em>wrong tool</em>.</>}
         issue={{ no: 'No.4', lines: ['Advisory', 'By the quarter'] }}
         art={{
-          src: '/art/pages/advisory',
-          alt: 'Painting: Mr. Mustard in a double-breasted suit points at a chalkboard flowchart in a green-marble Art Deco boardroom while the coffee bean, the sesame seed and the rest of the team take notes',
+          src: '/art/riviera/advisory',
+          alt: 'Painting: Mr. Mustard at the helm of a classic wooden sailboat points to the horizon while Mrs. Mustard holds a rolled nautical chart, the sails full and the coast behind',
           caption: 'The next move, in order',
         }}
         sticker="Check!"
@@ -94,13 +94,13 @@ export default function AdvisoryPage() {
             {THE_PROBLEM.map((c) => (
               <div
                 key={c.k}
-                className="flex min-w-0 flex-col rounded-2xl border-2 border-[#14110c] bg-white p-7 shadow-[6px_6px_0_0_#14110c]"
+                className="flex min-w-0 flex-col rounded-2xl border-2 border-[#0b3b44] bg-white p-7 shadow-[6px_6px_0_0_#0b3b44]"
               >
                 <span className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-[#C4160B]">
                   {c.k}
                 </span>
                 <h3 className="mt-2 font-display text-2xl font-extrabold italic leading-tight">{c.h}</h3>
-                <p className="mt-3 flex-1 font-body text-[13.5px] leading-relaxed text-[#14110c]/75">{c.d}</p>
+                <p className="mt-3 flex-1 font-body text-[13.5px] leading-relaxed text-[#0b3b44]/75">{c.d}</p>
               </div>
             ))}
           </div>
@@ -114,7 +114,7 @@ export default function AdvisoryPage() {
           <h2 className="mt-3 max-w-3xl font-display text-4xl font-extrabold italic leading-[1.02] md:text-5xl">
             A cadence, not a call whenever you remember.
           </h2>
-          <p className="mt-4 max-w-2xl font-body text-[15px] leading-relaxed text-[#14110c]/70">
+          <p className="mt-4 max-w-2xl font-body text-[15px] leading-relaxed text-[#0b3b44]/70">
             Retainers go quiet because nobody agreed what happens in them. This one has a shape, and
             you can hold us to it.
           </p>
@@ -122,15 +122,15 @@ export default function AdvisoryPage() {
             {THE_QUARTER.map((s) => (
               <div
                 key={s.n}
-                className="flex min-w-0 flex-col rounded-2xl border-2 border-[#14110c] bg-[#14110c] p-7 shadow-[6px_6px_0_0_#f5b700]"
+                className="flex min-w-0 flex-col rounded-2xl border-2 border-[#0b3b44] bg-[#0b3b44] p-7 shadow-[6px_6px_0_0_#f5b700]"
               >
                 <span className="font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-[#f5b700]">
                   {s.n}
                 </span>
-                <h3 className="mt-2 font-display text-2xl font-extrabold italic leading-tight text-[#f6efe0]">
+                <h3 className="mt-2 font-display text-2xl font-extrabold italic leading-tight text-[#fbf5ea]">
                   {s.h}
                 </h3>
-                <p className="mt-3 flex-1 font-body text-[13.5px] leading-relaxed text-[#f6efe0]/75">{s.d}</p>
+                <p className="mt-3 flex-1 font-body text-[13.5px] leading-relaxed text-[#fbf5ea]/75">{s.d}</p>
               </div>
             ))}
           </div>
@@ -148,14 +148,14 @@ export default function AdvisoryPage() {
             {WHAT_YOU_GET.map((w, i) => (
               <div
                 key={w.h}
-                className="flex min-w-0 flex-col gap-2 rounded-2xl border-2 border-[#14110c] bg-white p-6 shadow-[5px_5px_0_0_#14110c] sm:flex-row sm:items-baseline sm:gap-7"
+                className="flex min-w-0 flex-col gap-2 rounded-2xl border-2 border-[#0b3b44] bg-white p-6 shadow-[5px_5px_0_0_#0b3b44] sm:flex-row sm:items-baseline sm:gap-7"
               >
                 <span className="font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-[#8f6600] sm:w-10 sm:shrink-0">
                   {String(i + 1).padStart(2, '0')}
                 </span>
                 <div className="min-w-0 sm:flex-1">
                   <h3 className="font-display text-xl font-extrabold leading-tight">{w.h}</h3>
-                  <p className="mt-1.5 font-body text-[14px] leading-relaxed text-[#14110c]/75">{w.d}</p>
+                  <p className="mt-1.5 font-body text-[14px] leading-relaxed text-[#0b3b44]/75">{w.d}</p>
                 </div>
               </div>
             ))}
@@ -163,14 +163,14 @@ export default function AdvisoryPage() {
         </section>
 
         {/* ─────────────── What we refuse ─────────────── */}
-        <section className="rounded-2xl border-2 border-[#14110c] bg-[#f5b700] p-7 shadow-[8px_8px_0_0_#14110c] sm:p-10">
-          <p className="font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-[#14110c]">
+        <section className="rounded-2xl border-2 border-[#0b3b44] bg-[#f5b700] p-7 shadow-[8px_8px_0_0_#0b3b44] sm:p-10">
+          <p className="font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-[#0b3b44]">
             The part nobody advertises // What we will talk you out of
           </p>
           <h2 className="mt-3 max-w-3xl font-display text-4xl font-extrabold italic leading-[1.02] md:text-5xl">
             Half of this job is saying no.
           </h2>
-          <p className="mt-4 max-w-2xl font-body text-[15px] leading-relaxed text-[#14110c]/80">
+          <p className="mt-4 max-w-2xl font-body text-[15px] leading-relaxed text-[#0b3b44]/80">
             An advisor who never refuses anything is a salesperson with a nicer title. Here is what we
             argue against, in advance, so you know what you are hiring.
           </p>
@@ -179,11 +179,11 @@ export default function AdvisoryPage() {
               <li key={r} className="flex min-w-0 items-start gap-3">
                 <span
                   aria-hidden
-                  className="mt-1 grid h-5 w-5 shrink-0 place-items-center rounded-full border-2 border-[#14110c] bg-[#f6efe0] font-mono text-[11px] font-black leading-none text-[#C4160B]"
+                  className="mt-1 grid h-5 w-5 shrink-0 place-items-center rounded-full border-2 border-[#0b3b44] bg-[#fbf5ea] font-mono text-[11px] font-black leading-none text-[#C4160B]"
                 >
                   ×
                 </span>
-                <span className="font-body text-[14.5px] leading-relaxed text-[#14110c]/85">{r}</span>
+                <span className="font-body text-[14.5px] leading-relaxed text-[#0b3b44]/85">{r}</span>
               </li>
             ))}
           </ul>
@@ -198,26 +198,26 @@ export default function AdvisoryPage() {
             Who this seat is for.
           </h2>
           <div className="mt-10 grid gap-6 md:grid-cols-2">
-            <div className="min-w-0 rounded-2xl border-2 border-[#14110c] bg-white p-7 shadow-[6px_6px_0_0_#14110c]">
-              <span className="font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-[#8f1d22]">
+            <div className="min-w-0 rounded-2xl border-2 border-[#0b3b44] bg-white p-7 shadow-[6px_6px_0_0_#0b3b44]">
+              <span className="font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-[#0a7c78]">
                 A fit
               </span>
               <ul className="mt-4 space-y-3">
                 {FOR.map((f) => (
-                  <li key={f} className="flex min-w-0 items-start gap-2.5 font-body text-[14px] leading-relaxed text-[#14110c]/80">
-                    <span aria-hidden className="mt-[8px] h-1.5 w-1.5 shrink-0 rounded-full bg-[#14110c]" />
+                  <li key={f} className="flex min-w-0 items-start gap-2.5 font-body text-[14px] leading-relaxed text-[#0b3b44]/80">
+                    <span aria-hidden className="mt-[8px] h-1.5 w-1.5 shrink-0 rounded-full bg-[#0b3b44]" />
                     {f}
                   </li>
                 ))}
               </ul>
             </div>
-            <div className="min-w-0 rounded-2xl border-2 border-[#14110c] bg-[#F5F0E8] p-7 shadow-[6px_6px_0_0_#14110c]">
+            <div className="min-w-0 rounded-2xl border-2 border-[#0b3b44] bg-[#F5F0E8] p-7 shadow-[6px_6px_0_0_#0b3b44]">
               <span className="font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-[#C4160B]">
                 Not a fit
               </span>
               <ul className="mt-4 space-y-3">
                 {NOT_FOR.map((f) => (
-                  <li key={f} className="flex min-w-0 items-start gap-2.5 font-body text-[14px] leading-relaxed text-[#14110c]/75">
+                  <li key={f} className="flex min-w-0 items-start gap-2.5 font-body text-[14px] leading-relaxed text-[#0b3b44]/75">
                     <span aria-hidden className="mt-[8px] h-1.5 w-1.5 shrink-0 rounded-full bg-[#C4160B]" />
                     {f}
                   </li>
@@ -256,32 +256,32 @@ export default function AdvisoryPage() {
             ].map((c) => (
               <div
                 key={c.h}
-                className={`flex min-w-0 flex-col rounded-2xl border-2 border-[#14110c] p-7 ${
-                  c.here ? 'bg-[#14110c] shadow-[6px_6px_0_0_#f5b700]' : 'bg-white shadow-[5px_5px_0_0_#14110c]'
+                className={`flex min-w-0 flex-col rounded-2xl border-2 border-[#0b3b44] p-7 ${
+                  c.here ? 'bg-[#0b3b44] shadow-[6px_6px_0_0_#f5b700]' : 'bg-white shadow-[5px_5px_0_0_#0b3b44]'
                 }`}
               >
                 <h3
                   className={`font-display text-2xl font-extrabold italic leading-tight ${
-                    c.here ? 'text-[#f5b700]' : 'text-[#14110c]'
+                    c.here ? 'text-[#f5b700]' : 'text-[#0b3b44]'
                   }`}
                 >
                   {c.h}
                 </h3>
                 <p
                   className={`mt-3 flex-1 font-body text-[13.5px] leading-relaxed ${
-                    c.here ? 'text-[#f6efe0]/75' : 'text-[#14110c]/75'
+                    c.here ? 'text-[#fbf5ea]/75' : 'text-[#0b3b44]/75'
                   }`}
                 >
                   {c.d}
                 </p>
                 {c.here ? (
-                  <span className="mt-5 font-mono text-[11px] font-bold uppercase tracking-[0.16em] text-[#f6efe0]/55">
+                  <span className="mt-5 font-mono text-[11px] font-bold uppercase tracking-[0.16em] text-[#fbf5ea]/55">
                     You are here
                   </span>
                 ) : (
                   <Link
                     href={c.href}
-                    className="mt-5 font-sans text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#C4160B] transition-colors hover:text-[#14110c]"
+                    className="mt-5 font-sans text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#C4160B] transition-colors hover:text-[#0b3b44]"
                   >
                     Read that one →
                   </Link>
@@ -303,7 +303,7 @@ export default function AdvisoryPage() {
             {ADVISORY_FAQ.map((f) => (
               <details
                 key={f.q}
-                className="group rounded-xl border-2 border-[#14110c] bg-white p-5 transition-shadow open:shadow-[4px_4px_0_0_#f5b700]"
+                className="group rounded-xl border-2 border-[#0b3b44] bg-white p-5 transition-shadow open:shadow-[4px_4px_0_0_#f5b700]"
               >
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-display text-lg font-bold">
                   {f.q}
@@ -318,24 +318,24 @@ export default function AdvisoryPage() {
         </section>
 
         {/* ─────────────── Close ─────────────── */}
-        <section className="relative overflow-hidden rounded-2xl border-2 border-[#14110c] bg-[#14110c] p-10 text-center shadow-[8px_8px_0_0_#f5b700] md:p-14">
+        <section className="relative overflow-hidden rounded-2xl border-2 border-[#0b3b44] bg-[#0b3b44] p-10 text-center shadow-[8px_8px_0_0_#f5b700] md:p-14">
           <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-[#f5b700]">
             By inquiry · Answered personally
           </p>
-          <h2 className="mt-4 font-display text-3xl font-extrabold italic leading-[1.02] text-[#f6efe0] md:text-5xl">
+          <h2 className="mt-4 font-display text-3xl font-extrabold italic leading-[1.02] text-[#fbf5ea] md:text-5xl">
             Tell us the decision you are stuck on.
           </h2>
-          <p className="mx-auto mt-5 max-w-xl font-body text-[15px] leading-relaxed text-[#f6efe0]/80">
+          <p className="mx-auto mt-5 max-w-xl font-body text-[15px] leading-relaxed text-[#fbf5ea]/80">
             Not the whole roadmap. The one call in front of you right now. Sarah reads every inquiry
             herself and answers inside one business day, whether or not it is a fit.
           </p>
           <Link
             href="/book"
-            className="mt-8 inline-block rounded-full border-2 border-[#f5b700] bg-[#f5b700] px-9 py-4 font-sans text-[12px] font-extrabold uppercase tracking-[0.16em] text-[#14110c] transition-transform hover:-translate-y-0.5"
+            className="mt-8 inline-block rounded-full border-2 border-[#f5b700] bg-[#f5b700] px-9 py-4 font-sans text-[12px] font-extrabold uppercase tracking-[0.16em] text-[#0b3b44] transition-transform hover:-translate-y-0.5"
           >
             Begin an engagement →
           </Link>
-          <p className="mt-6 font-body text-[13px] leading-relaxed text-[#f6efe0]/55">
+          <p className="mt-6 font-body text-[13px] leading-relaxed text-[#fbf5ea]/55">
             Based in {SITE.city}, {SITE.regionName}. Working with operators nationwide.
           </p>
         </section>

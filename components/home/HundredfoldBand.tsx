@@ -19,7 +19,7 @@ import { HUNDREDFOLD, money } from '@/lib/hundredfold';
  */
 export default function HundredfoldBand() {
   return (
-    <section className="relative border-y-2 border-[#14110c] bg-[#14110c] overflow-hidden">
+    <section className="relative border-y-2 border-[#0b3b44] bg-[#0b3b44] overflow-hidden">
       <div aria-hidden="true" className="absolute inset-0 halftone-bg opacity-[0.07] pointer-events-none" />
 
       <div className="relative max-w-6xl mx-auto px-6 md:px-8 py-20 md:py-28">
@@ -27,16 +27,16 @@ export default function HundredfoldBand() {
           <p className="font-mono font-bold text-[10px] tracking-[0.4em] uppercase text-[#f5b700]">
             The flagship // Free interview today
           </p>
-          <h2 className="mt-6 font-display text-4xl md:text-6xl font-black tracking-tight leading-[0.98] text-[#f6efe0]">
+          <h2 className="mt-6 font-display text-4xl md:text-6xl font-black tracking-tight leading-[0.98] text-[#fbf5ea]">
             HUNDRED
-            <span className="text-[#f5b700]" style={{ WebkitTextStroke: '2px #f6efe0' }}>
+            <span className="text-[#f5b700]" style={{ WebkitTextStroke: '2px #fbf5ea' }}>
               FOLD
             </span>
           </h2>
-          <p className="mt-5 font-display italic font-bold text-xl md:text-2xl text-[#f6efe0] leading-snug">
+          <p className="mt-5 font-display italic font-bold text-xl md:text-2xl text-[#fbf5ea] leading-snug">
             A coach interviews you. Then we build the machine that runs the plan.
           </p>
-          <p className="mt-4 text-[#f6efe0]/75 font-body text-base md:text-lg leading-relaxed">
+          <p className="mt-4 text-[#fbf5ea]/75 font-body text-base md:text-lg leading-relaxed">
             Mr. Mustard asks you about thirty questions about your business, most people say nobody has
             ever made them say those numbers out loud, and everything after it gets built from your own
             answers. It costs nothing and you can do it right now.
@@ -48,19 +48,19 @@ export default function HundredfoldBand() {
           {/* 1. Watch */}
           <Link
             href="/hundredfold/webinar"
-            className="group flex flex-col rounded-2xl border-2 border-[#f6efe0]/25 bg-[#f6efe0]/[0.04] p-7 hover:border-[#f6efe0]/70 hover:bg-[#f6efe0]/[0.08] transition-all"
+            className="group flex flex-col rounded-2xl border-2 border-[#fbf5ea]/25 bg-[#fbf5ea]/[0.04] p-7 hover:border-[#fbf5ea]/70 hover:bg-[#fbf5ea]/[0.08] transition-all"
           >
-            <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-[#f6efe0]/50">
+            <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-[#fbf5ea]/50">
               Ten minutes
             </span>
-            <h3 className="mt-3 font-display text-2xl font-black text-[#f6efe0] tracking-tight leading-tight">
+            <h3 className="mt-3 font-display text-2xl font-black text-[#fbf5ea] tracking-tight leading-tight">
               Watch how it works
             </h3>
-            <p className="mt-3 text-[#f6efe0]/70 font-body text-sm leading-relaxed flex-1">
+            <p className="mt-3 text-[#fbf5ea]/70 font-body text-sm leading-relaxed flex-1">
               The whole thing, start to finish, on a real business. Starts the second you click. Nothing to
               schedule and nobody waiting on the other end.
             </p>
-            <span className="mt-6 font-mono text-[10px] uppercase tracking-[0.25em] font-bold text-[#f6efe0]/60 group-hover:text-[#f5b700] transition-colors">
+            <span className="mt-6 font-mono text-[10px] uppercase tracking-[0.25em] font-bold text-[#fbf5ea]/60 group-hover:text-[#f5b700] transition-colors">
               Play it now &rarr;
             </span>
           </Link>
@@ -68,19 +68,19 @@ export default function HundredfoldBand() {
           {/* 2. The interview. The big one. */}
           <Link
             href="/hundredfold#interview"
-            className="group flex flex-col rounded-2xl border-2 border-[#f5b700] bg-[#f5b700] p-7 shadow-[6px_6px_0_0_#f6efe0] hover:-translate-y-1 transition-all md:-mt-4 md:mb-4"
+            className="group flex flex-col rounded-2xl border-2 border-[#f5b700] bg-[#f5b700] p-7 shadow-[6px_6px_0_0_#fbf5ea] hover:-translate-y-1 transition-all md:-mt-4 md:mb-4"
           >
-            <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-[#14110c]/60">
+            <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-[#0b3b44]/60">
               Twenty minutes · Free
             </span>
-            <h3 className="mt-3 font-display text-2xl md:text-3xl font-black text-[#14110c] tracking-tight leading-tight">
+            <h3 className="mt-3 font-display text-2xl md:text-3xl font-black text-[#0b3b44] tracking-tight leading-tight">
               Get interviewed
             </h3>
-            <p className="mt-3 text-[#14110c]/80 font-body text-sm leading-relaxed flex-1">
+            <p className="mt-3 text-[#0b3b44]/80 font-body text-sm leading-relaxed flex-1">
               Talk to Mr. Mustard out loud, or type. He pushes when an answer is soft. You walk away with a
               plan built from your real numbers, whether or not you ever pay us a cent.
             </p>
-            <span className="mt-6 font-mono text-[10px] uppercase tracking-[0.25em] font-bold text-[#14110c] group-hover:tracking-[0.3em] transition-all">
+            <span className="mt-6 font-mono text-[10px] uppercase tracking-[0.25em] font-bold text-[#0b3b44] group-hover:tracking-[0.3em] transition-all">
               Start the interview &rarr;
             </span>
           </Link>
@@ -88,25 +88,25 @@ export default function HundredfoldBand() {
           {/* 3. Just the URL */}
           <Link
             href="/scaling-roadmap"
-            className="group flex flex-col rounded-2xl border-2 border-[#f6efe0]/25 bg-[#f6efe0]/[0.04] p-7 hover:border-[#f6efe0]/70 hover:bg-[#f6efe0]/[0.08] transition-all"
+            className="group flex flex-col rounded-2xl border-2 border-[#fbf5ea]/25 bg-[#fbf5ea]/[0.04] p-7 hover:border-[#fbf5ea]/70 hover:bg-[#fbf5ea]/[0.08] transition-all"
           >
-            <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-[#f6efe0]/50">
+            <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-[#fbf5ea]/50">
               Ninety seconds
             </span>
-            <h3 className="mt-3 font-display text-2xl font-black text-[#f6efe0] tracking-tight leading-tight">
+            <h3 className="mt-3 font-display text-2xl font-black text-[#fbf5ea] tracking-tight leading-tight">
               Just hand us your website
             </h3>
-            <p className="mt-3 text-[#f6efe0]/70 font-body text-sm leading-relaxed flex-1">
+            <p className="mt-3 text-[#fbf5ea]/70 font-body text-sm leading-relaxed flex-1">
               We read your site and write you a scaling roadmap. Free. Honestly the thinner version, because
               your homepage does not know your margin, but it is a real plan and it is yours.
             </p>
-            <span className="mt-6 font-mono text-[10px] uppercase tracking-[0.25em] font-bold text-[#f6efe0]/60 group-hover:text-[#f5b700] transition-colors">
+            <span className="mt-6 font-mono text-[10px] uppercase tracking-[0.25em] font-bold text-[#fbf5ea]/60 group-hover:text-[#f5b700] transition-colors">
               Build my roadmap &rarr;
             </span>
           </Link>
         </div>
 
-        <p className="mt-10 text-center font-mono text-[10px] uppercase tracking-[0.28em] text-[#f6efe0]/40">
+        <p className="mt-10 text-center font-mono text-[10px] uppercase tracking-[0.28em] text-[#fbf5ea]/40">
           The program is {money(HUNDREDFOLD.setupCents)} to start, then {money(HUNDREDFOLD.monthlyCents)} a
           month · Everything above is free
         </p>

@@ -14,12 +14,12 @@ export default function FieldGuide({ guide: stored, compact = false }: { guide: 
   const guide = withAuditSection(stored);
   const updated = new Date(guide.updatedAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
   return (
-    <div className="text-[#14110c]">
+    <div className="text-[#0b3b44]">
       {!compact && (
         <header className="mb-8">
-          <span className="text-[10px] uppercase tracking-[0.4em] text-[#8f1d22] font-mono font-bold block mb-2">Field guide</span>
+          <span className="text-[10px] uppercase tracking-[0.4em] text-[#0a7c78] font-mono font-bold block mb-2">Field guide</span>
           <h1 className="font-display text-4xl md:text-5xl font-semibold leading-[1.02] mb-3">{guide.title}</h1>
-          {guide.subtitle && <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#14110c]/60">{guide.subtitle}</p>}
+          {guide.subtitle && <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#0b3b44]/60">{guide.subtitle}</p>}
           <p className="font-body text-lg leading-relaxed mt-5 max-w-2xl">{guide.intro}</p>
         </header>
       )}
@@ -27,29 +27,29 @@ export default function FieldGuide({ guide: stored, compact = false }: { guide: 
 
       <div className={compact ? 'grid gap-5' : 'grid gap-8'}>
         {guide.sections.map((s) => (
-          <section key={s.heading} className={`bg-white border-2 border-[#14110c] rounded-2xl ${compact ? 'p-4 shadow-[3px_3px_0_0_#14110c]' : 'p-6 md:p-7 shadow-[5px_5px_0_0_#14110c]'}`}>
+          <section key={s.heading} className={`bg-white border-2 border-[#0b3b44] rounded-2xl ${compact ? 'p-4 shadow-[3px_3px_0_0_#0b3b44]' : 'p-6 md:p-7 shadow-[5px_5px_0_0_#0b3b44]'}`}>
             <h2 className={`font-display font-semibold ${compact ? 'text-lg' : 'text-2xl'} mb-1`}>{s.heading}</h2>
-            {s.blurb && <p className={`font-body text-[#14110c]/75 ${compact ? 'text-[13px]' : 'text-[15px]'} mb-4`}>{s.blurb}</p>}
+            {s.blurb && <p className={`font-body text-[#0b3b44]/75 ${compact ? 'text-[13px]' : 'text-[15px]'} mb-4`}>{s.blurb}</p>}
             <ol className="grid gap-3.5 mt-3">
               {s.items.map((it) => (
-                <li key={it.title} className="grid sm:grid-cols-[minmax(0,1fr)] border-t border-[#14110c]/10 pt-3.5 first:border-t-0 first:pt-0">
+                <li key={it.title} className="grid sm:grid-cols-[minmax(0,1fr)] border-t border-[#0b3b44]/10 pt-3.5 first:border-t-0 first:pt-0">
                   <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
                     <h3 className={`font-sans font-bold ${compact ? 'text-[14px]' : 'text-[16px]'}`}>
                       {it.url ? (
-                        <a href={it.url} target="_blank" rel="noopener noreferrer" className="underline decoration-[#f5b700] decoration-2 underline-offset-2 hover:decoration-[#14110c]">{it.title}</a>
+                        <a href={it.url} target="_blank" rel="noopener noreferrer" className="underline decoration-[#f5b700] decoration-2 underline-offset-2 hover:decoration-[#0b3b44]">{it.title}</a>
                       ) : it.title}
                     </h3>
-                    {it.when && <span className="inline-block bg-[#f5b700] border border-[#14110c] rounded-full px-2 py-0.5 text-[10px] uppercase tracking-[0.14em] font-mono font-bold whitespace-nowrap">{it.when}</span>}
-                    {it.where && <span className="text-[11px] uppercase tracking-[0.14em] font-mono text-[#14110c]/55">{it.where}</span>}
+                    {it.when && <span className="inline-block bg-[#f5b700] border border-[#0b3b44] rounded-full px-2 py-0.5 text-[10px] uppercase tracking-[0.14em] font-mono font-bold whitespace-nowrap">{it.when}</span>}
+                    {it.where && <span className="text-[11px] uppercase tracking-[0.14em] font-mono text-[#0b3b44]/55">{it.where}</span>}
                   </div>
-                  <p className={`font-body text-[#14110c]/85 leading-relaxed mt-1 [overflow-wrap:anywhere] ${compact ? 'text-[13px]' : 'text-[15px]'}`}>{it.detail}</p>
+                  <p className={`font-body text-[#0b3b44]/85 leading-relaxed mt-1 [overflow-wrap:anywhere] ${compact ? 'text-[13px]' : 'text-[15px]'}`}>{it.detail}</p>
                 </li>
               ))}
             </ol>
           </section>
         ))}
       </div>
-      <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#14110c]/45 mt-6">Updated {updated}</p>
+      <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#0b3b44]/45 mt-6">Updated {updated}</p>
     </div>
   );
 }

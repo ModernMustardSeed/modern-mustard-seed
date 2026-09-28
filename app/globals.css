@@ -59,14 +59,15 @@ html:not(.mm-js) .mm-r {
     --lake: #161616;
     --sage: #8fa98f;
     --cream: #f1ede4;
-    /* The Mustard Building tokens (2026-09-27). */
-    --deco-gold: #f5b700;
-    --deco-lacquer: #b3261e;
-    --deco-oxblood: #8f1d22;
-    --deco-champagne: #f3dc9b;
-    --deco-ink: #14110c;
-    --deco-ivory: #f6efe0;
-    --deco-emerald: #0f4a3c;
+    /* The Riviera tokens (2026-09-27). */
+    --riv-mustard: #f5b700;
+    --riv-coral: #ff6f59;
+    --riv-lagoon: #0a7c78;
+    --riv-foam: #d8f3f0;
+    --riv-sea: #0b3b44;
+    --riv-sand: #fbf5ea;
+    --riv-tiffany: #81d8d0;
+    --riv-deep: #0e5f63;
     /* Pop palette tokens */
     --pop-yellow: #f5b700;
     --pop-red: #e0301e;
@@ -78,10 +79,10 @@ html:not(.mm-js) .mm-r {
   html, body {
     width: 100%;
     max-width: 100vw;
-    /* The Mustard Building ground: ivory stock, black-lacquer type. Dark
+    /* The Riviera ground: warm sand, deep-sea type. Dark
        surfaces are bands a page paints on purpose, never the default. */
-    background-color: #f6efe0;
-    color: #14110c;
+    background-color: #fbf5ea;
+    color: #0b3b44;
     font-family: var(--font-body), system-ui, sans-serif;
     /* DM Sans merges "fi"/"fl" into ligature glyphs (the dotless-i "finally"
        problem). Keep letters as typed, sitewide. */
@@ -509,24 +510,24 @@ html:not(.mm-js) .mm-r {
   @apply rounded-xl border border-white/[0.05] my-8;
 }
 
-/* Light Mustard Building prose. Add alongside .mdx-prose on ivory pages. */
+/* Light Riviera prose. Add alongside .mdx-prose on sand pages. */
 .mdx-prose-pop {
   color: #3a3733;
 }
 .mdx-prose-pop h1,
 .mdx-prose-pop h2,
 .mdx-prose-pop h3 {
-  color: #14110c;
+  color: #0b3b44;
 }
 .mdx-prose-pop a {
-  color: #8f1d22;
-  text-decoration-color: rgba(245, 183, 0, 0.9);
+  color: #0a7c78;
+  text-decoration-color: rgba(129, 216, 208, 0.95);
 }
 .mdx-prose-pop a:hover {
-  color: #14110c;
+  color: #0b3b44;
 }
 .mdx-prose-pop strong {
-  color: #14110c;
+  color: #0b3b44;
 }
 .mdx-prose-pop blockquote {
   border-left-color: #f5b700;
@@ -534,29 +535,29 @@ html:not(.mm-js) .mm-r {
 }
 .mdx-prose-pop code {
   background: #fff;
-  border: 1px solid #14110c;
-  color: #14110c;
+  border: 1px solid #0b3b44;
+  color: #0b3b44;
 }
 .mdx-prose-pop pre {
-  background: #14110c;
-  border: 2px solid #14110c;
+  background: #0b3b44;
+  border: 2px solid #0b3b44;
 }
 .mdx-prose-pop pre code {
   background: transparent;
   border: 0;
-  color: #f6efe0;
+  color: #fbf5ea;
 }
 .mdx-prose-pop th {
-  color: #8f1d22;
-  border-bottom-color: rgba(20, 17, 12, 0.15);
+  color: #0a7c78;
+  border-bottom-color: rgba(11,59,68, 0.15);
 }
 .mdx-prose-pop td {
   color: #3a3733;
-  border-bottom-color: rgba(20, 17, 12, 0.08);
+  border-bottom-color: rgba(11,59,68, 0.08);
 }
 .mdx-prose-pop hr {
-  border-color: rgba(20, 17, 12, 0.12);
+  border-color: rgba(11,59,68, 0.12);
 }
 .mdx-prose-pop img {
-  border: 2px solid #14110c;
+  border: 2px solid #0b3b44;
 }

@@ -31,8 +31,8 @@ type PressResult = {
 };
 
 const FIELD =
-  'w-full rounded-lg border-2 border-[#14110c] bg-white px-3.5 py-2.5 font-body text-[15px] text-[#14110c] placeholder:text-[#14110c]/35 focus:outline-none focus:ring-2 focus:ring-[#f5b700] focus:border-[#14110c]';
-const LABEL = 'block text-[10px] uppercase tracking-[0.28em] font-mono font-bold text-[#14110c]/60 mb-1.5';
+  'w-full rounded-lg border-2 border-[#0b3b44] bg-white px-3.5 py-2.5 font-body text-[15px] text-[#0b3b44] placeholder:text-[#0b3b44]/35 focus:outline-none focus:ring-2 focus:ring-[#f5b700] focus:border-[#0b3b44]';
+const LABEL = 'block text-[10px] uppercase tracking-[0.28em] font-mono font-bold text-[#0b3b44]/60 mb-1.5';
 
 export default function PressRunExperience() {
   const [stage, setStage] = useState<Stage>('intake');
@@ -218,12 +218,12 @@ export default function PressRunExperience() {
 
       {/* ─── INTAKE ─── */}
       {stage === 'intake' && (
-        <form onSubmit={press} className="rounded-2xl border-2 border-[#14110c] bg-white p-6 md:p-8 shadow-[6px_6px_0_0_#14110c]">
-          <div className="flex items-center gap-3 mb-5 border-b-2 border-[#14110c] pb-4">
-            <Image src="/brand/mascot.png" alt="Mr. Mustard, pressman" width={46} height={46} className="rounded-full border-2 border-[#14110c] bg-[#f5b700]" />
+        <form onSubmit={press} className="rounded-2xl border-2 border-[#0b3b44] bg-white p-6 md:p-8 shadow-[6px_6px_0_0_#0b3b44]">
+          <div className="flex items-center gap-3 mb-5 border-b-2 border-[#0b3b44] pb-4">
+            <Image src="/brand/mascot.png" alt="Mr. Mustard, pressman" width={46} height={46} className="rounded-full border-2 border-[#0b3b44] bg-[#f5b700]" />
             <div>
-              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#8f1d22] font-bold">Job ticket · The Press Run</p>
-              <p className="font-display text-lg font-black text-[#14110c] leading-tight">Hand the pressman your price list.</p>
+              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#0a7c78] font-bold">Job ticket · The Press Run</p>
+              <p className="font-display text-lg font-black text-[#0b3b44] leading-tight">Hand the pressman your price list.</p>
             </div>
           </div>
 
@@ -258,16 +258,16 @@ export default function PressRunExperience() {
           {/* Honeypot: humans never see or fill this. */}
           <input id="pr-website" type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" className="absolute -left-[9999px] h-0 w-0 opacity-0" />
 
-          {error && <p className="mt-4 text-[#8f1d22] text-sm font-body font-semibold">{error}</p>}
+          {error && <p className="mt-4 text-[#0a7c78] text-sm font-body font-semibold">{error}</p>}
 
           <button
             type="submit"
             disabled={submitting}
-            className="mt-6 w-full rounded-full bg-[#f5b700] border-2 border-[#14110c] px-8 py-4 font-sans font-extrabold text-[#14110c] text-sm uppercase tracking-[0.18em] shadow-[4px_4px_0_0_#14110c] transition-all hover:-translate-y-0.5 hover:shadow-[5px_5px_0_0_#14110c] disabled:opacity-50"
+            className="mt-6 w-full rounded-full bg-[#f5b700] border-2 border-[#0b3b44] px-8 py-4 font-sans font-extrabold text-[#0b3b44] text-sm uppercase tracking-[0.18em] shadow-[4px_4px_0_0_#0b3b44] transition-all hover:-translate-y-0.5 hover:shadow-[5px_5px_0_0_#0b3b44] disabled:opacity-50"
           >
             Run my proof (free)
           </button>
-          <p className="mt-3 text-center text-[11px] font-mono text-[#14110c]/50">
+          <p className="mt-3 text-center text-[11px] font-mono text-[#0b3b44]/50">
             One free proof per business. No card. Every price set exactly as you wrote it.
           </p>
         </form>
@@ -275,15 +275,15 @@ export default function PressRunExperience() {
 
       {/* ─── PRESSING: the job log ─── */}
       {stage === 'pressing' && (
-        <div className="rounded-2xl border-2 border-[#14110c] bg-[#14110c] p-6 md:p-8 shadow-[6px_6px_0_0_#f5b700] min-h-[340px]">
+        <div className="rounded-2xl border-2 border-[#0b3b44] bg-[#0b3b44] p-6 md:p-8 shadow-[6px_6px_0_0_#f5b700] min-h-[340px]">
           <div className="flex items-center gap-3 mb-5">
             <Image src="/brand/mascot.png" alt="Mr. Mustard at the press" width={46} height={46} className="rounded-full border-2 border-[#f5b700] bg-[#f5b700] animate-pulse" />
             <div>
               <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#f5b700] font-bold">Press running</p>
-              <p className="font-display text-lg font-black text-[#f6efe0] leading-tight">Setting the type for {form.business.trim()}.</p>
+              <p className="font-display text-lg font-black text-[#fbf5ea] leading-tight">Setting the type for {form.business.trim()}.</p>
             </div>
           </div>
-          <div className="font-mono text-[13px] md:text-sm leading-7 text-[#f6efe0]/90">
+          <div className="font-mono text-[13px] md:text-sm leading-7 text-[#fbf5ea]/90">
             {logLines.filter((l): l is string => typeof l === 'string').map((line, i) => (
               <p key={i} className={`pr-rise ${line.startsWith('[') ? 'text-[#f5b700] font-bold' : ''}`}>{line}</p>
             ))}
@@ -295,7 +295,7 @@ export default function PressRunExperience() {
       {/* ─── THE PROOF ─── */}
       {stage === 'proof' && result && (
         <div className="space-y-6">
-          <div ref={proofWrap} className="pr-press rounded-xl border-[3px] border-[#14110c] bg-white shadow-[10px_10px_0_0_#14110c] overflow-hidden" style={{ height: `${Math.round(1056 * scale) + 2}px` }}>
+          <div ref={proofWrap} className="pr-press rounded-xl border-[3px] border-[#0b3b44] bg-white shadow-[10px_10px_0_0_#0b3b44] overflow-hidden" style={{ height: `${Math.round(1056 * scale) + 2}px` }}>
             <iframe
               title={`The proof for ${result.profile.business}`}
               srcDoc={result.proofHtml}
@@ -308,28 +308,28 @@ export default function PressRunExperience() {
             <a
               href={`/api/press/pdf?runId=${encodeURIComponent(result.runId)}`}
               onClick={() => trackEvent('press_proof_download', {})}
-              className="text-center rounded-full bg-white border-2 border-[#14110c] px-7 py-3.5 font-sans font-extrabold text-[#14110c] text-xs uppercase tracking-[0.18em] shadow-[4px_4px_0_0_#14110c] transition-all hover:-translate-y-0.5"
+              className="text-center rounded-full bg-white border-2 border-[#0b3b44] px-7 py-3.5 font-sans font-extrabold text-[#0b3b44] text-xs uppercase tracking-[0.18em] shadow-[4px_4px_0_0_#0b3b44] transition-all hover:-translate-y-0.5"
             >
               Download the proof (PDF)
             </a>
             <button
               type="button"
               onClick={openEditor}
-              className="rounded-full bg-[#14110c] border-2 border-[#14110c] px-7 py-3.5 font-sans font-extrabold text-[#f6efe0] text-xs uppercase tracking-[0.18em] shadow-[4px_4px_0_0_#f5b700] transition-all hover:-translate-y-0.5"
+              className="rounded-full bg-[#0b3b44] border-2 border-[#0b3b44] px-7 py-3.5 font-sans font-extrabold text-[#fbf5ea] text-xs uppercase tracking-[0.18em] shadow-[4px_4px_0_0_#f5b700] transition-all hover:-translate-y-0.5"
             >
               Fix the type (edit items + prices)
             </button>
           </div>
-          <p className="text-center text-[11px] font-mono text-[#14110c]/50">
+          <p className="text-center text-[11px] font-mono text-[#0b3b44]/50">
             Check every price before you buy. What you approve here is exactly what prints.
           </p>
 
           {/* FIX THE TYPE: the pre-checkout review table */}
           {editing && draft && (
-            <div className="rounded-2xl border-2 border-[#14110c] bg-white p-5 md:p-7 shadow-[6px_6px_0_0_#14110c]">
-              <div className="flex items-center justify-between border-b-2 border-[#14110c] pb-3 mb-4">
-                <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#8f1d22] font-bold">Fix the type</p>
-                <button type="button" onClick={() => setEditing(false)} className="font-mono text-xs font-bold text-[#14110c]/60 hover:text-[#14110c]">close ✕</button>
+            <div className="rounded-2xl border-2 border-[#0b3b44] bg-white p-5 md:p-7 shadow-[6px_6px_0_0_#0b3b44]">
+              <div className="flex items-center justify-between border-b-2 border-[#0b3b44] pb-3 mb-4">
+                <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#0a7c78] font-bold">Fix the type</p>
+                <button type="button" onClick={() => setEditing(false)} className="font-mono text-xs font-bold text-[#0b3b44]/60 hover:text-[#0b3b44]">close ✕</button>
               </div>
               <div className="space-y-6 max-h-[480px] overflow-y-auto pr-2">
                 {draft.sections.map((sec, si) => (
@@ -346,23 +346,23 @@ export default function PressRunExperience() {
                           onChange={(e) => setDraft((d) => { if (!d) return d; const n = structuredClone(d); n.sections[si].items[ii].name = e.target.value; return n; })} />
                         <input className={`${FIELD} text-right`} value={it.price} maxLength={60} placeholder="$0"
                           onChange={(e) => setDraft((d) => { if (!d) return d; const n = structuredClone(d); n.sections[si].items[ii].price = e.target.value; return n; })} />
-                        <button type="button" aria-label={`Remove ${it.name}`} className="h-9 rounded-lg border-2 border-[#14110c]/30 text-[#8f1d22] font-black hover:border-[#b3261e]"
+                        <button type="button" aria-label={`Remove ${it.name}`} className="h-9 rounded-lg border-2 border-[#0b3b44]/30 text-[#0a7c78] font-black hover:border-[#ff6f59]"
                           onClick={() => setDraft((d) => { if (!d) return d; const n = structuredClone(d); n.sections[si].items.splice(ii, 1); return n; })}>✕</button>
                       </div>
                     ))}
-                    <button type="button" className="font-mono text-[11px] font-bold text-[#8f1d22] underline underline-offset-2"
+                    <button type="button" className="font-mono text-[11px] font-bold text-[#0a7c78] underline underline-offset-2"
                       onClick={() => setDraft((d) => { if (!d) return d; const n = structuredClone(d); n.sections[si].items.push({ name: '', detail: null, price: '', note: null }); return n; })}>
                       + add an item
                     </button>
                   </div>
                 ))}
               </div>
-              {error && <p className="mt-3 text-[#8f1d22] text-sm font-body font-semibold">{error}</p>}
+              {error && <p className="mt-3 text-[#0a7c78] text-sm font-body font-semibold">{error}</p>}
               <button
                 type="button"
                 onClick={saveEdits}
                 disabled={saving}
-                className="mt-5 w-full rounded-full bg-[#f5b700] border-2 border-[#14110c] px-8 py-3.5 font-sans font-extrabold text-[#14110c] text-xs uppercase tracking-[0.18em] shadow-[4px_4px_0_0_#14110c] transition-all hover:-translate-y-0.5 disabled:opacity-50"
+                className="mt-5 w-full rounded-full bg-[#f5b700] border-2 border-[#0b3b44] px-8 py-3.5 font-sans font-extrabold text-[#0b3b44] text-xs uppercase tracking-[0.18em] shadow-[4px_4px_0_0_#0b3b44] transition-all hover:-translate-y-0.5 disabled:opacity-50"
               >
                 {saving ? 'Re-setting the type…' : 'Re-set the type'}
               </button>
@@ -375,11 +375,11 @@ export default function PressRunExperience() {
       {/* Breaks out of the intake column so the money row gets full width. */}
       <div id="roll" className="pt-14 md:pt-20 md:relative md:left-1/2 md:-translate-x-1/2 md:w-[min(100vw-2.5rem,64rem)]">
         <div className="text-center mb-8">
-          <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#8f1d22] font-bold mb-3">[ Off the press ]</p>
-          <h2 className="font-display text-3xl md:text-5xl font-black text-[#14110c] tracking-tight leading-[1.05]">
+          <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#0a7c78] font-bold mb-3">[ Off the press ]</p>
+          <h2 className="font-display text-3xl md:text-5xl font-black text-[#0b3b44] tracking-tight leading-[1.05]">
             The proof is free.<br className="hidden md:block" /> The clean file is one click.
           </h2>
-          <p className="font-body text-[#14110c]/65 max-w-xl mx-auto mt-4">
+          <p className="font-body text-[#0b3b44]/65 max-w-xl mx-auto mt-4">
             Approve your prices above, then lift the watermark. Full commercial rights on everything, forever.
           </p>
         </div>
@@ -388,9 +388,9 @@ export default function PressRunExperience() {
             <PressTierCard key={tier.slug} tier={tier} business={form.business.trim() || undefined} runId={result?.runId} />
           ))}
         </div>
-        <p className="text-center mt-6 font-body text-sm text-[#14110c]/60">
+        <p className="text-center mt-6 font-body text-sm text-[#0b3b44]/60">
           Prices change every season? The real fix is a website that updates itself.{' '}
-          <a href="/work-with-us" className="text-[#8f1d22] font-semibold underline underline-offset-2">Talk to the studio</a>.
+          <a href="/work-with-us" className="text-[#0a7c78] font-semibold underline underline-offset-2">Talk to the studio</a>.
         </p>
       </div>
     </div>
@@ -426,22 +426,22 @@ function PressTierCard({ tier, business, runId }: { tier: (typeof pressTiers)[nu
   };
 
   return (
-    <div className={`relative rounded-2xl border-2 border-[#14110c] bg-white p-7 shadow-[6px_6px_0_0_#14110c] flex flex-col ${tier.featured ? 'md:-translate-y-2' : ''}`}>
+    <div className={`relative rounded-2xl border-2 border-[#0b3b44] bg-white p-7 shadow-[6px_6px_0_0_#0b3b44] flex flex-col ${tier.featured ? 'md:-translate-y-2' : ''}`}>
       {tier.featured && (
-        <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full bg-[#b3261e] border-2 border-[#14110c] px-4 py-1 text-[10px] uppercase tracking-[0.22em] font-mono font-bold text-white whitespace-nowrap">
+        <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full bg-[#ff6f59] border-2 border-[#0b3b44] px-4 py-1 text-[10px] uppercase tracking-[0.22em] font-mono font-bold text-white whitespace-nowrap">
           Most pressed
         </span>
       )}
-      <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#8f1d22] font-bold">{tier.chip}</p>
-      <h3 className="font-display text-2xl font-black text-[#14110c] mt-1.5">{tier.name}</h3>
+      <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#0a7c78] font-bold">{tier.chip}</p>
+      <h3 className="font-display text-2xl font-black text-[#0b3b44] mt-1.5">{tier.name}</h3>
       <p className="mt-3">
-        <span className="font-display text-4xl font-black text-[#14110c]">${tier.priceUsd}</span>
-        <span className="font-body text-sm text-[#14110c]/60"> one time</span>
+        <span className="font-display text-4xl font-black text-[#0b3b44]">${tier.priceUsd}</span>
+        <span className="font-body text-sm text-[#0b3b44]/60"> one time</span>
       </p>
-      <p className="font-body text-sm text-[#14110c]/70 mt-2 leading-relaxed">{tier.pitch}</p>
+      <p className="font-body text-sm text-[#0b3b44]/70 mt-2 leading-relaxed">{tier.pitch}</p>
       <ul className="mt-5 space-y-2.5 flex-1">
         {tier.includes.map((line) => (
-          <li key={line} className="flex gap-2.5 font-body text-[13.5px] text-[#14110c]/80 leading-snug">
+          <li key={line} className="flex gap-2.5 font-body text-[13.5px] text-[#0b3b44]/80 leading-snug">
             <span className="text-[#f5b700] font-black mt-[1px]" aria-hidden="true">✓</span>
             {line}
           </li>
@@ -451,13 +451,13 @@ function PressTierCard({ tier, business, runId }: { tier: (typeof pressTiers)[nu
         type="button"
         onClick={buy}
         disabled={busy}
-        className={`mt-6 w-full rounded-full border-2 border-[#14110c] px-6 py-3.5 font-sans font-extrabold text-xs uppercase tracking-[0.18em] shadow-[4px_4px_0_0_#14110c] transition-all hover:-translate-y-0.5 hover:shadow-[5px_5px_0_0_#14110c] disabled:opacity-60 ${
-          tier.featured ? 'bg-[#f5b700] text-[#14110c]' : 'bg-white text-[#14110c]'
+        className={`mt-6 w-full rounded-full border-2 border-[#0b3b44] px-6 py-3.5 font-sans font-extrabold text-xs uppercase tracking-[0.18em] shadow-[4px_4px_0_0_#0b3b44] transition-all hover:-translate-y-0.5 hover:shadow-[5px_5px_0_0_#0b3b44] disabled:opacity-60 ${
+          tier.featured ? 'bg-[#f5b700] text-[#0b3b44]' : 'bg-white text-[#0b3b44]'
         }`}
       >
         {busy ? 'Inking up…' : tier.cta}
       </button>
-      {msg && <p className="mt-3 text-[#8f1d22] text-xs font-body font-semibold">{msg}</p>}
+      {msg && <p className="mt-3 text-[#0a7c78] text-xs font-body font-semibold">{msg}</p>}
     </div>
   );
 }

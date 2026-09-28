@@ -30,19 +30,19 @@ export default function LaunchFilmGreenlitPage() {
   ];
 
   return (
-    <div className="bg-[#f6efe0] text-[#14110c] min-h-screen">
-      <section className="halftone-bg border-b-2 border-[#14110c]">
+    <div className="bg-[#fbf5ea] text-[#0b3b44] min-h-screen">
+      <section className="halftone-bg border-b-2 border-[#0b3b44]">
         <div className="max-w-2xl mx-auto px-5 py-16 md:py-24 text-center">
           <Image
             src="/brand/mascot.png"
             alt="Mr. Mustard"
             width={84}
             height={84}
-            className="mx-auto rounded-full border-2 border-[#14110c] bg-[#f5b700] shadow-[4px_4px_0_0_#14110c]"
+            className="mx-auto rounded-full border-2 border-[#0b3b44] bg-[#f5b700] shadow-[4px_4px_0_0_#0b3b44]"
           />
-          <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#8f1d22] font-bold mt-6 mb-3">[ GREENLIT ]</p>
+          <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#0a7c78] font-bold mt-6 mb-3">[ GREENLIT ]</p>
           <h1 className="font-display text-4xl md:text-5xl font-black tracking-tight leading-[1.02]">Your launch has a film now.</h1>
-          <p className="font-body text-[#14110c]/70 mt-4 max-w-md mx-auto leading-relaxed">
+          <p className="font-body text-[#0b3b44]/70 mt-4 max-w-md mx-auto leading-relaxed">
             Order confirmed, the Stripe receipt is on its way, and a note from Sarah lands in your inbox today. Here is what happens next.
           </p>
         </div>
@@ -51,19 +51,19 @@ export default function LaunchFilmGreenlitPage() {
       <section className="max-w-2xl mx-auto px-5 py-14">
         <div className="space-y-4">
           {steps.map((s) => (
-            <div key={s.n} className="rounded-2xl border-2 border-[#14110c] bg-white p-6 shadow-[5px_5px_0_0_#14110c] flex gap-5">
+            <div key={s.n} className="rounded-2xl border-2 border-[#0b3b44] bg-white p-6 shadow-[5px_5px_0_0_#0b3b44] flex gap-5">
               <span className="font-display italic text-3xl font-black text-[#f5b700] leading-none" aria-hidden="true">
                 {s.n}
               </span>
               <div>
                 <h2 className="font-display text-lg font-black leading-tight">{s.title}</h2>
-                <p className="font-body text-sm text-[#14110c]/70 leading-relaxed mt-1.5">{s.body}</p>
+                <p className="font-body text-sm text-[#0b3b44]/70 leading-relaxed mt-1.5">{s.body}</p>
               </div>
             </div>
           ))}
         </div>
 
-        <div className="rounded-2xl border-2 border-[#14110c] bg-[#14110c] text-[#f6efe0] p-6 mt-8 text-center">
+        <div className="rounded-2xl border-2 border-[#0b3b44] bg-[#0b3b44] text-[#fbf5ea] p-6 mt-8 text-center">
           <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#f5b700] font-bold mb-2">The one thing that speeds it up</p>
           <p className="font-body text-sm leading-relaxed">
             Reply to Sarah&apos;s email with the product link and a login if it needs one. The film starts the moment the product runs.
@@ -71,7 +71,7 @@ export default function LaunchFilmGreenlitPage() {
         </div>
 
         <p className="text-center mt-10">
-          <Link href="/" className="font-sans font-extrabold text-xs uppercase tracking-[0.18em] text-[#8f1d22] underline underline-offset-4">
+          <Link href="/" className="font-sans font-extrabold text-xs uppercase tracking-[0.18em] text-[#0a7c78] underline underline-offset-4">
             Back to Modern Mustard Seed →
           </Link>
         </p>

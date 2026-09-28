@@ -41,7 +41,7 @@ export default function EnrollButton() {
         type="button"
         onClick={startCheckout}
         disabled={loading}
-        className="inline-flex min-h-12 w-full items-center justify-center rounded-full border-2 border-[#14110c] bg-[#f5b700] px-6 py-3 font-sans text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#14110c] shadow-[4px_4px_0_0_#14110c] transition-transform hover:-translate-y-0.5 disabled:cursor-wait disabled:opacity-65"
+        className="inline-flex min-h-12 w-full items-center justify-center rounded-full border-2 border-[#0b3b44] bg-[#f5b700] px-6 py-3 font-sans text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#0b3b44] shadow-[4px_4px_0_0_#0b3b44] transition-transform hover:-translate-y-0.5 disabled:cursor-wait disabled:opacity-65"
       >
         {loading ? 'Opening secure checkout...' : 'Take a founding seat · $997'}
       </button>
