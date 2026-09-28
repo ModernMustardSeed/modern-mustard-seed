@@ -13,6 +13,7 @@ const RESULTS = [
   { metric: '$30K commission', outcome: '$99 monthly tool', client: 'DEED AI' },
   { metric: '2 hours', outcome: '90 seconds per deal', client: 'PTG AI Deal Analyzer' },
   { metric: 'Sketch', outcome: 'Live storefront in 60 days', client: 'Cross + Covenant' },
+  { metric: 'Empty room photo', outcome: 'Staged in 60 seconds', client: 'Fiat Lux Design' },
   { metric: '3 hours of small jobs', outcome: '30 minutes of review', client: 'Wild Daisy' },
   { metric: '30% missed calls', outcome: '24/7 coverage', client: 'VoiceStaff' },
   { metric: 'Idea', outcome: 'Live product in weeks', client: 'Olive Shoot' },
