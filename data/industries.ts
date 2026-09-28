@@ -205,15 +205,15 @@ export const industries: Industry[] = [
       },
     ],
     receipt: {
-      caseStudySlug: 'voicestaff',
-      caseStudyTitle: 'VoiceStaff: Voice Agents That Actually Sound Human',
-      headline: 'Every buyer inquiry answered, day or night',
+      caseStudySlug: 'luxe-design',
+      caseStudyTitle: 'Luxe Design: Virtual Staging in Under a Minute',
+      headline: 'Virtual staging in under a minute, ready for MLS',
       body:
-        'VoiceStaff is the production voice agent platform behind our buyer follow-up agents. Real phone numbers, real inbound calls, real appointments booked. Vapi carries the voice, Claude does the reasoning, Supabase keeps every transcript, and the follow-up runs on its own schedule. For an agent, that means the open-house sign-in, the Zillow inquiry and the 9 PM call about the listing on Maple all get answered on the first ring, qualified against your active listings, and booked into a showing on your calendar. You read every conversation as a transcript the next morning. The buyer who calls three agents books with the one who picked up, and now that is you.',
+        'Luxe Design is a specialty agentic tool that turns empty listing photos into fully staged interior renderings in under 60 seconds. Eight design styles. Eight room types. Stripe-metered usage with a subscription tier and a credits tier. Built end-to-end on Next.js and Replicate, hosted on Vercel, payments on Stripe. The agents and investors who use it stage three listings on a Saturday afternoon. The output looks like a thousand-dollar interior designer set the room. The cost lands closer to a hundred dollars a month than a thousand a project. This is the pattern: the agentic tool compresses the part of the workflow that should never have been manual, and the agent reclaims the time and the margin. The same tooling can be branded for your brokerage, tuned to your local design preferences, and delivered with your logo. Or you can use ours and skip the build.',
       metrics: [
-        { label: 'Phone coverage', value: '24/7' },
-        { label: 'Time to deploy', value: 'Days' },
-        { label: 'Call outcomes', value: 'Book, qualify, transfer' },
+        { label: 'Staging time', value: 'Under 60 sec' },
+        { label: 'Cost vs traditional', value: '$99/mo vs $3K/project' },
+        { label: 'Build duration', value: '2 to 4 weeks' },
       ],
     },
     pricing: {

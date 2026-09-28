@@ -53,6 +53,13 @@ export const projects: Project[] = [
     color: 'from-amber-900/40 to-amber-800/20',
   },
   {
+    title: 'Luxe Design',
+    subtitle: 'Agentic interior design and virtual staging for real estate pros',
+    tags: ['Replicate', 'Stripe', 'Supabase'],
+    href: 'https://luxedesign-five.vercel.app',
+    color: 'from-rose-900/40 to-rose-800/20',
+  },
+  {
     title: 'AdBuild Studio',
     subtitle: 'Agent-powered ad creative generation and campaign design',
     tags: ['Agentic', 'Creative', 'Studio'],
