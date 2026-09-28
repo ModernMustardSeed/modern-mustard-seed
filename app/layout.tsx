@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { DM_Sans, Playfair_Display, Cormorant_Garamond, JetBrains_Mono, Oswald, Bodoni_Moda, Instrument_Sans } from 'next/font/google';
+import { DM_Sans, Playfair_Display, Cormorant_Garamond, JetBrains_Mono, Oswald, Unbounded, Figtree } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import Navbar from '@/components/Navbar';
@@ -26,11 +26,12 @@ const displayFont = Playfair_Display({ subsets: ['latin'], style: ['normal', 'it
 const serifFont = Cormorant_Garamond({ subsets: ['latin'], weight: ['300', '400', '500', '600'], style: ['normal', 'italic'], display: 'swap', preload: false, variable: '--font-serif' });
 const monoFont = JetBrains_Mono({ subsets: ['latin'], weight: ['400', '500', '700'], display: 'swap', preload: false, variable: '--font-mono' });
 const condensedFont = Oswald({ subsets: ['latin'], weight: ['400', '500', '600', '700'], display: 'swap', preload: false, variable: '--font-oswald' });
-// The Riviera (2026-09-27): a Paris-fashion Didone for display, set on its
-// optical-size axis so the hairlines sharpen as the type grows, and a clean
-// modern grotesk with a width axis for labels and reading. Both preload.
-const rivieraFont = Bodoni_Moda({ subsets: ['latin'], style: ['normal', 'italic'], axes: ['opsz'], display: 'swap', variable: '--font-riviera' });
-const capsFont = Instrument_Sans({ subsets: ['latin'], axes: ['wdth'], display: 'swap', variable: '--font-caps' });
+// The Riviera (2026-09-27): display type is Unbounded, wide, round and
+// confident, the face that says software at a glance and still feels like
+// the beach; the accent word is Unbounded in a lighter weight. Figtree sets
+// labels, reading type and the italics. Sarah picked the pairing ("c").
+const rivieraFont = Unbounded({ subsets: ['latin'], display: 'swap', variable: '--font-riviera' });
+const capsFont = Figtree({ subsets: ['latin'], style: ['normal', 'italic'], display: 'swap', variable: '--font-caps' });
 
 export const metadata: Metadata = buildMetadata();
 

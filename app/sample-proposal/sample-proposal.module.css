@@ -63,7 +63,7 @@
 .pow span {
   max-width: 76%;
   text-align: center;
-  font-family: var(--font-riviera), Georgia, serif;
+  font-family: var(--font-caps), sans-serif;
   font-style: italic;
   font-weight: 500;
   font-size: 19px;
@@ -98,7 +98,7 @@
   border: 0;
   border-radius: 20px 20px 20px 6px;
   box-shadow: 0 16px 30px -16px #0b3b44aa, 0 0 0 1px #0b3b4412;
-  font-family: var(--font-riviera), Georgia, serif;
+  font-family: var(--font-caps), sans-serif;
   font-style: italic;
   font-weight: 500;
   font-size: 18px;

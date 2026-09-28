@@ -755,8 +755,8 @@
 }
 
 /* ───── The Riviera (2026-09-27) ─────
-   The same page, at the beach club: display type in Bodoni Moda with its
-   italic, labels and reading type in Instrument Sans, the art on a postcard,
+   The same page, at the beach club: display type in Unbounded Bold with a
+   lighter accent word, labels, reading type and italics in Figtree, the art on a postcard,
    the awning ticker for banners, deep-sea and mustard pills for buttons,
    scallops and waves for ornament. Rules here override the ones above. */
 
@@ -804,7 +804,7 @@
   border: 0;
   border-radius: 20px 20px 20px 6px;
   box-shadow: 0 16px 30px -16px #0b3b44aa, 0 0 0 1px #0b3b4412;
-  font-family: var(--font-riviera), Georgia, serif;
+  font-family: var(--font-caps), sans-serif;
   font-style: italic;
   font-weight: 500;
   font-size: 16px;
@@ -814,7 +814,7 @@
 /* Hero: sand with a low sun behind the postcard. */
 .hero { background: transparent; }
 .heroDots { opacity: 1; background: radial-gradient(circle at 80% 78%, #f5b70038 0, #f5b70014 26%, transparent 50%); background-size: auto; -webkit-mask-image: none; mask-image: none; }
-.h1 { font-family: var(--font-riviera), Georgia, serif; font-weight: 500; letter-spacing: -.035em; line-height: .98; text-transform: none; }
+.h1 { font-family: var(--font-riviera), system-ui, sans-serif; font-weight: 700; letter-spacing: -.04em; line-height: 1.05; text-transform: none; }
 .rays { display: none; }
 .glow { background: radial-gradient(circle, #81d8d055 0, #81d8d01a 34%, #81d8d000 60%); }
 .cta, .ctaAlt { border: 0; border-radius: 999px; font-family: var(--font-caps), sans-serif; font-weight: 600; letter-spacing: .01em; text-transform: none; }
@@ -835,7 +835,7 @@
 }
 .frameImg { border: 0; border-radius: 12px; }
 .frameCap {
-  font-family: var(--font-riviera), Georgia, serif;
+  font-family: var(--font-caps), sans-serif;
   font-style: italic;
   font-size: 18px;
   font-weight: 400;
@@ -850,7 +850,7 @@
 .stickerText {
   padding-top: 0;
   max-width: 76%;
-  font-family: var(--font-riviera), Georgia, serif;
+  font-family: var(--font-caps), sans-serif;
   font-style: italic;
   font-weight: 500;
   font-size: 19px;
@@ -874,7 +874,7 @@
 }
 .marquee::after, .tapeBand::after { display: none; }
 .marquee, .tapeBand { overflow: hidden; }
-.mItem { font-family: var(--font-riviera), Georgia, serif; font-style: italic; font-weight: 400; font-size: 20px; letter-spacing: -.005em; text-transform: none; padding-block: 14px 13px; }
+.mItem { font-family: var(--font-caps), sans-serif; font-style: italic; font-weight: 400; font-size: 20px; letter-spacing: -.005em; text-transform: none; padding-block: 14px 13px; }
 .mItem i { font-size: 10px; color: var(--mustard); }
 .mItem:nth-child(3n + 2) i { color: var(--tiffany); }
 .tapeBand { background: var(--deep); color: var(--cream); rotate: 0deg; border: 0; box-shadow: none; }
@@ -884,7 +884,7 @@
 /* What happens: three postcards on a sea-foam band. */
 .steps { background: #e6f7f5; }
 .stepsDots { background: var(--wave) 0 30px / 22px 10px repeat-x; opacity: .7; -webkit-mask-image: none; mask-image: none; }
-.h2 { font-family: var(--font-riviera), Georgia, serif; font-weight: 500; letter-spacing: -.03em; line-height: 1; text-transform: none; }
+.h2 { font-family: var(--font-riviera), system-ui, sans-serif; font-weight: 700; letter-spacing: -.035em; line-height: 1.06; text-transform: none; }
 .panel { background: #fff; border: 0; border-radius: 24px; box-shadow: 0 30px 60px -36px #0b3b4480, 0 0 0 1px #0b3b4410; filter: none; rotate: 0deg; }
 .panel:hover { rotate: 0deg; translate: 0 -4px; box-shadow: 0 36px 64px -32px #0b3b4499, 0 0 0 1px var(--tiffany); filter: none; }
 .panelArt { border: 0; border-radius: 16px; overflow: hidden; }
@@ -905,8 +905,8 @@
 .num { rotate: 0deg; }
 .panel:hover .num { rotate: 0deg; }
 .num svg { filter: none; }
-.num span { font-family: var(--font-riviera), Georgia, serif; font-style: italic; font-weight: 500; font-size: 24px; padding-top: 2px; }
-.panelTitle { font-family: var(--font-riviera), Georgia, serif; font-weight: 600; font-size: 1.7rem; line-height: 1.05; letter-spacing: -.02em; text-transform: none; }
+.num span { font-family: var(--font-riviera), system-ui, sans-serif; font-style: normal; font-weight: 700; font-size: 20px; padding-top: 2px; }
+.panelTitle { font-family: var(--font-riviera), system-ui, sans-serif; font-weight: 700; font-size: 1.35rem; line-height: 1.12; letter-spacing: -.03em; text-transform: none; }
 .promise { background: var(--ink); border: 0; border-radius: 28px; box-shadow: 0 40px 70px -40px #0b3b44cc; }
 .promiseDots { background: var(--wave) 0 calc(100% - 20px) / 22px 10px repeat-x; background-size: 22px 10px; opacity: .5; -webkit-mask-image: none; mask-image: none; }
 .promiseLabel { font-family: var(--font-caps), sans-serif; font-weight: 600; font-size: 12.5px; letter-spacing: .2em; }
@@ -915,7 +915,7 @@
   color: var(--ink);
   border: 0;
   border-radius: 999px;
-  font-family: var(--font-riviera), Georgia, serif;
+  font-family: var(--font-caps), sans-serif;
   font-style: italic;
   font-size: 17px;
   font-weight: 500;
@@ -952,7 +952,7 @@
 .q summary { border-radius: 20px; font-family: var(--font-caps), sans-serif; font-weight: 600; font-size: 1.1rem; letter-spacing: -.005em; }
 .toggle { border-radius: 50%; box-shadow: none; border: 0; background: var(--tiffany); color: var(--ink); }
 .q[open] .toggle { background: var(--ink); color: var(--mustard); }
-.faqBubble { font-family: var(--font-riviera), Georgia, serif; font-style: italic; }
+.faqBubble { font-family: var(--font-caps), sans-serif; font-style: italic; }
 .faqMascot { rotate: 0deg; }
 
 @media (max-width: 760px) {
@@ -961,7 +961,7 @@
   .sticker { width: 88px; top: -14px; right: -4px; }
   .stickerText { font-size: 14px; }
   .heroBubble { left: 0; bottom: 8px; font-size: 14px; }
-  .h1 { font-size: clamp(2.8rem, 12.5vw, 3.8rem); }
+  .h1 { font-size: clamp(2.1rem, 9.4vw, 2.9rem); }
   .marquee { margin-inline: -10px; }
   .mItem, .tapeBand .mItem { font-size: 17px; }
   .caption { font-size: 11.5px; letter-spacing: .16em; }

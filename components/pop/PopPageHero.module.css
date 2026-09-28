@@ -1,6 +1,6 @@
 /* The Riviera page hero. Sand, deep sea, Tiffany blue, lagoon, mustard and
-   coral. Display type in Bodoni Moda with the italic accent, labels and
-   reading type in Instrument Sans; no outlined or stroked type, no cobalt.
+   coral. Display type in Unbounded Bold with a lighter accent word, labels,
+   reading type and italics in Figtree; no outlined or stroked type, no cobalt.
    Motion is the entrance and the ticker only, all of it off under
    prefers-reduced-motion. The card stays light: pages hand in their own lead
    and note colors, which are set for sand. */
@@ -103,7 +103,7 @@
   animation: dropIn .6s .45s cubic-bezier(.3, 1.3, .5, 1) both;
 }
 .issue::before { content: ''; position: absolute; left: 11px; top: 50%; width: 9px; height: 9px; margin-top: -4.5px; border-radius: 50%; background: var(--card); }
-.issue b { font-family: var(--font-riviera), Georgia, serif; font-style: italic; font-weight: 500; font-size: 26px; line-height: 1; color: var(--mustard); }
+.issue b { font-family: var(--font-riviera), system-ui, sans-serif; font-style: normal; font-weight: 700; font-size: 21px; line-height: 1; color: var(--mustard); }
 .issue span { font-family: var(--font-caps), sans-serif; font-size: 10px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; }
 .issue span + span::before { content: '· '; color: var(--tiffany); }
 @keyframes dropIn { from { opacity: 0; transform: translateY(-14px); } to { opacity: 1; transform: none; } }
@@ -176,11 +176,11 @@
    The accent comes from app/riviera-type.css. */
 .hero .h1 {
   margin: 0;
-  font-family: var(--font-riviera), 'Bodoni Moda', Georgia, serif;
-  font-weight: 500;
-  font-size: clamp(3rem, 5.6vw, 5.6rem);
-  line-height: .98;
-  letter-spacing: -.035em;
+  font-family: var(--font-riviera), 'Unbounded', system-ui, sans-serif;
+  font-weight: 700;
+  font-size: clamp(2.3rem, 4.2vw, 4.3rem);
+  line-height: 1.06;
+  letter-spacing: -.04em;
   text-transform: none;
   color: var(--ink);
   text-wrap: balance;
@@ -244,7 +244,7 @@
 .posterCap {
   padding: 12px 6px 0;
   text-align: center;
-  font-family: var(--font-riviera), Georgia, serif;
+  font-family: var(--font-caps), sans-serif;
   font-style: italic;
   font-weight: 400;
   font-size: 19px;
@@ -277,7 +277,7 @@
   position: relative;
   max-width: 80%;
   text-align: center;
-  font-family: var(--font-riviera), Georgia, serif;
+  font-family: var(--font-caps), sans-serif;
   font-style: italic;
   font-size: clamp(17px, 1.5vw, 22px);
   font-weight: 500;
@@ -300,7 +300,7 @@
   color: var(--ink);
   border-radius: 20px 20px 20px 6px;
   box-shadow: 0 16px 30px -16px #0b3b44aa, 0 0 0 1px #0b3b4412;
-  font-family: var(--font-riviera), Georgia, serif;
+  font-family: var(--font-caps), sans-serif;
   font-style: italic;
   font-weight: 500;
   font-size: 18px;
@@ -343,7 +343,7 @@
   align-items: center;
   gap: 24px;
   padding: 14px 24px 13px 0;
-  font-family: var(--font-riviera), Georgia, serif;
+  font-family: var(--font-caps), sans-serif;
   font-style: italic;
   font-size: 20px;
   font-weight: 400;
@@ -371,7 +371,7 @@
   .issue span { font-size: 9px; }
   .eyebrow { margin-bottom: 18px; }
   .pill, .eyebrow > span:only-child, .eyebrow > p:only-child { font-size: 11.5px; letter-spacing: .16em; }
-  .hero .h1 { font-size: clamp(2.6rem, 12vw, 3.6rem); line-height: 1; }
+  .hero .h1 { font-size: clamp(2rem, 9vw, 2.8rem); line-height: 1.08; }
   .lead, .copy > p { font-size: 16.5px; }
   .actions { flex-direction: column; align-items: stretch; }
   .cta, .ctaAlt { justify-content: space-between; padding: 0 24px; }

@@ -185,14 +185,14 @@
 
 
 /* ---------- The Riviera (2026-09-27) ----------
-   The beach hero carried down the page: Bodoni Moda headings with the italic
-   accent and its wave (app/riviera-type.css), kickers in tracked Instrument
+   The beach hero carried down the page: Unbounded Bold headings with a lighter
+   accent word and its wave (app/riviera-type.css), kickers in tracked Figtree
    Sans after a little sun, warm sand between bands of deep lagoon, Tiffany
    and mustard, postcard-white frames with soft corners, scalloped awning
    edges and waves for ornament. These rules override the ones above. */
-.studio{--ink:#0b3b44;--cream:#fbf5ea;--mustard:#f5b700;--red:#ff6f59;--coral:#ff6f59;--lagoon:#0a7c78;--butter:#d8f3f0;--tiffany:#81d8d0;--deep:#0e5f63;--midnight:#0b3b44;--t-h2:clamp(44px,5.6vw,88px);--t-h2c:clamp(38px,4.2vw,64px);--t-mega:clamp(58px,9vw,150px);--wave:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 8'%3E%3Cpath d='M0 4c5 0 5-3 10-3s5 3 10 3 5-3 10-3 5 3 10 3' fill='none' stroke='%2381d8d0' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E");--wave-white:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 8'%3E%3Cpath d='M0 4c5 0 5-3 10-3s5 3 10 3 5-3 10-3 5 3 10 3' fill='none' stroke='%23ffffff' stroke-width='1.6' stroke-linecap='round' opacity='.55'/%3E%3C/svg%3E");--scallop:radial-gradient(circle at 20px 0,#000 19.5px,transparent 20px) 0 0/40px 16px repeat-x;background:transparent;font-family:var(--font-caps),sans-serif}
-.studio h2{font-family:var(--font-riviera),Georgia,serif;font-weight:500;letter-spacing:-.03em;line-height:.98}
-.studio em{font-family:var(--font-riviera),Georgia,serif;font-style:italic;font-weight:400}
+.studio{--ink:#0b3b44;--cream:#fbf5ea;--mustard:#f5b700;--red:#ff6f59;--coral:#ff6f59;--lagoon:#0a7c78;--butter:#d8f3f0;--tiffany:#81d8d0;--deep:#0e5f63;--midnight:#0b3b44;--t-h2:clamp(34px,4.2vw,66px);--t-h2c:clamp(30px,3.3vw,50px);--t-mega:clamp(40px,6.2vw,104px);--wave:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 8'%3E%3Cpath d='M0 4c5 0 5-3 10-3s5 3 10 3 5-3 10-3 5 3 10 3' fill='none' stroke='%2381d8d0' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E");--wave-white:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 8'%3E%3Cpath d='M0 4c5 0 5-3 10-3s5 3 10 3 5-3 10-3 5 3 10 3' fill='none' stroke='%23ffffff' stroke-width='1.6' stroke-linecap='round' opacity='.55'/%3E%3C/svg%3E");--scallop:radial-gradient(circle at 20px 0,#000 19.5px,transparent 20px) 0 0/40px 16px repeat-x;background:transparent;font-family:var(--font-caps),sans-serif}
+.studio h2{font-family:var(--font-riviera), system-ui, sans-serif;font-weight:500;letter-spacing:-.03em;line-height:.98}
+.studio em{font-family:var(--font-riviera), system-ui, sans-serif;font-style: normal;font-weight: 400}
 .studio a:focus-visible,.studio summary:focus-visible{outline:2px solid var(--lagoon);outline-offset:6px}
 
 /* Kickers: tracked capitals after a little sun, a wave behind. */
@@ -213,7 +213,7 @@
 /* The verse, set like a line of poetry on the sand. */
 .verse{position:relative;background:transparent;border-bottom:0;padding:64px 6vw 58px}
 .verse:after{content:'';position:absolute;left:50%;bottom:0;width:min(240px,50vw);height:10px;translate:-50% 0;background:var(--wave) 0 50%/20px 10px repeat-x}
-.verse blockquote p{font-family:var(--font-riviera),Georgia,serif;font-style:italic;font-weight:400;font-size:clamp(24px,2.5vw,36px);line-height:1.3;letter-spacing:-.01em;color:var(--ink)}
+.verse blockquote p{font-family:var(--font-caps),sans-serif;font-style:italic;font-weight:400;font-size:clamp(24px,2.5vw,36px);line-height:1.3;letter-spacing:-.01em;color:var(--ink)}
 .verse figcaption{color:var(--lagoon);font-family:var(--font-caps),sans-serif;font-weight:600;font-size:12.5px;letter-spacing:.26em}
 .kingdomLink{border-bottom:2px solid var(--tiffany)}.kingdomLink>span{color:var(--lagoon)}
 
@@ -224,7 +224,7 @@
 .showMine .eyebrow{background:none;padding:0;transform:none}
 .showMine .eyebrow:after{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 8'%3E%3Cpath d='M0 4c5 0 5-3 10-3s5 3 10 3 5-3 10-3 5 3 10 3' fill='none' stroke='%230b3b44' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E")}
 .showMine .eyebrow:before{background:var(--ink);box-shadow:none}
-.showMine h2{font-family:var(--font-riviera),Georgia,serif;font-weight:500;letter-spacing:-.03em;line-height:1}
+.showMine h2{font-family:var(--font-riviera), system-ui, sans-serif;font-weight:500;letter-spacing:-.03em;line-height:1}
 .showMine h2 em{display:inline;font-weight:400}
 .showForm input{border:0;border-radius:999px;box-shadow:inset 0 0 0 1.5px #0b3b4433,0 10px 24px -14px #0b3b4499;background:#fff;padding:0 24px;font-family:var(--font-caps),sans-serif}
 .showForm input:focus{box-shadow:inset 0 0 0 2px var(--ink),0 10px 24px -14px #0b3b4499}
@@ -239,8 +239,8 @@
 .projectImage{border:0;border-radius:22px;overflow:hidden;padding:10px;background:#fff;box-shadow:0 34px 60px -34px #0b3b4480,0 0 0 1px #0b3b4412;filter:none}
 .projectImage picture,.projectImage img{display:block;width:100%;height:100%;border-radius:14px;overflow:hidden}
 .workVideo{inset:10px;width:calc(100% - 20px);height:calc(100% - 20px);border-radius:14px}
-.projectCaption h3{font-family:var(--font-riviera),Georgia,serif;font-weight:600;font-size:36px;letter-spacing:-.02em}
-.projectNumber{min-width:46px;height:46px;border-radius:50%;background:var(--tiffany);color:var(--ink);border:0;box-shadow:none;font-family:var(--font-riviera),Georgia,serif;font-style:italic;font-size:18px;font-weight:500;transform:none}
+.projectCaption h3{font-family:var(--font-riviera), system-ui, sans-serif;font-weight:600;font-size:36px;letter-spacing:-.02em}
+.projectNumber{min-width:46px;height:46px;border-radius:50%;background:var(--tiffany);color:var(--ink);border:0;box-shadow:none;font-family:var(--font-riviera),system-ui,sans-serif;font-style:normal;font-size:15px;font-weight:700;transform:none}
 
 /* In their words: deep lagoon with a slow swell of waves. */
 .results{position:relative;background:var(--deep);background-image:var(--wave-white),radial-gradient(ellipse at 20% 0,#12787c 0,transparent 60%);background-size:26px 10px,auto;background-position:0 calc(100% - 22px),0 0;background-repeat:repeat-x,no-repeat;border:0}
@@ -248,9 +248,9 @@
 .resultsTop h2{color:#fff}
 .result{border:1px solid #81d8d055;border-radius:24px;box-shadow:none;background:#ffffff10;backdrop-filter:blur(4px)}
 .result:nth-child(2){box-shadow:none}
-.result>strong{font-family:var(--font-riviera),Georgia,serif;font-weight:500;letter-spacing:-.03em;color:var(--mustard)}
+.result>strong{font-family:var(--font-riviera), system-ui, sans-serif;font-weight:500;letter-spacing:-.03em;color:var(--mustard)}
 .resultLabel{color:var(--tiffany);font-family:var(--font-caps),sans-serif}
-.result blockquote{font-family:var(--font-riviera),Georgia,serif;font-style:italic;font-weight:400;line-height:1.5;color:#fbf5ea}
+.result blockquote{font-family:var(--font-caps),sans-serif;font-style:italic;font-weight:400;line-height:1.5;color:#fbf5ea}
 .result figcaption{border-top:1px solid #81d8d044;color:#fff}
 .result figcaption span{color:#bfe9e4}
 
@@ -258,7 +258,7 @@
 .tvSection{background:transparent;border-top:0}
 .tvSection:before{background:radial-gradient(circle at 50% 46%,#81d8d066 0,#81d8d01f 30%,transparent 56%);-webkit-mask-image:none;mask-image:none}
 .tvHead .eyebrow{background:none;padding:0;transform:none;color:var(--lagoon)}
-.tvHead h2{font-family:var(--font-riviera),Georgia,serif;font-weight:500;letter-spacing:-.03em}
+.tvHead h2{font-family:var(--font-riviera), system-ui, sans-serif;font-weight:500;letter-spacing:-.03em}
 .tvHead h2 em{color:var(--lagoon)}
 
 /* The statement: a Tiffany band, the sea rolling in along the bottom. */
@@ -266,9 +266,9 @@
 .statement:before{content:'';position:absolute;left:0;right:0;bottom:0;top:auto;width:auto;height:84px;opacity:1;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 84' preserveAspectRatio='none'%3E%3Cpath d='M0 30c30 0 30-18 60-18s30 18 60 18 30-18 60-18 30 18 60 18v54H0z' fill='%23ffffff' opacity='.35'/%3E%3Cpath d='M0 52c30 0 30-16 60-16s30 16 60 16 30-16 60-16 30 16 60 16v32H0z' fill='%23fbf5ea'/%3E%3C/svg%3E") 0 0/480px 84px repeat-x;-webkit-mask-image:none;mask-image:none;animation:swell 18s linear infinite}
 @keyframes swell{to{background-position:-480px 0}}
 .statement>*{position:relative}
-.statement>p{font-family:var(--font-riviera),Georgia,serif;font-weight:500;letter-spacing:-.035em;line-height:.98;color:var(--ink)}
-.statement>p>em{display:inline;margin:0;padding:0;background:none;border:0;box-shadow:none;transform:none;font-family:var(--font-riviera),Georgia,serif;font-style:italic;font-weight:400;color:var(--deep)}
-.statement>p>span{font-family:var(--font-riviera),Georgia,serif;font-style:italic;font-weight:400;color:var(--deep)}
+.statement>p{font-family:var(--font-riviera), system-ui, sans-serif;font-weight:500;letter-spacing:-.035em;line-height:.98;color:var(--ink)}
+.statement>p>em{display:inline;margin:0;padding:0;background:none;border:0;box-shadow:none;transform:none;font-family:var(--font-riviera), system-ui, sans-serif;font-style: normal;font-weight: 400;color:var(--deep)}
+.statement>p>span{font-family:var(--font-riviera),system-ui,sans-serif;font-style:normal;font-weight:400;color:var(--deep)}
 .statement>div{color:#0b3b44cc}
 
 /* The practice: five postcards, each with its own scene. */
@@ -276,8 +276,8 @@
 .disciplineList{display:grid;gap:16px;background:none;padding:0;box-shadow:none}
 .discipline{grid-template-columns:54px 1fr 170px 26px;align-items:center;gap:26px;padding:22px 24px 22px 26px;border:0!important;border-radius:24px;background:#fff;box-shadow:0 24px 50px -34px #0b3b4480,0 0 0 1px #0b3b4410;color:var(--ink);transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s}
 .discipline:hover{transform:translateY(-3px);box-shadow:0 30px 60px -30px #0b3b4499,0 0 0 1px #81d8d0}
-.disciplineIndex{display:block;padding:0;border:0;color:var(--lagoon);font-family:var(--font-riviera),Georgia,serif;font-style:italic;font-weight:400;font-size:34px;line-height:1}
-.discipline h3{font-family:var(--font-riviera),Georgia,serif;font-weight:600;font-size:28px;letter-spacing:-.02em;color:var(--ink)}
+.disciplineIndex{display:block;padding:0;border:0;color:var(--lagoon);font-family:var(--font-riviera),system-ui,sans-serif;font-style:normal;font-weight:700;font-size:28px;line-height:1}
+.discipline h3{font-family:var(--font-riviera), system-ui, sans-serif;font-weight:600;font-size:28px;letter-spacing:-.02em;color:var(--ink)}
 .discipline p{color:#3f5a5f}
 .tags{color:var(--lagoon);font-family:var(--font-caps),sans-serif;font-weight:600;letter-spacing:.14em}
 .discipline>span:last-child{color:var(--ink)}
@@ -291,8 +291,8 @@
 .founder:before{content:'';position:absolute;left:0;right:0;bottom:100%;top:auto;height:16px;background:var(--ink);-webkit-mask:var(--scallop);mask:var(--scallop);transform:scaleY(-1);pointer-events:none}
 .founderHeading h2{color:#fff}
 .founderHeading em{color:var(--tiffany)}
-.founderInitial{font-family:var(--font-riviera),Georgia,serif;font-style:italic;font-weight:400;color:var(--mustard);text-shadow:none}
-.founderBody .founderLead{font-family:var(--font-riviera),Georgia,serif;font-size:28px;letter-spacing:-.015em;line-height:1.3}
+.founderInitial{font-family:var(--font-riviera),system-ui,sans-serif;font-style:normal;font-weight:800;color:var(--mustard);text-shadow:none}
+.founderBody .founderLead{font-family:var(--font-riviera), system-ui, sans-serif;font-size:28px;letter-spacing:-.015em;line-height:1.3}
 .founderBody>p{color:#bfd8da}
 .ownership{border-top:1px solid #81d8d044}
 .ownership>span{font-family:var(--font-caps),sans-serif;font-weight:600;font-size:12.5px;letter-spacing:.2em;color:var(--mustard)}
@@ -300,7 +300,7 @@
 /* Concierge: Mr. Mustard in front of the sun. */
 .concierge{background:transparent;border-bottom:0}
 .mascotOrbit{border:0;box-shadow:0 0 0 10px #fbf5ea,0 0 0 11px #81d8d0;background:radial-gradient(circle,#ffe27a 0,#f5b700 62%,#f0a800 100%);transform:none;border-radius:50%}
-.mascotLabel{background:#fff;color:var(--ink);border:0;border-radius:999px;box-shadow:0 12px 26px -14px #0b3b4499;padding:10px 18px;font-family:var(--font-riviera),Georgia,serif;font-style:italic;font-weight:500;font-size:16px;letter-spacing:0;text-transform:none;transform:none}
+.mascotLabel{background:#fff;color:var(--ink);border:0;border-radius:999px;box-shadow:0 12px 26px -14px #0b3b4499;padding:10px 18px;font-family:var(--font-caps),sans-serif;font-style:italic;font-weight:500;font-size:16px;letter-spacing:0;text-transform:none;transform:none}
 .concierge h2 em{color:var(--lagoon)}
 .phone{font-weight:600;font-family:var(--font-caps),sans-serif;font-size:14px;letter-spacing:.02em;text-transform:none}
 
@@ -327,7 +327,7 @@
 .proofStrip{border:0}
 .proofStrip:before{background:var(--tiffany)}
 .proofIntro .eyebrow{color:var(--ink)}
-.proofIntro h2{font-family:var(--font-riviera),Georgia,serif;font-weight:500;letter-spacing:-.03em;line-height:1}
+.proofIntro h2{font-family:var(--font-riviera), system-ui, sans-serif;font-weight:500;letter-spacing:-.03em;line-height:1}
 .proofCard{border:1px solid #81d8d066;border-radius:22px;box-shadow:none;background:#ffffff0d}
 .proofCard:hover{box-shadow:0 0 0 1px var(--tiffany);transform:translateY(-2px)}
 .aiCard{box-shadow:none;background:#ffffff0d}
@@ -337,7 +337,7 @@
 .review{border:0;border-radius:22px;background:#fff;box-shadow:0 24px 50px -30px #000a}
 .review:nth-child(2),.review:nth-child(3){transform:none}
 .review figcaption{border-top:1px solid #0b3b4418}
-.review figcaption strong{font-family:var(--font-riviera),Georgia,serif;font-weight:600;letter-spacing:-.01em;text-transform:none}
+.review figcaption strong{font-family:var(--font-riviera), system-ui, sans-serif;font-weight:600;letter-spacing:-.01em;text-transform:none}
 .reviewStars{background:none;padding:0;color:var(--mustard);font-size:18px}
 
 /* Between chapters: the sun setting into a line of waves. */
