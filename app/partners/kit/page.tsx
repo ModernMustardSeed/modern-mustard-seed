@@ -22,40 +22,40 @@ const SHOWCASE = 'https://modernmustardseed.com/demo/hub/6cda89d9-1803-4247-9d00
 const STEPS = [
   {
     n: '1',
-    accent: '#ff3b2f',
+    accent: '#b3261e',
     t: 'Type in a business you know',
     d: 'Their name, a phone number, and their website or Facebook page. The build works only from their real, public information, so you never invent a thing.',
   },
   {
     n: '2',
-    accent: '#ffd400',
+    accent: '#f5b700',
     t: 'A finished suite appears, under your flag',
     d: 'A voice agent that answers as their business and a website designed from scratch. The hub reads "Presented by you, with Modern Mustard Seed," with your code stamped into every checkout.',
   },
   {
     n: '3',
-    accent: '#ff3b2f',
+    accent: '#b3261e',
     t: 'Forward three lines',
     d: 'We email you the link and a short, honest hand-off. They see it real, not as a pitch. If they buy, the commission lands on your ledger automatically. You never touch billing.',
   },
 ];
 
 const EARN = [
-  { rate: '50%', accent: '#ff3b2f', label: 'On every product', detail: 'Every playbook and bundle, paid the moment they buy.' },
-  { rate: '25%', accent: '#ffd400', label: 'Recurring, monthly', detail: 'A quarter of each voice agent invoice, for a full year.' },
-  { rate: '10-20%', accent: '#ff3b2f', label: 'On custom builds', detail: '10% of the project, up to 20% once you are a Producer.' },
+  { rate: '50%', accent: '#b3261e', label: 'On every product', detail: 'Every playbook and bundle, paid the moment they buy.' },
+  { rate: '25%', accent: '#f5b700', label: 'Recurring, monthly', detail: 'A quarter of each voice agent invoice, for a full year.' },
+  { rate: '10-20%', accent: '#b3261e', label: 'On custom builds', detail: '10% of the project, up to 20% once you are a Producer.' },
 ];
 
 export default function PartnerKitPage() {
   return (
-    <div className="bg-[#f1ede4] text-[#0d0d0d]">
+    <div className="bg-[#f6efe0] text-[#14110c]">
       {/* Hero */}
       <section className="relative px-6 pt-36 pb-16 overflow-hidden halftone-bg">
         <div className="relative z-10 max-w-4xl mx-auto text-center">
-          <span className="text-[10px] uppercase tracking-[0.4em] text-[#d0241b] font-mono font-bold block mb-6">
+          <span className="text-[10px] uppercase tracking-[0.4em] text-[#8f1d22] font-mono font-bold block mb-6">
             The Partner Recruitment Kit
           </span>
-          <h1 className="font-display text-5xl md:text-7xl font-bold tracking-tight leading-[1.02] text-[#0d0d0d]">
+          <h1 className="font-display text-5xl md:text-7xl font-bold tracking-tight leading-[1.02] text-[#14110c]">
             Build under<br className="hidden sm:block" /> your flag.
           </h1>
           <p className="mt-7 text-[#3A3733] text-lg font-body font-light max-w-2xl mx-auto leading-relaxed">
@@ -64,13 +64,13 @@ export default function PartnerKitPage() {
           <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
               href="/partners#apply"
-              className="inline-block px-9 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-[#0d0d0d] bg-[#ffd400] border-2 border-[#0d0d0d] rounded-full shadow-[4px_4px_0_0_#0d0d0d] hover:shadow-[6px_6px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-all"
+              className="inline-block px-9 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-[#14110c] bg-[#f5b700] border-2 border-[#14110c] rounded-full shadow-[4px_4px_0_0_#14110c] hover:shadow-[6px_6px_0_0_#14110c] hover:-translate-y-0.5 transition-all"
             >
               Become a partner
             </Link>
             <a
               href="#downloads"
-              className="text-[12px] uppercase tracking-[0.18em] font-mono font-bold text-[#0d0d0d]/70 hover:text-[#0d0d0d] transition-colors underline underline-offset-4 decoration-[#ffd400] decoration-2"
+              className="text-[12px] uppercase tracking-[0.18em] font-mono font-bold text-[#14110c]/70 hover:text-[#14110c] transition-colors underline underline-offset-4 decoration-[#f5b700] decoration-2"
             >
               Get the kit
             </a>
@@ -81,19 +81,19 @@ export default function PartnerKitPage() {
       {/* How it works */}
       <section className="max-w-5xl mx-auto px-6 py-16">
         <div className="text-center mb-10">
-          <span className="text-[10px] uppercase tracking-[0.4em] text-[#d0241b] font-mono font-bold block mb-3">How it works</span>
-          <h2 className="font-display text-4xl font-semibold text-[#0d0d0d]">Two minutes of your knowledge, a whole build.</h2>
+          <span className="text-[10px] uppercase tracking-[0.4em] text-[#8f1d22] font-mono font-bold block mb-3">How it works</span>
+          <h2 className="font-display text-4xl font-semibold text-[#14110c]">Two minutes of your knowledge, a whole build.</h2>
         </div>
         <div className="grid md:grid-cols-3 gap-5">
           {STEPS.map((s) => (
-            <div key={s.n} className="bg-white border-2 border-[#0d0d0d] rounded-2xl shadow-[5px_5px_0_0_#0d0d0d] p-7 flex flex-col">
+            <div key={s.n} className="bg-white border-2 border-[#14110c] rounded-2xl shadow-[5px_5px_0_0_#14110c] p-7 flex flex-col">
               <div
-                className="w-14 h-14 grid place-items-center rounded-xl border-2 border-[#0d0d0d] shadow-[3px_3px_0_0_#0d0d0d] mb-5 font-display text-3xl font-bold"
-                style={{ background: s.accent, color: s.accent === '#ffd400' ? '#0d0d0d' : '#f1ede4' }}
+                className="w-14 h-14 grid place-items-center rounded-xl border-2 border-[#14110c] shadow-[3px_3px_0_0_#14110c] mb-5 font-display text-3xl font-bold"
+                style={{ background: s.accent, color: s.accent === '#f5b700' ? '#14110c' : '#f6efe0' }}
               >
                 {s.n}
               </div>
-              <h3 className="font-sans font-bold text-[#0d0d0d] text-lg mb-2">{s.t}</h3>
+              <h3 className="font-sans font-bold text-[#14110c] text-lg mb-2">{s.t}</h3>
               <p className="text-[#3A3733] font-body text-sm leading-relaxed">{s.d}</p>
             </div>
           ))}
@@ -102,24 +102,24 @@ export default function PartnerKitPage() {
 
       {/* What you earn, quick strip */}
       <section className="max-w-5xl mx-auto px-6 pb-16">
-        <div className="bg-[#0d0d0d] border-2 border-[#0d0d0d] rounded-3xl shadow-[6px_6px_0_0_#0d0d0d] p-8 md:p-10 relative overflow-hidden">
+        <div className="bg-[#14110c] border-2 border-[#14110c] rounded-3xl shadow-[6px_6px_0_0_#14110c] p-8 md:p-10 relative overflow-hidden">
           <div
             className="absolute inset-0 opacity-[0.06]"
-            style={{ backgroundImage: 'radial-gradient(#ffd400 1.4px, transparent 1.4px)', backgroundSize: '14px 14px' }}
+            style={{ backgroundImage: 'radial-gradient(#f5b700 1.4px, transparent 1.4px)', backgroundSize: '14px 14px' }}
             aria-hidden
           />
           <div className="relative">
-            <span className="text-[10px] uppercase tracking-[0.35em] text-[#ffd400] font-mono font-bold block mb-6 text-center">One structure, the same for everyone</span>
+            <span className="text-[10px] uppercase tracking-[0.35em] text-[#f5b700] font-mono font-bold block mb-6 text-center">One structure, the same for everyone</span>
             <div className="grid sm:grid-cols-3 gap-6">
               {EARN.map((e) => (
                 <div key={e.label} className="text-center">
                   <div className="font-display text-5xl font-bold leading-none" style={{ color: e.accent }}>{e.rate}</div>
-                  <div className="text-[11px] uppercase tracking-[0.2em] text-[#f1ede4]/60 font-mono font-bold mt-2 mb-2">{e.label}</div>
-                  <p className="text-[#f1ede4]/80 font-body text-sm leading-relaxed">{e.detail}</p>
+                  <div className="text-[11px] uppercase tracking-[0.2em] text-[#f6efe0]/60 font-mono font-bold mt-2 mb-2">{e.label}</div>
+                  <p className="text-[#f6efe0]/80 font-body text-sm leading-relaxed">{e.detail}</p>
                 </div>
               ))}
             </div>
-            <p className="text-[#f1ede4]/45 font-body text-[11px] mt-7 text-center leading-relaxed">
+            <p className="text-[#f6efe0]/45 font-body text-[11px] mt-7 text-center leading-relaxed">
               The full math, with honest worked examples, is in the earnings one-pager below. Illustrations only, never income promises.
             </p>
           </div>
@@ -129,23 +129,23 @@ export default function PartnerKitPage() {
       {/* Downloads */}
       <section id="downloads" className="max-w-5xl mx-auto px-6 pb-16 scroll-mt-24">
         <div className="text-center mb-10">
-          <span className="text-[10px] uppercase tracking-[0.4em] text-[#d0241b] font-mono font-bold block mb-3">The kit</span>
-          <h2 className="font-display text-4xl font-semibold text-[#0d0d0d]">Everything to bring a partner aboard.</h2>
+          <span className="text-[10px] uppercase tracking-[0.4em] text-[#8f1d22] font-mono font-bold block mb-3">The kit</span>
+          <h2 className="font-display text-4xl font-semibold text-[#14110c]">Everything to bring a partner aboard.</h2>
         </div>
         <div className="grid md:grid-cols-2 gap-5">
           <a
             href="/downloads/mms-partner-pitch.pdf"
             target="_blank"
             rel="noopener noreferrer"
-            className="group bg-white border-2 border-[#0d0d0d] rounded-2xl shadow-[5px_5px_0_0_#0d0d0d] hover:shadow-[7px_7px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-all p-7 flex flex-col"
+            className="group bg-white border-2 border-[#14110c] rounded-2xl shadow-[5px_5px_0_0_#14110c] hover:shadow-[7px_7px_0_0_#14110c] hover:-translate-y-0.5 transition-all p-7 flex flex-col"
           >
-            <span className="text-[9px] uppercase tracking-[0.25em] font-mono font-bold text-[#0d0d0d]/40 mb-3">PDF · The pitch</span>
-            <h3 className="font-display text-2xl font-semibold text-[#0d0d0d] mb-2">Build Under Your Flag</h3>
+            <span className="text-[9px] uppercase tracking-[0.25em] font-mono font-bold text-[#14110c]/40 mb-3">PDF · The pitch</span>
+            <h3 className="font-display text-2xl font-semibold text-[#14110c] mb-2">Build Under Your Flag</h3>
             <p className="text-[#3A3733] font-body text-sm leading-relaxed flex-1">
               The four-page partner pitch. What the Partner Build is, how a mint works, what you earn, the honest guardrails, and how to start.
             </p>
-            <span className="mt-5 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0d0d0d]">
-              <span className="px-4 py-2 bg-[#ffd400] border-2 border-[#0d0d0d] rounded-full shadow-[3px_3px_0_0_#0d0d0d] group-hover:-translate-y-0.5 transition-transform">Download pitch</span>
+            <span className="mt-5 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#14110c]">
+              <span className="px-4 py-2 bg-[#f5b700] border-2 border-[#14110c] rounded-full shadow-[3px_3px_0_0_#14110c] group-hover:-translate-y-0.5 transition-transform">Download pitch</span>
             </span>
           </a>
 
@@ -153,15 +153,15 @@ export default function PartnerKitPage() {
             href="/downloads/mms-partner-earnings.pdf"
             target="_blank"
             rel="noopener noreferrer"
-            className="group bg-white border-2 border-[#0d0d0d] rounded-2xl shadow-[5px_5px_0_0_#0d0d0d] hover:shadow-[7px_7px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-all p-7 flex flex-col"
+            className="group bg-white border-2 border-[#14110c] rounded-2xl shadow-[5px_5px_0_0_#14110c] hover:shadow-[7px_7px_0_0_#14110c] hover:-translate-y-0.5 transition-all p-7 flex flex-col"
           >
-            <span className="text-[9px] uppercase tracking-[0.25em] font-mono font-bold text-[#0d0d0d]/40 mb-3">PDF · The math</span>
-            <h3 className="font-display text-2xl font-semibold text-[#0d0d0d] mb-2">Earnings one-pager</h3>
+            <span className="text-[9px] uppercase tracking-[0.25em] font-mono font-bold text-[#14110c]/40 mb-3">PDF · The math</span>
+            <h3 className="font-display text-2xl font-semibold text-[#14110c] mb-2">Earnings one-pager</h3>
             <p className="text-[#3A3733] font-body text-sm leading-relaxed flex-1">
               The real commission structure with honest worked examples: a product sale, a referred voice agent, and a custom build, at current prices.
             </p>
-            <span className="mt-5 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0d0d0d]">
-              <span className="px-4 py-2 bg-[#ffd400] border-2 border-[#0d0d0d] rounded-full shadow-[3px_3px_0_0_#0d0d0d] group-hover:-translate-y-0.5 transition-transform">Download earnings</span>
+            <span className="mt-5 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#14110c]">
+              <span className="px-4 py-2 bg-[#f5b700] border-2 border-[#14110c] rounded-full shadow-[3px_3px_0_0_#14110c] group-hover:-translate-y-0.5 transition-transform">Download earnings</span>
             </span>
           </a>
         </div>
@@ -172,11 +172,11 @@ export default function PartnerKitPage() {
             href={SHOWCASE}
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-[#ffd400] border-2 border-[#0d0d0d] rounded-2xl shadow-[4px_4px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-transform p-6"
+            className="bg-[#f5b700] border-2 border-[#14110c] rounded-2xl shadow-[4px_4px_0_0_#14110c] hover:-translate-y-0.5 transition-transform p-6"
           >
-            <span className="text-[9px] uppercase tracking-[0.25em] font-mono font-bold text-[#0d0d0d]/60 block mb-2">See one that is live</span>
-            <h3 className="font-sans font-bold text-[#0d0d0d] text-lg mb-1">A real built suite</h3>
-            <p className="text-[#0d0d0d]/75 font-body text-sm leading-relaxed">
+            <span className="text-[9px] uppercase tracking-[0.25em] font-mono font-bold text-[#14110c]/60 block mb-2">See one that is live</span>
+            <h3 className="font-sans font-bold text-[#14110c] text-lg mb-1">A real built suite</h3>
+            <p className="text-[#14110c]/75 font-body text-sm leading-relaxed">
               A full suite the build minted start to finish. Voice Agent and website, both in one hub.
             </p>
           </a>
@@ -184,10 +184,10 @@ export default function PartnerKitPage() {
             href="/downloads/mms-partner-build-agreement.pdf"
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-white border-2 border-[#0d0d0d] rounded-2xl shadow-[4px_4px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-transform p-6"
+            className="bg-white border-2 border-[#14110c] rounded-2xl shadow-[4px_4px_0_0_#14110c] hover:-translate-y-0.5 transition-transform p-6"
           >
-            <span className="text-[9px] uppercase tracking-[0.25em] font-mono font-bold text-[#0d0d0d]/40 block mb-2">The fine print</span>
-            <h3 className="font-sans font-bold text-[#0d0d0d] text-lg mb-1">Partner Demo Agreement</h3>
+            <span className="text-[9px] uppercase tracking-[0.25em] font-mono font-bold text-[#14110c]/40 block mb-2">The fine print</span>
+            <h3 className="font-sans font-bold text-[#14110c] text-lg mb-1">Partner Demo Agreement</h3>
             <p className="text-[#3A3733] font-body text-sm leading-relaxed">
               The whole deal on one page: what the build does, the honesty rules, what you earn, and the guardrails.
             </p>
@@ -198,20 +198,20 @@ export default function PartnerKitPage() {
       {/* Become a partner CTA */}
       <section className="px-6 py-16 halftone-bg">
         <div className="max-w-4xl mx-auto">
-          <div className="bg-white border-2 border-[#0d0d0d] rounded-3xl shadow-[8px_8px_0_0_#0d0d0d] p-8 md:p-12">
+          <div className="bg-white border-2 border-[#14110c] rounded-3xl shadow-[8px_8px_0_0_#14110c] p-8 md:p-12">
             <div className="flex flex-col md:flex-row md:items-center gap-8">
               <div className="shrink-0 mx-auto md:mx-0">
                 <Image src="/brand/mascot.png" alt="The Modern Mustard Seed mascot" width={885} height={1180} className="h-36 w-auto" />
               </div>
               <div className="flex-1 text-center md:text-left">
-                <span className="text-[10px] uppercase tracking-[0.4em] text-[#d0241b] font-mono font-bold block mb-3">Ready when you are</span>
-                <h2 className="font-display text-3xl md:text-4xl font-semibold text-[#0d0d0d] mb-3">Recommend tools you believe in. Get paid for years.</h2>
+                <span className="text-[10px] uppercase tracking-[0.4em] text-[#8f1d22] font-mono font-bold block mb-3">Ready when you are</span>
+                <h2 className="font-display text-3xl md:text-4xl font-semibold text-[#14110c] mb-3">Recommend tools you believe in. Get paid for years.</h2>
                 <p className="text-[#3A3733] font-body leading-relaxed mb-6">
                   Sarah reviews every application personally. Approved partners get their link, free access to everything, and their build lit the same day.
                 </p>
                 <Link
                   href="/partners#apply"
-                  className="inline-block px-9 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-[#0d0d0d] bg-[#ffd400] border-2 border-[#0d0d0d] rounded-full shadow-[4px_4px_0_0_#0d0d0d] hover:shadow-[6px_6px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-all"
+                  className="inline-block px-9 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-[#14110c] bg-[#f5b700] border-2 border-[#14110c] rounded-full shadow-[4px_4px_0_0_#14110c] hover:shadow-[6px_6px_0_0_#14110c] hover:-translate-y-0.5 transition-all"
                 >
                   Become a partner
                 </Link>

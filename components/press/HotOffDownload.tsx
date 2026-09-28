@@ -34,7 +34,7 @@ export default function HotOffDownload({ sessionId }: { sessionId: string }) {
       href={href}
       onClick={() => trackEvent('press_clean_download', {})}
       aria-disabled={state === 'checking'}
-      className={`inline-block mt-8 rounded-full bg-[#ffd400] border-2 border-[#0d0d0d] px-10 py-4 font-sans font-extrabold text-[#0d0d0d] text-sm uppercase tracking-[0.18em] shadow-[5px_5px_0_0_#0d0d0d] transition-all hover:-translate-y-0.5 ${state === 'checking' ? 'opacity-60 pointer-events-none' : ''}`}
+      className={`inline-block mt-8 rounded-full bg-[#f5b700] border-2 border-[#14110c] px-10 py-4 font-sans font-extrabold text-[#14110c] text-sm uppercase tracking-[0.18em] shadow-[5px_5px_0_0_#14110c] transition-all hover:-translate-y-0.5 ${state === 'checking' ? 'opacity-60 pointer-events-none' : ''}`}
     >
       {state === 'checking' ? 'Checking the tray…' : 'Download your print-ready file'}
     </a>

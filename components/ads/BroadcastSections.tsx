@@ -17,28 +17,28 @@ const FILM_STRIP = [
 
 export function TimberlineConfession() {
   return (
-    <section className="py-16 md:py-24 bg-[#f1ede4] border-b-2 border-[#0d0d0d]">
+    <section className="py-16 md:py-24 bg-[#f6efe0] border-b-2 border-[#14110c]">
       <div className="max-w-6xl mx-auto px-5">
         <div className="grid lg:grid-cols-[1.1fr_1fr] gap-10 items-center">
           <div>
             <Reveal variant="eyebrow">
-              <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#d0241b] font-bold mb-4">[ FULL DISCLOSURE ]</p>
+              <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#8f1d22] font-bold mb-4">[ FULL DISCLOSURE ]</p>
             </Reveal>
             <Reveal variant="slam">
-              <h2 className="font-display text-3xl md:text-5xl font-black text-[#0d0d0d] tracking-tight leading-[1.05]">
+              <h2 className="font-display text-3xl md:text-5xl font-black text-[#14110c] tracking-tight leading-[1.05]">
                 None of these
                 <br /> companies exist.
               </h2>
             </Reveal>
             <Reveal variant="rise" delay={100}>
-              <div className="font-body text-[#0d0d0d]/75 mt-5 space-y-4 leading-relaxed max-w-xl">
+              <div className="font-body text-[#14110c]/75 mt-5 space-y-4 leading-relaxed max-w-xl">
                 <p>
                   Ironwood Roofing, Timberline Lawn Co., Glacier Air. We invented all three to show you the treatment. The storm is real, the mountains are real, the pipeline is real. The roof that got hammered at 2 a.m. protects a family who does not exist.
                 </p>
                 <p>
                   Each film took the studio one afternoon: written, shot, scored, and cut. No camera crew, no location fees, no $10,000 production invoice. Which is the entire point:
                 </p>
-                <p className="font-sans font-extrabold text-[#0d0d0d] text-lg">
+                <p className="font-sans font-extrabold text-[#14110c] text-lg">
                   If we do this for companies that do not exist, imagine what we do with your real one.
                 </p>
                 {/* The one real brand on the set. Added when the Cross + Covenant
@@ -47,7 +47,7 @@ export function TimberlineConfession() {
                     as a lie by omission, and saying it out loud is stronger
                     than the confession was on its own. */}
                 <p>
-                  One channel is different. <strong className="font-sans font-bold text-[#0d0d0d]">Cross&nbsp;+&nbsp;Covenant is real</strong>, it is live, and you can buy from it tonight. Every frame of that film is the actual store, and we built the store too.
+                  One channel is different. <strong className="font-sans font-bold text-[#14110c]">Cross&nbsp;+&nbsp;Covenant is real</strong>, it is live, and you can buy from it tonight. Every frame of that film is the actual store, and we built the store too.
                 </p>
                 {/* Channel 08 is a third category and the headline above would
                     be a half-truth without it: the plumbing company is invented
@@ -56,14 +56,14 @@ export function TimberlineConfession() {
                     spot, so it gets said here rather than left for someone to
                     discover. */}
                 <p>
-                  So is the voice on channel 08. The plumbing company in it was invented like the rest, but <strong className="font-sans font-bold text-[#0d0d0d]">the agent was not acting</strong>. We called our own line at night, recorded whatever it said back, and cut the ad from that. It answered, it quoted a real price, it admitted the time she asked for was not available, and it booked her anyway. The number on the end card rings the same one.
+                  So is the voice on channel 08. The plumbing company in it was invented like the rest, but <strong className="font-sans font-bold text-[#14110c]">the agent was not acting</strong>. We called our own line at night, recorded whatever it said back, and cut the ad from that. It answered, it quoted a real price, it admitted the time she asked for was not available, and it booked her anyway. The number on the end card rings the same one.
                 </p>
               </div>
             </Reveal>
             <Reveal variant="drop" delay={200}>
               <a
                 href="#packages"
-                className="inline-block mt-7 rounded-full bg-[#0d0d0d] border-2 border-[#0d0d0d] px-8 py-3.5 font-sans font-extrabold text-[#f1ede4] text-sm uppercase tracking-[0.16em] shadow-[4px_4px_0_0_#ffd400] transition-all hover:-translate-y-0.5"
+                className="inline-block mt-7 rounded-full bg-[#14110c] border-2 border-[#14110c] px-8 py-3.5 font-sans font-extrabold text-[#f6efe0] text-sm uppercase tracking-[0.16em] shadow-[4px_4px_0_0_#f5b700] transition-all hover:-translate-y-0.5"
               >
                 Put My Name In The Grass
               </a>
@@ -73,40 +73,40 @@ export function TimberlineConfession() {
           {/* The feed mockup: what the ad looks like where it runs */}
           <Reveal variant="rise" delay={150}>
             <div className="max-w-sm mx-auto w-full md:rotate-[1.2deg]">
-              <div className="rounded-2xl bg-white border-2 border-[#0d0d0d] shadow-[8px_8px_0_0_#ffd400] overflow-hidden">
+              <div className="rounded-2xl bg-white border-2 border-[#14110c] shadow-[8px_8px_0_0_#f5b700] overflow-hidden">
                 <div className="flex items-center gap-3 px-4 py-3">
-                  <div className="w-10 h-10 rounded-full bg-[#0d0d0d] flex items-center justify-center font-display font-black text-[#ffd400]" aria-hidden="true">T</div>
+                  <div className="w-10 h-10 rounded-full bg-[#14110c] flex items-center justify-center font-display font-black text-[#f5b700]" aria-hidden="true">T</div>
                   <div>
-                    <p className="font-sans font-bold text-sm text-[#0d0d0d] leading-tight">Timberline Lawn Co.</p>
-                    <p className="font-body text-xs text-[#0d0d0d]/55">Sponsored · Kalispell, MT</p>
+                    <p className="font-sans font-bold text-sm text-[#14110c] leading-tight">Timberline Lawn Co.</p>
+                    <p className="font-body text-xs text-[#14110c]/55">Sponsored · Kalispell, MT</p>
                   </div>
                 </div>
-                <p className="px-4 pb-3 font-body text-sm text-[#0d0d0d]/85">
+                <p className="px-4 pb-3 font-body text-sm text-[#14110c]/85">
                   Spring books fast in the Flathead. Striped lawns, on time, every week. 🏔️
                 </p>
                 <img src="/ads/broadcast-demo-poster.jpg" alt="Still from the Timberline Lawn Co. demo commercial: a mower carving the company name into a striped lawn beneath snowcapped peaks" className="w-full block" loading="lazy" />
-                <div className="flex items-center justify-between px-4 py-3 bg-[#f1ede4] border-t border-[#0d0d0d]/15">
+                <div className="flex items-center justify-between px-4 py-3 bg-[#f6efe0] border-t border-[#14110c]/15">
                   <div>
-                    <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-[#0d0d0d]/55">timberlinelawn.co</p>
-                    <p className="font-sans font-bold text-sm text-[#0d0d0d]">First mow free when you book the season</p>
+                    <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-[#14110c]/55">timberlinelawn.co</p>
+                    <p className="font-sans font-bold text-sm text-[#14110c]">First mow free when you book the season</p>
                   </div>
-                  <span className="shrink-0 rounded-lg bg-[#0d0d0d] px-4 py-2 font-sans font-bold text-xs text-white">Get Quote</span>
+                  <span className="shrink-0 rounded-lg bg-[#14110c] px-4 py-2 font-sans font-bold text-xs text-white">Get Quote</span>
                 </div>
               </div>
-              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#0d0d0d]/50 text-center mt-3">How a spot looks in the feed</p>
+              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#14110c]/50 text-center mt-3">How a spot looks in the feed</p>
             </div>
           </Reveal>
         </div>
 
         {/* Film strip */}
         <Reveal variant="rise" delay={220}>
-          <div className="mt-14 border-y-8 border-[#0d0d0d] py-3 bg-[#0d0d0d]" style={{ borderImage: 'repeating-linear-gradient(90deg, #0d0d0d 0 14px, #f1ede4 14px 22px) 8' }}>
-            <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#f1ede4]/60 text-center pb-2.5">The Timberline shot list, start to finish</p>
+          <div className="mt-14 border-y-8 border-[#14110c] py-3 bg-[#14110c]" style={{ borderImage: 'repeating-linear-gradient(90deg, #14110c 0 14px, #f6efe0 14px 22px) 8' }}>
+            <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#f6efe0]/60 text-center pb-2.5">The Timberline shot list, start to finish</p>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 px-3">
               {FILM_STRIP.map((f) => (
                 <figure key={f.src} className="m-0">
-                  <img src={f.src} alt={f.caption.toLowerCase()} className="w-full aspect-video object-cover rounded border border-[#f1ede4]/30" loading="lazy" />
-                  <figcaption className="font-mono text-[9px] md:text-[10px] uppercase tracking-[0.14em] text-[#f1ede4]/70 mt-1.5 text-center">{f.caption}</figcaption>
+                  <img src={f.src} alt={f.caption.toLowerCase()} className="w-full aspect-video object-cover rounded border border-[#f6efe0]/30" loading="lazy" />
+                  <figcaption className="font-mono text-[9px] md:text-[10px] uppercase tracking-[0.14em] text-[#f6efe0]/70 mt-1.5 text-center">{f.caption}</figcaption>
                 </figure>
               ))}
             </div>
@@ -137,14 +137,14 @@ const STEPS = [
 
 export function HowBroadcastWorks() {
   return (
-    <section className="py-16 md:py-24 bg-[#f1ede4] border-b-2 border-[#0d0d0d]">
+    <section className="py-16 md:py-24 bg-[#f6efe0] border-b-2 border-[#14110c]">
       <div className="max-w-6xl mx-auto px-5">
         <div className="text-center mb-10 md:mb-14">
           <Reveal variant="eyebrow">
-            <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#d0241b] font-bold mb-4">[ HOW IT WORKS ]</p>
+            <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#8f1d22] font-bold mb-4">[ HOW IT WORKS ]</p>
           </Reveal>
           <Reveal variant="slam">
-            <h2 className="font-display text-3xl md:text-5xl font-black text-[#0d0d0d] tracking-tight leading-[1.05]">
+            <h2 className="font-display text-3xl md:text-5xl font-black text-[#14110c] tracking-tight leading-[1.05]">
               Three jobs. We take all three.
             </h2>
           </Reveal>
@@ -153,10 +153,10 @@ export function HowBroadcastWorks() {
         <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
           {STEPS.map((s, i) => (
             <Reveal key={s.n} variant="rise" delay={i * 110}>
-              <div className="h-full rounded-2xl bg-white border-2 border-[#0d0d0d] shadow-[6px_6px_0_0_#0d0d0d] p-6 md:p-7">
-                <p className="font-display text-5xl font-black text-[#ffd400]" aria-hidden="true">{s.n}</p>
-                <h3 className="font-sans font-extrabold text-xl text-[#0d0d0d] mt-3 uppercase tracking-wide">{s.title}</h3>
-                <p className="font-body text-sm text-[#0d0d0d]/75 mt-2.5 leading-relaxed">{s.body}</p>
+              <div className="h-full rounded-2xl bg-white border-2 border-[#14110c] shadow-[6px_6px_0_0_#14110c] p-6 md:p-7">
+                <p className="font-display text-5xl font-black text-[#f5b700]" aria-hidden="true">{s.n}</p>
+                <h3 className="font-sans font-extrabold text-xl text-[#14110c] mt-3 uppercase tracking-wide">{s.title}</h3>
+                <p className="font-body text-sm text-[#14110c]/75 mt-2.5 leading-relaxed">{s.body}</p>
               </div>
             </Reveal>
           ))}
@@ -164,8 +164,8 @@ export function HowBroadcastWorks() {
 
         <Reveal variant="drop" delay={340}>
           <div className="max-w-5xl mx-auto mt-6">
-            <div className="rounded-2xl bg-[#ffd400] border-2 border-[#0d0d0d] shadow-[6px_6px_0_0_#0d0d0d] px-6 py-5 text-center md:-rotate-[0.4deg]">
-              <p className="font-display text-2xl md:text-3xl font-black text-[#0d0d0d]">
+            <div className="rounded-2xl bg-[#f5b700] border-2 border-[#14110c] shadow-[6px_6px_0_0_#14110c] px-6 py-5 text-center md:-rotate-[0.4deg]">
+              <p className="font-display text-2xl md:text-3xl font-black text-[#14110c]">
                 Your job: answer the phone. That is the whole job.
               </p>
             </div>
@@ -178,14 +178,14 @@ export function HowBroadcastWorks() {
 
 export function BroadcastFaqSection() {
   return (
-    <section id="faq" className="py-16 md:py-24 bg-[#f1ede4] border-b-2 border-[#0d0d0d]">
+    <section id="faq" className="py-16 md:py-24 bg-[#f6efe0] border-b-2 border-[#14110c]">
       <div className="max-w-3xl mx-auto px-5">
         <div className="text-center mb-10">
           <Reveal variant="eyebrow">
-            <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#d0241b] font-bold mb-4">[ STRAIGHT ANSWERS ]</p>
+            <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#8f1d22] font-bold mb-4">[ STRAIGHT ANSWERS ]</p>
           </Reveal>
           <Reveal variant="slam">
-            <h2 className="font-display text-3xl md:text-5xl font-black text-[#0d0d0d] tracking-tight leading-[1.05]">
+            <h2 className="font-display text-3xl md:text-5xl font-black text-[#14110c] tracking-tight leading-[1.05]">
               Asked and answered.
             </h2>
           </Reveal>
@@ -193,12 +193,12 @@ export function BroadcastFaqSection() {
         <div className="space-y-3">
           {broadcastFaq.map((f, i) => (
             <Reveal key={f.q} variant="rise" delay={Math.min(i * 60, 240)}>
-              <details className="group rounded-xl bg-white border-2 border-[#0d0d0d] shadow-[4px_4px_0_0_#0d0d0d] px-5 py-4">
-                <summary className="flex items-center justify-between gap-4 cursor-pointer list-none font-sans font-bold text-[#0d0d0d]">
+              <details className="group rounded-xl bg-white border-2 border-[#14110c] shadow-[4px_4px_0_0_#14110c] px-5 py-4">
+                <summary className="flex items-center justify-between gap-4 cursor-pointer list-none font-sans font-bold text-[#14110c]">
                   {f.q}
                   <span className="shrink-0 font-display text-xl text-[#8f6600] transition-transform group-open:rotate-45" aria-hidden="true">+</span>
                 </summary>
-                <p className="font-body text-sm text-[#0d0d0d]/75 leading-relaxed mt-3">{f.a}</p>
+                <p className="font-body text-sm text-[#14110c]/75 leading-relaxed mt-3">{f.a}</p>
               </details>
             </Reveal>
           ))}
@@ -210,23 +210,23 @@ export function BroadcastFaqSection() {
 
 export function BroadcastFinalCta() {
   return (
-    <section className="py-16 md:py-24 bg-[#ffd400]">
+    <section className="py-16 md:py-24 bg-[#f5b700]">
       <div className="max-w-3xl mx-auto px-5 text-center">
         <Reveal variant="slam">
-          <h2 className="font-display text-3xl md:text-5xl font-black text-[#0d0d0d] tracking-tight leading-[1.05]">
+          <h2 className="font-display text-3xl md:text-5xl font-black text-[#14110c] tracking-tight leading-[1.05]">
             Your competitors are boosting posts.
             <br className="hidden md:block" /> You could be on air.
           </h2>
         </Reveal>
         <Reveal variant="rise" delay={120}>
-          <p className="font-body text-[#0d0d0d]/75 mt-4 max-w-xl mx-auto">
+          <p className="font-body text-[#14110c]/75 mt-4 max-w-xl mx-auto">
             A real commercial, real management, and a real report every month, for less than one slow week costs you.
           </p>
         </Reveal>
         <Reveal variant="drop" delay={220}>
           <a
             href="#packages"
-            className="inline-block mt-8 rounded-full bg-[#0d0d0d] border-2 border-[#0d0d0d] px-10 py-4 font-sans font-extrabold text-[#f1ede4] text-sm uppercase tracking-[0.18em] shadow-[5px_5px_0_0_#f1ede4] transition-all hover:-translate-y-0.5"
+            className="inline-block mt-8 rounded-full bg-[#14110c] border-2 border-[#14110c] px-10 py-4 font-sans font-extrabold text-[#f6efe0] text-sm uppercase tracking-[0.18em] shadow-[5px_5px_0_0_#f6efe0] transition-all hover:-translate-y-0.5"
           >
             See The Packages
           </a>

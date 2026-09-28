@@ -22,8 +22,8 @@ type Stage = 'intake' | 'rolling' | 'reveal';
 type TestResult = { runId: string; storyboard: string; frameUrl: string | null; darkroom: boolean };
 
 const FIELD =
-  'w-full rounded-lg border-2 border-[#0d0d0d] bg-white px-3.5 py-2.5 font-body text-[15px] text-[#0d0d0d] placeholder:text-[#0d0d0d]/35 focus:outline-none focus:ring-2 focus:ring-[#ffd400] focus:border-[#0d0d0d]';
-const LABEL = 'block text-[10px] uppercase tracking-[0.28em] font-mono font-bold text-[#0d0d0d]/60 mb-1.5';
+  'w-full rounded-lg border-2 border-[#14110c] bg-white px-3.5 py-2.5 font-body text-[15px] text-[#14110c] placeholder:text-[#14110c]/35 focus:outline-none focus:ring-2 focus:ring-[#f5b700] focus:border-[#14110c]';
+const LABEL = 'block text-[10px] uppercase tracking-[0.28em] font-mono font-bold text-[#14110c]/60 mb-1.5';
 
 export default function ScreenTestExperience() {
   const [stage, setStage] = useState<Stage>('intake');
@@ -169,12 +169,12 @@ export default function ScreenTestExperience() {
 
       {/* ─── INTAKE ─── */}
       {stage === 'intake' && (
-        <form onSubmit={roll} className="rounded-2xl border-2 border-[#0d0d0d] bg-white p-6 md:p-8 shadow-[6px_6px_0_0_#0d0d0d]">
-          <div className="flex items-center gap-3 mb-5 border-b-2 border-[#0d0d0d] pb-4">
-            <Image src="/brand/mascot.png" alt="Mr. Mustard, director" width={46} height={46} className="rounded-full border-2 border-[#0d0d0d] bg-[#ffd400]" />
+        <form onSubmit={roll} className="rounded-2xl border-2 border-[#14110c] bg-white p-6 md:p-8 shadow-[6px_6px_0_0_#14110c]">
+          <div className="flex items-center gap-3 mb-5 border-b-2 border-[#14110c] pb-4">
+            <Image src="/brand/mascot.png" alt="Mr. Mustard, director" width={46} height={46} className="rounded-full border-2 border-[#14110c] bg-[#f5b700]" />
             <div>
-              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#d0241b] font-bold">Casting · The Screen Test</p>
-              <p className="font-display text-lg font-black text-[#0d0d0d] leading-tight">Tell the director about your business.</p>
+              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#8f1d22] font-bold">Casting · The Screen Test</p>
+              <p className="font-display text-lg font-black text-[#14110c] leading-tight">Tell the director about your business.</p>
             </div>
           </div>
 
@@ -213,16 +213,16 @@ export default function ScreenTestExperience() {
           {/* Honeypot: humans never see or fill this. */}
           <input id="px-website" type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" className="absolute -left-[9999px] h-0 w-0 opacity-0" />
 
-          {error && <p className="mt-4 text-[#d0241b] text-sm font-body font-semibold">{error}</p>}
+          {error && <p className="mt-4 text-[#8f1d22] text-sm font-body font-semibold">{error}</p>}
 
           <button
             type="submit"
             disabled={submitting}
-            className="mt-6 w-full rounded-full bg-[#ffd400] border-2 border-[#0d0d0d] px-8 py-4 font-sans font-extrabold text-[#0d0d0d] text-sm uppercase tracking-[0.18em] shadow-[4px_4px_0_0_#0d0d0d] transition-all hover:-translate-y-0.5 hover:shadow-[5px_5px_0_0_#0d0d0d] disabled:opacity-50"
+            className="mt-6 w-full rounded-full bg-[#f5b700] border-2 border-[#14110c] px-8 py-4 font-sans font-extrabold text-[#14110c] text-sm uppercase tracking-[0.18em] shadow-[4px_4px_0_0_#14110c] transition-all hover:-translate-y-0.5 hover:shadow-[5px_5px_0_0_#14110c] disabled:opacity-50"
           >
             Take my screen test (free)
           </button>
-          <p className="mt-3 text-center text-[11px] font-mono text-[#0d0d0d]/50">
+          <p className="mt-3 text-center text-[11px] font-mono text-[#14110c]/50">
             One screen test per business. No card. The treatment is yours to keep either way.
           </p>
         </form>
@@ -230,19 +230,19 @@ export default function ScreenTestExperience() {
 
       {/* ─── ROLLING: the production log ─── */}
       {stage === 'rolling' && (
-        <div className="rounded-2xl border-2 border-[#0d0d0d] bg-[#0d0d0d] p-6 md:p-8 shadow-[6px_6px_0_0_#ffd400] min-h-[360px]">
+        <div className="rounded-2xl border-2 border-[#14110c] bg-[#14110c] p-6 md:p-8 shadow-[6px_6px_0_0_#f5b700] min-h-[360px]">
           <div className="flex items-center gap-3 mb-5">
-            <Image src="/brand/mascot.png" alt="Mr. Mustard directing" width={46} height={46} className="rounded-full border-2 border-[#ffd400] bg-[#ffd400] animate-pulse" />
+            <Image src="/brand/mascot.png" alt="Mr. Mustard directing" width={46} height={46} className="rounded-full border-2 border-[#f5b700] bg-[#f5b700] animate-pulse" />
             <div>
-              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#ffd400] font-bold">Now shooting</p>
-              <p className="font-display text-lg font-black text-[#f1ede4] leading-tight">Mr. Mustard is directing {possessive(form.business.trim())} screen test.</p>
+              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#f5b700] font-bold">Now shooting</p>
+              <p className="font-display text-lg font-black text-[#f6efe0] leading-tight">Mr. Mustard is directing {possessive(form.business.trim())} screen test.</p>
             </div>
           </div>
-          <div className="font-mono text-[13px] md:text-sm leading-7 text-[#f1ede4]/90">
+          <div className="font-mono text-[13px] md:text-sm leading-7 text-[#f6efe0]/90">
             {logLines.filter((l): l is string => typeof l === 'string').map((line, i) => (
-              <p key={i} className={`px-rise ${line.startsWith('[') ? 'text-[#ffd400] font-bold' : ''}`}>{line}</p>
+              <p key={i} className={`px-rise ${line.startsWith('[') ? 'text-[#f5b700] font-bold' : ''}`}>{line}</p>
             ))}
-            <span className="px-caret inline-block w-2.5 h-4 bg-[#ffd400] align-middle ml-0.5" />
+            <span className="px-caret inline-block w-2.5 h-4 bg-[#f5b700] align-middle ml-0.5" />
           </div>
         </div>
       )}
@@ -251,7 +251,7 @@ export default function ScreenTestExperience() {
       {stage === 'reveal' && result && (
         <div className="space-y-6">
           {result.frameUrl ? (
-            <div className="px-develop rounded-2xl border-[3px] border-[#0d0d0d] overflow-hidden shadow-[8px_8px_0_0_#0d0d0d] bg-[#0d0d0d]">
+            <div className="px-develop rounded-2xl border-[3px] border-[#14110c] overflow-hidden shadow-[8px_8px_0_0_#14110c] bg-[#14110c]">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={result.frameUrl}
@@ -259,36 +259,36 @@ export default function ScreenTestExperience() {
                 className="w-full block"
                 onLoad={() => setFrameLoaded(true)}
               />
-              <div className="bg-[#0d0d0d] px-5 py-2.5 flex items-center justify-between">
-                <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#ffd400] font-bold">Hero frame · {form.business.trim()}</span>
-                <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#f1ede4]/50">{frameLoaded ? 'Developed' : 'Developing…'}</span>
+              <div className="bg-[#14110c] px-5 py-2.5 flex items-center justify-between">
+                <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#f5b700] font-bold">Hero frame · {form.business.trim()}</span>
+                <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#f6efe0]/50">{frameLoaded ? 'Developed' : 'Developing…'}</span>
               </div>
             </div>
           ) : (
-            <div className="rounded-2xl border-2 border-dashed border-[#0d0d0d]/40 bg-white/60 p-6 text-center">
-              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#d0241b] font-bold mb-1.5">The darkroom is backed up tonight</p>
-              <p className="font-body text-sm text-[#0d0d0d]/70">Your hero frame is still developing. It lands in your inbox the moment it dries.</p>
+            <div className="rounded-2xl border-2 border-dashed border-[#14110c]/40 bg-white/60 p-6 text-center">
+              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#8f1d22] font-bold mb-1.5">The darkroom is backed up tonight</p>
+              <p className="font-body text-sm text-[#14110c]/70">Your hero frame is still developing. It lands in your inbox the moment it dries.</p>
             </div>
           )}
 
-          <div className="rounded-2xl border-2 border-[#0d0d0d] bg-white p-6 md:p-9 shadow-[6px_6px_0_0_#0d0d0d]">
-            <div className="flex items-center justify-between border-b-2 border-[#0d0d0d] pb-3 mb-5">
-              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#d0241b] font-bold">The treatment · directed by Mr. Mustard</p>
-              <Image src="/brand/mascot.png" alt="" width={30} height={30} className="rounded-full border-2 border-[#0d0d0d]" />
+          <div className="rounded-2xl border-2 border-[#14110c] bg-white p-6 md:p-9 shadow-[6px_6px_0_0_#14110c]">
+            <div className="flex items-center justify-between border-b-2 border-[#14110c] pb-3 mb-5">
+              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#8f1d22] font-bold">The treatment · directed by Mr. Mustard</p>
+              <Image src="/brand/mascot.png" alt="" width={30} height={30} className="rounded-full border-2 border-[#14110c]" />
             </div>
-            <div className="font-serif text-[15.5px] md:text-base leading-8 text-[#0d0d0d] whitespace-pre-wrap">
+            <div className="font-serif text-[15.5px] md:text-base leading-8 text-[#14110c] whitespace-pre-wrap">
               {boardLines.filter((l): l is string => typeof l === 'string').map((line, i) => (
-                <p key={i} className={`px-rise ${/^(LOGLINE|THE BOARD|TAGLINES|DIRECTOR)/.test(line) ? 'font-mono text-[12px] uppercase tracking-[0.24em] font-bold text-[#0d0d0d]/60 mt-4' : ''}`}>{line || ' '}</p>
+                <p key={i} className={`px-rise ${/^(LOGLINE|THE BOARD|TAGLINES|DIRECTOR)/.test(line) ? 'font-mono text-[12px] uppercase tracking-[0.24em] font-bold text-[#14110c]/60 mt-4' : ''}`}>{line || ' '}</p>
               ))}
             </div>
-            <p className="mt-6 pt-4 border-t border-[#0d0d0d]/15 text-[12px] font-mono text-[#0d0d0d]/50">
+            <p className="mt-6 pt-4 border-t border-[#14110c]/15 text-[12px] font-mono text-[#14110c]/50">
               A copy is on its way to your inbox. It&apos;s yours to keep, filmed or not.
             </p>
           </div>
 
-          <div className="rounded-2xl border-2 border-[#0d0d0d] bg-[#ffd400] p-6 text-center shadow-[6px_6px_0_0_#0d0d0d]">
-            <p className="font-display text-xl md:text-2xl font-black text-[#0d0d0d]">Love the treatment? Let&apos;s film it.</p>
-            <a href="#roll" className="inline-block mt-3 rounded-full bg-[#0d0d0d] border-2 border-[#0d0d0d] px-8 py-3.5 font-sans font-extrabold text-[#f1ede4] text-xs uppercase tracking-[0.18em] shadow-[4px_4px_0_0_#f1ede4] transition-all hover:-translate-y-0.5">
+          <div className="rounded-2xl border-2 border-[#14110c] bg-[#f5b700] p-6 text-center shadow-[6px_6px_0_0_#14110c]">
+            <p className="font-display text-xl md:text-2xl font-black text-[#14110c]">Love the treatment? Let&apos;s film it.</p>
+            <a href="#roll" className="inline-block mt-3 rounded-full bg-[#14110c] border-2 border-[#14110c] px-8 py-3.5 font-sans font-extrabold text-[#f6efe0] text-xs uppercase tracking-[0.18em] shadow-[4px_4px_0_0_#f6efe0] transition-all hover:-translate-y-0.5">
               Roll film ↓
             </a>
           </div>
@@ -299,11 +299,11 @@ export default function ScreenTestExperience() {
       {/* Breaks out of the intake column so the tier row gets full width. */}
       <div id="roll" className="pt-14 md:pt-20 md:relative md:left-1/2 md:-translate-x-1/2 md:w-[min(100vw-2.5rem,64rem)]">
         <div className="text-center mb-8">
-          <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#d0241b] font-bold mb-3">[ Roll film ]</p>
-          <h2 className="font-display text-3xl md:text-5xl font-black text-[#0d0d0d] tracking-tight leading-[1.05]">
+          <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#8f1d22] font-bold mb-3">[ Roll film ]</p>
+          <h2 className="font-display text-3xl md:text-5xl font-black text-[#14110c] tracking-tight leading-[1.05]">
             From treatment to finished film.
           </h2>
-          <p className="font-body text-[#0d0d0d]/65 max-w-xl mx-auto mt-4">
+          <p className="font-body text-[#14110c]/65 max-w-xl mx-auto mt-4">
             Every spot is generated for your business and hand-reviewed by Sarah before it ships. Full commercial rights, files yours forever.
           </p>
         </div>
@@ -346,23 +346,23 @@ function TierCard({ tier, business, runId }: { tier: (typeof picturesTiers)[numb
   };
 
   return (
-    <div className={`relative rounded-2xl border-2 border-[#0d0d0d] bg-white p-7 shadow-[6px_6px_0_0_#0d0d0d] flex flex-col ${tier.featured ? 'md:-translate-y-2' : ''}`}>
+    <div className={`relative rounded-2xl border-2 border-[#14110c] bg-white p-7 shadow-[6px_6px_0_0_#14110c] flex flex-col ${tier.featured ? 'md:-translate-y-2' : ''}`}>
       {tier.featured && (
-        <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full bg-[#ff3b2f] border-2 border-[#0d0d0d] px-4 py-1 text-[10px] uppercase tracking-[0.22em] font-mono font-bold text-white whitespace-nowrap">
+        <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full bg-[#b3261e] border-2 border-[#14110c] px-4 py-1 text-[10px] uppercase tracking-[0.22em] font-mono font-bold text-white whitespace-nowrap">
           Most booked
         </span>
       )}
-      <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#d0241b] font-bold">{tier.chip}</p>
-      <h3 className="font-display text-2xl font-black text-[#0d0d0d] mt-1.5">{tier.name}</h3>
+      <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#8f1d22] font-bold">{tier.chip}</p>
+      <h3 className="font-display text-2xl font-black text-[#14110c] mt-1.5">{tier.name}</h3>
       <p className="mt-3">
-        <span className="font-display text-4xl font-black text-[#0d0d0d]">${tier.priceUsd}</span>
-        <span className="font-body text-sm text-[#0d0d0d]/60">{tier.cadence === 'monthly' ? '/mo' : ' one time'}</span>
+        <span className="font-display text-4xl font-black text-[#14110c]">${tier.priceUsd}</span>
+        <span className="font-body text-sm text-[#14110c]/60">{tier.cadence === 'monthly' ? '/mo' : ' one time'}</span>
       </p>
-      <p className="font-body text-sm text-[#0d0d0d]/70 mt-2 leading-relaxed">{tier.pitch}</p>
+      <p className="font-body text-sm text-[#14110c]/70 mt-2 leading-relaxed">{tier.pitch}</p>
       <ul className="mt-5 space-y-2.5 flex-1">
         {tier.includes.map((line) => (
-          <li key={line} className="flex gap-2.5 font-body text-[13.5px] text-[#0d0d0d]/80 leading-snug">
-            <span className="text-[#ffd400] font-black mt-[1px]" aria-hidden="true">✓</span>
+          <li key={line} className="flex gap-2.5 font-body text-[13.5px] text-[#14110c]/80 leading-snug">
+            <span className="text-[#f5b700] font-black mt-[1px]" aria-hidden="true">✓</span>
             {line}
           </li>
         ))}
@@ -371,13 +371,13 @@ function TierCard({ tier, business, runId }: { tier: (typeof picturesTiers)[numb
         type="button"
         onClick={buy}
         disabled={busy}
-        className={`mt-6 w-full rounded-full border-2 border-[#0d0d0d] px-6 py-3.5 font-sans font-extrabold text-xs uppercase tracking-[0.18em] shadow-[4px_4px_0_0_#0d0d0d] transition-all hover:-translate-y-0.5 hover:shadow-[5px_5px_0_0_#0d0d0d] disabled:opacity-60 ${
-          tier.featured ? 'bg-[#ffd400] text-[#0d0d0d]' : 'bg-white text-[#0d0d0d]'
+        className={`mt-6 w-full rounded-full border-2 border-[#14110c] px-6 py-3.5 font-sans font-extrabold text-xs uppercase tracking-[0.18em] shadow-[4px_4px_0_0_#14110c] transition-all hover:-translate-y-0.5 hover:shadow-[5px_5px_0_0_#14110c] disabled:opacity-60 ${
+          tier.featured ? 'bg-[#f5b700] text-[#14110c]' : 'bg-white text-[#14110c]'
         }`}
       >
         {busy ? 'Opening the box office…' : tier.cta}
       </button>
-      {msg && <p className="mt-3 text-[#d0241b] text-xs font-body font-semibold">{msg}</p>}
+      {msg && <p className="mt-3 text-[#8f1d22] text-xs font-body font-semibold">{msg}</p>}
     </div>
   );
 }

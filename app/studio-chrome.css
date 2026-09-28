@@ -1,5 +1,5 @@
 /* Editorial studio chrome, scoped to public navigation and footer. */
-nav[data-studio-nav]{background:#f1ede4f5;border-bottom:1px solid #0d0d0d20;box-shadow:none!important}
+nav[data-studio-nav]{background:#f6efe0f5;border-bottom:1px solid #14110c20;box-shadow:none!important}
 nav[data-studio-nav]>div{max-width:none;padding:19px 6vw}
 nav[data-studio-nav] a,nav[data-studio-nav] button{box-shadow:none!important}
 nav[data-studio-nav] a{border-width:1px}
@@ -9,68 +9,72 @@ nav[data-studio-nav]>div>a>img{height:34px}
 nav[data-studio-nav] a[href='/book']{border-radius:2px;padding:12px 20px;font-weight:600;font-size:10px}
 nav[data-studio-nav] a[href='/portal']{border:0;background:transparent}
 nav[data-studio-nav] a[aria-label='Modern Mustard Seed on Facebook']{border:0;background:transparent}
-.studio-footer{padding:75px 6vw 28px;background:#0d0d0d;color:#f1ede4}
-.studio-footer a:focus-visible,.studio-footer button:focus-visible{outline:2px solid #ffd400;outline-offset:5px}
-.studio-footer-top{display:grid;grid-template-columns:1.2fr 1fr;gap:12%;padding-bottom:60px;border-bottom:1px solid #f1ede425}
+.studio-footer{padding:75px 6vw 28px;background:#14110c;color:#f6efe0}
+.studio-footer a:focus-visible,.studio-footer button:focus-visible{outline:2px solid #f5b700;outline-offset:5px}
+.studio-footer-top{display:grid;grid-template-columns:1.2fr 1fr;gap:12%;padding-bottom:60px;border-bottom:1px solid #f6efe025}
 .studio-footer-brand{font-size:clamp(36px,5.5vw,80px);line-height:1.05;letter-spacing:-.045em;font-family:var(--font-display),serif}
-.studio-footer-brand em{color:#ffd400;font-weight:400}
+.studio-footer-brand em{color:#f5b700;font-weight:400}
 .studio-footer-top>div>p{font-size:13px;line-height:1.85;color:#bdbfc4;max-width:420px;margin-bottom:25px}
-.studio-footer-top>div>a{display:block;width:fit-content;font-size:13px;line-height:2.1;color:#f1ede4}
-.studio-footer-top>div>.studio-footer-inquire{display:flex;align-items:center;gap:50px;color:#ffd400;border-bottom:1px solid #ffd40060;padding-bottom:8px;margin-bottom:20px;font-size:13px}
+.studio-footer-top>div>a{display:block;width:fit-content;font-size:13px;line-height:2.1;color:#f6efe0}
+.studio-footer-top>div>.studio-footer-inquire{display:flex;align-items:center;gap:50px;color:#f5b700;border-bottom:1px solid #f5b70060;padding-bottom:8px;margin-bottom:20px;font-size:13px}
 .studio-footer-inquire>span{font-size:24px}
 .studio-footer-links{display:grid;grid-template-columns:repeat(4,1fr);gap:35px;padding:50px 0}
-.studio-footer-links h2{font-size:9px;text-transform:uppercase;letter-spacing:.18em;color:#ffd400;margin:0 0 22px;font-family:var(--font-body),sans-serif;font-weight:500}
-.studio-footer-links li{margin:0}.studio-footer-links a{display:block;width:fit-content;padding:6px 0;font-size:12px;line-height:1.45;color:#c6c8cc;transition:color .2s}.studio-footer-links a:hover{color:#ffd400}
-.studio-footer-seed{display:flex;align-items:center;gap:24px;max-width:770px;margin:12px 0 48px;padding:26px 0;border-top:1px solid #f1ede425}
+.studio-footer-links h2{font-size:9px;text-transform:uppercase;letter-spacing:.18em;color:#f5b700;margin:0 0 22px;font-family:var(--font-body),sans-serif;font-weight:500}
+.studio-footer-links li{margin:0}.studio-footer-links a{display:block;width:fit-content;padding:6px 0;font-size:12px;line-height:1.45;color:#c6c8cc;transition:color .2s}.studio-footer-links a:hover{color:#f5b700}
+.studio-footer-seed{display:flex;align-items:center;gap:24px;max-width:770px;margin:12px 0 48px;padding:26px 0;border-top:1px solid #f6efe025}
 .studio-footer-seed img{width:44px;height:auto;flex-shrink:0}.studio-footer-seed p{font-family:var(--font-display),serif;font-size:15px;line-height:1.7;font-style:italic;color:#c6c8cc}.studio-footer-seed span{display:block;margin-top:12px;font-size:9px;letter-spacing:.08em;color:#c6c8cc}
-.studio-footer-bottom{border-top:1px solid #f1ede425;padding-top:24px}.studio-footer-bottom>div{display:flex;flex-wrap:wrap;gap:8px 22px;align-items:center}.studio-footer-bottom a,.studio-footer-bottom button{font-family:var(--font-body),sans-serif;font-weight:400;font-size:10px;letter-spacing:0;color:#c6c8cc;border:0;border-radius:0;box-shadow:none;background:transparent;text-transform:none;min-height:44px;display:inline-flex;align-items:center;padding:0}.studio-footer-bottom>p{font-size:10px;color:#9c9fa6;margin-top:20px}
+.studio-footer-bottom{border-top:1px solid #f6efe025;padding-top:24px}.studio-footer-bottom>div{display:flex;flex-wrap:wrap;gap:8px 22px;align-items:center}.studio-footer-bottom a,.studio-footer-bottom button{font-family:var(--font-body),sans-serif;font-weight:400;font-size:10px;letter-spacing:0;color:#c6c8cc;border:0;border-radius:0;box-shadow:none;background:transparent;text-transform:none;min-height:44px;display:inline-flex;align-items:center;padding:0}.studio-footer-bottom>p{font-size:10px;color:#9c9fa6;margin-top:20px}
 @media(max-width:760px){nav[data-studio-nav]>div{padding:14px 5vw;gap:10px}nav[data-studio-nav]>div>a{gap:7px}nav[data-studio-nav]>div>a>span{font-size:11px;max-width:130px;line-height:1.3}nav[data-studio-nav]>div>a>img{height:29px}nav[data-studio-nav] a[aria-label='Modern Mustard Seed on Facebook']{display:none}.studio-footer{padding:55px 6vw 25px}.studio-footer-top{grid-template-columns:1fr;gap:30px;padding-bottom:35px}.studio-footer-brand{font-size:46px}.studio-footer-links{grid-template-columns:1fr 1fr;gap:30px 20px;padding:38px 0}.studio-footer-links a{font-size:11px;min-height:44px;display:flex;align-items:center;padding:8px 0}.studio-footer-links h2{font-size:8px;margin-bottom:12px}.studio-footer-seed{gap:16px;margin-bottom:25px}.studio-footer-seed p{font-size:13px}.studio-footer-bottom>div{gap:0 18px}}
 
 [data-studio-page] h1,[data-studio-page] h2,[data-studio-page] h3{font-weight:400;letter-spacing:-.035em}
 [data-studio-page] h1{letter-spacing:-.055em;line-height:1.05}
-[data-studio-page] [style*='text-stroke']{-webkit-text-stroke:0!important;color:#0d0d0d;font-style:italic}
-[data-studio-consent]>div{border-width:1px;border-color:#0d0d0d30;border-radius:4px;box-shadow:0 12px 50px #0d0d0d20}
+[data-studio-page] [style*='text-stroke']{-webkit-text-stroke:0!important;color:#14110c;font-style:italic}
+[data-studio-consent]>div{border-width:1px;border-color:#14110c30;border-radius:4px;box-shadow:0 12px 50px #14110c20}
 [data-studio-consent] button{border-width:1px;box-shadow:none;min-height:44px;border-radius:2px;font-weight:500;font-size:10px}
 [data-studio-consent] p:first-child{font-weight:500}
-[data-studio-launcher]>div{border:1px solid #0d0d0d30;box-shadow:0 6px 25px #0d0d0d30;border-radius:40px;padding:6px 14px 6px 6px;background:#f1ede4}
-[data-studio-launcher]>div>span:first-child{border:0;background:#ffd400}
+[data-studio-launcher]>div{border:1px solid #14110c30;box-shadow:0 6px 25px #14110c30;border-radius:40px;padding:6px 14px 6px 6px;background:#f6efe0}
+[data-studio-launcher]>div>span:first-child{border:0;background:#f5b700}
 [data-studio-launcher]>div>span:nth-child(2){font-size:12px;font-weight:500}
 @media(max-width:639px){[data-studio-launcher]>div{padding:5px}}
 
 .studio-footer-seed img{width:44px;height:59px;object-fit:contain}
 
 nav[data-studio-nav] a{border-width:0}
-nav[data-studio-nav] a[href='/book']{border:1px solid #0d0d0d}
+nav[data-studio-nav] a[href='/book']{border:1px solid #14110c}
 @media(prefers-reduced-motion:no-preference){[data-design='mms-editorial-2026']>section:first-child picture{animation:studio-art-enter 1.2s cubic-bezier(.2,.7,.2,1) both}}
 @keyframes studio-art-enter{from{opacity:.4;transform:scale(1.04)}to{opacity:1;transform:scale(1)}}
 
-[data-studio-page] :is(a,button,input,textarea,select):focus-visible{outline:2px solid #ff3b2f;outline-offset:4px}
+[data-studio-page] :is(a,button,input,textarea,select):focus-visible{outline:2px solid #b3261e;outline-offset:4px}
 [data-studio-page] form button{min-height:44px}
 
 #site-mega-menu [class*='shadow-']{box-shadow:none!important}
-#site-mega-menu [class*='border-2']{border-width:1px;border-color:#0d0d0d30;border-radius:3px}
+#site-mega-menu [class*='border-2']{border-width:1px;border-color:#14110c30;border-radius:3px}
 #site-mega-menu [style*='radial-gradient']{display:none}
 #site-mega-menu .font-display{font-weight:400;letter-spacing:-.03em}
 #site-mega-menu button{min-width:44px;min-height:44px}
-#site-mega-menu a:focus-visible,#site-mega-menu button:focus-visible{outline:2px solid #ff3b2f;outline-offset:4px}
-[role='dialog'][aria-label*='Mr. Mustard']{border-width:1px;box-shadow:0 15px 60px #0d0d0d30;border-radius:6px}
+#site-mega-menu a:focus-visible,#site-mega-menu button:focus-visible{outline:2px solid #b3261e;outline-offset:4px}
+[role='dialog'][aria-label*='Mr. Mustard']{border-width:1px;box-shadow:0 15px 60px #14110c30;border-radius:6px}
 [role='dialog'][aria-label*='Mr. Mustard'] [class*='shadow-']{box-shadow:none}
 [role='dialog'][aria-label*='Mr. Mustard'] [style*='radial-gradient']{display:none}
 [role='dialog'][aria-label*='Mr. Mustard'] .font-display{font-weight:400}
 [role='dialog'][aria-label*='Mr. Mustard'] button{border-width:1px}
 
 /* Carry the pop-art identity through the shared studio surfaces. */
-nav[data-studio-nav]{border-bottom:2px solid #0d0d0d}
-nav[data-studio-nav] a[href='/book']{border:2px solid #0d0d0d;box-shadow:3px 3px 0 #0d0d0d!important}
-.studio-footer{border-top:8px solid #ffd400}
-[data-studio-launcher]>div{border:2px solid #0d0d0d;box-shadow:3px 3px 0 #0d0d0d}
+nav[data-studio-nav]{border-bottom:2px solid #14110c}
+nav[data-studio-nav] a[href='/book']{border:2px solid #14110c;box-shadow:3px 3px 0 #14110c!important}
+.studio-footer{border-top:8px solid #f5b700}
+[data-studio-launcher]>div{border:2px solid #14110c;box-shadow:3px 3px 0 #14110c}
 
-/* Graffiti Couture (2026-09-26): the footer is the last wall, with yellow
-   paint running off its top edge; the nav gets a sticker-cut Book button. */
-.studio-footer{position:relative;border-top:0;padding-top:95px}
-.studio-footer:before{content:"";position:absolute;left:0;right:0;top:0;height:34px;background:#ffd400;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 40' preserveAspectRatio='none'%3E%3Cpath d='M0 0H300V8C290 8 287 12 286 20 285 28 282 31 279 31 276 31 274 28 273 20 272 12 268 8 260 8H196C190 8 187 13 186 24 185 35 182 40 178 40 174 40 171 35 170 24 169 13 166 8 160 8H92C86 8 84 11 83 16 82 21 80 23 77 23 74 23 72 21 71 16 70 11 67 8 61 8H24C18 8 16 11 15 15 14 19 12 21 10 21 8 21 6 19 5 15 4 11 2 8 0 8Z'/%3E%3C/svg%3E") 0 0/300px 100% repeat-x;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 40' preserveAspectRatio='none'%3E%3Cpath d='M0 0H300V8C290 8 287 12 286 20 285 28 282 31 279 31 276 31 274 28 273 20 272 12 268 8 260 8H196C190 8 187 13 186 24 185 35 182 40 178 40 174 40 171 35 170 24 169 13 166 8 160 8H92C86 8 84 11 83 16 82 21 80 23 77 23 74 23 72 21 71 16 70 11 67 8 61 8H24C18 8 16 11 15 15 14 19 12 21 10 21 8 21 6 19 5 15 4 11 2 8 0 8Z'/%3E%3C/svg%3E") 0 0/300px 100% repeat-x;pointer-events:none}
-nav[data-studio-nav] a[href='/book']{border-radius:2px;box-shadow:3px 3px 0 #0d0d0d!important}
-nav[data-studio-nav] a[href='/book']:hover{box-shadow:4px 4px 0 #ff3b2f!important}
-nav[data-studio-nav] button{border-radius:2px}
-.studio-footer-links a:hover{color:#ffd400}
-@media(max-width:760px){.studio-footer{padding-top:70px}}
+/* The Mustard Building (2026-09-27): the footer is the cornice at the top
+   of the tower, a gold stepped frieze over a double hairline; the nav wears
+   a thin gold rule and a brass-plate Book button. */
+nav[data-studio-nav]{border-bottom:1px solid #14110c;box-shadow:0 3px 0 -1px #f6efe0,0 4px 0 -1px #d9a300}
+nav[data-studio-nav] a[href='/book']{border-radius:0;border:1.5px solid #14110c;box-shadow:inset 0 0 0 3px #f5b700,inset 0 0 0 4px #14110c!important}
+nav[data-studio-nav] a[href='/book']:hover{box-shadow:inset 0 0 0 3px #f3dc9b,inset 0 0 0 4px #14110c!important}
+nav[data-studio-nav] button{border-radius:0}
+[data-studio-launcher]>div{border:1.5px solid #14110c;box-shadow:0 8px 22px #14110c40}
+.studio-footer{position:relative;border-top:0;padding-top:96px}
+.studio-footer:before{content:"";position:absolute;left:0;right:0;top:0;height:30px;background:#f5b700;-webkit-mask:linear-gradient(#000 0 0) 0 0/100% 38% no-repeat,url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 30'%3E%3Cpath d='M0 0H60V12H52V18H44V24H16V18H8V12H0Z'/%3E%3C/svg%3E") 0 0/60px 100% repeat-x;mask:linear-gradient(#000 0 0) 0 0/100% 38% no-repeat,url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 30'%3E%3Cpath d='M0 0H60V12H52V18H44V24H16V18H8V12H0Z'/%3E%3C/svg%3E") 0 0/60px 100% repeat-x;pointer-events:none}
+.studio-footer:after{content:"";position:absolute;left:0;right:0;top:38px;height:5px;border-block:1px solid #f5b70099;pointer-events:none}
+.studio-footer-links a:hover{color:#f5b700}
+@media(max-width:760px){.studio-footer{padding-top:74px}.studio-footer:before{height:22px;-webkit-mask-size:100% 38%,44px 100%;mask-size:100% 38%,44px 100%}.studio-footer:after{top:30px}}

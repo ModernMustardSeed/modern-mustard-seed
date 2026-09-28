@@ -18,16 +18,16 @@ export default async function LaunchDeckPage() {
 
   if (tier === 'none') {
     return (
-      <div className="min-h-screen bg-[#f1ede4] halftone-bg flex items-center justify-center px-6">
+      <div className="min-h-screen bg-[#f6efe0] halftone-bg flex items-center justify-center px-6">
         <div className="pop-card p-10 max-w-md text-center">
-          <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#d0241b] uppercase">[ Access check ]</p>
-          <h1 className="font-display italic font-extrabold text-3xl text-[#0d0d0d] mt-3">Not cleared for launch yet</h1>
-          <p className="font-sans text-sm text-[#0d0d0d]/70 mt-3">
+          <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#8f1d22] uppercase">[ Access check ]</p>
+          <h1 className="font-display italic font-extrabold text-3xl text-[#14110c] mt-3">Not cleared for launch yet</h1>
+          <p className="font-sans text-sm text-[#14110c]/70 mt-3">
             You are signed in as {session.email}, but Mustard Launch is not switched on for this email yet.
           </p>
           <Link
             href="/mustard-launch#ladder"
-            className="inline-block mt-6 font-sans font-bold bg-[#ffd400] text-[#0d0d0d] border-2 border-[#0d0d0d] shadow-[4px_4px_0_0_#0d0d0d] px-6 py-3 hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#0d0d0d] transition-all"
+            className="inline-block mt-6 font-sans font-bold bg-[#f5b700] text-[#14110c] border-2 border-[#14110c] shadow-[4px_4px_0_0_#14110c] px-6 py-3 hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#14110c] transition-all"
           >
             Get your Launch Kit
           </Link>

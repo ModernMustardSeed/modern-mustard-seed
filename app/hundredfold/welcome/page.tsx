@@ -17,7 +17,7 @@ export const metadata: Metadata = buildMetadata({
  */
 export default function HundredfoldWelcomePage() {
   return (
-    <main className="relative min-h-screen bg-[#f1ede4] text-[#0d0d0d] pt-36 md:pt-44 pb-24">
+    <main className="relative min-h-screen bg-[#f6efe0] text-[#14110c] pt-36 md:pt-44 pb-24">
       <div aria-hidden="true" className="absolute inset-0 halftone-bg opacity-50 pointer-events-none" />
       <div className="relative max-w-3xl mx-auto px-6 md:px-8 text-center">
         <span className="block text-[10px] uppercase tracking-[0.45em] font-mono font-bold text-[#C4160B] mb-7">
@@ -25,7 +25,7 @@ export default function HundredfoldWelcomePage() {
         </span>
         <h1 className="font-display text-4xl md:text-6xl font-black tracking-tight leading-[1.0]">
           You are in. Now the{' '}
-          <span className="text-[#ffd400]" style={{ WebkitTextStroke: '2px #0d0d0d' }}>
+          <span className="text-[#f5b700]" style={{ WebkitTextStroke: '2px #14110c' }}>
             twenty minutes
           </span>{' '}
           that matter
@@ -38,18 +38,18 @@ export default function HundredfoldWelcomePage() {
         <div className="mt-10 flex flex-col sm:flex-row justify-center gap-3">
           <Link
             href="/hundredfold#interview"
-            className="px-8 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-white bg-[#0d0d0d] rounded-xl border-2 border-[#0d0d0d] hover:-translate-y-0.5 transition-all"
+            className="px-8 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-white bg-[#14110c] rounded-xl border-2 border-[#14110c] hover:-translate-y-0.5 transition-all"
           >
             Do the interview now
           </Link>
           <Link
             href="/portal/hundredfold"
-            className="px-8 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-[#0d0d0d] bg-white rounded-xl border-2 border-[#0d0d0d] shadow-[4px_4px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-all"
+            className="px-8 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-[#14110c] bg-white rounded-xl border-2 border-[#14110c] shadow-[4px_4px_0_0_#14110c] hover:-translate-y-0.5 transition-all"
           >
             Open my Command Center
           </Link>
         </div>
-        <p className="mt-8 text-[#0d0d0d]/60 text-sm font-body max-w-xl mx-auto leading-relaxed">
+        <p className="mt-8 text-[#14110c]/60 text-sm font-body max-w-xl mx-auto leading-relaxed">
           Check your email for the sign-in link to your Command Center. Sarah reads every interview
           herself and will be in touch this week.
         </p>

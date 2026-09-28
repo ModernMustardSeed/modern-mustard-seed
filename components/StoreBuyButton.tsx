@@ -17,10 +17,10 @@ export default function StoreBuyButton({
   if (!configured) {
     return (
       <div className="md:text-right">
-        <span className="inline-flex items-center gap-2 px-9 py-4 rounded-full text-[12px] uppercase tracking-[0.22em] font-sans font-extrabold text-[#0d0d0d] border-2 border-[#0d0d0d] bg-white">
+        <span className="inline-flex items-center gap-2 px-9 py-4 rounded-full text-[12px] uppercase tracking-[0.22em] font-sans font-extrabold text-[#14110c] border-2 border-[#14110c] bg-white">
           Launching shortly
         </span>
-        <p className="text-[#0d0d0d]/55 text-[10px] font-mono uppercase tracking-[0.22em] mt-3 md:text-right">
+        <p className="text-[#14110c]/55 text-[10px] font-mono uppercase tracking-[0.22em] mt-3 md:text-right">
           Notify list opens at launch
         </p>
       </div>
@@ -60,14 +60,14 @@ export default function StoreBuyButton({
       <button
         onClick={onClick}
         disabled={loading}
-        className={`inline-flex items-center gap-2 px-9 py-4 rounded-full text-[12px] uppercase tracking-[0.22em] font-sans font-extrabold text-white bg-[#0d0d0d] border-2 border-[#0d0d0d] shadow-[4px_4px_0_0_rgba(13,13,13,0.3)] hover:-translate-y-0.5 transition-all ${
+        className={`inline-flex items-center gap-2 px-9 py-4 rounded-full text-[12px] uppercase tracking-[0.22em] font-sans font-extrabold text-white bg-[#14110c] border-2 border-[#14110c] shadow-[4px_4px_0_0_rgba(20,17,12,0.3)] hover:-translate-y-0.5 transition-all ${
           loading ? 'opacity-60 cursor-wait' : ''
         }`}
       >
         {loading ? 'Opening checkout…' : label}
       </button>
       {error && (
-        <p className="text-[#0d0d0d] text-[11px] font-mono font-bold uppercase tracking-[0.18em] mt-3 md:text-right">
+        <p className="text-[#14110c] text-[11px] font-mono font-bold uppercase tracking-[0.18em] mt-3 md:text-right">
           {error}
         </p>
       )}

@@ -74,16 +74,16 @@ const isLonelyLast = (i: number) =>
 
 export default function RecentWork() {
   return (
-    <section className="relative bg-[#f1ede4] border-t-2 border-[#0d0d0d] py-16 md:py-24 overflow-hidden">
+    <section className="relative bg-[#f6efe0] border-t-2 border-[#14110c] py-16 md:py-24 overflow-hidden">
       <div className="relative max-w-6xl mx-auto px-6">
         <div className="text-center mb-12 md:mb-16">
           <p className="font-mono font-bold text-[11px] uppercase tracking-[0.35em] text-[#C4160B]">
             Live in the wild // Real sites, real businesses
           </p>
-          <h2 className="font-display font-black tracking-tight leading-[1.03] text-[#0d0d0d] mt-4 text-[clamp(2.25rem,6vw,4rem)]">
+          <h2 className="font-display font-black tracking-tight leading-[1.03] text-[#14110c] mt-4 text-[clamp(2.25rem,6vw,4rem)]">
             Work we&rsquo;ve shipped.
           </h2>
-          <p className="font-body text-base md:text-lg text-[#0d0d0d]/70 leading-relaxed mt-4 max-w-2xl mx-auto">
+          <p className="font-body text-base md:text-lg text-[#14110c]/70 leading-relaxed mt-4 max-w-2xl mx-auto">
             Not mockups. Real businesses, running on the web right now. Go poke around.
           </p>
         </div>
@@ -95,16 +95,16 @@ export default function RecentWork() {
               href={w.url}
               target="_blank"
               rel="noopener noreferrer"
-              className={`group block rounded-2xl border-2 border-[#0d0d0d] bg-white shadow-[7px_7px_0_0_#0d0d0d] overflow-hidden transition-all duration-200 hover:-translate-y-1.5 hover:shadow-[10px_10px_0_0_#0d0d0d] ${w.tilt} hover:rotate-0 ${w.wide ? 'sm:col-span-2' : ''} ${isLonelyLast(i) ? 'sm:col-span-2 sm:mx-auto sm:w-[calc(50%-0.875rem)] md:w-[calc(50%-1.125rem)]' : ''}`}
+              className={`group block rounded-2xl border-2 border-[#14110c] bg-white shadow-[7px_7px_0_0_#14110c] overflow-hidden transition-all duration-200 hover:-translate-y-1.5 hover:shadow-[10px_10px_0_0_#14110c] ${w.tilt} hover:rotate-0 ${w.wide ? 'sm:col-span-2' : ''} ${isLonelyLast(i) ? 'sm:col-span-2 sm:mx-auto sm:w-[calc(50%-0.875rem)] md:w-[calc(50%-1.125rem)]' : ''}`}
             >
               {/* Faux browser chrome */}
-              <div className="flex items-center gap-3 px-4 py-2.5 border-b-2 border-[#0d0d0d] bg-[#f1ede4]">
+              <div className="flex items-center gap-3 px-4 py-2.5 border-b-2 border-[#14110c] bg-[#f6efe0]">
                 <div className="flex items-center gap-1.5 shrink-0" aria-hidden="true">
-                  <span className="h-2.5 w-2.5 rounded-full bg-[#ff3b2f] border border-[#0d0d0d]" />
-                  <span className="h-2.5 w-2.5 rounded-full bg-[#ffd400] border border-[#0d0d0d]" />
-                  <span className="h-2.5 w-2.5 rounded-full bg-[#0d0d0d] border border-[#0d0d0d]" />
+                  <span className="h-2.5 w-2.5 rounded-full bg-[#b3261e] border border-[#14110c]" />
+                  <span className="h-2.5 w-2.5 rounded-full bg-[#f5b700] border border-[#14110c]" />
+                  <span className="h-2.5 w-2.5 rounded-full bg-[#14110c] border border-[#14110c]" />
                 </div>
-                <span className="flex-1 min-w-0 truncate rounded-full bg-white border-2 border-[#0d0d0d] px-3 py-1 font-mono text-[11px] text-[#0d0d0d]/70 text-center">
+                <span className="flex-1 min-w-0 truncate rounded-full bg-white border-2 border-[#14110c] px-3 py-1 font-mono text-[11px] text-[#14110c]/70 text-center">
                   {w.domain}
                 </span>
               </div>
@@ -121,13 +121,13 @@ export default function RecentWork() {
               </div>
 
               {/* Caption */}
-              <div className="p-5 md:p-6 border-t-2 border-[#0d0d0d]">
+              <div className="p-5 md:p-6 border-t-2 border-[#14110c]">
                 <p className="font-mono font-bold text-[10px] uppercase tracking-[0.25em] text-[#8f6600]">
                   {w.tag}
                 </p>
-                <h3 className="font-display font-black text-2xl text-[#0d0d0d] mt-1.5">{w.name}</h3>
-                <p className="font-body text-sm text-[#0d0d0d]/70 leading-relaxed mt-2">{w.desc}</p>
-                <span className="inline-flex items-center gap-1.5 mt-4 font-sans font-extrabold text-[11px] uppercase tracking-[0.16em] text-[#c8201a] group-hover:text-[#C4160B] transition-colors">
+                <h3 className="font-display font-black text-2xl text-[#14110c] mt-1.5">{w.name}</h3>
+                <p className="font-body text-sm text-[#14110c]/70 leading-relaxed mt-2">{w.desc}</p>
+                <span className="inline-flex items-center gap-1.5 mt-4 font-sans font-extrabold text-[11px] uppercase tracking-[0.16em] text-[#8f1d22] group-hover:text-[#C4160B] transition-colors">
                   Visit the live site
                   <svg className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                     <path d="M7 17 17 7" />
@@ -142,7 +142,7 @@ export default function RecentWork() {
         <div className="text-center mt-12">
           <Link
             href="/work"
-            className="inline-flex items-center gap-2 rounded-full border-2 border-[#0d0d0d] bg-[#ffd400] px-8 py-3.5 font-sans font-extrabold text-[12px] uppercase tracking-[0.16em] text-[#0d0d0d] shadow-[4px_4px_0_0_#0d0d0d] transition-all hover:-translate-y-0.5"
+            className="inline-flex items-center gap-2 rounded-full border-2 border-[#14110c] bg-[#f5b700] px-8 py-3.5 font-sans font-extrabold text-[12px] uppercase tracking-[0.16em] text-[#14110c] shadow-[4px_4px_0_0_#14110c] transition-all hover:-translate-y-0.5"
           >
             See more of the work
           </Link>

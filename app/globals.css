@@ -59,12 +59,14 @@ html:not(.mm-js) .mm-r {
     --lake: #161616;
     --sage: #8fa98f;
     --cream: #f1ede4;
-    /* Graffiti Couture tokens (2026-09-26). */
-    --spray-yellow: #ffd400;
-    --spray-red: #ff3b2f;
-    --spray-butter: #ffe98a;
-    --spray-ink: #0d0d0d;
-    --spray-cream: #f1ede4;
+    /* The Mustard Building tokens (2026-09-27). */
+    --deco-gold: #f5b700;
+    --deco-lacquer: #b3261e;
+    --deco-oxblood: #8f1d22;
+    --deco-champagne: #f3dc9b;
+    --deco-ink: #14110c;
+    --deco-ivory: #f6efe0;
+    --deco-emerald: #0f4a3c;
     /* Pop palette tokens */
     --pop-yellow: #f5b700;
     --pop-red: #e0301e;
@@ -76,10 +78,10 @@ html:not(.mm-js) .mm-r {
   html, body {
     width: 100%;
     max-width: 100vw;
-    /* The Graffiti Couture ground: concrete cream, ink type. Dark surfaces are bands a
-       page paints on purpose, never the default. */
-    background-color: #f1ede4;
-    color: #0d0d0d;
+    /* The Mustard Building ground: ivory stock, black-lacquer type. Dark
+       surfaces are bands a page paints on purpose, never the default. */
+    background-color: #f6efe0;
+    color: #14110c;
     font-family: var(--font-body), system-ui, sans-serif;
     /* DM Sans merges "fi"/"fl" into ligature glyphs (the dotless-i "finally"
        problem). Keep letters as typed, sitewide. */
@@ -507,54 +509,54 @@ html:not(.mm-js) .mm-r {
   @apply rounded-xl border border-white/[0.05] my-8;
 }
 
-/* Light Graffiti Couture prose. Add alongside .mdx-prose on cream pages. */
+/* Light Mustard Building prose. Add alongside .mdx-prose on ivory pages. */
 .mdx-prose-pop {
   color: #3a3733;
 }
 .mdx-prose-pop h1,
 .mdx-prose-pop h2,
 .mdx-prose-pop h3 {
-  color: #0d0d0d;
+  color: #14110c;
 }
 .mdx-prose-pop a {
-  color: #d0241b;
-  text-decoration-color: rgba(255, 59, 47, 0.55);
+  color: #8f1d22;
+  text-decoration-color: rgba(245, 183, 0, 0.9);
 }
 .mdx-prose-pop a:hover {
-  color: #0d0d0d;
+  color: #14110c;
 }
 .mdx-prose-pop strong {
-  color: #0d0d0d;
+  color: #14110c;
 }
 .mdx-prose-pop blockquote {
-  border-left-color: #ffd400;
+  border-left-color: #f5b700;
   color: #3a3733;
 }
 .mdx-prose-pop code {
   background: #fff;
-  border: 1px solid #0d0d0d;
-  color: #0d0d0d;
+  border: 1px solid #14110c;
+  color: #14110c;
 }
 .mdx-prose-pop pre {
-  background: #0d0d0d;
-  border: 2px solid #0d0d0d;
+  background: #14110c;
+  border: 2px solid #14110c;
 }
 .mdx-prose-pop pre code {
   background: transparent;
   border: 0;
-  color: #f1ede4;
+  color: #f6efe0;
 }
 .mdx-prose-pop th {
-  color: #d0241b;
-  border-bottom-color: rgba(13, 13, 13, 0.15);
+  color: #8f1d22;
+  border-bottom-color: rgba(20, 17, 12, 0.15);
 }
 .mdx-prose-pop td {
   color: #3a3733;
-  border-bottom-color: rgba(13, 13, 13, 0.08);
+  border-bottom-color: rgba(20, 17, 12, 0.08);
 }
 .mdx-prose-pop hr {
-  border-color: rgba(13, 13, 13, 0.12);
+  border-color: rgba(20, 17, 12, 0.12);
 }
 .mdx-prose-pop img {
-  border: 2px solid #0d0d0d;
+  border: 2px solid #14110c;
 }

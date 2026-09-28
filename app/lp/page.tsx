@@ -42,17 +42,17 @@ const STEPS = [
 export default function LandingPage() {
   return (
     <>
-      <div className="relative min-h-screen bg-[#f1ede4] text-[#0d0d0d] pt-32 md:pt-44 pb-24 overflow-hidden">
+      <div className="relative min-h-screen bg-[#f6efe0] text-[#14110c] pt-32 md:pt-44 pb-24 overflow-hidden">
         <div className="pointer-events-none absolute inset-x-0 top-0 h-[560px] halftone-bg opacity-60 [mask-image:linear-gradient(to_bottom,black,transparent)]" aria-hidden="true" />
         <div className="relative max-w-4xl mx-auto px-6 md:px-8">
           {/* Hero */}
           <header className="text-center mb-14">
-            <span className="text-[10px] uppercase tracking-[0.4em] text-[#c8201a] font-mono font-bold mb-6 block">
+            <span className="text-[10px] uppercase tracking-[0.4em] text-[#8f1d22] font-mono font-bold mb-6 block">
               Modern Mustard Seed
             </span>
-            <h1 className="font-display text-4xl md:text-6xl font-black text-[#0d0d0d] tracking-tight leading-[1.05] mb-6">
+            <h1 className="font-display text-4xl md:text-6xl font-black text-[#14110c] tracking-tight leading-[1.05] mb-6">
               Agentic systems that pay for themselves,{' '}
-              <span className="italic text-[#c8201a]">fast</span>
+              <span className="italic text-[#8f1d22]">fast</span>
             </h1>
             <p className="text-[#3a3733] text-base md:text-lg font-body leading-relaxed max-w-2xl mx-auto mb-10">
               Custom agentic tools, apps, and websites for your business. Built by a studio that
@@ -63,18 +63,18 @@ export default function LandingPage() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
                 href="/audit"
-                className="inline-block w-full sm:w-auto px-9 py-4 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold rounded-full border-2 border-[#0d0d0d] shadow-[4px_4px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-all text-[#0d0d0d] bg-[#ffd400]"
+                className="inline-block w-full sm:w-auto px-9 py-4 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold rounded-full border-2 border-[#14110c] shadow-[4px_4px_0_0_#14110c] hover:-translate-y-0.5 transition-all text-[#14110c] bg-[#f5b700]"
               >
                 Run the Bottleneck Breaker
               </Link>
               <Link
                 href="/book"
-                className="inline-block w-full sm:w-auto px-9 py-4 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold rounded-full border-2 border-[#0d0d0d] shadow-[4px_4px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-all text-[#0d0d0d] bg-white"
+                className="inline-block w-full sm:w-auto px-9 py-4 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold rounded-full border-2 border-[#14110c] shadow-[4px_4px_0_0_#14110c] hover:-translate-y-0.5 transition-all text-[#14110c] bg-white"
               >
                 Book a Discovery Call
               </Link>
             </div>
-            <p className="text-[#0d0d0d]/60 text-xs font-mono mt-5">
+            <p className="text-[#14110c]/60 text-xs font-mono mt-5">
               No credit card. No obligation. Tuesdays through Fridays for calls.
             </p>
           </header>
@@ -83,25 +83,25 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-20">
             {PROOF.map((p) => (
               <div key={p.stat} className="pop-card-yellow p-7 text-center">
-                <div className="font-display text-2xl md:text-3xl font-black text-[#0d0d0d] mb-2">
+                <div className="font-display text-2xl md:text-3xl font-black text-[#14110c] mb-2">
                   {p.stat}
                 </div>
-                <p className="text-[#0d0d0d]/85 text-sm font-body leading-6">{p.label}</p>
+                <p className="text-[#14110c]/85 text-sm font-body leading-6">{p.label}</p>
               </div>
             ))}
           </div>
 
           {/* How it works */}
           <section className="mb-20">
-            <h2 className="font-display text-3xl md:text-5xl font-black text-[#0d0d0d] tracking-tight text-center mb-12">
+            <h2 className="font-display text-3xl md:text-5xl font-black text-[#14110c] tracking-tight text-center mb-12">
               How it works
             </h2>
             <div className="space-y-5">
               {STEPS.map((s) => (
                 <div key={s.n} className="pop-card p-8 flex gap-6 items-start">
-                  <span className="font-display text-2xl text-[#c8201a] font-black leading-none pt-0.5">{s.n}</span>
+                  <span className="font-display text-2xl text-[#8f1d22] font-black leading-none pt-0.5">{s.n}</span>
                   <div>
-                    <h3 className="font-display text-lg md:text-xl font-black text-[#0d0d0d] tracking-tight mb-2">
+                    <h3 className="font-display text-lg md:text-xl font-black text-[#14110c] tracking-tight mb-2">
                       {s.title}
                     </h3>
                     <p className="text-[#3a3733] text-sm md:text-base font-body leading-7">
@@ -114,19 +114,19 @@ export default function LandingPage() {
           </section>
 
           {/* Final CTA */}
-          <div className="relative p-10 md:p-14 text-center rounded-2xl border-2 border-[#0d0d0d] bg-[#0d0d0d] text-[#f1ede4] shadow-[6px_6px_0_0_#ffd400] overflow-hidden">
+          <div className="relative p-10 md:p-14 text-center rounded-2xl border-2 border-[#14110c] bg-[#14110c] text-[#f6efe0] shadow-[6px_6px_0_0_#f5b700] overflow-hidden">
             <div className="pointer-events-none absolute inset-0 halftone-ink" aria-hidden="true" />
             <div className="relative">
-            <h2 className="font-display text-2xl md:text-4xl font-black text-[#f1ede4] tracking-tight mb-5">
+            <h2 className="font-display text-2xl md:text-4xl font-black text-[#f6efe0] tracking-tight mb-5">
               See what agentic systems can do for your business
             </h2>
-            <p className="text-[#f1ede4]/80 text-base font-body leading-relaxed max-w-xl mx-auto mb-9">
+            <p className="text-[#f6efe0]/80 text-base font-body leading-relaxed max-w-xl mx-auto mb-9">
               The audit is free and takes a minute. If the opportunities are real, the next step is
               a conversation. If they are not, you have lost nothing.
             </p>
             <Link
               href="/audit"
-              className="inline-block px-10 py-4 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0d0d0d] bg-[#ffd400] rounded-full border-2 border-[#f1ede4] shadow-[4px_4px_0_0_#f1ede4] hover:-translate-y-0.5 transition-all"
+              className="inline-block px-10 py-4 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#14110c] bg-[#f5b700] rounded-full border-2 border-[#f6efe0] shadow-[4px_4px_0_0_#f6efe0] hover:-translate-y-0.5 transition-all"
             >
               Start the Free Audit
             </Link>

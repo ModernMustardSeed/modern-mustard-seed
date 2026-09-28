@@ -125,7 +125,7 @@ export default function LaunchFilmPlayer({ cuts, poster, runtime, film, aspect =
 
   return (
     <figure className="w-full">
-      <div className={`relative ${frame} w-full overflow-hidden rounded-2xl border-2 border-[#0d0d0d] bg-[#0d0d0d] shadow-[8px_8px_0_0_#0d0d0d]`}>
+      <div className={`relative ${frame} w-full overflow-hidden rounded-2xl border-2 border-[#14110c] bg-[#14110c] shadow-[8px_8px_0_0_#14110c]`}>
         {cut ? (
           <video
             key={cut.src}
@@ -142,14 +142,14 @@ export default function LaunchFilmPlayer({ cuts, poster, runtime, film, aspect =
           />
         ) : exhausted ? (
           <div data-film-fallback className="absolute inset-0 flex flex-col items-center justify-center gap-4 px-6 text-center">
-            <p className="font-body text-base text-[#f1ede4] max-w-md">
+            <p className="font-body text-base text-[#f6efe0] max-w-md">
               This browser will not play the film here. It plays everywhere else, so open it on its own.
             </p>
             <a
               href={cuts.mp4}
               target="_blank"
               rel="noopener"
-              className="inline-flex items-center justify-center rounded-full border-2 border-[#ffd400] bg-[#0d0d0d] px-6 py-3 font-sans text-xs font-extrabold uppercase tracking-[0.18em] text-[#f1ede4] shadow-[4px_4px_0_0_#ffd400]"
+              className="inline-flex items-center justify-center rounded-full border-2 border-[#f5b700] bg-[#14110c] px-6 py-3 font-sans text-xs font-extrabold uppercase tracking-[0.18em] text-[#f6efe0] shadow-[4px_4px_0_0_#f5b700]"
             >
               Open the film
             </a>
@@ -166,13 +166,13 @@ export default function LaunchFilmPlayer({ cuts, poster, runtime, film, aspect =
             <img src={poster} alt={`A frame from ${title}`} className="h-full w-full object-cover" width={aspect === 'tall' ? 1080 : 1920} height={aspect === 'tall' ? 1920 : 1080} />
             <span className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,12,22,0.05)_0%,rgba(8,12,22,0.25)_60%,rgba(8,12,22,0.7)_100%)]" />
             <span className="absolute inset-0 flex items-center justify-center">
-              <span className="flex h-20 w-20 items-center justify-center rounded-full border-2 border-[#0d0d0d] bg-[#ffd400] shadow-[5px_5px_0_0_#0d0d0d] transition-transform duration-200 group-hover:scale-110 sm:h-24 sm:w-24">
-                <svg viewBox="0 0 24 24" aria-hidden="true" className="ml-1 h-8 w-8 fill-[#0d0d0d] sm:h-9 sm:w-9">
+              <span className="flex h-20 w-20 items-center justify-center rounded-full border-2 border-[#14110c] bg-[#f5b700] shadow-[5px_5px_0_0_#14110c] transition-transform duration-200 group-hover:scale-110 sm:h-24 sm:w-24">
+                <svg viewBox="0 0 24 24" aria-hidden="true" className="ml-1 h-8 w-8 fill-[#14110c] sm:h-9 sm:w-9">
                   <path d="M6 3.5v17l15-8.5z" />
                 </svg>
               </span>
             </span>
-            <span className="absolute bottom-4 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border-2 border-[#0d0d0d] bg-[#f1ede4] px-4 py-1.5 font-mono text-[11px] font-bold uppercase tracking-[0.25em] text-[#0d0d0d] sm:bottom-6">
+            <span className="absolute bottom-4 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border-2 border-[#14110c] bg-[#f6efe0] px-4 py-1.5 font-mono text-[11px] font-bold uppercase tracking-[0.25em] text-[#14110c] sm:bottom-6">
               Watch the film · {runtime}
             </span>
           </button>

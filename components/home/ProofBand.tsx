@@ -73,7 +73,7 @@ export default async function ProofBand() {
   const marqueeItems = [...RESULTS, ...RESULTS];
 
   return (
-    <section className="relative bg-[#0d0d0d] py-20 md:py-28 border-b-2 border-[#0d0d0d] overflow-hidden">
+    <section className="relative bg-[#14110c] py-20 md:py-28 border-b-2 border-[#14110c] overflow-hidden">
       {/* Dim halftone texture */}
       <div
         aria-hidden="true"
@@ -85,7 +85,7 @@ export default async function ProofBand() {
       />
 
       <div className="relative max-w-6xl mx-auto px-6">
-        <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#FFDD55] uppercase">
+        <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#ffc933] uppercase">
           Proof // Not theory
         </p>
         <h2 className="font-display italic font-extrabold text-4xl md:text-6xl text-white mt-3 leading-[1.02] max-w-3xl">
@@ -108,20 +108,20 @@ export default async function ProofBand() {
         <div
           aria-hidden="true"
           className="absolute left-0 top-0 bottom-0 w-24 z-10 pointer-events-none"
-          style={{ background: 'linear-gradient(to right, #0d0d0d, transparent)' }}
+          style={{ background: 'linear-gradient(to right, #14110c, transparent)' }}
         />
         <div
           aria-hidden="true"
           className="absolute right-0 top-0 bottom-0 w-24 z-10 pointer-events-none"
-          style={{ background: 'linear-gradient(to left, #0d0d0d, transparent)' }}
+          style={{ background: 'linear-gradient(to left, #14110c, transparent)' }}
         />
         <div className="mm-proof-track">
           {marqueeItems.map((r, i) => (
             <div key={`${r.client}-${i}`} className="flex items-center gap-4 whitespace-nowrap flex-shrink-0">
               <span className="font-sans text-base md:text-lg font-bold text-white/55">{r.metric}</span>
-              <span className="text-[#ffd400] text-xl font-black" aria-hidden="true">→</span>
+              <span className="text-[#f5b700] text-xl font-black" aria-hidden="true">→</span>
               <span className="font-sans text-base md:text-lg font-extrabold text-white">{r.outcome}</span>
-              <span className="font-mono font-bold text-[10px] uppercase tracking-[0.3em] text-[#FFDD55]/70 ml-2">
+              <span className="font-mono font-bold text-[10px] uppercase tracking-[0.3em] text-[#ffc933]/70 ml-2">
                 {r.client}
               </span>
               <span className="text-white/20 text-xl mx-2" aria-hidden="true">·</span>
@@ -136,14 +136,14 @@ export default async function ProofBand() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {rows.map((r) => (
               <figure key={r.id} className="border-2 border-white/15 bg-[#0F1422] p-6 flex flex-col">
-                <div className="text-[#ffd400] text-sm mb-3" aria-hidden="true">
+                <div className="text-[#f5b700] text-sm mb-3" aria-hidden="true">
                   {'★'.repeat(Math.max(1, Math.min(5, r.rating || 5)))}
                 </div>
                 <blockquote className="text-white/85 font-body text-[15px] leading-relaxed flex-1">
                   &ldquo;{r.quote}&rdquo;
                 </blockquote>
                 {r.outcome && (
-                  <p className="mt-4 inline-block self-start text-[10px] uppercase tracking-[0.15em] font-mono font-bold text-[#0d0d0d] bg-[#ffd400] border border-[#0d0d0d] px-3 py-1">
+                  <p className="mt-4 inline-block self-start text-[10px] uppercase tracking-[0.15em] font-mono font-bold text-[#14110c] bg-[#f5b700] border border-[#14110c] px-3 py-1">
                     {r.outcome}
                   </p>
                 )}
@@ -164,7 +164,7 @@ export default async function ProofBand() {
       <div className="relative max-w-6xl mx-auto px-6 mt-12">
         <Link
           href="/work"
-          className="inline-flex items-center gap-3 font-mono font-bold text-[11px] uppercase tracking-[0.2em] text-[#FFDD55] hover:text-white transition-colors"
+          className="inline-flex items-center gap-3 font-mono font-bold text-[11px] uppercase tracking-[0.2em] text-[#ffc933] hover:text-white transition-colors"
         >
           See all the work →
         </Link>

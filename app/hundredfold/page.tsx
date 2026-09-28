@@ -112,7 +112,7 @@ export default function HundredfoldPage() {
         ]}
       />
 
-      <div className="relative bg-[#f1ede4] text-[#0d0d0d]">
+      <div className="relative bg-[#f6efe0] text-[#14110c]">
         {/* ── Hero ─────────────────────────────────────────────────────────── */}
         <PopPageHero
           eyebrow={<span>The flagship</span>}
@@ -120,7 +120,7 @@ export default function HundredfoldPage() {
           issue={{ no: 'No.100', lines: ['The flagship', 'Four gates, twelve months'] }}
           art={{
             src: '/art/pages/system',
-            alt: 'Graffiti couture painting: Mr. Mustard drives a black classic convertible through a graffiti-painted underpass: loose papers swirl in on one side and neat yellow boxes roll out on the other',
+            alt: 'Painting: Mr. Mustard in a mechanic’s apron pulls a big brass lever in the engine room of the tower, gears turning, gauges climbing and steam rising as the whole crew keeps the machine running',
             caption: 'The machine that runs the plan',
           }}
           sticker="x100!"
@@ -142,7 +142,7 @@ export default function HundredfoldPage() {
               Get the free roadmap first
             </Link>
           </div>
-          <p className="font-mono uppercase text-[#c8201a]">
+          <p className="font-mono uppercase text-[#8f1d22]">
             {priceSentence()} · Month to month
           </p>
         </PopPageHero>
@@ -155,7 +155,7 @@ export default function HundredfoldPage() {
         </section>
 
         {/* ── The truth ────────────────────────────────────────────────────── */}
-        <section className="py-20 md:py-28 border-y-2 border-[#0d0d0d]/12">
+        <section className="py-20 md:py-28 border-y-2 border-[#14110c]/12">
           <div className="max-w-3xl mx-auto px-6 md:px-8">
             <span className="block text-[10px] uppercase tracking-[0.45em] font-mono font-bold mb-6" style={{ color: RED }}>
               Read this part slowly
@@ -174,7 +174,7 @@ export default function HundredfoldPage() {
                 machines that carry the parts you will not do consistently, and somebody checking on you
                 every single week until the number clears.
               </p>
-              <p className="font-display italic font-black text-xl md:text-2xl text-[#0d0d0d] leading-snug">
+              <p className="font-display italic font-black text-xl md:text-2xl text-[#14110c] leading-snug">
                 That is the entire program. A plan, the machines, and someone who does not let it slide.
               </p>
             </div>
@@ -190,7 +190,7 @@ export default function HundredfoldPage() {
               </span>
               <h2 className="font-display text-4xl md:text-5xl font-black tracking-tight">
                 Six parts.{' '}
-                <span className="text-[#ffd400]" style={{ WebkitTextStroke: '1.5px #0d0d0d' }}>
+                <span className="text-[#f5b700]" style={{ WebkitTextStroke: '1.5px #14110c' }}>
                   Nobody else has all six.
                 </span>
               </h2>
@@ -202,19 +202,19 @@ export default function HundredfoldPage() {
                   <div className="flex flex-col md:flex-row">
                     <div
                       className={`md:w-56 shrink-0 p-7 flex md:flex-col items-center md:items-start gap-4 md:gap-2 ${
-                        i % 2 === 0 ? 'bg-[#0d0d0d]' : 'bg-[#ffd400]'
+                        i % 2 === 0 ? 'bg-[#14110c]' : 'bg-[#f5b700]'
                       }`}
                     >
                       <span
                         className={`font-display text-5xl md:text-6xl font-black leading-none ${
-                          i % 2 === 0 ? 'text-[#ffd400]' : 'text-[#0d0d0d]'
+                          i % 2 === 0 ? 'text-[#f5b700]' : 'text-[#14110c]'
                         }`}
                       >
                         {p.n}
                       </span>
                       <span
                         className={`font-display text-xl md:text-2xl font-black tracking-tight leading-tight ${
-                          i % 2 === 0 ? 'text-[#f1ede4]' : 'text-[#0d0d0d]'
+                          i % 2 === 0 ? 'text-[#f6efe0]' : 'text-[#14110c]'
                         }`}
                       >
                         {p.name}
@@ -227,8 +227,8 @@ export default function HundredfoldPage() {
                       <p className="text-[#3a3733] font-body text-sm md:text-base leading-relaxed">{p.body}</p>
                       <ul className="mt-5 space-y-2">
                         {p.gets.map((g) => (
-                          <li key={g} className="flex items-start gap-3 text-[#0d0d0d] font-body text-sm">
-                            <span className="mt-[7px] w-2 h-2 rounded-full bg-[#ffd400] border border-[#0d0d0d] shrink-0" />
+                          <li key={g} className="flex items-start gap-3 text-[#14110c] font-body text-sm">
+                            <span className="mt-[7px] w-2 h-2 rounded-full bg-[#f5b700] border border-[#14110c] shrink-0" />
                             {g}
                           </li>
                         ))}
@@ -242,23 +242,23 @@ export default function HundredfoldPage() {
         </section>
 
         {/* ── The interview, live ──────────────────────────────────────────── */}
-        <section id="interview" className="py-20 md:py-28 bg-[#0d0d0d] scroll-mt-24">
+        <section id="interview" className="py-20 md:py-28 bg-[#14110c] scroll-mt-24">
           <div className="max-w-6xl mx-auto px-6 md:px-8">
             <div className="text-center mb-12 max-w-3xl mx-auto">
-              <span className="block text-[10px] uppercase tracking-[0.45em] font-mono font-bold text-[#ffd400] mb-6">
+              <span className="block text-[10px] uppercase tracking-[0.45em] font-mono font-bold text-[#f5b700] mb-6">
                 Start here
               </span>
-              <h2 className="font-display text-4xl md:text-6xl font-black tracking-tight text-[#f1ede4] leading-[0.98]">
+              <h2 className="font-display text-4xl md:text-6xl font-black tracking-tight text-[#f6efe0] leading-[0.98]">
                 Get interviewed right now
               </h2>
-              <p className="mt-5 text-[#f1ede4]/75 font-body text-base md:text-lg leading-relaxed">
+              <p className="mt-5 text-[#f6efe0]/75 font-body text-base md:text-lg leading-relaxed">
                 Not a form. Not a survey. A coach asking you about your money for twenty minutes, and pushing
                 when the answer is soft. It is free, it works at eleven at night, and at the end of it you
                 have said things out loud that will change what you do on Monday.
               </p>
             </div>
             <TheInterview />
-            <p className="mt-8 text-center text-[#f1ede4]/45 text-xs font-body max-w-xl mx-auto">
+            <p className="mt-8 text-center text-[#f6efe0]/45 text-xs font-body max-w-xl mx-auto">
               Nothing is charged for the interview and there is nothing to cancel. Sarah reads it, builds
               your plan, and brings it to you.
             </p>
@@ -276,7 +276,7 @@ export default function HundredfoldPage() {
             </div>
 
             <div className="pop-card p-6 md:p-9">
-              <div className="divide-y divide-[#0d0d0d]/10">
+              <div className="divide-y divide-[#14110c]/10">
                 {STACK.map((s) => (
                   <div key={s.item} className="py-5 first:pt-0 last:pb-0 flex items-start gap-5">
                     <div className="flex-1 min-w-0">
@@ -290,12 +290,12 @@ export default function HundredfoldPage() {
                 ))}
               </div>
 
-              <div className="mt-7 pt-6 border-t-2 border-[#0d0d0d] flex flex-wrap items-end justify-between gap-6">
+              <div className="mt-7 pt-6 border-t-2 border-[#14110c] flex flex-wrap items-end justify-between gap-6">
                 <div>
-                  <span className="block text-[9px] uppercase tracking-[0.35em] font-mono font-bold text-[#0d0d0d]/55 mb-1">
+                  <span className="block text-[9px] uppercase tracking-[0.35em] font-mono font-bold text-[#14110c]/55 mb-1">
                     What it is worth
                   </span>
-                  <p className="font-display text-3xl md:text-4xl font-black text-[#0d0d0d]/40 line-through decoration-[3px]">
+                  <p className="font-display text-3xl md:text-4xl font-black text-[#14110c]/40 line-through decoration-[3px]">
                     {money(stackTotal)}
                   </p>
                 </div>
@@ -311,12 +311,12 @@ export default function HundredfoldPage() {
                   </p>
                 </div>
               </div>
-              <p className="mt-5 text-[#0d0d0d]/70 font-body text-sm leading-relaxed">
+              <p className="mt-5 text-[#14110c]/70 font-body text-sm leading-relaxed">
                 Month to month, thirty days notice, no exit fee, no contract to escape. Everything we build
                 stays in your accounts whatever happens.
               </p>
 
-              <div id="join" className="mt-8 pt-7 border-t-2 border-[#0d0d0d]/12 scroll-mt-24">
+              <div id="join" className="mt-8 pt-7 border-t-2 border-[#14110c]/12 scroll-mt-24">
                 <JoinHundredfold />
               </div>
             </div>
@@ -324,11 +324,11 @@ export default function HundredfoldPage() {
             {/* Guarantee + scarcity */}
             <div className="mt-5 grid md:grid-cols-2 gap-5">
               <div className="pop-card-yellow p-7">
-                <span className="block text-[9px] uppercase tracking-[0.35em] font-mono font-bold text-[#0d0d0d]/70 mb-3">
+                <span className="block text-[9px] uppercase tracking-[0.35em] font-mono font-bold text-[#14110c]/70 mb-3">
                   The guarantee
                 </span>
                 <h3 className="font-display text-2xl font-black tracking-tight mb-3">{GUARANTEE.name}</h3>
-                <p className="text-[#0d0d0d]/85 font-body text-sm leading-relaxed">{GUARANTEE.body}</p>
+                <p className="text-[#14110c]/85 font-body text-sm leading-relaxed">{GUARANTEE.body}</p>
               </div>
               <div className="pop-card p-7">
                 <span className="block text-[9px] uppercase tracking-[0.35em] font-mono font-bold mb-3" style={{ color: RED }}>
@@ -342,7 +342,7 @@ export default function HundredfoldPage() {
         </section>
 
         {/* ── Fit ──────────────────────────────────────────────────────────── */}
-        <section className="py-20 md:py-28 bg-white border-y-2 border-[#0d0d0d]/12">
+        <section className="py-20 md:py-28 bg-white border-y-2 border-[#14110c]/12">
           <div className="max-w-4xl mx-auto px-6 md:px-8">
             <div className="text-center mb-12">
               <span className="block text-[10px] uppercase tracking-[0.45em] font-mono font-bold mb-5" style={{ color: RED }}>
@@ -351,7 +351,7 @@ export default function HundredfoldPage() {
               <h2 className="font-display text-4xl md:text-5xl font-black tracking-tight">Who this is for</h2>
             </div>
             <div className="grid md:grid-cols-2 gap-5">
-              <div className="border-2 border-[#0d0d0d] rounded-2xl p-7 bg-[#f1ede4] shadow-[5px_5px_0_0_#0d0d0d]">
+              <div className="border-2 border-[#14110c] rounded-2xl p-7 bg-[#f6efe0] shadow-[5px_5px_0_0_#14110c]">
                 <span className="block text-[9px] uppercase tracking-[0.35em] font-mono font-bold text-[#2F7D32] mb-4">
                   This is you
                 </span>
@@ -364,13 +364,13 @@ export default function HundredfoldPage() {
                   ))}
                 </ul>
               </div>
-              <div className="border-2 border-[#0d0d0d] rounded-2xl p-7 bg-[#f1ede4]">
+              <div className="border-2 border-[#14110c] rounded-2xl p-7 bg-[#f6efe0]">
                 <span className="block text-[9px] uppercase tracking-[0.35em] font-mono font-bold mb-4" style={{ color: RED }}>
                   Not yet, or not this
                 </span>
                 <ul className="space-y-3">
                   {FIT.no.map((f) => (
-                    <li key={f} className="flex items-start gap-3 font-body text-sm md:text-base leading-relaxed text-[#0d0d0d]/75">
+                    <li key={f} className="flex items-start gap-3 font-body text-sm md:text-base leading-relaxed text-[#14110c]/75">
                       <span className="font-black shrink-0" style={{ color: RED }}>
                         ×
                       </span>
@@ -398,8 +398,8 @@ export default function HundredfoldPage() {
                   <summary className="font-display text-lg md:text-xl font-black tracking-tight cursor-pointer list-none flex items-start justify-between gap-4">
                     {f.q}
                     <span
-                      className="text-[#ffd400] font-mono text-xl leading-none shrink-0 group-open:rotate-45 transition-transform"
-                      style={{ WebkitTextStroke: '1px #0d0d0d' }}
+                      className="text-[#f5b700] font-mono text-xl leading-none shrink-0 group-open:rotate-45 transition-transform"
+                      style={{ WebkitTextStroke: '1px #14110c' }}
                     >
                       +
                     </span>
@@ -414,11 +414,11 @@ export default function HundredfoldPage() {
         {/* ── Close ────────────────────────────────────────────────────────── */}
         <section className="pb-24">
           <div className="max-w-4xl mx-auto px-6 md:px-8">
-            <div className="border-2 border-[#0d0d0d] rounded-2xl bg-[#0d0d0d] shadow-[8px_8px_0_0_#ffd400] p-9 md:p-14 text-center">
-              <h2 className="font-display text-4xl md:text-6xl font-black tracking-tight text-[#f1ede4] leading-[0.98]">
+            <div className="border-2 border-[#14110c] rounded-2xl bg-[#14110c] shadow-[8px_8px_0_0_#f5b700] p-9 md:p-14 text-center">
+              <h2 className="font-display text-4xl md:text-6xl font-black tracking-tight text-[#f6efe0] leading-[0.98]">
                 A seed does not argue about the harvest
               </h2>
-              <p className="mt-6 text-[#f1ede4]/80 font-body text-base md:text-lg leading-relaxed max-w-2xl mx-auto">
+              <p className="mt-6 text-[#f6efe0]/80 font-body text-base md:text-lg leading-relaxed max-w-2xl mx-auto">
                 It goes in the ground, it gets tended, and it grows into something birds can live in. Twenty
                 minutes with Mr. Mustard is the first honest look at your ground. Everything after that is
                 tending.
@@ -426,18 +426,18 @@ export default function HundredfoldPage() {
               <div className="mt-9 flex flex-col sm:flex-row justify-center gap-3">
                 <a
                   href="#interview"
-                  className="px-8 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-[#0d0d0d] bg-[#ffd400] rounded-xl border-2 border-[#ffd400] hover:-translate-y-0.5 transition-all"
+                  className="px-8 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-[#14110c] bg-[#f5b700] rounded-xl border-2 border-[#f5b700] hover:-translate-y-0.5 transition-all"
                 >
                   Start the interview
                 </a>
                 <Link
                   href="/scaling-roadmap"
-                  className="px-8 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-[#f1ede4] rounded-xl border-2 border-[#f1ede4]/40 hover:border-[#f1ede4] transition-all"
+                  className="px-8 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-[#f6efe0] rounded-xl border-2 border-[#f6efe0]/40 hover:border-[#f6efe0] transition-all"
                 >
                   Read the free roadmap first
                 </Link>
               </div>
-              <p className="mt-6 text-[#f1ede4]/45 text-[10px] uppercase tracking-[0.3em] font-mono">
+              <p className="mt-6 text-[#f6efe0]/45 text-[10px] uppercase tracking-[0.3em] font-mono">
                 {priceSentence()}
               </p>
             </div>

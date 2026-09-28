@@ -43,9 +43,9 @@ const SWATCHES: [keyof Brand, string][] = [
   ['line', 'Line'],
 ];
 
-const label = 'block text-[9px] uppercase tracking-[0.24em] font-mono font-bold text-[#0d0d0d]/55 mb-1.5';
+const label = 'block text-[9px] uppercase tracking-[0.24em] font-mono font-bold text-[#14110c]/55 mb-1.5';
 const input =
-  'w-full px-3 py-2 rounded-lg border-2 border-[#0d0d0d]/15 bg-white font-body text-sm focus:border-[#0d0d0d] focus:outline-none';
+  'w-full px-3 py-2 rounded-lg border-2 border-[#14110c]/15 bg-white font-body text-sm focus:border-[#14110c] focus:outline-none';
 
 export default function BrandPanel({ onChanged }: { onChanged?: () => void }) {
   const [brand, setBrand] = useState<Brand | null>(null);
@@ -120,14 +120,14 @@ export default function BrandPanel({ onChanged }: { onChanged?: () => void }) {
   const unset = brand.source === 'default';
 
   return (
-    <div className="mb-6 border-2 border-[#0d0d0d] rounded-xl bg-white overflow-hidden">
+    <div className="mb-6 border-2 border-[#14110c] rounded-xl bg-white overflow-hidden">
       <div className="p-4 md:p-5">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="min-w-0">
             <span className="block text-[9px] uppercase tracking-[0.28em] font-mono font-bold text-[#C4160B] mb-1">
               Your brand
             </span>
-            <p className="font-body text-sm text-[#0d0d0d]/70 leading-relaxed max-w-xl">
+            <p className="font-body text-sm text-[#14110c]/70 leading-relaxed max-w-xl">
               {unset ? (
                 <>
                   Everything we build gets painted with this. Right now it is a neutral placeholder, so let me read
@@ -146,11 +146,11 @@ export default function BrandPanel({ onChanged }: { onChanged?: () => void }) {
             {SWATCHES.map(([k, name]) => (
               <div key={k} className="text-center">
                 <div
-                  className="w-9 h-9 rounded-lg border-2 border-[#0d0d0d]/25"
+                  className="w-9 h-9 rounded-lg border-2 border-[#14110c]/25"
                   style={{ background: String(brand[k] ?? '#fff') }}
                   title={`${name} ${String(brand[k])}`}
                 />
-                <span className="block mt-1 text-[8px] uppercase tracking-[0.14em] font-mono text-[#0d0d0d]/45">
+                <span className="block mt-1 text-[8px] uppercase tracking-[0.14em] font-mono text-[#14110c]/45">
                   {name}
                 </span>
               </div>
@@ -172,24 +172,24 @@ export default function BrandPanel({ onChanged }: { onChanged?: () => void }) {
             type="button"
             onClick={() => void readFromSite()}
             disabled={busy !== null || !site.trim()}
-            className="px-4 py-2 rounded-lg border-2 border-[#0d0d0d] bg-[#ffd400] text-[10px] uppercase tracking-[0.18em] font-mono font-bold disabled:opacity-50"
+            className="px-4 py-2 rounded-lg border-2 border-[#14110c] bg-[#f5b700] text-[10px] uppercase tracking-[0.18em] font-mono font-bold disabled:opacity-50"
           >
             {busy === 'read' ? 'Reading…' : 'Read my brand off my site'}
           </button>
           <button
             type="button"
             onClick={() => setOpen((o) => !o)}
-            className="px-4 py-2 rounded-lg border-2 border-[#0d0d0d]/25 bg-white text-[10px] uppercase tracking-[0.18em] font-mono font-bold hover:border-[#0d0d0d]"
+            className="px-4 py-2 rounded-lg border-2 border-[#14110c]/25 bg-white text-[10px] uppercase tracking-[0.18em] font-mono font-bold hover:border-[#14110c]"
           >
             {open ? 'Done' : 'Change it by hand'}
           </button>
         </div>
 
-        {says && <p className="font-body text-[13px] text-[#0d0d0d]/70 mt-2">{says}</p>}
+        {says && <p className="font-body text-[13px] text-[#14110c]/70 mt-2">{says}</p>}
       </div>
 
       {open && (
-        <div className="border-t-2 border-[#0d0d0d]/10 bg-[#FFFDF6] p-4 md:p-5 space-y-4">
+        <div className="border-t-2 border-[#14110c]/10 bg-[#FFFDF6] p-4 md:p-5 space-y-4">
           <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
             {SWATCHES.map(([k, name]) => (
               <div key={k}>
@@ -203,13 +203,13 @@ export default function BrandPanel({ onChanged }: { onChanged?: () => void }) {
                     value={String(brand[k] ?? '#000000')}
                     onChange={(e) => setBrand({ ...brand, [k]: e.target.value.toUpperCase() })}
                     onBlur={(e) => void save({ [k]: e.target.value.toUpperCase() } as Partial<Brand>)}
-                    className="w-10 h-9 rounded border-2 border-[#0d0d0d]/20 bg-white p-0.5"
+                    className="w-10 h-9 rounded border-2 border-[#14110c]/20 bg-white p-0.5"
                   />
                   <input
                     value={String(brand[k] ?? '')}
                     onChange={(e) => setBrand({ ...brand, [k]: e.target.value })}
                     onBlur={(e) => void save({ [k]: e.target.value.toUpperCase() } as Partial<Brand>)}
-                    className="flex-1 min-w-0 px-2 py-2 rounded border-2 border-[#0d0d0d]/15 bg-white font-mono text-[11px]"
+                    className="flex-1 min-w-0 px-2 py-2 rounded border-2 border-[#14110c]/15 bg-white font-mono text-[11px]"
                   />
                 </div>
               </div>
@@ -300,7 +300,7 @@ export default function BrandPanel({ onChanged }: { onChanged?: () => void }) {
               </div>
             ))}
           </div>
-          <p className="text-[11px] font-body text-[#0d0d0d]/45">
+          <p className="text-[11px] font-body text-[#14110c]/45">
             Anything left blank shows up as an obvious [FILL IN] rather than something we made up.
           </p>
         </div>

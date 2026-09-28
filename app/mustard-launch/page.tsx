@@ -64,7 +64,7 @@ const jsonLd = {
 
 export default function MustardLaunchPage() {
   return (
-    <div className="bg-[#f1ede4] text-[#0d0d0d]">
+    <div className="bg-[#f6efe0] text-[#14110c]">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       {/* Hero: the comic cover */}

@@ -141,15 +141,15 @@ export default function MustardDemo(props: Props) {
     return (
       <div className="pop-card-yellow relative overflow-hidden p-7 sm:p-9 text-center" role="status" aria-live="polite">
         <div className="relative mx-auto mb-7 h-28 w-28" aria-hidden="true">
-          <span className="ring-wave h-24 w-24 -translate-x-1/2 -translate-y-1/2" style={{ borderColor: 'rgba(13,13,13,.55)' }} />
-          <span className="ring-wave h-24 w-24 -translate-x-1/2 -translate-y-1/2" style={{ borderColor: 'rgba(13,13,13,.4)', animationDelay: '1.4s' }} />
-          <span className="ring-wave h-24 w-24 -translate-x-1/2 -translate-y-1/2" style={{ borderColor: 'rgba(13,13,13,.28)', animationDelay: '2.8s' }} />
-          <span className="absolute left-1/2 top-1/2 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 border-[#0d0d0d] bg-[#f1ede4] text-3xl">
+          <span className="ring-wave h-24 w-24 -translate-x-1/2 -translate-y-1/2" style={{ borderColor: 'rgba(20,17,12,.55)' }} />
+          <span className="ring-wave h-24 w-24 -translate-x-1/2 -translate-y-1/2" style={{ borderColor: 'rgba(20,17,12,.4)', animationDelay: '1.4s' }} />
+          <span className="ring-wave h-24 w-24 -translate-x-1/2 -translate-y-1/2" style={{ borderColor: 'rgba(20,17,12,.28)', animationDelay: '2.8s' }} />
+          <span className="absolute left-1/2 top-1/2 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 border-[#14110c] bg-[#f6efe0] text-3xl">
             📞
           </span>
         </div>
 
-        <h2 className="font-display text-[2rem] sm:text-4xl font-extrabold leading-tight tracking-tight text-[#0d0d0d]">
+        <h2 className="font-display text-[2rem] sm:text-4xl font-extrabold leading-tight tracking-tight text-[#14110c]">
           {phase === 'queued' ? (
             <>
               You are <span className="italic">next</span> in line
@@ -165,18 +165,18 @@ export default function MustardDemo(props: Props) {
           )}
         </h2>
 
-        <p className="mt-3 text-lg leading-relaxed text-[#0d0d0d]/80">
+        <p className="mt-3 text-lg leading-relaxed text-[#14110c]/80">
           {phase === 'queued' ? message || 'He will ring you shortly.' : 'He is grabbing his headset. Keep your phone nearby.'}
         </p>
 
-        <p className="mt-5 inline-block rounded-lg border-2 border-[#0d0d0d] bg-[#f1ede4] px-4 py-2 font-mono text-xl font-bold tracking-wide">
+        <p className="mt-5 inline-block rounded-lg border-2 border-[#14110c] bg-[#f6efe0] px-4 py-2 font-mono text-xl font-bold tracking-wide">
           {phone}
         </p>
 
-        <p className="mt-7 text-sm leading-relaxed text-[#0d0d0d]/70">
+        <p className="mt-7 text-sm leading-relaxed text-[#14110c]/70">
           Do not let him present. Give him the call your team actually gets, and try to break him.
         </p>
-        <p className="mt-3 text-sm text-[#0d0d0d]/60">
+        <p className="mt-3 text-sm text-[#14110c]/60">
           Nothing rang? His line is{' '}
           <a className="font-bold underline underline-offset-4" href="tel:+14063121223">
             (406) 312-1223
@@ -194,7 +194,7 @@ export default function MustardDemo(props: Props) {
         <h2 className="mt-3 font-display text-[2rem] sm:text-4xl font-extrabold leading-tight tracking-tight">
           Want one that answers for <span className="italic">{business || 'your business'}</span>?
         </h2>
-        <p className="mt-3 text-[17px] leading-relaxed text-[#0d0d0d]/75">
+        <p className="mt-3 text-[17px] leading-relaxed text-[#14110c]/75">
           On your real number, around the clock, in your words.
         </p>
         <div className="mt-7 flex flex-col gap-3">
@@ -206,7 +206,7 @@ export default function MustardDemo(props: Props) {
           <Link href="/voice-agents" className={bigButtonQuiet}>
             Build my receptionist
           </Link>
-          <a href="/book" className="text-center text-sm font-semibold underline underline-offset-4 text-[#0d0d0d]/70">
+          <a href="/book" className="text-center text-sm font-semibold underline underline-offset-4 text-[#14110c]/70">
             Or talk it through with Sarah
           </a>
         </div>
@@ -216,16 +216,16 @@ export default function MustardDemo(props: Props) {
 
   if (phase === 'error') {
     return (
-      <div className="pop-card p-7 sm:p-9 text-center" style={{ borderColor: '#ff3b2f', boxShadow: '5px 5px 0 0 #ff3b2f' }}>
-        <p className="font-mono text-[11px] font-bold uppercase tracking-[0.3em] text-[#d0241b]">Snag</p>
+      <div className="pop-card p-7 sm:p-9 text-center" style={{ borderColor: '#b3261e', boxShadow: '5px 5px 0 0 #b3261e' }}>
+        <p className="font-mono text-[11px] font-bold uppercase tracking-[0.3em] text-[#8f1d22]">Snag</p>
         <h2 className="mt-3 font-display text-3xl font-extrabold leading-tight tracking-tight">
           Mr. Mustard hit a <span className="italic">snag</span>.
         </h2>
-        <p className="mt-3 text-[17px] leading-relaxed text-[#0d0d0d]/75">{error}</p>
+        <p className="mt-3 text-[17px] leading-relaxed text-[#14110c]/75">{error}</p>
         <button onClick={retry} className={`${bigButton} mt-6 w-full`}>
           Try again
         </button>
-        <p className="mt-4 text-sm text-[#0d0d0d]/60">
+        <p className="mt-4 text-sm text-[#14110c]/60">
           Or call him yourself at{' '}
           <a className="font-bold underline underline-offset-4" href="tel:+14063121223">
             (406) 312-1223
@@ -239,7 +239,7 @@ export default function MustardDemo(props: Props) {
   return (
     <form onSubmit={submit} className="pop-card p-6 sm:p-8">
       {props.knownAs && (
-        <p className="mb-5 rounded-lg border-2 border-[#0d0d0d] bg-[#ffd400] px-3 py-2 text-sm font-semibold">
+        <p className="mb-5 rounded-lg border-2 border-[#14110c] bg-[#f5b700] px-3 py-2 text-sm font-semibold">
           Welcome back, {props.knownAs}. Just confirm the number.
         </p>
       )}
@@ -256,13 +256,13 @@ export default function MustardDemo(props: Props) {
         placeholder="(602) 555-0134"
         value={phone}
         onChange={(e) => setPhone(formatUsPhone(e.target.value))}
-        className="mt-2 w-full rounded-xl border-2 border-[#0d0d0d] bg-[#f1ede4] px-4 py-4 font-mono text-2xl font-bold tracking-wide text-[#0d0d0d] outline-none transition-shadow placeholder:text-[#0d0d0d]/25 focus:shadow-[0_0_0_4px_#ffd400]"
+        className="mt-2 w-full rounded-xl border-2 border-[#14110c] bg-[#f6efe0] px-4 py-4 font-mono text-2xl font-bold tracking-wide text-[#14110c] outline-none transition-shadow placeholder:text-[#14110c]/25 focus:shadow-[0_0_0_4px_#f5b700]"
         aria-describedby="mustard-consent"
       />
 
       {showBusiness ? (
         <div className="mt-4">
-          <label htmlFor="mustard-business" className="block font-mono text-[11px] font-bold uppercase tracking-[0.24em] text-[#0d0d0d]/45">
+          <label htmlFor="mustard-business" className="block font-mono text-[11px] font-bold uppercase tracking-[0.24em] text-[#14110c]/45">
             Business name, so he can answer as you
           </label>
           <input
@@ -271,14 +271,14 @@ export default function MustardDemo(props: Props) {
             onChange={(e) => setBusiness(e.target.value)}
             placeholder="ABC Heating &amp; Air"
             autoComplete="organization"
-            className="mt-2 w-full rounded-xl border-2 border-[#0d0d0d] bg-[#f1ede4] px-4 py-3.5 text-base text-[#0d0d0d] outline-none placeholder:text-[#0d0d0d]/25 focus:shadow-[0_0_0_4px_#ffd400]"
+            className="mt-2 w-full rounded-xl border-2 border-[#14110c] bg-[#f6efe0] px-4 py-3.5 text-base text-[#14110c] outline-none placeholder:text-[#14110c]/25 focus:shadow-[0_0_0_4px_#f5b700]"
           />
         </div>
       ) : (
         <button
           type="button"
           onClick={() => setShowBusiness(true)}
-          className="mt-3 block text-left text-[13.5px] font-semibold underline underline-offset-4 text-[#0d0d0d]/55 hover:text-[#0d0d0d]"
+          className="mt-3 block text-left text-[13.5px] font-semibold underline underline-offset-4 text-[#14110c]/55 hover:text-[#14110c]"
         >
           Add your business name, and he answers as you
         </button>
@@ -304,25 +304,25 @@ export default function MustardDemo(props: Props) {
         <p className="font-mono text-[10px] font-bold uppercase tracking-[0.28em] text-[#C4160B]">
           The permission slip
         </p>
-        <p className="mt-1.5 text-[14px] font-semibold text-[#0d0d0d]">
+        <p className="mt-1.5 text-[14px] font-semibold text-[#14110c]">
           He is polite. He only calls people who invite him.
         </p>
-        <label className="mt-2.5 flex cursor-pointer items-start gap-3 rounded-xl border-2 border-[#0d0d0d] bg-[#f1ede4] p-3.5 shadow-[3px_3px_0_0_#0d0d0d] transition-colors hover:bg-white">
+        <label className="mt-2.5 flex cursor-pointer items-start gap-3 rounded-xl border-2 border-[#14110c] bg-[#f6efe0] p-3.5 shadow-[3px_3px_0_0_#14110c] transition-colors hover:bg-white">
           <input
             type="checkbox"
             checked={consent}
             onChange={(e) => setConsent(e.target.checked)}
-            className="mt-0.5 h-6 w-6 shrink-0 rounded border-2 border-[#0d0d0d] accent-[#ffd400]"
+            className="mt-0.5 h-6 w-6 shrink-0 rounded border-2 border-[#14110c] accent-[#f5b700]"
             aria-describedby="mustard-consent"
           />
-          <span id="mustard-consent" className="text-[12.5px] leading-[1.65] text-[#0d0d0d]/60">
+          <span id="mustard-consent" className="text-[12.5px] leading-[1.65] text-[#14110c]/60">
             {props.consentText}
           </span>
         </label>
       </div>
 
       {error && (
-        <p className="mt-4 text-sm font-bold text-[#d0241b]" role="alert">
+        <p className="mt-4 text-sm font-bold text-[#8f1d22]" role="alert">
           {error}
         </p>
       )}
@@ -331,7 +331,7 @@ export default function MustardDemo(props: Props) {
         {phase === 'sending' ? 'Getting him on the line...' : props.ctaLabel}
       </button>
 
-      <p className="mt-3.5 text-center text-[13px] text-[#0d0d0d]/55">
+      <p className="mt-3.5 text-center text-[13px] text-[#14110c]/55">
         He rings in about ten seconds. Three minutes, no card, no obligation.
       </p>
 
@@ -350,14 +350,14 @@ export default function MustardDemo(props: Props) {
         connect. This is the escape hatch, not the headline.
       */}
       <div className="mt-6 flex items-center gap-3" aria-hidden="true">
-        <span className="h-px flex-1 bg-[#0d0d0d]/15" />
-        <span className="font-mono text-[10px] font-bold uppercase tracking-[0.28em] text-[#0d0d0d]/40">or</span>
-        <span className="h-px flex-1 bg-[#0d0d0d]/15" />
+        <span className="h-px flex-1 bg-[#14110c]/15" />
+        <span className="font-mono text-[10px] font-bold uppercase tracking-[0.28em] text-[#14110c]/40">or</span>
+        <span className="h-px flex-1 bg-[#14110c]/15" />
       </div>
 
       <a
         href="tel:+14063121223"
-        className="mt-4 flex min-h-[60px] w-full items-center justify-center gap-3 rounded-xl border-2 border-[#0d0d0d] bg-white px-5 py-4 font-display text-lg font-extrabold tracking-tight text-[#0d0d0d] shadow-[5px_5px_0_0_#0d0d0d] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#0d0d0d] active:translate-y-0 active:shadow-[3px_3px_0_0_#0d0d0d]"
+        className="mt-4 flex min-h-[60px] w-full items-center justify-center gap-3 rounded-xl border-2 border-[#14110c] bg-white px-5 py-4 font-display text-lg font-extrabold tracking-tight text-[#14110c] shadow-[5px_5px_0_0_#14110c] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#14110c] active:translate-y-0 active:shadow-[3px_3px_0_0_#14110c]"
       >
         <span aria-hidden="true" className="text-xl">
           📞
@@ -365,15 +365,15 @@ export default function MustardDemo(props: Props) {
         Call him yourself, right now
       </a>
 
-      <p className="mt-2.5 text-center font-mono text-[13px] font-bold tracking-wide text-[#0d0d0d]/70">
+      <p className="mt-2.5 text-center font-mono text-[13px] font-bold tracking-wide text-[#14110c]/70">
         (406) 312-1223
       </p>
-      <p className="mt-1 text-center text-[12.5px] text-[#0d0d0d]/55">He picks up on the first ring, any hour.</p>
+      <p className="mt-1 text-center text-[12.5px] text-[#14110c]/55">He picks up on the first ring, any hour.</p>
     </form>
   );
 }
 
 const bigButton =
-  'inline-flex min-h-[60px] items-center justify-center rounded-xl border-2 border-[#0d0d0d] bg-[#ffd400] px-6 py-4 font-display text-xl font-extrabold tracking-tight text-[#0d0d0d] shadow-[5px_5px_0_0_#0d0d0d] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#0d0d0d] active:translate-y-0 active:shadow-[3px_3px_0_0_#0d0d0d] disabled:opacity-60 disabled:translate-y-0';
+  'inline-flex min-h-[60px] items-center justify-center rounded-xl border-2 border-[#14110c] bg-[#f5b700] px-6 py-4 font-display text-xl font-extrabold tracking-tight text-[#14110c] shadow-[5px_5px_0_0_#14110c] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#14110c] active:translate-y-0 active:shadow-[3px_3px_0_0_#14110c] disabled:opacity-60 disabled:translate-y-0';
 const bigButtonQuiet =
-  'inline-flex min-h-[60px] items-center justify-center rounded-xl border-2 border-[#0d0d0d] bg-white px-6 py-4 font-display text-lg font-extrabold tracking-tight text-[#0d0d0d] shadow-[5px_5px_0_0_#0d0d0d] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#0d0d0d] active:translate-y-0';
+  'inline-flex min-h-[60px] items-center justify-center rounded-xl border-2 border-[#14110c] bg-white px-6 py-4 font-display text-lg font-extrabold tracking-tight text-[#14110c] shadow-[5px_5px_0_0_#14110c] transition-all hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#14110c] active:translate-y-0';

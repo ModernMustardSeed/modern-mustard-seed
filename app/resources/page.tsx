@@ -11,7 +11,7 @@ export const metadata = buildMetadata({ title: 'Answer Engine and Website Resour
 export default function ResourcesPage() {
   const posts = listContent('blog');
   const guides = AI_RESOURCE_SLUGS.flatMap((slug) => posts.find((p) => p.slug === slug) ?? []);
-  return <article className="bg-[#f1ede4] text-[#0d0d0d] pb-20 overflow-x-clip">
+  return <article className="bg-[#f6efe0] text-[#14110c] pb-20 overflow-x-clip">
     <JsonLd data={[
       collectionPageJsonLd({ url: `${SITE.url}/resources`, name: 'Answer Engine Field Notes', description, itemListElement: guides.map((p) => ({ name: p.title, url: `${SITE.url}/blog/${p.slug}` })) }),
       breadcrumbJsonLd([{ name: 'Home', url: '/' }, { name: 'Resources', url: '/resources' }]),
@@ -23,9 +23,9 @@ export default function ResourcesPage() {
       sticker="Found!"
       mascot={{ bubble: 'Fresh field notes!' }}
     >
-      <p>An answer engine needs something worth pointing to. These guides explain what to build, what to measure and which claims deserve a raised eyebrow. Written by <Link href="/about" className="underline text-[#c8201a] font-bold">Sarah Scarano</Link>, founder of Modern Mustard Seed.</p>
+      <p>An answer engine needs something worth pointing to. These guides explain what to build, what to measure and which claims deserve a raised eyebrow. Written by <Link href="/about" className="underline text-[#8f1d22] font-bold">Sarah Scarano</Link>, founder of Modern Mustard Seed.</p>
     </PopPageHero>
-    <div className="max-w-5xl mx-auto px-6 grid md:grid-cols-2 gap-6">{guides.map((p, i) => <Link key={p.slug} href={`/blog/${p.slug}`} className="pop-card p-7 md:p-9 hover:-translate-y-1 transition-transform"><p className="font-mono text-xs font-bold text-[#C4160B]">FIELD NOTE {String(i + 1).padStart(2, '0')}</p><h2 className="mt-4 font-display text-2xl md:text-3xl font-bold leading-tight">{p.title}</h2><p className="mt-4 leading-relaxed text-[#3a3733]">{p.description}</p><p className="mt-6 font-bold text-[#c8201a]">Read the guide <span aria-hidden="true">→</span></p></Link>)}</div>
+    <div className="max-w-5xl mx-auto px-6 grid md:grid-cols-2 gap-6">{guides.map((p, i) => <Link key={p.slug} href={`/blog/${p.slug}`} className="pop-card p-7 md:p-9 hover:-translate-y-1 transition-transform"><p className="font-mono text-xs font-bold text-[#C4160B]">FIELD NOTE {String(i + 1).padStart(2, '0')}</p><h2 className="mt-4 font-display text-2xl md:text-3xl font-bold leading-tight">{p.title}</h2><p className="mt-4 leading-relaxed text-[#3a3733]">{p.description}</p><p className="mt-6 font-bold text-[#8f1d22]">Read the guide <span aria-hidden="true">→</span></p></Link>)}</div>
     <section className="max-w-5xl mx-auto px-6 mt-14"><div className="pop-card-yellow p-8"><h2 className="font-display text-3xl font-black">Bring it back to your business.</h2><p className="mt-4 leading-relaxed">The <Link href="/website-audit" className="underline font-bold">GEO Desk audit</Link> checks your current site. Our <Link href="/agentic-websites" className="underline font-bold">agentic website guide</Link> explains the build. <Link href="/work" className="underline font-bold">The work</Link> gives you examples to inspect. We build from <Link href="/montana/kalispell" className="underline font-bold">Kalispell</Link> for <Link href="/montana" className="underline font-bold">Montana</Link> and clients nationwide.</p><div className="mt-6 flex flex-wrap gap-4"><Link href="/book" className="pop-card px-6 py-4 font-bold">Begin an Engagement</Link><Link href="/blog" className="pop-card px-6 py-4 font-bold">All Studio Writing</Link></div></div></section>
   </article>;
 }

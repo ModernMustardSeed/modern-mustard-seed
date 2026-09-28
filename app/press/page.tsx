@@ -58,7 +58,7 @@ export default function PressPage() {
   };
 
   return (
-    <div id="top" className="bg-[#f1ede4] text-[#0d0d0d]">
+    <div id="top" className="bg-[#f6efe0] text-[#14110c]">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       {/* ─── MASTHEAD: the comic cover, then THE PRESS RUN ─── */}
@@ -76,7 +76,7 @@ export default function PressPage() {
           Free proof · No card · Every price exactly as you wrote it
         </p>
       </PopPageHero>
-      <section className="halftone-bg border-b-2 border-[#0d0d0d]">
+      <section className="halftone-bg border-b-2 border-[#14110c]">
         <div className="max-w-5xl mx-auto px-5 pb-16 md:pb-24">
           <div className="max-w-2xl mx-auto">
             <PressRunExperience />
@@ -90,17 +90,17 @@ export default function PressPage() {
       <PressCrossSell />
 
       {/* ─── FINAL CTA ─── */}
-      <section className="py-16 md:py-24 bg-[#ffd400] border-t-2 border-[#0d0d0d]">
+      <section className="py-16 md:py-24 bg-[#f5b700] border-t-2 border-[#14110c]">
         <div className="max-w-3xl mx-auto px-5 text-center">
-          <h2 className="font-display text-3xl md:text-5xl font-black text-[#0d0d0d] tracking-tight leading-[1.05]">
+          <h2 className="font-display text-3xl md:text-5xl font-black text-[#14110c] tracking-tight leading-[1.05]">
             Your prices do the talking.<br className="hidden md:block" /> Dress them for it.
           </h2>
-          <p className="font-body text-[#0d0d0d]/75 mt-4 max-w-xl mx-auto">
+          <p className="font-body text-[#14110c]/75 mt-4 max-w-xl mx-auto">
             The proof takes a minute and costs nothing. Most owners frame it out of spite for the old laminated one.
           </p>
           <a
             href="#top"
-            className="inline-block mt-8 rounded-full bg-[#0d0d0d] border-2 border-[#0d0d0d] px-10 py-4 font-sans font-extrabold text-[#f1ede4] text-sm uppercase tracking-[0.18em] shadow-[5px_5px_0_0_#f1ede4] transition-all hover:-translate-y-0.5"
+            className="inline-block mt-8 rounded-full bg-[#14110c] border-2 border-[#14110c] px-10 py-4 font-sans font-extrabold text-[#f6efe0] text-sm uppercase tracking-[0.18em] shadow-[5px_5px_0_0_#f6efe0] transition-all hover:-translate-y-0.5"
           >
             Run my proof, free
           </a>

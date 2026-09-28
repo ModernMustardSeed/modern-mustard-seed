@@ -74,34 +74,34 @@ export default function OutreachPlaybook({
   const px = (t: string) => personalize(t, bookDisplay);
 
   return (
-    <div className="bg-[#f1ede4] text-[#0d0d0d] min-h-screen">
+    <div className="bg-[#f6efe0] text-[#14110c] min-h-screen">
       {/* ── Header + signature money-link bar ── */}
-      <header className="border-b-2 border-[#0d0d0d] sticky top-0 z-40 bg-[#f1ede4]/95 backdrop-blur-md">
+      <header className="border-b-2 border-[#14110c] sticky top-0 z-40 bg-[#f6efe0]/95 backdrop-blur-md">
         <div className="max-w-5xl mx-auto px-6 py-4 flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <Link href={backHref} className="text-[10px] uppercase tracking-[0.25em] font-mono font-bold text-[#c8201a] hover:text-[#0d0d0d] transition-colors">{backLabel}</Link>
-            <span className="hidden sm:block h-4 w-px bg-[#0d0d0d]/20" />
+            <Link href={backHref} className="text-[10px] uppercase tracking-[0.25em] font-mono font-bold text-[#8f1d22] hover:text-[#14110c] transition-colors">{backLabel}</Link>
+            <span className="hidden sm:block h-4 w-px bg-[#14110c]/20" />
             <h1 className="font-sans text-base sm:text-lg font-bold tracking-tight">The Outreach Playbook</h1>
           </div>
           <a
             href={pdfHref}
             target="_blank"
             rel="noopener noreferrer"
-            className="px-4 py-2 text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-[#0d0d0d] bg-white border-2 border-[#0d0d0d] rounded-full hover:bg-[#FFF8E6] transition-all"
+            className="px-4 py-2 text-[10px] uppercase tracking-[0.18em] font-sans font-bold text-[#14110c] bg-white border-2 border-[#14110c] rounded-full hover:bg-[#FFF8E6] transition-all"
           >
             Download PDF ↓
           </a>
         </div>
         {/* Signature: the money link, always one tap away */}
-        <div className="bg-[#0d0d0d]">
+        <div className="bg-[#14110c]">
           <div className="max-w-5xl mx-auto px-6 py-2.5 flex flex-wrap items-center justify-between gap-2">
             <div className="flex items-center gap-2.5 min-w-0">
-              <span className="text-[9px] uppercase tracking-[0.3em] text-[#ffd400] font-mono font-bold whitespace-nowrap">Your money link</span>
-              <span className="font-mono text-[11px] sm:text-[12px] text-[#f1ede4] truncate">{bookDisplay}</span>
+              <span className="text-[9px] uppercase tracking-[0.3em] text-[#f5b700] font-mono font-bold whitespace-nowrap">Your money link</span>
+              <span className="font-mono text-[11px] sm:text-[12px] text-[#f6efe0] truncate">{bookDisplay}</span>
             </div>
             <button
               onClick={() => copy('moneylink', bookDisplay)}
-              className="px-4 py-1.5 text-[10px] uppercase tracking-[0.18em] font-sans font-extrabold text-[#0d0d0d] bg-[#ffd400] border-2 border-[#ffd400] rounded-full hover:bg-[#FFD23F] hover:border-[#FFD23F] transition-all whitespace-nowrap"
+              className="px-4 py-1.5 text-[10px] uppercase tracking-[0.18em] font-sans font-extrabold text-[#14110c] bg-[#f5b700] border-2 border-[#f5b700] rounded-full hover:bg-[#FFD23F] hover:border-[#FFD23F] transition-all whitespace-nowrap"
             >
               {copied === 'moneylink' ? 'Copied ✓' : 'Copy link'}
             </button>
@@ -111,20 +111,20 @@ export default function OutreachPlaybook({
 
       <main className="max-w-5xl mx-auto px-6">
         {/* ── Hero ── */}
-        <section className="halftone-bg -mx-6 px-6 pt-12 pb-10 border-b-2 border-[#0d0d0d]">
+        <section className="halftone-bg -mx-6 px-6 pt-12 pb-10 border-b-2 border-[#14110c]">
           <div className="max-w-3xl">
-            <span className="text-[10px] uppercase tracking-[0.4em] text-[#d0241b] font-mono font-bold block mb-4">{PLAYBOOK_INTRO.eyebrow}</span>
+            <span className="text-[10px] uppercase tracking-[0.4em] text-[#8f1d22] font-mono font-bold block mb-4">{PLAYBOOK_INTRO.eyebrow}</span>
             <h2 className="font-display text-4xl md:text-5xl font-bold tracking-tight leading-[1.05]">{PLAYBOOK_INTRO.title}</h2>
-            <p className="mt-5 text-[#0d0d0d] font-body text-lg md:text-xl leading-relaxed font-medium">{PLAYBOOK_INTRO.lede}</p>
+            <p className="mt-5 text-[#14110c] font-body text-lg md:text-xl leading-relaxed font-medium">{PLAYBOOK_INTRO.lede}</p>
             <p className="mt-4 text-[#3A3733] font-body leading-relaxed">{PLAYBOOK_INTRO.body}</p>
-            <p className="mt-5 inline-flex items-center gap-2 bg-[#ffd400] border-2 border-[#0d0d0d] rounded-full px-5 py-2 text-sm font-sans font-bold shadow-[3px_3px_0_0_#0d0d0d]">
+            <p className="mt-5 inline-flex items-center gap-2 bg-[#f5b700] border-2 border-[#14110c] rounded-full px-5 py-2 text-sm font-sans font-bold shadow-[3px_3px_0_0_#14110c]">
               ↑ {PLAYBOOK_INTRO.moneyLine}
             </p>
           </div>
           {/* Jump nav */}
           <div className="mt-8 flex flex-wrap gap-2">
             {NAV.map((n) => (
-              <a key={n.id} href={`#${n.id}`} className="px-3.5 py-1.5 text-[10px] uppercase tracking-[0.15em] font-sans font-semibold bg-white border-2 border-[#0d0d0d] rounded-full hover:bg-[#FFF8E6] transition-all">{n.label}</a>
+              <a key={n.id} href={`#${n.id}`} className="px-3.5 py-1.5 text-[10px] uppercase tracking-[0.15em] font-sans font-semibold bg-white border-2 border-[#14110c] rounded-full hover:bg-[#FFF8E6] transition-all">{n.label}</a>
             ))}
           </div>
         </section>
@@ -134,13 +134,13 @@ export default function OutreachPlaybook({
           <p className="text-[#3A3733] font-body mb-6 max-w-2xl">Four kinds of build, and builds are where you earn most. When someone describes one of these problems, that is your opening. Match your message to the lane.</p>
           <div className="grid sm:grid-cols-2 gap-5">
             {LANES.map((lane) => (
-              <div key={lane.key} className="bg-white border-2 border-[#0d0d0d] rounded-2xl shadow-[5px_5px_0_0_#0d0d0d] p-6">
+              <div key={lane.key} className="bg-white border-2 border-[#14110c] rounded-2xl shadow-[5px_5px_0_0_#14110c] p-6">
                 <h3 className="font-display text-2xl font-semibold mb-2">{lane.name}</h3>
                 <p className="text-[#3A3733] font-body text-sm leading-relaxed mb-4">{lane.blurb}</p>
-                <span className="text-[9px] uppercase tracking-[0.25em] text-[#d0241b] font-mono font-bold block mb-2">They sound like</span>
+                <span className="text-[9px] uppercase tracking-[0.25em] text-[#8f1d22] font-mono font-bold block mb-2">They sound like</span>
                 <ul className="space-y-1">
                   {lane.soundLike.map((s) => (
-                    <li key={s} className="text-[#0d0d0d]/75 font-body text-sm flex gap-2"><span className="text-[#ffd400]">●</span>{s}</li>
+                    <li key={s} className="text-[#14110c]/75 font-body text-sm flex gap-2"><span className="text-[#f5b700]">●</span>{s}</li>
                   ))}
                 </ul>
               </div>
@@ -154,10 +154,10 @@ export default function OutreachPlaybook({
           <p className="text-[#3A3733] font-body mb-6 max-w-2xl">Platforms ban accounts that look like spam. These five keep you out of trouble. They are not optional.</p>
           <div className="space-y-3">
             {SAFETY_RULES.map((r) => (
-              <div key={r.n} className="bg-white border-2 border-[#0d0d0d] rounded-2xl shadow-[3px_3px_0_0_#0d0d0d] p-5 flex gap-4">
-                <span className="font-display text-2xl font-bold text-[#ffd400] leading-none shrink-0 w-7">{r.n}</span>
+              <div key={r.n} className="bg-white border-2 border-[#14110c] rounded-2xl shadow-[3px_3px_0_0_#14110c] p-5 flex gap-4">
+                <span className="font-display text-2xl font-bold text-[#f5b700] leading-none shrink-0 w-7">{r.n}</span>
                 <div>
-                  <h3 className="font-sans font-bold text-[#0d0d0d] mb-1">{r.title}</h3>
+                  <h3 className="font-sans font-bold text-[#14110c] mb-1">{r.title}</h3>
                   <p className="text-[#3A3733] font-body text-sm leading-relaxed">{r.detail}</p>
                 </div>
               </div>
@@ -170,11 +170,11 @@ export default function OutreachPlaybook({
           <Callout>{SEARCH_HOWTO}</Callout>
           <div className="grid sm:grid-cols-2 gap-5 mt-5">
             {SEARCH_PHRASES.map((g) => (
-              <div key={g.lane} className="bg-white border-2 border-[#0d0d0d] rounded-2xl shadow-[4px_4px_0_0_#0d0d0d] p-5">
-                <span className="text-[10px] uppercase tracking-[0.2em] text-[#d0241b] font-mono font-bold block mb-3">{g.lane}</span>
+              <div key={g.lane} className="bg-white border-2 border-[#14110c] rounded-2xl shadow-[4px_4px_0_0_#14110c] p-5">
+                <span className="text-[10px] uppercase tracking-[0.2em] text-[#8f1d22] font-mono font-bold block mb-3">{g.lane}</span>
                 <div className="flex flex-wrap gap-2">
                   {g.phrases.map((p) => (
-                    <span key={p} className="px-3 py-1 text-xs font-mono text-[#0d0d0d]/80 bg-[#f1ede4] border border-[#0d0d0d]/20 rounded-md">{p}</span>
+                    <span key={p} className="px-3 py-1 text-xs font-mono text-[#14110c]/80 bg-[#f6efe0] border border-[#14110c]/20 rounded-md">{p}</span>
                   ))}
                 </div>
               </div>
@@ -185,24 +185,24 @@ export default function OutreachPlaybook({
         {/* ── Groups ── */}
         <Section id="groups" eyebrow="Where to be" title="Best groups to join">
           <div className="grid lg:grid-cols-2 gap-5">
-            <div className="bg-white border-2 border-[#0d0d0d] rounded-2xl shadow-[4px_4px_0_0_#0d0d0d] p-6">
-              <span className="text-[10px] uppercase tracking-[0.2em] text-[#d0241b] font-mono font-bold block mb-3">Group types to target</span>
+            <div className="bg-white border-2 border-[#14110c] rounded-2xl shadow-[4px_4px_0_0_#14110c] p-6">
+              <span className="text-[10px] uppercase tracking-[0.2em] text-[#8f1d22] font-mono font-bold block mb-3">Group types to target</span>
               <ul className="space-y-1.5">
                 {GROUP_TYPES.map((t) => (
-                  <li key={t} className="text-[#3A3733] font-body text-sm flex gap-2"><span className="text-[#ffd400] mt-0.5">●</span>{t}</li>
+                  <li key={t} className="text-[#3A3733] font-body text-sm flex gap-2"><span className="text-[#f5b700] mt-0.5">●</span>{t}</li>
                 ))}
               </ul>
             </div>
             <div className="space-y-5">
-              <div className="bg-white border-2 border-[#0d0d0d] rounded-2xl shadow-[4px_4px_0_0_#0d0d0d] p-6">
-                <span className="text-[10px] uppercase tracking-[0.2em] text-[#d0241b] font-mono font-bold block mb-3">How to find them</span>
+              <div className="bg-white border-2 border-[#14110c] rounded-2xl shadow-[4px_4px_0_0_#14110c] p-6">
+                <span className="text-[10px] uppercase tracking-[0.2em] text-[#8f1d22] font-mono font-bold block mb-3">How to find them</span>
                 <p className="text-[#3A3733] font-body text-sm leading-relaxed">{GROUP_FIND}</p>
               </div>
-              <div className="bg-white border-2 border-[#0d0d0d] rounded-2xl shadow-[4px_4px_0_0_#0d0d0d] p-6">
-                <span className="text-[10px] uppercase tracking-[0.2em] text-[#d0241b] font-mono font-bold block mb-3">How to spot a good group</span>
+              <div className="bg-white border-2 border-[#14110c] rounded-2xl shadow-[4px_4px_0_0_#14110c] p-6">
+                <span className="text-[10px] uppercase tracking-[0.2em] text-[#8f1d22] font-mono font-bold block mb-3">How to spot a good group</span>
                 <ul className="space-y-1.5">
                   {GROUP_SPOT.map((t) => (
-                    <li key={t} className="text-[#3A3733] font-body text-sm flex gap-2"><span className="text-[#ffd400] mt-0.5">●</span>{t}</li>
+                    <li key={t} className="text-[#3A3733] font-body text-sm flex gap-2"><span className="text-[#f5b700] mt-0.5">●</span>{t}</li>
                   ))}
                 </ul>
               </div>
@@ -212,8 +212,8 @@ export default function OutreachPlaybook({
           <h3 className="font-display text-2xl font-semibold mt-10 mb-4">The three places your words go</h3>
           <div className="grid sm:grid-cols-3 gap-4">
             {THREE_PLACES.map((p) => (
-              <div key={p.tag} className="bg-white border-2 border-[#0d0d0d] rounded-2xl shadow-[4px_4px_0_0_#0d0d0d] p-5">
-                <span className="font-display text-2xl font-bold text-[#ffd400]">{p.tag}</span>
+              <div key={p.tag} className="bg-white border-2 border-[#14110c] rounded-2xl shadow-[4px_4px_0_0_#14110c] p-5">
+                <span className="font-display text-2xl font-bold text-[#f5b700]">{p.tag}</span>
                 <h4 className="font-sans font-bold mt-1 mb-1.5">{p.title}</h4>
                 <p className="text-[#3A3733] font-body text-sm leading-relaxed">{p.detail}</p>
               </div>
@@ -288,21 +288,21 @@ export default function OutreachPlaybook({
           <Callout>{PHONE_SCRIPT.intro}</Callout>
           <div className="mt-5 space-y-3">
             {PHONE_SCRIPT.steps.map((s, i) => (
-              <div key={i} className="bg-white border-2 border-[#0d0d0d] rounded-2xl shadow-[4px_4px_0_0_#0d0d0d] p-5">
+              <div key={i} className="bg-white border-2 border-[#14110c] rounded-2xl shadow-[4px_4px_0_0_#14110c] p-5">
                 <div className="flex items-center justify-between gap-3 mb-2.5">
                   <div className="flex items-center gap-3">
-                    <span className="font-display text-xl font-bold text-[#ffd400] leading-none">{i + 1}</span>
-                    <span className="text-[10px] uppercase tracking-[0.2em] text-[#d0241b] font-mono font-bold">{s.label}</span>
+                    <span className="font-display text-xl font-bold text-[#f5b700] leading-none">{i + 1}</span>
+                    <span className="text-[10px] uppercase tracking-[0.2em] text-[#8f1d22] font-mono font-bold">{s.label}</span>
                   </div>
                   <button
                     onClick={() => copy(`phone-${i}`, px(s.script))}
-                    className="px-3 py-1 text-[9px] uppercase tracking-[0.15em] font-sans font-bold text-[#0d0d0d] bg-[#ffd400] border-2 border-[#0d0d0d] rounded-full hover:bg-[#FFD23F] transition-all shrink-0"
+                    className="px-3 py-1 text-[9px] uppercase tracking-[0.15em] font-sans font-bold text-[#14110c] bg-[#f5b700] border-2 border-[#14110c] rounded-full hover:bg-[#FFD23F] transition-all shrink-0"
                   >
                     {copied === `phone-${i}` ? 'Copied' : 'Copy'}
                   </button>
                 </div>
-                <p className="font-body text-[15px] text-[#0d0d0d] leading-relaxed italic">"{px(s.script)}"</p>
-                <p className="font-body text-xs text-[#0d0d0d]/55 mt-2.5">{px(s.note)}</p>
+                <p className="font-body text-[15px] text-[#14110c] leading-relaxed italic">"{px(s.script)}"</p>
+                <p className="font-body text-xs text-[#14110c]/55 mt-2.5">{px(s.note)}</p>
               </div>
             ))}
           </div>
@@ -310,8 +310,8 @@ export default function OutreachPlaybook({
           <h3 className="font-display text-2xl font-semibold mt-8 mb-4">Handling the four you'll hear most</h3>
           <div className="grid sm:grid-cols-2 gap-4">
             {PHONE_SCRIPT.objections.map((o, i) => (
-              <div key={i} className="bg-white border-2 border-[#0d0d0d] rounded-2xl shadow-[3px_3px_0_0_#0d0d0d] p-5">
-                <p className="font-sans font-bold text-[#0d0d0d] mb-1.5">{o.q}</p>
+              <div key={i} className="bg-white border-2 border-[#14110c] rounded-2xl shadow-[3px_3px_0_0_#14110c] p-5">
+                <p className="font-sans font-bold text-[#14110c] mb-1.5">{o.q}</p>
                 <p className="text-[#3A3733] font-body text-sm leading-relaxed">{o.a}</p>
               </div>
             ))}
@@ -324,25 +324,25 @@ export default function OutreachPlaybook({
         {/* ── Social strategy ── */}
         <Section id="social" eyebrow="Be everywhere, lightly" title="Your social strategy">
           <Callout>{SOCIAL_STRATEGY.intro}</Callout>
-          <p className="mt-5 inline-flex items-start gap-2 bg-[#0d0d0d] text-[#f1ede4] rounded-2xl px-5 py-3 text-sm font-body leading-relaxed shadow-[4px_4px_0_0_#ffd400]">
-            <span className="text-[#ffd400] font-bold">★</span>{SOCIAL_STRATEGY.oneRule}
+          <p className="mt-5 inline-flex items-start gap-2 bg-[#14110c] text-[#f6efe0] rounded-2xl px-5 py-3 text-sm font-body leading-relaxed shadow-[4px_4px_0_0_#f5b700]">
+            <span className="text-[#f5b700] font-bold">★</span>{SOCIAL_STRATEGY.oneRule}
           </p>
 
           <div className="grid lg:grid-cols-2 gap-5 mt-7">
-            <div className="bg-white border-2 border-[#0d0d0d] rounded-2xl shadow-[4px_4px_0_0_#0d0d0d] p-6">
-              <span className="text-[10px] uppercase tracking-[0.2em] text-[#d0241b] font-mono font-bold block mb-3">Set up your profile</span>
+            <div className="bg-white border-2 border-[#14110c] rounded-2xl shadow-[4px_4px_0_0_#14110c] p-6">
+              <span className="text-[10px] uppercase tracking-[0.2em] text-[#8f1d22] font-mono font-bold block mb-3">Set up your profile</span>
               <ul className="space-y-2">
                 {SOCIAL_STRATEGY.setup.map((s) => (
-                  <li key={s} className="text-[#3A3733] font-body text-sm flex gap-2 leading-relaxed"><span className="text-[#ffd400] mt-0.5">●</span>{s}</li>
+                  <li key={s} className="text-[#3A3733] font-body text-sm flex gap-2 leading-relaxed"><span className="text-[#f5b700] mt-0.5">●</span>{s}</li>
                 ))}
               </ul>
             </div>
-            <div className="bg-white border-2 border-[#0d0d0d] rounded-2xl shadow-[4px_4px_0_0_#0d0d0d] p-6">
-              <span className="text-[10px] uppercase tracking-[0.2em] text-[#d0241b] font-mono font-bold block mb-3">Where to show up</span>
+            <div className="bg-white border-2 border-[#14110c] rounded-2xl shadow-[4px_4px_0_0_#14110c] p-6">
+              <span className="text-[10px] uppercase tracking-[0.2em] text-[#8f1d22] font-mono font-bold block mb-3">Where to show up</span>
               <div className="space-y-3">
                 {SOCIAL_STRATEGY.channels.map((c) => (
                   <div key={c.name}>
-                    <p className="font-sans font-bold text-sm text-[#0d0d0d]">{c.name}</p>
+                    <p className="font-sans font-bold text-sm text-[#14110c]">{c.name}</p>
                     <p className="text-[#3A3733] font-body text-sm leading-relaxed">{c.role}</p>
                   </div>
                 ))}
@@ -353,27 +353,27 @@ export default function OutreachPlaybook({
           <h3 className="font-display text-2xl font-semibold mt-8 mb-4">What to post: four pillars</h3>
           <div className="grid sm:grid-cols-2 gap-4">
             {SOCIAL_STRATEGY.pillars.map((p) => (
-              <div key={p.name} className="bg-white border-2 border-[#0d0d0d] rounded-2xl shadow-[3px_3px_0_0_#0d0d0d] p-5">
-                <p className="font-sans font-bold text-[#0d0d0d] mb-1">{p.name}</p>
+              <div key={p.name} className="bg-white border-2 border-[#14110c] rounded-2xl shadow-[3px_3px_0_0_#14110c] p-5">
+                <p className="font-sans font-bold text-[#14110c] mb-1">{p.name}</p>
                 <p className="text-[#3A3733] font-body text-sm leading-relaxed">{p.detail}</p>
               </div>
             ))}
           </div>
 
           <div className="grid lg:grid-cols-2 gap-5 mt-6">
-            <div className="bg-white border-2 border-[#0d0d0d] rounded-2xl shadow-[4px_4px_0_0_#0d0d0d] p-6">
-              <span className="text-[10px] uppercase tracking-[0.2em] text-[#d0241b] font-mono font-bold block mb-3">Posting cadence</span>
+            <div className="bg-white border-2 border-[#14110c] rounded-2xl shadow-[4px_4px_0_0_#14110c] p-6">
+              <span className="text-[10px] uppercase tracking-[0.2em] text-[#8f1d22] font-mono font-bold block mb-3">Posting cadence</span>
               <ul className="space-y-2">
                 {SOCIAL_STRATEGY.cadence.map((c) => (
-                  <li key={c} className="text-[#3A3733] font-body text-sm flex gap-2 leading-relaxed"><span className="text-[#ffd400] mt-0.5">●</span>{c}</li>
+                  <li key={c} className="text-[#3A3733] font-body text-sm flex gap-2 leading-relaxed"><span className="text-[#f5b700] mt-0.5">●</span>{c}</li>
                 ))}
               </ul>
             </div>
-            <div className="bg-white border-2 border-[#0d0d0d] rounded-2xl shadow-[4px_4px_0_0_#0d0d0d] p-6">
-              <span className="text-[10px] uppercase tracking-[0.2em] text-[#d0241b] font-mono font-bold block mb-3">The DM funnel</span>
+            <div className="bg-white border-2 border-[#14110c] rounded-2xl shadow-[4px_4px_0_0_#14110c] p-6">
+              <span className="text-[10px] uppercase tracking-[0.2em] text-[#8f1d22] font-mono font-bold block mb-3">The DM funnel</span>
               <ol className="space-y-2">
                 {SOCIAL_STRATEGY.dmFunnel.map((d, i) => (
-                  <li key={d} className="text-[#3A3733] font-body text-sm flex gap-2.5 leading-relaxed"><span className="font-mono font-bold text-[#c8201a]">{i + 1}</span>{d}</li>
+                  <li key={d} className="text-[#3A3733] font-body text-sm flex gap-2.5 leading-relaxed"><span className="font-mono font-bold text-[#8f1d22]">{i + 1}</span>{d}</li>
                 ))}
               </ol>
             </div>
@@ -384,17 +384,17 @@ export default function OutreachPlaybook({
         <Section id="routine" eyebrow="Your day" title="The 45-minute routine">
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {ROUTINE.map((r) => (
-              <div key={r.title} className="bg-white border-2 border-[#0d0d0d] rounded-2xl shadow-[4px_4px_0_0_#0d0d0d] p-5">
-                <span className="inline-block text-[10px] uppercase tracking-[0.15em] font-mono font-bold text-[#f1ede4] bg-[#2D6A4F] rounded-md px-2.5 py-1 mb-3">{r.time}</span>
+              <div key={r.title} className="bg-white border-2 border-[#14110c] rounded-2xl shadow-[4px_4px_0_0_#14110c] p-5">
+                <span className="inline-block text-[10px] uppercase tracking-[0.15em] font-mono font-bold text-[#f6efe0] bg-[#2D6A4F] rounded-md px-2.5 py-1 mb-3">{r.time}</span>
                 <h4 className="font-sans font-bold mb-1">{r.title}</h4>
                 <p className="text-[#3A3733] font-body text-sm leading-relaxed">{r.detail}</p>
               </div>
             ))}
           </div>
-          <p className="text-[#0d0d0d]/55 font-body text-sm mt-4">{ROUTINE_NOTE}</p>
+          <p className="text-[#14110c]/55 font-body text-sm mt-4">{ROUTINE_NOTE}</p>
 
           <div className="grid sm:grid-cols-2 gap-4 mt-8">
-            <div className="bg-white border-2 border-[#0d0d0d] rounded-2xl shadow-[4px_4px_0_0_#0d0d0d] overflow-hidden">
+            <div className="bg-white border-2 border-[#14110c] rounded-2xl shadow-[4px_4px_0_0_#14110c] overflow-hidden">
               <div className="bg-[#2D6A4F] px-5 py-2.5"><span className="text-[11px] uppercase tracking-[0.25em] font-sans font-bold text-white">Do</span></div>
               <ul className="p-5 space-y-2">
                 {DO_LIST.map((d) => (
@@ -402,7 +402,7 @@ export default function OutreachPlaybook({
                 ))}
               </ul>
             </div>
-            <div className="bg-white border-2 border-[#0d0d0d] rounded-2xl shadow-[4px_4px_0_0_#0d0d0d] overflow-hidden">
+            <div className="bg-white border-2 border-[#14110c] rounded-2xl shadow-[4px_4px_0_0_#14110c] overflow-hidden">
               <div className="bg-[#9B3022] px-5 py-2.5"><span className="text-[11px] uppercase tracking-[0.25em] font-sans font-bold text-white">Don't</span></div>
               <ul className="p-5 space-y-2">
                 {DONT_LIST.map((d) => (
@@ -415,16 +415,16 @@ export default function OutreachPlaybook({
 
         {/* ── Close ── */}
         <section className="py-12">
-          <div className="bg-[#0d0d0d] rounded-3xl p-8 md:p-12 text-center shadow-[8px_8px_0_0_#ffd400]">
-            <span className="text-[10px] uppercase tracking-[0.4em] text-[#ffd400] font-mono font-bold block mb-4">Your job ends at the booked call</span>
-            <h2 className="font-display text-3xl md:text-4xl font-semibold text-[#f1ede4] mb-4">{JOB_ENDS.title}</h2>
-            <p className="text-[#f1ede4]/70 font-body max-w-2xl mx-auto leading-relaxed mb-8">{JOB_ENDS.body}</p>
-            <div className="inline-flex flex-col sm:flex-row items-center gap-3 bg-[#f1ede4] border-2 border-[#ffd400] rounded-2xl p-3 pl-5">
-              <span className="font-mono text-sm text-[#0d0d0d]">{bookDisplay}</span>
+          <div className="bg-[#14110c] rounded-3xl p-8 md:p-12 text-center shadow-[8px_8px_0_0_#f5b700]">
+            <span className="text-[10px] uppercase tracking-[0.4em] text-[#f5b700] font-mono font-bold block mb-4">Your job ends at the booked call</span>
+            <h2 className="font-display text-3xl md:text-4xl font-semibold text-[#f6efe0] mb-4">{JOB_ENDS.title}</h2>
+            <p className="text-[#f6efe0]/70 font-body max-w-2xl mx-auto leading-relaxed mb-8">{JOB_ENDS.body}</p>
+            <div className="inline-flex flex-col sm:flex-row items-center gap-3 bg-[#f6efe0] border-2 border-[#f5b700] rounded-2xl p-3 pl-5">
+              <span className="font-mono text-sm text-[#14110c]">{bookDisplay}</span>
               <div className="flex gap-2">
                 <button
                   onClick={() => copy('close', bookDisplay)}
-                  className="px-5 py-2.5 text-[11px] uppercase tracking-[0.18em] font-sans font-extrabold text-[#0d0d0d] bg-[#ffd400] border-2 border-[#0d0d0d] rounded-full shadow-[3px_3px_0_0_#0d0d0d] hover:shadow-[4px_4px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-all"
+                  className="px-5 py-2.5 text-[11px] uppercase tracking-[0.18em] font-sans font-extrabold text-[#14110c] bg-[#f5b700] border-2 border-[#14110c] rounded-full shadow-[3px_3px_0_0_#14110c] hover:shadow-[4px_4px_0_0_#14110c] hover:-translate-y-0.5 transition-all"
                 >
                   {copied === 'close' ? 'Copied ✓' : 'Copy your link'}
                 </button>
@@ -432,13 +432,13 @@ export default function OutreachPlaybook({
                   href={bookHref}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-5 py-2.5 text-[11px] uppercase tracking-[0.18em] font-sans font-extrabold text-[#0d0d0d] bg-white border-2 border-[#0d0d0d] rounded-full hover:bg-[#FFF8E6] transition-all"
+                  className="px-5 py-2.5 text-[11px] uppercase tracking-[0.18em] font-sans font-extrabold text-[#14110c] bg-white border-2 border-[#14110c] rounded-full hover:bg-[#FFF8E6] transition-all"
                 >
                   Preview it
                 </a>
               </div>
             </div>
-            <p className="text-[#f1ede4]/40 font-mono text-[11px] mt-6">Partner code {code} · earn on every build · open the door, Sarah closes</p>
+            <p className="text-[#f6efe0]/40 font-mono text-[11px] mt-6">Partner code {code} · earn on every build · open the door, Sarah closes</p>
           </div>
         </section>
       </main>
@@ -450,8 +450,8 @@ export default function OutreachPlaybook({
 
 function Section({ id, eyebrow, title, children }: { id: string; eyebrow: string; title: string; children: React.ReactNode }) {
   return (
-    <section id={id} className="py-10 border-b-2 border-[#0d0d0d]/10 scroll-mt-28">
-      <span className="text-[10px] uppercase tracking-[0.4em] text-[#d0241b] font-mono font-bold block mb-2">{eyebrow}</span>
+    <section id={id} className="py-10 border-b-2 border-[#14110c]/10 scroll-mt-28">
+      <span className="text-[10px] uppercase tracking-[0.4em] text-[#8f1d22] font-mono font-bold block mb-2">{eyebrow}</span>
       <h2 className="font-display text-3xl md:text-4xl font-semibold tracking-tight mb-6">{title}</h2>
       {children}
     </section>
@@ -460,7 +460,7 @@ function Section({ id, eyebrow, title, children }: { id: string; eyebrow: string
 
 function Callout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="bg-[#FFF8E6] border-l-4 border-[#ffd400] rounded-r-xl px-5 py-4">
+    <div className="bg-[#FFF8E6] border-l-4 border-[#f5b700] rounded-r-xl px-5 py-4">
       <p className="text-[#3A3733] font-body text-sm leading-relaxed">{children}</p>
     </div>
   );
@@ -486,17 +486,17 @@ function ScriptRow({
   highlight?: boolean;
 }) {
   return (
-    <div className={`rounded-2xl border-2 border-[#0d0d0d] p-5 ${highlight ? 'bg-[#FFF8E6] shadow-[4px_4px_0_0_#ffd400]' : 'bg-white shadow-[3px_3px_0_0_#0d0d0d]'}`}>
+    <div className={`rounded-2xl border-2 border-[#14110c] p-5 ${highlight ? 'bg-[#FFF8E6] shadow-[4px_4px_0_0_#f5b700]' : 'bg-white shadow-[3px_3px_0_0_#14110c]'}`}>
       <div className="flex items-start justify-between gap-3 mb-2">
-        {label ? <span className="text-[10px] uppercase tracking-[0.18em] text-[#d0241b] font-mono font-bold pt-0.5">{label}</span> : <span />}
+        {label ? <span className="text-[10px] uppercase tracking-[0.18em] text-[#8f1d22] font-mono font-bold pt-0.5">{label}</span> : <span />}
         <button
           onClick={() => onCopy(ckey, text)}
-          className="px-3 py-1 text-[9px] uppercase tracking-[0.15em] font-sans font-bold text-[#0d0d0d] bg-[#ffd400] border-2 border-[#0d0d0d] rounded-full hover:bg-[#FFD23F] transition-all shrink-0"
+          className="px-3 py-1 text-[9px] uppercase tracking-[0.15em] font-sans font-bold text-[#14110c] bg-[#f5b700] border-2 border-[#14110c] rounded-full hover:bg-[#FFD23F] transition-all shrink-0"
         >
           {copied === ckey ? 'Copied' : 'Copy'}
         </button>
       </div>
-      <p className="font-body text-[15px] text-[#0d0d0d] leading-relaxed">{text}</p>
+      <p className="font-body text-[15px] text-[#14110c] leading-relaxed">{text}</p>
     </div>
   );
 }

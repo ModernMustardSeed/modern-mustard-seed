@@ -24,25 +24,25 @@ export default async function IntakePage({
   const greetName = ownerName ? ownerName.split(/\s+/)[0] : '';
 
   return (
-    <div className="relative min-h-screen bg-[#f1ede4] text-[#0d0d0d] pt-32 md:pt-40 pb-28">
+    <div className="relative min-h-screen bg-[#f6efe0] text-[#14110c] pt-32 md:pt-40 pb-28">
       <div aria-hidden="true" className="absolute inset-0 halftone-bg opacity-40 pointer-events-none" />
       <div className="relative max-w-3xl mx-auto px-6 md:px-8">
         <header className="text-center mb-12">
-          <span className="text-[10px] uppercase tracking-[0.5em] text-[#d0241b] font-mono font-bold mb-6 block">
+          <span className="text-[10px] uppercase tracking-[0.5em] text-[#8f1d22] font-mono font-bold mb-6 block">
             {brandName ? brandName : 'Brand Intake'} · Modern Mustard Seed
           </span>
-          <h1 className="font-display text-4xl md:text-6xl font-black text-[#0d0d0d] tracking-tight mb-6 leading-[1.05]">
+          <h1 className="font-display text-4xl md:text-6xl font-black text-[#14110c] tracking-tight mb-6 leading-[1.05]">
             {greetName ? (
               <>
                 Let&rsquo;s build your store,{' '}
-                <span className="text-[#ffd400]" style={{ WebkitTextStroke: '2px #0d0d0d' }}>
+                <span className="text-[#f5b700]" style={{ WebkitTextStroke: '2px #14110c' }}>
                   {greetName}
                 </span>
               </>
             ) : (
               <>
                 Let&rsquo;s build{' '}
-                <span className="text-[#ffd400]" style={{ WebkitTextStroke: '2px #0d0d0d' }}>
+                <span className="text-[#f5b700]" style={{ WebkitTextStroke: '2px #14110c' }}>
                   your store
                 </span>
               </>
@@ -53,7 +53,7 @@ export default async function IntakePage({
             store and website for you. It takes about ten minutes, and you can skip anything you are
             not sure about.
           </p>
-          <p className="text-[#0d0d0d]/55 text-sm font-body leading-relaxed max-w-xl mx-auto">
+          <p className="text-[#14110c]/55 text-sm font-body leading-relaxed max-w-xl mx-auto">
             There is no cost for this build. The more you share, especially photos, the more it will
             feel truly yours.
           </p>

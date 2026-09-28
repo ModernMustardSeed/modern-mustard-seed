@@ -7,14 +7,14 @@ import { SITE } from '@/lib/seo';
 export const runtime = 'nodejs';
 
 export const alt =
-  'Modern Mustard Seed. Mr. Mustard in a gold puffer jacket in front of a graffiti wall, with the studio name in poster type and marker.';
+  'Modern Mustard Seed. Mr. Mustard and his family at work in a 1920s penthouse office over the city at night, with the studio name in gold.';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
 /**
- * The homepage share card: the Graffiti Couture card rendered once as a JPG
- * (public/brand/mr-mustard-social-20260926.jpg, the same file SITE.ogImage
- * points at), so every share of the root shows the same wall.
+ * The homepage share card: the Mustard Building card rendered once as a JPG
+ * (public/brand/mr-mustard-social-20260927.jpg, the same file SITE.ogImage
+ * points at), so every share of the root shows the same penthouse.
  */
 export default async function OpengraphImage() {
   const card = readFileSync(join(process.cwd(), 'public', SITE.ogImage.replace(/^\//, '')));

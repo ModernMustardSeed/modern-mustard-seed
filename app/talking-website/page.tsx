@@ -139,7 +139,7 @@ function talkingWebsiteJsonLd() {
 
 export default function TalkingWebsitePage() {
   return (
-    <div className="min-h-screen bg-[#f1ede4] text-[#0d0d0d]">
+    <div className="min-h-screen bg-[#f6efe0] text-[#14110c]">
       <JsonLd data={talkingWebsiteJsonLd()} />
 
       <section className={`${ps.hero} ${ps.withIssue}`}>
@@ -152,7 +152,7 @@ export default function TalkingWebsitePage() {
                 A website that answers its <em>own phone.</em>
               </h1>
             <p className="mt-5 font-body text-base leading-relaxed">Designed and built by Modern Mustard Seed, a boutique design and agentic systems studio in Kalispell, Montana, working with clients nationwide. <Link href="/agentic-websites" className="underline font-bold">See how our agentic websites connect the page and the business.</Link></p>
-              <p className="font-body text-[17px] text-[#0d0d0d]/75 mt-5 leading-relaxed">
+              <p className="font-body text-[17px] text-[#14110c]/75 mt-5 leading-relaxed">
                 Not a site with a chat bubble bolted on. Your website and your voice agent, built as one thing off one
                 brain, so the answer a visitor reads at noon is the exact answer a caller hears at midnight. The
                 two are built as one thing, off one brain.
@@ -174,7 +174,7 @@ export default function TalkingWebsitePage() {
                   Call it: {DEMO_LINE.display}
                 </a>
               </div>
-              <p className="font-body text-[13px] text-[#0d0d0d]/70 mt-4">
+              <p className="font-body text-[13px] text-[#14110c]/70 mt-4">
                 The number above is the studio's own line. Mr. Mustard answers it, which is the
                 standard of the work rather than a description of it.
               </p>
@@ -182,14 +182,14 @@ export default function TalkingWebsitePage() {
 
             {/* The commercial, in a frame. */}
             <div className={ps.stage}>
-              <div className="rounded-2xl border-2 border-[#0d0d0d] bg-white shadow-[8px_8px_0_0_#0d0d0d] overflow-hidden">
-                <div className="flex items-center gap-2 px-4 h-10 border-b-2 border-[#0d0d0d] bg-[#f1ede4]">
+              <div className="rounded-2xl border-2 border-[#14110c] bg-white shadow-[8px_8px_0_0_#14110c] overflow-hidden">
+                <div className="flex items-center gap-2 px-4 h-10 border-b-2 border-[#14110c] bg-[#f6efe0]">
                   <span className="flex gap-1.5">
-                    {['#ff3b2f', '#ffd400', '#0d0d0d'].map((c) => (
-                      <span key={c} className="h-3 w-3 rounded-full border border-[#0d0d0d]" style={{ background: c }} />
+                    {['#b3261e', '#f5b700', '#14110c'].map((c) => (
+                      <span key={c} className="h-3 w-3 rounded-full border border-[#14110c]" style={{ background: c }} />
                     ))}
                   </span>
-                  <span className="ml-2 flex-1 truncate rounded-full border border-[#0d0d0d]/30 bg-white px-3 py-1 font-mono text-[11px] text-[#0d0d0d]/65">
+                  <span className="ml-2 flex-1 truncate rounded-full border border-[#14110c]/30 bg-white px-3 py-1 font-mono text-[11px] text-[#14110c]/65">
                     The Talking Website, the film
                   </span>
                 </div>
@@ -222,7 +222,7 @@ export default function TalkingWebsitePage() {
           <h2 className="font-display italic font-extrabold text-4xl md:text-5xl mt-3 leading-[1.02] max-w-3xl">
             One brain. Two mouths.
           </h2>
-          <p className="font-body text-[15px] text-[#0d0d0d]/70 mt-4 max-w-2xl leading-relaxed mb-9">
+          <p className="font-body text-[15px] text-[#14110c]/70 mt-4 max-w-2xl leading-relaxed mb-9">
             Pick what a customer would actually ask and watch it land in both places at once. Nobody gets a different
             story depending on how they reached you.
           </p>
@@ -230,26 +230,26 @@ export default function TalkingWebsitePage() {
         </section>
 
         {/* ── Talk to this page ── */}
-        <section className="border-2 border-[#0d0d0d] bg-[#0d0d0d] rounded-2xl shadow-[8px_8px_0_0_#ffd400] p-7 sm:p-10">
+        <section className="border-2 border-[#14110c] bg-[#14110c] rounded-2xl shadow-[8px_8px_0_0_#f5b700] p-7 sm:p-10">
           <div className="grid grid-cols-1 [&>*]:min-w-0 lg:grid-cols-12 gap-8 items-center">
             <div className="lg:col-span-7">
-              <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#ffd400] uppercase">
+              <p className="font-mono font-bold text-[11px] tracking-[0.18em] text-[#f5b700] uppercase">
                 Proof // Right now, in your browser
               </p>
-              <h2 className="font-display italic font-extrabold text-3xl md:text-[2.75rem] mt-3 leading-[1.04] text-[#f1ede4]">
+              <h2 className="font-display italic font-extrabold text-3xl md:text-[2.75rem] mt-3 leading-[1.04] text-[#f6efe0]">
                 This page talks. Go ahead.
               </h2>
-              <p className="font-body text-[15px] text-[#f1ede4]/75 mt-4 leading-relaxed">
+              <p className="font-body text-[15px] text-[#f6efe0]/75 mt-4 leading-relaxed">
                 We are not going to sell you a talking website with a page that just sits there. Press the button and
                 talk to Mr. Mustard, our own agent, out loud, right now. Ask him what this costs. Ask him something we
                 would rather he dodged. He answers in six languages and he can book you a call with Sarah while you are
                 on the line.
               </p>
-              <p className="font-body text-[13px] text-[#f1ede4]/60 mt-4">
+              <p className="font-body text-[13px] text-[#f6efe0]/60 mt-4">
                 Prefer a real phone? Dial{' '}
                 <a
                   href={`tel:${DEMO_LINE.tel}`}
-                  className="font-bold text-[#ffd400] underline underline-offset-4 hover:text-[#f1ede4]"
+                  className="font-bold text-[#f5b700] underline underline-offset-4 hover:text-[#f6efe0]"
                 >
                   {DEMO_LINE.display}
                 </a>{' '}
@@ -274,11 +274,11 @@ export default function TalkingWebsitePage() {
             {STATS.map((s) => (
               <div
                 key={s.figure}
-                className="border-2 border-[#0d0d0d] bg-white rounded-2xl shadow-[5px_5px_0_0_#0d0d0d] p-6"
+                className="border-2 border-[#14110c] bg-white rounded-2xl shadow-[5px_5px_0_0_#14110c] p-6"
               >
                 <p className="font-display font-extrabold text-5xl leading-none text-[#C4160B]">{s.figure}</p>
                 <p className="font-sans font-bold text-[14px] mt-3 leading-snug">{s.label}</p>
-                <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-[#0d0d0d]/70 mt-3">{s.source}</p>
+                <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-[#14110c]/70 mt-3">{s.source}</p>
               </div>
             ))}
           </div>
@@ -292,7 +292,7 @@ export default function TalkingWebsitePage() {
           <h2 className="font-display italic font-extrabold text-4xl md:text-5xl mt-3 leading-[1.02] max-w-3xl">
             What are the missed ones worth?
           </h2>
-          <p className="font-body text-[15px] text-[#0d0d0d]/70 mt-4 max-w-2xl leading-relaxed mb-9">
+          <p className="font-body text-[15px] text-[#14110c]/70 mt-4 max-w-2xl leading-relaxed mb-9">
             Three numbers you already know, and you will see the size of the leak. Most operators find the monthly
             figure is larger than what the whole system costs.
           </p>
@@ -311,7 +311,7 @@ export default function TalkingWebsitePage() {
             {PIECES.map((p) => (
               <div
                 key={p.name}
-                className="flex flex-col border-2 border-[#0d0d0d] bg-white rounded-2xl shadow-[5px_5px_0_0_#0d0d0d] p-6 transition-transform hover:-translate-y-1"
+                className="flex flex-col border-2 border-[#14110c] bg-white rounded-2xl shadow-[5px_5px_0_0_#14110c] p-6 transition-transform hover:-translate-y-1"
               >
                 <span className="text-2xl leading-none" aria-hidden>
                   {p.icon}
@@ -320,7 +320,7 @@ export default function TalkingWebsitePage() {
                 <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-[#8f6600] font-bold mt-2">
                   {p.price}
                 </p>
-                <p className="font-body text-[13px] text-[#0d0d0d]/70 mt-2.5 leading-relaxed">{p.desc}</p>
+                <p className="font-body text-[13px] text-[#14110c]/70 mt-2.5 leading-relaxed">{p.desc}</p>
               </div>
             ))}
           </div>
@@ -341,7 +341,7 @@ export default function TalkingWebsitePage() {
           <h2 className="font-display italic font-extrabold text-4xl md:text-5xl mt-3 leading-[1.02] max-w-3xl">
             The size of the site is the size of the decision.
           </h2>
-          <p className="font-body text-[15px] text-[#0d0d0d]/70 mt-4 max-w-2xl leading-relaxed">
+          <p className="font-body text-[15px] text-[#14110c]/70 mt-4 max-w-2xl leading-relaxed">
             Google and the answer engines index pages, not sections. Every service and every town on its own
             page is how you become the answer. The voice agent reads every page, so a bigger site is
             a smarter phone too. Where you land is the first thing we work out together, and it is
@@ -354,46 +354,46 @@ export default function TalkingWebsitePage() {
               return (
                 <div
                   key={r.key}
-                  className={`relative flex flex-col border-2 border-[#0d0d0d] rounded-2xl p-6 md:p-7 ${
-                    featured ? 'bg-[#ffd400] shadow-[8px_8px_0_0_#0d0d0d]' : 'bg-white shadow-[6px_6px_0_0_#0d0d0d]'
+                  className={`relative flex flex-col border-2 border-[#14110c] rounded-2xl p-6 md:p-7 ${
+                    featured ? 'bg-[#f5b700] shadow-[8px_8px_0_0_#14110c]' : 'bg-white shadow-[6px_6px_0_0_#14110c]'
                   }`}
                 >
                   {featured ? (
                     <span
                       aria-hidden
-                      className="absolute -top-4 -right-3 rotate-[8deg] bg-[#C4160B] text-[#f1ede4] font-mono font-extrabold text-[10px] uppercase tracking-[0.14em] px-3 py-1.5 border-2 border-[#0d0d0d] shadow-[3px_3px_0_0_#0d0d0d]"
+                      className="absolute -top-4 -right-3 rotate-[8deg] bg-[#C4160B] text-[#f6efe0] font-mono font-extrabold text-[10px] uppercase tracking-[0.14em] px-3 py-1.5 border-2 border-[#14110c] shadow-[3px_3px_0_0_#14110c]"
                     >
                       Built to be found
                     </span>
                   ) : null}
-                  <span className="font-mono font-bold text-[10px] uppercase tracking-[0.2em] text-[#0d0d0d]/70">
+                  <span className="font-mono font-bold text-[10px] uppercase tracking-[0.2em] text-[#14110c]/70">
                     Size {i + 1} of 3
                   </span>
                   <h3 className="font-display italic font-extrabold text-3xl mt-1.5 leading-none">{r.label}</h3>
-                  <p className="font-body text-[13.5px] text-[#0d0d0d]/80 mt-4 leading-relaxed">{r.pitch}</p>
-                  <p className="font-body text-[12.5px] text-[#0d0d0d]/80 mt-2 leading-relaxed flex-1">{r.plan}</p>
+                  <p className="font-body text-[13.5px] text-[#14110c]/80 mt-4 leading-relaxed">{r.pitch}</p>
+                  <p className="font-body text-[12.5px] text-[#14110c]/80 mt-2 leading-relaxed flex-1">{r.plan}</p>
                 </div>
               );
             })}
           </div>
 
-          <div className="mt-8 border-2 border-[#0d0d0d] bg-[#0d0d0d] rounded-2xl shadow-[8px_8px_0_0_#ffd400] p-7 md:p-9">
+          <div className="mt-8 border-2 border-[#14110c] bg-[#14110c] rounded-2xl shadow-[8px_8px_0_0_#f5b700] p-7 md:p-9">
             <div className="flex flex-col md:flex-row md:items-center gap-6 md:gap-10">
               <div className="flex-1">
-                <p className="font-mono font-bold text-[10px] uppercase tracking-[0.2em] text-[#ffd400]">
+                <p className="font-mono font-bold text-[10px] uppercase tracking-[0.2em] text-[#f5b700]">
                   What the quote does
                 </p>
-                <p className="font-display italic font-extrabold text-2xl md:text-[1.9rem] mt-2 leading-[1.1] text-[#f1ede4]">
+                <p className="font-display italic font-extrabold text-2xl md:text-[1.9rem] mt-2 leading-[1.1] text-[#f6efe0]">
                   One price, agreed in writing, before anything is built.
                 </p>
-                <p className="font-body text-[13.5px] text-[#f1ede4]/75 mt-3 leading-relaxed max-w-xl">
+                <p className="font-body text-[13.5px] text-[#f6efe0]/75 mt-3 leading-relaxed max-w-xl">
                   Scoped in one conversation, quoted privately as a set package price, and it does not
                   move afterwards. Changes to what we built stay included, permanently.
                 </p>
               </div>
               <Link
                 href="/book"
-                className="shrink-0 text-center border-2 border-[#ffd400] bg-[#ffd400] text-[#0d0d0d] rounded-full px-8 py-4 font-sans font-extrabold text-[11px] uppercase tracking-[0.16em] transition-all hover:-translate-y-0.5"
+                className="shrink-0 text-center border-2 border-[#f5b700] bg-[#f5b700] text-[#14110c] rounded-full px-8 py-4 font-sans font-extrabold text-[11px] uppercase tracking-[0.16em] transition-all hover:-translate-y-0.5"
               >
                 Begin an engagement
               </Link>
@@ -414,13 +414,13 @@ export default function TalkingWebsitePage() {
               'Domain, hosting, and care handled',
               'You own the code and every account',
             ].map((f) => (
-              <li key={f} className="flex items-start gap-2.5 font-body text-[13.5px] text-[#0d0d0d]/85">
-                <span className="mt-[7px] h-1.5 w-1.5 rounded-full bg-[#0d0d0d] shrink-0" aria-hidden />
+              <li key={f} className="flex items-start gap-2.5 font-body text-[13.5px] text-[#14110c]/85">
+                <span className="mt-[7px] h-1.5 w-1.5 rounded-full bg-[#14110c] shrink-0" aria-hidden />
                 {f}
               </li>
             ))}
           </ul>
-          <p className="font-body text-[13px] text-[#0d0d0d]/70 mt-6 max-w-2xl">
+          <p className="font-body text-[13px] text-[#14110c]/70 mt-6 max-w-2xl">
             Every size, every page: changes are included, permanently. A page that did not exist
             before, beyond the size we scoped, is the next size up rather than an edit. That is the
             only line, and it is the one that keeps the sizes honest.
@@ -428,8 +428,8 @@ export default function TalkingWebsitePage() {
         </section>
 
         {/* ── How it works ── */}
-        <section className="bg-[#0d0d0d] border-2 border-[#0d0d0d] rounded-2xl shadow-[8px_8px_0_0_#ffd400] p-7 sm:p-10">
-          <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#ffd400] font-bold">How it works</span>
+        <section className="bg-[#14110c] border-2 border-[#14110c] rounded-2xl shadow-[8px_8px_0_0_#f5b700] p-7 sm:p-10">
+          <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#f5b700] font-bold">How it works</span>
           <div className="grid sm:grid-cols-3 gap-8 sm:gap-6 mt-6">
             {[
               [
@@ -449,10 +449,10 @@ export default function TalkingWebsitePage() {
               ],
             ].map(([n, t, d]) => (
               <div key={n} className="flex gap-4 sm:block">
-                <span className="font-display text-5xl font-bold text-[#ffd400] leading-none shrink-0">{n}</span>
+                <span className="font-display text-5xl font-bold text-[#f5b700] leading-none shrink-0">{n}</span>
                 <div className="sm:mt-3">
-                  <h3 className="font-display font-bold text-lg text-[#f1ede4] leading-tight">{t}</h3>
-                  <p className="font-body text-[13.5px] text-[#f1ede4]/70 mt-1.5 leading-relaxed">{d}</p>
+                  <h3 className="font-display font-bold text-lg text-[#f6efe0] leading-tight">{t}</h3>
+                  <p className="font-body text-[13.5px] text-[#f6efe0]/70 mt-1.5 leading-relaxed">{d}</p>
                 </div>
               </div>
             ))}
@@ -460,13 +460,13 @@ export default function TalkingWebsitePage() {
           <div className="mt-8 flex flex-wrap gap-5">
             <Link
               href="/websites"
-              className="font-sans font-bold text-[12px] uppercase tracking-[0.14em] text-[#ffd400] hover:text-[#f1ede4] transition-colors"
+              className="font-sans font-bold text-[12px] uppercase tracking-[0.14em] text-[#f5b700] hover:text-[#f6efe0] transition-colors"
             >
               Just the website →
             </Link>
             <Link
               href="/voice-agents"
-              className="font-sans font-bold text-[12px] uppercase tracking-[0.14em] text-[#ffd400] hover:text-[#f1ede4] transition-colors"
+              className="font-sans font-bold text-[12px] uppercase tracking-[0.14em] text-[#f5b700] hover:text-[#f6efe0] transition-colors"
             >
               Just the voice agent →
             </Link>
@@ -485,7 +485,7 @@ export default function TalkingWebsitePage() {
             {FAQ.map((f) => (
               <details
                 key={f.q}
-                className="group rounded-xl border-2 border-[#0d0d0d] bg-white p-5 open:shadow-[4px_4px_0_0_#ffd400] transition-shadow"
+                className="group rounded-xl border-2 border-[#14110c] bg-white p-5 open:shadow-[4px_4px_0_0_#f5b700] transition-shadow"
               >
                 <summary className="font-display text-lg font-bold cursor-pointer list-none flex items-center justify-between gap-4">
                   {f.q}
@@ -502,25 +502,25 @@ export default function TalkingWebsitePage() {
 
       {/* ── Close ── */}
       <div className="max-w-6xl mx-auto px-6 pb-16 lg:pb-20">
-        <section className="relative halftone-bg border-2 border-[#0d0d0d] rounded-2xl bg-[#ffd400] p-10 md:p-14 text-center overflow-hidden">
+        <section className="relative halftone-bg border-2 border-[#14110c] rounded-2xl bg-[#f5b700] p-10 md:p-14 text-center overflow-hidden">
           <div className="relative">
             <h2 className="font-display italic font-extrabold text-3xl md:text-5xl leading-[1.02]">
               Let it answer for you.
             </h2>
-            <p className="font-body text-[15px] text-[#0d0d0d]/80 mt-4 max-w-xl mx-auto leading-relaxed">
+            <p className="font-body text-[15px] text-[#14110c]/80 mt-4 max-w-xl mx-auto leading-relaxed">
               Call the studio line and hear the standard for yourself, then tell us what your own
               page and phone have to do. Sarah answers every inquiry herself, inside one business day.
             </p>
             <div className="mt-7 flex flex-wrap gap-3 justify-center">
               <Link
                 href="/book"
-                className="inline-block border-2 border-[#0d0d0d] bg-[#0d0d0d] text-[#ffd400] rounded-full px-9 py-4 font-sans font-extrabold text-[12px] uppercase tracking-[0.16em] shadow-[5px_5px_0_0_rgba(13,13,13,0.3)] hover:-translate-y-0.5 transition-all"
+                className="inline-block border-2 border-[#14110c] bg-[#14110c] text-[#f5b700] rounded-full px-9 py-4 font-sans font-extrabold text-[12px] uppercase tracking-[0.16em] shadow-[5px_5px_0_0_rgba(20,17,12,0.3)] hover:-translate-y-0.5 transition-all"
               >
                 Begin an engagement →
               </Link>
               <Link
                 href="/work"
-                className="inline-block border-2 border-[#0d0d0d] bg-white text-[#0d0d0d] rounded-full px-9 py-4 font-sans font-extrabold text-[12px] uppercase tracking-[0.16em] shadow-[5px_5px_0_0_rgba(13,13,13,0.3)] hover:-translate-y-0.5 transition-all"
+                className="inline-block border-2 border-[#14110c] bg-white text-[#14110c] rounded-full px-9 py-4 font-sans font-extrabold text-[12px] uppercase tracking-[0.16em] shadow-[5px_5px_0_0_rgba(20,17,12,0.3)] hover:-translate-y-0.5 transition-all"
               >
                 See the work
               </Link>

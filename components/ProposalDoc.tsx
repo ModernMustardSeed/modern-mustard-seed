@@ -69,11 +69,11 @@ function canEmbed(url: string): boolean {
 function LiveFrame({ label, url }: { label: string; url: string }) {
   const href = withProtocol(url);
   return (
-    <div className="rounded-xl border-2 border-[#0d0d0d] overflow-hidden shadow-[4px_4px_0_0_#0d0d0d] bg-white">
-      <div className="flex items-center gap-1.5 bg-[#0d0d0d] px-3 py-2">
-        <span aria-hidden="true" className="h-2 w-2 rounded-full bg-[#ff3b2f]" />
-        <span aria-hidden="true" className="h-2 w-2 rounded-full bg-[#ffd400]" />
-        <span aria-hidden="true" className="h-2 w-2 rounded-full bg-[#0d0d0d]" />
+    <div className="rounded-xl border-2 border-[#14110c] overflow-hidden shadow-[4px_4px_0_0_#14110c] bg-white">
+      <div className="flex items-center gap-1.5 bg-[#14110c] px-3 py-2">
+        <span aria-hidden="true" className="h-2 w-2 rounded-full bg-[#b3261e]" />
+        <span aria-hidden="true" className="h-2 w-2 rounded-full bg-[#f5b700]" />
+        <span aria-hidden="true" className="h-2 w-2 rounded-full bg-[#14110c]" />
         <span className="ml-2 flex-1 truncate rounded bg-white/10 px-2 py-0.5 font-mono text-[9.5px] text-white/70">
           {bareUrl(url)}
         </span>
@@ -89,7 +89,7 @@ function LiveFrame({ label, url }: { label: string; url: string }) {
           style={{ width: '200%', height: '200%', transform: 'scale(0.5)', transformOrigin: 'top left' }}
         />
         <a href={href} target="_blank" rel="noopener noreferrer" className="group absolute inset-0" aria-label={`${label}, open it live`}>
-          <span className="absolute bottom-3 right-3 inline-flex items-center gap-1.5 rounded-lg border-2 border-[#0d0d0d] bg-[#ffd400] px-3 py-1.5 font-sans text-[11px] font-extrabold text-[#0d0d0d] shadow-[2px_2px_0_0_#0d0d0d] group-hover:-translate-y-0.5 transition-transform">
+          <span className="absolute bottom-3 right-3 inline-flex items-center gap-1.5 rounded-lg border-2 border-[#14110c] bg-[#f5b700] px-3 py-1.5 font-sans text-[11px] font-extrabold text-[#14110c] shadow-[2px_2px_0_0_#14110c] group-hover:-translate-y-0.5 transition-transform">
             {label} <span aria-hidden="true">↗</span>
           </span>
         </a>
@@ -135,7 +135,7 @@ export default function ProposalDoc({
   const showcase = (demoLinks ?? []).filter((d) => d && d.url);
 
   return (
-    <div className="bg-white border-2 border-[#0d0d0d] rounded-2xl overflow-hidden shadow-[6px_6px_0_0_#0d0d0d]">
+    <div className="bg-white border-2 border-[#14110c] rounded-2xl overflow-hidden shadow-[6px_6px_0_0_#14110c]">
       {/* One orchestrated entrance, then stillness: a document you sign should
           settle, not perform. CSS-only so every render path (token page, sample,
           builder preview) gets it for free; reduced-motion and print opt out. */}
@@ -157,7 +157,7 @@ export default function ProposalDoc({
         }
       `}</style>
       {/* Midnight header band. Dark is reserved for exactly this, by brand law. */}
-      <div className="pd-head relative bg-[#0d0d0d] px-8 pt-10 pb-12 text-center overflow-hidden">
+      <div className="pd-head relative bg-[#14110c] px-8 pt-10 pb-12 text-center overflow-hidden">
         <div
           aria-hidden="true"
           className="absolute inset-0 pointer-events-none"
@@ -167,7 +167,7 @@ export default function ProposalDoc({
           }}
         />
         {/* Gold baseline strip, the one thing the eye hits on the dark canvas. */}
-        <div aria-hidden="true" className="absolute bottom-0 left-0 right-0 h-1.5 bg-[#ffd400]" />
+        <div aria-hidden="true" className="absolute bottom-0 left-0 right-0 h-1.5 bg-[#f5b700]" />
         <div className="relative">
           <Image
             src="/brand/mascot.png"
@@ -176,7 +176,7 @@ export default function ProposalDoc({
             height={1180}
             className="h-14 w-auto mx-auto mb-4 drop-shadow-[3px_3px_0_rgba(245,183,0,0.35)]"
           />
-          <div className="text-[10px] tracking-[0.45em] uppercase text-[#ffd400] font-mono font-bold">
+          <div className="text-[10px] tracking-[0.45em] uppercase text-[#f5b700] font-mono font-bold">
             Modern Mustard Seed
           </div>
           <h1 className="font-display text-4xl md:text-5xl font-black text-white tracking-tight mt-2.5 leading-[1.06] text-balance">
@@ -191,14 +191,14 @@ export default function ProposalDoc({
       <div className="pd-body px-7 md:px-9 py-8">
         {siteUrl && (
           <p className="mb-5">
-            <span className="block text-[9px] uppercase tracking-[0.25em] text-[#0d0d0d]/40 font-mono font-bold mb-1">
+            <span className="block text-[9px] uppercase tracking-[0.25em] text-[#14110c]/40 font-mono font-bold mb-1">
               Your site today
             </span>
             <a
               href={withProtocol(siteUrl)}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-baseline gap-1.5 text-[13px] font-mono text-[#c8201a] hover:text-[#0d0d0d] underline decoration-[#c8201a]/30 underline-offset-4 break-all transition-colors"
+              className="inline-flex items-baseline gap-1.5 text-[13px] font-mono text-[#8f1d22] hover:text-[#14110c] underline decoration-[#8f1d22]/30 underline-offset-4 break-all transition-colors"
             >
               {bareUrl(siteUrl)} <span aria-hidden="true">↗</span>
             </a>
@@ -239,20 +239,20 @@ export default function ProposalDoc({
                   href={withProtocol(d.url)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group block rounded-xl border-2 border-[#0d0d0d] bg-[#ffd400] px-4 py-3.5 shadow-[4px_4px_0_0_#0d0d0d] hover:-translate-y-0.5 hover:shadow-[5px_5px_0_0_#0d0d0d] transition-all"
+                  className="group block rounded-xl border-2 border-[#14110c] bg-[#f5b700] px-4 py-3.5 shadow-[4px_4px_0_0_#14110c] hover:-translate-y-0.5 hover:shadow-[5px_5px_0_0_#14110c] transition-all"
                 >
                   <span className="flex items-start justify-between gap-2">
-                    <span className="font-display font-black text-[16px] text-[#0d0d0d] leading-snug">
+                    <span className="font-display font-black text-[16px] text-[#14110c] leading-snug">
                       {d.label || 'See it live'}
                     </span>
                     <span
                       aria-hidden="true"
-                      className="text-[#0d0d0d] font-black text-[15px] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"
+                      className="text-[#14110c] font-black text-[15px] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"
                     >
                       ↗
                     </span>
                   </span>
-                  <span className="block font-mono text-[10.5px] text-[#0d0d0d]/60 mt-1 break-all">
+                  <span className="block font-mono text-[10.5px] text-[#14110c]/60 mt-1 break-all">
                     {bareUrl(d.url)}
                   </span>
                 </a>
@@ -276,24 +276,24 @@ export default function ProposalDoc({
             return (
               <div
                 key={i}
-                className="border-2 border-[#0d0d0d] rounded-xl p-5"
-                style={{ boxShadow: `inset 6px 0 0 0 ${s.variable ? '#ff3b2f' : '#ffd400'}` }}
+                className="border-2 border-[#14110c] rounded-xl p-5"
+                style={{ boxShadow: `inset 6px 0 0 0 ${s.variable ? '#b3261e' : '#f5b700'}` }}
               >
                 <div className="flex items-baseline justify-between gap-3 mb-1.5">
                   <span className="flex items-baseline gap-2.5 min-w-0">
                     <span className="font-mono text-[10px] font-bold text-[#8f6600] tracking-[0.12em] shrink-0">
                       {String(i + 1).padStart(2, '0')}
                     </span>
-                    <span className="font-display font-black text-[19px] text-[#0d0d0d] tracking-tight leading-snug">
+                    <span className="font-display font-black text-[19px] text-[#14110c] tracking-tight leading-snug">
                       {s.name}
                     </span>
                   </span>
                   <span className="text-right whitespace-nowrap">
-                    <span className="font-display text-[16px] font-black text-[#0d0d0d]">
+                    <span className="font-display text-[16px] font-black text-[#14110c]">
                       {linePriceLabel(s, l, hidePrices)}
                     </span>
                     {s.variable && (
-                      <span className="block text-[10px] text-[#0d0d0d]/45 font-mono uppercase tracking-wider">
+                      <span className="block text-[10px] text-[#14110c]/45 font-mono uppercase tracking-wider">
                         at cost, varies with usage
                       </span>
                     )}
@@ -317,7 +317,7 @@ export default function ProposalDoc({
 
         {/* Totals */}
         {hidePrices ? (
-          <div className="mt-7 rounded-xl bg-[#FFF3CC] border-2 border-[#0d0d0d] shadow-[3px_3px_0_0_#0d0d0d] p-5">
+          <div className="mt-7 rounded-xl bg-[#FFF3CC] border-2 border-[#14110c] shadow-[3px_3px_0_0_#14110c] p-5">
             <p className="text-[14px] text-[#3a3733] font-body leading-relaxed">
               Every line is quoted per engagement, in writing, before any work begins. Most builds run on a
               50% deposit to start and the balance on delivery, with software and compute billed at cost.
@@ -328,29 +328,29 @@ export default function ProposalDoc({
         <div className="mt-7 space-y-4">
           {oneTime > 0 && (
             <>
-              <div className="flex items-baseline justify-between border-t-2 border-[#0d0d0d]/10 pt-4">
-                <span className="text-[12px] uppercase tracking-[0.2em] font-mono font-bold text-[#0d0d0d]/55">
+              <div className="flex items-baseline justify-between border-t-2 border-[#14110c]/10 pt-4">
+                <span className="text-[12px] uppercase tracking-[0.2em] font-mono font-bold text-[#14110c]/55">
                   Project total
                 </span>
-                <span className="font-display text-3xl md:text-4xl font-black text-[#0d0d0d] tracking-tight">
+                <span className="font-display text-3xl md:text-4xl font-black text-[#14110c] tracking-tight">
                   {money(oneTime)}
                 </span>
               </div>
-              <div className="rounded-xl bg-[#FFF3CC] border-2 border-[#0d0d0d] shadow-[3px_3px_0_0_#0d0d0d] p-4 space-y-2.5">
+              <div className="rounded-xl bg-[#FFF3CC] border-2 border-[#14110c] shadow-[3px_3px_0_0_#14110c] p-4 space-y-2.5">
                 {balanceDue <= 0 ? (
                   <div className="flex items-baseline justify-between">
                     <span className="text-[13px] text-[#3a3733] font-body">One payment. Nothing due later.</span>
-                    <span className="font-display text-[17px] font-black text-[#0d0d0d]">{money(depositDue)}</span>
+                    <span className="font-display text-[17px] font-black text-[#14110c]">{money(depositDue)}</span>
                   </div>
                 ) : (
                   <>
                     <div className="flex items-baseline justify-between">
                       <span className="text-[13px] text-[#3a3733] font-body">To start, 50% deposit</span>
-                      <span className="font-display text-[17px] font-black text-[#0d0d0d]">{money(depositDue)}</span>
+                      <span className="font-display text-[17px] font-black text-[#14110c]">{money(depositDue)}</span>
                     </div>
                     <div className="flex items-baseline justify-between">
                       <span className="text-[13px] text-[#3a3733] font-body">Balance on delivery</span>
-                      <span className="font-display text-[17px] font-black text-[#0d0d0d]">{money(balanceDue)}</span>
+                      <span className="font-display text-[17px] font-black text-[#14110c]">{money(balanceDue)}</span>
                     </div>
                   </>
                 )}
@@ -362,11 +362,11 @@ export default function ProposalDoc({
               <span className="text-[13px] text-[#3a3733] font-body">
                 Monthly{hasVariable ? ', estimated' : ''}
               </span>
-              <span className="font-display text-[18px] font-black text-[#0d0d0d]">{money(monthly)}/mo</span>
+              <span className="font-display text-[18px] font-black text-[#14110c]">{money(monthly)}/mo</span>
             </div>
           )}
           {hasVariable && (
-            <p className="text-[12px] text-[#0d0d0d]/45 font-body leading-relaxed">
+            <p className="text-[12px] text-[#14110c]/45 font-body leading-relaxed">
               Software and compute is billed at cost and moves with the compute used each month. The monthly
               figure is an estimate, not a fixed charge.
             </p>
@@ -388,25 +388,25 @@ export default function ProposalDoc({
         </div>
 
         {prose.close && (
-          <p className="text-[16px] text-[#3a3733] font-body leading-relaxed mt-7 pt-6 border-t-2 border-[#0d0d0d]/10">
+          <p className="text-[16px] text-[#3a3733] font-body leading-relaxed mt-7 pt-6 border-t-2 border-[#14110c]/10">
             {prose.close}
           </p>
         )}
 
         {/* Signature */}
-        <div className="mt-9 pt-6 border-t-2 border-[#0d0d0d]/10 flex items-end justify-between gap-4 flex-wrap">
+        <div className="mt-9 pt-6 border-t-2 border-[#14110c]/10 flex items-end justify-between gap-4 flex-wrap">
           <div>
-            <p className="text-[10px] uppercase tracking-[0.3em] text-[#0d0d0d]/45 font-mono font-bold">With faith,</p>
-            <p className="font-display text-3xl font-black text-[#0d0d0d] mt-1">Sarah</p>
+            <p className="text-[10px] uppercase tracking-[0.3em] text-[#14110c]/45 font-mono font-bold">With faith,</p>
+            <p className="font-display text-3xl font-black text-[#14110c] mt-1">Sarah</p>
             <p className="text-[10px] uppercase tracking-[0.2em] text-[#8f6600] font-mono font-bold mt-1">
               Founder, Modern Mustard Seed
             </p>
           </div>
           <Image src="/brand/mascot.png" alt="" width={885} height={1180} className="h-11 w-auto" />
         </div>
-        <p className="mt-7 text-center font-serif italic text-[14.5px] text-[#0d0d0d]/55 leading-relaxed">
+        <p className="mt-7 text-center font-serif italic text-[14.5px] text-[#14110c]/55 leading-relaxed">
           &ldquo;If you have faith as small as a mustard seed, nothing will be impossible for you.&rdquo;{' '}
-          <span className="not-italic font-mono text-[9.5px] tracking-[0.15em] uppercase text-[#0d0d0d]/40">
+          <span className="not-italic font-mono text-[9.5px] tracking-[0.15em] uppercase text-[#14110c]/40">
             Matthew 17:20
           </span>
         </p>

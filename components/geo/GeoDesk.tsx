@@ -50,51 +50,51 @@ export default function GeoDesk() {
   const activeUrl = last?.url || urlInput;
 
   return (
-    <section id="geo-desk" className="py-16 md:py-24 border-t-2 border-[#0d0d0d] bg-[#f1ede4]">
+    <section id="geo-desk" className="py-16 md:py-24 border-t-2 border-[#14110c] bg-[#f6efe0]">
       <div className="max-w-5xl mx-auto px-5">
         {welcome && (
-          <div className="max-w-2xl mx-auto mb-10 rounded-2xl border-2 border-[#0d0d0d] bg-[#ffd400] p-6 text-center shadow-[5px_5px_0_0_#0d0d0d]">
-            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#0d0d0d] font-bold mb-1.5">[ ORDER CONFIRMED ]</p>
-            <p className="font-display text-xl font-black text-[#0d0d0d]">The desk has your site.</p>
-            <p className="font-body text-sm text-[#0d0d0d]/75 mt-2">Your receipt and next steps are in your inbox. Watch subscribers: the baseline re-grade lands within a day. White glove: Sarah emails within one business day.</p>
+          <div className="max-w-2xl mx-auto mb-10 rounded-2xl border-2 border-[#14110c] bg-[#f5b700] p-6 text-center shadow-[5px_5px_0_0_#14110c]">
+            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#14110c] font-bold mb-1.5">[ ORDER CONFIRMED ]</p>
+            <p className="font-display text-xl font-black text-[#14110c]">The desk has your site.</p>
+            <p className="font-body text-sm text-[#14110c]/75 mt-2">Your receipt and next steps are in your inbox. Watch subscribers: the baseline re-grade lands within a day. White glove: Sarah emails within one business day.</p>
           </div>
         )}
         <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#C4160B] font-bold mb-3 text-center">{GEO.wordmark}</p>
-        <h2 className="font-display text-3xl md:text-5xl font-black text-[#0d0d0d] tracking-tight text-center leading-[1.05]">
+        <h2 className="font-display text-3xl md:text-5xl font-black text-[#14110c] tracking-tight text-center leading-[1.05]">
           Be the answer ChatGPT gives.
         </h2>
-        <p className="font-body text-[#0d0d0d]/65 max-w-2xl mx-auto mt-4 text-center leading-relaxed">
+        <p className="font-body text-[#14110c]/65 max-w-2xl mx-auto mt-4 text-center leading-relaxed">
           {GEO.promise}
         </p>
 
         {/* The examiner's verdict */}
         <div className="max-w-2xl mx-auto mt-10">
           {last ? (
-            <div className="relative rounded-2xl border-[3px] border-[#0d0d0d] bg-white p-6 sm:p-7 shadow-[8px_8px_0_0_#0d0d0d]">
+            <div className="relative rounded-2xl border-[3px] border-[#14110c] bg-white p-6 sm:p-7 shadow-[8px_8px_0_0_#14110c]">
               {/* flex-wrap: the stamp drops to its own row on narrow screens
                   instead of pushing the viewport (ship-gate 375px blocker). */}
               <div className="flex flex-wrap items-start gap-4 sm:gap-5">
-                <Image src="/brand/mascot.png" alt="Mr. Mustard, examiner" width={56} height={56} className="rounded-full border-2 border-[#0d0d0d] bg-[#ffd400] shrink-0" />
+                <Image src="/brand/mascot.png" alt="Mr. Mustard, examiner" width={56} height={56} className="rounded-full border-2 border-[#14110c] bg-[#f5b700] shrink-0" />
                 <div className="flex-1 min-w-[11rem]">
-                  <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#d0241b] font-bold break-words">The examiner&apos;s verdict · {last.url.replace(/^https?:\/\//, '').replace(/\/$/, '')}</p>
-                  <p className="font-body text-[15px] text-[#0d0d0d]/80 leading-relaxed mt-2">{prescription(last.grade)}</p>
+                  <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#8f1d22] font-bold break-words">The examiner&apos;s verdict · {last.url.replace(/^https?:\/\//, '').replace(/\/$/, '')}</p>
+                  <p className="font-body text-[15px] text-[#14110c]/80 leading-relaxed mt-2">{prescription(last.grade)}</p>
                 </div>
-                <div className="shrink-0 -rotate-6 rounded-lg border-[3px] border-[#ff3b2f] px-4 py-2 text-center mx-auto sm:mx-0" aria-label={`Grade ${last.grade}`}>
-                  <span className="font-display text-4xl font-black text-[#d0241b] leading-none">{last.grade}</span>
-                  <span className="block font-mono text-[9px] uppercase tracking-[0.2em] text-[#d0241b]/80 mt-0.5">{last.score}/100</span>
+                <div className="shrink-0 -rotate-6 rounded-lg border-[3px] border-[#b3261e] px-4 py-2 text-center mx-auto sm:mx-0" aria-label={`Grade ${last.grade}`}>
+                  <span className="font-display text-4xl font-black text-[#8f1d22] leading-none">{last.grade}</span>
+                  <span className="block font-mono text-[9px] uppercase tracking-[0.2em] text-[#8f1d22]/80 mt-0.5">{last.score}/100</span>
                 </div>
               </div>
             </div>
           ) : (
-            <div className="rounded-2xl border-2 border-dashed border-[#0d0d0d]/35 bg-white/60 p-6 text-center">
-              <p className="font-body text-sm text-[#0d0d0d]/65">
+            <div className="rounded-2xl border-2 border-dashed border-[#14110c]/35 bg-white/60 p-6 text-center">
+              <p className="font-body text-sm text-[#14110c]/65">
                 Run the free audit above and the examiner grades your site right here. Or type your address to skip straight to the desk:
               </p>
               <input
                 value={urlInput}
                 onChange={(e) => setUrlInput(e.target.value)}
                 placeholder="yourbusiness.com"
-                className="mt-3 w-full max-w-sm mx-auto block rounded-lg border-2 border-[#0d0d0d] bg-white px-3.5 py-2.5 font-body text-[15px] text-[#0d0d0d] placeholder:text-[#0d0d0d]/35 focus:outline-none focus:ring-2 focus:ring-[#ffd400]"
+                className="mt-3 w-full max-w-sm mx-auto block rounded-lg border-2 border-[#14110c] bg-white px-3.5 py-2.5 font-body text-[15px] text-[#14110c] placeholder:text-[#14110c]/35 focus:outline-none focus:ring-2 focus:ring-[#f5b700]"
               />
             </div>
           )}
@@ -112,9 +112,9 @@ export default function GeoDesk() {
           ))}
         </div>
 
-        <p className="text-center mt-8 font-body text-sm text-[#0d0d0d]/60 max-w-xl mx-auto">
+        <p className="text-center mt-8 font-body text-sm text-[#14110c]/60 max-w-xl mx-auto">
           The honest fine print: nobody can promise what ChatGPT will recommend, and we never will. We install the signals it reads and prove they exist with re-grades. While you are fixing the website, the phones deserve the same:{' '}
-          <Link href="/demos" className="text-[#c8201a] font-semibold underline underline-offset-2">build your free voice agent demo</Link>.
+          <Link href="/demos" className="text-[#8f1d22] font-semibold underline underline-offset-2">build your free voice agent demo</Link>.
         </p>
       </div>
     </section>
@@ -150,23 +150,23 @@ function GeoTierCard({ tier, url }: { tier: (typeof geoTiers)[number]; url: stri
   };
 
   return (
-    <div className={`relative rounded-2xl border-2 border-[#0d0d0d] bg-white p-7 shadow-[6px_6px_0_0_#0d0d0d] flex flex-col ${tier.featured ? 'md:-translate-y-1' : ''}`}>
+    <div className={`relative rounded-2xl border-2 border-[#14110c] bg-white p-7 shadow-[6px_6px_0_0_#14110c] flex flex-col ${tier.featured ? 'md:-translate-y-1' : ''}`}>
       {tier.featured && (
-        <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full bg-[#ff3b2f] border-2 border-[#0d0d0d] px-4 py-1 text-[10px] uppercase tracking-[0.22em] font-mono font-bold text-white whitespace-nowrap">
+        <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full bg-[#b3261e] border-2 border-[#14110c] px-4 py-1 text-[10px] uppercase tracking-[0.22em] font-mono font-bold text-white whitespace-nowrap">
           Start here
         </span>
       )}
-      <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#d0241b] font-bold">{tier.chip}</p>
-      <h3 className="font-display text-2xl font-black text-[#0d0d0d] mt-1.5">{tier.name}</h3>
+      <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#8f1d22] font-bold">{tier.chip}</p>
+      <h3 className="font-display text-2xl font-black text-[#14110c] mt-1.5">{tier.name}</h3>
       <p className="mt-3">
-        <span className="font-display text-4xl font-black text-[#0d0d0d]">${tier.priceUsd}</span>
-        <span className="font-body text-sm text-[#0d0d0d]/60">{tier.cadence === 'monthly' ? '/mo' : ' one time'}</span>
+        <span className="font-display text-4xl font-black text-[#14110c]">${tier.priceUsd}</span>
+        <span className="font-body text-sm text-[#14110c]/60">{tier.cadence === 'monthly' ? '/mo' : ' one time'}</span>
       </p>
-      <p className="font-body text-sm text-[#0d0d0d]/70 mt-2 leading-relaxed">{tier.pitch}</p>
+      <p className="font-body text-sm text-[#14110c]/70 mt-2 leading-relaxed">{tier.pitch}</p>
       <ul className="mt-5 space-y-2.5 flex-1">
         {tier.includes.map((line) => (
-          <li key={line} className="flex gap-2.5 font-body text-[13.5px] text-[#0d0d0d]/80 leading-snug">
-            <span className="text-[#ffd400] font-black mt-[1px]" aria-hidden="true">✓</span>
+          <li key={line} className="flex gap-2.5 font-body text-[13.5px] text-[#14110c]/80 leading-snug">
+            <span className="text-[#f5b700] font-black mt-[1px]" aria-hidden="true">✓</span>
             {line}
           </li>
         ))}
@@ -175,13 +175,13 @@ function GeoTierCard({ tier, url }: { tier: (typeof geoTiers)[number]; url: stri
         type="button"
         onClick={buy}
         disabled={busy}
-        className={`mt-6 w-full rounded-full border-2 border-[#0d0d0d] px-6 py-3.5 font-sans font-extrabold text-xs uppercase tracking-[0.18em] shadow-[4px_4px_0_0_#0d0d0d] transition-all hover:-translate-y-0.5 hover:shadow-[5px_5px_0_0_#0d0d0d] disabled:opacity-60 ${
-          tier.featured ? 'bg-[#ffd400] text-[#0d0d0d]' : 'bg-white text-[#0d0d0d]'
+        className={`mt-6 w-full rounded-full border-2 border-[#14110c] px-6 py-3.5 font-sans font-extrabold text-xs uppercase tracking-[0.18em] shadow-[4px_4px_0_0_#14110c] transition-all hover:-translate-y-0.5 hover:shadow-[5px_5px_0_0_#14110c] disabled:opacity-60 ${
+          tier.featured ? 'bg-[#f5b700] text-[#14110c]' : 'bg-white text-[#14110c]'
         }`}
       >
         {busy ? 'Opening the desk…' : tier.cta}
       </button>
-      {msg && <p className="mt-3 text-[#d0241b] text-xs font-body font-semibold">{msg}</p>}
+      {msg && <p className="mt-3 text-[#8f1d22] text-xs font-body font-semibold">{msg}</p>}
     </div>
   );
 }

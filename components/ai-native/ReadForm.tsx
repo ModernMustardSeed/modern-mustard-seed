@@ -54,10 +54,10 @@ export default function ReadForm() {
 
   if (done) {
     return (
-      <div className="rounded-2xl border-2 border-[#0d0d0d] bg-white p-7 shadow-[6px_6px_0_0_#0d0d0d] text-center">
-        <p className="font-mono text-[11px] font-bold uppercase tracking-[0.3em] text-[#d0241b]">[ RECEIVED ]</p>
-        <h3 className="font-display text-2xl font-black tracking-tight text-[#0d0d0d] mt-2">The business is in the queue.</h3>
-        <p className="font-body text-sm leading-relaxed text-[#0d0d0d]/75 mt-3">
+      <div className="rounded-2xl border-2 border-[#14110c] bg-white p-7 shadow-[6px_6px_0_0_#14110c] text-center">
+        <p className="font-mono text-[11px] font-bold uppercase tracking-[0.3em] text-[#8f1d22]">[ RECEIVED ]</p>
+        <h3 className="font-display text-2xl font-black tracking-tight text-[#14110c] mt-2">The business is in the queue.</h3>
+        <p className="font-body text-sm leading-relaxed text-[#14110c]/75 mt-3">
           We read it and send the Agentic Read back {AI_NATIVE.readDelivery}: the three agentic moves that pay first in your company, what each one costs to run, and which door fits. No charge, and the read is yours either way.
         </p>
       </div>
@@ -65,11 +65,11 @@ export default function ReadForm() {
   }
 
   const field =
-    'mt-1.5 w-full rounded-lg border-2 border-[#0d0d0d] bg-[#f1ede4] px-3.5 py-2.5 font-body text-sm text-[#0d0d0d] outline-none placeholder:text-[#0d0d0d]/35 focus:bg-white focus:shadow-[3px_3px_0_0_#ffd400]';
-  const label = 'font-mono text-[10px] font-bold uppercase tracking-[0.25em] text-[#0d0d0d]/60';
+    'mt-1.5 w-full rounded-lg border-2 border-[#14110c] bg-[#f6efe0] px-3.5 py-2.5 font-body text-sm text-[#14110c] outline-none placeholder:text-[#14110c]/35 focus:bg-white focus:shadow-[3px_3px_0_0_#f5b700]';
+  const label = 'font-mono text-[10px] font-bold uppercase tracking-[0.25em] text-[#14110c]/60';
 
   return (
-    <form onSubmit={submit} className="rounded-2xl border-2 border-[#0d0d0d] bg-white p-6 md:p-7 shadow-[6px_6px_0_0_#0d0d0d]">
+    <form onSubmit={submit} className="rounded-2xl border-2 border-[#14110c] bg-white p-6 md:p-7 shadow-[6px_6px_0_0_#14110c]">
       <div className="grid sm:grid-cols-2 gap-4">
         <label className="block">
           <span className={label}>Your name</span>
@@ -115,11 +115,11 @@ export default function ReadForm() {
       <button
         type="submit"
         disabled={busy}
-        className="mt-5 w-full rounded-full border-2 border-[#0d0d0d] bg-[#ffd400] px-6 py-3.5 font-sans text-xs font-extrabold uppercase tracking-[0.18em] text-[#0d0d0d] shadow-[4px_4px_0_0_#0d0d0d] transition-all hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-wait"
+        className="mt-5 w-full rounded-full border-2 border-[#14110c] bg-[#f5b700] px-6 py-3.5 font-sans text-xs font-extrabold uppercase tracking-[0.18em] text-[#14110c] shadow-[4px_4px_0_0_#14110c] transition-all hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-wait"
       >
         {busy ? 'Sending' : 'Send the business, get the read'}
       </button>
-      <p className="mt-3 text-center font-mono text-[10px] uppercase tracking-[0.2em] text-[#0d0d0d]/50">Free · No card · The read is yours to keep</p>
+      <p className="mt-3 text-center font-mono text-[10px] uppercase tracking-[0.2em] text-[#14110c]/50">Free · No card · The read is yours to keep</p>
     </form>
   );
 }

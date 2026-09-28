@@ -50,7 +50,7 @@ const FAQ = [
 
 export default function NationwidePage() {
   return (
-    <div className="bg-[#f1ede4] text-[#0d0d0d]">
+    <div className="bg-[#f6efe0] text-[#14110c]">
       <JsonLd
         data={[
           faqJsonLd(FAQ),
@@ -67,16 +67,16 @@ export default function NationwidePage() {
         ]}
       />
 
-      <section className="relative overflow-hidden border-b-2 border-[#0d0d0d] bg-[#ffe98a]">
+      <section className="relative overflow-hidden border-b-2 border-[#14110c] bg-[#f3dc9b]">
         <PressMedallion />
-        <div aria-hidden="true" className="absolute inset-0 opacity-[0.14] [background-image:radial-gradient(#0d0d0d_1.3px,transparent_1.5px)] [background-size:11px_11px] [mask-image:linear-gradient(115deg,transparent_35%,#000_80%)]" />
+        <div aria-hidden="true" className="absolute inset-0 opacity-[0.14] [background-image:radial-gradient(#14110c_1.3px,transparent_1.5px)] [background-size:11px_11px] [mask-image:linear-gradient(115deg,transparent_35%,#000_80%)]" />
         <div className="relative max-w-6xl mx-auto px-6 pt-28 md:pt-36 pb-14 md:pb-20 xl:pr-[460px]">
-          <span className="inline-block -rotate-1 bg-[#0d0d0d] text-[#ffd400] px-3 py-1.5 font-sans text-[11px] font-bold uppercase tracking-[0.16em]">
+          <span className="inline-block -rotate-1 bg-[#14110c] text-[#f5b700] px-3 py-1.5 font-sans text-[11px] font-bold uppercase tracking-[0.16em]">
             Nationwide Reach
           </span>
           <h1 className="mt-6 flex flex-col items-start font-sans font-extrabold leading-[0.95] tracking-[-0.045em] text-[2.2rem] sm:text-5xl md:text-6xl lg:text-[5.2rem]">
             <span>Built in Montana.</span>{' '}
-            <span className="my-[0.12em] -rotate-2 border-[3px] border-[#0d0d0d] bg-[#f1ede4] px-[0.18em] pb-[0.08em] font-display italic font-medium tracking-[-0.03em] shadow-[7px_7px_0_0_#ff3b2f]">
+            <span className="my-[0.12em] -rotate-2 border-[3px] border-[#14110c] bg-[#f6efe0] px-[0.18em] pb-[0.08em] font-display italic font-medium tracking-[-0.03em] shadow-[7px_7px_0_0_#b3261e]">
               Working everywhere
             </span>{' '}
             <span>in the US.</span>
@@ -85,30 +85,30 @@ export default function NationwidePage() {
             Modern Mustard Seed is a design and agentic systems studio in Kalispell, Montana. We design and build websites and brand, custom software, and voice agents for businesses throughout the United States. Distance is not a factor. You own everything we build.
           </p>
           <div className="mt-9 flex flex-wrap gap-4">
-            <Link href="/inquire" className="inline-flex items-center gap-5 border-2 border-[#0d0d0d] bg-[#0d0d0d] px-7 py-4 font-sans font-bold text-sm text-[#f1ede4] shadow-[5px_5px_0_0_#f1ede4] transition-transform hover:-translate-x-0.5 hover:-translate-y-0.5">
-              Tell Us What You Have In Mind <span aria-hidden="true" className="text-[#ffd400] text-lg">↗</span>
+            <Link href="/inquire" className="inline-flex items-center gap-5 border-2 border-[#14110c] bg-[#14110c] px-7 py-4 font-sans font-bold text-sm text-[#f6efe0] shadow-[5px_5px_0_0_#f6efe0] transition-transform hover:-translate-x-0.5 hover:-translate-y-0.5">
+              Tell Us What You Have In Mind <span aria-hidden="true" className="text-[#f5b700] text-lg">↗</span>
             </Link>
-            <a href={`tel:${SITE.phoneE164}`} className="inline-flex items-center border-2 border-[#0d0d0d] bg-[#f1ede4] px-7 py-4 font-sans font-bold text-sm shadow-[5px_5px_0_0_#0d0d0d] transition-transform hover:-translate-y-0.5">
+            <a href={`tel:${SITE.phoneE164}`} className="inline-flex items-center border-2 border-[#14110c] bg-[#f6efe0] px-7 py-4 font-sans font-bold text-sm shadow-[5px_5px_0_0_#14110c] transition-transform hover:-translate-y-0.5">
               Call {SITE.phone}
             </a>
           </div>
         </div>
       </section>
 
-      <section className="border-b-2 border-[#0d0d0d]">
+      <section className="border-b-2 border-[#14110c]">
         <div className="max-w-6xl mx-auto px-6 py-16 md:py-24">
-          <p className="font-sans text-[11px] uppercase tracking-[0.22em] font-bold text-[#c8201a]">From Montana to Florida</p>
+          <p className="font-sans text-[11px] uppercase tracking-[0.22em] font-bold text-[#8f1d22]">From Montana to Florida</p>
           <h2 className="mt-3 font-display text-4xl md:text-5xl leading-[1.02] tracking-[-0.03em]">
             The work already <em>travels.</em>
           </h2>
           <div className="mt-11 grid md:grid-cols-3 gap-8">
             {WORK.map((w) => (
               <a key={w.name} href={w.url} target="_blank" rel="noopener noreferrer" className="group block">
-                <div className="overflow-hidden border-2 border-[#0d0d0d] shadow-[6px_6px_0_0_#0d0d0d] bg-[#eae6dc]">
+                <div className="overflow-hidden border-2 border-[#14110c] shadow-[6px_6px_0_0_#14110c] bg-[#eae6dc]">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={`/images/editorial/${w.image}-960.webp`} alt={`${w.name} website, designed and built by Modern Mustard Seed`} width={960} height={600} loading="lazy" decoding="async" className="block w-full aspect-[1.6] object-cover object-top transition-transform duration-700 group-hover:scale-[1.03]" />
                 </div>
-                <p className="mt-5 inline-block bg-[#ffd400] border border-[#0d0d0d] px-2 py-1 font-sans text-[10px] font-bold uppercase tracking-[0.16em]">{w.place}</p>
+                <p className="mt-5 inline-block bg-[#f5b700] border border-[#14110c] px-2 py-1 font-sans text-[10px] font-bold uppercase tracking-[0.16em]">{w.place}</p>
                 <h3 className="mt-3 font-display text-2xl tracking-[-0.02em]">{w.name}</h3>
                 <p className="mt-2 font-body text-sm text-[#3d382e] leading-relaxed">{w.note}</p>
               </a>
@@ -117,16 +117,16 @@ export default function NationwidePage() {
         </div>
       </section>
 
-      <section className="border-b-2 border-[#0d0d0d] bg-[#0d0d0d] text-[#f1ede4]">
+      <section className="border-b-2 border-[#14110c] bg-[#14110c] text-[#f6efe0]">
         <div className="max-w-6xl mx-auto px-6 py-16 md:py-24">
-          <p className="font-sans text-[11px] uppercase tracking-[0.22em] font-bold text-[#ffd400]">How it works from anywhere</p>
+          <p className="font-sans text-[11px] uppercase tracking-[0.22em] font-bold text-[#f5b700]">How it works from anywhere</p>
           <h2 className="mt-3 font-display text-4xl md:text-5xl leading-[1.02] tracking-[-0.03em]">
-            One studio. <em className="text-[#ffd400]">Every state.</em>
+            One studio. <em className="text-[#f5b700]">Every state.</em>
           </h2>
           <ol className="mt-11 grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {STEPS.map((s, i) => (
-              <li key={s.title} className="border-2 border-[#f1ede4] p-6 shadow-[6px_6px_0_0_#ffd400]">
-                <span className="font-sans text-xs font-bold text-[#ffd400]">0{i + 1}</span>
+              <li key={s.title} className="border-2 border-[#f6efe0] p-6 shadow-[6px_6px_0_0_#f5b700]">
+                <span className="font-sans text-xs font-bold text-[#f5b700]">0{i + 1}</span>
                 <h3 className="mt-3 font-sans text-lg font-bold">{s.title}</h3>
                 <p className="mt-2 font-body text-sm text-[#d9d7cc] leading-relaxed">{s.text}</p>
               </li>
@@ -135,7 +135,7 @@ export default function NationwidePage() {
         </div>
       </section>
 
-      <nav aria-label="Explore the studio" className="max-w-6xl mx-auto px-6 py-8 flex flex-wrap gap-6 font-bold text-[#c8201a] underline underline-offset-4">
+      <nav aria-label="Explore the studio" className="max-w-6xl mx-auto px-6 py-8 flex flex-wrap gap-6 font-bold text-[#8f1d22] underline underline-offset-4">
         <Link href="/work">What we have built</Link>
         <Link href="/montana">Our home in Northwest Montana</Link>
         <Link href="/for">Industries we build for</Link>
@@ -144,14 +144,14 @@ export default function NationwidePage() {
 
       <section>
         <div className="max-w-4xl mx-auto px-6 pb-16 md:pb-24">
-          <p className="font-sans text-[11px] uppercase tracking-[0.22em] font-bold text-[#c8201a]">Straight Answers</p>
+          <p className="font-sans text-[11px] uppercase tracking-[0.22em] font-bold text-[#8f1d22]">Straight Answers</p>
           <h2 className="mt-3 font-display text-3xl md:text-4xl leading-[1.05] tracking-[-0.03em]">Questions from outside Montana.</h2>
           <div className="mt-8 space-y-4">
             {FAQ.map((f) => (
-              <details key={f.q} className="group border-2 border-[#0d0d0d] bg-white p-5 shadow-[4px_4px_0_0_#0d0d0d]">
+              <details key={f.q} className="group border-2 border-[#14110c] bg-white p-5 shadow-[4px_4px_0_0_#14110c]">
                 <summary className="cursor-pointer list-none font-sans font-bold text-[15px] flex items-start justify-between gap-4">
                   {f.q}
-                  <span aria-hidden="true" className="text-[#c8201a] group-open:rotate-45 transition-transform">+</span>
+                  <span aria-hidden="true" className="text-[#8f1d22] group-open:rotate-45 transition-transform">+</span>
                 </summary>
                 <p className="mt-3 font-body text-sm text-[#3d382e] leading-relaxed">{f.a}</p>
               </details>
