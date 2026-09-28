@@ -15,7 +15,7 @@
    follow without a per-file edit, then by evening out case, weight and
    tracking on headings. */
 
-html:has([data-riviera-page]) {
+html.riv {
   --font-display: var(--font-riviera), 'Unbounded', system-ui, sans-serif;
   --font-body: var(--font-caps), 'Figtree', system-ui, sans-serif;
   --riv-sea: #0b3b44;
@@ -34,7 +34,7 @@ html:has([data-riviera-page]) {
 
 /* Warm sand under every public page, with the faintest grain, painted once
    as a background and never over the type. */
-html:has([data-riviera-page]) body {
+html.riv body {
   background-color: #fbf5ea;
   background-image:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .6 0 0 0 0 .5 0 0 0 0 .35 0 0 0 .22 -.08'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
@@ -42,9 +42,9 @@ html:has([data-riviera-page]) body {
 }
 
 /* ---------- Headings: the masthead ---------- */
-html:has([data-riviera-page]) main :is(h1, h2):not(#studio-heading, .sr-only),
-html:has([data-riviera-page]) main :is(h3, h4, h5, h6, dt, strong, span, div, a, button, li, label, figcaption, summary).font-display,
-html:has([data-riviera-page]) main :is(h3, h4).font-serif {
+html.riv main :is(h1, h2):not(#studio-heading, .sr-only),
+html.riv main :is(h3, h4, h5, h6, dt, strong, span, div, a, button, li, label, figcaption, summary).font-display,
+html.riv main :is(h3, h4).font-serif {
   font-family: var(--font-display);
   font-weight: 700;
   font-style: normal;
@@ -52,24 +52,24 @@ html:has([data-riviera-page]) main :is(h3, h4).font-serif {
   text-transform: none;
   font-synthesis: none;
 }
-html:has([data-riviera-page]) main :is(h1, h2):not(#studio-heading, .sr-only) {
+html.riv main :is(h1, h2):not(#studio-heading, .sr-only) {
   line-height: 1.06;
 }
-html:has([data-riviera-page]) main h1:not(#studio-heading) {
+html.riv main h1:not(#studio-heading) {
   letter-spacing: -.035em;
   text-wrap: balance;
 }
 /* Card titles run to three lines on a phone; they get a little more air. */
-html:has([data-riviera-page]) main h3:not(.sr-only),
-html:has([data-riviera-page]) main :is(article, li, a) h2 {
+html.riv main h3:not(.sr-only),
+html.riv main :is(article, li, a) h2 {
   font-weight: 600;
   line-height: 1.14;
   letter-spacing: -.02em;
 }
 /* Pull quotes and display paragraphs read in the italic: a paragraph should
    still read like one. */
-html:has([data-riviera-page]) main :is(p, blockquote, q, figcaption):is(.font-display, .font-serif),
-html:has([data-riviera-page]) main :is(p, blockquote, q, figcaption) :is(p, span, div).font-display {
+html.riv main :is(p, blockquote, q, figcaption):is(.font-display, .font-serif),
+html.riv main :is(p, blockquote, q, figcaption) :is(p, span, div).font-display {
   font-family: var(--font-caps), 'Figtree', sans-serif;
   font-weight: 500;
   font-style: italic;
@@ -77,12 +77,12 @@ html:has([data-riviera-page]) main :is(p, blockquote, q, figcaption) :is(p, span
   letter-spacing: 0;
   line-height: 1.4;
 }
-html:has([data-riviera-page]) main :is(blockquote, blockquote p, q) {
+html.riv main :is(blockquote, blockquote p, q) {
   font-synthesis: none;
 }
 
 /* ---------- The accent word: the italic, with a wave drawn under it ---------- */
-html:has([data-riviera-page]) main :is(h1, h2, h3, h4, .font-display):not(#studio-heading) :is(em, i, .italic) {
+html.riv main :is(h1, h2, h3, h4, .font-display):not(#studio-heading) :is(em, i, .italic) {
   font-family: var(--font-display);
   font-weight: 400;
   font-style: normal;
@@ -100,18 +100,18 @@ html:has([data-riviera-page]) main :is(h1, h2, h3, h4, .font-display):not(#studi
 }
 /* On deep sea or lagoon: Tiffany letters, a mustard wave.
    The :not(#studio-heading) matches the base rule's weight, so the ground wins. */
-html:has([data-riviera-page]) main :is([class*='bg-[#0b3b44]'], [class*='bg-[#0B3B44]'], [class*='bg-[#0e5f63]'], [class*='bg-[#0a7c78]'], [class*='bg-[#ff6f59]'], [data-ground='ink'], [data-ground='emerald'], [data-ground='red'], [data-ground='sea']) :is(h1, h2, h3, h4, .font-display):not(#studio-heading) :is(em, i, .italic) {
+html.riv main :is([class*='bg-[#0b3b44]'], [class*='bg-[#0B3B44]'], [class*='bg-[#0e5f63]'], [class*='bg-[#0a7c78]'], [class*='bg-[#ff6f59]'], [data-ground='ink'], [data-ground='emerald'], [data-ground='red'], [data-ground='sea']) :is(h1, h2, h3, h4, .font-display):not(#studio-heading) :is(em, i, .italic) {
   color: var(--riv-tiffany);
   background-image: var(--riv-wave-gold);
 }
 /* On mustard or Tiffany: sea letters, a sea wave. */
-html:has([data-riviera-page]) main :is([class*='bg-[#f5b700]'], [class*='bg-[#F5B700]'], [class*='bg-[#81d8d0]'], [data-ground='yellow'], [data-ground='gold'], [data-ground='tiffany']) :is(h1, h2, h3, h4, .font-display):not(#studio-heading) :is(em, i, .italic) {
+html.riv main :is([class*='bg-[#f5b700]'], [class*='bg-[#F5B700]'], [class*='bg-[#81d8d0]'], [data-ground='yellow'], [data-ground='gold'], [data-ground='tiffany']) :is(h1, h2, h3, h4, .font-display):not(#studio-heading) :is(em, i, .italic) {
   color: var(--riv-sea);
   background-image: var(--riv-wave-sea);
 }
 
 /* ---------- Kickers: tracked capitals after a little sun ---------- */
-html:has([data-riviera-page]) :is(main, footer) .font-mono.uppercase:not(input, textarea, select, code, pre, kbd, samp, td, th) {
+html.riv :is(main, footer) .font-mono.uppercase:not(input, textarea, select, code, pre, kbd, samp, td, th) {
   font-family: var(--font-caps), 'Figtree', sans-serif;
   font-weight: 600;
   font-size: 12px;
@@ -119,7 +119,7 @@ html:has([data-riviera-page]) :is(main, footer) .font-mono.uppercase:not(input, 
   letter-spacing: .2em;
   font-synthesis: none;
 }
-html:has([data-riviera-page]) main :is(p, span, div).font-mono.uppercase:has(+ :is(h1, h2, h3)) {
+html.riv main :is(p, span, div).font-mono.uppercase:has(+ :is(h1, h2, h3)) {
   display: inline-flex;
   align-items: center;
   gap: .8em;
@@ -130,7 +130,7 @@ html:has([data-riviera-page]) main :is(p, span, div).font-mono.uppercase:has(+ :
   box-shadow: none;
   transform: none;
 }
-html:has([data-riviera-page]) main :is(p, span, div).font-mono.uppercase:has(+ :is(h1, h2, h3))::before {
+html.riv main :is(p, span, div).font-mono.uppercase:has(+ :is(h1, h2, h3))::before {
   content: '';
   flex: none;
   width: .7em;
@@ -139,7 +139,7 @@ html:has([data-riviera-page]) main :is(p, span, div).font-mono.uppercase:has(+ :
   background: var(--riv-mustard);
   box-shadow: 0 0 0 3px #f5b70033;
 }
-html:has([data-riviera-page]) main :is(p, span, div).font-mono.uppercase:has(+ :is(h1, h2, h3))::after {
+html.riv main :is(p, span, div).font-mono.uppercase:has(+ :is(h1, h2, h3))::after {
   content: '';
   flex: none;
   width: 34px;
@@ -149,26 +149,26 @@ html:has([data-riviera-page]) main :is(p, span, div).font-mono.uppercase:has(+ :
 
 /* ---------- Phones ---------- */
 @media (max-width: 760px) {
-  html:has([data-riviera-page]) main :is(h1, h2):not(#studio-heading) {
+  html.riv main :is(h1, h2):not(#studio-heading) {
     overflow-wrap: break-word;
     letter-spacing: -.02em;
   }
-  html:has([data-riviera-page]) :is(main, footer) .font-mono.uppercase:not(input, textarea, select, code, pre, kbd, samp, td, th) {
+  html.riv :is(main, footer) .font-mono.uppercase:not(input, textarea, select, code, pre, kbd, samp, td, th) {
     font-size: 11.5px;
     letter-spacing: .16em;
   }
 }
 
 /* ---------- Shared chrome: nav and footer ---------- */
-html:has([data-riviera-page]) nav[data-studio-nav] > div > div a,
-html:has([data-riviera-page]) nav[data-studio-nav] a[href='/book'] {
+html.riv nav[data-studio-nav] > div > div a,
+html.riv nav[data-studio-nav] a[href='/book'] {
   font-family: var(--font-caps), 'Figtree', sans-serif;
   font-weight: 600;
   font-size: 13px;
   letter-spacing: .14em;
   font-synthesis: none;
 }
-html:has([data-riviera-page]) nav[data-studio-nav] > div > a > span {
+html.riv nav[data-studio-nav] > div > a > span {
   font-family: var(--font-riviera), 'Unbounded', system-ui, sans-serif;
   font-weight: 700;
   font-size: 17px;
@@ -176,7 +176,7 @@ html:has([data-riviera-page]) nav[data-studio-nav] > div > a > span {
   text-transform: none;
   font-synthesis: none;
 }
-html:has([data-riviera-page]) .studio-footer-brand {
+html.riv .studio-footer-brand {
   font-family: var(--font-riviera), 'Unbounded', system-ui, sans-serif;
   font-weight: 700;
   text-transform: none;
@@ -184,7 +184,7 @@ html:has([data-riviera-page]) .studio-footer-brand {
   line-height: 1.02;
   font-synthesis: none;
 }
-html:has([data-riviera-page]) .studio-footer-brand em {
+html.riv .studio-footer-brand em {
   display: inline-block;
   font-family: var(--font-riviera), 'Unbounded', system-ui, sans-serif;
   font-style: normal;
@@ -193,24 +193,24 @@ html:has([data-riviera-page]) .studio-footer-brand em {
   color: #81d8d0;
   margin-top: .02em;
 }
-html:has([data-riviera-page]) .studio-footer-links h2 {
+html.riv .studio-footer-links h2 {
   font-family: var(--font-caps), 'Figtree', sans-serif;
   font-weight: 600;
   font-size: 12.5px;
   letter-spacing: .2em;
   font-synthesis: none;
 }
-html:has([data-riviera-page]) .studio-footer-seed p {
+html.riv .studio-footer-seed p {
   font-family: var(--font-caps), sans-serif;
   font-style: italic;
 }
 @media (max-width: 760px) {
-  html:has([data-riviera-page]) .studio-footer-links h2 { font-size: 12px; }
-  html:has([data-riviera-page]) nav[data-studio-nav] > div > a > span { font-size: 14px; white-space: nowrap; }
+  html.riv .studio-footer-links h2 { font-size: 12px; }
+  html.riv nav[data-studio-nav] > div > a > span { font-size: 14px; white-space: nowrap; }
 }
 
 /* The mega menu's section titles and cards. */
-html:has([data-riviera-page]) #site-mega-menu .font-display {
+html.riv #site-mega-menu .font-display {
   font-family: var(--font-display);
   font-weight: 700;
   font-style: normal;
@@ -218,7 +218,7 @@ html:has([data-riviera-page]) #site-mega-menu .font-display {
   text-transform: none;
   font-synthesis: none;
 }
-html:has([data-riviera-page]) #site-mega-menu .font-mono.uppercase {
+html.riv #site-mega-menu .font-mono.uppercase {
   font-family: var(--font-caps), 'Figtree', sans-serif;
   font-weight: 600;
   font-size: 12px;
@@ -229,7 +229,7 @@ html:has([data-riviera-page]) #site-mega-menu .font-mono.uppercase {
    Any figure holding one of the studio's paintings (public/art/riviera) hangs
    level, with soft rounded corners and a white postcard border. The page
    hero's own frame is left alone. */
-html:has([data-riviera-page]) main figure:has(img:is([src*='/art/riviera/'], [src*='art%2Friviera%2F'])):not([class*='poster']) {
+html.riv main figure:has(img:is([src*='/art/riviera/'], [src*='art%2Friviera%2F'])):not([class*='poster']) {
   transform: none;
   rotate: none;
   border: 0;
@@ -238,11 +238,11 @@ html:has([data-riviera-page]) main figure:has(img:is([src*='/art/riviera/'], [sr
   padding: 10px;
   box-shadow: 0 30px 60px -30px #0b3b4466, 0 0 0 1px #0b3b4414;
 }
-html:has([data-riviera-page]) main figure:has(img:is([src*='/art/riviera/'], [src*='art%2Friviera%2F'])):not([class*='poster']) img {
+html.riv main figure:has(img:is([src*='/art/riviera/'], [src*='art%2Friviera%2F'])):not([class*='poster']) img {
   border: 0;
   border-radius: 14px;
 }
-html:has([data-riviera-page]) main figure:has(img:is([src*='/art/riviera/'], [src*='art%2Friviera%2F'])):not([class*='poster']) figcaption {
+html.riv main figure:has(img:is([src*='/art/riviera/'], [src*='art%2Friviera%2F'])):not([class*='poster']) figcaption {
   font-family: var(--font-caps), sans-serif;
   font-style: italic;
   font-weight: 400;

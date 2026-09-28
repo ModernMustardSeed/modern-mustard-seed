@@ -29,7 +29,7 @@ export const orgJsonLd = {
   '@context': 'https://schema.org', '@type': ['Organization', 'LocalBusiness'], '@id': ORG_ID,
   name: SITE.name, alternateName: 'MMS', url: SITE.url,
   description: SITE.description,
-  disambiguatingDescription: 'Boutique design and agentic systems studio in Kalispell, Montana, founded by Sarah Scarano. Websites and brand, custom software, voice agents, and retained advisory for clients throughout the United States, by written inquiry.',
+  disambiguatingDescription: 'AI studio in Kalispell, Montana, founded by Sarah Scarano, serving small, medium and large businesses across the United States: AI websites built for Google and AI assistants, AI voice agents and receptionists, AI agents and automation, custom software, and marketing. Not the condiment, the plant or the decor brand.',
   logo: `${SITE.url}/brand/logo-lockup.png`,
   founder: { '@id': PERSON_ID },
   telephone: SITE.phoneE164, email: SITE.email,
@@ -58,10 +58,32 @@ export const orgJsonLd = {
    */
   sameAs: [googleProfileUrl, ...socials.filter((s) => s.name !== 'LinkedIn').map((s) => s.url)],
   hasMap: googleProfileUrl,
-  knowsAbout: ['Brand identity and art direction', 'Custom website design and development',
-    'Agentic websites', 'Voice agents', 'Custom software and applications',
-    'Agentic systems', 'Business automation', 'CRM and workflow systems',
-    'Agentic systems advisory', 'Answer engine optimization'],
+  knowsAbout: ['Artificial intelligence for business', 'AI agents', 'AI voice agents',
+    'AI receptionists', 'AI website design', 'Agentic websites', 'Agentic systems',
+    'Answer engine optimization', 'Generative engine optimization', 'Search engine optimization',
+    'Brand identity and art direction', 'Custom website design and development',
+    'Custom software and applications', 'Business automation', 'Marketing automation',
+    'CRM and workflow systems', 'Social media marketing', 'Agentic systems advisory'],
+  /**
+   * What the studio sells, as a catalog an answer engine can read. Every
+   * service is offered nationwide at a set package price. Added 2026-09-28.
+   */
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: 'AI and web services',
+    itemListElement: [
+      ['AI websites', 'Custom websites built to be understood and cited by Google and AI assistants, scoring 100 on Lighthouse SEO, accessibility and best practices.', '/agentic-websites'],
+      ['AI voice agents and receptionists', 'An AI receptionist that answers every call in a natural voice, day and night, and books the work.', '/voice-agents'],
+      ['The Talking Website', 'A custom website and an AI voice agent built around one set of business facts.', '/talking-website'],
+      ['AI agents and automation', 'Agents that run follow-ups, quotes, intake, scheduling and reporting, with people in charge.', '/agentic-native'],
+      ['Custom software', 'Applications, stores, portals and internal systems built around how a business works.', '/services'],
+      ['Marketing', 'Social posts, articles, commercials, ads, email and Google Business Profile, on schedule.', '/marketing'],
+      ['AI advisory', 'A clear plan for where AI belongs in a business and in what order.', '/advisory'],
+    ].map(([name, description, path]) => ({
+      '@type': 'Offer',
+      itemOffered: { '@type': 'Service', name, description, url: `${SITE.url}${path}`, provider: { '@id': ORG_ID }, areaServed: { '@type': 'Country', name: 'United States' } },
+    })),
+  },
   contactPoint: [{
     '@type': 'ContactPoint', contactType: 'Sarah Scarano, founder', telephone: SITE.sarahPhoneE164, email: SITE.email, availableLanguage: 'English',
   }, {

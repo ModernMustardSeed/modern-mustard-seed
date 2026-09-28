@@ -1,43 +1,29 @@
 'use client';
 
+import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
+import { isRivieraPage } from '@/lib/riviera-scope';
+
+export { isRivieraPage };
 
 /**
  * Marks a page as part of the one Riviera site. app/riviera-type.css letters
  * every public page's headings, kickers and emphasis in the house hands
- * (Bodoni Moda display and italic, Instrument Sans for labels and reading), but
- * only when this marker is in the document, so the app shells (admin, portal,
- * the client desk, the office), program HQs, built demos, the booths of other
- * houses, private documents and the few pages that carry their own world keep
- * their own type. It renders on the server with the path, so there is no flash.
+ * (Unbounded display, Figtree labels and reading), but only while <html>
+ * carries the `riv` class, so the app shells (admin, portal, the client desk,
+ * the office), program HQs, built demos, the booths of other houses, private
+ * documents and the few pages that carry their own world keep their own type.
+ *
+ * The class is set by rivieraHeadScript() (lib/riviera-scope) before the first paint, so there is
+ * no flash, and this component keeps it right across client navigations. A
+ * plain class replaced html:has([data-riviera-page]) on 2026-09-28: every
+ * :has() rule made the browser re-check the whole page on each DOM change,
+ * about a second of style work on a phone.
  */
-const OFF_PREFIX = [
-  '/admin',
-  '/portal',
-  '/cc',
-  '/office',
-  '/demo/',
-  '/world',
-  '/switchboard/live',
-  '/sarah',
-  '/hatchery/',
-  '/voice-agents/build/demo/',
-  '/proposal/',
-  '/scaling-roadmap/r/',
-  '/audit/',
-  '/welcome/',
-];
-const OFF_EXACT = ['/super-nomad', '/partners/playbook'];
-
-export function isRivieraPage(path: string): boolean {
-  if (OFF_EXACT.includes(path)) return false;
-  if (path.endsWith('/hq')) return false;
-  // Entries ending in a slash only close their sub-pages (/audit stays on the Riviera, /audit/[id] does not).
-  return !OFF_PREFIX.some((p) => path.startsWith(p));
-}
-
 export default function RivieraScope() {
   const path = usePathname() || '/';
-  if (!isRivieraPage(path)) return null;
-  return <span data-riviera-page="" hidden />;
+  useEffect(() => {
+    document.documentElement.classList.toggle('riv', isRivieraPage(path));
+  }, [path]);
+  return null;
 }

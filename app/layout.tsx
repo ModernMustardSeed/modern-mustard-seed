@@ -20,9 +20,12 @@ import './globals.css';
 import './studio-chrome.css';
 import './riviera-type.css';
 import RivieraScope from '@/components/pop/RivieraScope';
+import { rivieraHeadScript } from '@/lib/riviera-scope';
 
-const bodyFont = DM_Sans({ subsets: ['latin'], style: ['normal'], display: 'optional', variable: '--font-body' });
-const displayFont = Playfair_Display({ subsets: ['latin'], style: ['normal', 'italic'], display: 'optional', variable: '--font-display' });
+// DM Sans and Playfair now set only the admin and portal (public pages wear
+// Unbounded and Figtree), so they no longer preload and compete with the hero.
+const bodyFont = DM_Sans({ subsets: ['latin'], style: ['normal'], display: 'optional', preload: false, variable: '--font-body' });
+const displayFont = Playfair_Display({ subsets: ['latin'], style: ['normal', 'italic'], display: 'optional', preload: false, variable: '--font-display' });
 const serifFont = Cormorant_Garamond({ subsets: ['latin'], weight: ['300', '400', '500', '600'], style: ['normal', 'italic'], display: 'swap', preload: false, variable: '--font-serif' });
 const monoFont = JetBrains_Mono({ subsets: ['latin'], weight: ['400', '500', '700'], display: 'swap', preload: false, variable: '--font-mono' });
 const condensedFont = Oswald({ subsets: ['latin'], weight: ['400', '500', '600', '700'], display: 'swap', preload: false, variable: '--font-oswald' });
@@ -31,7 +34,7 @@ const condensedFont = Oswald({ subsets: ['latin'], weight: ['400', '500', '600',
 // the beach; the accent word is Unbounded in a lighter weight. Figtree sets
 // labels, reading type and the italics. Sarah picked the pairing ("c").
 const rivieraFont = Unbounded({ subsets: ['latin'], display: 'swap', variable: '--font-riviera' });
-const capsFont = Figtree({ subsets: ['latin'], style: ['normal', 'italic'], display: 'swap', variable: '--font-caps' });
+const capsFont = Figtree({ subsets: ['latin'], style: ['normal', 'italic'], display: 'swap', preload: false, variable: '--font-caps' });
 
 export const metadata: Metadata = buildMetadata();
 
@@ -45,6 +48,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning className={`${bodyFont.variable} ${displayFont.variable} ${serifFont.variable} ${monoFont.variable} ${condensedFont.variable} ${rivieraFont.variable} ${capsFont.variable}`}>
       <head>
+        {/* Sets html.riv before the first paint, so the Riviera type never flashes. */}
+        <script dangerouslySetInnerHTML={{ __html: rivieraHeadScript() }} />
         <link rel="manifest" href="/site.webmanifest" />
         <JsonLd data={siteGraphJsonLd} />
         {/* Entrance animations across the site start hidden and are revealed by

@@ -2,7 +2,7 @@ import Link from '@/components/AttributionLink';
 import { buildMetadata } from '@/lib/seo';
 import { JsonLd, breadcrumbJsonLd, faqJsonLd, serviceJsonLd, webPageJsonLd } from '@/lib/jsonld';
 import { DEMO_PRODUCTS, formatUsd } from '@/lib/demo-order';
-import { DEMO_LINE } from '@/data/trade-pages';
+import { DEMO_LINE, liveTradePages } from '@/data/trade-pages';
 import PopPageHero, { pop } from '@/components/pop/PopPageHero';
 
 /**
@@ -89,7 +89,7 @@ const faq = [
   },
   {
     q: 'Do you only work in Montana?',
-    a: 'We are based in Kalispell, Montana, and build for businesses nationwide.',
+    a: 'No. We are based in Kalispell, Montana, and build for small, medium and large businesses in every state, remotely. The first conversation, the build and the handoff all run online.',
   },
 ];
 
@@ -132,7 +132,7 @@ export default function AIPage() {
           {builds.map((b) => (
             <li key={b.title}>
               <Link href={b.href} className="group flex h-full flex-col rounded-3xl bg-white p-7 shadow-[0_24px_50px_-34px_rgba(11,59,68,0.5)] ring-1 ring-[#0b3b44]/10 transition hover:-translate-y-1 hover:ring-[#81d8d0]">
-                <span className="self-start rounded-full bg-[#d8f3f0] px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-[#0a7c78]">{b.tag}</span>
+                <span className="self-start rounded-full bg-[#d8f3f0] px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-[#0b3b44]">{b.tag}</span>
                 <h3 className="font-display text-2xl mt-4">{b.title}</h3>
                 <p className="mt-3 leading-relaxed text-[#2c4c52] flex-1">{b.text}</p>
                 <span className="mt-5 font-semibold text-[#0b3b44] group-hover:text-[#0a7c78]">See how it works <span aria-hidden="true">→</span></span>
@@ -140,6 +140,21 @@ export default function AIPage() {
             </li>
           ))}
         </ul>
+      </section>
+
+      <section className="max-w-6xl mx-auto px-6 pb-16" aria-labelledby="industries-heading">
+        <p className="font-mono text-xs font-bold uppercase text-[#0a7c78]">AI for your industry</p>
+        <h2 id="industries-heading" className="font-display text-4xl md:text-5xl mt-3 max-w-3xl">Every trade, every size, <em>every state.</em></h2>
+        <p className="mt-5 max-w-2xl text-lg leading-relaxed">We build for small shops, growing companies and large operations across the United States. Pick your industry to see what an AI receptionist and an AI website do for a business like yours.</p>
+        <ul className="mt-8 flex flex-wrap gap-2.5">
+          {liveTradePages().map((t) => (
+            <li key={t.slug}><Link href={`/voice-agents/${t.slug}`} className="inline-flex min-h-11 items-center rounded-full bg-white px-4 py-2 text-[15px] font-semibold text-[#0b3b44] ring-1 ring-[#81d8d0] hover:bg-[#d8f3f0]">AI for {/^[A-Z]{2}/.test(t.forWord) ? t.forWord : t.forWord.charAt(0).toLowerCase() + t.forWord.slice(1)}</Link></li>
+          ))}
+          {[['/for/contractors', 'builders and contractors'], ['/for/health', 'health practices'], ['/for/restaurants', 'restaurants'], ['/for/weddings', 'wedding venues'], ['/for', 'every other industry']].map(([href, label]) => (
+            <li key={href}><Link href={href} className="inline-flex min-h-11 items-center rounded-full bg-[#0b3b44] px-4 py-2 text-[15px] font-semibold text-white hover:bg-[#0e4b56]">AI for {label}</Link></li>
+          ))}
+        </ul>
+        <p className="mt-6 text-sm text-[#4c6266]">Based in Kalispell, Montana. Working with businesses nationwide: <Link href="/nationwide" className="font-semibold text-[#0a7c78] underline decoration-2 underline-offset-4">see how we work remotely</Link>.</p>
       </section>
 
       <section className="bg-[#0e5f63] text-[#fbf5ea] py-16" data-ground="sea" aria-labelledby="agentic-heading">

@@ -7,11 +7,13 @@
 
 .art{position:absolute;inset:0;z-index:-4}
 .art img{width:100%;height:100%;object-fit:cover;object-position:68% 50%;animation:settle 2.6s cubic-bezier(.16,1,.3,1) both}
-@keyframes settle{from{opacity:0;transform:scale(1.06)}to{opacity:1;transform:scale(1)}}
+/* Motion only, never opacity: the painting and the headline are the page's
+   largest paint, and an element that starts invisible does not count until it
+   fades in (Lighthouse then picked the cookie banner, 2026-09-28). */
+@keyframes settle{from{transform:scale(1.06)}to{transform:scale(1)}}
 
-/* The sun over the open sea, breathing slowly. */
-.glare{position:absolute;left:-12vw;top:-18vw;width:56vw;aspect-ratio:1;z-index:-3;border-radius:50%;background:radial-gradient(circle,#fff8dccc 0,#fff4c466 22%,#fff4c400 60%);mix-blend-mode:screen;animation:breathe 9s ease-in-out infinite alternate;pointer-events:none}
-@keyframes breathe{from{opacity:.65;transform:scale(.94)}to{opacity:1;transform:scale(1.05)}}
+/* The sun over the open sea. Static: a blended layer that animates repaints the hero every frame. */
+.glare{position:absolute;left:-12vw;top:-18vw;width:56vw;aspect-ratio:1;z-index:-3;border-radius:50%;background:radial-gradient(circle,#fff8dccc 0,#fff4c466 22%,#fff4c400 60%);mix-blend-mode:screen;pointer-events:none}
 
 /* Sand haze over the open sea so the sea-ink words read. */
 .scrim{position:absolute;inset:0;z-index:-2;background:linear-gradient(90deg,#fbf5eaf2 0,#fbf5eae0 30%,#fbf5ea99 46%,#fbf5ea00 64%)}
@@ -28,8 +30,8 @@
 /* The headline says what we build, the first thing anyone reads. Each word
    rolls in on its own delay, a wave passing along the line. */
 .name{margin-top:18px!important;font-family:var(--font-riviera),system-ui,sans-serif;font-weight:700;font-size:clamp(38px,4.1vw,72px);line-height:1.05;letter-spacing:-.04em;font-optical-sizing:auto;color:var(--sea);text-wrap:balance}
-.word{display:inline-block;white-space:pre;animation:roll 1s cubic-bezier(.2,.9,.25,1.15) both;animation-delay:calc(.2s + var(--i) * 70ms)}
-@keyframes roll{0%{opacity:0;transform:translateY(.5em) rotate(4deg);filter:blur(6px)}60%{opacity:1;filter:blur(0)}100%{opacity:1;transform:none;filter:none}}
+.word{display:inline-block;white-space:pre;animation:roll .9s cubic-bezier(.2,.9,.25,1.15) both;animation-delay:calc(var(--i) * 60ms)}
+@keyframes roll{0%{transform:translateY(.35em) rotate(3deg)}100%{transform:none}}
 .name em{font-style:normal;font-weight:400;letter-spacing:-.035em;color:var(--lagoon)}
 
 .line{margin-top:16px!important;font-family:var(--font-riviera),system-ui,sans-serif;font-weight:600;font-size:clamp(19px,1.7vw,28px);line-height:1.08;letter-spacing:-.02em;color:var(--sea)}

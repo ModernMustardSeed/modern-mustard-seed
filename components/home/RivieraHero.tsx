@@ -1,3 +1,4 @@
+import { preload } from 'react-dom';
 import Link from '@/components/AttributionLink';
 import { Marquee } from './HeroMotion';
 import s from './RivieraHero.module.css';
@@ -28,11 +29,13 @@ function Rolling({ text, from = 0 }: { text: string; from?: number }) {
 }
 
 export default function RivieraHero() {
+  // Start the hero painting from the top of <head>, before the stylesheets: it is the page's largest paint.
+  preload(SCENE + '-960.avif', { as: 'image', type: 'image/avif', fetchPriority: 'high', imageSrcSet: SCENE + '-480.avif 480w, ' + SCENE + '-640.avif 640w, ' + SCENE + '-960.avif 960w, ' + SCENE + '-1600.avif 1600w', imageSizes: '100vw' });
   return <>
     <section className={s.hero} aria-labelledby="studio-heading">
       <picture className={s.art}>
-        <source type="image/avif" srcSet={SCENE + '-960.avif 960w, ' + SCENE + '-1600.avif 1600w'} sizes="100vw" />
-        <source type="image/webp" srcSet={SCENE + '-960.webp 960w, ' + SCENE + '-1600.webp 1600w'} sizes="100vw" />
+        <source type="image/avif" srcSet={SCENE + '-480.avif 480w, ' + SCENE + '-640.avif 640w, ' + SCENE + '-960.avif 960w, ' + SCENE + '-1600.avif 1600w'} sizes="100vw" />
+        <source type="image/webp" srcSet={SCENE + '-480.webp 480w, ' + SCENE + '-640.webp 640w, ' + SCENE + '-960.webp 960w, ' + SCENE + '-1600.webp 1600w'} sizes="100vw" />
         <img src={SCENE + '-1600.webp'} alt="Painting: Mr. Mustard in sunglasses and a light-blue linen shirt works on his phone from a lounger under a Tiffany-blue striped umbrella on a French Riviera beach. Mrs. Mustard in a straw sun hat lounges beside him, the kids splash and build a sandcastle at the water's edge, the seed dog chases a wave, and a white yacht sits offshore below a whitewashed village." width={1600} height={1067} decoding="async" fetchPriority="high" />
       </picture>
       <div className={s.glare} aria-hidden="true" />
