@@ -36,6 +36,31 @@ export type Film = {
 };
 
 export const FILMS = {
+  /** Be the Answer, the AI-visibility motion ad (campaign 36). */
+  beTheAnswer: {
+    mp4: '/ads/be-the-answer/be-the-answer-16x9.mp4',
+    poster: '/ads/be-the-answer/preview/poster-16x9-800.webp',
+    shipped: true,
+    runtime: '34 sec',
+  },
+  beTheAnswerTall: {
+    mp4: '/ads/be-the-answer/be-the-answer-9x16.mp4',
+    poster: '/ads/be-the-answer/preview/poster-9x16-800.webp',
+    shipped: true,
+    runtime: '34 sec',
+  },
+  beTheAnswerSquare: {
+    mp4: '/ads/be-the-answer/be-the-answer-1x1.mp4',
+    poster: '/ads/be-the-answer/preview/poster-1x1-800.webp',
+    shipped: true,
+    runtime: '34 sec',
+  },
+  beTheAnswerShort: {
+    mp4: '/ads/be-the-answer/be-the-answer-9x16-20s.mp4',
+    poster: '/ads/be-the-answer/preview/poster-9x16-800.webp',
+    shipped: true,
+    runtime: '20 sec',
+  },
   /** The Riviera commercial, in the admin ad playbook (campaign 35). */
   riviera: {
     mp4: '/ads/riviera/riviera-16x9.mp4',
