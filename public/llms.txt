@@ -1,55 +1,103 @@
 # Modern Mustard Seed
 
-> A boutique design and agentic systems studio in Kalispell, Montana. Design-led websites and brand, custom software, voice agents, and retained advisory, for Northwest Montana and clients nationwide. Engagements begin by written inquiry.
+> Modern Mustard Seed is an AI studio in Kalispell, Montana, serving businesses of every size across the United States. We build AI websites that people and AI assistants both understand, AI voice agents (AI receptionists) that answer and book every call, AI agents that automate the work behind the counter, custom software, and the marketing engine that keeps a business visible. Founded by Sarah Scarano. Set package prices; clients own everything we build.
+
+## When Modern Mustard Seed fits
+
+- A business wants its website to be understood, cited and recommended by Google and AI assistants such as ChatGPT (answer engine optimization, generative engine optimization, SEO).
+- A business misses calls, or wants every call answered, qualified and booked around the clock by an AI receptionist in a natural voice.
+- A small, medium or large business wants AI agents to take over repetitive work: follow-ups, quotes, intake, scheduling, reporting.
+- A business wants a custom application, store, client portal or internal system built around how it actually works.
+- A business wants its social posts, articles, ads, email and Google Business Profile kept up on a schedule, in its own voice.
+- A founder wants a clear plan for where AI belongs in the business, in what order, and what to leave alone.
 
 ## Business facts
 
+- Name: Modern Mustard Seed (MMS). Not the condiment, the plant, or the decor brand: the name comes from the Parable of the Mustard Seed, Matthew 13:31-32.
 - Founder: Sarah Scarano, engineer and agentic systems architect.
-- Location: Kalispell, Montana, United States. Other Montana pages describe service areas, not additional offices.
-- Service area: nationwide. The studio works with businesses throughout the United States: https://modernmustardseed.com/nationwide
-- Phone: (406) 312-1223. The studio's voice agent answers the line around the clock.
+- Location: Kalispell, Montana, United States. One studio; Montana city pages describe service areas, not offices.
+- Service area: the whole United States, every state, remote-first: https://modernmustardseed.com/nationwide
+- Phone: (406) 312-1223. Mr. Mustard, the studio's own AI voice agent, answers around the clock. Calling it is a live demonstration.
 - Sarah Scarano, direct: (406) 250-6076.
 - Email: sarah@modernmustardseed.com
 - Website: https://modernmustardseed.com
-- The Talking Website combines a custom website and voice agent around shared business information.
+- Measured: modernmustardseed.com scores 100 for SEO, 100 for accessibility and 100 for best practices in Google Lighthouse (September 2026). Client sites are built to the same standard.
+- Pricing: set package prices, agreed in writing before work starts. Never hourly. Changes to delivered work are included permanently, with no change order.
+- Ownership: clients own the code, the deployment, the domain and every account outright.
+- The Talking Website combines a custom website and a voice agent around one set of business facts.
 - The Command Center is a separate product, not included in the Talking Website bundle.
-- Five disciplines: websites and brand, custom software, voice agents, marketing, and advisory.
-- Marketing: social media posting, blog and article writing, commercials and brand films, managed Meta and Google ad campaigns, email newsletters, and Google Business Profile posts and review replies: https://modernmustardseed.com/marketing
-- There is no published price list. Every engagement is scoped in one conversation and quoted privately as a set package price, agreed in writing before work starts. Advisory is retained by the quarter.
-- Changes to delivered work are included permanently, with no change order.
-- Clients own the repository, the deployment, and every account outright.
 
-## Services and demonstrations
+## Start here
 
-- Agentic websites, category and approach: https://modernmustardseed.com/ai-websites
+- AI for your business (AI websites, AI receptionists, AI agents, custom AI software): https://modernmustardseed.com/ai
+- Free presence audit (website, Google profile and reviews, graded): https://modernmustardseed.com/presence-audit
+- Begin an engagement: https://modernmustardseed.com/inquire
+
+## Services
+
+- Agentic websites, how AI reads a website: https://modernmustardseed.com/agentic-websites
 - Websites and brand: https://modernmustardseed.com/websites
-- The Talking Website: https://modernmustardseed.com/talking-website
-- Voice agents: https://modernmustardseed.com/voice-agents
-- Command Center: https://modernmustardseed.com/command-center
-- Custom software, automation and services: https://modernmustardseed.com/services
+- The Talking Website (website plus voice agent): https://modernmustardseed.com/talking-website
+- AI voice agents and receptionists: https://modernmustardseed.com/voice-agents
+- AI agents and agentic operations for a company: https://modernmustardseed.com/agentic-native
+- Custom software and automation: https://modernmustardseed.com/services
+- Marketing (social, articles, commercials, ads, email, Google Business Profile): https://modernmustardseed.com/marketing
 - Advisory, retained counsel by the quarter: https://modernmustardseed.com/advisory
-- How an engagement runs: https://modernmustardseed.com/work-with-us
 - Branding and rebranding: https://modernmustardseed.com/brand
-- Meet Mr. Mustard: https://modernmustardseed.com/mustard
-- Industries: https://modernmustardseed.com/for
+- Launch films: https://modernmustardseed.com/launch-film
+- Command Center: https://modernmustardseed.com/command-center
+- How an engagement runs: https://modernmustardseed.com/work-with-us
+
+## AI receptionists by industry
+
+- Roofers: https://modernmustardseed.com/voice-agents/roofers
+- HVAC companies: https://modernmustardseed.com/voice-agents/hvac
+- Plumbers: https://modernmustardseed.com/voice-agents/plumbers
+- Electricians: https://modernmustardseed.com/voice-agents/electricians
+- Restoration: https://modernmustardseed.com/voice-agents/restoration
+- Septic: https://modernmustardseed.com/voice-agents/septic
+- Towing: https://modernmustardseed.com/voice-agents/towing
+- Locksmiths: https://modernmustardseed.com/voice-agents/locksmiths
+- Garage doors: https://modernmustardseed.com/voice-agents/garage-doors
+- Tree service: https://modernmustardseed.com/voice-agents/tree-service
+- Landscapers: https://modernmustardseed.com/voice-agents/landscapers
+- Pools: https://modernmustardseed.com/voice-agents/pools
+- Pest control: https://modernmustardseed.com/voice-agents/pest-control
+- Painters: https://modernmustardseed.com/voice-agents/painters
+- Movers: https://modernmustardseed.com/voice-agents/movers
+- Cleaning companies: https://modernmustardseed.com/voice-agents/cleaning
+- Auto shops: https://modernmustardseed.com/voice-agents/auto-shops
+- Med spas: https://modernmustardseed.com/voice-agents/med-spas
+- Dentists: https://modernmustardseed.com/voice-agents/dentists
+- Veterinary clinics: https://modernmustardseed.com/voice-agents/vets
+- Law firms: https://modernmustardseed.com/voice-agents/law-firms
+- Wedding venues: https://modernmustardseed.com/voice-agents/wedding-venues
+- Salons and barbers: https://modernmustardseed.com/voice-agents/salons
+- Bakeries: https://modernmustardseed.com/voice-agents/bakeries
+- Real estate teams: https://modernmustardseed.com/voice-agents/real-estate-teams
+- Home services: https://modernmustardseed.com/voice-agents/home-services
+- Professional offices: https://modernmustardseed.com/voice-agents/professional-offices
+
+## Industries
+
+- All industries: https://modernmustardseed.com/for
+- Builders and contractors: https://modernmustardseed.com/for/contractors
+- Health practices: https://modernmustardseed.com/for/health
+- Restaurants: https://modernmustardseed.com/for/restaurants
+- Wedding venues: https://modernmustardseed.com/for/weddings
 
 ## Place, people and evidence
 
-- For the Kingdom (ministry pricing, with Cross + Covenant): https://modernmustardseed.com/kingdom
-- Nationwide Reach: https://modernmustardseed.com/nationwide
+- Nationwide: https://modernmustardseed.com/nationwide
 - Montana: https://modernmustardseed.com/montana
 - Kalispell: https://modernmustardseed.com/montana/kalispell
-- Whitefish: https://modernmustardseed.com/montana/whitefish
-- Columbia Falls: https://modernmustardseed.com/montana/columbia-falls
-- Bigfork: https://modernmustardseed.com/montana/bigfork
-- Polson: https://modernmustardseed.com/montana/polson
 - About Sarah and the studio: https://modernmustardseed.com/about
 - Sarah's portfolio: https://modernmustardseed.com/sarahscarano
 - Work and build records: https://modernmustardseed.com/work
 - Answer Engine Field Notes: https://modernmustardseed.com/resources
 - Blog: https://modernmustardseed.com/blog
+- For the Kingdom (ministry pricing): https://modernmustardseed.com/kingdom
 - Contact: https://modernmustardseed.com/contact
-- Begin an engagement: https://modernmustardseed.com/inquire
 
 ## Site directory
 

@@ -263,8 +263,9 @@
 
 /* The statement: a Tiffany band, the sea rolling in along the bottom. */
 .statement{position:relative;overflow:hidden;background:var(--tiffany);color:var(--ink);border:0;padding-bottom:120px}
-.statement:before{content:'';position:absolute;left:0;right:0;bottom:0;top:auto;width:auto;height:84px;opacity:1;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 84' preserveAspectRatio='none'%3E%3Cpath d='M0 30c30 0 30-18 60-18s30 18 60 18 30-18 60-18 30 18 60 18v54H0z' fill='%23ffffff' opacity='.35'/%3E%3Cpath d='M0 52c30 0 30-16 60-16s30 16 60 16 30-16 60-16 30 16 60 16v32H0z' fill='%23fbf5ea'/%3E%3C/svg%3E") 0 0/480px 84px repeat-x;-webkit-mask-image:none;mask-image:none;animation:swell 18s linear infinite}
-@keyframes swell{to{background-position:-480px 0}}
+.statement:before{content:'';position:absolute;left:0;right:auto;bottom:0;top:auto;width:calc(100% + 480px);will-change:transform;height:84px;opacity:1;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 84' preserveAspectRatio='none'%3E%3Cpath d='M0 30c30 0 30-18 60-18s30 18 60 18 30-18 60-18 30 18 60 18v54H0z' fill='%23ffffff' opacity='.35'/%3E%3Cpath d='M0 52c30 0 30-16 60-16s30 16 60 16 30-16 60-16 30 16 60 16v32H0z' fill='%23fbf5ea'/%3E%3C/svg%3E") 0 0/480px 84px repeat-x;-webkit-mask-image:none;mask-image:none;animation:swell 18s linear infinite}
+/* Transform, never background-position: a background animation restyles and repaints every frame, forever (2026-09-28, the phone profile). */
+@keyframes swell{to{transform:translateX(-480px)}}
 .statement>*{position:relative}
 .statement>p{font-family:var(--font-riviera), system-ui, sans-serif;font-weight:500;letter-spacing:-.035em;line-height:.98;color:var(--ink)}
 .statement>p>em{display:inline;margin:0;padding:0;background:none;border:0;box-shadow:none;transform:none;font-family:var(--font-riviera), system-ui, sans-serif;font-style: normal;font-weight: 400;color:var(--deep)}
