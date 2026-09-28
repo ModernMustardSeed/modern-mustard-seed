@@ -571,8 +571,13 @@ export async function sendRequestedAudit(
 
 /* ─────────────────────────────── the email ─────────────────────────────── */
 
+/* The Riviera palette (2026-09-28): lagoon is strong, mustard is room to grow,
+   coral needs work. The number itself stays sea so it reads in any client. */
+const SEA = '#0b3b44';
 const DOT = (score: number, unknown: boolean) =>
-  unknown ? '#8A8378' : score >= 80 ? '#1E7A3C' : score >= 60 ? '#B87503' : '#C4160B';
+  unknown ? '#9fb5b8' : score >= 80 ? '#0a7c78' : score >= 60 ? '#f5b700' : '#ff6f59';
+const EMAIL_SANS = "Figtree,'Helvetica Neue',Helvetica,Arial,sans-serif";
+const EMAIL_DISPLAY = "Unbounded,'Arial Black','Helvetica Neue',Helvetica,Arial,sans-serif";
 
 /**
  * The "it is ready" email.
@@ -588,20 +593,22 @@ export function presenceAuditReadyEmail({ request, report }: { request: AuditReq
       const color = DOT(pl.score, pl.unknown);
       const value = pl.unknown ? 'not scored' : `${pl.score} / 100 &middot; ${escape(pl.letter)}`;
       return `<tr>
-        <td style="padding:10px 0;border-bottom:1px solid #EAE3D2;font-family:Helvetica,Arial,sans-serif;font-size:15px;color:#161616">
+        <td style="padding:11px 0;border-bottom:1px solid #d8f3f0;font-family:${EMAIL_SANS};font-size:15px;color:${SEA}">
           <span style="display:inline-block;width:10px;height:10px;border-radius:5px;background:${color};margin-right:10px;vertical-align:middle"></span>${escape(pl.label)}
         </td>
-        <td align="right" style="padding:10px 0;border-bottom:1px solid #EAE3D2;font-family:Helvetica,Arial,sans-serif;font-size:15px;font-weight:700;color:${color};white-space:nowrap">${value}</td>
+        <td align="right" style="padding:11px 0;border-bottom:1px solid #d8f3f0;font-family:${EMAIL_SANS};font-size:15px;font-weight:700;color:${SEA};white-space:nowrap">${value}</td>
       </tr>`;
     })
     .join('');
 
-  const scoreCard = `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#FFF8E1" style="background:#FFF8E1;border:2px solid #161616;border-radius:14px;margin:6px 0 22px">
+  const grade = DOT(report.overall_score, false);
+  const gradeInk = report.overall_score >= 80 ? '#ffffff' : SEA;
+  const scoreCard = `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff" style="background:#ffffff;border:1px solid #d8f3f0;border-top:5px solid #81d8d0;border-radius:18px;margin:6px 0 22px">
     <tr><td style="padding:22px 22px 8px">
-      <div style="font-family:Helvetica,Arial,sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;font-weight:700;color:#C4160B">${escape(request.business_name)}</div>
-      <div style="font-family:Georgia,serif;font-size:44px;line-height:1.1;font-weight:700;color:#161616;margin-top:6px">${report.overall_score}<span style="font-size:18px;color:#8A8378"> / 100</span>
-        <span style="display:inline-block;margin-left:8px;padding:2px 10px;border:2px solid #161616;border-radius:8px;background:#F5B700;font-size:20px;vertical-align:middle">${escape(report.letter_grade)}</span></div>
-      <div style="font-family:Georgia,serif;font-style:italic;font-size:17px;line-height:1.45;color:#161616;margin-top:10px">${escape(report.headline)}</div>
+      <div style="font-family:${EMAIL_SANS};font-size:11px;letter-spacing:2px;text-transform:uppercase;font-weight:700;color:#0a7c78">${escape(request.business_name)}</div>
+      <div style="font-family:${EMAIL_DISPLAY};font-size:44px;line-height:1.1;font-weight:700;letter-spacing:-1px;color:${SEA};margin-top:6px">${report.overall_score}<span style="font-family:${EMAIL_SANS};font-size:17px;font-weight:600;letter-spacing:0;color:#5f7f84"> / 100</span>
+        <span style="display:inline-block;margin-left:8px;padding:3px 14px;border-radius:999px;background:${grade};color:${gradeInk};font-family:${EMAIL_SANS};font-size:19px;letter-spacing:0;vertical-align:middle">${escape(report.letter_grade)}</span></div>
+      <div style="font-family:${EMAIL_SANS};font-size:17px;font-weight:600;line-height:1.45;color:${SEA};margin-top:10px">${escape(report.headline)}</div>
     </td></tr>
     <tr><td style="padding:6px 22px 16px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">${rows}</table></td></tr>
   </table>`;

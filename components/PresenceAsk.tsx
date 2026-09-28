@@ -82,18 +82,73 @@ const WANTS = [
   },
 ];
 
+/**
+ * Two skins, one ask. Classic is the pop-art card every audit before 2026-09-28
+ * was sent with. Riviera is the house the site moved into on 2026-09-27: deep
+ * sea, Tiffany and mustard, Unbounded and Figtree, round pills instead of offset
+ * shadows. The copy and the behaviour are identical.
+ */
+const SKINS = {
+  classic: {
+    section: 'rounded-2xl border-2 border-[#161616] bg-[#161616] text-[#FBF6EA] p-6 sm:p-9 shadow-[5px_5px_0_0_#F5B700]',
+    kicker: 'font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-[#F5B700]',
+    h2: 'font-display text-2xl sm:text-3xl font-black mt-2 leading-tight',
+    aPlus: 'text-[#F5B700]',
+    lede: 'font-body text-[15px] leading-relaxed text-[#FBF6EA]/85 mt-3 max-w-2xl',
+    legend: 'font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-[#FBF6EA]/55 mb-3',
+    grid: 'grid gap-2.5',
+    optOn: 'border-[#F5B700] bg-[#F5B700]/10',
+    optOff: 'border-[#FBF6EA]/25 hover:border-[#FBF6EA]/50',
+    opt: 'rounded-xl border-2 p-3.5',
+    boxOn: 'border-[#F5B700] bg-[#F5B700] text-[#161616]',
+    boxOff: 'border-[#FBF6EA]/45 text-transparent',
+    box: 'rounded-md border-2 font-mono',
+    optLabel: 'block font-sans text-[15px] font-bold',
+    optDetail: 'block font-body text-[13.5px] leading-relaxed text-[#FBF6EA]/70 mt-0.5',
+    primary: 'bg-[#F5B700] text-[#161616] border-2 border-[#F5B700] rounded-xl px-6 py-3 font-sans font-bold uppercase tracking-[0.1em] text-sm',
+    secondary: 'border-2 border-[#FBF6EA]/40 rounded-xl px-6 py-3 font-sans font-bold uppercase tracking-[0.1em] text-sm text-[#FBF6EA] hover:border-[#FBF6EA]',
+    foot: 'font-body text-[13.5px] leading-relaxed text-[#FBF6EA]/60 mt-5',
+    tel: 'font-mono font-bold text-[#F5B700] underline decoration-2 underline-offset-4',
+  },
+  riviera: {
+    section: 'rounded-[28px] bg-[#0b3b44] text-[#fbf5ea] p-6 sm:p-10 shadow-[0_40px_80px_-40px_#0b3b4499] [font-family:var(--font-caps),Figtree,system-ui,sans-serif]',
+    kicker: 'text-[12px] font-semibold uppercase tracking-[0.18em] text-[#81d8d0]',
+    h2: 'text-[28px] sm:text-[38px] font-bold mt-3 leading-[1.06] tracking-[-0.03em] [font-family:var(--font-riviera),Unbounded,system-ui,sans-serif]',
+    aPlus: 'text-[#f5b700]',
+    lede: 'text-[16px] leading-relaxed text-[#fbf5ea]/85 mt-4 max-w-2xl',
+    legend: 'text-[12px] font-semibold uppercase tracking-[0.18em] text-[#fbf5ea]/60 mb-3',
+    grid: 'grid gap-3 sm:grid-cols-2',
+    optOn: 'bg-[#81d8d0]/15 ring-2 ring-[#81d8d0]',
+    optOff: 'bg-white/[0.05] ring-1 ring-[#fbf5ea]/15 hover:ring-[#fbf5ea]/35',
+    opt: 'rounded-[18px] p-4',
+    boxOn: 'bg-[#81d8d0] text-[#0b3b44]',
+    boxOff: 'ring-2 ring-inset ring-[#fbf5ea]/40 text-transparent',
+    box: 'rounded-full',
+    optLabel: 'block text-[16px] font-semibold',
+    optDetail: 'block text-[14px] leading-relaxed text-[#fbf5ea]/70 mt-0.5',
+    primary: 'bg-[#f5b700] text-[#0b3b44] rounded-full px-7 py-3.5 font-bold text-[15px] hover:bg-[#ffc933]',
+    secondary: 'ring-2 ring-inset ring-[#81d8d0]/60 rounded-full px-7 py-3.5 font-bold text-[15px] text-[#fbf5ea] hover:ring-[#81d8d0]',
+    foot: 'text-[14.5px] leading-relaxed text-[#fbf5ea]/65 mt-6',
+    tel: 'font-bold text-[#81d8d0] underline decoration-2 underline-offset-4',
+  },
+} as const;
+
 export default function PresenceAsk({
   business,
   leadId,
   auditId = '',
   score,
+  edition = 'classic',
 }: {
   business: string;
   leadId: string;
   /** Set for an audit somebody requested on /presence-audit, which has no lead. */
   auditId?: string;
   score: number;
+  /** Which skin: every audit before the Riviera cutoff keeps the classic card. */
+  edition?: keyof typeof SKINS;
 }) {
+  const k = SKINS[edition];
   const router = useRouter();
   const [picked, setPicked] = useState<string[]>(['website']);
   const [sending, setSending] = useState(false);
@@ -130,32 +185,30 @@ export default function PresenceAsk({
   };
 
   return (
-    <section className="rounded-2xl border-2 border-[#161616] bg-[#161616] text-[#FBF6EA] p-6 sm:p-9 shadow-[5px_5px_0_0_#F5B700]">
-      <span className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-[#F5B700]">
+    <section className={k.section}>
+      <span className={k.kicker}>
         What we would do about it
       </span>
-      <h2 className="font-display text-2xl sm:text-3xl font-black mt-2 leading-tight">
-        We can take {business} to an <span className="text-[#F5B700]">A+</span>.
+      <h2 className={k.h2}>
+        We can take {business} to an <span className={k.aPlus}>A+</span>.
       </h2>
-      <p className="font-body text-[15px] leading-relaxed text-[#FBF6EA]/85 mt-3 max-w-2xl">
+      <p className={k.lede}>
         This is what we build. Tick anything you would like to see made for {business} and we will build it,
         then walk you through it on a call. Or skip the build and just book the call to go through what is on
         this page. Nothing here commits you to anything.
       </p>
 
       <fieldset className="mt-6">
-        <legend className="font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-[#FBF6EA]/55 mb-3">
+        <legend className={k.legend}>
           What we can build for you
         </legend>
-        <div className="grid gap-2.5">
+        <div className={k.grid}>
           {WANTS.map((w) => {
             const on = picked.includes(w.key);
             return (
               <label
                 key={w.key}
-                className={`flex gap-3 items-start cursor-pointer rounded-xl border-2 p-3.5 transition-colors ${
-                  on ? 'border-[#F5B700] bg-[#F5B700]/10' : 'border-[#FBF6EA]/25 hover:border-[#FBF6EA]/50'
-                }`}
+                className={`flex gap-3 items-start cursor-pointer transition-colors ${k.opt} ${on ? k.optOn : k.optOff}`}
               >
                 <input
                   type="checkbox"
@@ -165,15 +218,13 @@ export default function PresenceAsk({
                 />
                 <span
                   aria-hidden
-                  className={`mt-0.5 grid place-items-center h-5 w-5 shrink-0 rounded-md border-2 font-mono text-[11px] font-bold ${
-                    on ? 'border-[#F5B700] bg-[#F5B700] text-[#161616]' : 'border-[#FBF6EA]/45 text-transparent'
-                  }`}
+                  className={`mt-0.5 grid place-items-center h-5 w-5 shrink-0 text-[11px] font-bold ${k.box} ${on ? k.boxOn : k.boxOff}`}
                 >
                   ✓
                 </span>
                 <span className="min-w-0">
-                  <span className="block font-sans text-[15px] font-bold">{w.label}</span>
-                  <span className="block font-body text-[13.5px] leading-relaxed text-[#FBF6EA]/70 mt-0.5">
+                  <span className={k.optLabel}>{w.label}</span>
+                  <span className={k.optDetail}>
                     {w.detail}
                   </span>
                 </span>
@@ -188,7 +239,7 @@ export default function PresenceAsk({
           type="button"
           onClick={requestAndBook}
           disabled={sending || picked.length === 0}
-          className="inline-block bg-[#F5B700] text-[#161616] border-2 border-[#F5B700] rounded-xl px-6 py-3 font-sans font-bold uppercase tracking-[0.1em] text-sm disabled:opacity-45 disabled:cursor-not-allowed"
+          className={`inline-block disabled:opacity-45 disabled:cursor-not-allowed ${k.primary}`}
         >
           {sending ? 'One moment' : 'Build these and book the call'}
         </button>
@@ -197,15 +248,15 @@ export default function PresenceAsk({
           onClick={() =>
             goToBooking(`Scored ${score} on the presence audit. Booking a call to talk through what is on it.`)
           }
-          className="inline-block border-2 border-[#FBF6EA]/40 rounded-xl px-6 py-3 font-sans font-bold uppercase tracking-[0.1em] text-sm text-[#FBF6EA] hover:border-[#FBF6EA]"
+          className={`inline-block ${k.secondary}`}
         >
           Just book a call
         </button>
       </div>
 
-      <p className="font-body text-[13.5px] leading-relaxed text-[#FBF6EA]/60 mt-5">
+      <p className={k.foot}>
         Would rather talk now? Call Mr. Mustard, our own voice agent, on{' '}
-        <a href="tel:+14063121223" className="font-mono font-bold text-[#F5B700] underline decoration-2 underline-offset-4">
+        <a href="tel:+14063121223" className={k.tel}>
           (406) 312-1223
         </a>{' '}
         and he will book it while you are on the line.
