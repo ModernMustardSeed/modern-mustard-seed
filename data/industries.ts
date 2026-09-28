@@ -89,8 +89,9 @@ export const industries: Industry[] = [
       },
       {
         title: 'Agentic Virtual Staging',
+        caseStudySlug: 'fiat-lux-design',
         body:
-          'Empty room photos in, fully designed staging out in under a minute. Eight design styles, eight room types, instant download. Replaces a $3,000 traditional staging order with a sub-$100 subscription. Built for flippers who shoot listings on weekends and need to push to MLS by Monday.',
+          'Empty room photos in, fully designed staging out in under a minute. 34 design styles, 20 room types, instant download. Replaces a $3,000 traditional staging order with a subscription from $29 a month. Built for flippers who shoot listings on weekends and need to push to MLS by Monday.',
       },
       {
         title: 'FSBO Command Center',
@@ -180,8 +181,9 @@ export const industries: Industry[] = [
     builds: [
       {
         title: 'Agentic Virtual Staging',
+        caseStudySlug: 'fiat-lux-design',
         body:
-          'Empty listing photos in, fully designed staging in under a minute. Eight design styles, eight room types. Replaces a $3,000 traditional staging order with a $99 subscription. Agents use it on listings the seller will not pay to stage and on rentals where staging cost would never be recovered.',
+          'Empty listing photos in, fully designed staging in under a minute. 34 design styles, 20 room types. Replaces a $3,000 traditional staging order with a subscription from $29 a month. Agents use it on listings the seller will not pay to stage and on rentals where staging cost would never be recovered.',
       },
       {
         title: 'Listing Description Generator',
@@ -205,15 +207,15 @@ export const industries: Industry[] = [
       },
     ],
     receipt: {
-      caseStudySlug: 'luxe-design',
-      caseStudyTitle: 'Luxe Design: Virtual Staging in Under a Minute',
-      headline: 'Virtual staging in under a minute, ready for MLS',
+      caseStudySlug: 'fiat-lux-design',
+      caseStudyTitle: 'Fiat Lux Design: An Interior Staging Studio That Keeps the Windows Real',
+      headline: 'Virtual staging in seconds, with the real windows kept real',
       body:
-        'Luxe Design is a specialty agentic tool that turns empty listing photos into fully staged interior renderings in under 60 seconds. Eight design styles. Eight room types. Stripe-metered usage with a subscription tier and a credits tier. Built end-to-end on Next.js and Replicate, hosted on Vercel, payments on Stripe. The agents and investors who use it stage three listings on a Saturday afternoon. The output looks like a thousand-dollar interior designer set the room. The cost lands closer to a hundred dollars a month than a thousand a project. This is the pattern: the agentic tool compresses the part of the workflow that should never have been manual, and the agent reclaims the time and the margin. The same tooling can be branded for your brokerage, tuned to your local design preferences, and delivered with your logo. Or you can use ours and skip the build.',
+        'Fiat Lux Design is our staging studio for realtors. Paste a Zillow, Redfin or MLS link, or drop in a photo, pick one of 34 editorial styles, and the room comes back staged in seconds. Most virtual staging looks fake because the model repaints the view and warps the door frames. Fiat Lux traces the windows, doors and glass first and puts the original pixels back after staging, so what the buyer sees through the window is what they will see at the showing. Every room links out to shop the exact pieces, and the listing ships with a branded prospectus PDF, a video reel and a share page. Plans start at $29 a month and every plan is hard-capped. The same studio can carry your brokerage brand, or you can use ours and skip the build.',
       metrics: [
-        { label: 'Staging time', value: 'Under 60 sec' },
-        { label: 'Cost vs traditional', value: '$99/mo vs $3K/project' },
-        { label: 'Build duration', value: '2 to 4 weeks' },
+        { label: 'Design styles', value: '34' },
+        { label: 'Room types', value: '20' },
+        { label: 'Plans from', value: '$29/mo' },
       ],
     },
     pricing: {

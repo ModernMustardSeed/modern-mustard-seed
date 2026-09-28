@@ -269,8 +269,8 @@ const config: NextConfig = {
       { source: '/referral-program', destination: '/partners', permanent: true },
       { source: '/referrals', destination: '/partners', permanent: true },
       { source: '/case-studies/:slug', destination: '/work/:slug', permanent: true },
-      // Luxe Design (the Fiat Lux staging tool) came off /work on 2026-09-27.
-      { source: '/work/luxe-design', destination: '/work/built-right-in-montana', permanent: true },
+      // Luxe Design was an older staging build; Fiat Lux Design replaced it on /work 2026-09-27.
+      { source: '/work/luxe-design', destination: '/work/fiat-lux-design', permanent: true },
       // The Build Queue page was retired in favor of Book a Call. Any query
       // (e.g. the ?idea= carried from the home terminal) passes through to
       // /book automatically, where BookCall prefills it. /api/build-queue is

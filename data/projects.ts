@@ -53,10 +53,10 @@ export const projects: Project[] = [
     color: 'from-amber-900/40 to-amber-800/20',
   },
   {
-    title: 'Luxe Design',
+    title: 'Fiat Lux Design',
     subtitle: 'Agentic interior design and virtual staging for real estate pros',
-    tags: ['Replicate', 'Stripe', 'Supabase'],
-    href: 'https://luxedesign-five.vercel.app',
+    tags: ['fal.ai', 'Stripe', 'Supabase'],
+    href: 'https://fiatluxdesign.co',
     color: 'from-rose-900/40 to-rose-800/20',
   },
   {
