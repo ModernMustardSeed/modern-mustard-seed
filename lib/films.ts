@@ -36,6 +36,31 @@ export type Film = {
 };
 
 export const FILMS = {
+  /** The Riviera commercial, in the admin ad playbook (campaign 35). */
+  riviera: {
+    mp4: '/ads/riviera/riviera-16x9.mp4',
+    poster: '/ads/riviera/preview/poster-16x9-800.webp',
+    shipped: true,
+    runtime: '46 sec',
+  },
+  rivieraTall: {
+    mp4: '/ads/riviera/riviera-9x16.mp4',
+    poster: '/ads/riviera/preview/poster-9x16-800.webp',
+    shipped: true,
+    runtime: '46 sec',
+  },
+  rivieraSquare: {
+    mp4: '/ads/riviera/riviera-1x1.mp4',
+    poster: '/ads/riviera/preview/poster-1x1-800.webp',
+    shipped: true,
+    runtime: '46 sec',
+  },
+  rivieraShort: {
+    mp4: '/ads/riviera/riviera-9x16-26s.mp4',
+    poster: '/ads/riviera/preview/poster-9x16-800.webp',
+    shipped: true,
+    runtime: '26 sec',
+  },
   littleYesHook: {
     mp4: '/ads/little-yes/little-yes-hook-9x16.mp4',
     poster: '/ads/little-yes/preview/poster-9x16-800.webp',
