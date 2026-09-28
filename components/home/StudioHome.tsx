@@ -54,11 +54,16 @@ export default function StudioHome({ faq }: { faq: { q: string; a: string }[] })
     <section id="selected-work" className={styles.work} aria-labelledby="work-heading">
       <div className={styles.sectionTop}><p className={styles.eyebrow}>01 / Selected Work</p><span>Made here. Out in the world.</span></div>
       <div className={styles.workIntro}><h2 id="work-heading">The work<br />speaks <em>first.</em></h2><div><p>A landscaper in Tallahassee. A homebuilder in Montana. A brand with something to say. Real client work, our own ventures, and studio builds.</p><Link href="/work" className={styles.textLink}>Explore The Portfolio <Arrow /></Link></div></div>
-      <div className={styles.projectGrid}>{projects.map((project, i) => <a key={project.name} href={project.url} target="_blank" rel="noopener noreferrer" className={styles.project}>
-        <div className={styles.projectImage}><ProjectImage name={project.image} alt={project.name + ' website, designed and built by Modern Mustard Seed'} sizes={i === 0 ? '(max-width: 760px) 92vw, 88vw' : '(max-width: 760px) 92vw, 43vw'} /><WorkVideo src={'/video/work/' + project.image + '.mp4'} className={styles.workVideo} /><span className={styles.visit}><span className={styles.visitLabel}>Visit Live Site</span><Arrow /></span></div>
-        <div className={styles.projectCaption}><div><p className={styles.eyebrow}>{project.type}</p><h3>{project.name}</h3></div><span className={styles.projectNumber}>0{i + 1}</span></div>
-        <p className={styles.projectStatement}>{project.description}</p><p className={styles.projectDetail}>{project.detail}</p>
-      </a>)}</div>
+      {/* The row runs twice so the drift loops without a seam; the second pass is hidden from readers and the tab order. */}
+      <div className={styles.workStrip}><div className={styles.workTrack}>{[...projects, ...projects].map((project, k) => {
+        const i = k % projects.length;
+        const echo = k >= projects.length;
+        return <a key={k} href={project.url} target="_blank" rel="noopener noreferrer" className={styles.project} aria-hidden={echo || undefined} tabIndex={echo ? -1 : undefined}>
+          <div className={styles.projectImage}><ProjectImage name={project.image} alt={echo ? '' : project.name + ' website, designed and built by Modern Mustard Seed'} sizes="(max-width: 760px) 80vw, 34vw" /><WorkVideo src={'/video/work/' + project.image + '.mp4'} className={styles.workVideo} /><span className={styles.visit}><span className={styles.visitLabel}>Visit Live Site</span><Arrow /></span></div>
+          <div className={styles.projectCaption}><div><p className={styles.eyebrow}>{project.type}</p><h3>{project.name}</h3></div><span className={styles.projectNumber}>0{i + 1}</span></div>
+          <p className={styles.projectStatement}>{project.description}</p><p className={styles.projectDetail}>{project.detail}</p>
+        </a>;
+      })}</div></div>
     </section>
     <section id="results" className={styles.results} data-ground="sea" aria-labelledby="results-heading">
       <div className={styles.resultsTop}><p className={styles.eyebrow}>In their words</p><h2 id="results-heading">What changed <em>after.</em></h2></div>

@@ -365,3 +365,14 @@
   .founderBody .founderLead{font-size:24px}
 }
 @media(prefers-reduced-motion:reduce){.primary,.primary>span,.closeLink,.floorArt img,.discipline{transition:none}.statement:before{animation:none}}
+
+/* Selected work drifts sideways on its own. It holds still under a pointer or keyboard focus so a card can be opened, and under reduced motion it becomes a row you swipe. */
+.workStrip{margin:0 -6vw;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 4%,#000 96%,transparent);mask-image:linear-gradient(90deg,transparent,#000 4%,#000 96%,transparent)}
+.workTrack{display:flex;width:max-content;padding:6px 0 44px;animation:workDrift 64s linear infinite}
+.workStrip:hover .workTrack,.workStrip:focus-within .workTrack{animation-play-state:paused}
+.workTrack .project{flex:none;width:clamp(320px,34vw,560px);margin-right:36px}
+.workTrack .project .projectImage{aspect-ratio:1.6}
+.workTrack .projectCaption h3{font-size:30px}
+@keyframes workDrift{to{transform:translate3d(-50%,0,0)}}
+@media(max-width:760px){.workTrack{animation-duration:44s}.workTrack .project{width:80vw;margin-right:18px}.workTrack .projectCaption h3{font-size:26px}}
+@media(prefers-reduced-motion:reduce){.workStrip{overflow-x:auto;scroll-snap-type:x mandatory;-webkit-mask-image:none;mask-image:none}.workTrack{padding-left:6vw}.workTrack>[aria-hidden]{display:none}.workTrack .project{scroll-snap-align:start;scroll-margin-left:6vw}}
