@@ -236,7 +236,7 @@ export default function ContactForm({ defaultPackage, defaultMessage }: Props) {
                   </label>
 
                   {error && (
-                    <p role="alert" className="text-center font-body text-sm font-bold text-[#0a7c78]">
+                    <p role="alert" className="text-center font-body text-sm font-bold text-[#b3261e]">
                       {error}
                     </p>
                   )}

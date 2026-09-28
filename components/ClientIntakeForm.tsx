@@ -523,7 +523,7 @@ export default function ClientIntakeForm({ brandName = '', ownerName = '', email
       </SectionCard>
 
       {errorMsg && (
-        <p className="text-[#0a7c78] text-sm font-body font-bold text-center pop-card-cream p-4">{errorMsg}</p>
+        <p className="text-[#b3261e] text-sm font-body font-bold text-center pop-card-cream p-4">{errorMsg}</p>
       )}
 
       <button
@@ -595,7 +595,7 @@ function Thumb({ item, onRemove }: { item: Uploaded; onRemove: () => void }) {
           {item.uploading ? (
             <span className="text-[#0a7c78]">Uploading...</span>
           ) : item.error ? (
-            <span className="text-[#0a7c78]">{item.error}</span>
+            <span className="text-[#b3261e]">{item.error}</span>
           ) : (
             <span className="text-[#2e7d32]">✓ Uploaded</span>
           )}

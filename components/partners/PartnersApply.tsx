@@ -79,7 +79,7 @@ export default function PartnersApply() {
       <Field label="Where will you promote?"><input value={form.promoteWhere} onChange={set('promoteWhere')} className={inputCls} placeholder="YouTube, a newsletter, a chamber, your client list..." /></Field>
       <Field label="Your audience (size and shape)"><input value={form.audience} onChange={set('audience')} className={inputCls} placeholder="e.g. 8k builders on X, mostly non-technical founders" /></Field>
       <Field label="Why do you want in?"><textarea value={form.why} onChange={set('why')} rows={3} className={inputCls} placeholder="What draws you to sharing these tools?" /></Field>
-      {error && <p className="text-[#0a7c78] text-xs font-body">{error}</p>}
+      {error && <p className="text-[#b3261e] text-xs font-body">{error}</p>}
       <button type="submit" disabled={sending} className="w-full px-6 py-3.5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0b3b44] bg-[#f5b700] border-2 border-[#0b3b44] rounded-full shadow-[3px_3px_0_0_#0b3b44] hover:shadow-[4px_4px_0_0_#0b3b44] hover:-translate-y-0.5 transition-all disabled:opacity-50">
         {sending ? 'Sending...' : 'Apply to partner'}
       </button>

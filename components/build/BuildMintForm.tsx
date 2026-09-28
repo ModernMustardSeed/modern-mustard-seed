@@ -280,7 +280,7 @@ export default function BuildMintForm({ endpoint, variant }: { endpoint: string;
           )}
 
           {error && (
-            <p className="mt-4 font-body text-sm text-[#0a7c78] bg-[#ff6f59]/5 border-2 border-[#ff6f59]/30 rounded-xl px-4 py-3" role="alert">{error}</p>
+            <p className="mt-4 font-body text-sm text-[#b3261e] bg-[#ff6f59]/5 border-2 border-[#ff6f59]/30 rounded-xl px-4 py-3" role="alert">{error}</p>
           )}
 
           <button

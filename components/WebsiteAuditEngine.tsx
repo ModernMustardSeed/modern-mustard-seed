@@ -217,7 +217,7 @@ export default function WebsiteAuditEngine() {
       {/* Error */}
       {error && !loading && (
         <div className="mt-8 pop-card p-6 border-[#ff6f59]/40">
-          <p className="text-[#0a7c78] text-sm font-body font-bold leading-relaxed">{error}</p>
+          <p className="text-[#b3261e] text-sm font-body font-bold leading-relaxed">{error}</p>
           <button
             type="button"
             onClick={() => setError(null)}

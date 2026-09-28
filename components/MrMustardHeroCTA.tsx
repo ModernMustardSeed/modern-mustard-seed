@@ -118,7 +118,7 @@ export default function MrMustardHeroCTA({ location = 'hero' }: { location?: str
                 ? 'Ask anything. He can even book your call with Sarah.'
                 : 'Our agentic right hand. Live voice or chat, your pick.'}
             </p>
-            {error && <p className="text-[#0a7c78] text-[11px] font-mono mt-1">{error}</p>}
+            {error && <p className="text-[#b3261e] text-[11px] font-mono mt-1">{error}</p>}
           </div>
 
           {/* The two doors */}

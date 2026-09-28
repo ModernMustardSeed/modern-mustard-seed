@@ -213,7 +213,7 @@ export default function ScreenTestExperience() {
           {/* Honeypot: humans never see or fill this. */}
           <input id="px-website" type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" className="absolute -left-[9999px] h-0 w-0 opacity-0" />
 
-          {error && <p className="mt-4 text-[#0a7c78] text-sm font-body font-semibold">{error}</p>}
+          {error && <p className="mt-4 text-[#b3261e] text-sm font-body font-semibold">{error}</p>}
 
           <button
             type="submit"

@@ -290,7 +290,7 @@ export default function BookCall() {
 
           <div className="mt-8">
             {error && (
-              <p role="alert" className="mb-4 rounded-xl border-2 border-[#0b3b44] bg-[#fbf5ea] px-4 py-2.5 text-center font-body text-sm font-bold text-[#0a7c78] shadow-[3px_3px_0_0_#0b3b44]">{error}</p>
+              <p role="alert" className="mb-4 rounded-xl border-2 border-[#0b3b44] bg-[#fbf5ea] px-4 py-2.5 text-center font-body text-sm font-bold text-[#b3261e] shadow-[3px_3px_0_0_#0b3b44]">{error}</p>
             )}
             <button
               type="submit"

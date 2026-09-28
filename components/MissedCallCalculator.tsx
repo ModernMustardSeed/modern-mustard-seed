@@ -210,7 +210,7 @@ export default function MissedCallCalculator() {
                 {status === 'sending' ? 'Sending…' : 'Send my number →'}
               </button>
             </div>
-            {error && <p className="text-[#0a7c78] text-xs font-mono">{error}</p>}
+            {error && <p className="text-[#b3261e] text-xs font-mono">{error}</p>}
             <p className="text-[#0b3b44]/70 text-[11px] font-body">
               No spam. One reply from a real person. Unsubscribe anytime.
             </p>

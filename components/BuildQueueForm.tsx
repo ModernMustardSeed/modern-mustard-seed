@@ -186,7 +186,7 @@ export default function BuildQueueForm() {
       </div>
 
       {errorMsg && (
-        <p className="text-[#0a7c78] text-sm font-body font-bold text-center">{errorMsg}</p>
+        <p className="text-[#b3261e] text-sm font-body font-bold text-center">{errorMsg}</p>
       )}
 
       <button

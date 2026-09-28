@@ -150,7 +150,7 @@ export default function BottleneckBreaker() {
               <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder="your@email.com" className={inp} />
               <input value={url} onChange={(e) => setUrl(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && run()} placeholder="yourbusiness.com" spellCheck={false} autoCapitalize="none" className={inp} />
             </div>
-            {error && <p className="text-[#0a7c78] font-body font-bold text-sm mt-3">{error}</p>}
+            {error && <p className="text-[#b3261e] font-body font-bold text-sm mt-3">{error}</p>}
             <button
               onClick={run}
               disabled={!name.trim() || !email.includes('@') || !url.trim()}

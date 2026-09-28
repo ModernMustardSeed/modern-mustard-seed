@@ -66,7 +66,7 @@ export default function BuyButton({
       >
         {loading ? 'Opening checkout...' : label}
       </button>
-      {error && <p className={`text-xs font-body font-semibold max-w-xs text-center ${tone === 'ink' ? 'text-[#f5b700]' : 'text-[#0a7c78]'}`}>{error}</p>}
+      {error && <p className={`text-xs font-body font-semibold max-w-xs text-center ${tone === 'ink' ? 'text-[#f5b700]' : 'text-[#b3261e]'}`}>{error}</p>}
     </div>
   );
 }

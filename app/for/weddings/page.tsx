@@ -114,7 +114,7 @@ export default function WeddingsPage() {
           ]),
         ]}
       />
-      <div className="relative min-h-screen bg-[#f1ede4] text-[#0d0d0d] overflow-x-clip">
+      <div className="relative min-h-screen bg-[#fbf5ea] text-[#0b3b44] overflow-x-clip">
         <PopPageHero
           eyebrow={
             <>
@@ -125,7 +125,7 @@ export default function WeddingsPage() {
             </>
           }
           title={<>Give every couple the{' '}<em>whole weekend</em></>}
-          art={{ src: '/art/pages/industries', alt: 'Graffiti couture painting: Mr. Mustard waves from a mustard-yellow classic convertible cruising down a mountain-town main street of shops, under a railroad trestle painted in bright graffiti', caption: 'Just married, just built', focus: '30% 60%' }}
+          art={{ src: '/art/riviera/industries', alt: 'Painting: Mr. Mustard strolls a sunny seaside promenade of little shops with Tiffany-blue and coral awnings, a bakery, a gelato stand, a surf rental and a boat charter, the family with gelato and the sea at the end of the street', caption: 'Just married, just built', focus: '30% 60%' }}
           sticker="I do!"
           mascot={{ bubble: 'Table 4, by the window!' }}
         >
@@ -144,7 +144,7 @@ export default function WeddingsPage() {
           </div>
           <p className={pop.note}>
             Run a venue or plan weddings? We’ll build it with your name and your photos,{' '}
-            <Link href="/demos" className="text-[#c8201a] font-semibold underline underline-offset-2 hover:text-[#d0241b] transition-colors">
+            <Link href="/demos" className="text-[#0a7c78] font-semibold underline underline-offset-2 hover:text-[#0a7c78] transition-colors">
               free
             </Link>
             .
@@ -152,18 +152,18 @@ export default function WeddingsPage() {
         </PopPageHero>
 
         {/* The film: the ink band */}
-        <section className="relative mt-4 bg-[#0d0d0d] text-[#f1ede4] border-y-2 border-[#0d0d0d] overflow-hidden" aria-labelledby="film-h">
+        <section className="relative mt-4 bg-[#0b3b44] text-[#fbf5ea] border-y-2 border-[#0b3b44] overflow-hidden" aria-labelledby="film-h">
           <div className="pointer-events-none absolute inset-0 halftone-ink" aria-hidden="true" />
           <div className="relative max-w-6xl mx-auto px-6 md:px-8 py-16 md:py-20">
             <div className="text-center max-w-3xl mx-auto mb-10">
-              <span className="text-[10px] uppercase tracking-[0.4em] text-[#ffd400] font-mono font-bold mb-5 block">
+              <span className="text-[10px] uppercase tracking-[0.4em] text-[#f5b700] font-mono font-bold mb-5 block">
                 Watch it · 64 seconds
               </span>
-              <h2 id="film-h" className="font-display text-3xl md:text-5xl font-black text-[#f1ede4] tracking-tight leading-[1.1]">
+              <h2 id="film-h" className="font-display text-3xl md:text-5xl font-black text-[#fbf5ea] tracking-tight leading-[1.1]">
                 The Whole Weekend.
               </h2>
             </div>
-            <div className="border-2 border-[#f1ede4] shadow-[6px_6px_0_0_#ffd400] bg-black">
+            <div className="border-2 border-[#fbf5ea] shadow-[6px_6px_0_0_#f5b700] bg-black">
               <video
                 controls
                 playsInline
@@ -179,7 +179,7 @@ export default function WeddingsPage() {
                 <a href="/ads/whole-weekend/whole-weekend-16x9.mp4">Download the film</a>.
               </video>
             </div>
-            <p className="mt-5 text-center text-sm text-[#f1ede4]/75 font-body">
+            <p className="mt-5 text-center text-sm text-[#fbf5ea]/75 font-body">
               Mara and Jonah are a sample couple. Every screen in the film is the real demo, and you can open all three pieces below.
             </p>
           </div>
@@ -188,25 +188,25 @@ export default function WeddingsPage() {
         {/* The three pieces */}
         <section className="relative max-w-6xl mx-auto px-6 md:px-8 py-16 md:py-24" aria-labelledby="pieces-h">
           <div className="text-center max-w-3xl mx-auto mb-12">
-            <span className="text-[10px] uppercase tracking-[0.4em] text-[#c8201a] font-mono font-bold mb-5 block">
+            <span className="text-[10px] uppercase tracking-[0.4em] text-[#0a7c78] font-mono font-bold mb-5 block">
               Click through all of it
             </span>
-            <h2 id="pieces-h" className="font-display text-3xl md:text-5xl font-black text-[#0d0d0d] tracking-tight leading-[1.1]">
+            <h2 id="pieces-h" className="font-display text-3xl md:text-5xl font-black text-[#0b3b44] tracking-tight leading-[1.1]">
               One guest list. Three pieces.
             </h2>
           </div>
           <div className="grid grid-cols-1 gap-8">
             {pieces.map((p, i) => (
               <article key={p.href} className={`pop-card overflow-hidden grid grid-cols-1 md:grid-cols-2 ${i % 2 ? 'md:[&>*:first-child]:order-2' : ''}`}>
-                <a href={p.href} className={`block border-b-2 md:border-b-0 border-[#0d0d0d] ${p.phone ? 'bg-[#0B1517] flex items-center justify-center py-8' : 'bg-[#0B1517]'}`} aria-label={`${p.cta}: ${p.kicker}`}>
+                <a href={p.href} className={`block border-b-2 md:border-b-0 border-[#0b3b44] ${p.phone ? 'bg-[#0B1517] flex items-center justify-center py-8' : 'bg-[#0B1517]'}`} aria-label={`${p.cta}: ${p.kicker}`}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={p.shot} alt={p.alt} width={p.phone ? 800 : 1200} height={p.phone ? 1602 : 750} loading="lazy" className={p.phone ? 'block h-auto w-[62%] max-w-[260px] rounded-[22px] border-2 border-[#f1ede4]/20' : 'block w-full h-auto'} />
+                  <img src={p.shot} alt={p.alt} width={p.phone ? 800 : 1200} height={p.phone ? 1602 : 750} loading="lazy" className={p.phone ? 'block h-auto w-[62%] max-w-[260px] rounded-[22px] border-2 border-[#fbf5ea]/20' : 'block w-full h-auto'} />
                 </a>
                 <div className="p-7 md:p-10 flex flex-col justify-center">
-                  <span className="text-[10px] uppercase tracking-[0.35em] text-[#c8201a] font-mono font-bold mb-3 block">{p.kicker}</span>
-                  <h3 className="font-display text-2xl md:text-3xl font-black text-[#0d0d0d] tracking-tight leading-[1.1] mb-4">{p.title}</h3>
+                  <span className="text-[10px] uppercase tracking-[0.35em] text-[#0a7c78] font-mono font-bold mb-3 block">{p.kicker}</span>
+                  <h3 className="font-display text-2xl md:text-3xl font-black text-[#0b3b44] tracking-tight leading-[1.1] mb-4">{p.title}</h3>
                   <p className="text-[#3a3733] text-base font-body leading-7 mb-6">{p.body}</p>
-                  <a href={p.href} className="self-start inline-flex items-center gap-2 px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0d0d0d] bg-[#ffd400] rounded-full border-2 border-[#0d0d0d] shadow-[4px_4px_0_0_#0d0d0d] hover:-translate-y-0.5 transition-all">
+                  <a href={p.href} className="self-start inline-flex items-center gap-2 px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0b3b44] bg-[#f5b700] rounded-full border-2 border-[#0b3b44] shadow-[4px_4px_0_0_#0b3b44] hover:-translate-y-0.5 transition-all">
                     {p.cta} <span aria-hidden="true">→</span>
                   </a>
                 </div>
@@ -218,17 +218,17 @@ export default function WeddingsPage() {
         {/* Who it is for */}
         <section className="relative max-w-6xl mx-auto px-6 md:px-8 pb-16 md:pb-24" aria-labelledby="who-h">
           <div className="text-center max-w-3xl mx-auto mb-12">
-            <span className="text-[10px] uppercase tracking-[0.4em] text-[#c8201a] font-mono font-bold mb-5 block">
+            <span className="text-[10px] uppercase tracking-[0.4em] text-[#0a7c78] font-mono font-bold mb-5 block">
               Who it is for
             </span>
-            <h2 id="who-h" className="font-display text-3xl md:text-5xl font-black text-[#0d0d0d] tracking-tight leading-[1.1]">
+            <h2 id="who-h" className="font-display text-3xl md:text-5xl font-black text-[#0b3b44] tracking-tight leading-[1.1]">
               Built for the people who make the day.
             </h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {who.map((w) => (
               <article key={w.title} className="pop-card p-7">
-                <h3 className="font-display text-xl md:text-2xl font-black text-[#0d0d0d] tracking-tight mb-3">{w.title}</h3>
+                <h3 className="font-display text-xl md:text-2xl font-black text-[#0b3b44] tracking-tight mb-3">{w.title}</h3>
                 <p className="text-[#3a3733] text-sm md:text-base font-body leading-7">{w.body}</p>
               </article>
             ))}
@@ -237,15 +237,15 @@ export default function WeddingsPage() {
 
         {/* Questions */}
         <section className="relative max-w-4xl mx-auto px-6 md:px-8 pb-16 md:pb-24" aria-labelledby="faq-h">
-          <h2 id="faq-h" className="font-display text-3xl md:text-5xl font-black text-[#0d0d0d] tracking-tight leading-[1.1] mb-10 text-center">
+          <h2 id="faq-h" className="font-display text-3xl md:text-5xl font-black text-[#0b3b44] tracking-tight leading-[1.1] mb-10 text-center">
             Venues ask us
           </h2>
           <div className="grid gap-4">
             {faqs.map((f) => (
               <details key={f.q} className="pop-card p-6 md:p-7 group">
-                <summary className="cursor-pointer list-none flex justify-between gap-4 font-display text-lg md:text-xl font-black text-[#0d0d0d] tracking-tight">
+                <summary className="cursor-pointer list-none flex justify-between gap-4 font-display text-lg md:text-xl font-black text-[#0b3b44] tracking-tight">
                   {f.q}
-                  <span className="font-mono text-[#c8201a] group-open:rotate-45 transition-transform" aria-hidden="true">+</span>
+                  <span className="font-mono text-[#0a7c78] group-open:rotate-45 transition-transform" aria-hidden="true">+</span>
                 </summary>
                 <p className="mt-4 text-[#3a3733] text-base font-body leading-7">{f.a}</p>
               </details>
@@ -256,7 +256,7 @@ export default function WeddingsPage() {
         {/* Close */}
         <section className="relative max-w-4xl mx-auto px-6 md:px-8 pb-24">
           <div className="pop-card p-8 md:p-12 text-center">
-            <h2 className="font-display text-3xl md:text-5xl font-black text-[#0d0d0d] tracking-tight leading-[1.1] mb-4">
+            <h2 className="font-display text-3xl md:text-5xl font-black text-[#0b3b44] tracking-tight leading-[1.1] mb-4">
               See it built for your venue.
             </h2>
             <p className="text-[#3a3733] text-base md:text-lg font-body leading-relaxed max-w-2xl mx-auto mb-8">

@@ -118,7 +118,7 @@ export default function BroadcastPackages() {
         </div>
 
         {error && (
-          <p role="alert" className="text-center font-body text-sm text-[#0a7c78] font-bold mt-6">
+          <p role="alert" className="text-center font-body text-sm text-[#b3261e] font-bold mt-6">
             {error}
           </p>
         )}

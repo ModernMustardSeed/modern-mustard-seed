@@ -322,7 +322,7 @@ export default function MustardDemo(props: Props) {
       </div>
 
       {error && (
-        <p className="mt-4 text-sm font-bold text-[#0a7c78]" role="alert">
+        <p className="mt-4 text-sm font-bold text-[#b3261e]" role="alert">
           {error}
         </p>
       )}

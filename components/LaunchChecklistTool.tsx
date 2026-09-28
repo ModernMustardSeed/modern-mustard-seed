@@ -298,7 +298,7 @@ export default function LaunchChecklistTool() {
                 className="hidden"
                 aria-hidden
               />
-              {error && <p className="text-[#0a7c78] text-sm font-body text-center">{error}</p>}
+              {error && <p className="text-[#b3261e] text-sm font-body text-center">{error}</p>}
               <button
                 type="submit"
                 disabled={sending || !email.trim()}

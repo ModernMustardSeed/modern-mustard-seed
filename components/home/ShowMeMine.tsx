@@ -178,7 +178,7 @@ export default function ShowMeMine({ className }: { className: string }) {
                   <button type="submit" disabled={phase === 'sending'} className="mt-5 flex min-h-[56px] w-full items-center justify-center gap-3 border-2 border-[#0b3b44] bg-[#f5b700] text-[15px] font-extrabold shadow-[5px_5px_0_0_#0b3b44] disabled:opacity-60">
                     {phase === 'sending' ? 'Starting your build…' : <>Build mine, free <span aria-hidden="true">↗</span></>}
                   </button>
-                  {phase === 'error' && <p role="alert" className="mt-3 text-center text-[13px] font-bold text-[#0a7c78]">{error}</p>}
+                  {phase === 'error' && <p role="alert" className="mt-3 text-center text-[13px] font-bold text-[#b3261e]">{error}</p>}
                 </form>
               )}
             </div>

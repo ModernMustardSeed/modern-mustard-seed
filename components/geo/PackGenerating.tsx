@@ -60,7 +60,7 @@ export default function PackGenerating({ sessionId }: { sessionId: string }) {
           <span className="inline-block w-2.5 h-4 bg-[#f5b700] align-middle ml-0.5 animate-pulse" />
         </p>
       </div>
-      {error && <p className="mt-5 text-[#0a7c78] font-body text-sm font-semibold">{error}</p>}
+      {error && <p className="mt-5 text-[#b3261e] font-body text-sm font-semibold">{error}</p>}
     </div>
   );
 }

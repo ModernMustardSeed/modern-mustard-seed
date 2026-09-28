@@ -74,7 +74,7 @@ export default function EmailPlaybookCTA({ slug, title }: { slug: string; title:
           </form>
         )}
       </div>
-      {status === 'error' && <p className="text-[#0a7c78] font-body font-bold text-sm mt-3">{message}</p>}
+      {status === 'error' && <p className="text-[#b3261e] font-body font-bold text-sm mt-3">{message}</p>}
     </div>
   );
 }
