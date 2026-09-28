@@ -11,8 +11,8 @@ import { workByKey } from '@/data/website-work';
  * Same beautiful site, one tap apart. Pop-art cabin framing.
  */
 
-const SITE = workByKey['dd-landscaping'];
-const DOMAIN = 'ddlandscaping.pro';
+const SITE = workByKey['fiat-lux'];
+const DOMAIN = 'fiatluxdesign.co';
 
 const BROCHURE_NOTES = [
   'Looks nice. Does nothing.',
