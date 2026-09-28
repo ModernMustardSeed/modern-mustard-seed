@@ -38,14 +38,14 @@ export default function RivieraHero() {
       <div className={s.glare} aria-hidden="true" />
       <div className={s.scrim} aria-hidden="true" />
       <div className={s.copy}>
-        <p className={s.credit}>Modern Mustard Seed <i>·</i> Design &amp; agentic systems studio <i>·</i> Kalispell, Montana</p>
+        <p className={s.credit}>Modern Mustard Seed <i>·</i> Design &amp; agentic systems studio <i>·</i> Nationwide, from Montana</p>
         <h1 id="studio-heading" className={s.name}>
           <span className="sr-only">{HEADLINE} {LINE} Modern Mustard Seed.</span>
           <span aria-hidden="true"><Rolling text="We build websites and" /><em><Rolling text="agentic systems" from={4} /></em><Rolling text="that run your business." from={6} /></span>
         </h1>
         <p className={s.line} aria-hidden="true">So you can <em>run your life.</em></p>
         <ul className={s.chips} aria-label="What we build">{CHIPS.map(([label, href]) => <li key={href}><Link href={href}>{label}</Link></li>)}</ul>
-        <p className={s.what}>Designed and built by Sarah Scarano in Kalispell, Montana, at set package prices. You own everything.</p>
+        <p className={s.what}>Designed and built by Sarah Scarano in Kalispell, Montana, for businesses <Link href="/nationwide" className={s.nationwide}>across the country</Link>, at set package prices. You own everything.</p>
         <div className={s.actions}>
           <Link href="/inquire" className={s.cta}>Tell us what you have in mind <span aria-hidden="true">↗</span></Link>
           <a href="#selected-work" className={s.quiet}>See the work</a>
