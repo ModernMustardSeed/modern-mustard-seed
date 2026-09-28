@@ -29,7 +29,7 @@ type Post = {
 };
 type Payload = { ready: false } | { ready: true; people: Person[]; tags: Array<{ tag: string; count: number }>; posts: Post[] } | null;
 
-const ORIGIN: Record<string, string> = { 'web-express': 'Web Express', portal: 'added here' };
+const ORIGIN: Record<string, string> = { 'web-express': 'Web Express', portal: 'added here', website: 'website' };
 const day = (iso: string) => new Date(iso).toLocaleDateString('en-US', { timeZone: 'America/Denver', month: 'short', day: 'numeric', year: 'numeric' });
 const dayOnly = (d: string) => new Date(`${d}T12:00:00Z`).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
 const tel = (p: string) => p.replace(/\s*ext\.?\s*\d+$/i, '').replace(/[^\d+]/g, '');

@@ -10,6 +10,7 @@ import { creditLead, isCode } from '@/lib/campaigns';
 import { checkAnswer } from '@/lib/human-check';
 import { chatIdFromToolCall, linkChatToLead } from '@/lib/command-center/chat-store';
 import { hydrateDesks } from '@/lib/client-desks';
+import { fileLeadInBook } from '@/lib/client-contacts';
 
 export const runtime = 'nodejs';
 export const maxDuration = 30;
@@ -216,6 +217,17 @@ export async function POST(req: Request) {
     id = data.id as string;
     if (campaign) await creditLead(sb, project.clientEmail, campaign);
   }
+
+  // Every person who reaches out is in the contact book from the first minute.
+  await fileLeadInBook(sb, project.clientEmail, {
+    name: lead.name ?? (existing?.name as string | null) ?? null,
+    phone: lead.phone ?? (existing?.phone as string | null) ?? null,
+    email: lead.email ?? (existing?.email as string | null) ?? null,
+    town: lead.town ?? (existing?.town as string | null) ?? null,
+    projectType: lead.project_type ?? (existing?.project_type as string | null) ?? null,
+    note: lead.message ?? null,
+    source: `Website, ${VIA[source]}`,
+  });
 
   // Join the conversation to the lead, both ways, so opening either one finds
   // the other. Never allowed to fail the lead: by this point the row is saved

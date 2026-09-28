@@ -33,7 +33,7 @@ function lastName(name: string | null): string {
   return `${last} ${parts[0]}`.toLowerCase();
 }
 
-const ORIGIN: Record<string, string> = { 'web-express': 'Web Express', portal: 'Added here' };
+const ORIGIN: Record<string, string> = { 'web-express': 'Web Express', portal: 'Added here', website: 'Website' };
 
 const dateOf = (iso: string | null) => (iso ? new Date(`${iso}T12:00:00Z`).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' }) : '');
 
