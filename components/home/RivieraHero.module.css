@@ -79,3 +79,4 @@
   .awning:after{height:10px;-webkit-mask-size:30px 10px;mask-size:30px 10px;-webkit-mask-image:radial-gradient(circle at 15px 0,#000 14.5px,transparent 15px);mask-image:radial-gradient(circle at 15px 0,#000 14.5px,transparent 15px);background:repeating-linear-gradient(90deg,#81d8d0 0 30px,#ffffff 30px 60px)}
 }
 @media(prefers-reduced-motion:reduce){.art img,.copy>*,.word,.glare,.tape>div{animation:none}.cta,.cta span{transition:none}}
+.nationwide{color:var(--lagoon);font-weight:600;text-decoration:underline;text-decoration-color:var(--mustard);text-decoration-thickness:2px;text-underline-offset:3px}.nationwide:hover{color:var(--sea)}
