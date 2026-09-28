@@ -194,13 +194,6 @@ export const PORTFOLIO: PortfolioCategory[] = [
         tags: ['seafood', 'brand'],
       },
       {
-        name: 'Fiat Lux Design',
-        url: 'https://fiatluxdesign.co',
-        status: 'live',
-        blurb: 'A client design studio site with live Supabase billing wired in.',
-        tags: ['design', 'billing'],
-      },
-      {
         name: 'Penco Command',
         url: 'https://penco-command.vercel.app',
         owner: 'Penco Power Products',

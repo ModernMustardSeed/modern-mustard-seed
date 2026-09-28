@@ -77,7 +77,7 @@ const HOME_FAQ = [
   },
   {
     q: 'What has the studio built?',
-    a: 'Recent work includes Wild Hope, a Flathead Lake retreat village told through seventeen original oil paintings; Cross + Covenant, a direct-to-consumer apparel brand taken from sketch to live storefront in sixty days; Lago Society, a lakeside fashion house with an agentic personal stylist; Fiat Lux Design, an agentic staging studio for real estate; and D&D Landscaping, a design-build landscaper with a full back office behind it.',
+    a: 'Recent work includes Wild Hope, a Flathead Lake retreat village told through seventeen original oil paintings; Cross + Covenant, a direct-to-consumer apparel brand taken from sketch to live storefront in sixty days; Lago Society, a lakeside fashion house with an agentic personal stylist; and D&D Landscaping, a design-build landscaper with a full back office behind it.',
   },
   {
     q: 'Do I need to know agentic systems to work with the studio?',
