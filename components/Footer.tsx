@@ -58,6 +58,7 @@ export default function Footer() {
         { label: 'Industries We Build For', href: '/for' },
         { label: 'For Builders and Contractors', href: '/for/contractors' },
         { label: 'For Health Practices', href: '/for/health' },
+        { label: 'For Wedding Venues', href: '/for/weddings' },
         { label: 'Future-Proof Your Business', href: '/future-proof' },
         { label: 'Partner Program', href: '/partners' },
       ],

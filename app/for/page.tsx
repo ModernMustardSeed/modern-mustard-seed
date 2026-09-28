@@ -48,6 +48,13 @@ const collectionJsonLd = {
       description:
         'Websites Google and ChatGPT recommend, online booking, and a voice or text front desk that answers every call. Built for optometrists, dentists, med spas, clinics and therapists.',
     },
+    {
+      '@type': 'WebPage',
+      name: 'Wedding Websites, Guest Apps and Planners for Venues, Planners and Photographers',
+      url: `${SITE.url}/for/weddings`,
+      description:
+        'A wedding website, a guest app and a couple’s planner on one guest list, built with the venue name, photos and weekend.',
+    },
   ],
 };
 
@@ -153,6 +160,25 @@ export default function ForIndex() {
               </h2>
               <p className="text-[#3a3733] text-sm md:text-base font-body leading-7 mb-5">
                 Optometrists, dentists, med spas, clinics and therapists: a site patients choose, booking that works at midnight, and a front desk that answers every call.
+              </p>
+              <span className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.25em] font-mono font-bold text-[#c8201a] group-hover:text-[#d0241b] transition-colors">
+                Read the playbook
+                <span aria-hidden="true">→</span>
+              </span>
+            </Link>
+
+            <Link
+              href="/for/weddings"
+              className="pop-card p-8 md:p-10 hover:-translate-y-1 hover:shadow-[7px_7px_0_0_#0d0d0d] transition-all duration-300 group"
+            >
+              <span className="text-[10px] uppercase tracking-[0.35em] text-[#c8201a] font-mono font-bold mb-4 block">
+                Websites, Guest Apps and Planners
+              </span>
+              <h2 className="font-display text-xl md:text-2xl font-black text-[#0d0d0d] tracking-tight mb-4">
+                Wedding Venues, Planners and Photographers
+              </h2>
+              <p className="text-[#3a3733] text-sm md:text-base font-body leading-7 mb-5">
+                Give every couple the whole weekend: a wedding website, a guest app and a planner on one guest list, with your venue’s name on every one.
               </p>
               <span className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.25em] font-mono font-bold text-[#c8201a] group-hover:text-[#d0241b] transition-colors">
                 Read the playbook
