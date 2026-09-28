@@ -2,6 +2,7 @@ import { getSupabase } from '@/lib/supabase';
 import { buildMetadata } from '@/lib/seo';
 import { PILLAR_WEIGHTS, type PresenceAuditReport, type Pillar } from '@/lib/presence-audit';
 import PresenceAsk from '@/components/PresenceAsk';
+import RivieraAudit from './RivieraAudit';
 
 export const dynamic = 'force-dynamic';
 export const metadata = buildMetadata({ title: 'Your Presence Audit', noindex: true });
@@ -21,6 +22,18 @@ export const metadata = buildMetadata({ title: 'Your Presence Audit', noindex: t
  */
 
 type Params = Promise<{ auditId: string }>;
+type Search = Promise<{ look?: string }>;
+
+/**
+ * THE RIVIERA CUTOFF. Sarah, 2026-09-28: every audit from here on wears the new
+ * house, and the ones already sent stay exactly as their owners saw them (Andy's
+ * Crafthouse was named). The switch is the row's created_at, never the report's
+ * generated_at: regrade-presence-audits.mts rebuilds reports in place under the
+ * same id, and a rebuilt report must not change clothes on someone who already
+ * has the link. ?look=riviera previews the new look on any audit without
+ * changing what its owner sees.
+ */
+const RIVIERA_FROM = '2026-09-28T19:00:00Z';
 
 const RING = (score: number) => (score >= 80 ? '#1E7A3C' : score >= 60 ? '#B87503' : '#C4160B');
 
@@ -87,8 +100,9 @@ function Checks({ pillar }: { pillar: Pillar }) {
   );
 }
 
-export default async function PresenceAuditPage({ params }: { params: Params }) {
+export default async function PresenceAuditPage({ params, searchParams }: { params: Params; searchParams: Search }) {
   const { auditId } = await params;
+  const { look } = await searchParams;
   const sb = getSupabase();
 
   const missing = (
@@ -112,12 +126,14 @@ export default async function PresenceAuditPage({ params }: { params: Params }) 
 
   const { data: row } = await sb
     .from('presence_audits')
-    .select('report, status, lead_id')
+    .select('report, status, lead_id, created_at')
     .eq('id', auditId)
     .maybeSingle();
   if (!row?.report) return missing;
 
   const r = row.report as PresenceAuditReport;
+  const riviera = look === 'riviera' || (look !== 'classic' && Date.parse(String(row.created_at ?? '')) >= Date.parse(RIVIERA_FROM));
+  if (riviera) return <RivieraAudit r={r} auditId={auditId} leadId={String(row.lead_id ?? '')} />;
   const pillars = r.pillars ?? [];
   const business = r.business_name || 'your business';
 
