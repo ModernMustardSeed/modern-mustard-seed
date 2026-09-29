@@ -26,6 +26,14 @@ export type ClientProject = {
    * answer yet.
    */
   domainsReady?: boolean;
+  /**
+   * Rooms this client does not get, because another system of theirs already
+   * does the job: a Buildertrend shop keeps its pipeline in Lead Opportunities
+   * and its subs in Subs and Vendors, and a second copy is homework. A hidden
+   * room is absent from the rail and nothing feeds it: no briefs, no board
+   * reads, no certificate warnings, no Operator job actions.
+   */
+  hiddenRooms?: Array<'jobs' | 'field' | 'trades'>;
   /** People keys who get the 7:13 morning brief by email (app/api/cron/cc-morning). */
   morningBrief?: string[];
   clientEmail: string;
@@ -102,6 +110,8 @@ export const CLIENT_PROJECTS: Record<string, ClientProject> = {
     domainsReady: false,
     // Shan runs the sites; the brief is for the truck before it leaves.
     morningBrief: ['shan'],
+    // Buildertrend covers the pipeline and the subs (Sarah, 2026-09-29).
+    hiddenRooms: ['jobs', 'field', 'trades'],
     clientEmail: 'builtbyshan@gmail.com',
     business: 'Built Right in Montana',
     siteUrl: 'https://built-right-montana-demo.vercel.app',
@@ -159,6 +169,13 @@ export function projectForOfficeOrigin(origin: string): ClientProject | null {
 }
 
 /** The project a signed-in client belongs to, if any. */
+/** True when this client does not get the room (see ClientProject.hiddenRooms). */
+export function roomHidden(project: ClientProject, room: 'jobs' | 'field' | 'trades'): boolean {
+  const hidden = project.hiddenRooms ?? [];
+  // From the site lands photographs on a job, so it goes wherever the board goes.
+  return hidden.includes(room) || (room === 'field' && hidden.includes('jobs'));
+}
+
 export function projectForEmail(email: string): ClientProject | null {
   const e = email.toLowerCase();
   return Object.values(CLIENT_PROJECTS).find((p) => p.clientEmail.toLowerCase() === e) ?? null;
