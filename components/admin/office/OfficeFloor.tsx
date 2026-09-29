@@ -267,6 +267,35 @@ function FloorBody({ api }: { api: OfficeApi }) {
           <Shelf items={state?.deliverables ?? []} />
         </Panel>
 
+        <Panel
+          title="What the floor has learned"
+          note="After every mission Sower files what actually worked and what did not, with the evidence. Every plan after that carries these. Pin one to keep it on top; retire one that no longer holds."
+        >
+          {!state?.lessons.length ? (
+            <p className="text-[13px] text-[#161616]/60">Nothing yet. The first debrief writes the first lessons.</p>
+          ) : (
+            <ul className="space-y-2">
+              {state.lessons.map((l) => (
+                <li key={l.id} className={`flex items-start gap-3 rounded-xl border-2 px-3 py-2.5 ${l.pinned ? 'border-[#161616] bg-[#FFF6D6]' : 'border-[#161616]/15 bg-white'}`}>
+                  <span className="mt-0.5 shrink-0 rounded-md border-2 border-[#161616] bg-[#FBF6EA] px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-[0.12em] text-[#161616]">{l.area}</span>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[13.5px] font-semibold leading-snug text-[#161616]">{l.lesson}</p>
+                    {l.evidence && <p className="mt-0.5 text-[12px] leading-snug text-[#161616]/65">{l.evidence}</p>}
+                  </div>
+                  <div className="flex shrink-0 gap-1.5">
+                    <button type="button" onClick={() => api.lesson(l.id, { pinned: !l.pinned })} className="rounded-lg border-2 border-[#161616] bg-white px-2 py-1 font-oswald text-[10.5px] font-semibold uppercase tracking-[0.1em] text-[#161616]">
+                      {l.pinned ? 'Unpin' : 'Pin'}
+                    </button>
+                    <button type="button" onClick={() => api.lesson(l.id, { active: false })} className="rounded-lg border-2 border-[#161616]/30 bg-white px-2 py-1 font-oswald text-[10.5px] font-semibold uppercase tracking-[0.1em] text-[#161616]/70">
+                      Retire
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </Panel>
+
         <div className="grid gap-6 xl:grid-cols-2">
           <Panel title="Live feed">
             <ol className="max-h-[26rem] space-y-2 overflow-y-auto pr-1">

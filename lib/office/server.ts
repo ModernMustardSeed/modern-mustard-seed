@@ -38,7 +38,10 @@ export type OfficeState = {
   approvals: Approval[];
   deliverables: Deliverable[];
   events: { id: number; agent: string; kind: string; text: string; mission_id: string | null; created_at: string }[];
+  lessons: Lesson[];
 };
+
+export type Lesson = { id: string; lesson: string; area: string; evidence: string | null; mission_id: string | null; pinned: boolean; created_at: string };
 
 export type Task = {
   id: string;
@@ -98,6 +101,9 @@ const HEALTH_STALE_MS = 90_000;
 
 export async function loadOfficeState(sb: SupabaseClient, opts: { lite?: boolean } = {}): Promise<OfficeState> {
   const lite = Boolean(opts.lite);
+  const lessonRes = lite
+    ? { data: [] }
+    : await sb.from('office_lessons').select('id, lesson, area, evidence, mission_id, pinned, created_at').eq('active', true).order('pinned', { ascending: false }).order('created_at', { ascending: false }).limit(40);
   const [healthRes, settings, chiefRes, msgRes, missionRes, approvalRes, delivRes, eventRes] = await Promise.all([
     sb.from('app_state').select('value').eq('key', HEALTH_KEY).maybeSingle(),
     getSettings(sb),
@@ -145,5 +151,6 @@ export async function loadOfficeState(sb: SupabaseClient, opts: { lite?: boolean
     approvals: (approvalRes.data ?? []) as Approval[],
     deliverables: (delivRes.data ?? []) as Deliverable[],
     events: (eventRes.data ?? []) as OfficeState['events'],
+    lessons: (lessonRes.data ?? []) as Lesson[],
   };
 }

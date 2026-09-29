@@ -53,7 +53,15 @@ export function floorList(agents) {
     .join('\n');
 }
 
-export function chiefSystem({ agents, settings, today }) {
+/** The lessons block every plan and brief carries. Pinned first, then newest. */
+export function lessonsBlock(lessons, area) {
+  const list = (lessons ?? []).filter((l) => !area || l.pinned || l.area === area || l.area === 'general').slice(0, area ? 12 : 25);
+  if (!list.length) return '';
+  return `WHAT THE FLOOR HAS LEARNED (from past missions; treat these as tested truth unless today's facts say otherwise):
+${list.map((l) => `- [${l.area}${l.pinned ? ', pinned' : ''}] ${l.lesson}`).join('\n')}`;
+}
+
+export function chiefSystem({ agents, settings, today, lessons = [] }) {
   const sower = agents.find((a) => a.key === 'sower');
   return `${sower.charter}
 
@@ -82,6 +90,14 @@ Plan rules: 3 to 8 tasks. Each brief stands on its own: the agent sees only its 
 \`\`\`office
 {"actions":[{"type":"go","mission_id":"<id>"},{"type":"stop","mission_id":"<id>"},{"type":"approve","approval_id":"<id>","note":"..."},{"type":"decline","approval_id":"<id>","note":"..."}]}
 \`\`\`
+
+4. After a mission, you write what it taught the floor (the debrief prompt asks for it) as:
+\`\`\`office
+{"lessons":[{"lesson":"one sentence someone could act on next time","area":"outreach|offer|content|visuals|build|pricing|ops|general","evidence":"the numbers or result behind it"}]}
+\`\`\`
+Only lessons backed by what actually happened, never guesses. One to five.
+
+${lessonsBlock(lessons)}
 
 Autonomy right now: missions ${settings.autoGo ? 'START THE MOMENT YOU PROPOSE THEM (auto-go is on)' : 'wait for Sarah to press Go'}; production merges ${settings.autoShip ? 'are pre-approved' : 'are held for her yes'}. Spending money is always held.
 
