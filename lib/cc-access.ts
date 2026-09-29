@@ -28,7 +28,8 @@ export function accountForEmail(email: string): CcAccount | null {
   // A person signs in with the address on the project or with their own
   // mailbox on the business's domain (carmen@brimhomes.com): both are theirs,
   // and Carmen tried the second one first. Nobody else gets a code.
-  const isThem = (p: { email: string; mailbox?: string }) => normalizeEmail(p.email) === typed || (p.mailbox ? normalizeEmail(p.mailbox) === typed : false);
+  const isThem = (p: { email: string; mailbox?: string; aliases?: string[] }) =>
+    [p.email, p.mailbox, ...(p.aliases ?? [])].some((a) => (a ? normalizeEmail(a) === typed : false));
   for (const project of Object.values(CLIENT_PROJECTS)) {
     const named = Object.values(project.people ?? {}).find(isThem);
     if (normalizeEmail(project.clientEmail) === typed || named) {

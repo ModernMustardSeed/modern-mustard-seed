@@ -5,6 +5,7 @@ import { visibleProject } from '@/lib/command-center/visible';
 import { CATEGORIES, collectSorted, connectMailbox, disconnectMailbox, mailStatus, saveDraft, sendReply, syncMailbox, writeReply, type MailRow } from '@/lib/mail-desk';
 import { resendClient } from '@/lib/send-email';
 import { hiddenMailboxes, mailboxFilter, mailboxVisible } from '@/lib/mail-scope';
+import { getCcWho } from '@/lib/client-auth';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -51,7 +52,19 @@ export async function GET() {
   });
   const counts: Record<string, number> = {};
   for (const m of items) if (m.status === 'new') counts[m.category ?? 'sorting'] = (counts[m.category ?? 'sorting'] ?? 0) + 1;
-  return NextResponse.json({ mail: { status, items, counts, categories: CATEGORIES } });
+  // The person at the desk and their own inbox, so the room can ask them to
+  // connect it the first time they sit down. Null for the account holder
+  // with no named person, and for Sarah looking in.
+  let mine: { name: string; address: string; connected: boolean } | null = null;
+  if (!session.preview) {
+    const whoEmail = await getCcWho();
+    const me = whoEmail ? Object.values(project.people ?? {}).find((p) => [p.email, ...(p.aliases ?? [])].some((a) => a.toLowerCase() === whoEmail)) : undefined;
+    if (me?.mailbox) {
+      const address = me.mailbox.toLowerCase();
+      mine = { name: me.name, address, connected: Boolean(full.mailboxes?.some((b) => b.address.toLowerCase() === address && b.connected)) };
+    }
+  }
+  return NextResponse.json({ mail: { status, items, counts, categories: CATEGORIES, mine } });
 }
 
 export async function POST(req: Request) {
