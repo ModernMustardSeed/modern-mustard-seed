@@ -20,7 +20,11 @@ import { addPost, archiveCode, clearPosts, deleteContact, deleteJob, deleteLead,
 import { hydrateDesks } from '@/lib/client-desks';
 
 export const runtime = 'nodejs';
-export const maxDuration = 60;
+// The queue hop plus the thinking runs 45 to 65 seconds on the workstation
+// drainer (measured 2026-09-28 across every job that day), so a 45 second wait
+// inside a 60 second route answered "I hit a snag" to nearly every question
+// while the real answer landed seconds later where nothing read it.
+export const maxDuration = 150;
 
 /**
  * The in-portal AI guide. Scoped strictly to the signed-in client's own data
@@ -267,7 +271,7 @@ export async function POST(req: Request) {
       system: `${system}\n\n${DECISION_RULES}`,
       user: renderTranscript(convo, { assistantLabel: 'Assistant', userLabel: 'Client' }),
       schema: DECISION_SCHEMA,
-      timeoutMs: 45_000,
+      timeoutMs: 120_000,
       // A client is sitting in the Operator watching a spinner. This is the one
       // call site in the product where the queue hop, not the thinking, is the
       // wait, and where forty seconds reads as broken rather than busy. Costs a
