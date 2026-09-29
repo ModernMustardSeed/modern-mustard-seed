@@ -42,7 +42,7 @@ export async function GET(req: Request) {
   const sb = getSupabase();
   if (account && sb && (await commandCenterVisible(sb, account.clientEmail))) {
     await setCcSessionCookie(account.clientEmail);
-    if (account.person) await setCcWhoCookie(account.typed);
+    if (account.personEmail) await setCcWhoCookie(account.personEmail);
     if (next === '/portal') return NextResponse.redirect(`${origin}/cc`);
   }
   // A client's own Command Center is reached through its own address, which

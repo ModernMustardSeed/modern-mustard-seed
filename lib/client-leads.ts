@@ -15,6 +15,17 @@ export type ClientProject = {
   key: string;
   /** Their own sign-in door, modernmustardseed.com/cc/<door>. Defaults to key. */
   door?: string;
+  /**
+   * The day their site went public. Website chats from before it were our own
+   * testing on the preview, so the chat sync never copies them into the room.
+   */
+  recordsSince?: string;
+  /**
+   * False hides the Domains room until their names are moved to us and read
+   * live there. A room listing two of twenty names asks a question it cannot
+   * answer yet.
+   */
+  domainsReady?: boolean;
   clientEmail: string;
   business: string;
   siteUrl: string;
@@ -83,6 +94,10 @@ export const CLIENT_PROJECTS: Record<string, ClientProject> = {
   'built-right': {
     key: 'built-right',
     door: 'brim',
+    // Domain cutover, 2026-09-25. Every chat before it was the studio testing.
+    recordsSince: '2026-09-25T00:00:00Z',
+    // Hidden until Sarah transfers their names (on hold by her call, 2026-09-28).
+    domainsReady: false,
     clientEmail: 'builtbyshan@gmail.com',
     business: 'Built Right in Montana',
     siteUrl: 'https://built-right-montana-demo.vercel.app',

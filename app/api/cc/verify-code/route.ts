@@ -47,6 +47,6 @@ export async function POST(req: Request) {
   await setClientSessionCookie(account.typed);
   // The board is shared, the person is not. Keep who this code was mailed to,
   // so what they write is signed with their name.
-  if (account.person) await setCcWhoCookie(account.typed);
+  if (account.personEmail) await setCcWhoCookie(account.personEmail);
   return NextResponse.json({ ok: true, next: '/cc' });
 }
