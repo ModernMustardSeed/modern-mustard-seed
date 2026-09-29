@@ -23,6 +23,7 @@
  */
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { listConversations, type ChatConversation } from '@/lib/command-center/chats';
+import { projectForEmail } from '@/lib/client-leads';
 
 export type StoredConversation = ChatConversation & {
   lastAt: string;
@@ -96,7 +97,13 @@ export async function syncChats(
   if (conversations === null) return { read: false, seen: 0, written: 0 };
 
   const email = opts.clientEmail.toLowerCase();
-  const rows = conversations.map((c) => {
+  // Chats from before the site went public were our own testing on the
+  // preview. They are left at the provider and never written here, or a sync
+  // would put back every test a person cleared out of the room.
+  await (await import('@/lib/client-desks')).hydrateDesks();
+  const since = projectForEmail(email)?.recordsSince ?? null;
+  const live = since ? conversations.filter((c) => Date.parse(c.startedAt) >= Date.parse(since)) : conversations;
+  const rows = live.map((c) => {
     // The conversation's last moment is the last turn's, not the first chat's.
     // Sorting a room by started_at alone buries a conversation that is still
     // going under one that opened an hour earlier and ended immediately.
