@@ -147,6 +147,9 @@ export default function Operator({ open, onClose, seed, session, go, onDidAct }:
           ))}
           {busy && (
             <div className="max-w-[92%] rounded-xl border border-[var(--cc-line)] bg-white px-4 py-3">
+              {/* A full answer reads the whole desk first and takes up to a
+                  minute, so the wait says so instead of looking stuck. */}
+              <p className="mb-2 text-[12.5px] text-[var(--cc-muted)]">Reading your desk. A full answer takes up to a minute.</p>
               <span className="inline-flex gap-1">
                 <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-[var(--cc-muted)]" />
                 <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-[var(--cc-muted)] [animation-delay:120ms]" />
