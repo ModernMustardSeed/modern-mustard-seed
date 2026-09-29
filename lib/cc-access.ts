@@ -18,18 +18,22 @@ export type CcAccount = {
   clientEmail: string;
   /** Their first name, when the project names them. */
   person: string | null;
+  /** The named person's address on the project, which signs their marks. */
+  personEmail: string | null;
   project: ClientProject;
 };
 
 export function accountForEmail(email: string): CcAccount | null {
   const typed = normalizeEmail(email);
+  // A person signs in with the address on the project or with their own
+  // mailbox on the business's domain (carmen@brimhomes.com): both are theirs,
+  // and Carmen tried the second one first. Nobody else gets a code.
+  const isThem = (p: { email: string; mailbox?: string }) => normalizeEmail(p.email) === typed || (p.mailbox ? normalizeEmail(p.mailbox) === typed : false);
   for (const project of Object.values(CLIENT_PROJECTS)) {
-    if (normalizeEmail(project.clientEmail) === typed) {
-      const named = Object.values(project.people ?? {}).find((p) => normalizeEmail(p.email) === typed);
-      return { typed, clientEmail: project.clientEmail, person: named?.name ?? null, project };
+    const named = Object.values(project.people ?? {}).find(isThem);
+    if (normalizeEmail(project.clientEmail) === typed || named) {
+      return { typed, clientEmail: project.clientEmail, person: named?.name ?? null, personEmail: named ? normalizeEmail(named.email) : null, project };
     }
-    const person = Object.values(project.people ?? {}).find((p) => normalizeEmail(p.email) === typed);
-    if (person) return { typed, clientEmail: project.clientEmail, person: person.name, project };
   }
   return null;
 }
