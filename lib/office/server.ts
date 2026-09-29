@@ -25,6 +25,8 @@ export type OfficeHealth = {
   lanes: number;
   running: { job: string; kind: string; agent: string; title: string }[];
   probes: Record<string, string>;
+  /** When each engine reopens, if it is at its usage cap right now. */
+  caps: { claude: string | null; codex: string | null };
 };
 
 export type OfficeState = {
@@ -43,6 +45,7 @@ export type Task = {
   mission_id: string;
   position: number;
   agent: string;
+  engine: 'claude' | 'codex';
   title: string;
   brief: string;
   status: string;
@@ -111,7 +114,7 @@ export async function loadOfficeState(sb: SupabaseClient, opts: { lite?: boolean
   const { data: taskRows } = ids.length
     ? await sb
         .from('office_tasks')
-        .select('id, mission_id, position, agent, title, brief, status, last_action, output, error, depends_on, started_at, finished_at, updated_at')
+        .select('id, mission_id, position, agent, engine, title, brief, status, last_action, output, error, depends_on, started_at, finished_at, updated_at')
         .in('mission_id', ids)
         .order('position')
     : { data: [] };
@@ -133,6 +136,7 @@ export async function loadOfficeState(sb: SupabaseClient, opts: { lite?: boolean
       lanes: h?.lanes ?? 0,
       running: up ? h?.running ?? [] : [],
       probes: h?.probes ?? {},
+      caps: { claude: h?.caps?.claude ?? null, codex: h?.caps?.codex ?? null },
     },
     settings,
     thinking: chiefRes.data?.[0] ?? null,

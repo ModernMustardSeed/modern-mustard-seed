@@ -32,7 +32,7 @@ export const SETTINGS_KEY = 'office_settings';
 export const HEALTH_KEY = 'office_worker_health';
 export const CHIEF_KEY = 'office_chief';
 
-export type PlanTask = { key?: string; agent: string; title: string; brief: string; after?: string[] };
+export type PlanTask = { key?: string; agent: string; title: string; brief: string; after?: string[]; engine?: string };
 export type MissionPlan = {
   title: string;
   goal: string;
@@ -42,7 +42,9 @@ export type MissionPlan = {
   tasks: PlanTask[];
 };
 
-const WORKERS = new Set(['scout', 'rep', 'maker', 'herald', 'builder', 'ledger']);
+const WORKERS = new Set(['scout', 'rep', 'maker', 'herald', 'studio', 'builder', 'ledger']);
+/** Mirrors `engine` in lib/office/agents.ts; kept here because this file takes no imports. */
+const CODEX_BY_DEFAULT = new Set(['studio']);
 const TERMINAL = new Set(['done', 'failed', 'stopped']);
 
 export async function getSettings(sb: Db): Promise<OfficeSettings> {
@@ -116,6 +118,7 @@ export async function createMission(sb: Db, plan: MissionPlan, settings: OfficeS
     mission_id: mission.id,
     position: i,
     agent: String(t.agent).toLowerCase(),
+    engine: t.engine === 'codex' || t.engine === 'claude' ? t.engine : CODEX_BY_DEFAULT.has(String(t.agent).toLowerCase()) ? 'codex' : 'claude',
     title: t.title.slice(0, 200),
     brief: t.brief.slice(0, 8000),
     depends_on: (t.after ?? []).map((k) => byKey.get(k)).filter((x): x is string => Boolean(x) && x !== ids[i]),
