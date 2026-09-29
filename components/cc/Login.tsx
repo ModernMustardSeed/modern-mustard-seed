@@ -9,7 +9,23 @@ import { Button, cx, inputCls } from '@/components/cc/ui';
  * and a portal link opens this too, so nobody is asked twice.
  */
 
-export default function Login() {
+type StudioDoor = { door: string; business: string };
+
+export default function Login({
+  door,
+  business,
+  logo,
+  accent,
+  studioDoors,
+}: {
+  /** Set on a client's own door, /cc/<door>. */
+  door?: string;
+  business?: string;
+  logo?: string;
+  accent?: string;
+  /** Present while Sarah's studio pass is live: pick a client instead of signing in. */
+  studioDoors?: StudioDoor[] | null;
+} = {}) {
   const [step, setStep] = useState<'email' | 'code'>('email');
   const [email, setEmail] = useState('');
   const [code, setCode] = useState('');
@@ -25,7 +41,7 @@ export default function Login() {
     setBusy(true);
     setError(null);
     try {
-      const r = await fetch('/api/cc/request-code', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ email }) });
+      const r = await fetch('/api/cc/request-code', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ email, door }) });
       const j = (await r.json()) as { ok?: boolean; error?: string };
       if (!r.ok) {
         setError(j.error ?? 'That did not go through.');
@@ -43,15 +59,35 @@ export default function Login() {
     setBusy(true);
     setError(null);
     try {
-      const r = await fetch('/api/cc/verify-code', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ email, code }) });
-      const j = (await r.json()) as { ok?: boolean; error?: string };
+      const r = await fetch('/api/cc/verify-code', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ email, code, door }) });
+      const j = (await r.json()) as { ok?: boolean; error?: string; next?: string };
       if (!r.ok || !j.ok) {
         setError(j.error ?? 'That code did not work.');
         return;
       }
-      window.location.href = '/cc';
+      // The studio key from /cc/login has no client yet: reload onto the picker.
+      if (j.next === '/cc/login') window.location.reload();
+      else window.location.href = j.next ?? '/cc';
     } catch {
       setError('That code did not work.');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const enter = async (d: string) => {
+    setBusy(true);
+    setError(null);
+    try {
+      const r = await fetch('/api/cc/studio', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ door: d }) });
+      const j = (await r.json()) as { ok?: boolean; error?: string };
+      if (!r.ok || !j.ok) {
+        setError(j.error ?? 'That did not open.');
+        return;
+      }
+      window.location.href = '/cc';
+    } catch {
+      setError('That did not open.');
     } finally {
       setBusy(false);
     }
@@ -60,11 +96,54 @@ export default function Login() {
   return (
     <main
       className="min-h-screen grid lg:grid-cols-2 bg-[#F6F7F9] text-[#12151b]"
-      style={{ ['--cc-ink' as string]: '#12151b', ['--cc-line' as string]: '#E4E7EC', ['--cc-muted' as string]: '#5B6472', ['--cc-accent' as string]: '#1E50C8', ['--cc-card' as string]: '#fff' }}
+      style={{ ['--cc-ink' as string]: '#12151b', ['--cc-line' as string]: '#E4E7EC', ['--cc-muted' as string]: '#5B6472', ['--cc-accent' as string]: accent ?? '#1E50C8', ['--cc-card' as string]: '#fff' }}
     >
       <section className="flex items-center justify-center px-6 py-16">
+        {studioDoors ? (
+          // THE STUDIO PICKER. Sarah's pass is live: every client, one press each.
+          <div className="w-full max-w-[420px]">
+            <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[#5B6472]">Studio key</p>
+            <h1 className="mt-2 font-display text-[30px] leading-tight">Which client?</h1>
+            <p className="mt-2 text-[14px] leading-relaxed text-[#5B6472]">You see their Command Center exactly as they do. What you mark is signed Sarah at Modern Mustard Seed.</p>
+            <div className="mt-6 space-y-2">
+              {studioDoors.map((d) => (
+                <button
+                  key={d.door}
+                  onClick={() => void enter(d.door)}
+                  disabled={busy}
+                  className={cx(
+                    'flex w-full items-center justify-between gap-3 rounded-xl border bg-white px-4 py-3.5 text-left transition hover:border-[#12151b] disabled:opacity-50',
+                    d.door === door ? 'border-[var(--cc-accent)]' : 'border-[#E4E7EC]',
+                  )}
+                >
+                  <span className="min-w-0">
+                    <span className="block truncate text-[15px] font-semibold">{d.business}</span>
+                    <span className="block font-mono text-[11px] text-[#5B6472]">/cc/{d.door}</span>
+                  </span>
+                  <span className="flex-none text-[13px] font-semibold text-[var(--cc-accent)]">Open</span>
+                </button>
+              ))}
+            </div>
+            {error && <p className="mt-3 text-[13px] text-[#B42318]">{error}</p>}
+            <button
+              type="button"
+              className="mt-6 text-[12.5px] text-[#5B6472] underline"
+              onClick={async () => {
+                await fetch('/api/cc/logout', { method: 'POST' });
+                window.location.reload();
+              }}
+            >
+              Sign out of the studio key
+            </button>
+          </div>
+        ) : (
         <div className="w-full max-w-[380px]">
-          <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[#5B6472]">Command Center</p>
+          {logo ? (
+            // Their door wears their mark, so the link they saved is plainly theirs.
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={logo} alt={business ?? ''} className="mb-6 h-auto w-full max-w-[200px]" />
+          ) : null}
+          <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[#5B6472]">{business ? `${business} Command Center` : 'Command Center'}</p>
           <h1 className="mt-2 font-display text-[30px] leading-tight">Sign in</h1>
           <p className="mt-2 text-[14px] leading-relaxed text-[#5B6472]">
             {step === 'email' ? 'Your business email. We send a six digit code, good for fifteen minutes.' : `We sent a code to ${email}. It works once.`}
@@ -128,6 +207,7 @@ export default function Login() {
             .
           </p>
         </div>
+        )}
       </section>
 
       <section className="hidden lg:flex flex-col justify-center bg-[#0F1218] px-14 py-14 text-white">

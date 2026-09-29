@@ -43,6 +43,24 @@ export async function accountForSession(sb: SupabaseClient, email: string, previ
   return (await commandCenterVisible(sb, account.clientEmail)) ? account : null;
 }
 
+/** A client's own sign-in door: modernmustardseed.com/cc/<door>. */
+export function doorOf(project: ClientProject): string {
+  return (project.door ?? project.key).toLowerCase();
+}
+
+/** The project behind a door, or null. The caller has hydrated the desks. */
+export function projectForDoor(door: string): ClientProject | null {
+  const d = door.toLowerCase();
+  return Object.values(CLIENT_PROJECTS).find((p) => doorOf(p) === d) ?? null;
+}
+
+/** Every door, for the studio's picker. The caller has hydrated the desks. */
+export function allDoors(): Array<{ door: string; business: string; clientEmail: string }> {
+  return Object.values(CLIENT_PROJECTS)
+    .map((p) => ({ door: doorOf(p), business: p.business, clientEmail: p.clientEmail }))
+    .sort((a, b) => a.business.localeCompare(b.business));
+}
+
 /** The brand the Command Center wears: theirs, never ours. */
 export function brandFor(project: ClientProject) {
   return {

@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
 import { resendClient } from '@/lib/send-email';
 import { getSupabase } from '@/lib/supabase';
-import { createMagicToken, normalizeEmail } from '@/lib/client-auth';
-import { accountForEmail, accountForSession, brandFor } from '@/lib/cc-access';
+import { createMagicToken, normalizeEmail, STUDIO_EMAIL } from '@/lib/client-auth';
+import { accountForEmail, accountForSession, brandFor, projectForDoor } from '@/lib/cc-access';
 import { startChallenge, ccCodeEmail } from '@/lib/cc-code';
 import { magicLinkEmail } from '@/lib/email';
 import { SITE } from '@/lib/seo';
@@ -27,14 +27,36 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
  */
 export async function POST(req: Request) {
   await hydrateDesks();
-  let body: { email?: string };
+  let body: { email?: string; door?: string };
   try {
-    body = (await req.json()) as { email?: string };
+    body = (await req.json()) as { email?: string; door?: string };
   } catch {
     return NextResponse.json({ error: 'We could not read that.' }, { status: 400 });
   }
   const email = normalizeEmail(body.email ?? '');
   if (!email || !EMAIL_RE.test(email)) return NextResponse.json({ error: 'Enter the email address on your account.' }, { status: 400 });
+
+  // THE STUDIO KEY. Sarah's address gets a code on any door, and only her
+  // address: it is compared exactly, never matched by domain.
+  if (email === STUDIO_EMAIL) {
+    try {
+      const code = await startChallenge(email);
+      const at = body.door ? projectForDoor(body.door) : null;
+      if (process.env.RESEND_API_KEY) {
+        await resendClient().emails.send({
+          from: 'Modern Mustard Seed Command Center <sarah@modernmustardseed.com>',
+          to: STUDIO_EMAIL,
+          subject: `${code} is your studio code${at ? ` for ${at.business}` : ''}`,
+          html: ccCodeEmail({ code, link: null, business: at ? `Studio key: ${at.business}` : 'Studio key' }),
+        });
+      } else {
+        console.warn('RESEND_API_KEY missing; studio code not sent');
+      }
+    } catch (err) {
+      console.error('studio code send failed', err);
+    }
+    return NextResponse.json({ ok: true });
+  }
 
   const sb = getSupabase();
   const account = sb ? await accountForSession(sb, email) : null;

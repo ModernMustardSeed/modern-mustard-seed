@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { verifyToken, COOKIE_NAME } from '@/lib/admin-auth';
-import { verifyClientToken, verifyLookToken, verifyCcToken, CLIENT_COOKIE_NAME, CLIENT_LOOK_COOKIE_NAME, CC_COOKIE_NAME } from '@/lib/client-auth';
+import { verifyClientToken, verifyLookToken, verifyCcToken, verifyStudioToken, CLIENT_COOKIE_NAME, CLIENT_LOOK_COOKIE_NAME, CC_COOKIE_NAME, CC_STUDIO_COOKIE_NAME } from '@/lib/client-auth';
 
 export const config = {
   matcher: ['/admin/:path*', '/portal/:path*', '/cc/:path*', '/Mustard', '/MUSTARD', '/Contact', '/Terms', '/Privacy'],
@@ -40,13 +40,18 @@ export async function middleware(req: NextRequest) {
   // the two are sold apart and entered apart. Sarah's look pass opens it so a
   // Command Center can be perfected before the client is ever handed a code.
   if (path.startsWith('/cc')) {
-    if (path === '/cc/login') return NextResponse.next();
+    // /cc/login and every client's own door (/cc/brim) are sign-in pages.
+    if (path === '/cc/login' || /^\/cc\/[a-z0-9-]+\/?$/.test(path)) return NextResponse.next();
     const token = req.cookies.get(CC_COOKIE_NAME)?.value;
-    let session = token ? await verifyCcToken(token) : null;
+    let session: unknown = token ? await verifyCcToken(token) : null;
     if (!session) {
       const look = req.cookies.get(CLIENT_LOOK_COOKIE_NAME)?.value;
       const admin = req.cookies.get(COOKIE_NAME)?.value;
       if (look && admin && (await verifyToken(admin))) session = await verifyLookToken(look);
+    }
+    if (!session) {
+      const studio = req.cookies.get(CC_STUDIO_COOKIE_NAME)?.value;
+      if (studio && (await verifyStudioToken(studio))) session = true;
     }
     if (!session) return NextResponse.redirect(new URL('/cc/login', req.url));
     return NextResponse.next();
