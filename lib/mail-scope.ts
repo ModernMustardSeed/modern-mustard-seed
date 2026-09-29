@@ -21,7 +21,7 @@ export async function hiddenMailboxes(project: ClientProject): Promise<Set<strin
   const who = await getCcWho();
   if (!who) return null;
   const people = Object.values(project.people ?? {});
-  const me = people.find((p) => norm(p.email) === who || (p.mailbox && norm(p.mailbox) === who));
+  const me = people.find((p) => [p.email, p.mailbox, ...(p.aliases ?? [])].some((a) => a && norm(a) === who));
   if (!me) return null;
   const hidden = new Set(people.filter((p) => p !== me && p.mailbox).map((p) => norm(p.mailbox as string)));
   return hidden.size ? hidden : null;

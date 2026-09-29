@@ -43,6 +43,26 @@ function GoogleMark() {
   );
 }
 
+/**
+ * The person at the desk has an inbox of their own that is not connected yet.
+ * One press, on their own Google account, and the sorter and the reply writer
+ * work it like the office one. Only they will see what is in it.
+ */
+function ConnectMine({ name, address }: { name: string; address: string }) {
+  return (
+    <Card>
+      <div className="flex flex-wrap items-center gap-3">
+        <p className="min-w-0 flex-1 text-[14px]">
+          <span className="font-semibold">{name}, bring in your own email.</span> Connect {address} and it is read and sorted like the office inbox, with replies drafted. Only you will see it here.
+        </p>
+        <Button kind="primary" href={`/api/portal/mail/google?back=cc&hint=${encodeURIComponent(address)}`}>
+          <GoogleMark /> Connect my Gmail
+        </Button>
+      </div>
+    </Card>
+  );
+}
+
 /** A Google mailbox whose grant ended: one press puts it back, on the same account. */
 function SignInAgain({ address }: { address: string }) {
   return (
@@ -57,7 +77,7 @@ function SignInAgain({ address }: { address: string }) {
   );
 }
 type Status = { connected: boolean; address: string | null; lastSyncAt: string | null; error: string | null; mailboxes?: Mailbox[] };
-type Payload = { mail: { status: Status; items: MailItem[]; counts: Record<string, number>; categories?: string[] } | null };
+type Payload = { mail: { status: Status; items: MailItem[]; counts: Record<string, number>; categories?: string[]; mine?: { name: string; address: string; connected: boolean } | null } | null };
 
 export default function Inbox({ refreshPulse }: { refreshPulse: () => void }) {
   const [data, setData] = useState<Payload['mail']>(null);
@@ -255,6 +275,7 @@ export default function Inbox({ refreshPulse }: { refreshPulse: () => void }) {
   return (
     <div className="space-y-5">
       {heard}
+      {data?.mine && !data.mine.connected && /@gmail\.com$/i.test(data.mine.address) && <ConnectMine name={data.mine.name} address={data.mine.address} />}
       {signedOut.map((b) => (
         <SignInAgain key={b.address} address={b.address} />
       ))}
