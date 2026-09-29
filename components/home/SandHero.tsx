@@ -6,7 +6,7 @@ import s from './SandHero.module.css';
 /**
  * The homepage hero, written in the sand (preview, 2026-09-29).
  *
- * Open the page: an empty Riviera shoreline, and the Mustard kids finger-write
+ * Open the page: an empty Riviera shoreline, and an invisible finger writes
  * "Modern Mustard Seed" in the wet sand. Scroll: a wave rolls in and takes the
  * words, and as it slides back out the sea leaves the next line written behind
  * it. We build websites. And agentic systems. Then the light turns gold and the
@@ -50,7 +50,7 @@ export default function SandHero() {
       <div className={s.stage}>
         <picture className={s.plate}>
           <source type="image/avif" srcSet="/art/sand/day-960.avif 960w, /art/sand/day-1600.avif 1600w" sizes="max(100vw, 150svh)" />
-          <img src="/art/sand/day-1600.webp" alt="Painting: an empty stretch of wet golden sand on the French Riviera, calm turquoise water, a white yacht on the horizon. The Mustard kids kneel in the sand and write Modern Mustard Seed with their fingers." width={1600} height={1067} fetchPriority="high" decoding="async" />
+          <img src="/art/sand/day-1600.webp" alt="Painting: an empty stretch of wet golden sand on the French Riviera, calm turquoise water, a white yacht on the horizon. Modern Mustard Seed is written in the sand by hand, and each wave leaves a new line." width={1600} height={1067} fetchPriority="high" decoding="async" />
         </picture>
         <picture className={s.dusk} aria-hidden="true">
           <source type="image/avif" srcSet="/art/sand/dusk-960.avif 960w, /art/sand/dusk-1600.avif 1600w" sizes="max(100vw, 150svh)" />
@@ -74,10 +74,6 @@ export default function SandHero() {
           </div>
         </div>
 
-        <picture className={s.kids} aria-hidden="true">
-          <source type="image/avif" srcSet="/art/sand/kids.avif" />
-          <img src="/art/sand/kids.webp" alt="" decoding="async" draggable={false} />
-        </picture>
 
         <div className={s.copy}>
           <div className={`${s.cap} ${s.capIntro}`}>

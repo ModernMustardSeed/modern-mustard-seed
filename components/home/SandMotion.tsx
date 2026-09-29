@@ -56,7 +56,7 @@ export default function SandMotion() {
 
     const set = (k: string, v: number) => el.style.setProperty(k, v.toFixed(4));
 
-    // The kids write the name as the page opens: about four seconds, easing out.
+    // The name writes itself as the page opens: about four seconds, easing out.
     const t0 = performance.now();
     const INTRO_MS = 4200;
     let intro = 0;
@@ -94,7 +94,6 @@ export default function SandMotion() {
       set('--o-ai', seg(p, 0.49, 0.495) * (1 - seg(p, 0.73, 0.77)));
       set('--o-life', seg(p, 0.77, 0.775));
       set('--dusk', ease(seg(p, 0.66, 0.82)));
-      set('--k-out', ease(seg(p, 0.06, 0.16)));
       set('--c-intro', 1 - seg(p, 0.03, 0.09));
       set('--c-web', seg(p, 0.28, 0.33) * (1 - seg(p, 0.4, 0.44)));
       set('--c-ai', seg(p, 0.58, 0.63) * (1 - seg(p, 0.68, 0.72)));
