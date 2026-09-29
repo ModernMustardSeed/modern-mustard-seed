@@ -1027,7 +1027,7 @@ export function bookingConfirmationEmail({
   conferenceLink,
 }: BookingArgs): string {
   const inner = `
-    ${headline(`${firstName}, you are on my calendar.`)}
+    ${headline(`${firstName}, you are on our calendar.`)}
     <tr><td style="padding:26px 44px 0">
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="${C.panelWarm}" style="background:${C.panelWarm};border:1px solid ${C.lineGold};border-radius:12px">
         <tr><td style="padding:24px 26px">
@@ -1039,7 +1039,7 @@ export function bookingConfirmationEmail({
     </td></tr>
     ${conferenceLink
       ? paragraph(`<p style="margin:0">Your video link: <a href="${escape(conferenceLink)}" style="color:${C.gold};text-decoration:underline">${escape(conferenceLink)}</a></p>`)
-      : paragraph(`<p style="margin:0">I will send the video link the day before. If you would rather meet by phone, just reply with the best number to reach you.</p>`)}
+      : paragraph(`<p style="margin:0">We will send the video link the day before. If you would rather meet by phone, just reply with the best number to reach you.</p>`)}
     ${valueCallout(
       'How to make the call worth your time',
       `<ul style="margin:0;padding-left:18px;line-height:1.8">
@@ -1049,7 +1049,7 @@ export function bookingConfirmationEmail({
       </ul>`
     )}
     ${painSummary ? `<tr><td style="padding:24px 44px 0">
-      <div style="margin-bottom:8px">${overline('What you told me')}</div>
+      <div style="margin-bottom:8px">${overline('What you told us')}</div>
       <p class="mms-body" style="margin:0;font-family:${SERIF};font-style:italic;font-size:16px;color:${C.body};line-height:1.6">&ldquo;${escape(painSummary)}&rdquo;</p>
     </td></tr>` : ''}
     ${ctaBlock(
