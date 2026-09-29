@@ -1,6 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { CcAccount } from '@/lib/cc-access';
-import { listConversations } from '@/lib/command-center/chats';
+import { storedConversations } from '@/lib/command-center/chat-store';
 import { daysUntil } from '@/lib/domains';
 import { escape } from '@/lib/email';
 import { buildTraffic } from '@/lib/cc-traffic';
@@ -74,7 +74,9 @@ export async function buildWeek(sb: SupabaseClient, account: CcAccount, opts: { 
     count('client_contacts', 'created_at', prev, start),
     sb.from('client_contacts').select('id', { count: 'exact', head: true }).eq('client_email', email),
     sb.from('client_domains').select('domain, expires_on, status').eq('client_email', email),
-    account.project.assistantId ? listConversations(account.project.assistantId, 14) : Promise.resolve(undefined),
+    // Our own record, not the provider's: it starts at the site's launch and
+    // keeps out the studio's test chats, which the provider still holds.
+    account.project.assistantId ? storedConversations(sb, email, 200).catch(() => null) : Promise.resolve(undefined),
   ]);
 
   // The website's own visit count, the same one the Traffic room shows. When it

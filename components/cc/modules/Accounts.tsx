@@ -347,7 +347,9 @@ export default function Accounts({ session }: { session: Session }) {
       key: 'gbp',
       name: 'Google Business Profile',
       feed: true,
-      state: google ? 'on' : 'off',
+      // Signed in is not the same as posting: until Google clears our access,
+      // posts to the profile go out by hand, and this row says so.
+      state: google ? 'manual' : 'off',
       detail: google
         ? `Connected as ${google.account_email ?? 'your Google account'}. Posting to your profile turns on when Google approves our access; until then anything scheduled for Google is posted for you by hand.`
         : available
