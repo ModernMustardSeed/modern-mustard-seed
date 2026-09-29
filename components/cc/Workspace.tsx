@@ -144,7 +144,10 @@ export default function Workspace() {
         const j = (await r.json()) as Session;
         if (alive) {
           setSession(j);
-          if (!j.preview && !tourSeen(j.email)) setTourOpen(true);
+          // A shared session that has not said who is at the desk waits for
+          // the name: the tour opens for that person when they pick it.
+          const waitingForName = !j.who && j.people.length > 0;
+          if (!j.preview && !waitingForName && !tourSeen(j.email, j.who?.key ?? null)) setTourOpen(true);
         }
       } catch {
         if (alive) setFailed(true);
@@ -205,13 +208,16 @@ export default function Workspace() {
       const r = await fetch('/api/cc/who', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ key }) });
       const j = (await r.json()) as { ok?: boolean; who?: { key: string; name: string } };
       if (r.ok && j.who) {
-        setSession((prev) => (prev ? { ...prev, who: j.who ?? null, person: j.who?.name ?? null } : prev));
+        const who = j.who;
+        setSession((prev) => (prev ? { ...prev, who, person: who.name } : prev));
+        // Somebody new at a shared desk gets their own first walk through.
+        if (session && !session.preview && !tourSeen(session.email, who.key)) setTourOpen(true);
         void loadPulse();
       }
     } catch {
       /* the picker stays where it was; nothing was signed under a wrong name */
     }
-  }, [loadPulse]);
+  }, [loadPulse, session]);
 
   const visible = useMemo(() => MODULES.filter((m) => session?.modules?.[m.key] !== false), [session]);
   // A hash for a room this account does not own lands on the Overview rather
@@ -582,6 +588,7 @@ export default function Workspace() {
           rooms={tourRooms}
           go={goAny}
           email={session.email}
+          personKey={session.who?.key ?? null}
           business={session.brand.business}
           person={session.who?.name ?? null}
         />

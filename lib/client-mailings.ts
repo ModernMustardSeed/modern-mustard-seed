@@ -46,6 +46,17 @@ const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const norm = (e: string) => e.trim().toLowerCase();
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
+/**
+ * Where a reply to a campaign lands: the address it was sent from, which on
+ * their own domain forwards to the office inbox the Command Center reads.
+ * Without a sender of their own, the account's address as before.
+ */
+function replyAddress(project: ClientProject): string {
+  const from = campaignSender(project);
+  const bare = from?.match(/<([^>]+)>/)?.[1] ?? from;
+  return bare && EMAIL.test(bare) ? bare : project.clientEmail;
+}
+
 /** The address a campaign leaves from, or null when the project has none of its own yet. */
 export function campaignSender(project: ClientProject): string | null {
   const from = project.campaignFrom ?? null;
@@ -147,7 +158,7 @@ export async function sendTest(project: ClientProject, to: string, toName: strin
     subject: `[Test] ${personalise(subject, toName)}`,
     html: mailingHtml(project, body, toName, null),
     text: mailingText(project, body, toName, null),
-    replyTo: project.clientEmail,
+    replyTo: replyAddress(project),
   });
   return sent.ok ? { ok: true, error: null } : { ok: false, error: sent.error };
 }
@@ -234,7 +245,7 @@ export async function runMailing(sb: SupabaseClient, project: ClientProject, mai
           subject: personalise(mailing.subject, r.name),
           html: mailingHtml(project, mailing.body, r.name, unsub),
           text: mailingText(project, mailing.body, r.name, unsub),
-          replyTo: project.clientEmail,
+          replyTo: replyAddress(project),
           unsubscribeUrl: unsub,
         })
       : ({ ok: false, error: 'No unsubscribe link for this person.' } as const);

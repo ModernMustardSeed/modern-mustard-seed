@@ -47,14 +47,27 @@ function real(v: string | undefined): string | null {
   return v && !/^\[SENSITIVE\]$/i.test(v) ? v : null;
 }
 
+/**
+ * META'S DOORS ARE SHUT UNTIL META SAYS SO. Both Meta apps have their keys in
+ * production and neither can sign a client in yet: the Facebook Login app
+ * answers "domain isn't included", and the Instagram app is in development
+ * mode and refuses any account that is not a tester ("Insufficient developer
+ * role"). A button that opens onto a refusal is worse than no button, so both
+ * stay off until META_LOGIN_LIVE=1 is set after App Review. Until then the
+ * studio connects Facebook and Instagram together by pasting one Page token.
+ */
+function metaLoginLive(): boolean {
+  return process.env.META_LOGIN_LIVE === '1';
+}
+
 /** Facebook's Connect button needs the Meta app's id and secret; the paste does not. */
 export function facebookOAuthReady(): boolean {
-  return Boolean(real(process.env.FACEBOOK_APP_ID) && real(process.env.FACEBOOK_APP_SECRET));
+  return metaLoginLive() && Boolean(real(process.env.FACEBOOK_APP_ID) && real(process.env.FACEBOOK_APP_SECRET));
 }
 
 /** Instagram's own Connect button needs the Meta app's Instagram product id and secret, not the Facebook app's. */
 export function instagramLoginReady(): boolean {
-  return Boolean(real(process.env.INSTAGRAM_APP_ID) && real(process.env.INSTAGRAM_APP_SECRET));
+  return metaLoginLive() && Boolean(real(process.env.INSTAGRAM_APP_ID) && real(process.env.INSTAGRAM_APP_SECRET));
 }
 
 /** What a platform still needs before it can connect, or null when it is ready. */
