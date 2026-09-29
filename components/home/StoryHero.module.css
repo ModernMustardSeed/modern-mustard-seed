@@ -1,0 +1,156 @@
+/* The scroll story hero. The section is tall; the stage sticks to the screen
+   while you scroll through it. StoryHero.tsx writes the variables:
+   --intro 1 to 0 (opening copy leaves), --zoom (camera into the phone),
+   --dev (phone fills the screen), --site (a website assembles), --call (the
+   AI answers and books), --sun (sunset), --fin (the last line), and --dx/--dy
+   (how far the phone travels to the centre). Transform and opacity only. */
+.story{--sea:#0b3b44;--sand:#fbf5ea;--tiffany:#81d8d0;--lagoon:#0a7c78;--mustard:#f5b700;--coral:#ff6f59;--intro:1;--zoom:0;--dev:0;--site:0;--call:0;--sun:0;--fin:0;--dx:0px;--dy:0px;position:relative;height:480svh;background:var(--sand);color:var(--sea)}
+.stage{position:sticky;top:0;height:100svh;overflow:hidden;isolation:isolate}
+
+/* ---------- The scene: a 3:2 painting that always covers the screen ---------- */
+.scene{--W:max(100vw,150svh);position:absolute;bottom:0;width:var(--W);aspect-ratio:3/2;left:clamp(calc(100vw - var(--W)),calc(50vw - .6 * var(--W)),0px);transform-origin:70% 55.7%;transform:translate(calc(var(--zoom) * var(--dx)),calc(var(--zoom) * var(--dy))) scale(calc(1 + var(--zoom) * 2.3));will-change:transform}
+.plate,.sunset{position:absolute;inset:0}
+.plate img,.sunset img{display:block;width:100%;height:100%;object-fit:cover}
+.plate img{animation:settle 2.2s cubic-bezier(.16,1,.3,1) both}
+@keyframes settle{from{transform:scale(1.08)}to{transform:none}}
+.sunset{opacity:var(--sun)}
+
+/* The painted pieces, each with a soft contact shadow on the sand. */
+.piece{position:absolute;left:var(--x);top:var(--y);width:var(--w);pointer-events:none}
+.piece picture,.piece img{display:block;width:100%;height:auto}
+.piece::after{content:'';position:absolute;left:12%;right:12%;bottom:-2%;height:9%;border-radius:50%;background:radial-gradient(closest-side,#0b3b4440,#0b3b4400);z-index:-1;animation:shadow 1s both;animation-delay:inherit}
+.piece picture{animation-duration:1.1s;animation-fill-mode:both;animation-timing-function:cubic-bezier(.2,.9,.25,1.2)}
+.umbrella picture{animation-name:popOpen;animation-delay:.5s;transform-origin:50% 100%}
+.mrs picture{animation-name:slideIn;animation-delay:.85s}
+.mr picture{animation-name:dropIn;animation-delay:1.15s;transform-origin:50% 100%}
+.kids picture{animation-name:popUp;animation-delay:1.5s;transform-origin:50% 100%}
+.dog picture{animation-name:leap;animation-delay:1.8s;animation-duration:1.3s}
+.umbrella::after,.dog::after{display:none}
+@keyframes popOpen{0%{opacity:0;transform:scale(.2,.05) rotate(-8deg)}55%{opacity:1;transform:scale(1.06,1.1) rotate(2deg)}100%{opacity:1;transform:none}}
+@keyframes slideIn{0%{opacity:0;transform:translateX(60%)}100%{opacity:1;transform:none}}
+@keyframes dropIn{0%{opacity:0;transform:translateY(-70%) scale(.9,1.1)}60%{opacity:1;transform:translateY(4%) scale(1.06,.92)}80%{transform:translateY(-2%) scale(.98,1.02)}100%{opacity:1;transform:none}}
+@keyframes popUp{0%{opacity:0;transform:scale(.3)}100%{opacity:1;transform:none}}
+@keyframes leap{0%{opacity:0;transform:translate(-120%,40%) rotate(-20deg)}50%{opacity:1;transform:translate(-40%,-35%) rotate(-6deg)}100%{opacity:1;transform:none}}
+@keyframes shadow{from{opacity:0;transform:scaleX(.3)}to{opacity:1;transform:none}}
+
+/* Sand haze over the open sea so the opening words read; it leaves with them. */
+.haze{position:absolute;inset:0;background:linear-gradient(90deg,#fbf5eaf0 0,#fbf5eadb 28%,#fbf5ea80 44%,#fbf5ea00 60%);opacity:var(--intro);pointer-events:none}
+
+/* ---------- The opening words ---------- */
+.copy{position:absolute;left:6vw;top:calc(82px + 7svh);max-width:640px;opacity:var(--intro);transform:translateY(calc((1 - var(--intro)) * -60px))}
+.story[data-intro='0'] .copy{pointer-events:none}
+.copy>*{animation:rise 1s cubic-bezier(.16,1,.3,1) both}
+.copy>:nth-child(2){animation-delay:.12s}.copy>:nth-child(3){animation-delay:.3s}.copy>:nth-child(4){animation-delay:.45s}
+@keyframes rise{from{transform:translateY(20px)}to{transform:none}}
+.credit{margin:0;padding-left:22px;position:relative;font-family:var(--font-caps),sans-serif;font-size:12.5px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--lagoon)}
+.credit::before{content:'';position:absolute;left:0;top:.2em;width:11px;height:11px;border-radius:50%;background:var(--mustard);box-shadow:0 0 0 4px #f5b70030}
+.credit i{font-style:normal;margin:0 .45em;color:var(--mustard)}
+.name{margin:18px 0 0;font-family:var(--font-riviera),system-ui,sans-serif;font-weight:700;font-size:clamp(38px,4.1vw,70px);line-height:1.05;letter-spacing:-.04em;text-wrap:balance}
+.name em,.line em,.capA em,.capB em,.capC em{font-style:normal;font-weight:400;color:var(--lagoon)}
+.line{margin:16px 0 0;font-family:var(--font-riviera),system-ui,sans-serif;font-weight:600;font-size:clamp(19px,1.7vw,28px);letter-spacing:-.03em}
+.actions{display:flex;flex-wrap:wrap;align-items:center;gap:14px 26px;margin-top:28px}
+.cta{display:inline-flex;align-items:center;gap:16px;min-height:56px;padding:0 14px 0 26px;border-radius:999px;background:var(--sea);color:#fff;font-family:var(--font-caps),sans-serif;font-size:15px;font-weight:600;box-shadow:0 16px 34px -14px #0b3b44cc}
+.cta span{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--mustard);color:var(--sea)}
+.quiet{min-height:44px;display:inline-flex;align-items:center;font-family:var(--font-caps),sans-serif;font-size:15px;font-weight:600;color:var(--sea);border-bottom:2px solid var(--tiffany)}
+.quietLight{min-height:44px;display:inline-flex;align-items:center;font-family:var(--font-caps),sans-serif;font-size:15px;font-weight:600;color:#fff;border-bottom:2px solid var(--mustard)}
+.cta:focus-visible,.quiet:focus-visible,.quietLight:focus-visible{outline:2px solid var(--lagoon);outline-offset:5px}
+
+.cue{position:absolute;left:50%;bottom:28px;translate:-50% 0;margin:0;display:flex;flex-direction:column;align-items:center;gap:10px;font-family:var(--font-caps),sans-serif;font-size:11.5px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:#fff;text-shadow:0 1px 8px #0b3b44aa;opacity:var(--intro)}
+.mouse{width:24px;height:38px;border:2px solid #fff;border-radius:14px;position:relative;box-shadow:0 2px 10px #0b3b4466}
+.mouse::after{content:'';position:absolute;left:50%;top:7px;width:4px;height:8px;margin-left:-2px;border-radius:2px;background:#fff;animation:wheel 1.8s ease-in-out infinite}
+@keyframes wheel{0%{transform:translateY(0);opacity:1}70%{transform:translateY(12px);opacity:0}100%{opacity:0}}
+
+/* ---------- The phone that fills the screen ---------- */
+.device{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none;background:rgba(11,59,68,calc(var(--dev) * .55));opacity:clamp(0,calc(var(--dev) * 4),1)}
+.phone{position:relative;height:min(76svh,720px);aspect-ratio:9/19;border-radius:54px;background:#0f1d22;padding:12px;box-shadow:0 60px 120px -40px #000c,inset 0 0 0 2px #2c3e44;transform:scale(calc(.12 + var(--dev) * .88)) rotate(calc((1 - var(--dev)) * -8deg))}
+.island{position:absolute;left:50%;top:22px;width:30%;height:26px;margin-left:-15%;border-radius:14px;background:#000;z-index:3}
+.screen{position:relative;height:100%;border-radius:44px;overflow:hidden;background:var(--sand)}
+.site,.call{position:absolute;inset:0;padding:56px 16px 16px;display:flex;flex-direction:column;gap:12px}
+.site{opacity:calc(1 - clamp(0,calc(var(--call) * 6),1))}
+.call{opacity:clamp(0,calc(var(--call) * 6),1);background:linear-gradient(180deg,#0e5f63,#0b3b44);color:#fff;justify-content:flex-start;gap:10px}
+
+/* The website, arriving piece by piece. */
+.b{border-radius:14px;background:#fff;box-shadow:0 10px 22px -16px #0b3b4499}
+.b0{--k:clamp(0,calc(var(--site) * 5),1)}
+.b1{--k:clamp(0,calc((var(--site) - .14) * 4.5),1)}
+.b2{--k:clamp(0,calc((var(--site) - .34) * 5),1)}
+.b3{--k:clamp(0,calc((var(--site) - .48) * 5),1)}
+.b4{--k:clamp(0,calc((var(--site) - .66) * 5),1)}
+.b{opacity:var(--k);transform:translateY(calc((1 - var(--k)) * 50px)) scale(calc(.9 + var(--k) * .1))}
+.b0{display:flex;align-items:center;gap:8px;padding:10px 12px}
+.b0 .logo{width:22px;height:22px;border-radius:50%;background:var(--mustard);margin-right:auto}
+.b0 span{width:26px;height:6px;border-radius:3px;background:#cfe0e0}
+.b1{padding:10px;display:flex;flex-direction:column;gap:6px}
+.heroImg{height:110px;border-radius:10px;background:url('/art/story/plate-960.webp') 60% 45%/cover}
+.b1 b{font-family:var(--font-riviera),system-ui,sans-serif;font-size:21px;letter-spacing:-.04em;line-height:1.05}
+.b1 small{font-size:11px;color:#4c6266}
+.b1 em{align-self:flex-start;font-style:normal;margin-top:4px;padding:7px 14px;border-radius:999px;background:var(--sea);color:#fff;font-size:11px;font-weight:700}
+.b2{padding:10px 12px;display:flex;align-items:center;gap:10px}
+.b2 strong{color:var(--mustard);font-size:14px;letter-spacing:1px}
+.b2 span{font-size:12px;font-weight:700}
+.b3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:8px;background:none;box-shadow:none}
+.b3 div{height:64px;border-radius:10px;background:linear-gradient(160deg,#d8f3f0,#81d8d0)}
+.b3 div:nth-child(2){background:linear-gradient(160deg,#fff2c7,#f5b700)}
+.b3 div:nth-child(3){background:linear-gradient(160deg,#ffe0da,#ff9f8f)}
+.b4{padding:10px 12px;display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;background:#d8f3f0}
+.b4 i{font-style:normal;display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--lagoon);color:#fff;font-size:11px}
+
+/* The call, answered and booked. */
+.c{--k:0;opacity:var(--k);transform:translateY(calc((1 - var(--k)) * 30px));font-size:13px;line-height:1.35}
+.c0{--k:clamp(0,calc(var(--call) * 7),1);text-align:center;padding:14px 8px 6px;display:flex;flex-direction:column;align-items:center;gap:4px}
+.c0 small{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--tiffany);font-weight:700}
+.c0 b{font-family:var(--font-riviera),system-ui,sans-serif;font-size:22px;letter-spacing:-.04em}
+.c0 span{font-size:11.5px;color:#d8f3f0}
+.wave{display:flex;align-items:center;gap:4px;height:34px;margin:6px 0}
+.wave i{width:5px;border-radius:3px;background:var(--mustard);height:calc(8px + var(--call) * 22px);animation:talk 1s ease-in-out infinite alternate}
+.wave i:nth-child(2n){animation-delay:-.3s}.wave i:nth-child(3n){animation-delay:-.6s}
+@keyframes talk{from{transform:scaleY(.35)}to{transform:scaleY(1)}}
+.them,.ai{max-width:86%;padding:9px 12px;border-radius:16px}
+.them{align-self:flex-end;background:#fff;color:var(--sea);border-bottom-right-radius:4px}
+.ai{align-self:flex-start;background:var(--tiffany);color:var(--sea);border-bottom-left-radius:4px}
+.c1{--k:clamp(0,calc((var(--call) - .18) * 7),1)}
+.c2{--k:clamp(0,calc((var(--call) - .34) * 7),1)}
+.c3{--k:clamp(0,calc((var(--call) - .5) * 7),1)}
+.c4{--k:clamp(0,calc((var(--call) - .64) * 7),1)}
+.c5{--k:clamp(0,calc((var(--call) - .8) * 7),1)}
+.booked{align-self:center;margin-top:6px;padding:9px 14px;border-radius:999px;background:var(--mustard);color:var(--sea);font-weight:800;font-size:12.5px}
+
+/* ---------- The chapter lines beside the phone ---------- */
+.captions{position:absolute;inset:0;pointer-events:none}
+.capA,.capB,.capC{position:absolute;left:6vw;top:50%;width:min(30vw,440px);margin:0;translate:0 -50%;font-family:var(--font-riviera),system-ui,sans-serif;font-weight:700;font-size:clamp(32px,3.4vw,58px);line-height:1.05;letter-spacing:-.04em;color:#fff;text-shadow:0 4px 30px #0b3b44}
+.capA em,.capB em{color:var(--tiffany)}
+.capA span,.capB span,.capC span{display:block;margin-bottom:14px;font-family:var(--font-caps),sans-serif;font-size:12px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:var(--mustard);text-shadow:none}
+.capA{opacity:min(clamp(0,calc((var(--site) - .02) * 6),1),calc(1 - clamp(0,calc(var(--call) * 8),1)))}
+.capB{opacity:min(clamp(0,calc((var(--call) - .06) * 6),1),calc(1 - clamp(0,calc(var(--sun) * 4),1)))}
+.finale{position:absolute;left:6vw;top:13svh;max-width:760px;opacity:var(--fin);transform:translateY(calc((1 - var(--fin)) * 40px))}
+.story[data-fin='1'] .finale{pointer-events:auto}
+.capC{position:static;translate:none;width:auto;font-size:clamp(46px,5.4vw,96px);text-shadow:0 6px 40px #0b3b44cc}
+.capC em{color:var(--mustard)}
+.finale::before{content:'';position:absolute;inset:-20vh -20vw -30vh -10vw;z-index:-1;background:radial-gradient(ellipse at 20% 35%,#0b3b4499,#0b3b4400 60%)}
+
+/* ---------- Phones ---------- */
+@media(max-width:760px){
+  .story{height:440svh}
+  .haze{background:linear-gradient(180deg,#fbf5eaf2 0,#fbf5eae0 44%,#fbf5ea00 66%)}
+  .copy{left:16px;right:16px;top:calc(70px + 3svh)}
+  .credit{font-size:10.5px;letter-spacing:.16em;line-height:1.7;padding-left:19px}
+  .name{font-size:clamp(30px,8.6vw,42px)}
+  .line{font-size:clamp(18px,5vw,22px)}
+  .actions{gap:12px 20px;margin-top:20px}
+  .cta{font-size:14px;min-height:52px}
+  .phone{height:min(64svh,600px);border-radius:44px;padding:10px}
+  .screen{border-radius:36px}
+  .capA,.capB{left:16px;right:16px;top:calc(70px + 2svh);width:auto;translate:none;font-size:clamp(24px,7vw,32px);text-align:center}
+  .capA span,.capB span{margin-bottom:8px}
+  .device{align-items:end;padding-bottom:4svh}
+  .finale{left:16px;right:16px;top:11svh}
+  .capC{font-size:clamp(38px,11vw,54px)}
+}
+
+/* ---------- Reduced motion: the finished scene, not pinned ---------- */
+@media(prefers-reduced-motion:reduce){
+  .story{height:auto}
+  .stage{position:relative;height:100svh}
+  .device,.captions,.cue{display:none}
+  .plate img,.piece picture,.piece::after,.copy>*,.wave i,.mouse::after{animation:none}
+}

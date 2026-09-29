@@ -232,6 +232,8 @@ export default function MustardSeedChat() {
     // then the form fields (seen 2026-09-03). The launcher stays; the bubble goes.
     if (window.location.pathname.startsWith('/demos')) return;
     if (window.location.pathname === '/') return;
+    // The scroll story hero keeps its phone centre stage; the bubble sat on it.
+    if (document.querySelector('[data-story]')) return;
     const t = window.setTimeout(() => {
       try {
         if (window.localStorage.getItem(GREET_KEY) === '1') return;
