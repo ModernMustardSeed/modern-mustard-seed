@@ -54,10 +54,14 @@ export default function InquiryForm() {
   });
   const [kind, setKind] = useState<string | null>(null);
 
-  // A page can send people here with the engagement already chosen: /inquire?kind=kingdom.
+  // A page can send people here with the engagement already chosen: /inquire?kind=kingdom,
+  // and with the company already written in: /inquire?company=Flathead%20Roofing (the sand on the homepage).
   useEffect(() => {
-    const k = new URLSearchParams(window.location.search).get('kind');
+    const q = new URLSearchParams(window.location.search);
+    const k = q.get('kind');
     if (k && ENGAGEMENTS.some((x) => x.id === k)) setKind(k);
+    const c = q.get('company')?.trim().slice(0, 80);
+    if (c) setForm((f) => (f.company ? f : { ...f, company: c }));
   }, []);
   const [submitted, setSubmitted] = useState(false);
   const [sending, setSending] = useState(false);

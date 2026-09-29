@@ -1,0 +1,24 @@
+/* The seam between sand and sea. The strip has no height; its art hangs
+   across the seam, the lower half painted in the next section's own colour so
+   the join is invisible and the top edge is a scalloped shoreline. */
+.edge{position:relative;height:0;z-index:3;pointer-events:none;view-timeline:--shore block}
+.swell{position:absolute;left:0;right:0;top:calc(var(--offset,0px) - 48px);height:96px;overflow-x:clip}
+.layer{position:absolute;inset:0;width:100%;height:100%}
+.wash{opacity:.35}
+
+/* The foam is twice the width of the screen and slides one screen left, forever. */
+.foamTrack{position:absolute;left:0;top:0;width:200%;height:100%;animation:drift 26s linear infinite}
+.foam{display:block;width:100%;height:100%;opacity:.9}
+@keyframes drift{to{transform:translateX(-50%)}}
+
+/* As the seam scrolls up the screen the sea runs up the sand and settles. */
+@supports (animation-timeline: view()){
+  .swell{animation:swell linear both;animation-timeline:--shore;animation-range:entry 0% cover 45%}
+  .wash{animation:wash linear both;animation-timeline:--shore;animation-range:entry 0% cover 45%}
+  @keyframes swell{0%{transform:translateY(34px)}55%{transform:translateY(-10px)}100%{transform:none}}
+  @keyframes wash{0%{transform:translateY(20px);opacity:0}50%{transform:translateY(-18px);opacity:.5}100%{transform:none;opacity:.35}}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .foamTrack,.swell,.wash{animation:none}
+}
