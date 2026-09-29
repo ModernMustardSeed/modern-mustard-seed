@@ -26,6 +26,8 @@ export type ClientProject = {
    * answer yet.
    */
   domainsReady?: boolean;
+  /** People keys who get the 7:13 morning brief by email (app/api/cron/cc-morning). */
+  morningBrief?: string[];
   clientEmail: string;
   business: string;
   siteUrl: string;
@@ -98,6 +100,8 @@ export const CLIENT_PROJECTS: Record<string, ClientProject> = {
     recordsSince: '2026-09-25T00:00:00Z',
     // Hidden until Sarah transfers their names (on hold by her call, 2026-09-28).
     domainsReady: false,
+    // Shan runs the sites; the brief is for the truck before it leaves.
+    morningBrief: ['shan'],
     clientEmail: 'builtbyshan@gmail.com',
     business: 'Built Right in Montana',
     siteUrl: 'https://built-right-montana-demo.vercel.app',

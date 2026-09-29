@@ -54,6 +54,21 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: true, trade: r.trade, trades, needing: needingCert(trades) });
   }
 
+  // THE BENCH FROM THE BOOK. Everyone filed as a subcontractor or supplier
+  // comes over at once, keeping the tag as their trade, so nobody is typed twice.
+  if (action === 'from-book') {
+    const { data: people } = await sb.from('client_contacts').select('id, tags').eq('client_email', account.clientEmail).limit(5000);
+    let made = 0;
+    for (const p of (people ?? []) as Array<{ id: string; tags: string[] | null }>) {
+      const tag = (p.tags ?? []).find((t) => /subcontract|supplier|vendor|trade/i.test(t));
+      if (!tag) continue;
+      const r = await tradeFromContact(sb, account.clientEmail, p.id, /supplier|vendor/i.test(tag) ? 'Supplier' : 'Subcontractor');
+      if (r.ok) made += 1;
+    }
+    const trades = await listTrades(sb, account.clientEmail);
+    return NextResponse.json({ ok: true, made, trades, needing: needingCert(trades) });
+  }
+
   if (action === 'delete') {
     const id = String(body.id ?? '');
     if (!id) return NextResponse.json({ error: 'Which one?' }, { status: 400 });

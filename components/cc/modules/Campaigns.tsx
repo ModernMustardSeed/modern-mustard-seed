@@ -16,7 +16,15 @@ import type { Audience, Mailing } from '@/lib/client-mailings';
 type Loaded = { audience: Audience | null; mailings: Mailing[] | null; canSend: boolean; sendsFrom: string | null; testTo: string; cap: number };
 type ClientList = { id: string; name: string; tags: string[]; note: string | null; people: number; reachable: number };
 
-const STARTERS: Array<{ label: string; subject: string; body: string }> = [
+// `audience` picks the people as well as the words: a tag the starter was
+// written for, matched without regard to case, used only when the book has it.
+const STARTERS: Array<{ label: string; subject: string; body: string; audience?: RegExp }> = [
+  {
+    label: 'Houzz inquiries: next season',
+    subject: 'Still thinking about building?',
+    body: 'Hi {first},\n\nYou reached out to us on Houzz a while back about a home in Northwest Montana, and we wanted to follow up properly.\n\nWe are booking design and planning now for next building season. If a new home or a remodel is still on your mind, reply to this email and we will set up a time to talk it through, no pressure and no cost for the first conversation.\n\nIf your plans have changed, no need to reply. We are glad you thought of us.',
+    audience: /houzz/i,
+  },
   {
     label: 'Past client check-in',
     subject: 'Checking in on your home',
@@ -167,6 +175,8 @@ export default function Campaigns() {
                     onClick={() => {
                       setSubject(s.subject);
                       setBody(s.body);
+                      const match = s.audience ? (data?.audience?.tags ?? []).find((t) => s.audience!.test(t.tag)) : undefined;
+                      if (match) setTags([match.tag]);
                     }}
                   >
                     {s.label}

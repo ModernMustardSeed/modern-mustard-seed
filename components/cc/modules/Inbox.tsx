@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Badge, Button, Card, CardHead, Drawer, Empty, ErrorNote, Field, Label, Skeleton, cx, inputCls, when } from '@/components/cc/ui';
 import { Icon } from '@/components/cc/icons';
+import Deck from '@/components/cc/Deck';
 
 /**
  * THE MAIL DESK. Read twice an hour, sorted into the eight piles a business
@@ -70,6 +71,7 @@ export default function Inbox({ refreshPulse }: { refreshPulse: () => void }) {
   const [connect, setConnect] = useState({ address: '', appPassword: '' });
   const [who, setWho] = useState<string>('all');
   const [adding, setAdding] = useState(false);
+  const [deck, setDeck] = useState(false);
   // The reply writer: which button is working, what the box held before the
   // writer replaced it (so it can be put back), and one id per press so a
   // slow answer is collected rather than written twice.
@@ -135,6 +137,9 @@ export default function Inbox({ refreshPulse }: { refreshPulse: () => void }) {
       setBusy(false);
     }
   };
+
+  // Everything waiting on a reply, newest first, for the deck.
+  const waiting = (data?.items ?? []).filter((m) => m.status === 'new' && m.needs_reply);
 
   const write = async (mode: 'suggest' | 'polish') => {
     if (!open) return;
@@ -270,6 +275,7 @@ export default function Inbox({ refreshPulse }: { refreshPulse: () => void }) {
       {mailboxes.filter((b) => b.error && b.connected).map((b) => (
         <p key={b.address} className="text-[13px] text-[#B42318]">{b.address} could not be read on the last pass: {b.error}</p>
       ))}
+      {deck && <Deck items={waiting} onClose={() => setDeck(false)} act={act} busy={busy} note={note} />}
       <Card pad={false}>
         <div className="flex flex-wrap items-center gap-2 px-5 py-4 border-b border-[var(--cc-line)]">
           {piles.map((p) => (
@@ -282,6 +288,11 @@ export default function Inbox({ refreshPulse }: { refreshPulse: () => void }) {
             </button>
           ))}
           <span className="ml-auto flex items-center gap-2">
+            {waiting.length > 0 && (
+              <Button kind="primary" onClick={() => { setNote(null); setDeck(true); }} disabled={busy}>
+                Clear the deck ({waiting.length})
+              </Button>
+            )}
             {!many && data?.status.address && <Label>{data.status.address}</Label>}
             <Button kind="ghost" onClick={() => act({ action: 'sync' })} disabled={busy}>Check now</Button>
             {!adding && <Button kind="ghost" onClick={() => { setNote(null); setAdding(true); }} disabled={busy}>Add a mailbox</Button>}
