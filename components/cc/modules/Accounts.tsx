@@ -387,7 +387,9 @@ export default function Accounts({ session }: { session: Session }) {
                   ? 'Signs in through Facebook. Tick the Page and the Instagram account on the screen Facebook shows and both connect.'
                   : 'Being connected from our side through your Facebook Page. Until it is, anything you schedule for Instagram is posted for you by hand on the day it is due.'
                 : canOauth
-                  ? 'Sign in once and posts go out here on their own.'
+                  ? p === 'linkedin'
+                    ? 'Sign in with your own LinkedIn and posts go out on your profile on their own. Posting as the company page switches on once LinkedIn approves it.'
+                    : 'Sign in once and posts go out here on their own.'
                   : 'Being wired from our side. Nothing for you to do yet.',
         open: feedOpen(p, f) ?? undefined,
         action: st !== 'on' && canOauth && oauth ? { label: `Connect ${FEED_LABEL[p]}`, href: oauth } : null,
