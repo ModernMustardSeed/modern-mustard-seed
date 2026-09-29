@@ -35,7 +35,11 @@ function feedOpen(p: string, f: Feed | undefined): string | null {
   if (p === 'facebook') return f?.externalId ? `https://www.facebook.com/${f.externalId}` : null;
   if (p === 'instagram') return handle ? `https://www.instagram.com/${handle}/` : null;
   if (p === 'x') return handle ? `https://x.com/${handle}` : null;
-  if (p === 'linkedin') return f?.externalId ? `https://www.linkedin.com/company/${f.externalId}/` : null;
+  // A company page opens by its number; a person's member id has no public address.
+  if (p === 'linkedin') {
+    const org = f?.externalId?.match(/^(?:urn:li:organization:)?(\d+)$/)?.[1];
+    return org ? `https://www.linkedin.com/company/${org}/` : null;
+  }
   if (p === 'houzz') return 'https://pro.houzz.com/';
   return null;
 }

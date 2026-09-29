@@ -1,7 +1,8 @@
 /**
- * LinkedIn company page post through the Posts API, on the page admin's token
- * (w_organization_social). Image first: register an upload, PUT the bytes,
- * then create the post that references it.
+ * LinkedIn post through the Posts API. The author is whatever the connection
+ * holds: a company page (urn:li:organization, w_organization_social) or the
+ * person who signed in (urn:li:person, w_member_social). Image first:
+ * register an upload, PUT the bytes, then create the post that references it.
  */
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { accessToken, markAccount } from '../accounts';
@@ -18,7 +19,7 @@ export async function publishLinkedIn(sb: SupabaseClient, clientEmail: string, c
   const at = new Date().toISOString();
   const acct = await accessToken(sb, clientEmail, 'linkedin');
   if (!acct) return { ok: false, error: 'LinkedIn is not connected.', at, pending: true };
-  const org = acct.row.external_id; // urn:li:organization:123
+  const org = acct.row.external_id; // urn:li:organization:123 or urn:li:person:abc
   if (!org) return { ok: false, error: 'No company page chosen on the LinkedIn connection.', at };
 
   try {

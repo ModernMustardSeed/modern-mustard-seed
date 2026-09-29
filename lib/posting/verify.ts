@@ -99,6 +99,18 @@ async function checkLinkedIn(sb: SupabaseClient, email: string): Promise<Check> 
   if (!acct) return fail('linkedin', 'Not connected.', 'Connect LinkedIn as an admin of the company page.');
   const org = acct.row.external_id;
   if (!org) return fail('linkedin', 'No company page chosen on this connection.', 'Connect it again and pick the company page.');
+  // Connected as a person rather than a company page: the token reads its owner.
+  if (org.startsWith('urn:li:person:')) {
+    const me = await fetch('https://api.linkedin.com/v2/userinfo', { headers: { Authorization: `Bearer ${acct.token}` }, signal: AbortSignal.timeout(20_000) });
+    const mj = (await me.json().catch(() => ({}))) as { name?: string; message?: string };
+    if (!me.ok) {
+      const msg = mj.message ?? `HTTP ${me.status}`;
+      await markAccount(sb, email, 'linkedin', me.status === 401 ? 'revoked' : 'error', msg);
+      return fail('linkedin', msg, me.status === 401 ? 'The token expired. Connect LinkedIn again.' : null);
+    }
+    await markAccount(sb, email, 'linkedin', 'connected', null);
+    return pass('linkedin', mj.name ?? acct.row.account_name);
+  }
   const res = await fetch(`https://api.linkedin.com/rest/organizations/${encodeURIComponent(org.replace('urn:li:organization:', ''))}?fields=localizedName`, {
     headers: { Authorization: `Bearer ${acct.token}`, 'LinkedIn-Version': '202508', 'X-Restli-Protocol-Version': '2.0.0' },
     signal: AbortSignal.timeout(20_000),

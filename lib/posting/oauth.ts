@@ -15,7 +15,7 @@ function secret(): string {
 }
 const b64 = (s: string | Buffer) => Buffer.from(s).toString('base64url');
 
-export type OAuthState = { email: string; provider: 'x' | 'linkedin' | 'facebook' | 'instagram'; verifier?: string; by: 'client' | 'admin'; back?: 'cc'; exp: number };
+export type OAuthState = { email: string; provider: 'x' | 'linkedin' | 'facebook' | 'instagram'; verifier?: string; by: 'client' | 'admin'; back?: 'cc'; /** LinkedIn: a company page, or the person signing in. */ mode?: 'org' | 'member'; exp: number };
 
 export function signState(st: Omit<OAuthState, 'exp'>): string {
   const payload = b64(JSON.stringify({ ...st, exp: Date.now() + 15 * 60_000 }));
