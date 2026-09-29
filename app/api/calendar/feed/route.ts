@@ -50,7 +50,7 @@ export async function GET(req: Request) {
       const end = new Date(start.getTime() + availability.slotMinutes * 60 * 1000);
       const name = (l.name as string) || 'Visitor';
       const business = (l.business_name as string) || '';
-      const summary = `Discovery call — ${name}${business ? ` (${business})` : ''}`;
+      const summary = `Discovery call: ${name}${business ? ` (${business})` : ''}`;
       const description = `Booked via Modern Mustard Seed.\nEmail: ${l.email}\n\n${(l.message as string) || ''}`;
       return [
         'BEGIN:VEVENT',

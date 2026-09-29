@@ -120,7 +120,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
         from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
         to: email,
         replyTo: 'sarah@modernmustardseed.com',
-        subject: `${firstName}, you are on my calendar . ${shortLabel}`,
+        subject: `${firstName}, you are on our calendar . ${shortLabel}`,
         html: bookingConfirmationEmail({
           firstName,
           whenDisplay: display,

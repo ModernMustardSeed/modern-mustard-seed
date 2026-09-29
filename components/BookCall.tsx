@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, FormEvent } from 'react';
+import { useEffect, useRef, useState, FormEvent } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { trackBooking } from '@/lib/analytics';
@@ -95,6 +95,29 @@ export default function BookCall() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  /**
+   * LAND ON THE PICKER.
+   *
+   * Every Rep link and the plain booking link end in #pick. This form renders
+   * on the client, so when the browser looks for #pick on arrival it is not in
+   * the page yet and the visitor lands on the hero instead. Once the first
+   * slots are in and the picker has its full height, scroll to it, one time.
+   */
+  const landed = useRef(false);
+  useEffect(() => {
+    if (slotsLoading || landed.current) return;
+    landed.current = true;
+    if (window.location.hash !== '#pick') return;
+    requestAnimationFrame(() => document.getElementById('pick')?.scrollIntoView({ block: 'start' }));
+  }, [slotsLoading]);
+
+  // The receipt replaces a form several screens tall. Bring it into view, or a
+  // phone is left looking at whatever sat below the submit button.
+  const receipt = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (done) receipt.current?.scrollIntoView({ block: 'start', behavior: 'smooth' });
+  }, [done]);
+
   const submit = async (e: FormEvent) => {
     e.preventDefault();
     if (submitting) return;
@@ -125,19 +148,19 @@ export default function BookCall() {
   /* ── Confirmed: the card you filled in IS the receipt. ── */
   if (done) {
     return (
-      <div className="max-w-xl mx-auto text-center">
+      <div ref={receipt} className="max-w-xl mx-auto text-center scroll-mt-24">
         <StampStyles />
         <AppointmentCard name={form.name} business={form.business} focus={form.focus} timeLabel={done} stamp="booked" />
         <h2 className="mt-10 font-display text-3xl md:text-4xl font-extrabold text-[#0b3b44] leading-[1.05]">
           You are on the book.
         </h2>
         <p className="mt-3 text-[#0b3b44]/85 font-body leading-relaxed">
-          A calendar invite with the video link is on its way to your inbox. Sarah reads every answer before the call, so you can skip the throat-clearing and get right to it.
+          A calendar invite with the video link is on its way to your inbox. We read every answer before the call, so we can skip the throat-clearing and get right to it.
         </p>
         <p className="mt-5 font-mono text-[11px] uppercase tracking-[0.2em] text-[#0b3b44]/85">
           Something come up?{' '}
           <a href="mailto:sarah@modernmustardseed.com" className="font-bold text-[#0a7c78] underline decoration-2 underline-offset-2 hover:text-[#0a7c78]">
-            Email Sarah
+            Email us
           </a>
         </p>
       </div>
