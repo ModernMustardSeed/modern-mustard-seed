@@ -23,6 +23,7 @@ import Operator from '@/components/cc/Operator';
 import Tray from '@/components/cc/Tray';
 import Person, { type Who as PersonWho } from '@/components/cc/Person';
 import Palette from '@/components/cc/Palette';
+import Tour, { tourSeen } from '@/components/cc/Tour';
 
 /**
  * THE WORKSPACE. One rail, one canvas, one operator.
@@ -109,6 +110,9 @@ export default function Workspace() {
   // Who the search was really asking about. A name typed at speed almost
   // always means "who is this and what do we know".
   const [person, setPerson] = useState<PersonWho | null>(null);
+  // The walk through every room. It opens by itself once per browser for the
+  // account, never when Sarah is looking as the client.
+  const [tourOpen, setTourOpen] = useState(false);
 
   const loadPulse = useCallback(async () => {
     try {
@@ -135,7 +139,10 @@ export default function Workspace() {
           return;
         }
         const j = (await r.json()) as Session;
-        if (alive) setSession(j);
+        if (alive) {
+          setSession(j);
+          if (!j.preview && !tourSeen(j.email)) setTourOpen(true);
+        }
       } catch {
         if (alive) setFailed(true);
       }
@@ -181,6 +188,8 @@ export default function Workspace() {
     setPaletteOpen(false);
   }, []);
 
+  const goAny = useCallback((key: string) => go(key as ModuleKey), [go]);
+
   const ask = useCallback((text?: string, send = false) => {
     if (text) setSeed((prev) => ({ text, send, n: (prev?.n ?? 0) + 1 }));
     setOperatorOpen(true);
@@ -204,6 +213,7 @@ export default function Workspace() {
   const visible = useMemo(() => MODULES.filter((m) => session?.modules?.[m.key] !== false), [session]);
   // A hash for a room this account does not own lands on the Overview rather
   // than on a door that opens on nothing.
+  const tourRooms = useMemo(() => visible.map((m) => ({ key: m.key, label: m.label, icon: m.icon, blurb: m.blurb })), [visible]);
   const allowed = session && !visible.some((m) => m.key === active) ? 'overview' : active;
   const current = MODULES.find((m) => m.key === allowed) ?? MODULES[0];
   const brand = session?.brand;
@@ -348,6 +358,16 @@ export default function Workspace() {
                 )}
               </div>
             )}
+            <button
+              onClick={() => {
+                setRailOpen(false);
+                setTourOpen(true);
+              }}
+              className="mt-2 flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-[12.5px] text-white/70 hover:bg-white/[0.05] hover:text-white"
+            >
+              <span className="text-white/45"><Icon name="spark" size={16} /></span>
+              Take the tour
+            </button>
             <a href="/portal" className="mt-3 block font-mono text-[9px] uppercase tracking-[0.16em] text-white/45 hover:text-white">
               Your project portal
             </a>
@@ -550,6 +570,17 @@ export default function Workspace() {
         }}
         onPerson={setPerson}
       />
+      {session && tourOpen && (
+        <Tour
+          open={tourOpen}
+          onClose={() => setTourOpen(false)}
+          rooms={tourRooms}
+          go={goAny}
+          email={session.email}
+          business={session.brand.business}
+          person={session.who?.name ?? null}
+        />
+      )}
       <Person who={person} onClose={() => setPerson(null)} go={(k) => go(k as ModuleKey)} />
       <Tray open={trayOpen} onClose={() => setTrayOpen(false)} onFiled={loadPulse} />
       <Operator open={operatorOpen} onClose={() => setOperatorOpen(false)} seed={seed} session={session} go={(k) => go(k as ModuleKey)} onDidAct={loadPulse} />
