@@ -2,9 +2,9 @@
    SandMotion.tsx writes the variables: --w-<msg> (how much of a line is
    written, 0 to 1), --o-<msg> (is the line on the sand), --wave (how far the
    water has run up the beach), --wet (the sheen it leaves), --dusk (golden
-   hour), --k-out (the kids run off), --c-<cap> (the copy in the sky).
+   hour), --c-<cap> (the copy in the sky).
    Transform, opacity and stroke-dashoffset only. */
-.story{--sea:#0b3b44;--tiffany:#81d8d0;--lagoon:#0a7c78;--mustard:#f5b700;--w-mms:0;--w-web:0;--w-ai:0;--w-life:0;--o-mms:1;--o-web:0;--o-ai:0;--o-life:0;--wave:0;--wet:0;--dusk:0;--k-out:0;--c-intro:1;--c-web:0;--c-ai:0;--c-life:0;position:relative;height:440svh;background:#e9d3a6;color:var(--sea)}
+.story{--sea:#0b3b44;--tiffany:#81d8d0;--lagoon:#0a7c78;--mustard:#f5b700;--w-mms:0;--w-web:0;--w-ai:0;--w-life:0;--o-mms:1;--o-web:0;--o-ai:0;--o-life:0;--wave:0;--wet:0;--dusk:0;--c-intro:1;--c-web:0;--c-ai:0;--c-life:0;position:relative;height:440svh;background:#e9d3a6;color:var(--sea)}
 .stage{position:sticky;top:0;height:100svh;overflow:hidden;isolation:isolate}
 .srOnly{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 
@@ -37,12 +37,6 @@
 .water{position:absolute;left:0;right:0;top:0;bottom:36px;background:linear-gradient(180deg,#2aa39c00 0%,#2aa39c8a 16%,#3fb8b070 55%,#81d8d05c 84%,#eafcf8a8 100%)}
 .foam{position:absolute;left:0;right:0;bottom:0;width:100%;height:48px;fill:#fdfffe;opacity:.86}
 
-/* ---------- The kids: they write the name, then run off as the water comes ---------- */
-.kids{position:absolute;left:50%;translate:-50% 0;bottom:3svh;width:clamp(200px,23vw,350px);transform:translateX(calc(var(--k-out) * 45vw));opacity:calc(1 - var(--k-out));pointer-events:none}
-.kids img{display:block;width:100%;height:auto;animation:kidsIn 1.4s .3s cubic-bezier(.2,1.3,.4,1) both,kneel 1.1s 1.7s ease-in-out infinite alternate}
-@keyframes kidsIn{from{opacity:0;transform:translateY(24px) scale(.94)}to{opacity:1;transform:none}}
-@keyframes kneel{to{transform:translateY(3px) rotate(-.6deg)}}
-.kids::after{content:'';position:absolute;left:12%;right:12%;bottom:-2%;height:9%;border-radius:50%;background:radial-gradient(#5b3d1766,#5b3d1700 70%);z-index:-1}
 
 /* ---------- The copy in the sky ---------- */
 .copy{position:absolute;left:16px;right:16px;top:calc(84px + 4svh);display:grid;justify-items:center;text-align:center;pointer-events:none}
@@ -78,7 +72,6 @@
   .msg{top:20%;width:68vw}
   .web svg,.life svg{width:74%}
   .ink path{stroke-width:7}
-  .kids{bottom:4svh;width:58vw}
   .copy{top:calc(72px + 2svh)}
   .eyebrow{font-size:10.5px;letter-spacing:.18em;line-height:1.7}
   .say{font-size:clamp(19px,5.4vw,24px)}
@@ -92,7 +85,7 @@
 @media(prefers-reduced-motion:reduce){
   .story{height:auto;--w-mms:1}
   .stage{position:relative}
-  .plate img,.kids img,.line{animation:none}
+  .plate img,.line{animation:none}
 }
 @media(prefers-reduced-motion:reduce){
   .copy{gap:18px;pointer-events:auto}
