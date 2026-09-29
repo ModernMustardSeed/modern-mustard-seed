@@ -319,7 +319,7 @@ export default function Jobs({ session }: { session: Session }) {
                     : 'Put the jobs you are chasing on here, or turn a website inquiry into one from Leads. Buildertrend runs a job once it is signed; this is the months before that.'
               }
               action={
-                filter === 'needs' ? undefined : (jobs?.length ?? 0) > 0 ? <Button onClick={() => setFilter('all')}>Show everything</Button> : <Button kind="primary" onClick={() => setAdding(true)}>Add the first one</Button>
+                filter === 'needs' ? undefined : (jobs?.length ?? 0) > 0 ? <Button onClick={() => setFilter('all')}>Show everything</Button> : <div className="flex flex-wrap justify-center gap-2"><Button kind="primary" disabled={busy} onClick={() => void act({ action: 'from-leads' })}>Bring in my website leads</Button><Button onClick={() => setAdding(true)}>Add one by hand</Button></div>
               }
             />
           </div>

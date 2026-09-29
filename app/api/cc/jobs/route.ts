@@ -82,6 +82,28 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: true, job: r.job });
   }
 
+  // START FROM WHAT CAME IN. Every website inquiry from the last four months
+  // that is not on the board yet becomes a job at Inquiry, so the board opens
+  // full of the real people instead of an empty page asking for homework.
+  if (action === 'from-leads') {
+    const since = new Date(Date.now() - 120 * 86_400_000).toISOString();
+    const { data: leads } = await sb
+      .from('client_leads')
+      .select('id, name, phone, email, town, project_type, land, message, source')
+      .eq('client_email', account.clientEmail)
+      .gte('created_at', since)
+      .order('created_at', { ascending: false })
+      .limit(50);
+    let made = 0;
+    for (const lead of (leads ?? []) as Array<Parameters<typeof jobFromLead>[2]>) {
+      const had = await sb.from('client_jobs').select('id').eq('client_email', account.clientEmail).eq('lead_id', lead.id).maybeSingle();
+      if (had.data) continue;
+      const r = await jobFromLead(sb, account.clientEmail, lead, author);
+      if (r.ok) made += 1;
+    }
+    return NextResponse.json({ ok: true, made });
+  }
+
   if (action === 'update') {
     const id = String(body.id ?? '');
     if (!id) return NextResponse.json({ error: 'Which job?' }, { status: 400 });

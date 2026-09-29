@@ -181,7 +181,7 @@ export default function Trades() {
             <Empty
               title={q ? 'Nobody matches that' : 'Nobody on the bench yet'}
               note={q ? 'Try a shorter word.' : 'The subs and suppliers you build with, with the one date that lapses quietly. Add the five you call most and the rest can wait.'}
-              action={!q ? <Button kind="primary" onClick={() => setAdding(true)}>Add the first one</Button> : undefined}
+              action={!q ? <div className="flex flex-wrap justify-center gap-2"><Button kind="primary" disabled={busy} onClick={() => void act({ action: 'from-book' })}>Bring in my subs and suppliers</Button><Button onClick={() => setAdding(true)}>Add one by hand</Button></div> : undefined}
             />
           </div>
         ) : (
