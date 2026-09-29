@@ -31,6 +31,25 @@ export function AgentMark({ agent, size = 28, pulse = false }: { agent: string; 
   );
 }
 
+/** Which brain a desk or task is running on. */
+export function EngineTag({ engine, dark = false }: { engine: string; dark?: boolean }) {
+  const codex = engine === 'codex';
+  return (
+    <span
+      title={codex ? 'Runs on Codex (ChatGPT plan)' : 'Runs on Claude Code (Max plan)'}
+      className={`mt-1 inline-flex items-center rounded px-1.5 py-px font-mono text-[8.5px] font-bold uppercase tracking-[0.16em] ${
+        codex
+          ? 'bg-[#00A6A6] text-[#161616]'
+          : dark
+            ? 'border border-[#FBF6EA]/25 text-[#FBF6EA]/60'
+            : 'border border-[#161616]/25 text-[#161616]/60'
+      }`}
+    >
+      {codex ? 'Codex' : 'Claude'}
+    </span>
+  );
+}
+
 export function timeAgo(iso: string | null | undefined): string {
   if (!iso) return '';
   const s = Math.max(0, Math.floor((Date.now() - new Date(iso).getTime()) / 1000));
@@ -127,6 +146,7 @@ export function TaskRow({ task, open, onToggle }: { task: Task; open: boolean; o
           <span className="flex flex-wrap items-center gap-1.5">
             <span className="font-sans text-[13px] font-semibold text-[#161616]">{task.title}</span>
             <StatusChip status={task.status} />
+            {task.engine === 'codex' && <EngineTag engine="codex" />}
           </span>
           <span className="mt-0.5 block truncate font-mono text-[10.5px] text-[#161616]/60">
             {a.name}

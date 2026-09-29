@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react';
 import AdminHeader from '@/components/admin/AdminHeader';
 import { AGENTS } from '@/lib/office/agents';
 import type { Deliverable, OfficeState, Task } from '@/lib/office/server';
-import { AgentMark, ApprovalCard, HealthPill, MissionCard, Rich, SowerChat, agentOf, timeAgo } from './parts';
+import { AgentMark, ApprovalCard, EngineTag, HealthPill, MissionCard, Rich, SowerChat, agentOf, timeAgo } from './parts';
 import { useOffice, type OfficeApi } from './useOffice';
 
 type DeskState = { tone: 'working' | 'waiting' | 'queued' | 'idle'; line: string; task?: Task };
@@ -36,12 +36,16 @@ function deskStates(state: OfficeState | null): Record<string, DeskState> {
 
 const TONE_LABEL = { working: 'Working', waiting: 'Needs you', queued: 'Up next', idle: 'Idle' };
 
+function fmtTime(iso: string): string {
+  return new Date(iso).toLocaleString('en-US', { timeZone: 'America/Denver', weekday: 'short', hour: 'numeric', minute: '2-digit' });
+}
+
 function Desk({ agentKey, desk, big = false }: { agentKey: string; desk: DeskState; big?: boolean }) {
   const a = agentOf(agentKey);
   const working = desk.tone === 'working';
   return (
     <div
-      className={`relative flex flex-col rounded-2xl border-2 p-3.5 transition-all ${big ? 'sm:col-span-2 xl:col-span-3' : ''} ${
+      className={`relative flex flex-col rounded-2xl border-2 p-3.5 transition-all ${big ? 'ring-2 ring-[#F5B700]/40' : ''} ${
         working ? 'border-[#F5B700] bg-[#211d12] shadow-[0_0_0_3px_rgba(245,183,0,0.18)]' : desk.tone === 'waiting' ? 'border-[#FF6FB5] bg-[#231820]' : 'border-[#FBF6EA]/15 bg-[#1d1d1d]'
       }`}
     >
@@ -59,6 +63,7 @@ function Desk({ agentKey, desk, big = false }: { agentKey: string; desk: DeskSta
             </span>
           </div>
           <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#F5B700]/80">{a.role}</p>
+          <EngineTag engine={desk.task?.engine ?? a.engine} dark />
         </div>
       </div>
       <p className="mt-2.5 text-[12px] leading-snug text-[#FBF6EA]/60">{a.does}</p>
@@ -94,7 +99,8 @@ function Toggle({ on, label, note, onChange }: { on: boolean; label: string; not
 }
 
 const REACH: { name: string; how: string; probe?: string }[] = [
-  { name: 'Claude Code', how: 'The brain. Max subscription, never the metered API.', probe: 'claude' },
+  { name: 'Claude Code', how: 'The main brain. Max subscription, never the metered API.', probe: 'claude' },
+  { name: 'Codex', how: 'The second brain on the ChatGPT plan: Studio’s images, and every desk’s backup when Claude is capped.', probe: 'codex' },
   { name: 'GitHub', how: 'Repos, branches, PRs, merges.', probe: 'gh' },
   { name: 'Vercel', how: 'Deploys and previews. Production ships by merge to master.', probe: 'vercel' },
   { name: 'Supabase', how: 'Leads, bookings, the pipeline, every admin table.', probe: 'supabase' },
@@ -218,7 +224,13 @@ function FloorBody({ api }: { api: OfficeApi }) {
               <code className="mt-1.5 block rounded-md bg-black/40 px-2 py-1 font-mono text-[11.5px] text-[#F5B700]">node scripts\office\worker.mjs</code>
             </div>
           )}
-          <div className="grid gap-3 px-5 pb-5 sm:grid-cols-2 xl:grid-cols-3">
+          {state?.health.up && (state.health.caps.claude || state.health.caps.codex) && (
+            <div className="mx-5 mb-3 rounded-xl border-2 border-[#00A6A6] bg-[#10282a] px-3.5 py-2.5 text-[12.5px] leading-snug text-[#FBF6EA]">
+              {state.health.caps.claude && <p>Claude is at its usage cap until {fmtTime(state.health.caps.claude)}. {state.health.caps.codex ? '' : 'Codex is covering every desk.'}</p>}
+              {state.health.caps.codex && <p>Codex is at its usage cap until {fmtTime(state.health.caps.codex)}. {state.health.caps.claude ? 'Work waits for the first to reopen.' : 'Claude is covering Studio.'}</p>}
+            </div>
+          )}
+          <div className="grid gap-3 px-5 pb-5 sm:grid-cols-2 xl:grid-cols-4">
             {AGENTS.map((a) => (
               <Desk key={a.key} agentKey={a.key} desk={desks[a.key]} big={a.key === 'sower'} />
             ))}
@@ -298,7 +310,7 @@ function FloorBody({ api }: { api: OfficeApi }) {
               <ul className="space-y-2">
                 {REACH.map((r) => {
                   const p = r.probe ? state?.health.probes?.[r.probe] : undefined;
-                  const good = p ? /ready|signed in|installed/.test(p) : null;
+                  const good = p ? /ready|signed in|installed|\d+ logins?/.test(p) : null;
                   return (
                     <li key={r.name} className="flex items-start gap-2.5">
                       <span className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${good === null ? 'bg-[#1E50C8]' : good ? 'bg-[#2fae55]' : 'bg-[#E0301E]'}`} />

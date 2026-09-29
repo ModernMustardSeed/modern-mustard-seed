@@ -82,6 +82,42 @@ const CLAUDE_BIN = (() => {
   return existsSync(local) ? local : 'claude';
 })();
 
+/**
+ * Codex, run through Node straight from its package so no shell ever joins
+ * the arguments. The npm shim on this machine is a .ps1/.cmd pair.
+ */
+const CODEX_JS = env.CODEX_JS || path.join(env.APPDATA || path.join(os.homedir(), 'AppData', 'Roaming'), 'npm', 'node_modules', '@openai', 'codex', 'bin', 'codex.js');
+/**
+ * Every ChatGPT login this worker may use, primary first. A second
+ * subscription is a second CODEX_HOME folder (the image-gen plugin's
+ * add-codex-login.ps1 makes ~/.codex-b); unsigned folders are skipped.
+ */
+const CODEX_HOMES = (env.OFFICE_CODEX_HOMES ? env.OFFICE_CODEX_HOMES.split(';') : [path.join(os.homedir(), '.codex'), path.join(os.homedir(), '.codex-b')])
+  .map((h) => h.trim())
+  .filter((h) => h && existsSync(path.join(h, 'auth.json')));
+
+/** When each engine is capped until (ms). Read from the error text; there is no other source. */
+const caps = { claude: 0, codex: new Map() };
+const LIMIT_RE = /usage limit|limit reached|hit your limit|rate limit(ed)?|out of (extra )?usage|weekly limit|5-hour limit/i;
+
+function capUntil(text) {
+  const m = String(text ?? '').match(/try again (?:at|after|in) ([^.\n]+)/i);
+  if (m) {
+    const t = Date.parse(m[1].replace(/(\d)(st|nd|rd|th)/g, '$1'));
+    if (Number.isFinite(t) && t > Date.now()) return t;
+    const mins = m[1].match(/(\d+)\s*(minute|min|hour|hr)/i);
+    if (mins) return Date.now() + Number(mins[1]) * (/h/i.test(mins[2]) ? 3600_000 : 60_000);
+  }
+  return Date.now() + 60 * 60 * 1000;
+}
+
+function codexHomeFree() {
+  return CODEX_HOMES.find((h) => (caps.codex.get(h) ?? 0) < Date.now()) ?? null;
+}
+function engineOpen(engine) {
+  return engine === 'claude' ? caps.claude < Date.now() : Boolean(codexHomeFree());
+}
+
 const sb = createClient(SUPABASE_URL, SERVICE_KEY, { auth: { persistSession: false } });
 const log = (...a) => console.log(new Date().toISOString(), ...a);
 const today = () => new Date().toLocaleDateString('en-CA', { timeZone: 'America/Denver' }) + ', ' + new Date().toLocaleDateString('en-US', { timeZone: 'America/Denver', weekday: 'long' });
@@ -211,6 +247,128 @@ function runClaude({ prompt, system, sessionId, resume, onAction, isCancelled, t
   });
 }
 
+/** A readable line for the live feed from one Codex item. */
+function describeCodexItem(item = {}) {
+  const short = (s, n = 110) => String(s ?? '').replace(/\s+/g, ' ').trim().slice(0, n);
+  switch (item.type) {
+    case 'command_execution': {
+      const cmd = String(item.command ?? '');
+      if (cmd.includes('office.mjs')) return null;
+      return `Running ${short(cmd, 90)}`;
+    }
+    case 'file_change': return `Editing ${short((item.changes ?? []).map((c) => path.basename(String(c.path ?? ''))).join(', '), 80) || 'files'}`;
+    case 'web_search': return `Searching the web: ${short(item.query, 80)}`;
+    case 'mcp_tool_call': return `Using ${short(`${item.server ?? ''} ${item.tool ?? ''}`, 60)}`;
+    case 'image_generation':
+    case 'image_gen': return 'Rendering an image';
+    default: return null;
+  }
+}
+
+/**
+ * One Codex run on one ChatGPT login. Same contract as runClaude, so the task
+ * code does not care which brain it got. Codex has no system-prompt flag, so a
+ * fresh run carries the system block at the top of stdin.
+ */
+function runCodexOnce({ home, prompt, resume, onAction, isCancelled, timeoutMs, extraEnv = {} }) {
+  return new Promise((resolve) => {
+    const lastFile = path.join(os.tmpdir(), `office-codex-${process.pid}-${Date.now()}.txt`);
+    const shared = ['--json', '--skip-git-repo-check', '-o', lastFile, '-c', 'sandbox_workspace_write.network_access=true'];
+    const args = resume
+      ? [CODEX_JS, 'exec', 'resume', ...shared, '-c', 'sandbox_mode="workspace-write"', resume, '-']
+      // --approve-for-me implies the workspace-write sandbox and refuses -s (codex-cli 0.159).
+      : [CODEX_JS, 'exec', ...shared, '--approve-for-me', '-C', WORKSPACE, '-'];
+
+    const child = spawn(process.execPath, args, { cwd: WORKSPACE, env: { ...env, ...extraEnv, CODEX_HOME: home }, windowsHide: true });
+    children.add(child);
+    child.on('close', () => children.delete(child));
+
+    let buf = '';
+    let stderr = '';
+    let sid = resume || null;
+    let lastText = '';
+    let failure = '';
+    let done = false;
+
+    const finish = (code, why) => {
+      if (done) return;
+      done = true;
+      clearTimeout(timer);
+      clearInterval(watch);
+      let result = lastText;
+      try { if (existsSync(lastFile)) { result = readFileSync(lastFile, 'utf8').trim() || lastText; } } catch { /* keep the streamed text */ }
+      const errText = `${failure}\n${stderr}${why ? `\n${why}` : ''}`.trim();
+      resolve({ code, result, sessionId: sid, isError: code !== 0 || Boolean(failure), stderr: errText, limited: LIMIT_RE.test(errText), capText: errText });
+    };
+
+    const timer = setTimeout(() => { killTree(child); finish(124, `timed out after ${Math.round(timeoutMs / 60000)} min`); }, timeoutMs);
+    const watch = setInterval(async () => {
+      try {
+        if (stopping || (isCancelled && (await isCancelled()))) { killTree(child); finish(130, 'stopped'); }
+      } catch { /* a failed check is not a stop */ }
+    }, 15_000);
+
+    child.stdout.on('data', (d) => {
+      buf += d.toString();
+      let nl;
+      while ((nl = buf.indexOf('\n')) !== -1) {
+        const line = buf.slice(0, nl).trim();
+        buf = buf.slice(nl + 1);
+        if (!line) continue;
+        let ev;
+        try { ev = JSON.parse(line); } catch { continue; }
+        if (ev.type === 'thread.started' && ev.thread_id) sid = ev.thread_id;
+        else if (ev.type === 'item.started' || ev.type === 'item.completed') {
+          const item = ev.item ?? {};
+          if (item.type === 'agent_message' && item.text) lastText = String(item.text).trim();
+          else if (ev.type === 'item.started') {
+            const text = describeCodexItem(item);
+            if (text) onAction?.(text);
+          }
+        } else if (ev.type === 'turn.failed') failure = String(ev.error?.message ?? 'turn failed');
+        else if (ev.type === 'error') failure = String(ev.message ?? 'error');
+      }
+    });
+    child.stderr.on('data', (d) => { stderr = (stderr + d.toString()).slice(-4000); });
+    child.on('error', (err) => finish(null, err.message));
+    child.on('close', (code) => finish(code));
+
+    child.stdin.write(prompt);
+    child.stdin.end();
+  });
+}
+
+/** Codex across every login, skipping capped ones and recording each new cap. */
+async function runCodex(opts) {
+  if (!existsSync(CODEX_JS)) return { code: null, result: '', sessionId: null, isError: true, stderr: `Codex is not installed at ${CODEX_JS}`, limited: false };
+  let last = null;
+  for (;;) {
+    const home = codexHomeFree();
+    if (!home) return last ?? { code: null, result: '', sessionId: null, isError: true, stderr: 'Every Codex login is at its usage cap.', limited: true };
+    last = await runCodexOnce({ ...opts, home });
+    if (!last.limited) return last;
+    const until = capUntil(last.capText);
+    caps.codex.set(home, until);
+    log(`codex login ${path.basename(home)} capped until ${new Date(until).toISOString()}`);
+    // A resumed thread belongs to the login that opened it; the next login starts fresh.
+    if (opts.resume) return last;
+  }
+}
+
+/** One run on the named engine. Marks a Claude cap the same way runCodex marks a Codex one. */
+async function runEngine(engine, { system, prompt, resume, sessionId, ...rest }) {
+  if (engine === 'codex') {
+    return runCodex({ prompt: resume ? prompt : `${system}\n\n---\n\n${prompt}`, resume, ...rest });
+  }
+  const out = await runClaude({ system, prompt, resume, sessionId, ...rest });
+  out.limited = out.isError && LIMIT_RE.test(`${out.result ?? ''}\n${out.stderr ?? ''}`);
+  if (out.limited) {
+    caps.claude = capUntil(`${out.result}\n${out.stderr}`);
+    log(`claude capped until ${new Date(caps.claude).toISOString()}`);
+  }
+  return out;
+}
+
 async function waitForMemory(minMb) {
   for (;;) {
     if (stopping) return false;
@@ -286,10 +444,22 @@ async function chiefTurn(job, userPrompt) {
   const system = chiefSystem({ agents: AGENTS, settings, today: today() });
   const onAction = (text) => { sb.from('office_jobs').update({ last_action: text }).eq('id', job.id).then(() => {}); };
 
+  // Claude at its cap: Codex takes the turn with the recent thread, so Sarah
+  // still gets an answer and a plan. Sower's Claude session is kept for later.
+  const viaCodex = async () => {
+    const history = await recentTranscript();
+    const prompt = history ? `Earlier in this conversation:\n${history}\n\n---\n\n${userPrompt}` : userPrompt;
+    const out = await runEngine('codex', { system, prompt, onAction, timeoutMs: CHIEF_TIMEOUT_MS });
+    if (!out.isError || out.result) await engine.logEvent(sb, { agent: 'sower', kind: 'handoff', text: 'Claude is at its cap; Codex answered this one.' });
+    return out;
+  };
+  if (!engineOpen('claude') && engineOpen('codex')) return viaCodex();
+
   let session = await chiefSession();
   let out;
   if (session) {
-    out = await runClaude({ prompt: userPrompt, system, resume: session, onAction, timeoutMs: CHIEF_TIMEOUT_MS });
+    out = await runEngine('claude', { prompt: userPrompt, system, resume: session, onAction, timeoutMs: CHIEF_TIMEOUT_MS });
+    if (out.limited) return engineOpen('codex') ? viaCodex() : out;
     // A session that no longer exists fails fast with nothing said. Start over
     // with the recent thread so Sower does not lose the plot.
     if (out.isError && !out.result) session = null;
@@ -298,9 +468,10 @@ async function chiefTurn(job, userPrompt) {
     const fresh = crypto.randomUUID();
     const history = await recentTranscript();
     const prompt = history ? `Earlier in this conversation:\n${history}\n\n---\n\n${userPrompt}` : userPrompt;
-    out = await runClaude({ prompt, system, sessionId: fresh, onAction, timeoutMs: CHIEF_TIMEOUT_MS });
+    out = await runEngine('claude', { prompt, system, sessionId: fresh, onAction, timeoutMs: CHIEF_TIMEOUT_MS });
+    if (out.limited && engineOpen('codex')) return viaCodex();
   }
-  if (out.sessionId) await saveChiefSession(out.sessionId);
+  if (out.sessionId && !out.limited) await saveChiefSession(out.sessionId);
   return out;
 }
 
@@ -397,18 +568,38 @@ async function handleTask(job, resuming) {
   if (entry) { entry.agent = task.agent; entry.title = task.title; }
 
   const settings = await engine.getSettings(sb);
-  const system = taskSystem({ agent, settings, cli: CLI, today: today() });
   const startedRun = new Date().toISOString();
 
+  // Which brain. The task's own engine unless it is capped and the other one
+  // is open, in which case the other one takes it without anyone asking.
+  const other = (e) => (e === 'codex' ? 'claude' : 'codex');
+  let eng = task.engine === 'codex' || task.engine === 'claude' ? task.engine : agent.engine;
+  if (!engineOpen(eng) && engineOpen(other(eng))) {
+    await engine.logEvent(sb, { agent: task.agent, kind: 'handoff', mission_id: task.mission_id, task_id: task.id, text: `${eng === 'claude' ? 'Claude' : 'Codex'} is at its cap; ${eng === 'claude' ? 'Codex' : 'Claude'} takes ${task.title}` });
+    eng = other(eng);
+    await sb.from('office_tasks').update({ engine: eng }).eq('id', task.id);
+  }
+
+  let answersNote = '';
+  if (resuming) {
+    const { data: answers } = await sb.from('office_approvals').select('id, question, status, answer_note').eq('task_id', task.id).eq('delivered', false).neq('status', 'pending');
+    if (answers?.length) await sb.from('office_approvals').update({ delivered: true }).in('id', answers.map((a) => a.id));
+    answersNote = `Sarah answered:\n${(answers ?? []).map((a) => `- ${a.status.toUpperCase()}: ${a.question}${a.answer_note ? ` (her note: ${a.answer_note})` : ''}`).join('\n') || '- (no new answers)'}`;
+  }
+
+  // A session resumes only on the engine that opened it.
+  const sameEngineSession = task.session_id && (task.session_engine || 'claude') === eng;
   let prompt;
   let resume = null;
-  if (resuming && task.session_id) {
-    const { data: answers } = await sb.from('office_approvals').select('id, question, status, answer_note').eq('task_id', task.id).eq('delivered', false).neq('status', 'pending');
-    await sb.from('office_approvals').update({ delivered: true }).in('id', (answers ?? []).map((a) => a.id));
-    prompt = `Sarah answered:\n${(answers ?? []).map((a) => `- ${a.status.toUpperCase()}: ${a.question}${a.answer_note ? ` (her note: ${a.answer_note})` : ''}`).join('\n') || '- (no new answers)'}\n\nContinue your task from where you stopped. What she declined, route around.`;
+  let handoff = '';
+  if (resuming && sameEngineSession) {
+    prompt = `${answersNote}\n\nContinue your task from where you stopped. What she declined, route around.`;
     resume = task.session_id;
   } else {
     prompt = await taskContext(task);
+    if (resuming) {
+      handoff = `This task was already under way on the other engine and is continuing here. Its last report:\n${(task.output || '(none)').slice(0, 3000)}\n\n${answersNote}\nPick up from there; do not redo finished work.`;
+    }
   }
 
   await sb.from('office_tasks').update({ status: 'running', started_at: task.started_at ?? startedRun, last_action: resuming ? 'Back to work with Sarah\'s answer' : 'Starting', runs: (task.runs ?? 0) + 1, updated_at: startedRun }).eq('id', task.id);
@@ -426,26 +617,48 @@ async function handleTask(job, resuming) {
     return !data || data.status === 'stopped';
   };
 
-  const out = await runClaude({
-    prompt,
-    system,
-    resume,
-    sessionId: resume ? null : crypto.randomUUID(),
-    onAction,
-    isCancelled,
-    timeoutMs: TASK_TIMEOUT_MS,
-    extraEnv: { OFFICE_TASK_ID: task.id, OFFICE_MISSION_ID: task.mission_id, OFFICE_AGENT: task.agent, OFFICE_ENV_FILE: ENV_FILE },
-  });
+  const extraEnv = { OFFICE_TASK_ID: task.id, OFFICE_MISSION_ID: task.mission_id, OFFICE_AGENT: task.agent, OFFICE_ENV_FILE: ENV_FILE };
+  const run = (e, opts) =>
+    runEngine(e, {
+      system: taskSystem({ agent, settings, cli: CLI, today: today(), engine: e, handoff: opts.handoff }),
+      prompt: opts.prompt,
+      resume: opts.resume,
+      sessionId: opts.resume ? null : crypto.randomUUID(),
+      onAction,
+      isCancelled,
+      timeoutMs: TASK_TIMEOUT_MS,
+      extraEnv,
+    });
+
+  let out = await run(eng, { prompt, resume, handoff });
+
+  // Capped mid-task: the other engine picks it up from the partial report,
+  // once. If both are capped the task fails with the reset time in its error.
+  if (out.limited && !stopping && engineOpen(other(eng))) {
+    const from = eng;
+    eng = other(eng);
+    await sb.from('office_tasks').update({ engine: eng, output: out.result || null }).eq('id', task.id);
+    await engine.logEvent(sb, { agent: task.agent, kind: 'handoff', mission_id: task.mission_id, task_id: task.id, text: `${from === 'claude' ? 'Claude' : 'Codex'} hit its cap mid-task; ${eng === 'claude' ? 'Claude' : 'Codex'} picks up ${task.title}` });
+    out = await run(eng, {
+      prompt: await taskContext(task),
+      handoff: `This task started on the other engine, which hit its usage cap. How far it got:\n${(out.result || '(nothing reported)').slice(0, 3000)}\n${answersNote}\nPick up from there; check what already exists before redoing anything.`,
+    });
+  }
 
   // The worker is shutting down: the stop handler already put this job back in
   // the queue, and the session id lets the next run pick the thread back up.
   if (stopping) {
-    if (out.sessionId) await sb.from('office_tasks').update({ session_id: out.sessionId, status: 'queued' }).eq('id', task.id).eq('status', 'running');
+    if (out.sessionId) await sb.from('office_tasks').update({ session_id: out.sessionId, session_engine: eng, status: 'queued' }).eq('id', task.id).eq('status', 'running');
     return;
   }
   const { data: now } = await sb.from('office_tasks').select('status, runs').eq('id', task.id).maybeSingle();
   if (!now || now.status === 'stopped') return;
-  if (out.sessionId) await sb.from('office_tasks').update({ session_id: out.sessionId }).eq('id', task.id);
+  if (out.sessionId) await sb.from('office_tasks').update({ session_id: out.sessionId, session_engine: eng }).eq('id', task.id);
+  if (out.limited) {
+    out.stderr = `Both engines are at their usage caps. Claude reopens ${new Date(caps.claude || Date.now()).toLocaleString('en-US', { timeZone: 'America/Denver' })} MT. ${out.stderr ?? ''}`;
+    out.code = out.code || 1;
+    out.result = '';
+  }
 
   // A timeout can leave a half-written last message behind. That is not a report.
   if (out.isError && (!out.result || out.code === 124)) {
@@ -552,7 +765,12 @@ async function runProbes() {
     probe('supabase', ['--version'], (c) => (c === 0 ? 'installed' : 'missing')),
     probe('stripe', ['config', '--list'], (c, o) => (c === 0 && /api_key/.test(o) ? 'signed in' : c === 0 ? 'installed' : 'missing')),
   ]);
-  probes = { claude, gh, vercel, supabase, stripe, at: new Date().toISOString() };
+  const codex = !existsSync(CODEX_JS)
+    ? 'missing'
+    : CODEX_HOMES.length
+      ? `${CODEX_HOMES.length} login${CODEX_HOMES.length === 1 ? '' : 's'}`
+      : 'signed out';
+  probes = { claude, codex, gh, vercel, supabase, stripe, at: new Date().toISOString() };
   log('probes', JSON.stringify(probes));
 }
 
@@ -560,7 +778,22 @@ async function beat() {
   try {
     const list = [...running.entries()].map(([job, r]) => ({ job, kind: r.kind, agent: r.agent, title: r.title }));
     await sb.from('app_state').upsert(
-      { key: engine.HEALTH_KEY, value: { worker: WORKER, at: new Date().toISOString(), lanes: LANES, running: list, probes, workspace: WORKSPACE }, updated_at: new Date().toISOString() },
+      {
+        key: engine.HEALTH_KEY,
+        value: {
+          worker: WORKER,
+          at: new Date().toISOString(),
+          lanes: LANES,
+          running: list,
+          probes,
+          workspace: WORKSPACE,
+          caps: {
+            claude: caps.claude > Date.now() ? new Date(caps.claude).toISOString() : null,
+            codex: engineOpen('codex') || !CODEX_HOMES.length ? null : new Date(Math.min(...CODEX_HOMES.map((h) => caps.codex.get(h) ?? Date.now()))).toISOString(),
+          },
+        },
+        updated_at: new Date().toISOString(),
+      },
       { onConflict: 'key' },
     );
   } catch { /* a missed heartbeat never stops the work */ }
