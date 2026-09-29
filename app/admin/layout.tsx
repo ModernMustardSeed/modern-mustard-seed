@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { buildMetadata } from '@/lib/seo';
 import MustardHelp from '@/components/admin/MustardHelp';
+import OfficeDock from '@/components/admin/office/OfficeDock';
 import MustardDeskCall from '@/components/MustardDeskCall';
 import AnnouncementBanner from '@/components/admin/AnnouncementBanner';
 import WelcomeTour from '@/components/admin/WelcomeTour';
@@ -17,7 +18,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     <div className="admin-shell">
       <AnnouncementBanner />
       {children}
-      <MustardHelp />
+      {/* The owner gets Sower, the chief of staff at Yield, in the corner; the
+          team keeps Mr. Mustard's help bubble. One launcher per person. */}
+      {user?.role === 'owner' ? <OfficeDock /> : <MustardHelp />}
       {user && (
         <MustardDeskCall
           endpoint="/api/admin/desk-call"

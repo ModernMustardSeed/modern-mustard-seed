@@ -18,7 +18,7 @@ import { openWelcomeTour } from '@/components/admin/WelcomeTour';
  * the mustard chip, and the Inbox unread dot bubbles up to its group.
  */
 
-type Tab = 'overview' | 'hq' | 'portfolio' | 'gleaner' | 'pipeline' | 'tracker' | 'outbound' | 'acquisition' | 'factories' | 'partners' | 'partner-desk' | 'team' | 'outreach' | 'campaigns' | 'texting' | 'ads' | 'facebook' | 'social' | 'posters' | 'artifacts' | 'audit' | 'roadmaps' | 'hundredfold' | 'call' | 'script' | 'callers' | 'calls' | 'training' | 'clients' | 'front-office' | 'posting' | 'proposals' | 'projects' | 'builds' | 'build-log' | 'delivery' | 'templates' | 'intakes' | 'approvals' | 'reviews' | 'calendar' | 'onboarding' | 'manual' | 'inbox' | 'opps' | 'desks' | 'call-prep';
+type Tab = 'overview' | 'office' |'hq' | 'portfolio' | 'gleaner' | 'pipeline' | 'tracker' | 'outbound' | 'acquisition' | 'factories' | 'partners' | 'partner-desk' | 'team' | 'outreach' | 'campaigns' | 'texting' | 'ads' | 'facebook' | 'social' | 'posters' | 'artifacts' | 'audit' | 'roadmaps' | 'hundredfold' | 'call' | 'script' | 'callers' | 'calls' | 'training' | 'clients' | 'front-office' | 'posting' | 'proposals' | 'projects' | 'builds' | 'build-log' | 'delivery' | 'templates' | 'intakes' | 'approvals' | 'reviews' | 'calendar' | 'onboarding' | 'manual' | 'inbox' | 'opps' | 'desks' | 'call-prep';
 
 // `external: true` marks a public-facing offer page that opens in a new tab, so
 // clicking it from the admin never loses the team member's place. These items
@@ -28,6 +28,9 @@ type Item = { key: Tab | string; label: string; href: string; external?: boolean
 
 const PINNED: Item[] = [
   { key: 'overview', label: 'Overview', href: '/admin' },
+  // Yield, the agentic office: Sower and the floor. Pinned second because it
+  // is where the work gets asked for.
+  { key: 'office', label: 'Yield', href: '/admin/office' },
   // Pinned rather than tucked in a dropdown: the 50 client sprint is the number
   // the studio is currently steering by, so it gets a chip.
   { key: 'acquisition', label: 'Acquisition', href: '/admin/acquisition' },
