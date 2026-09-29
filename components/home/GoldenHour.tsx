@@ -32,7 +32,7 @@ export default function GoldenHour() {
         <div className={s.copy}>
           <p className={s.eyebrow}>Meet the Mustards</p>
           <h2 id="golden-heading">He runs his business <em>from here.</em></h2>
-          <p className={s.lede}>His website books the jobs. His agents answer every call, send the quotes and chase the follow-ups. Mr. Mustard reads one text from the lounger and goes back to the kids.</p>
+          <p className={s.lede}>His website books the jobs. His agents answer the calls and chase the follow-ups. He reads one text and goes back to the kids.</p>
           <div className={s.actions}>
             <Link href="/inquire" className={s.cta}>Build mine <span aria-hidden="true">↗</span></Link>
             <Link href="/ai" className={s.quiet}>How the agents work</Link>
