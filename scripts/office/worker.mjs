@@ -441,7 +441,8 @@ async function recentTranscript() {
 /** Run a chief turn in Sower's standing session, starting a fresh one if it is gone. */
 async function chiefTurn(job, userPrompt) {
   const settings = await engine.getSettings(sb);
-  const system = chiefSystem({ agents: AGENTS, settings, today: today() });
+  const { data: lessons } = await sb.from('office_lessons').select('lesson, area, pinned').eq('active', true).order('pinned', { ascending: false }).order('created_at', { ascending: false }).limit(25);
+  const system = chiefSystem({ agents: AGENTS, settings, today: today(), lessons: lessons ?? [] });
   const onAction = (text) => { sb.from('office_jobs').update({ last_action: text }).eq('id', job.id).then(() => {}); };
 
   // Claude at its cap: Codex takes the turn with the recent thread, so Sarah
@@ -475,12 +476,32 @@ async function chiefTurn(job, userPrompt) {
   return out;
 }
 
-async function applyBlocks(blocks) {
+const LESSON_AREAS = new Set(['general', 'outreach', 'offer', 'content', 'visuals', 'build', 'pricing', 'ops']);
+
+async function applyBlocks(blocks, ctx = {}) {
   const settings = await engine.getSettings(sb);
   const notes = [];
   let missionId = null;
   for (const b of blocks) {
     if (b.parseError) { notes.push(`(The plan did not parse: ${b.parseError}. Ask me again and I will resend it.)`); continue; }
+    if (Array.isArray(b.lessons) && b.lessons.length) {
+      const rows = b.lessons
+        .filter((l) => l && typeof l.lesson === 'string' && l.lesson.trim())
+        .slice(0, 5)
+        .map((l) => ({
+          lesson: l.lesson.trim().slice(0, 500),
+          area: LESSON_AREAS.has(l.area) ? l.area : 'general',
+          evidence: typeof l.evidence === 'string' ? l.evidence.slice(0, 1000) : null,
+          mission_id: ctx.missionId ?? null,
+        }));
+      if (rows.length) {
+        const { error } = await sb.from('office_lessons').insert(rows);
+        if (!error) {
+          await engine.logEvent(sb, { agent: 'sower', kind: 'lesson', mission_id: ctx.missionId ?? null, text: `Learned ${rows.length} thing${rows.length === 1 ? '' : 's'} for next time` });
+          notes.push(`Filed ${rows.length} lesson${rows.length === 1 ? '' : 's'} for next time.`);
+        }
+      }
+    }
     if (b.mission) {
       try {
         const m = await engine.createMission(sb, b.mission, settings);
@@ -531,10 +552,12 @@ ${(tasks ?? []).map((t) => `## ${t.agent}: ${t.title} [${t.status}]\n${(t.output
 Delivered:
 ${(shelf ?? []).map((d) => `- ${d.agent} ${d.kind}: ${d.title}${d.url ? ` ${d.url}` : ''}`).join('\n') || '- nothing'}
 
-Write Sarah the debrief: what landed against the number, exactly what she has in hand now (the script, the offer, the links), what fell short and why, and the next move you recommend. Under 250 words. If the next move is a new mission, propose it with an office block.`;
+Write Sarah the debrief: what landed against the number, exactly what she has in hand now (the script, the offer, the links), what fell short and why, and the next move you recommend. Under 250 words. If the next move is a new mission, propose it with an office block.
+
+Then file what this mission taught the floor as a lessons office block: one to five, each one sentence someone could act on next time, each backed by what actually happened here (reply rates, what booked, what was ignored, what broke). No lesson without evidence.`;
   const out = await chiefTurn(job, prompt);
   const { clean, blocks } = splitOfficeBlocks(out.result);
-  const { notes } = await applyBlocks(blocks);
+  const { notes } = await applyBlocks(blocks, { missionId });
   const body = [clean, ...notes].filter(Boolean).join('\n\n') || `${m.title}: done.`;
   await sb.from('office_missions').update({ debrief: clean || null, updated_at: new Date().toISOString() }).eq('id', missionId);
   await sb.from('office_messages').insert({ role: 'sower', body, mission_id: missionId });

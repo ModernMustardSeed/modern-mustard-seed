@@ -79,12 +79,17 @@ export function useOffice({ intervalMs, lite = false, enabled = true }: { interv
     await load();
   }, [load]);
 
+  const lesson = useCallback(async (id: string, patch: { pinned?: boolean; active?: boolean }) => {
+    await call(`/api/admin/office/lessons/${id}`, { method: 'PATCH', body: JSON.stringify(patch) });
+    await load();
+  }, [load]);
+
   const reset = useCallback(async () => {
     await call('/api/admin/office/chat', { method: 'DELETE' });
     await load();
   }, [load]);
 
-  return { state, error, forbidden, reload: load, send, mission, decide, settings, reset };
+  return { state, error, forbidden, reload: load, send, mission, decide, settings, reset, lesson };
 }
 
 export type OfficeApi = ReturnType<typeof useOffice>;
