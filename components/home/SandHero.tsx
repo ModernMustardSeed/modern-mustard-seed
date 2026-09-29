@@ -1,3 +1,4 @@
+import { preload } from 'react-dom';
 import Link from '@/components/AttributionLink';
 import { SAND_SCRIPT, type SandLine } from './sandScript';
 import SandMotion from './SandMotion';
@@ -44,20 +45,24 @@ function Message({ k }: { k: Key }) {
 }
 
 export default function SandHero() {
+  // The beach is the largest paint on the page; ask for it before the CSS is parsed.
+  preload('/art/sand/day-1600.avif', { as: 'image', type: 'image/avif', fetchPriority: 'high', imageSrcSet: '/art/sand/day-960.avif 960w, /art/sand/day-1600.avif 1600w', imageSizes: '(max-width: 760px) 540px, max(100vw, 150svh)' });
   return (
     <section id="sand-story" className={s.story} data-story="" aria-labelledby="studio-heading">
       <h1 id="studio-heading" className={s.srOnly}>Modern Mustard Seed: we build websites and agentic systems that run your business, so you can run your life.</h1>
       <div className={s.stage}>
         <picture className={s.plate}>
-          <source type="image/avif" srcSet="/art/sand/day-960.avif 960w, /art/sand/day-1600.avif 1600w" sizes="max(100vw, 150svh)" />
+          <source type="image/avif" srcSet="/art/sand/day-960.avif 960w, /art/sand/day-1600.avif 1600w" sizes="(max-width: 760px) 540px, max(100vw, 150svh)" />
           <img src="/art/sand/day-1600.webp" alt="Painting: an empty stretch of wet golden sand on the French Riviera, calm turquoise water, a white yacht on the horizon. Modern Mustard Seed is written in the sand by hand, and each wave leaves a new line." width={1600} height={1067} fetchPriority="high" decoding="async" />
         </picture>
+        {/* The sunset is not seen until the end of the story; SandMotion fills in its source after the page has loaded. */}
         <picture className={s.dusk} aria-hidden="true">
-          <source type="image/avif" srcSet="/art/sand/dusk-960.avif 960w, /art/sand/dusk-1600.avif 1600w" sizes="max(100vw, 150svh)" />
-          <img src="/art/sand/dusk-1600.webp" alt="" width={1600} height={1067} loading="lazy" decoding="async" />
+          <source type="image/avif" data-srcset="/art/sand/dusk-960.avif 960w, /art/sand/dusk-1600.avif 1600w" sizes="(max-width: 760px) 540px, max(100vw, 150svh)" />
+          <img data-src="/art/sand/dusk-1600.webp" alt="" width={1600} height={1067} decoding="async" />
         </picture>
 
         {/* The beach floor: writing and water share one perspective plane. */}
+        <canvas className={s.touch} data-touch="" aria-hidden="true" />
         <div className={s.floor} aria-hidden="true">
           <div className={s.plane}>
             <div className={s.wet} />
@@ -95,7 +100,8 @@ export default function SandHero() {
             </div>
           </div>
         </div>
-        <p className={s.cue} aria-hidden="true"><span className={s.line} />Scroll</p>
+        <p className={s.cue} aria-hidden="true"><span className={s.line} />Scroll<span className={s.hint}>or draw in the sand</span></p>
+        <a href="#after-story" className={s.skip}>Skip the story <span aria-hidden="true">↓</span></a>
 
         <svg className={s.defs} aria-hidden="true" focusable="false">
           <defs>
@@ -118,6 +124,7 @@ export default function SandHero() {
           </defs>
         </svg>
       </div>
+      <div id="after-story" className={s.after} tabIndex={-1} />
       <SandMotion />
     </section>
   );

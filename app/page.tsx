@@ -1,4 +1,7 @@
 import StudioHome from '@/components/home/StudioHome';
+import SandHero from '@/components/home/SandHero';
+import GoldenHour from '@/components/home/GoldenHour';
+import NameInSand from '@/components/home/NameInSand';
 import { JsonLd, breadcrumbJsonLd, faqJsonLd, parableJsonLd } from '@/lib/jsonld';
 import { buildMetadata, SITE } from '@/lib/seo';
 
@@ -93,5 +96,5 @@ const homeFaq = faqJsonLd(HOME_FAQ);
 
 
 export default function HomePage() {
-  return <><JsonLd data={[homeJsonLd, offerJsonLd, parableJsonLd, homeFaq, breadcrumbJsonLd([{ name: 'Home', url: '/' }])]} /><StudioHome faq={HOME_FAQ} /></>;
+  return <><JsonLd data={[homeJsonLd, offerJsonLd, parableJsonLd, homeFaq, breadcrumbJsonLd([{ name: 'Home', url: '/' }])]} /><StudioHome faq={HOME_FAQ} hero={<SandHero />} afterHero={<><GoldenHour /><NameInSand /></>} /></>;
 }
