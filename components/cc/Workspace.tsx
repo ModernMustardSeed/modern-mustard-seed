@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import Link from 'next/link';
 import { Icon, type IconName } from '@/components/cc/icons';
 import { Badge, Button, Who, cx, waited } from '@/components/cc/ui';
 import Overview from '@/components/cc/modules/Overview';
@@ -44,6 +45,8 @@ export type Session = {
   who: { key: string; name: string } | null;
   people: Array<{ key: string; name: string }>;
   preview: boolean;
+  /** Sarah in by her studio key: a preview that can switch clients. */
+  studio?: boolean;
   brand: { business: string; name: string; logo: string; logoOnDark: string; colors: { ink: string; paper: string; accent: string; accent2: string }; siteUrl: string; guideName: string };
   modules: Record<string, boolean>;
   /** Their project pages, each with the opening of its story and its cover. */
@@ -417,11 +420,13 @@ export default function Workspace() {
                   a phone. */}
               {session?.who && <Who name={session.who.name} size="md" />}
             </div>
-            {session?.preview && (
+            {session?.studio ? (
+              <StudioBar business={session.brand.business} />
+            ) : session?.preview ? (
               <div className="px-4 sm:px-6 pb-2">
                 <Badge tone="warn">Looking as {session.email}. Everything you do here is real.</Badge>
               </div>
-            )}
+            ) : null}
           </header>
 
           <main className="flex-1 px-4 sm:px-6 py-5 sm:py-6">
@@ -584,6 +589,62 @@ export default function Workspace() {
       <Person who={person} onClose={() => setPerson(null)} go={(k) => go(k as ModuleKey)} />
       <Tray open={trayOpen} onClose={() => setTrayOpen(false)} onFiled={loadPulse} />
       <Operator open={operatorOpen} onClose={() => setOperatorOpen(false)} seed={seed} session={session} go={(k) => go(k as ModuleKey)} onDidAct={loadPulse} />
+    </div>
+  );
+}
+
+/**
+ * THE STUDIO BAR. Sarah in by her studio key sees the client's exact view with
+ * this one strip on top: whose desk it is, a switch to any other client, and
+ * the way out. Mustard, so it is never mistaken for the client's own screen.
+ */
+function StudioBar({ business }: { business: string }) {
+  const [doors, setDoors] = useState<Array<{ door: string; business: string; here: boolean }> | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    let alive = true;
+    fetch('/api/cc/studio', { cache: 'no-store' })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((j: { doors?: Array<{ door: string; business: string; here: boolean }> } | null) => {
+        if (alive && j?.doors) setDoors(j.doors);
+      })
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  const switchTo = async (door: string) => {
+    setBusy(true);
+    try {
+      const r = await fetch('/api/cc/studio', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ door }) });
+      if (r.ok) window.location.href = '/cc';
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <div className="flex flex-wrap items-center gap-x-3 gap-y-2 bg-[#F5B700] px-4 sm:px-6 py-2 text-[12.5px] font-semibold text-[#161616]">
+      <span className="font-mono text-[10px] uppercase tracking-[0.18em]">Studio view</span>
+      <span className="min-w-0 flex-1 truncate">{business}. Exactly what they see. What you do here is real.</span>
+      {doors && doors.length > 1 && (
+        <label className="flex items-center gap-2">
+          <span className="sr-only">Switch client</span>
+          <select
+            disabled={busy}
+            value={doors.find((d) => d.here)?.door ?? ''}
+            onChange={(e) => void switchTo(e.target.value)}
+            className="rounded-md border border-[#161616]/25 bg-white/70 px-2 py-1 text-[12.5px] font-semibold text-[#161616]"
+          >
+            {doors.map((d) => (
+              <option key={d.door} value={d.door}>{d.business}</option>
+            ))}
+          </select>
+        </label>
+      )}
+      <Link href="/cc/login" className="underline underline-offset-2">All clients</Link>
     </div>
   );
 }

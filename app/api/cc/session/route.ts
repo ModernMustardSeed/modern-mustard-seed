@@ -4,6 +4,7 @@ import { getDesk } from '@/lib/cc-desk';
 import { getSettings } from '@/lib/posting/settings';
 import { mailStatus } from '@/lib/mail-desk';
 import { buildertrendStatus } from '@/lib/buildertrend';
+import { getCcSession } from '@/lib/client-auth';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -17,6 +18,9 @@ export async function GET() {
   const got = await getDesk();
   if (!got.ok) return NextResponse.json({ error: got.error }, { status: got.status });
   const { sb, account, preview, people, who } = got.desk;
+  // The studio key, as opposed to the admin look pass: both are previews,
+  // only the studio can switch clients from inside.
+  const studio = Boolean((await getCcSession())?.studio);
 
   const [posting, mail, bt] = await Promise.all([
     getSettings(sb, account.clientEmail).catch(() => null),
@@ -30,6 +34,7 @@ export async function GET() {
     who,
     people,
     preview,
+    studio,
     brand: brandFor(account.project),
     projects: account.project.projects,
     publicUrl: account.project.publicUrl,

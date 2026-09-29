@@ -28,6 +28,19 @@ const WHO_COOKIE = 'mms_cc_who';
 const LOOK_COOKIE = 'mms_client_look';
 const LOOK_HOURS = 8;
 
+// THE STUDIO KEY. Sarah's own address opens every client's Command Center from
+// its own door (/cc/<door>), by the same emailed code a client uses. The pass
+// names Sarah, never a client, and lasts twelve hours rather than thirty days,
+// because one inbox opening every business has to expire sooner than one
+// business's own sign-in. Which client she is standing in rides a second
+// cookie that opens nothing without a live pass beside it. Inside, she is in
+// preview: the client's exact view, her marks signed as the studio, never as
+// one of their people, and she is never added to their account.
+export const STUDIO_EMAIL = 'sarah@modernmustardseed.com';
+const STUDIO_COOKIE = 'mms_cc_studio';
+const STUDIO_AS_COOKIE = 'mms_cc_as';
+const STUDIO_HOURS = 12;
+
 function getSecret(): string {
   const s = process.env.CLIENT_SESSION_SECRET || process.env.ADMIN_SESSION_SECRET;
   if (!s || s.length < 16) {
@@ -74,7 +87,7 @@ function normalizeEmail(email: string): string {
 
 // ── Token core. `kind` keeps the four non-interchangeable ──
 
-type TokenKind = 'sess' | 'magic' | 'look' | 'cc' | 'who';
+type TokenKind = 'sess' | 'magic' | 'look' | 'cc' | 'who' | 'studio';
 
 async function makeToken(kind: TokenKind, email: string, expires: number): Promise<string> {
   const payload = `${kind}:${normalizeEmail(email)}:${expires}`;
@@ -103,7 +116,7 @@ async function readToken(kind: TokenKind, token: string): Promise<{ email: strin
 // ── Public API ─────────────────
 
 /** preview: true when Sarah is looking as this client from her admin session. */
-export type ClientSession = { email: string; expires: number; preview?: boolean };
+export type ClientSession = { email: string; expires: number; preview?: boolean; studio?: boolean };
 
 export async function createMagicToken(email: string): Promise<string> {
   return makeToken('magic', email, Date.now() + MAGIC_MINUTES * 60 * 1000);
@@ -138,6 +151,8 @@ export async function getClientSession(): Promise<ClientSession | null> {
     const as = await readToken('look', look);
     if (as && (await getAdminSession())) return { ...as, preview: true };
   }
+  const studio = await studioSession();
+  if (studio) return studio;
   const token = c.get(COOKIE_NAME)?.value;
   if (token) {
     const sess = await readToken('sess', token);
@@ -166,6 +181,49 @@ export async function clearCcSessionCookie(): Promise<void> {
   const c = await cookies();
   c.delete(CC_COOKIE);
   c.delete(WHO_COOKIE);
+  c.delete(STUDIO_COOKIE);
+  c.delete(STUDIO_AS_COOKIE);
+}
+
+// ── The studio key ────────────────────────────────────────────────
+
+/** Set only by /api/cc/verify-code after a code mailed to STUDIO_EMAIL came back. */
+export async function setStudioPass(): Promise<void> {
+  const expires = Date.now() + STUDIO_HOURS * 60 * 60 * 1000;
+  const token = await makeToken('studio', STUDIO_EMAIL, expires);
+  const c = await cookies();
+  c.set(STUDIO_COOKIE, token, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'lax', path: '/', maxAge: STUDIO_HOURS * 60 * 60 });
+}
+
+/** Which client the studio is standing in. The caller has already checked the pass. */
+export async function setStudioAs(clientEmail: string): Promise<void> {
+  const c = await cookies();
+  c.set(STUDIO_AS_COOKIE, normalizeEmail(clientEmail), { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'lax', path: '/', maxAge: STUDIO_HOURS * 60 * 60 });
+}
+
+/** True while a studio pass is live, whether or not a client is picked. */
+export async function hasStudioPass(): Promise<boolean> {
+  const c = await cookies();
+  const token = c.get(STUDIO_COOKIE)?.value;
+  if (!token) return false;
+  const pass = await readToken('studio', token);
+  return Boolean(pass && pass.email === STUDIO_EMAIL);
+}
+
+/** The client the studio is standing in, as a preview session, or null. */
+async function studioSession(): Promise<ClientSession | null> {
+  const c = await cookies();
+  const as = c.get(STUDIO_AS_COOKIE)?.value;
+  if (!as || !(await hasStudioPass())) return null;
+  const token = c.get(STUDIO_COOKIE)?.value ?? '';
+  const pass = await readToken('studio', token);
+  return pass ? { email: normalizeEmail(as), expires: pass.expires, preview: true, studio: true } : null;
+}
+
+/** For middleware: verify a raw studio pass (edge runtime). */
+export async function verifyStudioToken(token: string): Promise<boolean> {
+  const pass = await readToken('studio', token);
+  return Boolean(pass && pass.email === STUDIO_EMAIL);
 }
 
 // ── Which person is at the desk ───────────────────────────────────
@@ -197,6 +255,8 @@ export async function getCcSession(): Promise<ClientSession | null> {
     const as = await readToken('look', look);
     if (as && (await getAdminSession())) return { ...as, preview: true };
   }
+  const studio = await studioSession();
+  if (studio) return studio;
   const token = c.get(CC_COOKIE)?.value;
   if (!token) return null;
   return readToken('cc', token);
@@ -230,4 +290,4 @@ export async function verifyClientToken(token: string): Promise<ClientSession | 
   return readToken('sess', token);
 }
 
-export { COOKIE_NAME as CLIENT_COOKIE_NAME, LOOK_COOKIE as CLIENT_LOOK_COOKIE_NAME, CC_COOKIE as CC_COOKIE_NAME, normalizeEmail };
+export { COOKIE_NAME as CLIENT_COOKIE_NAME, LOOK_COOKIE as CLIENT_LOOK_COOKIE_NAME, CC_COOKIE as CC_COOKIE_NAME, STUDIO_COOKIE as CC_STUDIO_COOKIE_NAME, normalizeEmail };

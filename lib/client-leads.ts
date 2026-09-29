@@ -13,6 +13,8 @@ import { SITE } from '@/lib/seo';
 
 export type ClientProject = {
   key: string;
+  /** Their own sign-in door, modernmustardseed.com/cc/<door>. Defaults to key. */
+  door?: string;
   clientEmail: string;
   business: string;
   siteUrl: string;
@@ -80,6 +82,7 @@ const BUILT_RIGHT_PROJECTS = [
 export const CLIENT_PROJECTS: Record<string, ClientProject> = {
   'built-right': {
     key: 'built-right',
+    door: 'brim',
     clientEmail: 'builtbyshan@gmail.com',
     business: 'Built Right in Montana',
     siteUrl: 'https://built-right-montana-demo.vercel.app',
