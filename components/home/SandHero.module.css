@@ -45,7 +45,8 @@
 .capWeb{opacity:var(--c-web);transform:translateY(calc((1 - var(--c-web)) * 14px))}
 .capAi{opacity:var(--c-ai);transform:translateY(calc((1 - var(--c-ai)) * 14px))}
 .capLife{opacity:var(--c-life);transform:translateY(calc((1 - var(--c-life)) * 14px))}
-.story[data-end='1'] .capLife{pointer-events:auto}
+.lifeActions{position:absolute;left:16px;right:16px;bottom:clamp(28px,7svh,72px);margin:0;opacity:var(--c-life);transform:translateY(calc((1 - var(--c-life)) * 14px));pointer-events:none}
+.story[data-end='1'] .lifeActions{pointer-events:auto}
 .eyebrow{margin:0;font-family:var(--font-caps),sans-serif;font-size:12.5px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:var(--sea);text-shadow:0 0 18px #ffffffcc}
 .eyebrow i{font-style:normal;margin:0 .5em;color:var(--mustard)}
 .say{margin:0;font-family:var(--font-riviera),system-ui,sans-serif;font-weight:600;font-size:clamp(21px,2.3vw,36px);line-height:1.18;letter-spacing:-.03em;color:var(--sea);text-wrap:balance;text-shadow:0 0 24px #ffffffe6,0 0 6px #ffffff99}
@@ -74,7 +75,8 @@
 .after{position:absolute;bottom:0;left:0;width:1px;height:1px;outline:none}
 
 /* The last buttons cannot be reached by Tab while they are invisible. */
-.story:not([data-end='1']) .capLife{visibility:hidden}
+.story:not([data-end='1']) .lifeActions{visibility:hidden}
+.story[data-end='1'] .skip{opacity:0;pointer-events:none}
 
 /* ---------- Phone ---------- */
 @media(max-width:760px){
@@ -105,7 +107,7 @@
   .copy{gap:18px;pointer-events:auto}
   .cap{grid-area:auto;opacity:1!important;transform:none!important}
   .capLife .eyebrow{display:none}
-  .story .capLife{visibility:visible}
+  .story .lifeActions{visibility:visible;opacity:1;transform:none;pointer-events:auto}
   .skip{display:none}
   .cue{display:none}
 }

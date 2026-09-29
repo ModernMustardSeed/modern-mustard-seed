@@ -94,11 +94,12 @@ export default function SandHero() {
           </div>
           <div className={`${s.cap} ${s.capLife}`}>
             <p className={s.eyebrow}>So you can</p>
-            <div className={s.actions}>
-              <Link href="/inquire" className={s.cta}>Tell us what you have in mind <span aria-hidden="true">↗</span></Link>
-              <Link href="/ai" className={s.quiet}>AI for your business</Link>
-            </div>
           </div>
+        </div>
+        {/* The last buttons sit at the foot of the beach, below "run your life", never between the words. */}
+        <div className={`${s.actions} ${s.lifeActions}`}>
+          <Link href="/inquire" className={s.cta}>Tell us what you have in mind <span aria-hidden="true">↗</span></Link>
+          <Link href="/ai" className={s.quiet}>AI for your business</Link>
         </div>
         <p className={s.cue} aria-hidden="true"><span className={s.line} />Scroll<span className={s.hint}>or draw in the sand</span></p>
         <a href="#after-story" className={s.skip}>Skip the story <span aria-hidden="true">↓</span></a>
