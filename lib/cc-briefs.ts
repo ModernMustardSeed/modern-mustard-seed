@@ -1,3 +1,4 @@
+import { roomHidden } from '@/lib/client-leads';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { LlmUnavailable, llmJson } from '@/lib/llm';
 import { OPEN_STAGES, STAGE_LABEL, STAGE_MEANS, daysSince, listJobs, money, riskOf, type JobRow, type Stage } from '@/lib/cc-jobs';
@@ -206,7 +207,7 @@ export async function qualifyLead(sb: SupabaseClient, project: ClientProject, le
   }
 
   if (lead.phone) actions.push({ kind: 'call', label: `Call ${lead.name ?? 'them'}`, phone: lead.phone, leadId: lead.id });
-  actions.push({ kind: 'add_job', label: 'Put it on the board', leadId: lead.id });
+  if (!roomHidden(project, 'jobs')) actions.push({ kind: 'add_job', label: 'Put it on the board', leadId: lead.id });
 
   return put(sb, project.clientEmail, { kind: 'qualify', subject_type: 'lead', subject_id: lead.id, title, body, actions });
 }

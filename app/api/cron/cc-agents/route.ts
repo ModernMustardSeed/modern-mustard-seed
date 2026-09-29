@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getSupabase } from '@/lib/supabase';
-import { CLIENT_PROJECTS, type ClientProject } from '@/lib/client-leads';
+import { roomHidden, CLIENT_PROJECTS, type ClientProject } from '@/lib/client-leads';
 import { mondayBoard, put, qualifyLead, quietJob } from '@/lib/cc-briefs';
 import { certBody, certsNeedingAttention } from '@/lib/cc-handover';
 import { noticeThings } from '@/lib/cc-noticing';
@@ -138,7 +138,7 @@ export async function GET(req: Request) {
     }
 
     /* ── jobs that have gone quiet ── */
-    try {
+    if (!roomHidden(project, 'jobs')) try {
       const jobs = await listJobs(sb, project.clientEmail);
       const open = jobs.filter((j: JobRow) => OPEN_STAGES.includes(j.stage));
       const overdue = open
@@ -188,7 +188,7 @@ export async function GET(req: Request) {
     }
 
     /* ── certificates about to lapse ── */
-    try {
+    if (!roomHidden(project, 'trades')) try {
       const certs = await certsNeedingAttention(sb, project);
       if (certs.length) {
         const worst = certs[0];
@@ -215,7 +215,7 @@ export async function GET(req: Request) {
     }
 
     /* ── Monday ── */
-    if (isMondayMorning || force) {
+    if ((isMondayMorning || force) && !roomHidden(project, 'jobs')) {
       try {
         line.monday = await mondayBoard(sb, project);
       } catch (err) {

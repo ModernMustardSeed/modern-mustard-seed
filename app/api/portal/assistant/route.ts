@@ -6,7 +6,7 @@ import { displayForIso } from '@/lib/booking';
 import { createClientRequest } from '@/lib/client-requests';
 import { visibleProject } from '@/lib/command-center/visible';
 import { getCcSession } from '@/lib/client-auth';
-import { projectForEmail } from '@/lib/client-leads';
+import { roomHidden, projectForEmail } from '@/lib/client-leads';
 import { commandCenterContext } from '@/lib/command-center/context';
 import { draftNewMail } from '@/lib/mail-desk';
 import { sendReviewAsk } from '@/lib/reviews';
@@ -313,7 +313,7 @@ export async function POST(req: Request) {
               await supabase.from('client_lead_events').insert({ client_email: email, lead_id: lead.id, kind: 'called', author_key: null, author_name: `${asker}, through the Operator` });
               done.push(`${lead.name ?? a.name} is marked called and off the Monday list.`);
             } else done.push(`I did not find a waiting lead named ${a.name}.`);
-          } else if (a.type === 'add_job' && a.name) {
+          } else if (a.type === 'add_job' && a.name && !(project && roomHidden(project, 'jobs'))) {
             const r = await createJob(
               supabase,
               email,
