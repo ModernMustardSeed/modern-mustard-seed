@@ -367,7 +367,7 @@ export default function Accounts({ session }: { session: Session }) {
                   ? 'Sign in with the Instagram account you post from. It must be a Business or Creator account; it does not need to be linked to the Facebook Page.'
                   : canOauth
                   ? 'Signs in through Facebook. Tick the Page and the Instagram account on the screen Facebook shows and both connect.'
-                  : 'Comes with Facebook. Connect the Facebook Page and the Instagram account linked to it connects too.'
+                  : 'Being connected from our side through your Facebook Page. Until it is, anything you schedule for Instagram is posted for you by hand on the day it is due.'
                 : canOauth
                   ? 'Sign in once and posts go out here on their own.'
                   : 'Being wired from our side. Nothing for you to do yet.',
@@ -376,6 +376,11 @@ export default function Accounts({ session }: { session: Session }) {
         paste:
           preview && st !== 'on' && p === 'facebook' && !canOauth ? (
             <Paste label="Connect the Page" fields={[{ key: 'token', label: 'Page access token', secret: true, hint: 'Graph API Explorer, their Page, a long-lived Page token.' }]} submit={(v) => desk('facebook-token', v)} />
+          ) : preview && st !== 'on' && p === 'instagram' && !canOauth ? (
+            // Instagram rides the Facebook Page: a Page token carrying
+            // instagram_basic and instagram_content_publish connects the Page
+            // and the Instagram account linked to it in one paste.
+            <Paste label="Connect through the Page" fields={[{ key: 'token', label: 'Page access token', secret: true, hint: 'Graph API Explorer, their Page, with instagram_basic and instagram_content_publish. The Instagram account must be linked to the Page in Meta Business Suite first.' }]} submit={(v) => desk('facebook-token', v)} />
           ) : preview && st !== 'on' && p === 'x' && !canOauth ? (
             <Paste
               label="Connect X"

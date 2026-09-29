@@ -123,7 +123,8 @@ export const CLIENT_PROJECTS: Record<string, ClientProject> = {
     crm: 'buildertrend',
     emailDomain: 'brimhomes.com',
     // Campaigns wait on a sending address of their own on brimhomes.com, verified with Resend.
-    campaignFrom: null,
+    // brimhomes.com is verified at Resend; Porkbun forwards carmen@ to the office Gmail.
+    campaignFrom: 'Built Right in Montana <carmen@brimhomes.com>',
     postal: '150 Shady Ln Spc 405, Kalispell, MT 59901',
     // Two profiles, two offices, decided 2026-09-21 (Google will not merge two addresses). Every NEW review
     // ask goes to Kalispell (150 Shady Ln, CID 8946601095687912218, one review, being built up). Eureka

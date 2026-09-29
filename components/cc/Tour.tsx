@@ -93,19 +93,33 @@ const COPY: Record<string, { lead: string; points: string[] }> = {
   },
 };
 
-const storeKey = (email: string) => `cc-tour:v1:${email.toLowerCase()}`;
+// ONE PER PERSON, NOT PER BROWSER. An office computer is shared by three
+// people, so the tour is remembered for the person at the desk: Shan seeing it
+// does not spend Carmen's. `desk` stands for a session with no named people.
+const storeKey = (email: string, person: string | null) => `cc-tour:v2:${email.toLowerCase()}:${person ?? 'desk'}`;
+// The first version remembered the account only. Whoever finished it on this
+// browser is the person at the desk the next time it loads here, so that mark
+// is carried over to them once rather than showing them the tour again.
+const legacyKey = (email: string) => `cc-tour:v1:${email.toLowerCase()}`;
 
-export function tourSeen(email: string): boolean {
+export function tourSeen(email: string, person: string | null): boolean {
   try {
-    return window.localStorage.getItem(storeKey(email)) === 'done';
+    const ls = window.localStorage;
+    if (ls.getItem(storeKey(email, person)) === 'done') return true;
+    if (ls.getItem(legacyKey(email)) === 'done') {
+      ls.removeItem(legacyKey(email));
+      ls.setItem(storeKey(email, person), 'done');
+      return true;
+    }
+    return false;
   } catch {
     return false;
   }
 }
 
-function markSeen(email: string) {
+function markSeen(email: string, person: string | null) {
   try {
-    window.localStorage.setItem(storeKey(email), 'done');
+    window.localStorage.setItem(storeKey(email, person), 'done');
   } catch {
     /* no storage: the tour offers itself again next time, nothing breaks */
   }
@@ -119,12 +133,15 @@ export default function Tour({
   email,
   business,
   person,
+  personKey,
 }: {
   open: boolean;
   onClose: () => void;
   rooms: TourRoom[];
   go: (key: string) => void;
   email: string;
+  /** Who is at the desk, so the tour is remembered for them and not the next person. */
+  personKey: string | null;
   business: string;
   person: string | null;
 }) {
@@ -186,9 +203,9 @@ export default function Tour({
   }, [open, stop.room, go]);
 
   const finish = useCallback(() => {
-    markSeen(email);
+    markSeen(email, personKey);
     onClose();
-  }, [email, onClose]);
+  }, [email, personKey, onClose]);
 
   useEffect(() => {
     if (!open) return;
