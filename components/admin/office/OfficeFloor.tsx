@@ -41,7 +41,7 @@ function Desk({ agentKey, desk, big = false }: { agentKey: string; desk: DeskSta
   const working = desk.tone === 'working';
   return (
     <div
-      className={`relative flex flex-col rounded-2xl border-2 p-3.5 transition-all ${big ? 'sm:col-span-2' : ''} ${
+      className={`relative flex flex-col rounded-2xl border-2 p-3.5 transition-all ${big ? 'sm:col-span-2 xl:col-span-3' : ''} ${
         working ? 'border-[#F5B700] bg-[#211d12] shadow-[0_0_0_3px_rgba(245,183,0,0.18)]' : desk.tone === 'waiting' ? 'border-[#FF6FB5] bg-[#231820]' : 'border-[#FBF6EA]/15 bg-[#1d1d1d]'
       }`}
     >
@@ -319,8 +319,8 @@ function FloorBody({ api }: { api: OfficeApi }) {
       </div>
 
       {/* Sower, always on the right */}
-      <aside className="lg:sticky lg:top-24 lg:self-start">
-        <div className="flex h-[min(760px,calc(100vh-7.5rem))] min-h-[520px] flex-col overflow-hidden rounded-2xl border-2 border-[#161616] bg-[#FBF6EA] shadow-[5px_5px_0_0_#161616]">
+      <aside className="lg:self-start">
+        <div className="flex h-[min(760px,calc(100vh-3rem))] min-h-[520px] flex-col overflow-hidden rounded-2xl border-2 border-[#161616] bg-[#FBF6EA] shadow-[5px_5px_0_0_#161616]">
           <div className="flex shrink-0 items-center justify-between gap-2 bg-[#161616] px-4 py-3">
             <div className="flex items-center gap-2.5">
               <AgentMark agent="sower" size={34} pulse={Boolean(state?.thinking)} />

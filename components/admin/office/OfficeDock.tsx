@@ -65,13 +65,13 @@ export default function OfficeDock() {
         <div
           role="dialog"
           aria-label="Sower, chief of staff"
-          className="fixed bottom-5 right-5 z-50 flex h-[min(680px,calc(100vh-2.5rem))] w-[min(430px,calc(100vw-2.5rem))] flex-col overflow-hidden rounded-2xl border-2 border-[#161616] bg-[#FBF6EA] text-[#161616] shadow-[6px_6px_0_0_#161616]"
+          className="fixed bottom-5 right-5 z-[60] flex h-[min(680px,calc(100vh-2.5rem))] w-[min(430px,calc(100vw-2.5rem))] flex-col overflow-hidden rounded-2xl border-2 border-[#161616] bg-[#FBF6EA] text-[#161616] shadow-[6px_6px_0_0_#161616]"
         >
           <div className="flex shrink-0 items-center justify-between gap-2 bg-[#161616] px-3.5 py-3">
             <div className="flex min-w-0 items-center gap-2.5">
               <AgentMark agent="sower" size={32} pulse={working} />
               <div className="min-w-0">
-                <p className="font-mono text-[9px] font-bold uppercase leading-none tracking-[0.3em] text-[#F5B700]">Yield, chief of staff</p>
+                <p className="font-mono text-[9px] font-bold uppercase leading-none tracking-[0.3em] text-[#F5B700]">Chief of staff</p>
                 <p className="mt-1 font-sans text-[15px] font-bold leading-tight text-[#FBF6EA]">Sower</p>
               </div>
             </div>
