@@ -19,12 +19,26 @@ import Systems from '@/components/cc/Systems';
  */
 
 type Integration = { provider: string; account_email: string | null; account_name: string | null; status: string; error: string | null; scopes: string[] };
-type Feed = { provider: string; connected: boolean; status: string; accountName: string | null; error: string | null; manualOnly: boolean; needs: string | null; oauth?: boolean; instagramLogin?: boolean };
+type Feed = { provider: string; connected: boolean; status: string; accountName: string | null; externalId?: string | null; error: string | null; manualOnly: boolean; needs: string | null; oauth?: boolean; instagramLogin?: boolean };
 type State = 'on' | 'off' | 'warn' | 'manual';
 type Check = { platform: string; ok: boolean; account: string | null; error: string | null; fix: string | null; at: string };
 
 const FEED_LABEL: Record<string, string> = { facebook: 'Facebook', instagram: 'Instagram', linkedin: 'LinkedIn', x: 'X', gbp: 'Google Business Profile', houzz: 'Houzz' };
-const FEED_OPEN: Record<string, string> = { facebook: 'https://www.facebook.com/', instagram: 'https://www.instagram.com/', linkedin: 'https://www.linkedin.com/', x: 'https://x.com/', gbp: 'https://business.google.com/', houzz: 'https://pro.houzz.com/' };
+/**
+ * WHERE "OPEN" GOES: their own page, never a platform's front door. The front
+ * door opens whatever account the viewer's browser is signed into, so Sarah
+ * pressing Open on Built Right's Google row landed on D&D Landscaping's
+ * profile. A row with no address of its own offers no Open at all.
+ */
+function feedOpen(p: string, f: Feed | undefined): string | null {
+  const handle = f?.accountName?.startsWith('@') ? f.accountName.slice(1) : null;
+  if (p === 'facebook') return f?.externalId ? `https://www.facebook.com/${f.externalId}` : null;
+  if (p === 'instagram') return handle ? `https://www.instagram.com/${handle}/` : null;
+  if (p === 'x') return handle ? `https://x.com/${handle}` : null;
+  if (p === 'linkedin') return f?.externalId ? `https://www.linkedin.com/company/${f.externalId}/` : null;
+  if (p === 'houzz') return 'https://pro.houzz.com/';
+  return null;
+}
 
 /**
  * THE EXACT CLICKS. Written down because the alternative is remembering them
@@ -331,11 +345,11 @@ export default function Accounts({ session }: { session: Session }) {
       feed: true,
       state: google ? 'on' : 'off',
       detail: google
-        ? `Connected as ${google.account_email ?? 'your Google account'}. Reviews, hours, photos and posts run from here.`
+        ? `Connected as ${google.account_email ?? 'your Google account'}. Posting to your profile turns on when Google approves our access; until then anything scheduled for Google is posted for you by hand.`
         : available
           ? 'Sign in once with the Google account that manages your profile. We hold a key you can revoke any time, never a password.'
           : 'Being wired from our side. Nothing for you to do yet.',
-      open: FEED_OPEN.gbp,
+      open: session.googleProfileUrl ?? undefined,
       action: google || !available ? null : { label: 'Connect Google', href: '/api/oauth/google/start' },
       disconnect: google
         ? async () => {
@@ -371,7 +385,7 @@ export default function Accounts({ session }: { session: Session }) {
                 : canOauth
                   ? 'Sign in once and posts go out here on their own.'
                   : 'Being wired from our side. Nothing for you to do yet.',
-        open: FEED_OPEN[p],
+        open: feedOpen(p, f) ?? undefined,
         action: st !== 'on' && canOauth && oauth ? { label: `Connect ${FEED_LABEL[p]}`, href: oauth } : null,
         paste:
           preview && st !== 'on' && p === 'facebook' && !canOauth ? (

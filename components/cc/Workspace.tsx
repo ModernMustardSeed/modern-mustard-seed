@@ -52,6 +52,8 @@ export type Session = {
   /** Their project pages, each with the opening of its story and its cover. */
   projects: Array<{ slug: string; title: string; story?: string; image?: string }>;
   publicUrl: string;
+  /** Their own public Google listing, so Open never lands on another business. */
+  googleProfileUrl?: string | null;
   state: { mailConnected: boolean; crm: string | null; crmConnected: boolean; crmCaptcha: boolean };
 };
 

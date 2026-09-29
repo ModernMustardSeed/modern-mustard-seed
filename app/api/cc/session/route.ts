@@ -38,6 +38,7 @@ export async function GET() {
     brand: brandFor(account.project),
     projects: account.project.projects,
     publicUrl: account.project.publicUrl,
+    googleProfileUrl: account.project.googleProfile?.mapsUrl ?? null,
     modules: {
       leads: true,
       // The pre-construction board. On for every account: the months between
