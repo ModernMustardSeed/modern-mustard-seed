@@ -215,9 +215,6 @@ export default function Contacts() {
 
   return (
     <div className="space-y-5">
-      {/* What the desk knows about the business, and the questions it wants
-          answered before it treats a guess as a fact. */}
-      <Knows />
       <Card pad={false}>
         <div className="flex flex-wrap items-center gap-3 border-b border-[var(--cc-line)] px-5 py-4">
           <input id="cc-contacts-search" className={cx(inputCls, 'min-w-[220px] flex-1')} placeholder="Search a name, a town, a company, part of a number" value={q} onChange={(e) => setQ(e.target.value)} />
@@ -422,6 +419,10 @@ export default function Contacts() {
           {!people?.length && <span className="text-[13px] text-[var(--cc-muted)]">Nothing carried over yet.</span>}
         </div>
       </Card>
+
+      {/* What the desk knows about the business. Below the book, not above
+          it: this room is opened to find a person. */}
+      <Knows />
 
       <Drawer
         open={Boolean(open)}

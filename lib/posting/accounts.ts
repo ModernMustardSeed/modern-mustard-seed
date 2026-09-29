@@ -109,7 +109,9 @@ export async function accountViews(sb: SupabaseClient, clientEmail: string): Pro
       accountName: r?.account_name ?? r?.account_email ?? null,
       externalId: p === 'gbp' ? ((r?.meta as { gbp_location?: string } | null)?.gbp_location ?? null) : (r?.external_id ?? null),
       error: p === 'gbp' && r && r.status === 'connected' && !connected ? 'Google is connected; the Business Profile location is not chosen yet.' : (r?.error ?? null),
-      manualOnly: p === 'houzz',
+      // Google is posted by hand from the sheet until a Business Profile
+      // location is chosen and Google's API access clears, like Houzz always is.
+      manualOnly: p === 'houzz' || (p === 'gbp' && !connected),
       needs: connected ? null : connectNeeds(p),
       oauth: p === 'instagram' ? instagramLoginReady() || facebookOAuthReady() : p === 'facebook' ? facebookOAuthReady() : p === 'x' || p === 'linkedin' ? !connectNeeds(p) : false,
       ...(p === 'instagram' ? { instagramLogin: instagramLoginReady(), via: ((r?.meta as { via?: string } | null)?.via as string | undefined) ?? null } : {}),

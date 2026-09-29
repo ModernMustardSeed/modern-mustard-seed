@@ -135,20 +135,43 @@ function qualifyUser(lead: LeadLike): string {
   ].join('\n');
 }
 
+/**
+ * What they wrote, fit for a card. The website joins a contact note and the
+ * questionnaire into one message with a [bracketed] header between them, so
+ * the headers come out, and a long message stops at a line or a sentence
+ * rather than mid-word.
+ */
+function theirWords(message: string | null): string {
+  const lines = (message ?? '').split(/\r?\n/).map((l) => l.trim()).filter((l) => l && !/^\[[^\]]*\]?$/.test(l));
+  let out = '';
+  for (const l of lines) {
+    if (`${out} ${l}`.length > 700) break;
+    // Questionnaire lines ("Road access: gravel") read as a list, so they are
+    // joined with a period unless the line already ends in one.
+    out = out ? `${out}${/[.?!]$/.test(out) ? '' : '.'} ${l}` : l;
+  }
+  if (!out && lines[0]) out = lines[0].slice(0, 700).replace(/\s+\S*$/, '') + '...';
+  return out.trim();
+}
+
 /** The brief a person gets when the model is not there. Same facts, plainer words. */
 function qualifyFallback(lead: LeadLike, project: ClientProject): { title: string; body: string } {
   const bits: string[] = [];
   bits.push(`${lead.name ?? 'Someone'} came through the website${lead.town ? ` from ${lead.town}` : ''}.`);
   if (lead.land) bits.push(`On land: ${lead.land}.`);
   if (lead.project_type) bits.push(`Planning: ${lead.project_type}.`);
-  if ((lead.message ?? '').trim()) bits.push(`In their words: "${(lead.message ?? '').trim().slice(0, 400)}"`);
+  const words = theirWords(lead.message);
+  if (words) bits.push(`In their words: "${words}"`);
   bits.push('');
   bits.push('Worth asking on the call:');
-  bits.push('- Do you own the lot, and has it been perked and surveyed?');
-  bits.push('- Do you have drawings, or are we starting at the napkin?');
-  bits.push('- What range are you building to, all in?');
-  bits.push('- When would you want to be in the house?');
-  bits.push('- Who else are you talking to?');
+  // A remodel or an addition to a house they own is a different call from a
+  // new build on land, so the questions follow what they said they want.
+  const said = `${lead.project_type ?? ''} ${lead.land ?? ''} ${lead.message ?? ''}`.toLowerCase();
+  const onTheirHouse = /remodel|renovat|addition|add on|add-on|home i own|existing/.test(said);
+  const questions = onTheirHouse
+    ? ['When can we walk the house and the site with you?', 'Do you have drawings of the existing house we can start from?', 'What should the new space hold, and how should it meet the house?', 'What range are you working to, all in?', 'When do you want to start, and is anything tied to a date?']
+    : ['Do you own the lot, and has it been perked and surveyed?', 'Do you have drawings, or are we starting at the napkin?', 'What range are you building to, all in?', 'When would you want to be in the house?', 'Who else are you talking to?'];
+  for (const q of questions) bits.push(`- ${q}`);
   bits.push('');
   bits.push(`Call ${lead.phone ?? 'them'} today if you can. ${project.business} wins these on the callback.`);
   return { title: `New inquiry: ${lead.name ?? 'someone'}${lead.town ? `, ${lead.town}` : ''}`, body: bits.join('\n') };
