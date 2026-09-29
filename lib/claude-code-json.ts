@@ -192,10 +192,21 @@ function spawnClaude(prompt: string, model?: string, allowWeb = false, timeoutMs
       ? ['Bash', 'Write', 'Edit', 'NotebookEdit', 'Task']
       : ['Bash', 'Write', 'Edit', 'NotebookEdit', 'WebFetch', 'WebSearch', 'Task'];
 
+    // NONE OF SARAH'S OWN SETUP. Without --setting-sources "" every job loads
+    // the workstation's user settings first: the Study's session hook, the
+    // lens hooks, every CLAUDE.md and skill. Measured 2026-09-29 on a one word
+    // reply: 27.7s as it was, 3.2s with the setting sources off. That overhead
+    // was most of every Operator wait. The subscription sign-in is not a
+    // setting, so the job still runs on the plan.
     const args = [
       '-p',
       '--output-format', 'json',
       '--strict-mcp-config',
+      // Empty on purpose. Windows spawns through a shell that joins argv
+      // unquoted and drops a bare '', so there it is the two quote marks
+      // (measured: that form loads nothing; '--setting-sources=' still did).
+      '--setting-sources', process.platform === 'win32' ? '""' : '',
+      '--no-session-persistence',
       '--disallowed-tools', ...blocked,
     ];
     if (model) args.push('--model', model);
