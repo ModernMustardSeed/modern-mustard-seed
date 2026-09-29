@@ -26,6 +26,29 @@ export async function GET(req: Request) {
   const tj = (await tok.json().catch(() => ({}))) as { access_token?: string; expires_in?: number; refresh_token?: string; scope?: string; error_description?: string };
   if (!tok.ok || !tj.access_token) return NextResponse.redirect(homeFor(st, `linkedin-failed:${(tj.error_description ?? `HTTP ${tok.status}`).slice(0, 80)}`));
 
+  const sb = getSupabase();
+  if (!sb) return NextResponse.redirect(homeFor(st, 'linkedin-failed:db'));
+
+  // THE PERSON. Posts go out as whoever signed in: their member URN is the
+  // author, read from OpenID userinfo.
+  if (st.mode === 'member') {
+    const me = await fetch('https://api.linkedin.com/v2/userinfo', { headers: { Authorization: `Bearer ${tj.access_token}` }, signal: AbortSignal.timeout(20_000) });
+    const mj = (await me.json().catch(() => ({}))) as { sub?: string; name?: string; message?: string };
+    if (!me.ok || !mj.sub) return NextResponse.redirect(homeFor(st, `linkedin-failed:${(mj.message ?? `HTTP ${me.status}`).slice(0, 80)}`));
+    const name = mj.name ?? 'your LinkedIn profile';
+    const saved = await saveAccount(sb, st.email, {
+      provider: 'linkedin',
+      externalId: `urn:li:person:${mj.sub}`,
+      accountName: name,
+      accessToken: tj.access_token,
+      refreshToken: tj.refresh_token ?? null,
+      expiresInSec: tj.expires_in ?? 60 * 24 * 3600,
+      scopes: tj.scope,
+      meta: { via: 'oauth', by: st.by, as: 'member' },
+    });
+    return NextResponse.redirect(homeFor(st, saved.ok ? `linkedin-ok:${name}` : `linkedin-failed:${saved.error.slice(0, 80)}`));
+  }
+
   // Which company pages does this person administer?
   const orgs = await fetch(`${API}/organizationAcls?q=roleAssignee&role=ADMINISTRATOR&state=APPROVED&projection=(elements*(organization~(localizedName)))`, {
     headers: { Authorization: `Bearer ${tj.access_token}`, 'LinkedIn-Version': VERSION, 'X-Restli-Protocol-Version': '2.0.0' },
@@ -37,8 +60,6 @@ export async function GET(req: Request) {
   const wanted = url.searchParams.get('org');
   const org = list.find((o) => o.urn === wanted) ?? list[0];
 
-  const sb = getSupabase();
-  if (!sb) return NextResponse.redirect(homeFor(st, 'linkedin-failed:db'));
   const saved = await saveAccount(sb, st.email, {
     provider: 'linkedin',
     externalId: org.urn,
