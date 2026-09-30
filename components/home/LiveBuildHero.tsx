@@ -38,14 +38,25 @@ export default function LiveBuildHero() {
   const shown = name.trim() || 'Your Business';
   const t = TRADES[trade];
 
-  // Size the field to its text so the comma sits right after the name, like a sentence.
-  useLayoutEffect(() => {
+  // Size the field to its text so the comma sits right after the name, like a
+  // sentence, and shrink the type when a long name would not fit the line.
+  const fit = useCallback(() => {
     const el = input.current;
     const m = mirror.current;
-    if (!el || !m) return;
+    const line = el?.parentElement;
+    if (!el || !m || !line) return;
     m.textContent = name || el.placeholder;
-    el.style.width = `${Math.ceil(m.getBoundingClientRect().width) + 6}px`;
+    const natural = m.getBoundingClientRect().width + 3;
+    const room = line.getBoundingClientRect().width - 34;
+    const scale = Math.min(1, Math.max(0.42, room / natural));
+    line.style.setProperty('--fit', scale.toFixed(3));
+    el.style.width = `${Math.ceil(natural * scale)}px`;
   }, [name]);
+  useLayoutEffect(fit, [fit]);
+  useEffect(() => {
+    window.addEventListener('resize', fit);
+    return () => window.removeEventListener('resize', fit);
+  }, [fit]);
 
   const rebuild = useCallback(() => {
     window.clearTimeout(doneTimer.current);

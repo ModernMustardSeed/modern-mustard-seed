@@ -12,8 +12,9 @@
 .words{position:relative;min-width:0}
 .eyebrow{margin:0 0 26px;font-family:var(--font-caps),sans-serif;font-size:12.5px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:var(--lagoon)}
 .eyebrow i{font-style:normal;margin:0 .5em;color:var(--mustard)}
-.line{display:flex;align-items:baseline;max-width:100%}
+.line{--fit:1;display:flex;align-items:baseline;max-width:100%}
 .field,.mirror,.title{font-family:var(--font-riviera),system-ui,sans-serif;font-weight:700;font-size:clamp(40px,5.6vw,96px);line-height:1.02;letter-spacing:-.05em}
+.field,.comma{font-size:calc(clamp(40px,5.6vw,96px) * var(--fit))!important}
 .field{min-width:3ch;max-width:100%;padding:0 0 4px;border:0;border-bottom:4px dashed #f5b700aa;border-radius:0;background:transparent;color:var(--sea);caret-color:var(--coral);outline:none;text-overflow:ellipsis}
 .field::placeholder{color:#0b3b4459}
 .field:focus{border-bottom-style:solid;border-bottom-color:var(--mustard)}
@@ -108,8 +109,13 @@
 @media(max-width:900px){
   .hero{grid-template-columns:1fr;align-items:start;gap:34px;padding:calc(76px + 2svh) 16px 64px}
   .eyebrow{font-size:10.5px;letter-spacing:.16em;margin-bottom:18px}
-  .field,.mirror,.title,.comma{font-size:clamp(34px,10.4vw,56px)}
-  .lede{font-size:16px;margin-top:16px}
+  .mirror,.title{font-size:clamp(34px,10.4vw,56px)}
+  .field,.comma{font-size:calc(clamp(34px,10.4vw,56px) * var(--fit))!important}
+  .lede{display:none}
+  .trades{flex-wrap:nowrap;overflow-x:auto;margin-right:-16px;padding-right:16px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .trades::-webkit-scrollbar{display:none}
+  .chip{flex:none}
+  .after{margin-top:22px}
   .trades{gap:8px;margin-top:18px}
   .chip{min-height:40px;padding:0 14px;font-size:13px}
   .browser{transform:none}
