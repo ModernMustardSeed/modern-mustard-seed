@@ -64,7 +64,8 @@ export const orgJsonLd = {
     'Answer engine optimization', 'Generative engine optimization', 'Search engine optimization',
     'Brand identity and art direction', 'Custom website design and development',
     'Custom software and applications', 'Business automation', 'Marketing automation',
-    'CRM and workflow systems', 'Social media marketing', 'Agentic systems advisory'],
+    'CRM and workflow systems', 'Social media marketing', 'Agentic systems advisory',
+    'Claude', 'Claude Code', 'Claude skills', 'Claude setup for business', 'AI agent setup'],
   /**
    * What the studio sells, as a catalog an answer engine can read. Every
    * service is offered nationwide at a set package price. Added 2026-09-28.
@@ -80,6 +81,7 @@ export const orgJsonLd = {
       ['Custom software', 'Applications, stores, portals and internal systems built around how a business works.', '/services'],
       ['Marketing', 'Social posts, articles, commercials, ads, email and Google Business Profile, on schedule.', '/marketing'],
       ['AI advisory', 'A clear plan for where AI belongs in a business and in what order.', '/advisory'],
+      ['Claude setup', 'Claude Code and Claude desktop set up for a business: custom Claude skills, rules, memory, safety hooks, connected tools and Claude agents on a schedule. From $1,500.', '/claude'],
     ].map(([name, description, path]) => ({
       '@type': 'Offer',
       itemOffered: { '@type': 'Service', name, description, url: `${SITE.url}${path}`, provider: { '@id': ORG_ID }, areaServed: { '@type': 'Country', name: 'United States' } },

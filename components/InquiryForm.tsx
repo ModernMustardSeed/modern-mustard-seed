@@ -31,6 +31,7 @@ const ENGAGEMENTS = [
   { id: 'software', label: 'Custom software' },
   { id: 'voice', label: 'Voice agent' },
   { id: 'advisory', label: 'Advisory' },
+  { id: 'claude', label: 'Claude setup' },
   { id: 'pictures', label: 'Films and advertising' },
   { id: 'marketing', label: 'Marketing' },
   { id: 'kingdom', label: 'Ministry or charity (For the Kingdom)' },
@@ -76,7 +77,8 @@ export default function InquiryForm() {
     setError('');
 
     const timeline = TIMELINES.find((t) => t.value === form.timeline)?.label ?? 'Not given';
-    const engagement = ENGAGEMENTS.find((x) => x.id === kind)?.label ?? 'Not given';
+    const pkg = new URLSearchParams(window.location.search).get('package')?.slice(0, 40);
+    const engagement = (ENGAGEMENTS.find((x) => x.id === kind)?.label ?? 'Not given') + (pkg ? ` (package: ${pkg})` : '');
 
     // Everything Sarah needs to answer well, in the body of one note. The API
     // stores `message` verbatim and puts it in the notification email.
