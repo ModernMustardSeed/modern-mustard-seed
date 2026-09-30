@@ -2,6 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import PartnersApply from '@/components/partners/PartnersApply';
 import PartnerEarningsCalculator from '@/components/partners/PartnerEarningsCalculator';
+import PartnerFilm from '@/components/partners/PartnerFilm';
 import { buildMetadata } from '@/lib/seo';
 import { partnerMath } from '@/lib/partner-desk/letters';
 
@@ -96,23 +97,9 @@ export default function PartnersPage() {
           </p>
         </div>
 
-        {/* The partner-recruiting spot, framed. */}
-        <div className="relative z-10 max-w-4xl mx-auto mt-14">
-          <div className="rounded-3xl overflow-hidden border-[3px] border-[#0b3b44] bg-[#0b3b44] shadow-[10px_10px_0_0_#0b3b44]">
-            <video
-              className="w-full aspect-video object-cover block"
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="metadata"
-              poster="/ads/partner-yacht-poster.png"
-              aria-hidden="true"
-              style={{ backgroundColor: '#0b3b44' }}
-            >
-              <source src="/ads/partner-yacht-16x9.mp4" type="video/mp4" />
-            </video>
-          </div>
+        {/* The partner film: a name goes in, the demo builds, the owner calls, the first check lands. */}
+        <div id="film" className="relative z-10 max-w-4xl mx-auto mt-14 scroll-mt-24">
+          <PartnerFilm />
         </div>
       </section>
 

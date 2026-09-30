@@ -24,6 +24,8 @@
 export type Film = {
   /** Public path to the cut. */
   mp4: string;
+  /** Public path to the VP9 cut, when the film ships one for LaunchFilmPlayer. */
+  webm?: string;
   /** Public path to the poster frame. */
   poster: string;
   /**
@@ -206,5 +208,13 @@ export const FILMS = {
     poster: '/video/launch-film-cxc-poster.jpg',
     shipped: true,
     runtime: '42 sec',
+  },
+  /** The partner film, top of /partners and /partners/sales-rep, linked from the day-4 partner letter. */
+  partnerFilm: {
+    mp4: '/video/partner-film.mp4',
+    webm: '/video/partner-film.webm',
+    poster: '/video/partner-film-poster.jpg',
+    shipped: true,
+    runtime: '1 min 7 sec',
   },
 } as const satisfies Record<string, Film>;
