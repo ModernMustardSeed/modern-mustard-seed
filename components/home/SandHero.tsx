@@ -5,13 +5,15 @@ import SandMotion from './SandMotion';
 import s from './SandHero.module.css';
 
 /**
- * The homepage hero, written in the sand (preview, 2026-09-29).
+ * The homepage hero, written in the sand.
  *
- * Open the page: an empty Riviera shoreline, and an invisible finger writes
- * "Modern Mustard Seed" in the wet sand. Scroll: a wave rolls in and takes the
- * words, and as it slides back out the sea leaves the next line written behind
- * it. We build websites. And agentic systems. Then the light turns gold and the
- * last wave leaves "run your life."
+ * One screen that plays itself: an invisible finger writes "Modern Mustard
+ * Seed" in the wet sand, then wave after wave rolls in on its own, takes the
+ * words and leaves the next line behind: We build websites. And agentic
+ * systems. Then the light turns gold and the last wave leaves "run your life."
+ * Nobody has to scroll to see it (2026-09-29: a scroll-pinned version made
+ * people scroll through it). The buttons are there from the first second, and
+ * it ends on the whole sentence with a "Watch again".
  *
  * One message on the screen at a time. The writing is single-stroke script
  * laid flat on a perspective plane, so it sits in the sand, not on the glass.
@@ -93,16 +95,17 @@ export default function SandHero() {
             <p className={s.say}>Agents that answer the phone, book the job and follow up, day and night.</p>
           </div>
           <div className={`${s.cap} ${s.capLife}`}>
+            <p className={s.sum}>Websites and agentic systems that run your business.</p>
             <p className={s.eyebrow}>So you can</p>
           </div>
         </div>
-        {/* The last buttons sit at the foot of the beach, below "run your life", never between the words. */}
+        {/* The buttons sit at the foot of the beach from the first second, below the words, never between them. */}
         <div className={`${s.actions} ${s.lifeActions}`}>
           <Link href="/inquire" className={s.cta}>Tell us what you have in mind <span aria-hidden="true">↗</span></Link>
           <Link href="/ai" className={s.quiet}>AI for your business</Link>
+          <button type="button" className={s.replay} data-replay="">Watch again <span aria-hidden="true">↺</span></button>
         </div>
-        <p className={s.cue} aria-hidden="true"><span className={s.line} />Scroll<span className={s.hint}>or draw in the sand</span></p>
-        <a href="#after-story" className={s.skip}>Skip the story <span aria-hidden="true">↓</span></a>
+        <p className={s.cue} aria-hidden="true"><span className={s.hint}>Draw in the sand</span></p>
 
         <svg className={s.defs} aria-hidden="true" focusable="false">
           <defs>
@@ -125,7 +128,6 @@ export default function SandHero() {
           </defs>
         </svg>
       </div>
-      <div id="after-story" className={s.after} tabIndex={-1} />
       <SandMotion />
     </section>
   );
