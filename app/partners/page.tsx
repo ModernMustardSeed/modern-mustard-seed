@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import Image from 'next/image';
 import PartnersApply from '@/components/partners/PartnersApply';
 import PartnerEarningsCalculator from '@/components/partners/PartnerEarningsCalculator';
@@ -19,7 +20,7 @@ const LADDER = [
     rate: `${m.pct}%`,
     accent: '#f5b700',
     label: `Every month, for ${m.months} months`,
-    detail: `Send a business. If they keep ${m.talkingWebsite.name} you earn ${$(m.talkingWebsite.perMonth)} a month, ${$(m.talkingWebsite.year)} over the year, per business. A ${m.voice.name} alone pays ${$(m.voice.perMonth)} a month. Ten kept Talking Websites is ${$(m.tenTalkingWebsites.perMonth)} a month to you.`,
+    detail: `Send a business. If they keep ${m.talkingWebsite.name} you earn ${$(m.talkingWebsite.firstCheck)} the month they sign, because the first invoice carries the setup fee, then ${$(m.talkingWebsite.perMonth)} a month: ${$(m.talkingWebsite.year)} over the year, per business. A ${m.voice.name} alone pays ${$(m.voice.perMonth)} a month. Ten kept Talking Websites is ${$(m.tenTalkingWebsites.perMonth)} a month to you.`,
     tag: 'The part that compounds',
   },
   {
@@ -80,7 +81,7 @@ export default function PartnersPage() {
             Send us a business.<br className="hidden sm:block" /> Get paid for a year.
           </h1>
           <p className="mt-7 text-[#3A3733] text-lg font-body font-light max-w-2xl mx-auto leading-relaxed">
-            You introduce. We build them a free demo: their own site and a voice agent built to their trade. If they keep it, you earn {m.pct}% of every monthly invoice for {m.months} months. That is {$(m.talkingWebsite.year)} per Talking Website. No selling, no quota, no cap.
+            You introduce. We build them a free demo: their own site and a voice agent built to their trade. If they keep it, you earn {m.pct}% of every monthly invoice for {m.months} months. That is {$(m.talkingWebsite.firstCheck)} the month they sign and {$(m.talkingWebsite.year)} over the year, per Talking Website. No selling, no quota, no cap.
           </p>
           <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-4">
             <a href="#apply" className="inline-block px-9 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-[#0b3b44] bg-[#f5b700] border-2 border-[#0b3b44] rounded-full shadow-[4px_4px_0_0_#0b3b44] hover:shadow-[6px_6px_0_0_#0b3b44] hover:-translate-y-0.5 transition-all">
@@ -90,6 +91,9 @@ export default function PartnersPage() {
               Run your numbers
             </a>
           </div>
+          <p className="mt-6 text-sm font-body text-[#3A3733]">
+            Want to do this as your work? <Link href="/partners/sales-rep" className="font-bold text-[#0b3b44] underline underline-offset-4 decoration-[#f5b700] decoration-2">See the independent sales rep role</Link>.
+          </p>
         </div>
 
         {/* The partner-recruiting spot, framed. */}
@@ -175,6 +179,8 @@ export default function PartnersPage() {
           months={m.months}
           talkingWebsiteCents={m.talkingWebsite.perMonth}
           voiceCents={m.voice.perMonth}
+          talkingWebsiteYearCents={m.talkingWebsite.year}
+          voiceYearCents={m.voice.year}
           buildPct={m.buildPct}
           productPct={m.productPct}
         />

@@ -14,6 +14,9 @@ type Props = {
   months: number;
   talkingWebsiteCents: number;
   voiceCents: number;
+  /** Year-one earnings per kept business, first invoice (setup + month one) included. */
+  talkingWebsiteYearCents: number;
+  voiceYearCents: number;
   buildPct: number;
   productPct: number;
 };
@@ -83,7 +86,7 @@ function Stepper({ label, hint, value, onChange, accent }: { label: string; hint
   );
 }
 
-export default function PartnerEarningsCalculator({ pct, months, talkingWebsiteCents, voiceCents, buildPct, productPct }: Props) {
+export default function PartnerEarningsCalculator({ pct, months, talkingWebsiteCents, voiceCents, talkingWebsiteYearCents, voiceYearCents, buildPct, productPct }: Props) {
   const [sites, setSites] = useState(3);
   const [voices, setVoices] = useState(1);
   const [builds, setBuilds] = useState(0);
@@ -96,7 +99,7 @@ export default function PartnerEarningsCalculator({ pct, months, talkingWebsiteC
 
   const recurringMonthly = sites * twCut + voices * voiceCut;
   const monthly = recurringMonthly + builds * buildCut + products * productCut;
-  const recurringYear = recurringMonthly * months;
+  const recurringYear = (sites * talkingWebsiteYearCents + voices * voiceYearCents) / 100;
   const shownMonthly = useCountUp(monthly);
   const shownRecurring = useCountUp(recurringYear);
 

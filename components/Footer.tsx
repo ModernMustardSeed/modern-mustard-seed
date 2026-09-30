@@ -62,6 +62,7 @@ export default function Footer() {
         { label: 'For Wedding Venues', href: '/for/weddings' },
         { label: 'Future-Proof Your Business', href: '/future-proof' },
         { label: 'Partner Program', href: '/partners' },
+        { label: 'Sales Rep Jobs', href: '/partners/sales-rep' },
       ],
     },
     {

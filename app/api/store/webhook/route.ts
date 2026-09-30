@@ -626,13 +626,16 @@ async function handleInvoicePaid(invoice: Stripe.Invoice) {
   // carries a ref) pays the partner a share of THIS invoice, for a capped
   // window, idempotent by invoice id. This is what makes a referred Voice Agent
   // subscription pay the partner every month, not just at signup.
+  // Sales tax is collected for the state, not earned, so the partner's share
+  // is taken on the pre-tax total (never more than what actually cleared).
   if (subMetaAll?.ref && invoice.id) {
+    const preTax = typeof invoice.total_excluding_tax === 'number' ? invoice.total_excluding_tax : amount;
     await recordSubscriptionCommission({
       affiliateCode: subMetaAll.ref,
       orderEmail: email,
       subscriptionId: subId,
       invoiceId: invoice.id,
-      amountCents: amount,
+      amountCents: Math.min(amount, preTax),
       kind: subMetaAll.kind,
     });
   }
