@@ -9,8 +9,8 @@ import s from './CoverHero.module.css';
  * A Riviera sky, the masthead set edge to edge, and Mr. and Mrs. Mustard as
  * the cover stars standing in front of the letters, the way a cover star
  * breaks the masthead. The cover lines are the services, and each one is a
- * link. The main line is the promise and the call to action commissions the
- * work. The layers sit at different depths and drift apart with the pointer,
+ * link. Two cover lines only, so the masthead and the stars carry the cover.
+ * The main line is the promise and the call to action commissions the work. The layers sit at different depths and drift apart with the pointer,
  * like a pop-up book. One screen, rendered on the server; CoverMotion is the
  * only client code and it writes two numbers.
  */
@@ -18,21 +18,8 @@ import s from './CoverHero.module.css';
 const LINES = [
   { kicker: 'Websites', line: 'Found on Google. Recommended by ChatGPT.', href: '/websites' },
   { kicker: 'Voice agents', line: 'The receptionist who never sleeps.', href: '/voice-agents' },
-  { kicker: 'Custom software', line: 'Built around how you actually work.', href: '/services' },
-  { kicker: 'Agentic systems', line: 'Run the business from the beach.', href: '/ai' },
 ];
 
-// A barcode, drawn once: each letter of the studio's name sets a bar and a gap.
-const BARS = (() => {
-  let at = 0;
-  return 'MODERNMUSTARDSEED'.split('').map((c, i) => {
-    const w = (c.charCodeAt(0) % 3) + 1;
-    const bar = { x: at, w };
-    at += w + (i % 2) + 1;
-    return bar;
-  });
-})();
-const BAR_WIDTH = BARS[BARS.length - 1].x + BARS[BARS.length - 1].w;
 
 export default function CoverHero() {
   preload('/art/cover/sky-1600.avif', { as: 'image', type: 'image/avif', fetchPriority: 'high', imageSrcSet: '/art/cover/sky-960.avif 960w, /art/cover/sky-1600.avif 1600w', imageSizes: '100vw' });
@@ -44,7 +31,7 @@ export default function CoverHero() {
         <img src="/art/cover/sky-1600.webp" alt="" width={1600} height={1067} fetchPriority="high" decoding="async" />
       </picture>
 
-      <p className={s.dateline}><span>The Agentic Issue</span><span>Fall 2026</span><span>For businesses nationwide</span></p>
+      <p className={s.dateline}><span>The Agentic Issue</span><span>Fall 2026</span></p>
 
       {/* The masthead is type stretched to the exact width of the cover. */}
       <svg className={`${s.layer} ${s.masthead}`} viewBox="0 0 1000 150" preserveAspectRatio="xMidYMin meet" aria-hidden="true" focusable="false">
@@ -71,19 +58,11 @@ export default function CoverHero() {
 
       <div className={s.main}>
         <h1 id="studio-heading" className={s.promise}>We build websites and <em>agentic systems</em> that run your business.</h1>
-        <p className={s.sub}>So you can run your life. Made to measure, for businesses in every state.</p>
         <div className={s.actions}>
           <Link href="/inquire" className={s.cta}>Commission yours <span aria-hidden="true">↗</span></Link>
-          <a href="#selected-work" className={s.quiet}>See the work</a>
         </div>
       </div>
 
-      <div className={s.barcode} aria-hidden="true">
-        <svg viewBox={`0 0 ${BAR_WIDTH} 40`} preserveAspectRatio="none" focusable="false">
-          {BARS.map((b) => <rect key={b.x} x={b.x} y="0" width={b.w} height="40" />)}
-        </svg>
-        <span>modernmustardseed.com</span>
-      </div>
 
       <CoverMotion />
     </section>

@@ -29,34 +29,22 @@
 .lines{position:absolute;inset:0;z-index:3;pointer-events:none}
 .coverline{position:absolute;display:grid;gap:6px;width:min(22vw,300px);pointer-events:auto;color:var(--sea);text-decoration:none;animation:fade .7s calc(.9s + var(--i) * .12s) both;transform:translate(calc(var(--mx) * 10px),calc(var(--my) * 6px))}
 .coverline:nth-child(1){left:3vw;top:42%}
-.coverline:nth-child(2){right:3vw;top:40%}
-.coverline:nth-child(3){right:3vw;top:54%}
-.coverline:nth-child(4){right:3vw;top:68%}
-.coverline:nth-child(n+2){text-align:right;justify-items:end}
+.coverline:nth-child(2){right:3vw;top:48%;text-align:right;justify-items:end}
 .kicker{width:fit-content;padding:4px 9px;border-radius:4px;background:var(--mustard);font-family:var(--font-caps),sans-serif;font-size:11px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--sea)}
 .lineText{font-family:var(--font-riviera),system-ui,sans-serif;font-size:clamp(18px,1.65vw,27px);font-weight:700;line-height:1.08;letter-spacing:-.03em;color:#fff;text-shadow:0 3px 0 #0b3b44,0 0 18px #0b3b4466;text-wrap:balance}
 .coverline:hover .lineText,.coverline:focus-visible .lineText{text-decoration:underline;text-decoration-color:var(--mustard);text-decoration-skip-ink:none;text-decoration-thickness:3px;text-underline-offset:5px}
 .coverline:focus-visible{outline:2px solid var(--mustard);outline-offset:6px;border-radius:6px}
 
 /* The main line: the promise, bottom left, on a glass slip. */
-.main{position:absolute;left:3vw;bottom:clamp(20px,4svh,48px);z-index:4;width:min(38vw,560px);padding:clamp(20px,2vw,30px);border-radius:24px;background:#fbf5eaeb;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:0 30px 60px -30px #0b3b4499;animation:fade .8s 1.4s both}
+.main{position:absolute;left:3vw;bottom:clamp(20px,4svh,48px);z-index:4;width:min(34vw,480px);padding:clamp(20px,2vw,30px);border-radius:24px;background:#fbf5eaeb;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:0 30px 60px -30px #0b3b4499;animation:fade .8s 1.4s both}
 .promise{margin:0;font-family:var(--font-riviera),system-ui,sans-serif;font-weight:700;font-size:clamp(22px,2.1vw,34px);line-height:1.08;letter-spacing:-.035em;color:var(--sea);text-wrap:balance}
 .promise em{font-style:normal;color:var(--lagoon,#0a7c78)!important}
-.sub{margin:10px 0 0;font-family:var(--font-caps),sans-serif;font-size:15px;line-height:1.5;color:#0b3b44cc}
-.actions{display:flex;flex-wrap:wrap;align-items:center;gap:12px 22px;margin-top:16px}
+.actions{display:flex;flex-wrap:wrap;align-items:center;gap:12px 22px;margin-top:18px}
 .cta{display:inline-flex;align-items:center;gap:14px;min-height:52px;padding:0 12px 0 24px;border-radius:999px;background:var(--sea);color:#fff;font-family:var(--font-caps),sans-serif;font-size:15px;font-weight:600;box-shadow:0 14px 30px -14px #0b3b44cc;transition:transform .2s}
 .cta span{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--mustard);color:var(--sea)}
 .cta:hover{transform:translateY(-2px)}
-.quiet{min-height:44px;display:inline-flex;align-items:center;font-family:var(--font-caps),sans-serif;font-size:15px;font-weight:600;color:var(--sea);border-bottom:2px solid var(--tiffany)}
-.cta:focus-visible,.quiet:focus-visible{outline:2px solid var(--mustard);outline-offset:5px}
+.cta:focus-visible{outline:2px solid var(--mustard);outline-offset:5px}
 
-/* The barcode, bottom right above the chat button, like the corner of a newsstand copy. */
-.barcode{position:absolute;right:3vw;bottom:calc(clamp(20px,4svh,48px) + 76px);z-index:3;display:grid;gap:4px;justify-items:center;padding:8px 10px 6px;background:#fff;border-radius:4px;box-shadow:0 10px 24px -12px #0b3b4499;animation:fade .8s 1.6s both}
-.barcode svg{display:block;width:92px;height:34px;fill:var(--sea)}
-.barcode span{font-family:var(--font-caps),sans-serif;font-size:8.5px;font-weight:700;letter-spacing:.08em;color:var(--sea)}
-
-/* On shorter screens the barcode would sit on the last cover line. */
-@media(max-height:820px){.barcode{display:none}}
 
 /* ---------- Phone: a portrait cover, which is what a magazine is ---------- */
 @media(max-width:760px){
@@ -70,16 +58,12 @@
   .coverline{width:46vw}
   .coverline:nth-child(1){left:16px;top:37%}
   .coverline:nth-child(2){left:16px;right:auto;top:52%;text-align:left;justify-items:start}
-  .coverline:nth-child(3),.coverline:nth-child(4){display:none}
-  .quiet{display:none}
   .lineText{font-size:15px}
   .kicker{font-size:10px}
   .main{left:12px;right:12px;width:auto;bottom:12px;padding:18px}
   .promise{font-size:clamp(19px,5.6vw,24px)}
-  .sub{font-size:13.5px}
-  .barcode{display:none}
 }
 
 @media(prefers-reduced-motion:reduce){
-  .sky img,.masthead,.mastheadTall,.stars img,.coverline,.main,.barcode,.dateline{animation:none}
+  .sky img,.masthead,.mastheadTall,.stars img,.coverline,.main,.dateline{animation:none}
 }
