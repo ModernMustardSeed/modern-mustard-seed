@@ -16,6 +16,8 @@ import type { Prospect } from './store';
  */
 
 export const APPLY_URL = `${SITE.url}/partners`;
+/** The partner film: a name goes in, the demo builds, the owner calls, the first check lands. 67 seconds. */
+export const FILM_URL = `${SITE.url}/partners#film`;
 
 const dollars = (cents: number) =>
   `$${(cents / 100).toLocaleString('en-US', { minimumFractionDigits: cents % 100 ? 2 : 0, maximumFractionDigits: 2 })}`;
@@ -183,6 +185,8 @@ export function followUpBody(p: Prospect): string {
     hello(p),
     ``,
     `Floating this back up. The short version: ${short}.`,
+    ``,
+    `If a minute is easier than a letter, the whole thing is a 67-second film, from a name going in to the first check landing: ${FILM_URL}`,
     ``,
     `If there is a better inbox for partnerships, point me there and I'll take it from here. Otherwise the whole program is at ${APPLY_URL}.`,
     ``,

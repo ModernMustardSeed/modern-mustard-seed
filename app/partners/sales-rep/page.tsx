@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { buildMetadata, SITE } from '@/lib/seo';
 import { partnerMath } from '@/lib/partner-desk/letters';
+import PartnerFilm from '@/components/partners/PartnerFilm';
 
 const m = partnerMath();
 const $ = m.dollars;
@@ -102,6 +103,11 @@ export default function SalesRepPage() {
             </a>
           </div>
         </div>
+
+        {/* The job in 67 seconds, from real screens. */}
+        <div id="film" className="relative z-10 max-w-4xl mx-auto mt-14 scroll-mt-24">
+          <PartnerFilm />
+        </div>
       </section>
 
       {/* What one client pays */}
@@ -113,7 +119,7 @@ export default function SalesRepPage() {
         <div className="grid md:grid-cols-3 gap-5">
           {EARN.map((e) => (
             <div key={e.label} className="bg-white border-2 border-[#0b3b44] rounded-2xl shadow-[5px_5px_0_0_#0b3b44] p-7">
-              <div className="font-display text-5xl sm:text-6xl font-bold text-[#0b3b44] leading-none mb-2">{e.big}</div>
+              <div className="font-display text-5xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-[#0b3b44] leading-none mb-2 whitespace-nowrap">{e.big}</div>
               <div className="text-[11px] uppercase tracking-[0.2em] text-[#0b3b44]/60 font-mono font-bold mb-4">{e.label}</div>
               <p className="text-[#3A3733] font-body text-sm leading-relaxed">{e.d}</p>
             </div>
