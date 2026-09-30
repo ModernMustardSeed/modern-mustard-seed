@@ -8,7 +8,7 @@ import s from './PaperHero.module.css';
  *
  * Torn craft paper, stacked in layers: the cliff village and the sea, a
  * mustard paper sun, a paper sailboat, a band of torn-paper waves in front, and
- * Mr. and Mrs. Mustard cut from paper under a striped umbrella. On load the
+ * Mr. and Mrs. Mustard cut from paper under a striped umbrella on a paper sand bar. On load the
  * pieces drop onto the table one after another; then everything "boils" at a
  * handmade four frames a second, the way stop-motion breathes. The headline is
  * pasted up like a collage, with its two key phrases on torn paper strips. With
@@ -20,11 +20,13 @@ import s from './PaperHero.module.css';
 
 type Piece = { k: string; src: string; w: number; h: number; d: number };
 
-// Depth (d) is how far a layer drifts with the pointer: the nearer, the more.
+// Back to front, in paint order. Depth (d) is how far a layer drifts with the
+// pointer: the nearer, the more.
 const PIECES: Piece[] = [
   { k: 'sun', src: 'sun-480', w: 480, h: 476, d: 6 },
-  { k: 'sail', src: 'sail-360', w: 360, h: 391, d: 10 },
   { k: 'wave', src: 'wave-1600', w: 1600, h: 348, d: 16 },
+  { k: 'sail', src: 'sail-360', w: 360, h: 391, d: 12 },
+  { k: 'sand', src: 'sand-900', w: 900, h: 240, d: 20 },
   { k: 'lounge', src: 'lounge-760', w: 760, h: 795, d: 24 },
 ];
 
@@ -53,13 +55,13 @@ export default function PaperHero() {
         <h1 id="studio-heading" className={s.title}>
           We build <span className={`${s.strip} ${s.tiffany}`}>websites</span> and <span className={`${s.strip} ${s.mustard}`}>agentic systems</span> that run your <span className={s.white}>business.</span>
         </h1>
-        <p className={s.lede}>Made to measure, for businesses in every state. <b>So you can run your life.</b></p>
+        <p className={s.lede}>Made to measure for businesses in every state. <span className={s.home}>Based in Kalispell, MT.</span> <b>So you can run your life.</b></p>
         <div className={s.actions}>
           <Link href="/inquire" className={s.cta}>Commission yours</Link>
           <a href="#selected-work" className={s.ghost}>See the work</a>
         </div>
       </div>
-      <p className={s.alt}>A cut-paper diorama of the French Riviera: a mustard paper sun, a whitewashed village on the cliff, a paper sailboat on torn-paper waves, and Mr. and Mrs. Mustard under a striped umbrella, him on his phone.</p>
+      <p className={s.alt}>A cut-paper diorama of the French Riviera: a mustard paper sun, a whitewashed village on the cliff, a paper sailboat on torn-paper waves, and Mr. and Mrs. Mustard under a striped umbrella on a little paper beach, him on his phone.</p>
       <DepthMotion target="paper" />
     </section>
   );
