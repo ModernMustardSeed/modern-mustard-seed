@@ -4,9 +4,9 @@ import { JsonLd, breadcrumbJsonLd, faqJsonLd, parableJsonLd } from '@/lib/jsonld
 import { buildMetadata, SITE } from '@/lib/seo';
 
 export const metadata = buildMetadata({
-  title: 'AI Websites and Agentic Systems for Businesses Across the US',
+  title: 'Agentic Systems, AI Agents & Websites That Work for You',
   description:
-    'An AI studio for businesses across the United States. AI websites built to be found on Google and ChatGPT, AI voice agents that answer and book every call, custom software, and agentic systems that run the business. Set package prices; you own everything.',
+    'Agentic systems, AI agents and websites that work for you, built for businesses across the United States and made to be found on Google and ChatGPT. AI voice agents that answer and book every call, and custom software. Set package prices; you own everything. Based in Kalispell, MT.',
 });
 
 const homeJsonLd = {
@@ -14,7 +14,7 @@ const homeJsonLd = {
   '@type': 'WebPage',
   '@id': 'https://modernmustardseed.com/#webpage',
   url: 'https://modernmustardseed.com',
-  name: 'Modern Mustard Seed | AI Websites and Agentic Systems for Businesses Across the US',
+  name: 'Modern Mustard Seed | Agentic Systems, AI Agents & Websites That Work for You',
   description: SITE.description,
   isPartOf: { '@id': 'https://modernmustardseed.com/#website' },
   about: { '@id': 'https://modernmustardseed.com/#organization' },

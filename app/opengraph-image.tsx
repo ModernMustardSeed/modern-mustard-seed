@@ -7,14 +7,14 @@ import { SITE } from '@/lib/seo';
 export const runtime = 'nodejs';
 
 export const alt =
-  'Modern Mustard Seed. Mr. Mustard works from his phone under a Tiffany-blue umbrella on a French Riviera beach while his family plays at the water.';
+  'Modern Mustard Seed. Cut-paper Riviera: Mr. and Mrs. Mustard lounge under a striped umbrella on a paper sand bar beside a paper sailboat, with the words Agentic Systems, AI Agents and websites that work for you.';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
 /**
- * The homepage share card: the Riviera card rendered once as a JPG
- * (public/brand/mr-mustard-social-riviera.jpg, the same file SITE.ogImage
- * points at), so every share of the root shows the same beach.
+ * The homepage share card: the cut-paper Riviera card rendered once as a JPG
+ * (public/brand/mms-share-paper.jpg, the same file SITE.ogImage points at),
+ * so every share of the root shows the same scene.
  */
 export default async function OpengraphImage() {
   const card = readFileSync(join(process.cwd(), 'public', SITE.ogImage.replace(/^\//, '')));
