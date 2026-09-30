@@ -112,7 +112,8 @@
 .withIssue .panel { padding-top: 150px; }
 
 /* ---------- The copy: the page's own words, dressed ---------- */
-.copy { position: relative; z-index: 2; min-width: 0; }
+/* The words start at the top of the card, never pushed down to the middle of a tall picture. */
+.copy { position: relative; z-index: 2; min-width: 0; align-self: start; }
 .eyebrow { margin-bottom: 24px; }
 /* The eyebrow: tracked capitals after a little sun, a wave behind. */
 .pill,
