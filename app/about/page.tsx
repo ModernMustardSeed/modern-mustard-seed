@@ -4,7 +4,7 @@ import { buildMetadata } from '@/lib/seo';
 import PopPageHero from '@/components/pop/PopPageHero';
 
 export const metadata = buildMetadata({
-  title: 'Sarah Scarano and the Agentic Studio in Kalispell',
+  title: 'Sarah Scarano and the AI Studio Serving Businesses Nationwide',
   description:
     'Meet Sarah Scarano, founder of Modern Mustard Seed, a boutique design and agentic systems studio in Kalispell building websites and brand, custom software, and voice agents for clients nationwide.',
   path: '/about',

@@ -6,9 +6,9 @@ import { JsonLd, breadcrumbJsonLd, faqJsonLd, parableJsonLd } from '@/lib/jsonld
 import { buildMetadata, SITE } from '@/lib/seo';
 
 export const metadata = buildMetadata({
-  title: 'A Design and Agentic Systems Studio in Kalispell, Montana',
+  title: 'AI Websites and Agentic Systems for Businesses Across the US',
   description:
-    'Modern Mustard Seed is a boutique design and agentic systems studio in Montana with nationwide reach. Websites and brand, custom software, voice agents, and advisory for operators building something worth owning. By inquiry.',
+    'An AI studio for businesses across the United States. AI websites built to be found on Google and ChatGPT, AI voice agents that answer and book every call, custom software, and agentic systems that run the business. Set package prices; you own everything.',
 });
 
 const homeJsonLd = {
@@ -16,7 +16,7 @@ const homeJsonLd = {
   '@type': 'WebPage',
   '@id': 'https://modernmustardseed.com/#webpage',
   url: 'https://modernmustardseed.com',
-  name: 'Modern Mustard Seed | A Design and Agentic Systems Studio in Kalispell, Montana',
+  name: 'Modern Mustard Seed | AI Websites and Agentic Systems for Businesses Across the US',
   description: SITE.description,
   isPartOf: { '@id': 'https://modernmustardseed.com/#website' },
   about: { '@id': 'https://modernmustardseed.com/#organization' },
@@ -44,7 +44,7 @@ const offerJsonLd = {
 const HOME_FAQ = [
   {
     q: 'What does Modern Mustard Seed do?',
-    a: 'Modern Mustard Seed is a boutique design and agentic systems studio in Kalispell, Montana, founded by Sarah Scarano. Five disciplines: design-led websites and brand, custom software, voice agents, marketing (social posting, blog writing, commercials, and ads), and retained advisory for operators putting agentic systems into a business that already works. We work with clients across Northwest Montana and throughout the United States.',
+    a: 'Modern Mustard Seed is an AI studio that builds websites and agentic systems for businesses across the United States, founded by Sarah Scarano and based in Kalispell, Montana. Five disciplines: design-led websites and brand, custom software, voice agents, marketing (social posting, blog writing, commercials, and ads), and retained advisory for operators putting agentic systems into a business that already works. We work with businesses in every state, remotely, and with neighbors in Northwest Montana in person.',
   },
   {
     q: 'Who is Sarah Scarano?',

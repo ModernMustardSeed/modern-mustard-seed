@@ -5,7 +5,7 @@ export const SITE = {
   url: 'https://modernmustardseed.com',
   tagline: 'A Design and Agentic Systems Studio',
   description:
-    'A boutique design and agentic systems studio in Kalispell, Montana. Design-led websites and brand, custom software, voice agents, and retained advisory for Northwest Montana and clients nationwide. By inquiry.',
+    'An AI studio serving businesses across the United States: AI websites built for Google and AI assistants, AI voice agents and receptionists, custom software, and agentic systems that run the business. Based in Kalispell, Montana. By inquiry.',
   twitter: '@modmustardseed',
   founder: 'Sarah Scarano',
   email: 'sarah@modernmustardseed.com',
