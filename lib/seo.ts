@@ -5,11 +5,11 @@ export const SITE = {
   url: 'https://modernmustardseed.com',
   tagline: 'A Design and Agentic Systems Studio',
   description:
-    'An AI studio serving businesses across the United States: AI websites built for Google and AI assistants, AI voice agents and receptionists, custom software, and agentic systems that run the business. Based in Kalispell, Montana. By inquiry.',
+    'A studio for businesses across the United States: agentic systems, AI agents and voice receptionists, and websites that work for you, built to be found on Google and ChatGPT, plus custom software, and agentic systems that run the business. Based in Kalispell, Montana. By inquiry.',
   twitter: '@modmustardseed',
   founder: 'Sarah Scarano',
   email: 'sarah@modernmustardseed.com',
-  ogImage: '/brand/mr-mustard-social-riviera.jpg',
+  ogImage: '/brand/mms-share-paper.jpg',
   /**
    * Local identity. SINGLE SOURCE for every NAP (name, address, phone) signal.
    * Local search and AI answers both key off a consistent NAP, so never retype
@@ -61,7 +61,7 @@ export function buildMetadata({ title, description, path = '/', image, noindex, 
       description: desc,
       url,
       siteName: SITE.name,
-      images: [{ url: ogImage, width: 1200, height: 630, alt: image ? SITE.name : 'Mr. Mustard works from his phone under a Tiffany-blue umbrella on a French Riviera beach while his family plays at the water, with the Modern Mustard Seed name', type: /\.jpe?g(?:\?|$)/i.test(ogImage) ? 'image/jpeg' : 'image/png' }],
+      images: [{ url: ogImage, width: 1200, height: 630, alt: image ? SITE.name : 'Cut-paper Riviera: Mr. and Mrs. Mustard lounge under a striped umbrella on a paper sand bar beside a paper sailboat, with the words Agentic Systems, AI Agents and websites that work for you', type: /\.jpe?g(?:\?|$)/i.test(ogImage) ? 'image/jpeg' : 'image/png' }],
       locale: 'en_US',
       type: article ? 'article' : 'website',
       ...(article ? { publishedTime: article.published, modifiedTime: article.modified ?? article.published, authors: [article.author ?? `${SITE.url}/about`] } : {}),

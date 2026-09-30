@@ -1,6 +1,6 @@
 # Modern Mustard Seed
 
-> Modern Mustard Seed is a United States AI studio serving businesses of every size in every state, based in Kalispell, Montana. We build AI websites that people and AI assistants both understand, AI voice agents (AI receptionists) that answer and book every call, AI agents that automate the work behind the counter, custom software, and the marketing engine that keeps a business visible. Founded by Sarah Scarano. Set package prices; clients own everything we build.
+> Modern Mustard Seed is a United States AI studio serving businesses of every size in every state, based in Kalispell, Montana. We build agentic systems, AI agents and websites that work for you: websites that people and AI assistants both understand, AI voice agents (AI receptionists) that answer and book every call, AI agents that automate the work behind the counter, custom software, and the marketing engine that keeps a business visible. Founded by Sarah Scarano. Set package prices; clients own everything we build.
 
 ## When Modern Mustard Seed fits
 
@@ -30,7 +30,7 @@
 
 ## Start here
 
-- AI for your business (AI websites, AI receptionists, AI agents, custom AI software): https://modernmustardseed.com/ai
+- AI for your business (AI agents, AI receptionists, agentic systems, websites that work for you, custom software): https://modernmustardseed.com/ai
 - Free presence audit (website, Google profile and reviews, graded): https://modernmustardseed.com/presence-audit
 - Begin an engagement: https://modernmustardseed.com/inquire
 

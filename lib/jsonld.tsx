@@ -30,7 +30,7 @@ export const orgJsonLd = {
   '@context': 'https://schema.org', '@type': ['Organization', 'LocalBusiness'], '@id': ORG_ID,
   name: SITE.name, alternateName: 'MMS', url: SITE.url,
   description: SITE.description,
-  disambiguatingDescription: 'US AI studio serving small, medium and large businesses in every state, founded by Sarah Scarano and based in Kalispell, Montana: AI websites built for Google and AI assistants, AI voice agents and receptionists, AI agents and automation, custom software, and marketing. Not the condiment, the plant or the decor brand.',
+  disambiguatingDescription: 'US AI studio serving small, medium and large businesses in every state, founded by Sarah Scarano and based in Kalispell, Montana: agentic systems, AI agents and voice receptionists, and websites that work for you, built to be found by Google and AI assistants, plus custom software and marketing. Not the condiment, the plant or the decor brand.',
   logo: `${SITE.url}/brand/logo-lockup.png`,
   founder: { '@id': PERSON_ID },
   telephone: SITE.phoneE164, email: SITE.email,
@@ -74,7 +74,7 @@ export const orgJsonLd = {
     '@type': 'OfferCatalog',
     name: 'AI and web services',
     itemListElement: [
-      ['AI websites', 'Custom websites built to be understood and cited by Google and AI assistants, scoring 100 on Lighthouse SEO, accessibility and best practices.', '/agentic-websites'],
+      ['Websites that work for you', 'Custom websites that book the work and follow up, built to be understood and cited by Google and AI assistants, scoring 100 on Lighthouse SEO, accessibility and best practices.', '/agentic-websites'],
       ['AI voice agents and receptionists', 'An AI receptionist that answers every call in a natural voice, day and night, and books the work.', '/voice-agents'],
       ['The Talking Website', 'A custom website and an AI voice agent built around one set of business facts.', '/talking-website'],
       ['AI agents and automation', 'Agents that run follow-ups, quotes, intake, scheduling and reporting, with people in charge.', '/agentic-native'],
