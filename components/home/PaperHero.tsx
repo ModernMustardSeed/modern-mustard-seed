@@ -31,19 +31,19 @@ const PIECES: Piece[] = [
 ];
 
 export default function PaperHero() {
-  preload('/art/paper/plate-1600.avif', { as: 'image', type: 'image/avif', fetchPriority: 'high', imageSrcSet: '/art/paper/plate-960.avif 960w, /art/paper/plate-1600.avif 1600w', imageSizes: 'max(100vw, 150svh)' });
+  preload('/art/paper/plate-1600.avif', { as: 'image', type: 'image/avif', fetchPriority: 'high', imageSrcSet: '/art/paper/plate-960.avif 960w, /art/paper/plate-1600.avif 1600w', imageSizes: '(max-width: 760px) 540px, max(100vw, 150svh)' });
   return (
     <section id="paper" className={s.hero} data-story="" aria-labelledby="studio-heading">
       <div className={s.scene} aria-hidden="true">
         <picture className={s.plate}>
-          <source type="image/avif" srcSet="/art/paper/plate-960.avif 960w, /art/paper/plate-1600.avif 1600w" sizes="max(100vw, 150svh)" />
+          <source type="image/avif" srcSet="/art/paper/plate-960.avif 960w, /art/paper/plate-1600.avif 1600w" sizes="(max-width: 760px) 540px, max(100vw, 150svh)" />
           <img src="/art/paper/plate-1600.webp" alt="" width={1600} height={1067} fetchPriority="high" decoding="async" />
         </picture>
         {PIECES.map((p) => (
           <div key={p.k} className={`${s.piece} ${s[p.k]}`} style={{ ['--d' as string]: p.d }}>
             <picture>
               <source type="image/avif" srcSet={`/art/paper/${p.src}.avif`} />
-              <img src={`/art/paper/${p.src}.webp`} alt="" width={p.w} height={p.h} decoding="async" draggable={false} />
+              <img src={`/art/paper/${p.src}.webp`} alt="" width={p.w} height={p.h} fetchPriority="low" decoding="async" draggable={false} />
             </picture>
           </div>
         ))}
