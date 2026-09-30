@@ -3,8 +3,8 @@
 import { useEffect } from 'react';
 
 /**
- * Drives the sand story. Writes CSS variables on #sand-story and moves the
- * glint that rides the tip of whatever is being written. Renders nothing.
+ * Drives the sand story on a clock. Writes CSS variables on #sand-story and
+ * moves the glint that rides the tip of whatever is being written. Renders nothing.
  */
 
 const WAVES = [
@@ -106,8 +106,8 @@ export default function SandMotion() {
       el.querySelectorAll<HTMLSourceElement>('source[data-srcset]').forEach((n) => { n.srcset = n.dataset.srcset ?? ''; n.removeAttribute('data-srcset'); });
       el.querySelectorAll<HTMLImageElement>('img[data-src]').forEach((n) => { n.src = n.dataset.src ?? ''; n.removeAttribute('data-src'); });
     };
-    const duskTimer = document.readyState === 'complete' ? window.setTimeout(fillDusk, 1500) : 0;
-    const onLoad = () => window.setTimeout(fillDusk, 1500);
+    const duskTimer = document.readyState === 'complete' ? window.setTimeout(fillDusk, 300) : 0;
+    const onLoad = () => window.setTimeout(fillDusk, 300);
     if (!duskTimer) window.addEventListener('load', onLoad, { once: true });
 
     // Every stroke's length, per message and layout, measured once.
@@ -166,24 +166,22 @@ export default function SandMotion() {
       moveTip(key, w);
     };
 
-    // The name writes itself as the page opens: about four seconds, easing out.
-    const t0 = performance.now();
+    // The story runs on a clock, not on the scroll: the name writes itself for
+    // about four seconds, holds so it can be read, then the waves play the rest.
+    // The clock only moves while the hero is on screen.
     const INTRO_MS = 4200;
-    let intro = 0;
+    const HOLD_MS = 1600;
+    const PLAY_MS = 16000;
+    let elapsed = 0;
+    let lastNow = 0;
     let p = 0;
     let frame = 0;
-    let introFrame = 0;
-    let scrolled = true;
+    let onScreen = true;
     const touch = el.querySelector<HTMLCanvasElement>('[data-touch]');
 
     const render = () => {
-      frame = 0;
-      if (scrolled) {
-        const r = el.getBoundingClientRect();
-        const span = r.height - window.innerHeight;
-        p = span > 0 ? Math.min(1, Math.max(0, -r.top / span)) : 0;
-        scrolled = false;
-      }
+      const intro = outQuad(Math.min(1, elapsed / INTRO_MS));
+      p = Math.min(1, Math.max(0, (elapsed - INTRO_MS - HOLD_MS) / PLAY_MS));
 
       let wave = 0;
       let wet = 0;
@@ -200,35 +198,43 @@ export default function SandMotion() {
       set('--c-web', seg(p, 0.28, 0.33) * (1 - seg(p, 0.4, 0.44)));
       set('--c-ai', seg(p, 0.58, 0.63) * (1 - seg(p, 0.68, 0.72)));
       set('--c-life', seg(p, 0.86, 0.92));
-      const end = p > 0.86 ? '1' : '0';
+      const end = p > 0.9 ? '1' : '0';
       if (el.dataset.end !== end) el.dataset.end = end;
 
       const mmsOn = 1 - seg(p, 0.15, 0.19);
-      msg('mms', p > 0.05 ? 1 : intro, mmsOn);
+      msg('mms', intro, mmsOn);
       if (touch) put(touch, 'opacity', mmsOn);
       msg('web', outQuad(seg(p, 0.2, 0.36)), seg(p, 0.19, 0.195) * (1 - seg(p, 0.45, 0.49)));
       msg('ai', outQuad(seg(p, 0.5, 0.66)), seg(p, 0.49, 0.495) * (1 - seg(p, 0.73, 0.77)));
       msg('life', outQuad(seg(p, 0.79, 0.93)), seg(p, 0.77, 0.775));
     };
 
-    const tickIntro = (now: number) => {
-      intro = outQuad(Math.min(1, (now - t0) / INTRO_MS));
+    const tick = (now: number) => {
+      // A long gap (a background tab) counts as one frame, so the story never skips ahead.
+      if (onScreen && lastNow) elapsed += Math.min(100, now - lastNow);
+      lastNow = now;
       render();
-      if (intro < 1 && p <= 0.05) introFrame = requestAnimationFrame(tickIntro);
+      frame = p < 1 ? requestAnimationFrame(tick) : 0;
     };
+    const play = () => { if (!frame) { lastNow = 0; frame = requestAnimationFrame(tick); } };
 
-    const onScroll = () => { scrolled = true; if (!frame) frame = requestAnimationFrame(render); };
-    const onResize = () => { pick(); onScroll(); };
+    const io = new IntersectionObserver(([e]) => { onScreen = e.isIntersecting; }, { threshold: 0.35 });
+    io.observe(el);
+
+    const replay = el.querySelector<HTMLButtonElement>('[data-replay]');
+    const onReplay = () => { elapsed = 0; play(); };
+    replay?.addEventListener('click', onReplay);
+
+    const onResize = () => { pick(); render(); };
     render();
-    introFrame = requestAnimationFrame(tickIntro);
-    window.addEventListener('scroll', onScroll, { passive: true });
+    play();
     window.addEventListener('resize', onResize);
     const stopTouch = touchSand(el, () => p);
     return () => {
-      window.removeEventListener('scroll', onScroll);
       window.removeEventListener('resize', onResize);
+      replay?.removeEventListener('click', onReplay);
+      io.disconnect();
       cancelAnimationFrame(frame);
-      cancelAnimationFrame(introFrame);
       stopTouch();
       window.clearTimeout(duskTimer);
       window.removeEventListener('load', onLoad);

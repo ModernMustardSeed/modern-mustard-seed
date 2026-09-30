@@ -4,8 +4,8 @@
    water has run up the beach), --wet (the sheen it leaves), --dusk (golden
    hour), --c-<cap> (the copy in the sky).
    Transform, opacity and stroke-dashoffset only. */
-.story{--sea:#0b3b44;--tiffany:#81d8d0;--lagoon:#0a7c78;--mustard:#f5b700;--w-mms:0;--w-web:0;--w-ai:0;--w-life:0;--o-mms:1;--o-web:0;--o-ai:0;--o-life:0;--wave:0;--wet:0;--dusk:0;--c-intro:1;--c-web:0;--c-ai:0;--c-life:0;position:relative;height:440svh;background:#e9d3a6;color:var(--sea)}
-.stage{position:sticky;top:0;height:100svh;overflow:hidden;isolation:isolate}
+.story{--sea:#0b3b44;--tiffany:#81d8d0;--lagoon:#0a7c78;--mustard:#f5b700;--w-mms:0;--w-web:0;--w-ai:0;--w-life:0;--o-mms:1;--o-web:0;--o-ai:0;--o-life:0;--wave:0;--wet:0;--dusk:0;--c-intro:1;--c-web:0;--c-ai:0;--c-life:0;position:relative;height:100svh;min-height:560px;background:#e9d3a6;color:var(--sea)}
+.stage{position:relative;height:100%;overflow:hidden;isolation:isolate}
 .srOnly{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 
 /* ---------- The painting: covers the screen, the shoreline at ~38% ---------- */
@@ -45,8 +45,8 @@
 .capWeb{opacity:var(--c-web);transform:translateY(calc((1 - var(--c-web)) * 14px))}
 .capAi{opacity:var(--c-ai);transform:translateY(calc((1 - var(--c-ai)) * 14px))}
 .capLife{opacity:var(--c-life);transform:translateY(calc((1 - var(--c-life)) * 14px))}
-.lifeActions{position:absolute;left:16px;right:16px;bottom:clamp(28px,7svh,72px);margin:0;opacity:var(--c-life);transform:translateY(calc((1 - var(--c-life)) * 14px));pointer-events:none}
-.story[data-end='1'] .lifeActions{pointer-events:auto}
+.lifeActions{position:absolute;left:16px;right:16px;bottom:clamp(24px,6svh,64px);margin:0;pointer-events:auto}
+.sum{margin:0;max-width:36ch;font-family:var(--font-caps),sans-serif;font-size:clamp(14px,1.3vw,18px);font-weight:600;line-height:1.45;color:#fff;text-shadow:0 2px 14px #7a3b2acc}
 .eyebrow{margin:0;font-family:var(--font-caps),sans-serif;font-size:12.5px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:var(--sea);text-shadow:0 0 18px #ffffffcc}
 .eyebrow i{font-style:normal;margin:0 .5em;color:var(--mustard)}
 .say{margin:0;font-family:var(--font-riviera),system-ui,sans-serif;font-weight:600;font-size:clamp(21px,2.3vw,36px);line-height:1.18;letter-spacing:-.03em;color:var(--sea);text-wrap:balance;text-shadow:0 0 24px #ffffffe6,0 0 6px #ffffff99}
@@ -57,7 +57,7 @@
 .quiet{min-height:44px;display:inline-flex;align-items:center;font-family:var(--font-caps),sans-serif;font-size:15px;font-weight:600;color:#fff;border-bottom:2px solid var(--mustard);text-shadow:0 2px 12px #7a3b2a}
 .cta:focus-visible,.quiet:focus-visible{outline:2px solid #fff;outline-offset:5px}
 
-.cue{position:absolute;left:50%;bottom:22px;translate:-50% 0;margin:0;display:flex;flex-direction:column;align-items:center;gap:10px;font-family:var(--font-caps),sans-serif;font-size:11.5px;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:#fff;text-shadow:0 1px 8px #5b3d17aa;opacity:calc(var(--c-intro) * .95)}
+.cue{position:absolute;left:50%;bottom:calc(clamp(24px,6svh,64px) + 78px);translate:-50% 0;margin:0;display:flex;flex-direction:column;align-items:center;gap:10px;font-family:var(--font-caps),sans-serif;font-size:11.5px;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:#fff;text-shadow:0 1px 8px #5b3d17aa;opacity:calc(var(--c-intro) * .95)}
 .line{display:block;width:2px;height:44px;border-radius:2px;background:linear-gradient(#fff0,#fff);animation:drip 2s ease-in-out infinite;transform-origin:top}
 @keyframes drip{0%{transform:scaleY(0)}55%{transform:scaleY(1)}100%{transform:scaleY(1);opacity:0}}
 
@@ -68,19 +68,19 @@
 .hint{display:none;font-size:10.5px;letter-spacing:.18em;opacity:.85}
 @media(hover:hover) and (pointer:fine){.hint{display:block}}
 
-/* Skip the story: always there, never in the way. */
-.skip{position:absolute;left:max(16px,3vw);bottom:22px;display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border-radius:999px;background:#0b3b4499;color:#fff;font-family:var(--font-caps),sans-serif;font-size:13px;font-weight:600;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);opacity:calc(.5 + var(--c-intro) * .5);transition:background .2s}
-.skip:hover,.skip:focus-visible{background:#0b3b44;opacity:1}
-.skip:focus-visible{outline:2px solid var(--mustard);outline-offset:3px}
-.after{position:absolute;bottom:0;left:0;width:1px;height:1px;outline:none}
+/* Watch again: the last pill in the button row, once the story has played. */
+.replay{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border:0;border-radius:999px;background:#0b3b4499;color:#fff;font-family:var(--font-caps),sans-serif;font-size:13px;font-weight:600;cursor:pointer;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.replay:hover{background:#0b3b44}
+.replay:focus-visible{outline:2px solid var(--mustard);outline-offset:3px}
 
 /* The last buttons cannot be reached by Tab while they are invisible. */
-.story:not([data-end='1']) .lifeActions{visibility:hidden}
-.story[data-end='1'] .skip{opacity:0;pointer-events:none}
+.story:not([data-end='1']) .replay{display:none}
 
 /* ---------- Phone ---------- */
 @media(max-width:760px){
-  .story{height:420svh}
+  .story{height:100svh}
+  .cue{display:none}
+  .lifeActions{bottom:84px;gap:10px 22px}
   .wide{display:none!important}
   .narrow{display:block!important}
   .floor{top:37%;perspective:60svh}
@@ -95,8 +95,6 @@
 }
 
 /* ---------- Reduced motion: the name already written, nothing pinned ---------- */
-.story[data-still='1']{height:auto}
-.story[data-still='1'] .stage{position:relative}
 .story[data-still='1']{--w-mms:1;--o-mms:1;--c-intro:1}
 @media(prefers-reduced-motion:reduce){
   .story{height:auto;--w-mms:1}
@@ -108,6 +106,6 @@
   .cap{grid-area:auto;opacity:1!important;transform:none!important}
   .capLife .eyebrow{display:none}
   .story .lifeActions{visibility:visible;opacity:1;transform:none;pointer-events:auto}
-  .skip{display:none}
+  .replay{display:none!important}
   .cue{display:none}
 }
