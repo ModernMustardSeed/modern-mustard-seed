@@ -9,11 +9,12 @@ const LOCAL_ID = ORG_ID;
 const OG_IMAGE = {
   '@type': 'ImageObject', url: `${SITE.url}/opengraph-image`, width: 1200, height: 630,
 };
+// Nationwide first: the studio serves every state; Montana is home, not the limit.
 export const SERVICE_AREAS = [
-  { '@type': 'City', name: SITE.city },
-  { '@type': 'AdministrativeArea', name: 'Northwest Montana' },
-  { '@type': 'State', name: SITE.regionName },
   { '@type': 'Country', name: 'United States' },
+  { '@type': 'State', name: SITE.regionName },
+  { '@type': 'AdministrativeArea', name: 'Northwest Montana' },
+  { '@type': 'City', name: SITE.city },
 ];
 
 export const personJsonLd = {
@@ -29,7 +30,7 @@ export const orgJsonLd = {
   '@context': 'https://schema.org', '@type': ['Organization', 'LocalBusiness'], '@id': ORG_ID,
   name: SITE.name, alternateName: 'MMS', url: SITE.url,
   description: SITE.description,
-  disambiguatingDescription: 'AI studio in Kalispell, Montana, founded by Sarah Scarano, serving small, medium and large businesses across the United States: AI websites built for Google and AI assistants, AI voice agents and receptionists, AI agents and automation, custom software, and marketing. Not the condiment, the plant or the decor brand.',
+  disambiguatingDescription: 'US AI studio serving small, medium and large businesses in every state, founded by Sarah Scarano and based in Kalispell, Montana: AI websites built for Google and AI assistants, AI voice agents and receptionists, AI agents and automation, custom software, and marketing. Not the condiment, the plant or the decor brand.',
   logo: `${SITE.url}/brand/logo-lockup.png`,
   founder: { '@id': PERSON_ID },
   telephone: SITE.phoneE164, email: SITE.email,

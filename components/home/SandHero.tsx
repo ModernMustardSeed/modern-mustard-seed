@@ -84,7 +84,7 @@ export default function SandHero() {
 
         <div className={s.copy}>
           <div className={`${s.cap} ${s.capIntro}`}>
-            <p className={s.eyebrow}>Design &amp; agentic systems studio <i>·</i> Kalispell, Montana</p>
+            <p className={s.eyebrow}>Websites &amp; agentic systems <i>·</i> For businesses nationwide</p>
           </div>
           <div className={`${s.cap} ${s.capWeb}`}>
             <p className={s.eyebrow}>Chapter one</p>

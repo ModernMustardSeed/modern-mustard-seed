@@ -4,8 +4,8 @@ import { JsonLd, breadcrumbJsonLd, serviceJsonLd, webPageJsonLd } from '@/lib/js
 import { SITE_RUNGS, DEMO_PRODUCTS, formatUsd } from '@/lib/demo-order';
 import PopPageHero, { pop } from '@/components/pop/PopPageHero';
 
-const description = 'Agentic website design from Kalispell, Montana. Custom websites, shared-brain voice agents and answer engine foundations for businesses nationwide.';
-export const metadata = buildMetadata({ title: 'Agentic Website Design in Montana, Built in Kalispell', description, path: '/agentic-websites' });
+const description = 'Agentic website design for businesses across the United States: custom websites, shared-brain voice agents and answer engine foundations. Designed and built in Montana, delivered nationwide.';
+export const metadata = buildMetadata({ title: 'Agentic Website Design for Businesses Nationwide', description, path: '/agentic-websites' });
 const linkStyle = 'font-bold text-[#0a7c78] underline decoration-2 underline-offset-4';
 
 export default function AIWebsitesPage() {
