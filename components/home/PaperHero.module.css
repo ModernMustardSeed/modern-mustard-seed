@@ -13,7 +13,7 @@
 .piece img{filter:drop-shadow(0 6px 8px #3a2a1440)}
 
 .sun{left:54%;top:14%;width:clamp(150px,15vw,250px);animation-delay:.25s}
-.yacht{left:44%;top:57%;width:clamp(110px,11vw,190px);animation-delay:.55s}
+.sail{left:42%;bottom:29.5%;width:clamp(80px,7vw,120px);animation-delay:.55s}
 .wave{left:-4%;right:-4%;bottom:-9%;animation-delay:.75s}
 .lounge{right:2vw;bottom:1svh;width:clamp(260px,31vw,520px);animation-delay:1s}
 
@@ -21,7 +21,7 @@
 
 /* The boil: three hand-placed poses, stepped, like frames of stop-motion. */
 .sun img{animation:boil 1s steps(1) infinite,spin 1s steps(1) infinite}
-.yacht img{animation:rock 1.5s steps(1) infinite}
+.sail img{animation:rock 1.5s steps(1) infinite;transform-origin:50% 90%}
 .wave img{animation:bob 1.2s steps(1) infinite}
 .lounge img{animation:boil 1s .5s steps(1) infinite}
 @keyframes boil{0%{transform:translate(0,0) rotate(-.4deg)}33%{transform:translate(1px,-1px) rotate(.3deg)}66%{transform:translate(-1px,1px) rotate(-.1deg)}}
@@ -48,6 +48,7 @@
 @keyframes strip{from{transform:rotate(var(--tilt)) scaleX(0);transform-origin:left}to{transform:rotate(var(--tilt)) scaleX(1);transform-origin:left}}
 @keyframes paste{from{opacity:0;transform:translateY(14px) rotate(-1.5deg)}}
 
+.white{color:#fff;text-shadow:0 3px 0 #0b3b44,0 0 16px #0b3b4459}
 .lede{margin:22px 0 0;max-width:40ch;font-family:var(--font-caps),sans-serif;font-size:clamp(17px,1.35vw,21px);line-height:1.55;color:#0b3b44d9;animation:paste .6s .45s both}
 .lede b{color:var(--sea)}
 .actions{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-top:28px;animation:paste .6s .6s both}
@@ -69,7 +70,7 @@
   .cta,.ghost{min-height:50px;font-size:15px}
   .plate img{object-position:70% 100%}
   .sun{left:5vw;right:auto;top:auto;bottom:39svh;width:20vw}
-  .yacht{left:6vw;top:auto;bottom:24svh;width:26vw}
+  .sail{left:8vw;top:auto;bottom:22svh;width:17vw}
   .wave{bottom:-4svh;left:-30%;right:-30%}
   .lounge{right:-4vw;bottom:0;width:62vw}
 }

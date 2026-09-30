@@ -7,7 +7,7 @@ import s from './PaperHero.module.css';
  * The homepage hero as a cut-paper diorama of the Riviera.
  *
  * Torn craft paper, stacked in layers: the cliff village and the sea, a
- * mustard paper sun, a paper yacht, a band of torn-paper waves in front, and
+ * mustard paper sun, a paper sailboat, a band of torn-paper waves in front, and
  * Mr. and Mrs. Mustard cut from paper under a striped umbrella. On load the
  * pieces drop onto the table one after another; then everything "boils" at a
  * handmade four frames a second, the way stop-motion breathes. The headline is
@@ -23,7 +23,7 @@ type Piece = { k: string; src: string; w: number; h: number; d: number };
 // Depth (d) is how far a layer drifts with the pointer: the nearer, the more.
 const PIECES: Piece[] = [
   { k: 'sun', src: 'sun-480', w: 480, h: 476, d: 6 },
-  { k: 'yacht', src: 'yacht-480', w: 480, h: 193, d: 10 },
+  { k: 'sail', src: 'sail-360', w: 360, h: 391, d: 10 },
   { k: 'wave', src: 'wave-1600', w: 1600, h: 348, d: 16 },
   { k: 'lounge', src: 'lounge-760', w: 760, h: 795, d: 24 },
 ];
@@ -51,7 +51,7 @@ export default function PaperHero() {
       <div className={s.words}>
         <p className={s.chip}><i aria-hidden="true" />Modern Mustard Seed <span>· websites and agentic systems</span></p>
         <h1 id="studio-heading" className={s.title}>
-          We build <span className={`${s.strip} ${s.tiffany}`}>websites</span> and <span className={`${s.strip} ${s.mustard}`}>agentic systems</span> that run your business.
+          We build <span className={`${s.strip} ${s.tiffany}`}>websites</span> and <span className={`${s.strip} ${s.mustard}`}>agentic systems</span> that run your <span className={s.white}>business.</span>
         </h1>
         <p className={s.lede}>Made to measure, for businesses in every state. <b>So you can run your life.</b></p>
         <div className={s.actions}>
@@ -59,7 +59,7 @@ export default function PaperHero() {
           <a href="#selected-work" className={s.ghost}>See the work</a>
         </div>
       </div>
-      <p className={s.alt}>A cut-paper diorama of the French Riviera: a mustard paper sun, a whitewashed village on the cliff, a paper yacht on torn-paper waves, and Mr. and Mrs. Mustard under a striped umbrella, him on his phone.</p>
+      <p className={s.alt}>A cut-paper diorama of the French Riviera: a mustard paper sun, a whitewashed village on the cliff, a paper sailboat on torn-paper waves, and Mr. and Mrs. Mustard under a striped umbrella, him on his phone.</p>
       <DepthMotion target="paper" />
     </section>
   );
