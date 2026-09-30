@@ -20,22 +20,31 @@ export const APPLY_URL = `${SITE.url}/partners`;
 const dollars = (cents: number) =>
   `$${(cents / 100).toLocaleString('en-US', { minimumFractionDigits: cents % 100 ? 2 : 0, maximumFractionDigits: 2 })}`;
 
-/** What a partner earns on one referred subscription, per month and over the paid year. */
+/**
+ * What a partner earns on one referred subscription. The demo checkout bills
+ * the setup fee on the FIRST subscription invoice, and the recurring share is
+ * paid on every invoice, so the first check is the share of setup plus month
+ * one, and the year is that plus the remaining months of the window.
+ */
 export function partnerMath() {
   const pct = Math.round(COMMISSION_SUBSCRIPTION_RATE * 100);
   const months = COMMISSION_SUBSCRIPTION_MONTHS;
   const tw = Math.round(DEMO_BUNDLE.monthlyCents * COMMISSION_SUBSCRIPTION_RATE);
   const voice = Math.round(DEMO_PRODUCTS.voice.monthlyCents * COMMISSION_SUBSCRIPTION_RATE);
   const site = Math.round(DEMO_PRODUCTS.site.monthlyCents * COMMISSION_SUBSCRIPTION_RATE);
+  const first = (setupCents: number, monthlyCents: number) => Math.round((setupCents + monthlyCents) * COMMISSION_SUBSCRIPTION_RATE);
+  const twFirst = first(DEMO_BUNDLE.setupCents, DEMO_BUNDLE.monthlyCents);
+  const voiceFirst = first(DEMO_PRODUCTS.voice.setupCents, DEMO_PRODUCTS.voice.monthlyCents);
+  const siteFirst = first(DEMO_PRODUCTS.site.setupCents, DEMO_PRODUCTS.site.monthlyCents);
   return {
     pct,
     months,
     productPct: Math.round(COMMISSION_PRODUCT_RATE * 100),
     buildPct: Math.round(COMMISSION_BUILD_RATE * 100),
     producerPct: Math.round(COMMISSION_BUILD_PRODUCER_RATE * 100),
-    talkingWebsite: { name: DEMO_BUNDLE.name, plural: `${DEMO_BUNDLE.name.replace(/^The /, '')}s`, monthly: DEMO_BUNDLE.monthlyCents, setup: DEMO_BUNDLE.setupCents, perMonth: tw, year: tw * months },
-    voice: { name: DEMO_PRODUCTS.voice.name, monthly: DEMO_PRODUCTS.voice.monthlyCents, perMonth: voice, year: voice * months },
-    site: { name: DEMO_PRODUCTS.site.name, monthly: DEMO_PRODUCTS.site.monthlyCents, perMonth: site, year: site * months },
+    talkingWebsite: { name: DEMO_BUNDLE.name, plural: `${DEMO_BUNDLE.name.replace(/^The /, '')}s`, monthly: DEMO_BUNDLE.monthlyCents, setup: DEMO_BUNDLE.setupCents, perMonth: tw, firstCheck: twFirst, year: twFirst + tw * (months - 1) },
+    voice: { name: DEMO_PRODUCTS.voice.name, monthly: DEMO_PRODUCTS.voice.monthlyCents, perMonth: voice, firstCheck: voiceFirst, year: voiceFirst + voice * (months - 1) },
+    site: { name: DEMO_PRODUCTS.site.name, monthly: DEMO_PRODUCTS.site.monthlyCents, perMonth: site, firstCheck: siteFirst, year: siteFirst + site * (months - 1) },
     tenTalkingWebsites: { perMonth: tw * 10, year: tw * 10 * months },
     dollars,
   };
@@ -66,7 +75,7 @@ function offer(): string[] {
   return [
     `Here is the whole program, plainly:`,
     `- You send a business name. We build them a free demo: their own site and a voice agent they can call, built to their trade, in a day. You never sell. You introduce.`,
-    `- If they keep it, you earn ${m.pct}% of every monthly invoice for ${m.months} months. On ${m.talkingWebsite.name} that is ${dollars(m.talkingWebsite.perMonth)} a month, ${dollars(m.talkingWebsite.year)} over the year, per business.`,
+    `- If they keep it, you earn ${m.pct}% of every monthly invoice for ${m.months} months. On ${m.talkingWebsite.name} that is ${dollars(m.talkingWebsite.firstCheck)} the month they sign (the first invoice carries the setup fee), then ${dollars(m.talkingWebsite.perMonth)} a month: ${dollars(m.talkingWebsite.year)} over the year, per business.`,
     `- Ten kept ${m.talkingWebsite.plural} is ${dollars(m.tenTalkingWebsites.perMonth)} a month to you for a year.`,
     `- A bigger client who needs a real build pays you ${m.buildPct}% of the project, ${m.producerPct}% once you are closing them regularly.`,
     `- Every playbook we sell pays ${m.productPct}% the moment someone buys, and you get all of them free.`,

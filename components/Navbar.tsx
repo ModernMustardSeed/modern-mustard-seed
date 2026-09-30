@@ -60,6 +60,7 @@ const MENU_GROUPS = [
       { label: 'Sarah Scarano', href: '/sarahscarano' },
       { label: 'Contact', href: '/contact' },
       { label: 'Partner Program', href: '/partners' },
+      { label: 'Sales Rep Jobs', href: '/partners/sales-rep' },
       { label: 'Client Portal', href: '/portal' },
     ],
   },

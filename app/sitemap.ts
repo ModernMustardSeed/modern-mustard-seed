@@ -62,6 +62,8 @@ const STATIC_PATHS = [
   '/sarahscarano',
   '/world',
   '/contact',
+  '/partners',
+  '/partners/sales-rep',
   '/sample-proposal',
   '/privacy',
   '/terms',
