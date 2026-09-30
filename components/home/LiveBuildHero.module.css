@@ -1,0 +1,125 @@
+/* Built while you watch. Words on the left, the site being built on the right.
+   Each built piece carries a delay class (.p1 to .p8, .m1 to .m4); the browser
+   element is re-keyed on every build, so the whole sequence replays. */
+.hero{--sea:#0b3b44;--sand:#fbf5ea;--tiffany:#81d8d0;--lagoon:#0a7c78;--mustard:#f5b700;--coral:#ff6f59;position:relative;min-height:100svh;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.08fr);align-items:center;gap:clamp(24px,4vw,72px);padding:calc(88px + 3svh) max(24px,5vw) 6svh;overflow:hidden;isolation:isolate;background:var(--sand);color:var(--sea)}
+.srOnly{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+/* A slow Tiffany and mustard glow behind the site, like light off the water. */
+.glow{position:absolute;right:-12vw;top:8svh;width:70vw;height:80svh;z-index:-1;border-radius:50%;background:radial-gradient(closest-side,#81d8d073,#81d8d000),radial-gradient(closest-side at 30% 70%,#f5b70040,#f5b70000);filter:blur(10px);animation:tide 14s ease-in-out infinite alternate}
+@keyframes tide{to{transform:translate(-4vw,3svh) scale(1.08)}}
+
+/* ---------- The words ---------- */
+.words{position:relative;min-width:0}
+.eyebrow{margin:0 0 26px;font-family:var(--font-caps),sans-serif;font-size:12.5px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:var(--lagoon)}
+.eyebrow i{font-style:normal;margin:0 .5em;color:var(--mustard)}
+.line{display:flex;align-items:baseline;max-width:100%}
+.field,.mirror,.title{font-family:var(--font-riviera),system-ui,sans-serif;font-weight:700;font-size:clamp(40px,5.6vw,96px);line-height:1.02;letter-spacing:-.05em}
+.field{min-width:3ch;max-width:100%;padding:0 0 4px;border:0;border-bottom:4px dashed #f5b700aa;border-radius:0;background:transparent;color:var(--sea);caret-color:var(--coral);outline:none;text-overflow:ellipsis}
+.field::placeholder{color:#0b3b4459}
+.field:focus{border-bottom-style:solid;border-bottom-color:var(--mustard)}
+.field:focus-visible{box-shadow:0 10px 0 -6px #f5b70066}
+.comma{font-family:var(--font-riviera),system-ui,sans-serif;font-weight:700;font-size:clamp(40px,5.6vw,96px);line-height:1.02;color:var(--sea)}
+.mirror{position:absolute;visibility:hidden;white-space:pre;left:0;top:0}
+.title{margin:.06em 0 0;color:var(--sea);text-wrap:balance}
+.title em{font-style:normal;font-weight:400;color:var(--lagoon)!important}
+.lede{margin:24px 0 0;max-width:44ch;font-family:var(--font-caps),sans-serif;font-size:clamp(16px,1.25vw,19px);line-height:1.6;color:#0b3b44d9}
+
+.trades{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+.chip{min-height:44px;padding:0 18px;border-radius:999px;border:1.5px solid #0b3b4433;background:#ffffffb3;color:var(--sea);font-family:var(--font-caps),sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:background .2s,border-color .2s,transform .2s}
+.chip:hover{border-color:var(--sea);transform:translateY(-1px)}
+.chip[aria-pressed='true']{background:var(--sea);border-color:var(--sea);color:#fff}
+.chip:focus-visible{outline:2px solid var(--mustard);outline-offset:3px}
+
+.after{margin-top:30px}
+.took{margin:0 0 14px;font-family:var(--font-caps),sans-serif;font-size:15px;color:var(--lagoon);opacity:0;transform:translateY(8px);transition:opacity .6s,transform .6s}
+.took b{color:var(--sea)}
+.hero[data-done='1'] .took{opacity:1;transform:none}
+.actions{display:flex;flex-wrap:wrap;align-items:center;gap:14px 26px}
+.cta{display:inline-flex;align-items:center;gap:14px;min-height:56px;max-width:100%;padding:0 14px 0 26px;border-radius:999px;background:var(--sea);color:#fff;font-family:var(--font-caps),sans-serif;font-size:15px;font-weight:600;box-shadow:0 16px 34px -14px #0b3b44cc;transition:transform .2s}
+.cta b{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:22ch}
+.cta > [aria-hidden]{flex:none;display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--mustard);color:var(--sea)}
+.cta:hover{transform:translateY(-2px)}
+.hero[data-done='1'] .cta{animation:nudge 1.4s 1 ease-in-out}
+@keyframes nudge{30%{transform:scale(1.04)}60%{transform:scale(.99)}}
+.quiet{min-height:44px;display:inline-flex;align-items:center;font-family:var(--font-caps),sans-serif;font-size:15px;font-weight:600;color:var(--sea);border-bottom:2px solid var(--tiffany)}
+.cta:focus-visible,.quiet:focus-visible{outline:2px solid var(--mustard);outline-offset:5px}
+
+/* ---------- The site being built ---------- */
+.stage{position:relative;min-width:0;perspective:1600px}
+.browser{position:relative;border-radius:22px;background:#fff;box-shadow:0 50px 90px -40px #0b3b4480,0 0 0 1px #0b3b4414;transform:rotateY(-7deg) rotateX(3deg);transform-origin:40% 50%;transition:transform .8s}
+.stage:hover .browser{transform:rotateY(-2deg) rotateX(1deg)}
+.bar{display:flex;align-items:center;gap:7px;height:40px;padding:0 14px;border-bottom:1px solid #0b3b4412;background:#f6f1e7;border-radius:22px 22px 0 0}
+.bar i{width:10px;height:10px;border-radius:50%;background:#0b3b4426}
+.bar i:first-child{background:#ff6f59aa}.bar i:nth-child(2){background:#f5b700aa}.bar i:nth-child(3){background:#81d8d0}
+.url{flex:1;margin:0 10px;padding:5px 12px;border-radius:999px;background:#fff;font-family:var(--font-caps),sans-serif;font-size:12px;color:#0b3b44b3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tag{padding:3px 9px;border-radius:999px;background:#0b3b44;color:#fff;font-family:var(--font-caps),sans-serif;font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
+.site{padding:14px 14px 18px}
+.nav{display:flex;align-items:center;gap:10px;padding:4px 4px 12px}
+.mark{display:grid;place-items:center;width:30px;height:30px;border-radius:9px;background:var(--mustard);color:var(--sea);font-family:var(--font-riviera),system-ui,sans-serif;font-weight:700;font-size:15px}
+.brand{flex:1;min-width:0;font-family:var(--font-riviera),system-ui,sans-serif;font-size:15px;letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.links{display:flex;gap:14px;font-family:var(--font-caps),sans-serif;font-size:12px;color:#0b3b44b3}
+.links i{font-style:normal}
+.photo{position:relative;border-radius:14px;overflow:hidden;aspect-ratio:16/8.4;background:linear-gradient(135deg,#d8f3f0,#fbe7b8)}
+.photo picture,.photo img{display:block;width:100%;height:100%;object-fit:cover}
+.pitch{position:absolute;left:0;right:0;bottom:0;display:grid;justify-items:start;gap:12px;padding:40px 20px 18px;background:linear-gradient(0deg,#0b3b44d9,#0b3b4400)}
+.pitch b{max-width:18ch;font-family:var(--font-riviera),system-ui,sans-serif;font-size:clamp(18px,1.9vw,28px);line-height:1.05;letter-spacing:-.03em;color:#fff}
+.book{padding:9px 16px;border-radius:999px;background:var(--mustard);color:var(--sea);font-family:var(--font-caps),sans-serif;font-size:12.5px;font-weight:700}
+.services{display:flex;gap:8px;margin-top:12px}
+.services span{flex:1;padding:12px 10px;border-radius:12px;background:#f6f1e7;font-family:var(--font-caps),sans-serif;font-size:12px;font-weight:600;text-align:center}
+.review{display:flex;align-items:center;gap:10px;margin-top:10px;padding:10px 12px;border-radius:12px;border:1px solid #0b3b4414;font-family:var(--font-caps),sans-serif;font-size:12px}
+.review i{font-style:normal;margin-left:6px;color:#0b3b4480;font-size:10.5px;text-transform:uppercase;letter-spacing:.1em}
+.stars{color:var(--mustard);letter-spacing:1px}
+
+/* Mr. Mustard, at their front desk. */
+.chat{position:absolute;right:-18px;bottom:-26px;width:min(300px,62%);padding:12px;border-radius:18px;background:#fff;box-shadow:0 30px 60px -24px #0b3b4499,0 0 0 1px #0b3b4414;font-family:var(--font-caps),sans-serif}
+.chatHead{display:flex;align-items:center;gap:10px;padding-bottom:10px;margin-bottom:8px;border-bottom:1px solid #0b3b4412}
+.chatHead picture,.chatHead img{display:block;width:34px;height:34px;border-radius:50%;background:#fff5d6}
+.chatHead span{display:grid;min-width:0}
+.chatHead b{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chatHead small{font-size:11px;color:var(--lagoon)}
+.msg{width:fit-content;max-width:88%;margin:6px 0 0;padding:8px 12px;border-radius:14px;font-size:12.5px;line-height:1.4}
+.them{margin-left:auto;background:#0b3b44;color:#fff;border-bottom-right-radius:4px}
+.ai{background:#f1ede4;color:var(--sea);border-bottom-left-radius:4px}
+.toast{position:absolute;left:18px;top:56px;padding:10px 16px;border-radius:999px;background:var(--lagoon);color:#fff;font-family:var(--font-caps),sans-serif;font-size:13px;font-weight:700;box-shadow:0 16px 30px -14px #0a7c78}
+
+/* ---------- The build sequence ---------- */
+.browser[data-built='1'] .p1,.browser[data-built='1'] .p2,.browser[data-built='1'] .p3,.browser[data-built='1'] .p4,.browser[data-built='1'] .p5,.browser[data-built='1'] .p6{animation:rise .7s cubic-bezier(.2,1.2,.4,1) both}
+.browser[data-built='1'] .p2{animation-name:reveal;animation-duration:1s;animation-delay:.35s}
+.browser[data-built='1'] .p1{animation-delay:.1s}
+.browser[data-built='1'] .p3{animation-delay:.9s}
+.browser[data-built='1'] .p4{animation-delay:1.25s}
+.browser[data-built='1'] .p5{animation-delay:1.55s}
+.browser[data-built='1'] .p6{animation-delay:1.85s}
+.browser[data-built='1'] .p7{animation:pop .6s 2.3s cubic-bezier(.2,1.3,.4,1) both}
+.browser[data-built='1'] .m1{animation:rise .45s 2.9s both}
+.browser[data-built='1'] .m2{animation:typed 1.1s 3.5s both}
+.browser[data-built='1'] .m3{animation:rise .45s 4.7s both}
+.browser[data-built='1'] .m4{animation:typed 1.1s 5.2s both}
+.browser[data-built='1'] .p8{animation:pop .6s 6.2s cubic-bezier(.2,1.4,.4,1) both}
+.browser[data-built='0'] .p7,.browser[data-built='0'] .p8{opacity:0}
+.browser[data-built='0'] .site{opacity:.35;filter:saturate(.4)}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes reveal{from{clip-path:inset(0 100% 0 0 round 14px)}to{clip-path:inset(0 0 0 0 round 14px)}}
+@keyframes pop{from{opacity:0;transform:translateY(18px) scale(.9)}to{opacity:1;transform:none}}
+/* The receptionist "types": three dots first, then the reply. */
+@keyframes typed{0%{opacity:0;transform:translateY(10px);clip-path:inset(0 70% 0 0 round 14px)}35%{opacity:1;transform:none;clip-path:inset(0 70% 0 0 round 14px)}100%{opacity:1;clip-path:inset(0 0 0 0 round 14px)}}
+
+/* ---------- Phone ---------- */
+@media(max-width:900px){
+  .hero{grid-template-columns:1fr;align-items:start;gap:34px;padding:calc(76px + 2svh) 16px 64px}
+  .eyebrow{font-size:10.5px;letter-spacing:.16em;margin-bottom:18px}
+  .field,.mirror,.title,.comma{font-size:clamp(34px,10.4vw,56px)}
+  .lede{font-size:16px;margin-top:16px}
+  .trades{gap:8px;margin-top:18px}
+  .chip{min-height:40px;padding:0 14px;font-size:13px}
+  .browser{transform:none}
+  .stage{order:0;margin:0 6px 28px 0}
+  .chat{right:-6px;bottom:-30px;width:74%}
+  .links{display:none}
+  .glow{right:-40vw;top:auto;bottom:0;width:120vw;height:60svh}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .glow,.browser[data-built='1'] *{animation:none!important}
+  .browser{transform:none;transition:none}
+}
