@@ -85,6 +85,7 @@ const GROUPS: { name: string; items: Item[] }[] = [
     name: 'Marketing',
     items: [
       { key: 'ads', label: 'Ads Playbook', href: '/admin/ads' },
+      { key: 'huckwild', label: 'HUCKWILD Launch Film', href: '/admin/ads?campaign=huckwild' },
       { key: 'riviera', label: 'The Riviera Commercial', href: '/admin/ads?campaign=riviera' },
       { key: 'answer', label: 'Be the Answer', href: '/admin/ads?campaign=answer' },
       { key: 'warning', label: 'Warning Posters', href: '/admin/ads?campaign=warning' },
