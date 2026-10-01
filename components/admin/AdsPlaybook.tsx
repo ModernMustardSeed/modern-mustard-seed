@@ -15,6 +15,7 @@ import CairnfellCampaign from '@/components/admin/CairnfellCampaign';
 import RivieraCampaign from '@/components/admin/RivieraCampaign';
 import HuckwildCampaign from '@/components/admin/HuckwildCampaign';
 import MadeByHandCampaign from '@/components/admin/MadeByHandCampaign';
+import FramesThatRoarCampaign from '@/components/admin/FramesThatRoarCampaign';
 import BeTheAnswerCampaign from '@/components/admin/BeTheAnswerCampaign';
 import WarningPostersCampaign from '@/components/admin/WarningPostersCampaign';
 import Link from 'next/link';
@@ -1155,7 +1156,7 @@ function CopyBlock({ title, text }: { title: string; text: string }) {
   );
 }
 
-type AdsTab = 'madebyhand' | 'huckwild' | 'warning' | 'answer' | 'riviera' | 'cairnfell' | 'aianswer' | 'littleyes' | 'roomtogrow' | 'ecommerce' | 'presence' | 'makeitreal' | 'flathead' | 'freeaudit' | 'callme' | 'tw' | 'mm' | 'fm' | 'sk' | 'px' | 'pr' | 'geo' | 'gn' | 'py' | 'rest' | 'unv' | 'unvr' | 'unvf' | 'brg' | 'stone' | 'chief' | 'ans' | 'scenic' | 'cxc' | 'ah' | 'whaa' | 'debate' | 'lf' | 'social' | 'results';
+type AdsTab = 'framesroar' | 'madebyhand' | 'huckwild' | 'warning' | 'answer' | 'riviera' | 'cairnfell' | 'aianswer' | 'littleyes' | 'roomtogrow' | 'ecommerce' | 'presence' | 'makeitreal' | 'flathead' | 'freeaudit' | 'callme' | 'tw' | 'mm' | 'fm' | 'sk' | 'px' | 'pr' | 'geo' | 'gn' | 'py' | 'rest' | 'unv' | 'unvr' | 'unvf' | 'brg' | 'stone' | 'chief' | 'ans' | 'scenic' | 'cxc' | 'ah' | 'whaa' | 'debate' | 'lf' | 'social' | 'results';
 
 const TABS: { key: AdsTab; num: string; label: string; blurb: string }[] = [
   { key: 'callme', num: '01', label: 'Call Me', blurb: 'Voice agents · call objective · $25/day' },
@@ -1182,6 +1183,7 @@ const TABS: { key: AdsTab; num: string; label: string; blurb: string }[] = [
   { key: 'whaa', num: '22', label: 'Say Whaaa', blurb: 'The build · the agent that builds · $10/day' },
   { key: 'debate', num: '23', label: 'While You Were Debating', blurb: 'Idea to Product · the studio proof · $15/day' },
   { key: 'lf', num: '24', label: 'The Launch Film', blurb: 'Launch films · fifteen seconds of IRL · $20/day' },
+  { key: 'framesroar', num: '40', label: 'Frames That Roar', blurb: 'The Wild Things Optometrists launch film: 64s, three shapes, every format to download, studio ad copy' },
   { key: 'madebyhand', num: '39', label: 'Made by Hand', blurb: 'The cut-paper brand film of the new site: 64s, three shapes, every format to download, song to come' },
   { key: 'huckwild', num: '38', label: 'HUCKWILD', blurb: 'Concept build launch film: 64s in three shapes, every format to download, drink and studio ad copy' },
   { key: 'warning', num: '37', label: 'Warning Posters', blurb: 'Eight trades, one joke each: Google post images (live), Facebook 4:5 posters, post text and links' },
@@ -1212,7 +1214,7 @@ const TABS: { key: AdsTab; num: string; label: string; blurb: string }[] = [
 const CAMPAIGN_GROUPS: { name: string; keys: AdsTab[] }[] = [
   { name: 'Demo Funnel', keys: ['unv', 'unvr', 'unvf', 'brg', 'stone', 'ans'] },
   { name: 'Product Offers', keys: ['mm', 'sk', 'chief', 'px', 'pr', 'geo', 'lf'] },
-  { name: 'Brand + Verticals', keys: ['madebyhand', 'huckwild', 'answer', 'riviera', 'cairnfell', 'littleyes', 'roomtogrow', 'ecommerce', 'makeitreal', 'callme', 'ah', 'tw', 'gn', 'rest', 'scenic', 'whaa', 'cxc', 'debate'] },
+  { name: 'Brand + Verticals', keys: ['framesroar', 'madebyhand', 'huckwild', 'answer', 'riviera', 'cairnfell', 'littleyes', 'roomtogrow', 'ecommerce', 'makeitreal', 'callme', 'ah', 'tw', 'gn', 'rest', 'scenic', 'whaa', 'cxc', 'debate'] },
   { name: 'Audit', keys: ['aianswer', 'presence', 'freeaudit', 'flathead'] },
   { name: 'Partners + Magnets', keys: ['fm', 'py'] },
   { name: 'Organic', keys: ['warning', 'social'] },
@@ -3486,6 +3488,7 @@ export default function AdsPlaybook() {
         </>)}
 
         {tab === 'madebyhand' && <MadeByHandCampaign />}
+        {tab === 'framesroar' && <FramesThatRoarCampaign />}
         {tab === 'huckwild' && <HuckwildCampaign />}
         {tab === 'warning' && <WarningPostersCampaign />}
         {tab === 'answer' && <BeTheAnswerCampaign />}
