@@ -32,22 +32,25 @@ type Piece = {
   at: number;
   kind?: 'wave' | 'sail' | 'gull' | 'cloud';
   phase?: number;
+  /** Vertical squash, so a band of sea stays a band. */
+  sy?: number;
 };
 
 const ART = '/art/paper/';
 
 const PIECES: Piece[] = [
-  { src: 'sun-480.webp', w: 2.7, x: 1.6, y: 3.3, z: -5.2, at: 0.15 },
-  { src: 'clouds-900.webp', w: 9, x: -1.5, y: 4.4, z: -4.8, at: 0.25, kind: 'cloud' },
-  { src: 'cliff-700.webp', w: 5.6, x: 6.4, y: 0.6, z: -3.9, at: 0.35 },
-  { src: 'gulls-700.webp', w: 3.6, x: 2.9, y: 2.3, z: -3.2, at: 0.5, kind: 'gull' },
-  { src: 'wave-1600.webp', w: 27, x: -1, y: -1.55, z: -2.8, at: 0.55, kind: 'wave', phase: 0 },
-  { src: 'wave-1600.webp', w: 27, x: 1.5, y: -2.35, z: -1.7, at: 0.65, kind: 'wave', phase: 1.3 },
-  { src: 'sail-360.webp', w: 1.25, x: -0.2, y: -1.25, z: -1.2, at: 0.85, kind: 'sail' },
-  { src: 'wave-1600.webp', w: 27, x: -2, y: -3.2, z: -0.6, at: 0.75, kind: 'wave', phase: 2.6 },
-  { src: 'wave-1600.webp', w: 27, x: 0.8, y: -4.15, z: 0.5, at: 0.95, kind: 'wave', phase: 3.9 },
-  { src: 'sand-900.webp', w: 7.4, x: 5.4, y: -4.3, z: 1.3, at: 1.05 },
-  { src: 'lounge-760.webp', w: 5.2, x: 5.6, y: -2.05, z: 1.6, at: 1.2 },
+  { src: 'sun-480.webp', w: 2.6, x: 2.4, y: 3.4, z: -5.2, at: 0.15 },
+  { src: 'clouds-900.webp', w: 8, x: 3.2, y: 5.7, z: -5.0, at: 0.25, kind: 'cloud' },
+  { src: 'cliff-700.webp', w: 5.4, x: 7.2, y: -0.4, z: -4.2, at: 0.35 },
+  { src: 'gulls-700.webp', w: 3.2, x: 4.2, y: 2.4, z: -3.6, at: 0.5, kind: 'gull' },
+  { src: 'wave-1600.webp', w: 30, x: -1, y: -4.6, z: -3.0, at: 0.55, kind: 'wave', phase: 0, sy: 0.55 },
+  { src: 'sail-360.webp', w: 1.2, x: 1.6, y: -3.0, z: -2.5, at: 0.85, kind: 'sail' },
+  { src: 'wave-1600.webp', w: 30, x: 1.5, y: -5.6, z: -2.0, at: 0.65, kind: 'wave', phase: 1.3, sy: 0.55 },
+  { src: 'wave-1600.webp', w: 30, x: -2, y: -6.6, z: -1.0, at: 0.75, kind: 'wave', phase: 2.6, sy: 0.55 },
+  { src: 'wave-1600.webp', w: 30, x: 0.8, y: -7.7, z: 0.0, at: 0.95, kind: 'wave', phase: 3.9, sy: 0.6 },
+  { src: 'wave-1600.webp', w: 30, x: -1.2, y: -9.2, z: 0.6, at: 1.0, kind: 'wave', phase: 5.1, sy: 0.6 },
+  { src: 'sand-900.webp', w: 7.2, x: 6.4, y: -6.1, z: 1.0, at: 1.05 },
+  { src: 'lounge-760.webp', w: 5.0, x: 6.6, y: -3.9, z: 1.4, at: 1.2 },
 ];
 
 /** A soft paper-fibre texture for the back wall, drawn once on a canvas. */
@@ -112,15 +115,15 @@ export default function PaperRiviera3D({ className }: { className?: string }) {
       const scene = new THREE.Scene();
       const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 100);
 
-      scene.add(new THREE.HemisphereLight(0xfff6e4, 0xd8c7a4, 1.15));
-      const sun = new THREE.DirectionalLight(0xfff1d6, 1.45);
+      scene.add(new THREE.HemisphereLight(0xfffaf0, 0xf2e6cf, 2.3));
+      const sun = new THREE.DirectionalLight(0xfff4e2, 1.6);
       sun.position.set(-7, 9, 12);
       sun.castShadow = true;
       sun.shadow.mapSize.set(2048, 2048);
       sun.shadow.radius = 6;
       sun.shadow.bias = -0.0008;
       const sc = sun.shadow.camera as THREE_NS.OrthographicCamera;
-      sc.left = -16; sc.right = 16; sc.top = 10; sc.bottom = -10; sc.near = 1; sc.far = 40;
+      sc.left = -18; sc.right = 18; sc.top = 11; sc.bottom = -12; sc.near = 1; sc.far = 40;
       scene.add(sun);
 
       const wallTex = paperTexture(THREE);
@@ -129,13 +132,19 @@ export default function PaperRiviera3D({ className }: { className?: string }) {
       wall.receiveShadow = true;
       scene.add(wall);
 
+      const deepMat = new THREE.MeshStandardMaterial({ color: 0x0e5f63, roughness: 1 });
+      const deep = new THREE.Mesh(new THREE.PlaneGeometry(70, 20), deepMat);
+      deep.position.set(0, -17.6, -3.2);
+      deep.receiveShadow = true;
+      scene.add(deep);
+
       const loader = new THREE.TextureLoader();
       const maxAniso = renderer.capabilities.getMaxAnisotropy();
       type Live = { mesh: THREE_NS.Mesh; piece: Piece; base: THREE_NS.Vector3 };
       const live: Live[] = [];
       const textures: THREE_NS.Texture[] = [wallTex];
-      const materials: THREE_NS.Material[] = [wall.material as THREE_NS.Material];
-      const geometries: THREE_NS.BufferGeometry[] = [wall.geometry];
+      const materials: THREE_NS.Material[] = [wall.material as THREE_NS.Material, deepMat];
+      const geometries: THREE_NS.BufferGeometry[] = [wall.geometry, deep.geometry];
 
       await Promise.all(PIECES.map(async (p) => {
         const tex = await loader.loadAsync(ART + p.src).catch(() => null);
@@ -144,7 +153,7 @@ export default function PaperRiviera3D({ className }: { className?: string }) {
         tex.anisotropy = maxAniso;
         textures.push(tex);
         const img = tex.image as { width: number; height: number };
-        const geo = new THREE.PlaneGeometry(p.w, (p.w * img.height) / img.width);
+        const geo = new THREE.PlaneGeometry(p.w, ((p.w * img.height) / img.width) * (p.sy ?? 1));
         const mat = new THREE.MeshStandardMaterial({ map: tex, alphaTest: 0.5, roughness: 0.95, side: THREE.DoubleSide });
         const depth = new THREE.MeshDepthMaterial({ depthPacking: THREE.RGBADepthPacking, map: tex, alphaTest: 0.5 });
         const mesh = new THREE.Mesh(geo, mat);
@@ -201,9 +210,9 @@ export default function PaperRiviera3D({ className }: { className?: string }) {
         px += (tx - px) * 0.06;
         py += (ty - py) * 0.06;
 
-        const dist = aspect >= 1.2 ? 26 : aspect >= 0.8 ? 32 : 44;
-        camera.position.set(px * 1.6 + (aspect < 0.8 ? 2.2 : 0), 0.3 - py * 0.9 + scrollT * 1.2, dist - scrollT * 3);
-        camera.lookAt(aspect < 0.8 ? 2.2 : 0.4, -0.4 + scrollT * 0.6, -2);
+        const dist = aspect >= 1.2 ? 26 : aspect >= 0.8 ? 32 : 40;
+        camera.position.set(px * 1.6 + (aspect < 0.8 ? 3.4 : 0), 0.3 - py * 0.9 + scrollT * 1.2, dist - scrollT * 3);
+        camera.lookAt(aspect < 0.8 ? 3.4 : 0.4, -0.4 + scrollT * 0.6, -2);
 
         // Stop-motion: new hand-placed offsets four times a second.
         const step = Math.floor(t * 4);
