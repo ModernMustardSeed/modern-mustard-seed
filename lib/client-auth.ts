@@ -153,16 +153,19 @@ export async function getClientSession(): Promise<ClientSession | null> {
   }
   const studio = await studioSession();
   if (studio) return studio;
-  const token = c.get(COOKIE_NAME)?.value;
-  if (token) {
-    const sess = await readToken('sess', token);
-    if (sess) return sess;
-  }
-  // Signed into the Command Center and nowhere else: the same person, so the
-  // data routes both apps share answer for them too.
+  // The Command Center session is keyed to the account, the portal one to the
+  // address the person typed. Both doors mint both, so when both are present
+  // the account wins: every shared data route (posting, mail, leads) is keyed
+  // by the account address, and Carmen signed in as herself must read the
+  // same rows Shan does, not an empty account under her own address.
   const cc = c.get(CC_COOKIE)?.value;
-  if (!cc) return null;
-  return readToken('cc', cc);
+  if (cc) {
+    const desk = await readToken('cc', cc);
+    if (desk) return desk;
+  }
+  const token = c.get(COOKIE_NAME)?.value;
+  if (!token) return null;
+  return readToken('sess', token);
 }
 
 // ── The Command Center's own session ──────────────────────────────

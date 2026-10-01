@@ -96,7 +96,6 @@ export default function Composer({
   }
 
   const connected = (p: Platform) => accounts.find((a) => a.provider === p)?.connected ?? false;
-  const manualOnly = (p: Platform) => accounts.find((a) => a.provider === p)?.manualOnly ?? false;
 
   const toggle = (p: Platform) => {
     setChosen((prev) => (prev.includes(p) ? prev.filter((x) => x !== p) : [...prev, p]));
@@ -276,7 +275,7 @@ export default function Composer({
                 {on && <Icon name="check" size={13} />}
                 {SHORT[p]}
                 {!connected(p) && (
-                  <span className="font-mono text-[9px] uppercase tracking-[0.14em] text-[var(--cc-muted)]">{manualOnly(p) ? 'by hand' : 'not connected'}</span>
+                  <span className="font-mono text-[9px] uppercase tracking-[0.14em] text-[var(--cc-muted)]">we post it</span>
                 )}
               </button>
             );
@@ -323,7 +322,7 @@ export default function Composer({
                   <p className="flex items-center gap-2 text-[14.5px] font-semibold">
                     {LABEL[p]}
                     {h !== null && <Badge>{prettyHour(h)}</Badge>}
-                    {!connected(p) && <Badge tone="warn">{manualOnly(p) ? 'By hand' : 'Not connected'}</Badge>}
+                    {!connected(p) && <Badge>We post it</Badge>}
                   </p>
                   <span className={cx('font-mono text-[11px] tabular-nums', over ? 'text-[#B42318]' : near ? 'text-[#B54708]' : 'text-[var(--cc-muted)]')}>
                     {value.length}/{LIMIT[p]}
