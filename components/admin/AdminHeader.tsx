@@ -18,7 +18,7 @@ import { openWelcomeTour } from '@/components/admin/WelcomeTour';
  * the mustard chip, and the Inbox unread dot bubbles up to its group.
  */
 
-type Tab = 'overview' | 'office' |'hq' | 'portfolio' | 'gleaner' | 'pipeline' | 'tracker' | 'outbound' | 'acquisition' | 'factories' | 'partners' | 'partner-desk' | 'team' | 'outreach' | 'campaigns' | 'texting' | 'ads' | 'facebook' | 'social' | 'posters' | 'artifacts' | 'audit' | 'roadmaps' | 'hundredfold' | 'call' | 'script' | 'callers' | 'calls' | 'training' | 'clients' | 'front-office' | 'posting' | 'proposals' | 'projects' | 'builds' | 'build-log' | 'delivery' | 'templates' | 'intakes' | 'approvals' | 'reviews' | 'calendar' | 'onboarding' | 'manual' | 'inbox' | 'opps' | 'desks' | 'call-prep';
+type Tab = 'overview' | 'office' |'hq' | 'portfolio' | 'gleaner' | 'pipeline' | 'tracker' | 'outbound' | 'acquisition' | 'factories' | 'partners' | 'partner-desk' | 'team' | 'outreach' | 'campaigns' | 'texting' | 'ads' | 'my-content' | 'facebook' | 'social' | 'posters' | 'artifacts' | 'audit' | 'roadmaps' | 'hundredfold' | 'call' | 'script' | 'callers' | 'calls' | 'training' | 'clients' | 'front-office' | 'posting' | 'proposals' | 'projects' | 'builds' | 'build-log' | 'delivery' | 'templates' | 'intakes' | 'approvals' | 'reviews' | 'calendar' | 'onboarding' | 'manual' | 'inbox' | 'opps' | 'desks' | 'call-prep';
 
 // `external: true` marks a public-facing offer page that opens in a new tab, so
 // clicking it from the admin never loses the team member's place. These items
@@ -84,6 +84,7 @@ const GROUPS: { name: string; items: Item[] }[] = [
   {
     name: 'Marketing',
     items: [
+      { key: 'my-content', label: 'My Content', href: '/admin/my-content' },
       { key: 'ads', label: 'Ads Playbook', href: '/admin/ads' },
       { key: 'huckwild', label: 'HUCKWILD Launch Film', href: '/admin/ads?campaign=huckwild' },
       { key: 'riviera', label: 'The Riviera Commercial', href: '/admin/ads?campaign=riviera' },
