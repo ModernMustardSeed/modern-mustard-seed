@@ -87,6 +87,7 @@ const GROUPS: { name: string; items: Item[] }[] = [
       { key: 'my-content', label: 'My Content', href: '/admin/my-content' },
       { key: 'ads', label: 'Ads Playbook', href: '/admin/ads' },
       { key: 'madebyhand', label: 'Made by Hand Film', href: '/admin/ads?campaign=madebyhand' },
+      { key: 'framesroar', label: 'Frames That Roar Film', href: '/admin/ads?campaign=framesroar' },
       { key: 'huckwild', label: 'HUCKWILD Launch Film', href: '/admin/ads?campaign=huckwild' },
       { key: 'riviera', label: 'The Riviera Commercial', href: '/admin/ads?campaign=riviera' },
       { key: 'answer', label: 'Be the Answer', href: '/admin/ads?campaign=answer' },
