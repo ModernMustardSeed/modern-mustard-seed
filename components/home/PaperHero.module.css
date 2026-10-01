@@ -36,9 +36,6 @@
 
 /* ---------- The words, pasted up ---------- */
 .words{position:absolute;left:max(24px,6vw);top:calc(92px + 4svh);z-index:2;width:min(46vw,700px)}
-.chip{display:inline-flex;align-items:center;gap:8px;margin:0 0 22px;padding:7px 14px;border-radius:999px;background:#fffaf0;box-shadow:0 1px 0 #0b3b441f,0 6px 14px -8px #0b3b4455;font-family:var(--font-caps),sans-serif;font-size:13px;font-weight:700;color:var(--sea);transform:rotate(-1deg);animation:paste .6s .1s cubic-bezier(.3,1.4,.5,1) both}
-.chip i{width:8px;height:8px;border-radius:50%;background:var(--tiffany)}
-.chip span{font-weight:500;color:#0b3b44b3}
 .title{margin:0;font-family:var(--font-riviera),system-ui,sans-serif;font-weight:700;font-size:clamp(36px,4.3vw,72px);line-height:1.05;letter-spacing:-.045em;color:var(--sea);text-wrap:balance}
 /* A torn strip of colored paper behind a phrase, a little crooked. */
 .strip{position:relative;display:inline-block;padding:0 .16em .04em;margin:0 -.04em;z-index:0;white-space:nowrap}
@@ -66,8 +63,6 @@
 @media(max-width:760px){
   .hero{min-height:680px}
   .words{left:16px;right:16px;width:auto;top:calc(80px + 2svh)}
-  .chip{font-size:11.5px;margin-bottom:16px}
-  .chip span{display:none}
   .title{font-size:clamp(30px,8.4vw,40px)}
   .lede{font-size:14.5px;margin-top:14px;padding:10px 14px}
   .actions{margin-top:20px}
@@ -81,5 +76,5 @@
 }
 
 @media(prefers-reduced-motion:reduce){
-  .piece,.piece img,.chip,.title,.lede,.actions,.strip::before{animation:none!important}
+  .piece,.piece img,.title,.lede,.actions,.strip::before{animation:none!important}
 }
