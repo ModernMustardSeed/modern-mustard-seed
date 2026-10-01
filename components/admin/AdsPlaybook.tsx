@@ -13,6 +13,7 @@ import FlatheadAuditCampaign from '@/components/admin/FlatheadAuditCampaign';
 import AiAnswerCampaign from '@/components/admin/AiAnswerCampaign';
 import CairnfellCampaign from '@/components/admin/CairnfellCampaign';
 import RivieraCampaign from '@/components/admin/RivieraCampaign';
+import HuckwildCampaign from '@/components/admin/HuckwildCampaign';
 import BeTheAnswerCampaign from '@/components/admin/BeTheAnswerCampaign';
 import WarningPostersCampaign from '@/components/admin/WarningPostersCampaign';
 import Link from 'next/link';
@@ -1153,7 +1154,7 @@ function CopyBlock({ title, text }: { title: string; text: string }) {
   );
 }
 
-type AdsTab = 'warning' | 'answer' | 'riviera' | 'cairnfell' | 'aianswer' | 'littleyes' | 'roomtogrow' | 'ecommerce' | 'presence' | 'makeitreal' | 'flathead' | 'freeaudit' | 'callme' | 'tw' | 'mm' | 'fm' | 'sk' | 'px' | 'pr' | 'geo' | 'gn' | 'py' | 'rest' | 'unv' | 'unvr' | 'unvf' | 'brg' | 'stone' | 'chief' | 'ans' | 'scenic' | 'cxc' | 'ah' | 'whaa' | 'debate' | 'lf' | 'social' | 'results';
+type AdsTab = 'huckwild' | 'warning' | 'answer' | 'riviera' | 'cairnfell' | 'aianswer' | 'littleyes' | 'roomtogrow' | 'ecommerce' | 'presence' | 'makeitreal' | 'flathead' | 'freeaudit' | 'callme' | 'tw' | 'mm' | 'fm' | 'sk' | 'px' | 'pr' | 'geo' | 'gn' | 'py' | 'rest' | 'unv' | 'unvr' | 'unvf' | 'brg' | 'stone' | 'chief' | 'ans' | 'scenic' | 'cxc' | 'ah' | 'whaa' | 'debate' | 'lf' | 'social' | 'results';
 
 const TABS: { key: AdsTab; num: string; label: string; blurb: string }[] = [
   { key: 'callme', num: '01', label: 'Call Me', blurb: 'Voice agents · call objective · $25/day' },
@@ -1180,6 +1181,7 @@ const TABS: { key: AdsTab; num: string; label: string; blurb: string }[] = [
   { key: 'whaa', num: '22', label: 'Say Whaaa', blurb: 'The build · the agent that builds · $10/day' },
   { key: 'debate', num: '23', label: 'While You Were Debating', blurb: 'Idea to Product · the studio proof · $15/day' },
   { key: 'lf', num: '24', label: 'The Launch Film', blurb: 'Launch films · fifteen seconds of IRL · $20/day' },
+  { key: 'huckwild', num: '38', label: 'HUCKWILD', blurb: 'Concept build launch film: 64s in three shapes, every format to download, drink and studio ad copy' },
   { key: 'warning', num: '37', label: 'Warning Posters', blurb: 'Eight trades, one joke each: Google post images (live), Facebook 4:5 posters, post text and links' },
   { key: 'answer', num: '36', label: 'Be the Answer', blurb: 'Does AI say your name? 34s motion ad, 20s cut, poster for print and social, copy' },
   { key: 'riviera', num: '35', label: 'The Riviera', blurb: 'The new-site commercial: 46s in three shapes, a 26s cut, ad copy, phone downloads' },
@@ -1208,7 +1210,7 @@ const TABS: { key: AdsTab; num: string; label: string; blurb: string }[] = [
 const CAMPAIGN_GROUPS: { name: string; keys: AdsTab[] }[] = [
   { name: 'Demo Funnel', keys: ['unv', 'unvr', 'unvf', 'brg', 'stone', 'ans'] },
   { name: 'Product Offers', keys: ['mm', 'sk', 'chief', 'px', 'pr', 'geo', 'lf'] },
-  { name: 'Brand + Verticals', keys: ['answer', 'riviera', 'cairnfell', 'littleyes', 'roomtogrow', 'ecommerce', 'makeitreal', 'callme', 'ah', 'tw', 'gn', 'rest', 'scenic', 'whaa', 'cxc', 'debate'] },
+  { name: 'Brand + Verticals', keys: ['huckwild', 'answer', 'riviera', 'cairnfell', 'littleyes', 'roomtogrow', 'ecommerce', 'makeitreal', 'callme', 'ah', 'tw', 'gn', 'rest', 'scenic', 'whaa', 'cxc', 'debate'] },
   { name: 'Audit', keys: ['aianswer', 'presence', 'freeaudit', 'flathead'] },
   { name: 'Partners + Magnets', keys: ['fm', 'py'] },
   { name: 'Organic', keys: ['warning', 'social'] },
@@ -3481,6 +3483,7 @@ export default function AdsPlaybook() {
         </section>
         </>)}
 
+        {tab === 'huckwild' && <HuckwildCampaign />}
         {tab === 'warning' && <WarningPostersCampaign />}
         {tab === 'answer' && <BeTheAnswerCampaign />}
         {tab === 'riviera' && <RivieraCampaign />}
