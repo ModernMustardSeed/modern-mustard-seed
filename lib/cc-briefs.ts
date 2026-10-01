@@ -190,6 +190,7 @@ export async function qualifyLead(sb: SupabaseClient, project: ClientProject, le
       user: qualifyUser(lead),
       label: `brief:qualify:${project.clientEmail}`,
       model: 'sonnet',
+      preferPaid: true,
       schema: QUALIFY_SCHEMA,
       timeoutMs: 45_000,
     });
@@ -249,6 +250,7 @@ export async function quietJob(sb: SupabaseClient, project: ClientProject, job: 
       user: [`The job: ${job.name}`, ...facts, job.notes ? `Notes on it: ${job.notes.slice(0, 1200)}` : '', 'Write the JSON.'].filter(Boolean).join('\n'),
       label: `brief:quiet:${project.clientEmail}`,
       model: 'sonnet',
+      preferPaid: true,
       schema: QUIET_SCHEMA,
       timeoutMs: 45_000,
     });

@@ -272,10 +272,7 @@ export async function POST(req: Request) {
       user: renderTranscript(convo, { assistantLabel: 'Assistant', userLabel: 'Client' }),
       schema: DECISION_SCHEMA,
       timeoutMs: 120_000,
-      // A client is sitting in the Operator watching a spinner. This is the one
-      // call site in the product where the queue hop, not the thinking, is the
-      // wait, and where forty seconds reads as broken rather than busy. Costs a
-      // few cents a turn, and does nothing at all until a paid key exists.
+      // The Command Center runs on the API key, not the subscription.
       preferPaid: true,
     });
 

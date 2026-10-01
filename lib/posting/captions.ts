@@ -86,6 +86,7 @@ export async function enqueueCaptions(s: SettingsRow, b: Brief): Promise<string>
     user: userPrompt(b),
     label: `posting:${s.client_email}:${b.dateStr}`,
     model: 'sonnet',
+    preferPaid: true,
     schema: CAPTION_SCHEMA,
   });
 }

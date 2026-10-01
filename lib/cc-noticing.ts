@@ -189,7 +189,7 @@ export async function noticeThings(
   let noticed: Noticed[] = [];
   let patterns: Pattern[] = [];
   try {
-    const j = await llmJson<{ noticed: Noticed[]; patterns: Pattern[] }>({ system, user, label: `notice:${project.clientEmail}`, model: 'sonnet', schema: NOTICE_SCHEMA, timeoutMs: 60_000 });
+    const j = await llmJson<{ noticed: Noticed[]; patterns: Pattern[] }>({ system, user, label: `notice:${project.clientEmail}`, model: 'sonnet', preferPaid: true, schema: NOTICE_SCHEMA, timeoutMs: 60_000 });
     noticed = (Array.isArray(j.noticed) ? j.noticed : []).slice(0, 4);
     patterns = (Array.isArray(j.patterns) ? j.patterns : []).slice(0, 2);
   } catch (err) {

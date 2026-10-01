@@ -4,8 +4,9 @@
  * Every prompt in the product goes through `llmText` or `llmJson`, and both of
  * them start at the Claude Code CLI running on Sarah's Max subscription. Flat
  * cost, no wallet, no balance to empty, nothing that fails at 2am because a
- * card expired. That is the default on every call but the few marked
- * `preferPaid`, and it is where the vast majority of the work still happens.
+ * card expired. That is the default on every call except the ones marked
+ * `preferPaid`, which is every Command Center call site: those run on the
+ * Anthropic API key ONLY and never touch the subscription (see `preferPaid`).
  *
  * Behind it sits a second lane, `lib/llm-paid.ts`, dormant unless somebody
  * configures it. It exists because "the subscription is the only path" had a
@@ -136,20 +137,22 @@ export type LlmRequest = {
    */
   attachments?: Array<{ url: string; name?: string; type?: string }> | null;
   /**
-   * SPEND MONEY TO SAVE THE WAIT, FOR THE FEW PLACES A PERSON IS WATCHING.
+   * THE API KEY AND NOTHING ELSE. Every Command Center call site sets this.
    *
-   * The queue is the right default for everything with somewhere to land: a
-   * draft, a nightly brief, an audit. It is the wrong default for the Operator,
-   * where a client asks for a QR code and the honest queued answer is "about
-   * forty seconds", almost all of it the hop to a drainer rather than the model
-   * thinking.
+   * Sarah decided 2026-10-01: the client Command Center runs on the Anthropic
+   * API key only, never on her subscription, so a client never waits on a
+   * drainer hop. With this set there is no local CLI, no queue wait and no
+   * subscription fallback. If the key cannot answer (no key, a spent ceiling,
+   * an API fault) the call throws `LlmUnavailable` with a null job id and the
+   * caller says so, the way it always has.
    *
-   * Set this and the paid lane goes first, answering in a few seconds. It costs
-   * roughly four cents a turn, it does nothing at all unless a paid key is
-   * configured, and if the lane is closed or fails the call falls straight back
-   * to the queue. Do not set it on anything that runs on a schedule: a cron
-   * that prefers the paid lane is a cron that bills every single night for work
-   * nobody is waiting on.
+   * `llmEnqueue` honours it too: the job row is written with status `paid`,
+   * which `claim_llm_job` never claims, and the key answers it in the
+   * background. Collectors read the row exactly as they read a drained one.
+   *
+   * Everything outside the Command Center (audits, the build floor, admin
+   * drafts) leaves this unset and stays on the subscription. Setting it on a
+   * new call site is a decision to bill that call to the key.
    */
   preferPaid?: boolean;
 };
@@ -162,7 +165,7 @@ const DEFAULT_TIMEOUT_MS = 45_000;
 
 /* ───────────────────────── the queued path ───────────────────────── */
 
-async function enqueue(req: LlmRequest, schema: unknown | null): Promise<string> {
+async function enqueue(req: LlmRequest, schema: unknown | null, status: 'queued' | typeof PAID_STATUS = 'queued'): Promise<string> {
   const sb = getSupabase();
   if (!sb) {
     throw new LlmUnavailable(
@@ -181,6 +184,8 @@ async function enqueue(req: LlmRequest, schema: unknown | null): Promise<string>
       source_table: req.source?.table ?? null,
       source_id: req.source?.id ?? null,
       attachments: req.attachments?.length ? req.attachments : null,
+      status,
+      ...(status === PAID_STATUS ? { worker: 'api-key', claimed_at: new Date().toISOString() } : {}),
     })
     .select('id')
     .single();
@@ -345,6 +350,64 @@ async function viaPaid(req: LlmRequest, schema: unknown | null): Promise<{ text:
   }
 }
 
+/** One request on the key. Null for every reason that is not a usable answer. */
+async function paidOnce(req: LlmRequest, schema: unknown | null): Promise<{ text: string; json: unknown } | null> {
+  const got = await viaPaid(req, schema);
+  if (!got) return null;
+  if (schema == null ? !got.text.trim() : got.json == null) return null;
+  return got;
+}
+
+/**
+ * The key, never the subscription.
+ *
+ * When the key does not answer inside the request, the retry is handed to a
+ * `paid` job that the key answers in the background, so the caller gets the
+ * same `LlmUnavailable` with a job id it has always handled ("on its way",
+ * poll, collect by label) and still nothing reaches a drainer.
+ */
+async function paidOnly(req: LlmRequest, schema: unknown | null): Promise<{ text: string; json: unknown }> {
+  const got = await paidOnce(req, schema);
+  if (got) return got;
+  let jobId: string | null = null;
+  try {
+    jobId = await llmEnqueue({ ...req, preferPaid: true, schema: schema ?? undefined });
+  } catch {
+    jobId = null;
+  }
+  throw new LlmUnavailable('The API key did not answer inside this request. It is trying again in the background.', jobId);
+}
+
+/** The status a key-answered job holds while in flight. `claim_llm_job` only claims `queued` and stale `running`. */
+const PAID_STATUS = 'paid';
+
+/**
+ * Answer a `paid` job row on the key and write the result where a drainer would.
+ * One retry, because a sorted inbox is worth a second request on a blip.
+ */
+async function answerPaidJob(jobId: string, req: LlmRequest, schema: unknown | null): Promise<void> {
+  const sb = getSupabase();
+  if (!sb) return;
+  let got: { text: string; json: unknown } | null = null;
+  let error = '';
+  for (let attempt = 1; attempt <= 2 && !got; attempt++) {
+    try {
+      got = await paidOnce(req, schema);
+    } catch (err) {
+      error = (err as Error)?.message ?? String(err);
+    }
+  }
+  const finished_at = new Date().toISOString();
+  await sb
+    .from('llm_jobs')
+    .update(
+      got
+        ? { status: 'done', result_text: schema == null ? got.text : null, result_json: schema == null ? null : got.json, error: null, finished_at }
+        : { status: 'failed', error: error || 'The API key could not answer.', finished_at },
+    )
+    .eq('id', jobId);
+}
+
 /**
  * Put any attached files on this machine's disk and point the prompt at them.
  *
@@ -370,6 +433,9 @@ ${got.promptNote}` : req.user, done: () => cleanupAttachments(got.dir) };
  * on a subscription none of those exist.
  */
 export async function llmText(req: LlmRequest): Promise<string> {
+  // Command Center work: the API key, and nothing on the subscription.
+  if (req.preferPaid) return (await paidOnly(req, null)).text;
+
   if (claudeCodeAvailable()) {
     const { user, done } = await withAttachments(req);
     try {
@@ -382,12 +448,6 @@ export async function llmText(req: LlmRequest): Promise<string> {
     } finally {
       await done();
     }
-  }
-
-  // A person is watching a spinner: skip the queue and pay for the seconds.
-  if (req.preferPaid) {
-    const fast = await viaPaid(req, null);
-    if (fast) return fast.text;
   }
 
   try {
@@ -413,6 +473,9 @@ export async function llmText(req: LlmRequest): Promise<string> {
  * this delegates to it rather than reimplementing a parser here.
  */
 export async function llmJson<T = unknown>(req: LlmRequest & { schema: unknown }): Promise<T> {
+  // Command Center work: the API key, and nothing on the subscription.
+  if (req.preferPaid) return (await paidOnly(req, req.schema)).json as T;
+
   if (claudeCodeAvailable()) {
     const { user, done } = await withAttachments(req);
     try {
@@ -426,11 +489,6 @@ export async function llmJson<T = unknown>(req: LlmRequest & { schema: unknown }
     } finally {
       await done();
     }
-  }
-
-  if (req.preferPaid) {
-    const fast = await viaPaid(req, req.schema);
-    if (fast) return fast.json as T;
   }
 
   try {
@@ -523,5 +581,19 @@ export function renderTranscript(
  * caller can record where the answer will show up.
  */
 export async function llmEnqueue(req: LlmRequest & { schema?: unknown }): Promise<string> {
-  return enqueue(req, req.schema ?? null);
+  const schema = req.schema ?? null;
+  if (!req.preferPaid) return enqueue(req, schema);
+
+  // Command Center work: the row is written already claimed by the key, so no
+  // drainer ever picks it up, and the key answers it after the response goes.
+  const jobId = await enqueue(req, schema, PAID_STATUS);
+  const work = () => answerPaidJob(jobId, req, schema);
+  try {
+    const { after } = await import('next/server');
+    after(work);
+  } catch {
+    // Outside a request (a script, a test): just do the work now.
+    await work();
+  }
+  return jobId;
 }
