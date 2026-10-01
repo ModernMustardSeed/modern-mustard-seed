@@ -83,6 +83,34 @@ const CHANNELS: Channel[] = [
     src: '/ads/say-whaa-16x9.mp4',
     poster: '/ads/say-whaa-poster.jpg',
   },
+  {
+    n: '10',
+    title: 'HUCKWILD',
+    note: 'A concept build for a wild Montana huckleberry drink. Every frame is the live site: the glass you stir, the berries you tap, 400 numbered pouches.',
+    src: '/ads/huckwild/huckwild-wide.mp4',
+    poster: '/ads/huckwild/huckwild-wide-poster.jpg',
+  },
+  {
+    n: '11',
+    title: 'Frames That Roar',
+    note: 'Eyewear: a demo optometrist on safari, and the launch film was shot from its own website. Fictional practice, real craft.',
+    src: '/ads/wild-things/frames-that-roar-16x9.mp4',
+    poster: '/ads/wild-things/poster.jpg',
+  },
+  {
+    n: '12',
+    title: 'Cairnfell',
+    note: 'Luxury mountain homes: a concept builder with a website, an owner portal, and a studio behind it, filmed from the build itself.',
+    src: '/ads/cairnfell/cairnfell-16x9.mp4',
+    poster: '/ads/cairnfell/poster.jpg',
+  },
+  {
+    n: '13',
+    title: 'The Whole Weekend',
+    note: 'Weddings: one couple, one Glacier weekend, a website, a guest app, and a planner. Made for venues, planners, and photographers.',
+    src: '/ads/whole-weekend/whole-weekend-16x9.mp4',
+    poster: '/ads/whole-weekend/poster.jpg',
+  },
 ];
 
 export default function MustardNetworkTV() {
@@ -130,7 +158,7 @@ export default function MustardNetworkTV() {
         </div>
 
         <Reveal variant="rise" delay={120}>
-          <div className="grid lg:grid-cols-[1fr_260px] gap-6 items-start max-w-5xl mx-auto">
+          <div className="grid lg:grid-cols-[1fr_360px] gap-6 items-start max-w-6xl mx-auto">
             {/* The set */}
             <div className="rounded-[1.75rem] bg-[#fbf5ea] border-2 border-[#0b3b44] shadow-[10px_10px_0_0_#ff6f59] p-4 md:p-6">
               <div className="relative rounded-xl overflow-hidden border-2 border-[#0b3b44] bg-black">
@@ -181,14 +209,14 @@ export default function MustardNetworkTV() {
             </div>
 
             {/* Channel buttons */}
-            <div className="grid grid-cols-2 lg:grid-cols-1 gap-3">
+            <div className="grid grid-cols-2 gap-3">
               {CHANNELS.map((c, i) => (
                 <button
                   key={c.n}
                   type="button"
                   onClick={() => flip(i)}
                   aria-pressed={i === active}
-                  className={`text-left rounded-xl border-2 border-[#0b3b44] px-4 py-3 transition-all hover:-translate-y-0.5 ${
+                  className={`text-left rounded-xl border-2 border-[#0b3b44] px-3 py-2.5 transition-all hover:-translate-y-0.5 ${
                     i === active
                       ? 'bg-[#f5b700] shadow-[4px_4px_0_0_#fbf5ea] text-[#0b3b44]'
                       : 'bg-[#fbf5ea] shadow-[4px_4px_0_0_#f5b700] text-[#0b3b44]'

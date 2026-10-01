@@ -23,6 +23,11 @@ const CHANNELS = [
   { key: 'wonderful-time', title: 'A Wonderful Time To Be Alive', line: 'The studio film. Consume less. Create.', runtime: '96 sec' },
   { key: 'nine-forty-seven', title: '9:47 PM', line: 'A real call, booked while nobody was working.', runtime: '33 sec' },
   { key: 'good-news', title: 'Good News', line: 'Your business thrives. You get your life back.', runtime: '36 sec' },
+  // Launch films made from the builds themselves. No narration, the type carries them, so no caption file.
+  { key: 'huckwild', title: 'HUCKWILD', line: 'A concept build. Stir the glass, tap a berry, drink the legend.', runtime: '64 sec', noCaptions: true },
+  { key: 'frames-that-roar', title: 'Frames That Roar', line: 'A demo optometrist, filmed from its own website.', runtime: '64 sec', noCaptions: true },
+  { key: 'cairnfell', title: 'Cairnfell', line: 'A luxury mountain-home builder. A concept build: site, owner portal, studio.', runtime: '64 sec', noCaptions: true },
+  { key: 'whole-weekend', title: 'The Whole Weekend', line: 'A wedding weekend: the website, the guest app, the planner.', runtime: '64 sec', noCaptions: true },
 ] as const;
 
 export default function MustardTV() {
@@ -115,7 +120,7 @@ export default function MustardTV() {
                 onClick={togglePlay}
                 aria-label={`${ch.title}, a film by Modern Mustard Seed`}
               >
-                <track kind="captions" src={`/video/tv/${ch.key}.vtt`} srcLang="en" label="English" default />
+                {!('noCaptions' in ch) && <track kind="captions" src={`/video/tv/${ch.key}.vtt`} srcLang="en" label="English" default />}
               </video>
               <div className={s.glass} aria-hidden="true" />
               <div className={s.static} data-on={static_ || undefined} aria-hidden="true" />
