@@ -51,7 +51,6 @@ export default function PaperHero() {
       <div className={s.grain} aria-hidden="true" />
 
       <div className={s.words}>
-        <p className={s.chip}><i aria-hidden="true" />Modern Mustard Seed <span>· websites and agentic systems</span></p>
         <h1 id="studio-heading" className={s.title}>
           We build <span className={`${s.strip} ${s.tiffany}`}>websites</span> and <span className={`${s.strip} ${s.mustard}`}>agentic systems</span> that run your <span className={s.white}>business.</span>
         </h1>
