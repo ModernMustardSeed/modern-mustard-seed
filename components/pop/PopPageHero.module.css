@@ -216,14 +216,15 @@
   text-transform: none;
   transition: transform .25s, box-shadow .25s, background .25s;
 }
-.cta { background: var(--ink); color: #fff; box-shadow: 0 14px 30px -14px #0b3b44cc; }
-.cta span { color: var(--mustard); }
-.ctaAlt { background: #fff; color: var(--ink); box-shadow: inset 0 0 0 1.5px #0b3b4433; }
-.ctaAlt span { color: var(--lagoon); }
+/* These actions are also used below the hero, outside its color variables. */
+.cta { background: var(--ink, #0b3b44); color: #fff; box-shadow: 0 14px 30px -14px #0b3b44cc; }
+.cta span { color: var(--mustard, #f5b700); }
+.ctaAlt { background: #fff; color: var(--ink, #0b3b44); box-shadow: inset 0 0 0 1.5px #0b3b4433; }
+.ctaAlt span { color: var(--lagoon, #0a7c78); }
 .cta:hover { transform: translateY(-2px); background: #0e4b56; }
-.ctaAlt:hover { transform: translateY(-2px); box-shadow: inset 0 0 0 2px var(--tiffany); }
+.ctaAlt:hover { transform: translateY(-2px); box-shadow: inset 0 0 0 2px var(--tiffany, #81d8d0); }
 .cta:focus-visible,
-.ctaAlt:focus-visible { outline: 2px solid var(--lagoon); outline-offset: 4px; }
+.ctaAlt:focus-visible { outline: 2px solid var(--lagoon, #0a7c78); outline-offset: 4px; }
 
 /* ---------- The painting, on a postcard ---------- */
 .stage { position: relative; z-index: 1; padding: 22px 18px 30px; }
