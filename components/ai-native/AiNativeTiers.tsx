@@ -1,10 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+
 import Link from 'next/link';
 import { aiNativeTiers, type AiNativeTier } from '@/data/ai-native';
 import { PRICE_HEADLINE, priceCadence } from '@/lib/public-pricing';
-import { trackEvent } from '@/lib/analytics';
+
 
 /** The three doors, each one minting a live Stripe Checkout from data/ai-native.ts. */
 export default function AiNativeTiers() {
@@ -18,32 +18,7 @@ export default function AiNativeTiers() {
 }
 
 function TierCard({ tier }: { tier: AiNativeTier }) {
-  const [busy, setBusy] = useState(false);
-  const [msg, setMsg] = useState<string | null>(null);
 
-  const buy = async () => {
-    if (busy) return;
-    setBusy(true);
-    setMsg(null);
-    trackEvent('ai_native_checkout_click', { tier: tier.slug });
-    try {
-      const res = await fetch('/api/ai-native/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tier: tier.slug }),
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok || !data?.url) {
-        setMsg(data?.message || 'Checkout hiccuped. Try again or email sarah@modernmustardseed.com.');
-        setBusy(false);
-        return;
-      }
-      window.location.href = data.url as string;
-    } catch {
-      setMsg('Checkout hiccuped. Try again or email sarah@modernmustardseed.com.');
-      setBusy(false);
-    }
-  };
 
   return (
     <div
@@ -75,19 +50,12 @@ function TierCard({ tier }: { tier: AiNativeTier }) {
           </li>
         ))}
       </ul>
-      <button
-        type="button"
-        onClick={buy}
-        disabled={busy}
+      <Link
+        href={`/inquire?kind=ai-native&package=${tier.slug}`}
         className="mt-7 w-full rounded-full border-2 border-[#0b3b44] bg-[#0b3b44] px-6 py-3.5 font-sans text-xs font-extrabold uppercase tracking-[0.18em] text-[#fbf5ea] shadow-[4px_4px_0_0_#f5b700] transition-all hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-wait"
       >
-        {busy ? 'Opening checkout' : tier.cta}
-      </button>
-      {msg && (
-        <p role="alert" className="mt-3 font-body text-xs leading-relaxed text-[#C4160B]">
-          {msg}
-        </p>
-      )}
+        Request a quote
+      </Link>
       <p className="mt-3 text-center font-body text-xs text-[#0b3b44]/60">
         Rather talk first?{' '}
         <Link href="/book" className="font-bold text-[#0b3b44] underline underline-offset-4">

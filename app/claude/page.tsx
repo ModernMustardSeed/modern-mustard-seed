@@ -12,7 +12,6 @@ export const metadata = buildMetadata({
 const ART_ALT =
   'Cut-paper diorama: Mr. Mustard works at a laptop on the deck of a yacht with a lemonade beside him while Mrs. Mustard reads on a lounger and the kids and puppy play, the Riviera coast behind them.';
 
-const usd = (n: number) => '$' + n.toLocaleString('en-US');
 
 export default function ClaudePage() {
   const jsonLd = {
@@ -29,8 +28,6 @@ export default function ClaudePage() {
           '@type': 'Offer',
           name: t.name,
           description: t.pitch,
-          price: t.price,
-          priceCurrency: 'USD',
           url: `${SITE.url}/claude#packages`,
           availability: 'https://schema.org/InStock',
         })),
@@ -54,7 +51,7 @@ export default function ClaudePage() {
         eyebrow={<span>Claude setup // For businesses nationwide</span>}
         title={<>Claude, set up to <em>run your business.</em></>}
         art={{ src: '/art/riviera/yacht', alt: ART_ALT, caption: 'The office, wherever you are' }}
-        sticker="From $1,500!"
+        sticker="Made for you"
       >
         <p>{CLAUDE_SETUP.promise}</p>
         <div className={pop.actions}>
@@ -127,15 +124,15 @@ export default function ClaudePage() {
       {/* ─── THE PACKAGES ─── */}
       <section id="packages" className="py-16 md:py-24 scroll-mt-24" aria-labelledby="packages-heading">
         <div className="max-w-6xl mx-auto px-5">
-          <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#0a7c78] font-bold mb-3">[ Three set packages ]</p>
+          <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#0a7c78] font-bold mb-3">[ Three ways to work together ]</p>
           <h2 id="packages-heading" className="font-display text-3xl md:text-5xl font-black tracking-tight leading-[1.05]">A person, a team, or a crew.</h2>
-          <p className="font-body text-[#0b3b44]/75 leading-relaxed mt-4 max-w-2xl">Set prices, agreed before we start. Changes to what we set up are included. Your Claude subscription is billed by Anthropic, in your name.</p>
+          <p className="font-body text-[#0b3b44]/75 leading-relaxed mt-4 max-w-2xl">We quote your setup in the conversation, before we start. Changes to what we set up are included. Your Claude subscription is billed by Anthropic, in your name.</p>
           <div className="grid lg:grid-cols-3 gap-6 mt-10 items-stretch">
             {claudeTiers.map((t) => (
               <div key={t.slug} className={`flex flex-col rounded-2xl border-2 border-[#0b3b44] p-7 ${t.featured ? 'bg-[#0b3b44] text-[#fbf5ea] shadow-[8px_8px_0_0_#f5b700]' : 'bg-white shadow-[6px_6px_0_0_#0b3b44]'}`}>
                 <p className={`font-mono text-[10px] uppercase tracking-[0.24em] font-bold ${t.featured ? 'text-[#81d8d0]' : 'text-[#0a7c78]'}`}>{t.chip}</p>
                 <h3 className="font-display text-2xl font-black mt-3">{t.name}</h3>
-                <p className={`font-display text-4xl font-black mt-3 ${t.featured ? 'text-[#f5b700]' : ''}`}>{usd(t.price)}</p>
+                <p className={`font-display text-4xl font-black mt-3 ${t.featured ? 'text-[#f5b700]' : ''}`}>Request a quote</p>
                 <p className={`font-body text-[15px] leading-relaxed mt-3 ${t.featured ? 'text-[#fbf5ea]/85' : 'text-[#0b3b44]/75'}`}>{t.pitch}</p>
                 <ul className="mt-5 space-y-2.5 flex-1">
                   {t.includes.map((line) => (
@@ -148,7 +145,7 @@ export default function ClaudePage() {
                   href={`/inquire?kind=claude&package=${t.slug}`}
                   className={`mt-7 inline-flex items-center justify-center rounded-full border-2 border-[#0b3b44] px-6 py-3.5 font-sans font-extrabold text-xs uppercase tracking-[0.18em] ${t.featured ? 'bg-[#f5b700] text-[#0b3b44]' : 'bg-[#0b3b44] text-[#fbf5ea]'}`}
                 >
-                  {t.cta}
+                  Request a quote
                 </Link>
               </div>
             ))}

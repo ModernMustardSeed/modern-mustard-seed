@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { HUNDREDFOLD, money } from '@/lib/hundredfold';
 
 /**
  * THE FLAGSHIP BAND on the homepage.
@@ -107,8 +106,7 @@ export default function HundredfoldBand() {
         </div>
 
         <p className="mt-10 text-center font-mono text-[10px] uppercase tracking-[0.28em] text-[#fbf5ea]/40">
-          The program is {money(HUNDREDFOLD.setupCents)} to start, then {money(HUNDREDFOLD.monthlyCents)} a
-          month · Everything above is free
+          The program is scoped and quoted in the conversation · Everything above is free
         </p>
       </div>
     </section>

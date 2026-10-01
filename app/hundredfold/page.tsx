@@ -2,17 +2,7 @@ import Link from 'next/link';
 import TheInterview from '@/components/hundredfold/TheInterview';
 import HundredfoldFilm from '@/components/hundredfold/HundredfoldFilm';
 import JoinHundredfold from '@/components/hundredfold/JoinHundredfold';
-import {
-  FIT,
-  GUARANTEE,
-  HUNDREDFOLD,
-  PILLARS,
-  SCARCITY,
-  STACK,
-  money,
-  priceSentence,
-  stackTotalCents,
-} from '@/lib/hundredfold';
+import { FIT, GUARANTEE, PILLARS, SCARCITY, STACK, priceSentence } from '@/lib/hundredfold';
 import { JsonLd, breadcrumbJsonLd, faqJsonLd, serviceJsonLd } from '@/lib/jsonld';
 import { buildMetadata, SITE } from '@/lib/seo';
 import PopPageHero, { pop } from '@/components/pop/PopPageHero';
@@ -76,7 +66,6 @@ const FAQS = [
 ];
 
 export default function HundredfoldPage() {
-  const stackTotal = stackTotalCents();
 
   return (
     <>
@@ -94,8 +83,6 @@ export default function HundredfoldPage() {
             areaServed: 'United States',
             offers: {
               '@type': 'Offer',
-              price: (HUNDREDFOLD.setupCents / 100).toFixed(0),
-              priceCurrency: 'USD',
               description: `${priceSentence()}, month to month.`,
             },
           },
@@ -283,8 +270,8 @@ export default function HundredfoldPage() {
                       <h3 className="font-sans font-extrabold text-base leading-snug">{s.item}</h3>
                       <p className="mt-1 text-[#3a3733] font-body text-sm leading-relaxed">{s.why}</p>
                     </div>
-                    <span className="font-display font-black text-lg shrink-0 tabular-nums">
-                      {s.valueCents > 0 ? money(s.valueCents) : 'Yours'}
+                    <span className="font-mono text-xs max-w-28 text-right shrink-0">
+                      Included in your agreed scope
                     </span>
                   </div>
                 ))}
@@ -293,10 +280,10 @@ export default function HundredfoldPage() {
               <div className="mt-7 pt-6 border-t-2 border-[#0b3b44] flex flex-wrap items-end justify-between gap-6">
                 <div>
                   <span className="block text-[9px] uppercase tracking-[0.35em] font-mono font-bold text-[#0b3b44]/55 mb-1">
-                    What it is worth
+                    Your scope
                   </span>
-                  <p className="font-display text-3xl md:text-4xl font-black text-[#0b3b44]/40 line-through decoration-[3px]">
-                    {money(stackTotal)}
+                  <p className="font-display text-xl md:text-2xl font-black text-[#0b3b44]">
+                    A scope built for your goals
                   </p>
                 </div>
                 <div className="text-right">
@@ -304,10 +291,10 @@ export default function HundredfoldPage() {
                     What you pay
                   </span>
                   <p className="font-display text-3xl md:text-5xl font-black leading-none">
-                    {money(HUNDREDFOLD.setupCents)}
+                    Request a quote
                   </p>
                   <p className="mt-1 font-display text-xl md:text-2xl font-black">
-                    then {money(HUNDREDFOLD.monthlyCents)}/mo
+                    Quoted in the conversation
                   </p>
                 </div>
               </div>

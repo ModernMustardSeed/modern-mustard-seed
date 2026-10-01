@@ -36,7 +36,7 @@ export const frontDeskIntents: FrontDeskIntent[] = [
     key: 'pictures',
     match: ['commercial', 'video ad', 'promo video', 'tv ad', 'advertisement', 'video for my'],
     reply:
-      "Seed received, and the studio does this one on the spot: MUSTARD PICTURES writes your commercial's storyboard and taglines free at modernmustardseed.com/pictures (the Screen Test). Love it? The finished cinematic spot is $197 and lands in about two days, three cuts, ready to run.",
+      "Seed received, and the studio does this one on the spot: MUSTARD PICTURES writes your commercial's storyboard and taglines free at modernmustardseed.com/pictures (the Screen Test). Love it? We quote the finished cinematic spot in the conversation, with three cuts ready to run.",
     headline: 'Your {thing}, in theaters this week.',
     cta: { label: 'Run your free Screen Test', href: '/pictures' },
   },

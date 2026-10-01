@@ -81,7 +81,7 @@ export const orgJsonLd = {
       ['Custom software', 'Applications, stores, portals and internal systems built around how a business works.', '/services'],
       ['Marketing', 'Social posts, articles, commercials, ads, email and Google Business Profile, on schedule.', '/marketing'],
       ['AI advisory', 'A clear plan for where AI belongs in a business and in what order.', '/advisory'],
-      ['Claude setup', 'Claude Code and Claude desktop set up for a business: custom Claude skills, rules, memory, safety hooks, connected tools and Claude agents on a schedule. From $1,500.', '/claude'],
+      ['Claude setup', 'Claude Code and Claude desktop set up for a business: custom Claude skills, rules, memory, safety hooks, connected tools and Claude agents on a schedule. Scoped and quoted in the conversation.', '/claude'],
     ].map(([name, description, path]) => ({
       '@type': 'Offer',
       itemOffered: { '@type': 'Service', name, description, url: `${SITE.url}${path}`, provider: { '@id': ORG_ID }, areaServed: { '@type': 'Country', name: 'United States' } },

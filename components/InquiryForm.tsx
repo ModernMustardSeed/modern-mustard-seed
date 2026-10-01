@@ -60,8 +60,16 @@ export default function InquiryForm() {
   useEffect(() => {
     const q = new URLSearchParams(window.location.search);
     const k = q.get('kind');
-    if (k && ENGAGEMENTS.some((x) => x.id === k)) setKind(k);
-    const c = q.get('company')?.trim().slice(0, 80);
+    const aliases: Record<string, string> = {
+      'command-center': 'software', chief: 'software', switchboard: 'voice',
+      'voice-agent': 'voice', demo: 'website', 'talking-website': 'website',
+      'ai-native': 'claude', 'launch-film': 'pictures',
+      geo: 'marketing', press: 'marketing', hatchery: 'other',
+      hundredfold: 'advisory', launch: 'other', 'mustard-launch': 'other',
+    };
+    const selected = k ? (aliases[k] ?? k) : null;
+    if (selected && ENGAGEMENTS.some((x) => x.id === selected)) setKind(selected);
+    const c = (q.get('company') || q.get('business'))?.trim().slice(0, 80);
     if (c) setForm((f) => (f.company ? f : { ...f, company: c }));
   }, []);
   const [submitted, setSubmitted] = useState(false);
@@ -77,7 +85,8 @@ export default function InquiryForm() {
     setError('');
 
     const timeline = TIMELINES.find((t) => t.value === form.timeline)?.label ?? 'Not given';
-    const pkg = new URLSearchParams(window.location.search).get('package')?.slice(0, 40);
+    const query = new URLSearchParams(window.location.search);
+    const pkg = query.get('package')?.slice(0, 80);
     const engagement = (ENGAGEMENTS.find((x) => x.id === kind)?.label ?? 'Not given') + (pkg ? ` (package: ${pkg})` : '');
 
     // Everything Sarah needs to answer well, in the body of one note. The API
@@ -87,6 +96,10 @@ export default function InquiryForm() {
       '',
       '---',
       `Engagement: ${engagement}`,
+      ...(query.get('kind') ? [`Requested service: ${query.get('kind')?.slice(0, 80)}`] : []),
+      ...(query.get('products') ? [`Demo selections: ${query.get('products')?.slice(0, 80)}`] : []),
+      ...(query.get('pages') ? [`Website size: ${query.get('pages')?.slice(0, 40)}`] : []),
+      ...(query.get('hub') ? [`Demo hub: ${query.get('hub')?.slice(0, 80)}`] : []),
       `Company: ${form.company.trim() || 'Not given'}`,
       `Timeline: ${timeline}`,
       `Phone: ${form.phone.trim() || 'Not given'}`,

@@ -162,7 +162,7 @@ const faq = [
   },
   {
     q: 'What does Everywhere add?',
-    a: 'Unlimited saves, ten answers per ask with the full agent receipt, all seven chase modes and paths from any month for any length, What If in your own words, the morning briefing, window codes for Crossroads, and export. $6.99 a month or $49.99 a year, with seven days free.',
+    a: 'Unlimited saves, ten answers per ask with the full agent receipt, all seven chase modes and paths from any month for any length, What If in your own words, the morning briefing, window codes for Crossroads, and export. Ask us about access and pricing.',
   },
   {
     q: 'Where does my data go?',
@@ -434,7 +434,7 @@ export default function SuperNomadPage() {
                   <li>What If in your own words</li>
                   <li>The morning briefing, window codes, export</li>
                 </ul>
-                <p className="mt-6 font-mono text-sm text-[#F5B700]">$6.99 a month · $49.99 a year · seven days free</p>
+                <p className="mt-6 font-mono text-sm text-[#F5B700]">Ask us about access and pricing</p>
               </div>
             </div>
           </div>

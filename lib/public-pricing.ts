@@ -19,7 +19,7 @@
  */
 
 /** The headline that takes the price's slot on a tier card. */
-export const PRICE_HEADLINE = 'Set package price';
+export const PRICE_HEADLINE = 'Request a quote';
 
 /** The line under it. Keep it short: it sits in a mono caps slot. */
 export const PRICE_CADENCE_ONCE = 'Quoted privately · One time';
@@ -27,7 +27,7 @@ export const PRICE_CADENCE_MONTHLY = 'Quoted privately · Monthly';
 
 /** The sentence for body copy, where there is room for the whole promise. */
 export const PRICE_SENTENCE =
-  'Scoped in one conversation and quoted privately as a set package price, agreed in writing before work starts.';
+  'Tell us what you need. We quote your project in the conversation and agree the scope and price before work starts.';
 
 /** Cadence helper for tier cards that carry a `cadence` field. */
 export function priceCadence(cadence?: string): string {

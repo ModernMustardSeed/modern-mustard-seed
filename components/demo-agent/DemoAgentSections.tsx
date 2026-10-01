@@ -6,8 +6,8 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { DEMO_AGENT, demoAgentBoundaries, demoAgentFaq } from '@/data/demo-agent';
-import { chiefTiers, chiefUsd } from '@/data/chief';
-import { DEMO_PRODUCTS, formatUsd } from '@/lib/demo-order';
+
+
 
 export function HowItWorks() {
   const steps = [
@@ -62,7 +62,6 @@ export function HowItWorks() {
  * a home, which is The Talking Website. That is what this beat sells now.
  */
 export function GiveHimAHome() {
-  const site = DEMO_PRODUCTS.site;
   return (
     <section className="py-16 md:py-24" aria-labelledby="home-heading">
       <div className="max-w-5xl mx-auto px-5">
@@ -82,7 +81,7 @@ export function GiveHimAHome() {
             className="group flex flex-col rounded-2xl border-2 border-[#161616] bg-white p-6 shadow-[5px_5px_0_0_#161616] hover:-translate-y-1 hover:shadow-[7px_7px_0_0_#F5B700] transition-all"
           >
             <span className="text-2xl leading-none" aria-hidden="true">🌐</span>
-            <span className="font-mono text-[9px] uppercase tracking-[0.2em] font-bold text-[#C4160B] mt-2.5">From {formatUsd(site.monthlyCents)}/mo</span>
+            <span className="font-mono text-[9px] uppercase tracking-[0.2em] font-bold text-[#C4160B] mt-2.5">Request a quote</span>
             <h3 className="font-display italic font-black text-xl text-[#161616] mt-1">A Website That Works</h3>
             <p className="font-body text-[13px] text-[#161616]/70 mt-2 leading-relaxed flex-1">Designed from scratch for your trade and your town, built to capture the lead your Voice Agent then answers.</p>
             <span className="font-sans font-bold text-[11px] uppercase tracking-[0.14em] text-[#161616] mt-4 inline-flex items-center gap-1.5">See it <span className="group-hover:translate-x-1 transition-transform" aria-hidden="true">&rarr;</span></span>
@@ -214,7 +213,7 @@ export function CrossSell() {
             <p className="font-body text-sm text-[#161616]/80 mt-2.5 leading-relaxed max-w-2xl">
               Meet his big brother: a personal agentic chief of staff who runs your calendar, drafts your email, makes your
               calls, preps your pitches, and wakes you with a verse. Call, text, or type to him any hour. From $
-              {chiefUsd(chiefTiers[0].monthlyCents)}/mo, a fraction of a human assistant.
+              scoped and quoted for your business.
             </p>
           </div>
           <Link

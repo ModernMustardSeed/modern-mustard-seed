@@ -71,7 +71,7 @@ export default async function OpengraphImage() {
             </div>
           </div>
           <span style={{ fontSize: 26, color: '#4a4a4a', marginTop: 28 }}>
-            Paste your list. Free typeset proof. Print-ready file, $97.
+            Paste your list. Free typeset proof. Print-ready file, quoted for you.
           </span>
           <span style={{ fontSize: 22, color: INK, fontWeight: 700, marginTop: 18, letterSpacing: 1 }}>
             modernmustardseed.com/press

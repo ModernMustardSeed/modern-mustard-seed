@@ -17,7 +17,7 @@ import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 
-import { DEMO_AGENT, demoAgentTiers, demoAgentUsd } from '@/data/demo-agent';
+import { DEMO_AGENT, demoAgentTiers } from '@/data/demo-agent';
 import { DEMO_PRODUCTS, DEMO_BUNDLE } from '@/lib/demo-order';
 import { picturesTiers } from '@/data/pictures';
 import { broadcastTiers, broadcastEntry } from '@/data/ads';
@@ -29,9 +29,7 @@ import { hatcheryTiers } from '@/data/hatchery';
 import { mustardLevels } from '@/data/mustard-mode/offer';
 import { products } from '@/data/products';
 
-const INK = '#0b3b44';
 const GOLD = '#f5b700';
-const usd = (cents: number) => `$${demoAgentUsd(cents)}`;
 
 /* ------------------------------------------------------------------ */
 /* Derived prices. The law: never type a price, always derive it.      */
@@ -318,7 +316,7 @@ export default function MustardLifeComic() {
                   Mr. Mustard, Editor-in-Chief (Unpaid)
                 </p>
                 <p className="mt-1 font-body text-[12px] text-[#5c554a]">
-                  Reader discretion advised: contains real prices.
+                  Every service is quoted for your business.
                 </p>
               </div>
             </div>
@@ -331,11 +329,11 @@ export default function MustardLifeComic() {
                 </div>
                 <ul className="divide-y divide-dashed divide-[#0b3b44]/20 px-6 py-2">
                   {[
-                    { p: '04', label: 'The Voice Agent Build', note: `voice agent, from ${usd(P.voiceAgent.setupCents)} + ${usd(P.voiceAgent.monthlyCents)}/mo`, href: '#voice-agent' },
-                    { p: '06', label: 'Websites and The Talking Website', note: `from ${usd(P.site.setupCents)} + ${usd(P.site.monthlyCents)}/mo`, href: '#websites' },
-                    { p: '10', label: 'Pictures and Broadcast', note: `commercials from $${P.justCommercial.priceUsd}, managed ads from ${usd(P.onAir.setupCents)}`, href: '#pictures' },
-                    { p: '12', label: 'Launch and the GEO Desk', note: `from $${P.launchKit.priceUsd}`, href: '#launch' },
-                    { p: '14', label: 'The Switchboard', note: `franchises, from $${P.switchBest.perLocationUsd}/location`, href: '#switchboard' },
+                    { p: '04', label: 'The Voice Agent Build', note: 'voice agents, quoted for your business', href: '#voice-agent' },
+                    { p: '06', label: 'Websites and The Talking Website', note: 'websites, quoted for your business', href: '#websites' },
+                    { p: '10', label: 'Pictures and Broadcast', note: 'commercials and managed ads, quoted for you', href: '#pictures' },
+                    { p: '12', label: 'Launch and the GEO Desk', note: 'launch and GEO services, quoted for you', href: '#launch' },
+                    { p: '14', label: 'The Switchboard', note: 'franchise rollouts, quoted for your locations', href: '#switchboard' },
                     { p: '16', label: 'Night School and the Store', note: `courses from $${P.storeFrom}`, href: '#night-school' },
                     { p: '18', label: 'The Custom Shop', note: 'sites, stores, apps, whole systems', href: '#builds' },
                     { p: '20', label: 'The Free Classifieds', note: 'everything on this page costs nothing', href: '#classifieds' },
@@ -397,12 +395,12 @@ export default function MustardLifeComic() {
             <div className="space-y-4">
               <PriceTag
                 name={P.voiceAgent.name}
-                price={`${usd(P.voiceAgent.setupCents)} + ${usd(P.voiceAgent.monthlyCents)}/mo`}
+                price="Request a quote"
                 note={`${P.voiceAgent.minutesCap.toLocaleString()} answered minutes a month. At the cap he takes messages only. Never a surprise bill.`}
               />
               <PriceTag
                 name={P.demoAgentPro.name}
-                price={`${usd(P.demoAgentPro.setupCents)} + ${usd(P.demoAgentPro.monthlyCents)}/mo`}
+                price="Request a quote"
                 note={`${P.demoAgentPro.minutesCap.toLocaleString()} minutes, caller memory, real calendar booking, a monthly retrain call with Sarah.`}
                 featured
                 delay={120}
@@ -439,7 +437,7 @@ export default function MustardLifeComic() {
               </p>
               <PriceTag
                 name={P.site.name}
-                price={`${usd(P.site.setupCents)} + ${usd(P.site.monthlyCents)}/mo`}
+                price="Request a quote"
                 note={P.site.finePrint}
                 delay={220}
               />
@@ -488,7 +486,7 @@ export default function MustardLifeComic() {
               </p>
               <PriceTag
                 name={P.bundle.name}
-                price={`${usd(P.bundle.setupCents)} + ${usd(P.bundle.monthlyCents)}/mo`}
+                price="Request a quote"
                 note={P.bundle.blurb}
                 featured
                 delay={120}
@@ -559,8 +557,8 @@ export default function MustardLifeComic() {
                 head: 'Every launch needs witnesses.',
                 sub: 'Mustard Launch is your agentic launch coach. Type the idea, get the whole plan, count down to open. The Blueprint is free.',
                 tags: [
-                  { name: P.launchKit.name, price: `$${P.launchKit.priceUsd}` },
-                  { name: P.launchRoom.name, price: `$${P.launchRoom.priceUsd}/mo` },
+                  { name: P.launchKit.name, price: 'Request a quote' },
+                  { name: P.launchRoom.name, price: 'Request a quote' },
                 ],
                 cta: { label: 'Free Blueprint', href: '/mustard-launch' },
               },
@@ -570,8 +568,8 @@ export default function MustardLifeComic() {
                 head: 'Can the AIs find you?',
                 sub: 'When people ask ChatGPT who to hire, the GEO Desk makes sure the answer is you. Your findability grade is free.',
                 tags: [
-                  { name: P.fixPack.name, price: `$${P.fixPack.priceUsd}` },
-                  { name: P.watch.name, price: `from $${P.watch.priceUsd}/mo` },
+                  { name: P.fixPack.name, price: 'Request a quote' },
+                  { name: P.watch.name, price: 'Request a quote' },
                 ],
                 cta: { label: 'Free Answer Engine Grade', href: '/website-audit' },
               },
@@ -612,7 +610,7 @@ export default function MustardLifeComic() {
               </p>
               <PriceTag
                 name="The Switchboard"
-                price={`$${P.switchBest.perLocationUsd} to $${P.switchTop.perLocationUsd}/location/mo`}
+                price="Request a quote"
                 note={`Volume pricing by location count, plus a one-time $${P.buildFee.toLocaleString('en-US')} build. Call the demo line on the page first.`}
                 featured
                 delay={240}
@@ -698,7 +696,7 @@ export default function MustardLifeComic() {
                 Custom websites, stores, apps, and whole business systems, shipped in weeks, not months. A Seed
                 Site goes live in about a week. A Full-Service Business Build runs the whole operation. Every
                 engagement gets a fixed quote after a free 30-minute call, and every setup fee in this magazine
-                credits toward any build over $2,500.
+                can be discussed as credit toward your build.
               </p>
               <PriceTag name="Every Custom Build" price="Fixed quote" note="Priced after a free discovery call. Fixed scope, fixed timeline, no hourly meter, you own the code." featured delay={140} />
               <div className="mlc-pop flex flex-wrap gap-3 pt-1" style={{ transitionDelay: '240ms' }}>

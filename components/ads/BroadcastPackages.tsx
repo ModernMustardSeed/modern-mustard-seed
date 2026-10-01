@@ -1,46 +1,14 @@
 'use client';
 
-/**
- * The two managed packages + the DIY rung. Amounts render from data/ads.ts
- * (the same cents the checkout charges). Checkout POSTs to /api/ads/checkout
- * and redirects to Stripe; the business name is collected at checkout.
- */
+/** Managed packages are scoped and quoted before work begins. */
 
-import { useState } from 'react';
 import Link from 'next/link';
 import Reveal from '@/components/mustard-mode/Reveal';
-import { broadcastTiers, broadcastEntry, type BroadcastTier } from '@/data/ads';
+import { broadcastTiers, broadcastEntry } from '@/data/ads';
 import { PRICE_HEADLINE } from '@/lib/public-pricing';
 
-function usd(cents: number) {
-  return `$${(cents / 100).toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
-}
 
 export default function BroadcastPackages() {
-  const [busy, setBusy] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  const checkout = async (tier: BroadcastTier) => {
-    setBusy(tier.slug);
-    setError(null);
-    try {
-      const res = await fetch('/api/ads/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tier: tier.slug }),
-      });
-      const data = (await res.json()) as { url?: string; message?: string };
-      if (res.ok && data.url) {
-        window.location.href = data.url;
-        return;
-      }
-      setError(data.message || 'Checkout hiccuped. Try again in a minute or email sarah@modernmustardseed.com.');
-    } catch {
-      setError('Checkout hiccuped. Try again in a minute or email sarah@modernmustardseed.com.');
-    }
-    setBusy(null);
-  };
-
   return (
     <section id="packages" className="py-16 md:py-24 bg-[#fbf5ea] border-b-2 border-[#0b3b44]">
       <div className="max-w-6xl mx-auto px-5">
@@ -79,9 +47,8 @@ export default function BroadcastPackages() {
                 <p className="font-body text-[#0b3b44]/75 mt-2">{tier.pitch}</p>
 
                 <div className="flex items-end gap-3 mt-5 pb-5 border-b-2 border-dashed border-[#0b3b44]/25">
-                  <p className="font-display text-5xl font-black text-[#0b3b44] leading-none">
+                  <p className="font-display text-2xl font-black text-[#0b3b44] leading-none">
                     {PRICE_HEADLINE}
-                    <span className="font-sans text-base font-bold text-[#0b3b44]/60">/mo</span>
                   </p>
                   <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-[#0b3b44]/60 pb-1">
                     Quoted privately, before anything runs
@@ -97,18 +64,16 @@ export default function BroadcastPackages() {
                   ))}
                 </ul>
 
-                <button
-                  type="button"
-                  onClick={() => checkout(tier)}
-                  disabled={busy !== null}
+                <Link
+                  href={`/inquire?kind=marketing&package=${tier.slug}`}
                   className={`mt-auto rounded-full border-2 border-[#0b3b44] px-8 py-3.5 font-sans font-extrabold text-sm uppercase tracking-[0.16em] transition-all hover:-translate-y-0.5 disabled:opacity-60 disabled:hover:translate-y-0 ${
                     tier.featured
                       ? 'bg-[#0b3b44] text-[#fbf5ea] shadow-[4px_4px_0_0_#fbf5ea]'
                       : 'bg-[#f5b700] text-[#0b3b44] shadow-[4px_4px_0_0_#0b3b44]'
                   }`}
                 >
-                  {busy === tier.slug ? 'Opening Checkout…' : tier.cta}
-                </button>
+                  Request a quote
+                </Link>
                 <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-[#0b3b44]/55 text-center mt-3">
                   Manages up to ${tier.spendCapUsd.toLocaleString()}/mo ad spend · Cancel anytime
                 </p>
@@ -116,12 +81,6 @@ export default function BroadcastPackages() {
             </Reveal>
           ))}
         </div>
-
-        {error && (
-          <p role="alert" className="text-center font-body text-sm text-[#b3261e] font-bold mt-6">
-            {error}
-          </p>
-        )}
 
         {/* The DIY rung */}
         <Reveal variant="rise" delay={200}>

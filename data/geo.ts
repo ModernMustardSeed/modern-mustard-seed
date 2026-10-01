@@ -141,7 +141,7 @@ export function getGeoTier(slug: string): GeoTier | undefined {
 
 export const geoFaqAdditions = [
   {
-    q: 'What exactly is in the $297 Fix Pack?',
+    q: 'What exactly is in the Fix Pack?',
     a: 'The GEO signals your audit flagged as missing, written specifically for your business from your actual site content: llms.txt, .well-known/ai.txt, LocalBusiness and FAQ structured data (JSON-LD), meta title and description rewrites, and a citable FAQ block, plus a step-by-step install guide matched to your platform. You paste, you re-scan (three re-scans included), you watch the grade climb.',
   },
   {

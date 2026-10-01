@@ -18,7 +18,7 @@ export const HATCHERY = {
   by: 'by Modern Mustard Seed',
   metaTitle: 'Custom Mascot Design for Your Business, Born in One Day',
   metaDescription:
-    'Modern Mustard Seed births your business its official mascot: a name, a story, a face, a voice, and their own phone number, unveiled on a public Birth Day. $497, one time.',
+    'Modern Mustard Seed births your business its official mascot: a name, a story, a face, a voice, and their own phone number, unveiled on a public Birth Day. Scoped and quoted in the conversation.',
   promise:
     'Your shop has a name, a menu, and a phone number. Now it gets a someone. We write their story, draw their face, give them a voice, and throw them a birthday in front of everyone you know.',
   // The candlelight, ceremony-first voice line.
@@ -126,7 +126,7 @@ export const hatcheryFaq: { q: string; a: string }[] = [
   },
   {
     q: 'How much is it, and is that all?',
-    a: `${'$'}${HATCH.priceUsd} to hatch your mascot, one time. That is the whole price and it does not climb. You approve the direction before any art is made, so nothing is drawn until you love it. If you later want your mascot to keep drawing, filming, and answering, two optional monthly plans keep them going, and you can stop anytime.`,
+    a: 'We quote your mascot in the conversation, including the art, voice and any ongoing work you want. You approve the direction and agree the price before anything is made.',
   },
   {
     q: 'What do I actually get, and when?',

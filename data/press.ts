@@ -22,7 +22,7 @@ export const PRESS = {
     'Paste your price list, menu, or rate sheet exactly as it is, typos and all. Mr. Mustard sets the type before your eyes and hands you a print-ready proof. Free. If you love it, the clean file is yours in one click.',
   metaTitle: 'Menu and Price List Design, Typeset Free in 60 Seconds',
   metaDescription:
-    'Paste your price list and get a print-ready menu, rate sheet, or price card typeset on the spot, free watermarked proof included. The clean 300dpi file is $97, instant. By Modern Mustard Seed.',
+    'Paste your price list and get a print-ready menu, rate sheet, or price card typeset on the spot, free watermarked proof included. Request a quote for the clean print-ready file. By Modern Mustard Seed.',
   weeklyHandPressSlots: 5,
 } as const;
 
@@ -107,7 +107,7 @@ export const pressFaq = [
     a: 'Yes, by design. Your prices are parsed into a table you can review and edit before anything is final; the type is set from that table, never retyped or rounded. If you can read it on the preview, that is exactly what prints.',
   },
   {
-    q: 'What do I get for $97?',
+    q: 'What does the finished file include?',
     a: 'The exact page you approved with the watermark lifted: a clean US Letter PDF with crisp vector type, downloadable the moment you pay and emailed to you as a backup. Take it to any print shop or run it on the office printer.',
   },
   {

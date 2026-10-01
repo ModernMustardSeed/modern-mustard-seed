@@ -2,7 +2,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import { FILMS } from '@/lib/films';
 import { buildMetadata } from '@/lib/seo';
-import { HUNDREDFOLD, money } from '@/lib/hundredfold';
+
 import PopPageHero from '@/components/pop/PopPageHero';
 
 export const metadata: Metadata = buildMetadata({
@@ -95,7 +95,7 @@ export default function HundredfoldWebinarPage() {
             </Link>
           </div>
           <p className="mt-5 text-center font-mono text-[10px] uppercase tracking-[0.28em] text-[#fbf5ea]/70">
-            {money(HUNDREDFOLD.setupCents)} to start, then {money(HUNDREDFOLD.monthlyCents)} a month · The
+            Quoted in the conversation · The
             interview is free either way
           </p>
         </div>

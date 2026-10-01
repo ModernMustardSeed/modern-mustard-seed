@@ -8,7 +8,7 @@ import { consentVersion, CURRENT_CONSENT } from '@/lib/acq/consent';
 import { recordEventOnce } from '@/lib/acq/events';
 import { classifyHit, verdictDetail } from '@/lib/acq/bots';
 import { buildMetadata, SITE } from '@/lib/seo';
-import { DEMO_PRODUCTS, DEMO_BUNDLE, formatUsd } from '@/lib/demo-order';
+import { DEMO_PRODUCTS, DEMO_BUNDLE } from '@/lib/demo-order';
 import { CALL_STATS } from '@/data/proof-stats';
 import MissedMoney from '@/components/mustard/MissedMoney';
 import Link from 'next/link';
@@ -541,13 +541,10 @@ export default async function MustardPage({
                   so the answer somebody reads at noon is the answer they hear at midnight.
                 </p>
                 <p className="mt-5 inline-block rounded-lg border-2 border-[#0b3b44] bg-[#fbf5ea] px-4 py-2 font-mono text-[15px] font-bold tracking-wide">
-                  From {formatUsd(DEMO_BUNDLE.setupCents)} to build, then {formatUsd(DEMO_BUNDLE.monthlyCents)} a month
+                  Quoted for your business
                 </p>
                 <p className="mt-4 text-[14px] leading-relaxed text-[#0b3b44]/75">
-                  Bought apart, the website is {formatUsd(DEMO_PRODUCTS.site.setupCents)} and{' '}
-                  {formatUsd(DEMO_PRODUCTS.site.monthlyCents)} a month and the voice agent is{' '}
-                  {formatUsd(DEMO_PRODUCTS.voice.setupCents)} and {formatUsd(DEMO_PRODUCTS.voice.monthlyCents)} a
-                  month. Together they cost less and behave like one thing.
+                  The website and voice agent share one set of business facts. We quote the combined scope with you before work starts.
                 </p>
               </div>
             </div>
@@ -561,7 +558,7 @@ export default async function MustardPage({
                   <h3 className="mt-2 font-display text-[1.5rem] font-extrabold leading-tight tracking-tight">{p.name}</h3>
                   <p className="mt-2 text-[14.5px] leading-relaxed text-[#0b3b44]/70">{p.blurb}</p>
                   <p className="mt-3 font-mono text-[13.5px] font-bold">
-                    {formatUsd(p.setupCents)} to build, {formatUsd(p.monthlyCents)} a month
+                    Quoted for your business
                   </p>
                 </div>
               ))}
@@ -595,7 +592,7 @@ export default async function MustardPage({
           */}
           <div id="calculator" className="mt-14 grid scroll-mt-24 gap-6 lg:grid-cols-[1fr_1.05fr] lg:items-start">
             <MissedMoney
-              monthlyPrice={formatUsd(DEMO_BUNDLE.monthlyCents)}
+
               missedPreset={machine.missed}
               closePreset={machine.close}
               ticketPreset={machine.ticket}

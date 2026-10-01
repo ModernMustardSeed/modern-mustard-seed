@@ -48,7 +48,7 @@ export const money = (cents: number): string =>
 
 /** Reads as "$5,000 to start, then $2,500 a month". Used everywhere the price is said. */
 export const priceSentence = (): string =>
-  `${money(HUNDREDFOLD.setupCents)} to start, then ${money(HUNDREDFOLD.monthlyCents)} a month`;
+  'Scoped and quoted in the conversation';
 
 export const firstYearCents = (): number =>
   HUNDREDFOLD.setupCents + HUNDREDFOLD.monthlyCents * HUNDREDFOLD.termMonths;
@@ -165,17 +165,17 @@ export const STACK: { item: string; valueCents: number; why: string }[] = [
   {
     item: 'Custom agents and automations, built one window at a time',
     valueCents: 2_400_000,
-    why: 'Bespoke build work at this studio runs $2,500 to $45,000 per system.',
+    why: 'Bespoke build work is scoped and quoted for each business.',
   },
   {
     item: 'Your own coach, in your context, every hour of every day',
     valueCents: 1_800_000,
-    why: 'Studio time is $225 an hour. This is the answer at 11pm on a Sunday, as often as you need it.',
+    why: 'We agree the scope and price before work starts. This is the answer at 11pm on a Sunday, as often as you need it.',
   },
   {
     item: 'A voice agent answering your calls and a site that answers for you',
     valueCents: 596_400,
-    why: 'The Talking Website is $497 to start plus $397 a month on its own.',
+    why: 'The Talking Website is quoted for your business.',
   },
   {
     item: 'Your Command Center: live roadmap, gates, scoreboard, build queue',
@@ -260,4 +260,4 @@ export type SystemStatus = (typeof SYSTEM_STATUSES)[number];
  * months, so the two numbers on the page compare like for like.
  */
 export const firstYearPriceSentence = (): string =>
-  `${money(HUNDREDFOLD.setupCents)} to start, then ${money(HUNDREDFOLD.monthlyCents)} a month, month to month`;
+  'Scoped and quoted in the conversation, with terms agreed before work starts';

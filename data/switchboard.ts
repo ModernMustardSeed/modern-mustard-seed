@@ -87,7 +87,7 @@ export const howItWorks: { step: string; body: string }[] = [
 export const faq: { q: string; a: string }[] = [
   {
     q: 'How is this priced?',
-    a: 'Per location, discounted the more locations you have: $349 each for 1 to 5, $299 for 6 to 20, $249 for 21 to 50, and $199 each at 51+. Plus a one-time $3,500 franchise build that covers the brand voice template, the master Command Board, and the rollout. You see your exact number before you commit.',
+    a: 'We quote your rollout in the conversation based on your locations, call volume, brand voice and integrations. You see the scope and exact price before you commit.',
   },
   {
     q: 'Is the concierge a person?',

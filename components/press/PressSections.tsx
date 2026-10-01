@@ -22,7 +22,7 @@ export function HowThePressWorks() {
     {
       n: '03',
       title: 'Print it anywhere',
-      body: 'The proof is free and yours. The clean print-ready file is $97 and downloads the instant you pay: local print shop, office printer, or online printer.',
+      body: 'The proof is free and yours. We quote the clean print-ready file in the conversation, ready for your local print shop, office printer or online printer.',
     },
   ];
   return (
@@ -110,7 +110,7 @@ export function PressCrossSell() {
           <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#0a7c78] font-bold">Same studio, moving pictures</p>
           <h3 className="font-display text-xl font-black text-[#0b3b44] mt-1.5">Your menu deserves a trailer too</h3>
           <p className="font-body text-sm text-[#0b3b44]/70 mt-2 leading-relaxed">
-            MUSTARD PICTURES storyboards a commercial for your business on the spot, free, and films it for $197.
+            MUSTARD PICTURES storyboards a commercial for your business on the spot, free, and quotes the finished film with you.
           </p>
           <Link href="/pictures" className="inline-block mt-4 font-sans font-extrabold text-xs uppercase tracking-[0.18em] text-[#0a7c78] underline underline-offset-4">
             Take the free Screen Test →

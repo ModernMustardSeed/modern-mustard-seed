@@ -1,6 +1,6 @@
 import { buildMetadata, SITE } from '@/lib/seo';
 import DemoStation from '@/components/DemoStation';
-import { DEMO_PRODUCTS, formatUsd } from '@/lib/demo-order';
+import { DEMO_PRODUCTS } from '@/lib/demo-order';
 import { PREVIEW } from '@/data/preview-promise';
 
 /**
@@ -23,7 +23,7 @@ export const metadata = buildMetadata({
 const FAQ = [
   {
     q: 'Is it really free?',
-    a: 'Yes. The preview and the audit cost you nothing, and there is no card and no meeting. We build them because the work sells itself; keep the website from $147 a month, or walk away.',
+    a: 'Yes. The preview and the audit cost you nothing, and there is no card and no meeting. We build them because the work sells itself; we quote the website in the conversation, or you can walk away.',
   },
   {
     q: 'What exactly do I get?',
@@ -48,7 +48,7 @@ const PIECES = [
     icon: '🌐',
     title: 'Your Website Preview',
     desc: 'Sketched from scratch for your trade, your town, your phone number. A working preview of what yours could become. The real one is made bespoke.',
-    pill: `Free · keep from ${formatUsd(DEMO_PRODUCTS.site.monthlyCents)}/mo`,
+    pill: 'Free preview · quoted to make it yours',
     tone: 'gold' as const,
   },
   {
@@ -84,29 +84,11 @@ function demosJsonLd() {
   // Two, not three: the command center is not one of the demos we build, so it
   // is not one of the offers this page advertises (Sarah, 2026-08-25).
   const products = [DEMO_PRODUCTS.site];
-  const offer = (name: string, monthlyCents: number, setupCents: number, desc: string) => ({
+  const offer = (name: string, desc: string) => ({
     '@type': 'Offer' as const,
     name,
-    description: desc,
-    price: Math.round(monthlyCents / 100),
-    priceCurrency: 'USD',
-    priceSpecification: [
-      {
-        '@type': 'UnitPriceSpecification',
-        price: Math.round(monthlyCents / 100),
-        priceCurrency: 'USD',
-        billingIncrement: 1,
-        unitText: 'MONTH',
-      },
-      {
-        '@type': 'UnitPriceSpecification',
-        priceType: 'https://schema.org/Installment',
-        price: Math.round(setupCents / 100),
-        priceCurrency: 'USD',
-        description: 'One-time setup',
-      },
-    ],
-    url: `${SITE.url}/demos`,
+    description: `${desc} Scope and price are agreed in the conversation.`,
+    url: `${SITE.url}/inquire`,
     availability: 'https://schema.org/InStock',
   });
 
@@ -125,8 +107,6 @@ function demosJsonLd() {
           ...products.map((p) =>
             offer(
               p.name,
-              p.monthlyCents,
-              p.setupCents,
               p.blurb,
             ),
           ),
@@ -202,7 +182,7 @@ export default function DemosPage() {
                 {[
                   'No card. No meeting. No sales call to sit through.',
                   'Your preview and your audit are with you within 24 hours.',
-                  `Keep what you love from ${formatUsd(DEMO_PRODUCTS.site.monthlyCents)}/mo. Or keep nothing.`,
+                  'Keep what you love, quoted for your business. Or keep nothing.',
                 ].map((t) => (
                   <li key={t} className="flex items-start gap-2.5 font-body text-[15px] text-[#0b3b44]/80">
                     <span
@@ -337,7 +317,7 @@ export default function DemosPage() {
               {
                 n: '3',
                 t: 'Keep what you love',
-                d: `Keep the website at your hub from ${formatUsd(DEMO_PRODUCTS.site.monthlyCents)}/mo, live within 7 days, or work with us on the bespoke one.`,
+                d: 'We quote the website at your hub in the conversation, or work with us on a bespoke one.',
               },
             ].map((s) => (
               <div key={s.n} className="flex gap-4 sm:block">

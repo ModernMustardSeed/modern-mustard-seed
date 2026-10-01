@@ -19,7 +19,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import type Vapi from '@vapi-ai/web';
 import { trackEvent } from '@/lib/analytics';
-import { DEMO_AGENT, demoAgentVerticals, demoAgentTiers, getVertical, buildScript, demoAgentUsd } from '@/data/demo-agent';
+import { DEMO_AGENT, demoAgentVerticals, demoAgentTiers, getVertical, buildScript } from '@/data/demo-agent';
 import { demoVoice, genderFromVoiceId, type VoiceGender } from '@/lib/demo-voice';
 import VoiceGenderToggle from '@/components/demo-agent/VoiceGenderToggle';
 import { possessive } from '@/lib/business-name';
@@ -536,33 +536,8 @@ export default function BuildExperience() {
   );
 }
 
-function PricingCard({ tier, business, runId }: { tier: (typeof demoAgentTiers)[number]; business?: string; runId?: string }) {
-  const [busy, setBusy] = useState(false);
-  const [msg, setMsg] = useState<string | null>(null);
+function PricingCard({ tier }: { tier: (typeof demoAgentTiers)[number]; business?: string; runId?: string }) {
 
-  const buy = async () => {
-    if (busy) return;
-    setBusy(true);
-    setMsg(null);
-    trackEvent('demo_agent_checkout_click', { tier: tier.slug });
-    try {
-      const res = await fetch('/api/demo-agent/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tier: tier.slug, business, runId }),
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok || !data?.url) {
-        setMsg(data?.message || 'Checkout hiccuped. Try again or email sarah@modernmustardseed.com.');
-        setBusy(false);
-        return;
-      }
-      window.location.href = data.url as string;
-    } catch {
-      setMsg('Checkout hiccuped. Try again or email sarah@modernmustardseed.com.');
-      setBusy(false);
-    }
-  };
 
   return (
     <div className={`relative rounded-2xl border-2 border-[#161616] bg-white p-7 shadow-[6px_6px_0_0_#161616] flex flex-col ${tier.featured ? 'md:-translate-y-2' : ''}`}>
@@ -574,8 +549,8 @@ function PricingCard({ tier, business, runId }: { tier: (typeof demoAgentTiers)[
       <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#C4160B] font-bold">{tier.chip}</p>
       <h3 className="font-display text-2xl font-black text-[#161616] mt-1.5">{tier.name}</h3>
       <p className="mt-3">
-        <span className="font-display text-4xl font-black text-[#161616]">${demoAgentUsd(tier.monthlyCents)}</span>
-        <span className="font-body text-sm text-[#161616]/60">/mo + ${demoAgentUsd(tier.setupCents)} setup</span>
+        <span className="font-display text-2xl font-black text-[#161616]">Request a quote</span>
+        <span className="font-body text-sm text-[#161616]/60">Quoted in the conversation</span>
       </p>
       <p className="font-body text-sm text-[#161616]/70 mt-2 leading-relaxed">{tier.pitch}</p>
       <ul className="mt-5 space-y-2.5 flex-1">
@@ -586,17 +561,14 @@ function PricingCard({ tier, business, runId }: { tier: (typeof demoAgentTiers)[
           </li>
         ))}
       </ul>
-      <button
-        type="button"
-        onClick={buy}
-        disabled={busy}
+      <Link
+        href={`/inquire?kind=voice-agent&package=${tier.slug}`}
         className={`mt-6 w-full rounded-full border-2 border-[#161616] px-6 py-3.5 font-sans font-extrabold text-xs uppercase tracking-[0.18em] shadow-[4px_4px_0_0_#161616] transition-all hover:-translate-y-0.5 hover:shadow-[5px_5px_0_0_#161616] disabled:opacity-60 ${
           tier.featured ? 'bg-[#F5B700] text-[#161616]' : 'bg-white text-[#161616]'
         }`}
       >
-        {busy ? 'Opening checkout…' : tier.cta}
-      </button>
-      {msg && <p className="mt-3 text-[#C4160B] text-xs font-body font-semibold">{msg}</p>}
+        Request a quote
+      </Link>
     </div>
   );
 }

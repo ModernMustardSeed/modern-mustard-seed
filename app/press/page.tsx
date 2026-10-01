@@ -31,8 +31,6 @@ export default function PressPage() {
         offers: pressTiers.map((t) => ({
           '@type': 'Offer',
           name: `MUSTARD PRESS ${t.name}`,
-          price: t.priceUsd,
-          priceCurrency: 'USD',
           url: `${SITE.url}/press#roll`,
           availability: 'https://schema.org/InStock',
         })),
@@ -43,7 +41,7 @@ export default function PressPage() {
         step: [
           { '@type': 'HowToStep', name: 'Paste your list', text: 'Your menu, rate sheet, or price list exactly as it is; messy is fine.' },
           { '@type': 'HowToStep', name: 'Review the typeset proof', text: 'Every price parsed exactly as written into a print-quality layout, with an editable review table before anything is final.' },
-          { '@type': 'HowToStep', name: 'Lift the watermark', text: 'The clean print-ready US Letter PDF is $97 and downloads instantly, with full commercial rights.' },
+          { '@type': 'HowToStep', name: 'Lift the watermark', text: 'Request a quote for the clean print-ready US Letter PDF, with full commercial rights.' },
         ],
       },
       {

@@ -1,7 +1,7 @@
 import Link from '@/components/AttributionLink';
 import { buildMetadata } from '@/lib/seo';
 import { JsonLd, breadcrumbJsonLd, faqJsonLd, serviceJsonLd, webPageJsonLd } from '@/lib/jsonld';
-import { DEMO_PRODUCTS, formatUsd } from '@/lib/demo-order';
+
 import { DEMO_LINE, liveTradePages } from '@/data/trade-pages';
 import PopPageHero, { pop } from '@/components/pop/PopPageHero';
 
@@ -21,7 +21,6 @@ export const metadata = buildMetadata({
   path: '/ai',
 });
 
-const voice = DEMO_PRODUCTS.voice;
 
 const builds = [
   {
@@ -73,11 +72,11 @@ const faq = [
   },
   {
     q: 'Can AI answer my business phone?',
-    a: `Yes. Our voice agents answer every call in a natural voice, book work on your calendar and take messages. Call the studio line at ${DEMO_LINE.display} and Mr. Mustard, our own AI receptionist, will answer. A standalone voice agent is ${formatUsd(voice.setupCents)} setup and ${formatUsd(voice.monthlyCents)} a month.`,
+    a: `Yes. Our voice agents answer every call in a natural voice, book work on your calendar and take messages. Call the studio line at ${DEMO_LINE.display} and Mr. Mustard, our own AI receptionist, will answer. Your voice agent is scoped and quoted in the conversation.`,
   },
   {
     q: 'What does AI for a small business cost?',
-    a: `Every engagement is a set package price, never an hourly bill. A voice agent is ${formatUsd(voice.setupCents)} setup and ${formatUsd(voice.monthlyCents)} a month, websites have three published sizes on the websites page, and custom AI systems are scoped to a set package price before any work starts.`,
+    a: `Every engagement is a set package price, never an hourly bill. Websites, voice agents and custom AI systems are quoted in the conversation, with the scope and price agreed before any work starts.`,
   },
   {
     q: 'Will AI replace my staff?',

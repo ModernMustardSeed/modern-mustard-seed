@@ -91,7 +91,7 @@ export const industries: Industry[] = [
         title: 'Agentic Virtual Staging',
         caseStudySlug: 'fiat-lux-design',
         body:
-          'Empty room photos in, fully designed staging out in under a minute. 34 design styles, 20 room types, instant download. Replaces a $3,000 traditional staging order with a subscription from $29 a month. Built for flippers who shoot listings on weekends and need to push to MLS by Monday.',
+          'Empty room photos in, fully designed staging out in under a minute. 34 design styles, 20 room types, instant download. Replaces a $3,000 traditional staging order with a studio plan quoted for your needs. Built for flippers who shoot listings on weekends and need to push to MLS by Monday.',
       },
       {
         title: 'FSBO Command Center',
@@ -183,7 +183,7 @@ export const industries: Industry[] = [
         title: 'Agentic Virtual Staging',
         caseStudySlug: 'fiat-lux-design',
         body:
-          'Empty listing photos in, fully designed staging in under a minute. 34 design styles, 20 room types. Replaces a $3,000 traditional staging order with a subscription from $29 a month. Agents use it on listings the seller will not pay to stage and on rentals where staging cost would never be recovered.',
+          'Empty listing photos in, fully designed staging in under a minute. 34 design styles, 20 room types. Replaces a $3,000 traditional staging order with a studio plan quoted for your needs. Agents use it on listings the seller will not pay to stage and on rentals where staging cost would never be recovered.',
       },
       {
         title: 'Listing Description Generator',
@@ -211,11 +211,11 @@ export const industries: Industry[] = [
       caseStudyTitle: 'Fiat Lux Design: An Interior Staging Studio That Keeps the Windows Real',
       headline: 'Virtual staging in seconds, with the real windows kept real',
       body:
-        'Fiat Lux Design is our staging studio for realtors. Paste a Zillow, Redfin or MLS link, or drop in a photo, pick one of 34 editorial styles, and the room comes back staged in seconds. Most virtual staging looks fake because the model repaints the view and warps the door frames. Fiat Lux traces the windows, doors and glass first and puts the original pixels back after staging, so what the buyer sees through the window is what they will see at the showing. Every room links out to shop the exact pieces, and the listing ships with a branded prospectus PDF, a video reel and a share page. Plans start at $29 a month and every plan is hard-capped. The same studio can carry your brokerage brand, or you can use ours and skip the build.',
+        'Fiat Lux Design is our staging studio for realtors. Paste a Zillow, Redfin or MLS link, or drop in a photo, pick one of 34 editorial styles, and the room comes back staged in seconds. Most virtual staging looks fake because the model repaints the view and warps the door frames. Fiat Lux traces the windows, doors and glass first and puts the original pixels back after staging, so what the buyer sees through the window is what they will see at the showing. Every room links out to shop the exact pieces, and the listing ships with a branded prospectus PDF, a video reel and a share page. Plans are quoted for your needs and every plan is hard-capped. The same studio can carry your brokerage brand, or you can use ours and skip the build.',
       metrics: [
         { label: 'Design styles', value: '34' },
         { label: 'Room types', value: '20' },
-        { label: 'Plans from', value: '$29/mo' },
+        { label: 'Your plan', value: 'Request a quote' },
       ],
     },
     pricing: {
