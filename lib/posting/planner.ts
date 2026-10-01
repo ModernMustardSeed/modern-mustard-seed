@@ -4,10 +4,9 @@
  * The edit is queued the moment a day is claimed, so the words are waiting
  * long before the hour. A submission that asked for a graphic is held until
  * a person attaches one; on an approve-first account every day is held
- * until the client taps Approve. Nothing is planned from a bank of stock
- * lines: when the next days run empty, refill.ts fills them from the
- * client's own project pages, so the feeds keep going with nobody pressing
- * anything.
+ * until the client taps Approve. Nothing is planned from a bank: an empty
+ * queue is an empty day. Posting is the client's choice, never a chore the
+ * screen asks of them.
  *
  * Each platform posts at its own hour (the feed's best hour, or the client's
  * choice). The row's publish_at is the earliest of them, so the hourly tick

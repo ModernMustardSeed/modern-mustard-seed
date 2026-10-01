@@ -27,7 +27,7 @@ export function clientGuide(s: SettingsRow): GuideSection[] {
     {
       title: 'What to send',
       lines: [
-        'You never have to send anything. When nothing is waiting, we post one of the homes from your own website, one a day, so your feeds never go quiet.',
+        'Nothing here is required. Send something whenever you want it said, and skip it when you do not.',
         'A line or a paragraph about anything real: a job that framed up, a crew that beat the weather, a question a client asked, a thank you, a thing you are proud of.',
         'A photo if you have one. Phone photos are fine; they are sized for the feeds on the way up.',
         'A graphic, if you have one. Or tick the box and tell us what you picture, and we make it before the post goes.',

@@ -102,7 +102,7 @@ export default function Marketing({ session, refreshPulse }: { session: Session;
   };
 
   if (data && !data.settings) {
-    return <Card><Empty title="Your posts are on their way" note="Your calendar is being filled from the homes on your website. There is nothing for you to do here." /></Card>;
+    return <Card><Empty title="Marketing is ready when you are" note="Post whenever you like. Nothing here is required of you." /></Card>;
   }
 
   const today = data?.today ?? '';
@@ -155,7 +155,7 @@ export default function Marketing({ session, refreshPulse }: { session: Session;
         </div>
 
         <Card className="lg:col-span-2">
-          <CardHead title="Where it goes" hint="Every post is written and sent for you. Nothing here needs you." />
+          <CardHead title="Where it goes" hint="Connected feeds post themselves. We post the rest for you." />
           {!data ? (
             <Skeleton rows={4} />
           ) : (
@@ -214,7 +214,7 @@ export default function Marketing({ session, refreshPulse }: { session: Session;
           ) : !data ? (
             <Skeleton rows={4} />
           ) : upcoming.length === 0 ? (
-            <Empty title="Tomorrow's post is being written" note="When nothing is waiting, we post a home from your website, one a day. Anything you write above takes the next open day." />
+            <Empty title="Nothing scheduled" note="Whenever you want to, write a post above or pick a home from your website, and it takes the next open day. Nothing here is required." />
           ) : (
             <ul className="divide-y divide-[var(--cc-line)]">
               {upcoming.slice(0, 8).map((p) => (
