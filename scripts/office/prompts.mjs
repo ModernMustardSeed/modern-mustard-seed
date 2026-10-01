@@ -31,6 +31,24 @@ ${settings.autoShip ? '- Production merges are pre-approved: Builder may merge t
 Everything else you do yourself, completely, without asking.`;
 }
 
+/** How the floor drives Sarah's Chrome, which it shares with the Rep's shifts. */
+export function browserRules(cli) {
+  const n = `node "${cli}"`;
+  return `SARAH'S CHROME (the Claude in Chrome tools, mcp__claude-in-chrome__*)
+- Load them in ONE ToolSearch call: select:mcp__claude-in-chrome__tabs_context_mcp,mcp__claude-in-chrome__navigate,mcp__claude-in-chrome__computer,mcp__claude-in-chrome__browser_batch,mcp__claude-in-chrome__find,mcp__claude-in-chrome__get_page_text,mcp__claude-in-chrome__javascript_tool,mcp__claude-in-chrome__tabs_create_mcp,mcp__claude-in-chrome__list_connected_browsers,mcp__claude-in-chrome__select_browser,mcp__claude-in-chrome__file_upload
+- Before the first browser call run \`${n} browser take\`. If it prints "busy", a Rep shift is clicking in that Chrome: do not touch the browser, do the rest of your work, and try again later. Run \`${n} browser release\` the moment your browser work is done, and before you ask Sarah anything.
+- Then list_connected_browsers and select_browser deviceId ed0bb03b-277a-48ce-8fc0-7c8e1f36e224 ("Browser 1"). That is the one signed in to Sarah's Facebook and the Modern Mustard Seed Instagram. If it is not listed, stop and say so.
+- Work in a tab you create. Never type a password or a PIN; if Facebook or Instagram asks for one, stop and tell Sarah.
+- instagram.com may say "Navigation to this domain is not allowed" on the first try inside a batch; a single navigate call goes through.
+- Messages to a business, from her Facebook or the MMS Instagram:
+  1. Read the whole thread first, top to bottom. Send nothing that repeats what is already there.
+  2. Send only when the message delivers something we promised or answers something they asked. No nudges, no "just checking in", never two messages in a row with no reply between them.
+  3. Send exactly the words Sarah approved, once. No poster or image unless the approved message names one.
+  4. Before typing, confirm document.activeElement is the composer of that business's thread (aria-label "Write to <name>" on Facebook, the thread URL on Instagram). Screenshot after sending to confirm it landed.
+  5. Log it so the Rep never sends it again: node --env-file=C:/Users/SMSca/dev/mms/products/modern-mustard-seed/.env.local C:/Users/SMSca/dev/mms/rep/tools/log.mjs followup <lead id> <facebook|instagram> "<exact text>" (find the lead id with rep/tools/find.mjs "<business>").
+- Cold first messages are the Rep's job, inside its caps. The floor does not send them.`;
+}
+
 export function officeCli(cli) {
   const n = `node "${cli}"`;
   return `The office CLI (run it with Bash; it knows which task you are):
@@ -61,7 +79,7 @@ export function lessonsBlock(lessons, area) {
 ${list.map((l) => `- [${l.area}${l.pinned ? ', pinned' : ''}] ${l.lesson}`).join('\n')}`;
 }
 
-export function chiefSystem({ agents, settings, today, lessons = [] }) {
+export function chiefSystem({ agents, settings, today, lessons = [], cli }) {
   const sower = agents.find((a) => a.key === 'sower');
   return `${sower.charter}
 
@@ -99,7 +117,11 @@ Only lessons backed by what actually happened, never guesses. One to five.
 
 ${lessonsBlock(lessons)}
 
-Autonomy right now: missions ${settings.autoGo ? 'START THE MOMENT YOU PROPOSE THEM (auto-go is on)' : 'wait for Sarah to press Go'}; production merges ${settings.autoShip ? 'are pre-approved' : 'are held for her yes'}. Spending money is always held.
+${cli ? `${browserRules(cli)}
+
+When Sarah asks you to message someone or read a thread, you do it yourself in Chrome by these rules, now, in this turn. Never tell her you cannot reach her Chrome.
+
+` : ""}Autonomy right now: missions ${settings.autoGo ? 'START THE MOMENT YOU PROPOSE THEM (auto-go is on)' : 'wait for Sarah to press Go'}; production merges ${settings.autoShip ? 'are pre-approved' : 'are held for her yes'}. Spending money is always held.
 
 ${LAWS}
 
@@ -120,7 +142,9 @@ Do the work completely. Production-ready only: no drafts, no outlines, no "start
 
 ${officeCli(cli)}
 
-${heldRules(settings)}
+${engine === "codex" ? "" : `${browserRules(cli)}
+
+`}${heldRules(settings)}
 
 ${LAWS}
 
