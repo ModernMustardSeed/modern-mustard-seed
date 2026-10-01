@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { buildMetadata, SITE } from '@/lib/seo';
-import { SWITCHBOARD, PRICE_TIERS, BUILD_FEE_USD, whatShips, howItWorks, faq, quoteFor, usd } from '@/data/switchboard';
+import { SWITCHBOARD, PRICE_TIERS, whatShips, howItWorks, faq } from '@/data/switchboard';
 import CommandBoard from '@/components/switchboard/CommandBoard';
 import SwitchboardMotion from '@/components/switchboard/SwitchboardMotion';
 import SwitchboardExperiment from '@/components/switchboard/SwitchboardExperiment';
@@ -202,9 +202,9 @@ export default function SwitchboardPage() {
         <section data-cable-stop className="border-b-2 border-[#0b3b44] bg-[#F5F0E8]">
           <div className="relative z-[2] max-w-5xl mx-auto px-6 py-16 md:py-24">
             <div className="text-center max-w-2xl mx-auto mb-10">
-              <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#0a7c78] font-bold">Pricing</p>
-              <h2 className="mt-4 font-display text-3xl md:text-5xl font-extrabold leading-[1.05] text-[#0b3b44]">Per location. Cheaper as you grow.</h2>
-              <p className="mt-4 text-[#5c554a] font-body">The more locations, the lower the price at each door. One {usd(BUILD_FEE_USD)} build covers the brand voice template, the Command Board, and the rollout.</p>
+              <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#0a7c78] font-bold">Your rollout</p>
+              <h2 className="mt-4 font-display text-3xl md:text-5xl font-extrabold leading-[1.05] text-[#0b3b44]">One rollout. Quoted for your locations.</h2>
+              <p className="mt-4 text-[#5c554a] font-body">We quote your rollout in the conversation, covering your locations, brand voice, Command Board and connections.</p>
             </div>
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sb-reveal">
@@ -219,26 +219,26 @@ export default function SwitchboardPage() {
                     </span>
                   )}
                   <p className={`font-mono text-[10px] uppercase tracking-[0.2em] ${i === 2 ? 'text-[#0b3b44]/70' : 'text-[#5c554a]'}`}>{t.label}</p>
-                  <p className="mt-2 font-display text-4xl font-extrabold text-[#0b3b44]">${t.perLocationUsd}</p>
-                  <p className={`font-mono text-xs ${i === 2 ? 'text-[#0b3b44]/70' : 'text-[#5c554a]'}`}>per location / mo</p>
+                  <p className="mt-2 font-display text-2xl font-extrabold text-[#0b3b44]">Request a quote</p>
+                  <p className={`font-mono text-xs ${i === 2 ? 'text-[#0b3b44]/70' : 'text-[#5c554a]'}`}>Scoped to your locations</p>
                 </div>
               ))}
             </div>
 
             <div className="mt-8 grid sm:grid-cols-3 gap-4">
               {examples.map((ex) => {
-                const q = quoteFor(ex.loc);
+
                 return (
                   <div key={ex.loc} className="rounded-2xl border-2 border-dashed border-[#0b3b44]/40 bg-white/60 p-5 text-center">
                     <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#5c554a]">{ex.loc} locations · {ex.note}</p>
-                    <p className="mt-2 font-display text-2xl font-extrabold text-[#0a7c78]">{usd(q.monthlyUsd)}<span className="text-sm text-[#5c554a] font-body">/mo</span></p>
-                    <p className="text-xs text-[#5c554a] font-mono">{usd(q.annualUsd)}/yr</p>
+                    <p className="mt-2 font-display text-2xl font-extrabold text-[#0a7c78]">Request a quote</p>
+                    <p className="text-xs text-[#5c554a] font-mono">Quoted for your rollout</p>
                   </div>
                 );
               })}
             </div>
             <p className="mt-6 text-center text-sm text-[#5c554a] font-body">
-              Cheaper per door than a one-off install, and one chain never churns a location at a time.
+              Agree the scope, price and rollout before any work begins.
             </p>
           </div>
         </section>

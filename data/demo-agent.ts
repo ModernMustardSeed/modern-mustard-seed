@@ -31,7 +31,7 @@ export const DEMO_AGENT = {
   // the one fully-anonymous voice surface, so it keeps a ceiling (unlike the
   // phone line and the internal desks, which run to Vapi's 12h max).
   demoSeconds: 1800,
-  creditNote: 'Your setup fee is credited toward any custom build over $2,500.',
+  creditNote: 'Your setup fee is credited toward any custom build with the scope and credit agreed in your quote.',
 } as const;
 
 export type DemoAgentVertical = {
@@ -239,7 +239,7 @@ export const demoAgentFaq = [
   },
   {
     q: 'Is there a contract?',
-    a: 'Month to month, cancel anytime. The setup fee is one-time, and it is credited in full toward any custom build over $2,500 if you ever go bigger.',
+    a: 'Month to month, cancel anytime. The setup fee is one-time, and it is credited in full toward any custom build with the scope and credit agreed in your quote if you ever go bigger.',
   },
   {
     q: 'Who is Mr. Mustard?',

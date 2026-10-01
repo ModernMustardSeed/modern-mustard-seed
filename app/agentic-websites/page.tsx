@@ -1,7 +1,7 @@
 import Link from '@/components/AttributionLink';
 import { buildMetadata, SITE } from '@/lib/seo';
 import { JsonLd, breadcrumbJsonLd, serviceJsonLd, webPageJsonLd } from '@/lib/jsonld';
-import { SITE_RUNGS, DEMO_PRODUCTS, formatUsd } from '@/lib/demo-order';
+import { SITE_RUNGS } from '@/lib/demo-order';
 import PopPageHero, { pop } from '@/components/pop/PopPageHero';
 
 const description = 'Agentic website design for businesses across the United States: custom websites, shared-brain voice agents and answer engine foundations. Designed and built in Montana, delivered nationwide.';
@@ -73,9 +73,9 @@ export default function AIWebsitesPage() {
 
       <section className="max-w-6xl mx-auto px-6 py-16">
         <h2 className="font-display text-3xl md:text-4xl font-black">Pick the build that fits the business.</h2>
-        <p className="mt-5 max-w-3xl leading-relaxed">The productized website has three published sizes. Every page needs its own reason to exist. A larger package is room for useful service detail and proof, not permission to duplicate a paragraph across fifty towns.</p>
-        <div className="mt-8 grid md:grid-cols-3 gap-6">{Object.values(SITE_RUNGS).map((rung) => <div key={rung.key} className="pop-card p-6"><h3 className="font-display text-2xl font-bold">{rung.label}</h3><p className="mt-5 font-bold">Website: {formatUsd(rung.setupCents)} setup + {formatUsd(rung.monthlyCents)}/month</p><p className="mt-3">Talking Website: {formatUsd(rung.bundleSetupCents)} setup + {formatUsd(rung.bundleMonthlyCents)}/month</p></div>)}</div>
-        <p className="mt-6 leading-relaxed">Website packages include domain, hosting, care and unlimited edits to existing pages. Productized plans are month to month. The standalone Voice Agent is {formatUsd(DEMO_PRODUCTS.voice.setupCents)} setup + {formatUsd(DEMO_PRODUCTS.voice.monthlyCents)}/month. See <Link href="/websites" className={linkStyle}>website package details</Link> for page scope and delivery terms.</p>
+        <p className="mt-5 max-w-3xl leading-relaxed">We scope your website around the pages and workflows your business needs. Every page needs its own reason to exist. A larger package is room for useful service detail and proof, not permission to duplicate a paragraph across fifty towns.</p>
+        <div className="mt-8 grid md:grid-cols-3 gap-6">{Object.values(SITE_RUNGS).map((rung) => <div key={rung.key} className="pop-card p-6"><h3 className="font-display text-2xl font-bold">{rung.label}</h3><p className="mt-5 font-bold">Website: request a quote</p><p className="mt-3">Talking Website: request a quote</p></div>)}</div>
+        <p className="mt-6 leading-relaxed">Website packages include domain, hosting, care and unlimited edits to existing pages. Productized plans are month to month. The standalone Voice Agent is scoped and quoted in the conversation. See <Link href="/websites" className={linkStyle}>website package details</Link> for page scope and delivery terms.</p>
         <p className="mt-4 leading-relaxed">Custom applications, agentic automation, CRM and workflow systems, lead-generation systems, agentic infrastructure, branding and rebranding are scoped as <Link href="/services" className={linkStyle}>custom engagements</Link> at a set package price. The <Link href="/command-center" className={linkStyle}>Command Center</Link> is a separate product. It is not included in the Talking Website bundle.</p>
       </section>
 

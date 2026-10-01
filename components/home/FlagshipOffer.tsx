@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { DEMO_PRODUCTS, DEMO_BUNDLE, formatUsd } from '@/lib/demo-order';
+import { DEMO_BUNDLE } from '@/lib/demo-order';
 
 /**
  * FLAGSHIP OFFER. Homepage beat: the studio's headline product, built free and
@@ -35,10 +35,7 @@ const PIECES: { key: 'voice' | 'site'; icon: string; name: string; desc: string;
   },
 ];
 
-const priceLine = (key: 'voice' | 'site') => {
-  const p = DEMO_PRODUCTS[key];
-  return `${formatUsd(p.monthlyCents)}/mo + ${formatUsd(p.setupCents)} setup`;
-};
+const priceLine = () => 'Request a quote';
 
 export default function FlagshipOffer() {
   return (
@@ -81,7 +78,7 @@ export default function FlagshipOffer() {
                     <span className={`block text-[10px] uppercase tracking-[0.14em] ${inkCard ? 'text-[#fbf5ea]/50' : 'text-[#0b3b44]/55'}`}>
                       Free demo, then
                     </span>
-                    {priceLine(c.key)}
+                    {priceLine()}
                   </p>
                 </div>
               </div>
@@ -100,18 +97,7 @@ export default function FlagshipOffer() {
             </h3>
             <p className="font-body text-[14px] text-[#0b3b44]/75 mt-2 leading-relaxed max-w-xl">
               Your site and your voice agent built as one thing, off one brain, so the answer a
-              visitor reads is the answer a caller hears. From {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo +{' '}
-              {formatUsd(DEMO_BUNDLE.setupCents)} setup, in three sizes: 5, 20, or 50 pages. That is{' '}
-              {formatUsd(
-                DEMO_PRODUCTS.voice.setupCents + DEMO_PRODUCTS.site.setupCents - DEMO_BUNDLE.setupCents
-              )}{' '}
-              off the setup and{' '}
-              {formatUsd(
-                DEMO_PRODUCTS.voice.monthlyCents +
-                  DEMO_PRODUCTS.site.monthlyCents -
-                  DEMO_BUNDLE.monthlyCents
-              )}
-              /mo off buying the pieces apart. Month to month, no trials. The demo was the trial.
+              visitor reads is the answer a caller hears. We quote your website and voice agent in the conversation, with the scope and price agreed before work starts.
             </p>
           </div>
           <div className="mt-6 md:mt-0 flex flex-col gap-3 shrink-0">

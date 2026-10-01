@@ -3,13 +3,12 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { track } from '@vercel/analytics';
-import { DEMO_PRODUCTS, formatUsd } from '@/lib/demo-order';
 
 /**
  * The signature interactive moment for /command-center: the "replace your stack"
  * calculator. Toggle the tools a small business typically pays for, watch the
- * monthly total roll like an odometer, and see the command center undercut the
- * whole pile. Pop-art cabin styling, honest "typical cost" framing.
+ * monthly total roll like an odometer, then request a scoped command-center
+ * quote. Pop-art cabin styling, honest "typical cost" framing.
  */
 
 type Tool = { key: string; label: string; sub: string; cost: number };
@@ -47,7 +46,6 @@ export default function StackCalculator() {
   const [on, setOn] = useState<Record<string, boolean>>(() =>
     Object.fromEntries(TOOLS.map((t) => [t.key, true])),
   );
-  const ccMonthly = Math.round(DEMO_PRODUCTS.os.monthlyCents / 100); // 197
 
   const { total, count } = useMemo(() => {
     let total = 0;
@@ -57,7 +55,6 @@ export default function StackCalculator() {
   }, [on]);
 
   const shownTotal = useCountUp(total);
-  const savings = Math.max(0, total - ccMonthly);
 
   const toggle = (k: string) => setOn((s) => ({ ...s, [k]: !s[k] }));
 
@@ -104,7 +101,7 @@ export default function StackCalculator() {
           })}
         </div>
         <p className="font-body text-[11px] text-[#0b3b44]/70 mt-4 leading-relaxed">
-          Typical small-business software prices. Your real bill is probably higher once you count the seats.
+          Illustrative software costs, not provider quotes. We compare your actual tools and bills during the conversation.
         </p>
       </div>
 
@@ -114,7 +111,7 @@ export default function StackCalculator() {
           <span className="font-mono font-bold text-[10px] uppercase tracking-[0.24em] text-[#fbf5ea]/60 block">
             Your stack today, {count} {count === 1 ? 'tool' : 'tools'}
           </span>
-          <p className="font-display font-extrabold text-[#fbf5ea] mt-1 leading-none tabular-nums" style={{ fontSize: 'clamp(2.75rem, 8vw, 3.75rem)' }}>
+          <p className="font-display font-extrabold text-[#fbf5ea] mt-1 leading-none tabular-nums" style={{ fontSize: 'clamp(2.75rem, 7vw, 3.75rem)' }}>
             ${shownTotal.toLocaleString()}<span className="text-2xl">/mo</span>
           </p>
 
@@ -123,29 +120,21 @@ export default function StackCalculator() {
           <span className="font-mono font-bold text-[10px] uppercase tracking-[0.24em] text-[#f5b700] block">
             One command center
           </span>
-          <p className="font-display font-extrabold text-[#f5b700] mt-1 leading-none tabular-nums" style={{ fontSize: 'clamp(2.75rem, 8vw, 3.75rem)' }}>
-            ${ccMonthly}<span className="text-2xl">/mo</span>
+          <p className="font-display font-extrabold text-[#f5b700] mt-1 leading-tight" style={{ fontSize: 'clamp(1.75rem, 5vw, 2.5rem)' }}>
+            Request a quote
           </p>
           <p className="font-body text-[12.5px] text-[#fbf5ea]/70 mt-2 leading-relaxed">
             Every call transcribed, your website traffic, customers, reviews, invoices, and reports, wired together.
           </p>
 
-          {savings > 0 ? (
-            <p className="mt-4 rounded-xl border-2 border-[#f5b700] bg-[#f5b700] px-4 py-2.5 font-sans text-[14px] font-extrabold text-[#0b3b44]">
-              You would save {formatUsd(savings * 100)}/mo, on one board instead of five logins.
-            </p>
-          ) : (
-            <p className="mt-4 rounded-xl border-2 border-[#f5b700] bg-[#1F1F1F] px-4 py-2.5 font-sans text-[13px] font-bold text-[#f5b700]">
-              One board instead of five logins, and one bill instead of five.
-            </p>
-          )}
+          <p className="mt-4 text-sm text-[#fbf5ea]/80">Your quote depends on the tools, connections and workflows you need. We agree it with you before the build.</p>
 
           <Link
-            href="/demos"
+            href="/inquire?kind=command-center"
             onClick={() => track('command_center_calc_cta')}
             className="mt-5 block text-center rounded-full border-2 border-[#0b3b44] bg-[#f5b700] text-[#0b3b44] px-6 py-3.5 font-sans font-extrabold text-[11px] uppercase tracking-[0.16em] shadow-[4px_4px_0_0_#000000] hover:-translate-y-0.5 transition-all"
           >
-            Build mine free →
+            Get my quote →
           </Link>
         </div>
       </div>

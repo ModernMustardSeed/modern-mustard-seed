@@ -13,8 +13,9 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { trackEvent } from '@/lib/analytics';
-import { PICTURES, picturesVerticals, picturesTiers, screenTestScript } from '@/data/pictures';
+import { picturesVerticals, picturesTiers, screenTestScript } from '@/data/pictures';
 import { possessive } from '@/lib/business-name';
 
 type Stage = 'intake' | 'rolling' | 'reveal';
@@ -317,33 +318,8 @@ export default function ScreenTestExperience() {
   );
 }
 
-function TierCard({ tier, business, runId }: { tier: (typeof picturesTiers)[number]; business?: string; runId?: string }) {
-  const [busy, setBusy] = useState(false);
-  const [msg, setMsg] = useState<string | null>(null);
+function TierCard({ tier }: { tier: (typeof picturesTiers)[number]; business?: string; runId?: string }) {
 
-  const buy = async () => {
-    if (busy) return;
-    setBusy(true);
-    setMsg(null);
-    trackEvent('pictures_checkout_click', { tier: tier.slug });
-    try {
-      const res = await fetch('/api/pictures/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tier: tier.slug, business, runId }),
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok || !data?.url) {
-        setMsg(data?.message || 'Checkout hiccuped. Try again or email sarah@modernmustardseed.com.');
-        setBusy(false);
-        return;
-      }
-      window.location.href = data.url as string;
-    } catch {
-      setMsg('Checkout hiccuped. Try again or email sarah@modernmustardseed.com.');
-      setBusy(false);
-    }
-  };
 
   return (
     <div className={`relative rounded-2xl border-2 border-[#0b3b44] bg-white p-7 shadow-[6px_6px_0_0_#0b3b44] flex flex-col ${tier.featured ? 'md:-translate-y-2' : ''}`}>
@@ -355,8 +331,8 @@ function TierCard({ tier, business, runId }: { tier: (typeof picturesTiers)[numb
       <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#0a7c78] font-bold">{tier.chip}</p>
       <h3 className="font-display text-2xl font-black text-[#0b3b44] mt-1.5">{tier.name}</h3>
       <p className="mt-3">
-        <span className="font-display text-4xl font-black text-[#0b3b44]">${tier.priceUsd}</span>
-        <span className="font-body text-sm text-[#0b3b44]/60">{tier.cadence === 'monthly' ? '/mo' : ' one time'}</span>
+        <span className="font-display text-2xl font-black text-[#0b3b44]">Request a quote</span>
+        <span className="font-body text-sm text-[#0b3b44]/60">Quoted in the conversation</span>
       </p>
       <p className="font-body text-sm text-[#0b3b44]/70 mt-2 leading-relaxed">{tier.pitch}</p>
       <ul className="mt-5 space-y-2.5 flex-1">
@@ -367,17 +343,14 @@ function TierCard({ tier, business, runId }: { tier: (typeof picturesTiers)[numb
           </li>
         ))}
       </ul>
-      <button
-        type="button"
-        onClick={buy}
-        disabled={busy}
+      <Link
+        href={`/inquire?kind=pictures&package=${tier.slug}`}
         className={`mt-6 w-full rounded-full border-2 border-[#0b3b44] px-6 py-3.5 font-sans font-extrabold text-xs uppercase tracking-[0.18em] shadow-[4px_4px_0_0_#0b3b44] transition-all hover:-translate-y-0.5 hover:shadow-[5px_5px_0_0_#0b3b44] disabled:opacity-60 ${
           tier.featured ? 'bg-[#f5b700] text-[#0b3b44]' : 'bg-white text-[#0b3b44]'
         }`}
       >
-        {busy ? 'Opening the box office…' : tier.cta}
-      </button>
-      {msg && <p className="mt-3 text-[#0a7c78] text-xs font-body font-semibold">{msg}</p>}
+        Request a quote
+      </Link>
     </div>
   );
 }

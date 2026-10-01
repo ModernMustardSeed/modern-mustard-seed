@@ -1,5 +1,5 @@
 import { ImageResponse } from 'next/og';
-import { DEMO_BUNDLE, formatUsd } from '@/lib/demo-order';
+
 
 // The Talking Website share card. It renders the page's own thesis rather than
 // a generic logo lockup: the website panel and the phone panel, wired to one
@@ -98,7 +98,7 @@ export default function OpengraphImage() {
             The site and the voice agent, built as one thing off one brain.
           </span>
           <span style={{ fontSize: 22, color: INK, fontWeight: 700, marginTop: 18, letterSpacing: 1 }}>
-            {formatUsd(DEMO_BUNDLE.setupCents)} setup + {formatUsd(DEMO_BUNDLE.monthlyCents)}/mo
+            Quoted for your business
           </span>
         </div>
 

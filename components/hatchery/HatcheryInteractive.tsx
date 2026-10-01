@@ -1,40 +1,13 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { trackEvent } from '@/lib/analytics';
-import { HATCH } from '@/data/hatchery';
 
 /* ─────────────────────────  HATCH A MASCOT  ───────────────────────── */
 
 export function ClaimEgg({ variant = 'gold' }: { variant?: 'gold' | 'ink' }) {
   const [business, setBusiness] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const claim = async () => {
-    if (loading) return;
-    setLoading(true);
-    setError(null);
-    trackEvent('hatchery_hatch_mascot', { business: business ? 'named' : 'blank' });
-    try {
-      const res = await fetch('/api/hatchery/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tier: 'hatchery-hatch', business }),
-      });
-      const data = await res.json();
-      if (res.ok && data.url) {
-        window.location.href = data.url as string;
-        return;
-      }
-      setError(data.message || 'Checkout hiccuped. Try again in a moment.');
-    } catch {
-      setError('Checkout hiccuped. Try again in a moment.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const btnBase =
     variant === 'ink'
       ? 'bg-[#161616] text-[#FBF6EA] border-[#161616] shadow-[5px_5px_0_0_#F5B700]'
@@ -49,18 +22,15 @@ export function ClaimEgg({ variant = 'gold' }: { variant?: 'gold' | 'ink' }) {
         placeholder="Your shop's name (optional)"
         className="w-full mb-3 rounded-xl border-2 border-[#161616] bg-[#FBF6EA] px-4 py-3 font-body text-[#161616] placeholder-[#6b6152]/70 focus:outline-none focus:ring-2 focus:ring-[#E8A542]"
       />
-      <button
-        type="button"
-        onClick={claim}
-        disabled={loading}
-        className={`w-full rounded-full border-2 px-8 py-4 font-sans font-extrabold text-sm uppercase tracking-[0.14em] transition-all hover:-translate-y-0.5 disabled:opacity-60 disabled:hover:translate-y-0 disabled:cursor-not-allowed ${btnBase}`}
+      <Link
+        href={`/inquire?${new URLSearchParams({ kind: 'hatchery', business }).toString()}`}
+        className={`block text-center w-full rounded-full border-2 px-8 py-4 font-sans font-extrabold text-sm uppercase tracking-[0.14em] transition-all hover:-translate-y-0.5 disabled:opacity-60 disabled:hover:translate-y-0 disabled:cursor-not-allowed ${btnBase}`}
       >
-        {loading ? 'Opening checkout…' : `Hatch my mascot — $${HATCH.priceUsd}`}
-      </button>
+        Request my mascot quote
+      </Link>
       <p className="mt-3 text-[13px] text-[#6b6152] leading-relaxed" style={{ fontFamily: 'var(--font-serif, Cormorant Garamond, serif)', fontSize: '1rem' }}>
-        One time, $497, and the price does not climb. You approve the direction before any art is made, so nothing is drawn until you love it.
+        Quoted in the conversation before work starts. You approve the direction before any art is made, so nothing is drawn until you love it.
       </p>
-      {error && <p className="mt-2 text-xs font-mono text-[#B54423]">{error}</p>}
     </div>
   );
 }

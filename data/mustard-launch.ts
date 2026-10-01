@@ -182,7 +182,7 @@ export const launchFaq: { q: string; a: string }[] = [
   },
   {
     q: 'What is the difference between the Kit and the Room?',
-    a: 'The Launch Kit ($197, one time) generates your entire launch package and it is yours to keep: three name directions, your positioning, your offer and pricing, and a 30/60/90 plan with the copy already written. The Launch Room ($97/mo) adds the live coach: Mr. Mustard on chat, regenerating and expanding assets as your launch takes shape, coaching you mission by mission until you are open.',
+    a: 'The Launch Kit generates your entire launch package and it is yours to keep: three name directions, your positioning, your offer and pricing, and a 30/60/90 plan with the copy already written. The Launch Room adds the live coach: Mr. Mustard on chat, regenerating and expanding assets as your launch takes shape, coaching you mission by mission until you are open.',
   },
   {
     q: 'Will you build the actual website and systems for me?',

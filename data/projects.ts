@@ -68,7 +68,7 @@ export const projects: Project[] = [
   },
   {
     title: 'The Claw Concierge',
-    subtitle: 'Premium setup service. Three tiers from $697 to $15K+',
+    subtitle: 'Bespoke setup service, scoped and quoted for your business',
     tags: ['Brand', 'Service', 'Community'],
     href: 'https://theclawconcierge.com',
     color: 'from-amber-900/40 to-amber-800/20',

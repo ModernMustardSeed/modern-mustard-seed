@@ -1,11 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import {
-  celebrateFaq,
-  celebrateGiftFloorCents,
-  celebrateTiers,
-  celebrateUsd,
-} from '@/data/celebrate';
+import { celebrateFaq, celebrateTiers } from '@/data/celebrate';
 
 /** Deterministic confetti sprinkle so server and client render identically. */
 export function confettiPieces(count: number, seed: number) {
@@ -173,10 +168,10 @@ export function PricingStubs() {
           [ Admit Your Whole Team ]
         </p>
         <h2 className="font-display text-3xl md:text-5xl font-black text-center tracking-tight mt-3">
-          Pricing rides a ticket stub.
+          A quote for your whole team.
         </h2>
         <p className="font-body text-base text-[#0b3b44]/80 max-w-2xl mx-auto text-center mt-4">
-          One flat monthly for the autopilot, plus gifts at local-shop prices (from ${celebrateUsd(celebrateGiftFloorCents)}),
+          We quote the autopilot and gifting plan in the conversation,
           inside a budget you cap. No setup fee during the founding route. No free trials, no surprise bills, ever.
         </p>
         <div className="grid md:grid-cols-2 gap-8 max-w-3xl mx-auto mt-10">
@@ -188,9 +183,9 @@ export function PricingStubs() {
               <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-[#0a7c78] font-bold">{t.chip}</p>
               <div className="flex items-baseline justify-between mt-2">
                 <h3 className="font-display font-black text-2xl">{t.name}</h3>
-                <p className="font-display font-black text-3xl text-[#C4160B]">
-                  ${celebrateUsd(t.monthlyCents)}
-                  <span className="font-body font-bold text-sm text-[#0b3b44]/70">/mo</span>
+                <p className="font-display font-black text-xl text-[#C4160B]">
+                  Request a quote
+
                 </p>
               </div>
               <p className="font-body text-sm text-[#0b3b44]/70 mt-2">{t.pitch}</p>

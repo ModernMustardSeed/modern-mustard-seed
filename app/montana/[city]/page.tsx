@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import { buildMetadata, SITE } from '@/lib/seo';
 import { JsonLd, faqJsonLd, breadcrumbJsonLd, serviceJsonLd, webPageJsonLd } from '@/lib/jsonld';
 import { MONTANA_CITIES, getCity, cityFaqs } from '@/data/montana-cities';
-import { DEMO_PRODUCTS, formatUsd } from '@/lib/demo-order';
+
 import PopPageHero, { pop } from '@/components/pop/PopPageHero';
 
 // Five service areas, one Kalispell business. Preserve each town's local context.
@@ -157,20 +157,20 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
             What we build for {city.name}.
           </h2>
           <p className="mt-3 font-body text-[16px] text-[#0b3b44]/80 max-w-2xl">
-            Same prices everywhere. We do not quote by zip code.
+            Quoted around your business, your goals and the scope of the work.
           </p>
           <div className="mt-8 grid md:grid-cols-3 gap-6">
             {[
               {
                 t: 'The Website',
                 b: 'Designed from scratch for your business, not filled into a template. Lead capture, funnels, and SEO built in. You own the code, the domain, and every account.',
-                p: `From ${formatUsd(DEMO_PRODUCTS.site.setupCents)} setup, ${formatUsd(DEMO_PRODUCTS.site.monthlyCents)}/mo`,
+                p: 'Request a quote',
                 href: '/websites',
               },
               {
                 t: 'The Voice Agent',
                 b: 'Answers as your business, day or night, books the job, flags the emergencies, and texts you the summary. Trained on your services, your hours, and your service area.',
-                p: `${formatUsd(DEMO_PRODUCTS.voice.setupCents)} setup, ${formatUsd(DEMO_PRODUCTS.voice.monthlyCents)}/mo`,
+                p: 'Request a quote',
                 href: '/voice-agents',
               },
             ].map((c) => (

@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { track } from '@vercel/analytics';
 import { trackLead } from '@/lib/analytics';
-import { DEMO_PRODUCTS, formatUsd } from '@/lib/demo-order';
+
 
 /**
  * The self-serve Demo Station form + the build sequence. Signature moment:
@@ -271,7 +271,7 @@ export default function DemoStation() {
       {phase === 'error' && error ? <p className="font-body text-[13px] text-[#C4160B] text-center mt-3">{error}</p> : null}
       <p className="font-body text-[12px] text-[#0b3b44]/70 text-center mt-3.5 leading-relaxed">
         No card, no meeting, no strings. If you love it, keep the website from{' '}
-        {formatUsd(DEMO_PRODUCTS.site.monthlyCents)}/mo, month to month, or work with us on the bespoke one.
+        scoped and quoted in the conversation.
       </p>
     </form>
   );

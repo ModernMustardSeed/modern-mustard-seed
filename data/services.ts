@@ -25,7 +25,7 @@ export const services: Service[] = [
     icon: '🛠️',
     title: 'Specialty Agentic Tools',
     short:
-      'Industry-specific agentic tools that replace expensive workflows. The $3K service line item becomes the $99 subscription.',
+      'Industry-specific agentic tools that replace expensive workflows. Built around the workflows your business needs.',
     description:
       'Pick the friction in your industry. We build the agentic tool that removes it. Listing description generators, deal analyzers, estimate builders, intake summarizers. Tailored to your industry, owned by you.',
     outcomes: ['Industry-specific agentic systems', 'Replace expensive workflows', 'Per-engagement pricing'],

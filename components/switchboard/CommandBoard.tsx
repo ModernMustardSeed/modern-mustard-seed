@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { trackEvent } from '@/lib/analytics';
-import { quoteFor, usd } from '@/data/switchboard';
+import { usd } from '@/data/switchboard';
 
 /**
  * The Switchboard's signature moment AND its lead magnet: paste a franchise name
@@ -73,7 +73,6 @@ export default function CommandBoard() {
   const [state, setState] = useState<'idle' | 'sending' | 'done' | 'error'>('idle');
   const [msg, setMsg] = useState<string | null>(null);
 
-  const quote = useMemo(() => quoteFor(locations), [locations]);
   const recoveredMonthly = Math.round(locations * MISSED_PER_LOC_MO * CLOSE_RATE * ticket);
   const shownRecovered = useCountUp(recoveredMonthly);
 
@@ -118,7 +117,7 @@ export default function CommandBoard() {
       const res = await fetch('/api/switchboard/lead', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, business: name, locations, ticket, recoveredMonthly, monthlyUsd: quote.monthlyUsd, variant }),
+        body: JSON.stringify({ email, business: name, locations, ticket, recoveredMonthly, variant }),
       });
       const data = await res.json();
       if (res.ok) {
@@ -250,15 +249,10 @@ export default function CommandBoard() {
         <div className="space-y-4">
           <div className="rounded-xl border-2 border-[#f5b700] bg-[#0f1626] p-5">
             <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[#f5b700] font-bold">Your Switchboard</p>
-            <div className="mt-3 space-y-2.5 text-sm">
-              <div className="flex justify-between"><span className="text-[#fbf5ea]/70">Per location</span><span className="font-mono">{usd(quote.perLocationUsd)}/mo</span></div>
-              <div className="flex justify-between"><span className="text-[#fbf5ea]/70">All {locations} locations</span><span className="font-mono text-[#f5b700] font-bold">{usd(quote.monthlyUsd)}/mo</span></div>
-              <div className="flex justify-between text-[#fbf5ea]/60"><span>Per year</span><span className="font-mono">{usd(quote.annualUsd)}</span></div>
-              <div className="flex justify-between text-[#fbf5ea]/60 pt-2 border-t border-[#fbf5ea]/10"><span>One-time build</span><span className="font-mono">{usd(quote.buildUsd)}</span></div>
-            </div>
+            <p className="mt-3 text-sm text-[#fbf5ea]/80">Quoted for your locations, call volume and connections.</p>
             <div className="mt-4 rounded-lg bg-[#1C2333] border border-[#f5b700] p-3">
               <p className="text-[13px] text-[#fbf5ea]/80 leading-snug">
-                You spend <b className="text-[#f5b700]">{usd(quote.monthlyUsd)}</b> and recover an estimated <b className="text-white">{usd(recoveredMonthly)}</b> a month.
+                Your inputs suggest potential recovered revenue of <b className="text-white">{usd(recoveredMonthly)}</b> a month.
               </p>
             </div>
           </div>

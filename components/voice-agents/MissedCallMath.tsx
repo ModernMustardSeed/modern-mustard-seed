@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { demoAgentTiers, demoAgentUsd } from '@/data/demo-agent';
 
 /**
  * The trade page's interactive moment: the visitor's own missed-call math.
@@ -13,7 +12,6 @@ import { demoAgentTiers, demoAgentUsd } from '@/data/demo-agent';
  * carried a hardcoded $197 while Stripe charged $297 (fixed 2026-07-20); a
  * quoted price that does not come from the tier table is a revenue bug.
  */
-const ENTRY_MONTHLY = demoAgentUsd(demoAgentTiers[0].monthlyCents);
 export default function MissedCallMath({
   avgTicket,
   ticketWord,
@@ -119,8 +117,7 @@ export default function MissedCallMath({
           </p>
           <p className="mt-4 font-body text-sm text-[#fbf5ea]/75 leading-relaxed">
             Your numbers, your math: {missed} missed calls a week, a {closeRate}% close rate, and a $
-            {ticket.toLocaleString()} average {ticketWord}. The voice agent answers every one of those calls for
-            ${ENTRY_MONTHLY} a month.
+            {ticket.toLocaleString()} average {ticketWord}. We quote a voice agent for your call volume and booking workflow in the conversation.
           </p>
         </div>
       </div>

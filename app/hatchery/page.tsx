@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { buildMetadata, SITE } from '@/lib/seo';
-import { HATCHERY, HUCK, HATCH, hatcheryTiers, hatcheryFaq } from '@/data/hatchery';
+import { HATCHERY, HUCK, hatcheryTiers, hatcheryFaq } from '@/data/hatchery';
 import HuckVoiceWidget from '@/components/hatchery/HuckVoiceWidget';
 import { ClaimEgg, FirstGlimpse } from '@/components/hatchery/HatcheryInteractive';
 
@@ -31,8 +31,6 @@ export default function HatcheryPage() {
         offers: {
           '@type': 'Offer',
           name: 'The Hatch',
-          price: HATCH.priceUsd,
-          priceCurrency: 'USD',
           availability: 'https://schema.org/InStock',
           url: `${SITE.url}/hatchery#claim`,
         },
@@ -41,7 +39,7 @@ export default function HatcheryPage() {
         '@type': 'HowTo',
         name: 'How your business gets its own mascot',
         step: [
-          { '@type': 'HowToStep', name: 'Claim your hatch', text: 'Start the hatch for $497. You approve the direction before any art is made.' },
+          { '@type': 'HowToStep', name: 'Claim your hatch', text: 'Request a quote for your mascot. You approve the direction before any art is made.' },
           { '@type': 'HowToStep', name: 'We hatch your mascot', text: 'We write the Character Storybook, draw the model sheet, film the hatching, and give your mascot its own live phone line.' },
           { '@type': 'HowToStep', name: 'Birth Day', text: 'On a scheduled, public Birth Day the egg cracks live and your mascot answers its own phone for everyone you know.' },
         ],
@@ -175,7 +173,7 @@ export default function HatcheryPage() {
               ))}
             </ul>
             <p className="mt-6 font-mono text-sm uppercase tracking-[0.2em] text-[#161616]">
-              ${HATCH.priceUsd}, one time. The price does not climb.
+              Your mascot, scoped and quoted in the conversation.
             </p>
           </div>
         </div>
@@ -235,7 +233,7 @@ export default function HatcheryPage() {
               <div key={plan.slug} className="rounded-2xl border-2 border-[#161616] bg-[#FBF6EA] p-7 shadow-[5px_5px_0_0_#161616]">
                 <div className="flex items-baseline justify-between">
                   <h3 className="font-display text-2xl font-bold text-[#161616]">{plan.name}</h3>
-                  <p className="font-mono font-bold text-[#B54423]">${plan.priceUsd}<span className="text-[#6b6152] text-xs">/mo</span></p>
+                  <p className="font-mono font-bold text-[#B54423]">Request a quote</p>
                 </div>
                 <p className="mt-2 text-[#6b6152]" style={{ fontFamily: 'var(--font-serif, Cormorant Garamond, serif)', fontSize: '1.1rem' }}>{plan.tagline}</p>
                 <ul className="mt-4 space-y-2">
@@ -284,7 +282,7 @@ export default function HatcheryPage() {
             Every shop deserves a someone.
           </h2>
           <p className="mt-4 max-w-xl mx-auto text-[#FBF6EA]/80" style={{ fontFamily: 'var(--font-serif, Cormorant Garamond, serif)', fontSize: '1.2rem' }}>
-            Give yours a name, a face, a voice, and a birthday. One time, $497, and you approve the direction before we draw a thing.
+            Give yours a name, a face, a voice, and a birthday. Quoted in the conversation, and you approve the direction before we draw a thing.
           </p>
           <div className="mt-9 flex justify-center">
             <ClaimEgg variant="gold" />

@@ -1,5 +1,5 @@
 import { buildMetadata, SITE } from '@/lib/seo';
-import { DEMO_AGENT, demoAgentTiers, demoAgentFaq, demoAgentUsd } from '@/data/demo-agent';
+import { DEMO_AGENT, demoAgentTiers, demoAgentFaq } from '@/data/demo-agent';
 import BuildExperience from '@/components/demo-agent/BuildExperience';
 import { HowItWorks, Boundaries, Faq, MeetTheTrainer, CrossSell, GiveHimAHome } from '@/components/demo-agent/DemoAgentSections';
 import PopPageHero, { pop } from '@/components/pop/PopPageHero';
@@ -34,15 +34,6 @@ export default function DemoAgentPage() {
         offers: demoAgentTiers.map((t) => ({
           '@type': 'Offer',
           name: t.name,
-          price: demoAgentUsd(t.monthlyCents),
-          priceCurrency: 'USD',
-          priceSpecification: {
-            '@type': 'UnitPriceSpecification',
-            price: demoAgentUsd(t.monthlyCents),
-            priceCurrency: 'USD',
-            billingIncrement: 1,
-            unitText: 'MONTH',
-          },
           url: `${SITE.url}/voice-agents/build#keep`,
           availability: 'https://schema.org/InStock',
         })),

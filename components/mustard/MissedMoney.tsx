@@ -27,13 +27,11 @@ import RecoveryMachine from '@/components/RecoveryMachine';
  * apparently made up. Absent params, the presets are unchanged.
  */
 export default function MissedMoney({
-  monthlyPrice,
   missedPreset,
   closePreset,
   ticketPreset,
   typedKey,
 }: {
-  monthlyPrice: string;
   missedPreset?: number | null;
   closePreset?: number | null;
   ticketPreset?: number | null;
@@ -53,7 +51,7 @@ export default function MissedMoney({
         typedKey={typedKey}
       />
       <p className="mt-4 text-[13.5px] leading-relaxed text-[#0b3b44]/60">
-        Your numbers, not ours. Punch in your week. He costs {monthlyPrice} a month and answers every one of those calls.
+        Your numbers, not ours. Punch in your week. We scope and quote the voice agent around the calls and workflows you need.
       </p>
     </div>
   );

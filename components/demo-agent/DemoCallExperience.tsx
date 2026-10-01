@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import type { BuiltCall } from '@/lib/demo-agent';
-import { DEMO_PRODUCTS, formatUsd } from '@/lib/demo-order';
+
 import { demoVoice, genderFromVoiceId, type VoiceGender } from '@/lib/demo-voice';
 import VoiceGenderToggle from '@/components/demo-agent/VoiceGenderToggle';
 import { possessive } from '@/lib/business-name';
@@ -10,7 +10,6 @@ import Link from 'next/link';
 
 const PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY;
 const ASSISTANT_ID = process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID;
-const VOICE = DEMO_PRODUCTS.voice;
 
 type CallState = 'idle' | 'connecting' | 'live' | 'ended' | 'error';
 
@@ -189,11 +188,10 @@ export default function DemoCallExperience({
               Put it on {possessive(business)} real number
             </p>
             <p className="font-body text-[#FBF6EA]/70 mt-3 max-w-md mx-auto">
-              {formatUsd(VOICE.setupCents)} to set it up, then {formatUsd(VOICE.monthlyCents)} a month. Month to
-              month, cancel anytime, answering your line within a week.
+              We quote the setup and ongoing service in the conversation, and agree the scope and timeline before work starts.
             </p>
             <a
-              href={orderUrl}
+              href="/inquire?kind=voice-agent"
               className="inline-block mt-5 bg-[#F5B700] text-[#161616] border-2 border-[#161616] rounded-xl px-8 py-3.5 font-sans font-bold uppercase tracking-[0.1em] text-sm shadow-[4px_4px_0_0_#FBF6EA] hover:-translate-y-0.5 transition-transform"
             >
               Make it real →
@@ -215,7 +213,7 @@ export default function DemoCallExperience({
                 Book the 10-minute setup call
               </a>
               <Link href="/voice-agents" className="bg-white text-[#161616] border-2 border-[#161616] rounded-xl px-6 py-3 font-sans font-bold uppercase tracking-[0.1em] text-sm shadow-[3px_3px_0_0_#161616] hover:-translate-y-0.5 transition-transform">
-                See pricing
+                Discuss your setup
               </Link>
             </div>
           </div>

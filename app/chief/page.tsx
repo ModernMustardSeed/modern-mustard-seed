@@ -1,15 +1,7 @@
 import Link from 'next/link';
 import { buildMetadata, SITE } from '@/lib/seo';
 import { JsonLd, breadcrumbJsonLd, faqJsonLd } from '@/lib/jsonld';
-import {
-  CHIEF,
-  chiefTiers,
-  chiefUsd,
-  chiefCapabilities,
-  chiefBoundaries,
-  chiefFaq,
-  humanAssistantYear,
-} from '@/data/chief';
+import { CHIEF, chiefTiers, chiefCapabilities, chiefBoundaries, chiefFaq, humanAssistantYear } from '@/data/chief';
 import DayWithYourChief from '@/components/chief/DayWithYourChief';
 import ChiefCheckoutButton from '@/components/chief/ChiefCheckoutButton';
 import { PRICE_HEADLINE, PRICE_CADENCE_MONTHLY } from '@/lib/public-pricing';
@@ -25,9 +17,7 @@ export const metadata = buildMetadata({
 const PHONE_TEL = '+14063121223';
 const PHONE_DISPLAY = '(406) 312-1223';
 
-const entry = chiefTiers[0];
-const cabinet = chiefTiers[chiefTiers.length - 1];
-const chiefYear = chiefUsd(entry.monthlyCents) * 12;
+
 
 function chiefJsonLd() {
   return {
@@ -256,14 +246,8 @@ export default function ChiefPage() {
               <div className="flex items-baseline justify-between gap-4">
                 <span className="font-sans font-bold text-[13px] uppercase tracking-[0.14em] text-[#f5b700]">The Chief</span>
                 <span className="font-mono font-bold text-[15px] text-[#f5b700] tabular-nums whitespace-nowrap">
-                  ${chiefYear.toLocaleString()}/yr
+                  Quoted for your business
                 </span>
-              </div>
-              <div className="mt-2 h-6 rounded-full bg-[#fbf5ea]/10 overflow-hidden border border-[#fbf5ea]/15">
-                <div
-                  className="h-full rounded-full bg-[#f5b700]"
-                  style={{ width: `${Math.max(6, Math.round((chiefYear / humanAssistantYear.high) * 100))}%` }}
-                />
               </div>
             </div>
           </div>

@@ -1,25 +1,10 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { buildMetadata, SITE } from '@/lib/seo';
-import {
-  CELEBRATE,
-  CELEBRATE_LAUNCH,
-  celebrateFaq,
-  celebrateTiers,
-  celebrateUsd,
-  daysToLaunch,
-} from '@/data/celebrate';
+import { CELEBRATE, CELEBRATE_LAUNCH, celebrateFaq, celebrateTiers, daysToLaunch } from '@/data/celebrate';
 import ParadeBuilder from '@/components/celebrate/ParadeBuilder';
 import LaunchCountdown from '@/components/celebrate/LaunchCountdown';
-import {
-  CelebrateFaqSection,
-  ConfettiField,
-  FinalCta,
-  GoodsGallery,
-  HowItWorks,
-  LocalMakers,
-  PricingStubs,
-} from '@/components/celebrate/CelebrateSections';
+import { CelebrateFaqSection, ConfettiField, FinalCta, GoodsGallery, HowItWorks, LocalMakers, PricingStubs } from '@/components/celebrate/CelebrateSections';
 
 export const metadata = buildMetadata({
   title: CELEBRATE.metaTitle,
@@ -60,15 +45,6 @@ export default function CelebratePage() {
         offers: celebrateTiers.map((t) => ({
           '@type': 'Offer',
           name: t.name,
-          price: celebrateUsd(t.monthlyCents),
-          priceCurrency: 'USD',
-          priceSpecification: {
-            '@type': 'UnitPriceSpecification',
-            price: celebrateUsd(t.monthlyCents),
-            priceCurrency: 'USD',
-            billingIncrement: 1,
-            unitText: 'MONTH',
-          },
           url: `${SITE.url}/celebrate#pricing`,
           availability: 'https://schema.org/PreOrder',
           // Answer engines quote opening day off this, so it tracks the one

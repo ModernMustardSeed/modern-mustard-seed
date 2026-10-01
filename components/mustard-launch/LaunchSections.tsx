@@ -95,9 +95,9 @@ export function LadderSection() {
               </div>
               <h3 className="font-display font-extrabold text-2xl mt-3">{tier.name}</h3>
               <div className="font-display font-extrabold text-4xl mt-2">
-                {tier.priceUsd === 0 ? 'Free' : `$${tier.priceUsd}`}
-                {tier.cadence === 'monthly' && <span className="font-sans text-base font-normal opacity-70">/mo</span>}
-                {tier.cadence === 'once' && <span className="font-sans text-sm font-normal opacity-70"> once</span>}
+                {tier.priceUsd === 0 ? 'Free' : 'Request a quote'}
+
+
               </div>
               <p className={`font-sans text-sm mt-2 ${featured ? 'text-[#fbf5ea]/80' : 'text-[#0b3b44]/70'}`}>{tier.pitch}</p>
               <ul className="mt-4 space-y-2 flex-1">

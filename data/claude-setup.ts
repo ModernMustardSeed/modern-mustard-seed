@@ -14,7 +14,7 @@
 export const CLAUDE_SETUP = {
   metaTitle: 'Claude Setup for Your Business: Claude Code, Custom Skills and AI Agents',
   metaDescription:
-    'We set up Claude for businesses across the United States: Claude Code and Claude desktop, custom Claude skills for your own workflows, rules, memory, safety hooks and your tools connected. Three set packages from $1,500. Based in Kalispell, MT.',
+    'We set up Claude for businesses across the United States: Claude Code and Claude desktop, custom Claude skills for your own workflows, rules, memory, safety hooks and your tools connected. Setup for individuals, teams and business operations, quoted in the conversation. Based in Kalispell, MT.',
   promise:
     'Claude Code and Claude desktop, set up around how your business actually works: custom skills for the jobs you repeat, rules it follows, memory it keeps, guardrails it cannot cross, and your email, calendar and tools connected. Then we teach you to run it.',
 };
@@ -102,7 +102,7 @@ export const claudeWhatWeSetUp = [
 export const claudeFaq = [
   {
     q: 'How do I set up Claude for my business?',
-    a: 'Start with one person and five jobs you repeat every week. Install Claude Code or Claude desktop, write a rules file that says how your business works, turn each repeated job into a skill, connect your email and calendar, and turn on memory. Our Claude Setup package does all of it with you in one week for $1,500.',
+    a: 'Start with one person and five jobs you repeat every week. Install Claude Code or Claude desktop, write a rules file that says how your business works, turn each repeated job into a skill, connect your email and calendar, and turn on memory. Our Claude Setup package does all of it with you, with the scope and price quoted in the conversation.',
   },
   {
     q: 'What are Claude skills?',
@@ -122,7 +122,7 @@ export const claudeFaq = [
   },
   {
     q: 'What does it cost?',
-    a: 'Three set packages: Claude Setup for one person is $1,500, Claude for the Team (up to ten people) is $5,000, and Claude Operator (agents that run recurring work) is $9,500. Changes to what we set up are included. Your Claude subscription is billed by Anthropic in your own name.',
+    a: 'We quote your setup in the conversation, based on your team, workflows and connections. Choose Claude Setup, Claude for the Team or Claude Operator, then agree the scope and price before work starts. Changes to what we set up are included. Your Claude subscription is billed by Anthropic in your own name.',
   },
   {
     q: 'Are you affiliated with Anthropic?',
