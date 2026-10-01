@@ -13,6 +13,8 @@ import { PREVIEW } from '@/data/preview-promise';
 
 const projects = [
   { name: 'D & D Landscaping', type: 'Landscaping / Client website', image: 'dd-landscaping', url: 'https://ddlandscapingfl.com', description: 'A local business, unmistakable.', detail: 'A Tallahassee landscaping site with service selection, walkthrough booking, and a voice concierge.' },
+  // A concept build, not a client: the card says so, and hovering it plays the launch film.
+  { name: 'HUCKWILD', type: 'Drink brand / Concept build', image: 'huckwild', url: 'https://huckwild.vercel.app', description: 'Wild huckleberry, in a glass you can stir.', detail: 'A concept build for a Montana huckleberry drink mix: a live ink-in-water hero you stir with a finger, berries you tap to burst, and a numbered-pouch waitlist. Its launch film plays right here.', visit: 'See The Concept' },
   { name: 'Cross + Covenant', type: 'Commerce / Studio brand', image: 'cross-covenant-current', url: 'https://crossandcovenant.co', description: 'Wear the Gospel.', detail: 'An apparel storefront with original collections, a free Bible, daily devotionals, and a prayer wall.' },
   { name: 'Built Right in Montana', type: 'Custom homes / Client website', image: 'brim-homes', url: 'https://brimhomes.com', description: 'Built for the way Montana lives.', detail: 'A Flathead Valley homebuilder’s website, with a project showcase and a direct path to a build conversation.' },
   { name: 'Bare Earth', type: 'Landscape & construction / Studio build', image: 'bare-earth', url: 'https://bare-earth.vercel.app', description: 'Grounds worthy of the valley.', detail: 'A landscape and construction build for the Flathead Valley, with service pages and an instant-quote experience.' },
@@ -62,7 +64,7 @@ export default function StudioHome({ faq, hero, afterHero }: { faq: { q: string;
         const i = k % projects.length;
         const echo = k >= projects.length;
         return <a key={k} href={project.url} target="_blank" rel="noopener noreferrer" className={styles.project} aria-hidden={echo || undefined} tabIndex={echo ? -1 : undefined}>
-          <div className={styles.projectImage}><ProjectImage name={project.image} alt={echo ? '' : project.name + ' website, designed and built by Modern Mustard Seed'} sizes="(max-width: 760px) 80vw, 34vw" /><WorkVideo src={'/video/work/' + project.image + '.mp4'} className={styles.workVideo} /><span className={styles.visit}><span className={styles.visitLabel}>Visit Live Site</span><Arrow /></span></div>
+          <div className={styles.projectImage}><ProjectImage name={project.image} alt={echo ? '' : project.name + ' website, designed and built by Modern Mustard Seed'} sizes="(max-width: 760px) 80vw, 34vw" /><WorkVideo src={'/video/work/' + project.image + '.mp4'} className={styles.workVideo} /><span className={styles.visit}><span className={styles.visitLabel}>{project.visit ?? 'Visit Live Site'}</span><Arrow /></span></div>
           <div className={styles.projectCaption}><div><p className={styles.eyebrow}>{project.type}</p><h3>{project.name}</h3></div><span className={styles.projectNumber}>0{i + 1}</span></div>
           <p className={styles.projectStatement}>{project.description}</p><p className={styles.projectDetail}>{project.detail}</p>
         </a>;

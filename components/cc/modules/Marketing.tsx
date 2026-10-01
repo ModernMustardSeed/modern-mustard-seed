@@ -102,7 +102,7 @@ export default function Marketing({ session, refreshPulse }: { session: Session;
   };
 
   if (data && !data.settings) {
-    return <Card><Empty title="Daily Posting is not on this account" note="It writes, schedules and posts to your feeds every day, and it is sold on its own. Ask Sarah to switch it on." /></Card>;
+    return <Card><Empty title="Your posts are on their way" note="Your calendar is being filled from the homes on your website. There is nothing for you to do here." /></Card>;
   }
 
   const today = data?.today ?? '';
@@ -155,7 +155,7 @@ export default function Marketing({ session, refreshPulse }: { session: Session;
         </div>
 
         <Card className="lg:col-span-2">
-          <CardHead title="Where it goes" hint="Connected feeds post themselves. The rest go on a sheet you can post by hand." />
+          <CardHead title="Where it goes" hint="Every post is written and sent for you. Nothing here needs you." />
           {!data ? (
             <Skeleton rows={4} />
           ) : (
@@ -163,15 +163,11 @@ export default function Marketing({ session, refreshPulse }: { session: Session;
               {(data.accounts ?? []).map((a) => (
                 <li key={a.provider} className="flex items-center justify-between gap-3 rounded-lg border border-[var(--cc-line)] px-3.5 py-2.5">
                   <span className="text-[14px] font-semibold">{LABEL[a.provider] ?? a.provider}</span>
-                  {a.connected ? <Badge tone="good">Connected</Badge> : a.manualOnly ? <Badge>By hand</Badge> : <Badge>Not yet</Badge>}
+                  {a.connected ? <Badge tone="good">Posts itself</Badge> : <Badge>We post it</Badge>}
                 </li>
               ))}
             </ul>
           )}
-          <p className="mt-3 text-[12.5px] text-[var(--cc-muted)]">
-            Connect a feed once in Connections and it posts itself from then on.{' '}
-            <a href="#accounts" className="font-semibold text-[var(--cc-accent)] hover:underline">Open Connections</a>
-          </p>
         </Card>
       </div>
 
@@ -218,7 +214,7 @@ export default function Marketing({ session, refreshPulse }: { session: Session;
           ) : !data ? (
             <Skeleton rows={4} />
           ) : upcoming.length === 0 ? (
-            <Empty title="Nothing scheduled yet" note="Say something above and it goes into the queue." />
+            <Empty title="Tomorrow's post is being written" note="When nothing is waiting, we post a home from your website, one a day. Anything you write above takes the next open day." />
           ) : (
             <ul className="divide-y divide-[var(--cc-line)]">
               {upcoming.slice(0, 8).map((p) => (

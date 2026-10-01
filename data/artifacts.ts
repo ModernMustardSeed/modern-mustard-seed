@@ -22,6 +22,16 @@ export type ArtifactEntry = {
 
 export const ARTIFACTS: ArtifactEntry[] = [
   {
+    id: 'H7Zqadckjiq2KvERzyQxpN',
+    title: 'HUCKWILD Launch Film',
+    url: 'https://claude.ai/artifact/H7Zqadckjiq2KvERzyQxpN',
+    updated: '2026-10-01',
+    venture: 'Huckwild',
+    kind: 'Social',
+    description: 'The 64-second launch film for the HUCKWILD concept build, shot frame by frame from the live site. Wide 16:9, vertical 9:16 and square 1:1 cuts, switchable on the page. It also plays on the homepage work strip. Masters live in dev/mms/marketing/huckwild-film-2026-10-01/out.',
+    pinned: true,
+  },
+  {
     id: 'a456976e-db1e-4561-9f13-6976bb916223',
     title: 'One Desk, One Week',
     url: 'https://claude.ai/code/artifact/a456976e-db1e-4561-9f13-6976bb916223',

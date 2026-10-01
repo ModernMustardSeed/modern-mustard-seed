@@ -118,7 +118,7 @@ function Dot({ state }: { state: State }) {
 function StateBadge({ state }: { state: State }) {
   if (state === 'on') return <Badge tone="good">Connected</Badge>;
   if (state === 'warn') return <Badge tone="warn">Needs a look</Badge>;
-  if (state === 'manual') return <Badge>By hand</Badge>;
+  if (state === 'manual') return <Badge>We post it</Badge>;
   return <Badge>Not connected</Badge>;
 }
 
