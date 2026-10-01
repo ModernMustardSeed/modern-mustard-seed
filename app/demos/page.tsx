@@ -357,7 +357,7 @@ export default function DemosPage() {
         </section>
 
         <p className="font-mono text-[11px] text-[#0b3b44]/70 text-center pb-4">
-          Modern Mustard Seed · Kalispell, MT · Mr. Mustard (406) 312-1223 · Sarah (406) 250-6076
+          Modern Mustard Seed · Flathead Valley, MT · Mr. Mustard (406) 312-1223 · Sarah (406) 250-6076
         </p>
       </div>
     </div>

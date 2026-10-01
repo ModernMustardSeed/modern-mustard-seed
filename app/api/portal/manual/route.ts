@@ -48,7 +48,7 @@ p{margin:0 0 7pt}
 <h1>Your Command Center</h1>
 <p class="lede">What each part does on its own, and the one thing you do. Keep this in the truck; the live version is at ${esc(project.office.host)}.</p>
 ${guide.map((g) => `<section><h2>${esc(g.title)}</h2>${g.lines.map((l) => `<p>${esc(l)}</p>`).join('')}</section>`).join('')}
-<div class="foot"><span>Built and kept by Modern Mustard Seed, Kalispell. Sarah Scarano, (406) 250-6076, sarah@modernmustardseed.com.</span><span>${esc(today)}</span></div>
+<div class="foot"><span>Built and kept by Modern Mustard Seed, Flathead Valley. Sarah Scarano, (406) 250-6076, sarah@modernmustardseed.com.</span><span>${esc(today)}</span></div>
 </div></body></html>`;
   return new NextResponse(html, { headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' } });
 }

@@ -99,7 +99,7 @@ export function closeCard({ business, hubUrl }) {
          color:${CREAM};margin-top:8px;word-break:break-all">${esc(shown)}</p>
     </div>
     <p class="fade d5" style="font-size:20px;margin-top:32px;color:${INK}99">
-      Modern Mustard Seed &middot; Kalispell, Montana
+      Modern Mustard Seed &middot; Flathead Valley, Montana
     </p>
   </div>`);
 }

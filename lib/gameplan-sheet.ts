@@ -167,7 +167,7 @@ export function gameplanSheetHtml(l: OutboundLead, { hubQr, siteQr, planQr }: Ga
 
   <footer>
     <div><b>Set package pricing.</b> Changes included. No hourly billing, ever. You own everything we build.</div>
-    <div>Kalispell, Montana &middot; yes, a voice agent answers our phone too</div>
+    <div>Flathead Valley, Montana &middot; yes, a voice agent answers our phone too</div>
   </footer>
 </div>
 </body></html>`;

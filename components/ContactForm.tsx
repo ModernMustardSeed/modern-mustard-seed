@@ -102,7 +102,7 @@ export default function ContactForm({ defaultPackage, defaultMessage }: Props) {
               <div>
                 <p className="font-mono text-[9px] font-bold uppercase tracking-[0.24em] text-[#0a7c78]">Business Reply Card</p>
                 <p className="mt-1 font-display text-2xl font-extrabold leading-none text-[#0b3b44]">Modern Mustard Seed</p>
-                <p className="mt-1.5 font-mono text-[9px] uppercase tracking-[0.16em] text-[#5c554a]">Kalispell, Montana · no postage necessary</p>
+                <p className="mt-1.5 font-mono text-[9px] uppercase tracking-[0.16em] text-[#5c554a]">Flathead Valley, Montana · no postage necessary</p>
               </div>
 
               {/* The mascot IS the postage. The postmark cancels it on send. */}

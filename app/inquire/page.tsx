@@ -88,7 +88,7 @@ export default function InquirePage() {
       <PopPageHero
         eyebrow={<span>By inquiry</span>}
         title={<>Tell us what you are{' '}<em>building</em>.</>}
-        issue={{ no: 'No.1', lines: ['Private inquiry', 'Kalispell, Montana'] }}
+        issue={{ no: 'No.1', lines: ['Private inquiry', 'Flathead Valley, Montana'] }}
         art={{
           src: '/art/riviera/inquire',
           alt: 'Painting: at the end of a wooden dock over clear turquoise water, Mr. Mustard sweeps an arm out in welcome beside a wooden tender with Tiffany-blue cushions, the family already aboard and waving, a white yacht beyond',

@@ -163,7 +163,7 @@ export function cityFaqs(city: MontanaCity): { q: string; a: string }[] {
   return [
     {
       q: `Do you actually work with businesses in ${city.name}?`,
-      a: `Yes. Modern Mustard Seed is based in Kalispell, ${city.slug === 'kalispell' ? 'so this is home' : `about a ${driveTime(city)} drive from ${city.name}`}, and we work across the Flathead Valley including ${city.alsoServes.slice(0, 3).join(', ')}. You can call us at ${SITE.phone} and talk to a person, or to the voice agent after hours, which is one of the things we build.`,
+      a: `Yes. Modern Mustard Seed is based in the Flathead Valley, and we work across the region including ${city.alsoServes.slice(0, 3).join(', ')}. You can call us at ${SITE.phone} and talk to a person, or to the voice agent after hours, which is one of the things we build.`,
     },
     {
       q: `How much does a website cost in ${city.name}?`,
@@ -182,20 +182,4 @@ export function cityFaqs(city: MontanaCity): { q: string; a: string }[] {
       a: `Yes, and you should. Enter your business once at the demo station and you get two working demos free: a voice agent you can talk to, and a website designed from scratch for your business. No card, no meeting, no sales call to sit through. Keep what you love or keep nothing.`,
     },
   ];
-}
-
-/** Honest, rounded drive times from Kalispell. Used only in FAQ prose. */
-function driveTime(city: MontanaCity): string {
-  switch (city.slug) {
-    case 'whitefish':
-      return '20 minute';
-    case 'columbia-falls':
-      return '20 minute';
-    case 'bigfork':
-      return '30 minute';
-    case 'polson':
-      return 'an hour';
-    default:
-      return 'short';
-  }
 }

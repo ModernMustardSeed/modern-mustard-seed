@@ -12,18 +12,18 @@ import PopPageHero, { pop } from '@/components/pop/PopPageHero';
 
 export const metadata = buildMetadata({
   title: 'Montana Website Design and Agentic Systems',
-  description: 'A Kalispell-based boutique design and agentic systems studio: websites and brand, custom software, voice agents, and advisory for Northwest Montana and clients nationwide.',
+  description: 'A Flathead Valley-based boutique design and agentic systems studio: websites and brand, custom software, voice agents, and advisory for Northwest Montana and clients nationwide.',
   path: '/montana',
 });
 
 const FAQ = [
   {
     q: 'Where in Montana are you based?',
-    a: `Kalispell, in the Flathead Valley. We work in person across the valley and remotely with clients in every state. The phone is ${SITE.phone} and it is answered around the clock by the voice agent we build for other businesses. Sarah's own number is ${SITE.sarahPhone}.`,
+    a: `The Flathead Valley, Montana. We work in person across the valley and remotely with clients in every state. The phone is ${SITE.phone} and it is answered around the clock by the voice agent we build for other businesses. Sarah's own number is ${SITE.sarahPhone}.`,
   },
   {
     q: 'Do you only work with Montana businesses?',
-    a: 'No. Most of our work is remote and nationwide. Our studio is in Kalispell. These pages explain how the same tools fit the different seasonal and operational needs of businesses across Northwest Montana.',
+    a: 'No. Most of our work is remote and nationwide. Our studio is in the Flathead Valley. These pages explain how the same tools fit the different seasonal and operational needs of businesses across Northwest Montana.',
   },
   {
     q: 'What does a website cost?',
@@ -62,13 +62,13 @@ export default function MontanaPage() {
       <PopPageHero
         eyebrow={<span>▲ The Flathead Valley</span>}
         title={<>The agentic studio in your valley, not in your inbox from three time zones away.</>}
-        issue={{ no: 'No.1', lines: ['The Flathead Valley', 'Kalispell, Montana'] }}
+        issue={{ no: 'No.1', lines: ['The Flathead Valley', 'Flathead Valley, Montana'] }}
         art={{ src: '/art/riviera/montana', alt: MT_ALT, caption: 'Big sky, short drive' }}
         sticker="Howdy!"
         mascot={{ bubble: 'Right down the road!' }}
       >
         <p>
-          Modern Mustard Seed is a boutique design and agentic systems studio based in Kalispell. We design and build websites and brand, custom software, and voice agents for Northwest Montana and clients nationwide. You own everything we build.
+          Modern Mustard Seed is a boutique design and agentic systems studio based in the Flathead Valley. We design and build websites and brand, custom software, and voice agents for Northwest Montana and clients nationwide. You own everything we build.
         </p>
         <div className={pop.actions}>
           <Link href="/book" className={pop.cta}>
@@ -82,7 +82,7 @@ export default function MontanaPage() {
 
       <nav aria-label="Explore the studio" className="max-w-6xl mx-auto px-6 py-8 flex flex-wrap gap-6 font-bold text-[#0a7c78] underline underline-offset-4">
         <Link href="/agentic-websites">Agentic websites, explained</Link>
-        <Link href="/montana/kalispell">Our home in Kalispell</Link>
+        <Link href="/about">Our studio in the Flathead Valley</Link>
         <Link href="/nationwide">Working with us from outside Montana</Link>
         <Link href="/resources">The answer engine field notes</Link>
         <Link href="/work">What we have built</Link>

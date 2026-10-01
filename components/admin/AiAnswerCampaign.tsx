@@ -3,7 +3,7 @@ import { useRef, useState } from 'react';
 
 /**
  * Campaign 32: The AI Answer. The ad says what the Instagram bio says:
- * "Websites Google + ChatGPT recommend", built by Sarah in Kalispell, and
+ * "Websites Google + ChatGPT recommend", built by Sarah in the Flathead Valley, and
  * DM "ANSWER" for a free check. Mr. Mustard leaps off a comic cover holding
  * the answer. Messaging objective: every result is a DM with a business name
  * and a town, which is everything needed to run the check.
@@ -28,7 +28,7 @@ Your customers ask ChatGPT who to call now. It gives them three or four names, n
 
 DM me the word ANSWER. I'll ask for your business and send you exactly what it said. Free.
 
-Built by Sarah in Kalispell, MT.`,
+Built by Sarah in the Flathead Valley, MT.`,
   },
   {
     title: 'Primary text B (Stories and Reels)',
@@ -42,7 +42,7 @@ If not, that's fixable. DM me ANSWER and I'll send you exactly what it said, fre
   },
   { title: 'Headline 1', text: 'Does AI name your business?' },
   { title: 'Headline 2', text: 'Free check: does ChatGPT know you?' },
-  { title: 'Description', text: 'Websites by Modern Mustard Seed, Kalispell, MT.' },
+  { title: 'Description', text: 'Websites by Modern Mustard Seed, Flathead Valley, MT.' },
   {
     title: 'Message greeting (Meta inbox template)',
     text: `Hi! Type ANSWER and tell me your business name and town. I'll ask ChatGPT and send you exactly what it says.`,

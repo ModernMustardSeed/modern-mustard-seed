@@ -507,7 +507,7 @@ export const FAQ: { q: string; a: string }[] = [
   },
   {
     q: 'Can Modern Mustard Seed build this for me instead?',
-    a: 'Yes. Plenty of people read a guide like this, get a taste of what is possible, and decide they would rather have the thing than the education. We are a product studio in Kalispell, Montana that builds custom apps, websites, and voice agents at set package prices, usually shipped in weeks. Call the ranch line and Mr. Mustard, our own voice agent, will take it from there, or book a call with Sarah directly.',
+    a: 'Yes. Plenty of people read a guide like this, get a taste of what is possible, and decide they would rather have the thing than the education. We are a product studio in the Flathead Valley, Montana that builds custom apps, websites, and voice agents at set package prices, usually shipped in weeks. Call the ranch line and Mr. Mustard, our own voice agent, will take it from there, or book a call with Sarah directly.',
   },
 ];
 

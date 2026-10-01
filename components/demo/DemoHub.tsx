@@ -596,7 +596,7 @@ export default function DemoHub({
 
         <section className="text-center pb-6">
           <p className="font-mono text-[11px] text-[#161616]/40">
-            Demos built with care by Modern Mustard Seed · Kalispell, MT · Yes, a voice agent answers our phone too. Try it.
+            Demos built with care by Modern Mustard Seed · Flathead Valley, MT · Yes, a voice agent answers our phone too. Try it.
           </p>
         </section>
       </main>

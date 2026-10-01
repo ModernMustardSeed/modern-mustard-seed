@@ -58,7 +58,7 @@ export default function ClaudePage() {
           <a href="#packages" className={pop.cta}>See the three packages</a>
           <Link href="/inquire?kind=claude" className={pop.ctaAlt}>Tell us what you need</Link>
         </div>
-        <p className={pop.note}>Set up by Sarah Scarano. Based in Kalispell, MT, working with businesses in every state.</p>
+        <p className={pop.note}>Set up by Sarah Scarano. Based in the Flathead Valley, MT, working with businesses in every state.</p>
       </PopPageHero>
 
       {/* ─── THE PROOF ─── */}

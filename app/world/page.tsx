@@ -36,9 +36,9 @@ export default function WorldPage() {
         creator: { '@id': `${SITE.url}/#organization` },
         author: { '@id': `${SITE.url}/#sarah` },
         description:
-          'An interactive, scroll-driven claymation diorama of the Modern Mustard Seed studio on Flathead Lake in Kalispell, Montana. A brand experience that ends in a project intake.',
+          'An interactive, scroll-driven claymation diorama of the Modern Mustard Seed studio on Flathead Lake in the Flathead Valley, Montana. A brand experience that ends in a project intake.',
         keywords:
-          'Modern Mustard Seed, claymation, scroll experience, Flathead Lake, agentic systems studio, custom apps, websites, agentic tools, Kalispell Montana',
+          'Modern Mustard Seed, claymation, scroll experience, Flathead Lake, agentic systems studio, custom apps, websites, agentic tools, Flathead Valley Montana',
         genre: 'Interactive brand experience',
       },
       {

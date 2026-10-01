@@ -6,7 +6,7 @@ import { buildMetadata, SITE } from '@/lib/seo';
 export const metadata = buildMetadata({
   title: 'Agentic Systems, AI Agents & Websites That Work for You',
   description:
-    'Agentic systems, AI agents and websites that work for you, built for businesses across the United States and made to be found on Google and ChatGPT. AI voice agents that answer and book every call, and custom software. Set package prices; you own everything. Based in Kalispell, MT.',
+    'Agentic systems, AI agents and websites that work for you, built for businesses across the United States and made to be found on Google and ChatGPT. AI voice agents that answer and book every call, and custom software. Set package prices; you own everything. Based in the Flathead Valley, MT.',
 });
 
 const homeJsonLd = {
@@ -42,7 +42,7 @@ const offerJsonLd = {
 const HOME_FAQ = [
   {
     q: 'What does Modern Mustard Seed do?',
-    a: 'Modern Mustard Seed is an AI studio that builds websites and agentic systems for businesses across the United States, founded by Sarah Scarano and based in Kalispell, Montana. Five disciplines: design-led websites and brand, custom software, voice agents, marketing (social posting, blog writing, commercials, and ads), and retained advisory for operators putting agentic systems into a business that already works. We work with businesses in every state, remotely, and with neighbors in Northwest Montana in person.',
+    a: 'Modern Mustard Seed is an AI studio that builds websites and agentic systems for businesses across the United States, founded by Sarah Scarano and based in the Flathead Valley, Montana. Five disciplines: design-led websites and brand, custom software, voice agents, marketing (social posting, blog writing, commercials, and ads), and retained advisory for operators putting agentic systems into a business that already works. We work with businesses in every state, remotely, and with neighbors in Northwest Montana in person.',
   },
   {
     q: 'Who is Sarah Scarano?',

@@ -8,7 +8,7 @@ import PathFinder from '@/components/services/PathFinder';
 export const metadata = buildMetadata({
   title: 'Websites, Software and Agentic Systems',
   description:
-    'Custom websites, software, voice agents, and brand design. Built in Kalispell, Montana, for businesses nationwide. Set package pricing. You own the work.',
+    'Custom websites, software, voice agents, and brand design. Built in the Flathead Valley, Montana, for businesses nationwide. Set package pricing. You own the work.',
   path: '/services',
 });
 

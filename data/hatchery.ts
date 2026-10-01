@@ -38,7 +38,7 @@ export const HATCHERY = {
 export const HUCK = {
   name: 'Huck',
   business: 'The Huckleberry Scoop',
-  city: 'Kalispell, Montana',
+  city: 'Flathead Valley, Montana',
   assistantId: 'aad65761-8a06-4288-a5bd-d055360ea8f4',
   phone: '(406) 747-0139',
   phoneHref: 'tel:+14067470139',

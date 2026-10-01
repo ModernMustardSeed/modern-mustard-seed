@@ -109,7 +109,7 @@ export default async function DemoOrderThanksPage({
           <DemoOrderIntake hubId={hubId} sessionId={sessionId} products={products} business={business} prefill={prefill} />
         )}
         <p className="font-mono text-[11px] text-[#161616]/40 text-center pb-6">
-          Modern Mustard Seed · Kalispell, MT · Sarah (406) 250-6076 · Mr. Mustard (406) 312-1223 · sarah@modernmustardseed.com
+          Modern Mustard Seed · Flathead Valley, MT · Sarah (406) 250-6076 · Mr. Mustard (406) 312-1223 · sarah@modernmustardseed.com
         </p>
       </main>
     </div>

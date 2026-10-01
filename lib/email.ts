@@ -127,7 +127,7 @@ function footer(showSocial: boolean): string {
       </td></tr>
       <tr><td align="center">
         <p style="margin:0;color:${C.muted};font-family:${SANS};font-size:10px;letter-spacing:2px;text-transform:uppercase;font-weight:700">
-          Matthew 17:20 &nbsp;&middot;&nbsp; Kalispell, Montana
+          Matthew 17:20 &nbsp;&middot;&nbsp; Flathead Valley, Montana
         </p>
       </td></tr>
     </table>

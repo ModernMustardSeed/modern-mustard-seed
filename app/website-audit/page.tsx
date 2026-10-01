@@ -106,7 +106,7 @@ export default function WebsiteAuditPage() {
             proposal. */}
         <section className="max-w-5xl mx-auto px-6 py-10 mb-12">
           <h2 className="font-display text-3xl font-bold">Know what the grade is telling you.</h2>
-          <p className="mt-4 leading-relaxed">Read our <Link href="/resources" className="text-[#0a7c78] underline font-bold">Answer Engine Field Notes</Link> for the technical checks and measurement behind this work. <Link href="/blog/geo-vs-seo-montana" className="text-[#0a7c78] underline font-bold">GEO and SEO share a foundation</Link>: accessible pages, useful information and evidence. Modern Mustard Seed builds that foundation from Kalispell for businesses nationwide.</p>
+          <p className="mt-4 leading-relaxed">Read our <Link href="/resources" className="text-[#0a7c78] underline font-bold">Answer Engine Field Notes</Link> for the technical checks and measurement behind this work. <Link href="/blog/geo-vs-seo-montana" className="text-[#0a7c78] underline font-bold">GEO and SEO share a foundation</Link>: accessible pages, useful information and evidence. Modern Mustard Seed builds that foundation from the Flathead Valley for businesses nationwide.</p>
         </section>
 
         {/* What we score */}

@@ -35,7 +35,7 @@ await Promise.all(Array.from({ length: 5 }, async () => {
 for (const agent of ['OAI-SearchBot', 'Googlebot', 'Bingbot', 'Applebot', 'PerplexityBot']) {
   const response = await fetch(`${base}/agentic-websites`, { headers: { 'user-agent': agent } });
   const body = await response.text();
-  report.crawlers.push({ agent, status: response.status, readable: body.includes('AI-native product studio in Kalispell') });
+  report.crawlers.push({ agent, status: response.status, readable: body.includes('AI-native product studio in the Flathead Valley') });
 }
 for (const route of ['/agentic-websites/?utm_source=chatgpt', '/agentic-websites?utm_source=chatgpt', '/case-studies', '/does-not-exist-ai-qa']) {
   const response = await fetch(`${base}${route}`, { redirect: 'manual' });

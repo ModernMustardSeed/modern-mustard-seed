@@ -148,7 +148,7 @@ export const SYSTEM_FAQ = [
   },
   {
     q: 'Who builds it?',
-    a: 'Sarah Scarano, a self-taught full-stack engineer and agentic systems architect in Kalispell, Montana, with 40 plus shipped products. The person who scopes it is the person who ships it.',
+    a: 'Sarah Scarano, a self-taught full-stack engineer and agentic systems architect in the Flathead Valley, Montana, with 40 plus shipped products. The person who scopes it is the person who ships it.',
   },
   {
     q: 'Do I own it?',
