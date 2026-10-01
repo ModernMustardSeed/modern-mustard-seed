@@ -263,6 +263,13 @@ export async function connectFacebookByToken(
   let page: GraphPage | null = null;
   let pageToken = userToken;
   if (pages.length) {
+    // A login that manages several Pages (Sarah's manages a dozen) reconnects
+    // the Page this client is already on, so a re-paste needs no picker.
+    if (pages.length > 1 && !preferPageId) {
+      const { data: had } = await sb.from('client_integrations').select('external_id').eq('client_email', clientEmail).eq('provider', 'facebook').maybeSingle();
+      const known = (had?.external_id as string | null) ?? null;
+      if (known && pages.some((p) => p.id === known)) preferPageId = known;
+    }
     if (pages.length > 1 && !preferPageId) {
       return { ok: false, error: 'That account manages more than one Page. Pick the one to post as.', choices: pages.map((p) => ({ id: p.id, name: p.name })) };
     }
