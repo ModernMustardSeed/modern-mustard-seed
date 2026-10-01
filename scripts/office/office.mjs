@@ -12,11 +12,14 @@
  *   node office.mjs ask --question "Send this DM to 40 owners?" --detail "<the exact words>"
  *   node office.mjs progress --add 1 --note "Buffalo Saloon booked Thu 10am"
  *   node office.mjs state
+ *   node office.mjs browser take      (before any Chrome work; waits out a Rep shift)
+ *   node office.mjs browser release   (the moment the browser work is done)
  *
  * Output is plain text written for the agent that ran it.
  */
 import { createClient } from '@supabase/supabase-js';
-import { readFileSync, existsSync } from 'node:fs';
+import { readFileSync, existsSync, writeFileSync, unlinkSync } from 'node:fs';
+import { spawn, execFileSync } from 'node:child_process';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -64,6 +67,95 @@ async function feed(text, kind = 'note') {
 function fail(msg) {
   console.error(`office: ${msg}`);
   process.exit(1);
+}
+
+/*
+ * THE BROWSER LOCK. Sarah's Chrome is one browser shared by the Rep's shifts
+ * and the floor, and two sessions clicking in it at once send keys into the
+ * wrong chat. rep/shift.lock already keeps Rep shifts apart: its first line is
+ * the PID of whoever drives Chrome, and a shift waits while that PID lives.
+ * The floor takes the same lock. A small detached keeper holds it, so the
+ * PID stays alive exactly as long as the agent's session does, and the lock
+ * clears itself when that session ends or after OFFICE_BROWSER_MAX_MIN.
+ */
+const BROWSER_LOCK = env.OFFICE_BROWSER_LOCK || path.join(env.OFFICE_WORKSPACE || path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..'), 'rep', 'shift.lock');
+const BROWSER_MAX_MIN = Number(env.OFFICE_BROWSER_MAX_MIN || 45);
+
+function alive(pid) {
+  if (!Number.isInteger(pid) || pid <= 0) return false;
+  try { process.kill(pid, 0); return true; } catch (e) { return e.code === 'EPERM'; }
+}
+
+function readLock() {
+  if (!existsSync(BROWSER_LOCK)) return null;
+  const [first = '', second = ''] = readFileSync(BROWSER_LOCK, 'utf8').split(/\r?\n/);
+  const pid = Number.parseInt(first.trim(), 10);
+  return { pid, yours: second.startsWith('yield'), label: second.trim(), live: alive(pid) };
+}
+
+/** The claude process this command runs under, so the lock dies with the session. */
+function sessionPid() {
+  if (process.platform !== 'win32') return process.ppid;
+  try {
+    const rows = JSON.parse(execFileSync('powershell.exe', ['-NoProfile', '-Command', 'Get-CimInstance Win32_Process | Select-Object ProcessId,ParentProcessId,Name | ConvertTo-Json -Compress'], { encoding: 'utf8', windowsHide: true, maxBuffer: 8 * 1024 * 1024 }));
+    const byPid = new Map(rows.map((r) => [r.ProcessId, r]));
+    let cur = byPid.get(process.pid);
+    for (let i = 0; cur && i < 12; i += 1) {
+      if (/^claude(\.exe)?$/i.test(cur.Name) && cur.ProcessId !== process.pid) return cur.ProcessId;
+      cur = byPid.get(cur.ParentProcessId);
+    }
+  } catch { /* fall through to the time limit alone */ }
+  return 0;
+}
+
+async function browser(sub, args) {
+  if (sub === 'take') {
+    const held = readLock();
+    if (held?.live && !held.yours) {
+      console.log(`busy: a Rep shift (pid ${held.pid}) is driving Chrome. Do not touch the browser. Finish your other work, then run "browser take" again in 5 minutes. If it is still busy after 30 minutes, say so in your report.`);
+      process.exit(2);
+    }
+    if (held?.live && held.yours) {
+      console.log(`busy: another floor session holds Chrome (${held.label}). Run "browser take" again in 2 minutes.`);
+      process.exit(2);
+    }
+    const owner = sessionPid();
+    const keeper = spawn(process.execPath, [fileURLToPath(import.meta.url), 'browser', '_keep', String(owner)], { detached: true, stdio: 'ignore', windowsHide: true, env: process.env });
+    keeper.unref();
+    writeFileSync(BROWSER_LOCK, `${keeper.pid}\nyield ${AGENT}${TASK ? ` task ${TASK}` : ''} ${new Date().toISOString()}\n`);
+    await feed('Took the browser', 'note');
+    console.log(`Chrome is yours for up to ${BROWSER_MAX_MIN} minutes. Rep shifts wait until you run "browser release". Release it the moment you are done.`);
+    return;
+  }
+  if (sub === 'release') {
+    const held = readLock();
+    if (!held || !held.yours) { console.log('Nothing to release: the floor does not hold the browser.'); return; }
+    try { process.kill(held.pid); } catch { /* already gone */ }
+    try { unlinkSync(BROWSER_LOCK); } catch { /* already gone */ }
+    console.log('Released. Rep shifts can use Chrome again.');
+    return;
+  }
+  if (sub === 'status') {
+    const held = readLock();
+    console.log(!held || !held.live ? 'free' : held.yours ? `held by the floor (${held.label})` : `held by a Rep shift (pid ${held.pid})`);
+    return;
+  }
+  if (sub === '_keep') {
+    const owner = Number.parseInt(args[0] ?? '0', 10);
+    const until = Date.now() + BROWSER_MAX_MIN * 60_000;
+    await new Promise(() => {
+      const tick = setInterval(() => {
+        const held = readLock();
+        if (!held || held.pid !== process.pid) { clearInterval(tick); process.exit(0); }
+        if ((owner && !alive(owner)) || Date.now() > until) {
+          try { unlinkSync(BROWSER_LOCK); } catch { /* gone */ }
+          clearInterval(tick);
+          process.exit(0);
+        }
+      }, 10_000);
+    });
+  }
+  fail('browser take | release | status');
 }
 
 const KINDS = ['script', 'offer', 'product', 'link', 'file', 'copy', 'list', 'report', 'note'];
@@ -137,7 +229,12 @@ switch (cmd) {
     break;
   }
 
+  case 'browser': {
+    await browser(f._[0], f._.slice(1));
+    break;
+  }
+
   default:
-    console.log('office.mjs <note|deliver|ask|progress|state>. See the header of this file.');
+    console.log('office.mjs <note|deliver|ask|progress|state|browser>. See the header of this file.');
     process.exit(cmd ? 1 : 0);
 }

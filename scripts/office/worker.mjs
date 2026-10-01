@@ -66,6 +66,8 @@ const engine = await import('../../lib/office/engine.ts');
 
 const WORKER = env.OFFICE_WORKER_NAME || `office-${os.hostname()}`;
 const WORKSPACE = env.OFFICE_WORKSPACE || path.resolve(REPO, '..', '..');
+// office.mjs finds rep/shift.lock (the browser lock) from here.
+env.OFFICE_WORKSPACE = WORKSPACE;
 const LANES = Math.max(1, Number(env.OFFICE_LANES || 2));
 const MODEL = env.OFFICE_MODEL || 'opus';
 const PERMISSION_MODE = env.OFFICE_PERMISSION_MODE || 'auto';
@@ -74,6 +76,13 @@ const CHIEF_MIN_FREE_MB = Number(env.OFFICE_CHIEF_MIN_FREE_MB || 500);
 const CHIEF_TIMEOUT_MS = Number(env.OFFICE_CHIEF_TIMEOUT_MS || 15 * 60 * 1000);
 const TASK_TIMEOUT_MS = Number(env.OFFICE_TASK_TIMEOUT_MS || 2 * 60 * 60 * 1000);
 const POLL_MS = Number(env.OFFICE_POLL_MS || 2000);
+/**
+ * `claude -p` starts with no browser unless it is asked for one. Without this
+ * flag every prompt told the floor it had Sarah's Chrome while the Claude in
+ * Chrome tools never loaded, and Sower answered "I can't reach your Chrome"
+ * (2026-10-01). OFFICE_CHROME=off runs the floor without a browser.
+ */
+const CHROME = env.OFFICE_CHROME !== 'off';
 
 /** Spawn the real exe with no shell, so a long system prompt arrives intact as one argument. */
 const CLAUDE_BIN = (() => {
@@ -177,6 +186,7 @@ function describeTool(name, input = {}) {
 function runClaude({ prompt, system, sessionId, resume, onAction, isCancelled, timeoutMs, extraEnv = {} }) {
   return new Promise((resolve) => {
     const args = ['-p', '--output-format', 'stream-json', '--verbose', '--permission-mode', PERMISSION_MODE, '--model', MODEL];
+    if (CHROME) args.push('--chrome');
     if (system) args.push('--append-system-prompt', system);
     if (resume) args.push('--resume', resume);
     else if (sessionId) args.push('--session-id', sessionId);
@@ -442,7 +452,7 @@ async function recentTranscript() {
 async function chiefTurn(job, userPrompt) {
   const settings = await engine.getSettings(sb);
   const { data: lessons } = await sb.from('office_lessons').select('lesson, area, pinned').eq('active', true).order('pinned', { ascending: false }).order('created_at', { ascending: false }).limit(25);
-  const system = chiefSystem({ agents: AGENTS, settings, today: today(), lessons: lessons ?? [] });
+  const system = chiefSystem({ agents: AGENTS, settings, today: today(), lessons: lessons ?? [], cli: CHROME ? CLI : null });
   const onAction = (text) => { sb.from('office_jobs').update({ last_action: text }).eq('id', job.id).then(() => {}); };
 
   // Claude at its cap: Codex takes the turn with the recent thread, so Sarah
