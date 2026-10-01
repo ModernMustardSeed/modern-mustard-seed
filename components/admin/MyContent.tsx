@@ -107,7 +107,7 @@ function PostCard({ post }: { post: Post }) {
       <header className="flex items-start justify-between gap-3 flex-wrap">
         <div className="flex flex-col gap-1 min-w-0">
           <span className={`${eyebrow} text-[#8f6600]`}>
-            No. {post.n} · {post.pill}
+            {post.pill} · Post {post.n} in your queue
           </span>
           <h2 className="font-display text-2xl sm:text-[28px] font-extrabold leading-tight text-[#161616]">
             {post.title}
