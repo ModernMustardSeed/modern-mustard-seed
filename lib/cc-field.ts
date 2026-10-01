@@ -98,6 +98,7 @@ export async function readSiteDrop(input: FieldInput): Promise<FieldResult> {
       user,
       label: `field:${input.project.clientEmail}`,
       model: 'sonnet',
+      preferPaid: true,
       schema: FIELD_SCHEMA,
       attachments: input.files,
       timeoutMs: 50_000,

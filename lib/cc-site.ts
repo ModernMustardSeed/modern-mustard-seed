@@ -130,6 +130,7 @@ export async function draftProject(
       user,
       label: `site:project:${project.clientEmail}`,
       model: 'sonnet',
+      preferPaid: true,
       schema: PROJECT_SCHEMA,
       attachments: input.files,
       timeoutMs: 50_000,
@@ -172,7 +173,7 @@ export async function draftArticle(
   ].join('\n');
 
   try {
-    const j = await llmJson<ArticleDraft>({ system, user, label: `site:article:${project.clientEmail}`, model: 'sonnet', schema: ARTICLE_SCHEMA, timeoutMs: 50_000 });
+    const j = await llmJson<ArticleDraft>({ system, user, label: `site:article:${project.clientEmail}`, model: 'sonnet', preferPaid: true, schema: ARTICLE_SCHEMA, timeoutMs: 50_000 });
     return {
       ok: true,
       draft: { title: String(j.title ?? '').trim().slice(0, 140), summary: String(j.summary ?? '').trim().slice(0, 300), body: String(j.body ?? '').trim().slice(0, 12_000) },

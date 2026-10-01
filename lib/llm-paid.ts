@@ -1,26 +1,25 @@
 /**
- * THE PAID LANE. Dormant until somebody puts a key in it.
+ * THE PAID LANE. The Command Center's engine, on the Anthropic API key.
  *
- * `lib/llm.ts` runs every prompt in this product on Sarah's Max subscription,
- * and that is still true: nothing here runs unless the subscription could not
- * answer. What changed is what happens next. The old answer was
- * `LlmUnavailable`, which is honest ("the work is queued, the request ended
- * first") and completely useless to a client standing in front of the Operator
- * waiting for a QR code. This module is the second answer.
+ * Since 2026-10-01 every Command Center call site sets `preferPaid`, so the
+ * client desk runs here and only here: no drainer, no subscription backstop.
+ * Everything else in the product (audits, the build floor, admin drafts) still
+ * runs on Sarah's Max subscription and reaches this lane only when a drainer
+ * could not answer in time.
  *
  * FOUR RULES, AND THEY ARE THE WHOLE DESIGN.
  *
- *   1. SUBSCRIPTION FIRST. This is a fallback, not a router. A drainer gets the
- *      job and gets a real chance to finish it before a cent is spent. The one
- *      exception is `preferPaid`, for the handful of call sites where a person
- *      is watching a spinner and forty seconds is the wrong answer.
+ *   1. THE CALLER CHOOSES. `preferPaid` makes this lane the only lane; without
+ *      it this is a fallback behind the queue. The Command Center chose the key
+ *      so the desk never waits on a drainer and never spends Sarah's
+ *      subscription.
  *   2. SAME QUESTION. The prompts come from `jsonPrompt` in the CLI engine, the
  *      parsing comes from `extractJson` in the CLI engine. A fallback that asks
  *      a different question is a second product with its own bugs.
  *   3. A CEILING THAT ACTUALLY STOPS. Spend is metered into `app_state` and the
  *      lane closes at the cap. Past the cap this module behaves exactly like it
  *      did before it existed, which is a safe place to fail.
- *   4. SILENCE IS NOT SUCCESS. The first fallback of the month and the month it
+ *   4. SILENCE IS NOT SUCCESS. The first paid call of the month and the month it
  *      hits the ceiling both reach Sarah through `lib/cc-alert.ts`. A paid lane
  *      nobody is watching is how a $99.99 Vercel build bill happened.
  *
@@ -69,10 +68,16 @@ const DEFAULT_CEILING_CENTS = 2_000;
  * network call to count is a ledger that stops counting when the network is the
  * thing that broke.
  */
-const MODELS: Record<string, { id: string; inCents: number; outCents: number }> = {
-  opus: { id: 'claude-opus-5', inCents: 500, outCents: 2_500 },
-  sonnet: { id: 'claude-sonnet-5', inCents: 200, outCents: 1_000 },
-  haiku: { id: 'claude-haiku-4-5', inCents: 100, outCents: 500 },
+type PaidModel = { id: string; inCents: number; outCents: number; adaptive: boolean };
+
+/**
+ * `adaptive` is whether the model takes adaptive thinking and an effort level.
+ * Haiku 4.5 takes neither and answers a 400 if sent them.
+ */
+const MODELS: Record<string, PaidModel> = {
+  opus: { id: 'claude-opus-5-5', inCents: 400, outCents: 2_000, adaptive: true },
+  sonnet: { id: 'claude-sonnet-5-5', inCents: 200, outCents: 1_000, adaptive: true },
+  haiku: { id: 'claude-haiku-4-5', inCents: 100, outCents: 500, adaptive: false },
 };
 
 /**
@@ -90,12 +95,12 @@ const EFFORT = 'low' as const;
 /** Generous enough that nothing this product asks for gets cut off mid-sentence. */
 const MAX_TOKENS = 16_000;
 
-function modelFor(name: string | undefined): { id: string; inCents: number; outCents: number } {
+function modelFor(name: string | undefined): PaidModel {
   const known = MODELS[name ?? 'sonnet'];
   if (known) return known;
-  // An explicit model id passed straight through. Price it as Sonnet: guessing
+  // An explicit model id passed straight through. Price it as Opus: guessing
   // low would be the one direction that lets the ceiling be walked past.
-  return { id: name as string, inCents: MODELS.sonnet.inCents, outCents: MODELS.sonnet.outCents };
+  return { id: name as string, inCents: MODELS.opus.inCents, outCents: MODELS.opus.outCents, adaptive: !/haiku/i.test(name as string) };
 }
 
 /** Is there a key at all? Cheap, synchronous, safe to call on every request. */
@@ -258,22 +263,21 @@ async function call(sb: SupabaseClient | null, req: PaidRequest, prompt: string)
   const res = await client.messages.create({
     model: m.id,
     max_tokens: MAX_TOKENS,
-    thinking: { type: 'adaptive' },
-    output_config: { effort: EFFORT },
+    ...(m.adaptive ? { thinking: { type: 'adaptive' as const }, output_config: { effort: EFFORT } } : {}),
     messages: [{ role: 'user', content: contentFor(req, prompt) }],
   });
 
   const after = await bill(sb, centsFor(m, res.usage.input_tokens, res.usage.output_tokens));
 
-  // The first spend of the month is worth knowing about. It means a drainer did
-  // not answer, which is the thing that used to fail silently.
+  // The first spend of the month is worth knowing about: it proves the key is
+  // live and billing for the new month.
   if (after.calls === 1) {
     await alert(sb, {
       key: `llm-paid-first:${after.month}`,
       severity: 'watch',
-      what: 'The Command Center fell back to the paid model lane',
-      where: `First time this month. Job: ${req.label}`,
-      doThis: 'Nothing, this is the lane working. Worth a look if the drainers are meant to be up.',
+      what: 'The Command Center made its first API key call of the month',
+      where: `Job: ${req.label}`,
+      doThis: 'Nothing, this is the key working.',
       detail: `Model ${m.id}. Ceiling $${(ceilingCents() / 100).toFixed(2)} a month.`,
     });
   }

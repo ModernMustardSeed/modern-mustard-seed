@@ -474,6 +474,7 @@ async function syncOne(sb: SupabaseClient, p: ClientProject, creds: Creds): Prom
           const jobId = await llmEnqueue({
             label: `client-mail:${ins[0].id}`,
             model: 'sonnet',
+            preferPaid: true,
             system: SORT_SYSTEM(p, creds.address, signer),
             user: `From: ${row.from_name ?? ''} <${row.from_addr ?? ''}>\nTo: ${row.to_addrs ?? creds.address}\nSubject: ${row.subject}\nReceived: ${row.received_at}\n\n${row.body_text.slice(0, 6000)}`,
             schema: SORT_SCHEMA,
@@ -654,7 +655,7 @@ Answer with the reply body only: no subject line, no preamble, no notes to the w
       : `Write a reply to this message.${typed ? ` ${signer} has started with this; use it as the direction and keep what it says:\n\n${typed.slice(0, 2000)}\n` : ''}\n\n${original}\n\nEnd with a plain next step (a call, a site visit, a time that works).`;
   const attempt = /^[a-z0-9-]{6,40}$/i.test(opts.attempt ?? '') ? opts.attempt : Date.now().toString(36);
   try {
-    const out = await llmText({ system, user, label: `mail-write:${mailId}:${mode}:${attempt}`, model: 'sonnet', timeoutMs: 45_000, collectWithinMs: 10 * 60_000 });
+    const out = await llmText({ system, user, label: `mail-write:${mailId}:${mode}:${attempt}`, model: 'sonnet', preferPaid: true, timeoutMs: 45_000, collectWithinMs: 10 * 60_000 });
     const text = out.replace(/—/g, ',').replace(/^\s*subject:.*\n+/i, '').trim().slice(0, 4000);
     if (!text) return { ok: false, error: 'Nothing came back. Press it once more.' };
     if (mode === 'suggest') await sb.from('client_mail').update({ draft: text, updated_at: new Date().toISOString() }).eq('id', mailId);

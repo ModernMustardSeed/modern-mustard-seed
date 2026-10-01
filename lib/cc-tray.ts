@@ -137,6 +137,7 @@ export async function readTray(input: TrayInput): Promise<TrayResult> {
     label: `tray:${input.clientEmail}`,
     model: 'sonnet' as const,
     schema: TRAY_SCHEMA,
+    preferPaid: true,
     attachments: input.files ?? null,
   };
 

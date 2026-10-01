@@ -93,6 +93,7 @@ export async function compose(sb: SupabaseClient, s: SettingsRow, input: Compose
       user: userPrompt(brief),
       label: `compose:${s.client_email}:${date}`,
       model: 'sonnet',
+      preferPaid: true,
       schema: CAPTION_SCHEMA,
       timeoutMs: WAIT_MS,
     });
@@ -111,7 +112,7 @@ export async function compose(sb: SupabaseClient, s: SettingsRow, input: Compose
       // their own words, shaped. Silence here is deliberate: the caller has
       // something to show either way.
       try {
-        jobId = await llmEnqueue({ system: systemPrompt(s), user: userPrompt(brief), label: `compose:${s.client_email}:${date}`, model: 'sonnet', schema: CAPTION_SCHEMA });
+        jobId = await llmEnqueue({ system: systemPrompt(s), user: userPrompt(brief), label: `compose:${s.client_email}:${date}`, model: 'sonnet', preferPaid: true, schema: CAPTION_SCHEMA });
       } catch {
         jobId = null;
       }
