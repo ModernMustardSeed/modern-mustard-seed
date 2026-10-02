@@ -71,8 +71,8 @@ export default async function WhiteLabelSheetPage({ searchParams }: { searchPara
                   {l.group !== 'sites' && <p className="mt-0.5 text-[10px] leading-snug text-[#0b3b44]/70">{l.pitch}</p>}
                 </td>
                 <td className="py-1 pr-2 font-semibold tabular-nums">{money(l.wholesale.setup, l.wholesale.monthly)}</td>
-                <td className="py-1 pr-2 tabular-nums">{money(l.retail.setup, l.retail.monthly)}</td>
-                <td className="py-1 font-bold tabular-nums text-[#0a7c78]">{money(m.setup, m.monthly)}</td>
+                <td className="py-1 pr-2 tabular-nums">{l.internal ? 'For your studio' : money(l.retail.setup, l.retail.monthly)}</td>
+                <td className="py-1 font-bold tabular-nums text-[#0a7c78]">{l.internal ? 'Not resold' : money(m.setup, m.monthly)}</td>
               </tr>
             );
           })}
@@ -102,11 +102,16 @@ export default async function WhiteLabelSheetPage({ searchParams }: { searchPara
           </div>
         </header>
 
-        {WL_GROUPS.map((g, i) => (
+        {WL_GROUPS.filter((g) => g.key !== 'agency').map((g, i) => (
           <div key={g.key}>{table(g.sheetTitle, WL_LINES.filter((l) => l.group === g.key), i === 0)}</div>
         ))}
 
-        <div className="mt-6 grid grid-cols-3 gap-x-5 gap-y-3 print:mt-0 print:break-before-page">
+        <div className="print:break-inside-avoid-page">
+          {WL_GROUPS.filter((g) => g.key === 'agency').map((g) => (
+            <div key={g.key}>{table(g.sheetTitle, WL_LINES.filter((l) => l.group === g.key), true)}</div>
+          ))}
+
+        <div className="mt-6 grid grid-cols-3 gap-x-5 gap-y-3">
           {WL_TERMS.map((t) => (
             <div key={t.title}>
               <p className="text-[12px] font-bold">{t.title}</p>
@@ -119,6 +124,8 @@ export default async function WhiteLabelSheetPage({ searchParams }: { searchPara
           <p>
             <strong>Founding agency rate.</strong> The first {WL_PROGRAM.foundingAgencies} agencies keep these wholesale prices for {WL_PROGRAM.foundingMonths} months from their first client. Every voice agent answers {WL_PROGRAM.answeredMinutes} minutes a month, then takes messages; nobody gets an overage bill. One invoice a month from us covers every client.
           </p>
+        </div>
+
         </div>
 
         <p className="mt-3 text-[10px] text-[#0b3b44]/55">Wholesale prices on this sheet are for {agency} only. Your clients see your name and your prices, never these.</p>

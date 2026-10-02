@@ -62,7 +62,7 @@ const MENU_GROUPS = [
       { label: 'Contact', href: '/contact' },
       { label: 'Partner Program', href: '/partners' },
       { label: 'Sales Rep Jobs', href: '/partners/sales-rep' },
-      { label: 'White Label For Agencies', href: '/white-label' },
+      { label: 'Agency Partners', href: '/white-label' },
       { label: 'Client Portal', href: '/portal' },
     ],
   },

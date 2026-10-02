@@ -42,7 +42,7 @@ export default async function WhiteLabelDemoPage({ searchParams }: { searchParam
   const sample = wlSample(one(q.sample));
 
   // What an agency's client would buy. Overflow sites are agency-to-us capacity, so they stay off.
-  const show = ['ai-receptionist', 'site-agent', 'phone-and-site-agent', 'ai-visibility', 'marketing-dashboard', 'agentic-system'];
+  const show = ['ai-receptionist', 'site-agent', 'phone-and-site-agent', 'ai-visibility', 'custom-agent', 'site-ai', 'marketing-dashboard', 'agentic-system'];
   const lines: WlDemoLine[] = show
     .map((slug) => WL_LINES.find((l) => l.slug === slug)!)
     .map((l) => ({

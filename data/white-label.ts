@@ -23,7 +23,7 @@
  * sells on its own page at its own price (Study law).
  */
 
-export type WlGroup = 'ai' | 'sites' | 'systems';
+export type WlGroup = 'ai' | 'sites' | 'systems' | 'agency';
 
 /** The three shelves, in the order every page shows them. */
 export const WL_GROUPS: { key: WlGroup; title: string; sheetTitle: string; blurb: string }[] = [
@@ -41,9 +41,15 @@ export const WL_GROUPS: { key: WlGroup; title: string; sheetTitle: string; blurb
   },
   {
     key: 'systems',
-    title: 'Systems, dashboards and studios',
-    sheetTitle: 'Agentic systems, dashboards and studios, per client',
+    title: 'Agents, dashboards and AI in their site',
+    sheetTitle: 'Agents, agentic dashboards and systems, per client',
     blurb: 'Set-price builds scoped in writing. Running costs pass through at cost, never marked up by us.',
+  },
+  {
+    key: 'agency',
+    title: 'For your own agency',
+    sheetTitle: 'Your agentic partner, for your own studio',
+    blurb: 'The engineering bench behind your studio, and AI inside how your agency runs. Yours to use, not to resell.',
   },
 ];
 
@@ -61,6 +67,8 @@ export type WlLine = {
   retail: { setup: number; monthly: number };
   /** What a direct MMS client pays for the nearest thing, for Sarah's eyes only. */
   directRef?: string;
+  /** For the agency itself, not resold: no suggested retail, no margin. */
+  internal?: boolean;
 };
 
 export const WL_PROGRAM = {
@@ -68,8 +76,8 @@ export const WL_PROGRAM = {
   short: 'White Label',
   path: '/white-label',
   promise:
-    'Voice agents, agentic systems, marketing dashboards, custom studios and overflow websites, built by us and sold under your name. You set the price. You keep the client.',
-  metaTitle: 'White Label AI Services for Agencies: Voice Agents, Agentic Systems and Overflow',
+    'The engineering behind your agency. Agents, agentic dashboards and AI built into the sites you design, sold under your name. Your overflow when you are full. AI inside how your own studio runs.',
+  metaTitle: 'The Agentic Partner for Agencies: White Label AI, Agents, Dashboards and Overflow',
   metaDescription:
     'A white label AI program for web design and marketing agencies. Sell voice agents, agentic systems, marketing and ads dashboards and custom studios under your brand at your price, and hand us your overflow. Built and run by Modern Mustard Seed.',
   /** Founding rate: the first agencies keep these wholesale prices this long. */
@@ -198,7 +206,7 @@ export const WL_LINES: WlLine[] = [
    * Product $15,000 to $35,000). Bigger than a package is a new package. */
   {
     slug: 'automation',
-    name: 'Single Automation or Agent',
+    name: 'Single Automation',
     group: 'systems',
     pitch: 'One job the client does by hand today, done by an agent: intake, quoting, follow-up, scheduling or reporting.',
     includes: [
@@ -210,6 +218,36 @@ export const WL_LINES: WlLine[] = [
     wholesale: { setup: 1497, monthly: 0 },
     retail: { setup: 2997, monthly: 0 },
     directRef: 'Rate sheet: Single Automation from $2,500',
+  },
+  {
+    slug: 'custom-agent',
+    name: 'Custom Agent',
+    group: 'systems',
+    pitch: 'An agent with a real job: it qualifies leads, answers the inbox, writes quotes or chases invoices, with the client’s tools and memory.',
+    includes: [
+      'Scoped to one job, written down before we start',
+      'Connected to the client’s CRM, inbox, calendar or books',
+      'Approvals wherever money or a customer is involved',
+      'Monitored and tuned monthly, under your name',
+    ],
+    wholesale: { setup: 2997, monthly: 147 },
+    retail: { setup: 6497, monthly: 397 },
+    directRef: 'Rate sheet: Agent Build $5,000 to $12,000, operation from $300/mo',
+  },
+  {
+    slug: 'site-ai',
+    name: 'AI Built Into Their Site',
+    group: 'systems',
+    pitch: 'The site you designed starts doing work: an intake that understands, a quote builder, search that answers, content that fits each visitor.',
+    includes: [
+      'Built into your design, on your stack or ours',
+      'Connected to where the client actually works',
+      'You keep the design credit and the client relationship',
+      'Documented so your team can maintain it',
+    ],
+    wholesale: { setup: 1997, monthly: 0 },
+    retail: { setup: 4497, monthly: 0 },
+    directRef: 'Rate sheet: AI-optimized website build $3,500 to $8,000, MCP integration from $2,500',
   },
   {
     slug: 'agentic-system',
@@ -228,9 +266,9 @@ export const WL_LINES: WlLine[] = [
   },
   {
     slug: 'marketing-dashboard',
-    name: 'Marketing and Ads Dashboard',
+    name: 'Agentic Dashboard',
     group: 'systems',
-    pitch: 'Ads, site traffic, calls and leads on one screen, with an AI read of what moved and what to do next.',
+    pitch: 'Ads, leads, calls, jobs and revenue on one screen, with agents that read it and act: move budget, chase stale leads, flag what changed.',
     includes: [
       'Meta, Google Ads, Analytics and call data in one live dashboard',
       'Cost per lead and cost per booked job, not just clicks',
@@ -270,6 +308,57 @@ export const WL_LINES: WlLine[] = [
     wholesale: { setup: 897, monthly: 0 },
     retail: { setup: 1497, monthly: 0 },
     directRef: '/claude person tier, quoted direct',
+  },
+
+  /* ── FOR YOUR OWN AGENCY ────────────────────────────────────────────────
+   * Not resold, so no retail and no margin. The Bench is a capacity
+   * subscription (builds in flight), never time: no hours anywhere. */
+  {
+    slug: 'bench',
+    name: 'The Agentic Bench',
+    group: 'agency',
+    pitch: 'Your engineering team on a subscription: one build in flight at a time, as many requests in the queue as you like, delivered under your name.',
+    includes: [
+      'Overflow sites, integrations, agents, dashboards and automations',
+      'One build in flight at a time, the next one starts the day it ships',
+      'Your design system and your standards, your name on the work',
+      'Pause or cancel any month',
+    ],
+    wholesale: { setup: 0, monthly: 2997 },
+    retail: { setup: 0, monthly: 2997 },
+    internal: true,
+    directRef: 'Rate sheet: build and operate retainer from $2,000/mo',
+  },
+  {
+    slug: 'bench-two',
+    name: 'The Agentic Bench, Two at a Time',
+    group: 'agency',
+    pitch: 'The Bench with two builds in flight at once, for studios with a full pipeline.',
+    includes: [
+      'Everything in The Agentic Bench',
+      'Two builds in flight at a time',
+      'First in line when a client deadline moves',
+      'Pause or cancel any month',
+    ],
+    wholesale: { setup: 0, monthly: 4997 },
+    retail: { setup: 0, monthly: 4997 },
+    internal: true,
+  },
+  {
+    slug: 'agency-ops',
+    name: 'AI Inside Your Agency',
+    group: 'agency',
+    pitch: 'Your own studio, automated: proposals drafted from the discovery call, client reports that write themselves, onboarding that runs on its own.',
+    includes: [
+      'We map how your agency runs and pick the three things worth automating',
+      'Proposals, monthly reports and client onboarding built as agents',
+      'Claude set up for your team, with skills written for your studio',
+      'Monthly covers hosting, monitoring and changes',
+    ],
+    wholesale: { setup: 3997, monthly: 197 },
+    retail: { setup: 3997, monthly: 197 },
+    internal: true,
+    directRef: 'AI Native direct: The AI Map $2,500, AI Native $12,000',
   },
 ];
 
@@ -331,6 +420,14 @@ export const WL_FAQ: { q: string; a: string }[] = [
     a: 'Yes. We publish a suggested retail on your price sheet. Most agencies sell at or above it. The difference is yours.',
   },
   {
+    q: 'What is The Agentic Bench?',
+    a: 'Your engineering team on a subscription. One build in flight at a time, as many requests in the queue as you like: overflow sites, integrations, agents, dashboards, automations. The next build starts the day the last one ships. It is capacity, never billed by time, and you can pause or cancel any month.',
+  },
+  {
+    q: 'Can you build AI into the sites we design?',
+    a: 'Yes. An intake that understands, a quote builder, search that answers, content that fits each visitor, built into your design on your stack or ours. You keep the design credit and the client.',
+  },
+  {
     q: 'How does billing work?',
     a: 'Nothing is billed until a client goes live, and a client goes live only after you call the test line and press Approve. Then its setup and monthly land on your next invoice from us: one invoice a month covering every live client, payable within seven days. Pause a client and it drops off the next invoice.',
   },
@@ -354,6 +451,7 @@ export function wlPublicLines() {
 }
 
 export function wlMargin(l: WlLine) {
+  if (l.internal) return { setup: 0, monthly: 0 };
   return { setup: l.retail.setup - l.wholesale.setup, monthly: l.retail.monthly - l.wholesale.monthly };
 }
 
