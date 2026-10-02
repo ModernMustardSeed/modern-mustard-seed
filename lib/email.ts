@@ -251,13 +251,14 @@ function ctaBlock(primary: { label: string; url: string }, secondary?: { label: 
   </td></tr>`;
 }
 
-// Sarah's signature. A pop-art bubble portrait, her name set in script, the
-// role in plain type beneath it, and Mr. Mustard answering the ranch line so
-// every email ends with a way to reach a person. Signs every email. The name
-// arg is kept for call-site compatibility; the sign-off is always Sarah.
+// Sarah's signature, matching the Zoho one at public/brand/signature.html (keep
+// the two in step). A small circle portrait, her name in Unbounded, her cell and
+// the site, and paper Mr. Mustard on the ranch line so every email ends with a
+// way to reach a person. No title, by her call (2026-10-01). Signs every email. The name arg
+// is kept for call-site compatibility; the sign-off is always Sarah.
 //
 // The three assets are 2x PNGs in public/brand, sized down in the markup so
-// they stay sharp on retina. The script name carries alt="Sarah Scarano", so a
+// they stay sharp on retina. The name image carries alt="Sarah Scarano", so a
 // client with images off still shows the name and not a gap.
 //
 // IT MUST BE ABLE TO SHRINK (fixed 2026-08-25). Sarah: "most of my signature is
@@ -266,7 +267,7 @@ function ctaBlock(primary: { label: string; url: string }, secondary?: { label: 
 // the card's 44px side padding and the page's 16px, that is a 593px floor under
 // an otherwise fluid email, and on a phone the name ran off the right edge and
 // dragged the whole message into horizontal scroll. The name is fluid now
-// (`width:100%;max-width:339px`), so it scales into whatever it is given and the
+// (`width:100%;max-width:207px` since 2026-10-01), so it scales into whatever it is given and the
 // email has no fixed-width floor left in it.
 //
 // The bottom padding moves with the ranch card. That card used to carry the
@@ -275,35 +276,43 @@ function ctaBlock(primary: { label: string; url: string }, secondary?: { label: 
 // reads exactly like something that failed to finish rendering.
 function signature(_name?: string, opts?: { ranchLine?: boolean }): string {
   const withRanch = opts?.ranchLine !== false;
+  const sea = '#0b3b44';
+  const lagoon = '#0a7c78';
   return `<tr><td style="padding:36px 44px ${withRanch ? '0' : '38px'}">
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%"><tr>
-      <td class="mms-sig-face" width="114" style="width:114px;vertical-align:middle">
-        <img src="${SITE}/brand/sig-sarah.png?v=2026-08-25d" width="114" height="114" alt="" style="display:block;border:0;outline:none;text-decoration:none;width:114px;max-width:114px;height:auto" />
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse"><tr>
+      <td width="44" height="3" bgcolor="#81d8d0" style="width:44px;height:3px;line-height:3px;font-size:0;background:#81d8d0">&nbsp;</td>
+      <td width="22" height="3" bgcolor="${C.goldBrand}" style="width:22px;height:3px;line-height:3px;font-size:0;background:${C.goldBrand}">&nbsp;</td>
+    </tr></table>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;margin-top:16px"><tr>
+      <td class="mms-sig-face" width="64" style="width:64px;vertical-align:middle">
+        <img src="${SITE}/brand/sig-sarah-20261001.png?v=2026-10-01" width="64" height="64" alt="" style="display:block;border:0;outline:none;text-decoration:none;width:64px;height:64px" />
       </td>
-      <td class="mms-sig-text" style="vertical-align:middle;padding-left:20px">
-        <img src="${SITE}/brand/sig-name.png" width="339" height="46" alt="Sarah Scarano" style="display:block;border:0;outline:none;text-decoration:none;width:100%;max-width:339px;height:auto" />
-        <p class="mms-body" style="margin:9px 0 0;font-family:${SANS};font-size:14px;color:${C.body};font-weight:600">(Founder &amp; Agentic Engineer)</p>
-        <p class="mms-ink" style="margin:9px 0 0;font-family:${SANS};font-size:11px;color:${C.ink};letter-spacing:2px;text-transform:uppercase;font-weight:700">Modern Mustard Seed</p>
+      <td class="mms-sig-text" style="vertical-align:middle;padding-left:14px">
+        <img src="${SITE}/brand/sig-name-20261001.png?v=2026-10-01" width="207" height="29" alt="Sarah Scarano" style="display:block;border:0;outline:none;text-decoration:none;width:100%;max-width:207px;height:auto" />
+        <p style="margin:6px 0 0;font-family:${SANS};font-size:14px;line-height:1.45;color:${sea}">
+          <a href="tel:+14062506076" class="mms-ink" style="color:${sea};text-decoration:none;font-weight:700;white-space:nowrap">(406) 250-6076</a><br />
+          <a href="${SITE}" style="color:${lagoon};text-decoration:none;font-weight:600">modernmustardseed.com</a>
+        </p>
       </td>
     </tr></table>
   </td></tr>
   ${
     // The ranch card. Suppressed by the cold campaign, which now prints the same
     // number at 30px in the body with the instruction that turns the call into a
-    // demo. Two cream cards carrying one phone number, four inches apart, reads
-    // as a template repeating itself rather than as an invitation.
+    // demo. Two cards carrying one phone number, four inches apart, reads as a
+    // template repeating itself rather than as an invitation.
     !withRanch
       ? ''
-      : `<tr><td style="padding:26px 44px 42px">
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="${C.panelWarm}" style="background:${C.panelWarm};border:2px solid ${C.ink};border-radius:14px">
+      : `<tr><td style="padding:22px 44px 42px">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#fbf5ea" style="width:100%;border-collapse:separate;background:#fbf5ea;border:1.5px solid ${sea};border-radius:14px">
       <tr>
-        <td width="112" style="width:112px;vertical-align:bottom;padding:10px 0 0 12px">
-          <img src="${SITE}/brand/sig-mustard-phone.png" width="100" height="127" alt="Mr. Mustard answering the ranch line" style="display:block;border:0;outline:none;text-decoration:none" />
+        <td width="82" style="width:82px;vertical-align:middle;padding:14px 0 14px 12px">
+          <img src="${SITE}/brand/sig-mustard-paper-20261001.png?v=2026-10-01" width="72" height="88" alt="Mr. Mustard on the phone" style="display:block;border:0;outline:none;text-decoration:none;width:72px;height:88px" />
         </td>
-        <td style="vertical-align:middle;padding:18px 22px 18px 8px">
-          <div style="font-family:${SANS};font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:${C.gold}">The ranch line</div>
-          <a href="tel:+14063121223" class="mms-ink" style="display:inline-block;margin:8px 0 0;font-family:${SERIF};font-size:25px;font-weight:700;color:${C.ink};text-decoration:none;letter-spacing:0.2px">(406) 312-1223</a>
-          <p class="mms-body" style="margin:8px 0 0;font-family:${SANS};font-size:13px;color:${C.body};line-height:1.6">Mr. Mustard picks up day or night. Ask him anything, and he will get you to me.</p>
+        <td style="vertical-align:middle;padding:14px 14px 14px 12px">
+          <div style="font-family:${SANS};font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#d4462e;white-space:nowrap">Call the ranch line</div>
+          <a href="tel:+14063121223" class="mms-ink" style="display:inline-block;margin:6px 0 0;font-family:Unbounded,${SANS};font-size:19px;font-weight:700;color:${sea};text-decoration:none;letter-spacing:-0.2px;white-space:nowrap">(406) 312-1223</a>
+          <p class="mms-body" style="margin:6px 0 0;font-family:${SANS};font-size:13px;color:#2e5560;line-height:1.55">Mr. Mustard picks up day or night. Ask him anything, and he will get you to me.</p>
         </td>
       </tr>
     </table>

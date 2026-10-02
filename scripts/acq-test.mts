@@ -1030,7 +1030,7 @@ test('emails: email one carries the machine, the ranch line and exactly one butt
   const ranchSize = Number(html.match(/<a href="tel:[^"]*"[^>]*font-size:(\d+)px/)?.[1] ?? 0);
   assert.ok(ranchSize >= 28 && ranchSize <= 32, `the ranch number should be 28-32px, got ${ranchSize}`);
   // And nothing in the signature may impose a fixed width either.
-  assert.match(html, /sig-name\.png[^>]*width:100%/, 'the script name must scale into whatever column it gets');
+  assert.match(html, /sig-name-\d+\.png[^>]*width:100%/, 'the name image must scale into whatever column it gets');
   // ONE BUTTON, TWO TRACKED LINKS. The button opens the free build; the text
   // link under it opens the Talking Website. Both are measured, and only one of
   // them is a button, because a second button splits the click and measures
