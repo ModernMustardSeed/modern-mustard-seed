@@ -234,17 +234,21 @@ export async function connectFacebookByToken(
   if (!raw) return { ok: false, error: 'Paste the token first.' };
 
   // A user token that can be made long-lived is, when the app credentials exist. A Page token passes through untouched.
+  // When the exchange fails, say why: twice a short token was stored this way and died the same morning.
   let userToken = raw;
+  let exchangeNote: string | null = null;
   const appId = real(process.env.FACEBOOK_APP_ID);
   const appSecret = real(process.env.FACEBOOK_APP_SECRET);
   if (appId && appSecret) {
     try {
       const ex = await fetch(`${GRAPH}/oauth/access_token?grant_type=fb_exchange_token&client_id=${appId}&client_secret=${appSecret}&fb_exchange_token=${encodeURIComponent(raw)}`);
-      const j = (await ex.json()) as { access_token?: string };
+      const j = (await ex.json()) as { access_token?: string; error?: { message?: string } };
       if (ex.ok && j.access_token) userToken = j.access_token;
-    } catch {
-      /* the raw token still works for as long as it lasts */
+      else exchangeNote = j.error?.message ?? `HTTP ${ex.status}`;
+    } catch (err) {
+      exchangeNote = err instanceof Error ? err.message : 'network error';
     }
+    if (exchangeNote) console.warn(`[posting] Facebook token exchange failed for ${clientEmail}: ${exchangeNote}`);
   }
 
   // Who is this token? Only id and name: a person has no instagram_business_account
@@ -270,6 +274,13 @@ export async function connectFacebookByToken(
       const known = (had?.external_id as string | null) ?? null;
       if (known && pages.some((p) => p.id === known)) preferPageId = known;
     }
+    // Disconnected first, so nothing is remembered: the Page that carries the
+    // client's business name is theirs, when exactly one does.
+    if (pages.length > 1 && !preferPageId) {
+      const { data: s } = await sb.from('posting_settings').select('business_name').eq('client_email', clientEmail.toLowerCase().trim()).maybeSingle();
+      const hits = pagesNamed(pages, (s?.business_name as string | null) ?? '');
+      if (hits.length === 1) preferPageId = hits[0].id;
+    }
     if (pages.length > 1 && !preferPageId) {
       return { ok: false, error: 'That account manages more than one Page. Pick the one to post as.', choices: pages.map((p) => ({ id: p.id, name: p.name })) };
     }
@@ -286,6 +297,19 @@ export async function connectFacebookByToken(
   const granted = new Set((perms.ok ? perms.data.data ?? [] : []).filter((p) => p.status === 'granted').map((p) => p.permission));
   if (granted.size && !granted.has('pages_manage_posts')) {
     return { ok: false, error: 'That token cannot post: it is missing pages_manage_posts. Generate it again with pages_manage_posts and pages_read_engagement ticked.' };
+  }
+
+  // Only a Page token that never runs out is stored. One minted from a short
+  // user token dies within the hour, and the feed goes quiet with a green check.
+  const life = await tokenLife(pageToken);
+  // Saving blind is how the short token got in, so an unanswered question is a no.
+  if (!life.known) return { ok: false, error: 'Meta did not say how long that token lasts, so nothing was saved. Try again in a minute.' };
+  if (life.expiresAt) {
+    const when = new Date(life.expiresAt * 1000).toLocaleString('en-US', { timeZone: 'America/Denver', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+    return {
+      ok: false,
+      error: `That token runs out ${when} Mountain, so nothing was saved. Open it in Meta's Access Token Debugger, press Extend Access Token, and paste the longer token it gives you.${exchangeNote ? ` (Our own extension failed: ${exchangeNote})` : ''}`,
+    };
   }
 
   const fb = await saveAccount(sb, clientEmail, {
@@ -313,6 +337,39 @@ export async function connectFacebookByToken(
     await dropPageInstagram(sb, clientEmail);
   }
   return { ok: true, page: { id: page.id, name: page.name }, instagram: ig ? { id: ig.id, username: ig.username ?? null } : null };
+}
+
+/**
+ * Pages whose name IS the business name, ignoring case, punctuation and
+ * LLC-style suffixes. Exact on purpose: a studio login manages many clients'
+ * Pages, and a prefix would let a short name claim someone else's.
+ */
+export function pagesNamed<P extends { name: string }>(pages: P[], businessName: string): P[] {
+  const norm = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, ' ').replace(/\b(llc|inc|co|corp|ltd)\b/g, '').replace(/\s+/g, ' ').trim();
+  const want = norm(businessName);
+  if (!want) return [];
+  return pages.filter((p) => norm(p.name) === want);
+}
+
+/**
+ * When a Meta token runs out, from Meta itself. expiresAt null means never.
+ * A token inspects itself, so no app secret is needed. known false means Meta
+ * did not answer twice running; callers decide what unknown means to them.
+ */
+export async function tokenLife(token: string): Promise<{ known: boolean; expiresAt: number | null; dataAccessUntil: number | null }> {
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      const res = await fetch(`${GRAPH}/debug_token?input_token=${encodeURIComponent(token)}&access_token=${encodeURIComponent(token)}`, { signal: AbortSignal.timeout(15_000) });
+      const j = (await res.json().catch(() => ({}))) as { data?: { expires_at?: number; data_access_expires_at?: number } };
+      if (!j.data) continue;
+      const exp = j.data.expires_at;
+      const access = j.data.data_access_expires_at;
+      return { known: true, expiresAt: typeof exp === 'number' && exp > 0 ? exp : null, dataAccessUntil: typeof access === 'number' && access > 0 ? access : null };
+    } catch {
+      /* one more try */
+    }
+  }
+  return { known: false, expiresAt: null, dataAccessUntil: null };
 }
 
 async function graph<T>(url: string, token: string): Promise<{ ok: true; data: T } | { ok: false; error: string }> {

@@ -31,6 +31,8 @@ const INPUT = 'w-full rounded-lg border-2 border-[#161616]/40 bg-[#FBF6EA] px-3 
 
 type Act = (b: Record<string, unknown>, label?: string) => Promise<Record<string, unknown>>;
 
+const DESK_DOWN = 'The posting desk did not answer. Press Refresh to try again.';
+
 export default function PostingDesk() {
   const params = useSearchParams();
   const [clients, setClients] = useState<Overview[]>([]);
@@ -40,12 +42,21 @@ export default function PostingDesk() {
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
 
+  // Until the first answer lands the desk says it is reading, never "nobody is on":
+  // the read takes seconds, and an empty state that early reads as data lost.
+  const [loaded, setLoaded] = useState(false);
   const load = useCallback(async () => {
-    const res = await fetch(`/api/admin/posting${selected ? `?client=${encodeURIComponent(selected)}` : ''}`);
-    const j = (await res.json().catch(() => ({}))) as { clients?: Overview[]; detail?: Detail | null; error?: string };
-    setClients(j.clients ?? []);
+    const res = await fetch(`/api/admin/posting${selected ? `?client=${encodeURIComponent(selected)}` : ''}`, { cache: 'no-store' }).catch(() => null);
+    const j = (res ? await res.json().catch(() => ({})) : {}) as { clients?: Overview[]; detail?: Detail | null; error?: string };
+    if (!res || !res.ok || !Array.isArray(j.clients)) {
+      setError(j.error ?? DESK_DOWN);
+      return;
+    }
+    setClients(j.clients);
     setDetail(j.detail ?? null);
-    if (j.error) setError(j.error);
+    setLoaded(true);
+    // Clear only our own "did not answer"; a connect result or an action error stays up.
+    setError((e) => j.error ?? (e === DESK_DOWN ? null : e));
   }, [selected]);
 
   useEffect(() => {
@@ -91,7 +102,8 @@ export default function PostingDesk() {
           <Tile label="Queued ahead" value={clients.reduce((n, c) => n + c.queued, 0)} />
         </div>
 
-        {!clients.length && <p className={`${CARD} text-[15px] text-[#161616]/70`}>Nobody is on Daily Posting yet. Run `node scripts/posting-seed-built-right.mjs` for the first client.</p>}
+        {!loaded && !error && <p className={`${CARD} text-[15px] text-[#161616]/70`}>Reading every client&apos;s posting desk…</p>}
+        {loaded && !clients.length && <p className={`${CARD} text-[15px] text-[#161616]/70`}>Nobody is on Daily Posting yet. Run `node scripts/posting-seed-built-right.mjs` for the first client.</p>}
 
         <div className="space-y-3 mb-8">
           {clients.map((c) => (
