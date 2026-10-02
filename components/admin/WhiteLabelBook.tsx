@@ -51,6 +51,9 @@ type Client = {
 const card = 'bg-white border-2 border-[#161616] rounded-xl';
 const chip = 'rounded-full border-2 border-[#161616] px-3 py-1 text-[10px] font-mono font-bold uppercase tracking-[0.15em]';
 const input = 'rounded-lg border-2 border-[#161616] bg-[#FBF6EA] px-2.5 py-1.5 font-body text-sm text-[#161616] outline-none';
+/** Lines that need a test call before they go live; everything else is delivered. */
+const VOICE = ['ai-receptionist', 'site-agent', 'phone-and-site-agent'];
+
 const COLUMNS = [
   { key: 'submitted', label: 'Submitted', hint: 'Start the build' },
   { key: 'building', label: 'Building', hint: 'Add the test number, then send to review' },
@@ -176,7 +179,16 @@ export default function WhiteLabelBook({ lineNames }: { lineNames: Record<string
                           Start building
                         </button>
                       )}
-                      {col.key === 'building' && (
+                      {col.key === 'building' && !c.lines.some((x) => VOICE.includes(x)) && (
+                        <button
+                          disabled={!!busy}
+                          onClick={() => act(c.id, `/api/admin/white-label/clients/${c.id}`, 'PATCH', { status: 'live' }, `${c.business} delivered. Agency emailed, billing updated.`)}
+                          className={`${chip} mt-2 bg-[#F5B700]`}
+                        >
+                          Delivered
+                        </button>
+                      )}
+                      {col.key === 'building' && c.lines.some((x) => VOICE.includes(x)) && (
                         <div className="mt-2 flex flex-wrap gap-1.5">
                           <input className={`${input} w-36`} placeholder="Test number" value={tests[c.id] ?? c.test_number ?? ''} onChange={(e) => setTests({ ...tests, [c.id]: e.target.value })} />
                           <button

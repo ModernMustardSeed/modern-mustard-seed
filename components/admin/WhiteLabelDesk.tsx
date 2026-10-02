@@ -189,8 +189,8 @@ export default function WhiteLabelDesk({
                         <p className="font-body text-xs text-[#3A3733] mt-0.5 max-w-sm">{l.pitch}</p>
                       </td>
                       <td className="px-4 py-3 font-mono font-bold whitespace-nowrap">{money(l.wholesale.setup, l.wholesale.monthly)}</td>
-                      <td className="px-4 py-3 font-mono whitespace-nowrap">{money(l.retail.setup, l.retail.monthly)}</td>
-                      <td className="px-4 py-3 font-mono whitespace-nowrap text-[#0a7c78] font-bold">{money(l.retail.setup - l.wholesale.setup, l.retail.monthly - l.wholesale.monthly)}</td>
+                      <td className="px-4 py-3 font-mono whitespace-nowrap">{l.internal ? 'For their studio' : money(l.retail.setup, l.retail.monthly)}</td>
+                      <td className="px-4 py-3 font-mono whitespace-nowrap text-[#0a7c78] font-bold">{l.internal ? 'Not resold' : money(l.retail.setup - l.wholesale.setup, l.retail.monthly - l.wholesale.monthly)}</td>
                       <td className="px-4 py-3 font-body text-xs text-[#3A3733]">{l.directRef ?? '-'}</td>
                     </tr>
                   ))}

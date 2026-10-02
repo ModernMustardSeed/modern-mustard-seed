@@ -92,7 +92,10 @@ export async function mailApproved(a: Agency) {
 
 /* ─── A CLIENT IS SUBMITTED ───────────────────────────────────────────── */
 
+const VOICE_LINES = ['ai-receptionist', 'site-agent', 'phone-and-site-agent'];
+
 export async function mailClientSubmitted(a: Agency, c: WlClient) {
+  const voice = c.lines.some((s) => VOICE_LINES.includes(s));
   await send(
     a.email,
     `Got it: ${c.business}`,
@@ -100,7 +103,11 @@ export async function mailClientSubmitted(a: Agency, c: WlClient) {
       eyebrow: 'CLIENT RECEIVED',
       greeting: `${esc(c.business)} is on our board.`,
       body:
-        p(`We start within one business day: ${esc(linesLabel(c.lines))}. Inside seven days you get a test number to call. Nothing goes live and nothing is billed until you approve it.`) +
+        p(
+          voice
+            ? `We start within one business day: ${esc(linesLabel(c.lines))}. Inside seven days you get a test number to call. Nothing goes live and nothing is billed until you approve it.`
+            : `We read the brief and send the scope in writing within one business day: ${esc(linesLabel(c.lines))}. Nothing starts and nothing is billed until you say yes to it.`,
+        ) +
         p('If anything changes in the meantime, reply here or add a note in your portal.'),
       cta: { label: 'See it in your portal', url: portalUrl(a) },
     }),

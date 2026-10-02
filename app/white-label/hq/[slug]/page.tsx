@@ -60,7 +60,7 @@ export default async function AgencyPortalPage({ params, searchParams }: { param
         created_at: c.created_at,
         live_at: c.live_at,
       }))}
-      lines={WL_LINES.map((l) => ({ slug: l.slug, name: l.name, group: l.group, pitch: l.pitch, wholesale: l.wholesale, retail: l.retail }))}
+      lines={WL_LINES.map((l) => ({ slug: l.slug, name: l.name, group: l.group, pitch: l.pitch, wholesale: l.wholesale, retail: l.retail, internal: l.internal }))}
       groups={WL_GROUPS.map((g) => ({ key: g.key, title: g.title }))}
       foundingMonths={WL_PROGRAM.foundingMonths}
     />

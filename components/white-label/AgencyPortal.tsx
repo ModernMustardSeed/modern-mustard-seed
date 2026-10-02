@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { inkFor, textOnWhite, usd } from '@/components/white-label/brand';
 
-type Line = { slug: string; name: string; group: string; pitch: string; wholesale: { setup: number; monthly: number }; retail: { setup: number; monthly: number } };
+type Line = { slug: string; name: string; group: string; pitch: string; wholesale: { setup: number; monthly: number }; retail: { setup: number; monthly: number }; internal?: boolean };
 type Client = {
   id: string;
   business: string;
@@ -49,6 +49,7 @@ export default function AgencyPortal({
   const accent = textOnWhite(agency.color);
   const [form, setForm] = useState({ business: '', website: '', city: '', contact_name: '', owner_phone: '', owner_email: '', transfer_number: '', hours: '', services_text: '', lines: ['ai-receptionist'] as string[] });
   const [busy, setBusy] = useState(false);
+  const [forStudio, setForStudio] = useState(false);
   const [msg, setMsg] = useState('');
   const [err, setErr] = useState('');
   const [demoFor, setDemoFor] = useState({ site: '', name: '' });
@@ -57,7 +58,7 @@ export default function AgencyPortal({
   const byLine = useMemo(() => new Map(lines.map((l) => [l.slug, l])), [lines]);
   const live = clients.filter((c) => c.status === 'live');
   const monthlyToUs = live.reduce((n, c) => n + c.lines.reduce((m, s) => m + (byLine.get(s)?.wholesale.monthly ?? 0), 0), 0);
-  const suggested = live.reduce((n, c) => n + c.lines.reduce((m, s) => m + (byLine.get(s)?.retail.monthly ?? 0), 0), 0);
+  const suggested = live.reduce((n, c) => n + c.lines.reduce((m, s) => { const l = byLine.get(s); return m + (l && !l.internal ? l.retail.monthly : 0); }, 0), 0);
 
   const order = form.lines.map((s) => byLine.get(s)).filter(Boolean) as Line[];
   const orderSetup = order.reduce((n, l) => n + l.wholesale.setup, 0);
@@ -91,7 +92,7 @@ export default function AgencyPortal({
       const res = await fetch(`/api/white-label/hq/${agency.slug}/clients`, {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ ...form, k: portalKey }),
+        body: JSON.stringify({ ...form, business: forStudio ? form.business || `${agency.name}: studio project` : form.business, k: portalKey }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Could not save.');
@@ -203,13 +204,42 @@ export default function AgencyPortal({
         <div className="grid gap-8 lg:grid-cols-[1.4fr_1fr]">
           {/* ─── ADD A CLIENT ─── */}
           <form onSubmit={submit} className="rounded-2xl border border-black/10 bg-white p-6">
-            <h2 className="text-xl font-black">Add a client</h2>
-            <p className="mt-1 text-sm text-neutral-600">They said yes. Tell us who they are and what to switch on. Nothing is billed until you approve the test call.</p>
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <h2 className="text-xl font-black">{forStudio ? 'Start a project' : 'Add a client'}</h2>
+              <div className="inline-flex rounded-full bg-neutral-100 p-1 text-sm font-bold" role="tablist" aria-label="Who is it for">
+                {[
+                  { v: false, l: 'For a client' },
+                  { v: true, l: 'For my agency' },
+                ].map((o) => (
+                  <button
+                    type="button"
+                    key={o.l}
+                    role="tab"
+                    aria-selected={forStudio === o.v}
+                    onClick={() => {
+                      setForStudio(o.v);
+                      setForm((f) => ({ ...f, lines: o.v ? ['bench'] : ['ai-receptionist'] }));
+                    }}
+                    className="rounded-full px-4 py-1.5"
+                    style={forStudio === o.v ? { background: agency.color, color: ink } : undefined}
+                  >
+                    {o.l}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <p className="mt-2 text-sm text-neutral-600">
+              {forStudio
+                ? 'Overflow you do not have room for, the Bench, or AI inside your own studio. Tell us what to build; we scope it in writing before anything starts.'
+                : 'They said yes. Tell us who they are and what to switch on. Nothing is billed until you approve the test call.'}
+            </p>
             <div className="mt-5 grid gap-4 sm:grid-cols-2">
               <label className="sm:col-span-2">
-                <span className={label}>Business name</span>
-                <input className={input} required value={form.business} onChange={(e) => setForm({ ...form, business: e.target.value })} />
+                <span className={label}>{forStudio ? 'Project name' : 'Business name'}</span>
+                <input className={input} required={!forStudio} placeholder={forStudio ? 'Riverside Dental site build, or our reporting automation' : ''} value={form.business} onChange={(e) => setForm({ ...form, business: e.target.value })} />
               </label>
+              {!forStudio && (
+                <>
               <label>
                 <span className={label}>Website</span>
                 <input className={input} placeholder="theirbusiness.com" value={form.website} onChange={(e) => setForm({ ...form, website: e.target.value })} />
@@ -238,15 +268,26 @@ export default function AgencyPortal({
                 <span className={label}>Hours</span>
                 <input className={input} placeholder="Mon to Fri 8 to 5, Sat 9 to 1" value={form.hours} onChange={(e) => setForm({ ...form, hours: e.target.value })} />
               </label>
+                </>
+              )}
               <label className="sm:col-span-2">
-                <span className={label}>What they offer, what they charge, how they book</span>
-                <textarea className={`${input} min-h-[110px]`} placeholder="Services and any prices they quote, the questions they get most, how appointments work, anything the receptionist must never say." value={form.services_text} onChange={(e) => setForm({ ...form, services_text: e.target.value })} />
+                <span className={label}>{forStudio ? 'What should we build?' : 'What they offer, what they charge, how they book'}</span>
+                <textarea
+                  className={`${input} min-h-[110px]`}
+                  placeholder={
+                    forStudio
+                      ? 'The brief: what it is, who it is for, the design file or examples, the deadline, and the tools it has to connect to.'
+                      : 'Services and any prices they quote, the questions they get most, how appointments work, anything the receptionist must never say.'
+                  }
+                  value={form.services_text}
+                  onChange={(e) => setForm({ ...form, services_text: e.target.value })}
+                />
               </label>
             </div>
 
             <p className={`${label} mt-6`}>Switch on</p>
             <div className="space-y-4">
-              {groups.map((g) => (
+              {groups.filter((g) => (forStudio ? g.key !== 'ai' : g.key !== 'agency')).map((g) => (
                 <div key={g.key}>
                   <p className="text-sm font-bold">{g.title}</p>
                   <div className="mt-2 grid gap-2 sm:grid-cols-2">
@@ -280,11 +321,11 @@ export default function AgencyPortal({
 
             <div className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-xl bg-neutral-50 p-4 text-sm">
               <span>
-                For this client you pay us <strong>{orderSetup ? `${usd(orderSetup)} setup` : 'no setup'}</strong>
+                {forStudio ? 'For this project' : 'For this client'} you pay us <strong>{orderSetup ? `${usd(orderSetup)} setup` : 'no setup'}</strong>
                 {orderMonthly ? <> then <strong>{usd(orderMonthly)}/mo</strong></> : ''}, once it is live.
               </span>
-              <button disabled={busy || !form.business || !form.lines.length} className="rounded-full px-6 py-3 text-sm font-bold disabled:opacity-50" style={{ background: agency.color, color: ink }}>
-                {busy ? 'Sending' : 'Start this client'}
+              <button disabled={busy || (!forStudio && !form.business) || !form.lines.length} className="rounded-full px-6 py-3 text-sm font-bold disabled:opacity-50" style={{ background: agency.color, color: ink }}>
+                {busy ? 'Sending' : forStudio ? 'Send the project' : 'Start this client'}
               </button>
             </div>
             {msg && <p className="mt-3 text-sm font-semibold text-green-700">{msg}</p>}

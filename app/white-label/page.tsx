@@ -13,12 +13,28 @@ export const metadata = buildMetadata({
 const ART_ALT =
   'Painting: at a lantern-lit beachside dinner, Mr. Mustard shows friends a tablet of website layouts while Mrs. Mustard raises a glass, the kids wave sparklers and a lit-up yacht sits on the water behind';
 
-const FOR = [
-  { who: 'Web designers', line: 'Your clients already ask what you can do with AI. Now the answer is a working receptionist on the site you built.' },
-  { who: 'Marketing agencies', line: 'You fill the phone with leads. The receptionist answers and books every one, and the dashboard shows the client what your ads actually produced.' },
-  { who: 'Brand and creative studios', line: 'Add a monthly line to every launch without hiring an engineer or learning a voice platform.' },
-  { who: 'IT and consultants', line: 'You are already the person they trust with technology. Put agents in front of them with your name on it.' },
+const WAYS = [
+  {
+    tag: 'For your clients',
+    title: 'AI you sell as yours.',
+    line: 'Receptionists, custom agents, agentic dashboards and AI built into the sites you design. Your name on it, your price, your client.',
+    items: ['AI receptionist and website agent', 'Custom agents with a real job', 'Agentic dashboards that act, not just report', 'AI built into the site you designed'],
+  },
+  {
+    tag: 'When you are full',
+    title: 'Your overflow, handled.',
+    line: 'Send us the build you do not have room for. We make it to your design file and your standards, and you deliver it as yours.',
+    items: ['Websites, five pages to fifty', 'Integrations and web apps', 'Dashboards and internal tools', 'Or keep a builder on call with The Agentic Bench'],
+  },
+  {
+    tag: 'Inside your agency',
+    title: 'AI in how you run.',
+    line: 'Proposals drafted from the discovery call, client reports that write themselves, onboarding that runs on its own. Your studio, automated.',
+    items: ['Proposals and reporting as agents', 'Client onboarding automated', 'Claude set up for your team', 'An engineering bench on subscription'],
+  },
 ];
+
+const WHO = ['Web designers', 'Marketing agencies', 'Brand and creative studios', 'IT and consultants'];
 
 const STEPS = [
   { n: '01', title: 'Apply', when: 'Two minutes', body: 'Your demo, already wearing your agency’s name, lands in your inbox the moment you press apply.' },
@@ -48,7 +64,7 @@ export default function WhiteLabelPage() {
       {
         '@type': 'Service',
         name: `${WL_PROGRAM.name} by Modern Mustard Seed`,
-        serviceType: 'White label AI voice agents, agentic systems, marketing dashboards, custom studios and overflow websites for agencies',
+        serviceType: 'White label AI agents, agentic dashboards, AI website integration, automation and overflow engineering for agencies',
         description: WL_PROGRAM.metaDescription,
         provider: { '@type': 'Organization', name: SITE.name, url: SITE.url },
         areaServed: { '@type': 'Country', name: 'United States' },
@@ -75,10 +91,10 @@ export default function WhiteLabelPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       <PopPageHero
-        eyebrow={<span>White label // For agencies</span>}
-        title={<>Sell AI under your name. <em>We build it.</em></>}
+        eyebrow={<span>Agentic partner // For agencies</span>}
+        title={<>Your agency’s agentic partner. <em>Your name on all of it.</em></>}
         art={{ src: '/art/riviera/work', alt: ART_ALT, caption: 'Your clients, your table' }}
-        sticker="Your brand"
+        sticker="Your engineers"
       >
         <p>{WL_PROGRAM.promise}</p>
         <div className={pop.actions}>
@@ -102,24 +118,34 @@ export default function WhiteLabelPage() {
         </div>
       </section>
 
-      {/* ─── WHO IT IS FOR ─── */}
-      <section className="py-16 md:py-24" aria-labelledby="for-heading">
-        <div className="max-w-5xl mx-auto px-5">
-          <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#0a7c78] font-bold mb-3">[ Who it is for ]</p>
-          <h2 id="for-heading" className="font-display text-3xl md:text-5xl font-black tracking-tight leading-[1.05]">
-            You have the clients. <em className="italic">They are asking about AI.</em>
+      {/* ─── THREE WAYS WE WORK WITH YOU ─── */}
+      <section className="py-16 md:py-24" aria-labelledby="ways-heading">
+        <div className="max-w-6xl mx-auto px-5">
+          <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#0a7c78] font-bold mb-3">[ Your agentic partner ]</p>
+          <h2 id="ways-heading" className="font-display text-3xl md:text-5xl font-black tracking-tight leading-[1.05] max-w-4xl">
+            The engineering team behind your agency. <em className="italic">Without hiring one.</em>
           </h2>
           <p className="font-body text-[#0b3b44]/75 leading-relaxed mt-5 max-w-2xl">
-            Hiring an AI engineer to answer that question costs more than most agencies clear in a quarter. This program is the engineer, already trained, already running agents for real businesses, working behind your name.
+            Your clients are asking about AI, and hiring an AI engineer costs more than most agencies clear in a quarter. We are that engineer, already building agents, dashboards and automations for real businesses, working behind your name.
           </p>
-          <div className="grid sm:grid-cols-2 gap-5 mt-10">
-            {FOR.map((f) => (
-              <div key={f.who} className="border-2 border-[#0b3b44] rounded-2xl bg-white p-6">
-                <h3 className="font-display text-xl font-black">{f.who}</h3>
-                <p className="font-body text-[15px] text-[#0b3b44]/75 leading-relaxed mt-2">{f.line}</p>
+          <div className="grid md:grid-cols-3 gap-5 mt-10">
+            {WAYS.map((w, i) => (
+              <div key={w.tag} className={`flex flex-col rounded-2xl border-2 border-[#0b3b44] p-7 ${i === 0 ? 'bg-[#0b3b44] text-[#fbf5ea] shadow-[8px_8px_0_0_#f5b700]' : 'bg-white shadow-[6px_6px_0_0_#0b3b44]'}`}>
+                <p className={`font-mono text-[10px] uppercase tracking-[0.24em] font-bold ${i === 0 ? 'text-[#81d8d0]' : 'text-[#0a7c78]'}`}>{w.tag}</p>
+                <h3 className="font-display text-2xl font-black mt-2">{w.title}</h3>
+                <p className={`font-body text-[15px] leading-relaxed mt-3 ${i === 0 ? 'text-[#fbf5ea]/85' : 'text-[#0b3b44]/75'}`}>{w.line}</p>
+                <ul className="mt-5 space-y-2 flex-1">
+                  {w.items.map((x) => (
+                    <li key={x} className={`flex gap-2.5 font-body text-[14.5px] leading-snug ${i === 0 ? 'text-[#fbf5ea]/90' : 'text-[#0b3b44]/85'}`}>
+                      <span aria-hidden="true" className="text-[#f5b700] font-black">✓</span>
+                      {x}
+                    </li>
+                  ))}
+                </ul>
               </div>
             ))}
           </div>
+          <p className="font-body text-sm text-[#0b3b44]/65 mt-8">Built for {WHO.join(', ').replace(/, ([^,]*)$/, ' and $1')} who already have clients.</p>
         </div>
       </section>
 
@@ -164,7 +190,7 @@ export default function WhiteLabelPage() {
       <section id="services" className="py-16 md:py-24 scroll-mt-24" aria-labelledby="services-heading">
         <div className="max-w-6xl mx-auto px-5">
           <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#0a7c78] font-bold mb-3">[ What you can sell ]</p>
-          <h2 id="services-heading" className="font-display text-3xl md:text-5xl font-black tracking-tight leading-[1.05]">Everything we build. <em className="italic">Your name on all of it.</em></h2>
+          <h2 id="services-heading" className="font-display text-3xl md:text-5xl font-black tracking-tight leading-[1.05]">Every package, <em className="italic">set price, your name.</em></h2>
           <p className="font-body text-[#0b3b44]/75 leading-relaxed mt-4 max-w-2xl">AI that answers, websites when you are full, and the agentic systems, dashboards and studios your clients cannot get anywhere else. Wholesale prices arrive on your own price sheet, signed for your agency.</p>
           {WL_GROUPS.map((g) => {
             const shelf = lines.filter((l) => l.group === g.key);
