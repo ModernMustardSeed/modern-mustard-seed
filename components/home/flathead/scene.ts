@@ -12,7 +12,7 @@ void main(){
  vec2 flow=vec2(sin(uv.y*90.+t*.82)+sin(uv.y*167.-t*.60),cos(uv.x*30.+uv.y*60.-t*.72))*.0023*foreground*water;
  vec2 artUv=uv+flow;artUv+=uPointer*.0015;
  vec3 color=texture2D(uArt,clamp(artUv,.001,.999)).rgb;
- if(uMobile>.5){vec3 sky=texture2D(uArt,vec2(.07+vUv.x*.28,.90+clamp((vUv.y-.6)/.4,0.,1.)*.08)).rgb;color=mix(color,sky,smoothstep(.80,1.,uv.y));}
+ if(uMobile>.5){vec3 sky=texture2D(uArt,vec2(.50+vUv.x*.20,.90+clamp((vUv.y-.6)/.4,0.,1.)*.08)).rgb;color=mix(color,sky,smoothstep(.78,.84,uv.y));}
  float boatWidth=mix(.25,.38,uMobile);
  vec2 size=vec2(boatWidth,boatWidth*1.5/uBoatRatio);
  float bob=sin(t*.72)*.0038+sin(t*.31)*.001;

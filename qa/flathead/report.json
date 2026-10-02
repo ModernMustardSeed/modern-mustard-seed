@@ -557,16 +557,6 @@
     "visible": true
   },
   {
-    "path": "/claude",
-    "status": 200,
-    "errors": [],
-    "heading": "Claude, set up to run your business.",
-    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
-    "overflow": false,
-    "canonical": "https://modernmustardseed.com/claude",
-    "visible": true
-  },
-  {
     "path": "/agentic-native",
     "status": 200,
     "errors": [],
@@ -574,6 +564,16 @@
     "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
     "overflow": false,
     "canonical": "https://modernmustardseed.com/agentic-native",
+    "visible": true
+  },
+  {
+    "path": "/claude",
+    "status": 200,
+    "errors": [],
+    "heading": "Claude, set up to run your business.",
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "overflow": false,
+    "canonical": "https://modernmustardseed.com/claude",
     "visible": true
   },
   {
@@ -617,16 +617,6 @@
     "visible": true
   },
   {
-    "path": "/future-proof",
-    "status": 200,
-    "errors": [],
-    "heading": "Defend the Moat",
-    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
-    "overflow": false,
-    "canonical": "https://modernmustardseed.com/future-proof",
-    "visible": true
-  },
-  {
     "path": "/for",
     "status": 200,
     "errors": [],
@@ -637,6 +627,16 @@
     "visible": true
   },
   {
+    "path": "/future-proof",
+    "status": 200,
+    "errors": [],
+    "heading": "Defend the Moat",
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "overflow": false,
+    "canonical": "https://modernmustardseed.com/future-proof",
+    "visible": true
+  },
+  {
     "path": "/for/restaurants",
     "status": 200,
     "errors": [],
@@ -644,6 +644,16 @@
     "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
     "overflow": false,
     "canonical": "https://modernmustardseed.com/for/restaurants",
+    "visible": true
+  },
+  {
+    "path": "/for/health",
+    "status": 200,
+    "errors": [],
+    "heading": "Be the practice patients find first",
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "overflow": false,
+    "canonical": "https://modernmustardseed.com/for/health",
     "visible": true
   },
   {
@@ -664,16 +674,6 @@
     "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
     "overflow": false,
     "canonical": "https://modernmustardseed.com/for/weddings",
-    "visible": true
-  },
-  {
-    "path": "/for/health",
-    "status": 200,
-    "errors": [],
-    "heading": "Be the practice patients find first",
-    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
-    "overflow": false,
-    "canonical": "https://modernmustardseed.com/for/health",
     "visible": true
   },
   {

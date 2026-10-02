@@ -98,3 +98,4 @@ artifacts/
 /qa/discovery-local/
 /qa/flathead/*.png
 /qa/flathead-v10/*.png
+/qa/flathead-v11/*.png

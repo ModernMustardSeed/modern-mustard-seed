@@ -12,6 +12,7 @@ Verified on October 2, 2026:
 - Both film players share a 50-film catalog. All 50 videos and 50 optimized posters return HTTP 200. Search and IRL/HUCKWILD selection and playback pass on Mustard Pictures.
 - Brand/Rebrand is removed from the page, navigation, service map, and sitemap. `/brand` permanently redirects to `/websites` and retains query parameters. The old share-image URL redirects to the site's current share image.
 - Real portfolio destinations returned HTTP 200 when captured. Screenshots reflect the destination websites.
+- Edition 11: the painted sun and its reflection move left, clear of the hero inquiry link. The mobile shader samples clear sky without stretching the relocated sun. Mr. Mustard's bottom-right launcher visibly offers call or chat at 1440, 390, and 320 pixels. Both choices open the existing configured flows.
 - Contact and booking requests are intercepted in browser tests. No messages, bookings, purchases, or worker jobs are created by these tests.
 - Intake parsing and acquisition worker helper tests pass. The complete acquisition suite has one pre-existing assertion mismatch: keypad outreach expects `/demos`, while the unchanged campaign links to `/mustard`. The other 173 tests pass.
 
@@ -22,3 +23,5 @@ Run `node qa/flathead-build.mjs`, start the production server on port 4320, then
 The workspace skill's `C:/Users/SMSca/.codex/tools/shot.mjs` is missing. The committed Playwright script performs desktop and phone screenshots directly, including services, portfolio, public pages, and submitted forms. PNG review artifacts stay local; report.json records the checks.
 
 Live email delivery, payments, voice calls, and scheduled worker execution are not triggered by this visual change's verification. Those integration implementations retain their existing behavior.
+
+`node qa/flathead-worker.mjs` rebuilds the committed worker from the scene source. `node qa/flathead-v11.mjs` checks the sun asset and call/chat launcher at desktop and phone widths. Actual voice conversations are not started by these tests.
