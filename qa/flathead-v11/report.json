@@ -1,0 +1,29 @@
+[
+  {
+    "width": 1440,
+    "edition": 11,
+    "sunAsset": true,
+    "bottomRight": true,
+    "callEntry": true,
+    "chatEntry": true,
+    "overflow": false
+  },
+  {
+    "width": 390,
+    "edition": 11,
+    "sunAsset": true,
+    "bottomRight": true,
+    "callEntry": true,
+    "chatEntry": true,
+    "overflow": false
+  },
+  {
+    "width": 320,
+    "edition": 11,
+    "sunAsset": true,
+    "bottomRight": true,
+    "callEntry": true,
+    "chatEntry": true,
+    "overflow": false
+  }
+]

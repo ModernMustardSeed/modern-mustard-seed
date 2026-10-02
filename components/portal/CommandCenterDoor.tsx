@@ -1,5 +1,7 @@
 'use client';
 
+import Link from 'next/link';
+
 /**
  * THE DOOR TO THE COMMAND CENTER, standing in the portal.
  *
@@ -28,13 +30,13 @@ export default function CommandCenterDoor({ business, preview }: { business?: st
             Everything that has to keep running whether or not anyone is watching it. It opens with its own sign-in, a code to your email, so it stays yours even when this portal is quiet.
           </p>
           <div className="mt-6 flex flex-wrap items-center gap-3">
-            <a
+            <Link
               href="/cc"
               className="inline-flex items-center gap-2 rounded-lg bg-[#F5B700] px-5 py-3 text-[14px] font-extrabold text-[#161616] hover:brightness-95"
             >
               Open the Command Center
               <svg width="16" height="16" viewBox="0 0 20 20" aria-hidden><path d="M4 10h11M11.5 6.5 15 10l-3.5 3.5" stroke="currentColor" strokeWidth="1.8" fill="none" strokeLinecap="round" strokeLinejoin="round" /></svg>
-            </a>
+            </Link>
             <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-white/40">{preview ? 'Your look pass opens it too' : 'Separate sign-in'}</span>
           </div>
         </div>

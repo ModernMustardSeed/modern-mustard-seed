@@ -11,15 +11,14 @@ import { pop } from '@/components/pop/PopPageHero';
 
 const STORE = workByKey['cross-covenant'];
 
-// The hero film: a real scroll through a real build, recorded off the live
-// site by scripts/record-wildmere-scroll.mjs. Wildmere is a from-scratch
-// studio build, not a client engagement, so the copy here boasts about the
-// craft and never implies a customer. See mms-work-reel-copy-honesty.
+// A real scroll through the live Built Right site, recorded by
+// qa/record-built-right-scroll.mjs.
 const HERO_FILM = {
-  brand: 'Wildmere Honey Co.',
-  host: 'wildmere.vercel.app',
-  src: '/video/wildmere-scroll.mp4',
-  poster: '/video/wildmere-scroll-poster.jpg',
+  brand: 'Built Right in Montana',
+  host: 'builtrightinmontana.com',
+  url: 'https://builtrightinmontana.com',
+  src: '/video/built-right-scroll.mp4',
+  poster: '/video/built-right-scroll-poster.jpg',
 };
 
 export const metadata = buildMetadata({
@@ -157,9 +156,9 @@ export default function WebsitesPage() {
                       <span key={c} className="h-3 w-3 rounded-full border border-[#0b3b44]" style={{ background: c }} />
                     ))}
                   </span>
-                  <span className="ml-2 flex-1 truncate rounded-full border border-[#0b3b44]/30 bg-white px-3 py-1 font-mono text-[11px] text-[#0b3b44]/65">
+                  <a href={HERO_FILM.url} target="_blank" rel="noopener noreferrer" aria-label="Visit Built Right in Montana" className="ml-2 flex-1 truncate rounded-full border border-[#0b3b44]/30 bg-white px-3 py-1 font-mono text-[11px] text-[#0b3b44]/65">
                     {HERO_FILM.host}
-                  </span>
+                  </a>
                 </div>
                 <div className="relative">
                   {/* Poster is the film's own first frame, so the still and the
@@ -168,17 +167,17 @@ export default function WebsitesPage() {
                   <HeroFilm
                     src={HERO_FILM.src}
                     poster={HERO_FILM.poster}
-                    alt={`The homepage of ${HERO_FILM.brand}, a honey company website designed and built from scratch by Modern Mustard Seed, scrolling from the hero through the shelf to the booking form`}
+                    alt="Built Right in Montana: a custom home builder website by Modern Mustard Seed, from the homepage through the projects to the project inquiry form."
                   />
                   <div className="absolute top-3 right-3 max-w-[62%] rounded-xl border-2 border-[#0b3b44] bg-[#fbf5ea] px-3.5 py-2 shadow-[3px_3px_0_0_#f5b700]">
                     <p className="font-mono text-[8px] uppercase tracking-[0.16em] text-[#C4160B] font-bold">What it does</p>
-                    <p className="font-sans text-[11.5px] font-bold text-[#0b3b44] mt-0.5 leading-snug">Ends on a booking form, not a phone number</p>
+                    <p className="font-sans text-[11.5px] font-bold text-[#0b3b44] mt-0.5 leading-snug">From first look to project inquiry</p>
                   </div>
                 </div>
               </div>
               <p className="font-body text-[13px] text-[#0b3b44]/70 mt-3 pr-24 md:pr-32">
-                {HERO_FILM.brand}, designed and built from scratch. Every scroll, every reveal, and the
-                booking form at the end.
+                {HERO_FILM.brand}. Custom homes in the Flathead Valley.
+                Designed and built by Modern Mustard Seed.
               </p>
               <p className={ps.pow} aria-hidden="true"><span>Works!</span></p>
               <div className={ps.mascot} aria-hidden="true" style={{ left: 'auto', right: '-34px', bottom: '-46px', pointerEvents: 'none' }}>

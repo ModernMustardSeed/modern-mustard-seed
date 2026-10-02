@@ -31,7 +31,6 @@ const MENU_GROUPS = [
     links: [
       { label: 'AI For Your Business', href: '/ai' },
       { label: 'Websites And Brand', href: '/websites' },
-      { label: 'Brand / Rebrand', href: '/brand' },
       { label: 'Voice Agents', href: '/voice-agents' },
       { label: 'Marketing', href: '/marketing' },
       { label: 'For the Kingdom', href: '/kingdom' },
@@ -106,7 +105,6 @@ const DEPARTMENTS = [
   { name: 'AI For Your Business', tag: 'AI WEBSITES, AI RECEPTIONISTS, AI AGENTS', href: '/ai' },
   { name: 'The Talking Website', tag: 'A SITE THAT ANSWERS ITS OWN PHONE', href: '/talking-website' },
   { name: 'Websites And Brand', tag: 'DESIGN-LED, BUILT TO BE FOUND', href: '/websites' },
-  { name: 'Brand / Rebrand', tag: 'A NEW MARK ON EVERY SURFACE', href: '/brand' },
   { name: 'Voice Agents', tag: `THE STUDIO LINE: ${DEMO_LINE.display}`, href: '/voice-agents' },
   { name: 'Custom Software', tag: 'APPLICATIONS, STORES, AGENTIC SYSTEMS', href: '/services' },
   { name: 'Advisory', tag: 'RETAINED COUNSEL, BY THE QUARTER', href: '/advisory' },

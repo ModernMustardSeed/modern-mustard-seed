@@ -59,7 +59,7 @@ export type BuildSegment =
   | 'cold'
   | 'closed';
 
-export const SEGMENT_LABELS: Record<BuildSegment, string> = {
+const SEGMENT_LABELS: Record<BuildSegment, string> = {
   forging: 'On the anvil',
   failed: 'Build failed',
   door: 'Reached the door',
@@ -73,7 +73,7 @@ export const SEGMENT_LABELS: Record<BuildSegment, string> = {
   closed: 'Closed',
 };
 
-export const SEGMENT_NOTES: Record<BuildSegment, string> = {
+const SEGMENT_NOTES: Record<BuildSegment, string> = {
   forging: 'Their website is being built on your machine right now.',
   failed: 'The last website build failed. Retry puts it back on the anvil.',
   door:

@@ -35,7 +35,6 @@ const STATIC_PATHS = [
   '/websites',
   '/ai',
   '/agentic-websites',
-  '/brand',
   '/voice-agents',
   '/voice-agents/whitepaper',
   '/advisory',
@@ -84,7 +83,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority:
       path === '' || path === '/book' || path === '/presence-audit' || path === '/audit' || path === '/inquire'
         ? 1.0
-        : path === '/work' || path === '/services' || path === '/advisory' || path === '/talking-website' || path === '/websites' || path === '/voice-agents' || path === '/brand'
+        : path === '/work' || path === '/services' || path === '/advisory' || path === '/talking-website' || path === '/websites' || path === '/voice-agents'
           ? 0.95
           : path === '/work-with-us' || path === '/the-system' || path === '/command-center' || path === '/chief' || path === '/agentic-native' || path === '/claude' || path === '/pictures' || path === '/launch-film' || path === '/about'
             ? 0.9

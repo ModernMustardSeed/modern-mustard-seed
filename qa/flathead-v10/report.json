@@ -1,0 +1,41 @@
+[
+  {
+    "test": "gallery",
+    "automatic": true,
+    "hoverPause": true,
+    "focusPause": true,
+    "manualPause": true,
+    "projects": 13,
+    "buildLabels": 0,
+    "films": 50
+  },
+  {
+    "test": "reduced-motion",
+    "automatic": false
+  },
+  {
+    "test": "brand-retirement",
+    "status": 308,
+    "queryPreserved": true,
+    "sitemapRemoved": true
+  },
+  {
+    "test": "websites-hero",
+    "brand": "Built Right in Montana",
+    "playback": true,
+    "clickable": true
+  },
+  {
+    "test": "film-library",
+    "films": 50,
+    "search": true,
+    "selection": true,
+    "playback": true
+  },
+  {
+    "test": "film-assets",
+    "videos": 50,
+    "posters": 50,
+    "allAvailable": true
+  }
+]
