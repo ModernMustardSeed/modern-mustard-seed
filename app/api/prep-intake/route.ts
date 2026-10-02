@@ -142,7 +142,6 @@ export async function POST(req: Request) {
         greeting: 'Sarah,',
         body: p(`${escape(LABEL[kind])} for ${escape(spec.name)}, submitted ${escape(when)}${submittedBy ? ` by ${escape(submittedBy)}` : ''}. Filed on the client card. Read it any time at <a href="${viewUrl}">${viewUrl}</a>.`) + bodyHtml,
         signature: 'Mr. Mustard',
-        ranchLine: false,
       }),
     });
   } catch (err) {

@@ -117,7 +117,6 @@ export async function POST(req: Request) {
         greeting: 'Sarah,',
         body: p(`<strong>${escape(signer)}</strong> signed the ${escape(spec.name)} quote on ${escape(when)} from ${escape(email)}.`) + summary + p(`Signed copy: <a href="${viewUrl}">${viewUrl}</a>. Filed on the client card. Checkout opened right after this signature.`),
         signature: 'Mr. Mustard',
-        ranchLine: false,
       }),
     });
     await sendViaResend({
