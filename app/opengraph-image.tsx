@@ -7,13 +7,13 @@ import { SITE } from '@/lib/seo';
 export const runtime = 'nodejs';
 
 export const alt =
-  'Modern Mustard Seed. Cut-paper Riviera: Mr. and Mrs. Mustard lounge under a striped umbrella on a paper sand bar beside a paper sailboat, with the words Agentic Systems, AI Agents and websites that work for you.';
+  'Modern Mustard Seed. Build what is next. Grow what works. A handmade Flathead Lake landscape with the Mustard family sailboat.';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
 /**
- * The homepage share card: the cut-paper Riviera card rendered once as a JPG
- * (public/brand/mms-share-paper.jpg, the same file SITE.ogImage points at),
+ * The homepage share card: the approved Flathead scene rendered once as a JPG
+ * (public/brand/mms-share-flathead.jpg, the same file SITE.ogImage points at),
  * so every share of the root shows the same scene.
  */
 export default async function OpengraphImage() {

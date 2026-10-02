@@ -1,0 +1,858 @@
+[
+  {
+    "name": "desktop",
+    "errors": [],
+    "failed": [
+      {
+        "url": "http://127.0.0.1:4320/_vercel/insights/script.js",
+        "status": 404
+      },
+      {
+        "url": "http://127.0.0.1:4320/_vercel/speed-insights/script.js",
+        "status": 404
+      }
+    ],
+    "scrollWorks": true,
+    "endDisabled": true,
+    "faqOpens": true,
+    "filmSelect": true,
+    "projects": 13,
+    "frames": true,
+    "overflow": false,
+    "links": [
+      {
+        "href": "https://builtrightinmontana.com/",
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      },
+      {
+        "href": "https://ddlandscapingfl.com/",
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      },
+      {
+        "href": "https://irl.modernmustardseed.com/",
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      },
+      {
+        "href": "https://seedside.modernmustardseed.com/",
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      },
+      {
+        "href": "https://crossandcovenant.co/",
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      },
+      {
+        "href": "https://fiatluxdesign.co/",
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      },
+      {
+        "href": "https://bare-earth.vercel.app/",
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      },
+      {
+        "href": "https://studio-secret.vercel.app/",
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      },
+      {
+        "href": "https://alpenglow-opal.vercel.app/",
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      },
+      {
+        "href": "https://huckwild.vercel.app/",
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      },
+      {
+        "href": "https://wild-hope-hq.vercel.app/",
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      },
+      {
+        "href": "https://lagosociety.com/",
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      },
+      {
+        "href": "https://wildmere.vercel.app/",
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      }
+    ],
+    "faq": 14,
+    "film": 11,
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "ready": "true",
+    "footers": 1
+  },
+  {
+    "name": "phone",
+    "errors": [],
+    "failed": [
+      {
+        "url": "http://127.0.0.1:4320/_vercel/insights/script.js",
+        "status": 404
+      },
+      {
+        "url": "http://127.0.0.1:4320/_vercel/speed-insights/script.js",
+        "status": 404
+      }
+    ],
+    "scrollWorks": true,
+    "endDisabled": true,
+    "faqOpens": true,
+    "filmSelect": true,
+    "projects": 13,
+    "frames": true,
+    "overflow": false,
+    "links": [
+      {
+        "href": "https://builtrightinmontana.com/",
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      },
+      {
+        "href": "https://ddlandscapingfl.com/",
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      },
+      {
+        "href": "https://irl.modernmustardseed.com/",
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      },
+      {
+        "href": "https://seedside.modernmustardseed.com/",
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      },
+      {
+        "href": "https://crossandcovenant.co/",
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      },
+      {
+        "href": "https://fiatluxdesign.co/",
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      },
+      {
+        "href": "https://bare-earth.vercel.app/",
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      },
+      {
+        "href": "https://studio-secret.vercel.app/",
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      },
+      {
+        "href": "https://alpenglow-opal.vercel.app/",
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      },
+      {
+        "href": "https://huckwild.vercel.app/",
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      },
+      {
+        "href": "https://wild-hope-hq.vercel.app/",
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      },
+      {
+        "href": "https://lagosociety.com/",
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      },
+      {
+        "href": "https://wildmere.vercel.app/",
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      }
+    ],
+    "faq": 14,
+    "film": 11,
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "ready": "true",
+    "footers": 1
+  },
+  {
+    "name": "small",
+    "errors": [],
+    "failed": [
+      {
+        "url": "http://127.0.0.1:4320/_vercel/insights/script.js",
+        "status": 404
+      },
+      {
+        "url": "http://127.0.0.1:4320/_vercel/speed-insights/script.js",
+        "status": 404
+      }
+    ],
+    "scrollWorks": true,
+    "endDisabled": true,
+    "faqOpens": true,
+    "filmSelect": true,
+    "projects": 13,
+    "frames": true,
+    "overflow": false,
+    "links": [
+      {
+        "href": "https://builtrightinmontana.com/",
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      },
+      {
+        "href": "https://ddlandscapingfl.com/",
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      },
+      {
+        "href": "https://irl.modernmustardseed.com/",
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      },
+      {
+        "href": "https://seedside.modernmustardseed.com/",
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      },
+      {
+        "href": "https://crossandcovenant.co/",
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      },
+      {
+        "href": "https://fiatluxdesign.co/",
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      },
+      {
+        "href": "https://bare-earth.vercel.app/",
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      },
+      {
+        "href": "https://studio-secret.vercel.app/",
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      },
+      {
+        "href": "https://alpenglow-opal.vercel.app/",
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      },
+      {
+        "href": "https://huckwild.vercel.app/",
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      },
+      {
+        "href": "https://wild-hope-hq.vercel.app/",
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      },
+      {
+        "href": "https://lagosociety.com/",
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      },
+      {
+        "href": "https://wildmere.vercel.app/",
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      }
+    ],
+    "faq": 14,
+    "film": 11,
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "ready": "true",
+    "footers": 1
+  },
+  {
+    "name": "tablet",
+    "errors": [],
+    "failed": [
+      {
+        "url": "http://127.0.0.1:4320/_vercel/insights/script.js",
+        "status": 404
+      },
+      {
+        "url": "http://127.0.0.1:4320/_vercel/speed-insights/script.js",
+        "status": 404
+      }
+    ],
+    "scrollWorks": true,
+    "endDisabled": true,
+    "faqOpens": true,
+    "filmSelect": true,
+    "projects": 13,
+    "frames": true,
+    "overflow": false,
+    "links": [
+      {
+        "href": "https://builtrightinmontana.com/",
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      },
+      {
+        "href": "https://ddlandscapingfl.com/",
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      },
+      {
+        "href": "https://irl.modernmustardseed.com/",
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      },
+      {
+        "href": "https://seedside.modernmustardseed.com/",
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      },
+      {
+        "href": "https://crossandcovenant.co/",
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      },
+      {
+        "href": "https://fiatluxdesign.co/",
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      },
+      {
+        "href": "https://bare-earth.vercel.app/",
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      },
+      {
+        "href": "https://studio-secret.vercel.app/",
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      },
+      {
+        "href": "https://alpenglow-opal.vercel.app/",
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      },
+      {
+        "href": "https://huckwild.vercel.app/",
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      },
+      {
+        "href": "https://wild-hope-hq.vercel.app/",
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      },
+      {
+        "href": "https://lagosociety.com/",
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      },
+      {
+        "href": "https://wildmere.vercel.app/",
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      }
+    ],
+    "faq": 14,
+    "film": 11,
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "ready": "true",
+    "footers": 1
+  },
+  {
+    "path": "/",
+    "status": 200,
+    "errors": [],
+    "heading": "Build what’s next.Grow what works.",
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "overflow": false,
+    "canonical": "https://modernmustardseed.com/",
+    "visible": true
+  },
+  {
+    "path": "/presence-audit",
+    "status": 200,
+    "errors": [],
+    "heading": "Most people decide about you before they reach your website.",
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "overflow": false,
+    "canonical": "https://modernmustardseed.com/presence-audit",
+    "visible": true
+  },
+  {
+    "path": "/book",
+    "status": 200,
+    "errors": [],
+    "heading": "Get on the book.",
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "overflow": false,
+    "canonical": "https://modernmustardseed.com/book",
+    "visible": true,
+    "mobileOverflow": false
+  },
+  {
+    "path": "/audit",
+    "status": 200,
+    "errors": [],
+    "heading": "Bottleneck Breaker",
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "overflow": false,
+    "canonical": "https://modernmustardseed.com/audit",
+    "visible": true
+  },
+  {
+    "path": "/inquire",
+    "status": 200,
+    "errors": [],
+    "heading": "Tell us what you are building.",
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "overflow": false,
+    "canonical": "https://modernmustardseed.com/inquire",
+    "visible": true,
+    "mobileOverflow": false
+  },
+  {
+    "path": "/work",
+    "status": 200,
+    "errors": [],
+    "heading": "Real Products Real Receipts",
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "overflow": false,
+    "canonical": "https://modernmustardseed.com/work",
+    "visible": true,
+    "mobileOverflow": false
+  },
+  {
+    "path": "/work-with-us",
+    "status": 200,
+    "errors": [],
+    "heading": "Five steps. One number. No surprises anywhere in it.",
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "overflow": false,
+    "canonical": "https://modernmustardseed.com/work-with-us",
+    "visible": true
+  },
+  {
+    "path": "/services",
+    "status": 200,
+    "errors": [],
+    "heading": "Everything we build.One standard.",
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "overflow": false,
+    "canonical": "https://modernmustardseed.com/services",
+    "visible": true
+  },
+  {
+    "path": "/the-system",
+    "status": 200,
+    "errors": [],
+    "heading": "Your whole company,agentic.",
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "overflow": false,
+    "canonical": "https://modernmustardseed.com/the-system",
+    "visible": true
+  },
+  {
+    "path": "/talking-website",
+    "status": 200,
+    "errors": [],
+    "heading": "A website that answers its own phone.",
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "overflow": false,
+    "canonical": "https://modernmustardseed.com/talking-website",
+    "visible": true
+  },
+  {
+    "path": "/ai",
+    "status": 200,
+    "errors": [],
+    "heading": "AI that answers, books and runs the busywork.",
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "overflow": false,
+    "canonical": "https://modernmustardseed.com/ai",
+    "visible": true,
+    "mobileOverflow": false
+  },
+  {
+    "path": "/websites",
+    "status": 200,
+    "errors": [],
+    "heading": "Not a brochure. A website that works.",
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "overflow": false,
+    "canonical": "https://modernmustardseed.com/websites",
+    "visible": true,
+    "mobileOverflow": false
+  },
+  {
+    "path": "/agentic-websites",
+    "status": 200,
+    "errors": [],
+    "heading": "An agentic website shouldcarry its share.",
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "overflow": false,
+    "canonical": "https://modernmustardseed.com/agentic-websites",
+    "visible": true
+  },
+  {
+    "path": "/brand",
+    "status": 200,
+    "errors": [],
+    "heading": "A logo file is not a brand.",
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "overflow": false,
+    "canonical": "https://modernmustardseed.com/brand",
+    "visible": true
+  },
+  {
+    "path": "/voice-agents",
+    "status": 200,
+    "errors": [],
+    "heading": "Your phone rings at 2am.Somebody picks up.",
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "overflow": false,
+    "canonical": "https://modernmustardseed.com/voice-agents",
+    "visible": true
+  },
+  {
+    "path": "/voice-agents/whitepaper",
+    "status": 200,
+    "errors": [],
+    "heading": "The Always-On Voice Agent",
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "overflow": false,
+    "canonical": "https://modernmustardseed.com/voice-agents/whitepaper",
+    "visible": true
+  },
+  {
+    "path": "/advisory",
+    "status": 200,
+    "errors": [],
+    "heading": "Almost nobody loses money on agentic systems by picking the wrong tool.",
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "overflow": false,
+    "canonical": "https://modernmustardseed.com/advisory",
+    "visible": true
+  },
+  {
+    "path": "/command-center",
+    "status": 200,
+    "errors": [],
+    "heading": "The command center that runs the whole business.",
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "overflow": false,
+    "canonical": "https://modernmustardseed.com/command-center",
+    "visible": true
+  },
+  {
+    "path": "/agentic-native",
+    "status": 200,
+    "errors": [],
+    "heading": "Your company, running on agentic systems.Your team, running it.",
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "overflow": false,
+    "canonical": "https://modernmustardseed.com/agentic-native",
+    "visible": true
+  },
+  {
+    "path": "/claude",
+    "status": 200,
+    "errors": [],
+    "heading": "Claude, set up to run your business.",
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "overflow": false,
+    "canonical": "https://modernmustardseed.com/claude",
+    "visible": true
+  },
+  {
+    "path": "/chief",
+    "status": 200,
+    "errors": [],
+    "heading": "Your chief of staff, on call day and night.",
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "overflow": false,
+    "canonical": "https://modernmustardseed.com/chief",
+    "visible": true
+  },
+  {
+    "path": "/pictures",
+    "status": 200,
+    "errors": [],
+    "heading": "Make a scene.Make it count.",
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "overflow": false,
+    "canonical": "https://modernmustardseed.com/pictures",
+    "visible": true
+  },
+  {
+    "path": "/launch-film",
+    "status": 200,
+    "errors": [],
+    "heading": "The film your launch deserves.",
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "overflow": false,
+    "canonical": "https://modernmustardseed.com/launch-film",
+    "visible": true
+  },
+  {
+    "path": "/mustard",
+    "status": 200,
+    "errors": [],
+    "heading": "Meet Mr. Mustard.",
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "overflow": false,
+    "canonical": "https://modernmustardseed.com/mustard",
+    "visible": true
+  },
+  {
+    "path": "/future-proof",
+    "status": 200,
+    "errors": [],
+    "heading": "Defend the Moat",
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "overflow": false,
+    "canonical": "https://modernmustardseed.com/future-proof",
+    "visible": true
+  },
+  {
+    "path": "/playbook",
+    "status": 200,
+    "errors": [],
+    "heading": "The whole asset, in your name, with the keys.",
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "overflow": false,
+    "canonical": "https://modernmustardseed.com/playbook",
+    "visible": true
+  },
+  {
+    "path": "/for",
+    "status": 200,
+    "errors": [],
+    "heading": "Built for the work you actually do",
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "overflow": false,
+    "canonical": "https://modernmustardseed.com/for",
+    "visible": true
+  },
+  {
+    "path": "/for/restaurants",
+    "status": 200,
+    "errors": [],
+    "heading": "Stop losing the rush to voicemail",
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "overflow": false,
+    "canonical": "https://modernmustardseed.com/for/restaurants",
+    "visible": true
+  },
+  {
+    "path": "/for/contractors",
+    "status": 200,
+    "errors": [],
+    "heading": "Be the builder Google and ChatGPT suggest",
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "overflow": false,
+    "canonical": "https://modernmustardseed.com/for/contractors",
+    "visible": true
+  },
+  {
+    "path": "/for/health",
+    "status": 200,
+    "errors": [],
+    "heading": "Be the practice patients find first",
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "overflow": false,
+    "canonical": "https://modernmustardseed.com/for/health",
+    "visible": true
+  },
+  {
+    "path": "/montana",
+    "status": 200,
+    "errors": [],
+    "heading": "The agentic studio in your valley, not in your inbox from three time zones away.",
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "overflow": false,
+    "canonical": "https://modernmustardseed.com/montana",
+    "visible": true
+  },
+  {
+    "path": "/for/weddings",
+    "status": 200,
+    "errors": [],
+    "heading": "Give every couple the whole weekend",
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "overflow": false,
+    "canonical": "https://modernmustardseed.com/for/weddings",
+    "visible": true
+  },
+  {
+    "path": "/nationwide",
+    "status": 200,
+    "errors": [],
+    "heading": "Built in Montana. Working everywhere in the US.",
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "overflow": false,
+    "canonical": "https://modernmustardseed.com/nationwide",
+    "visible": true
+  },
+  {
+    "path": "/resources",
+    "status": 200,
+    "errors": [],
+    "heading": "Field notes forgetting found.",
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "overflow": false,
+    "canonical": "https://modernmustardseed.com/resources",
+    "visible": true
+  },
+  {
+    "path": "/kingdom",
+    "status": 200,
+    "errors": [],
+    "heading": "Build what the calling needs. Until all have heard.",
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "overflow": false,
+    "canonical": "https://modernmustardseed.com/kingdom",
+    "visible": true
+  },
+  {
+    "path": "/marketing",
+    "status": 200,
+    "errors": [],
+    "heading": "We build it. Then we get it seen.",
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "overflow": false,
+    "canonical": "https://modernmustardseed.com/marketing",
+    "visible": true
+  },
+  {
+    "path": "/blog",
+    "status": 200,
+    "errors": [],
+    "heading": "Thinking Out Loud",
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "overflow": false,
+    "canonical": "https://modernmustardseed.com/blog",
+    "visible": true
+  },
+  {
+    "path": "/about",
+    "status": 200,
+    "errors": [],
+    "heading": "Faith Meets Function",
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "overflow": false,
+    "canonical": "https://modernmustardseed.com/about",
+    "visible": true,
+    "mobileOverflow": false
+  },
+  {
+    "path": "/contact",
+    "status": 200,
+    "errors": [],
+    "heading": "Drop us a line.",
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "overflow": false,
+    "canonical": "https://modernmustardseed.com/contact",
+    "visible": true,
+    "mobileOverflow": false
+  },
+  {
+    "path": "/partners",
+    "status": 200,
+    "errors": [],
+    "heading": "Send us a business. Get paid for a year.",
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "overflow": false,
+    "canonical": "https://modernmustardseed.com/partners",
+    "visible": true
+  },
+  {
+    "path": "/partners/sales-rep",
+    "status": 200,
+    "errors": [],
+    "heading": "Walk in with the product already built.",
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "overflow": false,
+    "canonical": "https://modernmustardseed.com/partners/sales-rep",
+    "visible": true
+  },
+  {
+    "path": "/white-label",
+    "status": 200,
+    "errors": [],
+    "heading": "Sell AI under your name. We build it.",
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "overflow": false,
+    "canonical": "https://modernmustardseed.com/white-label",
+    "visible": true,
+    "mobileOverflow": false
+  },
+  {
+    "path": "/terms",
+    "status": 200,
+    "errors": [],
+    "heading": "Terms of Service",
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "overflow": false,
+    "canonical": "https://modernmustardseed.com/terms",
+    "visible": true
+  },
+  {
+    "path": "/privacy",
+    "status": 200,
+    "errors": [],
+    "heading": "Privacy Policy",
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "overflow": false,
+    "canonical": "https://modernmustardseed.com/privacy",
+    "visible": true
+  },
+  {
+    "path": "/sample-proposal",
+    "status": 200,
+    "errors": [],
+    "heading": "A plan for Rios Heating & Air.",
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "overflow": false,
+    "canonical": "https://modernmustardseed.com/sample-proposal",
+    "visible": true
+  },
+  {
+    "test": "inquiry-flow",
+    "prefilled": "White label (for agencies)",
+    "errorState": true,
+    "success": true,
+    "interceptedRequests": 2,
+    "source": "inquiry-white-label",
+    "companyInPayload": true
+  },
+  {
+    "test": "private-scope",
+    "editorialScope": false
+  },
+  {
+    "test": "no-javascript",
+    "portfolioCount": 13,
+    "readable": true
+  },
+  {
+    "test": "booking-flow",
+    "success": true,
+    "interceptedRequests": 1,
+    "businessPrefilled": true,
+    "ideaPrefilled": true,
+    "slotRetained": true
+  }
+]

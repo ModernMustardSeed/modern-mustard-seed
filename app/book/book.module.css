@@ -966,3 +966,22 @@
   .mItem, .tapeBand .mItem { font-size: 17px; }
   .caption { font-size: 11.5px; letter-spacing: .16em; }
 }
+
+/* The booking flow shares the Flathead edition's quiet cover. */
+.page{--ink:#103c54;--sand:#fcf8eb;--mustard:#f5b700;--lagoon:#1e50c8;background:#fcf8eb;color:#103c54}
+.hero{padding:155px 6vw 0}
+.heroInner{max-width:1260px;gap:7%;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);align-items:center}
+.heroCopy{animation:none}
+.h1{font-family:var(--font-display);font-weight:400;font-size:clamp(46px,5.3vw,82px);line-height:1.04;letter-spacing:-.025em}
+.lead{font-family:var(--font-body);font-size:16px;line-height:1.9;color:#365768}
+.cta,.ctaAlt{font-family:var(--font-body);font-size:13px;font-weight:600;min-height:51px;padding:0 22px;border-radius:2px;box-shadow:none}
+.cta{background:#f5b700;color:#103c54;border:0}
+.ctaAlt{background:transparent;border:1px solid #103c5440;color:#103c54}
+.heroDots,.spark,.glow,.rays,.tape,.sticker,.heroMascot,.heroBubble,.marquee,.tapeBand{display:none}
+.frame{rotate:0;animation:none;border-radius:0;border:1px solid #103c54;padding:9px;box-shadow:4px 4px 0 #103c54;background:#fcf8eb}
+.frameImg{border-radius:0;border:1px solid #103c5440}
+.frameCap{font-family:var(--font-body);font-size:11px;font-style:normal}
+.panelTitle,.q summary{font-family:var(--font-display);font-weight:400}
+.q{border-radius:2px;border:1px solid #103c5430;box-shadow:none}
+.q summary{border-radius:2px}
+@media(max-width:760px){.hero{padding:126px 6vw 0}.heroInner{grid-template-columns:1fr;gap:28px}.h1{font-size:clamp(42px,10vw,68px)}.lead{font-size:15px}.frame{padding:7px;box-shadow:3px 3px 0 #103c54}}

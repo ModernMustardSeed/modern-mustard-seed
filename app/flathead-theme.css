@@ -1,0 +1,63 @@
+/* The approved Flathead edition. Public marketing pages retain their routes and behavior. */
+html.riv{--font-display:var(--font-flathead-display),Georgia,serif;--font-body:var(--font-flathead-body),Arial,sans-serif;--font-riviera:var(--font-flathead-display);--font-caps:var(--font-flathead-body);--riv-sea:#103c54;--riv-sand:#fcf8eb;--riv-lagoon:#1e50c8;--riv-tiffany:#b5dfe1;--riv-wave:none;--riv-wave-gold:none;--riv-wave-sea:none;--ink:#103c54;--cream:#fcf8eb;--gold:#f5b700;--blue:#1e50c8}
+html.riv body{background:#fcf8eb;color:#103c54;font-family:var(--font-body);-webkit-font-smoothing:antialiased}
+html.riv main :is(h1,h2,h3,h4,h5,h6):not(:where(.flathead-home *)){font-family:var(--font-display);font-weight:400;font-style:normal;letter-spacing:-.025em;text-transform:none;text-shadow:none;-webkit-text-stroke:0;font-synthesis:none;text-wrap:balance}
+html.riv main :is(h1,h2):not(:where(.flathead-home *)){line-height:1.06}
+html.riv main :is(h1,h2,h3,h4):not(:where(.flathead-home *)) :is(em,i,.italic){font-family:var(--font-display);font-weight:400;font-style:italic;color:#1e50c8;background:none;padding-bottom:0;letter-spacing:inherit}
+html.riv main :is(h1,h2,h3,h4,.font-display):not(#studio-heading) :is(em,i,.italic){font-family:var(--font-flathead-display),Georgia,serif;font-weight:400;font-style:italic;color:#1e50c8;background:none;padding-bottom:0;letter-spacing:inherit}
+html.riv main :is(p,li){font-family:var(--font-body)}
+html.riv main .font-mono{font-family:var(--font-body);letter-spacing:.12em}
+html.riv main :is(.pop-card,.pop-card-cream){border:1px solid #103c542b;border-radius:3px;box-shadow:3px 3px 0 #103c5414;background:#fffcf3}
+html.riv main .halftone-bg,html.riv main .halftone-ink{background-image:none}
+html.riv main :is(input,textarea,select){border-radius:3px;font-family:var(--font-body);font-size:16px}
+html.riv main :is(input,textarea,select):focus-visible{outline:2px solid #1e50c8;outline-offset:3px}
+html.riv main :is(button,a):focus-visible{outline:3px solid #f5b700;outline-offset:5px}
+html.riv main :is(button[type='submit'],a[class*='bg-[#f5b700]']){border-radius:3px;box-shadow:none;min-height:48px}
+html.riv nav[data-studio-nav]{background:#fcf8ebf5;border-bottom:1px solid #103c5430;box-shadow:none!important}
+html.riv nav[data-studio-nav]>div{padding:16px 5vw;max-width:none}
+html.riv nav[data-studio-nav]>div>a>span{font-family:var(--font-body);font-weight:700;font-size:13px;letter-spacing:.055em;text-transform:uppercase;line-height:1.2;max-width:160px;white-space:normal}
+html.riv nav[data-studio-nav] :is(a,button){font-family:var(--font-body)}
+html.riv nav[data-studio-nav] a[href='/book']{border-radius:3px;border:0;box-shadow:none!important;font-size:12px}
+html.riv nav[data-studio-nav] button{border:1px solid #103c5425;border-radius:3px;background:transparent;box-shadow:none!important;min-width:44px;min-height:44px}
+html.riv #site-mega-menu .font-display{font-family:var(--font-display);font-weight:400;font-size:32px}
+html.riv #site-mega-menu :is(a,p){font-family:var(--font-body)}
+html.riv .studio-footer{background:#103c54;color:#fcf8eb;padding-top:70px;border-top:0}
+html.riv .studio-footer:before,html.riv .studio-footer:after{display:none}
+html.riv .studio-footer-brand{font-family:var(--font-display);font-weight:400;font-size:clamp(38px,5vw,76px)}
+html.riv .studio-footer-links a,html.riv .studio-footer-top>div>p,html.riv .studio-footer-top>div>a{font-size:14px}
+html.riv .studio-footer-links a{min-height:40px;color:#e0e7e6}
+html.riv .studio-footer-seed p{font-family:var(--font-display);font-size:25px}
+html.riv .studio-footer-bottom :is(a,button){font-size:12px;min-height:44px}
+html.riv [data-studio-launcher]>div{border:1px solid #103c5425;box-shadow:3px 3px 0 #103c541a}
+html.riv main figure:has(img[src*='/art/riviera/']):not([class*='poster']){border:1px solid #103c54;border-radius:0;padding:9px;background:#fcf8eb;box-shadow:3px 3px 0 #103c54;rotate:0;transform:none}
+html.riv main figure:has(img[src*='/art/riviera/']) img{border-radius:0}
+.portfolio-band{padding:54px 0 32px;background:#edf0e6;border-top:1px solid #103c5422;border-bottom:1px solid #103c5422;color:#103c54;overflow:hidden}
+.portfolio-heading{padding:0 6vw;display:flex;justify-content:space-between;align-items:end;gap:24px;margin-bottom:24px}
+.portfolio-kicker{font-family:var(--font-body),Manrope,sans-serif;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;margin:0 0 10px}
+html.riv main .portfolio-heading h2,.flathead-home .portfolio-heading h2{font-size:clamp(38px,4vw,58px);line-height:1;margin:0;font-family:var(--font-display),Instrument,serif;font-weight:400}
+.portfolio-heading h2 em{color:#1e50c8;font-style:italic}
+.portfolio-actions{display:flex;align-items:center;gap:26px;flex-shrink:0}
+.portfolio-all{font-size:13px;display:flex;align-items:center;gap:18px;min-height:44px;border-bottom:1px solid #103c5440}
+.portfolio-arrows{display:flex;gap:8px}
+.portfolio-arrows button{width:44px;height:44px;background:transparent;border:1px solid #103c5440;border-radius:50%;color:#103c54;font-size:22px;cursor:pointer;transition:background .2s}
+.portfolio-arrows button:hover:not(:disabled){background:#f5b700;border-color:#f5b700}
+.portfolio-arrows button:disabled{opacity:.28;cursor:default}
+.portfolio-rail{display:flex;gap:25px;padding:4px 6vw 20px;overflow-x:auto;overscroll-behavior-inline:contain;scroll-snap-type:x proximity;scroll-padding-inline:6vw;scrollbar-width:thin;scrollbar-color:#103c5480 transparent}
+.portfolio-rail:focus-visible{outline:2px solid #1e50c8;outline-offset:-2px}
+.portfolio-project{flex:0 0 330px;min-width:0;scroll-snap-align:start}
+.portfolio-project>a{display:block;color:inherit;text-decoration:none}
+.portfolio-frame{padding:7px;background:#fcf8eb;border:1px solid #103c54;box-shadow:3px 3px 0 #103c54;transition:transform .25s,box-shadow .25s}
+.portfolio-project a:hover .portfolio-frame,.portfolio-project a:focus-visible .portfolio-frame{transform:translateY(-3px);box-shadow:3px 6px 0 #103c54}
+.portfolio-browser{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:9px;line-height:1.2;padding:5px 2px 10px;color:#466777;font-family:var(--font-body),Manrope,sans-serif}
+.portfolio-browser>span:first-child{font-size:6px;letter-spacing:2px;color:#a0b3b7;flex-shrink:0}
+.portfolio-frame picture{display:block;border:1px solid #103c5440}
+.portfolio-frame img{display:block;width:100%;height:auto;aspect-ratio:1.44;object-fit:cover}
+.portfolio-caption{display:flex;align-items:start;gap:12px;margin-top:16px}
+.portfolio-number{font-size:10px;margin-top:6px;color:#567481}
+html.riv main .portfolio-caption h3,.flathead-home .portfolio-caption h3{font-family:var(--font-display),Instrument,serif;font-weight:400;font-size:27px;line-height:1.1;margin:0;letter-spacing:-.02em}
+.portfolio-caption p{font-size:11px;margin:6px 0 0;font-weight:600;color:#486572}
+.portfolio-visit{margin-left:auto;font-size:22px}
+.portfolio-description{margin:12px 0 0 27px;font-size:12px;line-height:1.6;color:#486572}
+.portfolio-hint{padding:0 6vw;margin:12px 0 0;font-size:11px;color:#486572}
+@media(max-width:600px){.portfolio-band{padding-top:34px}.portfolio-heading{align-items:start;gap:16px}.portfolio-kicker{font-size:9px;line-height:1.6;max-width:180px}.portfolio-actions{gap:12px;flex-direction:column-reverse;align-items:end}.portfolio-all{font-size:11px;gap:8px;min-height:28px}.portfolio-rail{gap:20px}.portfolio-project{flex-basis:78vw}.portfolio-caption h3{font-size:25px}.portfolio-description{font-size:12px}.portfolio-hint{font-size:10px}}
+@media(prefers-reduced-motion:reduce){.portfolio-frame{transition:none}.portfolio-rail{scroll-behavior:auto}}

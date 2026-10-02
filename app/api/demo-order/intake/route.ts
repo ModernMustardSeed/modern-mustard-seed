@@ -1,3 +1,4 @@
+import {parseTeam} from '@/lib/front-office/parse-team';
 /**
  * Save the post-purchase customization intake for a demo order and hand the
  * details to Sarah (email + the lead's cockpit thread). Keyed by hubId + the
@@ -72,22 +73,6 @@ const LANGUAGES = ['en', 'es'] as const;
  * A line with no usable number is dropped rather than saved as a transfer that
  * would silently fail on a live call.
  */
-export function parseTeam(raw: unknown): Array<{ name: string; phone: string; when?: string }> {
-  if (typeof raw !== 'string' || !raw.trim()) return [];
-  return raw
-    .split(/\r?\n/)
-    .map((line) => line.trim())
-    .filter(Boolean)
-    .slice(0, 12)
-    .map((line) => {
-      const phoneMatch = line.match(/(\+?1[\s.-]?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}/);
-      const phone = phoneMatch?.[0]?.trim() ?? '';
-      const rest = line.replace(phone, '').split(',').map((p) => p.trim()).filter(Boolean);
-      return { name: rest[0] ?? 'Team member', phone, when: rest.slice(1).join(', ') || undefined };
-    })
-    .filter((t) => t.phone.replace(/\D/g, '').length >= 10);
-}
-
 function oneOf<T extends readonly string[]>(allowed: T, v: unknown, fallback: T[number]): T[number] {
   const s = typeof v === 'string' ? v.trim().toLowerCase() : '';
   return (allowed as readonly string[]).includes(s) ? (s as T[number]) : fallback;

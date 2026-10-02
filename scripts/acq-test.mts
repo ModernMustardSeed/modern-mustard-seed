@@ -16,7 +16,7 @@ import { nameKey, domainKey, phoneDigits, emailKey, keysFor, checkDuplicate, cla
 import { scoreLead, lastCloseHour } from '../lib/acq/score';
 import { evaluate, dueForStep, businessDaysBetween, sequenceGaps, sequenceLength } from '../lib/acq/eligibility';
 
-import { workerStatus } from '../app/api/admin/acquisition/lead-finder/route';
+import { workerStatus } from '../lib/acq/worker-status';
 import { TRADE_DEFS, SOURCEABLE_TRADES, PROVEN_TRADES } from '../lib/acq/trades';
 import { detectTrade } from '../data/demo-os-trades';
 import { neverDoFor, escalateOnFor, defaultGreeting, callerKey } from '../lib/front-office/provision';
@@ -31,7 +31,7 @@ import { normalizeAreaCode } from '../lib/front-office/phone';
 import { shouldNotify, subjectFor, smsBodyFor } from '../lib/front-office/notify';
 import { trimForSms } from '../lib/sms';
 import { env, envAny, isPlaceholder, placeholderVars } from '../lib/env';
-import { parseTeam } from '../app/api/demo-order/intake/route';
+import { parseTeam } from '../lib/front-office/parse-team';
 import { TRADE_LABELS, TRADE_SCENARIOS, TRADE_ROLEPLAY_NOTE } from '../lib/acq/types';
 import { classifyAgent, classifyHit, verdictDetail, HUMAN_DELAY_SECONDS, POLL_WINDOW_MINUTES } from '../lib/acq/bots';
 import { piecesFrom, listPieces, PIECE_ORDER } from '../lib/build-pieces';

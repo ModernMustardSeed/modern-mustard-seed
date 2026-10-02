@@ -1,3 +1,4 @@
+import PortfolioRail from '@/components/home/PortfolioRail';
 import Link from '@/components/AttributionLink';
 import { JsonLd, breadcrumbJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
@@ -39,6 +40,7 @@ export default function WorkIndex() {
             Each case study is a teardown. The problem, the build, the stack, the outcome. What it was. How we built it. What it does now.
           </p>
         </PopPageHero>
+      <PortfolioRail id="portfolio" />
       <div className="relative pt-16 md:pt-20 pb-28">
         <div aria-hidden="true" className="absolute inset-0 halftone-bg opacity-50 pointer-events-none" />
         <div className="relative max-w-6xl mx-auto px-6 md:px-8">

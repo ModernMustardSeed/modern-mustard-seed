@@ -1,0 +1,11 @@
+import {createRequire} from 'node:module';
+import {readFile,writeFile} from 'node:fs/promises';
+const require=createRequire(import.meta.url);
+const {chromium}=require('playwright');const sharp=require('sharp');
+const data=async(name,type)=>`data:${type};base64,${(await readFile('public/flathead/'+name)).toString('base64')}`;
+const [scene,boat,font,italic,body]=await Promise.all([data('flathead-handmade-1536.jpg','image/jpeg'),data('mustard-sailboat-768.webp','image/webp'),data('instrument-serif.woff2','font/woff2'),data('instrument-serif-italic.woff2','font/woff2'),data('manrope.woff2','font/woff2')]);
+const browser=await chromium.launch({headless:true});const page=await browser.newPage({viewport:{width:1200,height:630},deviceScaleFactor:1});
+await page.setContent(`<style>@font-face{font-family:Display;src:url(${font})}@font-face{font-family:Display;src:url(${italic});font-style:italic}@font-face{font-family:Body;src:url(${body})}*{box-sizing:border-box}body{margin:0;background:#fcf8eb;color:#103c54;width:1200px;height:630px;overflow:hidden}.scene{position:absolute;width:1200px;height:630px;object-fit:cover;object-position:center 58%;z-index:-1}.copy{position:absolute;top:45px;left:65px}.brand{font:13px Body;letter-spacing:.17em;text-transform:uppercase}h1{font:76px/1.04 Display;margin:25px 0 0;letter-spacing:-.02em}em{color:#1e50c8}.boat{position:absolute;width:190px;right:225px;bottom:72px}footer{position:absolute;bottom:25px;left:65px;font:12px Body;letter-spacing:.04em}</style><img class="scene" src="${scene}"><div class="copy"><div class="brand">Modern Mustard Seed</div><h1>Build what’s next.<br><em>Grow what works.</em></h1></div><img class="boat" src="${boat}"><footer>AI systems, websites, and products. Built in Montana.</footer>`);
+await page.evaluate(async()=>{await document.fonts.ready;await Promise.all([...document.images].map(image=>image.decode()))});
+const png=await page.screenshot();await writeFile('public/brand/mms-share-flathead.jpg',await sharp(png).jpeg({quality:88,mozjpeg:true}).toBuffer());await writeFile('qa/flathead/share.png',png);await browser.close();
+console.log('Share card rendered at 1200 by 630.');

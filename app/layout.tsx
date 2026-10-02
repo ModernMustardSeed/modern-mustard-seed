@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import localFont from 'next/font/local';
 import { DM_Sans, Playfair_Display, Cormorant_Garamond, JetBrains_Mono, Oswald, Unbounded, Figtree } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
@@ -19,6 +20,8 @@ import { buildMetadata, SITE } from '@/lib/seo';
 import './globals.css';
 import './studio-chrome.css';
 import './riviera-type.css';
+import './flathead-home.css';
+import './flathead-theme.css';
 import RivieraScope from '@/components/pop/RivieraScope';
 import { rivieraHeadScript } from '@/lib/riviera-scope';
 
@@ -33,20 +36,23 @@ const condensedFont = Oswald({ subsets: ['latin'], weight: ['400', '500', '600',
 // confident, the face that says software at a glance and still feels like
 // the beach; the accent word is Unbounded in a lighter weight. Figtree sets
 // labels, reading type and the italics. Sarah picked the pairing ("c").
-const rivieraFont = Unbounded({ subsets: ['latin'], display: 'swap', variable: '--font-riviera' });
+const rivieraFont = Unbounded({ subsets: ['latin'], display: 'swap', preload: false, variable: '--font-riviera' });
 const capsFont = Figtree({ subsets: ['latin'], style: ['normal', 'italic'], display: 'swap', preload: false, variable: '--font-caps' });
+
+const flatheadDisplay = localFont({src:[{path:'../public/flathead/instrument-serif.woff2',weight:'400',style:'normal'},{path:'../public/flathead/instrument-serif-italic.woff2',weight:'400',style:'italic'}],display:'swap',variable:'--font-flathead-display'});
+const flatheadBody = localFont({src:[{path:'../public/flathead/manrope.woff2',weight:'400',style:'normal'},{path:'../public/flathead/manrope-semibold.woff2',weight:'600',style:'normal'},{path:'../public/flathead/manrope-bold.woff2',weight:'700',style:'normal'}],display:'swap',variable:'--font-flathead-body'});
 
 export const metadata: Metadata = buildMetadata();
 
 export const viewport: Viewport = {
-  themeColor: '#81D8D0',
+  themeColor: '#fcf8eb',
   width: 'device-width',
   initialScale: 1,
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${bodyFont.variable} ${displayFont.variable} ${serifFont.variable} ${monoFont.variable} ${condensedFont.variable} ${rivieraFont.variable} ${capsFont.variable}`}>
+    <html lang="en" suppressHydrationWarning className={`${bodyFont.variable} ${displayFont.variable} ${serifFont.variable} ${monoFont.variable} ${condensedFont.variable} ${rivieraFont.variable} ${capsFont.variable} ${flatheadDisplay.variable} ${flatheadBody.variable}`}>
       <head>
         {/* Sets html.riv before the first paint, so the Riviera type never flashes. */}
         <script dangerouslySetInnerHTML={{ __html: rivieraHeadScript() }} />
@@ -81,9 +87,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <RivieraScope />
         <div className="relative z-30">
           <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[9999] focus:bg-[#f5b700] focus:text-[#0b3b44] focus:px-5 focus:py-3">Skip to content</a>
-          <Navbar />
+          <HideOnAppShell alsoOn={['/']}><Navbar /></HideOnAppShell>
           <main id="main-content" tabIndex={-1}>{children}</main>
-          <HideOnAppShell>
+          <HideOnAppShell alsoOn={['/']}>
             <Footer />
           </HideOnAppShell>
         </div>

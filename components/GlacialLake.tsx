@@ -35,7 +35,7 @@ export default function GlacialLake({ variant = 'dawn', className = '' }: Props)
                 <stop offset="35%" stopColor="#0b3b44" />
                 <stop offset="62%" stopColor="#1A1A2E" />
                 <stop offset="82%" stopColor="#3B6B8A" />
-                <stop offset="92%" stopColor="#C8964E" />
+                <stop offset="92%" stopColor="#F5B700" />
                 <stop offset="100%" stopColor="#F0D090" />
               </>
             ) : (
@@ -58,7 +58,7 @@ export default function GlacialLake({ variant = 'dawn', className = '' }: Props)
           {/* Reflected sun streak on water: brass-cream */}
           <linearGradient id="gl-streak" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%"  stopColor="#F5F0E8" stopOpacity="0.88" />
-            <stop offset="55%" stopColor="#C8964E" stopOpacity="0.4" />
+            <stop offset="55%" stopColor="#F5B700" stopOpacity="0.4" />
             <stop offset="100%" stopColor="#C86A45" stopOpacity="0" />
           </linearGradient>
 
@@ -66,7 +66,7 @@ export default function GlacialLake({ variant = 'dawn', className = '' }: Props)
           <radialGradient id="gl-sun" cx="50%" cy="50%" r="50%">
             <stop offset="0%"  stopColor="#F5F0E8" stopOpacity="1" />
             <stop offset="35%" stopColor="#F0D090" stopOpacity="0.85" />
-            <stop offset="70%" stopColor="#C8964E" stopOpacity="0.28" />
+            <stop offset="70%" stopColor="#F5B700" stopOpacity="0.28" />
             <stop offset="100%" stopColor="#FF6B35" stopOpacity="0" />
           </radialGradient>
 
@@ -180,7 +180,7 @@ export default function GlacialLake({ variant = 'dawn', className = '' }: Props)
         )}
 
         {/* Horizon glow line where mountains meet water */}
-        <rect x="0" y="446" width="1600" height="6" fill="#C8964E" opacity="0.28" />
+        <rect x="0" y="446" width="1600" height="6" fill="#F5B700" opacity="0.28" />
         <rect x="0" y="448" width="1600" height="2" fill="#F0D090" opacity="0.6" />
 
         {/* Subtle water highlights */}

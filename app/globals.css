@@ -323,7 +323,7 @@ html:not(.mm-js) .mm-r {
   .text-gradient-mustard-subtle,
   .text-gradient-sunrise-warm,
   .text-gradient-sky-cool {
-    background: linear-gradient(135deg, #F0D090 0%, #C8964E 100%);
+    background: linear-gradient(135deg, #F0D090 0%, #F5B700 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -331,27 +331,27 @@ html:not(.mm-js) .mm-r {
 
   /* Background gradient utilities */
   .bg-brass {
-    background: linear-gradient(135deg, #C8964E 0%, #D4A053 50%, #C86A45 100%);
+    background: linear-gradient(135deg, #F5B700 0%, #D4A053 50%, #C86A45 100%);
   }
   .bg-brass-light {
-    background: linear-gradient(135deg, #F0D090 0%, #C8964E 100%);
+    background: linear-gradient(135deg, #F0D090 0%, #F5B700 100%);
   }
   .bg-ember-gradient {
-    background: linear-gradient(135deg, #C8964E 0%, #FF6B35 100%);
+    background: linear-gradient(135deg, #F5B700 0%, #FF6B35 100%);
   }
   /* Legacy aliases */
   .bg-sunrise,
   .bg-sky-gradient {
-    background: linear-gradient(135deg, #C8964E 0%, #D4A053 50%, #C86A45 100%);
+    background: linear-gradient(135deg, #F5B700 0%, #D4A053 50%, #C86A45 100%);
   }
   .bg-sunrise-warm,
   .bg-sky-cool {
-    background: linear-gradient(135deg, #F0D090 0%, #C8964E 100%);
+    background: linear-gradient(135deg, #F0D090 0%, #F5B700 100%);
   }
 
   /* Campfire glow utility (used on premium CTAs and ember moments) */
   .campfire-glow {
-    box-shadow: 0 0 12px #FF6B35CC, 0 0 24px #FF6B3566, 0 0 48px #C8964E33;
+    box-shadow: 0 0 12px #FF6B35CC, 0 0 24px #FF6B3566, 0 0 48px #F5B70033;
   }
   .lake-glow {
     box-shadow: 0 0 15px #3B6B8A80, 0 0 30px #3B6B8A33;
@@ -360,7 +360,7 @@ html:not(.mm-js) .mm-r {
     box-shadow: 0 0 15px #8FA98F80, 0 0 30px #8FA98F33;
   }
   .brass-glow {
-    box-shadow: 0 0 15px #C8964E80, 0 0 30px #C8964E33;
+    box-shadow: 0 0 15px #F5B70080, 0 0 30px #F5B70033;
   }
 
   .glass-card {
