@@ -23,6 +23,7 @@ import { recordEndOfCall } from '@/lib/voice-calls';
 import { buildSuiteFromCall } from '@/lib/voice-build-suite';
 import { DEMO_BOOKING_TOOL_NAMES, runDemoBookingTool } from '@/lib/demo-booking-tools';
 import { getRun } from '@/lib/demo-run-store';
+import { afterWhiteLabelCall } from '@/lib/white-label/after-call';
 import { notifyDemoBooking } from '@/lib/demo-booking-notify';
 import { demoAppointmentsFor } from '@/lib/demo-booking';
 import {
@@ -837,6 +838,12 @@ async function handleEndOfCallReport(message: Record<string, unknown>) {
     } catch (err) {
       console.error('demo call summary lookup failed', err);
     }
+  }
+
+  // A white label demo that rang someone's real phone: text them the summary
+  // the owner would get, in the agency's name. Never throws.
+  if (meta.kind === 'demo-agent' && meta.whiteLabel && meta.ringTo) {
+    await afterWhiteLabelCall(meta as Record<string, unknown>, durationSeconds);
   }
 
   const apiKey = process.env.RESEND_API_KEY;

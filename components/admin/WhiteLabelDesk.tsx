@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import AdminHeader from '@/components/admin/AdminHeader';
+import WhiteLabelBook from '@/components/admin/WhiteLabelBook';
 import type { WlLine } from '@/data/white-label';
 
 /**
@@ -143,7 +144,7 @@ export default function WhiteLabelDesk({
             <span className="text-[10px] uppercase tracking-[0.4em] text-[#E0301E] font-mono font-bold block mb-2">Agencies resell us under their name</span>
             <h1 className="font-display text-3xl sm:text-4xl font-semibold">The White Label Desk</h1>
             <p className="font-body text-sm text-[#3A3733] mt-2 max-w-2xl">
-              The price list, a prep tool for every agency meeting, and the playbook for the twenty minutes. Prices live in <code className="font-mono text-xs">data/white-label.ts</code>; the signed sheet and the demo move with them.
+              Applications, the client board, billing, the price list, meeting prep and the playbook for the twenty minutes. Prices live in <code className="font-mono text-xs">data/white-label.ts</code>; the signed sheet and the demo move with them.
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -157,6 +158,8 @@ export default function WhiteLabelDesk({
             The ladder is broken: the Phone + Website Agent wholesale must sit at or above the priciest single and below the two pieces added together. Fix it in data/white-label.ts before the next sheet goes out.
           </div>
         )}
+
+        <WhiteLabelBook lineNames={Object.fromEntries(lines.map((l) => [l.slug, l.name]))} />
 
         {/* ─── THE PRICE LIST ─── */}
         <section className="space-y-3">

@@ -57,7 +57,86 @@ function firstName(name: string): string {
 }
 
 function hello(p: Prospect): string {
+  if (p.kind === 'agency' && agencyName(p) === p.name.trim()) return `Hi ${p.name} team,`;
   return p.kind === 'community' ? `Hi ${p.name} team,` : `Hi ${firstName(p.name)},`;
+}
+
+/* ─── AGENCIES: THE WHITE LABEL LETTERS ──────────────────────────────────────
+ * An agency prospect keeps the person in `name` and the agency in `niche`
+ * (when the site names nobody, both are the agency and the greeting becomes
+ * "Hi <Agency> team"). The researched two-sentence opener lives in `notes` on
+ * a line starting "Opener:". The hook is a working demo with the agency's own
+ * name already on it, so the letter shows instead of describes. No wholesale
+ * number goes in a letter: that is on the signed sheet after they apply. */
+
+export const WHITE_LABEL_URL = `${SITE.url}/white-label`;
+
+function agencyName(p: Prospect): string {
+  return (p.niche || p.name || '').trim();
+}
+
+function agencyOpener(p: Prospect): string {
+  const line = (p.notes || '').split('\n').find((l) => /^opener:/i.test(l.trim()));
+  const custom = line ? line.trim().replace(/^opener:\s*/i, '').trim() : '';
+  return custom || `${agencyName(p)} builds websites for businesses that live and die by their phones. The next thing those clients ask for is AI, and you can be the one who hands it to them.`;
+}
+
+export function agencyDemoUrl(p: Prospect): string {
+  const q = new URLSearchParams({ agency: agencyName(p), sample: 'dental', utm_source: 'partner-desk', utm_medium: 'email', utm_campaign: 'white-label' });
+  return `${SITE.url}/white-label/demo?${q.toString()}`;
+}
+
+function agencyBody(p: Prospect): string {
+  const a = agencyName(p);
+  return [
+    hello(p),
+    ``,
+    agencyOpener(p),
+    ``,
+    `I'm Sarah, founder of Modern Mustard Seed. We build AI receptionists, website voice agents and agentic systems, and agencies sell them to their own clients under their own name.`,
+    ``,
+    `So I put ${a} on one. Open this, paste one of your clients' websites into the panel at the top, and call it. It reads the site and answers the phone as that business:`,
+    agencyDemoUrl(p),
+    ``,
+    `How the program works:`,
+    `- Your name on everything. The agent, the call summaries and the reports all say ${a}. We are never in the room and never contact your clients.`,
+    `- You set the price and bill your client. We bill you one set wholesale price per live client, one invoice a month.`,
+    `- No license fee, no minimum. At our suggested retail you keep $150 a month per client on the receptionist alone, and you can charge more.`,
+    `- When your studio is full, we also take overflow: sites, dashboards, agentic systems, built to your design and delivered as yours.`,
+    `- Changes to anything we build are included. If you ever leave, every agent and number goes with you.`,
+    `- The first five agencies lock their wholesale prices for two years.`,
+    ``,
+    `Everything, and the two-minute application: ${WHITE_LABEL_URL}`,
+    ``,
+    `If one of your clients comes to mind while you are on that call, reply with their name and I'll set the demo up around them.`,
+    ``,
+    `Sarah Scarano`,
+  ].join('\n');
+}
+
+function agencyFollowUpBody(p: Prospect): string {
+  return [
+    hello(p),
+    ``,
+    `Floating this back up. The demo with ${agencyName(p)} on it is still live:`,
+    agencyDemoUrl(p),
+    ``,
+    `The whole pitch is in that link: paste a client's website, call it, and listen to it answer as them. If it is something your clients would buy from you, the program is here: ${WHITE_LABEL_URL}`,
+    ``,
+    `Sarah Scarano`,
+  ].join('\n');
+}
+
+function agencyLastBody(p: Prospect): string {
+  return [
+    hello(p),
+    ``,
+    `Last note from me, and then I'll leave your inbox alone.`,
+    ``,
+    `Your demo stays live at ${agencyDemoUrl(p)}, and the program stays open whenever the timing is right: ${WHITE_LABEL_URL}`,
+    ``,
+    `Sarah Scarano`,
+  ].join('\n');
 }
 
 function nicheLine(p: Prospect): string {
@@ -153,6 +232,8 @@ export function emailSubject(p: Prospect): string {
       return `${fn}, ${dollars(m.talkingWebsite.year)} a year for every business you send us`;
     case 'community':
       return `A member benefit that pays ${p.name}`;
+    case 'agency':
+      return `${agencyName(p)}, your name on an AI receptionist`;
     default:
       return `${fn}, an invite to the Modern Mustard Seed partner program`;
   }
@@ -164,6 +245,8 @@ export function emailBody(p: Prospect): string {
       return referralBody(p);
     case 'community':
       return communityBody(p);
+    case 'agency':
+      return agencyBody(p);
     default:
       return creatorBody(p);
   }
@@ -174,6 +257,7 @@ export function followUpSubject(p: Prospect): string {
 }
 
 export function followUpBody(p: Prospect): string {
+  if (p.kind === 'agency') return agencyFollowUpBody(p);
   const m = partnerMath();
   const short =
     p.kind === 'referral'
@@ -195,6 +279,7 @@ export function followUpBody(p: Prospect): string {
 }
 
 export function lastNoteBody(p: Prospect): string {
+  if (p.kind === 'agency') return agencyLastBody(p);
   return [
     hello(p),
     ``,
@@ -236,6 +321,9 @@ export function xDM(p: Prospect): string {
 }
 
 export function linkedinDM(p: Prospect): string {
+  if (p.kind === 'agency') {
+    return `Hi ${firstName(p.name)}, I'm Sarah, founder of Modern Mustard Seed. Agencies sell our AI receptionists and agentic systems to their clients under their own name. I put ${agencyName(p)} on a working demo: paste one of your clients' websites in and call it. ${agencyDemoUrl(p)}`;
+  }
   const m = partnerMath();
   return `Hi ${firstName(p.name)}, I'm Sarah, founder of Modern Mustard Seed. We build websites that answer their own phone for small businesses, at a set price. I'd like you as a referral partner: you send a business name, we build their demo free, and you earn ${m.pct}% of every monthly invoice for ${m.months} months. The whole program: ${APPLY_URL}`;
 }

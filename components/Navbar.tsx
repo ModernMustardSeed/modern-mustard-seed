@@ -195,7 +195,7 @@ export default function Navbar() {
     pathname.startsWith('/sarahbook') ||
     pathname.startsWith('/voice-agents/build/demo/') ||
     // The white label demo and price sheet wear the agency's name, never ours.
-    pathname.startsWith('/white-label/');
+    /^\/white-label\/(demo|sheet|hq)(\/|$)/.test(pathname);
   if (isAppShell) return null;
 
   return (

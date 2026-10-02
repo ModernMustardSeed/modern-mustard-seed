@@ -2,7 +2,9 @@
 
 import { useEffect, useRef, useState } from 'react';
 import WlCallButton, { type Line } from '@/components/white-label/WlCallButton';
-import MarginPanel from '@/components/white-label/MarginPanel';
+import MarginPanel, { MarginSnapshot } from '@/components/white-label/MarginPanel';
+import WlRing from '@/components/white-label/WlRing';
+import WlPresenter, { type Slide } from '@/components/white-label/WlPresenter';
 import { WlAdsDashboard, WlVisibilityReport, WlClientSite } from '@/components/white-label/WlTour';
 import { inkFor, textOnWhite, initials, possessive, usd } from '@/components/white-label/brand';
 
@@ -58,12 +60,15 @@ export default function WhiteLabelDemo({
   lines,
   signed,
   present,
+  locked = false,
 }: {
   initial: { agency: string; color: string; city: string; sample: string; client: string; logo: string | null; site: string | null };
   samples: Sample[];
   lines: WlDemoLine[];
   signed: boolean;
   present: boolean;
+  /** A prospect's link from the agency portal: no panel, no way to open it. */
+  locked?: boolean;
 }) {
   const [agency, setAgency] = useState(initial.agency);
   const [color, setColor] = useState(initial.color);
@@ -79,6 +84,9 @@ export default function WhiteLabelDemo({
   const [readMsg, setReadMsg] = useState('');
   const [owner, setOwner] = useState<Owner>({ status: 'idle', seconds: 0, booked: [] });
   const [tab, setTab] = useState<(typeof TABS)[number]['id']>('site');
+  const [mode, setMode] = useState<'browser' | 'phone'>('browser');
+  const [live, setLive] = useState(false);
+  const [presenting, setPresenting] = useState(false);
   const runRef = useRef<string | null>(null);
   const transcriptEnd = useRef<HTMLDivElement>(null);
 
@@ -177,10 +185,14 @@ export default function WhiteLabelDemo({
     onLine: (l: Line) => setTranscript((t) => [...t, l].slice(-60)),
     onStart: (runId: string) => {
       runRef.current = runId;
+      setLive(true);
       setTranscript([]);
       setOwner({ status: 'idle', seconds: 0, booked: [] });
     },
-    onEnd: (s: number) => void callEnded(s),
+    onEnd: (s: number) => {
+      setLive(false);
+      void callEnded(s);
+    },
   };
 
   const brand = (size = 40) =>
@@ -198,17 +210,247 @@ export default function WhiteLabelDemo({
   // A real site can be any trade, so its prompts stay general.
   const tries = site ? ['What do you offer?', 'How much does it cost?', 'Can I book something this week?'] : (TRY[sampleId] ?? TRY.dental);
 
+  // ─── Shared pieces: used on the page and again inside presenter mode. ───
+
+  const callPanel = (onDark = false) => {
+    const solidBg = onDark ? color : ink === '#ffffff' ? '#ffffff' : '#111111';
+    const solidFg = onDark ? ink : ink === '#ffffff' ? '#111111' : '#ffffff';
+    const soft = onDark ? 'rgba(255,255,255,0.1)' : ink === '#ffffff' ? 'rgba(255,255,255,0.14)' : 'rgba(0,0,0,0.07)';
+    return (
+      <div style={onDark ? { color: '#ffffff' } : undefined}>
+        <div className="inline-flex rounded-full p-1" style={{ background: soft }} role="tablist" aria-label="How to call">
+          {(['browser', 'phone'] as const).map((m) => (
+            <button
+              key={m}
+              role="tab"
+              aria-selected={mode === m}
+              onClick={() => setMode(m)}
+              className="rounded-full px-4 py-2 text-sm font-bold transition-colors"
+              style={mode === m ? { background: solidBg, color: solidFg } : undefined}
+            >
+              {m === 'browser' ? 'Call in the browser' : 'Call my phone'}
+            </button>
+          ))}
+        </div>
+        <div className="mt-5">
+          {mode === 'browser' ? (
+            <WlCallButton {...callProps} bg={solidBg} fg={solidFg} />
+          ) : (
+            <WlRing
+              agency={agencyName}
+              client={client}
+              sample={sampleId}
+              city={city}
+              siteKey={site?.key ?? null}
+              bg={solidBg}
+              fg={solidFg}
+              onBooked={(b) => setOwner({ status: 'done', seconds: 0, booked: b })}
+            />
+          )}
+        </div>
+        <div className="mt-6">
+          <p className="text-[11px] font-bold uppercase tracking-[0.2em] opacity-60">Try saying</p>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {tries.map((t) => (
+              <span key={t} className="rounded-full px-3 py-1.5 text-sm" style={{ background: soft }}>
+                &ldquo;{t}&rdquo;
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const transcriptCard = () => (
+    <div className="overflow-hidden rounded-3xl bg-white text-neutral-900 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.45)] ring-1 ring-black/5">
+      <div className="flex items-center justify-between gap-3 border-b border-neutral-100 px-5 py-4">
+        <div className="flex min-w-0 items-center gap-3">
+          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-xs font-black" style={{ background: color, color: ink }}>
+            {initials(client)}
+          </span>
+          <div className="min-w-0">
+            <p className="truncate text-sm font-bold">{client}</p>
+            <p className="text-xs text-neutral-500">AI receptionist</p>
+          </div>
+        </div>
+        <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-bold ${live ? 'bg-green-50 text-green-700' : 'bg-neutral-100 text-neutral-500'}`}>
+          {live ? (
+            <span className="flex h-3 items-end gap-[2px]" aria-hidden="true">
+              {[0, 1, 2, 3].map((n) => (
+                <span key={n} className="w-[3px] rounded-full bg-green-600" style={{ height: '100%', animation: `wlBar 0.9s ${n * 0.15}s ease-in-out infinite` }} />
+              ))}
+            </span>
+          ) : (
+            <span className="h-1.5 w-1.5 rounded-full bg-neutral-400" />
+          )}
+          {live ? 'Live' : 'Ready'}
+        </span>
+      </div>
+      <div className="h-[22rem] space-y-2.5 overflow-y-auto px-5 py-4" aria-live="polite">
+        {transcript.length === 0 ? (
+          <div className="grid h-full place-items-center text-center text-sm text-neutral-500">
+            <div>
+              <p className="font-semibold text-neutral-700">The conversation shows up here, word for word.</p>
+              <p className="mt-1">Start a call, play a customer, and book something.</p>
+            </div>
+          </div>
+        ) : (
+          transcript.map((l, i) => (
+            <div key={i} className={`flex ${l.role === 'agent' ? 'justify-start' : 'justify-end'}`}>
+              <p
+                className={`max-w-[85%] px-3.5 py-2 text-[15px] leading-snug ${l.role === 'agent' ? 'rounded-2xl rounded-bl-md' : 'rounded-2xl rounded-br-md'}`}
+                style={l.role === 'agent' ? { background: '#f2f2f0' } : { background: color, color: ink }}
+              >
+                {l.text}
+              </p>
+            </div>
+          ))
+        )}
+        <div ref={transcriptEnd} />
+      </div>
+      <style>{`@keyframes wlBar { 0%,100% { transform: scaleY(.35) } 50% { transform: scaleY(1) } } [style*="wlBar"] { transform-origin: bottom }`}</style>
+    </div>
+  );
+
+  const ownerPhone = () => (
+    <div className="mx-auto w-full max-w-[340px]">
+      <div className="rounded-[2.8rem] bg-neutral-900 p-3 shadow-[0_40px_80px_-30px_rgba(0,0,0,0.5)]">
+        <div className="relative overflow-hidden rounded-[2.2rem] bg-[#f4f4f6]">
+          <div className="flex items-center justify-between px-6 pt-3 text-[12px] font-semibold text-neutral-900">
+            <span>9:41</span>
+            <span className="h-6 w-24 rounded-full bg-neutral-900" aria-hidden="true" />
+            <span>5G</span>
+          </div>
+          <div className="mt-3 flex flex-col items-center gap-1 border-b border-black/5 pb-3">
+            {brand(34)}
+            <p className="text-xs font-semibold text-neutral-700">{agencyName}</p>
+          </div>
+          <div className="min-h-[220px] space-y-2 px-4 py-4">
+            <p className="text-center text-[11px] text-neutral-400">Text Message · Today</p>
+            <div className="max-w-[88%] rounded-2xl rounded-bl-md bg-white px-3.5 py-2.5 text-[14px] leading-snug text-neutral-900 shadow-sm">
+              <p className="font-semibold">{client}</p>
+              {owner.status === 'done' && owner.booked.length > 0 ? (
+                owner.booked.map((b, i) => (
+                  <p key={i} className="mt-1">
+                    New booking: {b.name || 'a caller'}, {b.when}.{b.service ? ` ${b.service}.` : ''}
+                    {b.phone ? ` ${b.phone}.` : ''}
+                  </p>
+                ))
+              ) : owner.status === 'done' ? (
+                <p className="mt-1">Your AI receptionist took a {Math.max(1, Math.round(owner.seconds / 60))} minute call. No booking this time; the details are in the transcript.</p>
+              ) : (
+                <p className="mt-1 text-neutral-500">
+                  {owner.status === 'waiting' ? 'Writing the summary…' : `New booking: Dana Ruiz, Thursday 10:00 AM.${site ? '' : ` ${exampleService(sampleId)}`}`}
+                </p>
+              )}
+            </div>
+            <div className="max-w-[70%] rounded-2xl rounded-bl-md bg-white px-3.5 py-2 text-[13px] text-neutral-500 shadow-sm">Full transcript in your email.</div>
+          </div>
+          <p className="pb-4 text-center text-[11px] text-neutral-400">{owner.status === 'done' ? 'From your call' : 'Example until you call'}</p>
+        </div>
+      </div>
+    </div>
+  );
+
+  const slides: Slide[] = [
+    {
+      kicker: 'Your brand',
+      title: `${agencyName}, meet your AI department.`,
+      body: 'Everything in this walkthrough runs under your name. Your client never sees ours.',
+      content: (
+        <div className="overflow-hidden rounded-3xl" style={{ background: color, color: ink }}>
+          <div className="p-10">
+            <div className="flex items-center gap-4">
+              <span className="rounded-2xl bg-white p-2">{brand(48)}</span>
+              {!logo && <p className="text-3xl font-extrabold tracking-tight">{agencyName}</p>}
+            </div>
+            <div className="mt-10 grid gap-3 sm:grid-cols-2">
+              {lines.slice(0, 6).map((l) => (
+                <div key={l.slug} className="rounded-2xl px-4 py-3 text-sm font-semibold" style={{ background: ink === '#ffffff' ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.06)' }}>
+                  {l.name}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      ),
+    },
+    {
+      kicker: 'The receptionist',
+      wide: true,
+      title: `Call ${client}.`,
+      body: site ? `It read ${new URL(site.url).hostname.replace(/^www\./, '')} and answers as them. Play a customer, then book something.` : 'Play a customer: ask a question, then book something.',
+      content: (
+        <div className="grid gap-6 xl:grid-cols-[1fr_1fr]">
+          <div className="rounded-3xl bg-white/[0.06] p-6 text-white ring-1 ring-white/10">{callPanel(true)}</div>
+          {transcriptCard()}
+        </div>
+      ),
+    },
+    {
+      kicker: 'After the call',
+      title: 'The owner gets one text.',
+      body: 'Who called, what they needed, whether they booked. It comes from you.',
+      content: ownerPhone(),
+    },
+    {
+      kicker: 'On their website',
+      title: 'The site you built, answering out loud.',
+      body: 'One line of code. Same brain as the phone.',
+      content: (
+        <div className="rounded-3xl bg-white p-5">
+          <WlClientSite client={client} city={city} sample={sampleId} site={site} agencyColor={color} compact>
+            <WlCallButton {...callProps} variant="bubble" bg={site?.themeColor ?? '#1f2937'} fg={inkFor(site?.themeColor ?? '#1f2937')} />
+          </WlClientSite>
+        </div>
+      ),
+    },
+    signed
+      ? {
+          kicker: 'Your margin',
+          title: 'Ten clients. Every month.',
+          body: 'Wholesale is what you pay us. The rest is yours.',
+          content: <MarginSnapshot lines={lines} color={color} ink={ink} />,
+        }
+      : {
+          kicker: 'What happens next',
+          title: `Live within a week.`,
+          body: `${agencyName} sets it up, you approve a test call, and it starts answering ${possessive(client)} real phone.`,
+          content: (
+            <div className="rounded-3xl p-10" style={{ background: color, color: ink }}>
+              <ol className="space-y-5 text-lg font-semibold">
+                {['Say yes', 'We learn the business in a day', 'You call the test line and approve it', 'It answers every call, around the clock'].map((t, n) => (
+                  <li key={t} className="flex items-center gap-4">
+                    <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full text-base font-black" style={{ background: ink, color }}>
+                      {n + 1}
+                    </span>
+                    {t}
+                  </li>
+                ))}
+              </ol>
+            </div>
+          ),
+        },
+  ];
+
   return (
-    <div className="min-h-screen bg-[#f6f5f2] text-neutral-900" style={{ fontFamily: 'ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif' }}>
+    <div className="min-h-screen bg-[#f6f5f2] text-neutral-900 antialiased">
+      {presenting && <WlPresenter slides={slides} color={color} ink={ink} brand={brand(32)} onClose={() => setPresenting(false)} />}
       {/* ─── THE AGENCY'S CONTROL PANEL (theirs, never their client's) ─── */}
       {showStrip ? (
         <div className="bg-[#111] text-white">
           <div className="mx-auto max-w-6xl px-4 py-4">
             <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
               <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-white/60">Your demo panel · everything below wears your name</p>
-              <button onClick={() => setShowStrip(false)} className="rounded-full border border-white/25 px-3 py-1 text-xs font-semibold text-white/80 hover:bg-white/10">
-                Hide panel to present
-              </button>
+              <div className="flex gap-2">
+                <button onClick={() => setPresenting(true)} className="rounded-full px-3 py-1 text-xs font-bold" style={{ background: color, color: ink }}>
+                  Presenter mode
+                </button>
+                <button onClick={() => setShowStrip(false)} className="rounded-full border border-white/25 px-3 py-1 text-xs font-semibold text-white/80 hover:bg-white/10">
+                  Hide panel
+                </button>
+              </div>
             </div>
 
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-[1.3fr_1fr_auto_auto]">
@@ -294,119 +536,71 @@ export default function WhiteLabelDemo({
             <p className="mt-3 text-xs text-white/40">Built and run by Modern Mustard Seed. Your client never sees this panel or our name.</p>
           </div>
         </div>
-      ) : (
+      ) : locked ? null : (
         <button onClick={() => setShowStrip(true)} className="fixed bottom-4 left-4 z-40 rounded-full bg-black/70 px-3 py-1.5 text-xs font-semibold text-white opacity-40 hover:opacity-100">
           Panel
         </button>
       )}
 
       {/* ─── WHAT THE AGENCY'S CLIENT SEES ─── */}
-      <header className="border-b border-black/5 bg-white">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
-          <div className="flex items-center gap-3">
+      <header className="sticky top-0 z-30 border-b border-black/5 bg-white/85 backdrop-blur">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3.5">
+          <div className="flex min-w-0 items-center gap-3">
             {brand()}
-            <div>
-              {!logo && <p className="text-base font-extrabold leading-tight">{agencyName}</p>}
-              <p className="text-xs text-neutral-500">Prepared for {client}</p>
+            <div className="min-w-0">
+              {!logo && <p className="truncate text-base font-extrabold leading-tight tracking-tight">{agencyName}</p>}
+              <p className="truncate text-xs text-neutral-500">Prepared for {client}</p>
             </div>
           </div>
-          <a href="#call" className="hidden rounded-full px-5 py-2.5 text-sm font-bold sm:inline-block" style={{ background: color, color: ink }}>
-            Try the receptionist
-          </a>
+          <div className="flex shrink-0 items-center gap-2">
+            <button onClick={() => setPresenting(true)} className="hidden rounded-full border border-neutral-300 px-4 py-2 text-sm font-semibold hover:bg-neutral-50 sm:inline-block">
+              Present
+            </button>
+            <a href="#call" className="rounded-full px-5 py-2.5 text-sm font-bold" style={{ background: color, color: ink }}>
+              Try it
+            </a>
+          </div>
         </div>
       </header>
 
       <section id="call" className="relative overflow-hidden" style={{ background: color, color: ink }}>
-        <div className="mx-auto grid max-w-6xl gap-10 px-4 py-14 md:grid-cols-[1.1fr_0.9fr] md:py-20">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0"
+          style={{ background: `radial-gradient(1200px 500px at 85% -10%, ${ink === '#ffffff' ? 'rgba(255,255,255,0.16)' : 'rgba(255,255,255,0.45)'}, transparent 60%), radial-gradient(800px 400px at -10% 110%, rgba(0,0,0,0.18), transparent 60%)` }}
+        />
+        <div className="relative mx-auto grid max-w-6xl gap-12 px-4 py-16 md:grid-cols-[1.05fr_0.95fr] md:py-24">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.25em] opacity-70">{site ? `Trained on ${new URL(site.url).hostname.replace(/^www\./, '')}` : `For ${client} in ${city}`}</p>
-            <h1 className="mt-4 text-4xl font-black leading-[1.05] tracking-tight md:text-6xl">Every call to {client}, answered and booked.</h1>
-            <p className="mt-5 max-w-xl text-lg leading-relaxed opacity-85">
-              This is {possessive(client)} new AI receptionist, live. {site ? 'It read their website a moment ago and' : 'It'} knows the services, answers in under a second, and puts callers on the schedule while they are still on the phone.
+            <p className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-[0.22em]" style={{ background: ink === '#ffffff' ? 'rgba(255,255,255,0.14)' : 'rgba(0,0,0,0.07)' }}>
+              <span className="h-1.5 w-1.5 rounded-full bg-current" />
+              {site ? `Trained on ${new URL(site.url).hostname.replace(/^www\./, '')}` : `For ${client} · ${city}`}
             </p>
-            <div className="mt-8">
-              <WlCallButton {...callProps} bg={ink === '#ffffff' ? '#ffffff' : '#111111'} fg={ink === '#ffffff' ? '#111111' : '#ffffff'} />
-            </div>
-            <div className="mt-6">
-              <p className="text-[11px] font-bold uppercase tracking-[0.2em] opacity-60">Try saying</p>
-              <div className="mt-2 flex flex-wrap gap-2">
-                {tries.map((t) => (
-                  <span key={t} className="rounded-full px-3 py-1.5 text-sm" style={{ background: ink === '#ffffff' ? 'rgba(255,255,255,0.14)' : 'rgba(0,0,0,0.08)' }}>
-                    &ldquo;{t}&rdquo;
-                  </span>
-                ))}
-              </div>
-            </div>
+            <h1 className="mt-6 text-[2.6rem] font-extrabold leading-[1.02] tracking-[-0.03em] md:text-7xl">
+              Every call to {client}, answered and booked.
+            </h1>
+            <p className="mt-6 max-w-xl text-lg leading-relaxed opacity-85">
+              {possessive(client)} new AI receptionist, live. {site ? 'It read their website a moment ago, knows' : 'It knows'} the services, answers in under a second, and puts callers on the schedule while they are still on the line.
+            </p>
+            <div className="mt-9">{callPanel()}</div>
           </div>
-
-          <div className="rounded-2xl bg-white p-5 text-neutral-900 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-neutral-100 pb-3">
-              <p className="text-sm font-bold">Live transcript</p>
-              <p className="max-w-[60%] truncate text-xs text-neutral-500">{client}</p>
-            </div>
-            <div className="mt-3 h-80 space-y-2.5 overflow-y-auto pr-1" aria-live="polite">
-              {transcript.length === 0 ? (
-                <div className="grid h-full place-items-center text-center text-sm text-neutral-500">
-                  <p>
-                    Start the call and the conversation appears here,
-                    <br />
-                    word for word, as it happens.
-                  </p>
-                </div>
-              ) : (
-                transcript.map((l, i) => (
-                  <div key={i} className={`flex ${l.role === 'agent' ? 'justify-start' : 'justify-end'}`}>
-                    <p className="max-w-[85%] rounded-2xl px-3.5 py-2 text-sm leading-snug" style={l.role === 'agent' ? { background: '#f1f1ef' } : { background: color, color: ink }}>
-                      {l.text}
-                    </p>
-                  </div>
-                ))
-              )}
-              <div ref={transcriptEnd} />
-            </div>
-          </div>
+          <div className="md:pt-4">{transcriptCard()}</div>
         </div>
       </section>
 
       {/* ─── WHAT THE OWNER GETS AFTER THE CALL (real, from this call) ─── */}
-      <section className="mx-auto grid max-w-6xl gap-10 px-4 py-16 md:grid-cols-2 md:items-center">
+      <section className="mx-auto grid max-w-6xl gap-12 px-4 py-20 md:grid-cols-2 md:items-center">
         <div>
           <p className="text-xs font-bold uppercase tracking-[0.25em]" style={{ color: accentText }}>After every call</p>
-          <h2 className="mt-3 text-3xl font-black tracking-tight md:text-4xl">The owner gets the call in one text.</h2>
-          <p className="mt-4 leading-relaxed text-neutral-600">
+          <h2 className="mt-3 text-4xl font-extrabold tracking-[-0.025em] md:text-5xl">The owner gets the call in one text.</h2>
+          <p className="mt-5 text-lg leading-relaxed text-neutral-600">
             Who called, what they needed, and whether they booked, with the full transcript by email. It comes from {agencyName}, so the owner always knows who keeps the phones answered.
           </p>
-          <p className="mt-4 text-sm font-semibold text-neutral-800">
-            {owner.status === 'idle' ? 'Make a call above and book something. This phone fills in from your real call.' : owner.status === 'waiting' ? 'Reading what the call booked…' : 'That is the text from the call you just made.'}
+          <p className="mt-5 inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-semibold text-neutral-800 ring-1 ring-black/5">
+            <span className={`h-2 w-2 rounded-full ${owner.status === 'done' ? 'bg-green-500' : owner.status === 'waiting' ? 'animate-pulse bg-amber-400' : 'bg-neutral-300'}`} />
+            {owner.status === 'idle' ? 'Make a call above and book something. The phone fills in from your call.' : owner.status === 'waiting' ? 'Reading what the call booked…' : 'From the call you just made.'}
           </p>
         </div>
-        <div className="mx-auto w-full max-w-sm rounded-[2rem] border-8 border-neutral-900 bg-white p-4 shadow-xl">
-          <p className="text-center text-[11px] font-semibold text-neutral-400">Text Message · now</p>
-          <div className="mt-3 flex items-start gap-2.5">
-            {brand(30)}
-            <div className="flex-1 rounded-2xl bg-neutral-100 p-3.5 text-sm leading-snug">
-              <p className="font-bold">{agencyName} · {client}</p>
-              {owner.status === 'done' && owner.booked.length > 0 ? (
-                owner.booked.map((b, i) => (
-                  <p key={i} className="mt-1.5">
-                    New booking from your AI receptionist: {b.name || 'A caller'}, {b.when}.{b.service ? ` ${b.service}.` : ''}
-                    {b.phone ? ` Number: ${b.phone}.` : ''}
-                  </p>
-                ))
-              ) : owner.status === 'done' ? (
-                <p className="mt-1.5">
-                  Your AI receptionist took a {Math.max(1, Math.round(owner.seconds / 60))} minute call. No booking this time; the caller’s details and what they asked are in the transcript.
-                </p>
-              ) : (
-                <p className="mt-1.5 text-neutral-500">
-                  {owner.status === 'waiting' ? 'Writing the summary…' : `New booking from your AI receptionist: Dana Ruiz, Thursday 10:00 AM.${site ? '' : ` ${exampleService(sampleId)}`}`}
-                </p>
-              )}
-              <p className="mt-1.5 text-neutral-500">Full transcript in your email.</p>
-            </div>
-          </div>
-          <p className="mt-3 text-center text-[11px] text-neutral-400">{owner.status === 'done' ? 'From your call' : 'Example until you call'}</p>
-        </div>
+        {ownerPhone()}
       </section>
 
       {/* ─── THE TOUR ─── */}
