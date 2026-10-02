@@ -94,7 +94,7 @@ function toE164(phone) {
 // ── what is not a prospect ───────────────────────────────────────
 // chainBrand() from lib/chains.mjs is the shared, deliberately-conservative
 // list. These are the extra franchise/national names that show up specifically
-// in home-services Maps results and cannot buy a website from a Kalispell studio.
+// in home-services Maps results and cannot buy a website from a Flathead Valley studio.
 const FRANCHISE_EXTRA = [
   'servpro', 'roto-rooter', 'roto rooter', 'mr. rooter', 'mr rooter', 'benjamin franklin plumbing',
   'one hour heating', 'mister sparky', 'aire serv', 'rainbow restoration', 'servicemaster',

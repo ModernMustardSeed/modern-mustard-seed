@@ -5,7 +5,7 @@ export const SITE = {
   url: 'https://modernmustardseed.com',
   tagline: 'A Design and Agentic Systems Studio',
   description:
-    'A studio for businesses across the United States: agentic systems, AI agents and voice receptionists, and websites that work for you, built to be found on Google and ChatGPT, plus custom software, and agentic systems that run the business. Based in Kalispell, Montana. By inquiry.',
+    'A studio for businesses across the United States: agentic systems, AI agents and voice receptionists, and websites that work for you, built to be found on Google and ChatGPT, plus custom software, and agentic systems that run the business. Based in the Flathead Valley, Montana. By inquiry.',
   twitter: '@modmustardseed',
   founder: 'Sarah Scarano',
   email: 'sarah@modernmustardseed.com',
@@ -21,13 +21,11 @@ export const SITE = {
    *  offers a way to reach the studio (Sarah, 2026-09-26). */
   sarahPhone: '(406) 250-6076',
   sarahPhoneE164: '+14062506076',
-  city: 'Kalispell',
+  city: 'Flathead Valley',
+  addressLocality: 'Bigfork',
   region: 'MT',
   regionName: 'Montana',
-  postalCode: '59901',
   country: 'US',
-  latitude: 48.1958,
-  longitude: -114.3129,
 };
 
 type SeoArgs = {

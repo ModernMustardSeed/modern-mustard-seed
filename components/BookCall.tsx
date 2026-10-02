@@ -347,7 +347,7 @@ function AppointmentCard({
         <div>
           <p className="font-mono text-[8px] font-bold uppercase tracking-[0.24em] text-[#5c554a]">Modern Mustard Seed</p>
           <p className="mt-0.5 font-display text-xl font-extrabold leading-none text-[#0b3b44]">Appointment Card</p>
-          <p className="mt-1 font-mono text-[9px] uppercase tracking-[0.16em] text-[#5c554a]">Kalispell, Montana</p>
+          <p className="mt-1 font-mono text-[9px] uppercase tracking-[0.16em] text-[#5c554a]">Flathead Valley, Montana</p>
         </div>
         <span className="relative h-11 w-11 flex-shrink-0 overflow-hidden rounded-full border-2 border-[#0b3b44] bg-[#f5b700]">
           <Image src="/brand/mascot.png" alt="" fill sizes="44px" className="object-contain p-[3px]" />

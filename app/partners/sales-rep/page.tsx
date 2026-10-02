@@ -49,7 +49,7 @@ const FAQ = [
   { q: 'Do I have to close deals?', a: 'No. You open the door. The free demo and our team do the rest. Reps who like to close can walk an owner through their demo in person, and that is where the best months come from.' },
   { q: 'When do I get paid?', a: `A commission is recorded the moment a referred payment clears, visible in your portal the same day, and paid out on the schedule you set. The ${m.pct}% runs for ${m.months} paid invoices per business.` },
   { q: 'What else can I earn on?', a: `Businesses that need a bigger build, like a store, an app or an agentic system, pay you ${m.buildPct}% of the project, ${m.producerPct}% once you close them regularly. Every playbook we sell pays ${m.productPct}%.` },
-  { q: 'Where can I work?', a: 'Anywhere in the United States. We build for businesses nationwide from our home base in Kalispell, Montana, and every demo is delivered online.' },
+  { q: 'Where can I work?', a: 'Anywhere in the United States. We build for businesses nationwide from our home base in the Flathead Valley, Montana, and every demo is delivered online.' },
 ];
 
 const jsonLd = {

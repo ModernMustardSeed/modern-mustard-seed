@@ -304,7 +304,7 @@ export default function SwitchboardPage() {
               </a>
             </p>
             <p className="mt-8 text-xs text-[#0b3b44]/60 max-w-lg mx-auto">
-              Each location is answered by an agentic concierge in your brand voice, and it says so. The Switchboard, by Modern Mustard Seed, Kalispell, Montana.
+              Each location is answered by an agentic concierge in your brand voice, and it says so. The Switchboard, by Modern Mustard Seed, Flathead Valley, Montana.
             </p>
           </div>
         </section>

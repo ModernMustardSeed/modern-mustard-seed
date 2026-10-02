@@ -18,7 +18,7 @@ const RUNGS = SITE_RUNG_KEYS.map((k) => SITE_RUNGS[k]);
 export const metadata = buildMetadata({
   title: 'The Talking Website: Site and Voice Agent',
   description:
-    'Your website and your voice agent built as one thing, off one brain, so the answer a visitor reads is the exact answer a caller hears at midnight. Designed and built per engagement by a boutique studio in Kalispell, Montana.',
+    'Your website and your voice agent built as one thing, off one brain, so the answer a visitor reads is the exact answer a caller hears at midnight. Designed and built per engagement by a boutique studio in the Flathead Valley, Montana.',
   path: '/talking-website',
   // Route-level card. buildMetadata sets openGraph.images, which overrides
   // the file-based opengraph-image convention, so it must be named here.
@@ -151,7 +151,7 @@ export default function TalkingWebsitePage() {
               <h1 className={ps.h1}>
                 A website that answers its <em>own phone.</em>
               </h1>
-            <p className="mt-5 font-body text-base leading-relaxed">Designed and built by Modern Mustard Seed, a boutique design and agentic systems studio in Kalispell, Montana, working with clients nationwide. <Link href="/agentic-websites" className="underline font-bold">See how our agentic websites connect the page and the business.</Link></p>
+            <p className="mt-5 font-body text-base leading-relaxed">Designed and built by Modern Mustard Seed, a boutique design and agentic systems studio in the Flathead Valley, Montana, working with clients nationwide. <Link href="/agentic-websites" className="underline font-bold">See how our agentic websites connect the page and the business.</Link></p>
               <p className="font-body text-[17px] text-[#0b3b44]/75 mt-5 leading-relaxed">
                 Not a site with a chat bubble bolted on. Your website and your voice agent, built as one thing off one
                 brain, so the answer a visitor reads at noon is the exact answer a caller hears at midnight. The

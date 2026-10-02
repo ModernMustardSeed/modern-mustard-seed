@@ -26,7 +26,7 @@ export const AI_NATIVE = {
     'We map every workflow in your business, put agentic systems into the ones that pay first, build it inside accounts you own, and coach your team on their real work until they run it without us. Set prices, a fixed timeline, and no dependency on the studio when it is done.',
   metaTitle: 'Agentic Systems Consulting for Small Business',
   metaDescription:
-    'Agentic systems consulting for small and mid-sized companies: every workflow mapped, agentic systems put into the five that pay first, built in accounts you own, and your team coached on their real work. Set prices, delivered in eight weeks, by Modern Mustard Seed in Kalispell, Montana.',
+    'Agentic systems consulting for small and mid-sized companies: every workflow mapped, agentic systems put into the five that pay first, built in accounts you own, and your team coached on their real work. Set prices, delivered in eight weeks, by Modern Mustard Seed in the Flathead Valley, Montana.',
   mapDelivery: 'delivered within two weeks',
   buildDelivery: 'delivered within eight weeks',
   readDelivery: 'within two business days',

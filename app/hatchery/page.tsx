@@ -291,7 +291,7 @@ export default function HatcheryPage() {
             Every hatched mascot is an agentic character and says so, cheerfully. The Huckleberry Scoop is a fictional shop we used to hatch our pilot. Your business is real, and so is the mascot we will build for it.
           </p>
           <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.35em] text-[#F5B700]/80">
-            {HATCHERY.wordmark} &middot; {HATCHERY.by} &middot; Kalispell, Montana
+            {HATCHERY.wordmark} &middot; {HATCHERY.by} &middot; Flathead Valley, Montana
           </p>
         </div>
       </section>

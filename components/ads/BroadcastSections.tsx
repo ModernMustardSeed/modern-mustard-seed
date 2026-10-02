@@ -78,7 +78,7 @@ export function TimberlineConfession() {
                   <div className="w-10 h-10 rounded-full bg-[#0b3b44] flex items-center justify-center font-display font-black text-[#f5b700]" aria-hidden="true">T</div>
                   <div>
                     <p className="font-sans font-bold text-sm text-[#0b3b44] leading-tight">Timberline Lawn Co.</p>
-                    <p className="font-body text-xs text-[#0b3b44]/55">Sponsored · Kalispell, MT</p>
+                    <p className="font-body text-xs text-[#0b3b44]/55">Sponsored · Flathead Valley, MT</p>
                   </div>
                 </div>
                 <p className="px-4 pb-3 font-body text-sm text-[#0b3b44]/85">

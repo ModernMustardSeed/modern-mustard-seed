@@ -162,7 +162,7 @@ function buildHtml(r) {
     <!-- footer -->
     <tr><td style="padding:22px 32px 28px;">
       <div style="border-top:1px solid rgba(22,22,22,0.12);padding-top:14px;">
-        <p style="font-family:${sans};font-size:11px;line-height:1.6;color:rgba(22,22,22,0.5);margin:0;">Modern Mustard Seed, Kalispell MT. You are receiving this because you are on our team. Partners always disclose that they earn a commission. Welcome aboard.</p>
+        <p style="font-family:${sans};font-size:11px;line-height:1.6;color:rgba(22,22,22,0.5);margin:0;">Modern Mustard Seed, Flathead Valley, MT. You are receiving this because you are on our team. Partners always disclose that they earn a commission. Welcome aboard.</p>
       </div>
     </td></tr>
 

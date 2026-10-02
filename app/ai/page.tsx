@@ -13,7 +13,7 @@ import PopPageHero, { pop } from '@/components/pop/PopPageHero';
  */
 
 const description =
-  'AI for your business, built by Modern Mustard Seed in Kalispell, Montana: AI websites, AI voice agents that answer every call, AI agents that run the work behind the counter, and custom AI software. Set package prices. You own everything.';
+  'AI for your business, built by Modern Mustard Seed in the Flathead Valley, Montana: AI websites, AI voice agents that answer every call, AI agents that run the work behind the counter, and custom AI software. Set package prices. You own everything.';
 
 export const metadata = buildMetadata({
   title: 'AI for Your Business: AI Websites, AI Agents and AI Receptionists',
@@ -88,7 +88,7 @@ const faq = [
   },
   {
     q: 'Do you only work in Montana?',
-    a: 'No. We are based in Kalispell, Montana, and build for small, medium and large businesses in every state, remotely. The first conversation, the build and the handoff all run online.',
+    a: 'No. We are based in the Flathead Valley, Montana, and build for small, medium and large businesses in every state, remotely. The first conversation, the build and the handoff all run online.',
   },
 ];
 
@@ -103,7 +103,7 @@ export default function AIPage() {
       ]} />
 
       <PopPageHero
-        eyebrow={<span>AI for your business · Kalispell, Montana · Nationwide</span>}
+        eyebrow={<span>AI for your business · Flathead Valley, Montana · Nationwide</span>}
         title={<>AI that answers, books and runs <em>the busywork.</em></>}
         titleId="ai-heading"
         issue={{ no: 'No.1', lines: ['AI for business', 'Built and owned'] }}
@@ -116,7 +116,7 @@ export default function AIPage() {
         mascot={{ bubble: 'I answer the phones here!' }}
         marquee={['AI websites', 'AI receptionists', 'AI agents', 'Custom AI software', 'Set package prices', 'You own everything']}
       >
-        <p>We are Modern Mustard Seed, a design and AI studio in Kalispell, Montana. We build AI websites, AI voice agents that answer every call, and AI agents that run the work behind the counter, so the business keeps moving while you live your life.</p>
+        <p>We are Modern Mustard Seed, a design and AI studio in the Flathead Valley, Montana. We build AI websites, AI voice agents that answer every call, and AI agents that run the work behind the counter, so the business keeps moving while you live your life.</p>
         <div className={pop.actions}>
           <Link href="/inquire" className={pop.cta}>Tell us what you have in mind <span aria-hidden="true">↗</span></Link>
           <a href={`tel:${DEMO_LINE.tel}`} className={pop.ctaAlt}>Hear our AI answer · {DEMO_LINE.display}</a>
@@ -153,7 +153,7 @@ export default function AIPage() {
             <li key={href}><Link href={href} className="inline-flex min-h-11 items-center rounded-full bg-[#0b3b44] px-4 py-2 text-[15px] font-semibold text-white hover:bg-[#0e4b56]">AI for {label}</Link></li>
           ))}
         </ul>
-        <p className="mt-6 text-sm text-[#4c6266]">Based in Kalispell, Montana. Working with businesses nationwide: <Link href="/nationwide" className="font-semibold text-[#0a7c78] underline decoration-2 underline-offset-4">see how we work remotely</Link>.</p>
+        <p className="mt-6 text-sm text-[#4c6266]">Based in the Flathead Valley, Montana. Working with businesses nationwide: <Link href="/nationwide" className="font-semibold text-[#0a7c78] underline decoration-2 underline-offset-4">see how we work remotely</Link>.</p>
       </section>
 
       <section className="bg-[#0e5f63] text-[#fbf5ea] py-16" data-ground="sea" aria-labelledby="agentic-heading">

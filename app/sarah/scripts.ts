@@ -370,7 +370,7 @@ const SALES_DESK: PrompterScript[] = [
       {
         heading: 'Who You Are Dealing With',
         paragraphs: [
-          'I am Sarah Scarano. I run Modern Mustard Seed from Kalispell, Montana. I am a self-taught builder, I have shipped software for dozens of industries, contractors and restaurants and roofers and retailers, and I run this studio the way you probably run your shop. Personally. When you email, I read it. When something breaks, I fix it.',
+          'I am Sarah Scarano. I run Modern Mustard Seed from the Flathead Valley, Montana. I am a self-taught builder, I have shipped software for dozens of industries, contractors and restaurants and roofers and retailers, and I run this studio the way you probably run your shop. Personally. When you email, I read it. When something breaks, I fix it.',
           'The name comes from a parable about a mustard seed, the smallest of seeds that grows into a tree with room for others in its branches. That is the whole business plan, honestly. Small faithful work, real leverage, built to shelter the people it serves.',
           'I use agentic systems to do the heavy lifting, so a small studio can deliver like a big one. But the judgment, the taste, and the promise keeping are mine, and I do not delegate those.',
         ],
@@ -707,7 +707,7 @@ const META_ADS: PrompterScript[] = [
       {
         heading: 'Who You Get',
         paragraphs: [
-          'I am Sarah. I run Modern Mustard Seed out of Kalispell, Montana. When you email, I read it. When something breaks, I fix it. I use agentic systems to do the heavy lifting so a small studio can deliver like a big one, but the judgment and the promises are mine, and I do not delegate those.',
+          'I am Sarah. I run Modern Mustard Seed out of Flathead Valley, Montana. When you email, I read it. When something breaks, I fix it. I use agentic systems to do the heavy lifting so a small studio can deliver like a big one, but the judgment and the promises are mine, and I do not delegate those.',
           '(Mr. Mustard clip: he tips a little hat and hands over a wrench. Homemade, warm, no gloss.)',
         ],
       },
@@ -813,7 +813,7 @@ const META_ADS: PrompterScript[] = [
       {
         heading: 'CTA',
         paragraphs: [
-          'If you are building something small that you want to grow, come build it with me. Modern Mustard Seed. Kalispell, Montana. The link is below.',
+          'If you are building something small that you want to grow, come build it with me. Modern Mustard Seed. Flathead Valley, Montana. The link is below.',
         ],
       },
     ],

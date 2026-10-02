@@ -202,7 +202,7 @@ export default function FieldGuidePage() {
               />
             </div>
             <p className="mt-5 text-center text-[10px] uppercase tracking-[0.2em] font-mono font-bold text-[#0b3b44]/45">
-              Kalispell, Montana
+              Flathead Valley, Montana
             </p>
           </div>
           </div>
@@ -710,7 +710,7 @@ export default function FieldGuidePage() {
                   <div className="border-t-2 border-[#0b3b44]/15 pt-7">
                     <p className="text-[#0b3b44]/80 text-sm md:text-base font-body font-medium leading-7 max-w-2xl mb-5">
                       And if you read all of this and thought <em>I would rather someone just built it</em>, that is what
-                      we do. Modern Mustard Seed is a product studio in Kalispell, Montana. Custom apps, websites, and
+                      we do. Modern Mustard Seed is a product studio in the Flathead Valley, Montana. Custom apps, websites, and
                       voice agents, at set package prices, shipped in weeks. You own the code, the repo, and the deploys
                       when we are done.
                     </p>

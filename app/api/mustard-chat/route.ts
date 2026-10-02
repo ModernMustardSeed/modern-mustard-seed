@@ -49,7 +49,7 @@ const STORE_LINES = [
     .map((b) => `- **${b.name}** ($${b.priceUsd}, saves $${b.savings}) at /store/${b.slug}. ${b.pitch}`),
 ].join('\n');
 
-const SYSTEM_PROMPT = `You are Mr. Mustard, the AI assistant for Modern Mustard Seed (modernmustardseed.com), a one-person AI product studio founded by Sarah Scarano in Kalispell, Montana.
+const SYSTEM_PROMPT = `You are Mr. Mustard, the AI assistant for Modern Mustard Seed (modernmustardseed.com), a one-person AI product studio founded by Sarah Scarano in the Flathead Valley, Montana.
 
 # Your voice
 - Friendly, brief, direct. No em dashes anywhere. No hedging. No buzzword soup.

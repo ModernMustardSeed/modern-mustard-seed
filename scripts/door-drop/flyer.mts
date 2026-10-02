@@ -423,7 +423,7 @@ export function backInner(lead: Lead, qr: string, _opts: FlyerOptions): string {
         We will do all three, then take the whole site to an <span style="color:${MUSTARD}">A+</span>.
       </h2>
       <p style="margin:0.07in 0 0;font-size:8pt;line-height:1.38;color:rgba(255,253,246,0.82)">
-        Modern Mustard Seed is a small studio in Kalispell, Montana. Websites, AI systems, and phone
+        Modern Mustard Seed is a small studio in the Flathead Valley, Montana. Websites, AI systems, and phone
         agents that answer, at a set package price. You own the code, the domain, and the accounts. Call the
         ranch line and Mr. Mustard, our own AI, will pick up and book you.
       </p>
@@ -436,7 +436,7 @@ export function backInner(lead: Lead, qr: string, _opts: FlyerOptions): string {
 
   <div style="display:flex;align-items:center;gap:0.1in;margin-top:0.13in">
     ${SEED}
-    <span class="foot">Modern Mustard Seed &middot; Kalispell, MT &middot; Apps, Sites, and Specialty AI Tools</span>
+    <span class="foot">Modern Mustard Seed &middot; Flathead Valley, MT &middot; Apps, Sites, and Specialty AI Tools</span>
     <span style="flex:1"></span>
     <span class="foot credit">modernmustardseed.com</span>
   </div>

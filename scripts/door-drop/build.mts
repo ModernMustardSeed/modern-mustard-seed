@@ -780,7 +780,7 @@ tr { break-inside: avoid; }
 Tick the box when the flyer is handed over. The grade is what the audit read on their live site, so if they ask,
 open ${BASE}/audit and show them.</p>
 ${sections}
-<div class="foot">Modern Mustard Seed &middot; Kalispell, MT &middot; (406) 312-1223 &middot; <b>modernmustardseed.com</b></div>
+<div class="foot">Modern Mustard Seed &middot; Flathead Valley, MT &middot; (406) 312-1223 &middot; <b>modernmustardseed.com</b></div>
 </body></html>`;
 
   const page = await browser.newPage({ viewport: { width: 850, height: 1100 }, deviceScaleFactor: 2 });

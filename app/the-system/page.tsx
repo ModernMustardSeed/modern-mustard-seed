@@ -254,7 +254,7 @@ export default function TheSystemPage() {
                 One digital architect. One agentic engineer. Same person.
               </h2>
               <p className="font-body text-[15px] text-[#0b3b44]/75 mt-5 leading-relaxed">
-Sarah Scarano, self-taught full-stack engineer and agentic systems architect, Kalispell, Montana. Forty plus shipped products and four ventures running on this exact system. The people who draw the blueprint are the people who pour the foundation and hand you the keys.
+Sarah Scarano, self-taught full-stack engineer and agentic systems architect, Flathead Valley, Montana. Forty plus shipped products and four ventures running on this exact system. The people who draw the blueprint are the people who pour the foundation and hand you the keys.
               </p>
               <p className="font-body text-[15px] text-[#0b3b44]/75 mt-4 leading-relaxed">
                 Off-the-shelf software makes you bend your business around it. Custom infrastructure bends around you: your intake, your pricing, your crew, your customer. That is the difference between a tool you rent and an asset you own.

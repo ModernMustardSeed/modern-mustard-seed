@@ -782,7 +782,7 @@ export default function MustardLifeComic() {
           <p className="mlc-pop mt-10 font-mono text-[9px] uppercase tracking-[0.3em] text-white/60 leading-relaxed" style={{ transitionDelay: '380ms' }}>
             Mustard Life is published whenever the Mustards feel like it.
             <br className="hidden sm:block" />
-            Modern Mustard Seed · Kalispell, Montana · Started from a seed, Matthew 13:31-32
+            Modern Mustard Seed · Flathead Valley, Montana · Started from a seed, Matthew 13:31-32
           </p>
         </div>
       </section>

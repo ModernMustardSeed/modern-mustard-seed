@@ -367,7 +367,7 @@ export default function RivieraAudit({
             </p>
             <p className="mt-6 text-[12px] font-semibold uppercase tracking-[0.18em]" style={{ ...READ, color: `${SEA}80` }}>
               <a href="https://modernmustardseed.com" className="hover:text-[#0a7c78]" style={{ color: LAGOON }}>Modern Mustard Seed</a>
-              {' '}&middot; Kalispell, Montana
+              {' '}&middot; Flathead Valley, Montana
             </p>
           </footer>
         )}

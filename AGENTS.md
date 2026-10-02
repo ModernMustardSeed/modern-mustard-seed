@@ -46,6 +46,7 @@ master
 - If the site 404s with `X-Vercel-Error: DEPLOYMENT_NOT_FOUND`: diagnose with `curl -sI https://modernmustardseed.com` → `vercel ls` → `vercel domains inspect modernmustardseed.com` → `vercel alias ls | grep mustardseed`. Only re-attach (`vercel domains add modernmustardseed.com`) if the inspect table shows NO project AND no build is in flight.
 
 ## Conventions
+- MMS is based in Bigfork, Montana. Public studio location copy uses Flathead Valley, Montana. Kalispell is a served city, not the studio location; do not publish its ZIP code or coordinates as MMS’s address.
 - Public prices are only published for playbooks and courses. All services, custom builds and managed systems use quote requests, including metadata, JSON-LD, calculators and demos. Quote the scope and price in the conversation before work starts.
 - No em dashes in user-facing prose (Sarah's rule).
 - Internal links use `next/link`. Outbound links open in new tab with `rel="noopener noreferrer"`.

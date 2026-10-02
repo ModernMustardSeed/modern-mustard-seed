@@ -327,7 +327,7 @@ export default async function PresenceAuditPage({ params, searchParams }: { para
               pillar we could not see is left out of the total rather than counted as a zero.
             </p>
             <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#161616]/40 mt-5">
-              Modern Mustard Seed &middot; Kalispell, Montana
+              Modern Mustard Seed &middot; Flathead Valley, Montana
             </p>
           </footer>
         )}

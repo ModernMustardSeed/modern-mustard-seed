@@ -109,7 +109,7 @@ export default async function SiteDemoPage({ params }: { params: Promise<{ siteI
             </div>
           )}
 
-          <p className="font-mono text-[11px] text-[#FBF6EA]/35 mt-8">Modern Mustard Seed · Kalispell MT</p>
+          <p className="font-mono text-[11px] text-[#FBF6EA]/35 mt-8">Modern Mustard Seed · Flathead Valley MT</p>
         </div>
       </div>
     );

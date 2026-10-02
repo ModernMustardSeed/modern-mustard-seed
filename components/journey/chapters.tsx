@@ -153,7 +153,7 @@ export function JourneyHero() {
             A Drive
           </h1>
           <p className={`mt-3 sm:mt-5 max-w-2xl lg:max-w-xl text-base sm:text-lg md:text-xl text-[#fbf5ea]/95 font-body ${revealBase}`} style={{ transitionDelay: '240ms' }}>
-            Modern Mustard Seed. A boutique design and agentic systems studio in Kalispell,
+            Modern Mustard Seed. A boutique design and agentic systems studio in the Flathead Valley,
             Montana.
             <span className="hidden sm:inline"> This is the scenic route.</span>
           </p>
@@ -318,7 +318,7 @@ const SIGNS = [
   { href: '/brand', label: 'Brand And Rebrand', line: 'A mark, a palette, a voice, and every surface it has to live on. Built to be recognised before it is read.', cta: 'See The Studio' },
   { href: '/pictures', label: 'Mustard Pictures', line: 'Commercials, brand films, and social cuts, built from the real product rather than stock.', cta: 'Visit The Studio' },
   { href: '/agentic-native', label: 'Agentic Native', line: 'Your company running on agentic systems, with your own team operating it. Advisory and build, engaged together.', cta: 'Read The Sign' },
-  { href: '/about', label: 'The Studio', line: 'A boutique design and agentic systems studio in Kalispell, Montana, practising four disciplines and shipping all of them.', cta: 'Meet The Studio' },
+  { href: '/about', label: 'The Studio', line: 'A boutique design and agentic systems studio in the Flathead Valley, Montana, practising four disciplines and shipping all of them.', cta: 'Meet The Studio' },
   { href: '/presence-audit', label: 'The Free Presence Audit', line: 'Most people decide about you before they reach your website. We grade all three, the site, the Google profile and the reviews, and email you the report.', cta: 'Get My Free Audit' },
 ];
 
@@ -392,7 +392,7 @@ export function JourneySigns() {
  * square called the internet... but go into cro and funnels and things as well
  * that are all baked into the talking sites."*
  *
- * The honest framing matters here. GBP discovery is category-gated and Kalispell
+ * The honest framing matters here. GBP discovery is category-gated and Flathead Valley
  * is 26K people ([[mms-seo-indexing]]), so nothing on this page promises a rank
  * or a position. It promises the work: the profile wired correctly, the reviews
  * asked for and answered, the same facts published everywhere the square looks,
@@ -649,7 +649,7 @@ const DOORS = [
   {
     key: 'about',
     label: 'Meet Sarah',
-    line: 'A boutique design and agentic systems studio in Kalispell, Montana. Four disciplines, one standard, and the founder on every engagement.',
+    line: 'A boutique design and agentic systems studio in the Flathead Valley, Montana. Four disciplines, one standard, and the founder on every engagement.',
     cta: 'Read Her Story',
     href: '/about',
   },

@@ -291,7 +291,7 @@ const LF_CHECKLIST = [
 
 const DB_LANDING = 'https://imagine.modernmustardseed.com/?utm_source=meta&utm_medium=paid&utm_campaign=debating';
 
-const DB_COPY_A = `While the internet argues about whether AI takes jobs, one person in Kalispell built two companies and put twenty apps on a launch calendar.
+const DB_COPY_A = `While the internet argues about whether AI takes jobs, one person in the Flathead Valley built two companies and put twenty apps on a launch calendar.
 
 Not with a team. With a system. Ideation, code, financial models, creative and go-to-market run on one backend, so every project makes the next one easier.
 

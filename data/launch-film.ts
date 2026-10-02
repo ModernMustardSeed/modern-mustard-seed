@@ -25,7 +25,7 @@ export const LAUNCH_FILM = {
     'We run your product for real, cut a film to a score written for it, render every frame from the actual screens, and hand you three finished formats plus the source. Nothing on screen is stock, and nothing is invented.',
   metaTitle: 'Product Launch Films and Brand Commercials',
   metaDescription:
-    'A 60 to 90 second launch film for your app, product or company, built from real screens and real data, rendered frame by frame, with an original score. Widescreen, vertical and square cuts. Set price, delivered in ten business days, by Modern Mustard Seed in Kalispell, Montana.',
+    'A 60 to 90 second launch film for your app, product or company, built from real screens and real data, rendered frame by frame, with an original score. Widescreen, vertical and square cuts. Set price, delivered in ten business days, by Modern Mustard Seed in the Flathead Valley, Montana.',
   delivery: 'delivered within ten business days',
   campaignDelivery: 'delivered within fifteen business days',
 } as const;

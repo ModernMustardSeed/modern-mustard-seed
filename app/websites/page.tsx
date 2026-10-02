@@ -123,7 +123,7 @@ export default function WebsitesPage() {
               <h1 className={ps.h1}>
                 Not a brochure. A website that <em>works.</em>
               </h1>
-            <p className="mt-5 font-body text-base leading-relaxed">Designed and built by Modern Mustard Seed, a boutique design and agentic systems studio in Kalispell, Montana, working with clients nationwide. <Link href="/agentic-websites" className="underline font-bold">See how our agentic websites connect the page and the business.</Link></p>
+            <p className="mt-5 font-body text-base leading-relaxed">Designed and built by Modern Mustard Seed, a boutique design and agentic systems studio in the Flathead Valley, Montana, working with clients nationwide. <Link href="/agentic-websites" className="underline font-bold">See how our agentic websites connect the page and the business.</Link></p>
               <p className="font-body text-[17px] text-[#0b3b44]/75 mt-5 leading-relaxed">
                 Identity and art direction, funnels and SEO baked in, your domain and hosting handled.
                 It captures the lead and follows up while you sleep, and it answers the phone too the
@@ -144,7 +144,7 @@ export default function WebsitesPage() {
                 </Link>
               </div>
               <p className="font-body text-[13px] text-[#0b3b44]/70 mt-4">
-                A boutique design and agentic systems studio in Kalispell, Montana. Every inquiry is answered personally, inside one business day.
+                A boutique design and agentic systems studio in the Flathead Valley, Montana. Every inquiry is answered personally, inside one business day.
               </p>
             </div>
 

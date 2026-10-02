@@ -6,7 +6,7 @@ import { MONTANA_CITIES, getCity, cityFaqs } from '@/data/montana-cities';
 
 import PopPageHero, { pop } from '@/components/pop/PopPageHero';
 
-// Five service areas, one Kalispell business. Preserve each town's local context.
+// Five service areas, one Flathead Valley business. Preserve each town's local context.
 export const dynamicParams = false;
 
 export function generateStaticParams() {
@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: { params: Promise<{ city: str
   if (!city) return buildMetadata({ noindex: true });
   return buildMetadata({
     title: `Website Design in ${city.name}, MT`,
-    description: `Design-led websites, voice agents, and custom software for ${city.name} businesses. Built in Kalispell, Montana, by a boutique design and agentic systems studio.`,
+    description: `Design-led websites, voice agents, and custom software for ${city.name} businesses. Built in the Flathead Valley, Montana, by a boutique design and agentic systems studio.`,
     path: `/montana/${city.slug}`,
   });
 }
@@ -35,7 +35,7 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
   const others = MONTANA_CITIES.filter((c) => c.slug !== city.slug);
 
   const path = `/montana/${city.slug}`;
-  const description = `Agentic website design, voice agents, automation and custom software for ${city.name} businesses, built by Modern Mustard Seed in Kalispell, Montana.`;
+  const description = `Agentic website design, voice agents, automation and custom software for ${city.name} businesses, built by Modern Mustard Seed in the Flathead Valley, Montana.`;
   const localForCity = serviceJsonLd({
     path, name: `Agentic websites and business systems for ${city.name}`, description,
     areaServed: [{ '@type': 'City', name: city.name, containedInPlace: { '@type': 'State', name: 'Montana' } }],
@@ -63,7 +63,7 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
         sticker="Howdy!"
       >
         <p>
-          Modern Mustard Seed is a boutique design and agentic systems studio based in Kalispell, serving {city.name} and clients nationwide. We design and build websites and brand, custom software, and voice agents. You own the code and accounts.
+          Modern Mustard Seed is a boutique design and agentic systems studio based in the Flathead Valley, serving {city.name} and clients nationwide. We design and build websites and brand, custom software, and voice agents. You own the code and accounts.
         </p>
         <div className={pop.actions}>
           <Link href="/book" className={pop.cta}>

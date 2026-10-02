@@ -22,7 +22,7 @@ function biggerPicture(business: string, hubUrl: string | null): string {
   <div style="border-top: 4px solid #221C10; padding-top: 14px;">
     <span style="display: inline-block; font-weight: 700; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: #3A2E00; background: #FBEED3; border-radius: 4px; padding: 2px 8px;">The Bigger Picture</span>
     <h2 style="font-size: 26px; line-height: 1.1; margin: 10px 0 8px; text-transform: uppercase; font-weight: 800;">The world just changed, and it changed in your favor</h2>
-    <p style="font-size: 14px; line-height: 1.55; max-width: 65ch;">Everything in this plan, the agent, the website, this document itself, was built by agentic systems directed by one person in Kalispell. That is the part worth sitting with: you can now describe an idea in plain English and watch working software come out the other side, in days instead of quarters, at a fraction of what it cost even two years ago. The tools that used to belong to companies with IT departments now belong to anyone willing to learn a little or hire a guide. Owners are building things themselves in a terminal with an AI at the keyboard. We teach exactly that, and we build alongside you when you would rather run your business than learn ours.</p>
+    <p style="font-size: 14px; line-height: 1.55; max-width: 65ch;">Everything in this plan, the agent, the website, this document itself, was built by agentic systems directed by one person in the Flathead Valley. That is the part worth sitting with: you can now describe an idea in plain English and watch working software come out the other side, in days instead of quarters, at a fraction of what it cost even two years ago. The tools that used to belong to companies with IT departments now belong to anyone willing to learn a little or hire a guide. Owners are building things themselves in a terminal with an AI at the keyboard. We teach exactly that, and we build alongside you when you would rather run your business than learn ours.</p>
     <h3 style="font-size: 16px; text-transform: uppercase; letter-spacing: 0.04em; margin: 16px 0 6px; font-weight: 800;">What else agentic systems can already do for ${business}</h3>
     <ul style="font-size: 13.5px; line-height: 1.55; padding-left: 20px; max-width: 66ch; margin: 0;">
       <li>Turn job-site photos into written quotes and estimates in minutes</li>
@@ -42,7 +42,7 @@ function biggerPicture(business: string, hubUrl: string | null): string {
         <p style="font-size: 13px; line-height: 1.5; margin: 0;">Mr. Mustard answers our own phone: <b>(406) 312-1223</b>. Yes, a voice agent runs our front desk too. Call and ask him anything about yours.${hubUrl ? ` Your live demos: <b>${hubUrl.replace('https://', '')}</b>` : ''}</p>
       </div>
     </div>
-    <p style="font-size: 12px; color: #6B6250; margin: 14px 0 0;">Modern Mustard Seed is Kalispell's design and agentic systems studio. We build assets you own and can run without us. Set package pricing, changes included, no hourly billing, ever.</p>
+    <p style="font-size: 12px; color: #6B6250; margin: 14px 0 0;">Modern Mustard Seed is the Flathead Valley’s design and agentic systems studio. We build assets you own and can run without us. Set package pricing, changes included, no hourly billing, ever.</p>
   </div>
 </section>`;
 }

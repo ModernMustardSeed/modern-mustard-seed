@@ -37,7 +37,7 @@ try {
   const mh = 40, mw = (png.width / png.height) * mh;
   page.drawImage(png, { x: M, y: hy - mh, width: mw, height: mh });
   t('MODERN MUSTARD SEED', M + mw + 10, hy - 18, 11, bold, YELLOW, 2.5);
-  t('AI product studio  ·  Kalispell, MT', M + mw + 10, hy - 33, 9.5, reg, MUTED);
+  t('AI product studio  ·  Flathead Valley, MT', M + mw + 10, hy - 33, 9.5, reg, MUTED);
 } catch { t('MODERN MUSTARD SEED', M, hy - 18, 12, bold, YELLOW, 2.5); }
 hy -= 64;
 for (const ln of wrap('We build the apps, sites, and AI tools that run your business.', bold, 27, W - 2 * M)) { t(ln, M, hy, 27, bold, WHITE); hy -= 31; }

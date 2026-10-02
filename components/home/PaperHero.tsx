@@ -54,7 +54,7 @@ export default function PaperHero() {
         <h1 id="studio-heading" className={s.title}>
           We build <span className={`${s.strip} ${s.tiffany}`}>websites</span> and <span className={`${s.strip} ${s.mustard}`}>agentic systems</span> that run your <span className={s.white}>business.</span>
         </h1>
-        <p className={s.lede}>Made to measure for businesses in every state. <span className={s.home}>Based in Kalispell, MT.</span> <b>So you can run your life.</b></p>
+        <p className={s.lede}>Made to measure for businesses in every state. <span className={s.home}>Based in the Flathead Valley, MT.</span> <b>So you can run your life.</b></p>
         <div className={s.actions}>
           <Link href="/inquire" className={s.cta}>Commission yours</Link>
           <a href="#selected-work" className={s.ghost}>See the work</a>

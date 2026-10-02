@@ -173,7 +173,7 @@ export default function InquiryForm() {
           Modern Mustard Seed
         </p>
         <p className="mt-2 font-mono text-[9px] uppercase tracking-[0.16em] text-[#5c554a]">
-          Kalispell, Montana · answered personally
+          Flathead Valley, Montana · answered personally
         </p>
       </div>
 

@@ -4,14 +4,14 @@ import { buildMetadata, SITE } from '@/lib/seo';
 import { JsonLd, faqJsonLd, breadcrumbJsonLd } from '@/lib/jsonld';
 
 /**
- * Nationwide Reach. The studio is in Kalispell; the clients are wherever they
+ * Nationwide Reach. The studio is in the Flathead Valley; the clients are wherever they
  * are. This page catches the "web design studio" and "AI agency" queries that
  * carry no town, and says plainly that distance is not a factor.
  */
 
 export const metadata = buildMetadata({
   title: 'Nationwide Reach: A Design and Agentic Systems Studio for Businesses Across the US',
-  description: 'Modern Mustard Seed works with businesses throughout the United States. Websites and brand, custom software, voice agents, and advisory, designed and built from Kalispell, Montana, delivered nationwide.',
+  description: 'Modern Mustard Seed works with businesses throughout the United States. Websites and brand, custom software, voice agents, and advisory, designed and built from the Flathead Valley, Montana, delivered nationwide.',
   path: '/nationwide',
   image: '/nationwide/opengraph-image',
 });
@@ -32,7 +32,7 @@ const STEPS = [
 const FAQ = [
   {
     q: 'Do you work with businesses outside Montana?',
-    a: 'Yes. The studio is in Kalispell, Montana, and we work with businesses throughout the United States. D & D Landscaping in Tallahassee, Florida is a client.',
+    a: 'Yes. The studio is in the Flathead Valley, Montana, and we work with businesses throughout the United States. D & D Landscaping in Tallahassee, Florida is a client.',
   },
   {
     q: 'How does a remote engagement work?',
@@ -82,7 +82,7 @@ export default function NationwidePage() {
             <span>in the US.</span>
           </h1>
           <p className="mt-8 max-w-2xl text-lg md:text-xl font-body font-medium leading-relaxed">
-            Modern Mustard Seed is a design and agentic systems studio in Kalispell, Montana. We design and build websites and brand, custom software, and voice agents for businesses throughout the United States. Distance is not a factor. You own everything we build.
+            Modern Mustard Seed is a design and agentic systems studio in the Flathead Valley, Montana. We design and build websites and brand, custom software, and voice agents for businesses throughout the United States. Distance is not a factor. You own everything we build.
           </p>
           <div className="mt-9 flex flex-wrap gap-4">
             <Link href="/inquire" className="inline-flex items-center gap-5 border-2 border-[#0b3b44] bg-[#0b3b44] px-7 py-4 font-sans font-bold text-sm text-[#fbf5ea] shadow-[5px_5px_0_0_#fbf5ea] transition-transform hover:-translate-x-0.5 hover:-translate-y-0.5">

@@ -14,7 +14,7 @@ export const SERVICE_AREAS = [
   { '@type': 'Country', name: 'United States' },
   { '@type': 'State', name: SITE.regionName },
   { '@type': 'AdministrativeArea', name: 'Northwest Montana' },
-  { '@type': 'City', name: SITE.city },
+  { '@type': 'AdministrativeArea', name: SITE.city },
 ];
 
 export const personJsonLd = {
@@ -25,28 +25,20 @@ export const personJsonLd = {
   sameAs: socials.filter((s) => s.name === 'LinkedIn').map((s) => s.url),
 };
 
-// One studio in Kalispell. Service-area pages never create additional offices.
+// One studio in the Flathead Valley. Service-area pages never create additional offices.
 export const orgJsonLd = {
   '@context': 'https://schema.org', '@type': ['Organization', 'LocalBusiness'], '@id': ORG_ID,
   name: SITE.name, alternateName: 'MMS', url: SITE.url,
   description: SITE.description,
-  disambiguatingDescription: 'US AI studio serving small, medium and large businesses in every state, founded by Sarah Scarano and based in Kalispell, Montana: agentic systems, AI agents and voice receptionists, and websites that work for you, built to be found by Google and AI assistants, plus custom software and marketing. Not the condiment, the plant or the decor brand.',
+  disambiguatingDescription: 'US AI studio serving small, medium and large businesses in every state, founded by Sarah Scarano and based in the Flathead Valley, Montana: agentic systems, AI agents and voice receptionists, and websites that work for you, built to be found by Google and AI assistants, plus custom software and marketing. Not the condiment, the plant or the decor brand.',
   logo: `${SITE.url}/brand/logo-lockup.png`,
   founder: { '@id': PERSON_ID },
   telephone: SITE.phoneE164, email: SITE.email,
   address: {
-    '@type': 'PostalAddress', addressLocality: SITE.city, addressRegion: SITE.region,
-    postalCode: SITE.postalCode, addressCountry: SITE.country,
+    '@type': 'PostalAddress', addressLocality: SITE.addressLocality, addressRegion: SITE.region,
+    addressCountry: SITE.country,
   },
   areaServed: SERVICE_AREAS,
-  /**
-   * The studio's coordinates. Re-added 2026-09-14 (they were dropped in the
-   * schema rewrite). Kalispell in prose is a string; `geo` is the only part of
-   * this node a map surface can actually place, and the Google Business Profile
-   * is currently a service-area listing with no service area set, so the site is
-   * the only place we state where this business is.
-   */
-  geo: { '@type': 'GeoCoordinates', latitude: SITE.latitude, longitude: SITE.longitude },
   /**
    * ENTITY CORROBORATION. The Google Business Profile, added 2026-09-14.
    *
@@ -292,7 +284,7 @@ export function serviceJsonLd(svc: { name: string; description: string; path?: s
     ...(svc.path ? { '@id': `${canonicalUrl(svc.path)}#service`, url: canonicalUrl(svc.path), mainEntityOfPage: { '@id': `${canonicalUrl(svc.path)}#webpage` } } : {}),
     name: svc.name,
     description: svc.description,
-    // Provided by the LOCAL entity, so every service page inherits the Kalispell
+    // Provided by the LOCAL entity, so every service page inherits the Flathead Valley
     // signal instead of floating placelessly under a "Worldwide" organization.
     provider: { '@id': LOCAL_ID },
     areaServed: svc.areaServed ?? SERVICE_AREAS,

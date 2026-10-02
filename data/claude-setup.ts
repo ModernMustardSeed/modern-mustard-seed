@@ -14,7 +14,7 @@
 export const CLAUDE_SETUP = {
   metaTitle: 'Claude Setup for Your Business: Claude Code, Custom Skills and AI Agents',
   metaDescription:
-    'We set up Claude for businesses across the United States: Claude Code and Claude desktop, custom Claude skills for your own workflows, rules, memory, safety hooks and your tools connected. Setup for individuals, teams and business operations, quoted in the conversation. Based in Kalispell, MT.',
+    'We set up Claude for businesses across the United States: Claude Code and Claude desktop, custom Claude skills for your own workflows, rules, memory, safety hooks and your tools connected. Setup for individuals, teams and business operations, quoted in the conversation. Based in the Flathead Valley, MT.',
   promise:
     'Claude Code and Claude desktop, set up around how your business actually works: custom skills for the jobs you repeat, rules it follows, memory it keeps, guardrails it cannot cross, and your email, calendar and tools connected. Then we teach you to run it.',
 };

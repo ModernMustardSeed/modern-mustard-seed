@@ -17,7 +17,7 @@ export default function AIWebsitesPage() {
         breadcrumbJsonLd([{ name: 'Home', url: '/' }, { name: 'Agentic Websites', url: '/agentic-websites' }]),
       ]} />
       <PopPageHero
-        eyebrow={<span>Built in Kalispell · Working nationwide</span>}
+        eyebrow={<span>Built in the Flathead Valley · Working nationwide</span>}
         title={<>An agentic website should<br /><em>carry its share.</em></>}
         issue={{ no: 'No.6', lines: ['Agentic websites', 'Found, understood, chosen'] }}
         art={{
@@ -27,7 +27,7 @@ export default function AIWebsitesPage() {
         }}
         sticker="Handoff!"
       >
-        <p>Modern Mustard Seed is a boutique design and agentic systems studio in Kalispell, Montana. We design and build websites that explain your business clearly, connect the enquiry to the next job, and work with the systems behind the counter.</p>
+        <p>Modern Mustard Seed is a boutique design and agentic systems studio in the Flathead Valley, Montana. We design and build websites that explain your business clearly, connect the enquiry to the next job, and work with the systems behind the counter.</p>
         <div className={pop.actions}>
           <Link href="/book" className={pop.cta}>Begin an Engagement</Link>
           <Link href="/book" className={pop.ctaAlt}>Talk With Sarah</Link>
@@ -62,7 +62,7 @@ export default function AIWebsitesPage() {
           <ol className="mt-8 grid md:grid-cols-2 gap-6 list-decimal list-inside">
             {[
               ['Make the pages reachable.', 'Public HTML, correct status codes, intentional robots rules, clean canonicals and a sitemap of real pages.'],
-              ['Say what the business actually does.', 'One name, real contact details, a real base in Kalispell, defined services and honest service areas.'],
+              ['Say what the business actually does.', 'One name, real contact details, a real base in the Flathead Valley, defined services and honest service areas.'],
               ['Give the answer somewhere to point.', 'Specific service explanations, author-attributed resources, functioning examples and evidence with a source.'],
               ['Measure the handoff.', 'Track identifiable answer engine referrals through demo requests, enquiries and bookings. Separate visits from citations and revenue.'],
             ].map(([title, text]) => <li key={title} className="pop-card p-6 font-bold"><h3 className="inline">{title}</h3><p className="mt-3 font-normal leading-relaxed">{text}</p></li>)}
@@ -81,7 +81,7 @@ export default function AIWebsitesPage() {
 
       <section className="max-w-6xl mx-auto px-6 pb-14 grid md:grid-cols-2 gap-10">
         <div><h2 className="font-display text-3xl font-black">Built for owners with work to do.</h2><p className="mt-5 leading-relaxed">Service businesses, hospitality operators, retailers and founders with a defined customer problem. Especially the operator building a second business who needs the product built without assembling an engineering team. Explore the <Link href="/for" className={linkStyle}>industries we build for</Link>.</p><p className="mt-4 leading-relaxed">Productized websites usually go live about a week after kickoff. Custom builds have a scoped delivery schedule. You receive the repository, accounts and documentation. Changes to what we built are included. A new deliverable is a separately scoped engagement.</p></div>
-        <div><h2 className="font-display text-3xl font-black">Meet the builder. Inspect the work.</h2><p className="mt-5 leading-relaxed"><Link href="/about" className={linkStyle}>Sarah Scarano</Link> founded MMS and builds from <Link href="/montana/kalispell" className={linkStyle}>Kalispell</Link>. We serve <Link href="/montana" className={linkStyle}>Northwest Montana</Link> and work remotely with clients nationwide.</p><p className="mt-4 leading-relaxed">The <Link href="/work/cross-and-covenant" className={linkStyle}>Cross + Covenant storefront</Link> shows commerce and brand work. The <Link href="/work/wild-daisy-command-center" className={linkStyle}>Wild Daisy build record</Link> describes an operations system. Read the scope and evidence in <Link href="/work" className={linkStyle}>our work</Link>, then judge a demo built for your business.</p></div>
+        <div><h2 className="font-display text-3xl font-black">Meet the builder. Inspect the work.</h2><p className="mt-5 leading-relaxed"><Link href="/about" className={linkStyle}>Sarah Scarano</Link> founded MMS and builds from <Link href="/montana" className={linkStyle}>Flathead Valley</Link>. We serve <Link href="/montana" className={linkStyle}>Northwest Montana</Link> and work remotely with clients nationwide.</p><p className="mt-4 leading-relaxed">The <Link href="/work/cross-and-covenant" className={linkStyle}>Cross + Covenant storefront</Link> shows commerce and brand work. The <Link href="/work/wild-daisy-command-center" className={linkStyle}>Wild Daisy build record</Link> describes an operations system. Read the scope and evidence in <Link href="/work" className={linkStyle}>our work</Link>, then judge a demo built for your business.</p></div>
       </section>
       <section className="bg-[#f5b700] border-y-2 border-[#0b3b44] px-6 py-14 text-center"><h2 className="font-display text-3xl md:text-4xl font-black">Put your business in the driver&apos;s seat.</h2><p className="mt-4">Tell us what the page and the phone have to do, and Sarah answers inside one business day.</p><div className="mt-7 flex flex-wrap justify-center gap-4"><Link href="/book" className="pop-card px-7 py-4 font-bold">Begin an Engagement</Link><a href={`tel:${SITE.phoneE164}`} className="pop-card px-7 py-4 font-bold">Call {SITE.phone}</a></div></section>
     </article>

@@ -1,6 +1,6 @@
 # Modern Mustard Seed: public site directory
 
-Modern Mustard Seed is an AI-native product studio in Kalispell, Montana, founded by Sarah Scarano. It builds custom websites, AI voice agents, automation and software for Northwest Montana and clients nationwide.
+Modern Mustard Seed is an AI-native product studio in the Flathead Valley, Montana, founded by Sarah Scarano. It builds custom websites, AI voice agents, automation and software for Northwest Montana and clients nationwide.
 
 Website: https://modernmustardseed.com
 About: https://modernmustardseed.com/about

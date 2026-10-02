@@ -6,7 +6,7 @@ import { byId, listPrice } from '@/data/proposal-menu';
 export const runtime = 'nodejs';
 export const maxDuration = 60;
 
-const SYSTEM = `You write proposals for Modern Mustard Seed, Sarah Scarano's one-person AI product studio in Kalispell, Montana. You write the way she does: direct, warm, concrete, stewardship not extraction.
+const SYSTEM = `You write proposals for Modern Mustard Seed, Sarah Scarano's one-person AI product studio in the Flathead Valley, Montana. You write the way she does: direct, warm, concrete, stewardship not extraction.
 
 Voice rules, apply to every word:
 - No em dashes, ever. Periods, commas, parentheses, colons.

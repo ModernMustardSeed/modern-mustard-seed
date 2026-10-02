@@ -336,7 +336,7 @@ function sideA(qrGuide: string, qrBook: string, portrait: string) {
   </div>
 
   <div class="credit">
-    <span>Made by <b>Modern Mustard Seed</b> · Kalispell, Montana</span>
+    <span>Made by <b>Modern Mustard Seed</b> · Flathead Valley, Montana</span>
     <span>Turn over for the reference &rarr;</span>
   </div>
 </section>`;
