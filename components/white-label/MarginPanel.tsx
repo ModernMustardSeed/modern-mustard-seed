@@ -82,3 +82,29 @@ export default function MarginPanel({ agency, lines, color }: { agency: string; 
     </section>
   );
 }
+
+/** Presenter mode's one-screen version of the math: ten clients of each monthly line at suggested retail. */
+export function MarginSnapshot({ lines, color, ink }: { lines: WlDemoLine[]; color: string; ink: string }) {
+  const rows = lines.filter((l) => l.wholesale && l.wholesale.monthly > 0).slice(0, 3);
+  return (
+    <div className="space-y-3">
+      {rows.map((l) => {
+        const keep = (l.retail.monthly - l.wholesale!.monthly) * 10;
+        return (
+          <div key={l.slug} className="flex items-center justify-between gap-4 rounded-2xl bg-white p-5">
+            <div>
+              <p className="text-sm font-bold text-neutral-900">10 × {l.name}</p>
+              <p className="text-xs text-neutral-500">
+                You pay {usd(l.wholesale!.monthly)}, you charge {usd(l.retail.monthly)}
+              </p>
+            </div>
+            <p className="rounded-full px-4 py-2 text-lg font-black tabular-nums" style={{ background: color, color: ink }}>
+              {usd(keep)}/mo
+            </p>
+          </div>
+        );
+      })}
+      <p className="pt-2 text-sm text-white/60">At suggested retail. Charge more and keep more.</p>
+    </div>
+  );
+}

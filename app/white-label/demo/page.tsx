@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { wlSans } from '@/components/white-label/font';
 import WhiteLabelDemo, { type WlDemoLine } from '@/components/white-label/WhiteLabelDemo';
 import { WL_LINES, WL_SAMPLE_CLIENTS, wlSample, wlColor, wlClean, wlInk } from '@/data/white-label';
 import { wlKeyValid } from '@/lib/white-label/key';
@@ -54,6 +55,7 @@ export default async function WhiteLabelDemoPage({ searchParams }: { searchParam
     }));
 
   return (
+    <div className={wlSans.className}>
     <WhiteLabelDemo
       initial={{
         agency,
@@ -68,7 +70,9 @@ export default async function WhiteLabelDemoPage({ searchParams }: { searchParam
       samples={WL_SAMPLE_CLIENTS.map((s) => ({ id: s.id, label: s.label, client: s.client, services: s.services, hours: s.hours }))}
       lines={lines}
       signed={signed}
-      present={one(q.present) === '1'}
+      present={one(q.present) === '1' || one(q.view) === 'client'}
+      locked={one(q.view) === 'client'}
     />
+    </div>
   );
 }

@@ -13,7 +13,7 @@ import AdminHeader from '@/components/admin/AdminHeader';
  * Send after reading it.
  */
 
-type Kind = 'creator' | 'referral' | 'community';
+type Kind = 'creator' | 'referral' | 'community' | 'agency';
 type Status = 'queued' | 'emailed' | 'dm_sent' | 'replied' | 'joined' | 'passed';
 
 type Prospect = {
@@ -66,7 +66,7 @@ type Letter = {
   research: { label: string; url: string }[];
 };
 
-const KIND_LABEL: Record<Kind, string> = { creator: 'Creator', referral: 'Referral pro', community: 'Community' };
+const KIND_LABEL: Record<Kind, string> = { creator: 'Creator', referral: 'Referral pro', community: 'Community', agency: 'Agency (white label)' };
 const STATUS_LABEL: Record<Status, string> = {
   queued: 'Queued',
   emailed: 'Letter out',
@@ -194,7 +194,7 @@ export default function PartnerDesk() {
               </button>
             ))}
             <span className="w-px h-6 bg-[#161616]/20 mx-1" aria-hidden />
-            {(['all', 'creator', 'referral', 'community'] as const).map((k) => (
+            {(['all', 'creator', 'referral', 'community', 'agency'] as const).map((k) => (
               <button key={k} onClick={() => setKindFilter(k)} className={`px-3 py-1.5 text-[10px] uppercase tracking-[0.15em] font-mono font-bold rounded-full border border-[#161616]/40 ${kindFilter === k ? 'bg-[#F5B700]' : 'bg-white'}`}>
                 {k === 'all' ? 'Every kind' : KIND_LABEL[k]}
               </button>

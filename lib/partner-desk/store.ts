@@ -9,7 +9,7 @@ import { normalizeEmail } from '@/lib/client-auth';
  * finder in ./discover.ts. Nothing in this file sends mail.
  */
 
-export type ProspectKind = 'creator' | 'referral' | 'community';
+export type ProspectKind = 'creator' | 'referral' | 'community' | 'agency';
 export type ProspectStatus = 'queued' | 'emailed' | 'dm_sent' | 'replied' | 'joined' | 'passed';
 export type CreatorTier = 'mega' | 'macro' | 'mid' | 'micro';
 
@@ -17,12 +17,14 @@ export const KIND_LABEL: Record<ProspectKind, string> = {
   creator: 'Creators',
   referral: 'Referral pros',
   community: 'Communities',
+  agency: 'Agencies (white label)',
 };
 
 export const KIND_BLURB: Record<ProspectKind, string> = {
   creator: 'YouTube, Instagram, TikTok and newsletter people whose audience runs a business.',
   referral: 'Bookkeepers, insurance agents, commercial realtors, sign shops, printers, coaches, SBDC counselors. People who meet a new owner every week.',
   community: 'Chambers, networking circles, church business ministries, Facebook group admins. One introduction reaches a room.',
+  agency: 'Web design and marketing studios with clients already. They resell our AI under their own name; each letter carries a demo with their name on it.',
 };
 
 export type ProspectEvent = {
@@ -62,7 +64,7 @@ export type Prospect = {
 export type ProspectInput = Partial<Omit<Prospect, 'id' | 'created_at' | 'updated_at' | 'history'>> & { name: string };
 
 const TABLE = 'partner_prospects';
-const KINDS: ProspectKind[] = ['creator', 'referral', 'community'];
+const KINDS: ProspectKind[] = ['creator', 'referral', 'community', 'agency'];
 const STATUSES: ProspectStatus[] = ['queued', 'emailed', 'dm_sent', 'replied', 'joined', 'passed'];
 
 export function tierFor(followers?: number | null): CreatorTier | null {

@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { buildMetadata, SITE } from '@/lib/seo';
 import PopPageHero, { pop } from '@/components/pop/PopPageHero';
+import { partnerMath } from '@/lib/partner-desk/letters';
 import { WL_PROGRAM, WL_GROUPS, WL_TERMS, WL_KIT, WL_FAQ, WL_SAMPLE_CLIENTS, wlPublicLines } from '@/data/white-label';
 
 export const metadata = buildMetadata({
@@ -20,10 +21,12 @@ const FOR = [
 ];
 
 const STEPS = [
-  { n: '01', title: 'You sell it', body: 'Pitch with the live demo in your name. Set your price. Send us what the client does, their hours and how they book.' },
-  { n: '02', title: 'We build it', body: 'The agent is trained, tested and on a number inside seven days. It speaks as your client’s business.' },
-  { n: '03', title: 'You approve it', body: 'You call it, poke at it and sign off before your client ever hears it.' },
-  { n: '04', title: 'You bill, we run it', body: 'You invoice your client. We send you one invoice a month for every client, and keep everything running.' },
+  { n: '01', title: 'Apply', when: 'Two minutes', body: 'Your demo, already wearing your agency’s name, lands in your inbox the moment you press apply.' },
+  { n: '02', title: 'Get your portal', when: 'Within one business day', body: 'Sarah approves you and sends your portal, your signed price sheet and your demo with your margin in it.' },
+  { n: '03', title: 'Sell it', when: 'Your meeting', body: 'Paste a prospect’s own website into the demo and hand them the call. Your portal makes a link you can send them after.' },
+  { n: '04', title: 'Add the client', when: 'When they say yes', body: 'One form in your portal: what they do, how they book, what to switch on. We start within one business day.' },
+  { n: '05', title: 'Test it', when: 'Inside seven days', body: 'You get a test number. Call it like a customer, then press Approve. Nothing is billed before you do.' },
+  { n: '06', title: 'Go live, get paid', when: 'Every month after', body: 'It switches onto their real number. You bill your price. One invoice from us covers every live client.' },
 ];
 
 const STATS = [
@@ -33,6 +36,8 @@ const STATS = [
   { n: '1', label: 'Invoice a month' },
   { n: '100%', label: 'Your name' },
 ];
+
+const partner = partnerMath();
 
 export default function WhiteLabelPage() {
   const lines = wlPublicLines();
@@ -78,7 +83,7 @@ export default function WhiteLabelPage() {
         <p>{WL_PROGRAM.promise}</p>
         <div className={pop.actions}>
           <a href="#demo" className={pop.cta}>Try the demo in your name</a>
-          <Link href="/inquire?kind=white-label" className={pop.ctaAlt}>Ask for your price sheet</Link>
+          <Link href="/white-label/apply" className={pop.ctaAlt}>Apply now</Link>
         </div>
         <p className={pop.note}>Built and run by Sarah Scarano at Modern Mustard Seed. Your clients never see our name.</p>
       </PopPageHero>
@@ -195,12 +200,14 @@ export default function WhiteLabelPage() {
       <section className="py-16 md:py-20 bg-[#d8f3f0] border-y-2 border-[#0b3b44]" aria-labelledby="how-heading">
         <div className="max-w-5xl mx-auto px-5">
           <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#0a7c78] font-bold mb-3">[ How it works ]</p>
-          <h2 id="how-heading" className="font-display text-3xl md:text-5xl font-black tracking-tight leading-[1.05]">Sold on Monday. Answering by next Monday.</h2>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-10">
+          <h2 id="how-heading" className="font-display text-3xl md:text-5xl font-black tracking-tight leading-[1.05]">From apply to paid, every step written down.</h2>
+          <p className="font-body text-[#0b3b44]/75 leading-relaxed mt-4 max-w-2xl">Every step sends the next email on its own, and your portal always shows where each client stands.</p>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mt-10">
             {STEPS.map((s) => (
               <div key={s.n} className="bg-[#fbf5ea] border-2 border-[#0b3b44] rounded-2xl p-6">
                 <p className="font-display text-3xl font-black text-[#f5b700] [-webkit-text-stroke:1px_#0b3b44]">{s.n}</p>
                 <h3 className="font-display text-lg font-black mt-2">{s.title}</h3>
+                <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#0a7c78] font-bold mt-1">{s.when}</p>
                 <p className="font-body text-[14.5px] text-[#0b3b44]/75 leading-relaxed mt-2">{s.body}</p>
               </div>
             ))}
@@ -238,6 +245,36 @@ export default function WhiteLabelPage() {
         </div>
       </section>
 
+      {/* ─── REFER OR RESELL ─── */}
+      <section className="py-16 md:py-20 bg-[#0b3b44] text-[#fbf5ea]" aria-labelledby="which-heading">
+        <div className="max-w-5xl mx-auto px-5">
+          <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#81d8d0] font-bold mb-3">[ Refer or resell ]</p>
+          <h2 id="which-heading" className="font-display text-3xl md:text-5xl font-black tracking-tight leading-[1.05]">Two ways to work with us. <em className="italic text-[#f5b700]">Pick the one that fits.</em></h2>
+          <div className="grid md:grid-cols-2 gap-5 mt-10">
+            <div className="rounded-2xl border-2 border-[#f5b700] bg-[#fbf5ea] text-[#0b3b44] p-7">
+              <p className="font-mono text-[10px] uppercase tracking-[0.24em] font-bold text-[#0a7c78]">White Label · this page</p>
+              <h3 className="font-display text-2xl font-black mt-2">You sell it as yours.</h3>
+              <ul className="mt-4 space-y-2 font-body text-[15px]">
+                {['Your name on everything, ours nowhere', 'You set the price and bill the client', 'You keep the margin, every month', 'For agencies with clients already'].map((x) => (
+                  <li key={x} className="flex gap-2.5"><span aria-hidden="true" className="text-[#0a7c78] font-black">✓</span>{x}</li>
+                ))}
+              </ul>
+              <Link href="/white-label/apply" className="mt-6 inline-flex rounded-full bg-[#0b3b44] text-[#fbf5ea] px-6 py-3 font-sans font-extrabold text-xs uppercase tracking-[0.18em]">Apply to resell</Link>
+            </div>
+            <div className="rounded-2xl border-2 border-[#fbf5ea]/30 p-7">
+              <p className="font-mono text-[10px] uppercase tracking-[0.24em] font-bold text-[#81d8d0]">Partner Program</p>
+              <h3 className="font-display text-2xl font-black mt-2">You send them to us.</h3>
+              <ul className="mt-4 space-y-2 font-body text-[15px] text-[#fbf5ea]/85">
+                {['We sell, build and bill, under our name', `You earn ${partner.pct}% of every invoice for ${partner.months} months`, 'Nothing to manage after the introduction', 'For anyone who knows business owners'].map((x) => (
+                  <li key={x} className="flex gap-2.5"><span aria-hidden="true" className="text-[#f5b700] font-black">✓</span>{x}</li>
+                ))}
+              </ul>
+              <Link href="/partners" className="mt-6 inline-flex rounded-full border-2 border-[#fbf5ea] px-6 py-3 font-sans font-extrabold text-xs uppercase tracking-[0.18em]">See the Partner Program</Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ─── QUESTIONS ─── */}
       <section className="py-16 md:py-20 border-t-2 border-[#0b3b44]" aria-labelledby="faq-heading">
         <div className="max-w-3xl mx-auto px-5">
@@ -255,12 +292,9 @@ export default function WhiteLabelPage() {
             ))}
           </div>
           <div className="mt-10 flex flex-col sm:flex-row gap-3">
-            <Link href="/inquire?kind=white-label" className="inline-flex items-center justify-center rounded-full bg-[#f5b700] border-2 border-[#0b3b44] px-7 py-3.5 font-sans font-extrabold text-xs uppercase tracking-[0.18em] shadow-[4px_4px_0_0_#0b3b44]">Ask for your price sheet</Link>
+            <Link href="/white-label/apply" className="inline-flex items-center justify-center rounded-full bg-[#f5b700] border-2 border-[#0b3b44] px-7 py-3.5 font-sans font-extrabold text-xs uppercase tracking-[0.18em] shadow-[4px_4px_0_0_#0b3b44]">Apply now</Link>
             <Link href="/white-label/demo" className="inline-flex items-center justify-center rounded-full bg-white border-2 border-[#0b3b44] px-7 py-3.5 font-sans font-extrabold text-xs uppercase tracking-[0.18em]">Open the demo</Link>
           </div>
-          <p className="font-body text-sm text-[#0b3b44]/60 mt-8">
-            Referring instead of reselling? The <Link href="/partners" className="underline">Partner Program</Link> pays a commission on every business you send us.
-          </p>
         </div>
       </section>
     </div>

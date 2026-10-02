@@ -56,6 +56,7 @@ export function WlClientSite({
   site,
   agencyColor,
   children,
+  compact = false,
 }: {
   client: string;
   city: string;
@@ -63,12 +64,14 @@ export function WlClientSite({
   site: { url: string; description: string | null; themeColor: string | null } | null;
   agencyColor: string;
   children: ReactNode;
+  /** Presenter mode: just the site, no explainer column. */
+  compact?: boolean;
 }) {
   const brand = site?.themeColor ?? '#1f2937';
   const ink = inkFor(brand);
   const host = site ? new URL(site.url).hostname.replace(/^www\./, '') : `${client.toLowerCase().replace(/[^a-z0-9]+/g, '')}.com`;
   return (
-    <div className="grid gap-8 lg:grid-cols-[1.5fr_1fr] lg:items-center">
+    <div className={compact ? '' : 'grid gap-8 lg:grid-cols-[1.5fr_1fr] lg:items-center'}>
       <div className="overflow-hidden rounded-2xl border border-black/10 shadow-xl">
         <div className="flex items-center gap-2 border-b border-black/10 bg-neutral-100 px-4 py-2.5">
           <span className="h-3 w-3 rounded-full bg-red-400" />
@@ -98,7 +101,7 @@ export function WlClientSite({
           <div className="absolute bottom-5 right-5">{children}</div>
         </div>
       </div>
-      <div>
+      <div className={compact ? 'hidden' : ''}>
         <p className="text-xs font-bold uppercase tracking-[0.25em]" style={{ color: textOnWhite(agencyColor) }}>Website Voice and Chat Agent</p>
         <h3 className="mt-3 text-2xl font-black tracking-tight md:text-3xl">The site you built, answering out loud.</h3>
         <p className="mt-4 leading-relaxed text-neutral-600">

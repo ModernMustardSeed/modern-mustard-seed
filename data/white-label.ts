@@ -324,11 +324,15 @@ export const WL_FAQ: { q: string; a: string }[] = [
   },
   {
     q: 'What does it cost me?',
-    a: 'A fixed wholesale price per client per month, plus a one-time setup per client. No license fee and no minimum. We send the full price sheet after a twenty minute call.',
+    a: 'A fixed wholesale price per client, plus a one-time setup per client. No license fee and no minimum. Your signed price sheet arrives with your portal, within one business day of applying.',
   },
   {
     q: 'Can I charge whatever I want?',
     a: 'Yes. We publish a suggested retail on your price sheet. Most agencies sell at or above it. The difference is yours.',
+  },
+  {
+    q: 'How does billing work?',
+    a: 'Nothing is billed until a client goes live, and a client goes live only after you call the test line and press Approve. Then its setup and monthly land on your next invoice from us: one invoice a month covering every live client, payable within seven days. Pause a client and it drops off the next invoice.',
   },
   {
     q: 'What happens when a call goes over?',
