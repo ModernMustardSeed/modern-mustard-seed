@@ -64,6 +64,7 @@ const STATIC_PATHS = [
   '/world',
   '/contact',
   '/partners',
+  '/white-label',
   '/partners/sales-rep',
   '/sample-proposal',
   '/privacy',

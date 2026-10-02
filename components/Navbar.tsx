@@ -62,6 +62,7 @@ const MENU_GROUPS = [
       { label: 'Contact', href: '/contact' },
       { label: 'Partner Program', href: '/partners' },
       { label: 'Sales Rep Jobs', href: '/partners/sales-rep' },
+      { label: 'White Label For Agencies', href: '/white-label' },
       { label: 'Client Portal', href: '/portal' },
     ],
   },
@@ -192,7 +193,9 @@ export default function Navbar() {
     // booth is not a brand collision.)
     pathname.startsWith('/sarahcxc') ||
     pathname.startsWith('/sarahbook') ||
-    pathname.startsWith('/voice-agents/build/demo/');
+    pathname.startsWith('/voice-agents/build/demo/') ||
+    // The white label demo and price sheet wear the agency's name, never ours.
+    pathname.startsWith('/white-label/');
   if (isAppShell) return null;
 
   return (

@@ -18,7 +18,7 @@ import { openWelcomeTour } from '@/components/admin/WelcomeTour';
  * the mustard chip, and the Inbox unread dot bubbles up to its group.
  */
 
-type Tab = 'overview' | 'office' |'hq' | 'portfolio' | 'gleaner' | 'pipeline' | 'tracker' | 'outbound' | 'acquisition' | 'factories' | 'partners' | 'partner-desk' | 'team' | 'outreach' | 'campaigns' | 'texting' | 'ads' | 'my-content' | 'facebook' | 'social' | 'posters' | 'artifacts' | 'audit' | 'roadmaps' | 'hundredfold' | 'call' | 'script' | 'callers' | 'calls' | 'training' | 'clients' | 'front-office' | 'posting' | 'proposals' | 'projects' | 'builds' | 'build-log' | 'delivery' | 'templates' | 'intakes' | 'approvals' | 'reviews' | 'calendar' | 'onboarding' | 'manual' | 'inbox' | 'opps' | 'desks' | 'call-prep';
+type Tab = 'overview' | 'office' |'hq' | 'portfolio' | 'gleaner' | 'pipeline' | 'tracker' | 'outbound' | 'acquisition' | 'factories' | 'partners' | 'partner-desk' | 'white-label' | 'team' | 'outreach' | 'campaigns' | 'texting' | 'ads' | 'my-content' | 'facebook' | 'social' | 'posters' | 'artifacts' | 'audit' | 'roadmaps' | 'hundredfold' | 'call' | 'script' | 'callers' | 'calls' | 'training' | 'clients' | 'front-office' | 'posting' | 'proposals' | 'projects' | 'builds' | 'build-log' | 'delivery' | 'templates' | 'intakes' | 'approvals' | 'reviews' | 'calendar' | 'onboarding' | 'manual' | 'inbox' | 'opps' | 'desks' | 'call-prep';
 
 // `external: true` marks a public-facing offer page that opens in a new tab, so
 // clicking it from the admin never loses the team member's place. These items
@@ -119,6 +119,7 @@ const GROUPS: { name: string; items: Item[] }[] = [
       { key: 'team', label: 'Team', href: '/admin/team' },
       { key: 'partners', label: 'Partner Admin', href: '/admin/partners' },
       { key: 'partner-desk', label: 'Partner Desk', href: '/admin/partner-desk' },
+      { key: 'white-label', label: 'White Label', href: '/admin/white-label' },
       { key: 'calls', label: 'Calls', href: '/admin/calls' },
       { key: 'callers', label: 'Callers', href: '/admin/callers' },
       { key: 'onboarding', label: 'Academy', href: '/admin/onboarding' },

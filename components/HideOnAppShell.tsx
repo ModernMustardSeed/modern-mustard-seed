@@ -29,7 +29,9 @@ export default function HideOnAppShell({
     // The CXC and Eternal Optimist booths: no MMS footer under another house.
     p.startsWith('/sarahcxc') ||
     p.startsWith('/sarahbook') ||
-    p.startsWith('/voice-agents/build/demo/')
+    p.startsWith('/voice-agents/build/demo/') ||
+    // The white label demo and price sheet wear the agency's name, never ours.
+    p.startsWith('/white-label/')
   )
     return null;
   return <>{children}</>;

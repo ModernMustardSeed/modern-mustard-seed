@@ -14,6 +14,7 @@ export const RIVIERA_OFF_PREFIX = [
   '/sarah',
   '/hatchery/',
   '/voice-agents/build/demo/',
+  '/white-label/',
   '/proposal/',
   '/scaling-roadmap/r/',
   '/audit/',

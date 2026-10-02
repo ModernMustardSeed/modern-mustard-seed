@@ -64,6 +64,7 @@ export default function Footer() {
         { label: 'Future-Proof Your Business', href: '/future-proof' },
         { label: 'Partner Program', href: '/partners' },
         { label: 'Sales Rep Jobs', href: '/partners/sales-rep' },
+        { label: 'White Label For Agencies', href: '/white-label' },
       ],
     },
     {
