@@ -413,7 +413,7 @@ test('emails: every campaign email carries the opt-out and the tracked CTA', () 
       variant: { id: 'v', campaign_id: 'c', key: 'A', step, subject: 'S', cta_label: 'YES', body_key: 'default', weight: 1, active: true },
       step,
       fromName: 'Sarah at Modern Mustard Seed',
-      fromEmail: 'sarah@modernmustardseed.com',
+      fromEmail: 'sarah@outreach.modernmustardseed.com',
       replyTo: 'sarah@modernmustardseed.com',
     });
     assert.ok(built, `step ${step} should build`);
@@ -999,7 +999,7 @@ test('sequence: every body_key in the sequence renders its own distinct email', 
       variant: { id: 'v', campaign_id: 'c', key: 'A', step: 1, subject: 'S', cta_label: 'YES', body_key, weight: 1, active: true },
       step: 1,
       fromName: 'Sarah',
-      fromEmail: 'sarah@modernmustardseed.com',
+      fromEmail: 'sarah@outreach.modernmustardseed.com',
       replyTo: 'sarah@modernmustardseed.com',
     });
     assert.ok(built, `${body_key} should build`);
@@ -1213,7 +1213,7 @@ test('emails: the proof email quotes only cited figures, and shows the contested
     variant: { id: 'v', campaign_id: 'c', key: 'A', step: 2, subject: 'The call you never hear about', cta_label: 'YES', body_key: 'proof', weight: 1, active: true },
     step: 2,
     fromName: 'Sarah',
-    fromEmail: 'sarah@modernmustardseed.com',
+    fromEmail: 'sarah@outreach.modernmustardseed.com',
     replyTo: 'sarah@modernmustardseed.com',
   });
   const html = built!.html;
@@ -1236,7 +1236,7 @@ test('emails: the keep-her email promises nobody loses a job', () => {
     variant: { id: 'v', campaign_id: 'c', key: 'A', step: 5, subject: 'You do not have to replace anybody', cta_label: 'YES', body_key: 'keep_her', weight: 1, active: true },
     step: 5,
     fromName: 'Sarah',
-    fromEmail: 'sarah@modernmustardseed.com',
+    fromEmail: 'sarah@outreach.modernmustardseed.com',
     replyTo: 'sarah@modernmustardseed.com',
   });
   const html = built!.html;
@@ -1253,7 +1253,7 @@ test('emails: prose carries no em dashes, per the house rule', () => {
     variant: { id: 'v', campaign_id: 'c', key: 'A', step: 1, subject: 'Want my AI receptionist to call you?', cta_label: 'YES', body_key: 'default', weight: 1, active: true },
     step: 1,
     fromName: 'Sarah at Modern Mustard Seed',
-    fromEmail: 'sarah@modernmustardseed.com',
+    fromEmail: 'sarah@outreach.modernmustardseed.com',
     replyTo: 'sarah@modernmustardseed.com',
   });
   assert.ok(!built!.subject.includes('—'));
