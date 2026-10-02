@@ -18,7 +18,7 @@
  * shows up on both desks as the same red state the publisher would produce.
  */
 import type { SupabaseClient } from '@supabase/supabase-js';
-import { accessToken, markAccount } from './accounts';
+import { accessToken, markAccount, tokenLife } from './accounts';
 import { instagramAccess, viaInstagramLogin } from './instagram-login';
 import { getGoogleAccessToken } from '@/lib/oauth-google';
 import type { Platform } from './types';
@@ -68,6 +68,20 @@ async function checkFacebook(sb: SupabaseClient, email: string, platform: 'faceb
     if (Array.isArray(pj.tasks) && pj.tasks.length && !pj.tasks.includes('CREATE_CONTENT')) {
       await markAccount(sb, email, 'facebook', 'error', 'This token can read the Page but not post to it.');
       return fail('facebook', 'This token can read the Page but not post to it.', 'Generate the token again with pages_manage_posts and pages_read_engagement ticked.');
+    }
+  }
+
+  // A token that works today and dies tonight is the failure a read cannot see.
+  // Page tokens should never expire; Instagram Login tokens renew themselves.
+  if (!igLogin) {
+    const life = await tokenLife(acct.token);
+    const soon = Date.now() / 1000 + 14 * 24 * 3600;
+    const day = (s: number) => new Date(s * 1000).toLocaleDateString('en-US', { timeZone: 'America/Denver', month: 'long', day: 'numeric' });
+    if (life.expiresAt) {
+      return fail(platform, `This token runs out ${day(life.expiresAt)}. Posting stops then.`, 'Generate a token in Graph API Explorer, press Extend Access Token in the Access Token Debugger, and connect the longer one.');
+    }
+    if (life.dataAccessUntil && life.dataAccessUntil < soon) {
+      return fail(platform, `Meta needs the Page access confirmed by ${day(life.dataAccessUntil)}.`, 'Generate a fresh token in Graph API Explorer for the same Page, extend it, and connect it again.');
     }
   }
 

@@ -123,10 +123,30 @@ function StateBadge({ state }: { state: State }) {
 }
 
 /** A small form that posts one action and reports the answer in a sentence. */
-function Paste({ fields, submit, label }: { fields: Array<{ key: string; label: string; hint?: string; secret?: boolean }>; submit: (v: Record<string, string>) => Promise<string>; label: string }) {
+/** A paste answers with a sentence, or with a question: which of these did you mean. */
+type PasteAnswer = string | { note: string; choices: Array<{ id: string; name: string }> };
+
+function Paste({ fields, submit, label }: { fields: Array<{ key: string; label: string; hint?: string; secret?: boolean }>; submit: (v: Record<string, string>) => Promise<PasteAnswer>; label: string }) {
   const [v, setV] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState(false);
   const [note, setNote] = useState<string | null>(null);
+  const [choices, setChoices] = useState<Array<{ id: string; name: string }> | null>(null);
+  const send = async (extra: Record<string, string> = {}) => {
+    setBusy(true);
+    setNote(null);
+    try {
+      const a = await submit({ ...v, ...extra });
+      if (typeof a === 'string') {
+        setNote(a);
+        setChoices(null);
+      } else {
+        setNote(a.note);
+        setChoices(a.choices);
+      }
+    } finally {
+      setBusy(false);
+    }
+  };
   return (
     <div className="mt-3 rounded-lg border border-dashed border-[var(--cc-line)] bg-[#FAFBFC] p-3">
       <div className="grid gap-3 sm:grid-cols-2">
@@ -140,20 +160,17 @@ function Paste({ fields, submit, label }: { fields: Array<{ key: string; label: 
         ))}
       </div>
       {note && <p className="mt-2 text-[13px] text-[var(--cc-ink)]">{note}</p>}
+      {choices && (
+        <div className="mt-2 flex flex-wrap gap-2">
+          {choices.map((c) => (
+            <Button key={c.id} disabled={busy} onClick={() => void send({ pageId: c.id })}>
+              {c.name}
+            </Button>
+          ))}
+        </div>
+      )}
       <div className="mt-3">
-        <Button
-          kind="primary"
-          disabled={busy || fields.some((f) => !(v[f.key] ?? '').trim())}
-          onClick={async () => {
-            setBusy(true);
-            setNote(null);
-            try {
-              setNote(await submit(v));
-            } finally {
-              setBusy(false);
-            }
-          }}
-        >
+        <Button kind="primary" disabled={busy || fields.some((f) => !(v[f.key] ?? '').trim())} onClick={() => void send()}>
           {busy ? 'Checking' : label}
         </Button>
       </div>
@@ -252,11 +269,12 @@ export default function Accounts({ session }: { session: Session }) {
   // own route, which gates them on the look pass; the mailbox and Buildertrend
   // still go through the admin desk route that owns those connections. The
   // owner never sees any of these forms.
-  const desk = async (action: string, body: Record<string, string>): Promise<string> => {
+  const desk = async (action: string, body: Record<string, string>): Promise<PasteAnswer> => {
     const feed = ['facebook-token', 'x-tokens', 'linkedin-token'].includes(action);
     const url = feed ? '/api/cc/connections' : `/api/admin/posting?client=${encodeURIComponent(client)}`;
     const r = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ action, ...body }) });
-    const j = (await r.json().catch(() => ({}))) as { ok?: boolean; error?: string; page?: { name: string }; instagram?: { username: string | null } | null; username?: string; organization?: string; fetched?: number; captcha?: boolean };
+    const j = (await r.json().catch(() => ({}))) as { ok?: boolean; error?: string; choices?: Array<{ id: string; name: string }> | null; page?: { name: string }; instagram?: { username: string | null } | null; username?: string; organization?: string; fetched?: number; captcha?: boolean };
+    if (j.choices?.length) return { note: j.error ?? 'Which Page is theirs?', choices: j.choices };
     if (!r.ok || j.error) return j.error ?? 'That did not take.';
     void load();
     if (action === 'facebook-token') {
