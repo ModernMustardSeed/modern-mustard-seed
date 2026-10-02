@@ -239,10 +239,6 @@ export function buildCampaignEmail(args: {
       cta,
       secondary,
       signature: 'Sarah',
-      // The body already carries the ranch line at 30px with the line that
-      // makes the call a demo. The signature's own card would be the same
-      // number a second time, four inches lower.
-      ranchLine: false,
       trackId: lead.id,
     }) + complianceFooter(lead.email);
 

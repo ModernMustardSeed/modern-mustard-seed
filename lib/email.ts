@@ -253,11 +253,12 @@ function ctaBlock(primary: { label: string; url: string }, secondary?: { label: 
 
 // Sarah's signature, matching the Zoho one at public/brand/signature.html (keep
 // the two in step). A small circle portrait, her name in Unbounded, her cell and
-// the site, and paper Mr. Mustard on the ranch line so every email ends with a
-// way to reach a person. No title, by her call (2026-10-01). Signs every email. The name arg
-// is kept for call-site compatibility; the sign-off is always Sarah.
+// the site. The circle is Mr. Mustard in the sea and mustard palette, not her
+// photo, and there is no ranch line card (both by her call, 2026-10-02). No title,
+// by her call (2026-10-01). Signs every email. The name arg is kept for
+// call-site compatibility; the sign-off is always Sarah.
 //
-// The three assets are 2x PNGs in public/brand, sized down in the markup so
+// The assets are 2x PNGs in public/brand, sized down in the markup so
 // they stay sharp on retina. The name image carries alt="Sarah Scarano", so a
 // client with images off still shows the name and not a gap.
 //
@@ -269,23 +270,17 @@ function ctaBlock(primary: { label: string; url: string }, secondary?: { label: 
 // dragged the whole message into horizontal scroll. The name is fluid now
 // (`width:100%;max-width:207px` since 2026-10-01), so it scales into whatever it is given and the
 // email has no fixed-width floor left in it.
-//
-// The bottom padding moves with the ranch card. That card used to carry the
-// space under the signature in its own row, so suppressing it for the cold
-// campaign left the sign-off jammed against the bottom edge of the card, which
-// reads exactly like something that failed to finish rendering.
-function signature(_name?: string, opts?: { ranchLine?: boolean }): string {
-  const withRanch = opts?.ranchLine !== false;
+function signature(_name?: string): string {
   const sea = '#0b3b44';
   const lagoon = '#0a7c78';
-  return `<tr><td style="padding:36px 44px ${withRanch ? '0' : '38px'}">
+  return `<tr><td style="padding:36px 44px 38px">
     <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse"><tr>
       <td width="44" height="3" bgcolor="#81d8d0" style="width:44px;height:3px;line-height:3px;font-size:0;background:#81d8d0">&nbsp;</td>
       <td width="22" height="3" bgcolor="${C.goldBrand}" style="width:22px;height:3px;line-height:3px;font-size:0;background:${C.goldBrand}">&nbsp;</td>
     </tr></table>
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;margin-top:16px"><tr>
       <td class="mms-sig-face" width="64" style="width:64px;vertical-align:middle">
-        <img src="${SITE}/brand/sig-sarah-20261001.png?v=2026-10-01" width="64" height="64" alt="" style="display:block;border:0;outline:none;text-decoration:none;width:64px;height:64px" />
+        <img src="${SITE}/brand/sig-mustard-20261002.png?v=2026-10-02" width="64" height="64" alt="Mr. Mustard" style="display:block;border:0;outline:none;text-decoration:none;width:64px;height:64px" />
       </td>
       <td class="mms-sig-text" style="vertical-align:middle;padding-left:14px">
         <img src="${SITE}/brand/sig-name-20261001.png?v=2026-10-01" width="207" height="29" alt="Sarah Scarano" style="display:block;border:0;outline:none;text-decoration:none;width:100%;max-width:207px;height:auto" />
@@ -296,28 +291,7 @@ function signature(_name?: string, opts?: { ranchLine?: boolean }): string {
       </td>
     </tr></table>
   </td></tr>
-  ${
-    // The ranch card. Suppressed by the cold campaign, which now prints the same
-    // number at 30px in the body with the instruction that turns the call into a
-    // demo. Two cards carrying one phone number, four inches apart, reads as a
-    // template repeating itself rather than as an invitation.
-    !withRanch
-      ? ''
-      : `<tr><td style="padding:22px 44px 42px">
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#fbf5ea" style="width:100%;border-collapse:separate;background:#fbf5ea;border:1.5px solid ${sea};border-radius:14px">
-      <tr>
-        <td width="82" style="width:82px;vertical-align:middle;padding:14px 0 14px 12px">
-          <img src="${SITE}/brand/sig-mustard-paper-20261001.png?v=2026-10-01" width="72" height="88" alt="Mr. Mustard on the phone" style="display:block;border:0;outline:none;text-decoration:none;width:72px;height:88px" />
-        </td>
-        <td style="vertical-align:middle;padding:14px 14px 14px 12px">
-          <div style="font-family:${SANS};font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#d4462e;white-space:nowrap">Call the ranch line</div>
-          <a href="tel:+14063121223" class="mms-ink" style="display:inline-block;margin:6px 0 0;font-family:Unbounded,${SANS};font-size:19px;font-weight:700;color:${sea};text-decoration:none;letter-spacing:-0.2px;white-space:nowrap">(406) 312-1223</a>
-          <p class="mms-body" style="margin:6px 0 0;font-family:${SANS};font-size:13px;color:#2e5560;line-height:1.55">Mr. Mustard picks up day or night. Ask him anything, and he will get you to me.</p>
-        </td>
-      </tr>
-    </table>
-  </td></tr>`
-  }`;
+  `;
 }
 
 function nextUp(text: string): string {
@@ -917,8 +891,6 @@ type ClientEmailArgs = {
   cta?: { label: string; url: string };
   secondary?: { label: string; url: string };
   signature?: string;
-  /** Off for the cold campaign, which prints the number at full size itself. */
-  ranchLine?: boolean;
   trackId?: string;
 };
 
@@ -931,14 +903,13 @@ export function clientEmail({
   cta,
   secondary,
   signature: sig = 'Sarah',
-  ranchLine = true,
   trackId,
 }: ClientEmailArgs): string {
   const inner = `
     ${greeting ? headline(greeting) : ''}
     <tr><td class="mms-body" style="padding:24px 44px 0;font-family:${SANS};font-size:16px;color:${C.body};line-height:1.72">${body}</td></tr>
     ${cta ? ctaBlock(cta, secondary) : ''}
-    ${signature(sig, { ranchLine })}
+    ${signature(sig)}
     ${trackPixel(trackId)}
   `;
   return shell({ preheader, subtitle: eb, inner });

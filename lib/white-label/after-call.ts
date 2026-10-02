@@ -47,7 +47,6 @@ export async function afterWhiteLabelCall(meta: Record<string, unknown>, duratio
           greeting: `${client}, after your call.`,
           body: lines.map((l) => p(l)).join('') + p('This is the summary the owner gets after every call, with the full transcript attached in a live setup.'),
           signature: agency,
-          ranchLine: false,
         }),
       });
     }
