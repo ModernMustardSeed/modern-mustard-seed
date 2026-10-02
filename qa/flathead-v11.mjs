@@ -17,7 +17,7 @@ for(const width of [1440,390,320]){
  const bounds=await launcher.boundingBox();assert(bounds.x>width/2&&bounds.x+bounds.width<=width&&bounds.y+bounds.height<= (width===1440?900:844));
  assert.equal(await page.locator('[data-flathead-edition]').getAttribute('data-flathead-edition'),'11');
  assert.equal(await page.locator('.flathead-home').getAttribute('data-design'),'mms-editorial-2026','stable production monitor marker');
- assert((await page.locator('.lake-art img').evaluate(e=>e.currentSrc)).includes('flathead-sun-left'));
+ assert((await page.locator('.lake-art img').evaluate(e=>e.currentSrc)).includes('flathead-sun-near-talk'));
  await page.waitForTimeout(1500);await page.screenshot({path:out+`/home-${width}.png`});
  await launcher.click();const dialog=page.getByRole('dialog',{name:'Talk to Mr. Mustard',exact:true});await dialog.waitFor();
  assert(await dialog.getByRole('button',{name:/Talk live/}).isVisible(),'real live voice entry is configured');
