@@ -9,7 +9,7 @@ await context.addCookies([{name:'mms_consent',value:'denied',url:origin}]);
 await context.addInitScript(()=>localStorage.setItem('mms-ask-seen',String(Date.now())));
 await context.route('**/api/**',route=>route.request().method()==='POST'?route.fulfill({status:200,contentType:'application/json',body:'{"ok":true}'}):route.continue());
 const report=[];
-for(const width of [1440,390,320]){
+for(const width of [1440,1024,390,320]){
  const page=await context.newPage();await page.setViewportSize({width,height:width===1440?900:844});
  await page.goto(origin,{waitUntil:'domcontentloaded'});await page.evaluate(()=>document.fonts.ready);
  const launcher=page.getByRole('button',{name:'Call or chat with Mr. Mustard',exact:true});await launcher.waitFor();

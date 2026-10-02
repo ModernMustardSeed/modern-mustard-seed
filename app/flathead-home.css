@@ -40,3 +40,4 @@ html.riv .flathead-home .agency-art{padding:10px;background:var(--cream);border:
 @media(max-width:760px){html.riv .flathead-home .paths h2 br{display:initial}}
 
 html.riv .flathead-home .footer-extras{display:flex;align-items:center;flex-wrap:wrap;gap:6px 24px;margin-top:12px;font-size:11px}html.riv .flathead-home .footer-extras :is(a,button){min-height:44px;display:flex;align-items:center}html.riv .flathead-home .footer-extras button{border:0;background:transparent;color:inherit;padding:0;cursor:pointer}
+@media(min-width:761px){html.riv .flathead-home .lake-art img{object-position:100% 50%}}
