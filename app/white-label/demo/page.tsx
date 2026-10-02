@@ -40,10 +40,10 @@ export default async function WhiteLabelDemoPage({ searchParams }: { searchParam
   const signed = wlKeyValid(agency, one(q.k));
   const sample = wlSample(one(q.sample));
 
-  const show = ['ai-receptionist', 'site-agent', 'talking-business', 'ai-visibility', 'custom-agent', 'overflow-site'];
-  const lines: WlDemoLine[] = WL_LINES.filter((l) => show.includes(l.slug))
-    // The overflow site is agency-to-us capacity, not something an agency's client buys.
-    .filter((l) => l.slug !== 'overflow-site')
+  // What an agency's client would buy. Overflow sites are agency-to-us capacity, so they stay off.
+  const show = ['ai-receptionist', 'site-agent', 'phone-and-site-agent', 'ai-visibility', 'marketing-dashboard', 'agentic-system'];
+  const lines: WlDemoLine[] = show
+    .map((slug) => WL_LINES.find((l) => l.slug === slug)!)
     .map((l) => ({
       slug: l.slug,
       name: l.name,

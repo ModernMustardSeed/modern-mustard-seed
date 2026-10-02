@@ -60,6 +60,7 @@ const AFTER_YES = [
 
 export default function WhiteLabelDesk({
   lines,
+  groups,
   program,
   ladderHolds,
   samples,
@@ -68,6 +69,7 @@ export default function WhiteLabelDesk({
   callsToday,
 }: {
   lines: WlLine[];
+  groups: { key: string; sheetTitle: string }[];
   program: { foundingAgencies: number; foundingMonths: number; answeredMinutes: number };
   ladderHolds: boolean;
   samples: { id: string; label: string }[];
@@ -130,8 +132,6 @@ export default function WhiteLabelDesk({
       </div>
     ) : null;
 
-  const monthly = lines.filter((l) => l.cadence === 'monthly');
-  const projects = lines.filter((l) => l.cadence === 'project');
 
   return (
     <div className="min-h-screen bg-[#FBF6EA] text-[#161616]">
@@ -153,7 +153,7 @@ export default function WhiteLabelDesk({
 
         {!ladderHolds && (
           <div className="border-2 border-[#161616] rounded-xl px-4 py-3 font-body text-sm bg-[#E0301E]/15">
-            The ladder is broken: The Talking Business wholesale must sit at or above the priciest single and below the two pieces added together. Fix it in data/white-label.ts before the next sheet goes out.
+            The ladder is broken: the Phone + Website Agent wholesale must sit at or above the priciest single and below the two pieces added together. Fix it in data/white-label.ts before the next sheet goes out.
           </div>
         )}
 
@@ -165,7 +165,7 @@ export default function WhiteLabelDesk({
               No license fee, no minimum. {program.answeredMinutes} answered minutes per agent, then message mode. Founding rate locked {program.foundingMonths} months for the first {program.foundingAgencies} agencies.
             </p>
           </div>
-          {[['Monthly, per client', monthly], ['Projects, per client', projects]].map(([title, rows]) => (
+          {groups.map((g) => [g.sheetTitle, lines.filter((l) => l.group === g.key)] as const).map(([title, rows]) => (
             <div key={title as string} className={`${card} overflow-x-auto`}>
               <table className="w-full min-w-[820px] text-sm">
                 <thead className="bg-[#161616] text-[#FBF6EA] text-[10px] uppercase tracking-[0.15em] font-mono">

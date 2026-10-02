@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { buildMetadata } from '@/lib/seo';
-import { WL_LINES, WL_PROGRAM, WL_TERMS, wlClean, wlMargin, usd } from '@/data/white-label';
+import { WL_GROUPS, WL_LINES, WL_PROGRAM, WL_TERMS, wlClean, wlMargin, usd } from '@/data/white-label';
 import { wlKeyValid } from '@/lib/white-label/key';
 import PrintButton from '@/components/white-label/PrintButton';
 
@@ -42,10 +42,8 @@ export default async function WhiteLabelSheetPage({ searchParams }: { searchPara
   }
 
   const issued = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'America/Denver' });
-  const monthly = WL_LINES.filter((l) => l.cadence === 'monthly');
-  const projects = WL_LINES.filter((l) => l.cadence === 'project');
 
-  const table = (title: string, rows: typeof WL_LINES) => (
+  const table = (title: string, rows: typeof WL_LINES, first: boolean) => (
     <div className="mt-4">
       <h2 className="text-[11px] font-bold uppercase tracking-[0.22em] text-[#0a7c78]">{title}</h2>
       <table className="mt-1.5 w-full table-fixed border-collapse text-[12px]">
@@ -55,7 +53,7 @@ export default async function WhiteLabelSheetPage({ searchParams }: { searchPara
           <col className="w-[19%]" />
           <col className="w-[19%]" />
         </colgroup>
-        <thead>
+        <thead className={first ? '' : 'sr-only'}>
           <tr className="border-b-2 border-[#0b3b44] text-left text-[10px] uppercase tracking-[0.14em] text-[#0b3b44]/60">
             <th className="py-1.5 pr-3 font-bold">Service</th>
             <th className="py-1.5 pr-3 font-bold">You pay</th>
@@ -68,13 +66,13 @@ export default async function WhiteLabelSheetPage({ searchParams }: { searchPara
             const m = wlMargin(l);
             return (
               <tr key={l.slug} className="border-b border-[#0b3b44]/15 align-top break-inside-avoid">
-                <td className="py-1.5 pr-4">
+                <td className="py-1 pr-4">
                   <p className="font-bold">{l.name}</p>
-                  <p className="mt-0.5 text-[10.5px] leading-snug text-[#0b3b44]/70">{l.pitch}</p>
+                  {l.group !== 'sites' && <p className="mt-0.5 text-[10px] leading-snug text-[#0b3b44]/70">{l.pitch}</p>}
                 </td>
-                <td className="py-1.5 pr-2 font-semibold tabular-nums">{money(l.wholesale.setup, l.wholesale.monthly)}</td>
-                <td className="py-1.5 pr-2 tabular-nums">{money(l.retail.setup, l.retail.monthly)}</td>
-                <td className="py-1.5 font-bold tabular-nums text-[#0a7c78]">{money(m.setup, m.monthly)}</td>
+                <td className="py-1 pr-2 font-semibold tabular-nums">{money(l.wholesale.setup, l.wholesale.monthly)}</td>
+                <td className="py-1 pr-2 tabular-nums">{money(l.retail.setup, l.retail.monthly)}</td>
+                <td className="py-1 font-bold tabular-nums text-[#0a7c78]">{money(m.setup, m.monthly)}</td>
               </tr>
             );
           })}
@@ -104,10 +102,11 @@ export default async function WhiteLabelSheetPage({ searchParams }: { searchPara
           </div>
         </header>
 
-        {table("Monthly services, per client", monthly)}
-        {table("Projects, per client, one time", projects)}
+        {WL_GROUPS.map((g, i) => (
+          <div key={g.key}>{table(g.sheetTitle, WL_LINES.filter((l) => l.group === g.key), i === 0)}</div>
+        ))}
 
-        <div className="mt-4 grid grid-cols-3 gap-x-5 gap-y-2">
+        <div className="mt-6 grid grid-cols-3 gap-x-5 gap-y-3 print:mt-0 print:break-before-page">
           {WL_TERMS.map((t) => (
             <div key={t.title}>
               <p className="text-[12px] font-bold">{t.title}</p>

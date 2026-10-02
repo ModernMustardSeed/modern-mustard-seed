@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { buildMetadata, SITE } from '@/lib/seo';
 import PopPageHero, { pop } from '@/components/pop/PopPageHero';
-import { WL_PROGRAM, WL_TERMS, WL_KIT, WL_FAQ, WL_SAMPLE_CLIENTS, wlPublicLines } from '@/data/white-label';
+import { WL_PROGRAM, WL_GROUPS, WL_TERMS, WL_KIT, WL_FAQ, WL_SAMPLE_CLIENTS, wlPublicLines } from '@/data/white-label';
 
 export const metadata = buildMetadata({
   title: WL_PROGRAM.metaTitle,
@@ -14,7 +14,7 @@ const ART_ALT =
 
 const FOR = [
   { who: 'Web designers', line: 'Your clients already ask what you can do with AI. Now the answer is a working receptionist on the site you built.' },
-  { who: 'Marketing agencies', line: 'You fill the phone with leads. The receptionist makes sure every one of them gets answered and booked.' },
+  { who: 'Marketing agencies', line: 'You fill the phone with leads. The receptionist answers and books every one, and the dashboard shows the client what your ads actually produced.' },
   { who: 'Brand and creative studios', line: 'Add a monthly line to every launch without hiring an engineer or learning a voice platform.' },
   { who: 'IT and consultants', line: 'You are already the person they trust with technology. Put agents in front of them with your name on it.' },
 ];
@@ -29,7 +29,7 @@ const STEPS = [
 const STATS = [
   { n: '$0', label: 'License fee' },
   { n: '0', label: 'Minimums' },
-  { n: '7 days', label: 'Sold to live' },
+  { n: '7 days', label: 'Receptionist, sold to live' },
   { n: '1', label: 'Invoice a month' },
   { n: '100%', label: 'Your name' },
 ];
@@ -43,7 +43,7 @@ export default function WhiteLabelPage() {
       {
         '@type': 'Service',
         name: `${WL_PROGRAM.name} by Modern Mustard Seed`,
-        serviceType: 'White label AI voice agents, website agents and automations for agencies',
+        serviceType: 'White label AI voice agents, agentic systems, marketing dashboards, custom studios and overflow websites for agencies',
         description: WL_PROGRAM.metaDescription,
         provider: { '@type': 'Organization', name: SITE.name, url: SITE.url },
         areaServed: { '@type': 'Country', name: 'United States' },
@@ -159,25 +159,35 @@ export default function WhiteLabelPage() {
       <section id="services" className="py-16 md:py-24 scroll-mt-24" aria-labelledby="services-heading">
         <div className="max-w-6xl mx-auto px-5">
           <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#0a7c78] font-bold mb-3">[ What you can sell ]</p>
-          <h2 id="services-heading" className="font-display text-3xl md:text-5xl font-black tracking-tight leading-[1.05]">Seven services. Your name on every one.</h2>
-          <p className="font-body text-[#0b3b44]/75 leading-relaxed mt-4 max-w-2xl">Four run monthly, so every client you sell adds to what you earn next month. Three are one-time projects. Wholesale prices arrive on your own price sheet, signed for your agency.</p>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 mt-10">
-            {lines.map((l) => (
-              <div key={l.slug} className="flex flex-col bg-white border-2 border-[#0b3b44] rounded-2xl p-6 shadow-[5px_5px_0_0_#0b3b44]">
-                <p className="font-mono text-[10px] uppercase tracking-[0.24em] font-bold text-[#0a7c78]">{l.cadence === 'monthly' ? 'Monthly, per client' : 'Project, per client'}</p>
-                <h3 className="font-display text-xl font-black mt-2">{l.name}</h3>
-                <p className="font-body text-[15px] text-[#0b3b44]/75 leading-relaxed mt-2">{l.pitch}</p>
-                <ul className="mt-4 space-y-2 flex-1">
-                  {l.includes.map((x) => (
-                    <li key={x} className="flex gap-2.5 font-body text-[14px] leading-snug text-[#0b3b44]/85">
-                      <span aria-hidden="true" className="text-[#f5b700] font-black">✓</span>
-                      {x}
-                    </li>
+          <h2 id="services-heading" className="font-display text-3xl md:text-5xl font-black tracking-tight leading-[1.05]">Everything we build. <em className="italic">Your name on all of it.</em></h2>
+          <p className="font-body text-[#0b3b44]/75 leading-relaxed mt-4 max-w-2xl">AI that answers, websites when you are full, and the agentic systems, dashboards and studios your clients cannot get anywhere else. Wholesale prices arrive on your own price sheet, signed for your agency.</p>
+          {WL_GROUPS.map((g) => {
+            const shelf = lines.filter((l) => l.group === g.key);
+            return (
+              <div key={g.key} className="mt-12">
+                <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 border-b-2 border-[#0b3b44] pb-3">
+                  <h3 className="font-display text-2xl md:text-3xl font-black">{g.title}</h3>
+                  <p className="font-body text-sm text-[#0b3b44]/70 max-w-md">{g.blurb}</p>
+                </div>
+                <div className={`grid md:grid-cols-2 ${shelf.length === 4 ? 'lg:grid-cols-2' : 'lg:grid-cols-3'} gap-5 mt-6`}>
+                  {shelf.map((l) => (
+                    <div key={l.slug} className="flex flex-col bg-white border-2 border-[#0b3b44] rounded-2xl p-6 shadow-[5px_5px_0_0_#0b3b44]">
+                      <h4 className="font-display text-xl font-black">{l.name}</h4>
+                      <p className="font-body text-[15px] text-[#0b3b44]/75 leading-relaxed mt-2">{l.pitch}</p>
+                      <ul className="mt-4 space-y-2 flex-1">
+                        {l.includes.map((x) => (
+                          <li key={x} className="flex gap-2.5 font-body text-[14px] leading-snug text-[#0b3b44]/85">
+                            <span aria-hidden="true" className="text-[#f5b700] font-black">✓</span>
+                            {x}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   ))}
-                </ul>
+                </div>
               </div>
-            ))}
-          </div>
+            );
+          })}
         </div>
       </section>
 
