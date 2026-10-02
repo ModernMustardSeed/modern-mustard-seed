@@ -302,6 +302,8 @@ export async function connectFacebookByToken(
   // Only a Page token that never runs out is stored. One minted from a short
   // user token dies within the hour, and the feed goes quiet with a green check.
   const life = await tokenLife(pageToken);
+  // Saving blind is how the short token got in, so an unanswered question is a no.
+  if (!life.known) return { ok: false, error: 'Meta did not say how long that token lasts, so nothing was saved. Try again in a minute.' };
   if (life.expiresAt) {
     const when = new Date(life.expiresAt * 1000).toLocaleString('en-US', { timeZone: 'America/Denver', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
     return {
@@ -337,32 +339,37 @@ export async function connectFacebookByToken(
   return { ok: true, page: { id: page.id, name: page.name }, instagram: ig ? { id: ig.id, username: ig.username ?? null } : null };
 }
 
-/** Pages whose name carries the business name, ignoring case, punctuation and LLC-style suffixes. */
+/**
+ * Pages whose name IS the business name, ignoring case, punctuation and
+ * LLC-style suffixes. Exact on purpose: a studio login manages many clients'
+ * Pages, and a prefix would let a short name claim someone else's.
+ */
 export function pagesNamed<P extends { name: string }>(pages: P[], businessName: string): P[] {
-  const norm = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, ' ').replace(/\b(llc|inc|co|corp|ltd)\b/g, '').trim();
+  const norm = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, ' ').replace(/\b(llc|inc|co|corp|ltd)\b/g, '').replace(/\s+/g, ' ').trim();
   const want = norm(businessName);
   if (!want) return [];
-  return pages.filter((p) => {
-    const have = norm(p.name);
-    return have === want || have.startsWith(`${want} `) || want.startsWith(`${have} `);
-  });
+  return pages.filter((p) => norm(p.name) === want);
 }
 
 /**
  * When a Meta token runs out, from Meta itself. expiresAt null means never.
- * A token inspects itself, so no app secret is needed. Unknown answers read
- * as never, so a Meta hiccup never blocks a good token.
+ * A token inspects itself, so no app secret is needed. known false means Meta
+ * did not answer twice running; callers decide what unknown means to them.
  */
-export async function tokenLife(token: string): Promise<{ expiresAt: number | null; dataAccessUntil: number | null }> {
-  try {
-    const res = await fetch(`${GRAPH}/debug_token?input_token=${encodeURIComponent(token)}&access_token=${encodeURIComponent(token)}`, { signal: AbortSignal.timeout(20_000) });
-    const j = (await res.json().catch(() => ({}))) as { data?: { expires_at?: number; data_access_expires_at?: number } };
-    const exp = j.data?.expires_at;
-    const access = j.data?.data_access_expires_at;
-    return { expiresAt: typeof exp === 'number' && exp > 0 ? exp : null, dataAccessUntil: typeof access === 'number' && access > 0 ? access : null };
-  } catch {
-    return { expiresAt: null, dataAccessUntil: null };
+export async function tokenLife(token: string): Promise<{ known: boolean; expiresAt: number | null; dataAccessUntil: number | null }> {
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      const res = await fetch(`${GRAPH}/debug_token?input_token=${encodeURIComponent(token)}&access_token=${encodeURIComponent(token)}`, { signal: AbortSignal.timeout(15_000) });
+      const j = (await res.json().catch(() => ({}))) as { data?: { expires_at?: number; data_access_expires_at?: number } };
+      if (!j.data) continue;
+      const exp = j.data.expires_at;
+      const access = j.data.data_access_expires_at;
+      return { known: true, expiresAt: typeof exp === 'number' && exp > 0 ? exp : null, dataAccessUntil: typeof access === 'number' && access > 0 ? access : null };
+    } catch {
+      /* one more try */
+    }
   }
+  return { known: false, expiresAt: null, dataAccessUntil: null };
 }
 
 async function graph<T>(url: string, token: string): Promise<{ ok: true; data: T } | { ok: false; error: string }> {
