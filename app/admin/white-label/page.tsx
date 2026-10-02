@@ -3,7 +3,7 @@ import { getAdminUser } from '@/lib/admin-auth';
 import { getSupabase } from '@/lib/supabase';
 import { buildMetadata, SITE } from '@/lib/seo';
 import WhiteLabelDesk, { type Prep, type Inquiry } from '@/components/admin/WhiteLabelDesk';
-import { WL_LINES, WL_PROGRAM, WL_SAMPLE_CLIENTS, wlLadderHolds } from '@/data/white-label';
+import { WL_GROUPS, WL_LINES, WL_PROGRAM, WL_SAMPLE_CLIENTS, wlLadderHolds } from '@/data/white-label';
 import { wlLinks } from '@/lib/white-label/key';
 
 export const metadata = buildMetadata({ title: 'White Label', noindex: true });
@@ -40,6 +40,7 @@ export default async function WhiteLabelAdminPage() {
   return (
     <WhiteLabelDesk
       lines={WL_LINES}
+      groups={WL_GROUPS.map((g) => ({ key: g.key, sheetTitle: g.sheetTitle }))}
       program={{ foundingAgencies: WL_PROGRAM.foundingAgencies, foundingMonths: WL_PROGRAM.foundingMonths, answeredMinutes: WL_PROGRAM.answeredMinutes }}
       ladderHolds={wlLadderHolds()}
       samples={WL_SAMPLE_CLIENTS.map((s) => ({ id: s.id, label: s.label }))}

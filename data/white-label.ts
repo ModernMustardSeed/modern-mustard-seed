@@ -14,7 +14,7 @@
  * sheet and the demo's margin panel render wholesale only behind a key signed
  * for that agency (lib/white-label/key.ts).
  *
- * ⚠️ THE LADDER. The Talking Business bundle stays at or above the priciest
+ * ⚠️ THE LADDER. The Phone + Website Agent bundle stays at or above the priciest
  * single and below the sum of the two pieces, on setup and on monthly, so no
  * path buys more for less. `wlLadderHolds()` checks it; the admin desk shows a
  * red banner the moment a price move breaks it.
@@ -23,12 +23,34 @@
  * sells on its own page at its own price (Study law).
  */
 
-export type WlCadence = 'monthly' | 'project';
+export type WlGroup = 'ai' | 'sites' | 'systems';
+
+/** The three shelves, in the order every page shows them. */
+export const WL_GROUPS: { key: WlGroup; title: string; sheetTitle: string; blurb: string }[] = [
+  {
+    key: 'ai',
+    title: 'AI that answers',
+    sheetTitle: 'AI services, monthly, per client',
+    blurb: 'Monthly lines. Every client you sell adds to what you earn next month.',
+  },
+  {
+    key: 'sites',
+    title: 'Websites, when you are full',
+    sheetTitle: 'Overflow websites, per client',
+    blurb: 'Built to your design or ours, under your name. We host and care for it monthly, or hand you the code.',
+  },
+  {
+    key: 'systems',
+    title: 'Systems, dashboards and studios',
+    sheetTitle: 'Agentic systems, dashboards and studios, per client',
+    blurb: 'Set-price builds scoped in writing. Running costs pass through at cost, never marked up by us.',
+  },
+];
 
 export type WlLine = {
   slug: string;
   name: string;
-  cadence: WlCadence;
+  group: WlGroup;
   /** One line a client understands. */
   pitch: string;
   /** What ships, in plain words. */
@@ -46,10 +68,10 @@ export const WL_PROGRAM = {
   short: 'White Label',
   path: '/white-label',
   promise:
-    'Voice agents, website agents, AI visibility and custom automations, built by us and sold under your name. You set the price. You keep the client.',
-  metaTitle: 'White Label AI Services for Agencies: Voice Agents and Automations',
+    'Voice agents, agentic systems, marketing dashboards, custom studios and overflow websites, built by us and sold under your name. You set the price. You keep the client.',
+  metaTitle: 'White Label AI Services for Agencies: Voice Agents, Agentic Systems and Overflow',
   metaDescription:
-    'A white label AI program for web design and marketing agencies. Sell voice agents, website agents, AI visibility and custom automations under your brand at your price. Built and run by Modern Mustard Seed.',
+    'A white label AI program for web design and marketing agencies. Sell voice agents, agentic systems, marketing and ads dashboards and custom studios under your brand at your price, and hand us your overflow. Built and run by Modern Mustard Seed.',
   /** Founding rate: the first agencies keep these wholesale prices this long. */
   foundingAgencies: 5,
   foundingMonths: 24,
@@ -57,10 +79,11 @@ export const WL_PROGRAM = {
 } as const;
 
 export const WL_LINES: WlLine[] = [
+  /* ── AI THAT ANSWERS ───────────────────────────────────────────────────── */
   {
     slug: 'ai-receptionist',
     name: 'AI Receptionist',
-    cadence: 'monthly',
+    group: 'ai',
     pitch: 'A voice agent that answers the business phone around the clock, books the work and texts the owner a summary.',
     includes: [
       'Trained on the client’s services, prices, hours and policies',
@@ -71,12 +94,12 @@ export const WL_LINES: WlLine[] = [
     ],
     wholesale: { setup: 197, monthly: 147 },
     retail: { setup: 497, monthly: 297 },
-    directRef: 'Voice Agent direct: $297 setup, $297/mo',
+    directRef: 'Voice Agent direct: $297 setup, $297/mo, same 500 minute cap',
   },
   {
     slug: 'site-agent',
     name: 'Website Voice and Chat Agent',
-    cadence: 'monthly',
+    group: 'ai',
     pitch: 'The site you already built learns to talk: visitors ask out loud or type, and it answers and books.',
     includes: [
       'One script tag on any site: WordPress, Webflow, Squarespace, Shopify, Next.js',
@@ -86,27 +109,27 @@ export const WL_LINES: WlLine[] = [
     ],
     wholesale: { setup: 197, monthly: 97 },
     retail: { setup: 397, monthly: 197 },
-    directRef: 'No direct single; part of the Talking Website ($497 + $397/mo)',
+    directRef: 'No direct single; the agent half of the Talking Website',
   },
   {
-    slug: 'talking-business',
-    name: 'The Talking Business',
-    cadence: 'monthly',
-    pitch: 'The phone and the website answer as one: the AI Receptionist and the Website Agent, off one brain.',
+    slug: 'phone-and-site-agent',
+    name: 'Phone + Website Agent',
+    group: 'ai',
+    pitch: 'The phone and the site you built answer as one: the AI Receptionist and the Website Agent off one brain.',
     includes: [
       'Everything in the AI Receptionist',
       'Everything in the Website Voice and Chat Agent',
       'One knowledge base, so a change lands on the phone and the site at once',
-      'The line we recommend you lead with',
+      'No website included: it rides on the site you already built',
     ],
     wholesale: { setup: 297, monthly: 197 },
     retail: { setup: 797, monthly: 397 },
-    directRef: 'Talking Website direct: $497 setup, $397/mo (includes our site)',
+    directRef: 'Talking Website direct is $497 + $397/mo, but that includes our 5 page site',
   },
   {
     slug: 'ai-visibility',
     name: 'AI Visibility',
-    cadence: 'monthly',
+    group: 'ai',
     pitch: 'When someone asks ChatGPT, Google or Perplexity for the best in town, the client is the answer.',
     includes: [
       'Setup: entity, schema and answer pages fixed on the client’s site',
@@ -118,25 +141,125 @@ export const WL_LINES: WlLine[] = [
     retail: { setup: 1497, monthly: 397 },
     directRef: 'Rate sheet: GEO implementation $1,500 to $3,500, monitoring $300 to $750/mo',
   },
+
+  /* ── WEBSITES, WHEN YOU ARE FULL ─────────────────────────────────────────
+   * Mirrors SITE_RUNGS in lib/demo-order.ts at roughly 60% of setup and 65%
+   * of monthly, with suggested retail at our direct price. An agency must
+   * never pay us more for a site than its own client would pay us direct. */
   {
-    slug: 'custom-agent',
-    name: 'Custom AI Agent or Automation',
-    cadence: 'project',
-    pitch: 'One workflow the client does by hand today, done by an agent: intake, quoting, follow-up, scheduling, reporting.',
+    slug: 'site-5',
+    name: 'Website, 5 pages',
+    group: 'sites',
+    pitch: 'The storefront: home, services, about, reviews and a contact page that books.',
+    includes: [
+      'Built to your design file or brief, or designed by us',
+      'Hosting, care and unlimited edits in the monthly',
+      'Your name in the footer, never ours',
+      'Or skip the monthly and we hand you the code',
+    ],
+    wholesale: { setup: 297, monthly: 97 },
+    retail: { setup: 497, monthly: 147 },
+    directRef: 'Website direct, 5 pages: $497 setup, $147/mo',
+  },
+  {
+    slug: 'site-20',
+    name: 'Website, 20 pages and up',
+    group: 'sites',
+    pitch: 'Every service and every town the client serves, each on its own page, each one found.',
+    includes: [
+      'Service pages, town pages and answer guides',
+      'Hosting, care and unlimited edits in the monthly',
+      'Your name in the footer, never ours',
+      'Or skip the monthly and we hand you the code',
+    ],
+    wholesale: { setup: 597, monthly: 127 },
+    retail: { setup: 997, monthly: 197 },
+    directRef: 'Website direct, 20 pages: $997 setup, $197/mo',
+  },
+  {
+    slug: 'site-50',
+    name: 'Website, 50 pages and up',
+    group: 'sites',
+    pitch: 'The county: every service in every town, so the client is the answer wherever the question is asked.',
+    includes: [
+      'Every service-in-town pairing plus the guides',
+      'Hosting, care and unlimited edits in the monthly',
+      'Your name in the footer, never ours',
+      'Or skip the monthly and we hand you the code',
+    ],
+    wholesale: { setup: 1197, monthly: 197 },
+    retail: { setup: 1997, monthly: 297 },
+    directRef: 'Website direct, 50 pages: $1,997 setup, $297/mo',
+  },
+
+  /* ── SYSTEMS, DASHBOARDS AND STUDIOS ─────────────────────────────────────
+   * Set packages cut from the rate sheet in data/proposal-menu.ts (Single
+   * Automation from $2,500, Custom Agentic System $5,000 to $20,000, Idea to
+   * Product $15,000 to $35,000). Bigger than a package is a new package. */
+  {
+    slug: 'automation',
+    name: 'Single Automation or Agent',
+    group: 'systems',
+    pitch: 'One job the client does by hand today, done by an agent: intake, quoting, follow-up, scheduling or reporting.',
     includes: [
       'One workflow, scoped in writing before we start',
       'Connected to the tools the client already uses',
       'Documented so the client could run it without either of us',
-      'Running costs passed through at cost, no markup from us',
+      'Running costs passed through at cost',
     ],
-    wholesale: { setup: 2000, monthly: 0 },
-    retail: { setup: 4500, monthly: 0 },
-    directRef: 'Rate sheet: single automation from $2,500, agent build $5,000 to $12,000',
+    wholesale: { setup: 1497, monthly: 0 },
+    retail: { setup: 2997, monthly: 0 },
+    directRef: 'Rate sheet: Single Automation from $2,500',
+  },
+  {
+    slug: 'agentic-system',
+    name: 'Agentic System',
+    group: 'systems',
+    pitch: 'The client’s operation, run by agents: a custom CRM, internal tool or multi-step workflow built to how they work.',
+    includes: [
+      'Discovery of the process and the data behind it',
+      'Agents that act, not just answer: they move work between steps',
+      'A dashboard the owner actually opens',
+      'Repo, deploy and docs handed over at the end',
+    ],
+    wholesale: { setup: 4997, monthly: 0 },
+    retail: { setup: 9997, monthly: 0 },
+    directRef: 'Rate sheet: Custom Agentic System $5,000 to $20,000',
+  },
+  {
+    slug: 'marketing-dashboard',
+    name: 'Marketing and Ads Dashboard',
+    group: 'systems',
+    pitch: 'Ads, site traffic, calls and leads on one screen, with an AI read of what moved and what to do next.',
+    includes: [
+      'Meta, Google Ads, Analytics and call data in one live dashboard',
+      'Cost per lead and cost per booked job, not just clicks',
+      'A weekly AI summary sent under your agency’s name',
+      'Monthly covers hosting, the data connections and the summary',
+    ],
+    wholesale: { setup: 1997, monthly: 97 },
+    retail: { setup: 3997, monthly: 297 },
+    directRef: 'Custom build direct; nearest rate line is Custom Agentic System',
+  },
+  {
+    slug: 'custom-studio',
+    name: 'Custom Agentic Studio',
+    group: 'systems',
+    pitch: 'A private studio trained on the client’s brand that makes their images, video, ads and copy on demand.',
+    includes: [
+      'Brand voice, look and products built into every generation',
+      'Image, video, ad and copy tools on one screen for the client’s team',
+      'Approvals before anything posts or ships',
+      'Model usage passed through at cost',
+    ],
+    wholesale: { setup: 7497, monthly: 197 },
+    retail: { setup: 14997, monthly: 497 },
+    directRef: 'Our studio builds (CXC Studio, Make Me Studio, AdBuild Studio) are Idea to Product, $15,000 to $35,000',
   },
   {
     slug: 'claude-setup',
     name: 'Claude Setup',
-    cadence: 'project',
+    group: 'systems',
     pitch: 'Claude set up for one person at the client’s business: their skills, their tools, their way of working.',
     includes: [
       'Claude configured for one operator',
@@ -144,24 +267,9 @@ export const WL_LINES: WlLine[] = [
       'Their existing tools connected',
       'A working session so they leave using it',
     ],
-    wholesale: { setup: 900, monthly: 0 },
-    retail: { setup: 1500, monthly: 0 },
+    wholesale: { setup: 897, monthly: 0 },
+    retail: { setup: 1497, monthly: 0 },
     directRef: '/claude person tier, quoted direct',
-  },
-  {
-    slug: 'overflow-site',
-    name: 'Overflow Website Build',
-    cadence: 'project',
-    pitch: 'When your studio is full, we build the site under your name, to your design or ours, and hand you the repo.',
-    includes: [
-      'Up to five pages, built to your design file or brief',
-      'Mobile, speed and search basics done properly',
-      'The repository, deploy and docs handed to you',
-      'Your name in the footer, never ours',
-    ],
-    wholesale: { setup: 1500, monthly: 0 },
-    retail: { setup: 3500, monthly: 0 },
-    directRef: 'Website direct: $497 setup, $147/mo managed',
   },
 ];
 
@@ -169,7 +277,7 @@ export const WL_LINES: WlLine[] = [
 export const WL_TERMS: { title: string; body: string }[] = [
   {
     title: 'You set the price',
-    body: 'We charge you a fixed wholesale price per client. You charge whatever you want and keep every dollar above it.',
+    body: 'A fixed wholesale price per client, with no license fee and no minimum. You charge whatever you want and keep every dollar above it.',
   },
   {
     title: 'Your name, never ours',
@@ -180,8 +288,8 @@ export const WL_TERMS: { title: string; body: string }[] = [
     body: 'You bill them and you own the relationship. We never contact your client unless you ask us to, and we never sell to them directly.',
   },
   {
-    title: 'No license fee, no minimum',
-    body: 'Nothing to join. You pay for a client when you sell one, month to month, one invoice from us covering all of them.',
+    title: 'Your overflow, handled',
+    body: 'When your studio is full, send us the build: a site, an app, a dashboard, a system. Built to your design and standards, delivered under your name.',
   },
   {
     title: 'Changes are included',
@@ -205,6 +313,10 @@ export const WL_FAQ: { q: string; a: string }[] = [
   {
     q: 'Will my client ever see your name?',
     a: 'No. The agent speaks as your client’s business, the reports carry your agency’s name, and we never contact your client unless you ask us to.',
+  },
+  {
+    q: 'Can you take our overflow work?',
+    a: 'Yes. Websites, apps, dashboards and agentic systems, built to your design file and your standards and delivered under your name. Each one is a set package, priced before we start.',
   },
   {
     q: 'What do I have to do?',
@@ -234,7 +346,7 @@ export const WL_FAQ: { q: string; a: string }[] = [
 
 /** Public view of a line: everything but wholesale. */
 export function wlPublicLines() {
-  return WL_LINES.map(({ slug, name, cadence, pitch, includes }) => ({ slug, name, cadence, pitch, includes }));
+  return WL_LINES.map(({ slug, name, group, pitch, includes }) => ({ slug, name, group, pitch, includes }));
 }
 
 export function wlMargin(l: WlLine) {
@@ -246,7 +358,7 @@ export function wlLadderHolds(): boolean {
   const by = (s: string) => WL_LINES.find((l) => l.slug === s)!;
   const a = by('ai-receptionist').wholesale;
   const b = by('site-agent').wholesale;
-  const t = by('talking-business').wholesale;
+  const t = by('phone-and-site-agent').wholesale;
   const ok = (x: number, y: number, z: number) => z >= Math.max(x, y) && z < x + y;
   return ok(a.setup, b.setup, t.setup) && ok(a.monthly, b.monthly, t.monthly);
 }
