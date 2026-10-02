@@ -71,7 +71,7 @@ export default function ServicesPage() {
           caption: 'Every tool, one bench',
         }}
         sticker="Level!"
-        marquee={['Websites', 'Voice Agents', 'Brand / Rebrand', 'Marketing', 'Mustard Pictures', 'Advisory', 'You own everything on launch day']}
+        marquee={['Websites', 'Voice Agents', 'Marketing', 'Mustard Pictures', 'Advisory', 'You own everything on launch day']}
       >
         <p>
           Not a list of services on a slide. Five disciplines practiced deliberately, and the

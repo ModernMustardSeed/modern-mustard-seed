@@ -261,6 +261,8 @@ const config: NextConfig = {
       // `/mustard` and redirects the real page to itself in an infinite loop.
       { source: '/dashboard', destination: '/', permanent: false },
       { source: '/case-studies', destination: '/work', permanent: true },
+      { source: '/brand', destination: '/websites', permanent: true },
+      { source: '/brand/opengraph-image', destination: '/opengraph-image', permanent: true },
       // The partner program answers to every name people search it by.
       { source: '/ambassadors', destination: '/partners', permanent: true },
       { source: '/ambassador', destination: '/partners', permanent: true },

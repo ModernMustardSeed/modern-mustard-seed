@@ -87,7 +87,7 @@
       }
     ],
     "faq": 14,
-    "film": 11,
+    "film": 50,
     "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
     "ready": "true",
     "footers": 1
@@ -180,7 +180,7 @@
       }
     ],
     "faq": 14,
-    "film": 11,
+    "film": 50,
     "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
     "ready": "true",
     "footers": 1
@@ -273,7 +273,7 @@
       }
     ],
     "faq": 14,
-    "film": 11,
+    "film": 50,
     "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
     "ready": "true",
     "footers": 1
@@ -366,7 +366,7 @@
       }
     ],
     "faq": 14,
-    "film": 11,
+    "film": 50,
     "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
     "ready": "true",
     "footers": 1
@@ -507,13 +507,13 @@
     "visible": true
   },
   {
-    "path": "/brand",
+    "path": "/voice-agents/whitepaper",
     "status": 200,
     "errors": [],
-    "heading": "A logo file is not a brand.",
+    "heading": "The Always-On Voice Agent",
     "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
     "overflow": false,
-    "canonical": "https://modernmustardseed.com/brand",
+    "canonical": "https://modernmustardseed.com/voice-agents/whitepaper",
     "visible": true
   },
   {
@@ -524,16 +524,6 @@
     "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
     "overflow": false,
     "canonical": "https://modernmustardseed.com/voice-agents",
-    "visible": true
-  },
-  {
-    "path": "/voice-agents/whitepaper",
-    "status": 200,
-    "errors": [],
-    "heading": "The Always-On Voice Agent",
-    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
-    "overflow": false,
-    "canonical": "https://modernmustardseed.com/voice-agents/whitepaper",
     "visible": true
   },
   {
@@ -557,13 +547,13 @@
     "visible": true
   },
   {
-    "path": "/agentic-native",
+    "path": "/chief",
     "status": 200,
     "errors": [],
-    "heading": "Your company, running on agentic systems.Your team, running it.",
+    "heading": "Your chief of staff, on call day and night.",
     "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
     "overflow": false,
-    "canonical": "https://modernmustardseed.com/agentic-native",
+    "canonical": "https://modernmustardseed.com/chief",
     "visible": true
   },
   {
@@ -577,13 +567,13 @@
     "visible": true
   },
   {
-    "path": "/chief",
+    "path": "/agentic-native",
     "status": 200,
     "errors": [],
-    "heading": "Your chief of staff, on call day and night.",
+    "heading": "Your company, running on agentic systems.Your team, running it.",
     "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
     "overflow": false,
-    "canonical": "https://modernmustardseed.com/chief",
+    "canonical": "https://modernmustardseed.com/agentic-native",
     "visible": true
   },
   {
@@ -607,6 +597,16 @@
     "visible": true
   },
   {
+    "path": "/playbook",
+    "status": 200,
+    "errors": [],
+    "heading": "The whole asset, in your name, with the keys.",
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "overflow": false,
+    "canonical": "https://modernmustardseed.com/playbook",
+    "visible": true
+  },
+  {
     "path": "/mustard",
     "status": 200,
     "errors": [],
@@ -624,16 +624,6 @@
     "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
     "overflow": false,
     "canonical": "https://modernmustardseed.com/future-proof",
-    "visible": true
-  },
-  {
-    "path": "/playbook",
-    "status": 200,
-    "errors": [],
-    "heading": "The whole asset, in your name, with the keys.",
-    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
-    "overflow": false,
-    "canonical": "https://modernmustardseed.com/playbook",
     "visible": true
   },
   {
@@ -667,6 +657,16 @@
     "visible": true
   },
   {
+    "path": "/for/weddings",
+    "status": 200,
+    "errors": [],
+    "heading": "Give every couple the whole weekend",
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "overflow": false,
+    "canonical": "https://modernmustardseed.com/for/weddings",
+    "visible": true
+  },
+  {
     "path": "/for/health",
     "status": 200,
     "errors": [],
@@ -687,16 +687,6 @@
     "visible": true
   },
   {
-    "path": "/for/weddings",
-    "status": 200,
-    "errors": [],
-    "heading": "Give every couple the whole weekend",
-    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
-    "overflow": false,
-    "canonical": "https://modernmustardseed.com/for/weddings",
-    "visible": true
-  },
-  {
     "path": "/nationwide",
     "status": 200,
     "errors": [],
@@ -704,26 +694,6 @@
     "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
     "overflow": false,
     "canonical": "https://modernmustardseed.com/nationwide",
-    "visible": true
-  },
-  {
-    "path": "/resources",
-    "status": 200,
-    "errors": [],
-    "heading": "Field notes forgetting found.",
-    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
-    "overflow": false,
-    "canonical": "https://modernmustardseed.com/resources",
-    "visible": true
-  },
-  {
-    "path": "/kingdom",
-    "status": 200,
-    "errors": [],
-    "heading": "Build what the calling needs. Until all have heard.",
-    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
-    "overflow": false,
-    "canonical": "https://modernmustardseed.com/kingdom",
     "visible": true
   },
   {
@@ -737,6 +707,16 @@
     "visible": true
   },
   {
+    "path": "/resources",
+    "status": 200,
+    "errors": [],
+    "heading": "Field notes forgetting found.",
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "overflow": false,
+    "canonical": "https://modernmustardseed.com/resources",
+    "visible": true
+  },
+  {
     "path": "/blog",
     "status": 200,
     "errors": [],
@@ -744,6 +724,26 @@
     "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
     "overflow": false,
     "canonical": "https://modernmustardseed.com/blog",
+    "visible": true
+  },
+  {
+    "path": "/kingdom",
+    "status": 200,
+    "errors": [],
+    "heading": "Build what the calling needs. Until all have heard.",
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "overflow": false,
+    "canonical": "https://modernmustardseed.com/kingdom",
+    "visible": true
+  },
+  {
+    "path": "/partners",
+    "status": 200,
+    "errors": [],
+    "heading": "Send us a business. Get paid for a year.",
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "overflow": false,
+    "canonical": "https://modernmustardseed.com/partners",
     "visible": true
   },
   {
@@ -769,13 +769,13 @@
     "mobileOverflow": false
   },
   {
-    "path": "/partners",
+    "path": "/white-label/apply",
     "status": 200,
     "errors": [],
-    "heading": "Send us a business. Get paid for a year.",
+    "heading": "Sell AI under your name. Start today.",
     "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
     "overflow": false,
-    "canonical": "https://modernmustardseed.com/partners",
+    "canonical": "https://modernmustardseed.com/white-label/apply",
     "visible": true
   },
   {
@@ -792,22 +792,12 @@
     "path": "/white-label",
     "status": 200,
     "errors": [],
-    "heading": "Sell AI under your name. We build it.",
+    "heading": "Your agency’s agentic partner. Your name on all of it.",
     "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
     "overflow": false,
     "canonical": "https://modernmustardseed.com/white-label",
     "visible": true,
     "mobileOverflow": false
-  },
-  {
-    "path": "/terms",
-    "status": 200,
-    "errors": [],
-    "heading": "Terms of Service",
-    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
-    "overflow": false,
-    "canonical": "https://modernmustardseed.com/terms",
-    "visible": true
   },
   {
     "path": "/privacy",
@@ -817,6 +807,16 @@
     "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
     "overflow": false,
     "canonical": "https://modernmustardseed.com/privacy",
+    "visible": true
+  },
+  {
+    "path": "/terms",
+    "status": 200,
+    "errors": [],
+    "heading": "Terms of Service",
+    "font": "flatheadDisplay, \"flatheadDisplay Fallback\", Georgia, serif",
+    "overflow": false,
+    "canonical": "https://modernmustardseed.com/terms",
     "visible": true
   },
   {

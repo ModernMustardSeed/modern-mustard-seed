@@ -24,7 +24,6 @@ export default function Footer() {
         { label: 'AI for Your Business', href: '/ai' },
         { label: 'The Talking Website', href: '/talking-website' },
         { label: 'Websites And Brand', href: '/websites' },
-        { label: 'Brand / Rebrand', href: '/brand' },
         { label: 'Voice Agents', href: '/voice-agents' },
         { label: 'Custom Software', href: '/services' },
         { label: 'Marketing', href: '/marketing' },

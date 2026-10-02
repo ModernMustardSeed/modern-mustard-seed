@@ -1,6 +1,6 @@
 import Link from '@/components/AttributionLink';
 import { buildMetadata, SITE } from '@/lib/seo';
-import MustardNetworkTV from '@/components/ads/MustardNetworkTV';
+import MustardNetworkTV from '@/components/ads/StudioFilmLibrary';
 import PopPageHero, { pop } from '@/components/pop/PopPageHero';
 
 const description = 'Commercials, brand films, and managed advertising from one studio. Mustard Pictures brings creative direction, production, and campaign management together. Contact Modern Mustard Seed to discuss your project.';
