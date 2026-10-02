@@ -32,6 +32,7 @@ const ENGAGEMENTS = [
   { id: 'voice', label: 'Voice agent' },
   { id: 'advisory', label: 'Advisory' },
   { id: 'claude', label: 'Claude setup' },
+  { id: 'white-label', label: 'White label (for agencies)' },
   { id: 'pictures', label: 'Films and advertising' },
   { id: 'marketing', label: 'Marketing' },
   { id: 'kingdom', label: 'Ministry or charity (For the Kingdom)' },

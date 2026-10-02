@@ -207,6 +207,18 @@ export default function PartnersPage() {
         </p>
       </section>
 
+      {/* Agencies resell instead of refer */}
+      <section className="max-w-4xl mx-auto px-6 pb-16">
+        <div className="rounded-2xl border-2 border-[#0b3b44] bg-white p-7 md:p-8 shadow-[6px_6px_0_0_#f5b700] md:flex md:items-center md:justify-between md:gap-8">
+          <div>
+            <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#0a7c78] font-bold">Run an agency?</p>
+            <h2 className="font-display text-2xl md:text-3xl font-black text-[#0b3b44] mt-2">Resell it under your own name instead.</h2>
+            <p className="font-body text-[#3A3733] leading-relaxed mt-3">Web designers and marketers with clients already can white label our voice agents, website agents and automations: you set the price, you bill the client, you keep the difference.</p>
+          </div>
+          <Link href="/white-label" className="mt-5 md:mt-0 shrink-0 inline-flex items-center justify-center rounded-full bg-[#0b3b44] text-[#fbf5ea] border-2 border-[#0b3b44] px-6 py-3.5 font-sans font-extrabold text-xs uppercase tracking-[0.18em]">See the White Label Program</Link>
+        </div>
+      </section>
+
       {/* Apply */}
       <section id="apply" className="px-6 py-16 scroll-mt-20 halftone-bg">
         <div className="text-center mb-8">
