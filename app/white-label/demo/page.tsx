@@ -61,6 +61,9 @@ export default async function WhiteLabelDemoPage({ searchParams }: { searchParam
         city: wlClean(one(q.city)) || 'Kalispell',
         sample: sample.id,
         client: wlClean(one(q.client), 80),
+        // A logo can ride in the link as an https image URL; an uploaded one stays in the browser.
+        site: wlClean(one(q.site), 200) || null,
+        logo: /^https:\/\/[^\s"'<>]{4,400}$/.test(one(q.logo)) ? one(q.logo) : null,
       }}
       samples={WL_SAMPLE_CLIENTS.map((s) => ({ id: s.id, label: s.label, client: s.client, services: s.services, hours: s.hours }))}
       lines={lines}

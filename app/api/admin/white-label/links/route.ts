@@ -25,6 +25,7 @@ export async function POST(req: Request) {
     color: wlColor(body.color),
     city: wlClean(body.city) || 'Kalispell',
     sample: wlSample(body.sample).id,
+    site: wlClean(body.site, 200),
     contact: wlClean(body.contact, 80),
     meetingAt: wlClean(body.meetingAt, 40),
     notes: wlClean(body.notes, 600),

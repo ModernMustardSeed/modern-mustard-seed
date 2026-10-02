@@ -40,9 +40,10 @@ export function wlKeyValid(agency: string, key: string | null | undefined): bool
 }
 
 /** The two links Sarah takes into a meeting. */
-export function wlLinks(base: string, p: { agency: string; color: string; city: string; sample: string }) {
+export function wlLinks(base: string, p: { agency: string; color: string; city: string; sample: string; site?: string }) {
   const key = wlKey(p.agency);
   const q = new URLSearchParams({ agency: p.agency, color: p.color.replace('#', ''), city: p.city, sample: p.sample });
+  if (p.site) q.set('site', p.site);
   const demoPublic = `${base}/white-label/demo?${q.toString()}`;
   if (!key) return { demoPublic, demo: null, sheet: null };
   q.set('k', key);

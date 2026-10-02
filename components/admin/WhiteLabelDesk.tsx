@@ -20,6 +20,7 @@ export type Prep = {
   color: string;
   city: string;
   sample: string;
+  site?: string;
   contact?: string;
   meetingAt?: string;
   notes?: string;
@@ -78,7 +79,7 @@ export default function WhiteLabelDesk({
   callsToday: number;
 }) {
   const router = useRouter();
-  const [form, setForm] = useState({ agency: '', contact: '', meetingAt: '', city: 'Kalispell', sample: samples[0]?.id ?? 'dental', color: '#0b3b44', notes: '' });
+  const [form, setForm] = useState({ agency: '', contact: '', meetingAt: '', city: 'Kalispell', sample: samples[0]?.id ?? 'dental', color: '#0b3b44', site: '', notes: '' });
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [fresh, setFresh] = useState<Prep | null>(null);
@@ -201,7 +202,7 @@ export default function WhiteLabelDesk({
         <section className="grid lg:grid-cols-2 gap-6 items-start">
           <form onSubmit={prep} className={`${card} p-5 space-y-3`}>
             <h2 className="font-display text-xl font-semibold">Prep a meeting</h2>
-            <p className="font-body text-xs text-[#3A3733]">Mints the agency’s demo link with their name and color, plus their signed price sheet. Both open the margin panel only for this exact agency name.</p>
+            <p className="font-body text-xs text-[#3A3733]">Mints the agency’s demo link with their name and color, plus their signed price sheet. Add one of their real clients’ websites and the demo opens with the receptionist already answering as that client.</p>
             <div className="grid sm:grid-cols-2 gap-3">
               <label className="block sm:col-span-2">
                 <span className={label}>Agency name, exactly as they write it</span>
@@ -233,6 +234,10 @@ export default function WhiteLabelDesk({
                   <input type="color" value={form.color} onChange={(e) => setForm({ ...form, color: e.target.value })} className="h-10 w-12 cursor-pointer rounded border-2 border-[#161616]" />
                   <input className={input} value={form.color} onChange={(e) => setForm({ ...form, color: e.target.value })} />
                 </div>
+              </label>
+              <label className="block sm:col-span-2">
+                <span className={label}>One of their real clients’ websites (optional)</span>
+                <input className={input} placeholder="theirclient.com" value={form.site} onChange={(e) => setForm({ ...form, site: e.target.value })} />
               </label>
               <label className="block sm:col-span-2">
                 <span className={label}>Notes</span>
