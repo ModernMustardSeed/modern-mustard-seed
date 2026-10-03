@@ -9,6 +9,15 @@
     "overflow": false
   },
   {
+    "width": 1024,
+    "edition": 11,
+    "sunAsset": true,
+    "bottomRight": true,
+    "callEntry": true,
+    "chatEntry": true,
+    "overflow": false
+  },
+  {
     "width": 390,
     "edition": 11,
     "sunAsset": true,

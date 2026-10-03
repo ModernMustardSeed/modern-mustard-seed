@@ -42,7 +42,7 @@ export async function createOceanScene(config:OceanConfig){
  const textures=bitmaps.map(b=>{const t=new THREE.Texture(b);t.needsUpdate=true;t.colorSpace=THREE.SRGBColorSpace;t.minFilter=THREE.LinearFilter;t.generateMipmaps=false;return t;});
  const uniforms={uArt:{value:textures[0]},uBoat:{value:textures[1]},uTime:{value:0},uCover:{value:new THREE.Vector2(1,1)},uShift:{value:0},uPointer:{value:new THREE.Vector2()},uBoatRatio:{value:bitmaps[1].width/bitmaps[1].height},uMobile:{value:0}};
  const material=new THREE.ShaderMaterial({uniforms,vertexShader,fragmentShader,depthWrite:false,depthTest:false});const geometry=new THREE.PlaneGeometry(2,2);const mesh=new THREE.Mesh(geometry,material);const scene=new THREE.Scene();scene.add(mesh);const camera=new THREE.OrthographicCamera(-1,1,1,-1,0,10);
- function resize(width:number,height:number){renderer.setSize(width,height,false);const aspect=width/height;uniforms.uCover.value.set(Math.min(aspect/1.5,1),Math.min(1.5/aspect,1));uniforms.uShift.value=0;uniforms.uMobile.value=width<760?1:0;}
+ function resize(width:number,height:number){renderer.setSize(width,height,false);const aspect=width/height;uniforms.uCover.value.set(Math.min(aspect/1.5,1),Math.min(1.5/aspect,1));uniforms.uShift.value=width<760||uniforms.uCover.value.x>.95?0:Math.max(0,.827-(.5+.32*uniforms.uCover.value.x));uniforms.uMobile.value=width<760?1:0;}
  resize(config.width,config.height);await renderer.compileAsync(scene,camera);
  return{resize,draw(t:number,x:number,y:number){uniforms.uTime.value=t;uniforms.uPointer.value.set(x,y);renderer.render(scene,camera);},motion(_v:number){},dispose(){geometry.dispose();material.dispose();textures.forEach(t=>t.dispose());bitmaps.forEach(b=>b.close());renderer.dispose();}};
 }
