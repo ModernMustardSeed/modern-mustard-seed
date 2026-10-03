@@ -18,9 +18,9 @@ export type WorkSite = {
 
 export const WORK_SITES: WorkSite[] = [
   { key: 'dear-dahlia', name: 'Dear Dahlia', trade: 'Flower ranch concept', place: 'Northwest Montana', img: '/work-shots/dear-dahlia.jpg', url: 'https://dear-dahlia.makeourcitypretty.chatgpt.site' },
-  { key: 'modern-mustard-seed', name: 'Modern Mustard Seed', trade: 'Agentic web studio', place: 'This very site', img: '/work-shots/modern-mustard-seed.jpg', url: 'https://modernmustardseed.com' },
+  { key: 'modern-mustard-seed', name: 'Modern Mustard Seed', trade: 'Agentic web studio', place: 'This very site', img: '/flathead/portfolio/modern-mustard-seed-20261003-800.webp', url: 'https://modernmustardseed.com' },
   { key: 'linen-fresh', name: 'Linen Fresh', trade: 'Laundromat', place: 'Las Vegas, NV', img: '/work-shots/linen-fresh.jpg', url: 'https://modernmustardseed.com/demo/site/f1a7cacd-d7d9-4384-894f-8651a687be53' },
-  { key: 'dd-landscaping', name: 'D&D Landscaping', trade: 'Landscaping', place: 'Tallahassee, FL', img: '/work-shots/dd-landscaping.jpg', url: 'https://ddlandscaping.pro' },
+  { key: 'dd-landscaping', name: 'D&D Landscaping', trade: 'Landscaping', place: 'Tallahassee, FL', img: '/flathead/portfolio/dd-landscaping-20261003-800.webp', url: 'https://ddlandscapingfl.com' },
   { key: 'fiat-lux', name: 'Fiat Lux Design', trade: 'Agentic staging studio', place: 'Real estate staging', img: '/work-shots/fiat-lux.jpg', url: 'https://fiatluxdesign.co' },
   { key: 'cross-covenant', name: 'Cross + Covenant', trade: 'Faith apparel store', place: 'Cart to checkout', img: '/work-shots/cross-covenant.jpg', url: 'https://crossandcovenant.co/shop' },
   { key: 'lago-society', name: 'Lago Society', trade: 'Fashion boutique', place: 'On the lake', img: '/work-shots/lago-society.jpg', url: 'https://lagosociety.com' },

@@ -21,7 +21,16 @@ export const flatheadWork = [
     "description": "Custom homes in the Flathead Valley."
   },
   {
+    "id": "modern-mustard-seed",
+    "name": "Modern Mustard Seed",
+    "image": "modern-mustard-seed-20261003",
+    "kind": "Website",
+    "url": "https://modernmustardseed.com",
+    "description": "Montana roots. A wider horizon."
+  },
+  {
     "id": "dd-landscaping",
+    "image": "dd-landscaping-20261003",
     "name": "D & D Landscaping",
     "kind": "Client website",
     "url": "https://ddlandscapingfl.com",
