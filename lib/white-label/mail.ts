@@ -3,7 +3,8 @@ import { clientEmail, p } from '@/lib/email';
 import { OWNER_NOTIFY_TO } from '@/lib/owner';
 import { SITE } from '@/lib/seo';
 import { WL_LINES, usd } from '@/data/white-label';
-import { wlKey, wlLinks } from '@/lib/white-label/key';
+import { accessKey, wlLinks } from '@/lib/white-label/key';
+import { deliveries, emptyDelivery } from '@/lib/white-label/delivery';
 import type { Agency, WlClient } from '@/lib/white-label/store';
 
 /**
@@ -18,7 +19,7 @@ const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&
 const first = (name: string | null) => (name || '').trim().split(/\s+/)[0] || 'there';
 
 export function portalUrl(a: Pick<Agency, 'slug'>): string {
-  return `${SITE.url}/white-label/hq/${a.slug}?k=${wlKey(a.slug)}`;
+  return `${SITE.url}/white-label/hq/${a.slug}?k=${accessKey('portal', a.slug)}`;
 }
 
 export function agencyLinks(a: Agency) {
@@ -81,7 +82,7 @@ export async function mailApproved(a: Agency) {
       greeting: `Welcome in, ${esc(first(a.contact_name))}.`,
       body:
         p(`${esc(a.name)} is approved. Everything lives in your portal: your price sheet, your demo, your clients and where each one stands.`) +
-        p('<strong>Your first client, in three steps.</strong><br>1. Show them the demo with their own website pasted in.<br>2. When they say yes, add them in your portal: their business, what they offer, how they book.<br>3. We build it inside seven days and send you a test number. You call it, approve it, and it goes live. Then you bill them your price.') +
+        p('<strong>Your first client, in three steps.</strong><br>1. Show them the demo using their own website. Agree the result and your retail price.<br>2. Submit the brief in your portal. We confirm the scope and timeline. Phone agents get a test line; websites and systems get a preview.<br>3. Share the client review page, collect feedback, and approve the finished delivery. We launch it, then you bill your client your price.') +
         p(`One invoice a month from us covers every live client. No license fee, no minimum.${a.founding ? ' You are a founding agency, so these wholesale prices are locked for 24 months.' : ''}`) +
         (links.sheet ? p(`Your price sheet: <a href="${links.sheet}">${links.sheet}</a>`) : ''),
       cta: { label: 'Open your portal', url: portalUrl(a) },
@@ -92,7 +93,7 @@ export async function mailApproved(a: Agency) {
 
 /* ─── A CLIENT IS SUBMITTED ───────────────────────────────────────────── */
 
-const VOICE_LINES = ['ai-receptionist', 'site-agent', 'phone-and-site-agent'];
+const VOICE_LINES = ['ai-receptionist', 'phone-and-site-agent'];
 
 export async function mailClientSubmitted(a: Agency, c: WlClient) {
   const voice = c.lines.some((s) => VOICE_LINES.includes(s));
@@ -143,15 +144,17 @@ export async function mailClientSubmitted(a: Agency, c: WlClient) {
 /* ─── READY FOR THE AGENCY'S TEST CALL ────────────────────────────────── */
 
 export async function mailClientReview(a: Agency, c: WlClient) {
+  const delivery = (await deliveries([c.id]))[c.id] ?? emptyDelivery;
   await send(
     a.email,
-    `${c.business} is ready for your test call`,
+    `${c.business} is ready for your review`,
     clientEmail({
       eyebrow: 'TEST IT',
-      greeting: `Call ${esc(c.business)}’s receptionist.`,
+      greeting: `Review the work for ${esc(c.business)}.`,
       body:
-        p(c.test_number ? `The test line is <strong>${esc(c.test_number)}</strong>. Call it as a customer would: ask questions, book something, try to trip it up.` : 'The test line is in your portal. Call it as a customer would: ask questions, book something, try to trip it up.') +
-        p('When it sounds right, press Approve in your portal and it goes live on the client’s real number. If anything should change, tell us what; changes are included.'),
+        p(esc(delivery.summary)) +
+        (c.test_number ? p(`Test line: <strong>${esc(c.test_number)}</strong>. Test it as a customer would.`) : '') +
+        p('Open your portal to preview the work, share the branded review page with your client, and request changes or approve delivery. We launch after your approval. Changes are included.'),
       cta: { label: 'Approve it in your portal', url: portalUrl(a) },
     }),
   );
@@ -199,7 +202,7 @@ export async function mailAgencyApprovedClient(a: Agency, c: WlClient) {
     clientEmail({
       eyebrow: 'SWITCH IT ON',
       greeting: `${esc(a.name)} approved ${esc(c.business)}.`,
-      body: p('Point the client’s real number at the agent, then mark the client Live on the desk. That emails the agency and updates their invoice.'),
+      body: p('Run the launch checks for the selected services, then mark the delivery Live on the desk. That emails the agency and updates their invoice.'),
       cta: { label: 'Open the White Label desk', url: `${SITE.url}/admin/white-label` },
       signature: 'The desk',
     }),

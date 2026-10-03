@@ -1,4 +1,4 @@
-import { wlKeyValid } from '@/lib/white-label/key';
+import { accessKeyValid } from '@/lib/white-label/key';
 import { getAgencyBySlug, type Agency } from '@/lib/white-label/store';
 
 /**
@@ -7,7 +7,7 @@ import { getAgencyBySlug, type Agency } from '@/lib/white-label/store';
  * for an approved or active agency, so pausing or declining an agency closes it.
  */
 export async function agencyFromKey(slug: string, key: string | null | undefined): Promise<Agency | null> {
-  if (!/^[a-z0-9-]{1,70}$/.test(slug) || !wlKeyValid(slug, key)) return null;
+  if (!/^[a-z0-9-]{1,70}$/.test(slug) || !accessKeyValid('portal', slug, key)) return null;
   const a = await getAgencyBySlug(slug);
   return a && (a.status === 'approved' || a.status === 'active') ? a : null;
 }

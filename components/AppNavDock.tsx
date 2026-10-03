@@ -36,7 +36,7 @@ export default function AppNavDock() {
     return () => mq.removeEventListener('change', update);
   }, []);
 
-  if (!standalone) return null;
+  if (!standalone || /^\/white-label\/(demo|sheet|hq|review)(\/|$)/.test(pathname)) return null;
 
   const btn =
     'grid h-10 w-10 place-items-center rounded-full border-2 border-[#0b3b44] bg-white text-[#0b3b44] text-base font-bold transition-transform active:scale-90 hover:-translate-y-0.5';

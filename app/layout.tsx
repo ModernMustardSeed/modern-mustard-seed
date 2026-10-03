@@ -113,7 +113,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </HideOnAppShell>
         <Analytics />
         <SpeedInsights />
-        <noscript>
+        <HideOnAppShell><noscript>
           <p style={{ padding: '2rem', textAlign: 'center', color: '#0b3b44' }}>
             {SITE.name}. {SITE.description} Visit{' '}
             <a href={SITE.url} style={{ color: '#0a7c78' }}>
@@ -121,7 +121,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </a>{' '}
             for more.
           </p>
-        </noscript>
+        </noscript></HideOnAppShell>
       </body>
     </html>
   );

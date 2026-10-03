@@ -76,7 +76,7 @@ export const WL_PROGRAM = {
   short: 'White Label',
   path: '/white-label',
   promise:
-    'The engineering behind your agency. Agents, agentic dashboards and AI built into the sites you design, sold under your name. Your overflow when you are full. AI inside how your own studio runs.',
+    'AI receptionists, websites and useful automations, sold under your name. You set the price and own the relationship. We handle the engineering, delivery and care. Start with one client, then add the next.',
   metaTitle: 'The Agentic Partner for Agencies: White Label AI, Agents, Dashboards and Overflow',
   metaDescription:
     'A white label AI program for web design and marketing agencies. Sell voice agents, agentic systems, marketing and ads dashboards and custom studios under your brand at your price, and hand us your overflow. Built and run by Modern Mustard Seed.',
@@ -138,7 +138,7 @@ export const WL_LINES: WlLine[] = [
     slug: 'ai-visibility',
     name: 'AI Visibility',
     group: 'ai',
-    pitch: 'When someone asks ChatGPT, Google or Perplexity for the best in town, the client is the answer.',
+    pitch: 'Make the client’s business easier for search and AI tools to understand, with clear service pages, structured data and tracked visibility.',
     includes: [
       'Setup: entity, schema and answer pages fixed on the client’s site',
       'Monthly: tracked prompts across the major AI engines',
@@ -394,7 +394,8 @@ export const WL_TERMS: { title: string; body: string }[] = [
 export const WL_KIT: { title: string; body: string }[] = [
   { title: 'A live demo with your name on it', body: 'A link that opens a working AI receptionist for any client you type in, branded as your agency. Use it in the pitch.' },
   { title: 'A price sheet signed for you', body: 'Your wholesale prices, our suggested retail and your margin, on one page you can print.' },
-  { title: 'A sales one-pager per service', body: 'Written for your clients, in plain words, with your logo and your number.' },
+  { title: 'A first-client launch guide', body: 'Your portal walks you from the first pitch to the brief, preview, client feedback and final approval.' },
+  { title: 'A branded client review page', body: 'Your clients review the preview and request changes under your agency’s name. Your wholesale price and private portal stay private.' },
   { title: 'One person to text', body: 'Sarah Scarano, who builds the work, answers you directly. No ticket queue.' },
 ];
 
@@ -417,7 +418,7 @@ export const WL_FAQ: { q: string; a: string }[] = [
   },
   {
     q: 'Can I charge whatever I want?',
-    a: 'Yes. We publish a suggested retail on your price sheet. Most agencies sell at or above it. The difference is yours.',
+    a: 'Yes. Your private price sheet includes suggested retail for planning. You choose your own price and keep the difference.',
   },
   {
     q: 'What is The Agentic Bench?',
@@ -429,7 +430,7 @@ export const WL_FAQ: { q: string; a: string }[] = [
   },
   {
     q: 'How does billing work?',
-    a: 'Nothing is billed until a client goes live, and a client goes live only after you call the test line and press Approve. Then its setup and monthly land on your next invoice from us: one invoice a month covering every live client, payable within seven days. Pause a client and it drops off the next invoice.',
+    a: 'You review the preview or test line and approve the delivery before launch and billing. Monthly services are combined on your agency invoice, payable within seven days. A project with no monthly service receives a delivery invoice. You bill your client separately at your price.',
   },
   {
     q: 'What happens when a call goes over?',

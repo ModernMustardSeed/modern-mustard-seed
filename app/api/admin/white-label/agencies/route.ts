@@ -9,14 +9,16 @@ import { createAgency, listAgencies, listClients } from '@/lib/white-label/store
 import { approveAgency } from '@/lib/white-label/actions';
 import { agencyLinks, portalUrl } from '@/lib/white-label/mail';
 import { wlClean, wlColor } from '@/data/white-label';
+import { deliveries, emptyDelivery } from '@/lib/white-label/delivery';
 
 export const runtime = 'nodejs';
 
 export async function GET() {
   if (!(await getAdminUser())) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   const [agencies, clients] = await Promise.all([listAgencies(), listClients()]);
+  const delivery = await deliveries(clients.map((c) => c.id));
   // Portal links are signed server-side; the desk never holds the secret.
-  return NextResponse.json({ agencies: agencies.map((a) => ({ ...a, portal: portalUrl(a), sheet: agencyLinks(a).sheet })), clients });
+  return NextResponse.json({ agencies: agencies.map((a) => ({ ...a, portal: portalUrl(a), sheet: agencyLinks(a).sheet })), clients: clients.map((c) => ({ ...c, delivery: delivery[c.id] ?? emptyDelivery })) });
 }
 
 export async function POST(req: Request) {

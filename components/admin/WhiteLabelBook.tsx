@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
+import type { Delivery } from '@/lib/white-label/delivery';
 
 /**
  * THE WHITE LABEL BOOK, on /admin/white-label. The loop, operated:
@@ -31,6 +32,7 @@ type Agency = {
   sheet: string | null;
 };
 type Client = {
+  delivery: Delivery;
   id: string;
   agency_id: string;
   business: string;
@@ -52,12 +54,12 @@ const card = 'bg-white border-2 border-[#161616] rounded-xl';
 const chip = 'rounded-full border-2 border-[#161616] px-3 py-1 text-[10px] font-mono font-bold uppercase tracking-[0.15em]';
 const input = 'rounded-lg border-2 border-[#161616] bg-[#FBF6EA] px-2.5 py-1.5 font-body text-sm text-[#161616] outline-none';
 /** Lines that need a test call before they go live; everything else is delivered. */
-const VOICE = ['ai-receptionist', 'site-agent', 'phone-and-site-agent'];
+const VOICE = ['ai-receptionist', 'phone-and-site-agent'];
 
 const COLUMNS = [
   { key: 'submitted', label: 'Submitted', hint: 'Start the build' },
-  { key: 'building', label: 'Building', hint: 'Add the test number, then send to review' },
-  { key: 'review', label: 'Agency test call', hint: 'Waiting on their Approve' },
+  { key: 'building', label: 'Building', hint: 'Add a preview and test instructions' },
+  { key: 'review', label: 'Partner review', hint: 'Resolve feedback, then collect approval' },
   { key: 'live', label: 'Live', hint: 'Billing on Stripe' },
 ];
 
@@ -68,9 +70,12 @@ export default function WhiteLabelBook({ lineNames }: { lineNames: Record<string
   const [notice, setNotice] = useState('');
   const [busy, setBusy] = useState('');
   const [tests, setTests] = useState<Record<string, string>>({});
+  const [previews, setPreviews] = useState<Record<string, string>>({});
+  const [summaries, setSummaries] = useState<Record<string, string>>({});
   const [add, setAdd] = useState({ name: '', contact_name: '', email: '', website: '', approve: true });
 
   const load = useCallback(async () => {
+    try {
     const res = await fetch('/api/admin/white-label/agencies');
     if (!res.ok) {
       setError('Could not read the white label book. Is migration 153 applied?');
@@ -79,6 +84,7 @@ export default function WhiteLabelBook({ lineNames }: { lineNames: Record<string
     const data = await res.json();
     setAgencies(data.agencies);
     setClients(data.clients);
+    } catch { setError('The partner book could not load. Refresh to retry.'); }
   }, []);
 
   useEffect(() => {
@@ -96,8 +102,10 @@ export default function WhiteLabelBook({ lineNames }: { lineNames: Record<string
       if (data.billing && data.billing.ok === false) setError(`Saved, but billing failed: ${data.billing.error}`);
       else if (ok) setNotice(ok);
       await load();
+      return true;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'That did not work.');
+      return false;
     } finally {
       setBusy('');
     }
@@ -110,6 +118,11 @@ export default function WhiteLabelBook({ lineNames }: { lineNames: Record<string
 
   return (
     <div className="space-y-6">
+      <section className={`${card} p-5`}>
+        <p className="font-mono text-xs font-bold uppercase tracking-widest text-[#1e50c8]">First partnership launch desk</p>
+        <h2 className="mt-2 font-display text-2xl font-semibold">A partner can sell. A client can review. You can launch with confidence.</h2>
+        <div className="mt-4 grid gap-4 md:grid-cols-3">{[['Partner ready', 'Approve the application, check the branded demo, and confirm the wholesale sheet with the agency.'], ['Delivery ready', 'Agree the scope, build the service, add the preview or test line and instructions, and send it to review.'], ['Launch ready', 'Resolve every revision, collect agency approval, verify the live service and handoff, then mark it Live.']].map(([title, body]) => <div key={title} className="rounded-lg bg-[#FBF6EA] p-4"><h3 className="font-bold">{title}</h3><p className="mt-2 text-sm leading-relaxed text-[#3A3733]">{body}</p></div>)}</div>
+      </section>
       {(error || notice) && (
         <div className={`border-2 border-[#161616] rounded-xl px-4 py-3 font-body text-sm ${error ? 'bg-[#E0301E]/10' : 'bg-[#F5B700]/25'}`}>{error || notice}</div>
       )}
@@ -180,31 +193,30 @@ export default function WhiteLabelBook({ lineNames }: { lineNames: Record<string
                         </button>
                       )}
                       {col.key === 'building' && !c.lines.some((x) => VOICE.includes(x)) && (
-                        <button
-                          disabled={!!busy}
-                          onClick={() => act(c.id, `/api/admin/white-label/clients/${c.id}`, 'PATCH', { status: 'live' }, `${c.business} delivered. Agency emailed, billing updated.`)}
-                          className={`${chip} mt-2 bg-[#F5B700]`}
-                        >
-                          Delivered
-                        </button>
+                        <p className="mt-2 text-xs">Send the preview for partner approval before delivery is billed.</p>
                       )}
-                      {col.key === 'building' && c.lines.some((x) => VOICE.includes(x)) && (
-                        <div className="mt-2 flex flex-wrap gap-1.5">
-                          <input className={`${input} w-36`} placeholder="Test number" value={tests[c.id] ?? c.test_number ?? ''} onChange={(e) => setTests({ ...tests, [c.id]: e.target.value })} />
+                      {col.key === 'building' && (
+                        <div className="mt-3 space-y-2">
+                          <label className="block text-xs font-bold">Test number (for phone agents)<input className={`${input} mt-1 w-full`} value={tests[c.id] ?? c.test_number ?? ''} onChange={(e) => setTests({ ...tests, [c.id]: e.target.value })} /></label>
+                          <label className="block text-xs font-bold">HTTPS preview link<input className={`${input} mt-1 w-full`} value={previews[c.id] ?? c.delivery.url} onChange={(e) => setPreviews({ ...previews, [c.id]: e.target.value })} /></label>
+                          <label className="block text-xs font-bold">What shipped and what to test<textarea className={`${input} mt-1 min-h-24 w-full`} value={summaries[c.id] ?? c.delivery.summary} onChange={(e) => setSummaries({ ...summaries, [c.id]: e.target.value })} /></label>
+                          {c.delivery.feedback && <p className="whitespace-pre-line rounded-lg bg-amber-100 p-2 text-xs"><strong>Requested changes:</strong> {c.delivery.feedback}</p>}
                           <button
                             disabled={!!busy}
-                            onClick={() => act(c.id, `/api/admin/white-label/clients/${c.id}`, 'PATCH', { status: 'review', test_number: tests[c.id] ?? c.test_number ?? '' }, `Test call email sent for ${c.business}.`)}
+                            onClick={() => act(c.id, `/api/admin/white-label/clients/${c.id}`, 'PATCH', { status: 'review', test_number: tests[c.id] ?? c.test_number ?? '', review_url: previews[c.id] ?? c.delivery.url, delivery_summary: summaries[c.id] ?? c.delivery.summary }, `Review sent for ${c.business}.`)}
                             className={`${chip} bg-[#F5B700]`}
                           >
-                            Send to test
+                            Send for review
                           </button>
                         </div>
                       )}
                       {col.key === 'review' && (
                         <div className="mt-2 space-y-1.5">
-                          <p className="font-body text-[11px]">{c.agency_approved_at ? 'Agency approved. Point the real number, then go live.' : `Test line ${c.test_number ?? ''}: waiting on the agency.`}</p>
+                          <p className="font-body text-[11px]">{c.agency_approved_at ? 'Agency approved. Verify the service and handoff, then go live.' : 'Waiting for agency approval.'}</p>
+                          {c.delivery.feedback && <p className="whitespace-pre-line rounded-lg bg-amber-100 p-2 text-xs"><strong>Changes requested:</strong> {c.delivery.feedback}</p>}
+                          <button disabled={!!busy} onClick={() => act(c.id, `/api/admin/white-label/clients/${c.id}`, 'PATCH', { status: 'building' })} className={`${chip} bg-white`}>Revise delivery</button>
                           <button
-                            disabled={!!busy}
+                            disabled={!!busy || !c.agency_approved_at || !!c.delivery.feedback}
                             onClick={() => act(c.id, `/api/admin/white-label/clients/${c.id}`, 'PATCH', { status: 'live' }, `${c.business} is live. Agency emailed, billing updated.`)}
                             className={`${chip} ${c.agency_approved_at ? 'bg-[#F5B700]' : 'bg-white'}`}
                           >
@@ -213,9 +225,12 @@ export default function WhiteLabelBook({ lineNames }: { lineNames: Record<string
                         </div>
                       )}
                       {col.key === 'live' && (
+                        <div>
+                        {c.delivery.feedback && <div className="mt-3 rounded-lg bg-amber-100 p-3"><p className="whitespace-pre-line text-xs"><strong>Included revision:</strong> {c.delivery.feedback}</p><button disabled={!!busy} onClick={() => act(c.id, `/api/admin/white-label/clients/${c.id}`, 'PATCH', { resolve_feedback: true }, `Revision resolved for ${c.business}.`)} className={`${chip} mt-2 bg-white`}>Mark changes complete</button></div>}
                         <button disabled={!!busy} onClick={() => act(c.id, `/api/admin/white-label/clients/${c.id}`, 'PATCH', { status: 'paused' })} className={`${chip} mt-2 bg-white`}>
                           Pause
                         </button>
+                        </div>
                       )}
                     </div>
                   ))}
@@ -225,6 +240,8 @@ export default function WhiteLabelBook({ lineNames }: { lineNames: Record<string
           })}
         </div>
       </section>
+
+      {clients.some((c) => c.status === 'paused') && <section className={`${card} p-5`}><h2 className="font-display text-xl font-semibold">Paused deliveries</h2><p className="mt-2 text-sm text-[#3A3733]">Recheck the service and collect a fresh approval before recurring billing resumes.</p><ul className="mt-3 space-y-3">{clients.filter((c) => c.status === 'paused').map((c) => <li key={c.id} className="flex flex-wrap items-center justify-between gap-3"><p className="text-sm font-bold">{c.business}</p><button disabled={!!busy} onClick={() => act(c.id, `/api/admin/white-label/clients/${c.id}`, 'PATCH', { status: 'building' })} className={`${chip} bg-white`}>Prepare for review</button></li>)}</ul></section>}
 
       {/* ─── AGENCIES ─── */}
       <section className={`${card} p-5`}>
@@ -260,13 +277,13 @@ export default function WhiteLabelBook({ lineNames }: { lineNames: Record<string
         )}
 
         <form
-          className="mt-5 grid gap-2 sm:grid-cols-[1fr_1fr_1fr_1fr_auto] items-end border-t border-[#161616]/10 pt-4"
+          className="mt-5 grid gap-2 sm:grid-cols-2 xl:grid-cols-[repeat(4,minmax(0,1fr))_auto] items-end border-t border-[#161616]/10 pt-4 [&_input]:min-w-0 [&_input]:w-full"
           onSubmit={(e) => {
             e.preventDefault();
-            void act('add', '/api/admin/white-label/agencies', 'POST', add, `${add.name} added${add.approve ? ' and welcomed' : ''}.`).then(() => setAdd({ name: '', contact_name: '', email: '', website: '', approve: true }));
+            void act('add', '/api/admin/white-label/agencies', 'POST', add, `${add.name} added${add.approve ? ' and welcomed' : ''}.`).then((ok) => { if (ok) setAdd({ name: '', contact_name: '', email: '', website: '', approve: true }); });
           }}
         >
-          <p className="sm:col-span-5 font-mono text-[10px] font-bold uppercase tracking-[0.18em]">Add an agency you met</p>
+          <p className="sm:col-span-2 xl:col-span-5 font-mono text-[10px] font-bold uppercase tracking-[0.18em]">Add an agency you met</p>
           <input className={input} required placeholder="Agency" value={add.name} onChange={(e) => setAdd({ ...add, name: e.target.value })} />
           <input className={input} placeholder="Contact" value={add.contact_name} onChange={(e) => setAdd({ ...add, contact_name: e.target.value })} />
           <input className={input} required type="email" placeholder="Email" value={add.email} onChange={(e) => setAdd({ ...add, email: e.target.value })} />

@@ -44,9 +44,9 @@ export default async function WhiteLabelSheetPage({ searchParams }: { searchPara
   const issued = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'America/Denver' });
 
   const table = (title: string, rows: typeof WL_LINES, first: boolean) => (
-    <div className="mt-4">
+    <div className="mt-4 overflow-x-auto">
       <h2 className="text-[11px] font-bold uppercase tracking-[0.22em] text-[#0a7c78]">{title}</h2>
-      <table className="mt-1.5 w-full table-fixed border-collapse text-[12px]">
+      <table className="mt-1.5 w-full min-w-[600px] table-fixed border-collapse text-[12px] print:min-w-0">
         <colgroup>
           <col className="w-[43%]" />
           <col className="w-[19%]" />
@@ -87,14 +87,14 @@ export default async function WhiteLabelSheetPage({ searchParams }: { searchPara
       <div className="no-print mx-auto mb-4 flex max-w-[8.5in] justify-end px-4">
         <PrintButton />
       </div>
-      <article className="mx-auto max-w-[8.5in] bg-[#fbf5ea] px-10 py-9 text-[#0b3b44] shadow-xl print:max-w-none print:bg-white print:p-0 print:shadow-none">
-        <header className="flex items-start justify-between gap-6 border-b-4 border-[#f5b700] pb-3">
+      <article className="mx-auto max-w-[8.5in] bg-[#fbf5ea] px-4 sm:px-10 py-9 text-[#0b3b44] shadow-xl print:max-w-none print:bg-white print:p-0 print:shadow-none">
+        <header className="flex flex-col sm:flex-row print:flex-row items-start justify-between gap-6 border-b-4 border-[#f5b700] pb-3">
           <div>
             <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#0a7c78]">{WL_PROGRAM.name} · Price sheet</p>
             <h1 className="mt-1.5 font-display text-[28px] font-black leading-tight">Prepared for {agency}</h1>
             <p className="mt-1 text-[12.5px] text-[#0b3b44]/75">You set the price. You keep the client. We build and run it under your name.</p>
           </div>
-          <div className="shrink-0 text-right text-[11px] leading-relaxed text-[#0b3b44]/70">
+          <div className="shrink-0 text-left sm:text-right print:text-right text-[11px] leading-relaxed text-[#0b3b44]/70">
             <p className="font-bold text-[#0b3b44]">Modern Mustard Seed</p>
             <p>Sarah Scarano</p>
             <p>sarah@modernmustardseed.com</p>
@@ -111,7 +111,7 @@ export default async function WhiteLabelSheetPage({ searchParams }: { searchPara
             <div key={g.key}>{table(g.sheetTitle, WL_LINES.filter((l) => l.group === g.key), true)}</div>
           ))}
 
-        <div className="mt-6 grid grid-cols-3 gap-x-5 gap-y-3">
+        <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 print:grid-cols-3 gap-x-5 gap-y-3">
           {WL_TERMS.map((t) => (
             <div key={t.title}>
               <p className="text-[12px] font-bold">{t.title}</p>

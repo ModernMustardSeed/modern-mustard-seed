@@ -38,7 +38,7 @@ function monogram(agency: string, color: string): string {
 export default async function WhiteLabelDemoPage({ searchParams }: { searchParams: Search }) {
   const q = await searchParams;
   const agency = wlClean(one(q.agency)) || 'Your Agency';
-  const signed = wlKeyValid(agency, one(q.k));
+  const signed = one(q.view) !== 'client' && wlKeyValid(agency, one(q.k));
   const sample = wlSample(one(q.sample));
 
   // What an agency's client would buy. Overflow sites are agency-to-us capacity, so they stay off.
@@ -50,7 +50,7 @@ export default async function WhiteLabelDemoPage({ searchParams }: { searchParam
       name: l.name,
       pitch: l.pitch,
       includes: l.includes,
-      retail: l.retail,
+      retail: signed ? l.retail : { setup: 0, monthly: 0 },
       ...(signed ? { wholesale: l.wholesale } : {}),
     }));
 

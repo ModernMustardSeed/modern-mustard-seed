@@ -41,12 +41,12 @@ const STEPS = [
   { n: '02', title: 'Get your portal', when: 'Within one business day', body: 'Sarah approves you and sends your portal, your signed price sheet and your demo with your margin in it.' },
   { n: '03', title: 'Sell it', when: 'Your meeting', body: 'Paste a prospect’s own website into the demo and hand them the call. Your portal makes a link you can send them after.' },
   { n: '04', title: 'Add the client', when: 'When they say yes', body: 'One form in your portal: what they do, how they book, what to switch on. We start within one business day.' },
-  { n: '05', title: 'Test it', when: 'Inside seven days', body: 'You get a test number. Call it like a customer, then press Approve. Nothing is billed before you do.' },
-  { n: '06', title: 'Go live, get paid', when: 'Every month after', body: 'It switches onto their real number. You bill your price. One invoice from us covers every live client.' },
+  { n: '05', title: 'Review it', when: 'Before launch', body: 'Open the preview or test line. Share the client review page, request included changes, then approve the delivery.' },
+  { n: '06', title: 'Launch and repeat', when: 'After approval', body: 'We launch the approved work and confirm the handoff. You bill your price. We invoice your live services at the agreed wholesale price.' },
 ];
 
 const STATS = [
-  { n: '$0', label: 'License fee' },
+  { n: '0', label: 'License fees' },
   { n: '0', label: 'Minimums' },
   { n: '7 days', label: 'Receptionist, sold to live' },
   { n: '1', label: 'Invoice a month' },
@@ -92,14 +92,14 @@ export default function WhiteLabelPage() {
 
       <PopPageHero
         eyebrow={<span>Agentic partner // For agencies</span>}
-        title={<>Your agency’s agentic partner. <em>Your name on all of it.</em></>}
+        title={<>Sell the AI. Keep the client. <em>We build behind your brand.</em></>}
         art={{ src: '/art/riviera/work', alt: ART_ALT, caption: 'Your clients, your table' }}
         sticker="Your engineers"
       >
         <p>{WL_PROGRAM.promise}</p>
         <div className={pop.actions}>
-          <a href="#demo" className={pop.cta}>Try the demo in your name</a>
-          <Link href="/white-label/apply" className={pop.ctaAlt}>Apply now</Link>
+          <a href="#demo" className={pop.cta}>See it in your name</a>
+          <Link href="/white-label/apply" className={pop.ctaAlt}>Become a partner</Link>
         </div>
         <p className={pop.note}>Built and run by Sarah Scarano at Modern Mustard Seed. Your clients never see our name.</p>
       </PopPageHero>
@@ -126,7 +126,7 @@ export default function WhiteLabelPage() {
             The engineering team behind your agency. <em className="italic">Without hiring one.</em>
           </h2>
           <p className="font-body text-[#0b3b44]/75 leading-relaxed mt-5 max-w-2xl">
-            Your clients are asking about AI, and hiring an AI engineer costs more than most agencies clear in a quarter. We are that engineer, already building agents, dashboards and automations for real businesses, working behind your name.
+            Your clients already trust you with their business. Give them a receptionist that catches the missed call, a website that captures the inquiry, or a workflow that gets the follow-up done. You sell and lead the relationship. Sarah builds, tests and operates the work behind your brand.
           </p>
           <div className="grid md:grid-cols-3 gap-5 mt-10">
             {WAYS.map((w, i) => (
@@ -149,6 +149,19 @@ export default function WhiteLabelPage() {
         </div>
       </section>
 
+      <section className="border-y-2 border-[#161616] bg-[#f5b700] py-14 md:py-20" aria-labelledby="first-offer">
+        <div className="mx-auto max-w-6xl px-5">
+          <p className="font-mono text-xs font-bold uppercase tracking-[0.22em]">Start with one client you already know</p>
+          <h2 id="first-offer" className="mt-3 max-w-3xl font-display text-3xl font-black leading-tight md:text-5xl">Sell a result they can see. <em>Build from there.</em></h2>
+          <div className="mt-8 grid gap-5 md:grid-cols-3">{[
+            ['They miss calls', 'Start with the AI Receptionist', 'Show them a call answered as their business, a captured booking, and the owner handoff. Measure answered calls and qualified inquiries.'],
+            ['Their site gets visitors, not inquiries', 'Add the Website Agent', 'Keep the site you designed. Add answers and lead capture in their brand. Measure useful conversations and inquiries handed to their team.'],
+            ['Their team repeats the same task', 'Build one automation', 'Pick intake, quoting, follow-up or reporting. Agree the trigger, the result, the approval points and the tools before the build.'],
+          ].map(([problem, offer, body]) => <article key={problem} className="rounded-2xl border-2 border-[#161616] bg-[#fbf6ea] p-6 shadow-[5px_5px_0_0_#161616]"><p className="font-mono text-[11px] font-bold uppercase tracking-wider text-[#1e50c8]">{problem}</p><h3 className="mt-3 font-display text-2xl font-black">{offer}</h3><p className="mt-3 text-sm leading-relaxed">{body}</p></article>)}</div>
+          <p className="mt-6 max-w-3xl text-sm leading-relaxed">You choose the client and the retail price. We confirm the package, the timeline and the delivery checks in writing. A working preview comes before launch. Your agency approves the finished work.</p>
+        </div>
+      </section>
+
       {/* ─── THE LIVE DEMO ─── */}
       <section id="demo" className="py-16 md:py-20 bg-[#0b3b44] text-[#fbf5ea] scroll-mt-24" aria-labelledby="demo-heading">
         <div className="max-w-5xl mx-auto px-5 grid md:grid-cols-[1.05fr_0.95fr] gap-10 md:gap-14 items-center">
@@ -158,7 +171,7 @@ export default function WhiteLabelPage() {
               Type your agency’s name. <em className="italic text-[#f5b700]">Watch it become yours.</em>
             </h2>
             <p className="font-body text-[#fbf5ea]/80 leading-relaxed mt-5">
-              The demo opens a page in your name and color, for a client like yours, with a working AI receptionist on it. Call it, book an appointment, read the transcript as it happens. Then show it to a client.
+              Open a working AI receptionist in your name and color. Paste a client’s website, ask a real question, and capture a demo booking. Watch the transcript, then copy the clean client link. The dashboard and website examples show what comes next.
             </p>
           </div>
           <form action="/white-label/demo" method="get" className="bg-[#fbf5ea] text-[#0b3b44] rounded-2xl border-2 border-[#fbf5ea] p-6 shadow-[8px_8px_0_0_#f5b700]">
@@ -195,11 +208,12 @@ export default function WhiteLabelPage() {
           {WL_GROUPS.map((g) => {
             const shelf = lines.filter((l) => l.group === g.key);
             return (
-              <div key={g.key} className="mt-12">
-                <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 border-b-2 border-[#0b3b44] pb-3">
+              <details key={g.key} open={g.key === 'ai'} className="group mt-8">
+                <summary className="flex min-h-14 cursor-pointer list-none flex-wrap items-baseline justify-between gap-x-6 gap-y-1 border-b-2 border-[#0b3b44] pb-3">
                   <h3 className="font-display text-2xl md:text-3xl font-black">{g.title}</h3>
-                  <p className="font-body text-sm text-[#0b3b44]/70 max-w-md">{g.blurb}</p>
-                </div>
+                  <span className="font-mono text-xs font-bold">{shelf.length} packages <span className="group-open:hidden">+</span><span className="hidden group-open:inline">−</span></span>
+                </summary>
+                <p className="mt-4 font-body text-sm text-[#0b3b44]/70 max-w-2xl">{g.blurb}</p>
                 <div className={`grid md:grid-cols-2 ${shelf.length === 4 ? 'lg:grid-cols-2' : 'lg:grid-cols-3'} gap-5 mt-6`}>
                   {shelf.map((l) => (
                     <div key={l.slug} className="flex flex-col bg-white border-2 border-[#0b3b44] rounded-2xl p-6 shadow-[5px_5px_0_0_#0b3b44]">
@@ -216,7 +230,7 @@ export default function WhiteLabelPage() {
                     </div>
                   ))}
                 </div>
-              </div>
+              </details>
             );
           })}
         </div>
@@ -227,7 +241,7 @@ export default function WhiteLabelPage() {
         <div className="max-w-5xl mx-auto px-5">
           <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#0a7c78] font-bold mb-3">[ How it works ]</p>
           <h2 id="how-heading" className="font-display text-3xl md:text-5xl font-black tracking-tight leading-[1.05]">From apply to paid, every step written down.</h2>
-          <p className="font-body text-[#0b3b44]/75 leading-relaxed mt-4 max-w-2xl">Every step sends the next email on its own, and your portal always shows where each client stands.</p>
+          <p className="font-body text-[#0b3b44]/75 leading-relaxed mt-4 max-w-2xl">Your portal shows the brief, delivery stage, preview, client feedback and approval. Phone agents get a test line. Websites and systems get a preview and a timeline agreed in scope.</p>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mt-10">
             {STEPS.map((s) => (
               <div key={s.n} className="bg-[#fbf5ea] border-2 border-[#0b3b44] rounded-2xl p-6">

@@ -6,12 +6,15 @@ import { agencyLinks } from '@/lib/white-label/mail';
 import { WL_GROUPS, WL_LINES, WL_PROGRAM } from '@/data/white-label';
 import { wlSans } from '@/components/white-label/font';
 import AgencyPortal from '@/components/white-label/AgencyPortal';
+import { deliveries, emptyDelivery } from '@/lib/white-label/delivery';
+import { accessKey } from '@/lib/white-label/key';
 
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: { absolute: 'Agency Portal · White Label Program' },
   robots: { index: false, follow: false },
+  referrer: 'no-referrer',
 };
 
 type Search = Promise<Record<string, string | string[] | undefined>>;
@@ -42,6 +45,7 @@ export default async function AgencyPortalPage({ params, searchParams }: { param
   }
 
   const clients = await listClients(agency.id);
+  const delivery = await deliveries(clients.map((c) => c.id));
   const links = agencyLinks(agency);
   return (
     <div className={wlSans.className}>
@@ -59,6 +63,8 @@ export default async function AgencyPortalPage({ params, searchParams }: { param
         agency_approved_at: c.agency_approved_at,
         created_at: c.created_at,
         live_at: c.live_at,
+        delivery: delivery[c.id] ?? emptyDelivery,
+        review_link: `/white-label/review/${c.id}?k=${accessKey('review', c.id)}`,
       }))}
       lines={WL_LINES.map((l) => ({ slug: l.slug, name: l.name, group: l.group, pitch: l.pitch, wholesale: l.wholesale, retail: l.retail, internal: l.internal }))}
       groups={WL_GROUPS.map((g) => ({ key: g.key, title: g.title }))}

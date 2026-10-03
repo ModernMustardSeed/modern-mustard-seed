@@ -217,7 +217,12 @@ const config: NextConfig = {
     remotePatterns: [{ protocol: 'https', hostname: 'sarahscarano.com', pathname: '/images/web/**' }],
   },
   async headers() {
-    return [{ source: '/:path*', headers: SECURITY_HEADERS }];
+    return [
+      { source: '/:path*', headers: SECURITY_HEADERS },
+      { source: '/white-label/:path*', headers: [{ key: 'Referrer-Policy', value: 'no-referrer' }] },
+      { source: '/white-label/hq/:path*', headers: [{ key: 'Cache-Control', value: 'private, no-store' }] },
+      { source: '/white-label/review/:path*', headers: [{ key: 'Cache-Control', value: 'private, no-store' }] },
+    ];
   },
   async rewrites() {
     return [

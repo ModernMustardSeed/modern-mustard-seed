@@ -102,7 +102,7 @@ export default function ApplyForm() {
         </label>
         <input tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" value={f.company_url} onChange={(e) => setF({ ...f, company_url: e.target.value })} />
       </div>
-      {error && <p className="mt-4 font-body text-sm text-[#b42318]">{error}</p>}
+      {error && <p role="alert" className="mt-4 font-body text-sm text-[#b42318]">{error}</p>}
       <button disabled={busy} className="mt-6 inline-flex w-full items-center justify-center rounded-full border-2 border-[#0b3b44] bg-[#f5b700] px-7 py-4 font-sans text-xs font-extrabold uppercase tracking-[0.18em] shadow-[4px_4px_0_0_#0b3b44] disabled:opacity-60">
         {busy ? 'Sending' : 'Apply and get my demo'}
       </button>

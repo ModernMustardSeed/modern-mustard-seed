@@ -3,6 +3,8 @@
 import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { inkFor, textOnWhite, usd } from '@/components/white-label/brand';
+import ReviewFeedback from '@/components/white-label/ReviewFeedback';
+import type { Delivery } from '@/lib/white-label/delivery';
 
 type Line = { slug: string; name: string; group: string; pitch: string; wholesale: { setup: number; monthly: number }; retail: { setup: number; monthly: number }; internal?: boolean };
 type Client = {
@@ -15,12 +17,14 @@ type Client = {
   agency_approved_at: string | null;
   created_at: string;
   live_at: string | null;
+  delivery: Delivery;
+  review_link: string;
 };
 
 const STAGES = [
   { key: 'submitted', label: 'Received' },
   { key: 'building', label: 'Building' },
-  { key: 'review', label: 'Your test call' },
+  { key: 'review', label: 'Your review' },
   { key: 'live', label: 'Live' },
 ];
 
@@ -54,6 +58,7 @@ export default function AgencyPortal({
   const [err, setErr] = useState('');
   const [demoFor, setDemoFor] = useState({ site: '', name: '' });
   const [copied, setCopied] = useState('');
+  const [approving, setApproving] = useState('');
 
   const byLine = useMemo(() => new Map(lines.map((l) => [l.slug, l])), [lines]);
   const live = clients.filter((c) => c.status === 'live');
@@ -96,7 +101,7 @@ export default function AgencyPortal({
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Could not save.');
-      setMsg(`${form.business} is on our board. We start within one business day and you will have a test number inside seven days.`);
+      setMsg(`${form.business || agency.name} is on our board. We review the brief within one business day. Phone agents receive a test line; websites and systems receive a preview and written delivery scope.`);
       setForm({ business: '', website: '', city: '', contact_name: '', owner_phone: '', owner_email: '', transfer_number: '', hours: '', services_text: '', lines: ['ai-receptionist'] });
       router.refresh();
     } catch (e2) {
@@ -107,16 +112,25 @@ export default function AgencyPortal({
   };
 
   const approve = async (id: string) => {
+    setApproving(id); setErr('');
+    try {
     const res = await fetch(`/api/white-label/hq/${agency.slug}/clients/${id}/approve`, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ k: portalKey }),
     });
-    if (res.ok) router.refresh();
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Approval was not saved. Please retry.');
+    router.refresh();
+    } catch (error) { setErr(error instanceof Error ? error.message : 'Approval was not saved. Please retry.'); }
+    finally { setApproving(''); }
   };
 
-  const toggle = (slug: string) =>
-    setForm((f) => ({ ...f, lines: f.lines.includes(slug) ? f.lines.filter((x) => x !== slug) : [...f.lines, slug] }));
+  const toggle = (slug: string) => setForm((f) => {
+    if (f.lines.includes(slug)) return { ...f, lines: f.lines.filter((x) => x !== slug) };
+    const family = slug === 'phone-and-site-agent' ? ['ai-receptionist', 'site-agent'] : ['ai-receptionist', 'site-agent'].includes(slug) ? ['phone-and-site-agent'] : slug.startsWith('site-') && ['site-5', 'site-20', 'site-50'].includes(slug) ? ['site-5', 'site-20', 'site-50'] : ['bench', 'bench-two'].includes(slug) ? ['bench', 'bench-two'] : [];
+    return { ...f, lines: [...f.lines.filter((x) => !family.includes(x)), slug] };
+  });
 
   return (
     <div className="min-h-screen bg-[#f6f5f2] text-neutral-900">
@@ -135,13 +149,25 @@ export default function AgencyPortal({
       </header>
 
       <main className="mx-auto max-w-6xl space-y-8 px-5 py-10">
+        <section className="rounded-2xl border border-black/10 bg-white p-6">
+          <p className="text-xs font-bold uppercase tracking-widest text-neutral-500">{clients.length ? 'Your partner workspace' : 'Your first partnership launch'}</p>
+          <h2 className="mt-2 text-2xl font-black">{clients.length ? 'Your next move, already clear.' : 'One client. One useful result. Then repeat.'}</h2>
+          {clients.length > 0 && <p className="mt-3 text-sm text-neutral-600">{clients.filter((c) => c.status === 'review' && !c.agency_approved_at).length} waiting for review. {clients.filter((c) => c.delivery.feedback).length} with changes requested. Your client board has the preview and next action.</p>}
+          <details open={clients.length === 0} className="mt-4"><summary className="min-h-8 cursor-pointer text-sm font-bold">First-client launch guide</summary>
+          <ol className="mt-5 grid gap-4 md:grid-cols-3">
+            {[['01', 'Choose the right first client', 'Start with a business you already serve and a job you can measure: missed calls, slow follow-up, or a website that needs to book.'], ['02', 'Show their own business', 'Make the demo below with their website. Agree your retail price and the result before submitting the brief.'], ['03', 'Review before launch', 'Test the preview, collect client feedback, then approve it here. We handle launch and your wholesale invoice.']].map(([n, title, body]) => <li key={n} className="rounded-xl bg-neutral-50 p-4"><p className="text-xs font-bold text-neutral-500">{n}</p><h3 className="mt-2 font-bold">{title}</h3><p className="mt-2 text-sm leading-relaxed text-neutral-600">{body}</p></li>)}
+          </ol>
+          </details>
+          <a href={clients.length ? '#clients' : '#new-client'} className="mt-5 inline-flex min-h-11 items-center rounded-full px-5 py-2 text-sm font-bold" style={{ background: agency.color, color: ink }}>{clients.length ? 'Review your deliveries' : 'Start your first brief'}</a>
+        </section>
+        {err && <p role="alert" className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">{err}</p>}
         {/* ─── NUMBERS ─── */}
-        <section className="grid gap-4 sm:grid-cols-4">
+        <section className="grid grid-cols-2 gap-4 lg:grid-cols-4">
           {[
             ['Clients live', String(live.length)],
             ['In progress', String(clients.filter((c) => ['submitted', 'building', 'review'].includes(c.status)).length)],
             ['You pay us monthly', usd(monthlyToUs)],
-            ['At suggested retail you bill', usd(suggested)],
+            ['Illustrative retail, client services', usd(suggested)],
           ].map(([k, v]) => (
             <div key={k} className="rounded-2xl border border-black/10 bg-white p-5">
               <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-neutral-500">{k}</p>
@@ -154,7 +180,7 @@ export default function AgencyPortal({
         )}
 
         {/* ─── CLIENTS ─── */}
-        <section className="rounded-2xl border border-black/10 bg-white p-6">
+        <section id="clients" className="scroll-mt-6 rounded-2xl border border-black/10 bg-white p-6">
           <h2 className="text-xl font-black">Your clients</h2>
           {clients.length === 0 ? (
             <p className="mt-3 text-neutral-600">None yet. Show a business owner the demo with their own website in it, then add them below.</p>
@@ -183,17 +209,18 @@ export default function AgencyPortal({
                     {c.status === 'review' && (
                       <div className="mt-3 flex flex-wrap items-center gap-3 rounded-xl bg-neutral-50 p-3 text-sm">
                         <span>
-                          Call the test line{c.test_number ? <> at <strong>{c.test_number}</strong></> : ''} as a customer would.
+                          Review the delivery{c.test_number ? <>. Test line: <strong>{c.test_number}</strong></> : ''}.
                         </span>
                         {c.agency_approved_at ? (
                           <span className="font-semibold text-green-700">Approved. We are switching it on.</span>
                         ) : (
-                          <button onClick={() => approve(c.id)} className="rounded-full px-4 py-2 text-xs font-bold" style={{ background: agency.color, color: ink }}>
-                            It sounds right: approve
+                          <button disabled={!!approving || !!c.delivery.feedback} onClick={() => approve(c.id)} className="min-h-11 rounded-full px-4 py-2 text-xs font-bold disabled:opacity-50" style={{ background: agency.color, color: ink }}>
+                            {approving === c.id ? 'Saving approval' : 'Approve delivery for launch'}
                           </button>
                         )}
                       </div>
                     )}
+                    {['review', 'live', 'building'].includes(c.status) && <details className="mt-4 rounded-xl border border-neutral-200 p-4 text-sm"><summary className="min-h-8 cursor-pointer font-bold">Delivery, client review and changes</summary><p className="mt-3 whitespace-pre-line text-neutral-600">{c.delivery.summary || 'Your delivery summary arrives when the work is ready.'}</p><div className="mt-3 flex flex-wrap gap-3">{c.delivery.url && <a className="min-h-11 rounded-full border px-4 py-3 font-bold" href={c.delivery.url} target="_blank" rel="noopener noreferrer">Open preview</a>}<a className="min-h-11 rounded-full border px-4 py-3 font-bold" href={c.review_link} target="_blank" rel="noopener noreferrer">Client review page</a><button onClick={() => copy(`${window.location.origin}${c.review_link}`, c.id)} className="min-h-11 rounded-full border px-4 py-3 font-bold">{copied === c.id ? 'Copied' : 'Copy client review link'}</button></div>{c.delivery.feedback && <p className="mt-3 whitespace-pre-line rounded-lg bg-amber-50 p-3"><strong>Changes requested:</strong> {c.delivery.feedback}</p>}<ReviewFeedback id={c.id} slug={agency.slug} reviewKey={portalKey} /></details>}
                   </li>
                 );
               })}
@@ -203,7 +230,7 @@ export default function AgencyPortal({
 
         <div className="grid gap-8 lg:grid-cols-[1.4fr_1fr]">
           {/* ─── ADD A CLIENT ─── */}
-          <form onSubmit={submit} className="rounded-2xl border border-black/10 bg-white p-6">
+          <form id="new-client" onSubmit={submit} className="scroll-mt-6 rounded-2xl border border-black/10 bg-white p-6">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <h2 className="text-xl font-black">{forStudio ? 'Start a project' : 'Add a client'}</h2>
               <div className="inline-flex rounded-full bg-neutral-100 p-1 text-sm font-bold" role="tablist" aria-label="Who is it for">
@@ -231,7 +258,7 @@ export default function AgencyPortal({
             <p className="mt-2 text-sm text-neutral-600">
               {forStudio
                 ? 'Overflow you do not have room for, the Bench, or AI inside your own studio. Tell us what to build; we scope it in writing before anything starts.'
-                : 'They said yes. Tell us who they are and what to switch on. Nothing is billed until you approve the test call.'}
+                : 'They said yes. Tell us the result they need and what to build. You review and approve the delivery before launch and billing.'}
             </p>
             <div className="mt-5 grid gap-4 sm:grid-cols-2">
               <label className="sm:col-span-2">
@@ -360,8 +387,8 @@ export default function AgencyPortal({
               <h2 className="text-xl font-black text-neutral-900">How a client goes live</h2>
               <ol className="mt-3 list-decimal space-y-2 pl-5">
                 <li>You add them here. We start within one business day.</li>
-                <li>Inside seven days you get a test number by email.</li>
-                <li>You call it and press Approve. We switch it onto their real number.</li>
+                <li>Phone agents get a test line. Websites and systems get a preview, delivery summary, and the timeline agreed in scope.</li>
+                <li>You test it and share the client review link. Request changes here, then approve the finished delivery.</li>
                 <li>It shows Live, and the setup and monthly land on your next invoice from us. You bill your client your price.</li>
               </ol>
               <p className="mt-4">Changes to anything we built are included: tell us what and we do it. Questions go straight to Sarah at <a className="underline" href="mailto:sarah@modernmustardseed.com">sarah@modernmustardseed.com</a>.</p>
