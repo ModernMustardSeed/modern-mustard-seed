@@ -17,6 +17,7 @@ export type WorkSite = {
 };
 
 export const WORK_SITES: WorkSite[] = [
+  { key: 'dear-dahlia', name: 'Dear Dahlia', trade: 'Flower ranch concept', place: 'Northwest Montana', img: '/work-shots/dear-dahlia.jpg', url: 'https://dear-dahlia.makeourcitypretty.chatgpt.site' },
   { key: 'modern-mustard-seed', name: 'Modern Mustard Seed', trade: 'Agentic web studio', place: 'This very site', img: '/work-shots/modern-mustard-seed.jpg', url: 'https://modernmustardseed.com' },
   { key: 'linen-fresh', name: 'Linen Fresh', trade: 'Laundromat', place: 'Las Vegas, NV', img: '/work-shots/linen-fresh.jpg', url: 'https://modernmustardseed.com/demo/site/f1a7cacd-d7d9-4384-894f-8651a687be53' },
   { key: 'dd-landscaping', name: 'D&D Landscaping', trade: 'Landscaping', place: 'Tallahassee, FL', img: '/work-shots/dd-landscaping.jpg', url: 'https://ddlandscaping.pro' },

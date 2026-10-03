@@ -35,10 +35,15 @@ export default function WorkShowcase() {
       <div className="wsx-wrap relative mt-10">
         <div className="wsx-track flex gap-5 w-max px-6">
           {row.map((s, i) => (
-            <div
+            <a
               key={`${s.key}-${i}`}
+              href={s.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              tabIndex={i >= WORK_SITES.length ? -1 : undefined}
+              aria-label={`Visit ${s.name}`}
               aria-hidden={i >= WORK_SITES.length ? true : undefined}
-              className="wsx-card shrink-0 w-[300px] sm:w-[380px]"
+              className="wsx-card block shrink-0 w-[300px] sm:w-[380px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#0b3b44]"
             >
               <div className="rounded-2xl border-2 border-[#0b3b44] bg-white shadow-[6px_6px_0_0_#0b3b44] overflow-hidden">
                 <div className="relative aspect-[16/10] bg-[#0b3b44]">
@@ -55,7 +60,7 @@ export default function WorkShowcase() {
                   <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-[#8f6600] truncate">{s.trade} · {s.place}</p>
                 </div>
               </div>
-            </div>
+            </a>
           ))}
         </div>
       </div>
