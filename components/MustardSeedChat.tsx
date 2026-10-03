@@ -385,7 +385,7 @@ export default function MustardSeedChat() {
       >
         <div className="relative flex items-center gap-2 pl-1.5 pr-3 py-1.5 sm:pl-2 sm:pr-4 sm:py-2 rounded-full bg-[#f5b700] border-2 border-[#0b3b44] shadow-[4px_4px_0_0_#0b3b44] group-hover:shadow-[6px_6px_0_0_#0b3b44] group-hover:-translate-y-0.5 transition-all">
           <span className="relative flex h-11 w-11 items-center justify-center rounded-full bg-white border-2 border-[#0b3b44] overflow-hidden">
-            <Image src="/brand/mascot.png" alt="" width={885} height={1180} sizes="48px" className="h-9 w-auto" />
+            <Image src="/flathead/mascot/mr-mustard-sprout-160.webp" alt="" width={160} height={229} sizes="48px" className="h-9 w-auto" />
           </span>
           <span className="text-left font-sans text-xs sm:text-sm text-[#0b3b44] font-extrabold tracking-tight">
             <span className="block">Mr. Mustard</span>
@@ -414,7 +414,7 @@ export default function MustardSeedChat() {
             <div className="relative flex items-start justify-between">
               <div className="flex items-center gap-3">
                 <span className="flex h-12 w-12 items-center justify-center rounded-full bg-white border-2 border-[#0b3b44] overflow-hidden shrink-0">
-                  <Image src="/brand/mascot.png" alt="" width={885} height={1180} sizes="48px" className="h-9 w-auto" />
+                  <Image src="/flathead/mascot/mr-mustard-sprout-160.webp" alt="" width={160} height={229} sizes="48px" className="h-9 w-auto" />
                 </span>
                 <div>
                   <span className="block text-[8px] uppercase tracking-[0.35em] text-[#C4160B] font-mono font-bold mb-0.5">
@@ -545,7 +545,7 @@ export default function MustardSeedChat() {
                 />
               )}
               <span className="relative flex h-16 w-16 items-center justify-center rounded-full bg-[#fbf5ea] border-2 border-[#0b3b44] overflow-hidden mx-auto">
-                <Image src="/brand/mascot.png" alt="" width={885} height={1180} sizes="48px" className="h-12 w-auto" />
+                <Image src="/flathead/mascot/mr-mustard-sprout-160.webp" alt="" width={160} height={229} sizes="48px" className="h-12 w-auto" />
               </span>
             </div>
 
@@ -642,7 +642,7 @@ export default function MustardSeedChat() {
             <div className="relative flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white border-2 border-[#0b3b44] overflow-hidden shrink-0">
-                  <Image src="/brand/mascot.png" alt="" width={885} height={1180} sizes="48px" className="h-8 w-auto" />
+                  <Image src="/flathead/mascot/mr-mustard-sprout-160.webp" alt="" width={160} height={229} sizes="48px" className="h-8 w-auto" />
                 </span>
                 <div>
                   <span className="block text-[8px] uppercase tracking-[0.35em] text-[#C4160B] font-mono font-bold">

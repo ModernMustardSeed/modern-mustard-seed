@@ -207,10 +207,10 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-6 md:px-8 py-3.5 flex justify-between items-center gap-4">
           <Link href="/" className="flex items-center gap-2.5 hover:opacity-90 transition-opacity">
             <Image
-              src="/brand/mascot.png"
+              src="/flathead/mascot/mr-mustard-sprout-160.webp"
               alt="Mr. Mustard"
-              width={885}
-              height={1180}
+              width={160}
+              height={229}
               sizes="40px"
               className="h-9 w-auto md:h-10"
               loading="eager"
