@@ -79,14 +79,8 @@ export async function createAgency(input: Partial<Agency> & { name: string; emai
   // One row per address: a second application updates the first instead of duplicating it.
   const { data: prior } = await db().from('white_label_agencies').select('*').ilike('email', input.email.trim()).limit(1);
   if (prior?.[0]) {
-    const { data, error } = await db()
-      .from('white_label_agencies')
-      .update({ ...strip(input), updated_at: new Date().toISOString() })
-      .eq('id', prior[0].id)
-      .select('*')
-      .single();
-    if (error) throw new Error(error.message);
-    return data as Agency;
+    // Applying again never changes an existing partner's private profile.
+    return prior[0] as Agency;
   }
   const slug = await freeSlug(input.name);
   const { data, error } = await db()
@@ -115,7 +109,8 @@ export async function getAgencyBySlug(slug: string): Promise<Agency | null> {
 }
 
 export async function listAgencies(): Promise<Agency[]> {
-  const { data } = await db().from('white_label_agencies').select('*').order('created_at', { ascending: false }).limit(200);
+  const { data, error } = await db().from('white_label_agencies').select('*').order('created_at', { ascending: false }).limit(200);
+  if (error) throw new Error('Could not read agencies. Refresh to retry.');
   return (data as Agency[]) ?? [];
 }
 
@@ -144,7 +139,8 @@ export async function getClient(id: string): Promise<WlClient | null> {
 export async function listClients(agencyId?: string): Promise<WlClient[]> {
   let q = db().from('white_label_clients').select('*').order('created_at', { ascending: false }).limit(500);
   if (agencyId) q = q.eq('agency_id', agencyId);
-  const { data } = await q;
+  const { data, error } = await q;
+  if (error) throw new Error('Could not read clients. Billing and delivery updates were stopped.');
   return (data as WlClient[]) ?? [];
 }
 

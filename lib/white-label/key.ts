@@ -39,6 +39,21 @@ export function wlKeyValid(agency: string, key: string | null | undefined): bool
   return a.length === b.length && timingSafeEqual(a, b);
 }
 
+/** Access keys have separate scopes. A price sheet never opens a portal. */
+export function accessKey(scope: 'portal' | 'review', id: string): string | null {
+  const s = secret();
+  if (!s || !id) return null;
+  return createHmac('sha256', s).update(`white-label:${scope}:v2:${id}`).digest('base64url');
+}
+
+export function accessKeyValid(scope: 'portal' | 'review', id: string, key: string | null | undefined): boolean {
+  const want = accessKey(scope, id);
+  if (!want || typeof key !== 'string') return false;
+  const a = Buffer.from(want);
+  const b = Buffer.from(key);
+  return a.length === b.length && timingSafeEqual(a, b);
+}
+
 /** The two links Sarah takes into a meeting. */
 export function wlLinks(base: string, p: { agency: string; color: string; city: string; sample: string; site?: string }) {
   const key = wlKey(p.agency);

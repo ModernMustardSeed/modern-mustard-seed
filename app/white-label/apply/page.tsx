@@ -12,7 +12,7 @@ export const metadata = buildMetadata({
 const NEXT = [
   { n: '1', t: 'Now', d: 'Your demo, with your agency’s name on it, arrives by email.' },
   { n: '2', t: 'Within one business day', d: 'Sarah reads your application and sends your portal and signed price sheet.' },
-  { n: '3', t: 'Your first client', d: 'Add them in your portal. Live inside seven days, after you approve the test call.' },
+  { n: '3', t: 'Your first client', d: 'Agree the first result and submit the brief. Review the preview or test line, request changes, then approve launch.' },
 ];
 
 export default function WhiteLabelApplyPage() {

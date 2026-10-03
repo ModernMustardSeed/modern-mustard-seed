@@ -9,6 +9,7 @@ import { agencyFromKey } from '@/lib/white-label/portal';
 import { createClient } from '@/lib/white-label/store';
 import { mailClientSubmitted } from '@/lib/white-label/mail';
 import { WL_LINES, wlClean } from '@/data/white-label';
+import { serviceConflict } from '@/lib/white-label/delivery';
 
 export const runtime = 'nodejs';
 
@@ -20,9 +21,11 @@ export async function POST(req: Request, ctx: { params: Promise<{ slug: string }
 
   const s = (k: string, max = 200) => wlClean(typeof b[k] === 'string' ? (b[k] as string) : '', max) || null;
   const business = s('business', 120);
-  const lines = (Array.isArray(b.lines) ? b.lines : []).filter((x): x is string => typeof x === 'string' && WL_LINES.some((l) => l.slug === x));
+  const lines = [...new Set((Array.isArray(b.lines) ? b.lines : []).filter((x): x is string => typeof x === 'string' && WL_LINES.some((l) => l.slug === x)))];
   if (!business) return NextResponse.json({ error: 'The client’s business name is required.' }, { status: 400 });
   if (!lines.length) return NextResponse.json({ error: 'Pick at least one service.' }, { status: 400 });
+  const conflict = serviceConflict(lines);
+  if (conflict) return NextResponse.json({ error: conflict }, { status: 400 });
 
   const services = typeof b.services_text === 'string' ? b.services_text.replace(/[<>]/g, '').trim().slice(0, 3000) : null;
   try {

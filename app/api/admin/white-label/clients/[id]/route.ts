@@ -11,7 +11,8 @@ import { getAdminUser } from '@/lib/admin-auth';
 import { getAgency, getClient, updateAgency, updateClient, CLIENT_STATUSES, type ClientStatus } from '@/lib/white-label/store';
 import { syncAgencyBilling } from '@/lib/white-label/billing';
 import { mailClientLive, mailClientReview } from '@/lib/white-label/mail';
-import { WL_LINES, wlClean } from '@/data/white-label';
+import { wlClean } from '@/data/white-label';
+import { deliveries, emptyDelivery, saveDelivery, safeReviewUrl, serviceConflict, launchError } from '@/lib/white-label/delivery';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -24,19 +25,33 @@ export async function PATCH(req: Request, ctx: { params: Promise<{ id: string }>
   const agency = await getAgency(c.agency_id);
   if (!agency) return NextResponse.json({ error: 'Agency missing.' }, { status: 404 });
 
-  const b = (await req.json().catch(() => ({}))) as { status?: ClientStatus; test_number?: string; notes?: string; lines?: string[] };
+  const b = (await req.json().catch(() => ({}))) as { status?: ClientStatus; test_number?: string; notes?: string; lines?: string[]; review_url?: string; delivery_summary?: string; resolve_feedback?: boolean };
   const patch: Record<string, unknown> = {};
   if (typeof b.test_number === 'string') patch.test_number = wlClean(b.test_number, 40) || null;
   if (typeof b.notes === 'string') patch.notes = b.notes.slice(0, 2000);
-  if (Array.isArray(b.lines)) patch.lines = b.lines.filter((x) => WL_LINES.some((l) => l.slug === x));
+  if (Array.isArray(b.lines)) {
+    return NextResponse.json({ error: 'Service changes need a fresh project and approval so the agreed billing stays intact.' }, { status: 409 });
+  }
   const next = b.status && CLIENT_STATUSES.includes(b.status) && b.status !== c.status ? b.status : null;
   if (next) patch.status = next;
   if (next === 'live') patch.live_at = new Date().toISOString();
-  if (next === 'review' && !(patch.test_number ?? c.test_number)) {
-    return NextResponse.json({ error: 'Add the test number first: the agency email tells them what to call.' }, { status: 400 });
-  }
-
   try {
+    const priorDelivery = { ...emptyDelivery, ...(await deliveries([id]))[id] };
+    const delivery = { ...priorDelivery };
+    if (b.review_url !== undefined) {
+      delivery.url = safeReviewUrl(b.review_url);
+      if (b.review_url && !delivery.url) return NextResponse.json({ error: 'Use a complete HTTPS preview URL.' }, { status: 400 });
+    }
+    if (typeof b.delivery_summary === 'string') delivery.summary = b.delivery_summary.trim().slice(0, 3000);
+    if (delivery.url !== priorDelivery.url || delivery.summary !== priorDelivery.summary || (patch.test_number !== undefined && patch.test_number !== c.test_number)) patch.agency_approved_at = null;
+    if (b.resolve_feedback && c.status === 'live') { delivery.feedback = ''; delivery.feedbackAt = null; }
+    if (next === 'review') { delivery.feedback = ''; delivery.feedbackAt = null; patch.agency_approved_at = null; }
+    const failure = serviceConflict(c.lines) || launchError(c.status, next, patch.agency_approved_at === null ? null : c.agency_approved_at, c.lines, (patch.test_number !== undefined ? patch.test_number : c.test_number) as string | null, delivery);
+    if (failure) return NextResponse.json({ error: failure }, { status: 409 });
+    if (next === 'live' && !['approved', 'active'].includes(agency.status)) return NextResponse.json({ error: 'Activate this agency before launching a client.' }, { status: 409 });
+    if (c.status === 'live' && next && !['paused', 'cancelled'].includes(next)) return NextResponse.json({ error: 'Live services stay live during included revisions. Pause explicitly to stop the service and recurring billing.' }, { status: 409 });
+    if (next === 'building') patch.agency_approved_at = null;
+    await saveDelivery(id, delivery);
     const updated = await updateClient(id, patch);
     let billing: Awaited<ReturnType<typeof syncAgencyBilling>> | null = null;
     if (next === 'review') await mailClientReview(agency, updated);

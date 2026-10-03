@@ -87,6 +87,7 @@ export default function WhiteLabelDemo({
   const [mode, setMode] = useState<'browser' | 'phone'>('browser');
   const [live, setLive] = useState(false);
   const [presenting, setPresenting] = useState(false);
+  const [shareMessage, setShareMessage] = useState('');
   const runRef = useRef<string | null>(null);
   const transcriptEnd = useRef<HTMLDivElement>(null);
 
@@ -97,7 +98,7 @@ export default function WhiteLabelDemo({
   const accentText = textOnWhite(color);
 
   useEffect(() => {
-    transcriptEnd.current?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    if (transcript.length) transcriptEnd.current?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
   }, [transcript]);
 
   // Keep the URL shareable as the agency types. The logo stays in this browser.
@@ -130,7 +131,7 @@ export default function WhiteLabelDemo({
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || 'We could not read that site.');
       setSite(data as Site);
-      setClientName('');
+      if (!initial.client) setClientName('');
       setReadMsg(`Read ${data.pages.length} page${data.pages.length === 1 ? '' : 's'}. The receptionist now answers as ${data.name || 'this business'}.`);
     } catch (err) {
       setSite(null);
@@ -153,6 +154,15 @@ export default function WhiteLabelDemo({
     const r = new FileReader();
     r.onload = () => setLogo(typeof r.result === 'string' ? r.result : null);
     r.readAsDataURL(f);
+  };
+
+  const shareClientDemo = async () => {
+    const q = new URLSearchParams({ agency: agencyName, color: color.replace('#', ''), city, sample: sampleId, client, view: 'client' });
+    if (site) q.set('site', site.url);
+    if (initial.logo) q.set('logo', initial.logo);
+    const url = `${window.location.origin}/white-label/demo?${q}`;
+    try { await navigator.clipboard.writeText(url); setShareMessage('Client link copied. It contains no wholesale prices or agency controls.'); }
+    catch { setShareMessage(url); }
   };
 
   const callEnded = async (seconds: number) => {
@@ -533,7 +543,9 @@ export default function WhiteLabelDemo({
                 </p>
               </form>
             </div>
-            <p className="mt-3 text-xs text-white/40">Built and run by Modern Mustard Seed. Your client never sees this panel or our name.</p>
+            <div className="mt-4 flex flex-wrap items-center gap-3"><button onClick={shareClientDemo} className="min-h-11 rounded-full px-5 py-2 text-sm font-bold" style={{ background: color, color: ink }}>Copy client demo link</button><p className="max-w-xl break-words text-xs text-white/70" role="status">{shareMessage || 'Share this client link after the meeting. Uploaded logos stay in this browser; your agency name and color travel with the link.'}</p></div>
+            <div className="mt-4 grid gap-3 border-t border-white/15 pt-4 text-sm sm:grid-cols-3">{[['1. Make it theirs', 'Use their website and business name.'], ['2. Prove the handoff', 'Ask a real customer question, then request a booking.'], ['3. Agree the first result', 'Confirm what should happen next and who on their team receives it.']].map(([title, body]) => <div key={title}><p className="font-bold">{title}</p><p className="mt-1 text-white/65">{body}</p></div>)}</div>
+            <p className="mt-3 text-xs text-white/60">Built and run by Modern Mustard Seed. Your client never sees this panel or our name.</p>
           </div>
         </div>
       ) : locked ? null : (
@@ -579,7 +591,7 @@ export default function WhiteLabelDemo({
               Every call to {client}, answered and booked.
             </h1>
             <p className="mt-6 max-w-xl text-lg leading-relaxed opacity-85">
-              {possessive(client)} new AI receptionist, live. {site ? 'It read their website a moment ago, knows' : 'It knows'} the services, answers in under a second, and puts callers on the schedule while they are still on the line.
+              Try {possessive(client)} AI receptionist. {site ? 'It uses the services on their website' : 'It uses sample business details'} to answer questions and capture a demo booking. Your real calendar and phone number are connected during setup.
             </p>
             <div className="mt-9">{callPanel()}</div>
           </div>
@@ -607,7 +619,8 @@ export default function WhiteLabelDemo({
       <section className="border-t border-black/5 bg-white">
         <div className="mx-auto max-w-6xl px-4 py-16">
           <p className="text-xs font-bold uppercase tracking-[0.25em] text-neutral-500">From {agencyName}</p>
-          <h2 className="mt-3 text-3xl font-black tracking-tight md:text-4xl">The rest of what we switch on for {client}.</h2>
+          <h2 className="mt-3 text-3xl font-black tracking-tight md:text-4xl">See what the next step looks like.</h2>
+          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-neutral-600">The call above is interactive. The website, ads dashboard, and visibility report below are examples of the finished experience, using demonstration data. Your agency scopes the real connections with you.</p>
           <div className="mt-8 flex flex-wrap gap-2" role="tablist">
             {TABS.map((t) => (
               <button

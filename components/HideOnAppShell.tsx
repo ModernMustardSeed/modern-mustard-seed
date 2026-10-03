@@ -31,7 +31,7 @@ export default function HideOnAppShell({
     p.startsWith('/sarahbook') ||
     p.startsWith('/voice-agents/build/demo/') ||
     // The white label demo and price sheet wear the agency's name, never ours.
-    /^\/white-label\/(demo|sheet|hq)(\/|$)/.test(p)
+    /^\/white-label\/(demo|sheet|hq|review)(\/|$)/.test(p)
   )
     return null;
   return <>{children}</>;

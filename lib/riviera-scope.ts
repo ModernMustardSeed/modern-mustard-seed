@@ -17,6 +17,7 @@ export const RIVIERA_OFF_PREFIX = [
   '/white-label/demo',
   '/white-label/sheet',
   '/white-label/hq',
+  '/white-label/review',
   '/proposal/',
   '/scaling-roadmap/r/',
   '/audit/',
