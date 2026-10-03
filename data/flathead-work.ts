@@ -84,13 +84,6 @@ export const flatheadWork = [
     "description": "A Montana drink with a world of its own."
   },
   {
-    "id": "wild-hope",
-    "name": "Wild Hope",
-    "kind": "Studio venture",
-    "url": "https://wild-hope-hq.vercel.app",
-    "description": "A retreat village on Flathead Lake."
-  },
-  {
     "id": "lago-society",
     "name": "Lago Society",
     "kind": "Studio brand",
