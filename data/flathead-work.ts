@@ -1,5 +1,12 @@
 export const flatheadWork = [
   {
+    "id": "cairnfell",
+    "name": "Cairnfell Mountain Homes",
+    "kind": "Website",
+    "url": "https://modernmustardseed.com/demos/cairnfell",
+    "description": "Homes that belong to the mountain."
+  },
+  {
     "id": "dear-dahlia",
     "name": "Dear Dahlia",
     "kind": "Studio concept",
@@ -75,13 +82,6 @@ export const flatheadWork = [
     "kind": "Studio concept",
     "url": "https://huckwild.vercel.app",
     "description": "A Montana drink with a world of its own."
-  },
-  {
-    "id": "wild-hope",
-    "name": "Wild Hope",
-    "kind": "Studio venture",
-    "url": "https://wild-hope-hq.vercel.app",
-    "description": "A retreat village on Flathead Lake."
   },
   {
     "id": "lago-society",

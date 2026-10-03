@@ -26,15 +26,6 @@ const WORK: Work[] = [
   // (Sarah, 2026-07-21). Shot stays at /home/work/huckwild.jpg; restore as
   // the wide featured card when drinkhuckwild.com is live.
   {
-    name: 'Wild Hope',
-    domain: 'wildhopehq.com',
-    url: 'https://wildhopehq.com',
-    tag: 'Retreat village + brand',
-    desc: 'A Flathead Lake retreat told as a Book of Hours: seventeen original oil paintings, a night-to-dawn scroll, and a booking ledger sealed in wax.',
-    shot: '/home/work/wild-hope.jpg',
-    tilt: '-rotate-[0.8deg]',
-  },
-  {
     name: 'Cross + Covenant',
     domain: 'crossandcovenant.co',
     url: 'https://crossandcovenant.co',

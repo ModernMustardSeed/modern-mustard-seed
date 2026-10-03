@@ -177,7 +177,18 @@ export interface StoredSnapshot { published: boolean; snapshot: BuildLogSnapshot
 const PUBLIC_LABEL = new Map(
   BUILD_LOG_REPOS.filter((r) => r.publicLabel).map((r) => [r.name, r.publicLabel as string])
 );
-const publicName = (project: string) => PUBLIC_LABEL.get(project) || project;
+const publicName = (project: string) => /wild[ -]?hope|chinatown/i.test(project)
+  ? "Studio Builds"
+  : PUBLIC_LABEL.get(project) || project;
+
+function publicProjectCounts(projects: [string, number][]): [string, number][] {
+  const totals = new Map<string, number>();
+  for (const [project, count] of projects) {
+    const name = publicName(project);
+    totals.set(name, (totals.get(name) || 0) + count);
+  }
+  return [...totals.entries()].sort((a, b) => b[1] - a[1]);
+}
 
 export function buildSnapshot(data: BuildLogData): BuildLogSnapshot {
   const dayCounts: Record<string, SnapshotDay> = {};
@@ -218,8 +229,16 @@ export async function readSnapshot(): Promise<StoredSnapshot> {
   if (!sb) return { published: false, snapshot: null };
   const { data } = await sb.from("app_state").select("value").eq("key", SNAPSHOT_KEY).maybeSingle();
   const v = data?.value as StoredSnapshot | undefined;
+  const snapshot = v?.snapshot;
+  const projectTotals = snapshot ? publicProjectCounts(snapshot.projectTotals) : [];
   return v && typeof v === "object"
-    ? { published: !!v.published, snapshot: v.snapshot ?? null }
+    ? { published: !!v.published, snapshot: snapshot ? {
+      ...snapshot,
+      projectTotals,
+      totals: {...snapshot.totals, ventures: projectTotals.length},
+      dayCounts: Object.fromEntries(Object.entries(snapshot.dayCounts).map(([date, day]) =>
+        [date, {...day, byProject: publicProjectCounts(day.byProject)}])),
+    } : null }
     : { published: false, snapshot: null };
 }
 
