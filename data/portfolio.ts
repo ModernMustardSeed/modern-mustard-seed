@@ -288,6 +288,13 @@ export const PORTFOLIO: PortfolioCategory[] = [
     kicker: 'Free builds that win the deal',
     items: [
       {
+        name: 'Dear Dahlia',
+        url: 'https://dear-dahlia.makeourcitypretty.chatgpt.site',
+        status: 'demo',
+        blurb: 'A fictional Northwest Montana flower ranch concept. Full-screen engraved florals, expressive branding, original dahlia imagery, family galleries, and three seasonal gatherings.',
+        tags: ['studio-concept', 'flower-farm', 'events', 'website'],
+      },
+      {
         name: 'JR Tree Removal',
         url: 'https://jr-tree-website.vercel.app',
         owner: 'Jaco',
