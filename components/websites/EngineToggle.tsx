@@ -6,13 +6,13 @@ import { track } from '@vercel/analytics';
 import { workByKey } from '@/data/website-work';
 
 /**
- * The signature moment for /websites: flip a REAL site we built between "brochure"
+ * The signature moment for /websites: flip a studio concept between "brochure"
  * (drained to gray, dead) and "engine" (full living color, answering and capturing).
  * Same beautiful site, one tap apart. Pop-art cabin framing.
  */
 
-const SITE = workByKey['fiat-lux'];
-const DOMAIN = 'fiatluxdesign.co';
+const SITE = workByKey['dear-dahlia'];
+const DOMAIN = 'Dear Dahlia · Northwest Montana';
 
 const BROCHURE_NOTES = [
   'Looks nice. Does nothing.',
@@ -36,7 +36,7 @@ export default function EngineToggle() {
 
   return (
     <div className="grid lg:grid-cols-5 gap-6 items-start">
-      {/* The real site, framed */}
+      {/* The studio concept, framed */}
       <div className="lg:col-span-3">
         <div className="inline-flex items-center rounded-full border-2 border-[#0b3b44] bg-white p-1 shadow-[3px_3px_0_0_#0b3b44] mb-5">
           {(['brochure', 'engine'] as const).map((m) => (
@@ -71,7 +71,7 @@ export default function EngineToggle() {
           <div className="relative">
             <Image
               src={SITE.img}
-              alt={`${SITE.name}, a real ${SITE.trade.toLowerCase()} website designed and built by Modern Mustard Seed`}
+              alt="Dear Dahlia flower ranch concept, with engraved dahlias, cream and black artwork, and bold lettering"
               width={1600}
               height={1000}
               sizes="(min-width: 1024px) 55vw, 100vw"
@@ -82,7 +82,7 @@ export default function EngineToggle() {
             {/* Engine: the site is working. */}
             {engine ? (
               <div className="absolute top-3 right-3 max-w-[62%] rounded-xl border-2 border-[#0b3b44] bg-[#0b3b44] px-3.5 py-2.5 shadow-[3px_3px_0_0_#f5b700] animate-[etIn_.45s_ease-out_both]">
-                <p className="font-mono text-[8.5px] uppercase tracking-[0.18em] text-[#f5b700] font-bold">New lead captured</p>
+                <p className="font-mono text-[8.5px] uppercase tracking-[0.18em] text-[#f5b700] font-bold">Example: event inquiry</p>
                 <p className="font-sans text-[12px] font-bold text-[#fbf5ea] mt-0.5 leading-snug">Filed, and in your inbox</p>
               </div>
             ) : (
@@ -95,7 +95,8 @@ export default function EngineToggle() {
           </div>
         </div>
         <p className="font-body text-[12px] text-[#0b3b44]/70 mt-3 text-center">
-          A real site we built for {SITE.name}. Flip it to see the difference.
+          {SITE.name}, a flower ranch studio concept. The toggle illustrates lead capture.{' '}
+          <a href={SITE.url} target="_blank" rel="noopener noreferrer" className="font-bold underline underline-offset-4 hover:text-[#0b3b44]">Explore Dear Dahlia</a>
         </p>
         <style>{`@keyframes etIn{from{opacity:0;transform:translateY(8px) scale(.96)}to{opacity:1;transform:none}}`}</style>
       </div>
