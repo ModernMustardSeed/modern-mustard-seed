@@ -1,7 +1,7 @@
 /**
  * Every address crushedbotanicals.com answered at before the Squarespace move, mapped to the page that
- * replaces it. Built 2026-10-04 from the Wayback Machine index (Shopify 2024 to 2025, Square Online 2025,
- * WooCommerce 2019) and the live Squarespace sitemap. Every target was fetched and returned 200 that day.
+ * replaces it. Built 2026-10-04 from the Wayback Machine index (Shopify 2024 to 2025, GoDaddy 2025, and
+ * an older WooCommerce store from 2019) and the live Squarespace sitemap. Every target was fetched and returned 200 that day.
  * Specific lines come first; the bracket lines at the end catch anything the archive never saw.
  */
 export const URL_MAPPINGS: string[] = [

@@ -84,9 +84,8 @@ const WORKS = [
 ];
 
 const ERAS = [
-  { years: '2019 to 2020', platform: 'WooCommerce', example: '/product/organic_black_elderberry_syrup' },
   { years: '2024 to early 2025', platform: 'Shopify', example: '/products/black-elderberry-syrup' },
-  { years: '2025', platform: 'Square Online', example: '/shop/ols/products/organic-elderberry-syrup' },
+  { years: '2025', platform: 'GoDaddy', example: '/shop/ols/products/organic-elderberry-syrup' },
   { years: 'August 2026 to now', platform: 'Squarespace', example: '/shop/p/organic-elderberry-syrup' },
 ];
 
@@ -98,8 +97,8 @@ const FINDINGS: Finding[] = [
       <>
         <P>
           Each platform move gave every product a new web address, and none of the old addresses were pointed at the new
-          ones. The Wayback Machine has 335 addresses saved for crushedbotanicals.com from the Shopify, Square and
-          WooCommerce years. We tested them against the live site today. Every product, collection, blog and page address
+          ones. The Wayback Machine has 318 addresses saved for crushedbotanicals.com from the Shopify and GoDaddy
+          years. We tested them against the live site today. Every product, collection, blog and page address
           from before August returns <strong>404 Page Not Found</strong>.
         </P>
         <P className="mt-3">
@@ -112,12 +111,29 @@ const FINDINGS: Finding[] = [
   },
   {
     sev: 'critical',
+    title: 'Google Shopping sends buyers to a website that no longer exists',
+    body: (
+      <>
+        <P>
+          Your Google Shopping listings are tied to <Code>elementalrocksnherbs.com</Code>. On October 4 that domain was not
+          registered to anyone: it has no DNS records and the .com registry has no record of it. Every Shopping click goes
+          to a site that does not load, and Google stops showing listings whose website does not answer.
+        </P>
+        <P className="mt-3">
+          The domain is open to buy. Buying it back and forwarding it to crushedbotanicals.com recovers every old link that
+          still points there, and keeps anyone else from buying a name your customers know.
+        </P>
+      </>
+    ),
+  },
+  {
+    sev: 'critical',
     title: 'Google does not show your site when someone searches your name',
     body: (
       <P>
         A search for <Code>crushedbotanicals.com</Code> on October 4 returned other botanical companies and not your
-        store. A search for <Code>crushed botanicals herbal shop</Code> returned your partner store, Elemental Rocks and
-        Herbs in Dawsonville, and not crushedbotanicals.com. Someone who already knows your name and wants to reorder
+        store. A search for <Code>crushed botanicals herbal shop</Code> returned a directory listing for Elemental Rocks
+        and Herbs in Dawsonville, and not crushedbotanicals.com. Someone who already knows your name and wants to reorder
         cannot find the store from a search.
       </P>
     ),
@@ -217,6 +233,18 @@ const STEPS: { title: string; body: ReactNode }[] = [
     ),
   },
   {
+    title: 'Point Google Shopping at the new store',
+    body: (
+      <P>
+        Buy <Code>elementalrocksnherbs.com</Code> back (Squarespace Domains or any registrar) and set it to forward to{' '}
+        <Code>https://www.crushedbotanicals.com</Code>. Then in{' '}
+        <a className="underline" style={{ color: LAGOON }} href="https://merchants.google.com" target="_blank" rel="noopener noreferrer">Google Merchant Center</a>{' '}
+        change the business website to crushedbotanicals.com, verify and claim it, and send the product feed from the
+        Squarespace store so every listing links to a page that loads.
+      </P>
+    ),
+  },
+  {
     title: 'Tell Google the store moved',
     body: (
       <P>
@@ -261,21 +289,21 @@ const STEPS: { title: string; body: ReactNode }[] = [
 ];
 
 const QUESTIONS = [
-  'When did the orders drop: right after the Squarespace launch in late August, or back when the store moved from Shopify to Square in 2025?',
-  'Did your Shopify store use the Google and YouTube channel? Those free Google Shopping listings stopped when the Shopify store closed and need to be reconnected to the new store.',
-  'Is there a Facebook or Instagram Shop, or product tags on your posts? If the catalog was linked to Shopify or Square, those tags now point at a store that is gone.',
+  'When did the orders drop: right after the Squarespace launch in late August, or back when the store moved from Shopify to GoDaddy?',
+  'Is there a Facebook or Instagram Shop, or product tags on your posts? If the catalog was linked to Shopify or GoDaddy, those tags now point at a store that is gone.',
   'Did you have Google Search Console set up before? If so, it still holds your old search history and shows exactly which pages lost traffic.',
-  'Did your customer email list come over from Shopify and Square? A short "we moved, here is the new store" email is the fastest way to bring past buyers back.',
+  'Did your customer email list come over from Shopify and GoDaddy? A short "we moved, here is the new store" email is the fastest way to bring past buyers back.',
 ];
 
 const RECEIPTS = [
   ['Live site', 'www.crushedbotanicals.com read on October 4, 2026, served by Squarespace'],
-  ['Old addresses', '335 archived by the Wayback Machine (WooCommerce 2019 to 2020, Shopify 2024 to 2025, Square Online 2025)'],
-  ['Old stores', 'The Shopify and Square Online stores no longer answer; Squarespace is the only store'],
+  ['Old addresses', '318 archived by the Wayback Machine from the Shopify (2024 to 2025) and GoDaddy (2025) stores'],
+  ['Old stores', 'The Shopify and GoDaddy stores no longer answer; Squarespace is the only store'],
   ['Redirect targets', 'All 73 destination pages in the redirect block fetched and returned 200 on October 4'],
   ['Store data', '92 products, prices and stock read from the live Squarespace shop'],
   ['Cart test', 'Real add to cart and checkout page on October 4; we stopped before entering any details'],
   ['Search', 'Google searches for the domain and the business name on October 4'],
+  ['Old domain', 'elementalrocksnherbs.com: no DNS answer and no .com registry record (RDAP 404) on October 4'],
   ['Mail', 'Public DNS for crushedbotanicals.com returns no MX records'],
 ];
 
@@ -301,15 +329,15 @@ export default function CrushedBotanicalsAudit() {
           </p>
           <P className="mt-4 max-w-3xl">
             The checkout works, the products are good, and the site looks right. The orders stopped because the store has
-            moved platforms several times and the old addresses that Google, Pinterest and your past posts point to now
-            open error pages. Most of this you can fix yourself in an afternoon, and the exact steps and the redirect list
+            moved platforms twice, the old addresses that Google, Pinterest and your past posts point to now open error
+            pages, and Google Shopping still points at a domain that has expired. Most of this you can fix yourself in an afternoon, and the exact steps and the redirect list
             are below.
           </P>
 
           <div className="mt-8 grid gap-3 sm:grid-cols-4">
             {[
-              ['335', 'old addresses that now return an error'],
-              ['4', 'store platforms since 2019'],
+              ['318', 'old addresses that now return an error'],
+              ['3', 'stores since 2024: Shopify, GoDaddy, Squarespace'],
               ['0', 'analytics or ad tracking tools'],
               ['Works', 'cart and checkout, tested live'],
             ].map(([n, l]) => (
@@ -342,8 +370,8 @@ export default function CrushedBotanicalsAudit() {
         {/* the history */}
         <section className={CARD}>
           <Kicker>Why the orders stopped</Kicker>
-          <H2>Four stores, four sets of addresses</H2>
-          <P>One product, the elderberry syrup, has lived at four different addresses. Only the last one works today.</P>
+          <H2>Three stores, three sets of addresses</H2>
+          <P>One product, the elderberry syrup, has lived at three different addresses. Only the last one works today.</P>
           <div className="mt-5 overflow-x-auto">
             <table className="w-full text-left text-[14.5px]" style={READ}>
               <thead>
@@ -400,7 +428,7 @@ export default function CrushedBotanicalsAudit() {
         {/* the plan */}
         <section className={CARD}>
           <Kicker>The fix</Kicker>
-          <H2>Five steps, in this order</H2>
+          <H2>Six steps, in this order</H2>
           <ol className="space-y-6">
             {STEPS.map((s, i) => (
               <li key={s.title} className="flex gap-4">
@@ -439,7 +467,7 @@ export default function CrushedBotanicalsAudit() {
 
         {/* questions */}
         <section className={CARD}>
-          <Kicker>Five questions for you</Kicker>
+          <Kicker>Four questions for you</Kicker>
           <H2>What we could not see from outside</H2>
           <ol className="space-y-3 list-decimal pl-5">
             {QUESTIONS.map((q) => (
