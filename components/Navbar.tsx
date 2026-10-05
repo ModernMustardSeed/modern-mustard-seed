@@ -57,6 +57,8 @@ const MENU_GROUPS = [
     heading: 'Company',
     links: [
       { label: 'Journal', href: '/blog' },
+      { label: 'Compare Your Options', href: '/compare' },
+      { label: "Buyer's Guides", href: '/best' },
       { label: 'Sarah Scarano', href: '/sarahscarano' },
       { label: 'Contact', href: '/contact' },
       { label: 'Partner Program', href: '/partners' },

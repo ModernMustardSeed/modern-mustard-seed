@@ -44,7 +44,6 @@
 - Custom software and automation: https://modernmustardseed.com/services
 - Marketing (social, articles, commercials, ads, email, Google Business Profile): https://modernmustardseed.com/marketing
 - Advisory, retained counsel by the quarter: https://modernmustardseed.com/advisory
-- Branding and rebranding: https://modernmustardseed.com/brand
 - Launch films: https://modernmustardseed.com/launch-film
 - Command Center: https://modernmustardseed.com/command-center
 - How an engagement runs: https://modernmustardseed.com/work-with-us
@@ -86,6 +85,37 @@
 - Health practices: https://modernmustardseed.com/for/health
 - Restaurants: https://modernmustardseed.com/for/restaurants
 - Wedding venues: https://modernmustardseed.com/for/weddings
+- Real estate investors: https://modernmustardseed.com/for/real-estate-investors
+- Real estate agents: https://modernmustardseed.com/for/realtors
+- Service businesses: https://modernmustardseed.com/for/service-businesses
+- DTC and apparel brands: https://modernmustardseed.com/for/dtc-brands
+- Solopreneurs and creators: https://modernmustardseed.com/for/solopreneurs
+- Coaches and consultants: https://modernmustardseed.com/for/coaches-consultants
+
+## Comparisons
+
+Honest side-by-sides. Each says when the other option is the better choice; competitor prices were read from their own pages on the date shown on the page.
+
+- All comparisons: https://modernmustardseed.com/compare
+- Hiring a freelancer (e.g. Upwork) vs a product studio: https://modernmustardseed.com/compare/freelancer-vs-studio
+- Traditional web agency vs AI product studio: https://modernmustardseed.com/compare/web-agency-vs-product-studio
+- Wix or Squarespace vs a custom website: https://modernmustardseed.com/compare/wix-squarespace-vs-custom-website
+- GoHighLevel vs a custom build you own: https://modernmustardseed.com/compare/gohighlevel-vs-custom-build
+- AI receptionist vs live answering service (Ruby, Smith.ai): https://modernmustardseed.com/compare/ai-receptionist-vs-answering-service
+- AI receptionist vs voicemail: https://modernmustardseed.com/compare/ai-receptionist-vs-voicemail
+- Bubble and no-code vs a custom app: https://modernmustardseed.com/compare/bubble-no-code-vs-custom-app
+- In-house developer vs product studio: https://modernmustardseed.com/compare/in-house-developer-vs-product-studio
+
+## Buyer's guides
+
+Lists sorted by who each option fits. Modern Mustard Seed is on each list and discloses it; every option gets the same depth.
+
+- All buyer's guides: https://modernmustardseed.com/best
+- Best AI receptionists for contractors (Modern Mustard Seed, Avoca, Goodcall, Rosie, Smith.ai, Ruby): https://modernmustardseed.com/best/ai-receptionists-for-contractors
+- Best ways to answer calls when you are on a job (home services): https://modernmustardseed.com/best/ways-to-answer-calls-on-the-job
+- Best ways to get a website for a small business in Montana: https://modernmustardseed.com/best/ways-to-get-a-website-montana-small-business
+- Best ways for a non-technical founder to get a product built: https://modernmustardseed.com/best/ways-for-non-technical-founders-to-build-a-product
+- Best ways for a local business to get recommended by ChatGPT and Google AI: https://modernmustardseed.com/best/ways-to-get-recommended-by-chatgpt-and-google-ai
 
 ## Place, people and evidence
 

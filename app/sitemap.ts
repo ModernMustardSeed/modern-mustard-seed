@@ -4,6 +4,8 @@ import { SITE } from '@/lib/seo';
 import { industries } from '@/data/industries';
 import { liveTradePages } from '@/data/trade-pages';
 import { MONTANA_CITIES } from '@/data/montana-cities';
+import { comparePages } from '@/data/compare-pages';
+import { bestPages } from '@/data/best-pages';
 
 // PARKED 2026-08-07 (Sarah): /mustard-tree, /press, and /hatchery are out of
 // the sitemap and noindexed. The routes still answer directly; they are simply
@@ -58,6 +60,8 @@ const STATIC_PATHS = [
   '/kingdom',
   '/resources',
   '/blog',
+  '/compare',
+  '/best',
   '/about',
   '/sarahscarano',
   '/world',
@@ -130,6 +134,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.9,
   }));
 
+  // Comparisons and buyer's guides: the questions buyers put to AI assistants.
+  const guidePages = [
+    ...comparePages.map((p) => ({ url: `${SITE.url}/compare/${p.slug}`, lastModified: new Date(p.checked) })),
+    ...bestPages.map((p) => ({ url: `${SITE.url}/best/${p.slug}`, lastModified: new Date(p.checked) })),
+  ].map((e) => ({ ...e, changeFrequency: 'monthly' as const, priority: 0.85 }));
+
   const entries = [
     ...staticUrls,
     ...blog,
@@ -139,6 +149,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...storeItems,
     ...tradePages,
     ...cityPages,
+    ...guidePages,
   ];
   return Array.from(new Map(entries.map((entry) => [entry.url, entry])).values());
 }
