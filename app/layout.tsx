@@ -8,6 +8,7 @@ import Footer from '@/components/Footer';
 import DeferredChat from '@/components/DeferredChat';
 import RefCapture from '@/components/RefCapture';
 import AcquisitionCapture from '@/components/AcquisitionCapture';
+import HouseBeacon from '@/components/HouseBeacon';
 import AnalyticsScripts from '@/components/AnalyticsScripts';
 import CookieConsent from '@/components/CookieConsent';
 import InquiryPopup from '@/components/InquiryPopup';
@@ -105,6 +106,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </HideOnAppShell>
         <HydrationGate />
         <AcquisitionCapture />
+        <HouseBeacon />
         <RefCapture />
         <AnalyticsScripts />
         <CookieConsent />

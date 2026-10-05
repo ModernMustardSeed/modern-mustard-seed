@@ -38,6 +38,7 @@ export async function GET() {
     studio,
     brand: brandFor(account.project),
     projects: account.project.projects,
+    projectsPath: account.project.projectsPath ?? '/projects',
     publicUrl: account.project.publicUrl,
     googleProfileUrl: account.project.googleProfile?.mapsUrl ?? null,
     modules: {
