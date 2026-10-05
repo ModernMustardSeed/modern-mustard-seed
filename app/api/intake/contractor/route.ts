@@ -78,7 +78,8 @@ export async function POST(req: Request) {
   const files = Array.isArray(body.files) ? body.files.slice(0, 60) : [];
   const email = client.email as string;
   const who = (client.company as string) || (client.name as string) || email;
-  const licence = clean(answers.licenceNumber, 120);
+  // licenceNumber is the old field name; intakes submitted before 2026-10-05 carry it.
+  const licence = clean(answers.licenseNumber ?? answers.licenceNumber, 120);
 
   await supabase.from('client_intake').upsert(
     {
@@ -138,7 +139,7 @@ export async function POST(req: Request) {
         // The license is in the subject because it is the one answer that has
         // to end up on the live site, and a subject line is the only part of an
         // email you can be sure gets read.
-        subject: `Intake in: ${who}${licence ? ` · license ${licence}` : ' · NO LICENSE GIVEN'}`,
+        subject: `Intake in: ${who}${licence ? ` · license ${licence}` : ' · no license given'}`,
         html: `<div style="font:400 15px/1.6 sans-serif;color:#14181c;">
           <p style="margin:0 0 6px;"><strong>${who}</strong> finished the intake form.</p>
           <p style="margin:0 0 16px;color:#6e7c87;">${files.length} file${files.length === 1 ? '' : 's'} uploaded. They are on his card.</p>

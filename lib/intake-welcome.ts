@@ -56,7 +56,7 @@ export async function sendIntakeWelcome(
       <a href="${link}" style="display:inline-block;background:#C4380C;color:#fff;text-decoration:none;font-weight:700;padding:15px 26px;border:2px solid #14181c;box-shadow:4px 4px 0 #14181c;">Fill it in here</a>
     </p>
     <p style="margin:0 0 14px;">Photos matter most. The pictures on it now are stand-ins and they stay that way until yours arrive. Straight off your phone is perfect.</p>
-    <p style="margin:0 0 14px;">Skip anything you are not sure about. I will ring you about the rest.</p>
+    <p style="margin:0 0 14px;">Skip anything you are not sure about. I will call you about the rest.</p>
     <p style="margin:22px 0 0;">Sarah<br><a href="mailto:sarah@modernmustardseed.com" style="color:#C4380C;">sarah@modernmustardseed.com</a></p>
   </div>`;
 
@@ -78,7 +78,7 @@ ${link}
 Photos matter most. The pictures on it now are stand-ins and they stay that way
 until yours arrive. Straight off your phone is perfect.
 
-Skip anything you are not sure about. I will ring you about the rest.
+Skip anything you are not sure about. I will call you about the rest.
 
 Sarah
 sarah@modernmustardseed.com`,
