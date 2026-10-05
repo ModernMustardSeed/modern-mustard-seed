@@ -123,7 +123,7 @@ function Choice({
 export default function ContractorIntakeForm({
   intakeKey,
   company,
-  contact,
+  contact: _contact,
   services = [],
 }: {
   intakeKey: string;
@@ -143,7 +143,6 @@ export default function ContractorIntakeForm({
   const [files, setFiles] = useState<Uploaded[]>([]);
   const [uploading, setUploading] = useState(0);
   const [err, setErr] = useState('');
-  const first = contact.split(/\s+/)[0] || '';
 
   async function upload(list: FileList | null, kind: string, label: string) {
     if (!list?.length) return;
@@ -194,7 +193,7 @@ export default function ContractorIntakeForm({
           Received
         </p>
         <h2 className="font-display mb-4 text-3xl font-black tracking-tight text-[#0b3b44] md:text-5xl">
-          Thank you{first ? `, ${first}` : ''}.
+          Thank you{company && company !== 'your business' ? `, ${company}` : ''}.
         </h2>
         <p className="font-body mx-auto max-w-lg text-[17px] leading-relaxed text-[#0b3b44]/80">
           I have everything I need to start building {company}. I will email you the moment it is ready

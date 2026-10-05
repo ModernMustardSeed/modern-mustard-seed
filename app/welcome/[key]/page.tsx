@@ -44,7 +44,8 @@ export default async function WelcomePage({ params }: { params: Promise<{ key: s
 
   const company = (client.company as string) || 'your business';
   const contact = (client.name as string) || '';
-  const first = contact.split(/\s+/)[0] || '';
+  // Greets the business, not the person: Sarah, 2026-10-05, "say Lawn Dogs, not Garrett".
+  const named = (client.company as string) || '';
 
   return (
     <div className="relative min-h-screen bg-[#fbf5ea] pt-28 pb-28 text-[#0b3b44] md:pt-40">
@@ -56,15 +57,15 @@ export default async function WelcomePage({ params }: { params: Promise<{ key: s
           </span>
           <h1 className="font-display mb-6 text-4xl leading-[1.05] font-black tracking-tight md:text-6xl">
             Welcome aboard
-            {first ? (
+            {named ? (
               <>
-                , <em className="text-[#0a7c78] italic">{first}</em>
+                , <em className="text-[#0a7c78] italic">{named}</em>
               </>
             ) : null}
             .
           </h1>
           <p className="font-body mx-auto max-w-xl text-lg leading-relaxed text-[#0b3b44]/80">
-            Thank you for trusting us with {company}. This form is how your website becomes
+            Thank you for trusting us with your website. This form is how it becomes
             unmistakably yours: your photos, your services, your towns, your name.
           </p>
         </header>
