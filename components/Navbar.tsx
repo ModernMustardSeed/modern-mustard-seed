@@ -121,7 +121,9 @@ const DEPARTMENTS = [
   { name: 'Meet Mr. Mustard', tag: 'THE STUDIO ANSWERS, DAY AND NIGHT', href: '/mustard' },
 ];
 
-export default function Navbar() {
+/** `menuOnly` renders just the menu overlay, for a page that draws its own
+ *  header (the homepage). Any button marked `data-site-menu-toggle` opens it. */
+export default function Navbar({ menuOnly = false }: { menuOnly?: boolean } = {}) {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   // The layout wraps the nav in a `relative z-30` stacking context, so the
@@ -140,6 +142,24 @@ export default function Navbar() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // A page with its own header opens the menu from its own button.
+  useEffect(() => {
+    if (!menuOnly) return;
+    const onClick = (e: MouseEvent) => {
+      if ((e.target as Element | null)?.closest?.('[data-site-menu-toggle]')) setMenuOpen((o) => !o);
+    };
+    document.addEventListener('click', onClick);
+    return () => document.removeEventListener('click', onClick);
+  }, [menuOnly]);
+
+  useEffect(() => {
+    if (!menuOnly) return;
+    document.querySelectorAll('[data-site-menu-toggle]').forEach((b) => {
+      b.setAttribute('aria-expanded', String(menuOpen));
+      b.setAttribute('aria-label', menuOpen ? 'Close menu' : 'Open menu');
+    });
+  }, [menuOnly, menuOpen]);
 
   // Close the menu on navigation.
   useEffect(() => {
@@ -200,7 +220,7 @@ export default function Navbar() {
 
   return (
     <>
-      <nav
+      {!menuOnly && <nav
         data-studio-nav="true"
         className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 bg-[#fbf5ea]/95 backdrop-blur-md border-b-2 border-[#0b3b44] ${
           scrolled ? 'shadow-[0_3px_0_0_rgba(11,59,68,0.12)]' : ''
@@ -284,7 +304,7 @@ export default function Navbar() {
             </button>
           </div>
         </div>
-      </nav>
+      </nav>}
 
       {/* Full-screen mega-menu overlay (portaled to <body>, see `mounted`) */}
       {mounted && createPortal(
