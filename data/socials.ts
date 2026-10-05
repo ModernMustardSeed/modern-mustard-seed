@@ -23,6 +23,13 @@ export const navLinks = [
 export const bookingUrl = '/?book=1';
 
 // Google Business Profile review link. Shareable cleanly via /review.
+/**
+ * The company LinkedIn page (id 143941057), filled out 2026-10-05. The LinkedIn
+ * entry in `socials` is Sarah's personal profile and belongs on the Person;
+ * this one belongs on the Organization sameAs.
+ */
+export const linkedinCompanyUrl = 'https://www.linkedin.com/company/modernmustardseed';
+
 export const googleReviewUrl = 'https://g.page/r/CQPWYcgFAJByEAI/review';
 
 /**

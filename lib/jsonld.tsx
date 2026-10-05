@@ -1,5 +1,5 @@
 import { SITE, canonicalUrl } from './seo';
-import { googleProfileUrl, socials } from '@/data/socials';
+import { googleProfileUrl, linkedinCompanyUrl, socials } from '@/data/socials';
 import { PARABLE_REFERENCE, PARABLE_TEXT } from '@/data/parable';
 
 export const PERSON_ID = `${SITE.url}/#sarah`;
@@ -57,7 +57,7 @@ export const orgJsonLd = {
    * `hasMap` is the same claim in the property Google's local documentation
    * names. Both point at the CID URL in `data/socials.ts`; never retype it.
    */
-  sameAs: [googleProfileUrl, ...socials.filter((s) => s.name !== 'LinkedIn').map((s) => s.url)],
+  sameAs: [googleProfileUrl, linkedinCompanyUrl, ...socials.filter((s) => s.name !== 'LinkedIn').map((s) => s.url)],
   hasMap: googleProfileUrl,
   knowsAbout: ['Artificial intelligence for business', 'AI agents', 'AI voice agents',
     'AI receptionists', 'AI website design', 'Agentic websites', 'Agentic systems',
