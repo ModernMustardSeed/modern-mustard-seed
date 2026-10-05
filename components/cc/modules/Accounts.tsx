@@ -371,10 +371,10 @@ export default function Accounts({ session }: { session: Session }) {
       detail: google
         ? `Connected as ${google.account_email ?? 'your Google account'}. Posting to your profile turns on when Google approves our access; until then anything scheduled for Google is posted for you by hand.`
         : available
-          ? 'Sign in once with the Google account that manages your profile. We hold a key you can revoke any time, never a password.'
+          ? 'Sign in once with the Google account that manages your profile. We hold a key you can revoke any time, never a password. Google will say it has not verified our app yet, because its review is still in progress: press Advanced, then Go to modernmustardseed.com, and you land back here.'
           : 'Being wired from our side. Nothing for you to do yet.',
       open: session.googleProfileUrl ?? undefined,
-      action: google || !available ? null : { label: 'Connect Google', href: '/api/oauth/google/start' },
+      action: google || !available ? null : { label: 'Connect Google', href: '/api/oauth/google/start?back=cc' },
       disconnect: google
         ? async () => {
             await fetch('/api/portal/integrations', { method: 'DELETE' });

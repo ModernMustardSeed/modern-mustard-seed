@@ -69,34 +69,48 @@ export async function GET(req: Request) {
   // A mailbox sign-in comes back through the same registered redirect URI.
   if (isMailState(state)) return mailboxCallback(error, code, state as string);
 
-  // They said no. That is a legitimate answer, not a failure.
-  if (error) {
-    return NextResponse.redirect(`${SITE.url}/portal?connect=declined`);
+  // Where this lands: the Command Center's Accounts room when it started
+  // there (the state says so, under our MAC), otherwise the portal as before.
+  // A state too old to verify still names its desk: where a page lands grants
+  // nothing, so the unsigned tail may choose it. Only the MAC grants a connection.
+  const verified = state ? verifyState(state) : null;
+  let fromCc = verified?.back === 'cc';
+  if (!verified && state) {
+    try {
+      fromCc = Buffer.from(state.split('.')[0], 'base64url').toString('utf8').endsWith(':cc');
+    } catch {
+      /* the portal, then */
+    }
   }
-  if (!code || !state) {
-    return NextResponse.redirect(`${SITE.url}/portal?connect=failed`);
-  }
+  const done = (ok: boolean, note: string) =>
+    NextResponse.redirect(
+      fromCc
+        ? `${SITE.url}/cc?connect=${encodeURIComponent(ok ? `gbp-ok:${note}` : note === 'declined' ? 'gbp-denied' : `gbp-failed${note ? `:${note}` : ''}`)}#accounts`
+        : `${SITE.url}/portal?connect=${ok ? 'google' : note === 'declined' ? 'declined' : 'failed'}`,
+    );
 
-  const verified = verifyState(state);
+  // They said no. That is a legitimate answer, not a failure.
+  if (error) return done(false, 'declined');
+  if (!code || !state) return done(false, '');
   if (!verified) {
     console.error('google oauth: bad or expired state');
-    return NextResponse.redirect(`${SITE.url}/portal?connect=failed`);
+    return done(false, 'the sign-in took too long. Press Connect Google again.');
   }
 
   const tokens = await exchangeCode(code);
   if ('error' in tokens) {
     console.error('google oauth: token exchange failed:', tokens.error);
-    return NextResponse.redirect(`${SITE.url}/portal?connect=failed`);
+    return done(false, '');
   }
 
   const sb = getSupabase();
-  if (!sb) return NextResponse.redirect(`${SITE.url}/portal?connect=failed`);
+  if (!sb) return done(false, '');
 
   const saved = await saveGoogleIntegration(sb, verified.email, tokens);
   if (!saved.ok) {
     console.error('google oauth: could not store the connection:', saved.error);
-    return NextResponse.redirect(`${SITE.url}/portal?connect=failed`);
+    return done(false, '');
   }
 
-  return NextResponse.redirect(`${SITE.url}/portal?connect=google`);
+  return done(true, 'Google Business Profile');
 }
