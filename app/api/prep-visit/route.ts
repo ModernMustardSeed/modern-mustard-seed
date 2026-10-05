@@ -17,7 +17,8 @@ export const runtime = 'nodejs';
  * and the address is stored as a salted day hash, never raw.
  */
 
-const PROJECTS = new Set(['built-right']);
+// mms is this site itself, read by our own Command Center's Traffic room.
+const PROJECTS = new Set(['built-right', 'mms']);
 // Every page a prospect can open: the pitch (deck, audit, site) and the close
 // (quote, start, done) and the forms (onboard, handover). Sarah asks 'has he
 // opened anything yet' and the answer has to cover the pages that matter most.

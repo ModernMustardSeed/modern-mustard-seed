@@ -69,6 +69,13 @@ export type ClientProject = {
   /** The project pages on their site, for jobsite signs and photo drops. */
   /** Each carries the opening of its story and its cover, so a post can start from the page itself. */
   projects: Array<{ slug: string; title: string; story?: string; image?: string }>;
+  /** Where those pages live on their site. A builder's are /projects, a studio's /work. */
+  projectsPath?: string;
+  /**
+   * The pages a printed QR code can point at. Unset means a home builder's
+   * site: home, contact, projects, services, about, blog, community and towns.
+   */
+  campaignPages?: Array<{ path: string; label: string; group: string }>;
   /**
    * Their Command Center's own front: their name, their address, their
    * marks and colours. The same app answers there; only the door is theirs.
@@ -98,6 +105,31 @@ const BUILT_RIGHT_PROJECTS = [
   { slug: 'secluded-flathead-montana-luxury', title: 'Secluded Flathead Montana Luxury', image: BR_IMG + 'p-secluded-16-1600.webp', story: 'Deep in the Yaak, in the Purcell Mountains, the nearest neighbor is a long way off, and that is the point. This modern home brings real luxury to real seclusion, with stone and cedar accents, Louisiana Pacific siding in three styles, a matte black garage door and a glass front door that says welcome home.' },
   { slug: 'barndominium-flathead-montana', title: 'Barndominium Flathead Montana Style', image: BR_IMG + 'p-barndo-00-1600.webp', story: 'A barndominium puts the garage and the good life under one roof, and this timber-frame build in the Flathead does both with style. Wood and metal give the exterior its elegance, and directional soffit lights bring you up the drive and home after dark.' },
   { slug: 'flathead-lake-luxury-remodel', title: 'Flathead Lake Luxury Remodel', image: BR_IMG + 'p-flathead-05-1600.webp', story: 'Some homes do not need replacing. They need reimagining. This whole-home remodel on Flathead Lake kept a well-loved property and made it new, beginning with the biggest change of all: a second story luxury addition built over an expanded garage, with a wall of windows that faces the grounds.' },
+];
+
+/**
+ * Our own case studies, as they read on /work. Every story is told from the
+ * page itself; an image is a JPEG already on our site, because Instagram takes
+ * nothing else. A study without one still names its page in Traffic and
+ * Campaigns, and stays out of "From your website", which needs a photo.
+ */
+const MMS = 'https://modernmustardseed.com';
+const MMS_WORK = [
+  { slug: 'built-right-in-montana', title: 'Built Right in Montana', image: MMS + '/images/editorial/brim-homes-1440.jpg', story: 'Built Right in Montana has built custom homes in Northwest Montana since 1997, and their old website showed none of it. We rebuilt it: 36 pages written around their real projects, twelve five-star reviews word for word, a chat that answers the way their office would, and every lead texted and emailed to the office the minute it lands. The family owns every page of it.' },
+  { slug: 'cross-and-covenant', title: 'Cross + Covenant', image: MMS + '/images/editorial/cross-covenant-current-1440.jpg', story: 'Cross + Covenant went from a sketch to a live faith apparel store in under 60 days. We built the headless storefront, the WebGL hero on every collection, two production tiers and a hand-numbered signature line with a live edition counter. It reads like a fashion house and it checks out like a Shopify store.' },
+  { slug: 'fiat-lux-design', title: 'Fiat Lux Design', image: MMS + '/work-shots/fiat-lux.jpg', story: 'Most virtual staging looks fake for one reason: the model melts the windows. Fiat Lux Design stages any room from a listing link or a photo in 34 editorial styles, and a second model locks the real windows and doors pixel for pixel. Then you shop the exact pieces in the picture.' },
+  { slug: 'irl', title: 'IRL', image: MMS + '/video/launch-film-irl-poster.jpg', story: 'IRL ends the "what do you want to do" conversation. Everybody answers five questions separately, a wheel spins, and out comes one real plan with street addresses on it, checked against the forecast for the hours you will be out. No account, no database: the plan lives in its own link.' },
+  { slug: 'voicestaff', title: 'VoiceStaff' },
+  { slug: 'deed-ai', title: 'DEED AI' },
+  { slug: 'ptg-deal-analyzer', title: 'PTG Deal Analyzer' },
+  { slug: 'ugc-studio-secret', title: 'UGC Studio Secret' },
+  { slug: 'cxc-studio', title: 'CXC Studio' },
+  { slug: 'the-claw-concierge', title: 'The Claw Concierge' },
+  { slug: 'wild-daisy-command-center', title: 'Wild Daisy Command Center' },
+  { slug: 'olive-shoot', title: 'Olive Shoot' },
+  { slug: 'make-me-studio', title: 'Make Me Studio' },
+  { slug: 'ignition', title: 'Ignition' },
+  { slug: 'alive-notes', title: 'Alive Notes' },
 ];
 
 export const CLIENT_PROJECTS: Record<string, ClientProject> = {
@@ -162,6 +194,64 @@ export const CLIENT_PROJECTS: Record<string, ClientProject> = {
       logoOnDark: 'https://built-right-montana-demo.vercel.app/images/logo-footer.svg',
       colors: { ink: '#161616', paper: '#f6f3ee', accent: '#48603c', accent2: '#9b4f2f' },
       guideName: 'your Built Right guide',
+    },
+  },
+  // THE HOUSE DESK. Our own Command Center, so every room is proven on our own
+  // feeds before a client's: posting to our Page and profiles, campaigns to our
+  // own book, Mr. Mustard's conversations, and the traffic on this site. It is
+  // the studio's account, so the studio address is the person at the desk
+  // (Sarah, 2026-10-05). The Board, From the site and the Bench are a
+  // builder's rooms (a Buildertrend hand-off, jobsite photos, subs' insurance),
+  // so they are hidden here exactly as they are for Built Right.
+  mms: {
+    key: 'mms',
+    door: 'mms',
+    morningBrief: ['sarah'],
+    hiddenRooms: ['jobs', 'field', 'trades'],
+    clientEmail: 'sarah@modernmustardseed.com',
+    business: 'Modern Mustard Seed',
+    siteUrl: MMS,
+    publicUrl: MMS,
+    origins: [MMS, 'https://www.modernmustardseed.com'],
+    notify: { phone: null, emails: ['sarah@modernmustardseed.com'] },
+    people: {
+      sarah: { name: 'Sarah', email: 'sarah@modernmustardseed.com' },
+    },
+    answers: 'Sarah',
+    phone: SITE.phone,
+    // Mr. Mustard: the site chat and the (406) 312-1223 line.
+    assistantId: 'faf7f2c4-9cfd-4fcd-9c1a-73b7c9a38eee',
+    crm: null,
+    emailDomain: 'modernmustardseed.com',
+    campaignFrom: 'Modern Mustard Seed <sarah@modernmustardseed.com>',
+    postal: '14847 Montana Highway 35, Unit 5, Bigfork, MT 59911',
+    // Listing 02218546627237546724, owned by makeourcitypretty@gmail.com.
+    googleProfile: { reviewUrl: 'https://maps.google.com/?cid=8255098141806810627', mapsUrl: 'https://maps.google.com/?cid=8255098141806810627' },
+    reviews: [
+      { key: 'google', label: 'Google', url: 'https://maps.google.com/?cid=8255098141806810627' },
+      { key: 'facebook', label: 'Facebook', url: 'https://www.facebook.com/profile.php?id=61579149904370&sk=reviews' },
+    ],
+    projects: MMS_WORK,
+    projectsPath: '/work',
+    campaignPages: [
+      { path: '/', label: 'Home page', group: 'Pages' },
+      { path: '/contact', label: 'Contact', group: 'Pages' },
+      { path: '/work', label: 'Our work', group: 'Pages' },
+      { path: '/websites', label: 'Websites', group: 'Pages' },
+      { path: '/website-audit', label: 'Website audit', group: 'Pages' },
+      { path: '/blog', label: 'Blog', group: 'Pages' },
+      { path: '/about', label: 'About', group: 'Pages' },
+    ],
+    office: {
+      name: 'Modern Mustard Seed Command Center',
+      host: 'modernmustardseed.com/cc/mms',
+      origins: [],
+      logo: MMS + '/brand/logo-lockup.png',
+      // No white cut of the lockup exists, so the rail sets our name instead.
+      logoOnDark: '',
+      // Mustard-800: the pop yellow fails as text and under white type on a white card.
+      colors: { ink: '#161616', paper: '#FBF6EA', accent: '#9A5E00', accent2: '#E0301E' },
+      guideName: 'the house guide',
     },
   },
 };

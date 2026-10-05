@@ -88,7 +88,7 @@ function place(v: Visit): string {
 export function pageName(path: string, titles: Map<string, string>): string {
   const p = path.replace(/\/$/, '') || '/';
   if (p === '/') return 'Home page';
-  const project = /^\/projects\/([^/]+)$/.exec(p);
+  const project = /^\/(?:projects|work)\/([^/]+)$/.exec(p);
   if (project && titles.has(project[1])) return titles.get(project[1]) as string;
   const town = /^\/custom-homes-(.+)-([a-z]{2})$/.exec(p);
   if (town) return `Custom homes in ${town[1].split('-').map((w) => w[0].toUpperCase() + w.slice(1)).join(' ')}`;

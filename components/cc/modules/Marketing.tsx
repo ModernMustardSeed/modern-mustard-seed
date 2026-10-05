@@ -40,7 +40,7 @@ export default function Marketing({ session, refreshPulse }: { session: Session;
   // cover, and a link to the page. Their words, edited on the way out.
   const pages = session.projects.filter((p) => p.story && p.image);
   const startFrom = (p: (typeof pages)[number]) => {
-    setSeed({ text: p.story ?? '', photo: p.image ?? null, link: `${session.publicUrl}/projects/${p.slug}` });
+    setSeed({ text: p.story ?? '', photo: p.image ?? null, link: `${session.publicUrl}${session.projectsPath}/${p.slug}` });
     setNote(null);
   };
 
@@ -50,13 +50,13 @@ export default function Marketing({ session, refreshPulse }: { session: Session;
     setFilling(true);
     setNote(null);
     const said = new Set((data?.posts ?? []).map((x) => x.link ?? ''));
-    const pick = pages.filter((p) => !said.has(`${session.publicUrl}/projects/${p.slug}`)).slice(0, 5);
+    const pick = pages.filter((p) => !said.has(`${session.publicUrl}${session.projectsPath}/${p.slug}`)).slice(0, 5);
     let n = 0;
     for (const p of pick) {
       const r = await fetch('/api/portal/posting', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ action: 'post', text: p.story, url: p.image, link: `${session.publicUrl}/projects/${p.slug}` }),
+        body: JSON.stringify({ action: 'post', text: p.story, url: p.image, link: `${session.publicUrl}${session.projectsPath}/${p.slug}` }),
       }).catch(() => null);
       if (r?.ok) n += 1;
     }
