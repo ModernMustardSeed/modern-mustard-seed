@@ -80,13 +80,15 @@ function stateSecret(): string {
  * the email of the client who started it, so a callback cannot be replayed to attach
  * someone else's Google account to a different client's portal.
  */
-export function signState(email: string): string {
-  const payload = `${email}:${Date.now() + 15 * 60 * 1000}`;
+export function signState(email: string, back?: 'cc'): string {
+  // `back` names the desk the flow started from, inside the MAC, so the
+  // callback lands a Command Center sign-in back on its Accounts room.
+  const payload = `${email}:${Date.now() + 15 * 60 * 1000}${back ? `:${back}` : ''}`;
   const mac = crypto.createHmac('sha256', stateSecret()).update(payload).digest('base64url');
   return `${Buffer.from(payload).toString('base64url')}.${mac}`;
 }
 
-export function verifyState(state: string): { email: string } | null {
+export function verifyState(state: string): { email: string; back?: 'cc' } | null {
   const [body, mac] = (state || '').split('.');
   if (!body || !mac) return null;
   let payload: string;
@@ -100,14 +102,17 @@ export function verifyState(state: string): { email: string } | null {
   const b = Buffer.from(expected);
   if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) return null;
 
-  const idx = payload.lastIndexOf(':');
-  const email = payload.slice(0, idx);
-  const exp = Number(payload.slice(idx + 1));
+  // email:exp, or email:exp:cc. An address never holds a colon.
+  const parts = payload.split(':');
+  const back = parts.length === 3 && parts[2] === 'cc' ? ('cc' as const) : undefined;
+  if (parts.length !== 2 && !back) return null;
+  const email = parts[0];
+  const exp = Number(parts[1]);
   if (!email || !Number.isFinite(exp) || Date.now() > exp) return null;
-  return { email };
+  return back ? { email, back } : { email };
 }
 
-export function authUrl(email: string): string | null {
+export function authUrl(email: string, back?: 'cc'): string | null {
   const cfg = googleConfig();
   if (!cfg) return null;
   const u = new URL(AUTH_URL);
@@ -121,7 +126,7 @@ export function authUrl(email: string): string | null {
   u.searchParams.set('access_type', 'offline');
   u.searchParams.set('prompt', 'consent');
   u.searchParams.set('include_granted_scopes', 'true');
-  u.searchParams.set('state', signState(email));
+  u.searchParams.set('state', signState(email, back));
   return u.toString();
 }
 

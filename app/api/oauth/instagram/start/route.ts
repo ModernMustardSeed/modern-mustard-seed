@@ -28,7 +28,7 @@ export async function GET(req: Request) {
       by = 'admin';
     }
   }
-  if (!email) return NextResponse.redirect(`${SITE.url}/portal/login?next=/portal/posting`);
+  if (!email) return NextResponse.redirect(back === 'cc' ? `${SITE.url}/cc/login` : `${SITE.url}/portal/login?next=/portal/posting`);
 
   if (!instagramLoginReady()) {
     const note = 'instagram-unconfigured';

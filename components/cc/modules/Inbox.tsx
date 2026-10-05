@@ -221,7 +221,7 @@ export default function Inbox({ refreshPulse }: { refreshPulse: () => void }) {
       {note && <p className="mb-4 text-[13px] text-[#B42318]">{note}</p>}
       <div className="rounded-xl border border-[var(--cc-line)] p-4">
         <p className="text-[14.5px] font-semibold">Gmail or Google Workspace</p>
-        <p className="mt-1 text-[13.5px] text-[var(--cc-muted)]">Sign in on Google&apos;s own screen and pick the mailbox. No password ever reaches us, and you can cut us off from your Google account at any time.</p>
+        <p className="mt-1 text-[13.5px] text-[var(--cc-muted)]">Sign in on Google&apos;s own screen and pick the mailbox. No password ever reaches us, and you can cut us off from your Google account at any time. If Google says it has not verified our app, press Advanced, then Go to modernmustardseed.com: its review is still in progress.</p>
         <div className="mt-3">
           <Button kind="primary" href={`/api/portal/mail/google?back=cc${typedGoogle ? `&hint=${encodeURIComponent(connect.address.trim())}` : ''}`}>
             <GoogleMark /> Sign in with Google
