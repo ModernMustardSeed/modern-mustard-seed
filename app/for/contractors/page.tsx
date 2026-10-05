@@ -235,7 +235,7 @@ export default function ContractorsPage() {
                   </li>
                 ))}
               </ul>
-              <p className="mt-5 text-sm text-[#0b3b44]/75 font-body">These are the six things our presence audit grades. Want to know where your site stands? <Link href="/presence-audit" className="font-semibold underline underline-offset-2">Run the free presence audit</Link>.</p>
+              <p className="mt-5 text-sm text-[#0b3b44]/75 font-body">These are the six things our presence audit grades. Want to know where your site stands? <Link href="/presence-audit" className="font-semibold underline underline-offset-2">Run the free presence audit</Link>. Still choosing who answers the phone? See <Link href="/best/ai-receptionists-for-contractors" className="font-semibold underline underline-offset-2">the best AI receptionists for contractors</Link>.</p>
             </div>
           </div>
         </section>

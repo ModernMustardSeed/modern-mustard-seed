@@ -8,6 +8,8 @@ import {
 } from '@/lib/jsonld';
 import { buildMetadata, SITE } from '@/lib/seo';
 import { industries, industryBySlug } from '@/data/industries';
+import { comparePageBySlug } from '@/data/compare-pages';
+import { bestPageBySlug } from '@/data/best-pages';
 import { bookingUrl } from '@/data/socials';
 import PopPageHero, { pop } from '@/components/pop/PopPageHero';
 
@@ -29,6 +31,16 @@ export async function generateMetadata({ params }: { params: Params }) {
 }
 
 const IND_ALT = 'Painting: Mr. Mustard strolls a sunny seaside promenade of little shops with Tiffany-blue and coral awnings, a bakery, a gelato stand, a surf rental and a boat charter, the family with gelato and the sea at the end of the street';
+
+/** The comparisons and buyer's guides each audience reaches for before it hires anyone. */
+const BEFORE_YOU_CHOOSE: Record<string, { compare: string[]; best: string[] }> = {
+  'service-businesses': { compare: ['ai-receptionist-vs-answering-service'], best: ['ai-receptionists-for-contractors'] },
+  solopreneurs: { compare: ['freelancer-vs-studio'], best: ['ways-for-non-technical-founders-to-build-a-product'] },
+  'coaches-consultants': { compare: ['gohighlevel-vs-custom-build', 'wix-squarespace-vs-custom-website'], best: [] },
+  'dtc-brands': { compare: ['web-agency-vs-product-studio', 'wix-squarespace-vs-custom-website'], best: [] },
+  realtors: { compare: ['gohighlevel-vs-custom-build', 'ai-receptionist-vs-voicemail'], best: [] },
+  'real-estate-investors': { compare: ['in-house-developer-vs-product-studio', 'bubble-no-code-vs-custom-app'], best: [] },
+};
 
 export default async function IndustryPage({ params }: { params: Params }) {
   const { industry } = await params;
@@ -224,6 +236,24 @@ export default async function IndustryPage({ params }: { params: Params }) {
             </div>
           </div>
         </section>
+
+        {BEFORE_YOU_CHOOSE[i.slug] ? (
+          <section className="max-w-4xl mx-auto px-6 md:px-8 pb-4">
+            <h2 className="font-display text-xl md:text-2xl font-black text-[#0b3b44] tracking-tight mb-4">Before you choose anyone</h2>
+            <ul className="space-y-2 font-body text-base leading-7 list-disc pl-5">
+              {BEFORE_YOU_CHOOSE[i.slug].compare.map((c) => comparePageBySlug[c]).filter(Boolean).map((c) => (
+                <li key={c.slug}>
+                  <Link href={`/compare/${c.slug}`} className="text-[#0a7c78] font-semibold underline underline-offset-2">{c.h1}</Link>
+                </li>
+              ))}
+              {BEFORE_YOU_CHOOSE[i.slug].best.map((b) => bestPageBySlug[b]).filter(Boolean).map((b) => (
+                <li key={b.slug}>
+                  <Link href={`/best/${b.slug}`} className="text-[#0a7c78] font-semibold underline underline-offset-2">{b.h1}</Link>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ) : null}
 
         {/* FAQ */}
         <section className="max-w-4xl mx-auto px-6 md:px-8 py-16">

@@ -100,6 +100,7 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
           <nav aria-label="Website and agentic systems services" className="mt-6 flex flex-wrap gap-x-6 gap-y-3 font-bold underline underline-offset-4">
             <Link href="/agentic-websites">How our agentic websites work</Link>
             <Link href="/talking-website">The Talking Website</Link>
+            <Link href="/best/ways-to-get-a-website-montana-small-business">Website options for a Montana business, compared</Link>
             <Link href="/voice-agents">Voice agents</Link>
             <Link href="/services">Automation and custom software</Link>
             <Link href="/work">See the builds</Link>
