@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { JsonLd, articleJsonLd, breadcrumbJsonLd, faqJsonLd } from '@/lib/jsonld';
 import { buildMetadata, SITE } from '@/lib/seo';
 import { bestPages, bestPageBySlug } from '@/data/best-pages';
+import { comparePageBySlug } from '@/data/compare-pages';
 import { bookingUrl } from '@/data/socials';
 import PopPageHero, { pop } from '@/components/pop/PopPageHero';
 import { formatChecked } from '@/lib/checked-date';
@@ -27,6 +28,15 @@ export async function generateMetadata({ params }: { params: Params }) {
 
 const ART_ALT = 'Painting: Mr. Mustard on a sunny seaside road above the sea, the family in a Tiffany-blue convertible';
 
+/** The side-by-side comparisons that answer the next question each guide raises. */
+const RELATED_COMPARISONS: Record<string, string[]> = {
+  'ai-receptionists-for-contractors': ['ai-receptionist-vs-answering-service', 'ai-receptionist-vs-voicemail'],
+  'ways-to-answer-calls-on-the-job': ['ai-receptionist-vs-voicemail', 'ai-receptionist-vs-answering-service'],
+  'ways-to-get-a-website-montana-small-business': ['wix-squarespace-vs-custom-website', 'web-agency-vs-product-studio', 'freelancer-vs-studio'],
+  'ways-for-non-technical-founders-to-build-a-product': ['bubble-no-code-vs-custom-app', 'in-house-developer-vs-product-studio', 'freelancer-vs-studio'],
+  'ways-to-get-recommended-by-chatgpt-and-google-ai': ['wix-squarespace-vs-custom-website', 'gohighlevel-vs-custom-build'],
+};
+
 function anchor(name: string) {
   return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 }
@@ -37,6 +47,8 @@ export default async function BestPage({ params }: { params: Params }) {
   if (!p) notFound();
 
   const path = `/best/${p.slug}`;
+  const relatedComparisons = (RELATED_COMPARISONS[p.slug] ?? []).map((s) => comparePageBySlug[s]).filter(Boolean);
+  const otherGuides = bestPages.filter((b) => b.slug !== p.slug);
   const url = `${SITE.url}${path}`;
 
   const itemList = {
@@ -200,6 +212,25 @@ export default async function BestPage({ params }: { params: Params }) {
                 </summary>
                 <p className="text-[#3a3733] text-sm md:text-base font-body leading-7 mt-4">{item.a}</p>
               </details>
+            ))}
+          </div>
+        </section>
+
+        {/* Related */}
+        <section className="max-w-6xl mx-auto px-6 md:px-8 py-12">
+          <h2 className="font-display text-2xl md:text-3xl font-black text-[#0b3b44] tracking-tight mb-6 text-center">Related comparisons and guides</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {relatedComparisons.map((c) => (
+              <Link key={c.slug} href={`/compare/${c.slug}`} className="pop-card p-5 hover:-translate-y-1 transition-transform duration-300">
+                <span className="text-[10px] uppercase tracking-[0.3em] font-mono font-bold text-[#0a7c78] block mb-2">{c.eyebrow}</span>
+                <span className="font-display text-base font-black text-[#0b3b44] leading-snug">{c.h1}</span>
+              </Link>
+            ))}
+            {otherGuides.map((g) => (
+              <Link key={g.slug} href={`/best/${g.slug}`} className="pop-card p-5 hover:-translate-y-1 transition-transform duration-300">
+                <span className="text-[10px] uppercase tracking-[0.3em] font-mono font-bold text-[#0a7c78] block mb-2">Buyer&apos;s guide</span>
+                <span className="font-display text-base font-black text-[#0b3b44] leading-snug">{g.h1}</span>
+              </Link>
             ))}
           </div>
         </section>

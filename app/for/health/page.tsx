@@ -271,7 +271,7 @@ export default function HealthPage() {
                   </li>
                 ))}
               </ul>
-              <p className="mt-5 text-sm text-[#0b3b44]/75 font-body">These are the six things our presence audit grades. Want to know where your practice stands? <Link href="/presence-audit" className="font-semibold underline underline-offset-2">Run the free presence audit</Link>.</p>
+              <p className="mt-5 text-sm text-[#0b3b44]/75 font-body">These are the six things our presence audit grades. Want to know where your practice stands? <Link href="/presence-audit" className="font-semibold underline underline-offset-2">Run the free presence audit</Link>. For the moves that get a practice named in AI answers, see <Link href="/best/ways-to-get-recommended-by-chatgpt-and-google-ai" className="font-semibold underline underline-offset-2">the best ways to get recommended by ChatGPT and Google AI</Link>.</p>
             </div>
           </div>
         </section>

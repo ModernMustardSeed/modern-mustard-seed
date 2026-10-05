@@ -31,6 +31,12 @@ export async function generateMetadata({ params }: { params: Promise<{ trade: st
   });
 }
 
+/** Field trades whose callers reach a crew on a job site; they get the contractors guide too. */
+const FIELD_TRADES = new Set([
+  'roofers', 'hvac', 'plumbers', 'electricians', 'restoration', 'septic', 'garage-doors', 'tree-service',
+  'landscapers', 'pools', 'pest-control', 'painters', 'cleaning', 'home-services',
+]);
+
 export default async function TradePage({ params }: { params: Promise<{ trade: string }> }) {
   const { trade } = await params;
   const page = getTradePage(trade);
@@ -364,6 +370,32 @@ export default async function TradePage({ params }: { params: Promise<{ trade: s
               </details>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ─────────────── STILL COMPARING ─────────────── */}
+      <section className="border-b-2 border-[#0b3b44] bg-white">
+        <div className="max-w-4xl mx-auto px-6 py-10 md:py-12">
+          <p className="font-mono text-[11px] uppercase tracking-[0.3em] font-bold text-[#8f6600]">Still Comparing</p>
+          <p className="mt-3 font-body text-[16px] text-[#3d382e] leading-relaxed">
+            Weighing a voice agent against what answers the phone today? See{' '}
+            <Link href="/compare/ai-receptionist-vs-answering-service" className="underline underline-offset-2 font-semibold">
+              an AI receptionist compared with a live answering service
+            </Link>{' '}
+            and{' '}
+            <Link href="/compare/ai-receptionist-vs-voicemail" className="underline underline-offset-2 font-semibold">
+              an AI receptionist compared with voicemail
+            </Link>
+            {FIELD_TRADES.has(trade) ? (
+              <>
+                , or the shortlist of{' '}
+                <Link href="/best/ai-receptionists-for-contractors" className="underline underline-offset-2 font-semibold">
+                  the best AI receptionists for contractors
+                </Link>
+              </>
+            ) : null}
+            . Each one names when another option is the better buy.
+          </p>
         </div>
       </section>
 
