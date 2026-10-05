@@ -48,6 +48,8 @@ export default function Footer() {
         { label: 'What You Get', href: '/playbook' },
         { label: 'Agentic Websites', href: '/agentic-websites' },
         { label: 'Answer Engine Resources', href: '/resources' },
+        { label: 'Compare Your Options', href: '/compare' },
+        { label: "Buyer's Guides", href: '/best' },
       ],
     },
     {
