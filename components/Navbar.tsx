@@ -8,68 +8,21 @@ import { usePathname } from 'next/navigation';
 import { navLinks, socials } from '@/data/socials';
 import { DEMO_LINE } from '@/data/trade-pages';
 
-// Curated site map for the hamburger menu: fewer, clearer doors. Everything
-// dropped here (Idea to Spec, AI-Proof, industries, legal) stays reachable
-// through Services, the footer, and in-page cross-links.
-const MENU_GROUPS = [
-  {
-    heading: 'The Studio',
-    links: [
-      { label: 'The Work', href: '/work' },
-      { label: 'Services', href: '/services' },
-      { label: 'How We Work', href: '/work-with-us' },
-      { label: 'The System', href: '/the-system' },
-      { label: 'About Sarah', href: '/about' },
-      { label: 'The Free Presence Audit', href: '/presence-audit' },
-      { label: 'The Bottleneck Breaker', href: '/audit' },
-      { label: 'Book A Call', href: '/book' },
-      { label: 'Or Write Instead', href: '/inquire' },
-    ],
-  },
-  {
-    heading: 'Disciplines',
-    links: [
-      { label: 'AI For Your Business', href: '/ai' },
-      { label: 'Websites And Brand', href: '/websites' },
-      { label: 'Voice Agents', href: '/voice-agents' },
-      { label: 'Marketing', href: '/marketing' },
-      { label: 'For the Kingdom', href: '/kingdom' },
-      { label: 'Advisory', href: '/advisory' },
-      { label: 'Agentic Native', href: '/agentic-native' },
-      { label: 'Claude Setup', href: '/claude' },
-      { label: 'Mustard Pictures', href: '/pictures' },
-      { label: 'The Launch Film', href: '/launch-film' },
-    ],
-  },
-  {
-    heading: 'Where We Work',
-    links: [
-      { label: 'Nationwide Reach', href: '/nationwide' },
-      { label: 'Northwest Montana', href: '/montana' },
-      { label: 'Kalispell', href: '/montana/kalispell' },
-      { label: 'Industries We Build For', href: '/for' },
-      { label: 'For Builders and Contractors', href: '/for/contractors' },
-      { label: 'For Health Practices', href: '/for/health' },
-      { label: 'For Wedding Venues', href: '/for/weddings' },
-    ],
-  },
-  {
-    heading: 'Company',
-    links: [
-      { label: 'Journal', href: '/blog' },
-      { label: 'Compare Your Options', href: '/compare' },
-      { label: "Buyer's Guides", href: '/best' },
-      { label: 'Sarah Scarano', href: '/sarahscarano' },
-      { label: 'Contact', href: '/contact' },
-      { label: 'Partner Program', href: '/partners' },
-      { label: 'Sales Rep Jobs', href: '/partners/sales-rep' },
-      { label: 'Agency Partners', href: '/white-label' },
-      { label: 'Client Portal', href: '/portal' },
-    ],
-  },
+// The hamburger menu is short on purpose (Sarah, 2026-10-05: "way too much in
+// the hamburger menu"). Six offers, six studio doors, two calls to action.
+// Every page that came off it (industries, places, the buyer's guides, partner
+// programs, the parked departments below) still answers at its URL and stays
+// listed in the footer and the sitemap.
+const STUDIO_LINKS = [
+  { label: 'The Work', href: '/work' },
+  { label: 'All Services', href: '/services' },
+  { label: 'How We Work', href: '/work-with-us' },
+  { label: 'About Sarah', href: '/about' },
+  { label: 'Journal', href: '/blog' },
+  { label: 'Contact', href: '/contact' },
 ];
 
-// The Studio Departments. Rendered as the signature ink panel near the bottom
+// What We Build: the offers at the top of the ink menu. History of the old panel
 // of the drawer (names in Title Case, descriptors in tracked mono caps; never a
 // lowercase opener).
 //
@@ -103,22 +56,13 @@ const MENU_GROUPS = [
 // row plus the Footer, sitemap, services-hub, llms.txt, front-desk, portfolio,
 // industries, partner-swipe, jsonld, and comic entries, drop the noindex flag on
 // app/voice-agents/build/page.tsx, and repoint the cross-sell CTAs.
-const DEPARTMENTS = [
-  { name: 'AI For Your Business', tag: 'AI WEBSITES, AI RECEPTIONISTS, AI AGENTS', href: '/ai' },
-  { name: 'The Talking Website', tag: 'A SITE THAT ANSWERS ITS OWN PHONE', href: '/talking-website' },
+const OFFERS = [
+  { name: 'AI For Your Business', tag: 'AI WEBSITES, RECEPTIONISTS AND AGENTS', href: '/ai' },
   { name: 'Websites And Brand', tag: 'DESIGN-LED, BUILT TO BE FOUND', href: '/websites' },
   { name: 'Voice Agents', tag: `THE STUDIO LINE: ${DEMO_LINE.display}`, href: '/voice-agents' },
   { name: 'Custom Software', tag: 'APPLICATIONS, STORES, AGENTIC SYSTEMS', href: '/services' },
+  { name: 'Marketing', tag: 'SOCIAL, BLOG, ADS AND EMAIL', href: '/marketing' },
   { name: 'Advisory', tag: 'RETAINED COUNSEL, BY THE QUARTER', href: '/advisory' },
-  { name: 'The Presence Audit', tag: 'FREE: SITE, PROFILE AND REVIEWS, GRADED', href: '/presence-audit' },
-  { name: 'The Bottleneck Breaker', tag: 'THE ONE THING COSTING YOU MOST, IN 60 SECONDS', href: '/audit' },
-  { name: 'Agentic Native', tag: 'YOUR COMPANY ON AGENTIC SYSTEMS, YOUR TEAM RUNNING IT', href: '/agentic-native' },
-  { name: 'Claude Setup', tag: 'CLAUDE CODE, CUSTOM SKILLS AND AGENTS, SET UP FOR YOU', href: '/claude' },
-  { name: 'The Chief', tag: 'YOUR AGENTIC CHIEF OF STAFF', href: '/chief' },
-  { name: 'Command Center', tag: 'THE AGENTIC BACK OFFICE', href: '/command-center' },
-  { name: 'Mustard Pictures', tag: 'FILMS AND ADVERTISING', href: '/pictures' },
-  { name: 'The Launch Film', tag: 'A FILM BUILT FROM YOUR REAL PRODUCT', href: '/launch-film' },
-  { name: 'Meet Mr. Mustard', tag: 'THE STUDIO ANSWERS, DAY AND NIGHT', href: '/mustard' },
 ];
 
 /** `menuOnly` renders just the menu overlay, for a page that draws its own
@@ -306,7 +250,8 @@ export default function Navbar({ menuOnly = false }: { menuOnly?: boolean } = {}
         </div>
       </nav>}
 
-      {/* Full-screen mega-menu overlay (portaled to <body>, see `mounted`) */}
+      {/* Full-screen menu overlay (portaled to <body>, see `mounted`). One ink
+          panel: the studio's dark ground with the mustard halftone. */}
       {mounted && createPortal(
       <div
         id="site-mega-menu"
@@ -329,201 +274,104 @@ export default function Navbar({ menuOnly = false }: { menuOnly?: boolean } = {}
 
         {/* Panel */}
         <div
-          className={`absolute right-0 top-0 h-full w-full sm:max-w-2xl bg-[#fbf5ea] border-l-2 border-[#0b3b44] overflow-y-auto transition-transform duration-300 ${
+          className={`absolute right-0 top-0 h-full w-full sm:max-w-xl bg-[#0b3b44] text-[#fbf5ea] border-l-2 border-[#f5b700] overflow-y-auto transition-transform duration-300 ${
             menuOpen ? 'translate-x-0' : 'translate-x-full'
           }`}
         >
-          {/* Halftone texture */}
           <div
             aria-hidden="true"
             className="absolute inset-0 z-0 pointer-events-none"
             style={{
-              backgroundImage: 'radial-gradient(rgba(245,183,0,0.22) 1.4px, transparent 1.5px)',
-              backgroundSize: '20px 20px',
+              backgroundImage: 'radial-gradient(rgba(245,183,0,0.22) 1.3px, transparent 1.4px)',
+              backgroundSize: '18px 18px',
             }}
           />
 
-          <div className="relative z-10 px-7 md:px-10 py-7">
-            {/* Header row */}
-            <div className="flex items-center justify-between mb-9">
-              <span className="text-[10px] uppercase tracking-[0.4em] text-[#0a7c78] font-mono font-bold">
-                Menu
-              </span>
+          <div className="relative z-10 min-h-full flex flex-col px-7 md:px-11 py-7">
+            <div className="flex items-center justify-between mb-10">
+              <span className="font-mono uppercase text-[#f5b700]">Menu</span>
               <button
                 ref={closeBtnRef}
                 type="button"
                 onClick={() => setMenuOpen(false)}
                 aria-label="Close menu"
-                className="w-10 h-10 rounded-full border-2 border-[#0b3b44] bg-white text-[#0b3b44] text-xl leading-none flex items-center justify-center shadow-[2px_2px_0_0_#0b3b44] hover:shadow-[3px_3px_0_0_#0b3b44] hover:-translate-y-0.5 transition-all"
+                className="w-11 h-11 rounded-full border border-[#fbf5ea]/40 text-[#fbf5ea] text-2xl leading-none flex items-center justify-center hover:border-[#f5b700] hover:text-[#f5b700] transition-colors"
               >
                 ×
               </button>
             </div>
 
-            {/* The inquiry: the one door the whole site closes on. On phones the
-                nav pill is hidden, so this is where it lives. */}
-            <Link
-              href="/presence-audit"
-              onClick={() => setMenuOpen(false)}
-              className="group block rounded-2xl border-2 border-[#0b3b44] bg-[#f5b700] shadow-[5px_5px_0_0_#0b3b44] p-5 md:p-6 mb-5 hover:-translate-y-0.5 transition-transform"
-            >
-              <span className="block text-[10px] uppercase tracking-[0.32em] text-[#0b3b44]/70 font-mono font-bold mb-1.5">
-                Free · Three Pillars · No Card
-              </span>
-              <span className="block font-display font-black text-2xl md:text-3xl tracking-tight text-[#0b3b44] leading-snug">
-                The free presence audit <span className="inline-block group-hover:translate-x-1 transition-transform">→</span>
-              </span>
-              <span className="block font-body text-[13px] text-[#0b3b44]/75 mt-1 leading-relaxed">
-                Your site, your Google profile and your reviews, graded and emailed to you. Yours to keep.
-              </span>
-            </Link>
-
-            {/* Featured: Work With Us gets visual priority. */}
-            <div className="rounded-2xl border-2 border-[#0b3b44] bg-white shadow-[5px_5px_0_0_#0b3b44] p-6 md:p-7 mb-8">
-              <span className="block text-[11px] uppercase tracking-[0.32em] text-[#0a7c78] font-mono font-bold mb-1.5">
-                {MENU_GROUPS[0].heading}
-              </span>
-              <p className="font-display italic font-bold text-[#0b3b44] text-base md:text-lg leading-snug mb-5">
-                A boutique design and agentic systems studio. Five disciplines, one standard.
-              </p>
-              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
-                {MENU_GROUPS[0].links.map((link) => {
-                  const active = pathname === link.href;
-                  return (
-                    <li key={link.href}>
-                      <Link
-                        href={link.href}
-                        onClick={() => setMenuOpen(false)}
-                        className={`font-display font-black text-xl md:text-2xl tracking-tight leading-snug transition-colors ${
-                          active ? 'text-[#0a7c78]' : 'text-[#0b3b44] hover:text-[#0a7c78]'
+            <span className="block font-mono uppercase text-[#f5b700] mb-5">What We Build</span>
+            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-5">
+              {OFFERS.map((d) => {
+                const active = pathname === d.href;
+                return (
+                  <li key={d.href}>
+                    <Link href={d.href} onClick={() => setMenuOpen(false)} className="group block">
+                      <span
+                        className={`menu-offer block font-display leading-tight transition-colors ${
+                          active ? 'text-[#f5b700]' : 'text-[#fbf5ea] group-hover:text-[#f5b700]'
                         }`}
                       >
-                        {link.label}
-                      </Link>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
+                        {d.name}
+                      </span>
+                      <span className="block text-[9px] uppercase tracking-[0.22em] text-[#f5b700]/75 mt-1">
+                        {d.tag}
+                      </span>
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
 
-            {/* Secondary groups */}
-            <div className="grid grid-cols-2 gap-x-6 gap-y-8">
-              {MENU_GROUPS.slice(1).map((group) => (
-                <div key={group.heading}>
-                  <span className="block text-[10px] uppercase tracking-[0.3em] text-[#0b3b44]/45 font-mono font-bold mb-3">
-                    {group.heading}
-                  </span>
-                  <ul className="flex flex-col gap-2">
-                    {group.links.map((link) => {
-                      const active = pathname === link.href;
-                      return (
-                        <li key={link.href}>
-                          <Link
-                            href={link.href}
-                            onClick={() => setMenuOpen(false)}
-                            className={`font-display font-black text-base md:text-lg tracking-tight leading-snug transition-colors ${
-                              active ? 'text-[#0a7c78]' : 'text-[#0b3b44] hover:text-[#0a7c78]'
-                            }`}
-                          >
-                            {link.label}
-                          </Link>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </div>
-              ))}
-            </div>
+            <div className="my-9 h-px bg-[#fbf5ea]/15" />
 
-            {/* The Studio Departments: the signature ink panel */}
-            <div className="relative mt-9 rounded-2xl border-2 border-[#0b3b44] bg-[#0b3b44] shadow-[5px_5px_0_0_#f5b700] overflow-hidden">
-              <div
-                aria-hidden="true"
-                className="absolute inset-0 pointer-events-none"
-                style={{
-                  backgroundImage: 'radial-gradient(rgba(245,183,0,0.35) 1.3px, transparent 1.4px)',
-                  backgroundSize: '18px 18px',
-                }}
-              />
-              <div className="relative p-6 md:p-7">
-                <span className="block text-[10px] uppercase tracking-[0.32em] text-[#f5b700] font-mono font-bold mb-4">
-                  The Studio Departments
-                </span>
-                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
-                  {DEPARTMENTS.map((d) => {
-                    const active = pathname === d.href;
-                    return (
-                      <li key={d.href}>
-                        <Link
-                          href={d.href}
-                          onClick={() => setMenuOpen(false)}
-                          className="group block"
-                        >
-                          <span
-                            className={`block font-display font-black text-lg md:text-xl tracking-tight leading-snug transition-colors ${
-                              active ? 'text-[#f5b700]' : 'text-[#fbf5ea] group-hover:text-[#f5b700]'
-                            }`}
-                          >
-                            {d.name}
-                          </span>
-                          <span className="block font-mono text-[9px] uppercase tracking-[0.24em] text-[#f5b700]/75 mt-0.5">
-                            {d.tag}
-                          </span>
-                        </Link>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
-            </div>
+            <span className="block font-mono uppercase text-[#f5b700] mb-4">The Studio</span>
+            <ul className="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-3">
+              {STUDIO_LINKS.map((link) => {
+                const active = pathname === link.href;
+                return (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      onClick={() => setMenuOpen(false)}
+                      className={`text-[15px] transition-colors ${
+                        active ? 'text-[#f5b700]' : 'text-[#fbf5ea]/85 hover:text-[#f5b700]'
+                      }`}
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
 
-            {/* Primary CTAs */}
-            <div className="mt-11 flex flex-col sm:flex-row gap-3">
+            <div className="mt-10 flex flex-col sm:flex-row gap-3">
               <Link
                 href="/book"
                 onClick={() => setMenuOpen(false)}
-                className="flex-1 text-center px-6 py-4 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0b3b44] bg-[#f5b700] rounded-full border-2 border-[#0b3b44] shadow-[4px_4px_0_0_#0b3b44] hover:-translate-y-0.5 transition-all"
+                className="flex-1 text-center px-6 py-4 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0b3b44] bg-[#f5b700] rounded-sm hover:bg-[#ffc81f] transition-colors"
               >
                 Book a Call
               </Link>
               <Link
                 href="/presence-audit"
                 onClick={() => setMenuOpen(false)}
-                className="flex-1 text-center px-6 py-4 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0b3b44] bg-white rounded-full border-2 border-[#0b3b44] shadow-[4px_4px_0_0_#0b3b44] hover:-translate-y-0.5 transition-all"
+                className="flex-1 text-center px-6 py-4 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#fbf5ea] border border-[#fbf5ea]/50 rounded-sm hover:border-[#f5b700] hover:text-[#f5b700] transition-colors"
               >
-                Get the Free Audit
+                Free Presence Audit
               </Link>
             </div>
 
-            {/* Socials */}
-            <div className="mt-9 pt-7 border-t-2 border-[#0b3b44]/15">
-              <span className="block text-[10px] uppercase tracking-[0.3em] text-[#0b3b44]/45 font-mono font-bold mb-3.5">
-                Follow
-              </span>
-              <div className="flex flex-wrap gap-2.5">
-                {socials.filter((s) => s.name !== 'Facebook').map((s) => (
-                  <a
-                    key={s.name}
-                    href={s.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-4 py-2 text-[10px] uppercase tracking-[0.2em] font-sans font-bold text-[#0b3b44] bg-white rounded-full border-2 border-[#0b3b44] hover:bg-[#FFF8E6] hover:-translate-y-0.5 transition-all"
-                  >
-                    {s.name}
-                  </a>
-                ))}
-              </div>
-            </div>
-
-            {/* Team access */}
-            <div className="mt-7 pt-6 border-t-2 border-[#0b3b44]/15 pb-2">
-              <Link
-                href="/admin"
-                onClick={() => setMenuOpen(false)}
-                className="inline-flex items-center gap-2 px-5 py-2.5 text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0b3b44] bg-white rounded-full border-2 border-[#0b3b44] shadow-[2px_2px_0_0_#0b3b44] hover:shadow-[3px_3px_0_0_#0b3b44] hover:-translate-y-0.5 transition-all"
-              >
-                <span aria-hidden="true">🔒</span> Admin Login
-              </Link>
+            <div className="mt-auto pt-10 flex flex-wrap items-center gap-x-5 gap-y-2 text-[12px] text-[#fbf5ea]/60">
+              <Link href="/portal" onClick={() => setMenuOpen(false)} className="hover:text-[#f5b700] transition-colors">Client Portal</Link>
+              <Link href="/partners" onClick={() => setMenuOpen(false)} className="hover:text-[#f5b700] transition-colors">Partners</Link>
+              {socials.filter((x) => x.name !== 'Facebook').map((x) => (
+                <a key={x.name} href={x.url} target="_blank" rel="noopener noreferrer" className="hover:text-[#f5b700] transition-colors">
+                  {x.name}
+                </a>
+              ))}
+              <Link href="/admin" onClick={() => setMenuOpen(false)} className="hover:text-[#f5b700] transition-colors">Team Login</Link>
             </div>
           </div>
         </div>
