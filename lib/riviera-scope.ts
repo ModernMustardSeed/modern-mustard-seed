@@ -20,7 +20,6 @@ export const RIVIERA_OFF_PREFIX = [
   '/proposal/',
   '/scaling-roadmap/r/',
   '/audit/',
-  '/welcome/',
 ];
 export const RIVIERA_OFF_EXACT = ['/super-nomad', '/partners/playbook'];
 
