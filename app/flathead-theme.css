@@ -19,7 +19,7 @@ html.riv nav[data-studio-nav]>div>a>span{font-family:var(--font-body);font-weigh
 html.riv nav[data-studio-nav] :is(a,button){font-family:var(--font-body)}
 html.riv nav[data-studio-nav] a[href='/book']{border-radius:3px;border:0;box-shadow:none!important;font-size:12px}
 html.riv nav[data-studio-nav] button{border:1px solid #103c5425;border-radius:3px;background:transparent;box-shadow:none!important;min-width:44px;min-height:44px}
-html.riv #site-mega-menu .font-display{font-family:var(--font-display);font-weight:400;font-size:32px}
+html.riv #site-mega-menu .font-display{font-family:var(--font-display);font-weight:400;font-size:32px}html.riv #site-mega-menu .menu-offer{font-size:27px;letter-spacing:-.01em}
 html.riv #site-mega-menu :is(a,p){font-family:var(--font-body)}
 html.riv .studio-footer{background:#103c54;color:#fcf8eb;padding-top:70px;border-top:0}
 html.riv .studio-footer:before,html.riv .studio-footer:after{display:none}
