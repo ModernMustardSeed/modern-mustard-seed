@@ -49,7 +49,7 @@ export function buildMetadata({ title, description, path = '/', image, noindex, 
     title: fullTitle,
     description: desc,
     metadataBase: new URL(SITE.url),
-    alternates: { canonical: url },
+    alternates: { canonical: url, types: { 'application/rss+xml': `${SITE.url}/feed.xml` } },
     robots: noindex ? { index: false, follow: false } : { index: true, follow: true },
     verification: {
       other: {
