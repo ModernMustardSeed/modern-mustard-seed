@@ -6,6 +6,7 @@ import { liveTradePages } from '@/data/trade-pages';
 import { MONTANA_CITIES } from '@/data/montana-cities';
 import { comparePages } from '@/data/compare-pages';
 import { bestPages } from '@/data/best-pages';
+import { alternativesPages } from '@/data/alternatives-pages';
 
 // PARKED 2026-08-07 (Sarah): /mustard-tree, /press, and /hatchery are out of
 // the sitemap and noindexed. The routes still answer directly; they are simply
@@ -62,6 +63,7 @@ const STATIC_PATHS = [
   '/blog',
   '/compare',
   '/best',
+  '/alternatives',
   '/ai-receptionist-cost',
   '/about',
   '/sarahscarano',
@@ -139,6 +141,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const guidePages = [
     ...comparePages.map((p) => ({ url: `${SITE.url}/compare/${p.slug}`, lastModified: new Date(p.checked) })),
     ...bestPages.map((p) => ({ url: `${SITE.url}/best/${p.slug}`, lastModified: new Date(p.checked) })),
+    ...alternativesPages.map((p) => ({ url: `${SITE.url}/alternatives/${p.slug}`, lastModified: new Date(p.checked) })),
   ].map((e) => ({ ...e, changeFrequency: 'monthly' as const, priority: 0.85 }));
 
   const entries = [

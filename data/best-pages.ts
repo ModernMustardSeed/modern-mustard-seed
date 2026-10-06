@@ -152,7 +152,11 @@ const AVOCA: BestPick = {
 export const bestPages: BestPage[] = [
   {
     slug: 'ai-receptionists-for-contractors',
-    related: [{ href: '/ai-receptionist-cost', label: 'AI receptionist cost in 2026: every published price compared' }],
+    related: [
+      { href: '/ai-receptionist-cost', label: 'AI receptionist cost in 2026: every published price compared' },
+      { href: '/alternatives/goodcall-alternatives', label: 'Goodcall alternatives' },
+      { href: '/alternatives/smith-ai-alternatives', label: 'Smith.ai alternatives' },
+    ],
     metaTitle: 'Best AI Receptionists for Contractors (2026): 6 Options Compared',
     metaDescription:
       'The best AI receptionists and answering services for contractors and trades in 2026: Modern Mustard Seed, Avoca, Goodcall, Rosie, Smith.ai and Ruby, with prices checked live and who each is best for.',
@@ -216,6 +220,10 @@ export const bestPages: BestPage[] = [
   },
   {
     slug: 'ways-to-get-a-website-montana-small-business',
+    related: [
+      { href: '/alternatives/wix-alternatives-for-service-businesses', label: 'Wix alternatives for service businesses' },
+      { href: '/alternatives/squarespace-alternatives-for-small-business', label: 'Squarespace alternatives for small business' },
+    ],
     metaTitle: 'Best Ways to Get a Website for a Small Business in Montana (2026)',
     metaDescription:
       'The best ways for a Montana small business to get a website in 2026: Squarespace, Wix, a freelancer, a local agency, or a Kalispell studio. Prices checked live and who each fits.',

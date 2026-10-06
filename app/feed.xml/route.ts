@@ -2,6 +2,7 @@ import { listContent } from '@/lib/content';
 import { SITE } from '@/lib/seo';
 import { comparePages } from '@/data/compare-pages';
 import { bestPages } from '@/data/best-pages';
+import { alternativesPages } from '@/data/alternatives-pages';
 
 /**
  * RSS 2.0 feed at /feed.xml.
@@ -33,6 +34,12 @@ export async function GET() {
       title: p.metaTitle,
       description: p.metaDescription,
       path: `/compare/${p.slug}`,
+      date: p.checked,
+    })),
+    ...alternativesPages.map((p) => ({
+      title: p.metaTitle,
+      description: p.metaDescription,
+      path: `/alternatives/${p.slug}`,
       date: p.checked,
     })),
     ...bestPages.map((p) => ({

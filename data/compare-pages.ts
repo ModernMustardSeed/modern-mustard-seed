@@ -153,6 +153,10 @@ export const comparePages: ComparePage[] = [
   },
   {
     slug: 'wix-squarespace-vs-custom-website',
+    related: [
+      { href: '/alternatives/wix-alternatives-for-service-businesses', label: 'Wix alternatives for service businesses' },
+      { href: '/alternatives/squarespace-alternatives-for-small-business', label: 'Squarespace alternatives for small business' },
+    ],
     metaTitle: 'Wix or Squarespace vs a Custom Website for a Small Business (2026)',
     metaDescription:
       'Wix and Squarespace plan prices checked live, compared with a custom website built by Modern Mustard Seed. When DIY is the right call and when a custom build pays for itself.',
@@ -203,6 +207,7 @@ export const comparePages: ComparePage[] = [
   },
   {
     slug: 'gohighlevel-vs-custom-build',
+    related: [{ href: '/alternatives/gohighlevel-alternatives', label: 'GoHighLevel alternatives for small businesses' }],
     metaTitle: 'GoHighLevel vs a Custom Build: Which Is Right for a Local Business? (2026)',
     metaDescription:
       'HighLevel plans checked live ($97, $297, $497 a month) compared with a custom website and AI system built and owned outright. Who HighLevel is built for, and when it is the better choice.',
@@ -249,7 +254,11 @@ export const comparePages: ComparePage[] = [
   },
   {
     slug: 'ai-receptionist-vs-answering-service',
-    related: [{ href: '/ai-receptionist-cost', label: 'AI receptionist cost in 2026: every published price compared' }],
+    related: [
+      { href: '/ai-receptionist-cost', label: 'AI receptionist cost in 2026: every published price compared' },
+      { href: '/alternatives/smith-ai-alternatives', label: 'Smith.ai alternatives' },
+      { href: '/alternatives/ruby-receptionists-alternatives', label: 'Ruby Receptionists alternatives' },
+    ],
     metaTitle: 'AI Receptionist vs Answering Service (Ruby, Smith.ai): 2026 Comparison',
     metaDescription:
       'AI receptionist vs a live answering service like Ruby or Smith.ai. Plan prices checked live, what each does well, and which fits a contractor, a practice or a busy local business.',
