@@ -67,7 +67,6 @@ const STATIC_PATHS = [
   '/ai-receptionist-cost',
   '/about',
   '/sarahscarano',
-  '/world',
   '/contact',
   '/partners',
   '/white-label',

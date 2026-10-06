@@ -49,8 +49,6 @@ export default function MustardSeedChat() {
     pathname.startsWith('/demo/') ||
     // Hatchery reveal pages belong to the mascot; Huck owns his own corner.
     pathname.startsWith('/hatchery/') ||
-    // The Mustard Seed World is a full-screen claymation scroll experience.
-    pathname.startsWith('/world') ||
     // A paying client's intake form; a sales bubble over their answers is noise.
     pathname.startsWith('/welcome/') ||
     // Sarah's private recording booths (/sarah MMS, /sarahcxc Cross + Covenant);

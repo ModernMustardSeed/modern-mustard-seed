@@ -31,7 +31,7 @@ const PATHS = args.length ? args : [
   '/voice-agents/whitepaper', '/command-center', '/chief', '/agentic-native', '/ads',
   '/launch-film', '/mustard', '/playbook', '/future-proof', '/for',
   '/for/restaurants', '/montana', '/montana/kalispell', '/resources', '/blog',
-  '/about', '/sarahscarano', '/world', '/contact', '/sample-proposal', '/book',
+  '/about', '/sarahscarano', '/contact', '/sample-proposal', '/book',
   '/pictures', '/voice-agents/roofers',
 ];
 
