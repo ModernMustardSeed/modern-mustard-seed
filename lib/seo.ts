@@ -54,6 +54,7 @@ export function buildMetadata({ title, description, path = '/', image, noindex, 
     verification: {
       other: {
         'msvalidate.01': 'DEDD2DDDDB7C501DC147D6EB1396FDE9',
+        'p:domain_verify': 'f04410208073048516ae8a80f541f90a',
       },
     },
     openGraph: {
