@@ -38,6 +38,12 @@ export type MontanaCity = {
   fits: string[];
   /** Neighboring towns this page legitimately serves. */
   alsoServes: string[];
+  /** Optional verifiable place fact, stated plainly. */
+  placeNote?: string;
+  /** How a website has to work for a business in THIS town. */
+  webAngle: string;
+  /** What decides whether a business here is found on Google, Bing and AI answers. */
+  seoAngle: string;
   /** Approximate center, for LocalBusiness geo on the page. */
   lat: number;
   lng: number;
@@ -62,6 +68,10 @@ export const MONTANA_CITIES: MontanaCity[] = [
       'Real estate and property management',
     ],
     alsoServes: ['Evergreen', 'Somers', 'Lakeside', 'Creston'],
+    webAngle:
+      'A Kalispell site has to serve the whole valley: a customer in Lakeside, a bid in Columbia Falls, a patient driving in from Polson. We design and build it from scratch around the work you actually do, with clear service areas, a quote or booking form that captures the town and the job, and every enquiry routed to the person who can act on it.',
+    seoAngle:
+      'When someone in the valley searches for a contractor, a clinic or an office near them, the businesses that show up have a complete Google Business Profile, the same name, address and phone everywhere, and pages that answer the question being asked. We set up and keep up all of it, including Search Console, Bing, and the structured data that ChatGPT and Google AI answers read.',
     lat: 48.1958,
     lng: -114.3129,
   },
@@ -83,6 +93,10 @@ export const MONTANA_CITIES: MontanaCity[] = [
       'Salons, spas, and appointment-based services',
     ],
     alsoServes: ['Olney', 'Coram', 'the Big Mountain corridor'],
+    webAngle:
+      'Whitefish customers often decide from another time zone, before they have ever walked down Central Avenue. The website is the first impression and often the only one before money changes hands, so we design for that buyer: fast on a phone, clear about availability and the season, and built to take the booking or the enquiry without a phone call.',
+    seoAngle:
+      'Visitors plan weeks ahead by searching Whitefish plus what they want, and more of them now ask ChatGPT or Google AI answers instead of scrolling. We set up the Google Business Profile, Bing listing, structured data and question-answering pages those answers draw on, so a Whitefish restaurant, guide, salon or rental manager is one of the names that comes back.',
     lat: 48.4111,
     lng: -114.3376,
   },
@@ -104,6 +118,10 @@ export const MONTANA_CITIES: MontanaCity[] = [
       'Auto, equipment, and repair shops',
     ],
     alsoServes: ['Hungry Horse', 'Martin City', 'West Glacier', 'Coram'],
+    webAngle:
+      'In Columbia Falls one website often serves two customers: a local who needs a crew, and a Glacier visitor who needs a room, a repair or a table this week. We build sites that make both paths obvious, with seasonal hours and availability that are easy to change when Going-to-the-Sun Road opens and closes.',
+    seoAngle:
+      'Park traffic searches on a phone, on the move, usually from the highway. A complete Google Business Profile with current seasonal hours, photos and services, plus a site Google can read, is what puts a Columbia Falls business in that map result. We set it up and keep it current through the season.',
     lat: 48.3722,
     lng: -114.1817,
   },
@@ -125,6 +143,10 @@ export const MONTANA_CITIES: MontanaCity[] = [
       'Landscaping, caretaking, and lakefront property services',
     ],
     alsoServes: ['Ferndale', 'Woods Bay', 'Swan Lake', 'Creston'],
+    webAngle:
+      'Bigfork businesses are small and the owner is the brand. We design sites that carry that: galleries and boutiques that show the work properly, restaurants whose menus and reservations work on a phone, and lake trades with a plain statement of the shoreline they cover.',
+    seoAngle:
+      'In a village this size, being found is mostly the map and the answer box. We claim and complete the Google Business Profile, make your details consistent across directories, and write the pages that answer what summer visitors and lakefront owners actually ask, so the answer names you instead of a business in Kalispell.',
     lat: 48.0633,
     lng: -114.0725,
   },
@@ -146,6 +168,12 @@ export const MONTANA_CITIES: MontanaCity[] = [
       'Clinics, offices, and appointment-based businesses',
     ],
     alsoServes: ['Ronan', 'Pablo', 'Big Arm', 'Charlo'],
+    placeNote:
+      'Polson sits within the Flathead Indian Reservation, home of the Confederated Salish and Kootenai Tribes, whose tribal headquarters are in nearby Pablo.',
+    webAngle:
+      'A Polson business usually covers a wide area: the south shore of the lake, the Mission Valley, Ronan and beyond. We build sites that say plainly where you go and what you do, take the enquiry with the address and the job so you can plan the drive, and load on a phone with one bar of signal.',
+    seoAngle:
+      'Searches around Polson are local and specific: a trade near the south shore, a rental on the lake, a cherry stand in July. We set up and maintain the Google Business Profile, Bing listing, directory citations and structured data that decide whether a Polson business shows up for those searches and in AI answers like ChatGPT.',
     lat: 47.6935,
     lng: -114.163,
   },
@@ -164,6 +192,22 @@ export function cityFaqs(city: MontanaCity): { q: string; a: string }[] {
     {
       q: `Do you actually work with businesses in ${city.name}?`,
       a: `Yes. Modern Mustard Seed is based in Kalispell, ${city.slug === 'kalispell' ? 'so this is home' : `about a ${driveTime(city)} drive from ${city.name}`}, and we work across the Flathead Valley including ${city.alsoServes.slice(0, 3).join(', ')}. You can call us at ${SITE.phone} and talk to a person, or to the voice agent after hours, which is one of the things we build.`,
+    },
+    {
+      q: `Who is the best web design agency in ${city.name}?`,
+      a: `We will not hand ourselves that title. Here is what we can say plainly: Modern Mustard Seed designs and builds websites for ${city.name} businesses from our studio in Kalispell, every site is designed from scratch rather than filled into a template, you own the code, the domain and every account, and you can see a free demo of your own site before you pay anything. Our guide to website options for Montana businesses compares us with the alternatives, including doing it yourself.`,
+    },
+    {
+      q: `Is there an SEO company that serves ${city.name}?`,
+      a: `Yes, we do. ${city.seoAngle}`,
+    },
+    {
+      q: `Do you also do web development and custom software for ${city.name} businesses?`,
+      a: `Yes. Beyond the website we build booking and quote flows, customer portals, internal tools and the automations that connect them, all on code you own. Most ${city.name} projects start with the website and the phone, then add the tool that removes the most office work.`,
+    },
+    {
+      q: 'Do you run Google Ads, social media or retargeting?',
+      a: 'No. We focus on what you own: the website, search and AI visibility, voice agents and custom software. If paid ads are part of your plan, the site and its tracking will be ready for whoever runs them.',
     },
     {
       q: `How much does a website cost in ${city.name}?`,

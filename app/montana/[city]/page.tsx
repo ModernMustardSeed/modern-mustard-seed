@@ -18,8 +18,8 @@ export async function generateMetadata({ params }: { params: Promise<{ city: str
   const city = getCity(slug);
   if (!city) return buildMetadata({ noindex: true });
   return buildMetadata({
-    title: `Website Design in ${city.name}, MT`,
-    description: `Design-led websites, voice agents, and custom software for ${city.name} businesses. Built in Kalispell, Montana, by a boutique design and agentic systems studio.`,
+    title: `Web Design, Development and SEO Agency in ${city.name}, MT`,
+    description: `Web design, web development, SEO and AI receptionists for ${city.name}, MT businesses, from Modern Mustard Seed in Kalispell. Sites designed from scratch, found on Google and ChatGPT, and you own everything.`,
     path: `/montana/${city.slug}`,
   });
 }
@@ -35,18 +35,28 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
   const others = MONTANA_CITIES.filter((c) => c.slug !== city.slug);
 
   const path = `/montana/${city.slug}`;
-  const description = `Agentic website design, voice agents, automation and custom software for ${city.name} businesses, built by Modern Mustard Seed in Kalispell, Montana.`;
+  const description = `Web design, web development, SEO and AI receptionists for ${city.name}, MT businesses, built by Modern Mustard Seed in Kalispell, Montana.`;
+  const areaServed = [{ '@type': 'City', name: city.name, containedInPlace: { '@type': 'State', name: 'Montana' } }];
   const localForCity = serviceJsonLd({
-    path, name: `Agentic websites and business systems for ${city.name}`, description,
-    areaServed: [{ '@type': 'City', name: city.name, containedInPlace: { '@type': 'State', name: 'Montana' } }],
+    path, name: `Web design, development and SEO in ${city.name}, MT`, description, areaServed,
   });
+  // One Service per thing we actually sell, each scoped to this town. The
+  // provider is the one Kalispell studio; a city page never invents an office.
+  const services = [
+    { key: 'web', h: `Web design and development in ${city.name}`, b: city.webAngle, href: '/websites', cta: 'How we build websites' },
+    { key: 'seo', h: `SEO and AI search visibility for ${city.name} businesses`, b: city.seoAngle, href: '/best/ways-to-get-recommended-by-chatgpt-and-google-ai', cta: 'How businesses get found on Google and ChatGPT' },
+    { key: 'voice', h: `AI receptionists for ${city.name}`, b: `${city.phoneProblem.split('. ')[0]}. Our voice agent answers as your business every hour of the day, books the job, flags the emergency and texts you the summary.`, href: '/voice-agents', cta: 'Hear a voice agent' },
+    { key: 'software', h: `Custom software for ${city.name} operators`, b: `Quote and booking flows, customer portals, dispatch boards and the automations between them, built on code you own. We scope it around the enquiries a ${city.name} business actually gets.`, href: '/services', cta: 'Automation and custom software' },
+  ];
+  const serviceNodes = services.map((sv) => ({ ...serviceJsonLd({ name: sv.h, description: sv.b, areaServed }), '@id': `${SITE.url}${path}#${sv.key}` }));
 
   return (
     <div className="bg-[#fbf5ea] text-[#0b3b44]">
       <JsonLd
         data={[
           localForCity,
-          webPageJsonLd({ path, name: `Agentic websites in ${city.name}`, description }),
+          ...serviceNodes,
+          webPageJsonLd({ path, name: `Web Design, Development and SEO Agency in ${city.name}, MT`, description }),
           faqJsonLd(faqs),
           // breadcrumbJsonLd prepends SITE.url itself, so these are PATHS.
           breadcrumbJsonLd([
@@ -58,12 +68,12 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
 
       <PopPageHero
         eyebrow={<span>▲ {city.nameWithState}</span>}
-        title={<>Websites and a phone that always answers, for {city.name} businesses.</>}
+        title={<>Web design, development and SEO for {city.name} businesses.</>}
         art={{ src: '/art/riviera/montana', alt: MT_ALT, caption: `Hello, ${city.name}` }}
         sticker="Howdy!"
       >
         <p>
-          Modern Mustard Seed is a boutique design and agentic systems studio based in Kalispell, serving {city.name} and clients nationwide. We design and build websites and brand, custom software, and voice agents. You own the code and accounts.
+          Modern Mustard Seed is a web design, development and SEO studio based in Kalispell, serving {city.name} and clients nationwide. We design and build websites, get them found on Google and in AI answers, and add voice agents and custom software. You own the code and accounts.
         </p>
         <div className={pop.actions}>
           <Link href="/book" className={pop.cta}>
@@ -148,6 +158,45 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
               ))}
             </ul>
           </div>
+        </div>
+      </section>
+
+      {/* ─────────────── SERVICES IN THIS TOWN ─────────────── */}
+      <section className="border-b-2 border-[#0b3b44] bg-[#fbf5ea]">
+        <div className="max-w-6xl mx-auto px-6 py-14 md:py-20">
+          <p className="font-mono text-[11px] uppercase tracking-[0.3em] font-bold text-[#8f6600]">What We Do Here</p>
+          <h2 className="mt-2 font-display text-3xl md:text-4xl font-extrabold leading-[1.05]">
+            Web design, development and SEO in {city.nameWithState}.
+          </h2>
+          {city.placeNote ? (
+            <p className="mt-4 max-w-3xl font-body text-[15px] text-[#0b3b44]/75 leading-relaxed">{city.placeNote}</p>
+          ) : null}
+          <div className="mt-8 grid md:grid-cols-2 gap-6">
+            {services.map((sv) => (
+              <div key={sv.key} className="flex flex-col rounded-2xl border-2 border-[#0b3b44] bg-white p-6 shadow-[5px_5px_0_0_#0b3b44]">
+                <h3 className="font-display text-xl font-extrabold">{sv.h}</h3>
+                <p className="mt-2 font-body text-[15px] text-[#3d382e] leading-relaxed">{sv.b}</p>
+                <Link href={sv.href} className="mt-auto pt-5 font-mono text-[12px] font-bold text-[#8f6600] underline underline-offset-4">
+                  {sv.cta}
+                </Link>
+              </div>
+            ))}
+          </div>
+          <p className="mt-8 max-w-3xl font-body text-[15px] text-[#0b3b44]/80 leading-relaxed">
+            Weighing your options first? Read{' '}
+            <Link href="/best/ways-to-get-a-website-montana-small-business" className="font-bold underline underline-offset-4">
+              website options for a Montana business, compared
+            </Link>
+            , see{' '}
+            <Link href="/compare" className="font-bold underline underline-offset-4">
+              how a studio compares with a freelancer, an agency or doing it yourself
+            </Link>
+            , or look at{' '}
+            <Link href="/work/built-right-in-montana" className="font-bold underline underline-offset-4">
+              the site we built for a Flathead Valley custom home builder
+            </Link>
+            .
+          </p>
         </div>
       </section>
 
