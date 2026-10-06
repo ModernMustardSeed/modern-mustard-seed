@@ -4,8 +4,10 @@ import { JsonLd, articleJsonLd, breadcrumbJsonLd, faqJsonLd } from '@/lib/jsonld
 import { buildMetadata, SITE } from '@/lib/seo';
 import { bestPages, bestPageBySlug } from '@/data/best-pages';
 import { comparePageBySlug } from '@/data/compare-pages';
-import { bookingUrl } from '@/data/socials';
 import PopPageHero, { pop } from '@/components/pop/PopPageHero';
+import HearItAnswers from '@/components/conversion/HearItAnswers';
+import BookCallLink from '@/components/conversion/BookCallLink';
+import { bestCloser, ringDefault } from '@/data/conversion-copy';
 import { formatChecked } from '@/lib/checked-date';
 
 type Params = Promise<{ slug: string }>;
@@ -45,6 +47,7 @@ export default async function BestPage({ params }: { params: Params }) {
   const { slug } = await params;
   const p = bestPageBySlug[slug];
   if (!p) notFound();
+  const closer = bestCloser[p.slug] ?? ringDefault;
 
   const path = `/best/${p.slug}`;
   const relatedComparisons = (RELATED_COMPARISONS[p.slug] ?? []).map((s) => comparePageBySlug[s]).filter(Boolean);
@@ -120,11 +123,18 @@ export default async function BestPage({ params }: { params: Params }) {
             <a href="#picks" className={pop.cta}>
               See the picks
             </a>
-            <a href={bookingUrl} target="_blank" rel="noopener noreferrer" className={pop.ctaAlt}>
+            <BookCallLink source={`seo:/best/${p.slug}:hero`} className={pop.ctaAlt}>
               Book a Discovery Call
-            </a>
+            </BookCallLink>
           </div>
         </PopPageHero>
+
+        <HearItAnswers
+          source={`seo:/best/${p.slug}:after-answer`}
+          variant={closer.variant}
+          heading={closer.answer.heading}
+          lede={closer.answer.lede}
+        />
 
         {/* At a glance */}
         <section className="relative max-w-6xl mx-auto px-6 md:px-8 py-12" aria-labelledby="glance-h">
@@ -207,6 +217,13 @@ export default async function BestPage({ params }: { params: Params }) {
             <p className="mt-4 text-sm text-[#0b3b44]/70 font-body">Last checked {formatChecked(p.checked)}. Prices change; check each source before you buy.</p>
           </div>
         </section>
+
+        <HearItAnswers
+          source={`seo:/best/${p.slug}:before-faq`}
+          variant={closer.variant}
+          heading={closer.faq.heading}
+          lede={closer.faq.lede}
+        />
 
         {/* FAQ */}
         <section className="max-w-4xl mx-auto px-6 md:px-8 py-12">

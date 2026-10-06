@@ -1,9 +1,10 @@
 import Link from 'next/link';
 import { JsonLd, articleJsonLd, breadcrumbJsonLd, faqJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
-import { bookingUrl } from '@/data/socials';
 import PopPageHero, { pop } from '@/components/pop/PopPageHero';
 import ReceptionistPaybackCalculator from '@/components/ReceptionistPaybackCalculator';
+import HearItAnswers from '@/components/conversion/HearItAnswers';
+import BookCallLink from '@/components/conversion/BookCallLink';
 import { formatChecked } from '@/lib/checked-date';
 import { BLS_RECEPTIONIST, CHECKED, PUBLISHED, blsMonthly, costFaqs, vendors } from '@/data/receptionist-cost';
 
@@ -96,6 +97,12 @@ export default function AiReceptionistCostPage() {
             </a>
           </div>
         </PopPageHero>
+
+        <HearItAnswers
+          source="seo:/ai-receptionist-cost:after-answer"
+          heading="Before you compare prices, hear one answer."
+          lede="Type your number and our AI receptionist calls you in about ten seconds. Ask it what a customer would ask, and judge the call, not the price list."
+        />
 
         {/* Price table */}
         <section id="prices" className="relative max-w-6xl mx-auto px-6 md:px-8 py-12 scroll-mt-24" aria-labelledby="prices-h">
@@ -296,10 +303,16 @@ export default function AiReceptionistCostPage() {
             </p>
             <div className="flex flex-wrap gap-3">
               <Link href="/voice-agents" className={pop.cta}>See Our Voice Agents</Link>
-              <a href={bookingUrl} target="_blank" rel="noopener noreferrer" className={pop.ctaAlt}>Book a Discovery Call</a>
+              <BookCallLink source="seo:/ai-receptionist-cost:built-for-you" className={pop.ctaAlt}>Book a Discovery Call</BookCallLink>
             </div>
           </div>
         </section>
+
+        <HearItAnswers
+          source="seo:/ai-receptionist-cost:before-faq"
+          heading="Hear what yours would sound like."
+          lede="The fastest way to decide is a real call. Drop your number, tell him your trade, and he answers the way your own receptionist would."
+        />
 
         {/* FAQ */}
         <section className="max-w-4xl mx-auto px-6 md:px-8 py-16">

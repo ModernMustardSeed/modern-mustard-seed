@@ -3,8 +3,10 @@ import { notFound } from 'next/navigation';
 import { JsonLd, articleJsonLd, breadcrumbJsonLd, faqJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
 import { comparePages, comparePageBySlug } from '@/data/compare-pages';
-import { bookingUrl } from '@/data/socials';
 import PopPageHero, { pop } from '@/components/pop/PopPageHero';
+import HearItAnswers from '@/components/conversion/HearItAnswers';
+import BookCallLink from '@/components/conversion/BookCallLink';
+import { compareCloser, ringDefault } from '@/data/conversion-copy';
 import { formatChecked } from '@/lib/checked-date';
 
 type Params = Promise<{ slug: string }>;
@@ -31,6 +33,7 @@ export default async function ComparePage({ params }: { params: Params }) {
   const { slug } = await params;
   const p = comparePageBySlug[slug];
   if (!p) notFound();
+  const closer = compareCloser[p.slug] ?? ringDefault;
 
   const path = `/compare/${p.slug}`;
   const others = comparePages.filter((o) => o.slug !== p.slug);
@@ -87,11 +90,18 @@ export default async function ComparePage({ params }: { params: Params }) {
             <Link href="/inquire" className={pop.cta}>
               Begin an Engagement
             </Link>
-            <a href={bookingUrl} target="_blank" rel="noopener noreferrer" className={pop.ctaAlt}>
+            <BookCallLink source={`seo:/compare/${p.slug}:hero`} className={pop.ctaAlt}>
               Book a Discovery Call
-            </a>
+            </BookCallLink>
           </div>
         </PopPageHero>
+
+        <HearItAnswers
+          source={`seo:/compare/${p.slug}:after-answer`}
+          variant={closer.variant}
+          heading={closer.answer.heading}
+          lede={closer.answer.lede}
+        />
 
         {/* Side by side */}
         <section className="relative max-w-6xl mx-auto px-6 md:px-8 py-12" aria-labelledby="table-h">
@@ -186,6 +196,13 @@ export default async function ComparePage({ params }: { params: Params }) {
             ))}
           </div>
         </section>
+
+        <HearItAnswers
+          source={`seo:/compare/${p.slug}:before-faq`}
+          variant={closer.variant}
+          heading={closer.faq.heading}
+          lede={closer.faq.lede}
+        />
 
         {/* FAQ */}
         <section className="max-w-4xl mx-auto px-6 md:px-8 py-16">

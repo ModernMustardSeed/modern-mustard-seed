@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
+import { track } from '@vercel/analytics';
 import { metaDedup, trackEvent, trackLead } from '@/lib/analytics';
 import { DEMO_LINE } from '@/data/trade-pages';
 
@@ -77,6 +78,9 @@ export default function RingMeNow({
     setError('');
     setState('dialing');
     trackEvent('ring_me_submit', { location: source });
+    // Vercel Analytics is cookieless, so it counts every page's ring requests
+    // even when the visitor declined the GA4 cookie banner.
+    track('ring_me_submit', { source });
 
     try {
       const dedup = metaDedup();
@@ -91,6 +95,7 @@ export default function RingMeNow({
         setSeconds(12);
         setState('ringing');
         trackLead({ source, eventId: dedup.metaEventId });
+        track('ring_me_ringing', { source });
         return;
       }
       setState('error');
