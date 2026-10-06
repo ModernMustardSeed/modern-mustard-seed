@@ -6,6 +6,7 @@ import { JsonLd, faqJsonLd, serviceJsonLd, breadcrumbJsonLd } from '@/lib/jsonld
 import { getTradePage, liveTradePages, tradeFaqs, DEMO_LINE } from '@/data/trade-pages';
 
 import MissedCallMath from '@/components/voice-agents/MissedCallMath';
+import HearItAnswers from '@/components/conversion/HearItAnswers';
 
 /**
  * The voice agent trade fleet: /voice-agents/[trade].
@@ -115,6 +116,12 @@ export default async function TradePage({ params }: { params: Promise<{ trade: s
           </div>
         </div>
       </section>
+
+      <HearItAnswers
+        source={`seo:/voice-agents/${page.slug}:after-answer`}
+        heading={`Hear it answer a call for ${forWord.toLowerCase()}.`}
+        lede="Type your number and our voice agent calls you in about ten seconds. Tell him your trade, then ask what your customers ask."
+      />
 
       {/* ─────────────── MISSED-CALL MATH ─────────────── */}
       <section className="border-b-2 border-[#0b3b44]">
@@ -346,6 +353,12 @@ export default async function TradePage({ params }: { params: Promise<{ trade: s
           </div>
         </div>
       </section>
+
+      <HearItAnswers
+        source={`seo:/voice-agents/${page.slug}:before-faq`}
+        heading="Still deciding? Let it take your call."
+        lede="Drop your number and he rings you now. Play the customer who calls while you are on a job."
+      />
 
       {/* ─────────────── FAQ ─────────────── */}
       <section className="border-b-2 border-[#0b3b44]">

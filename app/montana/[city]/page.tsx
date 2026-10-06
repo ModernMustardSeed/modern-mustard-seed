@@ -5,6 +5,7 @@ import { JsonLd, faqJsonLd, breadcrumbJsonLd, serviceJsonLd, webPageJsonLd } fro
 import { MONTANA_CITIES, getCity, cityFaqs } from '@/data/montana-cities';
 
 import PopPageHero, { pop } from '@/components/pop/PopPageHero';
+import HearItAnswers from '@/components/conversion/HearItAnswers';
 
 // Five service areas, one Kalispell business. Preserve each town's local context.
 export const dynamicParams = false;
@@ -87,6 +88,12 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
           Our own line is answered by the voice agent we sell. Call it at midnight and try to stump it.
         </p>
       </PopPageHero>
+
+      <HearItAnswers
+        source={`seo:/montana/${city.slug}:after-answer`}
+        heading="Hear the voice agent that answers our own line."
+        lede={`Type your number and it calls you in about ten seconds. Ask it what a ${city.name} customer would ask your business.`}
+      />
 
       {/* The local truth card. This is what makes the page about THIS town. */}
       <section className="border-b-2 border-[#0b3b44] bg-[#fbf5ea]">
@@ -237,6 +244,12 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
           </div>
         </div>
       </section>
+
+      <HearItAnswers
+        source={`seo:/montana/${city.slug}:before-faq`}
+        heading={`Never miss a ${city.name} call again.`}
+        lede="Drop your number and he rings you now. Tell him your business and hear how your own agent would answer."
+      />
 
       {/* ─────────────── FAQ ─────────────── */}
       <section className="border-b-2 border-[#0b3b44]">
