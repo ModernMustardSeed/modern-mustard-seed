@@ -42,6 +42,8 @@ export type ComparePage = {
   useCases: CompareUseCase[];
   faqs: { q: string; a: string }[];
   sources: CompareSource[];
+  /** Optional further reading shown under the answer. */
+  related?: { href: string; label: string }[];
   /** ISO date the page and its competitor facts were last checked live. */
   checked: string;
   published: string;
@@ -247,6 +249,7 @@ export const comparePages: ComparePage[] = [
   },
   {
     slug: 'ai-receptionist-vs-answering-service',
+    related: [{ href: '/ai-receptionist-cost', label: 'AI receptionist cost in 2026: every published price compared' }],
     metaTitle: 'AI Receptionist vs Answering Service (Ruby, Smith.ai): 2026 Comparison',
     metaDescription:
       'AI receptionist vs a live answering service like Ruby or Smith.ai. Plan prices checked live, what each does well, and which fits a contractor, a practice or a busy local business.',

@@ -50,6 +50,7 @@ export default function Footer() {
         { label: 'Answer Engine Resources', href: '/resources' },
         { label: 'Compare Your Options', href: '/compare' },
         { label: "Buyer's Guides", href: '/best' },
+        { label: 'AI Receptionist Cost', href: '/ai-receptionist-cost' },
       ],
     },
     {
