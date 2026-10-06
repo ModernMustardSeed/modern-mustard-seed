@@ -106,6 +106,10 @@ Honest side-by-sides. Each says when the other option is the better choice; comp
 - Bubble and no-code vs a custom app: https://modernmustardseed.com/compare/bubble-no-code-vs-custom-app
 - In-house developer vs product studio: https://modernmustardseed.com/compare/in-house-developer-vs-product-studio
 
+## Pricing guide
+
+- What an AI receptionist costs in 2026, every published plan compared (Upfirst, Dialzara, Rosie, Goodcall, My AI Front Desk, Smith.ai, Ruby, Avoca) with a hire-vs-AI cost comparison and payback calculator: https://modernmustardseed.com/ai-receptionist-cost
+
 ## Buyer's guides
 
 Lists sorted by who each option fits. Modern Mustard Seed is on each list and discloses it; every option gets the same depth.

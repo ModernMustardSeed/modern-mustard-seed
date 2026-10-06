@@ -38,6 +38,8 @@ export type BestPage = {
   method: string[];
   picks: BestPick[];
   faqs: { q: string; a: string }[];
+  /** Optional further reading shown under the answer. */
+  related?: { href: string; label: string }[];
   checked: string;
   published: string;
 };
@@ -150,6 +152,7 @@ const AVOCA: BestPick = {
 export const bestPages: BestPage[] = [
   {
     slug: 'ai-receptionists-for-contractors',
+    related: [{ href: '/ai-receptionist-cost', label: 'AI receptionist cost in 2026: every published price compared' }],
     metaTitle: 'Best AI Receptionists for Contractors (2026): 6 Options Compared',
     metaDescription:
       'The best AI receptionists and answering services for contractors and trades in 2026: Modern Mustard Seed, Avoca, Goodcall, Rosie, Smith.ai and Ruby, with prices checked live and who each is best for.',

@@ -62,6 +62,7 @@ const STATIC_PATHS = [
   '/blog',
   '/compare',
   '/best',
+  '/ai-receptionist-cost',
   '/about',
   '/sarahscarano',
   '/world',

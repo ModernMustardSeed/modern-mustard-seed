@@ -103,6 +103,19 @@ export default async function BestPage({ params }: { params: Params }) {
         >
           <p className="best-answer">{p.answer}</p>
           <p className={pop.note}>Last checked {formatChecked(p.checked)}.</p>
+          {p.related && p.related.length > 0 && (
+            <p className={pop.note}>
+              Further reading:{' '}
+              {p.related.map((r, i) => (
+                <span key={r.href}>
+                  {i > 0 ? ', ' : ''}
+                  <Link href={r.href} className="underline underline-offset-2 font-semibold">
+                    {r.label}
+                  </Link>
+                </span>
+              ))}
+            </p>
+          )}
           <div className={pop.actions}>
             <a href="#picks" className={pop.cta}>
               See the picks

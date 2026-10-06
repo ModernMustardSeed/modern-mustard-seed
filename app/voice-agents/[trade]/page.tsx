@@ -394,6 +394,10 @@ export default async function TradePage({ params }: { params: Promise<{ trade: s
                 </Link>
               </>
             ) : null}
+            . For the numbers, see{' '}
+            <Link href="/ai-receptionist-cost" className="underline underline-offset-2 font-semibold">
+              what an AI receptionist costs in 2026
+            </Link>
             . Each one names when another option is the better buy.
           </p>
         </div>
