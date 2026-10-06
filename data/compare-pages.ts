@@ -295,7 +295,7 @@ export const comparePages: ComparePage[] = [
       { who: 'A solo consultant with five calls a week', pick: 'Either', why: 'Low volume. Pick on voice and how you want callers handled.' },
     ],
     faqs: [
-      { q: 'How much does Ruby cost?', a: 'Per ruby.com/pricing on October 5, 2026: Starter $250 a month for 50 minutes, Professional $395 for 100, Business $720 for 200, Enterprise $1,725 for 500.' },
+      { q: 'How much does Ruby cost?', a: 'Per ruby.com/pricing on October 5, 2026: $250 a month for 50 minutes, $395 for 100, $720 for 200 (its most popular plan), and $1,725 for 500.' },
       { q: 'How much does Smith.ai cost?', a: 'Per smith.ai/pricing on October 5, 2026: Starter $300 a month for 30 calls, Basic $810 for 90, Pro $2,100 for 300, with overage from $8.50 to $11.50 a call and add-ons such as appointment booking at $1.50 a call.' },
       { q: 'Will callers know they are talking to an AI?', a: 'The voice is natural, and it says what it is if asked. Most callers care that they were answered, helped and booked.' },
       { q: 'Can I hear a Modern Mustard Seed AI receptionist?', a: 'Yes. Call (406) 312-1223. Mr. Mustard, the studio\'s own voice agent, answers around the clock.' },

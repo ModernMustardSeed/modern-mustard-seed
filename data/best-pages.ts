@@ -79,7 +79,7 @@ const RUBY: BestPick = {
     'Plans are metered by minutes: 50 minutes on the Starter plan.',
     'Cost grows with call volume.',
   ],
-  price: 'Starter $250 a month (50 minutes), Professional $395 (100), Business $720 (200), Enterprise $1,725 (500).',
+  price: '$250 a month for 50 minutes, $395 for 100, $720 for 200, $1,725 for 500 (plans are named by minutes).',
 };
 
 const SMITH: BestPick = {
