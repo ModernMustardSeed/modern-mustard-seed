@@ -251,6 +251,10 @@ const config: NextConfig = {
       // Retired navigation URLs still appear in Search Console and old links.
       { source: '/home', destination: '/', permanent: true },
       { source: '/notes', destination: '/blog', permanent: true },
+      // Pre-Next site URLs Google still crawls as 404s (Search Console, 2026-10-05).
+      { source: '/Note-:slug', destination: '/blog', permanent: true },
+      { source: '/Telemetry', destination: '/', permanent: true },
+      { source: '/seeddrop', destination: '/', permanent: true },
       // /sarahscarano is a real page again (2026-09-08): her portfolio in the
       // studio's grammar, sourced from data/sarah-portfolio.ts. The full gallery,
       // the plain resume PDF and the OG cover stay on her own domain, so every
