@@ -255,6 +255,9 @@ const config: NextConfig = {
       { source: '/Note-:slug', destination: '/blog', permanent: true },
       { source: '/Telemetry', destination: '/', permanent: true },
       { source: '/seeddrop', destination: '/', permanent: true },
+      // The Mustard Seed World came off the site (Sarah, 2026-10-05).
+      { source: '/world', destination: '/', permanent: true },
+      { source: '/world/:path*', destination: '/', permanent: true },
       // /sarahscarano is a real page again (2026-09-08): her portfolio in the
       // studio's grammar, sourced from data/sarah-portfolio.ts. The full gallery,
       // the plain resume PDF and the OG cover stay on her own domain, so every

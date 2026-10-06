@@ -726,7 +726,6 @@ export default function MustardLifeComic() {
               { label: 'The Prompt Playbook', note: 'The prompts the studio actually uses, ready to steal.', href: '/prompt-playbook' },
               { label: 'Idea to Spec', note: 'Turn the napkin sketch into a build brief a developer can price.', href: '/idea-to-spec' },
               { label: 'The Terminal', note: 'Watch the studio work. Live, unfiltered, oddly soothing.', href: '/the-terminal' },
-              { label: 'The Mustard Seed World', note: 'Fly a seaplane over Flathead Lake. Chase twelve seeds. Plant yours.', href: '/world' },
               { label: 'Free Playbooks', note: 'The library of plays, open to readers of this fine publication.', href: '/playbooks' },
             ].map((c, i) => (
               <Link

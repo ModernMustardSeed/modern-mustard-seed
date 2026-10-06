@@ -9,7 +9,6 @@ export const RIVIERA_OFF_PREFIX = [
   '/cc',
   '/office',
   '/demo/',
-  '/world',
   '/switchboard/live',
   '/sarah',
   '/hatchery/',

@@ -79,7 +79,6 @@ export default function Footer() {
         { label: 'The Bottleneck Breaker', href: '/audit' },
         { label: 'Book A Call', href: '/book' },
         { label: 'Or Write Instead', href: '/inquire' },
-        { label: 'The Mustard Seed World', href: '/world' },
         { label: 'Journal', href: '/blog' },
         { label: 'About', href: '/about' },
         { label: 'Sarah Scarano', href: '/sarahscarano' },
