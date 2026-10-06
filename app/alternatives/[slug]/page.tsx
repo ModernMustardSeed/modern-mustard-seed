@@ -1,0 +1,302 @@
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
+import { JsonLd, articleJsonLd, breadcrumbJsonLd, faqJsonLd } from '@/lib/jsonld';
+import { buildMetadata, SITE } from '@/lib/seo';
+import { alternativesPages, alternativesPageBySlug } from '@/data/alternatives-pages';
+import { bookingUrl } from '@/data/socials';
+import PopPageHero, { pop } from '@/components/pop/PopPageHero';
+import { formatChecked } from '@/lib/checked-date';
+
+type Params = Promise<{ slug: string }>;
+
+export function generateStaticParams() {
+  return alternativesPages.map((p) => ({ slug: p.slug }));
+}
+
+export async function generateMetadata({ params }: { params: Params }) {
+  const { slug } = await params;
+  const p = alternativesPageBySlug[slug];
+  if (!p) return buildMetadata({ title: 'Not Found', noindex: true });
+  return buildMetadata({
+    title: p.metaTitle,
+    description: p.metaDescription,
+    path: `/alternatives/${p.slug}`,
+    article: { published: p.published, modified: p.checked },
+  });
+}
+
+const ART_ALT = 'Painting: Mr. Mustard on a sunny seaside road above the sea, the family in a Tiffany-blue convertible';
+
+function anchor(name: string) {
+  return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
+export default async function AlternativesPage({ params }: { params: Params }) {
+  const { slug } = await params;
+  const p = alternativesPageBySlug[slug];
+  if (!p) notFound();
+
+  const path = `/alternatives/${p.slug}`;
+  const url = `${SITE.url}${path}`;
+  const others = alternativesPages.filter((a) => a.slug !== p.slug);
+
+  const itemList = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    '@id': `${url}#list`,
+    name: p.h1,
+    numberOfItems: p.picks.length,
+    itemListOrder: 'https://schema.org/ItemListUnordered',
+    itemListElement: p.picks.map((pick, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: pick.name,
+      description: `${pick.bestFor}. ${pick.what}`,
+      url: pick.url ?? `${url}#${anchor(pick.name)}`,
+    })),
+  };
+
+  return (
+    <>
+      <JsonLd
+        data={[
+          articleJsonLd({
+            title: p.h1,
+            description: p.metaDescription,
+            path,
+            datePublished: p.published,
+            dateModified: p.checked,
+          }),
+          itemList,
+          faqJsonLd(p.faqs),
+          breadcrumbJsonLd([
+            { name: 'Home', url: '/' },
+            { name: 'Alternatives', url: '/alternatives' },
+            { name: p.h1, url: path },
+          ]),
+        ]}
+      />
+      <article className="relative min-h-screen bg-[#fbf5ea] text-[#0b3b44] overflow-x-clip">
+        <PopPageHero
+          eyebrow={
+            <>
+              <Link href="/alternatives" className={pop.back}>
+                ← All Alternatives
+              </Link>
+              <span className={pop.pill}>{p.eyebrow}</span>
+            </>
+          }
+          title={p.h1}
+          art={{ src: '/art/riviera/road', alt: ART_ALT, caption: 'Every option, fairly' }}
+          sticker="Switch?"
+        >
+          <p className="best-answer">{p.answer}</p>
+          <p className={pop.note}>Last checked {formatChecked(p.checked)}.</p>
+          <p className={pop.note}>
+            Further reading:{' '}
+            {p.related.map((r, i) => (
+              <span key={r.href}>
+                {i > 0 ? ', ' : ''}
+                <Link href={r.href} className="underline underline-offset-2 font-semibold">
+                  {r.label}
+                </Link>
+              </span>
+            ))}
+          </p>
+          <div className={pop.actions}>
+            <a href="#options" className={pop.cta}>
+              See the alternatives
+            </a>
+            <a href={bookingUrl} target="_blank" rel="noopener noreferrer" className={pop.ctaAlt}>
+              Book a Discovery Call
+            </a>
+          </div>
+        </PopPageHero>
+
+        {/* Why people switch / when to stay */}
+        <section className="max-w-5xl mx-auto px-6 md:px-8 py-12 grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div className="pop-card p-7 md:p-9">
+            <span className="text-[10px] uppercase tracking-[0.4em] text-[#0a7c78] font-mono font-bold mb-4 block">Why people look elsewhere</span>
+            <ul className="list-disc pl-5 space-y-2 text-[#3a3733] text-sm md:text-base font-body leading-7">
+              {p.whySwitch.map((w) => <li key={w}>{w}</li>)}
+            </ul>
+            <p className="mt-4 text-xs text-[#0b3b44]/70 font-body">
+              From{' '}
+              <a href={p.vendorUrl} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">
+                {p.vendor}&apos;s own pricing page
+              </a>
+              , read {formatChecked(p.checked)}.
+            </p>
+          </div>
+          <div className="pop-card-cream p-7 md:p-9">
+            <span className="text-[10px] uppercase tracking-[0.4em] text-[#0a7c78] font-mono font-bold mb-4 block">When to stay with {p.vendor}</span>
+            <ul className="list-disc pl-5 space-y-2 text-[#3a3733] text-sm md:text-base font-body leading-7">
+              {p.stayWith.map((s) => <li key={s}>{s}</li>)}
+            </ul>
+          </div>
+        </section>
+
+        {/* Comparison table */}
+        <section className="relative max-w-6xl mx-auto px-6 md:px-8 py-8" aria-labelledby="table-h">
+          <div className="text-center max-w-3xl mx-auto mb-8">
+            <span className="text-[10px] uppercase tracking-[0.4em] text-[#0a7c78] font-mono font-bold mb-5 block">Side by side</span>
+            <h2 id="table-h" className="font-display text-3xl md:text-5xl font-black text-[#0b3b44] tracking-tight leading-[1.1]">
+              {p.vendor} alternatives <span className="italic text-[#0a7c78]">at a glance</span>
+            </h2>
+          </div>
+          <div className="pop-card p-0 overflow-x-auto">
+            <table className="w-full min-w-[640px] text-left text-sm font-body">
+              <thead>
+                <tr className="border-b-2 border-[#0b3b44]/15">
+                  <th scope="col" className="p-4 text-[10px] uppercase tracking-[0.3em] font-mono font-bold text-[#0b3b44]">Option</th>
+                  <th scope="col" className="p-4 text-[10px] uppercase tracking-[0.3em] font-mono font-bold text-[#0b3b44]">Best for</th>
+                  <th scope="col" className="p-4 text-[10px] uppercase tracking-[0.3em] font-mono font-bold text-[#0b3b44]">Billed by</th>
+                  <th scope="col" className="p-4 text-[10px] uppercase tracking-[0.3em] font-mono font-bold text-[#0b3b44]">Starts at</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y-2 divide-[#0b3b44]/10">
+                {p.picks.map((pick) => (
+                  <tr key={pick.name} className={pick.isUs ? 'bg-[#ffe9a8]/40' : undefined}>
+                    <th scope="row" className="p-4 font-display font-black text-[#0b3b44]">
+                      <a href={`#${anchor(pick.name)}`} className="underline-offset-4 hover:underline">{pick.name}</a>
+                    </th>
+                    <td className="p-4 text-[#3a3733] leading-6">{pick.bestFor}</td>
+                    <td className="p-4 text-[#3a3733] leading-6">{pick.billedBy}</td>
+                    <td className="p-4 text-[#3a3733] leading-6">{pick.startsAt}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        {/* The options */}
+        <section id="options" className="max-w-5xl mx-auto px-6 md:px-8 py-8 space-y-6 scroll-mt-24">
+          {p.picks.map((pick, i) => (
+            <section
+              key={pick.name}
+              id={anchor(pick.name)}
+              className={`${pick.isUs ? 'pop-card-yellow' : 'pop-card'} p-7 md:p-9 scroll-mt-24`}
+              aria-labelledby={`${anchor(pick.name)}-h`}
+            >
+              <span className="text-[10px] uppercase tracking-[0.3em] font-mono font-bold text-[#0a7c78] block mb-2">
+                {String(i + 1).padStart(2, '0')} · {pick.bestFor}
+              </span>
+              <h2 id={`${anchor(pick.name)}-h`} className="font-display text-2xl md:text-3xl font-black text-[#0b3b44] tracking-tight mb-3">
+                {pick.name}
+                {pick.isUs && <span className="ml-3 align-middle text-[10px] uppercase tracking-[0.25em] font-mono text-[#0b3b44]/70">(that&apos;s us)</span>}
+              </h2>
+              <p className="text-[#3a3733] text-sm md:text-base font-body leading-7 mb-5">{pick.what}</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+                <div>
+                  <h3 className="text-[10px] uppercase tracking-[0.3em] font-mono font-bold text-[#0b3b44] mb-2">Strengths</h3>
+                  <ul className="list-disc pl-5 space-y-1 text-sm text-[#3a3733] font-body leading-6">
+                    {pick.strengths.map((s) => <li key={s}>{s}</li>)}
+                  </ul>
+                </div>
+                <div>
+                  <h3 className="text-[10px] uppercase tracking-[0.3em] font-mono font-bold text-[#0b3b44] mb-2">Watch for</h3>
+                  <ul className="list-disc pl-5 space-y-1 text-sm text-[#3a3733] font-body leading-6">
+                    {pick.watchFor.map((s) => <li key={s}>{s}</li>)}
+                  </ul>
+                </div>
+              </div>
+              <p className="text-sm font-body leading-6 text-[#0b3b44]">
+                <span className="text-[10px] uppercase tracking-[0.3em] font-mono font-bold mr-2">Price</span>
+                {pick.price}
+              </p>
+              {pick.url && !pick.isUs && (
+                <a href={pick.url} target="_blank" rel="noopener noreferrer" className="inline-block mt-3 text-sm text-[#0a7c78] underline underline-offset-2">
+                  Source: {pick.name} pricing page
+                </a>
+              )}
+              {pick.url && pick.isUs && (
+                <Link href={pick.url.replace(SITE.url, '')} className="inline-block mt-3 text-sm text-[#0b3b44] underline underline-offset-2">
+                  See what we build
+                </Link>
+              )}
+            </section>
+          ))}
+        </section>
+
+        {/* Method */}
+        <section className="max-w-4xl mx-auto px-6 md:px-8 py-12">
+          <div className="pop-card-cream p-7 md:p-9">
+            <span className="text-[10px] uppercase tracking-[0.4em] text-[#0a7c78] font-mono font-bold mb-4 block">How we checked</span>
+            <ul className="list-disc pl-5 space-y-2 text-[#3a3733] text-sm md:text-base font-body leading-7">
+              <li>Every price and plan limit was read from the company&apos;s own pricing page on {formatChecked(p.checked)} and is linked below.</li>
+              <li>Reasons to switch come only from what {p.vendor} publishes: plan limits, how it bills, and what its pricing page leaves out. No reviews, no rumors.</li>
+              <li>Modern Mustard Seed wrote this page and is one of the options. Every option gets the same space.</li>
+            </ul>
+            <p className="mt-4 text-sm text-[#0b3b44]/70 font-body">Prices change; check each source before you buy.</p>
+            <ul className="mt-4 flex flex-wrap gap-x-4 gap-y-1 text-sm font-body">
+              {p.sources.map((s) => (
+                <li key={s.url}>
+                  <a href={s.url} target="_blank" rel="noopener noreferrer" className="text-[#0a7c78] underline underline-offset-2">
+                    {s.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
+        {/* FAQ */}
+        <section className="max-w-4xl mx-auto px-6 md:px-8 py-12">
+          <div className="text-center mb-10">
+            <span className="text-[10px] uppercase tracking-[0.4em] text-[#0a7c78] font-mono font-bold mb-4 block">FAQ</span>
+            <h2 className="font-display text-3xl md:text-5xl font-black text-[#0b3b44] tracking-tight leading-[1.1]">
+              Common <span className="italic text-[#0a7c78]">questions</span>
+            </h2>
+          </div>
+          <div className="space-y-3">
+            {p.faqs.map((item) => (
+              <details key={item.q} className="pop-card p-6 group cursor-pointer">
+                <summary className="flex justify-between items-start gap-4 list-none">
+                  <h3 className="font-display text-base md:text-lg font-black text-[#0b3b44] tracking-tight">{item.q}</h3>
+                  <span className="text-[#0a7c78] text-2xl font-black flex-shrink-0 transition-transform group-open:rotate-45 leading-none">+</span>
+                </summary>
+                <p className="text-[#3a3733] text-sm md:text-base font-body leading-7 mt-4">{item.a}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        {/* Related */}
+        <section className="max-w-6xl mx-auto px-6 md:px-8 py-12">
+          <h2 className="font-display text-2xl md:text-3xl font-black text-[#0b3b44] tracking-tight mb-6 text-center">Related comparisons and alternatives</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {p.related.map((r) => (
+              <Link key={r.href} href={r.href} className="pop-card p-5 hover:-translate-y-1 transition-transform duration-300">
+                <span className="text-[10px] uppercase tracking-[0.3em] font-mono font-bold text-[#0a7c78] block mb-2">Read next</span>
+                <span className="font-display text-base font-black text-[#0b3b44] leading-snug">{r.label}</span>
+              </Link>
+            ))}
+            {others.map((a) => (
+              <Link key={a.slug} href={`/alternatives/${a.slug}`} className="pop-card p-5 hover:-translate-y-1 transition-transform duration-300">
+                <span className="text-[10px] uppercase tracking-[0.3em] font-mono font-bold text-[#0a7c78] block mb-2">Alternatives</span>
+                <span className="font-display text-base font-black text-[#0b3b44] leading-snug">{a.h1}</span>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        {/* Next */}
+        <section className="max-w-4xl mx-auto px-6 md:px-8 pt-4 pb-24 text-center">
+          <div className="pop-card-cream halftone-bg p-10 md:p-14">
+            <h2 className="font-display text-3xl md:text-4xl font-black text-[#0b3b44] tracking-tight leading-[1.1] mb-5">
+              Want it built for you instead?
+            </h2>
+            <p className="text-[#3a3733] text-base md:text-lg font-body leading-relaxed mb-8 max-w-2xl mx-auto">
+              Tell us what the business needs. We scope it in a free discovery call and agree a set package price before work starts.
+            </p>
+            <div className="flex flex-col sm:flex-row flex-wrap gap-3 justify-center">
+              <Link href="/inquire" className={pop.cta}>Begin an Engagement</Link>
+              <Link href="/compare" className={pop.ctaAlt}>See the comparisons</Link>
+            </div>
+          </div>
+        </section>
+      </article>
+    </>
+  );
+}
