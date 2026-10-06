@@ -18,7 +18,7 @@ import { openWelcomeTour } from '@/components/admin/WelcomeTour';
  * the mustard chip, and the Inbox unread dot bubbles up to its group.
  */
 
-type Tab = 'overview' | 'office' |'hq' | 'portfolio' | 'gleaner' | 'pipeline' | 'tracker' | 'outbound' | 'acquisition' | 'factories' | 'partners' | 'partner-desk' | 'white-label' | 'team' | 'outreach' | 'campaigns' | 'texting' | 'ads' | 'my-content' | 'facebook' | 'social' | 'posters' | 'artifacts' | 'audit' | 'roadmaps' | 'hundredfold' | 'call' | 'script' | 'callers' | 'calls' | 'training' | 'clients' | 'front-office' | 'posting' | 'proposals' | 'projects' | 'builds' | 'build-log' | 'delivery' | 'templates' | 'intakes' | 'approvals' | 'reviews' | 'calendar' | 'onboarding' | 'manual' | 'inbox' | 'opps' | 'desks' | 'call-prep';
+type Tab = 'overview' | 'office' |'hq' | 'portfolio' | 'gleaner' | 'pipeline' | 'tracker' | 'outbound' | 'acquisition' | 'factories' | 'partners' | 'partner-desk' | 'white-label' | 'team' | 'outreach' | 'campaigns' | 'texting' | 'ads' | 'my-content' | 'facebook' | 'social' | 'posters' | 'artifacts' | 'audit' | 'roadmaps' | 'hundredfold' | 'call' | 'script' | 'callers' | 'calls' | 'training' | 'clients' | 'front-office' | 'posting' | 'proposals' | 'projects' | 'builds' | 'build-log' | 'delivery' | 'templates' | 'intakes' | 'approvals' | 'reviews' | 'calendar' | 'onboarding' | 'manual' | 'inbox' | 'opps' | 'desks' | 'call-prep' | 'call-lists';
 
 // `external: true` marks a public-facing offer page that opens in a new tab, so
 // clicking it from the admin never loses the team member's place. These items
@@ -114,6 +114,7 @@ const GROUPS: { name: string; items: Item[] }[] = [
       { key: 'inbox', label: 'Inbox', href: '/admin/inbox' },
       { key: 'audit', label: 'Audit Desk', href: '/admin/audit' },
       { key: 'call-prep', label: 'Call Prep', href: '/admin/call-prep' },
+      { key: 'call-lists', label: 'Call Lists', href: '/admin/call-lists' },
       { key: 'calendar', label: 'Calendar', href: '/admin/calendar' },
       { key: 'approvals', label: 'Approvals', href: '/admin/approvals' },
       { key: 'team', label: 'Team', href: '/admin/team' },
