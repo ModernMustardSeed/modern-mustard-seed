@@ -1,7 +1,7 @@
 import Link from '@/components/AttributionLink';
 import { JsonLd, aboutPageJsonLd, breadcrumbJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
-import PopPageHero from '@/components/pop/PopPageHero';
+import SarahPortrait from '@/components/sarah/SarahPortrait';
 
 export const metadata = buildMetadata({
   title: 'Sarah Scarano and the AI Studio Serving Businesses Nationwide',
@@ -10,31 +10,56 @@ export const metadata = buildMetadata({
   path: '/about',
 });
 
+// The about page wears the homepage's Flathead editorial grammar (Sarah,
+// 2026-10-05): cream ground, ruled eyebrows, Instrument Serif with the blue
+// italic, the gold-topped card and one dark ink band. It speaks in the first
+// person, as the studio.
+
 // The standard we hold on every build.
 const STANDARD: { k: string; v: string }[] = [
   { k: 'Ship complete', v: 'We hand over finished, polished work. No drafts, no almost-done, no "we will fix it later."' },
   { k: 'Design like it matters', v: 'Every screen is held to an Apple and Linear bar. We never ship the generic template look.' },
-  { k: 'Honest and flat', v: 'One fixed price, agreed before we build. No surprise invoices, no meter running.' },
+  { k: 'Honest and flat', v: 'One set package price, agreed before we build. Refinements to what we built are included.' },
   { k: 'You own everything', v: 'The code, the accounts, the keys. When we are done, it is yours, free and clear.' },
+];
+
+// What we build: the same six doors as the site menu.
+const OFFERS: { t: string; d: string; href: string }[] = [
+  { t: 'AI For Your Business', d: 'AI websites, receptionists and agents that answer, book and follow up.', href: '/ai' },
+  { t: 'Websites And Brand', d: 'Design-led, built to be found, with a clear offer and an obvious next step.', href: '/websites' },
+  { t: 'Voice Agents', d: 'A phone line that answers every call, day and night, and books the job.', href: '/voice-agents' },
+  { t: 'Custom Software', d: 'The one clean tool built for exactly how your business runs.', href: '/services' },
+  { t: 'Marketing', d: 'Social, blog, ads and email, written in your voice and published on schedule.', href: '/marketing' },
+  { t: 'Advisory', d: 'Retained counsel by the quarter on what to build and where agents belong.', href: '/advisory' },
 ];
 
 // The one stack we build on, refined in production every week.
 const STACK = ['Next.js', 'React', 'TypeScript', 'Tailwind', 'Supabase', 'Stripe', 'Vercel', 'Trigger.dev', 'Anthropic Claude', 'Gemini', 'Vapi'];
 
-// What we make for the businesses we work with.
-const OFFERINGS: { t: string; d: string }[] = [
-  { t: 'Voice + chat agents', d: 'A 24/7 voice agent that answers the phone and books the job, plus a helper that never lets a lead go cold.' },
-  { t: 'Websites that sell', d: 'Not a brochure. A clear offer, real proof, and an obvious next step, live in weeks and yours to keep.' },
-  { t: 'Custom apps + agentic tools', d: 'The one clean tool built for exactly how a business runs, instead of five apps held together by a spreadsheet.' },
-  { t: 'The Studio', d: 'The departments a working engagement reaches for: Voice Agents, Pictures, the Launch Film, and the GEO Desk.' },
-  { t: 'Mustard Mode', d: 'Rather build it yourself? We coach you to ship with agentic systems, in your own hands, one mission at a time.' },
-];
+// The global theme sets every <p> in main to the body face; serif lines say so inline.
+const SERIF = { fontFamily: 'var(--font-flathead-display), Georgia, serif' };
 
-function SectionLabel({ children }: { children: React.ReactNode }) {
+function Overline({ children, light = false }: { children: React.ReactNode; light?: boolean }) {
   return (
-    <span className="text-[10px] uppercase tracking-[0.4em] text-[#0a7c78] font-mono font-bold block mb-3">
+    <p
+      className={`inline-block border-t pt-1.5 mb-6 text-[10px] font-bold uppercase tracking-[0.17em] leading-relaxed ${
+        light ? 'border-[#f5b700]/60 text-[#f5b700]' : 'border-[#103c54]/60 text-[#103c54]'
+      }`}
+    >
       {children}
-    </span>
+    </p>
+  );
+}
+
+function TextLink({ href, children }: { href: string; children: React.ReactNode }) {
+  return (
+    <Link
+      href={href}
+      className="inline-flex items-center justify-between gap-7 min-h-[44px] border-b border-[#103c54]/30 py-1.5 text-[13px] font-semibold text-[#103c54] hover:text-[#1e50c8] hover:border-[#1e50c8] transition-colors"
+    >
+      {children}
+      <span aria-hidden="true" className="text-xl leading-none">↗</span>
+    </Link>
   );
 }
 
@@ -50,168 +75,150 @@ export default function AboutPage() {
           ]),
         ]}
       />
-      <div data-studio-page="about" className="relative min-h-screen bg-[#fbf5ea] text-[#0b3b44] overflow-x-clip">
-        <PopPageHero
-          eyebrow={<span>About</span>}
-          title={<>Faith Meets{' '}<em>Function</em></>}
-          issue={{ no: 'No.1', lines: ['The studio', 'Kalispell, Montana'] }}
-          art={{
-            src: '/art/riviera/about',
-            alt: 'Painting: Mr. and Mrs. Mustard at a marble table on a Riviera café terrace under a Tiffany-blue awning, espresso and croissants, he smiles at his phone while the kids share a pastry with the seed dog and white yachts sit in the marina behind',
-            caption: 'Made in Kalispell, Montana',
-          }}
-          sticker="Built here!"
-          mascot={{ bubble: 'Welcome to the studio!' }}
-          marquee={['Ship complete', 'Design like it matters', 'Honest and flat', 'You own everything', 'Kalispell, Montana', 'Clients nationwide']}
-        >
-          <p>
-            Modern Mustard Seed is a boutique design and agentic systems studio in Kalispell, Montana. We design and build websites and brand, custom software, and voice agents for Northwest Montana and clients nationwide, and we advise operators putting agentic systems to work in a business that already works.
-          </p>
-        </PopPageHero>
-      <div className="relative pt-16 md:pt-20 pb-28">
-        <div aria-hidden="true" className="absolute inset-0 halftone-bg opacity-50 pointer-events-none" />
-        <div className="relative max-w-3xl mx-auto px-6 md:px-8">
-          {/* ─── Who we are ─── */}
-          <div className="space-y-5 text-[#3A3733] font-body text-[17px] leading-relaxed max-w-2xl mx-auto">
-            <p>
-              Sarah Scarano founded Modern Mustard Seed. She is the engineer and agentic systems architect behind the studio, and the person you meet on a discovery call. We design, build and ship products businesses can own and operate.
-            </p>
-            <p>
-              We build the way agentic systems finally made possible. A focused team with a strong stack and a clear point of view can now deliver what used to take a room of ten. That leverage is the entire point. Our clients do not want a strategy deck. They want the thing built, shipped, and working, and they want it to look and feel like it cost far more than it did.
-            </p>
-          </div>
-
-          {/* ─── The signature "why" band ─── */}
-          <div className="relative mt-16 bg-[#0b3b44] text-[#fbf5ea] border-2 border-[#0b3b44] rounded-3xl shadow-[6px_6px_0_0_#f5b700] overflow-hidden">
-            <div aria-hidden className="absolute inset-0 halftone-bg opacity-[0.15]" />
-            <div className="relative p-8 md:p-12">
-              <SectionLabel>Why we do this</SectionLabel>
-              <p className="font-display text-2xl md:text-4xl font-black tracking-tight leading-[1.12]">
-                Good software was priced out of reach for too long. We are here to end that.
+      <div data-studio-page="about" className="relative min-h-screen bg-[#fcf8eb] text-[#103c54] overflow-x-clip">
+        {/* ─── Hero: the builder ─── */}
+        <section className="px-[6%] lg:px-[max(6%,calc((100vw-1200px)/2))] pt-32 md:pt-40 pb-20 md:pb-28">
+          <div className="grid lg:grid-cols-[1.1fr_.9fr] gap-14 lg:gap-24 items-center">
+            <div>
+              <Overline>About the studio</Overline>
+              <h1 className="text-[clamp(52px,6.4vw,92px)] leading-[0.98]">
+                Faith meets <em>function.</em>
+              </h1>
+              <p style={SERIF} className="text-[24px] md:text-[28px] leading-[1.35] mt-8 max-w-[520px]">
+                A direct line to the builder.
               </p>
-              <p className="mt-5 text-[#fbf5ea]/80 font-body text-[16px] leading-relaxed max-w-2xl">
-                The corner shop. The founder with one real shot. The operator drowning in busywork. They were all told that serious tools were for companies with serious budgets. That is over. Putting an elite product in the hands of someone who was never supposed to be able to afford one is the work we love most. It is the reason we do any of this.
-              </p>
-            </div>
-          </div>
-
-          {/* ─── Faith posture ─── */}
-          <div className="mt-16 text-center max-w-2xl mx-auto">
-            <SectionLabel>The posture</SectionLabel>
-            <p className="font-serif italic text-2xl md:text-3xl font-medium text-[#0b3b44] leading-snug">
-              &ldquo;The smallest of all seeds, yet when it is planted it grows into the largest of garden plants.&rdquo;
-            </p>
-            <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#0b3b44]/50 mt-3">Matthew 13:31-32</p>
-            <p className="font-body text-[16px] text-[#3A3733] leading-relaxed mt-5">
-              Small beginnings, outsized outcomes. Faith and execution in the same hand. That is how we approach every project, every client, and every line of code.
-            </p>
-          </div>
-
-          {/* ─── The standard (excellence) ─── */}
-          <div className="mt-20">
-            <div className="text-center mb-8">
-              <SectionLabel>The standard we hold</SectionLabel>
-              <h2 className="font-display text-3xl md:text-4xl font-black text-[#0b3b44] tracking-tight">Excellence, every time</h2>
-            </div>
-            <div className="grid sm:grid-cols-2 gap-4">
-              {STANDARD.map((s) => (
-                <div key={s.k} className="pop-card p-6">
-                  <h3 className="font-display text-lg font-black text-[#0b3b44] mb-1.5">{s.k}</h3>
-                  <p className="font-body text-[15px] text-[#3A3733] leading-relaxed">{s.v}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* ─── The stack (tools we use) ─── */}
-          <div className="mt-16">
-            <div className="text-center mb-6">
-              <SectionLabel>The tools we build on</SectionLabel>
-              <h2 className="font-display text-3xl md:text-4xl font-black text-[#0b3b44] tracking-tight">One stack, sharpened weekly</h2>
-            </div>
-            <div className="pop-card p-7 md:p-8">
-              <div className="flex flex-wrap justify-center gap-2.5">
-                {STACK.map((tool) => (
-                  <span
-                    key={tool}
-                    className="font-mono text-[13px] font-semibold text-[#0b3b44] bg-[#fbf5ea] border-2 border-[#0b3b44] rounded-full px-3.5 py-1.5"
-                  >
-                    {tool}
-                  </span>
-                ))}
+              <div className="mt-6 space-y-4 text-[16px] leading-[1.85] max-w-[540px]">
+                <p>
+                  I&apos;m Sarah Scarano, founder, designer and engineer of Modern Mustard Seed. You work with the person who designs it and the person who builds it, from the first conversation to the finished detail.
+                </p>
+                <p>
+                  We are a boutique design and agentic systems studio in Kalispell, Montana, building websites and brand, custom software and voice agents for businesses across the United States.
+                </p>
               </div>
-              <p className="font-body text-[15px] text-[#3A3733] leading-relaxed text-center mt-6 max-w-xl mx-auto">
-                One refined stack across every engagement, proven in production every single week. We do not chase frameworks. We compound.
-              </p>
+              <div className="flex flex-wrap gap-x-10 gap-y-2 mt-9">
+                <TextLink href="/sarahscarano">See my portfolio</TextLink>
+                <TextLink href="/book">Book a call</TextLink>
+              </div>
             </div>
+            <SarahPortrait
+              priority
+              caption="Sarah Scarano · Founder · Kalispell, Montana"
+              className="w-full max-w-[420px] justify-self-center lg:justify-self-end"
+            />
           </div>
+        </section>
 
-          {/* ─── What we build (offer) ─── */}
-          <div className="mt-16">
-            <div className="text-center mb-8">
-              <SectionLabel>What we build</SectionLabel>
-              <h2 className="font-display text-3xl md:text-4xl font-black text-[#0b3b44] tracking-tight">The work we offer</h2>
+        {/* ─── Why we do this: the ink band ─── */}
+        <section className="relative bg-[#103c54] text-[#fcf8eb] overflow-hidden">
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 pointer-events-none"
+            style={{ backgroundImage: 'radial-gradient(rgba(245,183,0,0.16) 1.3px, transparent 1.4px)', backgroundSize: '18px 18px' }}
+          />
+          <div className="relative px-[6%] lg:px-[max(6%,calc((100vw-1200px)/2))] py-20 md:py-28 grid lg:grid-cols-[1.2fr_1fr] gap-10 lg:gap-24 items-end">
+            <div>
+              <Overline light>Why we do this</Overline>
+              <h2 className="!text-[#fcf8eb] text-[clamp(38px,4.4vw,64px)]">
+                Good software was priced out of reach for too long. <em className="!text-[#f5b700]">We are here to end that.</em>
+              </h2>
             </div>
-            <div className="space-y-3">
-              {OFFERINGS.map((o, i) => (
-                <div key={o.t} className="pop-card p-6 flex items-start gap-4">
-                  <span className="shrink-0 font-mono text-sm font-bold text-[#0b3b44] bg-[#f5b700] border-2 border-[#0b3b44] rounded-lg w-9 h-9 flex items-center justify-center">
-                    {String(i + 1).padStart(2, '0')}
-                  </span>
-                  <div>
-                    <h3 className="font-display text-lg font-black text-[#0b3b44] mb-1">{o.t}</h3>
-                    <p className="font-body text-[15px] text-[#3A3733] leading-relaxed">{o.d}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* ─── Who we work with ─── */}
-          <div className="mt-16 text-center max-w-2xl mx-auto">
-            <SectionLabel>Who we work with</SectionLabel>
-            <p className="font-body text-[17px] text-[#3A3733] leading-relaxed">
-              Founders building something meant to last. Service businesses ready to get out of the inbox. Creators who treat their brand like a moat. People with a clear vision who need a partner that can actually ship.
+            <p className="!text-[#fcf8eb]/80 text-[16px] leading-[1.9]">
+              The corner shop. The founder with one real shot. The operator drowning in busywork. They were all told that serious tools were for companies with serious budgets. That is over. Putting an elite product in the hands of someone who was never supposed to afford one is the work we love most.
             </p>
           </div>
+        </section>
 
-          {/* ─── Signed: Sarah ─── */}
-          <div className="mt-16 text-center">
-            <div className="flex items-end justify-center gap-1">
-              <svg viewBox="0 0 200 185" className="w-24 h-auto" role="img" aria-label="With love">
-                <path
-                  d="M100 165 C 55 130, 18 96, 18 58 C 18 32, 41 16, 65 22 C 83 27, 95 43, 100 59 C 105 43, 117 27, 135 22 C 159 16, 182 32, 182 58 C 182 96, 145 130, 100 165 Z"
-                  fill="#FFFFFF"
-                  stroke="#0b3b44"
-                  strokeWidth="6"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              <span className="font-serif italic text-4xl font-bold text-[#0b3b44] pb-3">, Sarah</span>
+        {/* ─── The standard ─── */}
+        <section className="px-[6%] lg:px-[max(6%,calc((100vw-1200px)/2))] py-20 md:py-28">
+          <div className="grid lg:grid-cols-[.8fr_1.2fr] gap-10 lg:gap-24">
+            <div>
+              <Overline>The standard we hold</Overline>
+              <h2 className="text-[clamp(42px,4.2vw,62px)]">
+                Excellence, <em>every time.</em>
+              </h2>
+              <p className="mt-6 text-[16px] leading-[1.85] max-w-[380px]">
+                Small beginnings, outsized outcomes. Faith and execution in the same hand, on every project and every line of code.
+              </p>
             </div>
-            <p className="font-body text-sm text-[#0b3b44]/70 mt-2">Modern Mustard Seed</p>
+            <ol className="grid sm:grid-cols-2 border-t border-[#103c54]/20">
+              {STANDARD.map((s, i) => (
+                <li key={s.k} className={`py-8 border-b border-[#103c54]/20 ${i % 2 === 0 ? 'sm:pr-10' : 'sm:pl-10 sm:border-l'}`}>
+                  <span className="font-display text-[15px] text-[#1e50c8]">{String(i + 1).padStart(2, '0')}</span>
+                  <h3 className="text-[28px] leading-tight mt-2">{s.k}</h3>
+                  <p className="mt-2.5 text-[15px] leading-[1.8] text-[#103c54]/85">{s.v}</p>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </section>
+
+        {/* ─── What we build ─── */}
+        <section className="bg-[#f3ecd5] px-[6%] lg:px-[max(6%,calc((100vw-1200px)/2))] py-20 md:py-28">
+          <div className="flex flex-wrap items-end justify-between gap-6 mb-10">
+            <div>
+              <Overline>What we build</Overline>
+              <h2 className="text-[clamp(42px,4.2vw,62px)]">
+                Six doors, <em>one standard.</em>
+              </h2>
+            </div>
+            <TextLink href="/work">See the work</TextLink>
+          </div>
+          <ul className="grid md:grid-cols-2 lg:grid-cols-3 border-t border-[#103c54]/25">
+            {OFFERS.map((o) => (
+              <li key={o.href} className="border-b border-[#103c54]/25">
+                <Link href={o.href} className="group flex h-full flex-col py-8 md:pr-10">
+                  <span className="flex items-baseline justify-between gap-4">
+                    <span className="font-display text-[30px] leading-tight group-hover:text-[#1e50c8] transition-colors">{o.t}</span>
+                    <span aria-hidden="true" className="text-xl group-hover:text-[#1e50c8] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition">↗</span>
+                  </span>
+                  <span className="mt-2.5 text-[15px] leading-[1.75] text-[#103c54]/80">{o.d}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        {/* ─── The verse ─── */}
+        <section className="px-[6%] py-20 md:py-28 text-center">
+          <blockquote className="max-w-[820px] mx-auto">
+            <p style={SERIF} className="italic text-[clamp(30px,3.4vw,46px)] leading-[1.25] text-[#103c54]">
+              &ldquo;If you have faith as small as a mustard seed, nothing will be impossible for you.&rdquo;
+            </p>
+            <footer className="mt-5 text-[10px] font-bold uppercase tracking-[0.2em] text-[#103c54]/60">Matthew 17:20</footer>
+          </blockquote>
+        </section>
+
+        {/* ─── Tools, who we work with, the signature ─── */}
+        <section className="px-[6%] lg:px-[max(6%,calc((100vw-1200px)/2))] pb-24 md:pb-32">
+          <div className="grid lg:grid-cols-2 gap-14 lg:gap-24 border-t border-[#103c54]/20 pt-14">
+            <div>
+              <Overline>The tools we build on</Overline>
+              <p style={SERIF} className="text-[26px] md:text-[30px] leading-[1.35]">
+                {STACK.join(' · ')}
+              </p>
+              <p className="mt-5 text-[15px] leading-[1.85] text-[#103c54]/85 max-w-[460px]">
+                One refined stack across every engagement, proven in production every week. We do not chase frameworks. We compound.
+              </p>
+            </div>
+            <div>
+              <Overline>Who we work with</Overline>
+              <p className="text-[16px] leading-[1.9]">
+                Founders building something meant to last. Service businesses ready to get out of the inbox. Creators who treat their brand like a moat. People with a clear vision who need a partner that can actually ship.
+              </p>
+              <p style={SERIF} className="italic text-[44px] leading-none mt-10">With love, Sarah</p>
+              <p className="mt-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#103c54]/60">Modern Mustard Seed</p>
+            </div>
           </div>
 
-          {/* ─── CTAs ─── */}
-          <p className="mt-12 font-body leading-relaxed text-center">
-            <Link href="/sarahscarano" className="text-[#0a7c78] underline">Explore Sarah&apos;s portfolio</Link>, read our <Link href="/resources" className="text-[#0a7c78] underline">technical field notes</Link>, or see how we build <Link href="/agentic-websites" className="text-[#0a7c78] underline">agentic websites</Link> from our <Link href="/montana/kalispell" className="text-[#0a7c78] underline">Kalispell studio</Link>.
+          <p className="mt-16 text-[15px] leading-[1.85] text-[#103c54]/85 max-w-[760px]">
+            Read our <Link href="/resources" className="underline decoration-[#103c54]/40 underline-offset-4 hover:text-[#1e50c8]">technical field notes</Link>, see how we build <Link href="/agentic-websites" className="underline decoration-[#103c54]/40 underline-offset-4 hover:text-[#1e50c8]">agentic websites</Link>, or visit our <Link href="/montana/kalispell" className="underline decoration-[#103c54]/40 underline-offset-4 hover:text-[#1e50c8]">Kalispell studio</Link>.
           </p>
-          <div className="mt-16 grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <Link href="/work" className="pop-card p-6 hover:-translate-y-1 transition-transform text-center">
-              <span className="block text-[10px] uppercase tracking-[0.3em] text-[#0a7c78] font-mono font-bold mb-2">Work</span>
-              <span className="font-display text-base font-black text-[#0b3b44]">See the case studies</span>
-            </Link>
-            <Link href="/work-with-us" className="pop-card p-6 hover:-translate-y-1 transition-transform text-center">
-              <span className="block text-[10px] uppercase tracking-[0.3em] text-[#0a7c78] font-mono font-bold mb-2">Engage</span>
-              <span className="font-display text-base font-black text-[#0b3b44]">How we work</span>
-            </Link>
-            <Link href="/contact" className="pop-card p-6 hover:-translate-y-1 transition-transform text-center">
-              <span className="block text-[10px] uppercase tracking-[0.3em] text-[#0a7c78] font-mono font-bold mb-2">Talk</span>
-              <span className="font-display text-base font-black text-[#0b3b44]">Book a call</span>
-            </Link>
+          <div className="flex flex-wrap gap-x-10 gap-y-2 mt-8">
+            <TextLink href="/work">See the case studies</TextLink>
+            <TextLink href="/work-with-us">How we work</TextLink>
+            <TextLink href="/book">Book a call</TextLink>
           </div>
-        </div>
-      </div>
+        </section>
       </div>
     </>
   );
