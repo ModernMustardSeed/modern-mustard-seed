@@ -58,6 +58,8 @@ export default function Footer() {
         { label: 'Nationwide Reach', href: '/nationwide' },
         { label: 'Northwest Montana', href: '/montana' },
         { label: 'Kalispell', href: '/montana/kalispell' },
+        { label: 'Whitefish', href: '/montana/whitefish' },
+        { label: 'Polson', href: '/montana/polson' },
         { label: 'Industries We Build For', href: '/for' },
         { label: 'For Builders and Contractors', href: '/for/contractors' },
         { label: 'For Health Practices', href: '/for/health' },
