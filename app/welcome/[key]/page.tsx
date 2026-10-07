@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
-import ContractorIntakeForm from '@/components/ContractorIntakeForm';
+import IntakeForm from '@/components/IntakeForm';
+import { resolveIntake } from '@/lib/intake-resolve';
 import { getSupabase } from '@/lib/supabase';
 import { buildMetadata } from '@/lib/seo';
 
@@ -34,18 +35,13 @@ export default async function WelcomePage({ params }: { params: Promise<{ key: s
   const supabase = getSupabase();
   if (!supabase) notFound();
 
-  const { data: client } = await supabase
-    .from('clients')
-    .select('email, name, company, intake_key')
-    .eq('intake_key', key)
-    .maybeSingle();
-
+  // The form is tailored to the business: lib/intake-profiles.ts.
+  const client = await resolveIntake(supabase, key);
   if (!client) notFound();
 
-  const company = (client.company as string) || 'your business';
-  const contact = (client.name as string) || '';
+  const company = client.company || 'your business';
   // Greets the business, not the person: Sarah, 2026-10-05, "say Lawn Dogs, not Garrett".
-  const named = (client.company as string) || '';
+  const named = client.company || '';
 
   return (
     <div className="relative min-h-screen bg-[#fbf5ea] pt-28 pb-28 text-[#0b3b44] md:pt-40">
@@ -65,8 +61,7 @@ export default async function WelcomePage({ params }: { params: Promise<{ key: s
             .
           </h1>
           <p className="font-body mx-auto max-w-xl text-lg leading-relaxed text-[#0b3b44]/80">
-            Thank you for trusting us with your website. This form is how it becomes
-            unmistakably yours: your photos, your services, your towns, your name.
+            {client.profile.intro}
           </p>
         </header>
 
@@ -80,7 +75,7 @@ export default async function WelcomePage({ params }: { params: Promise<{ key: s
           ))}
         </ol>
 
-        <ContractorIntakeForm intakeKey={key} company={company} contact={contact} />
+        <IntakeForm intakeKey={key} company={company} profile={client.profile} />
       </div>
     </div>
   );

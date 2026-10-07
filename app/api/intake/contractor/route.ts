@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getSupabase } from '@/lib/supabase';
 import { resendClient } from '@/lib/send-email';
+import { resolveIntake } from '@/lib/intake-resolve';
 
 export const runtime = 'nodejs';
 export const maxDuration = 30;
@@ -15,7 +16,12 @@ const OPS_INBOX = (process.env.OPS_INBOX ?? 'sarah@modernmustardseed.com')
   .filter(Boolean);
 
 /**
- * The contractor intake.
+ * The welcome intake, for every kind of business.
+ *
+ * Lives at /api/intake/contractor because that is where it started and where
+ * every form already posts. The form itself is tailored per business by
+ * lib/intake-profiles.ts; this route resolves the same profile so the email
+ * Sarah gets reads in the form's own words, not raw field names.
  *
  * The existing brand intake asks about products, price lists and a shop. A
  * builder has none of those and does have four things it never asks for: a
@@ -34,8 +40,8 @@ const OPS_INBOX = (process.env.OPS_INBOX ?? 'sarah@modernmustardseed.com')
  *      table the admin reads.
  *   3. Files every upload on client_files so they show on his card.
  *   4. Moves his project to `building`, because he has now done his part.
- *   5. Emails Sarah that it landed, with the license number in the subject
- *      line, because that is the thing that has to go on the live site.
+ *   5. Emails Sarah that it landed, with the profile's one must-publish answer
+ *      (a license, for a trade or a clinic) in the subject line.
  */
 
 type Body = {
@@ -43,6 +49,9 @@ type Body = {
   answers?: Record<string, unknown>;
   files?: Array<{ label: string; url: string; kind?: string }>;
 };
+
+const esc = (s: string) =>
+  s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
 const clean = (v: unknown, max = 2000): string | null => {
   if (typeof v !== 'string') return null;
@@ -64,27 +73,31 @@ export async function POST(req: Request) {
   const supabase = getSupabase();
   if (!supabase) return NextResponse.json({ error: 'db_not_configured' }, { status: 503 });
 
-  const { data: client } = await supabase
-    .from('clients')
-    .select('email, name, company')
-    .eq('intake_key', key)
-    .maybeSingle();
-
-  if (!client?.email) {
+  const client = await resolveIntake(supabase, key);
+  if (!client) {
     return NextResponse.json({ error: 'unknown_key' }, { status: 401 });
   }
 
   const answers = (body.answers ?? {}) as Record<string, unknown>;
   const files = Array.isArray(body.files) ? body.files.slice(0, 60) : [];
-  const email = client.email as string;
-  const who = (client.company as string) || (client.name as string) || email;
+  const email = client.email;
+  const who = client.company || client.name || email;
+  const profile = client.profile;
   // licenceNumber is the old field name; intakes submitted before 2026-10-05 carry it.
-  const licence = clean(answers.licenseNumber ?? answers.licenceNumber, 120);
+  const headline = profile.subjectField
+    ? clean(answers[profile.subjectField.name] ?? (profile.subjectField.name === 'licenseNumber' ? answers.licenceNumber : undefined), 120)
+    : null;
+
+  /* The form's own wording for each answer, so the email reads "Conditions and
+   * injuries you treat", not "services". Unknown keys fall back to the key. */
+  const labels = new Map<string, string>();
+  for (const section of profile.sections) for (const f of section.fields) labels.set(f.name, f.label);
+  labels.set('domain', 'Web address');
 
   await supabase.from('client_intake').upsert(
     {
       client_email: email,
-      answers: { ...answers, kind: 'contractor', fileCount: files.length },
+      answers: { ...answers, kind: profile.kind, fileCount: files.length },
       status: 'submitted',
       submitted_at: new Date().toISOString(),
     },
@@ -118,17 +131,17 @@ export async function POST(req: Request) {
     }
   }
 
-  // He has done his part, so the project is ours again.
+  // They have done their part, so the project is ours again.
   await supabase.from('projects').update({ status: 'building' }).eq('client_email', email);
 
   const resend = resendClient();
   if (resend) {
     const rows = Object.entries(answers)
-      .filter(([, v]) => v !== null && v !== undefined && String(v).trim() !== '')
+      .filter(([k, v]) => k !== 'kind' && v !== null && v !== undefined && String(v).trim() !== '')
       .map(
         ([k, v]) =>
-          `<tr><td style="padding:6px 14px 6px 0;vertical-align:top;color:#6e7c87;font:600 12px/1.5 sans-serif;white-space:nowrap;">${k}</td>` +
-          `<td style="padding:6px 0;font:400 14px/1.55 sans-serif;color:#14181c;">${String(v).slice(0, 800)}</td></tr>`,
+          `<tr><td style="padding:6px 14px 6px 0;vertical-align:top;color:#6e7c87;font:600 12px/1.5 sans-serif;">${esc(labels.get(k) ?? k)}</td>` +
+          `<td style="padding:6px 0;font:400 14px/1.55 sans-serif;color:#14181c;white-space:pre-wrap;">${esc(String(v).slice(0, 1500))}</td></tr>`,
       )
       .join('');
 
@@ -139,20 +152,22 @@ export async function POST(req: Request) {
         // The license is in the subject because it is the one answer that has
         // to end up on the live site, and a subject line is the only part of an
         // email you can be sure gets read.
-        subject: `Intake in: ${who}${licence ? ` · license ${licence}` : ' · no license given'}`,
+        subject: `Intake in: ${who}${
+          profile.subjectField ? (headline ? ` · ${profile.subjectField.label} ${headline}` : ` · no ${profile.subjectField.label} given`) : ''
+        }`,
         html: `<div style="font:400 15px/1.6 sans-serif;color:#14181c;">
-          <p style="margin:0 0 6px;"><strong>${who}</strong> finished the intake form.</p>
-          <p style="margin:0 0 16px;color:#6e7c87;">${files.length} file${files.length === 1 ? '' : 's'} uploaded. They are on his card.</p>
+          <p style="margin:0 0 6px;"><strong>${esc(who)}</strong> finished the intake form <span style="color:#6e7c87;">(${profile.kind} form)</span>.</p>
+          <p style="margin:0 0 16px;color:#6e7c87;">${files.length} file${files.length === 1 ? '' : 's'} uploaded. They are on the card.</p>
           <table style="border-collapse:collapse;">${rows}</table>
           <p style="margin:18px 0 0;">
             <a href="https://modernmustardseed.com/admin/clients/${encodeURIComponent(email)}"
-               style="color:#C4380C;font-weight:700;">Open his card and build it</a>
+               style="color:#C4380C;font-weight:700;">Open the card and build it</a>
           </p>
         </div>`,
       });
     } catch {
       /* The answers are saved. A failed notification must not lose them, and
-       * must not tell him something went wrong when nothing did. */
+       * must not tell them something went wrong when nothing did. */
     }
   }
 
