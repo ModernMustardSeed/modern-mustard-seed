@@ -65,6 +65,10 @@ const VOICE = [
 
 const GOOGLE_FONTS = ['https://fonts.googleapis.com', 'https://fonts.gstatic.com'];
 
+// The Mustard Studio film series plays in /admin/videos straight off the Studio
+// domain (video plus a HEAD serve check), so it needs media-src and connect-src.
+const MUSTARD_STUDIO = 'https://mustardstudio.modernmustardseed.com';
+
 /**
  * ENFORCED. Every directive here is one that cannot break a page that already
  * works, and between them they close what the audit flagged.
@@ -115,8 +119,8 @@ const REPORT_ONLY_CSP = [
   `style-src ${[SELF, "'unsafe-inline'", ...GOOGLE_FONTS].join(' ')}`,
   `font-src ${[SELF, 'data:', ...GOOGLE_FONTS].join(' ')}`,
   `img-src ${[SELF, 'data:', 'blob:', 'https:'].join(' ')}`,
-  `media-src ${[SELF, 'data:', 'blob:'].join(' ')}`,
-  `connect-src ${[SELF, ...GOOGLE_ANALYTICS, ...META_PIXEL, ...VOICE].join(' ')}`,
+  `media-src ${[SELF, 'data:', 'blob:', MUSTARD_STUDIO].join(' ')}`,
+  `connect-src ${[SELF, ...GOOGLE_ANALYTICS, ...META_PIXEL, ...VOICE, MUSTARD_STUDIO].join(' ')}`,
   `frame-src ${[SELF, 'https://www.youtube.com', 'https://www.youtube-nocookie.com', 'https://*.daily.co'].join(' ')}`,
   `worker-src ${[SELF, 'blob:'].join(' ')}`,
   "frame-ancestors 'self'",
