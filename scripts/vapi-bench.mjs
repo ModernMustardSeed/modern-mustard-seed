@@ -69,18 +69,31 @@ function arg(name, fallback) {
  * Three turns that exercise the three things a phone line has to do: hear a
  * new caller, answer a follow-up, and read contact details back. The number is
  * Sarah's cell, so a readback that reaches a tool lands with her. */
-const LINES = {
+const SCRIPTS = {
+  pitch: {
   u1: 'Hi, this is Dalton with D and D Landscaping in Tallahassee. I keep missing calls when I am out on jobs. What would a voice agent cost me?',
   u2: 'Okay. And how fast could you have that answering my phone?',
   u3: 'Great. My email is dalton at gmail dot com, and my number is four zero six, two five zero, six zero seven six. Can you read that back to me?',
+  },
+  /* 2026-10-07: the call that went silent. Asking for a day forces
+   * get_available_slots, the tool whose result was dropped. The last line is a
+   * goodbye, so no slot is ever booked onto Sarah's calendar. */
+  booking: {
+    b1: 'Hi, I run a landscaping company here in Kalispell and I was wondering what you could do to help my business.',
+    b2: 'Actually, could you set up a time for me to talk with Sarah? Maybe on Friday?',
+    b3: 'Okay, let me check with my wife and I will call back. Thanks, bye.',
+  },
 };
+const SCRIPT = arg('--script', 'pitch');
+const LINES = SCRIPTS[SCRIPT];
+if (!LINES) throw new Error(`Unknown --script ${SCRIPT}. Have: ${Object.keys(SCRIPTS).join(', ')}`);
 
 function callerAudio(dir) {
   mkdirSync(dir, { recursive: true });
   const missing = Object.keys(LINES).filter((k) => !existsSync(join(dir, `${k}.wav`)));
   if (missing.length) {
     if (process.platform !== 'win32') {
-      throw new Error(`Caller audio missing (${missing.join(', ')}) and only Windows System.Speech is wired up. Drop 16kHz mono s16le WAVs named u1.wav, u2.wav, u3.wav into ${dir}.`);
+      throw new Error(`Caller audio missing (${missing.join(', ')}) and only Windows System.Speech is wired up. Drop 16kHz mono s16le WAVs named ${Object.keys(LINES).join('.wav, ')}.wav into ${dir}.`);
     }
     const ps = [
       'Add-Type -AssemblyName System.Speech',
@@ -90,7 +103,7 @@ function callerAudio(dir) {
     ].join('; ');
     execFileSync('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', ps], { stdio: 'inherit' });
   }
-  return ['u1', 'u2', 'u3'].map((k) => readFileSync(join(dir, `${k}.wav`)).subarray(44));
+  return Object.keys(LINES).map((k) => readFileSync(join(dir, `${k}.wav`)).subarray(44));
 }
 
 function wavHeader(pcmLength) {

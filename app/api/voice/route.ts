@@ -41,6 +41,7 @@ import { env } from '@/lib/env';
 import { checkSpokenEmail, spokenEmailInstruction } from '@/lib/spoken-email';
 import { noDashes, noDashesTitle } from '@/lib/no-dashes';
 import { PRESENCE_AUDIT_TOOL, requestAuditFromCall } from '@/lib/voice-audit-request';
+import { clearSpeech, controlUrlOf, guardToolSilence, noteSpeech, noteToolCall } from '@/lib/voice-dead-air';
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -1225,6 +1226,9 @@ export async function POST(req: Request) {
     // Vapi sends toolCallList (new) or toolCalls (older payloads). Handle both.
     const rawCalls = (message.toolCallList ?? message.toolCalls ?? []) as VapiToolCall[];
     const results: { toolCallId: string; result: string }[] = [];
+    const liveCallId = typeof callObj.id === 'string' ? callObj.id : null;
+    // Off the hot path: the stamp only has to beat a guard that waits seconds.
+    if (liveCallId) after(() => noteToolCall(liveCallId));
 
     for (const call of rawCalls) {
       const fnName = call.function?.name ?? call.name ?? '';
@@ -1290,10 +1294,33 @@ export async function POST(req: Request) {
       results.push({ toolCallId: call.id, result });
     }
 
+    // If Vapi drops the follow-up turn, the caller hears nothing. The guard
+    // runs after this response is sent and nudges the live call if he has not
+    // spoken since. lib/voice-dead-air.ts has the incident.
+    // Only when this assistant sends speech-update: without those stamps every
+    // call would look silent and he would be nudged after every tool.
+    const controlUrl = controlUrlOf(callObj);
+    const hears = ((message.assistant as { serverMessages?: unknown } | undefined)?.serverMessages ?? []) as unknown[];
+    if (liveCallId && controlUrl && results.length && hears.includes('speech-update')) {
+      const respondedAt = Date.now();
+      const named = rawCalls.map((c, i) => ({
+        name: c.function?.name ?? c.name ?? 'tool',
+        result: results[i]?.result ?? '',
+      }));
+      after(() => guardToolSilence({ callId: liveCallId, controlUrl, respondedAt, results: named }));
+    }
+
     return NextResponse.json({ results });
   }
 
+  if (type === 'speech-update') {
+    await noteSpeech(message);
+    return NextResponse.json({ ok: true });
+  }
+
   if (type === 'end-of-call-report') {
+    const ended = (message.call ?? {}) as Record<string, unknown>;
+    after(() => clearSpeech(typeof ended.id === 'string' ? ended.id : null));
     await handleEndOfCallReport(message);
     return NextResponse.json({ ok: true });
   }

@@ -467,6 +467,7 @@ Today is {{"now" | date: "%A, %B %d, %Y", "America/Denver"}}, Mountain Time. Tha
 
 # Tool protocol
 - ⚠️ ANSWER FIRST, ALWAYS. Your reply to the caller's first sentence must come STRAIGHT from you, with NO tool call in front of it. Do NOT open the call with recall_caller. Every tool call costs the caller several seconds of silence, and silence on the first turn is what makes people think the line went dead. Talk first, look things up later.
+- ⚠️ EVERY TOOL CALL GETS ONE SHORT BEAT FROM YOU, AND THE BEAT NEVER CLAIMS A RESULT. No tool speaks for you, so in the same reply as the tool call say one short line about what you are doing, then call it: "Let me look at her calendar.", "One second, I'm sending that.", "Let me get word to Sarah." The beat is what you are DOING, never how it turned out. You do not know yet whether Friday is open, whether the email went, or whether it booked, so "Friday works", "done", "you're all set" and "that's booked" are lies until the tool comes back and says so. On a real call you said "Friday works" before the calendar answered. Say the result only after the tool returns.
 - recall_caller: only when there is an actual reason, and never on the first turn. Reasons: they say they have called or worked with us before, they mention a past conversation, or they give you an email and might be a returning caller. If it returns known, greet them by name and reference what you remember ("good to talk again, how did that launch go"). If unknown, continue normally and never mention that you checked.
 - get_available_slots ONLY once one of the three booking situations above is true, and never during or after a build. Then call it before ever promising a time. Never invent availability. If the caller asked for a specific day, compare what the tool returns against the day they asked for, and if they do not match, name that difference out loud before you offer the times. Sarah books up to about four months out, so when they want a later week or month, call it again with fromDate (YYYY-MM-DD; "sometime in September" means the first of September). Never say a date is too far ahead without checking, and follow the tool's note field when a stretch is full.
 - book_discovery_call only after you have confirmed name, email (as words, per the readback rules), and their chosen slot's startIso from the slots you fetched.
@@ -505,21 +506,43 @@ const FIRST_MESSAGE =
 
 /* ───────────────────────── Tools ───────────────────────── */
 
+/*
+ * ⚠️ NO TOOL SPEAKS A SCRIPTED LINE. EVERY BEAT IS HIS OWN.
+ *
+ * 2026-10-07, call 01a11684: Sarah asked to book Friday. In ONE response the
+ * model said "Friday works. Let me pull her calendar and see what's open." and
+ * called get_available_slots. Vapi then pushed the tool's request-start line
+ * ("Let me pull up Sarah's calendar.") onto the say queue on top of that
+ * sentence. His sentence was cut after "Friday works.", the scripted line never
+ * played, the webhook answered 200 in 898ms with real slots, and Vapi NEVER
+ * made the follow-up model request. 25 seconds of dead air, then she hung up.
+ * The pipeline log (GET /call/{id}/call-logs) shows no LLM request after
+ * "Response successful: tool-calls".
+ *
+ * It is the same collision as Lucy's call on 2026-08-20 ("played on top of
+ * his own speech"). The tool calls on his line since the Flux switch sort
+ * cleanly: recall_caller on 09-18 (scripted line, no lead-in) worked,
+ * send_email on 09-18 (his own lead-in, empty start line) worked, and
+ * get_available_slots on 10-07 (his lead-in AND a scripted line) wedged. Claude speaks before a tool call
+ * as a habit, so the scripted line is the half that goes. The prompt's tool
+ * protocol tells him to say one short beat himself, and the content '' keeps
+ * Vapi from inventing a filler of its own.
+ *
+ * The guarantee under this is lib/voice-dead-air.ts: if he has not spoken
+ * within a few seconds of a tool result, the webhook nudges the live call.
+ */
+const SILENT_START = [{ type: 'request-start', content: '' }];
+
 const TOOLS = [
   {
     type: 'function',
     async: false,
-    // ⚠️ DO NOT SILENCE THIS AGAIN. It was set to '' on 2026-08-06 to kill Vapi's
-    // auto-filler, and that was a REGRESSION: a real call went bare-silent and
-    // the caller said "Hello? Hello?" then hung up.
-    // Why: the tool itself is fast (webhook round trip measured 1.2s), but the
-    // MODEL takes ~10s to decide to call it after the caller stops talking
-    // (10.3s on opus-4-6, 10.7s on sonnet-5, so it is not model-specific). That
-    // 10 seconds is unavoidable dead air on the FIRST turn of every call, and
-    // Vapi's auto-filler had been covering it all along.
-    // So the fix is not silence, it is OUR line instead of Vapi's random one.
-    // Keep it SHORT and natural so it reads as a beat, not a stall.
-    messages: [{ type: 'request-start', content: 'Sure thing.' }],
+    // History: '' on 2026-08-06 went bare-silent on a real call, because the
+    // model then took ~10s to decide on the tool (livekit endpointing, opus).
+    // On Flux and sonnet-4-6 the decision lands in under 2s (call 01a11684:
+    // 1.8s from end of turn to tool call), and the beat now comes from him in
+    // the same response, per the tool protocol. See SILENT_START.
+    messages: SILENT_START,
     function: {
       name: 'recall_caller',
       description:
@@ -540,10 +563,8 @@ const TOOLS = [
   {
     type: 'function',
     async: false,
-    // A calendar lookup is genuinely slow enough that silence would feel like a
-    // dropped call, so this one keeps a spoken beat. It is stated explicitly so
-    // it is OUR line in his voice, not Vapi's randomly generated filler.
-    messages: [{ type: 'request-start', content: "Let me pull up Sarah's calendar." }],
+    // The scripted calendar line is what wedged call 01a11684. See SILENT_START.
+    messages: SILENT_START,
     function: {
       name: 'get_available_slots',
       description:
@@ -564,7 +585,7 @@ const TOOLS = [
   {
     type: 'function',
     async: false,
-    messages: [{ type: 'request-start', content: 'Getting that on her calendar now.' }],
+    messages: SILENT_START,
     function: {
       name: 'book_discovery_call',
       description:
@@ -593,7 +614,7 @@ const TOOLS = [
     async: false,
     // Silent: fires mid-conversation and returns fast. Announcing it would both
     // stall and tell the caller they are being filed, which is not the moment.
-    messages: [{ type: 'request-start', content: '' }],
+    messages: SILENT_START,
     function: {
       name: 'capture_lead',
       description:
@@ -616,10 +637,9 @@ const TOOLS = [
   {
     type: 'function',
     async: false,
-    // The tool checks the address, files the row and waits on Twilio for up to
-    // five seconds, so it earns a beat. "One second." is true whether it files,
-    // bounces or fails, which a request-start line must be (see forge_demo_suite).
-    messages: [{ type: 'request-start', content: 'One second.' }],
+    // Up to five seconds on Twilio, so he says his own beat first ("One
+    // second, I'm filing that."). See SILENT_START.
+    messages: SILENT_START,
     function: {
       name: 'request_presence_audit',
       description:
@@ -647,7 +667,7 @@ const TOOLS = [
     async: false,
     // Silent: the persona already confirms the send in his own words afterwards
     // ("that's on its way to your inbox"), so a stall here just doubles it up.
-    messages: [{ type: 'request-start', content: '' }],
+    messages: SILENT_START,
     function: {
       name: 'send_email',
       description:
@@ -679,7 +699,7 @@ const TOOLS = [
   {
     type: 'function',
     async: false,
-    messages: [{ type: 'request-start', content: 'Let me get word to Sarah right now.' }],
+    messages: SILENT_START,
     function: {
       name: 'reach_sarah',
       description:
@@ -703,9 +723,6 @@ const TOOLS = [
   {
     type: 'function',
     async: false,
-    // Deliberate line: firing the build IS the moment, and it earns a beat of
-    // ceremony while the tool round-trips. The handler answers fast (the heavy
-    // build runs after the webhook responds), so this never strands the call.
     /**
      * ⚠️ THIS FILLER USED TO PROMISE A BUILD, AND THAT WAS THE BUG A CALLER
      * HEARD. On a real inbound call 2026-08-20 he called this tool five times
@@ -714,12 +731,10 @@ const TOOLS = [
      * right now. Yeah. Yeah. Build right now." five times over, and then an
      * apology about a technical snag. Nothing was ever built.
      *
-     * A request-start message must be true whether the call succeeds or
-     * bounces, because it plays before the result is known. So it says the one
-     * thing that is always true, and it is short enough not to collide with
-     * whatever he is already saying.
+     * That was the first sighting of the collision that wedged call 01a11684
+     * on 2026-10-07. No tool carries a scripted line now; see SILENT_START.
      */
-    messages: [{ type: 'request-start', content: 'One second.' }],
+    messages: SILENT_START,
     function: {
       name: 'forge_demo_suite',
       description:
@@ -1333,7 +1348,9 @@ const assistant = {
     url: `${SITE_URL}/api/voice`,
     ...(WEBHOOK_SECRET ? { secret: WEBHOOK_SECRET } : {}),
   },
-  serverMessages: ['tool-calls', 'end-of-call-report'],
+  // speech-update is the dead-air watchdog's ears (lib/voice-dead-air.ts): it is
+  // how the webhook knows whether he spoke after a tool result came back.
+  serverMessages: ['tool-calls', 'speech-update', 'end-of-call-report'],
   endCallPhrases: ['goodbye', 'bye bye', 'talk soon', 'end the call'],
   endCallMessage:
     'This was fun. Check your inbox, and Sarah will take it from here. Talk soon!',
