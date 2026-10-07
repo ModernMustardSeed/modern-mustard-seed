@@ -568,7 +568,7 @@ const TOOLS = [
     function: {
       name: 'get_available_slots',
       description:
-        "Fetch Sarah's open 30-minute discovery call slots (Mountain Time). ⚠️ Booked calls are deliberately rare: call this ONLY when the caller asks to book on their own, when they want custom work that has to be scoped before it can be quoted, or when they want Sarah personally and a transfer did not connect. Never open the calendar on your own initiative, and never during or after a build, where the demo suite in their inbox IS the next step. Never promise times without calling this first. Bookings are open up to about four months out: when the caller asks about a later day, week, or month, pass fromDate instead of saying it is too far ahead.",
+        "Fetch Sarah's open 30-minute discovery call slots (Mountain Time). ⚠️ The line you say in the same breath as this call is ONLY 'Let me look at her calendar.' Never 'Friday works', 'that works', 'sure, Friday' or any yes to a day: you do not know what is open until this returns, and a yes followed by different times is the most confusing thing a caller can hear. ⚠️ Booked calls are deliberately rare: call this ONLY when the caller asks to book on their own, when they want custom work that has to be scoped before it can be quoted, or when they want Sarah personally and a transfer did not connect. Never open the calendar on your own initiative, and never during or after a build, where the demo suite in their inbox IS the next step. Never promise times without calling this first. Bookings are open up to about four months out: when the caller asks about a later day, week, or month, pass fromDate instead of saying it is too far ahead.",
       parameters: {
         type: 'object',
         properties: {
