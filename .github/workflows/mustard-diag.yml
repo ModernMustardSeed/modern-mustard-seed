@@ -1,0 +1,18 @@
+name: Mustard diag (temporary)
+on:
+  push:
+    branches: [fix/mustard-dead-air-1007]
+    paths: ['scripts/mustard-diag.mjs', '.github/workflows/mustard-diag.yml']
+permissions:
+  contents: read
+jobs:
+  diag:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '20' }
+      - env: { VAPI_API_KEY: '${{ secrets.VAPI_API_KEY }}' }
+        run: node scripts/mustard-diag.mjs
+      - uses: actions/upload-artifact@v4
+        with: { name: diag, path: diag/, retention-days: 1 }
