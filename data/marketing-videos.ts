@@ -427,6 +427,25 @@ export const MARKETING_VIDEOS: MarketingVideo[] = [
     group: 'The films',
   },
   {
+    id: 'studio-mustard-computer',
+    title: 'Mustard Computer',
+    runtime: 76.3,
+    formats: [
+      { file: 'https://mustardstudio.modernmustardseed.com/films/mustard-computer.mp4', label: '16:9', width: 1920, height: 1080 },
+      { file: 'https://mustardstudio.modernmustardseed.com/films/mustard-computer-vertical.mp4', label: '9:16', width: 1080, height: 1920 },
+    ],
+    poster: 'https://mustardstudio.modernmustardseed.com/films/mustard-computer-poster.jpg',
+    summary: 'Ask once, research everywhere: Mr. Mustard splits one question across a fleet of computers.',
+    runsAt: [
+      'https://mustardstudio.modernmustardseed.com/together/computer-fleet',
+      'https://mustardstudio.modernmustardseed.com/films',
+    ],
+    watchUrl: 'https://claude.ai/artifact/NzE5znXnWyTfekMZLMUqd1',
+    source: 'marketing/mustard-studio-series/14-mustard-computer',
+    series: STUDIO_SERIES,
+    group: 'The films',
+  },
+  {
     id: 'studio-how-to-set-up-your-studio',
     title: 'Set Up Your Studio',
     runtime: 34.4,
@@ -525,25 +544,6 @@ export const MARKETING_VIDEOS: MarketingVideo[] = [
     source: 'marketing/mustard-studio-series',
     series: STUDIO_SERIES,
     group: 'How to',
-  },
-  {
-    id: 'studio-mustard-computer',
-    title: 'Mustard Computer',
-    runtime: 76.3,
-    formats: [
-      { file: 'https://mustardstudio.modernmustardseed.com/films/mustard-computer.mp4', label: '16:9', width: 1920, height: 1080 },
-      { file: 'https://mustardstudio.modernmustardseed.com/films/mustard-computer-vertical.mp4', label: '9:16', width: 1080, height: 1920 },
-    ],
-    poster: 'https://mustardstudio.modernmustardseed.com/films/mustard-computer-poster.jpg',
-    summary: 'Ask once, research everywhere: Mr. Mustard splits one question across a fleet of computers.',
-    runsAt: [
-      'https://mustardstudio.modernmustardseed.com/together/computer-fleet',
-      'https://mustardstudio.modernmustardseed.com/films',
-    ],
-    watchUrl: 'https://claude.ai/artifact/NzE5znXnWyTfekMZLMUqd1',
-    source: 'marketing/mustard-studio-series/14-mustard-computer',
-    series: STUDIO_SERIES,
-    group: 'The films',
   },
 ];
 
