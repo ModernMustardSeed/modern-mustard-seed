@@ -50,7 +50,7 @@ const DEDUPE_MINUTES = 30;
  *   what their business is, offers to build them their own, and gets the name
  *   and email we did not ask for on the page.
  */
-export type CallbackIntent = 'general' | 'voice-agent';
+export type CallbackIntent = 'general' | 'voice-agent' | 'follow-up';
 
 export type CallbackRequest = {
   name?: string | null;
@@ -62,6 +62,12 @@ export type CallbackRequest = {
   intent?: CallbackIntent;
   /** Raw Accept-Language header. English changes nothing (lib/call-language.ts). */
   acceptLanguage?: string | null;
+  /**
+   * `follow-up` only: a call he places from his own inbox (lib/mustard-inbox.ts).
+   * The inbox writes the opening line and the briefing, because it knows why
+   * this person is being called and this file does not.
+   */
+  followUp?: { inboxId: string; greeting: string; briefing: string };
 };
 
 export type CallbackResult =
@@ -90,6 +96,7 @@ function firstName(name?: string | null): string {
  * thing they asked for, not a telemarketer who happened to time it well.
  */
 function greeting(req: CallbackRequest): string {
+  if (req.intent === 'follow-up' && req.followUp) return req.followUp.greeting;
   const who = firstName(req.name);
   if (req.intent === 'voice-agent') {
     // The hero box asks for a phone number and nothing else, so he cannot open
@@ -120,6 +127,7 @@ function greeting(req: CallbackRequest): string {
  * context below is injected as prompt text instead.
  */
 function briefing(req: CallbackRequest): string {
+  if (req.intent === 'follow-up' && req.followUp) return req.followUp.briefing;
   const known = [
     req.name ? `Name: ${req.name}.` : null,
     req.email ? `Email: ${req.email}.` : null,
@@ -260,9 +268,13 @@ export async function placeInstantCallback(req: CallbackRequest): Promise<Callba
           // Undefined for English, so the tuned English stack is untouched.
           ...(phoneOverrides(pickLanguage(req.acceptLanguage), req.name) ?? {}),
           metadata: {
-            mode: 'instant-callback',
+            // inbox-follow-up is how the end-of-call webhook finds the inbox row
+            // to write the outcome onto, and how the inbox knows a follow-up's
+            // own follow-ups need Sarah's yes.
+            mode: req.intent === 'follow-up' ? 'inbox-follow-up' : 'instant-callback',
             intent: req.intent || 'general',
             source: req.source || '',
+            ...(req.followUp ? { inboxId: req.followUp.inboxId } : {}),
           },
           variableValues: {
             callerName: req.name || '',

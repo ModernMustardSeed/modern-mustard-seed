@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import AdminHeader from './AdminHeader';
+import MustardInbox from './MustardInbox';
 import CallDetail, { CallPills, cleanSummary, endedLabel, fmtDuration, fmtPhone, fmtWhen, whoLabel, type CallView } from '@/components/calls/CallDetail';
 
 /**
@@ -241,6 +242,8 @@ export default function CallsPanel() {
           <Stat label="Handed to a person" value={stats.handed} />
           <Stat label="Booked" value={stats.booked} />
         </div>
+
+        <MustardInbox onOpenCall={(id) => setOpen(id)} />
 
         <div className="mb-4 flex flex-wrap gap-2">
           {FILTERS.map((f) => (
