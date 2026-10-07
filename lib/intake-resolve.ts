@@ -1,4 +1,5 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
+import { likeLiteral } from '@/lib/sql-like';
 import {
   detectIntakeKind,
   readTailor,
@@ -34,8 +35,8 @@ export async function resolveIntake(supabase: SupabaseClient, key: string): Prom
   let kind = tailor.kind;
   if (!kind) {
     const [{ data: projects }, { data: leads }] = await Promise.all([
-      supabase.from('projects').select('name, summary').ilike('client_email', email).limit(3),
-      supabase.from('leads').select('industry, business_name, company').ilike('email', email).limit(3),
+      supabase.from('projects').select('name, summary').ilike('client_email', likeLiteral(email)).limit(3),
+      supabase.from('leads').select('industry, business_name, company').ilike('email', likeLiteral(email)).limit(3),
     ]);
     kind = detectIntakeKind(
       company,
