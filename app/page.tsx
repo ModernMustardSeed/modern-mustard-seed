@@ -3,7 +3,7 @@ import { JsonLd, breadcrumbJsonLd, faqJsonLd, parableJsonLd } from '@/lib/jsonld
 import { buildMetadata, SITE } from '@/lib/seo';
 
 export const metadata = buildMetadata({
-  title: 'Build What’s Next. Grow What Works.',
+  title: 'Agentic Systems, Websites & AI Voice Agents',
   description:
     'Agentic systems, AI agents and websites that work for you, built for businesses across the United States and made to be found on Google and ChatGPT. AI voice agents that answer and book every call, and custom software. Set package prices; you own everything. Based in Kalispell, MT.',
 });

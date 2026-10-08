@@ -246,6 +246,8 @@ const config: NextConfig = {
   },
   async redirects() {
     return [
+      // One host. www answered 200 beside the apex (audit, 2026-10-08).
+      { source: '/:path*', has: [{ type: 'host', value: 'www.modernmustardseed.com' }], destination: 'https://modernmustardseed.com/:path*', permanent: true },
       { source: '/ads', destination: '/pictures', permanent: true },
       // Agentic, not AI (Sarah, 2026-09-23): the three AI-named pages moved.
       { source: '/ai-websites', destination: '/agentic-websites', permanent: true },

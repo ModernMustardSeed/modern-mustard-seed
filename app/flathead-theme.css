@@ -72,7 +72,7 @@ html.riv .studio-film-heading h2{font-family:var(--font-display);font-size:clamp
 .portfolio-frame picture{display:block;border:1px solid #103c5440}
 .portfolio-frame img{display:block;width:100%;height:auto;aspect-ratio:1.44;object-fit:cover}
 .portfolio-caption{display:flex;align-items:start;gap:12px;margin-top:16px}
-.portfolio-number{font-size:10px;margin-top:6px;color:#567481}
+.portfolio-number{font-size:10px;margin-top:6px;color:#3b5a68}
 html.riv main .portfolio-caption h3,.flathead-home .portfolio-caption h3{font-family:var(--font-display),Instrument,serif;font-weight:400;font-size:27px;line-height:1.1;margin:0;letter-spacing:-.02em}
 .portfolio-caption p{font-size:11px;margin:6px 0 0;font-weight:600;color:#486572}
 .portfolio-visit{margin-left:auto;font-size:22px}
