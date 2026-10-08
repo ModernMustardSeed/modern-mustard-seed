@@ -1,5 +1,26 @@
 export type StudioFilm = {title:string;src:string;poster:string;track?:string};
+
+// The Mustard Studio series is served from the Studio's own domain; the CSP
+// allows it in media-src. Order and titles follow data/marketing-videos.ts.
+const STUDIO = 'https://mustardstudio.modernmustardseed.com/films';
+const studioFilm = (title: string, slug: string): StudioFilm => ({ title, src: `${STUDIO}/${slug}.mp4`, poster: `${STUDIO}/${slug}-poster.jpg` });
+
 export const flatheadFilms: StudioFilm[] = [
+  // First film on the homepage TV and on /pictures. The lyrics are burned in, so there is no caption track.
+  {
+    "title": "They Say Your Name",
+    "src": "/video/tv/they-say-your-name.mp4",
+    "poster": "/video/tv/they-say-your-name.webp"
+  },
+  studioFilm('Plant It Now', 'plant-it-now'),
+  studioFilm('Inside Mustard Studio', 'inside-mustard-studio'),
+  studioFilm('The Studio Behind Every Studio', 'the-studio-behind-every-studio'),
+  studioFilm('Meet Mustard Studio', 'meet-mustard-studio'),
+  studioFilm('Meet Mr. Mustard', 'meet-mr-mustard'),
+  studioFilm('Your Name on the Work', 'your-name-on-the-work'),
+  studioFilm('Your Client Portal', 'your-client-portal'),
+  studioFilm('Learn While You Level Up', 'learn-while-you-level-up'),
+  studioFilm('Mustard Computer', 'mustard-computer'),
   {
     "title": "IRL",
     "src": "/video/launch-film-irl.mp4",
