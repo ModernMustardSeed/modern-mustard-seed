@@ -1,0 +1,94 @@
+---
+title: "What You Should Own When the Build Is Done"
+description: "Most custom software is delivered with the repo, the domain, the database and the billing in the builder's name. Here is the ownership test, the eight things a real hand off contains, the one sentence to put in the contract, and why owning it does not mean you have to run it."
+date: "2026-10-08"
+dateModified: "2026-10-08"
+tag: "Custom Software"
+author: "Sarah Scarano"
+faq:
+  - q: "What should I own when a developer or agency finishes building my software?"
+    a: "The domain at the registrar, the DNS, the source code repository, the hosting project, the database project, the payment account, the transactional email account, and every AI vendor account. Each one should sit in an account you created, with you as the billing owner and the builder as an invited member you can remove. If the builder has to add you, you do not own it."
+  - q: "Is being added as a collaborator the same as owning the code?"
+    a: "No. A collaborator can read and push code. The owner controls who has access, where the billing goes, and whether the repository exists tomorrow. Ask for the repository to be created inside your own GitHub organization from the first commit, or transferred into it at hand off with the builder kept on as a member."
+  - q: "What does a software hand off actually include?"
+    a: "Repository ownership in your name, an environment variable inventory listing every secret by name, purpose and location, a deploy runbook covering ship, roll back and read the logs, an architecture summary written for a developer new to the codebase, database schema and migration documentation, transfer of every third-party account, an operating document of what breaks and what to do, and a recorded live walkthrough with the operator."
+  - q: "If I own everything, do I have to run it myself?"
+    a: "No. Owning the asset and operating it are separate decisions. Modern Mustard Seed stays on after the hand off for clients who want it, on a flat monthly care plan: hosting, monitoring, edits, the logs at 9 pm, and the vendor bills watched. We work as a member inside accounts you own, so you can end it any month and nothing moves."
+  - q: "Why do most agencies not hand off properly?"
+    a: "Dependency is recurring revenue. A client who cannot deploy, cannot read the logs and does not hold the domain renews the retainer whether or not the work is good. A builder who hands off completely has to earn the next month. Most would rather not."
+  - q: "Can another developer take over software Modern Mustard Seed built?"
+    a: "Yes. The code is standard Next.js, TypeScript, Supabase and Stripe, it lives in your accounts, and the Hand Off tier of Idea to Product delivers the runbook, the environment inventory and the recorded walkthrough. Any competent developer can pick it up without calling us."
+---
+
+The product is finished. It works. Customers are using it. Then one day you decide to move on from the people who built it, and you find out the repo is in their GitHub, the domain is in their registrar, the database runs on their account, and Stripe pays out to a connected account they set up. You do not own a product. You own a login they gave you.
+
+This is not an edge case. It is the default outcome of most custom software engagements, and it is not an accident. A client who cannot deploy, cannot read the logs and does not hold the domain renews the retainer whether or not the work is good. Dependency is the business model. For a buyer weighing that model against ours, here is [a traditional web agency compared with an AI product studio](/compare/web-agency-vs-product-studio).
+
+Here is how to make sure the thing you paid for is yours.
+
+## The ownership test
+
+Eight accounts decide whether you own a piece of software. For each one, the question is the same: can you log in as the owner, remove the builder, and have everything keep running?
+
+**1. The domain.** Registered at a registrar you control, in an account with your email and your card. Not "managed" by the agency. If the renewal notice goes to them, they own your front door.
+
+**2. DNS.** Wherever the nameservers point, that account is yours too. Domain and DNS are often at different vendors. Check both.
+
+**3. The code.** A GitHub organization in your business's name, with you as owner. The builder is a member you invited. Collaborator access is not ownership: a collaborator can push code, an owner decides whether the repository exists tomorrow and who gets to see it.
+
+**4. Hosting.** The Vercel team that runs the production deployment is yours. The production domain is attached to a project in that team. Billing goes to your card.
+
+**5. The database.** The Supabase project sits in your organization. The service role key, the one that bypasses every row-level policy, is a secret you hold and the builder has been given, not the other way round.
+
+**6. Payments.** The Stripe account is yours, created with your EIN and your bank account. Payouts land in your account directly. Never let a builder run your revenue through a platform account they control.
+
+**7. Email.** The transactional sender, Resend in our stack, verified against your domain in your account. The same for Zoho or Google Workspace. Your receipts and password resets should not stop when a vendor relationship does.
+
+**8. AI vendors.** Vapi, ElevenLabs, the Anthropic API key. Every one of these is a metered bill. The account that pays it is the account that can turn it off.
+
+Run this test on anything you have already had built. If the answer on any line is "they would have to add me," you have found the dependency.
+
+## Why "we'll transfer it at the end" is the wrong answer
+
+Everything above can be moved later. GitHub repositories transfer between organizations. Vercel projects and Supabase projects can change hands. Domains can be pushed between registrar accounts. It all works and it is all slower, riskier and more annoying than starting in the right place.
+
+The right place is your accounts, from the first commit. The builder creates nothing in their own name except the tools they bring to every job. When the engagement ends, nothing has to move, because nothing was ever anywhere else.
+
+This is how every Idea to Product build at Modern Mustard Seed starts. The GitHub organization, the Vercel team, the Supabase project and the Stripe account are created in your name during Scope and Sequence, before Build and Ship writes a line of code. We are a member of each one. You are the owner of all of them.
+
+## What a real hand off contains
+
+Owning the accounts is necessary and not sufficient. A repo you own but cannot operate is a liability with a nicer name. Hand Off is the fourth tier of Idea to Product, and it is a tier rather than a courtesy because it has a fixed deliverable list:
+
+- **Repository ownership** confirmed in your organization, with the builder's access set to what you decide.
+- **An environment variable inventory.** Every secret by name, what it is for, and where it lives: Vercel production, Vercel preview, the local file, the CI secret store. This is the single most skipped item in the industry, and the one that bites first. A new developer who cannot answer "what is the service role key and where do I set it" cannot ship a fix.
+- **A deploy runbook.** How to ship, how to roll back to the previous deployment, how to read the production logs when something breaks at 9 pm.
+- **An architecture summary** written for a developer who has never seen the codebase. What the folders are, where the data flows, what the integrations touch.
+- **Database schema and migration documentation.** Every table, what it holds, and how a schema change gets applied without taking production down.
+- **Third-party account transfer** across every vendor on the ownership test, with the billing owner confirmed as you.
+- **An operating document.** What breaks, how you will know, and what to do. The three failure modes a real product has in its first year, written down before they happen.
+- **A recorded live walkthrough** with the operator. Screen recorded, kept forever, so the next person can watch it instead of guessing.
+
+Changes to what we built remain included after the hand off. That is not a retainer. It is what finishing the job means.
+
+## Owning it does not mean running it
+
+Most owners do not want to read production logs, rotate an API key, or decide whether a dependency update is safe. They want the product up, the edits made, and the bill predictable. Ownership does not change that, and it was never meant to.
+
+So we stay on. After the hand off, we run the product for clients who want it: hosting, monitoring, edits as they come up, the logs at 9 pm, the vendor bills watched so a metered API never surprises you. It is a flat monthly care plan, not hours, and it starts after the hand off rather than instead of it. You can end it any month. Nothing moves when you do, because we work as a member inside accounts you already own.
+
+That is the difference between a care plan and a retainer. A retainer is the price of access to your own product. A care plan is a job you are paying someone to do well, and that you can give to anyone else the day they stop doing it well.
+
+## The sentence to put in the contract
+
+Before you sign anything with any builder, add this:
+
+> Every account used to build, host, run or bill for the product is created in the client's name from the start of the engagement, with the client as billing owner. The source code lives in a repository the client owns. The engagement closes with a written environment variable inventory, a deploy runbook, and a recorded walkthrough. Any ongoing management is a separate agreement the client can end at any time without any account, domain or code changing hands.
+
+A builder who will sign that is a builder who plans to hand you something you can run, and to earn the right to keep running it. A builder who pushes back on it has told you what the retainer is for. Both answers are useful. Only one of them costs you the product.
+
+## What ownership looks like from our side
+
+A client who owns everything can leave at any time. That is the point. If the work is good and the price is fixed, they do not leave, and when they do come back it is because they want something new built, not because they are locked in.
+
+We build on standard tools so that any developer can pick the work up: Next.js, TypeScript, Supabase, Stripe, Vercel. We write the runbook so that the operator does not need us to read the logs. We put the asset in your name so that the question of who owns it never has to be asked. Then, if you want us to, we keep running it. If you have an idea and a business that already works, that is [the custom build at the bottom of The System](/the-system), scoped and quoted privately, fixed price, fixed timeline, handed off with the repo and every credential in your name.
