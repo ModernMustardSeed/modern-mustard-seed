@@ -61,6 +61,7 @@ import { OWNER_NOTIFY_TO } from '@/lib/owner';
 import { possessive } from '@/lib/business-name';
 import { cancelPendingFor } from '@/lib/acq/queue';
 import { recordEvent } from '@/lib/acq/events';
+import { fulfillBootcampCheckout } from '@/lib/bootcamp/fulfill';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -3273,6 +3274,16 @@ export async function POST(req: Request) {
   if (session.metadata?.kind === 'geo') {
     await handleGeoPurchase(session, slug, email, name ?? null);
     return NextResponse.json({ received: true, kind: 'geo' });
+  }
+
+  // ── THE BOOTCAMP: a ticket (ga, vip, platinum) or an Operator Program seat ──
+  if (session.metadata?.kind === 'bootcamp') {
+    await fulfillBootcampCheckout(session);
+    return NextResponse.json({ received: true, kind: 'bootcamp' });
+  }
+  if (session.metadata?.kind === 'operator') {
+    await fulfillBootcampCheckout(session);
+    return NextResponse.json({ received: true, kind: 'operator' });
   }
 
   // ── Flagship $497 program purchase (The Terminal, Idea to Spec, bundle) ──

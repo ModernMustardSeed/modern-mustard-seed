@@ -181,6 +181,15 @@ export const ADMIN_HELP: HelpGuideContent = {
       ],
     },
     {
+      title: 'Bootcamp',
+      items: [
+        'Desk: seats and revenue by tier, hosts, outreach, and a live countdown to the next dated moment.',
+        'Outreach: the switch (Armed or Off, with a daily cap of 1 to 12) and the host list. Send now, Mark replied, Mark hosting, Skip, Requeue. Rows marked by hand carry the message to paste.',
+        'Hosts: approve an applicant to mint their links and email them. The first 25 approved are founding hosts. Approved hosts show clicks, tickets and what they are owed.',
+        'Registrations: search, filter by tier, export CSV. Marketing Kit: every piece of launch copy with a Copy button. The Plan: the four-launch ladder for 2027.',
+      ],
+    },
+    {
       title: 'Reviews, Outreach, Partner Admin',
       items: [
         'Reviews (Clients menu): approve client-submitted reviews to publish them on the site.',

@@ -31,6 +31,7 @@ export default function Footer() {
         { label: 'Advisory', href: '/advisory' },
         { label: 'Agentic Native', href: '/agentic-native' },
         { label: 'Claude Setup', href: '/claude' },
+        { label: 'The Bootcamp', href: '/bootcamp' },
         { label: 'The Chief', href: '/chief' },
         { label: 'Command Center', href: '/command-center' },
         { label: 'Mustard Pictures', href: '/pictures' },
