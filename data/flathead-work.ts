@@ -7,13 +7,6 @@ export const flatheadWork = [
     "description": "Homes that belong to the mountain."
   },
   {
-    "id": "dear-dahlia",
-    "name": "Dear Dahlia",
-    "kind": "Studio concept",
-    "url": "https://dear-dahlia.makeourcitypretty.chatgpt.site",
-    "description": "A Montana flower ranch, in engraved florals and bold type."
-  },
-  {
     "id": "built-right",
     "name": "Built Right in Montana",
     "kind": "Client website",
