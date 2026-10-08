@@ -60,9 +60,10 @@ This report goes to the owner of the business, unasked. One wrong claim and they
 - Never use outside knowledge about the business: its history, decor, menu, reputation, founding year, owners, or anything you happen to know about it. Only what the page itself says.
 - Never guess when the site was built or how old it looks. A year may appear only when it is printed on the page, or when it is the release year of a library you can actually see in script_srcs and you name that library. "Stuck in a 2016 theme" and "a 2015 template" are guesses; "jQuery 1.8.3, released in 2012, is loaded here" is a fact. Say "dated" and name the evidence instead of dating it.
 - An em dash or en dash may appear only inside text you are quoting from their page. Never in a sentence of your own.
-- Write for the owner, never for an engineer reading our code. NEVER print the name of a signal field: json_ld_count, form_count, h1_count, img_missing_alt, has_analytics, has_chat_widget_hint, aux.llms_txt, script_srcs, og_tags and the rest are our field names, not words. Say what they mean: "there is no form on the homepage", "no structured data on the page at all", "no analytics installed", "1 of 3 images has no alt text". Numbers and file names (llms.txt, sitemap.xml, robots.txt) are fine; field names are not.
+- Write for the owner, never for an engineer reading our code. NEVER print the name of a signal field: json_ld_count, form_count, h1_count, img_missing_alt, img_decorative, has_analytics, has_chat_widget_hint, aux.llms_txt, script_srcs, og_tags and the rest are our field names, not words. Say what they mean: "there is no form on the homepage", "no structured data on the page at all", "no analytics installed", "1 of 3 images has no alt text". Numbers and file names (llms.txt, sitemap.xml, robots.txt) are fine; field names are not.
 - Security is a measured fact: \`served_over_https\` and \`final_url\`. If served_over_https is true, never say the site is not secure, served over plain http, or needs to move to https. Only if it is false may you say the site loads without https.
 - body_text_snippet is the first 5,000 characters of the homepage only. Something missing from it is not missing from the site. Say "not on the homepage" or "we did not see it on the homepage", never "the site has no" or "zero", unless a signal field (json_ld_count, has_analytics, aux, canonical and so on) proves the absence.
+- Images: img_missing_alt counts images with no alt attribute at all, which is the defect. img_decorative counts images marked decorative on purpose with an empty alt, which is correct practice: never call those missing alt text or ask the owner to fix them.
 - Quote a typo only if the exact misspelled text appears in the signals, and quote it exactly as it appears.
 - Never invent numbers: visitors, revenue, calls, conversion rates, rankings.
 - When the message names the business this site is supposed to belong to, check that the page is actually theirs. A domain that has lapsed, been parked, or been taken over serves somebody else's content under their name. If nothing on the page connects it to that business (no name, no town, no matching trade), say that first, in the headline, and grade the page for what it is. Do not write "your website" about a page that is not theirs.
@@ -202,7 +203,10 @@ type Signals = {
   json_ld_count: number;
   json_ld_types: string[];
   img_count: number;
+  /** Images with no alt attribute at all. */
   img_missing_alt: number;
+  /** Images marked decorative on purpose with alt="". Not a defect. */
+  img_decorative: number;
   form_count: number;
   iframe_count: number;
   link_count: number;
@@ -362,7 +366,15 @@ function extractSignals(url: URL, html: string, status: number): Signals {
     json_ld_count: allOf('script[type="application/ld+json"]').length,
     json_ld_types: Array.from(new Set(jsonLdTypes)).slice(0, 20),
     img_count: imgs.length,
-    img_missing_alt: imgs.filter((i) => !i.getAttribute('alt')).length,
+    // alt="" is how a page marks an image decorative on purpose, which is
+    // exactly what this audit tells owners to do. Only an absent attribute is
+    // missing. Counting both told crossandcovenant.co (2026-10-07) that 63
+    // images had no alt text when every one was deliberately decorative.
+    img_missing_alt: imgs.filter((i) => i.getAttribute('alt') == null).length,
+    img_decorative: imgs.filter((i) => {
+      const alt = i.getAttribute('alt');
+      return alt != null && alt.trim() === '';
+    }).length,
     form_count: allOf('form').length,
     iframe_count: allOf('iframe').length,
     link_count: links.length,
