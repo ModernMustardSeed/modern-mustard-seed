@@ -132,6 +132,9 @@ function inlinePriceChecks(): Check[] {
     // The Care Plan ($97/mo) and the $29 portal edit were retired 2026-08-03 when
     // edits went unlimited. Nothing left to price-check: there is no checkout.
     { funnel: 'hatchery', amounts: [HATCH.priceUsd] },
+    // The bootcamp's three tickets and the Operator Program seat, whole dollars
+    // (data/bootcamp.ts). Inline price_data, so these are the only copy.
+    { funnel: 'bootcamp', amounts: [97, 297, 497, 4997] },
   ];
   const checks = groups.map(({ funnel, amounts }) => {
     const bad = amounts.filter((a) => !isPosInt(a));

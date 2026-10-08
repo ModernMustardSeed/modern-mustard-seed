@@ -128,6 +128,14 @@
     {
       "path": "/api/cron/mustard-inbox",
       "schedule": "22,52 * * * *"
+    },
+    {
+      "path": "/api/cron/bootcamp-drip",
+      "schedule": "33 * * * *"
+    },
+    {
+      "path": "/api/cron/bootcamp-outreach",
+      "schedule": "38 15 * * 1-5"
     }
   ]
 }

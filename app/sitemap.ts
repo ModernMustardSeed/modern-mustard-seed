@@ -45,6 +45,10 @@ const STATIC_PATHS = [
   '/chief',
   '/agentic-native',
   '/claude',
+  '/bootcamp',
+  '/bootcamp/masterclass',
+  '/bootcamp/operator',
+  '/bootcamp/host',
   '/pictures',
   '/launch-film',
   '/mustard',
@@ -91,7 +95,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
         ? 1.0
         : path === '/work' || path === '/services' || path === '/advisory' || path === '/talking-website' || path === '/websites' || path === '/voice-agents'
           ? 0.95
-          : path === '/work-with-us' || path === '/the-system' || path === '/command-center' || path === '/chief' || path === '/agentic-native' || path === '/claude' || path === '/pictures' || path === '/launch-film' || path === '/about'
+          : path === '/work-with-us' || path === '/the-system' || path === '/command-center' || path === '/chief' || path === '/agentic-native' || path === '/claude' || path === '/bootcamp' || path === '/pictures' || path === '/launch-film' || path === '/about'
             ? 0.9
             : 0.7,
   }));
