@@ -62,7 +62,8 @@ async function fetchPageContext(rawUrl: string): Promise<string | null> {
     h2_count: all('h2').length,
     has_json_ld: all('script[type="application/ld+json"]').length > 0,
     img_count: imgs.length,
-    img_missing_alt: imgs.filter((i) => !i.getAttribute('alt')).length,
+    // alt="" marks an image decorative on purpose; only an absent attribute is missing.
+    img_missing_alt: imgs.filter((i) => i.getAttribute('alt') == null).length,
     form_count: all('form').length,
     has_chat_widget: scriptSrcs.some((s) => chatHints.some((h) => s.toLowerCase().includes(h))),
     has_analytics: scriptSrcs.some((s) => analyticsHints.some((h) => s.toLowerCase().includes(h))),
