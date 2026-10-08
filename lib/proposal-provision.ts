@@ -51,11 +51,38 @@ export async function provisionFromProposal(proposalId: string): Promise<void> {
   // 2. Project, once. Deliverables come from the proposal's chosen services.
   //    The revision budget is set ONLY on insert so a replay can never refill it.
   let projectId = (p.project_id as string | null) ?? null;
+  const milestones = lines.map((l) => ({
+    title: byId(l.id)?.name ?? l.id,
+    done: false,
+  }));
+
+  //    A client who already has a project gets this proposal added to it, never a
+  //    second project: one client is one row on the Delivery Board and one card
+  //    in their portal. Built Right's add-on proposal minted an empty duplicate
+  //    beside their launched build, and the board showed the add-on as the deal.
   if (!projectId) {
-    const milestones = lines.map((l) => ({
-      title: byId(l.id)?.name ?? l.id,
-      done: false,
-    }));
+    try {
+      const { data: existing } = await supabase
+        .from('projects')
+        .select('id, milestones')
+        .eq('client_email', email)
+        .order('created_at', { ascending: true })
+        .limit(1)
+        .maybeSingle();
+      if (existing) {
+        projectId = existing.id as string;
+        const have = Array.isArray(existing.milestones) ? (existing.milestones as Array<{ title?: string }>) : [];
+        const titles = new Set(have.map((m) => m.title));
+        const added = milestones.filter((m) => !titles.has(m.title));
+        if (added.length) await supabase.from('projects').update({ milestones: [...have, ...added] }).eq('id', projectId);
+        await supabase.from('proposals').update({ project_id: projectId }).eq('id', proposalId);
+      }
+    } catch (err) {
+      console.error('provision: existing project lookup failed', err);
+    }
+  }
+
+  if (!projectId) {
     const name = `${(p.client_company as string) || (p.client_name as string) || 'New'} build`;
     try {
       const { data: proj } = await supabase

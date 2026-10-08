@@ -79,7 +79,18 @@ type Row = {
   projectId: string | null;
   project: Project | null;
   proposal: ProposalInfo | null;
+  agreements?: Agreement[];
   openRequests: number;
+};
+type Agreement = {
+  kind: 'quote' | 'proposal';
+  id: string;
+  signedAt: string | null;
+  signedBy: string | null;
+  setupCents: number;
+  monthlyCents: number;
+  items: string[];
+  url: string | null;
 };
 
 const usd = (c: number) => `$${Math.round(c / 100)}`;
@@ -525,6 +536,43 @@ function DeliveryRow({
               <a href={`/admin/clients/${encodeURIComponent(row.email)}`} className={`${BTN_QUIET} inline-block no-underline`}>
                 Open client file →
               </a>
+            </div>
+          )}
+
+          {/* Everything they signed, and the monthly bill those add up to. */}
+          {row.agreements && row.agreements.length > 0 && (
+            <div>
+              <h4 className="font-sans text-[11px] uppercase tracking-[0.18em] font-bold text-[#161616] mb-2">
+                {row.agreements.length === 1 ? 'The agreement' : `The agreements, all ${row.agreements.length}`}
+              </h4>
+              <ul className="space-y-1.5">
+                {row.agreements.map((a) => (
+                  <li key={a.id} className="font-body text-[13px] text-[#161616]">
+                    <span className="font-semibold">
+                      {a.signedAt ? new Date(a.signedAt).toLocaleDateString() : 'Unsigned'}
+                    </span>
+                    {' · '}
+                    {a.items.join(' + ') || (a.kind === 'quote' ? 'Signed quote' : 'Signed proposal')}
+                    {' · '}
+                    {[a.setupCents ? `${usd(a.setupCents)} one time` : null, a.monthlyCents ? `${usd(a.monthlyCents)}/mo` : null]
+                      .filter(Boolean)
+                      .join(' + ')}
+                    {a.url && (
+                      <>
+                        {' · '}
+                        <a href={a.url} target="_blank" rel="noopener noreferrer" className="underline">
+                          open ↗
+                        </a>
+                      </>
+                    )}
+                  </li>
+                ))}
+              </ul>
+              {row.agreements.length > 1 && (
+                <p className="font-body text-[13px] font-semibold text-[#161616] mt-2">
+                  Monthly bill {usd(row.monthlyCents)}/mo · {usd(row.setupCents)} one time across all of them
+                </p>
+              )}
             </div>
           )}
 

@@ -305,6 +305,9 @@ export async function provisionPurchase(session: Stripe.Checkout.Session): Promi
 
     // 2. The ownership card, once per Stripe session. Insert-if-absent so a replay
     //    can never reset a status we have since advanced.
+    // A proposal deposit gets its card from provisionFromProposal, tied to the
+    // project. Writing one here too gave Built Right two cards for one $994.
+    if (kind === 'deposit' && session.metadata?.proposal_id) return;
     try {
       const { data: existing } = await supabase
         .from('client_products')
