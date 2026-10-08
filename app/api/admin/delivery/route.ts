@@ -58,6 +58,61 @@ export async function GET() {
   const orders = (orderRes.data ?? []) as ProjRow[];
   const proposals = (propRes.data ?? []) as ProjRow[];
 
+  // EVERY signed agreement per client, oldest first: quotes signed on a prep
+  // site (prep_signatures) and signed proposals. A client who signs twice owes
+  // the sum, so a row that showed only the latest proposal told Sarah Built
+  // Right paid $197 a month when the bill is $691.
+  type Agreement = {
+    kind: 'quote' | 'proposal';
+    id: string;
+    signedAt: string | null;
+    signedBy: string | null;
+    setupCents: number;
+    monthlyCents: number;
+    items: string[];
+    url: string | null;
+  };
+  const agreementsByEmail = new Map<string, Agreement[]>();
+  const addAgreement = (email: unknown, a: Agreement) => {
+    const em = String(email ?? '').toLowerCase();
+    if (!em) return;
+    agreementsByEmail.set(em, [...(agreementsByEmail.get(em) ?? []), a]);
+  };
+  const { data: sigRows } = await sb
+    .from('prep_signatures')
+    .select('id, client_email, signer_name, packages, setup_cents, monthly_cents, quote_url, created_at')
+    .order('created_at', { ascending: true })
+    .limit(300);
+  for (const s of sigRows ?? []) {
+    const pkgs = Array.isArray(s.packages) ? (s.packages as Array<{ label?: string; key?: string }>) : [];
+    addAgreement(s.client_email, {
+      kind: 'quote',
+      id: s.id as string,
+      signedAt: (s.created_at as string) ?? null,
+      signedBy: (s.signer_name as string) ?? null,
+      setupCents: Number(s.setup_cents) || 0,
+      monthlyCents: Number(s.monthly_cents) || 0,
+      items: pkgs.map((k) => k.label ?? k.key ?? '').filter(Boolean),
+      url: (s.quote_url as string) ?? null,
+    });
+  }
+  for (const pr of [...proposals].reverse()) {
+    if (!pr.signed_at) continue;
+    const lines = Array.isArray(pr.lines) ? (pr.lines as Array<{ id: string }>) : [];
+    addAgreement(pr.client_email, {
+      kind: 'proposal',
+      id: pr.id as string,
+      signedAt: pr.signed_at as string,
+      signedBy: (pr.client_name as string) ?? null,
+      setupCents: Math.round(Number(pr.one_time_total) || 0) * 100,
+      monthlyCents: Math.round(Number(pr.monthly_total) || 0) * 100,
+      items: lines.map((l) => byId(l.id)?.name ?? l.id),
+      url: pr.share_token ? `/proposal/${pr.share_token}` : null,
+    });
+  }
+  for (const list of agreementsByEmail.values())
+    list.sort((a, b) => String(a.signedAt ?? '').localeCompare(String(b.signedAt ?? '')));
+
   // Cheap site/draft presence for every project (never pull the HTML blobs here).
   const flags = new Map<string, { has_site: boolean; has_draft: boolean }>();
   if (projects.length) {
@@ -199,11 +254,15 @@ export async function GET() {
     const prop = propByProject.get(p.id as string) ?? (o ? null : (propByEmail.get(email) ?? null));
     const source = o ? 'demo' : prop ? 'proposal' : 'direct';
     const propLines = prop && Array.isArray(prop.lines) ? (prop.lines as Array<{ id: string }>) : [];
+    const agreements = o ? [] : (agreementsByEmail.get(email) ?? []);
     const products = o
       ? Array.isArray(o.products)
         ? o.products
         : []
-      : propLines.map((l) => byId(l.id)?.name ?? l.id);
+      : agreements.length
+        ? Array.from(new Set(agreements.flatMap((a) => a.items)))
+        : propLines.map((l) => byId(l.id)?.name ?? l.id);
+    const sum = (k: 'setupCents' | 'monthlyCents') => agreements.reduce((t, a) => t + a[k], 0);
     rows.push({
       id: o ? o.id : p.id,
       source,
@@ -212,8 +271,13 @@ export async function GET() {
       email: email || null,
       phone: (o?.phone as string) ?? null,
       products,
-      setupCents: (o?.setup_cents as number) ?? (prop ? Math.round(Number(prop.one_time_total) || 0) * 100 : 0),
-      monthlyCents: (o?.monthly_cents as number) ?? (prop ? Math.round(Number(prop.monthly_total) || 0) * 100 : 0),
+      setupCents:
+        (o?.setup_cents as number) ??
+        (agreements.length ? sum('setupCents') : prop ? Math.round(Number(prop.one_time_total) || 0) * 100 : 0),
+      monthlyCents:
+        (o?.monthly_cents as number) ??
+        (agreements.length ? sum('monthlyCents') : prop ? Math.round(Number(prop.monthly_total) || 0) * 100 : 0),
+      agreements,
       status: (o?.status as string) ?? null,
       createdAt: p.created_at,
       intake: ((o?.intake ?? null) as Record<string, unknown> | null),
