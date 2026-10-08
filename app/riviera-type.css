@@ -42,7 +42,7 @@ html.riv body {
 }
 
 /* ---------- Headings: the masthead ---------- */
-html.riv main :is(h1, h2):not(#studio-heading, .sr-only),
+html.riv main :is(h1, h2):not(#studio-heading, .sr-only, .eyebrow),
 html.riv main :is(h3, h4, h5, h6, dt, strong, span, div, a, button, li, label, figcaption, summary).font-display,
 html.riv main :is(h3, h4).font-serif {
   font-family: var(--font-display);
@@ -52,10 +52,10 @@ html.riv main :is(h3, h4).font-serif {
   text-transform: none;
   font-synthesis: none;
 }
-html.riv main :is(h1, h2):not(#studio-heading, .sr-only) {
+html.riv main :is(h1, h2):not(#studio-heading, .sr-only, .eyebrow) {
   line-height: 1.06;
 }
-html.riv main h1:not(#studio-heading) {
+html.riv main h1:not(#studio-heading, .eyebrow) {
   letter-spacing: -.035em;
   text-wrap: balance;
 }
@@ -149,7 +149,7 @@ html.riv main :is(p, span, div).font-mono.uppercase:has(+ :is(h1, h2, h3))::afte
 
 /* ---------- Phones ---------- */
 @media (max-width: 760px) {
-  html.riv main :is(h1, h2):not(#studio-heading) {
+  html.riv main :is(h1, h2):not(#studio-heading, .eyebrow) {
     overflow-wrap: break-word;
     letter-spacing: -.02em;
   }

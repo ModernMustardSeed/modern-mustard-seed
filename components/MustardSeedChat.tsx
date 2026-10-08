@@ -380,7 +380,7 @@ export default function MustardSeedChat() {
         onClick={toggleOpen}
         data-studio-launcher="true"
         aria-expanded={open}
-        aria-label={open ? 'Close Mr. Mustard' : 'Call or chat with Mr. Mustard'}
+        aria-label={open ? 'Mr. Mustard, call or chat: close' : undefined}
         className="fixed bottom-6 right-6 z-[80] group"
       >
         <div className="relative flex items-center gap-2 pl-1.5 pr-3 py-1.5 sm:pl-2 sm:pr-4 sm:py-2 rounded-full bg-[#f5b700] border-2 border-[#0b3b44] shadow-[4px_4px_0_0_#0b3b44] group-hover:shadow-[6px_6px_0_0_#0b3b44] group-hover:-translate-y-0.5 transition-all">
