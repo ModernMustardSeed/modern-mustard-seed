@@ -13,7 +13,7 @@ export const contentType = 'image/png';
 
 /**
  * The homepage share card: the studio edition card rendered once as a JPG
- * (public/brand/mms-share-studio.jpg, the same file SITE.ogImage points at),
+ * (public/brand/mms-share-studio-2.jpg, the same file SITE.ogImage points at),
  * so every share of the root shows the same card.
  */
 export default async function OpengraphImage() {

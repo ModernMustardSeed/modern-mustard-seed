@@ -9,7 +9,7 @@ export const SITE = {
   twitter: '@modmustardseed',
   founder: 'Sarah Scarano',
   email: 'sarah@modernmustardseed.com',
-  ogImage: '/brand/mms-share-studio.jpg',
+  ogImage: '/brand/mms-share-studio-2.jpg',
   /**
    * Local identity. SINGLE SOURCE for every NAP (name, address, phone) signal.
    * Local search and AI answers both key off a consistent NAP, so never retype
