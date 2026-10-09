@@ -417,13 +417,17 @@ export default function StudioAudit({ r, auditId, leadId }: { r: PresenceAuditRe
                 <p className="mt-2 text-[12px] uppercase tracking-[0.16em]" style={{ ...MONO, color: `${INK}99` }}>Grade {r.letter_grade}</p>
               </div>
             </div>
-            <dl className="grid grid-cols-3" style={{ borderTop: `1px solid ${INK}` }}>
+            <dl className="flex" style={{ borderTop: `1px solid ${INK}` }}>
               {[
                 { k: 'Checks run', v: checksRun },
                 { k: 'Already right', v: (scan?.counts.pass ?? 0) + pillars.filter((x) => !x.unknown).reduce((n, x) => n + x.checks.filter((c) => c.passed).length, 0) },
                 { k: 'Fixes, ranked', v: fixesCount },
-              ].map((s, i) => (
-                <div key={s.k} className="px-4 py-4 sm:px-5" style={{ borderLeft: i ? `1px solid ${RULE}` : undefined }}>
+              ]
+                // A zero on the cover reads as a verdict. On a report filed before
+                // the deep scan there may be nothing countable to praise yet.
+                .filter((s) => s.v > 0)
+                .map((s, i) => (
+                <div key={s.k} className="min-w-0 flex-1 px-4 py-4 sm:px-5" style={{ borderLeft: i ? `1px solid ${RULE}` : undefined }}>
                   <dd className="text-[30px] font-bold leading-none tabular-nums tracking-[-0.04em]" style={{ ...SANS, color: INK }}>{s.v}</dd>
                   <dt className="mt-2 text-[10px] uppercase leading-tight tracking-[0.16em]" style={{ ...MONO, color: `${INK}99` }}>{s.k}</dt>
                 </div>
