@@ -133,6 +133,23 @@ const SCRIPTS = {
     vr3: 'I am Jenna Ruiz. Four zero six, two five zero, six zero seven six. Voicemail is fine.',
     vr4: 'Okay. Thanks, bye.',
   },
+  /* Numbers and emails taken and read back right: a plain email, then one
+   * that has to be spelled, and a number with no repeats so a dropped or
+   * doubled digit is obvious in the transcript. */
+  'vann-email': {
+    ve1: 'Hi. I got rear ended in Whitefish last Friday and I want to talk to someone about it.',
+    ve2: 'My name is Rachel Dunn. My cell is four zero six, eight eight one, three nine two seven.',
+    ve3: 'Yes, that is right. Voicemail is fine.',
+    ve4: 'Sure. It is rachel dot dunn at gmail dot com.',
+    ve5: 'Yes. Thanks, bye.',
+  },
+  'vann-spell': {
+    vs1: 'Hi, this is Peter Knoepfle. My wife and I want to update our wills. My number is four zero six, seven one three, five two eight four.',
+    vs2: 'Yep, that is right, and a voicemail is fine.',
+    vs3: 'My email is p knoepfle at yahoo dot com. Knoepfle is k as in kite, n as in nancy, o as in ocean, e as in echo, p as in paul, f as in frank, l as in lima, e as in echo.',
+    vs4: 'Yes, that is right.',
+    vs5: 'We have an old will from about ten years ago. That is all, thanks, bye.',
+  },
   'vann-angry': {
     va1: 'I have called three times and nobody calls me back. This is ridiculous. I am a client, Dale Miller.',
     va2: 'It is about my case. Just have Jordan call me today. Four zero six, two five zero, six zero seven six.',
