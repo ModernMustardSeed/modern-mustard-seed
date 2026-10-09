@@ -1,0 +1,14 @@
+{
+  "bannedPhrases": [
+    { "pattern": "\\$\\s?\\d[\\d,]*(\\.\\d+)?\\s*(/|per\\s+)\\s*(hour|hr)\\b", "why": "We sell set packages. No price is ever stated by the hour." },
+    { "pattern": "\\bhourly\\s+(rate|rates|pricing|billing|fee|fees)\\b", "why": "We sell set packages. Nothing is priced by the hour." },
+    { "pattern": "\\btime\\s+and\\s+materials\\b", "why": "We sell set packages, never metered time." },
+    { "pattern": "\\bbillable\\s+hours\\b", "why": "We sell set packages. Hours are not billed." },
+    { "pattern": "\\bchange\\s+orders?\\b", "why": "Changes to what we built are included. There is no paperwork for a change." }
+  ],
+  "wordsSkip": ["[\\\\/]\\.claude[\\\\/]", "CLAUDE\\.md$", "[\\\\/]studio-kit[\\\\/]"],
+  "protectedBranches": ["main", "master", "production"],
+  "workspaceRoots": [],
+  "sendCommands": [],
+  "deployRule": "Production ships by merging to the main branch. Deploy commands from a laptop are approved by a person, every time."
+}

@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import { buildMetadata, SITE } from '@/lib/seo';
 import { getSupabase } from '@/lib/supabase';
-import { BOOTCAMP, OPERATOR, tradeRooms, bootcampTiers, enrollmentOpen, fmtMountain, fmtMountainTime, getBootcampTier, usd } from '@/data/bootcamp';
+import { BOOTCAMP, OPERATOR, tradeRooms, bootcampTiers, deliverablesFor, deliverablesReleased, enrollmentOpen, fmtMountain, fmtMountainTime, getBootcampTier, usd } from '@/data/bootcamp';
+import { deliverableHref, fmtBytes, readManifest } from '@/lib/bootcamp/deliverables';
 import { WORKSHEET_MINUTES, WORKSHEET_NAME } from '@/data/bootcamp-worksheet';
 import { roomRegistration } from '@/lib/bootcamp/room-auth';
 import { getStage, loadWorksheet, EMPTY_STAGE, type StageState } from '@/lib/bootcamp/stage';
@@ -24,6 +25,7 @@ import { firstNameOf, type RegistrationRow } from '@/lib/bootcamp/store';
 import RoomLive, { type LiveView, type NextView, type TradeRoomLink } from '@/components/bootcamp/room/RoomLive';
 import Schedule, { type ScheduleItem, type ScheduleStatus } from '@/components/bootcamp/room/Schedule';
 import Worksheet from '@/components/bootcamp/room/Worksheet';
+import Deliverables, { type DeliverableView } from '@/components/bootcamp/room/Deliverables';
 import RoomLinkForm from '@/components/bootcamp/room/RoomLinkForm';
 import TierCards from '@/components/bootcamp/TierCards';
 import DoorRow from '@/components/bootcamp/DoorRow';
@@ -134,6 +136,15 @@ export default async function RoomPage({ searchParams }: { searchParams: Promise
     }
   }
 
+  // The tier deliverables: VIP holds the deck, Platinum and the cohort hold all three.
+  const owned = deliverablesFor(tier);
+  const released = deliverablesReleased(now);
+  const manifest = owned.length && released ? await readManifest() : {};
+  const kit: DeliverableView[] = owned.map((d) => ({
+    ...d,
+    files: d.files.map((f) => ({ ...f, href: deliverableHref(f.name, reg.id, k), size: fmtBytes(manifest[f.name]?.bytes) })),
+  }));
+
   const first = reg.first_name ?? firstNameOf(reg.name);
   const ticket = getBootcampTier(tier);
   const closes = replayCloses(reg);
@@ -241,6 +252,23 @@ export default async function RoomPage({ searchParams }: { searchParams: Promise
             </p>
             <div className="mt-8">
               <Worksheet id={reg.id} k={k} initial={worksheet?.answers ?? {}} savedAt={worksheet?.at ?? null} who={{ name: reg.name, business: reg.business }} />
+            </div>
+          </div>
+        </section>
+      )}
+
+      {kit.length > 0 && (
+        <section id="kit" className="scroll-mt-24 py-10 md:py-14 border-t-2 border-[#0b3b44]/10" aria-labelledby="kit-heading">
+          <div className="max-w-6xl mx-auto px-5">
+            <Kicker>In your seat</Kicker>
+            <h2 id="kit-heading" className={h2SmCls}>{kit.length === 1 ? 'Your deck.' : 'Your deck, your kit,'} <em>{kit.length === 1 ? 'Forty cards.' : 'your playbook.'}</em></h2>
+            <p className={leadCls}>
+              {released
+                ? 'Everything your seat includes, ready to download. The links work only from this room; keep this page.'
+                : `Your ${TIER_NAME[tier] ?? ''} seat includes ${kit.length === 1 ? 'this' : 'these'}. ${kit.length === 1 ? 'It opens' : 'They open'} right here when Day 3 ends, ${whenLine(BOOTCAMP.dates.deliverables)}, and we email you the moment ${kit.length === 1 ? 'it does' : 'they do'}.`}
+            </p>
+            <div className="mt-8">
+              <Deliverables items={kit} released={released} opensOn={fmtMountain(BOOTCAMP.dates.deliverables)} />
             </div>
           </div>
         </section>

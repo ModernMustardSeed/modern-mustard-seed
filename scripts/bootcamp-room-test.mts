@@ -178,3 +178,35 @@ test('every letter renders with the room link and the house rules', () => {
   const preview = STEP_TEMPLATES['day1-24h']({ firstName: null, email: 'x@example.com', tier: 'ga', unsubscribeUrl: 'https://x.test/u' });
   assert.match(preview.text, /Your room link lands in this inbox the morning of/);
 });
+
+test('the tier deliverables: who holds what, and when the door opens', async () => {
+  const { deliverablesFor, deliverableForFile, deliverablesReleased, bootcampDeliverables } = await import('../data/bootcamp');
+  const { gate, deliverableHref } = await import('../lib/bootcamp/deliverables');
+  const slugs = (tier: string) => deliverablesFor(tier).map((d) => d.slug);
+  assert.deepEqual(slugs('masterclass'), []);
+  assert.deepEqual(slugs('ga'), []);
+  assert.deepEqual(slugs('vip'), ['deck']);
+  assert.deepEqual(slugs('platinum'), ['deck', 'kit', 'playbook']);
+  assert.deepEqual(slugs('operator'), ['deck', 'kit', 'playbook']);
+
+  const open = new Date(BOOTCAMP.dates.deliverables).getTime();
+  assert.ok(open >= sessionEnd(getSession('day3')!), 'opens when Day 3 ends, not before');
+  assert.equal(deliverablesReleased(open - 1), false);
+  assert.equal(deliverablesReleased(open), true);
+
+  assert.equal(gate('vip', 'directors-deck.pdf', open), 'ok');
+  assert.equal(gate('vip', 'directors-deck-files.zip', open), 'ok');
+  assert.equal(gate('vip', 'studio-kit.zip', open), 'not-yours');
+  assert.equal(gate('ga', 'directors-deck.pdf', open), 'not-yours');
+  assert.equal(gate('platinum', 'operators-playbook.pdf', open - 1), 'not-yet');
+  assert.equal(gate('operator', 'studio-kit.zip', open), 'ok');
+  assert.equal(gate('platinum', '../.env.local', open), 'unknown');
+  assert.equal(gate('platinum', 'manifest.json', open), 'unknown');
+  assert.equal(deliverableForFile('..%2F.env'), undefined);
+
+  // Every file a deliverable names is actually built.
+  const { existsSync } = await import('node:fs');
+  for (const d of bootcampDeliverables) for (const f of d.files) assert.ok(existsSync(`private/bootcamp/dist/${f.name}`), `${f.name} is built`);
+
+  assert.equal(deliverableHref('studio-kit.zip', REG, 'abc'), `/api/bootcamp/kit/studio-kit.zip?id=${REG}&k=abc`);
+});

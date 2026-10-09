@@ -52,8 +52,21 @@ type Question = {
   at: string;
 };
 
+type DeliverablesStatus = {
+  releaseAt: string;
+  released: boolean;
+  items: {
+    slug: string;
+    name: string;
+    minTier: 'vip' | 'platinum';
+    holders: number;
+    files: { name: string; kind: string; bytes: number; builtAt: string | null; downloads: number; people: number }[];
+  }[];
+};
+
 type StagePayload = {
   ok: true;
+  deliverables?: DeliverablesStatus;
   now: string;
   live: string | null;
   next: string | null;
@@ -180,6 +193,53 @@ function SessionRow({ s, onSaved }: { s: StageSession; onSaved: () => void }) {
         {error && <span className="font-body text-sm text-[#E0301E]">{error}</span>}
       </div>
     </div>
+  );
+}
+
+const kb = (n: number) => (n >= 1048576 ? `${(n / 1048576).toFixed(1)} MB` : `${Math.max(1, Math.round(n / 1024))} KB`);
+
+/** The tier deliverables: built, held and downloaded. They open in the rooms by themselves when Day 3 ends. */
+function DeliverablesPanel({ d }: { d: DeliverablesStatus }) {
+  return (
+    <section className={`${card} p-5`} aria-labelledby="kit-heading">
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
+        <h2 id="kit-heading" className="font-display text-xl font-semibold">Deck, Kit and Playbook</h2>
+        <span className={`rounded-full px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.15em] ${d.released ? 'bg-[#0a7c78] text-white' : 'bg-[#F5B700] text-[#161616]'}`}>
+          {d.released ? 'Open in the rooms' : `Opens ${fmtDateTime(d.releaseAt)}`}
+        </span>
+      </div>
+      <p className={`${muted} mt-1`}>
+        They open in every VIP, Platinum and cohort room on their own when Day 3 ends, and the &quot;in your room&quot; letter goes on the next hourly run. Nothing to set. To change a file, edit private/bootcamp/src and run scripts/bootcamp-deliverables-build.mjs.
+      </p>
+      <div className="mt-4 grid gap-3 md:grid-cols-3">
+        {d.items.map((item) => (
+          <div key={item.slug} className="rounded-lg border-2 border-[#161616]/20 bg-white p-3">
+            <p className="font-display text-lg font-semibold">{item.name}</p>
+            <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-[#3A3733]">
+              {item.minTier === 'vip' ? 'VIP and up' : 'Platinum and cohort'} · {item.holders.toLocaleString('en-US')} seat{item.holders === 1 ? '' : 's'}
+            </p>
+            <ul className="mt-2 space-y-1.5">
+              {item.files.map((f) => (
+                <li key={f.name} className="font-mono text-[11px] text-[#161616]">
+                  {f.bytes ? (
+                    <>
+                      {f.name} · {kb(f.bytes)}
+                      <br />
+                      <span className="text-[#3A3733]">
+                        {f.people.toLocaleString('en-US')} downloaded{item.holders ? ` of ${item.holders.toLocaleString('en-US')}` : ''}
+                        {f.builtAt ? ` · built ${fmtDateTime(f.builtAt)}` : ''}
+                      </span>
+                    </>
+                  ) : (
+                    <span className="font-bold text-[#E0301E]">{f.name} is missing from the build</span>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }
 
@@ -445,6 +505,8 @@ export default function StageTab() {
         </button>
         {showCohort && cohortSessions.map((s) => <SessionRow key={`${s.key}|${s.liveUrl}|${s.replayUrl}|${s.transcriptUrl}`} s={s} onSaved={() => void load(focus)} />)}
       </section>
+
+      {data.deliverables && <DeliverablesPanel d={data.deliverables} />}
 
       <section className={`${card} p-5`} aria-labelledby="ws-heading">
         <div className="flex flex-wrap items-center justify-between gap-2">

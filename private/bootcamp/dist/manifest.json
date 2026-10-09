@@ -1,0 +1,22 @@
+{
+  "directors-deck.pdf": {
+    "bytes": 717763,
+    "sha256": "4913039b7cbb06c96c4f884e602a8938a7ae68e263ed204055b97de39d0612e0",
+    "builtAt": "2026-10-09T12:40:08.846Z"
+  },
+  "directors-deck-files.zip": {
+    "bytes": 24422,
+    "sha256": "7e3cea4f4f4b4772759812df1e4e6358f9b2a0722fd0177f20cf3c294890a9eb",
+    "builtAt": "2026-10-09T12:40:08.846Z"
+  },
+  "studio-kit.zip": {
+    "bytes": 43271,
+    "sha256": "cbf893bc25ee5a9c851022d93f06e674583bc9735acd4427c86504c9c3804b69",
+    "builtAt": "2026-10-09T12:40:08.846Z"
+  },
+  "operators-playbook.pdf": {
+    "bytes": 547184,
+    "sha256": "525b9618972f04a71b0fa8cadddc918f9d162f1ab46b1cac4f44f83f7e9b118a",
+    "builtAt": "2026-10-09T12:40:08.847Z"
+  }
+}

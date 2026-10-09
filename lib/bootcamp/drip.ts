@@ -60,6 +60,8 @@ export type DripStep = {
   window?: number;
   /** A replay letter: held until the stage has a replay link for this session. */
   replay?: SessionKey;
+  /** Only these tiers inside the lanes get the step (the deliverables letter skips General Admission). */
+  tiers?: string[];
 };
 
 export type ScheduleOpts = {
@@ -101,6 +103,8 @@ export function dripSchedule(dates: typeof BOOTCAMP.dates = BOOTCAMP.dates, opts
     { step: 'day3-24h', at: t(dates.day3) - DAY, lanes: sessions },
     { step: 'day3-live', at: t(dates.day3) - MORNING_OF_MS, lanes: sessions, window: MORNING_OF_MS },
     { step: 'day3-1h', at: t(dates.day3) - H, lanes: sessions, window: H },
+    // The deliverables open when Day 3 ends; the letter closes before the replay letter opens.
+    { step: 'kit-ready', at: t(dates.deliverables), lanes: sessions, window: t(dates.day3) + 4 * H - t(dates.deliverables), tiers: ['vip', 'platinum', 'operator'] },
     { step: 'day3-replay', at: t(dates.day3) + 4 * H, lanes: ['paid'], window: 40 * H, replay: 'day3' },
     { step: 'day3-replay-op', at: t(dates.day3) + 4 * H, lanes: ['operator'], window: 40 * H, replay: 'day3' },
     { step: 'op-2', at: t(dates.day3) + 2 * DAY, lanes: ['paid'] },
@@ -132,7 +136,7 @@ export function dueSteps(reg: DueRegistration, now: number, schedule: DripStep[]
   if (!lane) return [];
   const sent = new Set(reg.sent_steps ?? []);
   return schedule
-    .filter((s) => s.lanes.includes(lane) && !sent.has(s.step) && now >= s.at && now < s.at + (s.window ?? WINDOW_MS))
+    .filter((s) => s.lanes.includes(lane) && (!s.tiers || s.tiers.includes(reg.tier)) && !sent.has(s.step) && now >= s.at && now < s.at + (s.window ?? WINDOW_MS))
     .sort((a, b) => a.at - b.at)
     .map((s) => s.step);
 }

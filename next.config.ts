@@ -183,6 +183,14 @@ const config: NextConfig = {
    * not just a size workaround. Fonts and templates that ARE read at runtime
    * live under app/ and lib/, which stay traced.
    */
+  // The bootcamp tier deliverables are read from disk by one signed route and
+  // never served from public/, so the folder is traced into that function only.
+  outputFileTracingIncludes: {
+    '/api/bootcamp/kit/[file]': ['./private/bootcamp/dist/**/*'],
+    // The room and the Stage tab read only the manifest, for file sizes.
+    '/bootcamp/room': ['./private/bootcamp/dist/manifest.json'],
+    '/api/admin/bootcamp/stage': ['./private/bootcamp/dist/manifest.json'],
+  },
   outputFileTracingExcludes: {
     '**': [
       // ONLY the heavy asset directories, named explicitly.

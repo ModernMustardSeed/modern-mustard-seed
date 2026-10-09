@@ -2,8 +2,9 @@ import { NextResponse } from 'next/server';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { getAdminUser } from '@/lib/admin-auth';
 import { getSupabase } from '@/lib/supabase';
-import { BOOTCAMP } from '@/data/bootcamp';
-import { countsByTier } from '@/lib/bootcamp/store';
+import { BOOTCAMP, bootcampDeliverables, deliverablesReleased } from '@/data/bootcamp';
+import { countsByTier, listEvents } from '@/lib/bootcamp/store';
+import { readManifest } from '@/lib/bootcamp/deliverables';
 import { TRADE_SLUGS, attendanceCounts, getStage, listQuestions, markAnswered, patchStage, worksheetCount, type TradeSlug } from '@/lib/bootcamp/stage';
 import { bootcampSessions, isLive, isSessionKey, liveSession, nextSession, playerFor, sessionEnd, type Audience } from '@/lib/bootcamp/sessions';
 
@@ -40,12 +41,14 @@ export async function GET(req: Request) {
     const wanted = url.searchParams.get('session');
     const focus = isSessionKey(wanted) ? wanted : live?.key ?? next?.key ?? all[0].key;
 
-    const [stage, present, counts, questions, worksheets] = await Promise.all([
+    const [stage, present, counts, questions, worksheets, manifest, downloads] = await Promise.all([
       getStage(sb),
       attendanceCounts(sb),
       countsByTier(sb, BOOTCAMP.launch),
       listQuestions(sb, focus),
       worksheetCount(sb),
+      readManifest(),
+      listEvents(sb, { kind: 'kit_download', limit: 1000 }),
     ]);
 
     const seats: Record<Audience, number> = {
@@ -79,8 +82,33 @@ export async function GET(req: Request) {
       };
     });
 
+    // The tier deliverables: what is built, who holds each, and who has downloaded it.
+    const holders = { vip: counts.vip + counts.platinum + counts.operator, platinum: counts.platinum + counts.operator };
+    const deliverables = {
+      releaseAt: BOOTCAMP.dates.deliverables,
+      released: deliverablesReleased(now),
+      items: bootcampDeliverables.map((d) => ({
+        slug: d.slug,
+        name: d.name,
+        minTier: d.minTier,
+        holders: holders[d.minTier],
+        files: d.files.map((f) => {
+          const hits = downloads.filter((e) => (e.detail as { file?: string } | null)?.file === f.name);
+          return {
+            name: f.name,
+            kind: f.kind,
+            bytes: manifest[f.name]?.bytes ?? 0,
+            builtAt: manifest[f.name]?.builtAt ?? null,
+            downloads: hits.length,
+            people: new Set(hits.map((e) => e.registration_id).filter(Boolean)).size,
+          };
+        }),
+      })),
+    };
+
     return NextResponse.json({
       ok: true,
+      deliverables,
       now: new Date(now).toISOString(),
       live: live?.key ?? null,
       next: next?.key ?? null,
