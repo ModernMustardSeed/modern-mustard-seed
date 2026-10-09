@@ -8,6 +8,7 @@ import { inkFor } from '@/components/white-label/brand';
 type Agency = { name: string; color: string; logo: string | null; website: string | null };
 type Client = { id: string; business: string; agent: string; line: string | null };
 type Filter = 'attention' | 'all' | 'handled';
+type VoiceChoice = { key: string; feel: string; line: string; sample: string };
 
 const DAY = 86_400_000;
 /** Instrument Serif, set by the page wrapper (components/white-label/font.ts). */
@@ -51,6 +52,8 @@ export default function ClientDesk({
   fresh,
   openCall,
   voice,
+  voices = [],
+  voiceNow = null,
 }: {
   agency: Agency;
   client: Client;
@@ -59,6 +62,8 @@ export default function ClientDesk({
   fresh: boolean;
   openCall: string | null;
   voice: { publicKey: string; assistantId: string } | null;
+  voices?: VoiceChoice[];
+  voiceNow?: string | null;
 }) {
   const router = useRouter();
   const [calls, setCalls] = useState(initial);
@@ -199,6 +204,10 @@ export default function ClientDesk({
             </div>
           ))}
         </section>
+
+        {voices.length > 0 && (
+          <VoicePicker voices={voices} initial={voiceNow} agent={client.agent} brand={brand} onBrand={onBrand} clientId={client.id} deskKey={deskKey} />
+        )}
 
         <div className="mt-14 flex flex-col gap-4 border-b border-black/[0.08] sm:flex-row sm:items-end sm:justify-between">
           <div className="-mb-px flex gap-6 overflow-x-auto sm:gap-8" role="tablist">
@@ -560,5 +569,118 @@ function TalkButton({
         {error || (state === 'filing' ? 'It lands below in about thirty seconds.' : 'Uses your microphone. Call like a client would.')}
       </p>
     </div>
+  );
+}
+
+/**
+ * The office chooses how its receptionist sounds. Each card plays a short
+ * sample of her own lines; choosing one switches the live line at once, and
+ * "Talk to" above is the way to hear it for real.
+ */
+function VoicePicker({
+  voices,
+  initial,
+  agent,
+  brand,
+  onBrand,
+  clientId,
+  deskKey,
+}: {
+  voices: VoiceChoice[];
+  initial: string | null;
+  agent: string;
+  brand: string;
+  onBrand: string;
+  clientId: string;
+  deskKey: string;
+}) {
+  const [current, setCurrent] = useState<string | null>(initial);
+  const [busy, setBusy] = useState<string | null>(null);
+  const [playing, setPlaying] = useState<string | null>(null);
+  const [note, setNote] = useState('');
+  const audio = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => () => audio.current?.pause(), []);
+
+  const play = (v: VoiceChoice) => {
+    if (playing === v.key) {
+      audio.current?.pause();
+      setPlaying(null);
+      return;
+    }
+    audio.current?.pause();
+    const a = new Audio(v.sample);
+    a.onended = () => setPlaying(null);
+    audio.current = a;
+    void a.play().then(() => setPlaying(v.key)).catch(() => setPlaying(null));
+  };
+
+  const choose = async (v: VoiceChoice) => {
+    setBusy(v.key);
+    setNote('');
+    const res = await fetch(`/api/white-label/desk/${clientId}/voice`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ k: deskKey, voice: v.key }),
+    }).catch(() => null);
+    setBusy(null);
+    if (res?.ok) {
+      setCurrent(v.key);
+      setNote(`Done. ${agent} sounds like this on the very next call. Talk to her above to hear it live.`);
+    } else {
+      setNote('That did not switch. Try again in a moment.');
+    }
+  };
+
+  return (
+    <section className="mt-14">
+      <div className="flex flex-col gap-1 border-b border-black/[0.08] pb-4 sm:flex-row sm:items-end sm:justify-between">
+        <h2 className={`${SERIF} text-[34px] leading-none sm:text-[40px]`}>{agent}&rsquo;s voice</h2>
+        <p className="text-[13px] text-neutral-500">Play each one, then choose. It changes on the next call.</p>
+      </div>
+      <div className="mt-5 grid gap-4 md:grid-cols-3">
+        {voices.map((v) => {
+          const on = current === v.key;
+          return (
+            <div
+              key={v.key}
+              className="flex flex-col rounded-[22px] bg-white p-6 ring-1 transition-shadow"
+              style={on ? { boxShadow: `inset 0 0 0 2px ${brand}` } : { boxShadow: 'inset 0 0 0 1px rgba(0,0,0,0.07)' }}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <p className={`${SERIF} text-[26px] leading-tight`}>{v.feel}</p>
+                {on && (
+                  <span className="shrink-0 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.14em]" style={{ background: brand, color: onBrand }}>
+                    In use
+                  </span>
+                )}
+              </div>
+              <p className="mt-2 flex-1 text-[14px] leading-relaxed text-neutral-600">{v.line}</p>
+              <div className="mt-5 flex flex-wrap items-center gap-2">
+                <button
+                  onClick={() => play(v)}
+                  className="inline-flex items-center gap-2 rounded-full border border-black/10 px-4 py-2 text-sm font-semibold text-neutral-800 transition-colors hover:border-black/30"
+                  aria-label={playing === v.key ? `Stop the ${v.feel} sample` : `Play the ${v.feel} sample`}
+                >
+                  <span aria-hidden="true">{playing === v.key ? '■' : '▶'}</span>
+                  {playing === v.key ? 'Stop' : 'Listen'}
+                </button>
+                {!on && (
+                  <button
+                    onClick={() => void choose(v)}
+                    disabled={busy !== null}
+                    className="rounded-full px-4 py-2 text-sm font-semibold transition-transform hover:-translate-y-0.5 disabled:opacity-50"
+                    style={{ background: brand, color: onBrand }}
+                  >
+                    {busy === v.key ? 'Switching…' : 'Use this voice'}
+                  </button>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      {note && <p className="mt-4 text-[14px] text-neutral-700" role="status">{note}</p>}
+    </section>
   );
 }
