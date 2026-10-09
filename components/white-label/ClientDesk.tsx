@@ -277,7 +277,9 @@ function CallCard({
   audio: string | null;
 }) {
   const urgent = urgentOf(c);
-  const callback = c.intake.callback_number || c.callerNumber;
+  // A number the caller gave that is not ten digits (a dropped digit on a bad
+  // line) falls back to the caller ID, so there is always a number to dial.
+  const callback = tel(c.intake.callback_number) ? c.intake.callback_number : c.callerNumber || c.intake.callback_number;
   const href = tel(callback);
   const note = c.intake.summary_for_attorney || c.summary || 'No summary for this call.';
   const fields: [string, string | undefined][] = [
