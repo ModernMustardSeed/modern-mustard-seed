@@ -1,76 +1,35 @@
 import * as THREE from 'three';
 
 /**
- * The hero garden, in one of two compositions.
+ * The hero seed. One mustard seed drops onto the page, wiggles, and bursts:
+ * thousands of engraved mustard blossoms spiral out of it and settle into a
+ * single great flower laid on the golden angle, with the seed at its heart.
+ * "The smallest of all seeds becomes the largest of garden plants."
  *
- * quiet: the film on a card with real thickness, a few engraved blooms held at
- * depth in a paper haze, and a slow handful of blossoms falling through.
- * wreath: the same card, with a ring of engraved flowers circling it slowly in
- * 3D, passing behind and in front of the film.
- *
- * Both lean toward the pointer, settle on scroll and pause offscreen. Loaded on
- * idle, after the headline has painted. Returns its controls.
+ * At rest the flower breathes and turns slowly. It tilts toward the pointer,
+ * the blossoms under the cursor lift, and a click sends a ripple through it.
+ * Every blossom is moved on the GPU, so the whole flower is one draw call.
+ * Loaded on idle, after the headline has painted. Returns its controls.
  */
 export type GardenControls = { dispose: () => void; setPaused: (paused: boolean) => void };
-export type GardenVariant = 'quiet' | 'wreath';
 
 const INK = 0x141210;
-const MUSTARD = 0xf5b700;
-const PAPER = 0xfcfaf3;
-const FILM_ASPECT = 1024 / 572;
-
-function roundedShape(w: number, h: number, r: number) {
-  const x = -w / 2;
-  const y = -h / 2;
-  const s = new THREE.Shape();
-  s.moveTo(x + r, y);
-  s.lineTo(x + w - r, y);
-  s.quadraticCurveTo(x + w, y, x + w, y + r);
-  s.lineTo(x + w, y + h - r);
-  s.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-  s.lineTo(x + r, y + h);
-  s.quadraticCurveTo(x, y + h, x, y + h - r);
-  s.lineTo(x, y + r);
-  s.quadraticCurveTo(x, y, x + r, y);
-  return s;
-}
-
-function roundedRect(w: number, h: number, r: number) {
-  const g = new THREE.ShapeGeometry(roundedShape(w, h, r), 12);
-  const p = g.attributes.position;
-  const uv = new Float32Array(p.count * 2);
-  for (let i = 0; i < p.count; i++) {
-    uv[i * 2] = (p.getX(i) + w / 2) / w;
-    uv[i * 2 + 1] = (p.getY(i) + h / 2) / h;
-  }
-  g.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
-  return g;
-}
-
-const easeOutBack = (t: number) => {
-  const c1 = 1.70158;
-  const c3 = c1 + 1;
-  return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
-};
-const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
+const GOLDEN = Math.PI * (3 - Math.sqrt(5));
+const R = 2.4; // radius of the great flower, world units
+const DROP = 0.7; // seconds for the seed to land
+const POP = 1.45; // the moment it bursts
 const clamp01 = (t: number) => Math.min(1, Math.max(0, t));
 
-type Bloom = {
-  mesh: THREE.Mesh;
-  base: THREE.Vector3;
-  size: number;
-  spin: number;
-  phase: number;
-  delay: number;
-  hover: number;
-  angle: number;
-  orbit: number;
-};
-type Petal = { x: number; y: number; z: number; vy: number; sway: number; phase: number; rx: number; ry: number; rz: number; s: number };
+// Where the flower sits in the stage, as fractions of width and height, and
+// how much of the shorter side it spans. The film card holds the lower left.
+function placement(w: number, h: number) {
+  if (w < 640) return { fx: 0.6, fy: 0.38, span: 0.6 };
+  if (w > h * 1.2) return { fx: 0.6, fy: 0.42, span: 0.72 };
+  return { fx: 0.58, fy: 0.4, span: 0.68 };
+}
 
-export function mountGarden(host: HTMLElement, video: HTMLVideoElement, onReady: () => void, variant: GardenVariant = 'quiet'): GardenControls {
+export function mountGarden(host: HTMLElement, onReady: () => void): GardenControls {
   const phone = host.clientWidth < 640;
-  const wreath = variant === 'wreath';
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, phone ? 1.5 : 1.75));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -80,173 +39,235 @@ export function mountGarden(host: HTMLElement, video: HTMLVideoElement, onReady:
   host.appendChild(canvas);
 
   const scene = new THREE.Scene();
-  // Paper haze: far blooms soften toward the page instead of sitting flat on it.
-  const fog = new THREE.Fog(PAPER, 10, 20);
-  scene.fog = fog;
   const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 100);
   const disposables: { dispose: () => void }[] = [];
   const track = <T extends { dispose: () => void }>(d: T) => (disposables.push(d), d);
 
-  // The film card: a slab with real thickness, an ink face, the film, and the
-  // mustard plate offset behind it. Fog is off so the film never hazes.
-  const W = 4.4;
-  const H = W / FILM_ASPECT;
-  const card = new THREE.Group();
-  const filmTex = track(new THREE.VideoTexture(video));
-  filmTex.colorSpace = THREE.SRGBColorSpace;
-  const slabGeo = track(new THREE.ExtrudeGeometry(roundedShape(W + 0.16, H + 0.16, 0.2), { depth: 0.12, bevelEnabled: true, bevelThickness: 0.02, bevelSize: 0.02, bevelSegments: 3, curveSegments: 12 }));
-  slabGeo.translate(0, 0, -0.12);
-  const ink = track(new THREE.MeshBasicMaterial({ color: INK, fog: false }));
-  const slab = new THREE.Mesh(slabGeo, ink);
-  const plateGeo = track(new THREE.ExtrudeGeometry(roundedShape(W + 0.16, H + 0.16, 0.2), { depth: 0.08, bevelEnabled: false, curveSegments: 12 }));
-  const plate = new THREE.Mesh(plateGeo, track(new THREE.MeshBasicMaterial({ color: MUSTARD, fog: false })));
-  plate.position.set(0.26, -0.26, -0.3);
-  const screen = new THREE.Mesh(track(roundedRect(W, H, 0.14)), track(new THREE.MeshBasicMaterial({ map: filmTex, fog: false })));
-  screen.position.z = 0.025;
-  card.add(plate, slab, screen);
-  card.rotation.set(-0.08, -0.2, 0.025);
-  scene.add(card);
+  const flower = new THREE.Group();
+  scene.add(flower);
 
-  // A soft contact shadow on the paper, behind the card.
+  const blossomTex = track(new THREE.TextureLoader().load('/storybook/ms-mustard-blossom-cut-256.webp'));
+  blossomTex.colorSpace = THREE.SRGBColorSpace;
+  blossomTex.anisotropy = 4;
+
+  // The blossoms, placed on the golden angle: tiny at the heart, fuller at the rim.
+  const COUNT = phone ? 520 : 900;
+  const target = new Float32Array(COUNT * 3);
+  const look = new Float32Array(COUNT * 4);
+  const c = R / Math.sqrt(COUNT);
+  for (let i = 0; i < COUNT; i++) {
+    // The rim loosens: the outer blossoms scatter a little, so the edge reads grown, not cut.
+    const rim = Math.max(0, i / COUNT - 0.78) / 0.22;
+    const r = c * Math.sqrt(i + 4) * (1 + rim * (Math.random() * 0.22));
+    const a = i * GOLDEN + rim * (Math.random() - 0.5) * 0.5;
+    const n = Math.min(1, r / R);
+    // A shallow cup, the rim leaning toward the viewer like a real flower head.
+    target.set([Math.cos(a) * r, Math.sin(a) * r, n * n * 0.35], i * 3);
+    const size = c * (1.7 + n * 0.8) * (0.85 + Math.random() * 0.3) * (1 - rim * 0.25);
+    look.set([size, Math.random() * Math.PI * 2, Math.random(), n * 0.55 + Math.random() * 0.12], i * 4);
+  }
+  const quad = track(new THREE.PlaneGeometry(1, 1));
+  const geo = track(new THREE.InstancedBufferGeometry());
+  geo.index = quad.index;
+  geo.setAttribute('position', quad.attributes.position);
+  geo.setAttribute('uv', quad.attributes.uv);
+  geo.setAttribute('aTarget', new THREE.InstancedBufferAttribute(target, 3));
+  geo.setAttribute('aLook', new THREE.InstancedBufferAttribute(look, 4));
+  geo.instanceCount = COUNT;
+
+  const uniforms = {
+    uTime: { value: 0 },
+    uBloom: { value: -1 }, // seconds since the seed burst
+    uPointer: { value: new THREE.Vector4(0, 0, 0, 0) }, // flower-local x, y, unused, strength
+    uRipple: { value: new THREE.Vector4(0, 0, 0, -99) }, // flower-local x, y, unused, start time
+    uMap: { value: blossomTex },
+    uButter: { value: new THREE.Color(0xffe39a) },
+    uDeep: { value: new THREE.Color(0xb7860f) },
+  };
+  const blossoms = new THREE.Mesh(
+    geo,
+    track(
+      new THREE.ShaderMaterial({
+        uniforms,
+        alphaToCoverage: true,
+        side: THREE.DoubleSide,
+        vertexShader: /* glsl */ `
+          uniform float uTime; uniform float uBloom;
+          uniform vec4 uPointer; uniform vec4 uRipple;
+          attribute vec3 aTarget;
+          attribute vec4 aLook; // size, spin, tone, delay
+          varying vec2 vUv; varying float vTone; varying float vDepth;
+          const float R = ${R.toFixed(2)};
+          void main(){
+            float r = length(aTarget.xy);
+            float n = r / R;
+            float p = clamp((uBloom - aLook.w) / 1.5, 0.0, 1.0);
+            float e = p >= 1.0 ? 1.0 : 1.0 - pow(2.0, -10.0 * p);
+            // Out of the seed on a swirl: the angle unwinds as each blossom lands.
+            float swirl = (1.0 - e) * 2.4;
+            float cs = cos(swirl), sn = sin(swirl);
+            vec2 xy = vec2(aTarget.x * cs - aTarget.y * sn, aTarget.x * sn + aTarget.y * cs) * e;
+            float z = aTarget.z * e + sin(p * 3.14159) * (0.25 + n * 0.9);
+
+            // At rest: a slow breath that rolls out from the heart.
+            z += sin(uTime * 1.1 - r * 2.2) * 0.035 * e;
+
+            // The cursor lifts what it passes over.
+            vec2 dp = aTarget.xy - uPointer.xy;
+            float lift = uPointer.w * exp(-dot(dp, dp) / 0.45);
+            z += lift * 0.42;
+
+            // A click sends one ring out through the flower.
+            float age = uTime - uRipple.w;
+            float d = length(aTarget.xy - uRipple.xy);
+            float ring = exp(-pow((d - age * 3.2) * 1.6, 2.0)) * exp(-age * 0.9);
+            z += ring * 0.5;
+
+            float grow = smoothstep(0.0, 0.45, p) * (1.0 + sin(clamp(p * 1.4, 0.0, 1.0) * 3.14159) * 0.25);
+            float s = aLook.x * grow * (1.0 + lift * 0.3 + ring * 0.35);
+            float a = aLook.y + (1.0 - e) * 5.0 + ring * 1.2;
+            vec2 local = position.xy * s;
+            local = vec2(local.x * cos(a) - local.y * sin(a), local.x * sin(a) + local.y * cos(a));
+
+            vec4 mv = modelViewMatrix * vec4(xy + local, z, 1.0);
+            vUv = uv;
+            vTone = aLook.z;
+            vDepth = n;
+            gl_Position = projectionMatrix * mv;
+          }
+        `,
+        fragmentShader: /* glsl */ `
+          uniform sampler2D uMap; uniform vec3 uButter; uniform vec3 uDeep;
+          varying vec2 vUv; varying float vTone; varying float vDepth;
+          void main(){
+            // Just the flower head of the engraved cut, not its stem.
+            vec2 uv = vec2(0.1, 0.36) + vUv * vec2(0.8, 0.64);
+            vec4 t = texture2D(uMap, uv);
+            vec3 c = t.rgb;
+            float lum = dot(c, vec3(0.299, 0.587, 0.114));
+            // Deeper gold at the heart, a scatter of pale butter toward the rim.
+            c = mix(c, uDeep * (0.5 + lum * 0.7), (1.0 - vDepth) * 0.35);
+            c = mix(c, uButter * (0.3 + lum * 0.8), step(0.88 + (1.0 - vDepth) * 0.1, vTone) * 0.55);
+            gl_FragColor = vec4(c, smoothstep(0.3, 0.65, t.a));
+            #include <colorspace_fragment>
+          }
+        `,
+      }),
+    ),
+  );
+  blossoms.frustumCulled = false;
+  flower.add(blossoms);
+
+  // The seed: a small engraved sphere, ochre with hatched shade and an ink edge.
+  const seedR = 0.2;
+  const seed = new THREE.Group();
+  const seedGeo = track(new THREE.SphereGeometry(seedR, 48, 32));
+  const seedBody = new THREE.Mesh(
+    seedGeo,
+    track(
+      new THREE.ShaderMaterial({
+        uniforms: { uLight: { value: new THREE.Color(0xe9b13a) }, uDark: { value: new THREE.Color(0x8a5a10) }, uInk: { value: new THREE.Color(INK) } },
+        vertexShader: /* glsl */ `
+          varying vec3 vN;
+          void main(){
+            vN = normalize(normalMatrix * normal);
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+          }
+        `,
+        fragmentShader: /* glsl */ `
+          uniform vec3 uLight; uniform vec3 uDark; uniform vec3 uInk;
+          varying vec3 vN;
+          void main(){
+            float l = clamp(dot(normalize(vN), normalize(vec3(-0.5, 0.65, 0.6))), 0.0, 1.0);
+            vec3 c = mix(uDark, uLight, smoothstep(0.05, 0.85, l));
+            // Engraved hatching in the shadow side, the way the botanicals are drawn.
+            float rows = (gl_FragCoord.x + gl_FragCoord.y) / 3.2;
+            float hatch = step(0.55, fract(rows)) * (1.0 - smoothstep(0.1, 0.55, l));
+            c = mix(c, uInk, hatch * 0.35);
+            // A small highlight.
+            c += pow(l, 18.0) * 0.35;
+            gl_FragColor = vec4(c, 1.0);
+            #include <colorspace_fragment>
+          }
+        `,
+      }),
+    ),
+  );
+  const seedEdge = new THREE.Mesh(seedGeo, track(new THREE.MeshBasicMaterial({ color: INK, side: THREE.BackSide })));
+  seedEdge.scale.setScalar(1.09);
+  seed.add(seedEdge, seedBody);
+  seed.position.z = 0.15;
+  flower.add(seed);
+
+  // The seed's shadow on the paper before it bursts.
   const shadowCanvas = document.createElement('canvas');
-  shadowCanvas.width = shadowCanvas.height = 128;
+  shadowCanvas.width = shadowCanvas.height = 64;
   const sctx = shadowCanvas.getContext('2d');
   if (sctx) {
-    const grad = sctx.createRadialGradient(64, 64, 6, 64, 64, 64);
-    grad.addColorStop(0, 'rgba(20,18,16,0.5)');
-    grad.addColorStop(1, 'rgba(20,18,16,0)');
-    sctx.fillStyle = grad;
-    sctx.fillRect(0, 0, 128, 128);
+    const g = sctx.createRadialGradient(32, 32, 2, 32, 32, 32);
+    g.addColorStop(0, 'rgba(20,18,16,0.5)');
+    g.addColorStop(1, 'rgba(20,18,16,0)');
+    sctx.fillStyle = g;
+    sctx.fillRect(0, 0, 64, 64);
   }
   const shadow = new THREE.Mesh(
     track(new THREE.PlaneGeometry(1, 1)),
-    track(new THREE.MeshBasicMaterial({ map: track(new THREE.CanvasTexture(shadowCanvas)), transparent: true, depthWrite: false, opacity: 0, fog: false })),
+    track(new THREE.MeshBasicMaterial({ map: track(new THREE.CanvasTexture(shadowCanvas)), transparent: true, depthWrite: false, opacity: 0 })),
   );
-  shadow.position.set(0.5, -0.55, -1.2);
-  shadow.scale.set(W * 1.45, H * 1.5, 1);
-  shadow.renderOrder = -10;
-  scene.add(shadow);
+  shadow.position.set(0.06, -0.26, -0.05);
+  shadow.scale.set(0.55, 0.16, 1);
+  flower.add(shadow);
 
-  // Engraved flowers, from the Mustard Studio botanicals.
-  const loader = new THREE.TextureLoader();
-  const texture = (src: string) => {
-    const t = track(loader.load(src));
-    t.colorSpace = THREE.SRGBColorSpace;
-    t.anisotropy = 8;
-    return t;
-  };
-  const dahlia = texture('/storybook/ms-mustard-dahlia-cut-640.webp');
-  const cosmos = texture(phone ? '/storybook/ms-ivory-cosmos-cut-640.webp' : '/storybook/ms-ivory-cosmos-cut-1024.webp');
-  const blossom = texture('/storybook/ms-mustard-blossom-cut-256.webp');
-  const plane = track(new THREE.PlaneGeometry(1, 1));
-  const bloomMat = (map: THREE.Texture) => track(new THREE.MeshBasicMaterial({ map, alphaToCoverage: true }));
-  const mats = { dahlia: bloomMat(dahlia), cosmos: bloomMat(cosmos), blossom: bloomMat(blossom) };
-
-  const blooms: Bloom[] = [];
-  const addBloom = (mat: THREE.Material, x: number, y: number, z: number, size: number, i: number, orbit = 0) => {
-    const mesh = new THREE.Mesh(plane, mat);
-    mesh.position.set(x, y, z);
-    mesh.scale.setScalar(0.0001);
-    scene.add(mesh);
-    blooms.push({ mesh, base: new THREE.Vector3(x, y, z), size, spin: (i % 2 ? -1 : 1) * (0.03 + (i % 5) * 0.008), phase: i * 1.7, delay: 0.35 + i * 0.07, hover: 0, angle: i * 0.9, orbit });
-  };
-
-  // The wreath: blooms evenly spaced on a tilted ellipse around the card.
-  // Tilted steeply, so the near arc passes under the film and the far arc rises
-  // behind it like a halo: the flowers circle the faces without covering them.
-  const RING_X = phone ? 3.0 : 3.5;
-  const RING_Z = 2.5;
-  const RING_TILT = 0.82;
-  if (wreath) {
-    const pattern: [keyof typeof mats, number][] = [
-      ['dahlia', 1.25], ['blossom', 0.55], ['cosmos', 1.05], ['blossom', 0.48],
-      ['dahlia', 0.85], ['cosmos', 0.75], ['blossom', 0.6], ['dahlia', 1.05],
-      ['cosmos', 1.15], ['blossom', 0.5], ['dahlia', 0.75], ['cosmos', 0.85],
-    ];
-    const n = phone ? 10 : pattern.length;
-    for (let i = 0; i < n; i++) {
-      const [kind, size] = pattern[i];
-      addBloom(mats[kind], 0, 0, 0, size * (phone ? 0.9 : 1), i, (i / n) * Math.PI * 2);
-    }
-  } else {
-    const layout: [keyof typeof mats, number, number, number, number][] = phone
-      ? [
-          ['dahlia', 2.25, 1.3, -1.4, 1.9],
-          ['cosmos', -2.3, -1.2, 0.8, 1.45],
-          ['dahlia', -2.6, 1.6, -4.2, 1.2],
-        ]
-      : [
-          ['dahlia', 2.6, 1.4, -1.6, 2.25],
-          ['cosmos', -2.65, -1.2, 1.0, 1.7],
-          ['dahlia', -3.1, 1.75, -4.6, 1.35],
-          ['cosmos', 3.5, -1.45, -3.8, 1.15],
-          ['blossom', -1.2, 2.1, -6.5, 0.8],
-        ];
-    layout.forEach(([kind, x, y, z, size], i) => addBloom(mats[kind], x, y, z, size, i));
-  }
-
-  // A slow handful of blossoms falling through, shaded darker as they turn edge-on.
-  const PETALS = phone ? 6 : wreath ? 8 : 12;
-  const petalMat = track(new THREE.MeshBasicMaterial({ map: blossom, side: THREE.DoubleSide, alphaToCoverage: true }));
-  const petals = new THREE.InstancedMesh(plane, petalMat, PETALS);
-  petals.frustumCulled = false;
-  scene.add(petals);
-  const rand = (a: number, b: number) => a + Math.random() * (b - a);
-  const seedPetal = (top: boolean): Petal => ({
-    x: rand(-4.8, 4.8),
-    y: top ? rand(3.6, 4.6) : rand(-2.5, 4),
-    z: rand(-3.5, 2.2),
-    vy: rand(0.12, 0.22),
-    sway: rand(0.12, 0.3),
-    phase: rand(0, Math.PI * 2),
-    rx: rand(0.35, 0.9),
-    ry: rand(0.25, 0.7),
-    rz: rand(-0.5, 0.5),
-    s: rand(0.32, 0.52),
-  });
-  const petalState: Petal[] = Array.from({ length: PETALS }, () => seedPetal(false));
-  const dummy = new THREE.Object3D();
-  const normal = new THREE.Vector3();
-  const tint = new THREE.Color();
-  for (let i = 0; i < PETALS; i++) petals.setColorAt(i, tint.setScalar(1));
-
-  // Input: pointer lean, scroll settle, hover bloom, and on the wreath a click spins the ring.
-  const pointer = { x: 0, y: 0, tx: 0, ty: 0 };
-  const ndc = new THREE.Vector2(-9, -9);
+  // Input: the flower tilts toward the pointer, lifts under it, and ripples on a click.
+  const pointer = { x: 0, y: 0, tx: 0, ty: 0, on: 0 };
+  let inside = false;
+  const ndc = new THREE.Vector2();
   const ray = new THREE.Raycaster();
-  let ringBoost = 0;
+  const flowerPlane = new THREE.Plane();
+  const hit = new THREE.Vector3();
+  const normal = new THREE.Vector3();
+  const local = new THREE.Vector3();
   const onPointer = (e: PointerEvent) => {
     const r = host.getBoundingClientRect();
     pointer.tx = ((e.clientX - r.left) / r.width) * 2 - 1;
     pointer.ty = ((e.clientY - r.top) / r.height) * 2 - 1;
-    ndc.set(pointer.tx, -pointer.ty);
+    inside = Math.abs(pointer.tx) <= 1 && Math.abs(pointer.ty) <= 1;
   };
   const onLeave = () => {
-    pointer.tx = 0;
-    pointer.ty = 0;
-    ndc.set(-9, -9);
+    inside = false;
   };
-  const onDown = () => {
-    ringBoost = 1;
+  const toFlower = (x: number, y: number) => {
+    ndc.set(x, -y);
+    ray.setFromCamera(ndc, camera);
+    normal.set(0, 0, 1).applyQuaternion(flower.quaternion);
+    flowerPlane.setFromNormalAndCoplanarPoint(normal, flower.position);
+    if (!ray.ray.intersectPlane(flowerPlane, hit)) return null;
+    return flower.worldToLocal(local.copy(hit));
+  };
+  const onDown = (e: PointerEvent) => {
+    onPointer(e);
+    if (t < POP + 1.2) return;
+    const p = toFlower(pointer.tx, pointer.ty);
+    if (p && p.length() < R * 1.3) uniforms.uRipple.value.set(p.x, p.y, 0, t);
   };
   window.addEventListener('pointermove', onPointer, { passive: true });
   host.addEventListener('pointerleave', onLeave);
   host.addEventListener('pointerdown', onDown);
 
-  let fitZ = 10;
+  const home = new THREE.Vector3();
   const resize = () => {
     const w = host.clientWidth;
     const h = host.clientHeight;
     if (!w || !h) return;
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
-    const half = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
-    const fitW = (W * (wreath ? 1.75 : 1.55)) / (2 * half * camera.aspect);
-    const fitH = (H * (wreath ? 2.7 : 2.05)) / (2 * half);
-    fitZ = Math.max(fitW, fitH);
-    fog.near = fitZ + 2;
-    fog.far = fitZ + 13;
+    const { fx, fy, span } = placement(w, h);
+    const visibleH = (2 * R * h) / (span * Math.min(w, h));
+    const dist = visibleH / (2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)));
+    camera.position.set(0, 0, dist);
+    camera.lookAt(0, 0, 0);
     camera.updateProjectionMatrix();
+    home.set((fx - 0.5) * visibleH * camera.aspect, (0.5 - fy) * visibleH, 0);
   };
   const ro = new ResizeObserver(resize);
   ro.observe(host);
@@ -263,7 +284,7 @@ export function mountGarden(host: HTMLElement, video: HTMLVideoElement, onReady:
   let frameId = 0;
   let last = performance.now();
   let t = 0;
-  let ring = 0;
+  let spin = 0;
   let readyFired = false;
 
   const tick = (now: number) => {
@@ -275,65 +296,35 @@ export function mountGarden(host: HTMLElement, video: HTMLVideoElement, onReady:
 
     pointer.x += (pointer.tx - pointer.x) * Math.min(1, dt * 3);
     pointer.y += (pointer.ty - pointer.y) * Math.min(1, dt * 3);
+    pointer.on += ((inside && t > POP + 1.2 ? 1 : 0) - pointer.on) * Math.min(1, dt * 4);
     const r = host.getBoundingClientRect();
     const scroll = clamp01(-r.top / Math.max(r.height, 1));
 
-    const arrive = easeOutCubic(clamp01(t / 1.8));
-    camera.position.set(pointer.x * 0.5, -pointer.y * 0.3 + scroll * 0.6, fitZ + (1 - arrive) * 1.2);
-    camera.lookAt(0, scroll * 0.4, 0);
+    // The flower: home position, a slow turn, a lean toward the pointer, a settle on scroll.
+    spin += dt * 0.045;
+    flower.position.set(home.x, home.y + scroll * 0.8, 0);
+    flower.rotation.set(-0.12 + pointer.y * 0.22 + scroll * 0.5, pointer.x * 0.3, spin);
 
-    const rise = easeOutBack(clamp01(t / 1.1));
-    card.scale.setScalar(0.86 + 0.14 * rise);
-    card.rotation.y = -0.2 + pointer.x * 0.22 + Math.sin(t * 0.35) * 0.025;
-    card.rotation.x = -0.08 + pointer.y * 0.12 + scroll * 0.3;
-    card.position.y = Math.sin(t * 0.6) * 0.05 + scroll * 0.5;
+    // The seed: drops in, lands with a squash, wiggles, then swells into the heart.
+    const drop = clamp01(t / DROP);
+    const fall = drop < 1 ? 1 - drop * drop : 0;
+    const land = Math.max(0, t - DROP);
+    const bounce = Math.exp(-land * 7) * Math.abs(Math.sin(land * 14)) * 0.18;
+    const wiggle = t > DROP + 0.25 && t < POP ? Math.sin((t - DROP) * 38) * 0.18 * clamp01((t - DROP - 0.25) * 4) : 0;
+    const swell = t < POP ? 1 + clamp01((t - POP + 0.35) / 0.35) * 0.35 : 1.35 - Math.min(0.15, (t - POP) * 0.3);
+    const squash = 1 - Math.exp(-land * 9) * 0.3 * (drop >= 1 ? 1 : 0);
+    seed.position.set(0, fall * 3.2 + bounce, 0.15);
+    seed.rotation.set(0, 0, wiggle - spin);
+    seed.scale.set(swell * (2 - squash), swell * squash, swell);
     const shadowMat = shadow.material as THREE.MeshBasicMaterial;
-    shadowMat.opacity = 0.32 * rise;
-    shadow.position.x = 0.5 - pointer.x * 0.25;
-    shadow.position.y = -0.55 + card.position.y * 0.4 + pointer.y * 0.15;
+    shadowMat.opacity = clamp01(drop * 1.5) * (1 - clamp01((t - POP) * 2)) * 0.6;
+    shadow.visible = shadowMat.opacity > 0.001;
 
-    ray.setFromCamera(ndc, camera);
-    const hit = ray.intersectObjects(blooms.map((b) => b.mesh), false)[0];
-    host.style.cursor = hit ? 'pointer' : '';
-
-    ringBoost *= Math.exp(-dt * 1.4);
-    ring += dt * (0.075 + ringBoost * 1.6);
-
-    for (const b of blooms) {
-      const k = easeOutBack(clamp01((t - b.delay) / 0.9));
-      const over = hit?.object === b.mesh ? 1 : 0;
-      b.hover += (over - b.hover) * Math.min(1, dt * 8);
-      b.angle += (b.spin + b.hover * 1.2 + ringBoost * 0.8) * dt;
-      b.mesh.scale.setScalar(Math.max(0.0001, b.size * k * (1 + b.hover * 0.16)));
-      if (wreath) {
-        const a = b.orbit + ring;
-        const x = Math.cos(a) * RING_X;
-        const z = Math.sin(a) * RING_Z;
-        const lift = Math.sin(t * 0.6 + b.phase) * 0.08;
-        b.mesh.position.set(x, -z * Math.sin(RING_TILT) + lift + scroll * 0.6, z * Math.cos(RING_TILT) - 0.3 + (1 - k) * -3);
-      } else {
-        b.mesh.position.set(b.base.x, b.base.y + Math.sin(t * 0.5 + b.phase) * 0.1 + scroll * (1.2 - b.base.z * 0.2), b.base.z + (1 - k) * -3);
-      }
-      b.mesh.lookAt(camera.position.x * 0.3, camera.position.y * 0.3, camera.position.z);
-      b.mesh.rotateZ(b.angle);
-    }
-
-    const fade = clamp01((t - 0.8) / 1.5);
-    for (let i = 0; i < PETALS; i++) {
-      const p = petalState[i];
-      p.y -= p.vy * dt;
-      p.x += Math.sin(t * 0.6 + p.phase) * p.sway * dt;
-      if (p.y < -3.6) petalState[i] = seedPetal(true);
-      dummy.position.set(p.x, p.y, p.z);
-      dummy.rotation.set(t * p.rx + p.phase, t * p.ry, p.rz + Math.sin(t * 0.7 + p.phase) * 0.35);
-      dummy.scale.setScalar(p.s * fade);
-      dummy.updateMatrix();
-      petals.setMatrixAt(i, dummy.matrix);
-      normal.set(0, 0, 1).applyQuaternion(dummy.quaternion);
-      petals.setColorAt(i, tint.setScalar(0.74 + 0.26 * Math.abs(normal.z)));
-    }
-    petals.instanceMatrix.needsUpdate = true;
-    if (petals.instanceColor) petals.instanceColor.needsUpdate = true;
+    uniforms.uTime.value = t;
+    uniforms.uBloom.value = t - POP;
+    const p = pointer.on > 0.01 ? toFlower(pointer.x, pointer.y) : null;
+    if (p) uniforms.uPointer.value.set(p.x, p.y, 0, pointer.on);
+    else uniforms.uPointer.value.w = 0;
 
     renderer.render(scene, camera);
     if (!readyFired) {
@@ -366,7 +357,6 @@ export function mountGarden(host: HTMLElement, video: HTMLVideoElement, onReady:
       document.removeEventListener('visibilitychange', onVis);
       ro.disconnect();
       io.disconnect();
-      petals.dispose();
       disposables.forEach((d) => d.dispose());
       renderer.dispose();
       canvas.remove();

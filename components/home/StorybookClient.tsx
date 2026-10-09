@@ -5,9 +5,10 @@ import type { StudioFilm } from '@/data/flathead-films';
 import type { GardenControls } from './storybookScene';
 
 /**
- * The hero stage. It paints as a still composition (film card plus engraved
- * flowers) so the headline stays the first paint. On idle, Three.js loads and
- * the same pieces come alive in depth. Reduced motion keeps the still version.
+ * The hero stage. The film card holds the lower left. Behind it the stage
+ * paints a still engraved bloom so the headline stays the first paint; on
+ * idle, Three.js loads and a mustard seed bursts into a great flower made of
+ * thousands of blossoms. Reduced motion and no WebGL keep the still bloom.
  */
 export function StorybookStage() {
   const host = useRef<HTMLDivElement>(null);
@@ -42,8 +43,7 @@ export function StorybookStage() {
       import('./storybookScene')
         .then(({ mountGarden }) => {
           if (cancelled) return;
-          const variant = new URLSearchParams(window.location.search).get('hero') === 'wreath' ? 'wreath' : 'quiet';
-          garden.current = mountGarden(el, v, () => setLive(true), variant);
+          garden.current = mountGarden(el, () => setLive(true));
         })
         .catch(() => {});
     };
@@ -74,25 +74,23 @@ export function StorybookStage() {
 
   return (
     <div className={`sb-stage${live ? ' is-live' : ''}`} ref={host}>
-      <div className="sb-stage-still" aria-hidden={live ? true : undefined}>
-        <img className="sb-still-flower f1" src="/storybook/ms-mustard-dahlia-cut-640.webp" width={640} height={640} alt="" />
-        <img className="sb-still-flower f2" src="/storybook/ms-ivory-cosmos-cut-640.webp" width={640} height={640} alt="" />
-        <img className="sb-still-flower f3" src="/storybook/ms-mustard-blossom-cut-256.webp" width={256} height={256} alt="" />
-        <div className="sb-still-card">
-          <video
-            ref={film}
-            muted
-            loop
-            playsInline
-            preload="metadata"
-            poster="/storybook/hero-poster.webp"
-            width={1024}
-            height={572}
-            aria-label="Sarah, Anthony and Mr. Mustard jump for joy in a field of mustard flowers with the seed crew."
-          >
-            <source src="/storybook/hero-loop.mp4" type="video/mp4" />
-          </video>
-        </div>
+      <div className="sb-stage-still" aria-hidden="true">
+        <img className="sb-still-flower" src="/storybook/ms-mustard-dahlia-cut-640.webp" width={640} height={640} alt="" />
+      </div>
+      <div className="sb-film">
+        <video
+          ref={film}
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          poster="/storybook/hero-poster.webp"
+          width={1024}
+          height={572}
+          aria-label="Sarah, Anthony and Mr. Mustard jump for joy in a field of mustard flowers with the seed crew."
+        >
+          <source src="/storybook/hero-loop.mp4" type="video/mp4" />
+        </video>
       </div>
       <button type="button" className="sb-motion" onClick={toggle} aria-pressed={!playing}>
         {playing ? 'Pause motion' : 'Play motion'}
