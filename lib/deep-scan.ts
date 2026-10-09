@@ -189,6 +189,18 @@ export function ownsDomain(url: string): boolean {
   }
 }
 
+/** tel:+14065085860 -> (406) 508-5860. Anything that is not ten US digits prints as written. */
+function prettyPhone(tel: string): string {
+  let raw = tel.replace(/^tel:/i, '');
+  try {
+    raw = decodeURIComponent(raw);
+  } catch {
+    /* keep it as written */
+  }
+  const d = raw.replace(/\D/g, '').replace(/^1(?=\d{10}$)/, '');
+  return d.length === 10 ? `(${d.slice(0, 3)}) ${d.slice(3, 6)}-${d.slice(6)}` : raw.trim();
+}
+
 /* ─────────────────────────────── platform ───────────────────────────────── */
 
 export function detectPlatform(html: string, headers: Record<string, string>): string | null {
@@ -882,7 +894,7 @@ export function evaluateDeepScan(raw: RawScan, ctx: ScanContext = {}): DeepScan 
       id: 'tap-to-call',
       label: 'Tap to call',
       status: tel ? 'pass' : 'fail',
-      found: tel ? `Your number is a tap-to-call link (${decodeURIComponent(tel.replace(/^tel:/i, ''))}).` : phoneShown ? `${phoneShown} is printed ${onHome} but is not a tap-to-call link.` : `No tap-to-call link ${onHome}.`,
+      found: tel ? `Your number is a tap-to-call link (${prettyPhone(tel)}).` : phoneShown ? `${phoneShown} is printed ${onHome} but is not a tap-to-call link.` : `No tap-to-call link ${onHome}.`,
       why: 'On a phone, a number that is not a link has to be memorised or copied. Most people do neither; they call the next result.',
       ...(tel ? {} : { fix: 'Wrap the phone number in a tel: link and put it in the header so it is on every page.', effort: 'minutes' as const }),
     }));

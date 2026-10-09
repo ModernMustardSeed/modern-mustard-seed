@@ -283,9 +283,9 @@ function DeepScanSection({ scan }: { scan: DeepScan }) {
               </ul>
             )}
             {right.length > 0 && (
-              <ul className="grid gap-px sm:grid-cols-2" style={{ background: RULE, borderTop: open.length ? `1px solid ${RULE}` : undefined }}>
+              <ul className="flex flex-wrap gap-px" style={{ background: RULE, borderTop: open.length ? `1px solid ${RULE}` : undefined }}>
                 {right.map((c) => (
-                  <li key={c.id} className="flex gap-3 px-6 py-4 sm:px-8" style={{ background: c.status === 'pass' ? '#fbfcf6' : '#ffffff' }}>
+                  <li key={c.id} className="flex min-w-0 grow basis-full gap-3 px-6 py-4 sm:basis-[calc(50%-1px)] sm:px-8" style={{ background: c.status === 'pass' ? '#fbfcf6' : '#ffffff' }}>
                     <Chip status={c.status} />
                     <span className="min-w-0">
                       <span className="block text-[15px] font-semibold leading-snug" style={{ ...SANS, color: INK }}>{c.label}</span>
@@ -447,9 +447,9 @@ export default function StudioAudit({ r, auditId, leadId }: { r: PresenceAuditRe
 
         {/* ── contents ── */}
         <nav aria-label="In this report" className="print:hidden">
-          <ol className="grid gap-px sm:grid-cols-3 lg:grid-cols-5" style={{ background: RULE, border: `1px solid ${RULE}` }}>
+          <ol className="flex flex-wrap gap-px" style={{ background: RULE, border: `1px solid ${RULE}` }}>
             {shown.map((c, i) => (
-              <li key={c.id} style={{ background: PAPER }}>
+              <li key={c.id} className="grow basis-[200px]" style={{ background: PAPER }}>
                 <a href={`#${c.id}`} className="flex items-baseline gap-3 px-4 py-3.5 text-[14.5px] font-semibold tracking-[-0.01em] transition-colors hover:bg-white" style={{ color: INK }}>
                   <span className="text-[11px] tabular-nums" style={{ ...MONO, color: TEAL }}>{String(i + 1).padStart(2, '0')}</span>
                   {c.label}
@@ -582,11 +582,11 @@ export default function StudioAudit({ r, auditId, leadId }: { r: PresenceAuditRe
             <Chapter n={num('website')} id="website" kicker="Seven readings" title="Your website," accent="read closely.">
               The way a stranger reads your site, in seven parts: what it says, whether it is believed, whether Google and the AI engines can find it, whether it works for you after hours, whether it turns a visit into a call, and how it looks doing it.
             </Chapter>
-            <div className="grid gap-px sm:grid-cols-2" style={{ background: RULE, border: `1px solid ${RULE}` }}>
+            <div className="flex flex-wrap gap-px" style={{ background: RULE, border: `1px solid ${RULE}` }}>
               {Object.entries(r.website_categories)
                 .filter((e): e is [string, { score: number; letter: string; notes: string }] => Boolean(e[1]) && typeof (e[1] as { score?: unknown }).score === 'number')
                 .map(([key, cat]) => (
-                  <div key={key} className="p-6 sm:p-7" style={{ background: '#ffffff' }}>
+                  <div key={key} className="min-w-0 grow basis-full p-6 sm:basis-[calc(50%-1px)] sm:p-7" style={{ background: '#ffffff' }}>
                     <div className="flex items-baseline justify-between gap-3">
                       <Label color={INK}>{key === 'geo' ? 'GEO · AI search' : key === 'ai_features' ? 'AI features' : key}</Label>
                       <span className="text-[13px] tabular-nums" style={{ ...MONO, color: tone(cat.score).color }}>{cat.score} · {cat.letter}</span>
@@ -642,9 +642,9 @@ export default function StudioAudit({ r, auditId, leadId }: { r: PresenceAuditRe
         <footer className="space-y-8">
           <Chapter n={num('receipts')} id="receipts" kicker="Where every number came from" title="The" accent="receipts." />
           {r.provenance?.length > 0 && (
-            <dl className="grid gap-px sm:grid-cols-2" style={{ background: RULE, border: `1px solid ${RULE}` }}>
+            <dl className="flex flex-wrap gap-px" style={{ background: RULE, border: `1px solid ${RULE}` }}>
               {r.provenance.map((x) => (
-                <div key={x.label} className="px-5 py-4" style={{ background: '#ffffff' }}>
+                <div key={x.label} className="min-w-0 grow basis-full px-5 py-4 sm:basis-[calc(50%-1px)]" style={{ background: '#ffffff' }}>
                   <dt className="text-[10.5px] uppercase tracking-[0.16em]" style={{ ...MONO, color: `${INK}99` }}>{x.label}</dt>
                   <dd className="mt-1 break-words text-[15px] [overflow-wrap:anywhere]" style={{ ...SANS, color: INK }}>
                     {x.value}{' '}
