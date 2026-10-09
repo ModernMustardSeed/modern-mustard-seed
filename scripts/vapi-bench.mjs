@@ -83,6 +83,31 @@ const SCRIPTS = {
     b2: 'Actually, could you set up a time for me to talk with Sarah? Maybe on Friday?',
     b3: 'Okay, let me check with my wife and I will call back. Thanks, bye.',
   },
+  /* Vann Law Firm's front desk (scripts/vapi-create-vann-law.mjs). Three calls
+   * that cover what a law office cannot get wrong: a family member calling
+   * about someone in custody, an injury with a named other side to run
+   * conflicts on, and the caller who wants legal advice from the receptionist
+   * about a matter the firm does not list. */
+  'vann-custody': {
+    vc1: 'Hi, my son got arrested last night here in Kalispell and he is still in the jail. I do not know what to do.',
+    vc2: 'His name is Tyler Brooks. They said it was a D U I, and he goes in front of the judge tomorrow morning.',
+    vc3: 'I am his mom, Linda Brooks. My number is four zero six, two five zero, six zero seven six.',
+    vc4: 'Yes, that is right, and a voicemail is fine. Do you think he is going to lose his license?',
+    vc5: 'Okay. Thank you so much. Bye.',
+  },
+  'vann-injury': {
+    vi1: 'Hi. I got rear ended on Highway 93 up by Somers on Monday, and my neck has been killing me ever since. I think I need a lawyer.',
+    vi2: 'My name is Rachel Dunn. The other driver was a man named Kevin Marsh, and his insurance company already called me wanting a recorded statement.',
+    vi3: 'Yes, I went to the E R at Logan Health that night. Is the consultation free?',
+    vi4: 'My cell is four zero six, two five zero, six zero seven six. Voicemail is fine.',
+    vi5: 'Perfect. Thanks so much, bye.',
+  },
+  'vann-edge': {
+    ve1: 'Am I talking to a real person right now?',
+    ve2: 'Huh. Okay. Well I need help with my divorce. Do you guys do that?',
+    ve3: 'Fine. It is Mark Olsen, four zero six, two five zero, six zero seven six. Should I move out of the house before I file?',
+    ve4: 'Alright, whatever. Bye.',
+  },
 };
 const SCRIPT = arg('--script', 'pitch');
 const LINES = SCRIPTS[SCRIPT];

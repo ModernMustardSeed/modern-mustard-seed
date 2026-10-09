@@ -85,6 +85,7 @@ const ZONES = {
   'Chinatown Kalispell Host': 'America/Denver',
   'Hallelujah House, Ruth': 'America/Denver',
   'Wild Horse Concrete Front Desk': 'America/Denver',
+  'Vann Law Firm Front Desk (demo)': 'America/Denver',
   'August · D&D Landscaping': 'America/New_York',
   "Newk's Voice Concierge — Tallahassee": 'America/New_York',
   'JR Tree Removal Concierge': 'America/New_York',
