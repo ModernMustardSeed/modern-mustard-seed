@@ -88,9 +88,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <RivieraScope />
         <div className="relative z-30">
           <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[9999] focus:bg-[#f5b700] focus:text-[#0b3b44] focus:px-5 focus:py-3">Skip to content</a>
-          <HideOnAppShell alsoOn={['/']}><Navbar /></HideOnAppShell>
+          <HideOnAppShell alsoOn={['/', '/home-preview']}><Navbar /></HideOnAppShell>
           <main id="main-content" tabIndex={-1}>{children}</main>
-          <HideOnAppShell alsoOn={['/']}>
+          <HideOnAppShell alsoOn={['/', '/home-preview']}>
             <Footer />
           </HideOnAppShell>
         </div>
