@@ -70,16 +70,22 @@ export function wlClientKeyValid(clientId: string, key: string | null | undefine
 }
 
 /** The two links Sarah takes into a meeting. */
-export function wlLinks(base: string, p: { agency: string; color: string; city: string; sample: string; site?: string }) {
+/**
+ * `demoAt` is the full demo URL without a query, for an agency whose own host
+ * is live (https://ai.agency.com/receptionist). The price sheet always stays on
+ * `base`: it is ours to issue, not the agency's to show.
+ */
+export function wlLinks(base: string, p: { agency: string; color: string; city: string; sample: string; site?: string }, demoAt?: string) {
   const key = wlKey(p.agency);
+  const demoUrl = demoAt ?? `${base}/white-label/demo`;
   const q = new URLSearchParams({ agency: p.agency, color: p.color.replace('#', ''), city: p.city, sample: p.sample });
   if (p.site) q.set('site', p.site);
-  const demoPublic = `${base}/white-label/demo?${q.toString()}`;
+  const demoPublic = `${demoUrl}?${q.toString()}`;
   if (!key) return { demoPublic, demo: null, sheet: null };
   q.set('k', key);
   return {
     demoPublic,
-    demo: `${base}/white-label/demo?${q.toString()}`,
+    demo: `${demoUrl}?${q.toString()}`,
     sheet: `${base}/white-label/sheet?${new URLSearchParams({ agency: p.agency, k: key }).toString()}`,
   };
 }

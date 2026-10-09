@@ -1,4 +1,5 @@
 import { getSupabase } from '@/lib/supabase';
+import { wlBaseFor } from '@/data/white-label-hosts';
 import { syncAssistantCalls } from '@/lib/voice-calls';
 import { wlClientKey, wlClientKeyValid } from '@/lib/white-label/key';
 import { getAgencyBySlug, getClient, updateClient, type Agency, type WlClient } from '@/lib/white-label/store';
@@ -21,7 +22,8 @@ export function deskUrl(agencySlug: string, clientId: string, callId?: string): 
   if (!k) return null;
   const q = new URLSearchParams({ k });
   if (callId) q.set('call', callId);
-  return `${SITE}/white-label/hq/${agencySlug}/c/${clientId}?${q.toString()}`;
+  const own = wlBaseFor(agencySlug);
+  return own ? `${own}/desk/${clientId}?${q.toString()}` : `${SITE}/white-label/hq/${agencySlug}/c/${clientId}?${q.toString()}`;
 }
 
 export async function deskFromKey(

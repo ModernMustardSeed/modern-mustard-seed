@@ -1,20 +1,26 @@
 import type { Metadata } from 'next';
+import { wlHostMeta } from '@/lib/white-label/host-meta';
 import Link from 'next/link';
 import { agencyFromKey } from '@/lib/white-label/portal';
 import { listClients } from '@/lib/white-label/store';
 import { agencyLinks } from '@/lib/white-label/mail';
 import { deskUrl } from '@/lib/white-label/desk';
 import { wlPricesHeld } from '@/lib/white-label/key';
+import { wlBaseFor } from '@/data/white-label-hosts';
 import { WL_GROUPS, WL_LINES, WL_PROGRAM } from '@/data/white-label';
 import { wlSans, wlSerif } from '@/components/white-label/font';
 import AgencyPortal from '@/components/white-label/AgencyPortal';
 
 export const dynamic = 'force-dynamic';
 
-export const metadata: Metadata = {
-  title: { absolute: 'Agency Portal · White Label Program' },
-  robots: { index: false, follow: false },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    ...(await wlHostMeta()),
+    title: { absolute: 'Agency Portal' },
+    robots: { index: false, follow: false },
+    referrer: 'no-referrer',
+  };
+}
 
 type Search = Promise<Record<string, string | string[] | undefined>>;
 
@@ -67,6 +73,7 @@ export default async function AgencyPortalPage({ params, searchParams }: { param
       }))}
       lines={WL_LINES.map((l) => ({ slug: l.slug, name: l.name, group: l.group, pitch: l.pitch, wholesale: held ? none : l.wholesale, retail: held ? none : l.retail, internal: l.internal }))}
       pricesHeld={held}
+      demoAt={wlBaseFor(agency.slug) ? `${wlBaseFor(agency.slug)}/receptionist` : null}
       groups={WL_GROUPS.map((g) => ({ key: g.key, title: g.title }))}
       foundingMonths={WL_PROGRAM.foundingMonths}
     />

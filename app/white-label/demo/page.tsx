@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { wlHostMeta } from '@/lib/white-label/host-meta';
 import { wlSans } from '@/components/white-label/font';
 import WhiteLabelDemo, { type WlDemoLine } from '@/components/white-label/WhiteLabelDemo';
 import { WL_LINES, WL_SAMPLE_CLIENTS, wlSample, wlColor, wlClean, wlInk } from '@/data/white-label';
@@ -13,6 +14,7 @@ export async function generateMetadata({ searchParams }: { searchParams: Search 
   const agency = wlClean(one(q.agency)) || 'Your Agency';
   const client = wlClean(one(q.client), 80) || wlSample(one(q.sample)).client;
   return {
+    ...(await wlHostMeta()),
     title: { absolute: `${client} · AI Receptionist by ${agency}` },
     description: `A live AI receptionist for ${client}, from ${agency}.`,
     robots: { index: false, follow: false },
