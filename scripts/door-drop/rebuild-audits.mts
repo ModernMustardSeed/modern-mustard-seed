@@ -12,6 +12,7 @@
 import { loadEnv, supabase } from './select.mts';
 import { buildPresenceReport, inputFromLead } from '../../lib/presence-audit.ts';
 import type { WebsiteAuditReport } from '../../lib/website-audit.ts';
+import type { DeepScan } from '../../lib/deep-scan.ts';
 
 loadEnv(process.cwd());
 const sb = supabase();
@@ -19,12 +20,14 @@ const ids = process.argv.slice(2).filter((a) => !a.startsWith('--'));
 if (!ids.length) throw new Error('give me at least one presence_audits id');
 
 for (const id of ids) {
-  const { data: a } = await sb.from('presence_audits').select('id,lead_id,business_name,score,letter').eq('id', id).maybeSingle();
+  const { data: a } = await sb.from('presence_audits').select('id,lead_id,business_name,score,letter,report').eq('id', id).maybeSingle();
   if (!a) { console.log(`${id}: no such audit`); continue; }
   const { data: lead } = await sb.from('outbound_leads').select('*').eq('id', a.lead_id).maybeSingle();
   if (!lead) { console.log(`${a.business_name}: no lead row`); continue; }
 
-  const built = buildPresenceReport(inputFromLead(lead), (lead.audit_json as WebsiteAuditReport | null) ?? null);
+  // The deep scan is a measurement from the day it was taken; carry it forward.
+  const scan = (a.report as { deep_scan?: DeepScan | null } | null)?.deep_scan ?? null;
+  const built = buildPresenceReport(inputFromLead(lead), (lead.audit_json as WebsiteAuditReport | null) ?? null, scan);
   const { error } = await sb
     .from('presence_audits')
     .update({ score: built.overall_score, letter: built.letter_grade, report: built })

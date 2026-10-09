@@ -33,6 +33,7 @@ import { parseSiteFacts, type SiteFacts } from '@/lib/site-facts';
 import { ensureSiteFacts } from '@/lib/site-facts-store';
 import { CATEGORY_KEYS, type WebsiteAuditReport } from '@/lib/website-audit';
 import { auditPreferringWorker } from '@/lib/audit-queue';
+import { collectDeepScan, type DeepScan } from '@/lib/deep-scan';
 import { SITE } from '@/lib/seo';
 
 /* ────────────────────────────── the shapes ──────────────────────────────── */
@@ -84,6 +85,12 @@ export type PresenceAuditReport = {
   website_categories: Record<string, { score: number; letter: string; notes: string }> | null;
   /** Every fact we used, with where it came from. Printed at the foot. */
   provenance: { label: string; value: string; source: string; sourceUrl?: string | null }[];
+  /**
+   * The deep scan (lib/deep-scan.ts): speed, security, domain, email, search,
+   * AI search and conversion plumbing, measured rather than judged. It does not
+   * move the grade. Absent on reports filed before 2026-10-09.
+   */
+  deep_scan?: DeepScan | null;
 };
 
 /* ─────────────────────────────── the grades ─────────────────────────────── */
@@ -549,9 +556,16 @@ export function headlineFor(pillars: Pillar[], business: string): { headline: st
  * because they are free and same-day, and an audit that opens with "rebuild
  * your website" reads as a sales document no matter how true it is.
  */
-export function fixesFor(pillars: Pillar[], report: WebsiteAuditReport | null): PresenceFix[] {
+export function fixesFor(pillars: Pillar[], report: WebsiteAuditReport | null, scan: DeepScan | null = null): PresenceFix[] {
   const by = Object.fromEntries(pillars.map((p) => [p.key, p])) as Record<PillarKey, Pillar>;
   const out: PresenceFix[] = [];
+
+  // A real emergency from the deep scan outranks everything: a site telling
+  // Google to stay away, a certificate or a domain about to lapse. Each one is
+  // free or nearly, and each one costs more by the day than anything below it.
+  for (const c of (scan?.sections ?? []).flatMap((x) => x.checks).filter((c) => c.urgent && c.fix).slice(0, 2)) {
+    out.push({ title: c.label, why: `${c.found} ${c.why}`, how: c.fix! });
+  }
 
   for (const c of (by.profile.unknown ? [] : by.profile.checks).filter((c) => !c.passed)) {
     out.push({
@@ -633,7 +647,7 @@ export function provenanceFor(input: PresenceInput): { label: string; value: str
 }
 
 /** Assemble the whole report from an input plus an optional website grade. */
-export function buildPresenceReport(input: PresenceInput, report: WebsiteAuditReport | null): PresenceAuditReport {
+export function buildPresenceReport(input: PresenceInput, report: WebsiteAuditReport | null, scan: DeepScan | null = null): PresenceAuditReport {
   const pillars = [scoreWebsite(input, report), scoreReviews(input), scoreProfile(input)];
   const overall = blend(pillars);
   const { headline, summary } = headlineFor(pillars, input.business_name);
@@ -647,13 +661,14 @@ export function buildPresenceReport(input: PresenceInput, report: WebsiteAuditRe
     headline,
     summary,
     pillars,
-    top_fixes: fixesFor(pillars, report),
+    top_fixes: fixesFor(pillars, report, scan),
     website_todo: (report?.full_todo ?? []).filter((t) => t && typeof t.task === 'string'),
     // Only the seven real categories. A stored grade from before the shape
     // filter can carry junk keys (trust_note, "_") whose value is null, and
     // the report page reads .score off every entry. See website-audit.ts.
     website_categories: report?.categories ? keptCategories(report.categories) : null,
     provenance: provenanceFor(input),
+    deep_scan: scan,
   };
 }
 
@@ -757,6 +772,12 @@ export async function runPresenceAudit(
   const cacheFresh = !opts.force && cachedAt > 0 && Date.now() - cachedAt < 14 * 24 * 60 * 60 * 1000;
   let report: WebsiteAuditReport | null = cacheFresh ? ((lead.audit_json as WebsiteAuditReport | null) ?? null) : null;
 
+  // The deep scan runs alongside the website grade, never after it: it is a
+  // second or two of fetches and lookups, and it never throws.
+  const scanning: Promise<DeepScan | null> = input.website
+    ? collectDeepScan(input.website, { town: input.city, business: input.business_name, facts, budgetMs: 40_000 }).catch(() => null)
+    : Promise.resolve(null);
+
   if (!report && input.website) {
     const outcome = await auditPreferringWorker(sb, {
       url: input.website,
@@ -778,7 +799,7 @@ export async function runPresenceAudit(
     // pillar reports honestly instead of the whole audit dying.
   }
 
-  const built = buildPresenceReport(input, report);
+  const built = buildPresenceReport(input, report, await scanning);
 
   const { data: row, error } = await sb
     .from('presence_audits')

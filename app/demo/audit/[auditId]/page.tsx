@@ -3,6 +3,7 @@ import { buildMetadata } from '@/lib/seo';
 import { PILLAR_WEIGHTS, type PresenceAuditReport, type Pillar } from '@/lib/presence-audit';
 import PresenceAsk from '@/components/PresenceAsk';
 import RivieraAudit from './RivieraAudit';
+import StudioAudit from './StudioAudit';
 
 export const dynamic = 'force-dynamic';
 export const metadata = buildMetadata({ title: 'Your Presence Audit', noindex: true });
@@ -34,6 +35,15 @@ type Search = Promise<{ look?: string }>;
  * changing what its owner sees.
  */
 const RIVIERA_FROM = '2026-09-28T19:00:00Z';
+
+/**
+ * THE STUDIO CUTOFF, the same rule a second time. Sarah, 2026-10-09: the audit
+ * becomes a document worth keeping (what is working, how you show up, the deep
+ * scan, the plan by effort), in the studio house the site moved into that day.
+ * Audits filed from here on wear it; the ones already sent keep the clothes
+ * their owners saw. ?look=studio previews it on any audit.
+ */
+const STUDIO_FROM = '2026-10-09T20:00:00Z';
 
 const RING = (score: number) => (score >= 80 ? '#1E7A3C' : score >= 60 ? '#B87503' : '#C4160B');
 
@@ -132,7 +142,10 @@ export default async function PresenceAuditPage({ params, searchParams }: { para
   if (!row?.report) return missing;
 
   const r = row.report as PresenceAuditReport;
-  const riviera = look === 'riviera' || (look !== 'classic' && Date.parse(String(row.created_at ?? '')) >= Date.parse(RIVIERA_FROM));
+  const created = Date.parse(String(row.created_at ?? ''));
+  const studio = look === 'studio' || (!look && created >= Date.parse(STUDIO_FROM));
+  if (studio) return <StudioAudit r={r} auditId={auditId} leadId={String(row.lead_id ?? '')} />;
+  const riviera = look === 'riviera' || (look !== 'classic' && created >= Date.parse(RIVIERA_FROM));
   if (riviera) return <RivieraAudit r={r} auditId={auditId} leadId={String(row.lead_id ?? '')} />;
   const pillars = r.pillars ?? [];
   const business = r.business_name || 'your business';

@@ -19,9 +19,9 @@
  */
 
 export const PRESENCE = {
-  metaTitle: 'The Free Online Presence Audit',
+  metaTitle: 'The Free Website and Online Presence Audit',
   metaDescription:
-    'A free audit of your whole online presence: your website graded on seven categories, your Google Business Profile on eight checks, and your reviews against your trade. Leave your email and the full report arrives in your inbox.',
+    'A free audit of your website, your Google Business Profile and your reviews, plus a deep scan underneath: speed, security certificate, domain expiry, email forgery protection, Google and AI search readiness, and whether a visit turns into a call. Every check prints what we found.',
   /** The promise on the page, the receipt email and the FAQ. Change it in all three. */
   turnaround: 'within 24 hours',
 };
@@ -32,6 +32,10 @@ export const TICKER = [
   'Your website, graded',
   'Your Google profile, checked',
   'Your reviews, measured',
+  'Speed, measured',
+  'Domain and certificate, dated',
+  'Email forgery, tested',
+  'AI search, checked',
   'Every check verifiable',
   'Yours to keep',
   'No card',
@@ -71,6 +75,100 @@ export const SAMPLE = {
   },
 };
 
+/* ─────────────────────────── the four layers ─────────────────────────── */
+
+/**
+ * What the report is made of, in the order it reads. Each one maps to a
+ * chapter of the studio edition report (app/demo/audit/[auditId]/StudioAudit.tsx).
+ */
+export const LAYERS = [
+  {
+    n: '01',
+    name: 'The grade',
+    line: 'Three pillars, one number',
+    d: 'Your website read closely across seven categories, your Google profile on eight checks, your reviews against your trade. The weights are printed, and anything we could not see is left out rather than scored as zero.',
+  },
+  {
+    n: '02',
+    name: 'How you show up',
+    line: 'Your real Google result, drawn',
+    d: 'The title and description Google is most likely to print for you, and what your link looks like when a happy customer texts it to a friend. Drawn from your own homepage, so the gap is something you can see.',
+  },
+  {
+    n: '03',
+    name: 'The deep scan',
+    line: 'Under the hood, measured',
+    d: 'Speed, the security certificate, the date your domain comes due, whether anyone can send email as you, whether Google and the AI assistants are allowed to read you, and whether a visitor can call, text or book. Every line prints what we found.',
+  },
+  {
+    n: '04',
+    name: 'The plan',
+    line: 'Sorted by effort, not alarm',
+    d: 'What you already got right comes first. Then the fixes: a short list to do first, and everything else in three columns, this week, this month, and when you are ready. Most of the first column costs nothing.',
+  },
+];
+
+/* ─────────────────────────── every check, listed ─────────────────────────── */
+
+/**
+ * The whole catalogue, printed before anybody asks. Mirrors the checks in
+ * lib/presence-audit.ts (profile, reviews), lib/website-audit.ts (the seven
+ * categories) and lib/deep-scan.ts (everything else). The count on the page is
+ * this list's length, never a typed number: change a check there, change it here.
+ * Some checks only run where they apply (Google's own speed test when a key is
+ * set, the urgent-work check for the trades that take it, lazy images on a page
+ * with enough of them), so a given report can show fewer.
+ */
+export const CATALOG: { group: string; layer: string; checks: string[] }[] = [
+  {
+    group: 'Your website, read closely',
+    layer: 'The grade',
+    checks: ['Brand: what you do, in three seconds', 'Trust: proof, names, real photos', 'SEO: what Google reads', 'GEO: what AI engines can quote', 'AI features: what answers for you', 'Conversion: the path to a call', 'Design: how it feels on a phone'],
+  },
+  {
+    group: 'Your Google profile',
+    layer: 'The grade',
+    checks: ['A listing a customer can find', 'Phone number on the listing', 'Website linked from it', 'Street address published', 'Hours published', 'Active enough to carry a rating', 'Enough reviews to rank locally', 'Urgent or after-hours work stated'],
+  },
+  {
+    group: 'Your reviews',
+    layer: 'The grade',
+    checks: ['Star rating', 'Review volume, against your trade'],
+  },
+  {
+    group: 'Speed',
+    layer: 'The deep scan',
+    checks: ['How fast your server answers', 'Weight of the homepage', 'Scripts the page loads', 'Images in a modern format', 'Images below the fold wait their turn', "Google's mobile speed score", 'Time until the main thing appears', 'Does the page jump while it loads', 'How fast it reacts to a tap'],
+  },
+  {
+    group: 'Security and trust',
+    layer: 'The deep scan',
+    checks: ['Secure connection (HTTPS)', 'http:// forwards to the secure page', 'Certificate, and the day it expires', 'Security headers', 'Everything on the page loads securely', 'A footer year that is current'],
+  },
+  {
+    group: 'Your domain and email',
+    layer: 'The deep scan',
+    checks: ['The day your domain comes due', 'How long the name has been yours', 'Email at your own domain', 'SPF: who may send as you', 'DMARC: what happens to forgeries', 'The address customers see'],
+  },
+  {
+    group: 'Search basics',
+    layer: 'The deep scan',
+    checks: ['Page title', 'Meta description', 'One clear main heading', 'Built for phones', 'Google is allowed to list you', 'One official address per page', 'A sitemap', 'Photos described in words', 'Page language', 'A picture when your link is shared', 'Your icon in the browser tab'],
+  },
+  {
+    group: 'AI search',
+    layer: 'The deep scan',
+    checks: ['Business details in machine-readable form', 'How complete that business card is', 'ChatGPT, Claude and Perplexity allowed in', 'An llms.txt guide', 'Questions answered in your own words', 'Enough words to quote'],
+  },
+  {
+    group: 'Turning visits into calls',
+    layer: 'The deep scan',
+    checks: ['Tap to call', 'A way to reach you without calling', 'Online booking', 'You can see who visits', 'Your other profiles, linked', 'Your reviews, on your own site', 'Something answers after hours'],
+  },
+];
+
+export const CATALOG_COUNT = CATALOG.reduce((n, g) => n + g.checks.length, 0);
+
 /* ─────────────────────────── how it works ─────────────────────────── */
 
 export const STEPS = [
@@ -81,13 +179,13 @@ export const STEPS = [
   },
   {
     n: '02',
-    h: 'We grade all three',
-    d: 'Your Google listing on eight checks, your reviews against your trade, and your website against seven categories.',
+    h: 'We grade it and scan it',
+    d: 'Your Google listing on eight checks, your reviews against your trade, your website against seven categories, then the deep scan underneath: speed, security, domain, email, search and AI search.',
   },
   {
     n: '03',
     h: 'It lands in your inbox',
-    d: 'Your score, every check with what it is worth, and the fixes ranked cheapest first. A private report page that is yours to keep.',
+    d: 'What you already got right, your score, every check with what we found, and the plan sorted by effort. A private report page that is yours to keep, and prints clean.',
   },
 ];
 
@@ -177,7 +275,19 @@ export const PRESENCE_FAQ = [
   },
   {
     q: 'What makes this different from the free audits everybody offers?',
-    a: 'Two of the three pillars are plain facts, not model judgment. Every profile check passes or fails on something you can verify yourself in a minute, every review number prints the benchmark it was measured against, and the pillar weights are printed on the report. Anything we could not see is left out of the score rather than counted as a zero.',
+    a: 'Most free audits are a speed score with a sales pitch attached. This one grades the three things a stranger actually sees (your site, your Google profile, your reviews), then measures the parts underneath that nobody checks: your domain, your certificate, your email security, and whether AI search can read you. Two of the three pillars are plain facts, every deep scan line prints what we found, and anything we could not see is left out rather than counted as a zero. It opens on what you already got right.',
+  },
+  {
+    q: 'What is the deep scan?',
+    a: 'The part of your online presence nobody looks at until it breaks: how fast your site answers, when your security certificate and your domain name expire, whether your email is protected against someone sending fake invoices in your name, whether Google and the AI assistants are allowed to read your site, and whether a visitor can call, text or book. It is measured from public records and your public pages, every line prints what we found, and it does not change your grade.',
+  },
+  {
+    q: 'Do you need any logins or access?',
+    a: 'No. Everything in the audit is public: your Google listing, your reviews, your website as any visitor sees it, and the public records every domain has (registration, certificate, DNS). Nothing private is read and nothing is changed.',
+  },
+  {
+    q: 'Can I hand the report to my web person?',
+    a: 'That is what it is built for. Every check prints exactly what we found (the actual title tag, the actual DMARC record, the actual expiry date) and the fix in plain words, so whoever runs your site can confirm it and do it without a meeting.',
   },
   {
     q: 'How is this different from the Bottleneck Breaker?',
