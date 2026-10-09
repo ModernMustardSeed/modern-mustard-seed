@@ -495,7 +495,7 @@ export default function StorybookHome() {
               <a href="https://instagram.com/modernmustardseed" target="_blank" rel="noopener noreferrer">Instagram</a>
               <a href="https://www.linkedin.com/in/sarahmscarano/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
               <a href="https://github.com/ModernMustardSeed" target="_blank" rel="noopener noreferrer">GitHub</a>
-              <Link href="/review">Review on Google</Link>
+              <a href="/review">Review on Google</a>
               <button type="button" data-cookie-preferences>Cookie preferences</button>
             </span>
           </div>
