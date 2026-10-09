@@ -14,6 +14,8 @@
  * billed by time. The office is SeedSide.
  */
 
+import { STUDIO_STATS } from './studio-stats';
+
 export type Copy = {
   id: string;
   title: string;
@@ -32,7 +34,7 @@ export const META_PRIMARY: Copy[] = [
     id: 'meta-office',
     title: 'The live office tour',
     channel: 'meta',
-    body: `Modern Mustard Seed is an AI product studio with one person at the desk. The rest of the staff is a crew of Claude agents: twenty laws they obey, forty-six skills they run, ten hooks they cannot get past, and 321 memory notes they read before they touch anything. Forty-plus products have shipped out of that office.
+    body: `Modern Mustard Seed is an AI product studio with one person at the desk. The rest of the staff is a crew of Claude agents: twenty laws they obey, forty-six skills they run, ten hooks they cannot get past, and ${STUDIO_STATS.memoryNotes} memory notes they read before they touch anything. Forty-plus products have shipped out of that office.
 
 On January 26 I am opening it on screen. Not slides. The live phone agent answering our line, the org chart, the morning briefing with the decisions waiting for my yes, and what the whole thing costs a month.
 
@@ -132,7 +134,7 @@ export const LINKEDIN_POSTS: Copy[] = [
 
 The rest of the staff is a crew of Claude agents.
 
-Twenty laws they obey. Forty-six skills they run. Ten hooks they cannot get past. 321 memory notes they read before they touch anything. Forty-plus products shipped.
+Twenty laws they obey. Forty-six skills they run. Ten hooks they cannot get past. ${STUDIO_STATS.memoryNotes} memory notes they read before they touch anything. Forty-plus products shipped.
 
 A phone agent answers the studio line. A presence agent reads our site and listings every week and files the fixes. A morning briefing tells me what ran overnight and which three decisions are waiting for a yes.
 
@@ -242,7 +244,7 @@ The bootcamp builds you ten. Link in bio.`,
     id: 'ts-04-memory',
     title: 'Memory: never explain the business twice',
     channel: 'instagram',
-    body: `My agents read 321 memory notes before they do anything.
+    body: `My agents read ${STUDIO_STATS.memoryNotes} memory notes before they do anything.
 
 Each note is one true thing: a client's price, a trap we hit, a rule Sarah set on a date. New session, same business, nothing re-explained.
 
@@ -367,7 +369,7 @@ export const HOST_SWIPE: Copy[] = [
 
 I am hosting a room at The One-Person Company Bootcamp, and I want you in it.
 
-Here is what it is. Sarah Scarano runs an entire AI product studio with one person at the desk and a crew of Claude agents: twenty laws, forty-six skills, ten safety hooks, 321 memory notes, forty-plus products shipped. Over three live sessions in February she opens that office on screen, then every attendee builds two working agents for their own business and leaves with them running in their own office. Not prompts. Agents, working.
+Here is what it is. Sarah Scarano runs an entire AI product studio with one person at the desk and a crew of Claude agents: twenty laws, forty-six skills, ten safety hooks, ${STUDIO_STATS.memoryNotes} memory notes, forty-plus products shipped. Over three live sessions in February she opens that office on screen, then every attendee builds two working agents for their own business and leaves with them running in their own office. Not prompts. Agents, working.
 
 It starts with a free masterclass on Tuesday, January 26 at 1:00 PM Mountain. That is the one to see first. The live call to the phone agent, the org chart, the morning briefing, and two live demos on a volunteer's business.
 
@@ -430,7 +432,7 @@ export const MASTERCLASS_SCRIPT: { minute: number; beat: string; onScreen: strin
   { minute: 10, beat: 'Charters. Read one out loud: the presence agent reads and files, never sends. Why narrow agents are the ones you can leave alone.', onScreen: 'One charter file, full screen' },
   { minute: 13, beat: 'The twenty laws, and the one incident that wrote each of three of them: contacted means a person, every dial through one phone library, never quote a price from memory.', onScreen: 'The laws file, scrolling, three highlighted' },
   { minute: 17, beat: 'Hooks. Try to make an agent send an email outside the logged sender and watch it refuse. A hook is a wall, not a request.', onScreen: 'Terminal, the refusal in red' },
-  { minute: 20, beat: 'Memory. Open the 321 notes. Show one about a client, one about a trap. The rule: probe, never quote from memory.', onScreen: 'The memory index' },
+  { minute: 20, beat: `Memory. Open the ${STUDIO_STATS.memoryNotes} notes. Show one about a client, one about a trap. The rule: probe, never quote from memory.`, onScreen: 'The memory index' },
   { minute: 23, beat: 'The morning briefing. Read this morning\'s: what ran overnight, what broke, the three decisions waiting. Say yes to one on screen.', onScreen: 'Today\'s briefing, a yes clicked live' },
   { minute: 27, beat: 'The money. What this office costs per month, line by line, and what it replaced. No rounding.', onScreen: 'One slide, the monthly bill' },
   { minute: 30, beat: 'Live demo one. A volunteer gives their website. The presence agent reads it, the listings and the reviews, and files the top three fixes with the first one drafted.', onScreen: 'Volunteer site on the left, agent output on the right' },

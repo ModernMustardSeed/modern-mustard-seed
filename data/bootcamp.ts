@@ -17,6 +17,7 @@
  */
 
 import { OFFICE_AGENT_COUNT } from './bootcamp-office';
+import { STUDIO_STATS } from './studio-stats';
 
 export const BOOTCAMP = {
   name: 'The One-Person Company Bootcamp',
@@ -155,7 +156,7 @@ export const bootcampDays: BootcampDay[] = [
       'A live call to the phone agent that answers our line, in front of everyone',
       'The org chart: every agent, its one job, and the charter it cannot break',
       'The twenty laws the crew obeys, and the one incident that wrote each of them',
-      'Memory: how 321 notes mean we never explain the business twice',
+      `Memory: how ${STUDIO_STATS.memoryNotes} notes mean we never explain the business twice`,
       'The morning briefing: what ran overnight, and the three decisions waiting for a yes',
       'The money: what this setup costs a month, and what it replaced',
     ],
@@ -272,7 +273,7 @@ export const BOOTCAMP_PROOF = [
   { n: '20', label: 'laws the crew obeys' },
   { n: '46', label: 'skills in daily use' },
   { n: String(OFFICE_AGENT_COUNT), label: 'agents on the crew' },
-  { n: '321', label: 'memory notes it reads first' },
+  { n: String(STUDIO_STATS.memoryNotes), label: 'memory notes it reads first' },
   { n: '40+', label: 'products shipped' },
 ] as const;
 

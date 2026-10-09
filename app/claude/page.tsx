@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { buildMetadata, SITE } from '@/lib/seo';
+import { OFFICE_URL } from '@/data/studio-stats';
 import { CLAUDE_SETUP, CLAUDE_PROOF, claudeTiers, claudeWhatWeSetUp, claudeFaq } from '@/data/claude-setup';
 import PopPageHero, { pop } from '@/components/pop/PopPageHero';
 
@@ -85,10 +86,22 @@ export default function ClaudePage() {
               Claude runs this studio. <em className="italic">Yours is next.</em>
             </h2>
             <p className="font-body text-[#0b3b44]/75 leading-relaxed mt-5">
-              Modern Mustard Seed is one person and a back office of Claude agents. Claude builds the websites, writes the follow-ups, keeps the books and drafts the work, following seventeen skills we wrote for how this studio operates. Ten safety hooks stop it from sending, spending or deleting anything without a yes.
+              Modern Mustard Seed is one person and a back office of Claude agents. Claude builds the websites, writes the follow-ups, keeps the books and drafts the work, following eighteen skills we wrote for how this studio operates, across sixty-four specialist agents. Ten safety hooks stop it from sending, spending or deleting anything without a yes.
             </p>
             <p className="font-body text-[#0b3b44]/75 leading-relaxed mt-4">
               Every package on this page is a smaller copy of that setup, shaped around your business instead of ours.
+            </p>
+            <p className="font-body text-[#0b3b44]/75 leading-relaxed mt-4">
+              Meet the whole staff, with Mr. Mustard as chief of staff, at{' '}
+              <a
+                href={`${OFFICE_URL}/?utm_source=mms&utm_medium=referral&utm_campaign=claude-page`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold text-[#0a7c78] underline underline-offset-4 decoration-[#81d8d0] hover:decoration-[#0a7c78]"
+              >
+                office.modernmustardseed.com
+              </a>
+              .
             </p>
           </div>
           <div className="border-2 border-[#0b3b44] rounded-2xl bg-white p-6 shadow-[6px_6px_0_0_#f5b700]">
