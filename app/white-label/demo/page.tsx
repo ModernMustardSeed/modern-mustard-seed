@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { wlSans } from '@/components/white-label/font';
 import WhiteLabelDemo, { type WlDemoLine } from '@/components/white-label/WhiteLabelDemo';
 import { WL_LINES, WL_SAMPLE_CLIENTS, wlSample, wlColor, wlClean, wlInk } from '@/data/white-label';
-import { wlKeyValid } from '@/lib/white-label/key';
+import { wlPricesKeyValid } from '@/lib/white-label/key';
 
 type Search = Promise<Record<string, string | string[] | undefined>>;
 const one = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v) ?? '';
@@ -38,7 +38,7 @@ function monogram(agency: string, color: string): string {
 export default async function WhiteLabelDemoPage({ searchParams }: { searchParams: Search }) {
   const q = await searchParams;
   const agency = wlClean(one(q.agency)) || 'Your Agency';
-  const signed = wlKeyValid(agency, one(q.k));
+  const signed = wlPricesKeyValid(agency, one(q.k));
   const sample = wlSample(one(q.sample));
 
   // What an agency's client would buy. Overflow sites are agency-to-us capacity, so they stay off.

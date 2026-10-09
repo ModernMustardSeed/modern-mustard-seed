@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { buildMetadata } from '@/lib/seo';
 import { WL_GROUPS, WL_LINES, WL_PROGRAM, WL_TERMS, wlClean, wlMargin, usd } from '@/data/white-label';
-import { wlKeyValid } from '@/lib/white-label/key';
+import { wlPricesKeyValid } from '@/lib/white-label/key';
 import PrintButton from '@/components/white-label/PrintButton';
 
 export const metadata = buildMetadata({
@@ -24,7 +24,7 @@ const money = (setup: number, monthly: number) =>
 export default async function WhiteLabelSheetPage({ searchParams }: { searchParams: Search }) {
   const q = await searchParams;
   const agency = wlClean(one(q.agency));
-  const ok = agency && wlKeyValid(agency, one(q.k));
+  const ok = agency && wlPricesKeyValid(agency, one(q.k));
 
   if (!ok) {
     return (

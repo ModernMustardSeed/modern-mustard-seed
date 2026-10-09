@@ -86,6 +86,14 @@ export const WL_PROGRAM = {
   answeredMinutes: 500,
 } as const;
 
+/**
+ * Agencies whose portal, price sheet and demo margin panel show no prices.
+ * Sarah holds an agency here while its board is still being shaped and quotes
+ * it by hand. The portal still opens; only the numbers are gone, from the
+ * page and from the data sent to the browser. Delete the slug to open them.
+ */
+export const WL_PRICES_HELD: readonly string[] = ['jcreative'];
+
 export const WL_LINES: WlLine[] = [
   /* ── AI THAT ANSWERS ───────────────────────────────────────────────────── */
   {
