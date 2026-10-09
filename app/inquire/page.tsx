@@ -148,8 +148,8 @@ export default function InquirePage() {
                 and no second invoice.
               </p>
               <p className="mt-4 font-body text-[15px] leading-relaxed text-[#fbf5ea]/85">
-                You own everything at the end: the repository, the deployment, the accounts, and
-                the documentation to run it without us.
+                After launch we manage it for you end to end, and you own everything: the
+                repository, the deployment and the accounts.
               </p>
             </div>
           </div>

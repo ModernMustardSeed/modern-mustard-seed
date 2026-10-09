@@ -124,10 +124,10 @@ export default function AiNativePage() {
           <div>
             <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#0a7c78] font-bold mb-3">[ We run this way ourselves ]</p>
             <h2 id="native-heading" className="font-display text-3xl md:text-5xl font-black text-[#0b3b44] tracking-tight leading-[1.05]">
-              One person. Seventeen agents. <em className="italic">A whole company.</em>
+              One builder. Seventeen agents. <em className="italic">A whole company.</em>
             </h2>
             <p className="font-body text-[#0b3b44]/75 leading-relaxed mt-5">
-              Modern Mustard Seed is a product studio run by one person and a back office of agents. The leads are found by the machine, the demo sites are built by it, the follow-up is sent by it, and the books are kept by it. The person at the desk decides, designs and talks to clients. That is what agentic native means here, and it is the same shape we build inside your company.
+              Modern Mustard Seed is a product studio run by two people and a back office of agents: Sarah Scarano builds, Anthony Scarano runs sales and marketing. The leads are found by the machine, the demo sites are built by it, the follow-up is sent by it, and the books are kept by it. The people at the desk decide, design and talk to clients. That is what agentic native means here, and it is the same shape we build inside your company.
             </p>
             <p className="font-body text-[#0b3b44]/75 leading-relaxed mt-4">
               Nothing on this page is theory. Every workflow we move onto agentic systems for you is one we moved first for ourselves, and the portfolio is the receipt.

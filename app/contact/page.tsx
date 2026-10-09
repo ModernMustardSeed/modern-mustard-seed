@@ -59,8 +59,8 @@ export default async function ContactPage({ searchParams }: { searchParams: Sear
             <div className="lg:col-span-6">
               <figure className="relative rotate-[1.5deg] rounded-[2px] border-[3px] border-[#0b3b44] bg-white p-2.5 shadow-[9px_9px_0_0_#f5b700]">
                 <Image
-                  src="/art/riviera/contact-1600.webp"
-                  alt="Painting: Mr. Mustard stands on a paddleboard in turquoise water taking a phone call and waving hello, the seed dog riding the front of the board and the family paddling a clear kayak beside him"
+                  src="/storybook/concierge-1600.webp"
+                  alt="Mr. Mustard in a headset works an old switchboard beside a red rotary phone."
                   width={1600}
                   height={1067}
                   priority

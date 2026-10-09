@@ -4,9 +4,9 @@ import { buildMetadata } from '@/lib/seo';
 import SarahPortrait from '@/components/sarah/SarahPortrait';
 
 export const metadata = buildMetadata({
-  title: 'Sarah Scarano and the AI Studio Serving Businesses Nationwide',
+  title: 'Sarah and Anthony Scarano, the AI Studio Serving Businesses Nationwide',
   description:
-    'Meet Sarah Scarano, founder of Modern Mustard Seed, a boutique design and agentic systems studio in Kalispell building websites and brand, custom software, and voice agents for clients nationwide.',
+    'Meet the team at Modern Mustard Seed: Sarah Scarano, founder, designer and engineer, and Anthony Scarano, who leads sales and marketing. A design and AI product studio in Kalispell building websites, AI voice agents and custom software for clients nationwide.',
   path: '/about',
 });
 
@@ -105,6 +105,31 @@ export default function AboutPage() {
               caption="Sarah Scarano · Founder · Kalispell, Montana"
               className="w-full max-w-[420px] justify-self-center lg:justify-self-end"
             />
+          </div>
+        </section>
+
+        {/* ─── The team (2026-10-09): Sarah builds, Anthony runs sales and marketing ─── */}
+        <section id="team" className="px-[6%] lg:px-[max(6%,calc((100vw-1200px)/2))] pb-20 md:pb-28" aria-labelledby="team-title">
+          <Overline>The team</Overline>
+          <h2 id="team-title" className="text-[clamp(38px,4.4vw,64px)] max-w-[900px]">
+            Two people, one studio. <em>A direct line to both.</em>
+          </h2>
+          <div className="mt-10 overflow-hidden rounded-[4px] border border-[#141210] bg-white">
+            <img src="/storybook/team-duo-1600.webp" srcSet="/storybook/team-duo-800.webp 800w, /storybook/team-duo-1600.webp 1600w" sizes="(min-width: 1200px) 1200px, 92vw" width={1600} height={1067} loading="lazy" decoding="async" alt="Sarah and Anthony stand side by side in the sunny studio, surrounded by mustard flowers and the cheering seed crew." className="w-full h-auto" />
+          </div>
+          <div className="mt-8 grid md:grid-cols-2 gap-6">
+            <article className="rounded-[4px] border border-[#141210] bg-white p-6">
+              <p className="font-mono uppercase text-[11px] tracking-[.14em]">Founder / Design and engineering</p>
+              <h3 className="mt-2 text-[30px]">Sarah Scarano</h3>
+              <p className="mt-3 text-[16px] leading-[1.7] text-[#4a4339]">Sarah designs and builds every website, voice agent and system we ship. Creative direction and engineering in one person, from the first conversation to the finished detail.</p>
+              <Link href="/sarahscarano" className="mt-4 inline-block font-bold border-b-2 border-[#f5b700]">Meet Sarah ↗</Link>
+            </article>
+            <article className="rounded-[4px] border border-[#141210] bg-white p-6">
+              <p className="font-mono uppercase text-[11px] tracking-[.14em]">Sales / Marketing</p>
+              <h3 className="mt-2 text-[30px]">Anthony Scarano</h3>
+              <p className="mt-3 text-[16px] leading-[1.7] text-[#4a4339]">Anthony Scarano leads sales and marketing. He helps you choose the right build, then keeps your marketing moving once it is live.</p>
+              <Link href="/book" className="mt-4 inline-block font-bold border-b-2 border-[#f5b700]">Book a call ↗</Link>
+            </article>
           </div>
         </section>
 

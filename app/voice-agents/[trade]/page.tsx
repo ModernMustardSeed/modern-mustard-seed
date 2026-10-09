@@ -100,8 +100,8 @@ export default async function TradePage({ params }: { params: Promise<{ trade: s
             <div className="lg:col-span-5">
               <figure className="relative rotate-[-1.5deg] rounded-[2px] border-[3px] border-[#0b3b44] bg-white p-2.5 shadow-[9px_9px_0_0_#f5b700]">
                 <Image
-                  src="/art/riviera/voice-1600.webp"
-                  alt="Painting: on the stern of a yacht in late afternoon light, Mr. Mustard laughs into a small earpiece while fishing with a seed kid, his phone glowing on the teak beside him and the dog watching the line"
+                  src="/storybook/voice-1600.webp"
+                  alt="A smiling mustard seed answers an old rotary phone at a desk late at night."
                   width={1600}
                   height={1067}
                   priority

@@ -26,7 +26,7 @@ const STEPS = [
   { title: 'Write in', text: 'Every engagement starts with a written inquiry. Tell us what you have in mind, from anywhere in the country.' },
   { title: 'Scope it together', text: 'We scope it in one conversation, on video or by phone, then send a set package price in writing before any work starts.' },
   { title: 'Watch it take shape', text: 'You see the build on a live preview link as it comes together. Changes to what we build are included.' },
-  { title: 'Own all of it', text: 'The code, the domain, and every account are yours. We hand you something you can run without us.' },
+  { title: 'Managed end to end', text: 'We build it, then run it, update it and keep it improving for you. The code, the domain and every account stay yours.' },
 ];
 
 const FAQ = [

@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import localFont from 'next/font/local';
-import { DM_Sans, Playfair_Display, Cormorant_Garamond, JetBrains_Mono, Oswald, Unbounded, Figtree } from 'next/font/google';
+import { DM_Sans, Playfair_Display, Cormorant_Garamond, JetBrains_Mono, Oswald, Unbounded, Figtree, Shrikhand } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import Navbar from '@/components/Navbar';
@@ -23,12 +23,15 @@ import './studio-chrome.css';
 import './riviera-type.css';
 import './flathead-home.css';
 import './flathead-theme.css';
+import './studio-theme.css';
 import RivieraScope from '@/components/pop/RivieraScope';
 import { rivieraHeadScript } from '@/lib/riviera-scope';
 
 // DM Sans and Playfair now set only the admin and portal (public pages wear
 // Unbounded and Figtree), so they no longer preload and compete with the hero.
-const bodyFont = DM_Sans({ subsets: ['latin'], style: ['normal'], display: 'optional', preload: false, variable: '--font-body' });
+// The studio edition (2026-10-09) sets every public page in DM Sans with Shrikhand for the accent line, as Mustard Studio does.
+const bodyFont = DM_Sans({ subsets: ['latin'], style: ['normal'], display: 'swap', variable: '--font-body' });
+const accentFont = Shrikhand({ subsets: ['latin'], weight: '400', display: 'swap', variable: '--font-shrikhand' });
 const displayFont = Playfair_Display({ subsets: ['latin'], style: ['normal', 'italic'], display: 'optional', preload: false, variable: '--font-display' });
 const serifFont = Cormorant_Garamond({ subsets: ['latin'], weight: ['300', '400', '500', '600'], style: ['normal', 'italic'], display: 'swap', preload: false, variable: '--font-serif' });
 const monoFont = JetBrains_Mono({ subsets: ['latin'], weight: ['400', '500', '700'], display: 'swap', preload: false, variable: '--font-mono' });
@@ -40,20 +43,20 @@ const condensedFont = Oswald({ subsets: ['latin'], weight: ['400', '500', '600',
 const rivieraFont = Unbounded({ subsets: ['latin'], display: 'swap', preload: false, variable: '--font-riviera' });
 const capsFont = Figtree({ subsets: ['latin'], style: ['normal', 'italic'], display: 'swap', preload: false, variable: '--font-caps' });
 
-const flatheadDisplay = localFont({src:[{path:'../public/flathead/instrument-serif.woff2',weight:'400',style:'normal'},{path:'../public/flathead/instrument-serif-italic.woff2',weight:'400',style:'italic'}],display:'swap',variable:'--font-flathead-display'});
-const flatheadBody = localFont({src:[{path:'../public/flathead/manrope.woff2',weight:'400',style:'normal'},{path:'../public/flathead/manrope-semibold.woff2',weight:'600',style:'normal'},{path:'../public/flathead/manrope-bold.woff2',weight:'700',style:'normal'}],display:'swap',variable:'--font-flathead-body'});
+const flatheadDisplay = localFont({src:[{path:'../public/flathead/instrument-serif.woff2',weight:'400',style:'normal'},{path:'../public/flathead/instrument-serif-italic.woff2',weight:'400',style:'italic'}],display:'swap',preload:false,variable:'--font-flathead-display'});
+const flatheadBody = localFont({src:[{path:'../public/flathead/manrope.woff2',weight:'400',style:'normal'},{path:'../public/flathead/manrope-semibold.woff2',weight:'600',style:'normal'},{path:'../public/flathead/manrope-bold.woff2',weight:'700',style:'normal'}],display:'swap',preload:false,variable:'--font-flathead-body'});
 
 export const metadata: Metadata = buildMetadata();
 
 export const viewport: Viewport = {
-  themeColor: '#fcf8eb',
+  themeColor: '#fcfaf3',
   width: 'device-width',
   initialScale: 1,
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${bodyFont.variable} ${displayFont.variable} ${serifFont.variable} ${monoFont.variable} ${condensedFont.variable} ${rivieraFont.variable} ${capsFont.variable} ${flatheadDisplay.variable} ${flatheadBody.variable}`}>
+    <html lang="en" suppressHydrationWarning className={`${bodyFont.variable} ${displayFont.variable} ${serifFont.variable} ${monoFont.variable} ${condensedFont.variable} ${rivieraFont.variable} ${capsFont.variable} ${flatheadDisplay.variable} ${flatheadBody.variable} ${accentFont.variable}`}>
       <head>
         {/* Sets html.riv before the first paint, so the Riviera type never flashes. */}
         <script dangerouslySetInnerHTML={{ __html: rivieraHeadScript() }} />

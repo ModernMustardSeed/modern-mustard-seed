@@ -17,7 +17,7 @@ const STUDIO_LINKS = [
   { label: 'The Work', href: '/work' },
   { label: 'All Services', href: '/services' },
   { label: 'How We Work', href: '/work-with-us' },
-  { label: 'About Sarah', href: '/about' },
+  { label: 'About the Studio', href: '/about' },
   { label: 'Journal', href: '/blog' },
   { label: 'Contact', href: '/contact' },
 ];
@@ -164,87 +164,34 @@ export default function Navbar({ menuOnly = false }: { menuOnly?: boolean } = {}
 
   return (
     <>
-      {!menuOnly && <nav
-        data-studio-nav="true"
-        className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 bg-[#fbf5ea]/95 backdrop-blur-md border-b-2 border-[#0b3b44] ${
-          scrolled ? 'shadow-[0_3px_0_0_rgba(11,59,68,0.12)]' : ''
-        }`}
-      >
-        <div className="max-w-7xl mx-auto px-6 md:px-8 py-3.5 flex justify-between items-center gap-4">
-          <Link href="/" className="flex items-center gap-2.5 hover:opacity-90 transition-opacity">
-            <Image
-              src="/flathead/mascot/mr-mustard-sprout-160.webp"
-              alt="Mr. Mustard"
-              width={160}
-              height={229}
-              sizes="40px"
-              className="h-9 w-auto md:h-10"
-              loading="eager"
-            />
-            <span className="font-sans text-sm md:text-base tracking-[0.06em] text-[#0b3b44] uppercase font-extrabold">
-              Modern Mustard Seed
-            </span>
+      {!menuOnly && <nav className={`studio-bar${scrolled ? ' is-scrolled' : ''}`} aria-label="Main navigation">
+        <div className="studio-bar-in">
+          <Link href="/" className="studio-bar-brand" aria-label="Modern Mustard Seed home">
+            <Image src="/storybook/seed-mark.webp" alt="" width={160} height={160} sizes="40px" loading="eager" />
+            <span>Modern Mustard Seed</span>
           </Link>
 
-          <div className="flex items-center gap-3 sm:gap-4 xl:gap-6">
-            {/* The inline link row rides at xl. Below xl it folds into the
-                hamburger and the one door that earns its keep, Inquire, stays
-                out as a pill. */}
-            <div className="hidden xl:flex items-center gap-6">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.label}
-                  href={link.href}
-                  className="text-[11px] uppercase tracking-[0.2em] transition-colors font-body font-bold text-[#0b3b44]/70 hover:text-[#0a7c78]"
-                >
-                  {link.label}
-                </Link>
-              ))}
-              <Link
-                href="/portal"
-                className="px-4 py-2 text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0b3b44] bg-white rounded-full border-2 border-[#0b3b44] hover:bg-[#FFF8E6] transition-all"
-              >
-                Clients
+          {/* What we build, by name, on every page: the clearest answer to
+              "what is this studio" for a visitor, for Google and for Bing. */}
+          <div className="studio-bar-links">
+            {navLinks.map((link) => (
+              <Link key={link.href} href={link.href} aria-current={pathname === link.href ? 'page' : undefined}>
+                {link.label}
               </Link>
-              <Link
-                href="/book"
-                className="px-5 py-2.5 text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0b3b44] bg-[#f5b700] rounded-full border-2 border-[#0b3b44] shadow-[3px_3px_0_0_#0b3b44] hover:shadow-[4px_4px_0_0_#0b3b44] hover:-translate-y-0.5 transition-all"
-              >
-                Book a Call
-              </Link>
-            </div>
+            ))}
+          </div>
 
-            {/* Between the phone and the full row, the inquiry is the door. */}
-            <Link
-              href="/book"
-              className="hidden sm:inline-flex xl:hidden items-center px-4 py-2.5 text-[10px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0b3b44] bg-[#f5b700] rounded-full border-2 border-[#0b3b44] shadow-[3px_3px_0_0_#0b3b44] hover:shadow-[4px_4px_0_0_#0b3b44] hover:-translate-y-0.5 transition-all"
-            >
-              Book a Call
-            </Link>
-
-            {/* Hamburger: top right, ALL breakpoints, opens the full menu. */}
+          <div className="studio-bar-end">
+            <Link href="/book" className="studio-bar-cta">Book a call <span aria-hidden="true">↗</span></Link>
             <button
-              className="flex flex-col justify-center items-center w-10 h-10 gap-1.5 rounded-full border-2 border-[#0b3b44] bg-white shadow-[2px_2px_0_0_#0b3b44] hover:shadow-[3px_3px_0_0_#0b3b44] hover:-translate-y-0.5 transition-all"
+              type="button"
+              className={`studio-bar-menu${menuOpen ? ' is-open' : ''}`}
               onClick={() => setMenuOpen((o) => !o)}
               aria-label={menuOpen ? 'Close menu' : 'Open menu'}
               aria-expanded={menuOpen}
               aria-controls="site-mega-menu"
             >
-              <span
-                className={`block w-5 h-0.5 bg-[#0b3b44] transition-all duration-300 ${
-                  menuOpen ? 'rotate-45 translate-y-[4px]' : ''
-                }`}
-              />
-              <span
-                className={`block w-5 h-0.5 bg-[#0b3b44] transition-all duration-300 ${
-                  menuOpen ? 'opacity-0' : ''
-                }`}
-              />
-              <span
-                className={`block w-5 h-0.5 bg-[#0b3b44] transition-all duration-300 ${
-                  menuOpen ? '-rotate-45 -translate-y-[4px]' : ''
-                }`}
-              />
+              <span /><span /><span />
             </button>
           </div>
         </div>
@@ -267,25 +214,17 @@ export default function Navbar({ menuOnly = false }: { menuOnly?: boolean } = {}
       >
         {/* Backdrop */}
         <div
-          className="absolute inset-0 bg-[#0b3b44]/40 backdrop-blur-sm"
+          className="absolute inset-0 bg-[#141210]/40 backdrop-blur-sm"
           onClick={() => setMenuOpen(false)}
           aria-hidden="true"
         />
 
         {/* Panel */}
         <div
-          className={`absolute right-0 top-0 h-full w-full sm:max-w-xl bg-[#0b3b44] text-[#fbf5ea] border-l-2 border-[#f5b700] overflow-y-auto transition-transform duration-300 ${
+          className={`absolute right-0 top-0 h-full w-full sm:max-w-xl bg-[#141210] text-[#fcfaf3] border-l border-[#f5b700] overflow-y-auto transition-transform duration-300 ${
             menuOpen ? 'translate-x-0' : 'translate-x-full'
           }`}
         >
-          <div
-            aria-hidden="true"
-            className="absolute inset-0 z-0 pointer-events-none"
-            style={{
-              backgroundImage: 'radial-gradient(rgba(245,183,0,0.22) 1.3px, transparent 1.4px)',
-              backgroundSize: '18px 18px',
-            }}
-          />
 
           <div className="relative z-10 min-h-full flex flex-col px-7 md:px-11 py-7">
             <div className="flex items-center justify-between mb-10">

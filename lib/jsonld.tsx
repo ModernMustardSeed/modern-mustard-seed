@@ -33,6 +33,11 @@ export const orgJsonLd = {
   disambiguatingDescription: 'US AI studio serving small, medium and large businesses in every state, founded by Sarah Scarano and based in Kalispell, Montana: agentic systems, AI agents and voice receptionists, and websites that work for you, built to be found by Google and AI assistants, plus custom software and marketing. Not the condiment, the plant or the decor brand.',
   logo: `${SITE.url}/brand/logo-lockup.png`,
   founder: { '@id': PERSON_ID },
+  // The team on the homepage (2026-10-09): Sarah builds, Anthony runs sales and marketing.
+  employee: [
+    { '@id': PERSON_ID },
+    { '@type': 'Person', '@id': `${SITE.url}/about#anthony-scarano`, name: 'Anthony Scarano', givenName: 'Anthony', familyName: 'Scarano', jobTitle: 'Sales and Marketing', worksFor: { '@id': ORG_ID }, spouse: { '@id': PERSON_ID } },
+  ],
   telephone: SITE.phoneE164, email: SITE.email,
   address: {
     '@type': 'PostalAddress', addressLocality: SITE.city, addressRegion: SITE.region,
