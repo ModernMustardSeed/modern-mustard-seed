@@ -154,8 +154,8 @@ export default function BookPage() {
               <span className={`${s.tape} ${s.tapeL}`} aria-hidden="true" />
               <span className={`${s.tape} ${s.tapeR}`} aria-hidden="true" />
               <Image
-                src="/art/riviera/book-1600.webp"
-                alt="Painting: a sesame-seed host with a leather reservation book welcomes the Mustard family to a beach club of Tiffany-blue umbrellas, Mr. Mustard showing the booking on his phone as the kids and dog run for the sand"
+                src="/storybook/software-1600.webp"
+                alt="A mustard seed checks off a day on a giant calendar while a paper airplane message flies to a happy customer."
                 width={1600}
                 height={1067}
                 priority
@@ -205,7 +205,7 @@ export default function BookPage() {
                   style={{ '--s': step.crop.s, '--ox': step.crop.ox, '--oy': step.crop.oy } as CSSProperties}
                 >
                   {/* The crop zooms in about 2x, so ask for twice the pixels to stay sharp. */}
-                  <Image src="/art/riviera/book-1600.webp" alt="" fill sizes="(min-width: 900px) 760px, 200vw" />
+                  <Image src="/storybook/software-1600.webp" alt="" fill sizes="(min-width: 900px) 760px, 200vw" />
                   <span className={`${s.bubble} ${s.bubbleRight} ${s.panelBubble}`} aria-hidden="true">{step.bubble}</span>
                   <span className={s.narr} aria-hidden="true">{step.narr}</span>
                 </div>

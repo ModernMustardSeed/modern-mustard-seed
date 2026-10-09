@@ -240,8 +240,8 @@ export default function VoiceAgentsPage() {
               <div className="lg:col-span-6">
                 <figure className="relative rotate-[-2deg] rounded-[2px] border-[3px] border-[#fbf5ea] bg-[#fbf5ea] p-2.5 shadow-[10px_10px_0_0_#f5b700]">
                   <Image
-                    src="/art/riviera/voice-1600.webp"
-                    alt="Painting: on the stern of a yacht in late afternoon light, Mr. Mustard laughs into a small earpiece while fishing with a seed kid, his phone glowing on the teak beside him and the dog watching the line"
+                    src="/storybook/voice-1600.webp"
+                    alt="A smiling mustard seed answers an old rotary phone at a desk late at night."
                     width={1600}
                     height={1067}
                     sizes="(min-width: 1024px) 48vw, 92vw"

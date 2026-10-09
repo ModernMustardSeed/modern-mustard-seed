@@ -147,7 +147,7 @@ html.riv main :is(input, textarea, select):focus-visible { outline: 2px solid #1
 html.riv main :is(button, a):focus-visible { outline: 3px solid #f5b700; outline-offset: 3px; box-shadow: 0 0 0 6px #141210; }
 
 /* The old dark sea becomes the studio's ink and teal. */
-html.riv main :is([class*='bg-[#0b3b44]'], [class*='bg-[#0B3B44]']) { background-color: #141210; }
+html.riv main :is([class*='bg-[#0b3b44]'], [class*='bg-[#0B3B44]'], [class*='bg-[#103c54]']) { background-color: #141210; }
 html.riv main :is([class*='bg-[#0e5f63]'], [class*='bg-[#0a7c78]']) { background-color: #0f4c47; }
 
 /* The mega menu, in the studio's ink. */
