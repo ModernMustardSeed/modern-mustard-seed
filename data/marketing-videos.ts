@@ -19,6 +19,9 @@
  * /video paths on disk and HEADs https URLs.
  */
 
+/** The MMS cartoon music commercials. First in the array so they lead the page. */
+export const COMMERCIALS_SERIES = 'MMS commercials';
+
 /** The series label shared by every film hosted on mustardstudio.modernmustardseed.com. */
 export const STUDIO_SERIES = 'Mustard Studio films';
 
@@ -62,6 +65,37 @@ export type MarketingVideo = {
 };
 
 export const MARKETING_VIDEOS: MarketingVideo[] = [
+  {
+    id: 'does-it-work-for-you',
+    title: 'Does It Work for You?',
+    runtime: 98.5,
+    formats: [
+      { file: '/video/commercials/does-it-work-16x9.mp4', label: '16:9', width: 1920, height: 1080 },
+      { file: '/video/commercials/does-it-work-9x16.mp4', label: '9:16', width: 1080, height: 1920 },
+      { file: '/video/commercials/does-it-work-ad-16x9.mp4', label: '36s ad 16:9', width: 1920, height: 1080 },
+      { file: '/video/commercials/does-it-work-ad-9x16.mp4', label: '36s ad 9:16', width: 1080, height: 1920 },
+    ],
+    poster: '/video/commercials/does-it-work-poster.jpg',
+    summary:
+      'Cartoon music commercial that asks the owner straight: does your website bring you leads, does it bring people through the door? Bea the bike-shop owner, a lazy laptop in a hammock, then the site that gets found on Google and ChatGPT, answers, books and texts every lead back. Sarah, Anthony and Mr. Mustard. Not posted yet.',
+    runsAt: [],
+    watchUrl: 'https://claude.ai/artifact/PmMdbTLWuAyNbvMTNmvSXK',
+    source: 'marketing/does-it-work-2026-10-08',
+    series: COMMERCIALS_SERIES,
+  },
+  {
+    id: 'they-say-your-name',
+    title: 'They Say Your Name',
+    runtime: 97.5,
+    formats: [{ file: '/video/tv/they-say-your-name.mp4', label: '16:9', width: 1280, height: 720 }],
+    poster: '/video/tv/they-say-your-name.webp',
+    summary:
+      'Cartoon music commercial: when someone asks Google or ChatGPT who the best in town is, one name comes back. Dale the plumber, Sarah, Anthony and Mr. Mustard. Lyrics burned in.',
+    runsAt: ['data/flathead-films.ts'],
+    watchUrl: 'https://claude.ai/artifact/Kz5W7piQgS5qAYAEwZxgon',
+    source: 'marketing/they-say-your-name-2026-10-07',
+    series: COMMERCIALS_SERIES,
+  },
   {
     id: 'mms-brand-film',
     title: 'A Wonderful Time To Be Alive',
