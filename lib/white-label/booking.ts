@@ -139,6 +139,7 @@ export type BookResult = { ok: true; label: string } | { ok: false; reason: 'inv
 export async function bookSlot(
   clientId: string,
   input: { startsAt: string; name: string; phone?: string | null; matter?: string | null; callId?: string | null },
+  opts: { dryRun?: boolean } = {},
 ): Promise<BookResult> {
   const db = getSupabase();
   const valid = window().find((s) => s.startsAt === input.startsAt);
@@ -156,7 +157,7 @@ export async function bookSlot(
   };
   // Past bookings fall off after two weeks so the row never grows without end.
   const keep = current.filter((b) => Date.parse(b.startsAt) > Date.now() - 14 * 86_400_000);
-  if (db) {
+  if (db && !opts.dryRun) {
     await db.from('app_state').upsert({ key: stateKey(clientId), value: { bookings: [...keep, booking] }, updated_at: new Date().toISOString() });
   }
   return { ok: true, label: valid.label };
