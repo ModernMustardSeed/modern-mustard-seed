@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import IntakeForm from '@/components/IntakeForm';
 import { resolveIntake } from '@/lib/intake-resolve';
+import { listIntakeFiles } from '@/lib/intake-files';
 import { getSupabase } from '@/lib/supabase';
 import { buildMetadata } from '@/lib/seo';
 
@@ -25,7 +26,7 @@ export const metadata = buildMetadata({
  */
 
 const STEPS = [
-  { n: '01', title: 'You fill this out', detail: 'About ten minutes. Skip anything you are not sure about.' },
+  { n: '01', title: 'You fill this out', detail: 'About ten minutes, and it saves as you go. Skip anything you are not sure about.' },
   { n: '02', title: 'We build it', detail: 'Your site, written and designed around your answers and your photos.' },
   { n: '03', title: 'You review it', detail: 'Ask for anything you want changed. Changes are always included.' },
 ];
@@ -38,6 +39,17 @@ export default async function WelcomePage({ params }: { params: Promise<{ key: s
   // The form is tailored to the business: lib/intake-profiles.ts.
   const client = await resolveIntake(supabase, key);
   if (!client) notFound();
+
+  /* What they already gave us, so a second visit (or a phone that reloaded the
+   * tab) picks up exactly where they left off instead of a blank form. */
+  const [{ data: saved }, files] = await Promise.all([
+    supabase.from('client_intake').select('answers, status, submitted_at, updated_at').eq('client_email', client.email).maybeSingle(),
+    listIntakeFiles(supabase, client.email),
+  ]);
+  const savedAnswers: Record<string, string> = {};
+  for (const [k, v] of Object.entries((saved?.answers ?? {}) as Record<string, unknown>)) {
+    if (typeof v === 'string') savedAnswers[k] = v;
+  }
 
   const company = client.company || 'your business';
   // Greets the business, not the person: Sarah, 2026-10-05, "say Lawn Dogs, not Garrett".
@@ -75,7 +87,17 @@ export default async function WelcomePage({ params }: { params: Promise<{ key: s
           ))}
         </ol>
 
-        <IntakeForm intakeKey={key} company={company} profile={client.profile} />
+        <IntakeForm
+          intakeKey={key}
+          company={company}
+          profile={client.profile}
+          saved={{
+            answers: savedAnswers,
+            submittedAt: (saved?.status === 'submitted' ? (saved.submitted_at as string | null) : null) ?? null,
+            updatedAt: (saved?.updated_at as string | null) ?? null,
+            files: files.map((f) => ({ label: f.label, url: f.url, kind: f.kind })),
+          }}
+        />
       </div>
     </div>
   );

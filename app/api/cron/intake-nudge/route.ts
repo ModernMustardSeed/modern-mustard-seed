@@ -131,6 +131,36 @@ export async function GET(req: Request) {
   }
 
   /*
+   * A welcome intake started and not sent. The form autosaves (since
+   * 2026-10-08), so a client who typed half of it and closed the tab has left
+   * real answers and photos on the card. Sarah hears about it after a day
+   * rather than finding out at the kickoff call.
+   */
+  const { data: drafts } = await db
+    .from('client_intake')
+    .select('client_email, answers, updated_at')
+    .eq('status', 'in_progress')
+    .lt('updated_at', new Date(now - 20 * 3600_000).toISOString())
+    .gte('updated_at', new Date(now - 14 * 86400_000).toISOString())
+    .limit(50);
+  for (const d of drafts ?? []) {
+    const email = d.client_email as string;
+    const answered = Object.entries((d.answers ?? {}) as Record<string, unknown>).filter(
+      ([k, v]) => k !== 'kind' && k !== 'domain' && typeof v === 'string' && v.trim() !== '',
+    ).length;
+    const { data: c } = await db.from('clients').select('company').eq('email', email).maybeSingle();
+    const { count } = await db
+      .from('client_files')
+      .select('id', { count: 'exact', head: true })
+      .eq('client_email', email)
+      .like('url', '%/client-intake/intake/client/%');
+    if (!answered && !count) continue;
+    results.slaFlags.push(
+      `intake started, not sent: ${(c?.company as string | null) ?? email}, ${answered} answer${answered === 1 ? '' : 's'} and ${count ?? 0} file${count === 1 ? '' : 's'} saved, last touched ${(d.updated_at as string).slice(0, 10)}. ${SITE.url}/admin/clients/${encodeURIComponent(email)}`,
+    );
+  }
+
+  /*
    * ── 3. The acquisition half of the loop ──────────────────────────────────
    *
    * The two checks above watch what happens AFTER somebody pays. Everything
