@@ -13,11 +13,14 @@ export const facebookUrl = 'https://www.facebook.com/modernmustardseed';
 // Playbooks came out of it. The studio's front row is the work and the
 // disciplines now; the self-serve catalog still answers at its own URLs, it is
 // simply not advertised from the top of every page.
+/** The header row on every public page: what the studio builds, by name (2026-10-09). */
 export const navLinks = [
-  { label: 'The Work', href: '/work' },
-  { label: 'Services', href: '/services' },
-  { label: 'The Studio', href: '/about' },
-  { label: 'Journal', href: '/blog' },
+  { label: 'Websites', href: '/websites' },
+  { label: 'AI Voice Agents', href: '/voice-agents' },
+  { label: 'Custom Software', href: '/services' },
+  { label: 'Agentic Systems', href: '/ai' },
+  { label: 'Marketing', href: '/marketing' },
+  { label: 'Our Work', href: '/work' },
 ];
 
 export const bookingUrl = '/?book=1';

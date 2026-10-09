@@ -1,414 +1,316 @@
-/* The Riviera page hero. Sand, deep sea, Tiffany blue, lagoon, mustard and
-   coral. Display type in Unbounded Bold with a lighter accent word, labels,
-   reading type and italics in Figtree; no outlined or stroked type, no cobalt.
-   Motion is the entrance and the ticker only, all of it off under
-   prefers-reduced-motion. The card stays light: pages hand in their own lead
-   and note colors, which are set for sand. */
+/* The inner-page cover, studio edition (2026-10-09). Mustard Studio's
+   editorial system: warm paper, ink rules, a JetBrains Mono label line, a
+   tight DM Sans headline with the accent line in Shrikhand on a mustard
+   underline, and the page's film still in an ink frame on a mustard plate.
+   Decoration is aria-hidden; motion is the entrance and the ticker, both
+   still under prefers-reduced-motion. Class names are unchanged so the
+   pages that compose their own cover (websites, chief, talking website)
+   keep working. */
 
 .hero {
-  --ink: #0b3b44;
-  --sand: #fbf5ea;
-  --card: #fffaf1;
-  --tiffany: #81d8d0;
-  --lagoon: #0a7c78;
+  --ink: #141210;
+  --ink-2: #4a4339;
+  --paper: #fcfaf3;
   --mustard: #f5b700;
-  --coral: #ff6f59;
-  --wave: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 8'%3E%3Cpath d='M0 4c5 0 5-3 10-3s5 3 10 3 5-3 10-3 5 3 10 3' fill='none' stroke='%2381d8d0' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E");
+  --teal: #0f4c47;
+  --pale: #e8ecd0;
+  --mono: var(--font-mono), 'JetBrains Mono', ui-monospace, monospace;
+  --sans: 'DM Sans', 'DM Sans Fallback', system-ui, sans-serif;
+  --disp: var(--font-shrikhand), 'Shrikhand', Georgia, serif;
   position: relative;
   isolation: isolate;
   overflow-x: clip;
-  padding: 112px 6vw 0;
-  background: transparent;
+  padding: 66px 0 0;
+  background: var(--paper);
   color: var(--ink);
-  font-family: var(--font-caps), sans-serif;
+  font-family: var(--sans);
+  border-bottom: 1px solid var(--ink);
 }
 
-/* ---------- The card, under its awning ---------- */
+/* ---------- The cover: copy left, the still right, a rule between ---------- */
 .panel {
   position: relative;
-  max-width: 1280px;
-  margin: 0 auto 70px;
   display: grid;
-  grid-template-columns: minmax(0, 1.02fr) minmax(0, .98fr);
-  gap: 56px;
-  align-items: center;
-  padding: 104px 60px 64px;
-  background: var(--card);
-  border-radius: 34px;
-  box-shadow: 0 40px 80px -48px #0b3b4480, 0 0 0 1px #0b3b4410;
-  animation: panelIn .8s cubic-bezier(.2, .8, .2, 1) both;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: stretch;
+  min-height: min(720px, calc(100svh - 66px));
+  animation: panelIn .7s cubic-bezier(.2, .8, .2, 1) both;
 }
-@keyframes panelIn { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+@keyframes panelIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
 
-/* The striped awning across the top of the card, its scalloped edge hanging over. */
-.cornice {
-  position: absolute;
-  z-index: 1;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 38px;
-  border-radius: 34px 34px 0 0;
-  background: repeating-linear-gradient(90deg, var(--tiffany) 0 40px, #fff 40px 80px);
-  pointer-events: none;
-}
-.cornice::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 100%;
-  height: 16px;
-  background: repeating-linear-gradient(90deg, var(--tiffany) 0 40px, #fff 40px 80px);
-  -webkit-mask: radial-gradient(circle at 20px 0, #000 19.5px, transparent 20px) 0 0 / 40px 16px repeat-x;
-  mask: radial-gradient(circle at 20px 0, #000 19.5px, transparent 20px) 0 0 / 40px 16px repeat-x;
-  filter: drop-shadow(0 4px 3px #0b3b4414);
+.cornice, .ground, .bloom, .splat, .rays, .lines, .dots, .pow, .mascot { display: none; }
+.mascotImg { width: 100%; height: auto; }
+
+.copy {
+  position: relative;
+  z-index: 2;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(48px, 6vw, 96px) clamp(16px, 3.4vw, 56px);
+  border-right: 1px solid var(--ink);
 }
 
-.ground { position: absolute; inset: 0; overflow: hidden; border-radius: 34px; pointer-events: none; }
-.ground i { position: absolute; display: block; }
-/* A low sun rising behind the postcard. */
-.bloom {
-  right: -8%;
-  bottom: -36%;
-  width: 64%;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: radial-gradient(circle, #f5b70040 0, #f5b70018 36%, transparent 64%);
-}
-/* A line of waves along the bottom of the card. */
-.splat {
-  left: 0;
-  right: 0;
-  bottom: 22px;
-  height: 10px;
-  background: var(--wave) 0 50% / 22px 10px repeat-x;
-  opacity: .8;
-}
-
-/* The luggage tag. */
+/* The issue tag: a mono line across the top of the cover. */
 .issue {
   position: absolute;
   z-index: 3;
-  top: 66px;
-  left: 40px;
-  margin: 0;
+  top: 0;
+  left: 0;
+  right: 50%;
   display: flex;
-  align-items: baseline;
-  gap: 12px;
-  padding: 9px 18px 9px 30px;
-  background: var(--ink);
-  color: #fff;
-  border-radius: 8px 999px 999px 8px;
-  animation: dropIn .6s .45s cubic-bezier(.3, 1.3, .5, 1) both;
+  align-items: center;
+  gap: 14px;
+  margin: 0;
+  padding: 12px clamp(16px, 3.4vw, 56px);
+  border-bottom: 1px solid var(--ink);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
 }
-.issue::before { content: ''; position: absolute; left: 11px; top: 50%; width: 9px; height: 9px; margin-top: -4.5px; border-radius: 50%; background: var(--card); }
-.issue b { font-family: var(--font-riviera), system-ui, sans-serif; font-style: normal; font-weight: 700; font-size: 21px; line-height: 1; color: var(--mustard); }
-.issue span { font-family: var(--font-caps), sans-serif; font-size: 10px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; }
-.issue span + span::before { content: '· '; color: var(--tiffany); }
-@keyframes dropIn { from { opacity: 0; transform: translateY(-14px); } to { opacity: 1; transform: none; } }
+.issue b { font-family: var(--mono); font-weight: 500; color: var(--ink); background: var(--mustard); padding: 2px 7px; border: 1px solid var(--ink); }
+.issue span + span::before { content: '/ '; opacity: .5; }
+.withIssue .copy { padding-top: clamp(84px, 8vw, 120px); }
 
-/* With a tag on the card, the copy starts under it. */
-.withIssue .panel { padding-top: 150px; }
-
-/* ---------- The copy: the page's own words, dressed ---------- */
-/* The words start at the top of the card, never pushed down to the middle of a tall picture. */
-.copy { position: relative; z-index: 2; min-width: 0; align-self: start; }
-.eyebrow { margin-bottom: 24px; }
-/* The eyebrow: tracked capitals after a little sun, a wave behind. */
+/* The eyebrow and pills: mono labels. */
+.eyebrow { margin-bottom: 22px; }
 .pill,
 .eyebrow > span:only-child,
 .eyebrow > p:only-child {
-  position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 12px;
+  gap: .6em;
   margin: 0;
   padding: 0;
-  background: none;
-  color: var(--lagoon);
-  box-shadow: none;
-  font-family: var(--font-caps), sans-serif;
-  font-size: 12.5px;
-  font-weight: 600;
-  line-height: 1.3;
-  letter-spacing: .22em;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: .14em;
   text-transform: uppercase;
-  font-synthesis: none;
-  transform: none;
+  line-height: 1.5;
+  color: var(--ink);
+  background: none;
+  border: 0;
 }
 .pill::before,
 .eyebrow > span:only-child::before,
 .eyebrow > p:only-child::before {
   content: '';
   flex: none;
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: var(--mustard);
-  box-shadow: 0 0 0 3px #f5b70030;
+  border: 1px solid var(--ink);
 }
-.pill::after,
-.eyebrow > span:only-child::after,
-.eyebrow > p:only-child::after {
-  content: '';
-  flex: none;
-  width: 34px;
-  height: 8px;
-  background: var(--wave) 0 50% / 17px 8px repeat-x;
-}
-.eyebrow:has(.back) { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 18px; }
+.pill { margin: 0 10px 10px 0; padding: 6px 12px; border: 1px solid var(--ink); border-radius: 3px; background: #fff; }
+.eyebrow:has(.back) { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; }
 .back {
   display: inline-flex;
   align-items: center;
-  min-height: 44px;
-  font-family: var(--font-caps), sans-serif;
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: .14em;
+  gap: .4em;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: .12em;
   text-transform: uppercase;
   color: var(--ink);
-  border-bottom: 2px solid var(--tiffany);
-  line-height: 1;
-  font-synthesis: none;
+  text-decoration: none;
+  border-bottom: 2px solid var(--mustard);
 }
-.back:hover { color: var(--lagoon); }
-/* Beats the editorial [data-studio-page] h1 rule so every page sets the same.
-   The accent comes from app/riviera-type.css. */
+.back:hover { border-color: var(--ink); }
+
 .hero .h1 {
   margin: 0;
-  font-family: var(--font-riviera), 'Unbounded', system-ui, sans-serif;
+  font-family: var(--sans);
   font-weight: 700;
-  font-size: clamp(2.3rem, 4.2vw, 4.3rem);
-  line-height: 1.06;
-  letter-spacing: -.04em;
-  text-transform: none;
+  font-style: normal;
+  font-size: clamp(2.6rem, 5vw, 4.9rem);
+  line-height: .98;
+  letter-spacing: -.05em;
   color: var(--ink);
   text-wrap: balance;
-  font-optical-sizing: auto;
 }
+.hero .h1 em {
+  font-family: var(--disp);
+  font-weight: 400;
+  font-style: normal;
+  font-size: .92em;
+  letter-spacing: -.005em;
+  color: var(--ink);
+  background: linear-gradient(transparent 80%, var(--mustard) 80%, var(--mustard) 95%, transparent 95%);
+  padding: 0 .05em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
 .lead,
 .copy > p {
-  margin: 24px 0 0;
-  max-width: 36rem;
-  font-size: 18px;
-  line-height: 1.65;
-  font-weight: 450;
-  color: #2c4c52;
+  max-width: 560px;
+  margin-top: 22px;
+  font-family: var(--sans);
+  font-size: clamp(1.05rem, 1.3vw, 1.18rem);
+  line-height: 1.6;
+  color: var(--ink-2);
 }
 .copy > p + p { margin-top: 14px; }
-.note { font-size: 15px !important; color: #4c6266 !important; }
-.actions { margin-top: 34px; display: flex; flex-wrap: wrap; gap: 14px 16px; }
+.note { font-family: var(--mono) !important; font-size: 12px !important; letter-spacing: .04em; color: var(--ink-2) !important; }
+
+/* ---------- Buttons ---------- */
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 14px; margin-top: 30px; }
 .cta,
 .ctaAlt {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 14px;
-  min-height: 56px;
-  padding: 0 28px;
-  border: 0;
-  border-radius: 999px;
-  font-family: var(--font-caps), sans-serif;
+  gap: .5em;
+  min-height: 50px;
+  padding: .7em 1.35em;
+  border: 1px solid var(--ink);
+  border-radius: 3px;
+  font-family: var(--sans);
   font-size: 15px;
-  font-weight: 600;
-  letter-spacing: .01em;
-  text-transform: none;
-  transition: transform .25s, box-shadow .25s, background .25s;
-}
-/* These actions are also used below the hero, outside its color variables. */
-.cta { background: var(--ink, #0b3b44); color: #fff; box-shadow: 0 14px 30px -14px #0b3b44cc; }
-.cta span { color: var(--mustard, #f5b700); }
-.ctaAlt { background: #fff; color: var(--ink, #0b3b44); box-shadow: inset 0 0 0 1.5px #0b3b4433; }
-.ctaAlt span { color: var(--lagoon, #0a7c78); }
-.cta:hover { transform: translateY(-2px); background: #0e4b56; }
-.ctaAlt:hover { transform: translateY(-2px); box-shadow: inset 0 0 0 2px var(--tiffany, #81d8d0); }
-.cta:focus-visible,
-.ctaAlt:focus-visible { outline: 2px solid var(--lagoon, #0a7c78); outline-offset: 4px; }
-
-/* ---------- The painting, on a postcard ---------- */
-.stage { position: relative; z-index: 1; padding: 22px 18px 30px; }
-.poster {
-  position: relative;
-  margin: 0;
-  rotate: 1.4deg;
-  animation: postIn 1s .15s cubic-bezier(.2, .9, .3, 1) both;
-}
-.paper {
-  position: relative;
-  padding: 12px 12px 14px;
-  background: #fff;
-  border-radius: 20px;
-  box-shadow: 0 40px 70px -40px #0b3b4499, 0 0 0 1px #0b3b4410;
-}
-.paper picture { display: block; position: relative; overflow: hidden; border-radius: 12px; }
-.posterImg { display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; }
-.posterCap {
-  padding: 12px 6px 0;
-  text-align: center;
-  font-family: var(--font-caps), sans-serif;
-  font-style: italic;
-  font-weight: 400;
-  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -.01em;
   line-height: 1.2;
+  text-decoration: none;
+  text-transform: none;
   color: var(--ink);
+  transition: transform .18s cubic-bezier(.34, 1.56, .64, 1), box-shadow .18s, background .18s;
 }
-@keyframes postIn { from { opacity: 0; transform: translateY(-14px) rotate(-3deg); } to { opacity: 1; transform: none; } }
+.cta { background: var(--mustard); }
+.ctaAlt { background: transparent; }
+.cta:hover,
+.ctaAlt:hover { transform: translate(-2px, -2px); box-shadow: 4px 4px 0 var(--ink); }
+.ctaAlt:hover { background: #fff; }
+.cta:focus-visible,
+.ctaAlt:focus-visible { outline: 3px solid var(--mustard); outline-offset: 3px; box-shadow: 0 0 0 6px var(--ink); }
 
-/* The postage stamp: perforated edges, a word in the italic. */
-.sticker {
-  position: absolute;
-  z-index: 4;
-  top: -10px;
-  right: -6px;
-  margin: 0;
+/* ---------- The still: an ink frame on a mustard plate, on a pale disc ---------- */
+.stage {
+  position: relative;
+  z-index: 1;
   display: grid;
   place-items: center;
-  width: clamp(64px, 5vw, 74px);
-  aspect-ratio: 4 / 5;
-  padding: 6px;
-  background: var(--mustard);
-  -webkit-mask: radial-gradient(circle at 50% 50%, transparent 2.1px, #000 2.5px) -3px -3px / 6px 6px, linear-gradient(#000 0 0) 3px 3px / calc(100% - 6px) calc(100% - 6px) no-repeat;
-  mask: radial-gradient(circle at 50% 50%, transparent 2.1px, #000 2.5px) -3px -3px / 6px 6px, linear-gradient(#000 0 0) 3px 3px / calc(100% - 6px) calc(100% - 6px) no-repeat;
-  rotate: 6deg;
-  filter: drop-shadow(0 6px 8px #0b3b4433);
-  animation: stampIn .6s .8s cubic-bezier(.3, 1.5, .5, 1) both;
+  min-width: 0;
+  padding: clamp(40px, 5vw, 72px) clamp(20px, 4vw, 64px);
+  background: radial-gradient(circle at 55% 50%, var(--pale) 0, var(--pale) 36%, transparent 36.2%);
 }
-.sticker::before { content: ''; position: absolute; inset: 6px; border: 1px solid #0b3b4455; border-radius: 3px; }
-.sticker span {
+.poster { position: relative; width: 100%; max-width: 660px; margin: 0; transform: rotate(-1.5deg); }
+.paper {
   position: relative;
-  max-width: 94%;
-  text-align: center;
-  font-family: var(--font-caps), sans-serif;
-  font-style: italic;
-  font-size: clamp(10.5px, .8vw, 12px);
-  font-weight: 500;
-  line-height: 1.05;
-  letter-spacing: -.01em;
-  color: var(--ink);
+  overflow: hidden;
+  border: 1px solid var(--ink);
+  border-radius: 6px;
+  background: #fff;
+  box-shadow: 14px 14px 0 var(--mustard), 14px 14px 0 1px var(--ink);
 }
-@keyframes stampIn { from { opacity: 0; transform: scale(1.6) rotate(-10deg); } to { opacity: 1; transform: none; } }
+.posterImg { display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; }
+.posterCap {
+  padding: 9px 12px;
+  border-top: 1px solid var(--ink);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  background: var(--paper);
+}
 
-/* Mr. Mustard's line, in a speech bubble over the postcard's top corner. */
+/* The seal: a round ink stamp with a mustard ring. */
+.sticker {
+  position: absolute;
+  z-index: 3;
+  right: clamp(10px, 4vw, 48px);
+  top: clamp(18px, 4vw, 44px);
+  display: grid;
+  place-items: center;
+  width: 104px;
+  height: 104px;
+  margin: 0;
+  border-radius: 50%;
+  background: var(--ink);
+  border: 3px solid var(--mustard);
+  transform: rotate(8deg);
+}
+.sticker span {
+  max-width: 78px;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .12em;
+  line-height: 1.3;
+  text-align: center;
+  text-transform: uppercase;
+  color: var(--mustard);
+}
+
+/* Mr. Mustard's speech tag. */
 .bubble {
   position: absolute;
-  z-index: 4;
-  left: -18px;
-  top: 34px;
-  width: max-content;
-  max-width: 240px;
-  padding: 11px 18px 12px;
+  z-index: 3;
+  left: clamp(10px, 3vw, 40px);
+  bottom: clamp(16px, 3vw, 40px);
+  max-width: 230px;
+  padding: 10px 14px;
+  border: 1px solid var(--ink);
+  border-radius: 4px;
   background: #fff;
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.35;
   color: var(--ink);
-  border-radius: 20px 20px 20px 6px;
-  box-shadow: 0 16px 30px -16px #0b3b44aa, 0 0 0 1px #0b3b4412;
-  font-family: var(--font-caps), sans-serif;
-  font-style: italic;
-  font-weight: 500;
-  font-size: 18px;
-  line-height: 1.2;
-  animation: fade .5s 1.3s both;
+  box-shadow: 4px 4px 0 var(--ink);
 }
-@keyframes fade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
 
-/* ---------- The awning ticker ---------- */
-.banner {
-  position: relative;
-  z-index: 2;
-  margin: 0 -6vw 40px;
-  padding-bottom: 12px;
-  background: repeating-linear-gradient(90deg, var(--tiffany) 0 40px, #fff 40px 80px);
-}
-.banner::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 100%;
-  height: 14px;
-  background: repeating-linear-gradient(90deg, var(--tiffany) 0 40px, #fff 40px 80px);
-  -webkit-mask: radial-gradient(circle at 20px 0, #000 19.5px, transparent 20px) 0 0 / 40px 14px repeat-x;
-  mask: radial-gradient(circle at 20px 0, #000 19.5px, transparent 20px) 0 0 / 40px 14px repeat-x;
-}
-.stripAlone { margin: 18px 0 44px; }
-.marquee {
-  position: relative;
-  background: var(--ink);
-  color: var(--sand);
-  overflow: hidden;
-  white-space: nowrap;
-}
-.marquee > div { display: inline-flex; animation: slide 46s linear infinite; }
-.mRun { display: inline-flex; }
+/* ---------- The ticker: ink, mono capitals, mustard plus signs ---------- */
+.banner { overflow: hidden; background: var(--ink); color: var(--paper); border-top: 1px solid var(--ink); }
+.marquee { overflow: hidden; }
+.marquee > div { display: flex; width: max-content; }
+.mRun { display: flex; flex-shrink: 0; }
 .mItem {
   display: inline-flex;
   align-items: center;
-  gap: 24px;
-  padding: 14px 24px 13px 0;
-  font-family: var(--font-caps), sans-serif;
-  font-style: italic;
-  font-size: 20px;
-  font-weight: 400;
-  letter-spacing: -.005em;
+  gap: 2.2rem;
+  padding: 14px 0 14px 2.2rem;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  white-space: nowrap;
 }
-.mItem i { display: block; width: 7px; height: 7px; border-radius: 50%; background: var(--mustard); }
-@keyframes slide { to { transform: translateX(-50%); } }
-
-/* ---------- Tablet: the postcard sits under the copy ---------- */
-@media (max-width: 1023px) {
-  .panel { grid-template-columns: minmax(0, 1fr); gap: 40px; padding: 96px 40px 56px; }
-  .stage { max-width: 640px; width: 100%; justify-self: center; }
+.mItem i { display: inline-block; width: 9px; height: 9px; position: relative; }
+.mItem i::before, .mItem i::after { content: ''; position: absolute; background: var(--mustard); }
+.mItem i::before { left: 4px; top: 0; width: 1.5px; height: 9px; }
+.mItem i::after { top: 4px; left: 0; height: 1.5px; width: 9px; }
+@media (prefers-reduced-motion: no-preference) {
+  .marquee > div { animation: tick 52s linear infinite; }
 }
+@keyframes tick { to { transform: translateX(-50%); } }
+.stripAlone { border-bottom: 1px solid var(--ink); }
 
-/* ---------- Phone ---------- */
+/* ---------- Tablet and phone ---------- */
+@media (max-width: 1024px) {
+  .panel { grid-template-columns: 1fr; min-height: 0; }
+  .copy { border-right: 0; border-bottom: 1px solid var(--ink); }
+  .issue { right: 0; }
+  .stage { padding: 44px 20px 56px; }
+}
 @media (max-width: 760px) {
-  .hero { padding: 92px 16px 0; }
-  .panel { gap: 30px; padding: 80px 22px 44px; margin-bottom: 52px; border-radius: 26px; }
-  .cornice { height: 28px; border-radius: 26px 26px 0 0; background-size: auto; background: repeating-linear-gradient(90deg, var(--tiffany) 0 28px, #fff 28px 56px); }
-  .cornice::after { height: 12px; background: repeating-linear-gradient(90deg, var(--tiffany) 0 28px, #fff 28px 56px); -webkit-mask: radial-gradient(circle at 14px 0, #000 13.5px, transparent 14px) 0 0 / 28px 12px repeat-x; mask: radial-gradient(circle at 14px 0, #000 13.5px, transparent 14px) 0 0 / 28px 12px repeat-x; }
-  .ground { border-radius: 26px; }
-  .issue { top: 54px; left: 18px; padding: 7px 14px 7px 26px; }
-  .withIssue .panel { padding-top: 124px; }
-  .issue b { font-size: 21px; }
-  .issue span { font-size: 9px; }
-  .eyebrow { margin-bottom: 18px; }
-  .pill, .eyebrow > span:only-child, .eyebrow > p:only-child { font-size: 11.5px; letter-spacing: .16em; }
-  .hero .h1 { font-size: clamp(2rem, 9vw, 2.8rem); line-height: 1.08; }
-  .lead, .copy > p { font-size: 16.5px; }
-  .actions { flex-direction: column; align-items: stretch; }
-  .cta, .ctaAlt { justify-content: space-between; padding: 0 24px; }
-  .stage { padding: 14px 4px 24px; }
-  .paper { padding: 8px 8px 10px; border-radius: 16px; }
-  .posterCap { font-size: 16px; }
-  .sticker { width: 58px; top: -8px; right: 0; }
-  .sticker span { font-size: 9.5px; }
-  .bubble { font-size: 15px; max-width: 190px; left: -2px; top: 22px; }
-  .banner { margin: 0 -16px 34px; background: repeating-linear-gradient(90deg, var(--tiffany) 0 28px, #fff 28px 56px); }
-  .banner::after { background: repeating-linear-gradient(90deg, var(--tiffany) 0 28px, #fff 28px 56px); -webkit-mask: radial-gradient(circle at 14px 0, #000 13.5px, transparent 14px) 0 0 / 28px 14px repeat-x; mask: radial-gradient(circle at 14px 0, #000 13.5px, transparent 14px) 0 0 / 28px 14px repeat-x; }
-  .stripAlone { margin: 14px 0 36px; }
-  .mItem { font-size: 17px; padding-block: 11px 10px; }
+  .hero { padding-top: 64px; }
+  .copy { padding: 40px 16px 44px; }
+  .withIssue .copy { padding-top: 76px; }
+  .issue { padding: 10px 16px; font-size: 10px; }
+  .hero .h1 { font-size: clamp(2.3rem, 10.5vw, 3.2rem); letter-spacing: -.04em; }
+  .actions .cta, .actions .ctaAlt { flex: 1 1 100%; }
+  .poster { transform: none; }
+  .paper { box-shadow: 8px 8px 0 var(--mustard), 8px 8px 0 1px var(--ink); }
+  .sticker { width: 84px; height: 84px; }
+  .sticker span { font-size: 8.5px; }
 }
-
 @media (prefers-reduced-motion: reduce) {
-  .panel, .issue, .poster, .sticker, .bubble, .marquee > div { animation: none; }
+  .panel { animation: none; }
   .cta, .ctaAlt { transition: none; }
 }
-
-/* Flathead editorial edition: shared inner-page cover and actions. */
-.pow,.mascot{display:none}
-.mascotImg{width:100%;height:auto}
-.hero{--ink:#103c54;--sand:#fcf8eb;--card:#fcf8eb;--lagoon:#1e50c8;--mustard:#f5b700;padding:155px 6vw 0;color:var(--ink);font-family:var(--font-body)}
-.panel,.withIssue .panel{padding:0 0 70px;max-width:1260px;margin:0 auto;gap:7%;background:transparent;border-radius:0;box-shadow:none;animation:none;align-items:center;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr)}
-.cornice,.ground,.issue,.sticker,.bubble,.banner{display:none}
-.copy{align-self:center}.eyebrow{margin-bottom:22px}
-.pill,.eyebrow>span:only-child,.eyebrow>p:only-child{padding:0;border:0;background:transparent;box-shadow:none;letter-spacing:.14em;color:#103c54;font-size:11px;border-radius:0;font-family:var(--font-body);font-weight:600}
-.pill::before,.pill::after,.eyebrow>span:only-child::before,.eyebrow>span:only-child::after,.eyebrow>p:only-child::before,.eyebrow>p:only-child::after{display:none}
-.hero .h1{font-family:var(--font-display);font-weight:400;font-size:clamp(46px,5.3vw,82px);line-height:1.04;letter-spacing:-.025em}
-.copy>p,.lead{font-family:var(--font-body);font-size:16px;line-height:1.9;color:#365768;max-width:34rem}
-.note{font-size:14px!important}.actions{margin-top:28px;gap:12px}
-.cta,.ctaAlt{font-family:var(--font-body);font-size:13px;font-weight:600;min-height:51px;padding:0 22px;border-radius:2px;box-shadow:none}
-.cta{background:#f5b700;color:#103c54}.cta span{color:#103c54}.cta:hover{background:#ffcf47}
-.ctaAlt{background:transparent;border:1px solid #103c5440;color:#103c54}.ctaAlt:hover{box-shadow:none;background:#edf0e6}
-.stage{padding:9px 0 12px}.poster{rotate:0;animation:none}.paper{padding:9px;background:#fcf8eb;border:1px solid #103c54;border-radius:0;box-shadow:4px 4px 0 #103c54}
-.paper picture{border:1px solid #103c5440;border-radius:0}.posterImg{border-radius:0}.posterCap{font-family:var(--font-body);font-size:11px;font-style:normal;letter-spacing:.04em;padding-top:12px}
-@media(max-width:760px){.hero{padding:126px 6vw 0}.panel,.withIssue .panel{grid-template-columns:1fr;gap:28px;padding:0 0 42px}.hero .h1{font-size:clamp(42px,10vw,68px)}.copy>p,.lead{font-size:15px}.stage{max-width:620px;width:100%;margin:0 auto}.paper{padding:7px;box-shadow:3px 3px 0 #103c54}.actions{gap:10px}.cta,.ctaAlt{font-size:12px}}

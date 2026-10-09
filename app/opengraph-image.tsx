@@ -7,14 +7,14 @@ import { SITE } from '@/lib/seo';
 export const runtime = 'nodejs';
 
 export const alt =
-  'Modern Mustard Seed. Build what is next. Grow what works. A handmade Flathead Lake landscape with the Mustard family sailboat.';
+  'Modern Mustard Seed: We build websites, AI voice agents and custom software. Sarah and Anthony in the studio with the mustard seed crew.';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
 /**
- * The homepage share card: the approved Flathead scene rendered once as a JPG
- * (public/brand/mms-share-flathead.jpg, the same file SITE.ogImage points at),
- * so every share of the root shows the same scene.
+ * The homepage share card: the studio edition card rendered once as a JPG
+ * (public/brand/mms-share-studio.jpg, the same file SITE.ogImage points at),
+ * so every share of the root shows the same card.
  */
 export default async function OpengraphImage() {
   const card = readFileSync(join(process.cwd(), 'public', SITE.ogImage.replace(/^\//, '')));

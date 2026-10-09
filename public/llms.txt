@@ -17,7 +17,8 @@
 ## Business facts
 
 - Name: Modern Mustard Seed (MMS). Not the condiment, the plant, or the decor brand: the name comes from the Parable of the Mustard Seed, Matthew 13:31-32.
-- Founder: Sarah Scarano, engineer and agentic systems architect.
+- Founder: Sarah Scarano, engineer and agentic systems architect. She designs and builds the work.
+- Sales and marketing: Anthony leads sales and marketing for the studio.
 - Home base: Kalispell, Montana, United States. One studio; Montana city pages describe local service areas, not offices.
 - Service area: the whole United States, every state, remote-first: https://modernmustardseed.com/nationwide
 - Phone: (406) 312-1223. Mr. Mustard, the studio's own AI voice agent, answers around the clock. Calling it is a live demonstration.

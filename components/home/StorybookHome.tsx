@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { JetBrains_Mono, Shrikhand } from 'next/font/google';
 import Navbar from '@/components/Navbar';
 import { flatheadWork } from '@/data/flathead-work';
 import { flatheadFilms } from '@/data/flathead-films';
@@ -14,8 +13,6 @@ import './storybook.css';
  * engraved botanicals) carrying the cartoon film world (They Say Your Name,
  * Does It Work for You?, the crew song). The hero garden is Three.js.
  */
-const display = Shrikhand({ subsets: ['latin'], weight: '400', display: 'swap', variable: '--sb-display' });
-const mono = JetBrains_Mono({ subsets: ['latin'], weight: ['400', '500'], display: 'swap', preload: false, variable: '--sb-mono' });
 
 const NAV = [
   { href: '/websites', label: 'Websites' },
@@ -220,7 +217,7 @@ const TICKER = ['Websites', 'AI voice agents', 'Custom software', 'Agentic syste
 
 export default function StorybookHome() {
   return (
-    <div id="sb" className={`${display.variable} ${mono.variable}`} data-design="mms-editorial-2026" data-edition="studio-storybook-2026-10">
+    <div id="sb" data-design="mms-editorial-2026" data-edition="studio-storybook-2026-10">
       <div id="sbk">
         <header className="sb-header">
           <Link className="sb-brand" href="/" aria-label="Modern Mustard Seed home">
@@ -388,15 +385,31 @@ export default function StorybookHome() {
           </div>
         </section>
 
-        <section id="studio" className="sb-section sb-studio" aria-labelledby="sb-studio-title">
-          <div className="sb-studio-main">
-            <div className="sb-studio-art"><Art name="sarah" alt="Sarah, in braids, and Anthony smile in a field of mustard flowers with the seed crew." sizes="(max-width: 760px) 92vw, 680px" /></div>
-            <p className="sb-label">06 <span aria-hidden="true">/</span> One studio, personally built</p>
-            <h2 id="sb-studio-title">A direct line <em>to the builder.</em></h2>
-            <p className="sb-lead">You work with the person who designs it, and the person who builds it.</p>
-            <p>I’m Sarah Scarano, founder, designer and engineer. I bring the creative direction and the technical work together, from the first conversation to the finished detail. Based in Kalispell, Montana. Building for businesses across the United States.</p>
-            <Link className="sb-link" href="/about">Meet Sarah {ARROW}</Link>
+        <section id="studio" className="sb-section sb-team" aria-labelledby="sb-studio-title">
+          <div className="sb-head sb-head-row">
+            <div>
+              <p className="sb-label">06 <span aria-hidden="true">/</span> The team</p>
+              <h2 id="sb-studio-title">Two people, one studio. <em>A direct line to both.</em></h2>
+              <p>You work with the people who design it, build it and bring it to market. Based in Kalispell, Montana, building for businesses across the United States.</p>
+            </div>
+            <Link className="sb-btn sb-btn-line" href="/about">About the studio {ARROW}</Link>
           </div>
+          <div className="sb-team-art"><Art name="team-duo" alt="Sarah and Anthony stand side by side in the sunny studio, surrounded by mustard flowers and the cheering seed crew." sizes="(max-width: 760px) 92vw, 1240px" /></div>
+          <div className="sb-team-grid">
+            <article className="sb-person">
+              <div className="sb-person-art"><Art name="team-sarah" alt="Sarah sketches a website on a tablet at the build bench while two seed characters help." sizes="(max-width: 760px) 92vw, 400px" /></div>
+              <p className="sb-label">Founder <span aria-hidden="true">/</span> Design and engineering</p>
+              <h3>Sarah Scarano</h3>
+              <p>Sarah designs and builds every website, voice agent and system we ship, and stays on it from the first conversation to the finished detail.</p>
+              <Link className="sb-link" href="/sarahscarano">Meet Sarah {ARROW}</Link>
+            </article>
+            <article className="sb-person">
+              <div className="sb-person-art"><Art name="team-anthony" alt="Anthony laughs on an old phone and gives a thumbs up beside a board of campaign cards, with seed characters holding a megaphone and a camera." sizes="(max-width: 760px) 92vw, 400px" /></div>
+              <p className="sb-label">Sales <span aria-hidden="true">/</span> Marketing</p>
+              <h3>Anthony</h3>
+              <p>Anthony leads sales and marketing. He helps you choose the right build, then keeps your marketing moving once it is live.</p>
+              <Link className="sb-link" href="/book">Book a call {ARROW}</Link>
+            </article>
           <aside className="sb-concierge" aria-labelledby="sb-concierge-title">
             <div className="sb-seal">
               <img src="/storybook/ms-mustard-blossom-cut-256.webp" width={256} height={256} alt="" loading="lazy" />
@@ -412,6 +425,7 @@ export default function StorybookHome() {
               <p>You own the code, the accounts and the finished work. Changes to what we build are included.</p>
             </div>
           </aside>
+          </div>
         </section>
 
         <section id="white-label" className="sb-section sb-split" aria-labelledby="sb-agency-title">

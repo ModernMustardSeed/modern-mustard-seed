@@ -1,0 +1,199 @@
+/*
+ * THE STUDIO EDITION (2026-10-09). Mustard Studio's system on every public
+ * page: DM Sans set tight for headings and reading, Shrikhand for the accent
+ * line with a mustard underline, JetBrains Mono for labels, ink rules, square
+ * buttons, warm paper ground. Loaded after the Riviera and Flathead layers and
+ * scoped by the same html.riv marker, so the admin, portal, client desk,
+ * office, built demos and booths keep their own type.
+ *
+ * It works the way the Riviera layer did: repoint the shared variables, then
+ * match the specificity of the earlier rules (their :not(#studio-heading)
+ * carries one id) so the later file wins.
+ */
+
+html.riv {
+  --font-display: 'DM Sans', 'DM Sans Fallback', system-ui, sans-serif;
+  --font-body: 'DM Sans', 'DM Sans Fallback', system-ui, sans-serif;
+  --font-caps: 'DM Sans', 'DM Sans Fallback', system-ui, sans-serif;
+  --font-riviera: 'DM Sans', 'DM Sans Fallback', system-ui, sans-serif;
+  --font-flathead-display: var(--font-shrikhand), 'Shrikhand', Georgia, serif;
+  --font-flathead-body: 'DM Sans', 'DM Sans Fallback', system-ui, sans-serif;
+  --studio-ink: #141210;
+  --studio-paper: #fcfaf3;
+  --studio-mustard: #f5b700;
+  --studio-teal: #0f4c47;
+  --studio-pale: #e8ecd0;
+  --riv-sand: #fcfaf3;
+  --riv-lagoon: #141210;
+  --riv-wave: none;
+  --riv-wave-gold: none;
+  --riv-wave-sea: none;
+  --ink: #141210;
+  --cream: #fcfaf3;
+  --blue: #141210;
+}
+
+html.riv body {
+  background: #fcfaf3;
+  background-image: none;
+  color: #141210;
+  font-family: var(--font-body);
+  font-optical-sizing: none;
+  font-variation-settings: 'opsz' 14;
+}
+
+/* Headings: DM Sans, bold and tight. */
+html.riv main :is(h1, h2):not(#studio-heading, .sr-only, .eyebrow),
+html.riv main :is(h3, h4, h5, h6, dt, strong, span, div, a, button, li, label, figcaption, summary).font-display,
+html.riv main :is(h3, h4).font-serif {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-style: normal;
+  letter-spacing: -.04em;
+  text-transform: none;
+  font-synthesis: none;
+}
+html.riv main :is(h1, h2):not(#studio-heading, .sr-only, .eyebrow) { line-height: 1.02; }
+html.riv main h1:not(#studio-heading, .eyebrow) { letter-spacing: -.05em; text-wrap: balance; }
+html.riv main :is(h1, h2, h3, h4, h5, h6):not(:where(.flathead-home *, #sb *)) {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-style: normal;
+  letter-spacing: -.04em;
+}
+html.riv main h3:not(.sr-only),
+html.riv main :is(article, li, a) h2 { font-weight: 700; line-height: 1.12; letter-spacing: -.03em; }
+
+/* The accent word: Shrikhand, ink, a mustard underline. */
+html.riv main :is(h1, h2, h3, h4, .font-display):not(#studio-heading) :is(em, i, .italic),
+html.riv main :is(h1, h2, h3, h4):not(:where(.flathead-home *, #sb *)) :is(em, i, .italic) {
+  font-family: var(--font-shrikhand), 'Shrikhand', Georgia, serif;
+  font-weight: 400;
+  font-style: normal;
+  letter-spacing: -.005em;
+  color: inherit;
+  text-shadow: none;
+  background: linear-gradient(transparent 82%, #f5b700 82%, #f5b700 95%, transparent 95%);
+  padding: 0 .04em;
+  -webkit-text-fill-color: currentColor;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+/* On mustard, the underline turns ink. On dark grounds, the letters go mustard. */
+html.riv main :is([class*='bg-[#f5b700]'], [class*='bg-[#F5B700]'], [data-ground='yellow'], [data-ground='gold']) :is(h1, h2, h3, h4, .font-display):not(#studio-heading) :is(em, i, .italic) {
+  color: #141210;
+  background: linear-gradient(transparent 82%, #141210 82%, #141210 95%, transparent 95%);
+}
+html.riv main :is([class*='bg-[#0b3b44]'], [class*='bg-[#0B3B44]'], [class*='bg-[#0e5f63]'], [class*='bg-[#0a7c78]'], [class*='bg-[#141210]'], [data-ground='ink'], [data-ground='emerald'], [data-ground='sea']) :is(h1, h2, h3, h4, .font-display):not(#studio-heading) :is(em, i, .italic) {
+  color: #f5b700;
+  background: none;
+}
+
+/* Reading type and display paragraphs. */
+html.riv main :is(p, li) { font-family: var(--font-body); }
+html.riv main :is(p, blockquote, q, figcaption):is(.font-display, .font-serif),
+html.riv main :is(p, blockquote, q, figcaption) :is(p, span, div).font-display {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-style: normal;
+  letter-spacing: -.01em;
+}
+
+/* Labels: JetBrains Mono in tracked capitals, no sun, no wave. */
+html.riv :is(main, footer) .font-mono.uppercase:not(input, textarea, select, code, pre, kbd, samp, td, th),
+html.riv main .font-mono {
+  font-family: var(--font-mono), 'JetBrains Mono', ui-monospace, monospace;
+  font-weight: 500;
+  font-size: 11.5px;
+  letter-spacing: .14em;
+}
+html.riv main :is(p, span, div).font-mono.uppercase:has(+ :is(h1, h2, h3))::before,
+html.riv main :is(p, span, div).font-mono.uppercase:has(+ :is(h1, h2, h3))::after { display: none; }
+
+/* Cards and frames: ink rules, a small radius, no drop shadows. */
+html.riv main :is(.pop-card, .pop-card-cream) {
+  border: 1px solid #141210;
+  border-radius: 4px;
+  box-shadow: none;
+  background: #fff;
+}
+html.riv main figure:has(img:is([src*='/art/riviera/'], [src*='art%2Friviera%2F'])):not([class*='poster']) {
+  border: 1px solid #141210;
+  border-radius: 4px;
+  padding: 0;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 10px 10px 0 #f5b700;
+}
+
+/* Buttons: square, ink edge, the lift on hover. */
+html.riv main :is(button[type='submit'], a[class*='bg-[#f5b700]'], button[class*='bg-[#f5b700]']) {
+  border-radius: 3px;
+  border: 1px solid #141210;
+  box-shadow: none;
+  min-height: 48px;
+  transition: transform .18s cubic-bezier(.34, 1.56, .64, 1), box-shadow .18s;
+}
+html.riv main :is(button[type='submit'], a[class*='bg-[#f5b700]'], button[class*='bg-[#f5b700]']):hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0 #141210;
+}
+html.riv main :is(input, textarea, select) {
+  border-radius: 3px;
+  font-family: var(--font-body);
+  font-size: 16px;
+}
+html.riv main :is(input, textarea, select):focus-visible { outline: 2px solid #141210; outline-offset: 2px; }
+html.riv main :is(button, a):focus-visible { outline: 3px solid #f5b700; outline-offset: 3px; box-shadow: 0 0 0 6px #141210; }
+
+/* The old dark sea becomes the studio's ink and teal. */
+html.riv main :is([class*='bg-[#0b3b44]'], [class*='bg-[#0B3B44]']) { background-color: #141210; }
+html.riv main :is([class*='bg-[#0e5f63]'], [class*='bg-[#0a7c78]']) { background-color: #0f4c47; }
+
+/* The mega menu, in the studio's ink. */
+html.riv #site-mega-menu .font-display,
+html.riv #site-mega-menu .menu-offer {
+  font-family: var(--font-shrikhand), 'Shrikhand', Georgia, serif;
+  font-weight: 400;
+  font-size: 27px;
+  letter-spacing: -.005em;
+}
+html.riv #site-mega-menu :is(a, p) { font-family: var(--font-body); }
+
+/* The footer: ink, mustard labels, the wordmark in Shrikhand. */
+html.riv .studio-footer { background: #141210; color: #fcfaf3; border-top: 1px solid #141210; }
+html.riv .studio-footer-brand { font-family: var(--font-shrikhand), 'Shrikhand', Georgia, serif; font-weight: 400; letter-spacing: -.01em; color: #f5b700; }
+html.riv .studio-footer-brand em { color: #fcfaf3; }
+html.riv .studio-footer-links h2 { font-family: var(--font-mono), 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: .14em; color: #f5b700; }
+html.riv .studio-footer-links a { color: #e9e4d8; font-size: 14px; }
+html.riv .studio-footer-links a:hover { color: #f5b700; }
+html.riv .studio-footer-seed p { font-family: var(--font-body); font-size: 18px; }
+
+@media (max-width: 760px) {
+  html.riv main :is(h1, h2):not(#studio-heading, .eyebrow) { letter-spacing: -.035em; }
+}
+
+/* The header bar on every public page (components/Navbar). Not scoped to
+   html.riv: the pages outside the Riviera that still show it wear it too. */
+.studio-bar { position: fixed; top: 0; left: 0; z-index: 50; width: 100%; background: rgba(252, 250, 243, .96); border-bottom: 1px solid #141210; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); transition: box-shadow .2s; }
+.studio-bar.is-scrolled { box-shadow: 0 6px 24px -18px rgba(20, 18, 16, .5); }
+.studio-bar-in { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 12px clamp(16px, 3vw, 40px); }
+.studio-bar-brand { display: flex; align-items: center; gap: 10px; flex-shrink: 0; color: #141210; text-decoration: none; }
+.studio-bar-brand img { width: 40px; height: 40px; border-radius: 50%; border: 1px solid #141210; object-fit: cover; background: #fff; }
+.studio-bar-brand span { font-family: var(--font-shrikhand), 'Shrikhand', Georgia, serif; font-size: 1.15rem; line-height: 1; color: #141210; }
+.studio-bar-links { display: none; gap: 2px; }
+.studio-bar-links a { padding: 8px 11px; border-radius: 3px; font-family: 'DM Sans', 'DM Sans Fallback', system-ui, sans-serif; font-size: 14px; font-weight: 500; letter-spacing: -.01em; color: #141210; white-space: nowrap; text-decoration: none; transition: background .15s; }
+.studio-bar-links a:hover { background: #e8ecd0; }
+.studio-bar-links a[aria-current='page'] { box-shadow: inset 0 -2px 0 #f5b700; }
+.studio-bar-end { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.studio-bar-cta { display: none; align-items: center; gap: .45em; min-height: 42px; padding: 0 16px; border: 1px solid #141210; border-radius: 3px; background: #f5b700; font-family: 'DM Sans', 'DM Sans Fallback', system-ui, sans-serif; font-size: 14px; font-weight: 700; color: #141210; text-decoration: none; transition: transform .18s cubic-bezier(.34, 1.56, .64, 1), box-shadow .18s; }
+.studio-bar-cta:hover { transform: translate(-2px, -2px); box-shadow: 4px 4px 0 #141210; }
+.studio-bar-menu { display: inline-flex; flex-direction: column; justify-content: center; gap: 5px; width: 42px; height: 42px; padding: 0 11px; border: 1px solid #141210; border-radius: 3px; background: transparent; cursor: pointer; }
+.studio-bar-menu span { display: block; height: 2px; background: #141210; transition: transform .25s, opacity .2s; }
+.studio-bar-menu.is-open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.studio-bar-menu.is-open span:nth-child(2) { opacity: 0; }
+.studio-bar-menu.is-open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+.studio-bar :is(a, button):focus-visible { outline: 3px solid #f5b700; outline-offset: 2px; }
+@media (min-width: 640px) { .studio-bar-cta { display: inline-flex; } }
+@media (min-width: 1180px) { .studio-bar-links { display: flex; } }
+@media (max-width: 420px) { .studio-bar-brand span { font-size: 1rem; } }

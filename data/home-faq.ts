@@ -20,6 +20,10 @@ export const HOME_QUESTIONS: { q: string; a: string }[] = [
     a: 'Sarah Scarano is the founder, designer, and engineer behind Modern Mustard Seed. She is a full-stack engineer and agentic systems architect who has shipped products across agentic systems, e-commerce, real estate, hospitality and SaaS. She sets the direction on every engagement and stays on it from the first note to the handoff.',
   },
   {
+    q: 'Who will I work with?',
+    a: 'Two people and one AI receptionist. Sarah Scarano, the founder, designs and builds the work. Anthony leads sales and marketing, from choosing the right build to keeping your marketing moving after launch. Mr. Mustard, the studio’s AI receptionist, answers the line day and night at (406) 312-1223.',
+  },
+  {
     q: 'How do engagements begin?',
     a: 'With a written inquiry at modernmustardseed.com/inquire. Sarah reads every one herself and replies inside one business day. If it is a fit, the next step is one working conversation, then a written scope with a set package price and a fixed timeline.',
   },
