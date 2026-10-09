@@ -3,7 +3,7 @@ import PresenceRequestForm from '@/components/presence/PresenceRequestForm';
 import SampleScorecard from '@/components/presence/SampleScorecard';
 import { JsonLd, breadcrumbJsonLd, faqJsonLd, webPageJsonLd } from '@/lib/jsonld';
 import { buildMetadata, SITE } from '@/lib/seo';
-import { PRESENCE, TICKER, STEPS, WHY, PILLARS, DESK, PRESENCE_FAQ } from '@/data/presence-audit-page';
+import { PRESENCE, TICKER, STEPS, WHY, PILLARS, DESK, PRESENCE_FAQ, LAYERS, CATALOG, CATALOG_COUNT } from '@/data/presence-audit-page';
 import PopPageHero from '@/components/pop/PopPageHero';
 
 export const metadata = buildMetadata({
@@ -18,6 +18,11 @@ export const metadata = buildMetadata({
  * Sarah, 2026-09-16: every "free audit" link went to the Bottleneck Breaker, and
  * "those are two different things." Sarah, 2026-09-18: the visitor has to leave
  * an email, she runs the audit from the admin, and it emails them when she does.
+ *
+ * Sarah, 2026-10-09: "make that page and the audit itself be the most elite and
+ * valuable info ever ... do more than just online presence." So the report
+ * gained the deep scan (lib/deep-scan.ts) and this page names all four layers
+ * and prints every check the audit runs, counted from data, never typed.
  *
  * So this page does one job: make the ask irresistible. The form is in the hero
  * and again at the close. Between them the page shows the report rather than
@@ -53,16 +58,17 @@ export default function PresenceAuditPage() {
         eyebrow={
           <span>
             <span className="h-2 w-2 rounded-full bg-[#ff6f59]" aria-hidden />
-            Free · Three pillars · Yours to keep
+            Free · {CATALOG_COUNT} checks · Yours to keep
           </span>
         }
-        title={<>Most people decide about you{' '}<em>before</em>{' '}they reach your website.</>}
+        title={<>See your business the way a{' '}<em>stranger</em>{' '}does.</>}
         art={{ src: '/art/riviera/audit', alt: AUD_ALT, caption: 'The way a stranger meets you' }}
         sticker="Graded!"
       >
         <p>
-          A listing, a star rating and a pile of reviews, and their mind is made up before a page of yours loads. So we
-          grade all three, the way a stranger meets you, and email you the whole report.
+          Your website read closely, your Google profile and reviews checked line by line, and a deep scan of everything
+          underneath: speed, your certificate and domain, whether anyone can send email as you, and whether Google and
+          the AI assistants can read you. Every check prints what we found. The whole report lands in your inbox.
         </p>
 
         <ul className="mt-8 hidden max-w-xl gap-3 sm:grid sm:grid-cols-3">
@@ -105,16 +111,19 @@ export default function PresenceAuditPage() {
           <div className="min-w-0">
             <p className="font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-[#C4160B]">What lands in your inbox</p>
             <h2 className="mt-3 font-display text-4xl font-extrabold italic leading-[1.02] md:text-5xl">
-              One number, three dials, and the fixes in order.
+              A report you keep, not a score you forget.
             </h2>
             <p className="mt-5 max-w-lg font-body text-[16px] leading-relaxed text-[#0b3b44]/75">
-              The headline is written from the shape of your three scores, never the average, because the shape is the
-              story. Reviews outrunning the website. A great site nobody can find. A profile two free fixes from complete.
+              It opens on what you already got right. The headline is written from the shape of your three scores, never
+              the average, because the shape is the story: reviews outrunning the website, a great site nobody can find, a
+              profile two free fixes from complete. Then the deep scan, and a plan sorted by effort.
             </p>
             <ul className="mt-7 space-y-3">
               {[
-                'Every check prints what it is worth and what you earned',
-                'Every number says where it came from, so you can verify it',
+                'What you already got right, first',
+                'Every check prints what we found, so you can verify it',
+                'Your real Google result and link preview, drawn',
+                'Domain, certificate and email security, dated and tested',
                 'Free fixes rank above anything that costs money',
                 'Anything we could not see is left out, never scored as zero',
               ].map((t) => (
@@ -137,6 +146,30 @@ export default function PresenceAuditPage() {
       </section>
 
       <div className="mx-auto max-w-6xl space-y-20 px-4 py-16 sm:px-6 md:space-y-24 md:py-24">
+        {/* ─────────────── The four layers ─────────────── */}
+        <section>
+          <div className="max-w-2xl">
+            <p className="font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-[#C4160B]">More than presence // Four layers, one report</p>
+            <h2 className="mt-3 font-display text-4xl font-extrabold italic leading-[1.02] md:text-5xl">
+              The grade is the first page. Not the whole report.
+            </h2>
+            <p className="mt-4 font-body text-[15px] leading-relaxed text-[#0b3b44]/70">
+              Most audits stop at a score. This one keeps going into the parts of your business online that nobody checks
+              until they break, and ends on what to do about them, in order.
+            </p>
+          </div>
+          <ol className="mt-12 grid border border-[#0b3b44]/20 bg-[#0b3b44]/20 gap-px sm:grid-cols-2 lg:grid-cols-4">
+            {LAYERS.map((l, i) => (
+              <li key={l.n} className={`flex min-w-0 flex-col p-7 ${i === 2 ? 'bg-[#0f4c47] text-[#fcfaf3]' : 'bg-white'}`}>
+                <span className={`font-mono text-[12px] tabular-nums ${i === 2 ? 'text-[#f5b700]' : 'text-[#0f4c47]'}`}>{l.n}</span>
+                <h3 className="mt-4 font-display text-2xl font-extrabold leading-tight">{l.name}</h3>
+                <p className={`mt-1 font-mono text-[10.5px] font-bold uppercase tracking-[0.16em] ${i === 2 ? 'text-[#f5b700]' : 'text-[#8f6600]'}`}>{l.line}</p>
+                <p className={`mt-4 flex-1 font-body text-[14px] leading-relaxed ${i === 2 ? 'text-[#fcfaf3]/80' : 'text-[#0b3b44]/75'}`}>{l.d}</p>
+              </li>
+            ))}
+          </ol>
+        </section>
+
         {/* ─────────────── How it works ─────────────── */}
         <section>
           <div className="max-w-2xl">
@@ -197,6 +230,45 @@ export default function PresenceAuditPage() {
                   <div className="h-full bg-[#f5b700]" style={{ width: `${p.weight * 2}%` }} />
                 </div>
               </article>
+            ))}
+          </div>
+        </section>
+
+        {/* ─────────────── Every check, listed ─────────────── */}
+        <section>
+          <div className="grid items-end gap-6 lg:grid-cols-[1fr_auto]">
+            <div className="max-w-2xl">
+              <p className="font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-[#C4160B]">Nothing hidden // The full list, before you ask</p>
+              <h2 className="mt-3 font-display text-4xl font-extrabold italic leading-[1.02] md:text-5xl">
+                Every check we run, named.
+              </h2>
+              <p className="mt-4 font-body text-[15px] leading-relaxed text-[#0b3b44]/70">
+                An audit that will not tell you what it measures is a sales pitch with a progress bar. Here is ours, all of
+                it. A few only run where they apply, so your report may show fewer.
+              </p>
+            </div>
+            <p className="font-display text-7xl font-extrabold leading-none tabular-nums text-[#0b3b44] md:text-8xl">
+              {CATALOG_COUNT}
+              <span className="ml-3 align-middle font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-[#0b3b44]/60">checks</span>
+            </p>
+          </div>
+          <div className="mt-12 grid gap-px border border-[#0b3b44]/20 bg-[#0b3b44]/20 sm:grid-cols-2 lg:grid-cols-3">
+            {CATALOG.map((g) => (
+              <div key={g.group} className="min-w-0 bg-white p-6">
+                <div className="flex items-baseline justify-between gap-3">
+                  <h3 className="font-display text-xl font-extrabold leading-tight">{g.group}</h3>
+                  <span className="shrink-0 font-mono text-[11px] tabular-nums text-[#0b3b44]/50">{g.checks.length}</span>
+                </div>
+                <p className="mt-1 font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-[#0f4c47]">{g.layer}</p>
+                <ul className="mt-4 space-y-1.5">
+                  {g.checks.map((c) => (
+                    <li key={c} className="flex gap-2.5 font-body text-[13.5px] leading-snug text-[#0b3b44]/80">
+                      <span aria-hidden className="mt-[0.45em] h-1.5 w-1.5 shrink-0 bg-[#f5b700]" />
+                      {c}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             ))}
           </div>
         </section>
@@ -283,7 +355,7 @@ export default function PresenceAuditPage() {
             <div className="min-w-0">
               <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-[#0b3b44]/70">No card · No meeting · Yours either way</p>
               <h2 className="mt-4 font-display text-4xl font-extrabold italic leading-[1.02] md:text-5xl">
-                Find out what strangers see before they call.
+                Find out what strangers see, and what they cannot.
               </h2>
               <p className="mt-5 max-w-xl font-body text-[16px] leading-relaxed text-[#0b3b44]/80">
                 Thirty seconds to ask. The whole report in your inbox {PRESENCE.turnaround}. Nobody rings you unless you

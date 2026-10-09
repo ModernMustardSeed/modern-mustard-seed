@@ -83,7 +83,7 @@ const WANTS = [
 ];
 
 /**
- * Two skins, one ask. Classic is the pop-art card every audit before 2026-09-28
+ * Three skins, one ask. Classic is the pop-art card every audit before 2026-09-28
  * was sent with. Riviera is the house the site moved into on 2026-09-27: deep
  * sea, Tiffany and mustard, Unbounded and Figtree, round pills instead of offset
  * shadows. The copy and the behaviour are identical.
@@ -130,6 +130,28 @@ const SKINS = {
     secondary: 'ring-2 ring-inset ring-[#81d8d0]/60 rounded-full px-7 py-3.5 font-bold text-[15px] text-[#fbf5ea] hover:ring-[#81d8d0]',
     foot: 'text-[14.5px] leading-relaxed text-[#fbf5ea]/65 mt-6',
     tel: 'font-bold text-[#81d8d0] underline decoration-2 underline-offset-4',
+  },
+  /** The studio edition (2026-10-09): ink ground, mustard, DM Sans, ruled lines and square corners. */
+  studio: {
+    section: 'rounded-[4px] bg-[#141210] text-[#fcfaf3] p-6 sm:p-10 [font-family:var(--font-body),"DM_Sans",system-ui,sans-serif]',
+    kicker: '[font-family:var(--font-mono),ui-monospace,monospace] text-[11px] font-medium uppercase tracking-[0.2em] text-[#f5b700]',
+    h2: 'text-[30px] sm:text-[42px] font-bold mt-3 leading-[1.02] tracking-[-0.045em]',
+    aPlus: 'text-[#f5b700]',
+    lede: 'text-[16px] leading-relaxed text-[#fcfaf3]/80 mt-4 max-w-2xl',
+    legend: '[font-family:var(--font-mono),ui-monospace,monospace] text-[11px] uppercase tracking-[0.2em] text-[#fcfaf3]/55 mb-3',
+    grid: 'grid gap-px bg-[#fcfaf3]/15 sm:grid-cols-2 border border-[#fcfaf3]/15',
+    optOn: 'bg-[#f5b700]/[0.12]',
+    optOff: 'bg-[#141210] hover:bg-white/[0.04]',
+    opt: 'p-4',
+    boxOn: 'bg-[#f5b700] text-[#141210]',
+    boxOff: 'ring-1 ring-inset ring-[#fcfaf3]/45 text-transparent',
+    box: 'rounded-[3px]',
+    optLabel: 'block text-[16px] font-semibold tracking-[-0.01em]',
+    optDetail: 'block text-[14px] leading-relaxed text-[#fcfaf3]/65 mt-0.5',
+    primary: 'bg-[#f5b700] text-[#141210] rounded-[3px] px-7 py-3.5 font-bold text-[15px] hover:bg-[#ffc933]',
+    secondary: 'ring-1 ring-inset ring-[#fcfaf3]/50 rounded-[3px] px-7 py-3.5 font-bold text-[15px] text-[#fcfaf3] hover:ring-[#f5b700]',
+    foot: 'text-[14.5px] leading-relaxed text-[#fcfaf3]/60 mt-6',
+    tel: 'font-bold text-[#f5b700] underline decoration-1 underline-offset-4',
   },
 } as const;
 

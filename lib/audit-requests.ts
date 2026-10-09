@@ -27,6 +27,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { buildPresenceReport, type PresenceAuditReport, type PresenceInput } from '@/lib/presence-audit';
 import { auditPreferringWorker } from '@/lib/audit-queue';
+import { collectDeepScan, type DeepScan } from '@/lib/deep-scan';
 import { fetchSiteFacts, type SiteFacts } from '@/lib/site-facts';
 import type { WebsiteAuditReport } from '@/lib/website-audit';
 import { resendClient, sendViaResend } from '@/lib/send-email';
@@ -476,6 +477,12 @@ export async function runRequestedAudit(
     facts = await fetchSiteFacts(request.website, { timeoutMs: 8000, maxPages: 3 }).catch(() => null);
   }
 
+  // The deep scan reads the site's plumbing while the grade is written. It is
+  // measured, not judged, takes a second or two, and never throws.
+  const scanning: Promise<DeepScan | null> = request.website
+    ? collectDeepScan(request.website, { town: request.town, business: request.business_name, facts, budgetMs: 45_000 }).catch(() => null)
+    : Promise.resolve(null);
+
   if (request.website && !report) {
     const outcome = await auditPreferringWorker(sb, {
       url: request.website,
@@ -498,7 +505,7 @@ export async function runRequestedAudit(
     // website pillar reports that honestly rather than the whole audit dying.
   }
 
-  const built = buildPresenceReport(inputFromRequest(request, facts), report);
+  const built = buildPresenceReport(inputFromRequest(request, facts), report, await scanning);
 
   const { data: row, error } = await sb
     .from('presence_audits')
@@ -614,13 +621,17 @@ export function presenceAuditReadyEmail({ request, report }: { request: AuditReq
   </table>`;
 
   const topFix = report.top_fixes[0];
+  const scan = report.deep_scan;
   const body =
     p(`Your Online Presence Audit is finished. I graded ${escape(hostOf(request.website) || request.business_name)} the way a customer meets you: the website, the Google profile, and the reviews.`) +
     scoreCard +
+    (scan && scan.counts.total
+      ? p(`Underneath the grade I ran the deep scan: ${scan.counts.total} measured checks on speed, your certificate and domain, your email security, Google and AI search, and how a visit turns into a call. <strong>${scan.counts.pass} are already right.</strong> ${scan.counts.fail + scan.counts.warn ? `${scan.counts.fail + scan.counts.warn} are worth tightening, and the report sorts them by how long each one takes.` : 'Nothing there needs fixing.'}`)
+      : '') +
     (topFix
       ? p(`<strong>Where I would start:</strong> ${escape(topFix.title)}. ${escape(topFix.why)}`)
       : '') +
-    p('The full report has every check, what it is worth, the ranked fixes, and where each number came from, so you can verify all of it yourself. It is yours to keep, and plenty of people take the list and do the work themselves.') +
+    p('The full report opens on what you already got right, then every check with what we found, the fixes in order, and where each number came from, so you or your web person can verify all of it. It is yours to keep, and plenty of people take the list and do the work themselves.') +
     p('If you want to talk any of it through, just reply to this email.');
 
   return clientEmail({
@@ -642,7 +653,7 @@ export function presenceAuditReceivedEmail(request: Pick<AuditRequest, 'name' | 
     greeting: first ? `Hi ${escape(first)},` : 'Hi there,',
     body:
       p(`Your audit request for <strong>${escape(request.business_name)}</strong>${site ? ` (${escape(site)})` : ''} is in.`) +
-      p('Your website gets graded across seven categories, your Google listing check by check, and your reviews against businesses like yours. Then the whole report comes to you with the fixes ranked.') +
+      p('Your website gets graded across seven categories, your Google listing check by check, and your reviews against businesses like yours. Then a deep scan underneath: speed, your certificate and domain, your email security, and whether Google and the AI assistants can read you. The whole report comes to you with the fixes sorted by effort.') +
       p(`Expect it ${PRESENCE.turnaround}. If there is something specific you want me to look at, reply to this email and tell me.`),
   });
 }

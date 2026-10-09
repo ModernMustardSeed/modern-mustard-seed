@@ -2621,3 +2621,104 @@ test('audit: the receipts print what the website itself says, presence only', ()
   assert.ok(!/Google/i.test(phone.source), 'a listing nobody opened is never cited as a source');
   assert.ok(!/reviews say/i.test(report.summary), 'the summary cannot praise reviews it withheld');
 });
+
+/* ─────────────────────────────── the deep scan ───────────────────────────── */
+
+import { evaluateDeepScan, robotsBlocks, registrableDomain, scanFixes, type RawScan } from '../lib/deep-scan';
+
+const NOW = new Date('2026-10-09T18:00:00Z');
+const page = (body: string, head = '') =>
+  `<!doctype html><html lang="en"><head><title>Furnace Repair in Kalispell | ABC Heating</title><meta name="viewport" content="width=device-width"><meta name="description" content="Furnace and AC repair across the Flathead Valley since 1998. Same-day service, upfront prices, 312 reviews at 4.8 stars. Call (406) 555-0143.">${head}</head><body>${body}</body></html>`;
+const raw = (over: Partial<RawScan> = {}): RawScan => ({
+  url: 'https://abcheating.example',
+  final_url: 'https://abcheating.example/',
+  status: 200,
+  ttfb_ms: 420,
+  html_bytes: 80_000,
+  html: page(`<h1>Furnace repair in Kalispell</h1><a href="tel:4065550143">Call</a><form><input name="n"><input name="p"><textarea></textarea></form><p>${'Real words about the work we do. '.repeat(60)}</p><footer>© 2026 ABC</footer>`),
+  headers: { 'strict-transport-security': 'max-age=1', 'x-content-type-options': 'nosniff', 'referrer-policy': 'strict-origin' },
+  http_redirect_to: 'https://abcheating.example/',
+  http_checked: true,
+  cert: { valid_to: '2027-01-01T00:00:00Z', issuer: "Let's Encrypt", authorized: true },
+  cert_checked: true,
+  robots_txt: 'User-agent: *\nAllow: /\nSitemap: https://abcheating.example/sitemap.xml',
+  robots_checked: true,
+  sitemap_found: true,
+  llms_txt_found: false,
+  dns: { mx: ['aspmx.l.google.com'], spf: ['v=spf1 include:_spf.google.com ~all'], dmarc: null },
+  rdap: { expires: '2027-06-01T00:00:00Z', registered: '2014-03-02T00:00:00Z', registrar: 'Porkbun' },
+  vitals: null,
+  ...over,
+});
+const check = (s: ReturnType<typeof evaluateDeepScan>, id: string) => s.sections.flatMap((x) => x.checks).find((c) => c.id === id);
+
+test('deep scan: every line prints what was found, and the good ones pass', () => {
+  const s = evaluateDeepScan(raw(), { town: 'Kalispell', now: NOW });
+  assert.equal(check(s, 'https')?.status, 'pass');
+  assert.equal(check(s, 'title')?.status, 'pass', 'service and town in the title');
+  assert.equal(check(s, 'tap-to-call')?.status, 'pass');
+  assert.equal(check(s, 'capture')?.status, 'pass');
+  assert.equal(check(s, 'indexable')?.status, 'pass');
+  for (const c of s.sections.flatMap((x) => x.checks)) assert.ok(c.found.trim().length > 0, `${c.id} says what it found`);
+  assert.equal(s.counts.total, s.counts.pass + s.counts.warn + s.counts.fail + s.counts.info);
+});
+
+test('deep scan: a missing DMARC record is a fix with the exact record to add', () => {
+  const s = evaluateDeepScan(raw(), { now: NOW });
+  const d = check(s, 'dmarc')!;
+  assert.equal(d.status, 'fail');
+  assert.match(d.fix!, /_dmarc\.abcheating\.example/);
+  assert.equal(check(s, 'spf')?.status, 'pass');
+});
+
+test('deep scan: a noindexed site and a lapsing domain go to the top of the fix list', () => {
+  const s = evaluateDeepScan(
+    raw({ html: page('<h1>Hi</h1>', '<meta name="robots" content="noindex">'), rdap: { expires: '2026-10-20T00:00:00Z', registered: null, registrar: 'GoDaddy' } }),
+    { now: NOW },
+  );
+  assert.equal(check(s, 'indexable')?.status, 'fail');
+  assert.equal(check(s, 'domain-expiry')?.status, 'fail');
+  const urgent = scanFixes(s).filter((c) => c.urgent).map((c) => c.id);
+  assert.deepEqual(urgent.sort(), ['domain-expiry', 'indexable']);
+  const report = buildPresenceReport(presence(), null, s);
+  assert.ok(['Google is allowed to list you', 'Your domain name is paid up'].includes(report.top_fixes[0].title), 'an emergency outranks every free profile fix');
+  assert.ok(report.deep_scan, 'the scan rides on the report');
+});
+
+test('deep scan: a page drawn by script is never told its content is missing', () => {
+  const scripts = Array.from({ length: 8 }, (_, i) => `<script src="/s${i}.js"></script>`).join('');
+  const s = evaluateDeepScan(raw({ html: `<!doctype html><html lang="en"><head><title>App</title></head><body><div id="root"></div>${scripts}</body></html>` }), { now: NOW });
+  assert.equal(s.script_rendered, true);
+  for (const id of ['tap-to-call', 'capture', 'faq', 'words', 'h1', 'reviews-on-site']) {
+    assert.equal(check(s, id)?.status, 'info', `${id} becomes a note, not a failure`);
+  }
+});
+
+test('deep scan: a check we could not run is left off, never failed', () => {
+  const s = evaluateDeepScan(raw({ dns: null, rdap: null, cert: null, cert_checked: false, http_checked: false, http_redirect_to: null, sitemap_found: null, llms_txt_found: null }), { now: NOW });
+  for (const id of ['dmarc', 'spf', 'mx', 'domain-expiry', 'cert', 'http-redirect', 'sitemap', 'llms']) {
+    assert.equal(check(s, id), undefined, `${id} is not reported when it was not read`);
+  }
+});
+
+test('deep scan: a hosted builder subdomain is not graded on DNS it does not own', () => {
+  const s = evaluateDeepScan(raw({ url: 'https://abc.wixsite.com/heat', final_url: 'https://abc.wixsite.com/heat' }), { now: NOW });
+  assert.ok(!s.sections.some((x) => x.key === 'email' || x.key === 'domain'));
+});
+
+test('deep scan: robots.txt is read per agent, not by substring', () => {
+  assert.deepEqual(robotsBlocks('User-agent: *\nDisallow: /wp-admin/'), { all: false, bots: [] });
+  assert.equal(robotsBlocks('User-agent: *\nDisallow: /').all, true);
+  const r = robotsBlocks('User-agent: GPTBot\nUser-agent: CCBot\nDisallow: /\n\nUser-agent: *\nAllow: /');
+  assert.deepEqual(r.bots, ['GPTBot', 'CCBot']);
+  assert.equal(r.all, false);
+  assert.equal(registrableDomain('https://www.shop.example.co.uk/x'), 'example.co.uk');
+  assert.equal(registrableDomain('https://www.murrelldental.com/contact'), 'murrelldental.com');
+});
+
+test('deep scan: an auto-renewing certificate with three weeks left is not an alarm', () => {
+  const s = evaluateDeepScan(raw({ cert: { valid_to: '2026-10-25T00:00:00Z', issuer: "Let's Encrypt", authorized: true } }), { now: NOW });
+  assert.equal(check(s, 'cert')?.status, 'pass');
+  const t = evaluateDeepScan(raw({ cert: { valid_to: '2026-10-12T00:00:00Z', issuer: 'DigiCert Inc', authorized: true } }), { now: NOW });
+  assert.equal(check(t, 'cert')?.status, 'fail');
+});

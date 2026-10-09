@@ -30,6 +30,7 @@
  */
 import { createClient } from '@supabase/supabase-js';
 import { buildPresenceReport, inputFromLead } from '../lib/presence-audit.ts';
+import type { DeepScan } from '../lib/deep-scan.ts';
 import { runWebsiteAudit, type WebsiteAuditReport } from '../lib/website-audit.ts';
 import { parseSiteFacts } from '../lib/site-facts.ts';
 
@@ -131,7 +132,10 @@ async function one(a: (typeof audits)[number]) {
   if (!lead) { missing += 1; return; }
 
   const website = REWEBSITE ? await regradeWebsite(lead) : ((lead.audit_json as WebsiteAuditReport | null) ?? null);
-  const built = buildPresenceReport(inputFromLead(lead), website);
+  // The deep scan is a measurement taken on the day, not a grade, so a rebuild
+  // carries it forward rather than re-reading the site.
+  const scan = ((a.report as { deep_scan?: DeepScan | null } | null)?.deep_scan ?? null);
+  const built = buildPresenceReport(inputFromLead(lead), website, scan);
 
   const before = JSON.stringify(a.report ?? {});
   const after = JSON.stringify({ ...built, generated_at: (a.report as { generated_at?: string } | null)?.generated_at });
