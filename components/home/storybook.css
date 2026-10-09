@@ -5,8 +5,8 @@
  * #sb #sbk: two ids outrank the Riviera type layer, whose
  * :not(#studio-heading) carries one id, without !important.
  */
-#sb{--paper:#fcfaf3;--ink:#141210;--ink-2:#4a4339;--mustard:#f5b700;--mustard-2:#ffd34d;--teal:#0f4c47;--pale:#e8ecd0;--rule:1px solid var(--ink);--sans:var(--sb-sans),'DM Sans',system-ui,sans-serif;--disp:var(--sb-display),'Shrikhand',Georgia,serif;--mono:var(--sb-mono),'JetBrains Mono',ui-monospace,monospace;background:var(--paper);color:var(--ink)}
-#sb #sbk{position:relative;overflow-x:clip;font-family:var(--sans);font-size:1.0625rem;line-height:1.6;color:var(--ink);background:var(--paper);-webkit-font-smoothing:antialiased}
+#sb{--paper:#fcfaf3;--ink:#141210;--ink-2:#4a4339;--mustard:#f5b700;--mustard-2:#ffd34d;--teal:#0f4c47;--pale:#e8ecd0;--rule:1px solid var(--ink);--sans:var(--font-body),'DM Sans',system-ui,sans-serif;--disp:var(--sb-display),'Shrikhand',Georgia,serif;--mono:var(--sb-mono),'JetBrains Mono',ui-monospace,monospace;background:var(--paper);color:var(--ink)}
+#sb #sbk{position:relative;overflow-x:clip;font-family:var(--sans);font-optical-sizing:none;font-variation-settings:'opsz' 14;font-size:1.0625rem;line-height:1.6;color:var(--ink);background:var(--paper);-webkit-font-smoothing:antialiased}
 #sb #sbk *{box-sizing:border-box}
 #sb #sbk :is(h1,h2,h3){font-family:var(--sans);font-weight:700;font-style:normal;letter-spacing:-.045em;line-height:1;color:inherit;text-transform:none;text-shadow:none;-webkit-text-stroke:0;margin:0;text-wrap:balance}
 #sb #sbk :is(h1,h2,h3) :is(em,i){display:inline;font-family:var(--disp);font-weight:400;font-style:normal;letter-spacing:-.01em;color:inherit;background:none;padding:0}

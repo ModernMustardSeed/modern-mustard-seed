@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { DM_Sans, JetBrains_Mono, Shrikhand } from 'next/font/google';
+import { JetBrains_Mono, Shrikhand } from 'next/font/google';
 import Navbar from '@/components/Navbar';
 import { flatheadWork } from '@/data/flathead-work';
 import { flatheadFilms } from '@/data/flathead-films';
@@ -15,7 +15,6 @@ import './storybook.css';
  * Does It Work for You?, the crew song). The hero garden is Three.js.
  */
 const display = Shrikhand({ subsets: ['latin'], weight: '400', display: 'swap', variable: '--sb-display' });
-const sans = DM_Sans({ subsets: ['latin'], weight: ['400', '500', '700'], display: 'swap', variable: '--sb-sans' });
 const mono = JetBrains_Mono({ subsets: ['latin'], weight: ['400', '500'], display: 'swap', preload: false, variable: '--sb-mono' });
 
 const NAV = [
@@ -221,7 +220,7 @@ const TICKER = ['Websites', 'AI voice agents', 'Custom software', 'Agentic syste
 
 export default function StorybookHome() {
   return (
-    <div id="sb" className={`${display.variable} ${sans.variable} ${mono.variable}`} data-design="mms-editorial-2026" data-edition="studio-storybook-2026-10">
+    <div id="sb" className={`${display.variable} ${mono.variable}`} data-design="mms-editorial-2026" data-edition="studio-storybook-2026-10">
       <div id="sbk">
         <header className="sb-header">
           <Link className="sb-brand" href="/" aria-label="Modern Mustard Seed home">
@@ -245,7 +244,7 @@ export default function StorybookHome() {
           <div className="sb-hero-copy">
             <p className="sb-label">Design and AI product studio <span aria-hidden="true">/</span> Kalispell, MT <span aria-hidden="true">/</span> Nationwide</p>
             <h1 id="sb-hero-title">
-              We build websites, AI voice agents <em>&amp; custom software.</em>
+              We build websites, AI voice agents <br /><em>&amp; custom software.</em>
             </h1>
             <p className="sb-hero-sub">
               Get found on Google and ChatGPT. Answer every call. Hand the busywork to AI agents.
