@@ -72,7 +72,7 @@ export function wlClientKeyValid(clientId: string, key: string | null | undefine
 /** The two links Sarah takes into a meeting. */
 /**
  * `demoAt` is the full demo URL without a query, for an agency whose own host
- * is live (https://ai.agency.com/receptionist). The price sheet always stays on
+ * is live (https://agents.agency.com/receptionist). The price sheet always stays on
  * `base`: it is ours to issue, not the agency's to show.
  */
 export function wlLinks(base: string, p: { agency: string; color: string; city: string; sample: string; site?: string }, demoAt?: string) {
