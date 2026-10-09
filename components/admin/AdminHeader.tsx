@@ -18,7 +18,7 @@ import { openWelcomeTour } from '@/components/admin/WelcomeTour';
  * the mustard chip, and the Inbox unread dot bubbles up to its group.
  */
 
-type Tab = 'overview' | 'office' |'hq' | 'portfolio' | 'gleaner' | 'pipeline' | 'tracker' | 'outbound' | 'acquisition' | 'factories' | 'partners' | 'partner-desk' | 'white-label' | 'team' | 'outreach' | 'campaigns' | 'texting' | 'ads' | 'my-content' | 'facebook' | 'social' | 'posters' | 'videos' | 'artifacts' | 'audit' | 'roadmaps' | 'hundredfold' | 'call' | 'script' | 'callers' | 'calls' | 'training' | 'clients' | 'front-office' | 'posting' | 'proposals' | 'projects' | 'builds' | 'build-log' | 'delivery' | 'templates' | 'intakes' | 'approvals' | 'reviews' | 'calendar' | 'onboarding' | 'manual' | 'inbox' | 'opps' | 'desks' | 'call-prep' | 'call-lists' | 'bootcamp';
+type Tab = 'overview' | 'office' |'hq' | 'portfolio' | 'gleaner' | 'pipeline' | 'tracker' | 'outbound' | 'acquisition' | 'factories' | 'partners' | 'partner-desk' | 'white-label' | 'team' | 'outreach' | 'campaigns' | 'texting' | 'ads' | 'my-content' | 'facebook' | 'social' | 'posters' | 'videos' | 'artifacts' | 'audit' | 'roadmaps' | 'hundredfold' | 'call' | 'script' | 'callers' | 'calls' | 'training' | 'clients' | 'front-office' | 'posting' | 'proposals' | 'projects' | 'builds' | 'build-log' | 'delivery' | 'templates' | 'intakes' | 'approvals' | 'reviews' | 'calendar' | 'onboarding' | 'manual' | 'inbox' | 'opps' | 'desks' | 'call-prep' | 'call-lists' | 'bootcamp' | 'website';
 
 // `external: true` marks a public-facing offer page that opens in a new tab, so
 // clicking it from the admin never loses the team member's place. These items
@@ -87,6 +87,7 @@ const GROUPS: { name: string; items: Item[] }[] = [
   {
     name: 'Marketing',
     items: [
+      { key: 'website', label: 'Website', href: '/admin/website' },
       { key: 'my-content', label: 'My Content', href: '/admin/my-content' },
       { key: 'ads', label: 'Ads Playbook', href: '/admin/ads' },
       { key: 'madebyhand', label: 'Made by Hand Film', href: '/admin/ads?campaign=madebyhand' },

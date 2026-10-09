@@ -12,6 +12,7 @@ import KitTab from '@/components/admin/bootcamp/KitTab';
 import PlanTab from '@/components/admin/bootcamp/PlanTab';
 import OfferTab from '@/components/admin/bootcamp/OfferTab';
 import StageTab from '@/components/admin/bootcamp/StageTab';
+import WebsiteLinks from '@/components/admin/WebsiteLinks';
 import { api, type HostRow, type StatsPayload } from '@/components/admin/bootcamp/shared';
 
 export type { HostRow } from '@/components/admin/bootcamp/shared';
@@ -25,7 +26,7 @@ export type { HostRow } from '@/components/admin/bootcamp/shared';
  * everything else loads from /api/admin/bootcamp/*.
  */
 
-type TabKey = 'desk' | 'offer' | 'stage' | 'outreach' | 'hosts' | 'registrations' | 'kit' | 'plan';
+type TabKey = 'desk' | 'offer' | 'stage' | 'outreach' | 'hosts' | 'registrations' | 'kit' | 'plan' | 'links';
 
 const TABS: { key: TabKey; label: string }[] = [
   { key: 'desk', label: 'Desk' },
@@ -36,6 +37,7 @@ const TABS: { key: TabKey; label: string }[] = [
   { key: 'registrations', label: 'Registrations' },
   { key: 'kit', label: 'Marketing Kit' },
   { key: 'plan', label: 'The Plan' },
+  { key: 'links', label: 'Links' },
 ];
 
 function readTab(): TabKey {
@@ -141,6 +143,7 @@ export default function BootcampDesk({ hosts, hostsError }: { hosts: HostRow[]; 
         {tab === 'registrations' && <RegistrationsTab />}
         {tab === 'kit' && <KitTab />}
         {tab === 'plan' && <PlanTab />}
+        {tab === 'links' && <WebsiteLinks bootcampOnly />}
       </main>
     </div>
   );
