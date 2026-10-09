@@ -185,7 +185,7 @@ export default function ClientDesk({
               <button
                 key={t.key}
                 onClick={() => setFilter(t.key)}
-                className="whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold transition-colors"
+                className="whitespace-nowrap rounded-full px-3 py-2 text-[13px] font-semibold transition-colors sm:px-4 sm:text-sm"
                 style={filter === t.key ? { background: brand, color: onBrand } : { color: '#4b5563' }}
               >
                 {t.label} <span className="ml-1 tabular-nums opacity-70">{t.count}</span>

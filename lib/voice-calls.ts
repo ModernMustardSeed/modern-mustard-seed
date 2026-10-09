@@ -147,6 +147,9 @@ export function shapeCall(c: Json): Shaped {
     ...((c.metadata as Json | undefined) ?? {}),
     ...((overrides.metadata as Json | undefined) ?? {}),
     ...(intake ? { intake } : {}),
+    // The name a call was placed under, e.g. "bench:custody" from the latency
+    // bench, so a client desk can leave our own test calls off.
+    ...(typeof c.name === 'string' && c.name ? { callName: c.name } : {}),
   } as Json;
   const messages = artifact.messages ?? c.messages;
   const started = typeof c.startedAt === 'string' ? c.startedAt : typeof c.createdAt === 'string' ? c.createdAt : null;
@@ -334,7 +337,21 @@ export async function syncAssistantCalls(assistantId: string): Promise<SyncResul
   const sb = getSupabase();
   if (!sb) return { ok: false, pulled: 0, written: 0, reason: 'no-supabase' };
   if (!apiKey()) return { ok: false, pulled: 0, written: 0, reason: 'no-vapi-key' };
-  const batch = await vapiGet<Json[]>(`/call?${new URLSearchParams({ assistantId, limit: String(PAGE) }).toString()}`);
+  // Incremental and small. Every call Vapi lists carries the agent's whole
+  // prompt several times over, so a hundred of them is tens of megabytes, and
+  // inside Next that body was cut off mid-stream ("other side closed") and the
+  // desk silently showed a stale list. Only what is new since the last logged
+  // call, with the same two hour overlap the full sync uses for late summaries.
+  const { data: last } = await sb
+    .from('voice_calls')
+    .select('started_at')
+    .eq('assistant_id', assistantId)
+    .order('started_at', { ascending: false })
+    .limit(1);
+  const latest = (last?.[0] as { started_at?: string } | undefined)?.started_at;
+  const qs = new URLSearchParams({ assistantId, limit: '25' });
+  if (latest) qs.set('createdAtGt', new Date(Date.parse(latest) - RESYNC_WINDOW_MS).toISOString());
+  const batch = await vapiGet<Json[]>(`/call?${qs.toString()}`);
   if (!batch) return { ok: false, pulled: 0, written: 0, reason: 'vapi-failed' };
   const { data: known } = await sb.from('voice_agents').select('assistant_id,name,client_email,business,kind,hidden,last_seen_at');
   const agents: AgentMap = new Map();

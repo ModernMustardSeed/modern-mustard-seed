@@ -124,8 +124,13 @@ export async function deskCalls(client: WlClient, limit = 200): Promise<{ calls:
         handledAt: handled[r.vapi_call_id] ?? null,
       };
     })
-    .filter((c) => c.turns.some((t) => t.who === 'caller'));
+    .filter((c, i) => c.turns.some((t) => t.who === 'caller') && !isBench((data ?? [])[i] as Row));
   return { calls, fresh: Boolean(synced?.ok) };
+}
+
+/** Our own scripted test calls (scripts/vapi-bench.mjs) are not the office's calls. */
+function isBench(r: Row | undefined): boolean {
+  return /^bench:/.test(String(r?.metadata?.callName ?? ''));
 }
 
 /** True when this call belongs to this client's receptionist. */
