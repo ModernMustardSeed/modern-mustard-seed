@@ -1,8 +1,8 @@
 import { createHmac, timingSafeEqual } from 'node:crypto';
 
 /**
- * Signed keys for the bootcamp's two private doors: a host's dashboard and a
- * registration's own page. Signed with ADMIN_SESSION_SECRET under a bootcamp
+ * Signed keys for the bootcamp's private doors: a host's dashboard and a
+ * registration's own room. Signed with ADMIN_SESSION_SECRET under a bootcamp
  * prefix, so a key can never be replayed as a white label sheet or an admin
  * session. No secret, no keys: every check fails closed.
  */
@@ -50,6 +50,16 @@ export function hostLinks(base: string, slug: string) {
     masterclass: `${base}/bootcamp/masterclass?via=${slug}`,
     dashboard: key ? `${base}/bootcamp/host/${slug}?k=${key}` : null,
   };
+}
+
+/**
+ * A person's own room: the live link, their replays, the worksheet, the
+ * questions box. Same key as the unsubscribe link, because both prove the
+ * same thing: this email address was sent this link.
+ */
+export function roomLink(base: string, id: string): string | null {
+  const key = regKey(id);
+  return key ? `${base}/bootcamp/room?id=${id}&k=${key}` : null;
 }
 
 export function unsubscribeLink(base: string, id: string): string | null {

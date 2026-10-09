@@ -15,7 +15,9 @@ import {
 import { callout, clientEmail, escape, p } from '@/lib/email';
 import { complianceFooter, complianceFooterText } from '@/lib/outbound-email';
 import { SITE } from '@/lib/seo';
-import { inviteUrl } from '@/lib/bootcamp/ics';
+import { inviteUrl, type InviteWhich } from '@/lib/bootcamp/ics';
+import { roomLink } from '@/lib/bootcamp/key';
+import { WORKSHEET_MINUTES, WORKSHEET_NAME, worksheetQuestions } from '@/data/bootcamp-worksheet';
 import type { HostStats } from '@/lib/bootcamp/store';
 
 /**
@@ -41,7 +43,8 @@ import type { HostStats } from '@/lib/bootcamp/store';
 
 export type BootcampEmail = { subject: string; html: string; text: string };
 export type Link = { label: string; url: string };
-export type Person = { firstName?: string | null; email?: string | null };
+/** regId, when known, signs the person's room link and calendar files into every letter. */
+export type Person = { firstName?: string | null; email?: string | null; regId?: string | null };
 
 type Piece =
   | string
@@ -87,10 +90,36 @@ const HOST_URL = `${SITE.url}/bootcamp/host`;
 
 const GA = getBootcampTier('ga') ?? bootcampTiers[0];
 const CLOSE_LINE = `${onDate(D.close)} at ${atTime(D.close)} ${TZ}`;
-const ROOM_LINE = 'The live link arrives in this inbox the morning of, from this address.';
-const PRIVATE_ROOM_LINE = 'Your private room invite comes separately, before the kickoff.';
-
 const hi = (who: Person) => (who.firstName ? `Hi ${who.firstName},` : 'Hi there,');
+
+/** The person's own room, or null when the letter is a preview with no registration behind it. */
+const roomOf = (who: Person): string | null => (who.regId ? roomLink(SITE.url, who.regId) : null);
+
+/** "[your room](url)" when we know who they are, plain "your room" otherwise. */
+const yourRoom = (who: Person, anchor = ''): string => {
+  const room = roomOf(who);
+  return room ? `[your room](${room}${anchor})` : 'your room';
+};
+
+/** Their own calendar file when we know who they are; the public one otherwise. */
+const cal = (which: InviteWhich, who: Person) => inviteUrl(which, who.regId);
+
+/**
+ * One sentence about the room, the same in every letter: where the live
+ * session, the replays and the questions box are. Without a registration
+ * behind the letter it points at the morning-of email instead.
+ */
+function roomLine(who: Person): string {
+  return roomOf(who)
+    ? `Everything happens in ${yourRoom(who)}: the live session, the replays and the questions box. Same link every time; keep this email.`
+    : 'Your room link lands in this inbox the morning of, from this address.';
+}
+
+/** The button into the room, with a public page as the fallback. */
+const roomCta = (who: Person, label = 'Enter my room', fallback: Link = { label: 'The three days', url: `${SITE.url}/bootcamp#days` }): Link => {
+  const room = roomOf(who);
+  return room ? { label, url: room } : fallback;
+};
 
 const DAY_BY_N = (n: 1 | 2 | 3) => bootcampDays.find((d) => d.n === n) ?? bootcampDays[n - 1];
 
@@ -189,10 +218,10 @@ export function masterclassConfirm(who: Person): BootcampEmail {
     pieces: [
       `You are in. The masterclass is ${whenLine(D.masterclass)}. Sixty minutes, live.`,
       'I am going to put the real studio on screen: the phone agent that answers our line, the crew and what each one does, the morning briefing that tells me what ran overnight, and what the whole thing costs a month. Not slides. The office.',
-      'Add it to your calendar now, while this email is open. ' + ROOM_LINE,
+      `Add it to your calendar now, while this email is open. ${roomLine(who)}`,
       'Bring one thing: the job in your business you would hand to an agent first. We will use it live.',
     ],
-    cta: { label: 'Add it to my calendar', url: inviteUrl('masterclass') },
+    cta: { label: 'Add it to my calendar', url: cal('masterclass', who) },
     secondary: { label: 'What the bootcamp is', url: BOOTCAMP_URL },
   });
 }
@@ -201,15 +230,15 @@ export function masterclassReminder24h(who: Person, f: DripFooter): BootcampEmai
   return render(
     {
       subject: `Tomorrow at ${atTime(D.masterclass)} ${TZ}: the masterclass`,
-      preheader: 'One day out. The live link lands in the morning.',
+      preheader: 'One day out. Your room link is inside.',
       eyebrow: 'Tomorrow',
       greeting: hi(who),
       pieces: [
-        `The masterclass is tomorrow, ${whenLine(D.masterclass)}. ${ROOM_LINE}`,
+        `The masterclass is tomorrow, ${whenLine(D.masterclass)}. ${roomLine(who)}`,
         'Here is the plan for the hour: a live call to the agent on our phone line, the org chart of the crew with the one job each agent owns, the morning briefing, and the money. Then the two agents every ticket holder builds in February, so you can decide whether that is for you.',
         'Have your website open in another tab. I will ask the room what the first agent in each business should be, and yours will be a better answer if you can see your own front door.',
       ],
-      cta: { label: 'Add it to my calendar', url: inviteUrl('masterclass') },
+      cta: { label: 'Add it to my calendar', url: cal('masterclass', who) },
     },
     f,
   );
@@ -219,14 +248,14 @@ export function masterclassReminder1h(who: Person, f: DripFooter): BootcampEmail
   return render(
     {
       subject: 'We start in an hour',
-      preheader: `${atTime(D.masterclass)} ${TZ}. The live link is in the email from this morning.`,
+      preheader: `${atTime(D.masterclass)} ${TZ}. The room opens at ten to the hour.`,
       eyebrow: 'One hour',
       greeting: hi(who),
       pieces: [
-        `The masterclass starts at ${atTime(D.masterclass)} ${TZ}, one hour from now. The live link is in the email that landed this morning from this address. If it is not there, reply to this one and I will send it straight back.`,
+        `The masterclass starts at ${atTime(D.masterclass)} ${TZ}, one hour from now. ${roomLine(who)} If the link gives you any trouble, reply to this email and I will send it straight back.`,
         'Come a few minutes early. I open the room at ten to the hour and take the first questions then.',
       ],
-      cta: { label: 'The masterclass page', url: MASTERCLASS_URL },
+      cta: roomCta(who, 'Enter my room', { label: 'The masterclass page', url: MASTERCLASS_URL }),
     },
     f,
   );
@@ -241,14 +270,14 @@ export function masterclassReplay(who: Person, f: DripFooter): BootcampEmail {
       eyebrow: 'The replay',
       greeting: hi(who),
       pieces: [
-        `Thank you for today. The replay is up on [the masterclass page](${MASTERCLASS_URL}) and stays there through the week.`,
+        `Thank you for today. The replay is up in ${yourRoom(who)} and on [the masterclass page](${MASTERCLASS_URL}), and it stays up until enrollment closes.`,
         `If you want the two agents built for your own business, that is the bootcamp: three live sessions, ${onDate(D.day1)}, ${onDate(D.day2)} and ${onDate(D.day3)}, ${BOOTCAMP.sessionTime}. Kickoff is ${onDate(D.kickoff)}, where we do setup together so Day 1 starts at speed.`,
         `General Admission is ${usd(GA.priceCents)}. Every price is a set package. Nothing is added later.`,
         { callout: { label: 'The guarantee', title: 'Day 1 or your money back', body: BOOTCAMP.guarantee } },
         `Enrollment closes ${CLOSE_LINE}.`,
       ],
       cta: { label: 'Take a seat', url: TIERS_URL },
-      secondary: { label: 'Watch the replay', url: MASTERCLASS_URL },
+      secondary: roomCta(who, 'Watch the replay', { label: 'Watch the replay', url: MASTERCLASS_URL }),
     },
     f,
   );
@@ -289,7 +318,7 @@ export function masterclassOffer(step: 2 | 3, who: Person, f: DripFooter): Bootc
       pieces: [
         `Enrollment for the bootcamp closes ${CLOSE_LINE}, the night of Day 1. After that the room is set for the run and I do not add seats.`,
         `If you watched the masterclass and thought "that is where my business should be going," this is the week to act on it. Kickoff is ${onDate(D.kickoff)}, Day 1 is ${onDate(D.day1)}, and you can attend Day 1 live and still take every dollar back if it was not worth the ticket.`,
-        'If the timing is wrong, no hard feelings, and this is the last of these notes. The replay stays up through the week.',
+        'If the timing is wrong, no hard feelings, and this is the last of these notes. The replay stays up until enrollment closes.',
       ],
       cta: { label: 'Take a seat', url: TIERS_URL },
     },
@@ -322,20 +351,20 @@ export function ticketWelcome(tier: BootcampTierSlug, who: Person): BootcampEmai
           `Day 3: ${whenLine(D.day3)}. ${DAY_BY_N(3).title}.`,
         ],
       },
-      `Replays stay up for ${t.replayDays} days. ${PRIVATE_ROOM_LINE} ${ROOM_LINE}`,
-      `Pre-work: the Idea Director worksheet, which turns one idea into a brief an agent can build. It arrives by email before kickoff and takes about twenty minutes. ${seedside}`.trim(),
+      `${roomLine(who)} Replays go up there the same evening and stay for ${t.replayDays} days.`,
+      `Pre-work: ${WORKSHEET_NAME}, seven questions that turn one idea into a brief an agent can build. It is waiting in ${yourRoom(who, '#worksheet')} now and takes about ${WORKSHEET_MINUTES} minutes. ${seedside}`.trim(),
       'Put all four on your calendar now:',
       {
         links: [
-          { label: 'Kickoff', url: inviteUrl('kickoff') },
-          { label: 'Day 1', url: inviteUrl('day1') },
-          { label: 'Day 2', url: inviteUrl('day2') },
-          { label: 'Day 3', url: inviteUrl('day3') },
+          { label: 'Kickoff', url: cal('kickoff', who) },
+          { label: 'Day 1', url: cal('day1', who) },
+          { label: 'Day 2', url: cal('day2', who) },
+          { label: 'Day 3', url: cal('day3', who) },
         ],
       },
       `Changes to what we teach are included. If anything looks wrong on this receipt, reply and I will fix it.`,
     ],
-    cta: { label: 'The three days', url: DAYS_URL },
+    cta: roomCta(who, 'Open my room', { label: 'The three days', url: DAYS_URL }),
   });
 }
 
@@ -347,14 +376,14 @@ export function kickoffTomorrow(who: Person, f: DripFooter): BootcampEmail {
       eyebrow: 'Kickoff',
       greeting: hi(who),
       pieces: [
-        `Kickoff is tomorrow, ${whenLine(D.kickoff)}. ${ROOM_LINE}`,
+        `Kickoff is tomorrow, ${whenLine(D.kickoff)}. ${roomLine(who)}`,
         'This is the working session before the sessions. We get everyone set up together: your SeedSide office, your accounts, the tools we will use on Day 3, and the one idea from your worksheet that your first agent will be built around.',
         {
           list: ['Your laptop, not a phone', 'The Idea Director worksheet, filled in as far as you got', 'Your website open in a tab'],
         },
         `Then Day 1 on ${onDate(D.day1)} starts at speed, and nobody spends the first twenty minutes finding a login.`,
       ],
-      cta: { label: 'Add the kickoff to my calendar', url: inviteUrl('kickoff') },
+      cta: { label: 'Add the kickoff to my calendar', url: cal('kickoff', who) },
     },
     f,
   );
@@ -372,12 +401,12 @@ export function dayReminder(n: 1 | 2 | 3, lead: '24h' | '1h', who: Person, f: Dr
         eyebrow: `Day ${n}`,
         greeting: hi(who),
         pieces: [
-          `Day ${n} is tomorrow, ${whenLine(iso)}. ${day.lead} ${ROOM_LINE}`,
+          `Day ${n} is tomorrow, ${whenLine(iso)}. ${day.lead} ${roomLine(who)}`,
           'On the board:',
           { list: day.beats.slice(0, 4) },
           `You leave with: ${day.leaveWith}`,
         ],
-        cta: { label: 'Add it to my calendar', url: inviteUrl(day.dateKey) },
+        cta: { label: 'Add it to my calendar', url: cal(day.dateKey, who) },
       },
       f,
     );
@@ -385,18 +414,18 @@ export function dayReminder(n: 1 | 2 | 3, lead: '24h' | '1h', who: Person, f: Dr
   return render(
     {
       subject: `Day ${n} starts in an hour`,
-      preheader: `${atTime(iso)} ${TZ}. The live link is in this morning's email.`,
+      preheader: `${atTime(iso)} ${TZ}. The room opens at ten to the hour.`,
       eyebrow: `Day ${n}`,
       greeting: hi(who),
       pieces: [
-        `Day ${n} starts at ${atTime(iso)} ${TZ}, one hour from now. The live link is in the email that landed this morning from this address. If it is not there, reply to this one and I will send it straight back.`,
+        `Day ${n} starts at ${atTime(iso)} ${TZ}, one hour from now. ${roomLine(who)} If the link gives you any trouble, reply to this email and I will send it straight back.`,
         n === 3
           ? 'Today you build. Have your laptop, your SeedSide login and your build plan from Day 2 ready. By the end of the session both agents are working.'
           : n === 2
             ? 'Today the room splits by trade. Join the room for your business; the host for each room is named on screen at the start.'
             : 'I open the room at ten to the hour. Come early and bring the question you most want answered about running on a crew.',
       ],
-      cta: { label: 'The three days', url: DAYS_URL },
+      cta: roomCta(who),
     },
     f,
   );
@@ -409,14 +438,14 @@ export function dayReplay(n: 1 | 2 | 3, who: Person, f: DripFooter): BootcampEma
     return render(
       {
         subject: `Day ${n} replay is up`,
-        preheader: `${day.title}. The replay is in your private room.`,
+        preheader: `${day.title}. The replay is in your room.`,
         eyebrow: `Day ${n} replay`,
         greeting: hi(who),
         pieces: [
-          `The Day ${n} replay is in your private room, with the transcript. ${day.leaveWith}`,
+          `The Day ${n} replay is up in ${yourRoom(who)}. ${day.leaveWith}`,
           `Next: ${whenLine(D[DAY_BY_N((n + 1) as 2 | 3).dateKey])}.`,
         ],
-        cta: { label: 'The three days', url: DAYS_URL },
+        cta: roomCta(who, 'Watch the replay'),
       },
       f,
     );
@@ -428,7 +457,7 @@ export function dayReplay(n: 1 | 2 | 3, who: Person, f: DripFooter): BootcampEma
       eyebrow: 'After Day 3',
       greeting: hi(who),
       pieces: [
-        'You built two agents today and they are working in your own office. That is the product, and most people stop here, which is a good outcome. The replay and the transcript are in your private room.',
+        `You built two agents today and they are working in your own office. That is the product, and most people stop here, which is a good outcome. The replay is up in ${yourRoom(who)}.`,
         'There are three doors out of Day 3, and I would rather you choose with your eyes open:',
         { list: bootcampDoors.map((d) => `[${d.title}](${SITE.url}${d.href}): ${d.body}`) },
         `The middle door is ${OPERATOR.name}: ${OPERATOR.weeks} weeks, live, a cohort of ${OPERATOR.seats}, starting ${OPERATOR.starts}. ${OPERATOR.promise}`,
@@ -501,10 +530,10 @@ export function operatorWelcome(who: Person): BootcampEmail {
           'Graduation: your operating manual, every account in your name, and a seat in the alumni room.',
         ],
       },
-      `Before we start: nothing but the Idea Director worksheet, which arrives by email the week before. ${ROOM_LINE}`,
+      `Before we start: nothing but ${WORKSHEET_NAME}, which is waiting in ${yourRoom(who, '#worksheet')}. ${roomLine(who)}`,
       'Changes to what we teach are included. If anything on this receipt looks wrong, reply and I will fix it.',
     ],
-    cta: { label: 'Add week 1 to my calendar', url: inviteUrl('operator') },
+    cta: { label: 'Add week 1 to my calendar', url: cal('operator', who) },
     secondary: { label: 'The eight weeks', url: OPERATOR_URL },
   });
 }
@@ -517,11 +546,11 @@ export function operatorStart24h(who: Person, f: DripFooter): BootcampEmail {
       eyebrow: 'Week 1',
       greeting: hi(who),
       pieces: [
-        `We start tomorrow, ${whenLine(D.operatorStart)}. ${ROOM_LINE}`,
+        `We start tomorrow, ${whenLine(D.operatorStart)}. ${roomLine(who)}`,
         `Week 1 is ${operatorWeeks[0].title}: ${operatorWeeks[0].outcome}`,
         { list: ['Your laptop', 'Your Idea Director worksheet', 'One idea you would ship this quarter if someone else did the building'] },
       ],
-      cta: { label: 'Add week 1 to my calendar', url: inviteUrl('operator') },
+      cta: { label: 'Add week 1 to my calendar', url: cal('operator', who) },
     },
     f,
   );
@@ -606,6 +635,117 @@ export function hostWeekly(
 }
 
 /* -------------------------------------------------------------------------- */
+/* The morning of, and the pre-work                                            */
+/* -------------------------------------------------------------------------- */
+
+export type LiveKey = 'masterclass' | 'kickoff' | 'day1' | 'day2' | 'day3';
+
+const LIVE_NAME: Record<LiveKey, string> = {
+  masterclass: 'The masterclass',
+  kickoff: 'Kickoff',
+  day1: 'Day 1',
+  day2: 'Day 2',
+  day3: 'Day 3',
+};
+
+const LIVE_BRING: Record<LiveKey, string> = {
+  masterclass: 'Have your website open in another tab. I ask the room what the first agent in each business should be, and yours is a better answer if you can see your own front door.',
+  kickoff: 'Bring your laptop, not a phone, and your worksheet filled in as far as you got. We do setup together so nobody spends Day 1 finding a login.',
+  day1: 'Bring the question you most want answered about running on a crew. I take the first ones at ten to the hour.',
+  day2: 'The room splits by trade today. Pick your room when the session opens; the host for each room is named on screen at the start.',
+  day3: 'Today you build. Laptop, your SeedSide login and your build plan from Day 2. By the end of the session both agents are working.',
+};
+
+/**
+ * The morning of every live session: today, the time, the one link. This is
+ * the letter the masterclass page and the calendar files promise.
+ */
+export function liveToday(key: LiveKey, who: Person, f: DripFooter): BootcampEmail {
+  const iso = D[key];
+  const name = LIVE_NAME[key];
+  return render(
+    {
+      subject: `Today at ${atTime(iso)} ${TZ}: ${key === 'masterclass' ? 'the masterclass' : name}`,
+      preheader: `Your room opens at ten to the hour. One link, the same every session.`,
+      eyebrow: 'Today',
+      greeting: hi(who),
+      pieces: [
+        `${name} is today at ${atTime(iso)} ${TZ}. ${roomLine(who)}`,
+        LIVE_BRING[key],
+        'Questions go in the box under the stream; I read them live and answer the ones the room shares first.',
+      ],
+      cta: roomCta(who, 'Enter my room', { label: 'The masterclass page', url: MASTERCLASS_URL }),
+    },
+    f,
+  );
+}
+
+/**
+ * The pre-work, a week before kickoff (ticket holders) and a week before the
+ * cohort starts (Operator seats). The worksheet lives in their room and
+ * saves as they type.
+ */
+export function worksheetLetter(audience: 'ticket' | 'operator', who: Person, f: DripFooter): BootcampEmail {
+  const due = audience === 'operator' ? D.operatorStart : D.kickoff;
+  const dueName = audience === 'operator' ? `week 1 on ${onDate(due)}` : `kickoff on ${onDate(due)}`;
+  return render(
+    {
+      subject: `Your pre-work: ${WORKSHEET_NAME}`,
+      preheader: `Seven questions, about ${WORKSHEET_MINUTES} minutes, done before ${dueName}.`,
+      eyebrow: 'Pre-work',
+      greeting: hi(who),
+      pieces: [
+        `Before ${dueName}, one thing: ${WORKSHEET_NAME}. Seven questions that turn one idea into a brief an agent can build from. About ${WORKSHEET_MINUTES} minutes, and it saves as you type.`,
+        { list: worksheetQuestions.map((q) => `${q.title}`) },
+        audience === 'operator'
+          ? 'If you did it before the bootcamp, open it and sharpen it. Week 1 starts from the brief it writes.'
+          : 'I read every one before Day 2, and the front row is picked from them. On Day 3 the brief at the bottom is the first thing your agent reads.',
+        `It is in ${yourRoom(who, '#worksheet')}.`,
+      ],
+      cta: roomCta(who, 'Open my worksheet', { label: 'The three days', url: DAYS_URL }),
+    },
+    f,
+  );
+}
+
+/**
+ * "Send me my room link": the recovery letter for anyone who lost the email.
+ * Transactional, one-to-one, and it goes only to the address on the
+ * registration, so asking for someone else's room sends it to them, not you.
+ */
+export function roomLinkLetter(who: Person): BootcampEmail {
+  return render({
+    subject: 'Your room link',
+    preheader: 'The live sessions, your replays and the questions box, one link.',
+    eyebrow: BOOTCAMP.short,
+    greeting: hi(who),
+    pieces: [
+      `Here is your room, as asked. ${roomLine(who)}`,
+      'If you did not ask for this, nothing has changed and you can ignore it.',
+    ],
+    cta: roomCta(who, 'Open my room', { label: 'The bootcamp', url: BOOTCAMP_URL }),
+  });
+}
+
+/** The Day 3 replay for a cohort seat: the replay, without the cohort pitch they already said yes to. */
+export function day3ReplayForCohort(who: Person, f: DripFooter): BootcampEmail {
+  return render(
+    {
+      subject: 'Day 3 replay is up',
+      preheader: `Your two agents are working. Week 1 is ${shortDate(D.operatorStart)}.`,
+      eyebrow: 'Day 3 replay',
+      greeting: hi(who),
+      pieces: [
+        `The Day 3 replay is up in ${yourRoom(who)}. You leave the bootcamp with two agents working in your own office, and the cohort starts from there.`,
+        `Week 1, ${operatorWeeks[0].title}: ${whenLine(D.operatorStart)}. ${operatorWeeks[0].outcome}`,
+      ],
+      cta: roomCta(who, 'Watch the replay'),
+    },
+    f,
+  );
+}
+
+/* -------------------------------------------------------------------------- */
 /* The drip's map from step name to letter                                     */
 /* -------------------------------------------------------------------------- */
 
@@ -613,39 +753,59 @@ export type DripContext = Person & { email: string; tier: string; unsubscribeUrl
 
 export type StepName =
   | 'mc-24h'
+  | 'mc-live'
   | 'mc-1h'
   | 'mc-replay'
   | 'mc-offer-2'
   | 'mc-offer-3'
+  | 'worksheet'
   | 'kickoff-24h'
+  | 'kickoff-live'
   | 'day1-24h'
+  | 'day1-live'
   | 'day1-1h'
+  | 'day1-replay'
   | 'day2-24h'
+  | 'day2-live'
   | 'day2-1h'
+  | 'day2-replay'
   | 'day3-24h'
+  | 'day3-live'
   | 'day3-1h'
   | 'day3-replay'
+  | 'day3-replay-op'
   | 'op-2'
   | 'op-3'
+  | 'op-worksheet'
   | 'op-start-24h';
 
 const foot = (c: DripContext): DripFooter => ({ unsubscribeUrl: c.unsubscribeUrl, email: c.email });
 
 export const STEP_TEMPLATES: Record<StepName, (c: DripContext) => BootcampEmail> = {
   'mc-24h': (c) => masterclassReminder24h(c, foot(c)),
+  'mc-live': (c) => liveToday('masterclass', c, foot(c)),
   'mc-1h': (c) => masterclassReminder1h(c, foot(c)),
   'mc-replay': (c) => masterclassReplay(c, foot(c)),
   'mc-offer-2': (c) => masterclassOffer(2, c, foot(c)),
   'mc-offer-3': (c) => masterclassOffer(3, c, foot(c)),
+  worksheet: (c) => worksheetLetter('ticket', c, foot(c)),
   'kickoff-24h': (c) => kickoffTomorrow(c, foot(c)),
+  'kickoff-live': (c) => liveToday('kickoff', c, foot(c)),
   'day1-24h': (c) => dayReminder(1, '24h', c, foot(c)),
+  'day1-live': (c) => liveToday('day1', c, foot(c)),
   'day1-1h': (c) => dayReminder(1, '1h', c, foot(c)),
+  'day1-replay': (c) => dayReplay(1, c, foot(c)),
   'day2-24h': (c) => dayReminder(2, '24h', c, foot(c)),
+  'day2-live': (c) => liveToday('day2', c, foot(c)),
   'day2-1h': (c) => dayReminder(2, '1h', c, foot(c)),
+  'day2-replay': (c) => dayReplay(2, c, foot(c)),
   'day3-24h': (c) => dayReminder(3, '24h', c, foot(c)),
+  'day3-live': (c) => liveToday('day3', c, foot(c)),
   'day3-1h': (c) => dayReminder(3, '1h', c, foot(c)),
   'day3-replay': (c) => dayReplay(3, c, foot(c)),
+  'day3-replay-op': (c) => day3ReplayForCohort(c, foot(c)),
   'op-2': (c) => operatorInvite(2, c, foot(c)),
   'op-3': (c) => operatorInvite(3, c, foot(c)),
+  'op-worksheet': (c) => worksheetLetter('operator', c, foot(c)),
   'op-start-24h': (c) => operatorStart24h(c, foot(c)),
 };

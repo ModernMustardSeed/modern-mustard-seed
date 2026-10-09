@@ -9,7 +9,10 @@ import { ErrorNote, Field, SUPPORT_EMAIL, inputCls, isEmail } from './ui';
  * The free seat. Name and email are the only hard requirements; the rest
  * shapes which room a person lands in on Day 2 and what Sarah reads before
  * the masterclass. `via` arrives from the page (the ?via= param or the host
- * cookie) and rides along so a host gets credit for the seat.
+ * cookie) and rides along so a host gets credit for the seat. A new free
+ * seat walks straight into its own room; an address that already holds a
+ * ticket lands on the confirmation page, because its room link is in its
+ * receipt and this public form does not hand it out.
  */
 
 type Form = { name: string; email: string; business: string; website: string; trade: string; why: string };
@@ -64,10 +67,16 @@ export default function MasterclassForm({ via }: { via: string }) {
           via: via || undefined,
         }),
       });
-      const data = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
+      const data = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string; room?: string | null };
       if (!res.ok || !data.ok) {
         setServerError(data.error || 'That did not go through.');
         setStatus('error');
+        return;
+      }
+      if (data.room) {
+        // Same origin as this page, so a preview deployment stays on the preview.
+        const u = new URL(data.room);
+        router.push(`${u.pathname}${u.search}&new=1`);
         return;
       }
       router.push('/bootcamp/welcome?masterclass=1');

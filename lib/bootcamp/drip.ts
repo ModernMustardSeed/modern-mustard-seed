@@ -6,6 +6,8 @@ import { SITE } from '@/lib/seo';
 import { unsubscribeLink } from '@/lib/bootcamp/key';
 import { STEP_TEMPLATES, type StepName } from '@/lib/bootcamp/emails';
 import { firstNameOf, listDripCandidates, markSteps, recordEvent, type RegistrationRow } from '@/lib/bootcamp/store';
+import { getStage, replayReady } from '@/lib/bootcamp/stage';
+import type { SessionKey } from '@/lib/bootcamp/sessions';
 
 /**
  * THE BOOTCAMP DRIP: every reminder, replay and offer, on the clock.
@@ -30,6 +32,16 @@ import { firstNameOf, listDripCandidates, markSteps, recordEvent, type Registrat
  * reminder still open when the replay comes due) the newest wins and the
  * older one is dropped, because a reminder for a session that already ended
  * is worse than no reminder.
+ *
+ * A replay letter says the replay is up, so it waits until it is: a step
+ * with `replay` set leaves the schedule entirely (neither sent nor dropped)
+ * until the stage desk has a replay link for that session. Its window is
+ * long enough for a replay posted the next morning and short enough that it
+ * never collides with the next session's reminders.
+ *
+ * The morning-of letter goes at 8:00 AM Mountain (five hours before every
+ * 1:00 PM session) with the person's own room link, and every reminder after
+ * it carries the same link, so dropping one for a newer one loses nothing.
  */
 
 export const CAP_PER_RUN = 400;
@@ -40,31 +52,65 @@ const DAY = 24 * H;
 
 export type Lane = 'masterclass' | 'paid' | 'operator';
 
-export type DripStep = { step: StepName; at: number; lanes: Lane[] };
+export type DripStep = {
+  step: StepName;
+  at: number;
+  lanes: Lane[];
+  /** How long the step stays due. Six hours unless set. */
+  window?: number;
+  /** A replay letter: held until the stage has a replay link for this session. */
+  replay?: SessionKey;
+};
+
+export type ScheduleOpts = {
+  /** Which sessions have a replay posted. Omitted, every replay counts as ready (the test's view). */
+  replayReady?: (key: SessionKey) => boolean;
+};
 
 const t = (iso: string) => new Date(iso).getTime();
 
+/** Five hours before a 1:00 PM Mountain session is 8:00 AM Mountain. */
+export const MORNING_OF_MS = 5 * H;
+
 /** The whole schedule, computed from data/bootcamp.ts so a moved date moves every step. */
-export function dripSchedule(dates: typeof BOOTCAMP.dates = BOOTCAMP.dates): DripStep[] {
+export function dripSchedule(dates: typeof BOOTCAMP.dates = BOOTCAMP.dates, opts: ScheduleOpts = {}): DripStep[] {
   const sessions: Lane[] = ['paid', 'operator'];
-  return [
+  const everyone: Lane[] = ['masterclass', 'paid', 'operator'];
+  const steps: DripStep[] = [
     { step: 'mc-24h', at: t(dates.masterclass) - DAY, lanes: ['masterclass'] },
-    { step: 'mc-1h', at: t(dates.masterclass) - H, lanes: ['masterclass'] },
-    { step: 'mc-replay', at: t(dates.masterclass) + 4 * H, lanes: ['masterclass'] },
+    { step: 'mc-live', at: t(dates.masterclass) - MORNING_OF_MS, lanes: everyone, window: MORNING_OF_MS },
+    { step: 'mc-1h', at: t(dates.masterclass) - H, lanes: ['masterclass'], window: H },
+    // Held for the replay link; closes before the second offer letter opens.
+    { step: 'mc-replay', at: t(dates.masterclass) + 4 * H, lanes: ['masterclass'], window: 40 * H, replay: 'masterclass' },
     { step: 'mc-offer-2', at: t(dates.masterclass) + 2 * DAY, lanes: ['masterclass'] },
     { step: 'mc-offer-3', at: t(dates.masterclass) + 5 * DAY, lanes: ['masterclass'] },
+    // The pre-work: from the day after the masterclass (clear of its letters and of the
+    // seats bought during it) until the kickoff reminder opens, so a late buyer still gets it.
+    { step: 'worksheet', at: t(dates.masterclass) + DAY, lanes: sessions, window: t(dates.kickoff) - DAY - (t(dates.masterclass) + DAY) },
     { step: 'kickoff-24h', at: t(dates.kickoff) - DAY, lanes: sessions },
+    { step: 'kickoff-live', at: t(dates.kickoff) - MORNING_OF_MS, lanes: sessions, window: MORNING_OF_MS },
     { step: 'day1-24h', at: t(dates.day1) - DAY, lanes: sessions },
-    { step: 'day1-1h', at: t(dates.day1) - H, lanes: sessions },
+    { step: 'day1-live', at: t(dates.day1) - MORNING_OF_MS, lanes: sessions, window: MORNING_OF_MS },
+    { step: 'day1-1h', at: t(dates.day1) - H, lanes: sessions, window: H },
+    // Day 2 is two days after Day 1: the replay letter closes before the Day 2 reminder opens.
+    { step: 'day1-replay', at: t(dates.day1) + 4 * H, lanes: sessions, window: 20 * H, replay: 'day1' },
     { step: 'day2-24h', at: t(dates.day2) - DAY, lanes: sessions },
-    { step: 'day2-1h', at: t(dates.day2) - H, lanes: sessions },
+    { step: 'day2-live', at: t(dates.day2) - MORNING_OF_MS, lanes: sessions, window: MORNING_OF_MS },
+    { step: 'day2-1h', at: t(dates.day2) - H, lanes: sessions, window: H },
+    { step: 'day2-replay', at: t(dates.day2) + 4 * H, lanes: sessions, window: 40 * H, replay: 'day2' },
     { step: 'day3-24h', at: t(dates.day3) - DAY, lanes: sessions },
-    { step: 'day3-1h', at: t(dates.day3) - H, lanes: sessions },
-    { step: 'day3-replay', at: t(dates.day3) + 4 * H, lanes: ['paid'] },
+    { step: 'day3-live', at: t(dates.day3) - MORNING_OF_MS, lanes: sessions, window: MORNING_OF_MS },
+    { step: 'day3-1h', at: t(dates.day3) - H, lanes: sessions, window: H },
+    { step: 'day3-replay', at: t(dates.day3) + 4 * H, lanes: ['paid'], window: 40 * H, replay: 'day3' },
+    { step: 'day3-replay-op', at: t(dates.day3) + 4 * H, lanes: ['operator'], window: 40 * H, replay: 'day3' },
     { step: 'op-2', at: t(dates.day3) + 2 * DAY, lanes: ['paid'] },
     { step: 'op-3', at: t(dates.day3) + 5 * DAY, lanes: ['paid'] },
+    // After the Day 3 replay letter closes, until the week 1 reminder opens.
+    { step: 'op-worksheet', at: t(dates.day3) + 2 * DAY, lanes: ['operator'], window: t(dates.operatorStart) - DAY - (t(dates.day3) + 2 * DAY) },
     { step: 'op-start-24h', at: t(dates.operatorStart) - DAY, lanes: ['operator'] },
   ];
+  const ready = opts.replayReady;
+  return ready ? steps.filter((s) => !s.replay || ready(s.replay)) : steps;
 }
 
 export function laneOf(tier: string): Lane | null {
@@ -86,7 +132,7 @@ export function dueSteps(reg: DueRegistration, now: number, schedule: DripStep[]
   if (!lane) return [];
   const sent = new Set(reg.sent_steps ?? []);
   return schedule
-    .filter((s) => s.lanes.includes(lane) && !sent.has(s.step) && now >= s.at && now < s.at + WINDOW_MS)
+    .filter((s) => s.lanes.includes(lane) && !sent.has(s.step) && now >= s.at && now < s.at + (s.window ?? WINDOW_MS))
     .sort((a, b) => a.at - b.at)
     .map((s) => s.step);
 }
@@ -124,7 +170,16 @@ export async function runBootcampDrip(
     return result;
   }
 
-  const schedule = dripSchedule();
+  // Replay letters wait for the replay link. An unreadable stage holds them
+  // all (fail closed): a late replay letter beats one that points at nothing.
+  let ready: (key: SessionKey) => boolean = () => false;
+  try {
+    const stage = await getStage(sb);
+    ready = (key) => replayReady(stage, key);
+  } catch (err) {
+    result.errors.push(`stage unreadable, replay letters held: ${err instanceof Error ? err.message : String(err)}`);
+  }
+  const schedule = dripSchedule(BOOTCAMP.dates, { replayReady: ready });
   const rows = await listDripCandidates(sb, BOOTCAMP.launch);
   result.scanned = rows.length;
 
@@ -157,6 +212,7 @@ export async function runBootcampDrip(
     const letter = STEP_TEMPLATES[step]({
       email: reg.email,
       firstName: reg.first_name ?? firstNameOf(reg.name),
+      regId: reg.id,
       tier: reg.tier,
       unsubscribeUrl,
     });

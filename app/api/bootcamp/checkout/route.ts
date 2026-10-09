@@ -12,7 +12,9 @@ import { BOOTCAMP, OPERATOR, enrollmentOpen, getBootcampTier } from '@/data/boot
  * The host's slug rides in from the mms_bc_ref cookie set by /bootcamp/r/[code]
  * and lands in metadata.host, where fulfillment credits the sale. Tickets close
  * at BOOTCAMP.dates.close (the night of Day 1); the program stays open until
- * the cohort starts.
+ * the cohort starts. A purchase from the room sends the host its masterclass
+ * seat came through as body.host; the cookie still wins when both exist,
+ * because the cookie is the click that most recently brought them.
  */
 
 export const runtime = 'nodejs';
@@ -24,7 +26,7 @@ const SLUG_RE = /^[a-z0-9][a-z0-9-]{0,47}$/;
 const GUARANTEE_SENTENCE = BOOTCAMP.guarantee.split('. ')[0] + '.';
 
 export async function POST(req: Request) {
-  let body: { tier?: string; email?: string; business?: string };
+  let body: { tier?: string; email?: string; business?: string; host?: string };
   try {
     body = await req.json();
   } catch {
@@ -47,7 +49,8 @@ export async function POST(req: Request) {
 
   const cookieRef = (req.headers.get('cookie') || '').match(/(?:^|;\s*)mms_bc_ref=([^;]+)/);
   const hostRaw = cookieRef ? decodeURIComponent(cookieRef[1]).trim().toLowerCase() : '';
-  const host = SLUG_RE.test(hostRaw) ? hostRaw : undefined;
+  const bodyHost = (body.host || '').trim().toLowerCase();
+  const host = SLUG_RE.test(hostRaw) ? hostRaw : SLUG_RE.test(bodyHost) ? bodyHost : undefined;
 
   const email = (body.email || '').trim().slice(0, 120);
   const business = (body.business || '').trim().slice(0, 80);

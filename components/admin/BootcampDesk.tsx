@@ -10,21 +10,25 @@ import HostsTab from '@/components/admin/bootcamp/HostsTab';
 import RegistrationsTab from '@/components/admin/bootcamp/RegistrationsTab';
 import KitTab from '@/components/admin/bootcamp/KitTab';
 import PlanTab from '@/components/admin/bootcamp/PlanTab';
+import StageTab from '@/components/admin/bootcamp/StageTab';
 import { api, type HostRow, type StatsPayload } from '@/components/admin/bootcamp/shared';
 
 export type { HostRow } from '@/components/admin/bootcamp/shared';
 
 /**
- * THE BOOTCAMP DESK. Six tabs: the numbers, the host outreach engine and its
- * switch, host approvals, registrations, the marketing kit and The Plan.
+ * THE BOOTCAMP DESK. Seven tabs: the numbers, the stage (live links, the
+ * offer switch, the question queue, replays and worksheets), the host
+ * outreach engine and its switch, host approvals, registrations, the
+ * marketing kit and The Plan.
  * Hosts arrive as props from the server page (their links are signed there);
  * everything else loads from /api/admin/bootcamp/*.
  */
 
-type TabKey = 'desk' | 'outreach' | 'hosts' | 'registrations' | 'kit' | 'plan';
+type TabKey = 'desk' | 'stage' | 'outreach' | 'hosts' | 'registrations' | 'kit' | 'plan';
 
 const TABS: { key: TabKey; label: string }[] = [
   { key: 'desk', label: 'Desk' },
+  { key: 'stage', label: 'Stage' },
   { key: 'outreach', label: 'Outreach' },
   { key: 'hosts', label: 'Hosts' },
   { key: 'registrations', label: 'Registrations' },
@@ -128,6 +132,7 @@ export default function BootcampDesk({ hosts, hostsError }: { hosts: HostRow[]; 
         </nav>
 
         {tab === 'desk' && <DeskTab stats={stats} error={statsError} loading={statsLoading} />}
+        {tab === 'stage' && <StageTab />}
         {tab === 'outreach' && <OutreachTab onChanged={() => void loadStats()} />}
         {tab === 'hosts' && <HostsTab hosts={hosts} error={hostsError} onChanged={refresh} />}
         {tab === 'registrations' && <RegistrationsTab />}
