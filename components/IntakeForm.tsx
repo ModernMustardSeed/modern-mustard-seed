@@ -385,6 +385,10 @@ export default function IntakeForm({
         clearTimeout(saveTimer.current);
         saveTimer.current = null;
       }
+      /* No form on the page means the thank-you has replaced it. An iPhone
+       * fires pagehide when that tab is closed, and saving an absent form sent
+       * {} and erased every answer just submitted (loop test, 2026-10-09). */
+      if (!formRef.current) return true;
       const answers = snapshot();
       const body = JSON.stringify({ key: intakeKey, answers });
       const sig = JSON.stringify(answers);

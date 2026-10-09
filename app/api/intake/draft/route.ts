@@ -43,6 +43,14 @@ export async function POST(req: Request) {
   // A different intake (the old brand intake) lives in the same row under its
   // own key. Keep it rather than overwrite it.
   const kept = (prior?.answers ?? {}) as Record<string, unknown>;
+
+  /* An empty save never erases a filled one. The form always posts every
+   * field it shows, so an empty body is a page with no form on it (the thank
+   * you, an iPhone closing the tab), never a client who cleared everything. */
+  const hasPrior = Object.keys(kept).some((k) => k !== 'kind' && k !== 'brand_intake');
+  if (!Object.keys(answers).length && hasPrior) {
+    return NextResponse.json({ ok: true, skipped: 'empty' });
+  }
   const carry: Record<string, unknown> = {};
   if ('brand_intake' in kept) carry.brand_intake = kept.brand_intake;
 
