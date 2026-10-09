@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { upcomingBookings } from '@/lib/white-label/booking';
 import { currentVoice } from '@/lib/white-label/voice';
 import { WL_VOICES } from '@/data/white-label-voices';
 import { wlHostMeta } from '@/lib/white-label/host-meta';
@@ -53,6 +54,7 @@ export default async function ClientDeskPage({ params, searchParams }: { params:
   const { agency, client } = desk;
   const { calls, fresh } = await deskCalls(client);
   const publicKey = process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY ?? null;
+  const bookings = await upcomingBookings(client.id).catch(() => []);
   const voiceNow = client.vapi_assistant_id ? await currentVoice(client.vapi_assistant_id).catch(() => null) : null;
 
   return (
@@ -67,6 +69,7 @@ export default async function ClientDeskPage({ params, searchParams }: { params:
         voice={publicKey && client.vapi_assistant_id ? { publicKey, assistantId: client.vapi_assistant_id } : null}
         voices={client.vapi_assistant_id ? WL_VOICES.map((v) => ({ key: v.key, feel: v.feel, line: v.line, sample: v.sample })) : []}
         voiceNow={voiceNow?.key ?? null}
+        bookings={bookings.map((b) => ({ startsAt: b.startsAt, label: b.label, name: b.name, phone: b.phone, matter: b.matter, callId: b.callId }))}
       />
     </div>
   );

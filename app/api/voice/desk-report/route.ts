@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { answerToolCalls } from '@/lib/white-label/desk-tools';
 import { env } from '@/lib/env';
 import { OWNER_NOTIFY_TO } from '@/lib/owner';
 import { resendClient } from '@/lib/send-email';
@@ -39,6 +40,14 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Bad request' }, { status: 400 });
   }
   const message = body.message ?? {};
+  // A white label receptionist checking and booking consultations mid-call.
+  if (message.type === 'tool-calls') {
+    const tc = (message.call ?? {}) as Record<string, unknown>;
+    const aid = typeof tc.assistantId === 'string' ? tc.assistantId : null;
+    const client = aid ? await getClientByAssistant(aid).catch(() => null) : null;
+    if (!client) return NextResponse.json({ results: [] });
+    return NextResponse.json(await answerToolCalls(client.id, message));
+  }
   if (message.type !== 'end-of-call-report') return NextResponse.json({ ok: true });
 
   // The log first and best effort: a database hiccup must not cost the email.

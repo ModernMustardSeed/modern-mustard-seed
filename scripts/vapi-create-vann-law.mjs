@@ -101,7 +101,7 @@ const PROMPT = `You are ${AGENT}, answering the phone at ${FIRM} in Kalispell, M
 # WHAT YOU ARE FOR
 Every call ends one of three ways: a clean message Jordan can act on, a caller pointed to the right place, or, if it is an emergency, 911. You take down the right details for the kind of matter, read the callback number back, tell them what happens next, and close.
 
-You do NOT book appointments, look up case status, quote fees, or give legal advice. A real person follows up on every message you take, and the message reaches Jordan and Delma in writing the moment you hang up.
+You book consultations with Jordan (see BOOKING below). You do NOT look up case status, quote fees, or give legal advice. A real person follows up on every message you take, and the message reaches Jordan and Delma in writing the moment you hang up.
 
 # THE FLOW
 1. Find out what it is about in their own words. If they start telling a long story, let them get the gist out, then gently take the wheel: "Okay. Let me grab a few things so Jordan can call you back ready to help."
@@ -111,6 +111,14 @@ You do NOT book appointments, look up case status, quote fees, or give legal adv
 4. Ask who is on the other side when there is one: the other driver, the other family member, the person the estate dispute is with. Say why in plain words: "We check that before Jordan talks to anyone, just to make sure there's no conflict." Get the full name, spelled if it is unusual.
 5. Ask how they heard about us, but only if the call has been calm and easy. Skip it on anything urgent or upsetting.
 6. Close with endCall, which says the goodbye for you. Never promise a time. On an urgent matter, say "I'm marking this urgent so it goes straight to Jordan." right before you call it.
+
+# BOOKING A CONSULTATION
+- Offer it to anyone with a NEW matter, once you have their name and a confirmed number: "Would you like me to get you on Jordan's calendar to talk it through?" Existing clients, the other side of a case, and people only asking for information get a message, not a booking.
+- If they say yes, call check_availability. Pass the date (YYYY-MM-DD) if they named a day, and morning or afternoon if they said one. Offer two of the times it gives you, in its own words. Never say a day or time that did not come from the tool.
+- When they pick one, call book_consultation with that slot's exact starts_at, their name, number and the matter in a few words. Then say the day and time back and tell them they are all set.
+- Never call it a free consultation. If they ask what it costs, Jordan goes over cost on that first conversation.
+- URGENT (someone in custody, court within a week, a warrant): say you are marking it urgent and Jordan will call as soon as he can. Offer a booking only if they still want one.
+- Times are Mountain time. After it is booked, ask if there is anything else, then close.
 
 # BY KIND OF MATTER
 CRIMINAL. Who is charged, and is it them or someone they are calling for. Are they in custody right now, and where. What the charge is, if they know it. Any court date, arraignment or deadline already set. Once per call, early, in its own turn, and ONLY on criminal and DUI calls (never on injury, estate or anything else), the most important thing you will say: "You don't need to tell me what happened. Please don't go into the details with me or anyone else. Jordan will go over that with you himself." Somebody arrested, a court date within a week, or a warrant is URGENT.
@@ -173,7 +181,7 @@ const PHONE_SPOKEN = 'four, zero, six. eight, two, six. six, five, two, nine.';
 const voice = {
   provider: '11labs',
   voiceId: VOICE_ID,
-  model: 'eleven_flash_v2_5',
+  model: 'eleven_v4_turbo',
   // Lower stability is more expressive; 0.5 read flat on the phone.
   stability: 0.4,
   similarityBoost: 0.75,
@@ -237,6 +245,48 @@ const SUMMARY_PROMPT = `You write the message slip for Jordan Vann, an attorney,
 
 /* ── the assistant ──────────────────────────────────────────────────────── */
 
+/* ── booking ────────────────────────────────────────────────────────────────
+ * Two tools, answered by /api/voice/desk-report (lib/white-label/desk-tools.ts)
+ * on the assistant's own server and secret. On the demo desk the calendar is
+ * ours (lib/white-label/booking.ts) and every booking shows on Vann's desk. */
+const DESK_TOOLS = [
+  {
+    type: 'function',
+    async: false,
+    messages: [{ type: 'request-start', content: "Let me look at Jordan's calendar." }],
+    function: {
+      name: 'check_availability',
+      description: "Get the real open consultation times on Jordan Vann's calendar. Call this before offering any day or time.",
+      parameters: {
+        type: 'object',
+        properties: {
+          date: { type: 'string', description: 'A day the caller asked for, as YYYY-MM-DD in Mountain time. Leave out if they did not name one.' },
+          part_of_day: { type: 'string', description: 'morning or afternoon, only if the caller said one.' },
+        },
+      },
+    },
+  },
+  {
+    type: 'function',
+    async: false,
+    messages: [{ type: 'request-start', content: 'Okay, booking that now.' }],
+    function: {
+      name: 'book_consultation',
+      description: 'Book one of the times check_availability just returned, on Jordan Vann\'s calendar.',
+      parameters: {
+        type: 'object',
+        properties: {
+          starts_at: { type: 'string', description: 'The exact startsAt value from check_availability, copied character for character.' },
+          caller_name: { type: 'string', description: 'The caller\'s full name.' },
+          caller_phone: { type: 'string', description: 'The number they confirmed, digits only.' },
+          matter: { type: 'string', description: 'What it is about, in a few words (DUI, car accident, update a will).' },
+        },
+        required: ['starts_at', 'caller_name'],
+      },
+    },
+  },
+];
+
 const config = {
   name: `${FIRM} Front Desk (demo)`,
   firstMessage: `Vann Law Firm, this is ${AGENT}. Just so you know, calls here are recorded so nothing you tell me gets lost. What can I help you with?`,
@@ -252,7 +302,8 @@ const config = {
     model: 'claude-haiku-4-5-20251001',
     temperature: 0.4,
     maxTokens: 300,
-    messages: [{ role: 'system', content: `${PROMPT}\n\n${voiceStandard({ timezone: TZ, booking: null, spelling: true })}` }],
+    tools: DESK_TOOLS,
+    messages: [{ role: 'system', content: `${PROMPT}\n\n${voiceStandard({ timezone: TZ, booking: { check: 'check_availability', book: 'book_consultation' }, spelling: true })}` }],
   },
   voice,
   transcriber: {
@@ -328,7 +379,7 @@ const config = {
     successEvaluationPlan: { enabled: false },
   },
   server: { url: 'https://modernmustardseed.com/api/voice/desk-report', timeoutSeconds: 20 },
-  serverMessages: ['end-of-call-report'],
+  serverMessages: ['end-of-call-report', 'tool-calls'],
   metadata: {
     kind: 'law-front-desk-demo',
     client: FIRM,
