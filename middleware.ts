@@ -28,7 +28,7 @@ export const config = {
 function agencyHost(req: NextRequest, wl: WlHost) {
   const path = req.nextUrl.pathname;
   if (path === '/robots.txt') return new NextResponse('User-agent: *\nDisallow: /\n', { headers: { 'content-type': 'text/plain' } });
-  if (path.startsWith('/api/white-label/') || path.startsWith('/white-label/demo/opengraph-image')) return NextResponse.next();
+  if (path.startsWith('/api/white-label/') || path.startsWith('/white-label/demo/opengraph-image') || path.startsWith('/white-label/voices/')) return NextResponse.next();
 
   const url = req.nextUrl.clone();
   if (path === '/receptionist') {

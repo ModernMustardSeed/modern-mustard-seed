@@ -26,6 +26,7 @@ const cases: [string, Want][] = [
   [`https://agents.jcreativemt.com/api/white-label/desk/${ID}/handled`, { pass: true }],
   ['https://agents.jcreativemt.com/white-label/demo/opengraph-image?x=1', { pass: true }],
   ['https://agents.jcreativemt.com/robots.txt', { body: /Disallow: \// }],
+  ['https://agents.jcreativemt.com/white-label/voices/matilda.mp3', { pass: true }],
   ['https://AGENTS.JCreativeMT.com/receptionist', { rewrite: /\/white-label\/demo\?/ }],
   // Our own domain is untouched.
   ['https://modernmustardseed.com/Contact', { redirect: /\/contact$/ }],
