@@ -150,6 +150,16 @@ const SCRIPTS = {
     vs4: 'Yes, that is right.',
     vs5: 'We have an old will from about ten years ago. That is all, thanks, bye.',
   },
+  /* A new matter that books a consultation: she checks the calendar, offers
+   * two real times, books the one picked and says it back. */
+  'vann-book': {
+    vb1: 'Hi. I was in a car accident in Kalispell on Saturday and I think I need to talk to a lawyer.',
+    vb2: 'My name is Dana Price. My cell is four zero six, five five two, eight one three nine.',
+    vb3: 'Yes, that is right, and a voicemail is fine. Can I set up a time to talk to Jordan?',
+    vb4: 'Tuesday afternoon would be best.',
+    vb5: 'The first one works.',
+    vb6: 'No, that is everything. Thank you, bye.',
+  },
   'vann-angry': {
     va1: 'I have called three times and nobody calls me back. This is ridiculous. I am a client, Dale Miller.',
     va2: 'It is about my case. Just have Jordan call me today. Four zero six, two five zero, six zero seven six.',
