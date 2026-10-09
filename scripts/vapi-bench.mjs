@@ -160,6 +160,18 @@ const SCRIPTS = {
     vb5: 'The first one works.',
     vb6: 'No, that is everything. Thank you, bye.',
   },
+  /* Sarah's own test, 2026-10-09: a caller who opens by asking for an
+   * appointment on a DUI. She should never ask if they were arrested, and
+   * should reach the calendar quickly. */
+  'vann-appt': {
+    vt1: 'Hi. I was wondering if I could book an appointment with Mister Vann, please.',
+    vt2: 'It is about a DUI. It is for me.',
+    vt3: 'My name is Sarah Cole. Four zero six, two five zero, six zero seven six.',
+    vt4: 'Yes, that is right.',
+    vt5: 'Wednesday morning works.',
+    vt6: 'The first one is great.',
+    vt7: 'No, that is all. Thanks, bye.',
+  },
   'vann-angry': {
     va1: 'I have called three times and nobody calls me back. This is ridiculous. I am a client, Dale Miller.',
     va2: 'It is about my case. Just have Jordan call me today. Four zero six, two five zero, six zero seven six.',

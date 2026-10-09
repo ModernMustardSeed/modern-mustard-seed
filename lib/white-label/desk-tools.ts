@@ -25,7 +25,7 @@ function args(raw: unknown): Record<string, unknown> {
 
 const s = (v: unknown, max = 200) => (typeof v === 'string' && v.trim() ? v.trim().slice(0, max) : null);
 
-async function answer(clientId: string, name: string, a: Record<string, unknown>, callId: string | null): Promise<string> {
+async function answer(clientId: string, name: string, a: Record<string, unknown>, callId: string | null, bench: boolean): Promise<string> {
   if (name === 'check_availability') {
     const slots = await openSlots(clientId, { date: s(a.date, 10), part: s(a.part_of_day, 20) });
     if (!slots.length) {
@@ -45,7 +45,7 @@ async function answer(clientId: string, name: string, a: Record<string, unknown>
     if (!startsAt || !caller) {
       return JSON.stringify({ ok: false, instruction: 'You need the exact starts_at from check_availability and their name. Ask for what is missing, once.' });
     }
-    const r = await bookSlot(clientId, { startsAt, name: caller, phone: s(a.caller_phone, 40), matter: s(a.matter, 200), callId });
+    const r = await bookSlot(clientId, { startsAt, name: caller, phone: s(a.caller_phone, 40), matter: s(a.matter, 200), callId }, { dryRun: bench });
     if (r.ok) {
       return JSON.stringify({
         ok: true,
@@ -69,12 +69,15 @@ async function answer(clientId: string, name: string, a: Record<string, unknown>
 export async function answerToolCalls(clientId: string, message: Record<string, unknown>): Promise<{ results: { toolCallId: string; result: string }[] }> {
   const call = (message.call ?? {}) as Record<string, unknown>;
   const callId = typeof call.id === 'string' ? call.id : null;
+  // Our scripted test calls (scripts/vapi-bench.mjs) run the whole booking but
+  // never land on the office's calendar, the same way they never show as calls.
+  const bench = /^bench:/.test(String(call.name ?? ''));
   const list = (message.toolCallList ?? message.toolCalls ?? []) as ToolCall[];
   const results = [];
   for (const tc of list) {
     const name = tc.function?.name ?? '';
     const result = DESK_TOOL_NAMES.has(name)
-      ? await answer(clientId, name, args(tc.function?.arguments), callId).catch((e) => {
+      ? await answer(clientId, name, args(tc.function?.arguments), callId, bench).catch((e) => {
           console.error('desk tool failed', name, e);
           return JSON.stringify({ ok: false, instruction: 'The calendar did not answer. Take their details and say Jordan will call to set a time.' });
         })

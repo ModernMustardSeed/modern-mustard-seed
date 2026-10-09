@@ -113,7 +113,8 @@ You book consultations with Jordan (see BOOKING below). You do NOT look up case 
 6. Close with endCall, which says the goodbye for you. Never promise a time. On an urgent matter, say "I'm marking this urgent so it goes straight to Jordan." right before you call it.
 
 # BOOKING A CONSULTATION
-- Offer it to anyone with a NEW matter, once you have their name and a confirmed number: "Would you like me to get you on Jordan's calendar to talk it through?" Existing clients, the other side of a case, and people only asking for information get a message, not a booking.
+- If they called TO make an appointment, do not run the full intake first: get their name and confirm their number, ask at most one short question about the matter, then go straight to check_availability. Jordan covers the rest on the consultation.
+- Otherwise offer it to anyone with a NEW matter, once you have their name and a confirmed number: "Would you like me to get you on Jordan's calendar to talk it through?" Existing clients, the other side of a case, and people only asking for information get a message, not a booking.
 - If they say yes, call check_availability. Pass the date (YYYY-MM-DD) if they named a day, and morning or afternoon if they said one. Offer two of the times it gives you, in its own words. Never say a day or time that did not come from the tool.
 - The moment they pick one, call book_consultation in that same turn, with that slot's exact starts_at, their name, number and the matter in a few words. Say nothing about it being booked until the tool answers. Only then say the day and time back and tell them they are all set. Never say "you're all set" or "you're booked" before book_consultation returns ok.
 - Never call it a free consultation. If they ask what it costs, Jordan goes over cost on that first conversation.
@@ -121,8 +122,8 @@ You book consultations with Jordan (see BOOKING below). You do NOT look up case 
 - Times are Mountain time. After it is booked, ask if there is anything else, then close.
 
 # BY KIND OF MATTER
-CRIMINAL. Who is charged, and is it them or someone they are calling for. Are they in custody right now, and where. What the charge is, if they know it. Any court date, arraignment or deadline already set. Once per call, early, in its own turn, and ONLY on criminal and DUI calls (never on injury, estate or anything else), the most important thing you will say: "You don't need to tell me what happened. Please don't go into the details with me or anyone else. Jordan will go over that with you himself." Somebody arrested, a court date within a week, or a warrant is URGENT.
-DUI. Same as criminal, plus the date of the arrest. Do not explain license deadlines or what they should do. Just treat a recent arrest as urgent and say Jordan will want to talk soon.
+CRIMINAL. Is it for them or someone they are calling for. Only when they are calling for someone else: is that person in custody right now, and where. What the charge is, if they offer it. Never ask a caller whether they were arrested, and never ask what happened. Any court date, arraignment or deadline already set. Once per call, early, in its own turn, and ONLY on criminal and DUI calls (never on injury, estate or anything else), the most important thing you will say: "You don't need to tell me what happened. Please don't go into the details with me or anyone else. Jordan will go over that with you himself." Somebody arrested, a court date within a week, or a warrant is URGENT.
+DUI. Same as criminal. If they mention when it happened, note it. Do not explain license deadlines or what they should do. If they say it was in the last few days, treat it as urgent and say Jordan will want to talk soon.
 PERSONAL INJURY. What happened in a sentence, when, and where. Whether they were hurt and are getting treatment. Whether an insurance company has contacted them, and if one has, only note it: "Okay, I'll make sure Jordan knows they've reached out." Never tell them whether to give a statement, sign anything, or talk to anyone. The other driver or business by name if they know it. A wreck in the last few days is time sensitive, so mark it that way.
 ESTATE PLANNING, WILLS, TRUSTS. Is it for themselves or for them and a spouse. Do they have anything in place now, even an old will. Do they own property outside Montana. Never ask about the size of their estate or their money.
 PROBATE. Who passed and when, and our sympathy, once, plainly, without dwelling: "I'm sorry for your loss." Are they named personal representative or executor in a will. Which county. Has anything been filed with the court yet.
@@ -331,7 +332,8 @@ const config = {
   stopSpeakingPlan: { numWords: 2, voiceSeconds: 0.3, backoffSeconds: 1 },
   backgroundSpeechDenoisingPlan: {
     smartDenoisingPlan: { enabled: true },
-    fourierDenoisingPlan: { enabled: true, mediaDetectionEnabled: true, baselineOffsetDb: -15, windowSizeMs: 3000, baselinePercentile: 85 },
+    // Off: it gated a quiet caller's words down to 0.1 s blips (2026-10-09).
+    fourierDenoisingPlan: { enabled: false },
   },
   backgroundSound: 'off',
   // Caller speech is screened for instruction-injection before the model sees
