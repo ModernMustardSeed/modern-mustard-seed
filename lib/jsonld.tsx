@@ -36,7 +36,7 @@ export const orgJsonLd = {
   // The team on the homepage (2026-10-09): Sarah builds, Anthony runs sales and marketing.
   employee: [
     { '@id': PERSON_ID },
-    { '@type': 'Person', name: 'Anthony', jobTitle: 'Sales and Marketing', worksFor: { '@id': ORG_ID } },
+    { '@type': 'Person', '@id': `${SITE.url}/about#anthony-scarano`, name: 'Anthony Scarano', givenName: 'Anthony', familyName: 'Scarano', jobTitle: 'Sales and Marketing', worksFor: { '@id': ORG_ID }, spouse: { '@id': PERSON_ID } },
   ],
   telephone: SITE.phoneE164, email: SITE.email,
   address: {

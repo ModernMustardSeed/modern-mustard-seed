@@ -287,7 +287,7 @@ export default function StorybookHome() {
             ))}
           </div>
           <div className="sb-crew">
-            <p><strong>Behind the studio:</strong> {STUDIO_STATS.specialists} AI specialists and one human in charge.</p>
+            <p><strong>Behind the studio:</strong> {STUDIO_STATS.specialists} AI specialists, run by the two of us.</p>
             <a className="sb-btn sb-btn-line" href={OFFICE_URL} target="_blank" rel="noopener noreferrer">Meet the crew {ARROW}</a>
           </div>
         </section>
@@ -406,8 +406,8 @@ export default function StorybookHome() {
             <article className="sb-person">
               <div className="sb-person-art"><Art name="team-anthony" alt="Anthony laughs on an old phone and gives a thumbs up beside a board of campaign cards, with seed characters holding a megaphone and a camera." sizes="(max-width: 760px) 92vw, 400px" /></div>
               <p className="sb-label">Sales <span aria-hidden="true">/</span> Marketing</p>
-              <h3>Anthony</h3>
-              <p>Anthony leads sales and marketing. He helps you choose the right build, then keeps your marketing moving once it is live.</p>
+              <h3>Anthony Scarano</h3>
+              <p>Anthony Scarano leads sales and marketing. He helps you choose the right build, then keeps your marketing moving once it is live.</p>
               <Link className="sb-link" href="/book">Book a call {ARROW}</Link>
             </article>
           <aside className="sb-concierge" aria-labelledby="sb-concierge-title">

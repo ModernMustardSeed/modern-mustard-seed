@@ -86,7 +86,7 @@ export default function ClaudePage() {
               Claude runs this studio. <em className="italic">Yours is next.</em>
             </h2>
             <p className="font-body text-[#0b3b44]/75 leading-relaxed mt-5">
-              Modern Mustard Seed is one person and a back office of Claude agents. Claude builds the websites, writes the follow-ups, keeps the books and drafts the work, following eighteen skills we wrote for how this studio operates, across sixty-four specialist agents. Ten safety hooks stop it from sending, spending or deleting anything without a yes.
+              Modern Mustard Seed is two people and a back office of Claude agents: Sarah Scarano builds, Anthony Scarano runs sales and marketing. Claude builds the websites, writes the follow-ups, keeps the books and drafts the work, following eighteen skills we wrote for how this studio operates, across sixty-four specialist agents. Ten safety hooks stop it from sending, spending or deleting anything without a yes.
             </p>
             <p className="font-body text-[#0b3b44]/75 leading-relaxed mt-4">
               Every package on this page is a smaller copy of that setup, shaped around your business instead of ours.

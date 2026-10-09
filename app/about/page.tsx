@@ -4,9 +4,9 @@ import { buildMetadata } from '@/lib/seo';
 import SarahPortrait from '@/components/sarah/SarahPortrait';
 
 export const metadata = buildMetadata({
-  title: 'Sarah Scarano, Anthony and the AI Studio Serving Businesses Nationwide',
+  title: 'Sarah and Anthony Scarano, the AI Studio Serving Businesses Nationwide',
   description:
-    'Meet the team at Modern Mustard Seed: Sarah Scarano, founder, designer and engineer, and Anthony, who leads sales and marketing. A design and AI product studio in Kalispell building websites, AI voice agents and custom software for clients nationwide.',
+    'Meet the team at Modern Mustard Seed: Sarah Scarano, founder, designer and engineer, and Anthony Scarano, who leads sales and marketing. A design and AI product studio in Kalispell building websites, AI voice agents and custom software for clients nationwide.',
   path: '/about',
 });
 
@@ -126,8 +126,8 @@ export default function AboutPage() {
             </article>
             <article className="rounded-[4px] border border-[#141210] bg-white p-6">
               <p className="font-mono uppercase text-[11px] tracking-[.14em]">Sales / Marketing</p>
-              <h3 className="mt-2 text-[30px]">Anthony</h3>
-              <p className="mt-3 text-[16px] leading-[1.7] text-[#4a4339]">Anthony leads sales and marketing. He helps you choose the right build, then keeps your marketing moving once it is live.</p>
+              <h3 className="mt-2 text-[30px]">Anthony Scarano</h3>
+              <p className="mt-3 text-[16px] leading-[1.7] text-[#4a4339]">Anthony Scarano leads sales and marketing. He helps you choose the right build, then keeps your marketing moving once it is live.</p>
               <Link href="/book" className="mt-4 inline-block font-bold border-b-2 border-[#f5b700]">Book a call ↗</Link>
             </article>
           </div>

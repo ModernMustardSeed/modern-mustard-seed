@@ -21,7 +21,7 @@ export const HOME_QUESTIONS: { q: string; a: string }[] = [
   },
   {
     q: 'Who will I work with?',
-    a: 'Two people and one AI receptionist. Sarah Scarano, the founder, designs and builds the work. Anthony leads sales and marketing, from choosing the right build to keeping your marketing moving after launch. Mr. Mustard, the studio’s AI receptionist, answers the line day and night at (406) 312-1223.',
+    a: 'Two people and one AI receptionist. Sarah Scarano, the founder, designs and builds every piece of the work. Anthony Scarano leads sales and marketing, from choosing the right build to keeping your marketing moving after launch. Mr. Mustard, the studio’s AI receptionist, answers the line day and night at (406) 312-1223.',
   },
   {
     q: 'How do engagements begin?',
