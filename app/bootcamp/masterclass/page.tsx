@@ -6,6 +6,7 @@ import { BOOTCAMP, bootcampDays, bootcampTiers, fmtMountain, fmtMountainTime, us
 import PopPageHero, { pop } from '@/components/pop/PopPageHero';
 import MasterclassForm from '@/components/bootcamp/MasterclassForm';
 import { Check, Kicker, h2Cls, leadCls } from '@/components/bootcamp/ui';
+import TheOffice from '@/components/bootcamp/office/TheOffice';
 import RoomLinkForm from '@/components/bootcamp/room/RoomLinkForm';
 import Player from '@/components/bootcamp/room/Player';
 import { getSupabase } from '@/lib/supabase';
@@ -156,6 +157,8 @@ export default async function MasterclassPage({ searchParams }: { searchParams: 
           </div>
         </div>
       </section>
+
+      <TheOffice cta="masterclass" />
 
       <section className="bg-[#0b3b44] text-[#fbf5ea] border-t-2 border-[#0b3b44]" aria-labelledby="after-heading">
         <div className="max-w-4xl mx-auto px-5 py-14 md:py-16 text-center">
