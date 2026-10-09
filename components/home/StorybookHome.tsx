@@ -95,9 +95,9 @@ const PATHS = [
     alt: 'Sarah and Anthony assemble a giant website on a stage while a crane lowers the final panel.',
     kicker: 'Your next venture',
     title: 'Make it real.',
-    body: 'From the first idea to a working product you own, scoped, built, launched and handed over.',
+    body: 'From the first idea to a working product, scoped, built, launched and then managed for you.',
     href: '#chapters',
-    cta: 'From idea to hand off',
+    cta: 'From idea to launch, managed',
   },
   {
     art: 'agency',
@@ -138,7 +138,7 @@ const CHAPTERS = [
   { title: 'Scope and Sequence', body: 'Your idea becomes a specified, sequenced build plan with a set package price.' },
   { title: 'Build and Ship', body: 'The product gets built and put in front of real users.' },
   { title: 'Launch', body: 'It goes to market with the surrounding system in place.' },
-  { title: 'Hand Off', body: 'The code, the accounts and the know-how transfer to you.' },
+  { title: 'Managed for You', body: 'We host it, run it, update it and keep it improving. Changes are included.' },
 ];
 
 const FOOTER = [
@@ -213,7 +213,7 @@ function Art({ name, alt, sizes = '(max-width: 760px) 92vw, 420px', priority = f
 }
 
 const ARROW = <span aria-hidden="true">↗</span>;
-const TICKER = ['Websites', 'AI voice agents', 'Custom software', 'Agentic systems', 'Google and ChatGPT search', 'Marketing', 'Films', 'Advisory'];
+const TICKER = ['Websites', 'AI voice agents', 'Custom software', 'Agentic systems', 'Managed end to end', 'Google and ChatGPT search', 'Marketing', 'Films', 'Advisory'];
 
 export default function StorybookHome() {
   return (
@@ -245,7 +245,7 @@ export default function StorybookHome() {
             </h1>
             <p className="sb-hero-sub">
               Get found on Google and ChatGPT. Answer every call. Hand the busywork to AI agents.
-              Set package prices, and you own every piece of it.
+              We build it and manage it for you, end to end, at a set package price.
             </p>
             <div className="sb-ctas">
               <Link className="sb-btn" href="/inquire">Start your build {ARROW}</Link>
@@ -272,7 +272,7 @@ export default function StorybookHome() {
           <div className="sb-head">
             <p className="sb-label">01 <span aria-hidden="true">/</span> What we build</p>
             <h2 id="sb-services-title">Found, booked and running. <em>One studio behind it.</em></h2>
-            <p>Modern Mustard Seed builds the face of your business and the systems behind it, start to finish, in one place.</p>
+            <p>Modern Mustard Seed builds the face of your business and the systems behind it, then manages all of it for you, end to end.</p>
           </div>
           <div className="sb-grid">
             {SERVICES.map((s, i) => (
@@ -369,8 +369,8 @@ export default function StorybookHome() {
           <div className="sb-band-in">
             <div className="sb-head">
               <p className="sb-label">05 <span aria-hidden="true">/</span> Idea to Product</p>
-              <h2 id="sb-chapters-title">Four chapters. <em>One happy ending.</em></h2>
-              <p>Every build follows the same story, with a set package price agreed before chapter one. Changes along the way are included.</p>
+              <h2 id="sb-chapters-title">Built, launched <em>and managed for you.</em></h2>
+              <p>Every build follows the same story, with a set package price agreed before chapter one. After launch we keep running it, and changes are always included.</p>
             </div>
             <ol className="sb-chapters">
               {CHAPTERS.map((c, i) => (
@@ -421,8 +421,8 @@ export default function StorybookHome() {
             <a className="sb-btn" href="tel:+14063121223">Call (406) 312-1223</a>
             <Link className="sb-link" href="/mustard">Meet Mr. Mustard {ARROW}</Link>
             <div className="sb-own">
-              <strong>Your business. Your asset.</strong>
-              <p>You own the code, the accounts and the finished work. Changes to what we build are included.</p>
+              <strong>Managed end to end.</strong>
+              <p>We host it, watch it and keep it current, and changes are included. You still own every piece.</p>
             </div>
           </aside>
           </div>
@@ -484,7 +484,7 @@ export default function StorybookHome() {
           <div className="sb-close-copy">
             <p className="sb-label">Your next step</p>
             <h2 id="sb-close-title">A new venture. A stronger business. <em>Let’s build the tree.</em></h2>
-            <p>A clear scope. A set package price. The finished work belongs to you.</p>
+            <p>A clear scope. A set package price. Built and managed for you, end to end.</p>
             <div className="sb-ctas">
               <Link className="sb-btn sb-btn-ink" href="/inquire">Start a conversation {ARROW}</Link>
               <Link className="sb-link" href="/book">Book a call {ARROW}</Link>

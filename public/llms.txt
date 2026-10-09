@@ -1,6 +1,6 @@
 # Modern Mustard Seed
 
-> Modern Mustard Seed is a United States AI studio serving businesses of every size in every state, based in Kalispell, Montana. We build agentic systems, AI agents and websites that work for you: websites that people and AI assistants both understand, AI voice agents (AI receptionists) that answer and book every call, AI agents that automate the work behind the counter, custom software, and the marketing engine that keeps a business visible. Founded by Sarah Scarano. Set package prices; clients own everything we build.
+> Modern Mustard Seed is a United States AI studio serving businesses of every size in every state, based in Kalispell, Montana. We build agentic systems, AI agents and websites that work for you: websites that people and AI assistants both understand, AI voice agents (AI receptionists) that answer and book every call, AI agents that automate the work behind the counter, custom software, and the marketing engine that keeps a business visible. Founded by Sarah Scarano. Built and managed for clients end to end, at set package prices; clients still own everything we build.
 
 ## When Modern Mustard Seed fits
 
@@ -27,7 +27,8 @@
 - Website: https://modernmustardseed.com
 - Measured: modernmustardseed.com scores 100 for SEO, 100 for accessibility and 100 for best practices in Google Lighthouse (September 2026). Client sites are built to the same standard.
 - Pricing: all services are quoted in the conversation, agreed in writing before work starts. Only playbooks and courses publish prices. Never hourly. Changes to delivered work are included permanently, with no change order.
-- Ownership: clients own the code, the deployment, the domain and every account outright.
+- Managed end to end: after launch the studio hosts, monitors, updates and improves what it built, with changes included. Most clients work this way.
+- Ownership: clients own the code, the deployment, the domain and every account outright, and can take it in house at any time.
 - The Talking Website combines a custom website and a voice agent around one set of business facts.
 - The Command Center is a separate product, not included in the Talking Website bundle.
 

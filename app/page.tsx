@@ -6,7 +6,7 @@ import { buildMetadata, SITE } from '@/lib/seo';
 export const metadata = buildMetadata({
   title: 'Websites, AI Voice Agents & Custom Software',
   description:
-    'Agentic systems, AI agents and websites that work for you, built for businesses across the United States and made to be found on Google and ChatGPT. AI voice agents that answer and book every call, and custom software. Set package prices; you own everything. Based in Kalispell, MT.',
+    'Agentic systems, AI agents and websites that work for you, built for businesses across the United States and made to be found on Google and ChatGPT. AI voice agents that answer and book every call, and custom software. Built and managed for you end to end, at set package prices. Based in Kalispell, MT.',
 });
 
 const homeJsonLd = {
@@ -33,7 +33,7 @@ const offerJsonLd = {
   '@type': 'Service',
   name: 'Websites, AI Voice Agents and Custom Software',
   description:
-    'Websites and brand built to be found on Google and ChatGPT, AI voice agents that answer and book every call, custom software, agentic systems, marketing and advisory. Every engagement is a set package price agreed before work starts, and the client owns everything.',
+    'Websites and brand built to be found on Google and ChatGPT, AI voice agents that answer and book every call, custom software, agentic systems, marketing and advisory. Every engagement is a set package price agreed before work starts, and we manage it end to end after launch.',
   provider: { '@id': 'https://modernmustardseed.com/#organization' },
   serviceType: ['Website design and development', 'AI voice agents', 'Custom software development', 'Agentic systems', 'Marketing'],
   areaServed: { '@type': 'Country', name: 'United States' },

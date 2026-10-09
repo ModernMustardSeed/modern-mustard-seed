@@ -73,13 +73,13 @@ export const STEPS: Step[] = [
   },
   {
     n: '05',
-    title: 'The handoff',
-    promise: 'You leave owning all of it.',
+    title: 'Managed for you',
+    promise: 'We keep it running. You keep ownership.',
     body:
-      'The repository, the live deployment, the domain, every account and credential, and the documentation to run it without us. Not a licence and not a lease. If you hired another engineer tomorrow they could pick it up, which is the only real test of whether you own something.',
-    yours: 'Accept the transfer, and keep the credentials somewhere you will find them.',
-    output: 'The asset, in your name, with the keys.',
-    clock: 'Launch day',
+      'After launch we host it, monitor it, update it and keep improving it, end to end, and changes are included. The repository, the domain and every account stay in your name, so it is yours outright. If you ever want to run it in house, everything transfers with the documentation.',
+    yours: 'Tell us what you need next. We handle the rest.',
+    output: 'A live asset in your name, managed end to end.',
+    clock: 'From launch day on',
   },
 ];
 
@@ -118,7 +118,7 @@ export const TERMS: Term[] = [
   {
     title: 'Stewardship over extraction',
     body:
-      'Every decision gets made for the version of your business that exists in three years. We build assets you own and can operate without us. We do not build dependency, and we will tell you when something is not worth building at all.',
+      'Every decision gets made for the version of your business that exists in three years. We build assets you own outright and manage them for you end to end. You are never locked in, and we will tell you when something is not worth building at all.',
   },
 ];
 

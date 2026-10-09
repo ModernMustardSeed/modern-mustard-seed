@@ -40,12 +40,16 @@ export const HOME_QUESTIONS: { q: string; a: string }[] = [
     a: 'A website or a voice agent is typically live within a week or two of kickoff. Custom software, full applications, and stores are deeper builds and usually run two to six weeks. The timeline is fixed in the proposal alongside the price.',
   },
   {
+    q: 'Do you manage it after launch?',
+    a: 'Yes, end to end, and that is how most clients work with us. We host it, monitor it, keep the website, the voice agent and the AI agents current, and make the changes you need as you grow. Changes are included. You never have to touch the technical side.',
+  },
+  {
     q: 'Do I own the work when it is finished?',
-    a: 'Yes, outright. You receive the repository, the live deployment, the accounts, and the documentation to run all of it without us. We build assets you own, not a dependency on the studio.',
+    a: 'Yes. The code, the accounts and the domain are yours. Most clients have us manage it for them, and if you ever want to take it in house, everything transfers to you.',
   },
   {
     q: 'Do you work outside Montana?',
-    a: 'Yes. The studio is based in Kalispell, Montana and builds for businesses across the United States. Every step, from the first conversation to the handoff, works remotely.',
+    a: 'Yes. The studio is based in Kalispell, Montana and builds for businesses across the United States. Every step, from the first conversation to launch and the management after it, works remotely.',
   },
   {
     q: 'Do you offer white-label services for agencies?',

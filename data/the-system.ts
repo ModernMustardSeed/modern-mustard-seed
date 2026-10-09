@@ -152,7 +152,7 @@ export const SYSTEM_FAQ = [
   },
   {
     q: 'Do I own it?',
-    a: 'Yes. The repo, the database, the deploys, the phone number, the documentation, every credential. Stewardship over extraction: we build assets you can run without us.',
+    a: 'Yes. The repo, the database, the deploys, the phone number and every credential are in your name. Most clients have us manage it end to end, and it is yours to take in house whenever you want.',
   },
   {
     q: 'What does it cost?',

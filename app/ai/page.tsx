@@ -88,7 +88,7 @@ const faq = [
   },
   {
     q: 'Do you only work in Montana?',
-    a: 'No. We are based in Kalispell, Montana, and build for small, medium and large businesses in every state, remotely. The first conversation, the build and the handoff all run online.',
+    a: 'No. We are based in Kalispell, Montana, and build for small, medium and large businesses in every state, remotely. The first conversation, the build and the management after launch all run online.',
   },
 ];
 
