@@ -16,6 +16,8 @@
  * Dates are Mountain Time. February is standard time (UTC-7).
  */
 
+import { OFFICE_AGENT_COUNT } from './bootcamp-office';
+
 export const BOOTCAMP = {
   name: 'The One-Person Company Bootcamp',
   short: 'The Bootcamp',
@@ -269,7 +271,7 @@ export const BOOTCAMP_PROOF = [
   { n: '1', label: 'person at the desk' },
   { n: '20', label: 'laws the crew obeys' },
   { n: '46', label: 'skills in daily use' },
-  { n: '10', label: 'hooks it cannot get past' },
+  { n: String(OFFICE_AGENT_COUNT), label: 'agents on the crew' },
   { n: '321', label: 'memory notes it reads first' },
   { n: '40+', label: 'products shipped' },
 ] as const;

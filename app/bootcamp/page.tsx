@@ -21,6 +21,7 @@ import Countdown from '@/components/bootcamp/Countdown';
 import RoomTabs from '@/components/bootcamp/RoomTabs';
 import FaqList from '@/components/bootcamp/FaqList';
 import DoorRow from '@/components/bootcamp/DoorRow';
+import TheOffice from '@/components/bootcamp/office/TheOffice';
 import { Check, Kicker, btn, h2Cls, h2SmCls, leadCls } from '@/components/bootcamp/ui';
 
 /**
@@ -131,6 +132,9 @@ export default function BootcampPage() {
           <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#fbf5ea]/50 text-center mt-7">Counted from the setup that runs Modern Mustard Seed today. You see all of it on Day 1.</p>
         </div>
       </section>
+
+      {/* THE OFFICE: the real crew, and a console to hand it a job */}
+      <TheOffice />
 
       {/* THE THESIS */}
       <section className="py-16 md:py-24" aria-labelledby="thesis-heading">
