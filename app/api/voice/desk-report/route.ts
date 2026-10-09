@@ -67,6 +67,8 @@ export async function POST(req: Request) {
     listenUrl: desk ?? (loggedId ? `https://modernmustardseed.com/admin/calls?call=${loggedId}` : null),
   });
   if (!report.worthSending) return NextResponse.json({ ok: true, sent: false });
+  // Our own scripted test calls (scripts/vapi-bench.mjs) are logged, never mailed.
+  if (typeof call.name === 'string' && call.name.startsWith('bench:')) return NextResponse.json({ ok: true, sent: false, bench: true });
 
   const office = wl?.status === 'live' && wl.owner_email ? [wl.owner_email] : [];
   const to = Array.from(new Set([...OWNER_NOTIFY_TO, ...(meta.notifyTo ?? []), ...office]));

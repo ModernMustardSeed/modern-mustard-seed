@@ -456,8 +456,10 @@ function TalkButton({
       });
       vapi.on('call-end', ended);
       vapi.on('error', () => {
+        // Fires when the call cannot connect as well as when it drops, so the
+        // words cover both and point at the one thing a person can do.
         setState('error');
-        setError('The line dropped. Try again.');
+        setError('The call could not connect. Try again in a moment, or call the line.');
       });
       vapiRef.current = vapi;
       await vapi.start(voice.assistantId);

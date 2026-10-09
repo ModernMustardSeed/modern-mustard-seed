@@ -16,6 +16,9 @@ export async function generateMetadata({ params, searchParams }: { params: Param
   return {
     title: { absolute: desk ? `${desk.client.business} · Front Desk` : 'Front Desk' },
     robots: { index: false, follow: false },
+    // The signed key rides in this page's URL. No referrer, so the agency's
+    // logo host and any link out never receive it.
+    referrer: 'no-referrer',
     icons: desk?.agency.logo_url ? { icon: desk.agency.logo_url } : undefined,
   };
 }

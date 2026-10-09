@@ -273,7 +273,7 @@ ${
     ? `<tr><td style="padding:24px 28px 0"><div style="font-family:${SANS};font-size:11px;letter-spacing:1.2px;text-transform:uppercase;color:${muted};font-weight:700;margin-bottom:10px">Transcript</div><div style="font-family:${SANS};font-size:13px;line-height:1.55;color:#3A3A3A">${lines}</div></td></tr>`
     : ''
 }
-<tr><td style="padding:22px 28px 26px"><div style="border-top:1px solid ${rule};padding-top:12px;font-family:${SANS};font-size:12px;line-height:1.5;color:${muted}">Taken by ${escape(meta.desk ?? 'the front desk')}, the AI receptionist for ${escape(meta.business)}.${ended ? ` Call ended: ${escape(ended.replace(/-/g, ' '))}.` : ''}</div></td></tr>
+<tr><td style="padding:22px 28px 26px"><div style="border-top:1px solid ${rule};padding-top:12px;font-family:${SANS};font-size:12px;line-height:1.5;color:${muted}">Confidential. Written for ${escape(meta.business)} only; please do not forward. Taken by ${escape(meta.desk ?? 'the front desk')}, the AI receptionist.${ended ? ` Call ended: ${escape(ended.replace(/-/g, ' '))}.` : ''}</div></td></tr>
 </table>
 </td></tr></table>
 </body></html>`;
