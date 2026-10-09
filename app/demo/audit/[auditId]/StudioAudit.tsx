@@ -173,8 +173,8 @@ function ShowUp({ scan, business }: { scan: DeepScan; business: string }) {
   const safeImg = s.og_image && /^https:/i.test(s.og_image) ? s.og_image : null;
   const safeIcon = s.favicon && /^https:/i.test(s.favicon) ? s.favicon : null;
   return (
-    <div className="grid gap-px md:grid-cols-[1.25fr_1fr]" style={{ background: RULE, border: `1px solid ${RULE}` }}>
-      <figure className="m-0 p-6 sm:p-8" style={{ background: '#ffffff' }}>
+    <div className="grid grid-cols-1 gap-px md:grid-cols-[1.25fr_1fr]" style={{ background: RULE, border: `1px solid ${RULE}` }}>
+      <figure className="m-0 min-w-0 p-6 sm:p-8" style={{ background: '#ffffff' }}>
         <Label color={`${INK}99`}>On Google, today</Label>
         <div className="mt-5 max-w-[600px]" style={{ fontFamily: 'arial, sans-serif' }}>
           <div className="flex items-center gap-3">
@@ -202,7 +202,7 @@ function ShowUp({ scan, business }: { scan: DeepScan; business: string }) {
           Drawn from your homepage&apos;s own title and description tags, the two lines Google most often prints. Google can rewrite them; it rarely improves on a good one.
         </figcaption>
       </figure>
-      <figure className="m-0 flex flex-col p-6 sm:p-8" style={{ background: PAPER }}>
+      <figure className="m-0 flex min-w-0 flex-col p-6 sm:p-8" style={{ background: PAPER }}>
         <Label color={`${INK}99`}>When a customer texts your link</Label>
         <div className="mt-5 flex justify-end">
           <div className="w-full max-w-[290px] overflow-hidden rounded-[18px]" style={{ background: '#e9e9eb' }}>
@@ -391,7 +391,7 @@ export default function StudioAudit({ r, auditId, leadId }: { r: PresenceAuditRe
 
       <div className="mx-auto max-w-6xl space-y-20 px-5 pb-20 pt-10 sm:space-y-28 sm:px-8 sm:pt-16">
         {/* ── the cover ── */}
-        <section className="grid gap-10 lg:grid-cols-[1.35fr_1fr] lg:gap-14">
+        <section className="grid grid-cols-1 gap-10 lg:grid-cols-[1.35fr_1fr] lg:gap-14">
           <div className="min-w-0">
             <Label>Website, presence and everything under them</Label>
             <h1 className="mt-5 break-words text-[44px] font-bold leading-[0.95] tracking-[-0.055em] [text-wrap:balance] sm:text-[72px]" style={{ ...SANS, color: INK }}>
@@ -449,7 +449,7 @@ export default function StudioAudit({ r, auditId, leadId }: { r: PresenceAuditRe
         <nav aria-label="In this report" className="print:hidden">
           <ol className="flex flex-wrap gap-px" style={{ background: RULE, border: `1px solid ${RULE}` }}>
             {shown.map((c, i) => (
-              <li key={c.id} className="grow basis-[200px]" style={{ background: PAPER }}>
+              <li key={c.id} className="grow basis-[150px] sm:basis-[200px]" style={{ background: PAPER }}>
                 <a href={`#${c.id}`} className="flex items-baseline gap-3 px-4 py-3.5 text-[14.5px] font-semibold tracking-[-0.01em] transition-colors hover:bg-white" style={{ color: INK }}>
                   <span className="text-[11px] tabular-nums" style={{ ...MONO, color: TEAL }}>{String(i + 1).padStart(2, '0')}</span>
                   {c.label}
@@ -465,7 +465,7 @@ export default function StudioAudit({ r, auditId, leadId }: { r: PresenceAuditRe
             <Chapter n={num('working')} id="working" kicker="Start here" title="What you already" accent="got right.">
               Every business we audit is doing something well. These are yours, and every fix later in this report is built to protect them.
             </Chapter>
-            <ul className="grid gap-px sm:grid-cols-2 lg:grid-cols-3" style={{ background: RULE, border: `1px solid ${RULE}` }}>
+            <ul className="grid grid-cols-1 gap-px sm:grid-cols-2 lg:grid-cols-3" style={{ background: RULE, border: `1px solid ${RULE}` }}>
               {good.map((g) => (
                 <li key={g.title} className="flex gap-3 p-6" style={{ background: '#ffffff' }}>
                   <Chip status="pass" />
@@ -484,7 +484,7 @@ export default function StudioAudit({ r, auditId, leadId }: { r: PresenceAuditRe
           <Chapter n={num('pillars')} id="pillars" kicker="The grade" title="Three pillars," accent="one number.">
             How a stranger meets you: your website, your reviews and your Google profile. The weights are printed on each one, and anything we could not see is left out of the total rather than counted as a zero.
           </Chapter>
-          <div className="grid gap-px md:grid-cols-3" style={{ background: INK, border: `1px solid ${INK}` }}>
+          <div className="grid grid-cols-1 gap-px md:grid-cols-3" style={{ background: INK, border: `1px solid ${INK}` }}>
             {pillars.map((x) => <PillarCell key={x.key} p={x} />)}
           </div>
         </section>
@@ -495,9 +495,9 @@ export default function StudioAudit({ r, auditId, leadId }: { r: PresenceAuditRe
             <Chapter n={num('first')} id="first" kicker="In this order" title="Do these" accent="first.">
               Ranked by what each one is worth against what it costs. The free ones lead on purpose.
             </Chapter>
-            <ol className="grid gap-px md:grid-cols-2" style={{ background: `${PAPER}26`, border: `1px solid ${TEAL}` }}>
+            <ol className="flex flex-wrap gap-px" style={{ background: `${PAPER}26`, border: `1px solid ${TEAL}` }}>
               {r.top_fixes.map((f, i) => (
-                <li key={`${f.title}-${i}`} className="flex gap-5 p-6 sm:p-8" style={{ background: TEAL, color: PAPER }}>
+                <li key={`${f.title}-${i}`} className="flex min-w-0 grow basis-full gap-5 p-6 sm:p-8 md:basis-[calc(50%-1px)]" style={{ background: TEAL, color: PAPER }}>
                   <span className="text-[44px] font-bold leading-[0.85] tabular-nums tracking-[-0.06em]" style={{ ...SANS, color: MUSTARD }}>{i + 1}</span>
                   <div className="min-w-0">
                     <h3 className="text-[20px] font-semibold leading-snug tracking-[-0.02em]" style={{ ...SANS, color: PAPER }}>{f.title}</h3>
@@ -551,7 +551,7 @@ export default function StudioAudit({ r, auditId, leadId }: { r: PresenceAuditRe
         {pillars.some((x) => x.checks.length > 0 && !x.unknown) && (
           <section className="space-y-8">
             <Chapter n={num('listing')} id="listing" kicker="Arithmetic you can redo" title="Your profile and reviews," accent="line by line." />
-            <div className="grid gap-6 lg:grid-cols-2">
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
               {pillars.filter((x) => x.checks.length > 0 && !x.unknown).map((x) => (
                 <section key={x.key} style={{ border: `1px solid ${RULE}`, background: '#ffffff' }}>
                   <div className="flex items-baseline justify-between gap-4 px-6 pb-4 pt-6 sm:px-8" style={{ borderBottom: `1px solid ${RULE}` }}>
@@ -605,7 +605,7 @@ export default function StudioAudit({ r, auditId, leadId }: { r: PresenceAuditRe
             <Chapter n={num('plan')} id="plan" kicker="Everything else, by effort" title="The plan, sorted by" accent="effort.">
               The rest of what we found, sorted by how long it takes rather than how loud it sounds. A good week clears the first column; most of it costs nothing.
             </Chapter>
-            <div className="grid gap-px lg:grid-cols-3" style={{ background: INK, border: `1px solid ${INK}` }}>
+            <div className="grid grid-cols-1 gap-px lg:grid-cols-3" style={{ background: INK, border: `1px solid ${INK}` }}>
               {[
                 { k: 'This week', sub: 'Minutes each, mostly free', items: p.week, bg: MUSTARD },
                 { k: 'This month', sub: 'An afternoon each', items: p.month, bg: '#ffffff' },
@@ -660,7 +660,7 @@ export default function StudioAudit({ r, auditId, leadId }: { r: PresenceAuditRe
               ))}
             </dl>
           )}
-          <div className="grid gap-8 text-[14.5px] leading-relaxed md:grid-cols-2" style={{ ...SANS, color: `${INK}b3` }}>
+          <div className="grid grid-cols-1 gap-8 text-[14.5px] leading-relaxed md:grid-cols-2" style={{ ...SANS, color: `${INK}b3` }}>
             <p>
               <b style={{ color: INK }}>The grade.</b> Website {Math.round(PILLAR_WEIGHTS.website * 100)}%, reviews{' '}
               {Math.round(PILLAR_WEIGHTS.reviews * 100)}%, Google profile {Math.round(PILLAR_WEIGHTS.profile * 100)}%. The website is read live and graded in seven categories. The profile and reviews are arithmetic you can redo yourself: every check shows what it is worth and what it earned. A pillar we could not see is left out of the total, never counted as zero.
