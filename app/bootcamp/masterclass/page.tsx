@@ -6,10 +6,21 @@ import { BOOTCAMP, bootcampDays, bootcampTiers, fmtMountain, fmtMountainTime, us
 import PopPageHero, { pop } from '@/components/pop/PopPageHero';
 import MasterclassForm from '@/components/bootcamp/MasterclassForm';
 import { Check, Kicker, h2Cls, leadCls } from '@/components/bootcamp/ui';
+import RoomLinkForm from '@/components/bootcamp/room/RoomLinkForm';
+import Player from '@/components/bootcamp/room/Player';
+import { getSupabase } from '@/lib/supabase';
+import { getStage } from '@/lib/bootcamp/stage';
+import { MASTERCLASS_REPLAY_UNTIL, getSession, isLive, playerFor, roomNow, sessionEnd } from '@/lib/bootcamp/sessions';
 
 /**
  * THE FREE SEAT. Reads ?via= or the host cookie on the server so the form can
  * carry the host's code without a client round trip.
+ *
+ * While the masterclass is on, the page opens with a live door: registered
+ * people get their room link sent again, and anyone else registers below and
+ * walks straight into the room. After it ends, the replay plays here for
+ * everyone until enrollment closes, because the replay is the best sales page
+ * we will ever have.
  */
 export const dynamic = 'force-dynamic';
 
@@ -33,6 +44,18 @@ export default async function MasterclassPage({ searchParams }: { searchParams: 
   const day1 = bootcampDays[0];
   const ga = bootcampTiers[0];
   const endIso = new Date(new Date(BOOTCAMP.dates.masterclass).getTime() + 60 * 60 * 1000).toISOString();
+
+  const now = roomNow();
+  const mc = getSession('masterclass');
+  const liveNow = mc ? isLive(mc, now) : false;
+  let replay: ReturnType<typeof playerFor> = null;
+  if (mc && now >= sessionEnd(mc) && now < new Date(MASTERCLASS_REPLAY_UNTIL).getTime()) {
+    try {
+      replay = playerFor((await getStage(getSupabase())).sessions.masterclass?.replayUrl);
+    } catch (err) {
+      console.error('masterclass page: stage read failed', err instanceof Error ? err.message : err);
+    }
+  }
 
   const eventJsonLd = {
     '@context': 'https://schema.org',
@@ -72,6 +95,40 @@ export default async function MasterclassPage({ searchParams }: { searchParams: 
         </div>
         <p className={pop.note}>{WHEN}. 60 minutes. Replay to everyone registered the same evening.</p>
       </PopPageHero>
+
+      {liveNow && (
+        <section className="bg-[#0b3b44] text-[#fbf5ea] border-b-2 border-[#0b3b44]" aria-labelledby="live-heading">
+          <div className="max-w-4xl mx-auto px-5 py-10 md:py-12 grid md:grid-cols-[1fr_1.1fr] gap-8 items-center">
+            <div>
+              <p className="inline-flex items-center gap-2 rounded-full border-2 border-[#fbf5ea] bg-[#c2261a] px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.22em]">
+                <span className="h-2 w-2 rounded-full bg-[#fbf5ea] motion-safe:animate-pulse" aria-hidden="true" /> Live now
+              </p>
+              <h2 id="live-heading" className="font-display text-3xl md:text-4xl font-black leading-tight mt-4">We are on the air.</h2>
+              <p className="font-body text-[#fbf5ea]/80 leading-relaxed mt-3">Registered? Your room link is in your inbox; we will send it again in a second. Not yet? Save your seat below and you walk straight in.</p>
+            </div>
+            <div className="rounded-2xl border-2 border-[#81d8d0] bg-[#0f4a55] p-5 sm:p-6">
+              <RoomLinkForm dark />
+              <a href="#register" className="mt-4 inline-flex font-sans text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#f5b700] underline underline-offset-4">Not registered: take a free seat</a>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {replay && (
+        <section className="py-14 md:py-20 border-b-2 border-[#0b3b44]" aria-labelledby="replay-heading">
+          <div className="max-w-5xl mx-auto px-5">
+            <Kicker>The replay · up until {fmtMountain(MASTERCLASS_REPLAY_UNTIL, { weekday: undefined })}</Kicker>
+            <h2 id="replay-heading" className={h2Cls}>Missed it? <em>Here is the hour.</em></h2>
+            <p className={leadCls}>The whole masterclass, the live call to the phone agent included. If you want the two agents built for your own business, the seats are right under it.</p>
+            <div className="mt-8">
+              <Player player={replay} title="The masterclass replay" />
+            </div>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link href="/bootcamp#tiers" className={pop.cta}>See the three seats</Link>
+            </div>
+          </div>
+        </section>
+      )}
 
       <section className="py-14 md:py-20" aria-labelledby="see-heading">
         <div className="max-w-5xl mx-auto px-5 grid lg:grid-cols-[1fr_1.1fr] gap-10 lg:gap-14 items-start">

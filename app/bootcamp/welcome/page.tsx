@@ -69,7 +69,7 @@ export default async function WelcomePage({ searchParams }: { searchParams: Prom
   if (masterclass) {
     return (
       <Shell kicker="Free masterclass · you are in" title={<>You are <em>in.</em></>} lead={`${when(BOOTCAMP.dates.masterclass)}. Sixty minutes. The link to the room is in your inbox now, with a reminder the day before and one an hour out.`}>
-        <Step n="1" title="Put it on the calendar" body="One click. The invite carries the room link, so you will not have to hunt for the email." action={<CalLink which="masterclass" label="Add to calendar" />} />
+        <Step n="1" title="Put it on the calendar" body="One click. Your room link is in the confirmation email, and again in the reminder the morning of." action={<CalLink which="masterclass" label="Add to calendar" />} />
         <Step n="2" title="What to expect" body={<ul className="list-disc pl-4 space-y-1">{bootcampDays[0].beats.slice(0, 4).map((b) => <li key={b}>{b}</li>)}</ul>} />
         <Step n="3" title="Bring one idea" body="The thing you would hand to an agent tomorrow if you could. We take a few from the room at the end and show how the brief would read." />
         <div className="rounded-2xl border-2 border-[#0b3b44] bg-[#0b3b44] text-[#fbf5ea] p-6 sm:p-8 shadow-[6px_6px_0_0_#f5b700] mt-8">
@@ -102,8 +102,8 @@ export default async function WelcomePage({ searchParams }: { searchParams: Prom
 
     if (isOperator) {
       return (
-        <Shell kicker={`${OPERATOR.name} · seat confirmed`} title={<>{first ? `${first}, you` : 'You'} are <em>in the cohort.</em></>} lead={`Starts ${OPERATOR.starts}. Tuesdays 1:00 to 2:30 PM Mountain with a Thursday build lab every week. Your welcome note and the private room are in your inbox.`}>
-          <Step n="1" title="Check your inbox" body={<>The welcome note from Sarah has the room link, the pre-work for week one and a short form about your business. Ten minutes, then you are done until we start.{session?.email ? <> Sent to <strong>{session.email}</strong>.</> : null}</>} />
+        <Shell kicker={`${OPERATOR.name} · seat confirmed`} title={<>{first ? `${first}, you` : 'You'} are <em>in the cohort.</em></>} lead={`Starts ${OPERATOR.starts}. Tuesdays 1:00 to 2:30 PM Mountain with a Thursday build lab every week. Your welcome note, with your room link, is in your inbox.`}>
+          <Step n="1" title="Check your inbox" body={<>The welcome note from Sarah has your room link. Inside the room is the pre-work for week one, the Idea Director worksheet: about twenty minutes, then you are done until we start.{session?.email ? <> Sent to <strong>{session.email}</strong>.</> : null}</>} />
           <Step n="2" title="Your office opens before week one" body="Your SeedSide office is set up in the week before the cohort starts, so week one begins with a desk, not a setup call." />
           <Step n="3" title="The bootcamp sessions are yours too" body={`Every Operator seat includes the three bootcamp sessions, ${bootcampDays[0].dateLabel} to ${bootcampDays[2].dateLabel}. Add them now.`} action={<><CalLink which="kickoff" label="Kickoff" /><CalLink which="day1" label="Day 1" /><CalLink which="day2" label="Day 2" /><CalLink which="day3" label="Day 3" /></>} />
           <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[#0b3b44]/50 text-center pt-6">Questions any time: sarah@modernmustardseed.com</p>
@@ -118,12 +118,12 @@ export default async function WelcomePage({ searchParams }: { searchParams: Prom
         lead={
           failed
             ? 'Stripe has your payment and your receipt is on its way. We could not load the ticket details on this page just now; everything below still applies, and your welcome email has the rest.'
-            : `${tierName}${session?.amountCents ? `, ${usd(session.amountCents)}` : ''}. Your welcome note is in your inbox with the private room link and the Idea Director worksheet.`
+            : `${tierName}${session?.amountCents ? `, ${usd(session.amountCents)}` : ''}. Your welcome note is in your inbox with your room link; the Idea Director worksheet is waiting inside.`
         }
       >
         <Step n="1" title={`Kickoff: ${fmtMountain(BOOTCAMP.dates.kickoff)}`} body={`${fmtMountainTime(BOOTCAMP.dates.kickoff)} ${BOOTCAMP.tzLabel}. Setup done together: SeedSide, your calendar and inbox connected, so Day 1 starts at speed.`} action={<CalLink which="kickoff" label="Add kickoff" />} />
         <Step n="2" title={`Day 1: ${bootcampDays[0].dateLabel}`} body={`${bootcampDays[0].title}. ${bootcampDays[0].lead}`} action={<><CalLink which="day1" label="Add Day 1" /><CalLink which="day2" label="Add Day 2" /><CalLink which="day3" label="Add Day 3" /></>} />
-        <Step n="3" title="The private room" body="Questions between sessions get answered in the private room; the link is in your welcome email. Replays go up there the same evening, and stay for the length of your ticket." />
+        <Step n="3" title="Your room" body="One link, in your welcome email: the live sessions play there, questions go in from there, and replays go up there the same evening for the length of your ticket. The worksheet is inside too, about twenty minutes, before kickoff." />
         {tier && (
           <Step n="4" title="Bring a friend" body={<>Day 2 works better in pairs: two people from the same trade room push each other further. Send them to <span className="font-mono">{SITE.url.replace('https://', '')}/bootcamp</span>. Seats stay open until the night of Day 1.</>} action={<Link href="/bootcamp" className="inline-flex items-center rounded-full border-2 border-[#0b3b44] bg-[#f5b700] px-4 py-2 font-sans text-[11px] font-extrabold uppercase tracking-[0.14em] text-[#0b3b44] shadow-[2px_2px_0_0_#0b3b44]">The offer page</Link>} />
         )}

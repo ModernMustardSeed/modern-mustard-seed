@@ -158,7 +158,7 @@ export async function fulfillBootcampCheckout(session: Stripe.Checkout.Session):
 
   // The welcome. One-to-one, from the root address, no unsubscribe.
   try {
-    const letter = tier === 'operator' ? operatorWelcome({ firstName, email }) : ticketWelcome(tier as 'ga' | 'vip' | 'platinum', { firstName, email });
+    const letter = tier === 'operator' ? operatorWelcome({ firstName, email, regId: registrationId }) : ticketWelcome(tier as 'ga' | 'vip' | 'platinum', { firstName, email, regId: registrationId });
     const sent = await sendViaResend({
       from: FROM_ROOT,
       to: email,

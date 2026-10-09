@@ -128,6 +128,7 @@ Each of these needs Sarah's hands, keys or voice. Everything else in this plan r
 6. Record the masterclass rehearsal, full sixty minutes, against `MASTERCLASS_SCRIPT`. The week of October 26, again December 14, final the week of January 18.
 7. Approve the first 25 hosts from `/admin/bootcamp`, Hosts tab. They become founding hosts on approval.
 8. Flip the outreach switch (Armed, cap 12) on `/admin/bootcamp`, Outreach tab. Nothing sends until she does.
+9. Set the broadcast. Before each session, paste its live link on `/admin/bootcamp`, Stage tab (section 8 says which). After it, paste the replay link the same afternoon: that is what releases the replay letter.
 
 ## 6. The metrics board
 
@@ -162,3 +163,33 @@ On `/admin/bootcamp`, Desk tab, read every morning with the briefing.
 **Host concentration.** If three hosts bring 60% of registrations, those three hosts are the launch. Answer: the founding 25 are chosen across the four trades and across platforms (newsletters, podcasts, communities, agencies), the weekly host email shows every host their rank, and the outreach engine keeps sending at twelve a day through January 15 regardless of how the top three are doing.
 
 **Sarah's time.** She teaches one masterclass, three sessions, one kickoff, eight Tuesday sessions and eight Thursday labs, and she is the only person who can approve hosts, flip the switch, and run go-live. Answer: section 5 is the whole list of what is on her. Everything else is on the crew, in writing, in this document.
+
+## 8. Running a live session
+
+Every attendee has one room: `/bootcamp/room`, a signed link in every letter and every calendar file. It is the live stream, the questions box, their replays, their transcripts (VIP and up), the Idea Director worksheet and, for a free seat, the ticket offer. Sarah runs it all from `/admin/bootcamp`, **Stage** tab.
+
+**The broadcast.** Stream from StreamYard (or OBS) to an unlisted YouTube Live event, and paste the YouTube link as the session's live link. YouTube plays inside every room, takes any number of viewers, and the same link is the replay the moment the stream ends. Questions come through the room's questions box, not YouTube chat, so they land on the Stage tab with the person's name, business, trade and seat. A Zoom or Zoho Meeting link also works; the room shows it as a button that opens a new tab, which is right for the kickoff (setup together) and for the Thursday labs.
+
+**Day 2 trade rooms.** The Day 2 row on the Stage tab takes four more links, one per trade room, each run by its room host on their own Zoom or StreamYard. Every room lists all four with the person's own trade first and lit. The main Day 2 link carries the opening; the rooms carry the rest.
+
+**The clock, for every session.**
+
+| When | What happens | Who |
+| --- | --- | --- |
+| The day before, 1:00 PM | Reminder with the room link | Drip |
+| 8:00 AM the day of | "Today at 1:00 PM" letter with the room link | Drip |
+| Any time before 12:45 PM | Live link pasted on the Stage tab | Sarah or crew |
+| 12:00 PM | "Starts in an hour" letter | Drip |
+| 12:45 PM | Rooms turn live: the stream plays, attendance is taken from the browser, questions queue for the session | Automatic |
+| During | Stage tab: the question queue refreshes every 15 seconds; mark each one answered. The masterclass run of show lights the current beat by the clock | Sarah |
+| Masterclass minute 52 | **Put the offer up.** The three seats appear under the stream in every free seat's room within about 30 seconds, checkout prefilled with their email and crediting their host | Sarah |
+| End plus 30 minutes | Rooms close the live view; the session shows "Replay tonight" | Automatic |
+| Same afternoon | Replay link (and the transcript link for VIP and up) pasted on the Stage tab. The replay letter goes on the next hourly run | Sarah or crew |
+
+**What waits on a replay link.** The masterclass replay letter (with the ticket offer), the Day 1 and Day 2 replay letters, the Day 3 "three doors" letter and the cohort's Day 3 note. Each waits until its replay link is set, then sends inside its window (40 hours for the masterclass, Day 2 and Day 3; 20 hours for Day 1, so it never collides with the Day 2 reminders). The Stage tab flags every session holding a letter.
+
+**The guarantee, on record.** A ticket holder in the room during Day 1 is marked present in `attended_days`. A refund request that night is checked against it.
+
+**The worksheet.** Every ticket gets the pre-work letter the day after the masterclass; cohort seats get theirs after Day 3. Answers save into the room as people type. The Stage tab lists every worksheet, Platinum first, with the brief it writes: the Day 2 front row is picked from these.
+
+**Lost links.** Anyone can ask for their room link again from the room page or the masterclass page. It only ever goes to the address on the registration.

@@ -5,6 +5,7 @@ import { leadNotification } from '@/lib/email';
 import { OWNER_NOTIFY_TO } from '@/lib/owner';
 import { SITE } from '@/lib/seo';
 import { masterclassConfirm } from '@/lib/bootcamp/emails';
+import { roomLink } from '@/lib/bootcamp/key';
 import { countEventsToday, recordEvent, upsertRegistration } from '@/lib/bootcamp/store';
 
 /**
@@ -16,6 +17,10 @@ import { countEventsToday, recordEvent, upsertRegistration } from '@/lib/bootcam
  *
  * Posting twice with the same email is fine: the row is reused, the fields
  * fill in, and the confirmation simply goes again, because the person asked.
+ *
+ * The answer carries the room link only for a free seat. A paid seat has its
+ * room in its receipt; handing it to whoever typed the address into a public
+ * form would hand a paid live link to anyone who knows the email.
  */
 
 export const runtime = 'nodejs';
@@ -71,7 +76,7 @@ export async function POST(req: Request) {
       tier: 'masterclass',
     });
 
-    const letter = masterclassConfirm({ firstName: row.first_name, email });
+    const letter = masterclassConfirm({ firstName: row.first_name, email, regId: row.id });
     const sent = await sendViaResend({
       from: 'Sarah at Modern Mustard Seed <sarah@modernmustardseed.com>',
       to: email,
@@ -118,7 +123,8 @@ export async function POST(req: Request) {
       }
     }
 
-    return NextResponse.json({ ok: true });
+    const room = row.tier === 'masterclass' ? roomLink(SITE.url, row.id) : null;
+    return NextResponse.json({ ok: true, room, paid: row.tier !== 'masterclass' });
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     console.error('bootcamp register failed', message);

@@ -6,7 +6,7 @@ import { Check, btn } from './ui';
  * The three seats. VIP is the featured card and goes dark. Every number comes
  * from data/bootcamp.ts; the button carries only the slug.
  */
-export default function TierCards({ open }: { open: boolean }) {
+export default function TierCards({ open, email, host }: { open: boolean; email?: string; host?: string | null }) {
   return (
     <div className="grid lg:grid-cols-3 gap-6 lg:gap-5 mt-10 items-stretch">
       {bootcampTiers.map((t) => {
@@ -41,7 +41,7 @@ export default function TierCards({ open }: { open: boolean }) {
                 Front row: first {t.frontRowSeats} seats
               </p>
             )}
-            <CheckoutButton tier={t.slug} label={`${t.cta} · ${usd(t.priceCents)}`} open={open} className={dark ? btn.onDark : btn.dark} />
+            <CheckoutButton tier={t.slug} label={`${t.cta} · ${usd(t.priceCents)}`} open={open} className={dark ? btn.onDark : btn.dark} email={email} host={host} />
             <p className={`mt-3 text-center font-body text-xs ${dark ? 'text-[#fbf5ea]/55' : 'text-[#0b3b44]/55'}`}>
               Replays for {t.replayDays === 182 ? 'six months' : `${t.replayDays} days`}. Card or bank, through Stripe.
             </p>

@@ -7,7 +7,9 @@ import { ErrorNote, SUPPORT_EMAIL } from './ui';
 /**
  * One button, one tier. POSTs /api/bootcamp/checkout and follows the Stripe
  * URL it returns. The server decides the price; this never carries a number.
- * When enrollment is closed the button says so and does nothing.
+ * When enrollment is closed the button says so and does nothing. From the room
+ * it also carries the buyer's email (Stripe opens prefilled) and the host who
+ * brought their masterclass seat, so that host is credited for the ticket.
  */
 export default function CheckoutButton({
   tier,
@@ -15,12 +17,16 @@ export default function CheckoutButton({
   open,
   className,
   closedLabel = 'Enrollment closed',
+  email,
+  host,
 }: {
   tier: BootcampPaidSlug;
   label: string;
   open: boolean;
   className: string;
   closedLabel?: string;
+  email?: string;
+  host?: string | null;
 }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
@@ -33,7 +39,7 @@ export default function CheckoutButton({
       const res = await fetch('/api/bootcamp/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tier }),
+        body: JSON.stringify({ tier, ...(email ? { email } : {}), ...(host ? { host } : {}) }),
       });
       const data = (await res.json().catch(() => ({}))) as { url?: string; error?: string };
       if (!res.ok || !data.url) {
