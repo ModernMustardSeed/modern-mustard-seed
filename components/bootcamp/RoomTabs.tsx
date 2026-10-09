@@ -41,8 +41,8 @@ export default function RoomTabs() {
               tabIndex={on ? 0 : -1}
               onClick={() => setActive(i)}
               onKeyDown={(e) => onKey(e, i)}
-              className={`rounded-full border-2 border-[#0b3b44] px-5 py-2.5 font-sans text-xs font-extrabold uppercase tracking-[0.16em] transition-all ${
-                on ? 'bg-[#0b3b44] text-[#fbf5ea] shadow-[3px_3px_0_0_#f5b700]' : 'bg-white text-[#0b3b44] hover:-translate-y-0.5 hover:shadow-[3px_3px_0_0_#0b3b44]'
+              className={`rounded-full border-2 border-[#141210] px-5 py-2.5 font-sans text-xs font-extrabold uppercase tracking-[0.16em] transition-all ${
+                on ? 'bg-[#141210] text-[#fcfaf3] shadow-[3px_3px_0_0_#f5b700]' : 'bg-white text-[#141210] hover:-translate-y-0.5'
               }`}
             >
               {r.name}
@@ -57,17 +57,17 @@ export default function RoomTabs() {
           role="tabpanel"
           aria-labelledby={`${base}-tab-${i}`}
           hidden={i !== active}
-          className="mt-6 grid md:grid-cols-[0.9fr_1.1fr] gap-6 rounded-2xl border-2 border-[#0b3b44] bg-white p-6 sm:p-8 shadow-[6px_6px_0_0_#81d8d0]"
+          className="mt-6 grid md:grid-cols-[0.9fr_1.1fr] gap-6 rounded-[4px] border-2 border-[#141210] bg-white p-6 sm:p-8"
         >
           <div>
-            <p className="font-mono text-[10px] uppercase tracking-[0.24em] font-bold text-[#0a7c78]">Room {i + 1} of {tradeRooms.length}</p>
+            <p className="font-mono text-[10px] uppercase tracking-[0.24em] font-bold text-[#0f4c47]">Room {i + 1} of {tradeRooms.length}</p>
             <h3 className="font-display text-2xl sm:text-3xl font-black mt-2">{r.name}</h3>
-            <p className="font-body text-[15px] text-[#0b3b44]/75 leading-relaxed mt-3">{r.who}</p>
+            <p className="font-body text-[15px] text-[#141210]/75 leading-relaxed mt-3">{r.who}</p>
           </div>
-          <div className="rounded-xl bg-[#fbf5ea] border-2 border-[#0b3b44]/15 p-5 sm:p-6">
-            <p className="font-mono text-[10px] uppercase tracking-[0.24em] font-bold text-[#0a7c78]">Built on screen in this room</p>
-            <p className="font-body text-[17px] leading-relaxed mt-3 text-[#0b3b44]">{r.example}</p>
-            <p className="font-body text-xs text-[#0b3b44]/55 mt-4">Your own business, when you take a seat. The front row gets built first.</p>
+          <div className="rounded-[4px] bg-[#fcfaf3] border-2 border-[#141210]/15 p-5 sm:p-6">
+            <p className="font-mono text-[10px] uppercase tracking-[0.24em] font-bold text-[#0f4c47]">Built on screen in this room</p>
+            <p className="font-body text-[17px] leading-relaxed mt-3 text-[#141210]">{r.example}</p>
+            <p className="font-body text-xs text-[#141210]/55 mt-4">Your own business, when you take a seat. The front row gets built first.</p>
           </div>
         </div>
       ))}

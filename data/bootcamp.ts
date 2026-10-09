@@ -1,7 +1,7 @@
 /**
  * THE ONE-PERSON COMPANY BOOTCAMP. Every bootcamp surface reads this file.
  *
- * Three live sessions where one person shows how a whole AI product studio
+ * Three live sessions where one builder shows how a whole AI product studio
  * runs on a crew of Claude agents, and every attendee leaves with two working
  * agents of their own. A free masterclass sells the ticket. The ticket sells
  * The Operator Program (eight weeks, cohort). Anyone who would rather have it
@@ -25,9 +25,9 @@ export const BOOTCAMP = {
   launch: 'launch-1',
   metaTitle: 'The One-Person Company Bootcamp: Run Your Business With a Crew of AI Agents',
   metaDescription:
-    'Three live sessions. Watch one person run an entire AI product studio with a crew of Claude agents, then build two working agents for your own business and leave with your own agentic office. February 2 to 9, 2027. $97.',
+    'Three live sessions. Watch one builder run an entire AI product studio with a crew of Claude agents, then build two working agents for your own business and leave with your own agentic office. February 2 to 9, 2027. $97.',
   promise:
-    'Watch one person run an entire AI product studio with a crew of Claude agents. Then build two of your own, live, for the business you already run.',
+    'Watch one builder run an entire AI product studio with a crew of Claude agents. Then build two of your own, live, for the business you already run.',
   thesis:
     'We are all directors of ideas now. The work left for a person is deciding what should exist and saying yes. This bootcamp teaches you to brief, train and direct a crew of agents that runs the business, brings you fresh ideas, and builds whatever you can describe.',
   timezone: 'America/Denver',
@@ -214,7 +214,7 @@ export const bootcampDays: BootcampDay[] = [
     n: 1,
     dateKey: 'day1',
     dateLabel: 'Tuesday, February 2',
-    title: 'Inside a company run by one person and a crew',
+    title: 'Inside a company run by one builder and a crew',
     lead: 'The whole studio on screen, live. Not slides. The actual office.',
     beats: [
       'A live call to the phone agent that answers our line, in front of everyone',

@@ -105,7 +105,7 @@ export function proofFor(target: OutreachTarget): { n: string; label: string } {
 }
 
 const WHAT_IT_IS =
-  `${BOOTCAMP.name} is three live sessions, ${SESSION_SPAN}. I show how one person runs an entire AI product studio on a crew of Claude agents, then every attendee builds two agents of their own.`;
+  `${BOOTCAMP.name} is three live sessions, ${SESSION_SPAN}. I show how one builder runs an entire AI product studio on a crew of Claude agents, then every attendee builds two agents of their own.`;
 
 const WHAT_HOSTING_IS =
   `Hosting means running it for your audience under your name. You keep ${HOSTS.ticketPct}% of every ticket, ${ticketLow} to ${ticketHigh}, plus ${HOSTS.programPct}% of every ${PROGRAM} seat, ${programShare} a seat. Bring ${HOSTS.roomThreshold} and you get your own room on Day 2 with your name on it.`;
@@ -171,7 +171,7 @@ export function outreachEmail(step: OutreachStep, target: OutreachTarget): { sub
 export function handMessage(target: OutreachTarget): string {
   return [
     observationFrom(target, 20),
-    `${BOOTCAMP.name} is three live sessions, ${SESSION_SPAN}: one person runs an AI product studio on a crew of Claude agents, and every attendee builds two agents.`,
+    `${BOOTCAMP.name} is three live sessions, ${SESSION_SPAN}: one builder runs an AI product studio on a crew of Claude agents, and every attendee builds two agents.`,
     `Hosts keep ${HOSTS.ticketPct}% of every ticket and ${HOSTS.programPct}% of every ${PROGRAM} seat.`,
     `Want the host link and the swipe copy? Reply yes and it is yours the same day. Sarah Scarano, ${SITE.name}, ${HOST_URL}`,
   ].join(' ');

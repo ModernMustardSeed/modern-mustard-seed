@@ -72,23 +72,23 @@ function statusOf(reg: RegistrationRow, s: BootcampSession, stage: StageState, n
 
 function NotFound() {
   return (
-    <div className="bg-[#fbf5ea] text-[#0b3b44] min-h-[70vh]">
-      <section className="halftone-bg border-b-2 border-[#0b3b44]">
+    <div className="bg-[#fcfaf3] text-[#141210] min-h-[70vh]">
+      <section className="halftone-bg border-b-2 border-[#141210]">
         <div className="max-w-2xl mx-auto px-5 pt-28 pb-14 md:pt-36 md:pb-16 text-center">
           <Kicker className="justify-center">{BOOTCAMP.short}</Kicker>
           <h1 className="font-display text-4xl md:text-6xl font-black tracking-tight leading-[1.02]">This link does not <em>open a room.</em></h1>
-          <p className="font-body text-[#0b3b44]/70 mt-5 max-w-lg mx-auto leading-relaxed">
+          <p className="font-body text-[#141210]/70 mt-5 max-w-lg mx-auto leading-relaxed">
             Room links are personal and come in every email we send you. If the link was cut off by your mail app, or you cannot find the email, we will send it again.
           </p>
         </div>
       </section>
       <section className="py-14">
         <div className="max-w-xl mx-auto px-5">
-          <div className="rounded-2xl border-2 border-[#0b3b44] bg-white p-6 sm:p-8 shadow-[6px_6px_0_0_#0b3b44]">
+          <div className="rounded-[4px] border-2 border-[#141210] bg-white p-6 sm:p-8">
             <RoomLinkForm />
           </div>
           <div className="flex flex-col sm:flex-row gap-3 justify-center mt-8 text-center">
-            <Link href="/bootcamp/masterclass" className="font-sans text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#0a7c78] underline underline-offset-4">Not registered? The free masterclass</Link>
+            <Link href="/bootcamp/masterclass" className="font-sans text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#0f4c47] underline underline-offset-4">Not registered? The free masterclass</Link>
           </div>
         </div>
       </section>
@@ -191,8 +191,8 @@ export default async function RoomPage({ searchParams }: { searchParams: Promise
       : `Replays of every session stay here until ${dateOnly(closes)}.${getsTranscripts(tier) ? ' Transcripts and class notes go up with them.' : ''}`;
 
   return (
-    <div className="bg-[#fbf5ea] text-[#0b3b44] overflow-x-clip">
-      <section className="halftone-bg border-b-2 border-[#0b3b44]">
+    <div className="bg-[#fcfaf3] text-[#141210] overflow-x-clip">
+      <section className="halftone-bg border-b-2 border-[#141210]">
         <div className="max-w-5xl mx-auto px-5 pt-28 pb-10 md:pt-36 md:pb-14">
           <Kicker>Your room · {TIER_NAME[tier] ?? tier}</Kicker>
           <h1 className="font-display text-4xl md:text-6xl font-black tracking-tight leading-[1.02]">
@@ -231,7 +231,7 @@ export default async function RoomPage({ searchParams }: { searchParams: Promise
         </div>
       </section>
 
-      <section className="py-10 md:py-14 border-t-2 border-[#0b3b44]/10" aria-labelledby="sessions-heading">
+      <section className="py-10 md:py-14 border-t-2 border-[#141210]/10" aria-labelledby="sessions-heading">
         <div className="max-w-5xl mx-auto px-5">
           <Kicker>Every session in your seat</Kicker>
           <h2 id="sessions-heading" className={h2SmCls}>Live, then <em>on replay.</em></h2>
@@ -243,7 +243,7 @@ export default async function RoomPage({ searchParams }: { searchParams: Promise
       </section>
 
       {isTicket && (
-        <section id="worksheet" className="scroll-mt-24 py-10 md:py-14 bg-[#d8f3f0]/50 border-y-2 border-[#0b3b44]" aria-labelledby="ws-heading">
+        <section id="worksheet" className="scroll-mt-24 py-10 md:py-14 bg-[#e8ecd0]/50 border-y-2 border-[#141210]" aria-labelledby="ws-heading">
           <div className="max-w-3xl mx-auto px-5">
             <Kicker>Pre-work · about {WORKSHEET_MINUTES} minutes</Kicker>
             <h2 id="ws-heading" className={h2SmCls}>{WORKSHEET_NAME}</h2>
@@ -258,7 +258,7 @@ export default async function RoomPage({ searchParams }: { searchParams: Promise
       )}
 
       {kit.length > 0 && (
-        <section id="kit" className="scroll-mt-24 py-10 md:py-14 border-t-2 border-[#0b3b44]/10" aria-labelledby="kit-heading">
+        <section id="kit" className="scroll-mt-24 py-10 md:py-14 border-t-2 border-[#141210]/10" aria-labelledby="kit-heading">
           <div className="max-w-6xl mx-auto px-5">
             <Kicker>In your seat</Kicker>
             <h2 id="kit-heading" className={h2SmCls}>{kit.length === 1 ? 'Your deck.' : 'Your deck, your kit,'} <em>{kit.length === 1 ? 'Forty cards.' : 'your playbook.'}</em></h2>
@@ -290,13 +290,13 @@ export default async function RoomPage({ searchParams }: { searchParams: Promise
       {tier === 'masterclass' && !masterclassOver && (
         <section className="py-12 md:py-14" aria-labelledby="bring-heading">
           <div className="max-w-3xl mx-auto px-5">
-            <div className="rounded-2xl border-2 border-[#0b3b44] bg-white p-6 sm:p-8 shadow-[6px_6px_0_0_#0b3b44]">
+            <div className="rounded-[4px] border-2 border-[#141210] bg-white p-6 sm:p-8">
               <Kicker>Before {fmtMountain(BOOTCAMP.dates.masterclass, { weekday: undefined })}</Kicker>
               <h2 id="bring-heading" className="font-display text-2xl sm:text-3xl font-black leading-tight">Bring one idea.</h2>
-              <p className="font-body text-[15px] text-[#0b3b44]/75 leading-relaxed mt-3">
+              <p className="font-body text-[15px] text-[#141210]/75 leading-relaxed mt-3">
                 The job in your business you would hand to an agent tomorrow if you could. Have your website open in another tab; Sarah asks the room what each business&apos;s first agent should be, and yours is a better answer if you can see your own front door.
               </p>
-              <Link href="/bootcamp" className="mt-5 inline-flex font-sans text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#0a7c78] underline underline-offset-4">
+              <Link href="/bootcamp" className="mt-5 inline-flex font-sans text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#0f4c47] underline underline-offset-4">
                 What the bootcamp is
               </Link>
             </div>
@@ -305,7 +305,7 @@ export default async function RoomPage({ searchParams }: { searchParams: Promise
       )}
 
       {isTicket && ticket && day3Done && (
-        <section className="py-12 md:py-16 border-t-2 border-[#0b3b44]/10" aria-labelledby="doors-heading">
+        <section className="py-12 md:py-16 border-t-2 border-[#141210]/10" aria-labelledby="doors-heading">
           <div className="max-w-6xl mx-auto px-5">
             <Kicker>After Day 3</Kicker>
             <h2 id="doors-heading" className={h2SmCls}>Three doors <em>out.</em></h2>
@@ -315,15 +315,15 @@ export default async function RoomPage({ searchParams }: { searchParams: Promise
         </section>
       )}
 
-      <section className="py-10 border-t-2 border-[#0b3b44]/10">
+      <section className="py-10 border-t-2 border-[#141210]/10">
         <div className="max-w-5xl mx-auto px-5 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
-          <p className="font-body text-[13px] text-[#0b3b44]/60">
+          <p className="font-body text-[13px] text-[#141210]/60">
             Trouble with the room? Reply to any of our emails or write <a href="mailto:sarah@modernmustardseed.com" className="font-semibold underline underline-offset-2">sarah@modernmustardseed.com</a>.
           </p>
           {mute && !reg.unsubscribed_at && (
-            <a href={mute} className="font-body text-[12px] text-[#0b3b44]/50 underline underline-offset-2">Mute the reminder emails</a>
+            <a href={mute} className="font-body text-[12px] text-[#141210]/50 underline underline-offset-2">Mute the reminder emails</a>
           )}
-          {reg.unsubscribed_at && <p className="font-body text-[12px] text-[#0b3b44]/50">Reminder emails are muted. This room still works.</p>}
+          {reg.unsubscribed_at && <p className="font-body text-[12px] text-[#141210]/50">Reminder emails are muted. This room still works.</p>}
         </div>
       </section>
     </div>

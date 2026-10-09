@@ -42,7 +42,7 @@ export default function RoomLinkForm({ dark = false }: { dark?: boolean }) {
 
   if (state === 'sent') {
     return (
-      <p role="status" className={`font-body text-[15px] leading-relaxed ${dark ? 'text-[#fbf5ea]' : 'text-[#0b3b44]'}`}>
+      <p role="status" className={`font-body text-[15px] leading-relaxed ${dark ? 'text-[#fcfaf3]' : 'text-[#141210]'}`}>
         If <strong>{email.trim().toLowerCase()}</strong> has a seat, the room link is on its way to that inbox now, from sarah@modernmustardseed.com. Check promotions and spam if it is not there in a minute.
       </p>
     );
@@ -50,7 +50,7 @@ export default function RoomLinkForm({ dark = false }: { dark?: boolean }) {
 
   return (
     <form onSubmit={send} noValidate className="space-y-3">
-      <label htmlFor="room-link-email" className={`block font-mono text-[10px] font-bold uppercase tracking-[0.26em] ${dark ? 'text-[#81d8d0]' : 'text-[#5c554a]'}`}>
+      <label htmlFor="room-link-email" className={`block font-mono text-[10px] font-bold uppercase tracking-[0.26em] ${dark ? 'text-[#e8ecd0]' : 'text-[#5c554a]'}`}>
         Send me my room link
       </label>
       <div className="flex flex-col sm:flex-row gap-3">
@@ -66,7 +66,7 @@ export default function RoomLinkForm({ dark = false }: { dark?: boolean }) {
         <button
           type="submit"
           disabled={state === 'sending'}
-          className="shrink-0 rounded-full border-2 border-[#0b3b44] bg-[#f5b700] px-6 py-3 font-sans text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#0b3b44] shadow-[3px_3px_0_0_#0b3b44] transition-all hover:-translate-y-0.5 disabled:opacity-60"
+          className="shrink-0 rounded-full border-2 border-[#141210] bg-[#f5b700] px-6 py-3 font-sans text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#141210] transition-all hover:-translate-y-0.5 disabled:opacity-60"
         >
           {state === 'sending' ? 'Sending…' : 'Send it'}
         </button>

@@ -81,9 +81,9 @@ export default function HostForm() {
 
   if (status === 'done') {
     return (
-      <div className="rounded-2xl border-2 border-[#0b3b44] bg-white p-8 md:p-12 shadow-[7px_7px_0_0_#0b3b44] text-center" role="status">
-        <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-[#0a7c78]">Received</p>
-        <h3 className="mt-4 font-display text-3xl font-extrabold leading-tight text-[#0b3b44]">Applied. Sarah reads every application herself.</h3>
+      <div className="rounded-[4px] border-2 border-[#141210] bg-white p-8 md:p-12 text-center" role="status">
+        <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-[#0f4c47]">Received</p>
+        <h3 className="mt-4 font-display text-3xl font-extrabold leading-tight text-[#141210]">Applied. Sarah reads every application herself.</h3>
         <p className="mt-4 font-body text-[15px] leading-relaxed text-[#5c554a] max-w-md mx-auto">
           A note confirming it is on its way to {form.email.trim().toLowerCase()}. When you are approved, the next email carries your link, your dashboard and the swipe copy, ready the same day.
         </p>
@@ -94,10 +94,10 @@ export default function HostForm() {
   const sending = status === 'sending';
 
   return (
-    <form onSubmit={submit} noValidate className="rounded-2xl border-2 border-[#0b3b44] bg-white p-6 md:p-10 shadow-[7px_7px_0_0_#0b3b44] space-y-5">
-      <div className="border-b-2 border-[#0b3b44] pb-5">
-        <p className="font-mono text-[9px] font-bold uppercase tracking-[0.26em] text-[#0a7c78]">Host application</p>
-        <p className="mt-2 font-display text-2xl font-extrabold leading-none text-[#0b3b44]">Host a Room</p>
+    <form onSubmit={submit} noValidate className="rounded-[4px] border-2 border-[#141210] bg-white p-6 md:p-10 space-y-5">
+      <div className="border-b-2 border-[#141210] pb-5">
+        <p className="font-mono text-[9px] font-bold uppercase tracking-[0.26em] text-[#0f4c47]">Host application</p>
+        <p className="mt-2 font-display text-2xl font-extrabold leading-none text-[#141210]">Host a Room</p>
       </div>
       <div className="grid gap-5 sm:grid-cols-2">
         <Field id="host-name" label="Name" error={errors.name}>
@@ -148,7 +148,7 @@ export default function HostForm() {
         type="submit"
         disabled={sending}
         aria-busy={sending}
-        className="w-full rounded-full border-2 border-[#0b3b44] bg-[#f5b700] px-8 py-4 font-sans text-[11px] font-extrabold uppercase tracking-[0.22em] text-[#0b3b44] shadow-[4px_4px_0_0_#0b3b44] transition-all hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
+        className="w-full rounded-full border-2 border-[#141210] bg-[#f5b700] px-8 py-4 font-sans text-[11px] font-extrabold uppercase tracking-[0.22em] text-[#141210] transition-all hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
       >
         {sending ? 'Sending…' : 'Apply to host'}
       </button>

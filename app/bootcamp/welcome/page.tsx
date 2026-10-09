@@ -24,12 +24,12 @@ const ics = (which: 'masterclass' | 'kickoff' | 'day1' | 'day2' | 'day3') => `/a
 
 function Shell({ kicker, title, lead, children }: { kicker: string; title: React.ReactNode; lead: string; children: React.ReactNode }) {
   return (
-    <div className="bg-[#fbf5ea] text-[#0b3b44] min-h-[70vh]">
-      <section className="halftone-bg border-b-2 border-[#0b3b44]">
+    <div className="bg-[#fcfaf3] text-[#141210] min-h-[70vh]">
+      <section className="halftone-bg border-b-2 border-[#141210]">
         <div className="max-w-2xl mx-auto px-5 pt-28 pb-14 md:pt-36 md:pb-20 text-center">
           <Kicker className="justify-center">{kicker}</Kicker>
           <h1 className="font-display text-4xl md:text-6xl font-black tracking-tight leading-[1.02]">{title}</h1>
-          <p className="font-body text-[#0b3b44]/70 mt-5 max-w-lg mx-auto leading-relaxed">{lead}</p>
+          <p className="font-body text-[#141210]/70 mt-5 max-w-lg mx-auto leading-relaxed">{lead}</p>
         </div>
       </section>
       <section className="py-14 md:py-20">
@@ -41,11 +41,11 @@ function Shell({ kicker, title, lead, children }: { kicker: string; title: React
 
 function Step({ n, title, body, action }: { n: string; title: string; body: React.ReactNode; action?: React.ReactNode }) {
   return (
-    <div className="rounded-2xl bg-white border-2 border-[#0b3b44] shadow-[5px_5px_0_0_#0b3b44] p-6 flex gap-5">
+    <div className="rounded-[4px] bg-white border-2 border-[#141210] p-6 flex gap-5">
       <p className="font-display text-4xl font-black text-[#f5b700] leading-none" aria-hidden="true">{n}</p>
       <div className="min-w-0 flex-1">
         <h2 className="font-display font-black text-lg">{title}</h2>
-        <div className="font-body text-sm text-[#0b3b44]/75 mt-1.5 leading-relaxed">{body}</div>
+        <div className="font-body text-sm text-[#141210]/75 mt-1.5 leading-relaxed">{body}</div>
         {action && <div className="mt-3 flex flex-wrap gap-2">{action}</div>}
       </div>
     </div>
@@ -54,7 +54,7 @@ function Step({ n, title, body, action }: { n: string; title: string; body: Reac
 
 function CalLink({ which, label }: { which: Parameters<typeof ics>[0]; label: string }) {
   return (
-    <a href={ics(which)} className="inline-flex items-center rounded-full border-2 border-[#0b3b44] bg-white px-4 py-2 font-sans text-[11px] font-extrabold uppercase tracking-[0.14em] text-[#0b3b44] shadow-[2px_2px_0_0_#0b3b44] hover:-translate-y-0.5 transition-all">
+    <a href={ics(which)} className="inline-flex items-center rounded-full border-2 border-[#141210] bg-white px-4 py-2 font-sans text-[11px] font-extrabold uppercase tracking-[0.14em] text-[#141210] hover:-translate-y-0.5 transition-all">
       {label}
     </a>
   );
@@ -72,13 +72,13 @@ export default async function WelcomePage({ searchParams }: { searchParams: Prom
         <Step n="1" title="Put it on the calendar" body="One click. Your room link is in the confirmation email, and again in the reminder the morning of." action={<CalLink which="masterclass" label="Add to calendar" />} />
         <Step n="2" title="What to expect" body={<ul className="list-disc pl-4 space-y-1">{bootcampDays[0].beats.slice(0, 4).map((b) => <li key={b}>{b}</li>)}</ul>} />
         <Step n="3" title="Bring one idea" body="The thing you would hand to an agent tomorrow if you could. We take a few from the room at the end and show how the brief would read." />
-        <div className="rounded-2xl border-2 border-[#0b3b44] bg-[#0b3b44] text-[#fbf5ea] p-6 sm:p-8 shadow-[6px_6px_0_0_#f5b700] mt-8">
-          <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[#81d8d0] font-bold">If you already know you want the rest</p>
+        <div className="rounded-[4px] border-2 border-[#141210] bg-[#141210] text-[#fcfaf3] p-6 sm:p-8 shadow-[6px_6px_0_0_#f5b700] mt-8">
+          <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[#e8ecd0] font-bold">If you already know you want the rest</p>
           <h2 className="font-display text-2xl font-black mt-2 leading-tight">The bootcamp, from {usd(ga.priceCents)}.</h2>
-          <p className="font-body text-[15px] text-[#fbf5ea]/80 leading-relaxed mt-2">{BOOTCAMP.promise} {bootcampDays[0].dateLabel} to {bootcampDays[2].dateLabel}. Day 1 is guaranteed.</p>
+          <p className="font-body text-[15px] text-[#fcfaf3]/80 leading-relaxed mt-2">{BOOTCAMP.promise} {bootcampDays[0].dateLabel} to {bootcampDays[2].dateLabel}. Day 1 is guaranteed.</p>
           <Link href="/bootcamp#tiers" className={`${btn.onDark} mt-5`}>See the three seats</Link>
         </div>
-        <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[#0b3b44]/50 text-center pt-6">Questions any time: sarah@modernmustardseed.com</p>
+        <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[#141210]/50 text-center pt-6">Questions any time: sarah@modernmustardseed.com</p>
       </Shell>
     );
   }
@@ -106,7 +106,7 @@ export default async function WelcomePage({ searchParams }: { searchParams: Prom
           <Step n="1" title="Check your inbox" body={<>The welcome note from Sarah has your room link. Inside the room is the pre-work for week one, the Idea Director worksheet: about twenty minutes, then you are done until we start.{session?.email ? <> Sent to <strong>{session.email}</strong>.</> : null}</>} />
           <Step n="2" title="Your office opens before week one" body="Your SeedSide office is set up in the week before the cohort starts, so week one begins with a desk, not a setup call." />
           <Step n="3" title="The bootcamp sessions are yours too" body={`Every Operator seat includes the three bootcamp sessions, ${bootcampDays[0].dateLabel} to ${bootcampDays[2].dateLabel}. Add them now.`} action={<><CalLink which="kickoff" label="Kickoff" /><CalLink which="day1" label="Day 1" /><CalLink which="day2" label="Day 2" /><CalLink which="day3" label="Day 3" /></>} />
-          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[#0b3b44]/50 text-center pt-6">Questions any time: sarah@modernmustardseed.com</p>
+          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[#141210]/50 text-center pt-6">Questions any time: sarah@modernmustardseed.com</p>
         </Shell>
       );
     }
@@ -125,9 +125,9 @@ export default async function WelcomePage({ searchParams }: { searchParams: Prom
         <Step n="2" title={`Day 1: ${bootcampDays[0].dateLabel}`} body={`${bootcampDays[0].title}. ${bootcampDays[0].lead}`} action={<><CalLink which="day1" label="Add Day 1" /><CalLink which="day2" label="Add Day 2" /><CalLink which="day3" label="Add Day 3" /></>} />
         <Step n="3" title="Your room" body="One link, in your welcome email: the live sessions play there, questions go in from there, and replays go up there the same evening for the length of your ticket. The worksheet is inside too, about twenty minutes, before kickoff." />
         {tier && (
-          <Step n="4" title="Bring a friend" body={<>Day 2 works better in pairs: two people from the same trade room push each other further. Send them to <span className="font-mono">{SITE.url.replace('https://', '')}/bootcamp</span>. Seats stay open until the night of Day 1.</>} action={<Link href="/bootcamp" className="inline-flex items-center rounded-full border-2 border-[#0b3b44] bg-[#f5b700] px-4 py-2 font-sans text-[11px] font-extrabold uppercase tracking-[0.14em] text-[#0b3b44] shadow-[2px_2px_0_0_#0b3b44]">The offer page</Link>} />
+          <Step n="4" title="Bring a friend" body={<>Day 2 works better in pairs: two people from the same trade room push each other further. Send them to <span className="font-mono">{SITE.url.replace('https://', '')}/bootcamp</span>. Seats stay open until the night of Day 1.</>} action={<Link href="/bootcamp" className="inline-flex items-center rounded-full border-2 border-[#141210] bg-[#f5b700] px-4 py-2 font-sans text-[11px] font-extrabold uppercase tracking-[0.14em] text-[#141210]">The offer page</Link>} />
         )}
-        <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[#0b3b44]/50 text-center pt-6">Questions any time: sarah@modernmustardseed.com</p>
+        <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[#141210]/50 text-center pt-6">Questions any time: sarah@modernmustardseed.com</p>
       </Shell>
     );
   }
@@ -138,7 +138,7 @@ export default async function WelcomePage({ searchParams }: { searchParams: Prom
         <Link href="/bootcamp" className={btn.dark}>The bootcamp</Link>
         <Link href="/bootcamp/masterclass" className={btn.white}>Free masterclass</Link>
       </div>
-      <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[#0b3b44]/50 text-center pt-6">sarah@modernmustardseed.com</p>
+      <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[#141210]/50 text-center pt-6">sarah@modernmustardseed.com</p>
     </Shell>
   );
 }
