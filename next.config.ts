@@ -69,6 +69,11 @@ const GOOGLE_FONTS = ['https://fonts.googleapis.com', 'https://fonts.gstatic.com
 // domain (video plus a HEAD serve check), so it needs media-src and connect-src.
 const MUSTARD_STUDIO = 'https://mustardstudio.modernmustardseed.com';
 
+// Supabase Storage. The welcome intake sends photos straight from the phone to a
+// signed upload URL here (lib/intake-files.ts), so promoting connect-src without
+// it would silently break every client's photo upload.
+const SUPABASE_STORAGE = 'https://qqvohlvhynmtavdbvkha.supabase.co';
+
 /**
  * ENFORCED. Every directive here is one that cannot break a page that already
  * works, and between them they close what the audit flagged.
@@ -120,7 +125,7 @@ const REPORT_ONLY_CSP = [
   `font-src ${[SELF, 'data:', ...GOOGLE_FONTS].join(' ')}`,
   `img-src ${[SELF, 'data:', 'blob:', 'https:'].join(' ')}`,
   `media-src ${[SELF, 'data:', 'blob:', MUSTARD_STUDIO].join(' ')}`,
-  `connect-src ${[SELF, ...GOOGLE_ANALYTICS, ...META_PIXEL, ...VOICE, MUSTARD_STUDIO].join(' ')}`,
+  `connect-src ${[SELF, ...GOOGLE_ANALYTICS, ...META_PIXEL, ...VOICE, MUSTARD_STUDIO, SUPABASE_STORAGE].join(' ')}`,
   `frame-src ${[SELF, 'https://www.youtube.com', 'https://www.youtube-nocookie.com', 'https://*.daily.co'].join(' ')}`,
   `worker-src ${[SELF, 'blob:'].join(' ')}`,
   "frame-ancestors 'self'",
