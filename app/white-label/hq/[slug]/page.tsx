@@ -4,6 +4,7 @@ import { agencyFromKey } from '@/lib/white-label/portal';
 import { listClients } from '@/lib/white-label/store';
 import { agencyLinks } from '@/lib/white-label/mail';
 import { deskUrl } from '@/lib/white-label/desk';
+import { wlPricesHeld } from '@/lib/white-label/key';
 import { WL_GROUPS, WL_LINES, WL_PROGRAM } from '@/data/white-label';
 import { wlSans } from '@/components/white-label/font';
 import AgencyPortal from '@/components/white-label/AgencyPortal';
@@ -44,12 +45,14 @@ export default async function AgencyPortalPage({ params, searchParams }: { param
 
   const clients = await listClients(agency.id);
   const links = agencyLinks(agency);
+  const held = wlPricesHeld(agency.slug);
+  const none = { setup: 0, monthly: 0 };
   return (
     <div className={wlSans.className}>
     <AgencyPortal
       agency={{ name: agency.name, slug: agency.slug, contact: agency.contact_name, color: agency.color || '#0b3b44', founding: agency.founding, status: agency.status }}
       portalKey={key as string}
-      links={{ demo: links.demo, sheet: links.sheet }}
+      links={{ demo: links.demo, sheet: held ? null : links.sheet }}
       clients={clients.map((c) => ({
         id: c.id,
         business: c.business,
@@ -62,7 +65,8 @@ export default async function AgencyPortalPage({ params, searchParams }: { param
         live_at: c.live_at,
         desk: c.vapi_assistant_id ? deskUrl(agency.slug, c.id) : null,
       }))}
-      lines={WL_LINES.map((l) => ({ slug: l.slug, name: l.name, group: l.group, pitch: l.pitch, wholesale: l.wholesale, retail: l.retail, internal: l.internal }))}
+      lines={WL_LINES.map((l) => ({ slug: l.slug, name: l.name, group: l.group, pitch: l.pitch, wholesale: held ? none : l.wholesale, retail: held ? none : l.retail, internal: l.internal }))}
+      pricesHeld={held}
       groups={WL_GROUPS.map((g) => ({ key: g.key, title: g.title }))}
       foundingMonths={WL_PROGRAM.foundingMonths}
     />

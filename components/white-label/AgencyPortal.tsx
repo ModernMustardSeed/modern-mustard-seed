@@ -37,6 +37,7 @@ export default function AgencyPortal({
   lines,
   groups,
   foundingMonths,
+  pricesHeld = false,
 }: {
   agency: { name: string; slug: string; contact: string | null; color: string; founding: boolean; status: string };
   portalKey: string;
@@ -45,6 +46,7 @@ export default function AgencyPortal({
   lines: Line[];
   groups: { key: string; title: string }[];
   foundingMonths: number;
+  pricesHeld?: boolean;
 }) {
   const router = useRouter();
   const ink = inkFor(agency.color);
@@ -138,12 +140,11 @@ export default function AgencyPortal({
 
       <main className="mx-auto max-w-6xl space-y-8 px-5 py-10">
         {/* ─── NUMBERS ─── */}
-        <section className="grid gap-4 sm:grid-cols-4">
+        <section className={`grid gap-4 ${pricesHeld ? 'sm:grid-cols-2' : 'sm:grid-cols-4'}`}>
           {[
             ['Clients live', String(live.length)],
             ['In progress', String(clients.filter((c) => ['submitted', 'building', 'review'].includes(c.status)).length)],
-            ['You pay us monthly', usd(monthlyToUs)],
-            ['At suggested retail you bill', usd(suggested)],
+            ...(pricesHeld ? [] : [['You pay us monthly', usd(monthlyToUs)], ['At suggested retail you bill', usd(suggested)]]),
           ].map(([k, v]) => (
             <div key={k} className="rounded-2xl border border-black/10 bg-white p-5">
               <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-neutral-500">{k}</p>
@@ -151,7 +152,7 @@ export default function AgencyPortal({
             </div>
           ))}
         </section>
-        {agency.founding && (
+        {agency.founding && !pricesHeld && (
           <p className="text-sm text-neutral-600">Founding agency: your wholesale prices are locked for {foundingMonths} months from your first live client.</p>
         )}
 
@@ -318,9 +319,9 @@ export default function AgencyPortal({
                               {l.name}
                               <span aria-hidden="true" style={{ color: on ? accent : '#d4d4d4' }}>{on ? '✓' : '+'}</span>
                             </span>
-                            <span className="mt-0.5 block text-xs text-neutral-500">
+                            {!pricesHeld && <span className="mt-0.5 block text-xs text-neutral-500">
                               You pay {[l.wholesale.setup ? `${usd(l.wholesale.setup)} setup` : '', l.wholesale.monthly ? `${usd(l.wholesale.monthly)}/mo` : ''].filter(Boolean).join(' + ')}
-                            </span>
+                            </span>}
                           </button>
                         );
                       })}
@@ -330,10 +331,12 @@ export default function AgencyPortal({
             </div>
 
             <div className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-xl bg-neutral-50 p-4 text-sm">
-              <span>
+              {pricesHeld ? (
+                <span>Sarah confirms the price for {forStudio ? 'this project' : 'this client'} with you before we start.</span>
+              ) : <span>
                 {forStudio ? 'For this project' : 'For this client'} you pay us <strong>{orderSetup ? `${usd(orderSetup)} setup` : 'no setup'}</strong>
                 {orderMonthly ? <> then <strong>{usd(orderMonthly)}/mo</strong></> : ''}, once it is live.
-              </span>
+              </span>}
               <button disabled={busy || (!forStudio && !form.business) || !form.lines.length} className="rounded-full px-6 py-3 text-sm font-bold disabled:opacity-50" style={{ background: agency.color, color: ink }}>
                 {busy ? 'Sending' : forStudio ? 'Send the project' : 'Start this client'}
               </button>
@@ -372,7 +375,7 @@ export default function AgencyPortal({
                 <li>You add them here. We start within one business day.</li>
                 <li>Inside seven days you get a test number by email.</li>
                 <li>You call it and press Approve. We switch it onto their real number.</li>
-                <li>It shows Live, and the setup and monthly land on your next invoice from us. You bill your client your price.</li>
+                <li>It shows Live, and the setup and monthly land on your next invoice from us{pricesHeld ? ' at the price we agreed' : ''}. You bill your client your price.</li>
               </ol>
               <p className="mt-4">Changes to anything we built are included: tell us what and we do it. Questions go straight to Sarah at <a className="underline" href="mailto:sarah@modernmustardseed.com">sarah@modernmustardseed.com</a>.</p>
             </div>

@@ -146,19 +146,21 @@ SALES, VENDORS, SURVEYS. Polite and brief. Name, company, number, a one line mes
 THE CALLER DECIDES WHEN THE CALL IS OVER. The moment they say bye, thanks, or that they have to go, call endCall and say nothing yourself: it speaks the goodbye. Never "one more thing", never "I just need another minute", never hold them to confirm a readback. A name and a number is enough for Jordan to call them back, and if you do not have a number, the caller ID comes with the message. When you are the one finishing, the last thing you say yourself is the urgent line if it applies ("I'm marking this urgent so it goes straight to Jordan."), then endCall.`;
 
 /* ── the voice ─────────────────────────────────────────────────────────────
- * Rime "eyre" on coda, Rime's newest model. Rime records its voices from real
- * Americans rather than voice actors, so they carry the plain, unpolished
- * rhythm of somebody who answers a phone for a living instead of an announcer
- * read. Eyre is a calm, warm adult woman with no regional tilt toward the
- * South or California, which is how a Flathead native sounds: friendly, flat
- * northern West, in no hurry.
+ * Rime "lintel" on coda, Rime's newest model. Rime records its voices from real
+ * Americans rather than voice actors, so they carry the plain rhythm of
+ * somebody who answers a phone for a living instead of an announcer read.
+ * Lintel is a young American woman, polished and lively, with no regional
+ * accent.
+ *
+ * She replaced "eyre" on 2026-10-09. Sarah's call: eyre's cadence was right but
+ * the voice read too country and too low energy for a law office. Runners-up
+ * from the same catalog, both polished and lively: clementine, ibis. Audition
+ * with VANN_VOICE_ID=clementine and --update.
  *
  * Not ElevenLabs. Vapi's ElevenLabs credential fails every call on the org as
  * of 2026-10-08 (pipeline-error-eleven-labs-voice-failed, even on the voice that
- * used to carry Mr. Mustard), and Rime runs on Vapi with no key of ours. Swap
- * with VANN_VOICE_ID=moraga or VANN_VOICE_ID=clara and --update to audition
- * the other two finalists on the live line. */
-const VOICE_ID = process.env.VANN_VOICE_ID || 'eyre';
+ * used to carry Mr. Mustard), and Rime runs on Vapi with no key of ours. */
+const VOICE_ID = process.env.VANN_VOICE_ID || 'lintel';
 
 const PHONE_SPOKEN = 'four, zero, six. eight, two, six. six, five, two, nine.';
 

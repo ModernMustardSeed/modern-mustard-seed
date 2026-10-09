@@ -1,4 +1,5 @@
 import { createHmac, timingSafeEqual } from 'node:crypto';
+import { WL_PRICES_HELD } from '@/data/white-label';
 
 /**
  * A key signed for one agency. It unlocks that agency's wholesale prices on
@@ -37,6 +38,16 @@ export function wlKeyValid(agency: string, key: string | null | undefined): bool
   const a = Buffer.from(want);
   const b = Buffer.from(key.trim());
   return a.length === b.length && timingSafeEqual(a, b);
+}
+
+/** True when this agency's prices are held back (data/white-label.ts). */
+export function wlPricesHeld(agency: string): boolean {
+  return WL_PRICES_HELD.includes(wlSlug(agency));
+}
+
+/** A signed key that may also open prices: valid, and the agency is not held. */
+export function wlPricesKeyValid(agency: string, key: string | null | undefined): boolean {
+  return !wlPricesHeld(agency) && wlKeyValid(agency, key);
 }
 
 /**
