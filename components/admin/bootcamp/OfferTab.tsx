@@ -66,7 +66,7 @@ export default function OfferTab() {
 
   return (
     <div className="space-y-8">
-      <section className={`${card} p-5 bg-[#161616] text-[#FBF6EA] border-[#161616]`}>
+      <section className="rounded-xl border-2 border-[#161616] bg-[#161616] p-5 text-[#FBF6EA] shadow-[4px_4px_0_0_#F5B700]">
         <p className="font-mono text-[10px] uppercase tracking-[0.3em] font-bold text-[#F5B700]">The promise</p>
         <p className="font-display text-2xl leading-snug mt-2 text-[#FBF6EA]">{BOOTCAMP.promise}</p>
         <p className="font-body text-sm mt-3 text-[#FBF6EA]/80 max-w-3xl">{BOOTCAMP.thesis}</p>
