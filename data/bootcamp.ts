@@ -44,6 +44,8 @@ export const BOOTCAMP = {
     close: '2027-02-03T06:59:00.000Z',
     operatorStart: '2027-02-16T20:00:00.000Z',
     operatorEnd: '2027-04-06T21:30:00.000Z',
+    /** The tier deliverables open in every eligible room when Day 3 ends, 2:30 PM MT. */
+    deliverables: '2027-02-09T21:30:00.000Z',
   },
   seedsideIncluded: true,
   guarantee:
@@ -134,6 +136,68 @@ export function usd(cents: number): string {
 
 /** The tier a registration climbs to when a paid tier is bought. */
 export const TIER_RANK: Record<string, number> = { masterclass: 0, ga: 1, vip: 2, platinum: 3, operator: 4 };
+
+/**
+ * THE TIER DELIVERABLES, named on the VIP and Platinum cards above. Built
+ * from private/bootcamp/src by scripts/bootcamp-deliverables-build.mjs and
+ * served only through the signed room route, never from public/. A cohort
+ * seat holds everything Platinum holds. They open in the room when Day 3
+ * ends (BOOTCAMP.dates.deliverables); before that the room shows the date.
+ */
+export type DeliverableFile = { name: string; label: string; kind: 'PDF' | 'ZIP'; mime: string };
+export type BootcampDeliverable = {
+  slug: 'deck' | 'kit' | 'playbook';
+  name: string;
+  minTier: 'vip' | 'platinum';
+  blurb: string;
+  files: DeliverableFile[];
+};
+
+export const bootcampDeliverables: BootcampDeliverable[] = [
+  {
+    slug: 'deck',
+    name: "The Director's Deck",
+    minTier: 'vip',
+    blurb: 'Forty prompts and skill files lifted from the studio, in eight suits, in the words we use them. The deck to read, and the same forty as files to paste.',
+    files: [
+      { name: 'directors-deck.pdf', label: 'The deck', kind: 'PDF', mime: 'application/pdf' },
+      { name: 'directors-deck-files.zip', label: 'The forty as files', kind: 'ZIP', mime: 'application/zip' },
+    ],
+  },
+  {
+    slug: 'kit',
+    name: 'The Studio Kit',
+    minTier: 'platinum',
+    blurb: 'The twenty laws as a rules file you fill in, twelve skills, and the ten safety hooks that run Modern Mustard Seed, with an installer and a test suite for Windows and macOS.',
+    files: [{ name: 'studio-kit.zip', label: 'The kit', kind: 'ZIP', mime: 'application/zip' }],
+  },
+  {
+    slug: 'playbook',
+    name: "The Operator's Playbook",
+    minTier: 'platinum',
+    blurb: 'The written manual for running a company with a crew: fourteen chapters and the first-thirty-days checklist.',
+    files: [{ name: 'operators-playbook.pdf', label: 'The playbook', kind: 'PDF', mime: 'application/pdf' }],
+  },
+];
+
+/** The deliverables a tier holds, in order. Free seats and General Admission hold none. */
+export function deliverablesFor(tier: string): BootcampDeliverable[] {
+  const rank = TIER_RANK[tier] ?? 0;
+  return bootcampDeliverables.filter((d) => rank >= TIER_RANK[d.minTier]);
+}
+
+/** The deliverable a file belongs to, or undefined when no deliverable ships that name. */
+export function deliverableForFile(name: string): { deliverable: BootcampDeliverable; file: DeliverableFile } | undefined {
+  for (const deliverable of bootcampDeliverables) {
+    const file = deliverable.files.find((f) => f.name === name);
+    if (file) return { deliverable, file };
+  }
+  return undefined;
+}
+
+export function deliverablesReleased(now = Date.now()): boolean {
+  return now >= new Date(BOOTCAMP.dates.deliverables).getTime();
+}
 
 export type BootcampDay = {
   n: 1 | 2 | 3;

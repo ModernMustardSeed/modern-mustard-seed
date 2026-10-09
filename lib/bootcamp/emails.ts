@@ -5,6 +5,7 @@ import {
   bootcampDays,
   bootcampDoors,
   bootcampTiers,
+  deliverablesFor,
   fmtMountain,
   fmtMountainTime,
   getBootcampTier,
@@ -745,6 +746,30 @@ export function day3ReplayForCohort(who: Person, f: DripFooter): BootcampEmail {
   );
 }
 
+/** The tier deliverables open in the room when Day 3 ends. VIP gets the deck; Platinum and the cohort get all three. */
+export function kitReady(tier: string, who: Person, f: DripFooter): BootcampEmail {
+  const owned = deliverablesFor(tier);
+  const one = owned.length === 1;
+  return render(
+    {
+      subject: one ? "Your Director's Deck is in your room" : 'Your deck, your kit and your playbook are in your room',
+      preheader: one ? 'Forty prompts and skill files, ready to download.' : "The Director's Deck, the Studio Kit and the Operator's Playbook, ready to download.",
+      eyebrow: 'In your seat',
+      greeting: hi(who),
+      pieces: [
+        `Day 3 is done, and what your seat includes is waiting in ${yourRoom(who, '#kit')}:`,
+        { list: owned.map((d) => `${d.name}: ${d.blurb}`) },
+        owned.some((d) => d.slug === 'kit')
+          ? 'Start with the Studio Kit. Unzip it, open INSTALL.md, and it is running in about twenty minutes on Windows or a Mac. The playbook is the manual for the weeks after.'
+          : 'Start with card one. The six skill files take a minute each to install, and every agent uses them from then on.',
+        'The downloads work only from your room, so keep the link. The Day 3 replay letter follows as soon as the replay is up.',
+      ],
+      cta: roomCta(who, 'Open my room'),
+    },
+    f,
+  );
+}
+
 /* -------------------------------------------------------------------------- */
 /* The drip's map from step name to letter                                     */
 /* -------------------------------------------------------------------------- */
@@ -772,6 +797,7 @@ export type StepName =
   | 'day3-24h'
   | 'day3-live'
   | 'day3-1h'
+  | 'kit-ready'
   | 'day3-replay'
   | 'day3-replay-op'
   | 'op-2'
@@ -802,6 +828,7 @@ export const STEP_TEMPLATES: Record<StepName, (c: DripContext) => BootcampEmail>
   'day3-24h': (c) => dayReminder(3, '24h', c, foot(c)),
   'day3-live': (c) => liveToday('day3', c, foot(c)),
   'day3-1h': (c) => dayReminder(3, '1h', c, foot(c)),
+  'kit-ready': (c) => kitReady(c.tier, c, foot(c)),
   'day3-replay': (c) => dayReplay(3, c, foot(c)),
   'day3-replay-op': (c) => day3ReplayForCohort(c, foot(c)),
   'op-2': (c) => operatorInvite(2, c, foot(c)),

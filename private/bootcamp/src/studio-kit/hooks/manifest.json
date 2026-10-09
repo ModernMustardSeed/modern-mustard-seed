@@ -1,0 +1,15 @@
+{
+  "about": "The ten Studio Kit hooks and the events they run on. install.mjs writes these into your Claude Code settings with absolute paths for this machine.",
+  "hooks": [
+    { "n": 1, "name": "words-guard", "event": "PreToolUse", "matcher": "Write|Edit|MultiEdit|Bash|PowerShell", "what": "Blocks phrases your business never writes (bannedPhrases)." },
+    { "n": 2, "name": "secrets-guard", "event": "PreToolUse", "matcher": "Write|Edit|MultiEdit|Bash|PowerShell", "what": "Blocks live keys written into files." },
+    { "n": 3, "name": "cron-guard", "event": "PreToolUse", "matcher": "Write|Edit|MultiEdit", "what": "Blocks two scheduled jobs on the same minute." },
+    { "n": 4, "name": "git-guard", "event": "PreToolUse", "matcher": "Bash|PowerShell", "what": "Blocks force pushes, protected branch deletes and skipped checks. Asks before hard resets." },
+    { "n": 5, "name": "delete-guard", "event": "PreToolUse", "matcher": "Bash|PowerShell", "what": "Blocks recursive deletes outside the workspace." },
+    { "n": 6, "name": "send-guard", "event": "PreToolUse", "matcher": "Bash|PowerShell|mcp__.*", "what": "Asks before anything is emailed, texted or posted." },
+    { "n": 7, "name": "money-guard", "event": "PreToolUse", "matcher": "Bash|PowerShell|mcp__.*", "what": "Asks before charges, refunds, payouts and price changes." },
+    { "n": 8, "name": "deploy-guard", "event": "PreToolUse", "matcher": "Bash|PowerShell", "what": "Blocks hand-pointed domains. Asks before production deploys." },
+    { "n": 9, "name": "sql-guard", "event": "PreToolUse", "matcher": "Bash|PowerShell|mcp__.*", "what": "Asks before drops, truncates and unscoped deletes or updates." },
+    { "n": 10, "name": "audit-log", "event": "PostToolUse", "matcher": "*", "what": "Writes every tool call to a monthly audit trail. Never blocks." }
+  ]
+}

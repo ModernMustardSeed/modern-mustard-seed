@@ -149,3 +149,16 @@ test('no letter is silently dropped by a neighbour it was never meant to yield t
     }
   }
 });
+
+test('the deliverables letter reaches VIP, Platinum and the cohort when Day 3 ends, and never General Admission', () => {
+  const kit = stepAt('kit-ready');
+  assert.equal(kit, at(BOOTCAMP.dates.deliverables));
+  assert.ok(kit >= at(BOOTCAMP.dates.day3) + 90 * 60 * 1000, 'not before Day 3 ends');
+  assert.deepEqual(dueSteps(ticket, kit), ['kit-ready']);
+  assert.deepEqual(dueSteps({ ...ticket, tier: 'platinum' }, kit), ['kit-ready']);
+  assert.deepEqual(dueSteps(operator, kit), ['kit-ready']);
+  assert.deepEqual(dueSteps({ ...ticket, tier: 'ga' }, kit), []);
+  assert.deepEqual(dueSteps(masterclass, kit), []);
+  // It closes before the Day 3 replay letter opens, so neither drops the other.
+  assert.ok(!dueSteps(ticket, stepAt('day3-replay')).includes('kit-ready'));
+});

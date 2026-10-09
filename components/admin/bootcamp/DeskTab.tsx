@@ -13,6 +13,7 @@ const MOMENT_LABEL: Record<string, string> = {
   close: 'Enrollment closes',
   operatorStart: 'The Operator Program starts',
   operatorEnd: 'The Operator Program ends',
+  deliverables: 'Deck, Kit and Playbook open in the rooms',
 };
 
 function countdown(ms: number): { d: number; h: number; m: number; s: number } {

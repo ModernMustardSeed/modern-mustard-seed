@@ -113,7 +113,7 @@ Owner is Sarah or the crew. The crew means the agents and the desks that run wit
 | Jan 18 | Trade Secrets 11. Ads to $500 a day on Jan 19, `meta-guarantee` on warm. LinkedIn post 3 (Jan 19). Final rehearsal, timed. Registrant count checked against 15,000 target. | Crew; Sarah rehearses |
 | Jan 25 | Hosts post and email again (Jan 25). Trade Secrets 12 on the day. Masterclass live Tuesday Jan 26, 1:00 PM Mountain. Replay out by 5:00 PM. Ads stop. Drip takes over: replay, offer 2 (Jan 28), offer 3 (Jan 31). | Sarah teaches; crew runs the drip |
 | Feb 1 | Kickoff call Monday Feb 1. Day 1 Tuesday Feb 2. Enrollment closes 11:59 PM Mountain Feb 2. Refund requests answered the same night. Day 2 Thursday Feb 4 with trade rooms and host doors. | Sarah teaches; crew runs rooms and refunds |
-| Feb 8 | Day 3 Tuesday Feb 9. Replay plus three doors by 5:00 PM. Operator invites 1 (Feb 9), 2 (Feb 11), 3 (Feb 14). VIP coaching sessions scheduled. Platinum kits shipped. | Sarah teaches; crew ships |
+| Feb 8 | Day 3 Tuesday Feb 9. Replay plus three doors by 5:00 PM. Operator invites 1 (Feb 9), 2 (Feb 11), 3 (Feb 14). VIP coaching sessions scheduled. The Director's Deck (VIP and up), the Studio Kit and the Operator's Playbook (Platinum and cohort) open in every eligible room at 2:30 PM Mountain on Feb 9, with the in-your-room letter on the next hourly run. | Sarah teaches; crew ships |
 | Feb 15 | The Operator Program starts Tuesday Feb 16. Host payouts sent by Feb 19 (within ten days of Day 3). Launch 1 close-out numbers posted against section 2. Launch 2 calendar re-dated from this one. | Sarah teaches; crew pays and reports |
 
 ## 5. What is on Sarah only
@@ -191,5 +191,7 @@ Every attendee has one room: `/bootcamp/room`, a signed link in every letter and
 **The guarantee, on record.** A ticket holder in the room during Day 1 is marked present in `attended_days`. A refund request that night is checked against it.
 
 **The worksheet.** Every ticket gets the pre-work letter the day after the masterclass; cohort seats get theirs after Day 3. Answers save into the room as people type. The Stage tab lists every worksheet, Platinum first, with the brief it writes: the Day 2 front row is picked from these.
+
+**The tier deliverables.** The Director's Deck, the Studio Kit and the Operator's Playbook open by themselves in every VIP, Platinum and cohort room when Day 3 ends (`BOOTCAMP.dates.deliverables`), and the `kit-ready` letter goes on the next hourly run. Nothing to set on the Stage tab; it shows each file's size, build date and how many seat holders have downloaded it. The sources live in `private/bootcamp/src`; edit them and run `node scripts/bootcamp-deliverables-build.mjs` to rebuild the PDFs and zips in `private/bootcamp/dist`. Downloads go only through `/api/bootcamp/kit/[file]` with the person's signed room key.
 
 **Lost links.** Anyone can ask for their room link again from the room page or the masterclass page. It only ever goes to the address on the registration.

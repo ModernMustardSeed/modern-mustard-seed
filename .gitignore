@@ -99,3 +99,7 @@ artifacts/
 /qa/flathead/*.png
 /qa/flathead-v10/*.png
 /qa/flathead-v11/*.png
+
+# The bootcamp tier deliverables are built artifacts that ship with the site
+# (read by app/api/bootcamp/kit), so their dist folder is committed.
+!/private/bootcamp/dist/
