@@ -16,11 +16,13 @@ export const RIVIERA_OFF_PREFIX = [
   '/white-label/demo',
   '/white-label/sheet',
   '/white-label/hq',
+  // The same pages on an agency's own host (data/white-label-hosts.ts).
+  '/desk/',
   '/proposal/',
   '/scaling-roadmap/r/',
   '/audit/',
 ];
-export const RIVIERA_OFF_EXACT = ['/super-nomad', '/partners/playbook'];
+export const RIVIERA_OFF_EXACT = ['/super-nomad', '/partners/playbook', '/agency', '/receptionist'];
 // Exact paths an off prefix would catch that still wear the site's type:
 // '/sarah' closes the CXC and Eternal Optimist booths, not the MMS portfolio.
 export const RIVIERA_ON_EXACT = ['/sarahscarano'];

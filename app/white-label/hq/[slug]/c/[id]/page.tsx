@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { wlHostMeta } from '@/lib/white-label/host-meta';
 import { deskCalls, deskFromKey } from '@/lib/white-label/desk';
 import { wlSans, wlSerif } from '@/components/white-label/font';
 import ClientDesk from '@/components/white-label/ClientDesk';
@@ -14,6 +15,7 @@ export async function generateMetadata({ params, searchParams }: { params: Param
   const { slug, id } = await params;
   const desk = await deskFromKey(slug, id, one((await searchParams).k));
   return {
+    ...(await wlHostMeta()),
     title: { absolute: desk ? `${desk.client.business} · Front Desk` : 'Front Desk' },
     robots: { index: false, follow: false },
     // The signed key rides in this page's URL. No referrer, so the agency's

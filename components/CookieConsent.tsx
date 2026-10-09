@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
+import { WL_HOST_PATH } from '@/data/white-label-hosts';
 import Link from 'next/link';
 import { getConsent, setConsent } from '@/lib/consent';
 
@@ -24,7 +25,7 @@ export default function CookieConsent() {
   // Never float the public cookie notice over the staff admin app. It is a
   // logged-in tool, and a bottom-anchored banner was covering admin controls.
   // Same for built demo websites (/demo/): that page belongs to the prospect.
-  if (!show || pathname?.startsWith('/admin') || pathname?.startsWith('/cc') || pathname?.startsWith('/office') || pathname?.startsWith('/demo/') || pathname?.startsWith('/hatchery/') || /^\/white-label\/(demo|sheet|hq)(\/|$)/.test(pathname || '')) return null;
+  if (!show || pathname?.startsWith('/admin') || pathname?.startsWith('/cc') || pathname?.startsWith('/office') || pathname?.startsWith('/demo/') || pathname?.startsWith('/hatchery/') || /^\/white-label\/(demo|sheet|hq)(\/|$)/.test(pathname || '') || WL_HOST_PATH.test(pathname || '')) return null;
 
   const decide = (v: 'granted' | 'denied') => {
     setConsent(v);

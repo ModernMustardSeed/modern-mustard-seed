@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import { WL_HOST_PATH } from '@/data/white-label-hosts';
 import { usePathname } from 'next/navigation';
 
 /**
@@ -26,7 +27,7 @@ export default function HouseBeacon() {
   useEffect(() => {
     const ref = previous ?? document.referrer ?? '';
     previous = window.location.href;
-    if (SKIP.test(path) || path.endsWith('/hq')) return;
+    if (SKIP.test(path) || WL_HOST_PATH.test(path) || path.endsWith('/hq')) return;
     const body = JSON.stringify({ project: 'mms', surface: 'site', path, ref });
     try {
       const sent = navigator.sendBeacon?.('/api/prep-visit', new Blob([body], { type: 'text/plain' }));

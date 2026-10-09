@@ -1,12 +1,60 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { verifyToken, COOKIE_NAME } from '@/lib/admin-auth';
 import { verifyClientToken, verifyLookToken, verifyCcToken, verifyStudioToken, CLIENT_COOKIE_NAME, CLIENT_LOOK_COOKIE_NAME, CC_COOKIE_NAME, CC_STUDIO_COOKIE_NAME } from '@/lib/client-auth';
+import { wlHostFor, type WlHost } from '@/data/white-label-hosts';
 
 export const config = {
-  matcher: ['/admin/:path*', '/portal/:path*', '/cc/:path*', '/Mustard', '/MUSTARD', '/Contact', '/Terms', '/Privacy'],
+  matcher: [
+    '/admin/:path*',
+    '/portal/:path*',
+    '/cc/:path*',
+    '/Mustard',
+    '/MUSTARD',
+    '/Contact',
+    '/Terms',
+    '/Privacy',
+    // White label agency hosts (data/white-label-hosts.ts). Every path except
+    // build assets, and only when the Host is an agency's, so nothing on our
+    // own domain ever reaches the block below. A new agency adds its domain here.
+    { source: '/((?!_next/).*)', has: [{ type: 'host', value: '(?:.+\\.)?jcreativemt\\.com' }] },
+  ],
 };
 
+/**
+ * An agency host serves the receptionist demo, its clients' desks and its own
+ * portal under clean paths, plus the APIs those pages call. Everything else of
+ * ours is out of reach on it: any other path goes to the demo.
+ */
+function agencyHost(req: NextRequest, wl: WlHost) {
+  const path = req.nextUrl.pathname;
+  if (path === '/robots.txt') return new NextResponse('User-agent: *\nDisallow: /\n', { headers: { 'content-type': 'text/plain' } });
+  if (path.startsWith('/api/white-label/') || path.startsWith('/white-label/demo/opengraph-image')) return NextResponse.next();
+
+  const url = req.nextUrl.clone();
+  if (path === '/receptionist') {
+    url.pathname = '/white-label/demo';
+    if (!url.searchParams.get('agency')) url.searchParams.set('agency', wl.agency);
+    if (!url.searchParams.get('color')) url.searchParams.set('color', wl.color);
+    // No agency key, no agency panel: a bare link is what a prospect sees.
+    if (!url.searchParams.get('k') && !url.searchParams.get('view')) url.searchParams.set('view', 'client');
+    return NextResponse.rewrite(url);
+  }
+  const desk = /^\/desk\/([0-9a-f-]{36})\/?$/.exec(path);
+  if (desk) {
+    url.pathname = `/white-label/hq/${wl.slug}/c/${desk[1]}`;
+    return NextResponse.rewrite(url);
+  }
+  if (path === '/agency') {
+    url.pathname = `/white-label/hq/${wl.slug}`;
+    return NextResponse.rewrite(url);
+  }
+  return NextResponse.redirect(new URL('/receptionist', req.url), 307);
+}
+
 export async function middleware(req: NextRequest) {
+  const wl = wlHostFor(req.headers.get('host'));
+  if (wl) return agencyHost(req, wl);
+
   const path = req.nextUrl.pathname;
 
   // Exact path checks prevent redirect loops on canonical lowercase pages.

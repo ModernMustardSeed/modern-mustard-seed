@@ -44,6 +44,7 @@ export default function AgencyPortal({
   groups,
   foundingMonths,
   pricesHeld = false,
+  demoAt = null,
 }: {
   agency: { name: string; slug: string; contact: string | null; color: string; founding: boolean; status: string; logo?: string | null };
   portalKey: string;
@@ -53,6 +54,8 @@ export default function AgencyPortal({
   groups: { key: string; title: string }[];
   foundingMonths: number;
   pricesHeld?: boolean;
+  /** The agency's own demo URL (https://ai.agency.com/receptionist), once its host is live. */
+  demoAt?: string | null;
 }) {
   const router = useRouter();
   const ink = inkFor(agency.color);
@@ -75,14 +78,22 @@ export default function AgencyPortal({
   const orderSetup = order.reduce((n, l) => n + l.wholesale.setup, 0);
   const orderMonthly = order.reduce((n, l) => n + l.wholesale.monthly, 0);
 
-  const clientDemo = `/white-label/demo?${new URLSearchParams({
-    agency: agency.name,
-    color: agency.color.replace('#', ''),
-    sample: 'dental',
-    view: 'client',
-    ...(demoFor.site.trim() ? { site: demoFor.site.trim() } : {}),
-    ...(demoFor.name.trim() ? { client: demoFor.name.trim() } : {}),
-  }).toString()}`;
+  // On the agency's own host the demo already knows the agency, its color and
+  // the client view, so the link a prospect gets carries only their own site.
+  const clientDemo = demoAt
+    ? `${demoAt}${demoFor.site.trim() || demoFor.name.trim() ? '?' : ''}${new URLSearchParams({
+        ...(demoFor.site.trim() ? { site: demoFor.site.trim() } : {}),
+        ...(demoFor.name.trim() ? { client: demoFor.name.trim() } : {}),
+      }).toString()}`
+    : `/white-label/demo?${new URLSearchParams({
+        agency: agency.name,
+        color: agency.color.replace('#', ''),
+        sample: 'dental',
+        view: 'client',
+        ...(demoFor.site.trim() ? { site: demoFor.site.trim() } : {}),
+        ...(demoFor.name.trim() ? { client: demoFor.name.trim() } : {}),
+      }).toString()}`;
+  const clientDemoFull = () => (demoAt ? clientDemo : `${window.location.origin}${clientDemo}`);
 
   const copy = async (text: string, k: string) => {
     try {
@@ -479,7 +490,7 @@ export default function AgencyPortal({
                 <input className={darkInput} value={demoFor.name} onChange={(e) => setDemoFor({ ...demoFor, name: e.target.value })} />
               </label>
               <div className="mt-7 flex flex-wrap gap-2.5">
-                <button onClick={() => copy(`${window.location.origin}${clientDemo}`, 'demo')} className="rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-neutral-900 transition-transform hover:-translate-y-0.5">
+                <button onClick={() => copy(clientDemoFull(), 'demo')} className="rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-neutral-900 transition-transform hover:-translate-y-0.5">
                   {copied === 'demo' ? 'Copied' : 'Copy link'}
                 </button>
                 <a href={clientDemo} target="_blank" rel="noopener noreferrer" className="rounded-full border border-white/25 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:border-white/60">

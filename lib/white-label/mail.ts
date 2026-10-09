@@ -1,4 +1,5 @@
 import { sendViaResend } from '@/lib/send-email';
+import { wlBaseFor } from '@/data/white-label-hosts';
 import { clientEmail, p } from '@/lib/email';
 import { OWNER_NOTIFY_TO } from '@/lib/owner';
 import { SITE } from '@/lib/seo';
@@ -18,11 +19,13 @@ const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&
 const first = (name: string | null) => (name || '').trim().split(/\s+/)[0] || 'there';
 
 export function portalUrl(a: Pick<Agency, 'slug'>): string {
-  return `${SITE.url}/white-label/hq/${a.slug}?k=${wlKey(a.slug)}`;
+  const own = wlBaseFor(a.slug);
+  return own ? `${own}/agency?k=${wlKey(a.slug)}` : `${SITE.url}/white-label/hq/${a.slug}?k=${wlKey(a.slug)}`;
 }
 
 export function agencyLinks(a: Agency) {
-  return wlLinks(SITE.url, { agency: a.name, color: a.color || '#0b3b44', city: '', sample: 'dental' });
+  const own = wlBaseFor(a.slug);
+  return wlLinks(SITE.url, { agency: a.name, color: a.color || '#0b3b44', city: '', sample: 'dental' }, own ? `${own}/receptionist` : undefined);
 }
 
 export function linesLabel(slugs: string[]): string {

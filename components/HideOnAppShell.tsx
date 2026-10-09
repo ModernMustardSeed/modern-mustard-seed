@@ -1,6 +1,7 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
+import { WL_HOST_PATH } from '@/data/white-label-hosts';
 
 /** Hides marketing chrome (footer, etc.) on app shells that have their own
  *  layout: admin, the client portal, program HQs, and every built demo
@@ -31,7 +32,9 @@ export default function HideOnAppShell({
     p.startsWith('/sarahbook') ||
     p.startsWith('/voice-agents/build/demo/') ||
     // The white label demo and price sheet wear the agency's name, never ours.
-    /^\/white-label\/(demo|sheet|hq)(\/|$)/.test(p)
+    /^\/white-label\/(demo|sheet|hq)(\/|$)/.test(p) ||
+    // The same pages on an agency's own host (data/white-label-hosts.ts).
+    WL_HOST_PATH.test(p)
   )
     return null;
   return <>{children}</>;
