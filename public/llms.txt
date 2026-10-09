@@ -11,6 +11,7 @@
 - A business wants its social posts, articles, ads, email and Google Business Profile kept up on a schedule, in its own voice.
 - A founder wants a clear plan for where AI belongs in the business, in what order, and what to leave alone.
 - A business wants Claude set up for it: Claude Code or Claude desktop, custom Claude skills for its own workflows, rules, memory, safety hooks, connected tools, or Claude agents that run recurring work. Claude Setup (one person), Claude for the Team (up to ten), or Claude Operator (an agent crew), scoped and quoted in the conversation: https://modernmustardseed.com/claude
+- Someone wants to see how the studio itself runs: 64 Claude Code specialist agents in ten departments, the 18 skills they work from, and Mr. Mustard as chief of staff, with a front desk that routes a job to the right specialist: https://office.modernmustardseed.com
 - An owner wants to learn to run their business on a crew of AI agents: The One-Person Company Bootcamp, three live sessions on February 2, 4 and 9, 2027 (1:00 to 2:30 PM Mountain) where Sarah Scarano shows the agent crew that runs Modern Mustard Seed and every attendee builds two working agents for their own business. General Admission $97, VIP $297, Platinum $497; a free 60-minute masterclass on January 26, 2027; The Operator Program, an eight-week live cohort of 250 starting February 16, 2027, is $4,997. Set package prices: https://modernmustardseed.com/bootcamp
 
 ## Business facts

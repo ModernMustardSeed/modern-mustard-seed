@@ -8,8 +8,11 @@
  * never imply Anthropic endorses or partners with the studio.
  *
  * The proof numbers are counted from the studio's own setup, not estimated:
- * custom skills, safety hooks and memory notes in use on 2026-09-30.
+ * custom skills, safety hooks, memory notes and specialists, read from
+ * data/studio-stats.ts (recounted there, never here).
  */
+
+import { STUDIO_STATS } from './studio-stats';
 
 export const CLAUDE_SETUP = {
   metaTitle: 'Claude Setup for Your Business: Claude Code, Custom Skills and AI Agents',
@@ -20,10 +23,10 @@ export const CLAUDE_SETUP = {
 };
 
 export const CLAUDE_PROOF = [
-  { n: '17', label: 'custom Claude skills in daily use' },
-  { n: '10', label: 'safety hooks it cannot get past' },
-  { n: '282', label: 'memory notes it reads before it works' },
-  { n: '17', label: 'agents in the back office' },
+  { n: String(STUDIO_STATS.skillsWritten), label: 'custom Claude skills we wrote' },
+  { n: String(STUDIO_STATS.hooks), label: 'safety hooks it cannot get past' },
+  { n: String(STUDIO_STATS.memoryNotes), label: 'memory notes it reads before it works' },
+  { n: String(STUDIO_STATS.specialists), label: 'specialist agents on staff' },
   { n: '1', label: 'person at the desk' },
 ] as const;
 
@@ -110,7 +113,7 @@ export const claudeFaq = [
   },
   {
     q: 'Can Claude run my business operations?',
-    a: 'Claude can run the recurring work: follow-ups, quotes, intake, reports, research and drafts. The decisions stay with you. We run Modern Mustard Seed this way ourselves, with seventeen custom skills, ten safety hooks and a crew of agents, and a person saying yes to what leaves the building.',
+    a: 'Claude can run the recurring work: follow-ups, quotes, intake, reports, research and drafts. The decisions stay with you. We run Modern Mustard Seed this way ourselves, with eighteen custom skills, ten safety hooks and sixty-four specialist agents, and a person saying yes to what leaves the building.',
   },
   {
     q: 'Claude or ChatGPT for a small business?',
