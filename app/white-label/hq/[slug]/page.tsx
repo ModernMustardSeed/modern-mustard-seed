@@ -6,7 +6,7 @@ import { agencyLinks } from '@/lib/white-label/mail';
 import { deskUrl } from '@/lib/white-label/desk';
 import { wlPricesHeld } from '@/lib/white-label/key';
 import { WL_GROUPS, WL_LINES, WL_PROGRAM } from '@/data/white-label';
-import { wlSans } from '@/components/white-label/font';
+import { wlSans, wlSerif } from '@/components/white-label/font';
 import AgencyPortal from '@/components/white-label/AgencyPortal';
 
 export const dynamic = 'force-dynamic';
@@ -48,7 +48,7 @@ export default async function AgencyPortalPage({ params, searchParams }: { param
   const held = wlPricesHeld(agency.slug);
   const none = { setup: 0, monthly: 0 };
   return (
-    <div className={wlSans.className}>
+    <div className={`${wlSans.className} ${wlSerif.variable}`}>
     <AgencyPortal
       agency={{ name: agency.name, slug: agency.slug, contact: agency.contact_name, color: agency.color || '#0b3b44', founding: agency.founding, status: agency.status }}
       portalKey={key as string}

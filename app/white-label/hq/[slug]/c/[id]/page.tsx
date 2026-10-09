@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { deskCalls, deskFromKey } from '@/lib/white-label/desk';
-import { wlSans } from '@/components/white-label/font';
+import { wlSans, wlSerif } from '@/components/white-label/font';
 import ClientDesk from '@/components/white-label/ClientDesk';
 
 export const dynamic = 'force-dynamic';
@@ -36,7 +36,7 @@ export default async function ClientDeskPage({ params, searchParams }: { params:
 
   if (!desk) {
     return (
-      <div className={`${wlSans.className} grid min-h-screen place-items-center bg-[#f5f6f8] px-5 text-neutral-900`}>
+      <div className={`${wlSans.className} ${wlSerif.variable} grid min-h-screen place-items-center bg-[#f5f6f8] px-5 text-neutral-900`}>
         <div className="max-w-md text-center">
           <p className="text-xs font-bold uppercase tracking-[0.25em] text-neutral-500">Front desk</p>
           <h1 className="mt-3 text-3xl font-black">This link is not active.</h1>
@@ -51,7 +51,7 @@ export default async function ClientDeskPage({ params, searchParams }: { params:
   const publicKey = process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY ?? null;
 
   return (
-    <div className={wlSans.className}>
+    <div className={`${wlSans.className} ${wlSerif.variable}`}>
       <ClientDesk
         agency={{ name: agency.name, color: agency.color || '#1C0950', logo: agency.logo_url, website: agency.website }}
         client={{ id: client.id, business: client.business, agent: client.agent_name || 'Your receptionist', line: client.test_number }}
