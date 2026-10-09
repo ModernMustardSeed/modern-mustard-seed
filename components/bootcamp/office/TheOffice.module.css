@@ -4,10 +4,10 @@
    prefers-reduced-motion. */
 
 .floor {
-  --ink: #0b3b44;
-  --deep: #072a31;
-  --sand: #fbf5ea;
-  --tiffany: #81d8d0;
+  --ink: #141210;
+  --deep: #0a0908;
+  --sand: #fcfaf3;
+  --tiffany: #e8ecd0;
   --mustard: #f5b700;
   --coral: #ff6f59;
   position: relative;
@@ -57,7 +57,7 @@
   height: 34px;
   border-radius: 9px;
   border: 1px solid rgba(251, 245, 234, 0.18);
-  background: color-mix(in srgb, var(--dept) 22%, #0b3b44);
+  background: color-mix(in srgb, var(--dept) 22%, #141210);
   color: var(--sand);
   font-family: var(--font-mono), monospace;
   font-size: 10px;
@@ -130,7 +130,7 @@
 
 .ticket {
   position: relative;
-  background: #fffaf1;
+  background: #ffffff;
   color: var(--ink);
   border-radius: 6px 6px 14px 14px;
   box-shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.7), 8px 8px 0 0 var(--mustard);
@@ -143,7 +143,7 @@
   right: 0;
   top: -7px;
   height: 8px;
-  background: radial-gradient(circle at 7px 0, transparent 6px, #fffaf1 6.5px) 0 0 / 14px 8px repeat-x;
+  background: radial-gradient(circle at 7px 0, transparent 6px, #ffffff 6.5px) 0 0 / 14px 8px repeat-x;
 }
 .print {
   animation: print 0.7s cubic-bezier(0.2, 0.9, 0.3, 1) both;

@@ -75,12 +75,12 @@ function normaliseStats(raw: unknown): { stats: HostStatsView; recent: HostEvent
 
 function Invalid({ title, body }: { title: string; body: string }) {
   return (
-    <div className="bg-[#fbf5ea] text-[#0b3b44] min-h-[70vh] flex items-center">
+    <div className="bg-[#fcfaf3] text-[#141210] min-h-[70vh] flex items-center">
       <div className="max-w-md mx-auto px-5 py-28 text-center">
-        <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#0a7c78] font-bold">Host dashboard</p>
+        <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#0f4c47] font-bold">Host dashboard</p>
         <h1 className="font-display text-3xl md:text-4xl font-black tracking-tight mt-3">{title}</h1>
-        <p className="font-body text-[#0b3b44]/70 leading-relaxed mt-4">{body}</p>
-        <Link href="/bootcamp/host" className="mt-8 inline-flex items-center justify-center rounded-full border-2 border-[#0b3b44] bg-[#0b3b44] px-6 py-3 font-sans text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#fbf5ea]">About hosting a room</Link>
+        <p className="font-body text-[#141210]/70 leading-relaxed mt-4">{body}</p>
+        <Link href="/bootcamp/host" className="mt-8 inline-flex items-center justify-center rounded-full border-2 border-[#141210] bg-[#141210] px-6 py-3 font-sans text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#fcfaf3]">About hosting a room</Link>
       </div>
     </div>
   );

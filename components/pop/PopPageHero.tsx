@@ -53,7 +53,8 @@ const ROAD: PopArt = { src: '/art/riviera/road', alt: '' };
  * The studio edition (2026-10-09) hangs a still from the studio's own cartoon
  * films where the Riviera painting used to go. Each entry is a file pair in
  * /public/storybook (-800 and -1600 .webp) and the alt text for that still.
- * A painting with no entry here (the bootcamp art, for one) stays as it was.
+ * A painting with no entry here stays as it was. The bootcamp entries are stills
+ * from the bootcamp film (marketing/bootcamp-film-2026-10-09).
  */
 const STILLS: Record<string, { name: string; alt: string }> = {
   '/art/riviera/road': { name: 'road', alt: 'Dale the plumber drives his teal van down a sunny main street, smiling at his phone.' },
@@ -68,6 +69,11 @@ const STILLS: Record<string, { name: string; alt: string }> = {
   '/art/riviera/services': { name: 'services', alt: 'The whole mustard seed crew, each dressed for a different job, crowds together and waves.' },
   '/art/riviera/inquire': { name: 'inquire', alt: 'Sarah plants a seedling in a pot at a workbench while Dale the plumber leans in to watch.' },
   '/art/riviera/blog': { name: 'blog', alt: 'A mustard seed in a green hoodie types on a laptop beside a big cup of coffee at sunrise.' },
+  '/art/bootcamp/hero': { name: 'bc-hero', alt: 'Sarah works at her desk in a sunny studio while a whole crew of mustard seed agents works at little desks all around her.' },
+  '/art/bootcamp/masterclass': { name: 'bc-masterclass', alt: 'A theater audience watches a big screen showing the studio, every desk filled with mustard seed agents at work.' },
+  '/art/bootcamp/operator': { name: 'bc-operator', alt: 'A roofer in a plaid shirt shakes hands with mustard seed agents at his workbench, the crew ready to work.' },
+  '/art/bootcamp/host': { name: 'bc-host', alt: 'Business owners from different trades sit in a row of director chairs, a chef, a nurse, a mechanic, a gardener and a designer, each with a seed agent.' },
+  '/art/bootcamp/rooms': { name: 'bc-rooms', alt: 'Four open doorways in a row, each into a different trade room, with a mustard seed agent waiting at each door.' },
   '/art/riviera/advisory': { name: 'advisory', alt: 'A mustard seed with a clipboard leads a team of seed specialists through a sunny studio.' },
 };
 

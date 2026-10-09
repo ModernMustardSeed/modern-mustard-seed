@@ -92,7 +92,7 @@ export function bootcampSessions(): BootcampSession[] {
     ];
   });
   return [
-    { key: 'masterclass', label: 'Masterclass', title: 'Inside a company run by one person and a crew', startsAt: D.masterclass, minutes: 60, audience: 'everyone' },
+    { key: 'masterclass', label: 'Masterclass', title: 'Inside a company run by one builder and a crew', startsAt: D.masterclass, minutes: 60, audience: 'everyone' },
     { key: 'kickoff', label: 'Kickoff', title: 'Setup together, so Day 1 starts at speed', startsAt: D.kickoff, minutes: 90, audience: 'ticket' },
     ...days,
     ...weeks,

@@ -96,14 +96,14 @@ export default function Worksheet({ id, k, initial, savedAt, who }: Props) {
 
   return (
     <div>
-      <div className="sticky top-20 z-10 mb-6 flex items-center justify-between gap-4 rounded-full border-2 border-[#0b3b44] bg-white px-5 py-2.5 shadow-[3px_3px_0_0_#0b3b44]">
-        <p className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-[#0b3b44]">
+      <div className="sticky top-20 z-10 mb-6 flex items-center justify-between gap-4 rounded-full border-2 border-[#141210] bg-white px-5 py-2.5">
+        <p className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-[#141210]">
           {done} of {worksheetQuestions.length} answered
         </p>
-        <div className="hidden sm:block h-2 flex-1 max-w-[220px] rounded-full bg-[#0b3b44]/10 overflow-hidden" aria-hidden="true">
+        <div className="hidden sm:block h-2 flex-1 max-w-[220px] rounded-full bg-[#141210]/10 overflow-hidden" aria-hidden="true">
           <div className="h-full bg-[#f5b700] transition-all" style={{ width: `${(done / worksheetQuestions.length) * 100}%` }} />
         </div>
-        <p aria-live="polite" className={`font-mono text-[10px] font-bold uppercase tracking-[0.2em] ${state === 'error' ? 'text-[#c2261a]' : 'text-[#0a7c78]'}`}>
+        <p aria-live="polite" className={`font-mono text-[10px] font-bold uppercase tracking-[0.2em] ${state === 'error' ? 'text-[#c2261a]' : 'text-[#0f4c47]'}`}>
           {status}
         </p>
       </div>
@@ -112,12 +112,12 @@ export default function Worksheet({ id, k, initial, savedAt, who }: Props) {
         {worksheetQuestions.map((q) => {
           const fid = `ws-${q.key}`;
           return (
-            <li key={q.key} className="rounded-2xl border-2 border-[#0b3b44] bg-white p-5 sm:p-7 shadow-[4px_4px_0_0_#0b3b44]">
+            <li key={q.key} className="rounded-[4px] border-2 border-[#141210] bg-white p-5 sm:p-7">
               <div className="flex gap-4">
                 <span className="font-display text-3xl font-black text-[#f5b700] leading-none" aria-hidden="true">{q.n}</span>
                 <div className="min-w-0 flex-1">
-                  <label htmlFor={fid} className="font-display text-lg sm:text-xl font-black text-[#0b3b44] leading-tight block">{q.title}</label>
-                  <p id={`${fid}-prompt`} className="font-body text-[14px] text-[#0b3b44]/70 mt-1.5 leading-relaxed">{q.prompt}</p>
+                  <label htmlFor={fid} className="font-display text-lg sm:text-xl font-black text-[#141210] leading-tight block">{q.title}</label>
+                  <p id={`${fid}-prompt`} className="font-body text-[14px] text-[#141210]/70 mt-1.5 leading-relaxed">{q.prompt}</p>
                   {q.long ? (
                     <textarea
                       id={fid}
@@ -139,7 +139,7 @@ export default function Worksheet({ id, k, initial, savedAt, who }: Props) {
                       className={`${inputCls} mt-3`}
                     />
                   )}
-                  <p id={`${fid}-eg`} className="font-body text-[12.5px] text-[#0b3b44]/50 mt-2 leading-relaxed">
+                  <p id={`${fid}-eg`} className="font-body text-[12.5px] text-[#141210]/50 mt-2 leading-relaxed">
                     <span className="font-semibold">For example:</span> {q.example}
                   </p>
                 </div>
@@ -155,22 +155,22 @@ export default function Worksheet({ id, k, initial, savedAt, who }: Props) {
         </div>
       )}
 
-      <div className="mt-10 rounded-2xl border-2 border-[#0b3b44] bg-[#0b3b44] p-5 sm:p-7 text-[#fbf5ea] shadow-[6px_6px_0_0_#f5b700]">
+      <div className="mt-10 rounded-[4px] border-2 border-[#141210] bg-[#141210] p-5 sm:p-7 text-[#fcfaf3] shadow-[6px_6px_0_0_#f5b700]">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <p className="font-mono text-[10px] font-bold uppercase tracking-[0.26em] text-[#81d8d0]">Your brief</p>
+            <p className="font-mono text-[10px] font-bold uppercase tracking-[0.26em] text-[#e8ecd0]">Your brief</p>
             <p className="font-display text-xl sm:text-2xl font-black mt-1">What your first agent reads on Day 3</p>
           </div>
           <button
             type="button"
             onClick={copyBrief}
             disabled={done === 0}
-            className="rounded-full border-2 border-[#0b3b44] bg-[#f5b700] px-5 py-2.5 font-sans text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#0b3b44] shadow-[3px_3px_0_0_#81d8d0] disabled:opacity-50"
+            className="rounded-full border-2 border-[#141210] bg-[#f5b700] px-5 py-2.5 font-sans text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#141210] disabled:opacity-50"
           >
             {copied ? 'Copied' : 'Copy the brief'}
           </button>
         </div>
-        <pre className="mt-5 whitespace-pre-wrap break-words rounded-xl border-2 border-[#81d8d0]/40 bg-[#06262c] p-4 sm:p-5 font-mono text-[12.5px] leading-relaxed text-[#fbf5ea]/90">
+        <pre className="mt-5 whitespace-pre-wrap break-words rounded-[4px] border-2 border-[#e8ecd0]/40 bg-[#06262c] p-4 sm:p-5 font-mono text-[12.5px] leading-relaxed text-[#fcfaf3]/90">
           {done === 0 ? 'Answer the first question and your brief starts writing itself here.' : brief}
         </pre>
       </div>

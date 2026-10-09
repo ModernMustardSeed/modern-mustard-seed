@@ -28,7 +28,7 @@ export const dynamic = 'force-dynamic';
 const WHEN = `${fmtMountain(BOOTCAMP.dates.masterclass)}, ${fmtMountainTime(BOOTCAMP.dates.masterclass)} ${BOOTCAMP.tzLabel}`;
 
 export const metadata = buildMetadata({
-  title: `Free Masterclass, January 26: Inside a Company Run by One Person and a Crew of Agents`,
+  title: `Free Masterclass, January 26: Inside a Company Run by One Builder and a Crew of Agents`,
   description: `Sixty minutes, free, live. ${BOOTCAMP.promise} ${WHEN}.`,
   path: '/bootcamp/masterclass',
 });
@@ -78,18 +78,18 @@ export default async function MasterclassPage({ searchParams }: { searchParams: 
   };
 
   return (
-    <div className="bg-[#fbf5ea] text-[#0b3b44] overflow-x-clip">
+    <div className="bg-[#fcfaf3] text-[#141210] overflow-x-clip">
       <JsonLd data={[eventJsonLd, breadcrumbJsonLd([{ name: 'Home', url: '/' }, { name: BOOTCAMP.short, url: '/bootcamp' }, { name: 'Free masterclass', url: '/bootcamp/masterclass' }])]} />
 
       <PopPageHero
         eyebrow={<span>Free masterclass · {fmtMountain(BOOTCAMP.dates.masterclass, { month: 'long', day: 'numeric' })}</span>}
         title={<>The whole studio on screen, <em>in sixty minutes.</em></>}
         titleId="mc-heading"
-        art={{ src: '/art/bootcamp/hero', alt: 'Cut-paper diorama: one person at a desk on a harbor pier directing a crew of small paper agents at little desks around them, the sea behind', caption: 'Pull up a chair. It is free.' }}
+        art={{ src: '/art/bootcamp/masterclass', alt: '', caption: 'Pull up a chair. It is free.' }}
         sticker="Free"
         issue={{ no: '60', lines: ['minutes', 'Jan 26'] }}
       >
-        <p>Watch one person run an AI product studio on a crew of Claude agents: the phone agent answering live, the org chart, the laws, the memory and the morning briefing. Free, live, with questions at the end.</p>
+        <p>Watch one builder run an AI product studio on a crew of Claude agents: the phone agent answering live, the org chart, the laws, the memory and the morning briefing. Free, live, with questions at the end.</p>
         <div className={pop.actions}>
           <a href="#register" className={pop.cta}>Save my free seat</a>
           <Link href="/bootcamp" className={pop.ctaAlt}>The full bootcamp, <span>{usd(ga.priceCents)}</span></Link>
@@ -98,16 +98,16 @@ export default async function MasterclassPage({ searchParams }: { searchParams: 
       </PopPageHero>
 
       {liveNow && (
-        <section className="bg-[#0b3b44] text-[#fbf5ea] border-b-2 border-[#0b3b44]" aria-labelledby="live-heading">
+        <section className="bg-[#141210] text-[#fcfaf3] border-b-2 border-[#141210]" aria-labelledby="live-heading">
           <div className="max-w-4xl mx-auto px-5 py-10 md:py-12 grid md:grid-cols-[1fr_1.1fr] gap-8 items-center">
             <div>
-              <p className="inline-flex items-center gap-2 rounded-full border-2 border-[#fbf5ea] bg-[#c2261a] px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.22em]">
-                <span className="h-2 w-2 rounded-full bg-[#fbf5ea] motion-safe:animate-pulse" aria-hidden="true" /> Live now
+              <p className="inline-flex items-center gap-2 rounded-full border-2 border-[#fcfaf3] bg-[#c2261a] px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.22em]">
+                <span className="h-2 w-2 rounded-full bg-[#fcfaf3] motion-safe:animate-pulse" aria-hidden="true" /> Live now
               </p>
               <h2 id="live-heading" className="font-display text-3xl md:text-4xl font-black leading-tight mt-4">We are on the air.</h2>
-              <p className="font-body text-[#fbf5ea]/80 leading-relaxed mt-3">Registered? Your room link is in your inbox; we will send it again in a second. Not yet? Save your seat below and you walk straight in.</p>
+              <p className="font-body text-[#fcfaf3]/80 leading-relaxed mt-3">Registered? Your room link is in your inbox; we will send it again in a second. Not yet? Save your seat below and you walk straight in.</p>
             </div>
-            <div className="rounded-2xl border-2 border-[#81d8d0] bg-[#0f4a55] p-5 sm:p-6">
+            <div className="rounded-[4px] border-2 border-[#e8ecd0] bg-[#0f4c47] p-5 sm:p-6">
               <RoomLinkForm dark />
               <a href="#register" className="mt-4 inline-flex font-sans text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#f5b700] underline underline-offset-4">Not registered: take a free seat</a>
             </div>
@@ -116,7 +116,7 @@ export default async function MasterclassPage({ searchParams }: { searchParams: 
       )}
 
       {replay && (
-        <section className="py-14 md:py-20 border-b-2 border-[#0b3b44]" aria-labelledby="replay-heading">
+        <section className="py-14 md:py-20 border-b-2 border-[#141210]" aria-labelledby="replay-heading">
           <div className="max-w-5xl mx-auto px-5">
             <Kicker>The replay · up until {fmtMountain(MASTERCLASS_REPLAY_UNTIL, { weekday: undefined })}</Kicker>
             <h2 id="replay-heading" className={h2Cls}>Missed it? <em>Here is the hour.</em></h2>
@@ -140,17 +140,17 @@ export default async function MasterclassPage({ searchParams }: { searchParams: 
             <ul className="mt-7 space-y-3">
               {day1.beats.slice(0, 5).map((b) => <Check key={b}>{b}</Check>)}
             </ul>
-            <div className="mt-8 rounded-2xl border-2 border-[#0b3b44] bg-white p-5 sm:p-6 shadow-[6px_6px_0_0_#81d8d0]">
-              <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[#0a7c78] font-bold">Who it is for</p>
-              <p className="font-body text-[15px] text-[#0b3b44]/80 leading-relaxed mt-2">Owners and operators who already run something that works and are still the bottleneck. Builders, clinics, home services and agencies get their own room in the bootcamp on Day 2.</p>
-              <p className="font-body text-xs text-[#0b3b44]/55 mt-4">{BOOTCAMP.ownerLine}</p>
+            <div className="mt-8 rounded-[4px] border-2 border-[#141210] bg-white p-5 sm:p-6">
+              <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[#0f4c47] font-bold">Who it is for</p>
+              <p className="font-body text-[15px] text-[#141210]/80 leading-relaxed mt-2">Owners and operators who already run something that works and are still the bottleneck. Builders, clinics, home services and agencies get their own room in the bootcamp on Day 2.</p>
+              <p className="font-body text-xs text-[#141210]/55 mt-4">{BOOTCAMP.ownerLine}</p>
             </div>
           </div>
 
-          <div id="register" className="scroll-mt-24 rounded-2xl border-2 border-[#0b3b44] bg-white p-6 md:p-10 shadow-[7px_7px_0_0_#0b3b44]">
-            <div className="border-b-2 border-[#0b3b44] pb-5 mb-6">
-              <p className="font-mono text-[9px] font-bold uppercase tracking-[0.26em] text-[#0a7c78]">Free registration</p>
-              <p className="mt-2 font-display text-2xl font-extrabold leading-none text-[#0b3b44]">Save your seat</p>
+          <div id="register" className="scroll-mt-24 rounded-[4px] border-2 border-[#141210] bg-white p-6 md:p-10">
+            <div className="border-b-2 border-[#141210] pb-5 mb-6">
+              <p className="font-mono text-[9px] font-bold uppercase tracking-[0.26em] text-[#0f4c47]">Free registration</p>
+              <p className="mt-2 font-display text-2xl font-extrabold leading-none text-[#141210]">Save your seat</p>
               <p className="mt-2 font-mono text-[9px] uppercase tracking-[0.16em] text-[#5c554a]">{WHEN}</p>
             </div>
             <MasterclassForm via={via} />
@@ -160,12 +160,12 @@ export default async function MasterclassPage({ searchParams }: { searchParams: 
 
       <TheOffice cta="masterclass" />
 
-      <section className="bg-[#0b3b44] text-[#fbf5ea] border-t-2 border-[#0b3b44]" aria-labelledby="after-heading">
+      <section className="bg-[#141210] text-[#fcfaf3] border-t-2 border-[#141210]" aria-labelledby="after-heading">
         <div className="max-w-4xl mx-auto px-5 py-14 md:py-16 text-center">
           <Kicker dark className="justify-center">Then, if you want the rest</Kicker>
           <h2 id="after-heading" className="font-display text-3xl md:text-4xl font-black tracking-tight leading-[1.06]">Three live sessions. Two agents <em>you keep.</em></h2>
-          <p className="font-body text-[#fbf5ea]/80 leading-relaxed mt-4 max-w-xl mx-auto">{BOOTCAMP.promise} {day1.dateLabel} to {bootcampDays[2].dateLabel}, from {usd(ga.priceCents)}.</p>
-          <Link href="/bootcamp#tiers" className="mt-8 inline-flex items-center justify-center rounded-full border-2 border-[#0b3b44] bg-[#f5b700] px-7 py-3.5 font-sans text-xs font-extrabold uppercase tracking-[0.18em] text-[#0b3b44] shadow-[4px_4px_0_0_#81d8d0]">See the three seats</Link>
+          <p className="font-body text-[#fcfaf3]/80 leading-relaxed mt-4 max-w-xl mx-auto">{BOOTCAMP.promise} {day1.dateLabel} to {bootcampDays[2].dateLabel}, from {usd(ga.priceCents)}.</p>
+          <Link href="/bootcamp#tiers" className="mt-8 inline-flex items-center justify-center rounded-full border-2 border-[#141210] bg-[#f5b700] px-7 py-3.5 font-sans text-xs font-extrabold uppercase tracking-[0.18em] text-[#141210]">See the three seats</Link>
         </div>
       </section>
     </div>

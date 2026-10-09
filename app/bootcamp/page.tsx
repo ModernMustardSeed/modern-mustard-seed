@@ -38,10 +38,10 @@ export const metadata = buildMetadata({
 });
 
 const ART_ALT =
-  'Cut-paper diorama: one person at a desk on a harbor pier directing a crew of small paper agents at little desks around them, the sea behind';
+  'Sarah works at her desk in a sunny studio while a whole crew of mustard seed agents works at little desks all around her.';
 
 const ROOMS_ALT =
-  'Cut-paper diorama: four paper rooms on a quay, one per trade. A builder with a house frame under a mustard awning, a clinic chair under a coral awning, a service van under a Tiffany blue awning, and an agency easel under a lagoon green awning.';
+  'Four open doorways in a row, each into a different trade room: a builder’s shop, a clinic chair, a utility room and a planning office, with a mustard seed agent waiting at each door.';
 
 const ga = bootcampTiers[0];
 
@@ -96,14 +96,14 @@ export default function BootcampPage() {
   };
 
   return (
-    <div id="top" className="bg-[#fbf5ea] text-[#0b3b44] overflow-x-clip">
+    <div id="top" className="bg-[#fcfaf3] text-[#141210] overflow-x-clip">
       <JsonLd data={[eventJsonLd, faqJsonLd(bootcampFaq), breadcrumbJsonLd([{ name: 'Home', url: '/' }, { name: BOOTCAMP.short, url: '/bootcamp' }])]} />
 
       <PopPageHero
         eyebrow={<span>{BOOTCAMP.name}</span>}
         title={<>Run your business on a <em>crew of agents.</em></>}
         titleId="bootcamp-heading"
-        art={{ src: '/art/bootcamp/hero', alt: ART_ALT, caption: 'One desk. A whole crew.' }}
+        art={{ src: '/art/bootcamp/hero', alt: ART_ALT, }}
         sticker="Live"
         issue={{ no: '3', lines: ['live sessions', 'Feb 2 to 9'] }}
         marquee={['Three live sessions', 'February 2, 4 and 9', 'Two agents you keep', 'Four trade rooms', `${usd(ga.priceCents)} a seat`, 'Taught live by Sarah Scarano']}
@@ -119,17 +119,17 @@ export default function BootcampPage() {
       </PopPageHero>
 
       {/* THE PROOF */}
-      <section className="bg-[#0b3b44]" aria-label="How the studio runs">
+      <section className="bg-[#141210]" aria-label="How the studio runs">
         <div className="max-w-5xl mx-auto px-5 py-8 md:py-10">
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-x-4 gap-y-7">
             {BOOTCAMP_PROOF.map((p) => (
               <div key={p.label} className="text-center">
                 <p className="font-display text-3xl md:text-4xl font-black text-[#f5b700] tracking-tight leading-none">{p.n}</p>
-                <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#fbf5ea]/70 mt-2 leading-snug">{p.label}</p>
+                <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#fcfaf3]/70 mt-2 leading-snug">{p.label}</p>
               </div>
             ))}
           </div>
-          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#fbf5ea]/50 text-center mt-7">Counted from the setup that runs Modern Mustard Seed today. You see all of it on Day 1.</p>
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#fcfaf3]/50 text-center mt-7">Counted from the setup that runs Modern Mustard Seed today. You see all of it on Day 1.</p>
         </div>
       </section>
 
@@ -146,10 +146,10 @@ export default function BootcampPage() {
           </div>
           <div className="grid md:grid-cols-3 gap-5 mt-10">
             {DIRECTOR.map((d, i) => (
-              <div key={d.title} className="rounded-2xl border-2 border-[#0b3b44] bg-white p-6 shadow-[6px_6px_0_0_#0b3b44]">
-                <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[#0a7c78] font-bold">What a director does · {i + 1}</p>
+              <div key={d.title} className="rounded-[4px] border-2 border-[#141210] bg-white p-6">
+                <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[#0f4c47] font-bold">What a director does · {i + 1}</p>
                 <h3 className="font-display text-xl font-black mt-3">{d.title}</h3>
-                <p className="font-body text-[15px] text-[#0b3b44]/75 leading-relaxed mt-2">{d.body}</p>
+                <p className="font-body text-[15px] text-[#141210]/75 leading-relaxed mt-2">{d.body}</p>
               </div>
             ))}
           </div>
@@ -157,27 +157,27 @@ export default function BootcampPage() {
       </section>
 
       {/* THE THREE DAYS */}
-      <section id="days" className="py-16 md:py-20 bg-[#d8f3f0] border-y-2 border-[#0b3b44] scroll-mt-24" aria-labelledby="days-heading">
+      <section id="days" className="py-16 md:py-20 bg-[#e8ecd0] border-y-2 border-[#141210] scroll-mt-24" aria-labelledby="days-heading">
         <div className="max-w-5xl mx-auto px-5">
           <Kicker>Three live sessions</Kicker>
           <h2 id="days-heading" className={h2Cls}>Watch it run. Then <em>build your own.</em></h2>
           <p className={leadCls}>{BOOTCAMP.sessionTime}, every session. Kickoff is {fmtMountain(BOOTCAMP.dates.kickoff)}: setup done together, so Day 1 starts at speed.</p>
           <ol className="mt-12 relative">
-            <span aria-hidden="true" className="absolute left-[22px] sm:left-[30px] top-6 bottom-6 w-0.5 bg-[#0b3b44]/20" />
+            <span aria-hidden="true" className="absolute left-[22px] sm:left-[30px] top-6 bottom-6 w-0.5 bg-[#141210]/20" />
             {bootcampDays.map((d) => (
               <li key={d.n} className="relative pl-16 sm:pl-24 pb-12 last:pb-0">
-                <span aria-hidden="true" className="absolute left-0 top-0 grid place-items-center w-11 h-11 sm:w-[60px] sm:h-[60px] rounded-full bg-[#f5b700] border-2 border-[#0b3b44] shadow-[3px_3px_0_0_#0b3b44] font-display font-black text-base sm:text-xl">
+                <span aria-hidden="true" className="absolute left-0 top-0 grid place-items-center w-11 h-11 sm:w-[60px] sm:h-[60px] rounded-full bg-[#f5b700] border-2 border-[#141210] font-display font-black text-base sm:text-xl">
                   {d.n}
                 </span>
-                <div className="rounded-2xl border-2 border-[#0b3b44] bg-[#fbf5ea] p-6 sm:p-8 shadow-[6px_6px_0_0_#0b3b44]">
-                  <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[#0a7c78] font-bold">Day {d.n} · {d.dateLabel} · {fmtMountainTime(BOOTCAMP.dates[d.dateKey])} {BOOTCAMP.tzLabel}</p>
+                <div className="rounded-[4px] border-2 border-[#141210] bg-[#fcfaf3] p-6 sm:p-8">
+                  <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[#0f4c47] font-bold">Day {d.n} · {d.dateLabel} · {fmtMountainTime(BOOTCAMP.dates[d.dateKey])} {BOOTCAMP.tzLabel}</p>
                   <h3 className="font-display text-2xl sm:text-3xl font-black mt-3 leading-tight">{d.title}</h3>
-                  <p className="font-body text-[17px] text-[#0b3b44]/80 leading-relaxed mt-3">{d.lead}</p>
+                  <p className="font-body text-[17px] text-[#141210]/80 leading-relaxed mt-3">{d.lead}</p>
                   <ul className="mt-5 space-y-2.5">
                     {d.beats.map((b) => <Check key={b}>{b}</Check>)}
                   </ul>
-                  <div className="mt-6 rounded-xl bg-[#0b3b44] text-[#fbf5ea] p-5">
-                    <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[#81d8d0] font-bold">You leave with</p>
+                  <div className="mt-6 rounded-[4px] bg-[#141210] text-[#fcfaf3] p-5">
+                    <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[#e8ecd0] font-bold">You leave with</p>
                     <p className="font-body text-[16px] leading-relaxed mt-2">{d.leaveWith}</p>
                   </div>
                 </div>
@@ -198,21 +198,19 @@ export default function BootcampPage() {
                 {tradeRooms.map((r) => r.name).join(', ')}: each room works on the real businesses in it, with its own host. Pick your trade when you register and the room is set.
               </p>
             </div>
-            <figure className="m-0 rounded-[22px] bg-white p-2.5 shadow-[0_30px_60px_-30px_#0b3b4466,0_0_0_1px_#0b3b4414]">
-              <picture>
-                <source type="image/avif" srcSet="/art/bootcamp/rooms-960.avif 960w, /art/bootcamp/rooms-1600.avif 1600w" sizes="(min-width: 1024px) 42vw, 90vw" />
-                <source type="image/webp" srcSet="/art/bootcamp/rooms-960.webp 960w, /art/bootcamp/rooms-1600.webp 1600w" sizes="(min-width: 1024px) 42vw, 90vw" />
-                <img
-                  src="/art/bootcamp/rooms-960.webp"
-                  alt={ROOMS_ALT}
-                  width={1600}
-                  height={1067}
-                  loading="lazy"
-                  decoding="async"
-                  className="block w-full h-auto aspect-[3/2] object-cover rounded-[14px]"
-                />
-              </picture>
-              <figcaption className="pt-2.5 text-center font-body italic text-[15px] text-[#0b3b44]">Four rooms on the quay. Yours is one of them.</figcaption>
+            <figure className="m-0 overflow-hidden rounded-[4px] border border-[#141210] bg-white shadow-[12px_12px_0_#f5b700]">
+              <img
+                src="/storybook/bc-rooms-1600.webp"
+                srcSet="/storybook/bc-rooms-800.webp 800w, /storybook/bc-rooms-1600.webp 1600w"
+                sizes="(min-width: 1024px) 42vw, 90vw"
+                alt={ROOMS_ALT}
+                width={1600}
+                height={1067}
+                loading="lazy"
+                decoding="async"
+                className="block w-full h-auto aspect-[3/2] object-cover"
+              />
+              <figcaption className="border-t border-[#141210] px-3 py-2 font-mono text-[11px] uppercase tracking-[.1em] text-[#4a4339]">Four trade rooms. Yours is one of them.</figcaption>
             </figure>
           </div>
           <RoomTabs />
@@ -220,7 +218,7 @@ export default function BootcampPage() {
       </section>
 
       {/* THE SEATS */}
-      <section id="tiers" className="py-16 md:py-24 bg-[#fbf5ea] border-t-2 border-[#0b3b44] scroll-mt-24" aria-labelledby="tiers-heading">
+      <section id="tiers" className="py-16 md:py-24 bg-[#fcfaf3] border-t-2 border-[#141210] scroll-mt-24" aria-labelledby="tiers-heading">
         <div className="max-w-6xl mx-auto px-5">
           <Kicker>Take a seat</Kicker>
           <h2 id="tiers-heading" className={h2Cls}>Three seats. <em>One price each.</em></h2>
@@ -229,7 +227,7 @@ export default function BootcampPage() {
             {!open && ' Enrollment for this run is closed; the masterclass replay and the next run go to the list first.'}
           </p>
           <TierCards open={open} />
-          <p className="font-body text-sm text-[#0b3b44]/60 mt-8 max-w-2xl">
+          <p className="font-body text-sm text-[#141210]/60 mt-8 max-w-2xl">
             Promotion codes work at checkout. Every seat includes the first month of SeedSide; after that it is month to month, cancel any time.
           </p>
         </div>
@@ -240,19 +238,19 @@ export default function BootcampPage() {
       {/* THE GUARANTEE */}
       <section className="py-16 md:py-20" aria-labelledby="guarantee-heading">
         <div className="max-w-4xl mx-auto px-5">
-          <div className="relative rounded-2xl border-2 border-[#0b3b44] bg-white p-7 sm:p-10 shadow-[8px_8px_0_0_#81d8d0]">
+          <div className="relative rounded-[4px] border-2 border-[#141210] bg-white p-7 sm:p-10">
             <span aria-hidden="true" className="absolute -top-4 right-6 sm:right-10 rotate-[-6deg] rounded-md border-[3px] border-[#ff6f59] px-3 py-1 font-mono text-[11px] font-bold uppercase tracking-[0.25em] text-[#ff6f59] bg-white">
               Day 1 guarantee
             </span>
             <Kicker>The guarantee</Kicker>
             <h2 id="guarantee-heading" className={h2SmCls}>Day 1 pays for the ticket, <em>or you do not.</em></h2>
-            <p className="font-body text-[17px] text-[#0b3b44]/80 leading-relaxed mt-4">{BOOTCAMP.guarantee}</p>
+            <p className="font-body text-[17px] text-[#141210]/80 leading-relaxed mt-4">{BOOTCAMP.guarantee}</p>
           </div>
         </div>
       </section>
 
       {/* THE DOORS */}
-      <section className="py-16 md:py-20 border-t-2 border-[#0b3b44]" aria-labelledby="doors-heading">
+      <section className="py-16 md:py-20 border-t-2 border-[#141210]" aria-labelledby="doors-heading">
         <div className="max-w-5xl mx-auto px-5">
           <Kicker>After Day 3</Kicker>
           <h2 id="doors-heading" className={h2Cls}>Three doors out. <em>You pick.</em></h2>
@@ -262,12 +260,12 @@ export default function BootcampPage() {
       </section>
 
       {/* HOST A ROOM */}
-      <section className="bg-[#0a7c78] text-[#fbf5ea] border-y-2 border-[#0b3b44]" aria-labelledby="host-heading">
+      <section className="bg-[#0f4c47] text-[#fcfaf3] border-y-2 border-[#141210]" aria-labelledby="host-heading">
         <div className="max-w-5xl mx-auto px-5 py-14 md:py-16 grid md:grid-cols-[1.2fr_auto] gap-8 items-center">
           <div>
             <Kicker dark>{HOSTS.name} · Founding hosts: {HOSTS.foundingHosts}</Kicker>
             <h2 id="host-heading" className="font-display text-3xl md:text-4xl font-black tracking-tight leading-[1.06]">Have an audience? Keep <em>every ticket.</em></h2>
-            <p className="font-body text-[#fbf5ea]/85 leading-relaxed mt-4 max-w-2xl">{HOSTS.pitch}</p>
+            <p className="font-body text-[#fcfaf3]/85 leading-relaxed mt-4 max-w-2xl">{HOSTS.pitch}</p>
           </div>
           <Link href="/bootcamp/host" className={`${btn.gold} md:min-w-[220px]`}>{HOSTS.cta}</Link>
         </div>
@@ -282,20 +280,20 @@ export default function BootcampPage() {
             <p className={leadCls}>{OPERATOR.pitch}</p>
             <div className="mt-7 flex flex-col sm:flex-row gap-3">
               <Link href="/bootcamp/operator" className={btn.dark}>See the program</Link>
-              <span className="inline-flex items-center font-mono text-[11px] uppercase tracking-[0.2em] text-[#0b3b44]/60 font-bold">
+              <span className="inline-flex items-center font-mono text-[11px] uppercase tracking-[0.2em] text-[#141210]/60 font-bold">
                 {usd(OPERATOR.priceCents)} · {OPERATOR.seats} seats · starts {OPERATOR.starts}
               </span>
             </div>
           </div>
-          <div className="rounded-2xl border-2 border-[#0b3b44] bg-[#0b3b44] text-[#fbf5ea] p-6 sm:p-8 shadow-[8px_8px_0_0_#f5b700]">
-            <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[#81d8d0] font-bold">The promise</p>
+          <div className="rounded-[4px] border-2 border-[#141210] bg-[#141210] text-[#fcfaf3] p-6 sm:p-8 shadow-[8px_8px_0_0_#f5b700]">
+            <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[#e8ecd0] font-bold">The promise</p>
             <p className="font-body text-[17px] leading-relaxed mt-3">{OPERATOR.promise}</p>
           </div>
         </div>
       </section>
 
       {/* FAQ */}
-      <section className="py-16 md:py-20 border-t-2 border-[#0b3b44]" aria-labelledby="faq-heading">
+      <section className="py-16 md:py-20 border-t-2 border-[#141210]" aria-labelledby="faq-heading">
         <div className="max-w-3xl mx-auto px-5">
           <Kicker>Straight answers</Kicker>
           <h2 id="faq-heading" className={h2SmCls}>Before you take a seat.</h2>
@@ -304,16 +302,16 @@ export default function BootcampPage() {
       </section>
 
       {/* CLOSING */}
-      <section className="bg-[#0b3b44] text-[#fbf5ea] halftone-ink" aria-labelledby="close-heading">
+      <section className="bg-[#141210] text-[#fcfaf3] halftone-ink" aria-labelledby="close-heading">
         <div className="max-w-4xl mx-auto px-5 py-16 md:py-24 text-center">
           <Kicker dark className="justify-center">{day1.dateLabel} · {BOOTCAMP.sessionTime}</Kicker>
           <h2 id="close-heading" className="font-display text-3xl md:text-5xl font-black tracking-tight leading-[1.05]">One desk. <em>A whole crew.</em></h2>
-          <p className="font-body text-[#fbf5ea]/80 leading-relaxed mt-5 max-w-xl mx-auto">Two working agents for the business you already run, built with you in the room, for {usd(ga.priceCents)}. Or come to the free masterclass first and decide after.</p>
+          <p className="font-body text-[#fcfaf3]/80 leading-relaxed mt-5 max-w-xl mx-auto">Two working agents for the business you already run, built with you in the room, for {usd(ga.priceCents)}. Or come to the free masterclass first and decide after.</p>
           <div className="mt-9 flex flex-col sm:flex-row justify-center gap-3">
             <a href="#tiers" className={btn.onDark}>Take a seat, {usd(ga.priceCents)}</a>
             <Link href="/bootcamp/masterclass" className={btn.white}>Free masterclass, Jan 26</Link>
           </div>
-          <p className="font-body text-xs text-[#fbf5ea]/50 mt-10">Claude is a product of Anthropic. Modern Mustard Seed is an independent studio and is not affiliated with or endorsed by Anthropic.</p>
+          <p className="font-body text-xs text-[#fcfaf3]/50 mt-10">Claude is a product of Anthropic. Modern Mustard Seed is an independent studio and is not affiliated with or endorsed by Anthropic.</p>
         </div>
       </section>
     </div>

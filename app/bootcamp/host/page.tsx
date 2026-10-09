@@ -31,14 +31,14 @@ export default function HostPage() {
   ];
 
   return (
-    <div className="bg-[#fbf5ea] text-[#0b3b44] overflow-x-clip">
+    <div className="bg-[#fcfaf3] text-[#141210] overflow-x-clip">
       <JsonLd data={breadcrumbJsonLd([{ name: 'Home', url: '/' }, { name: BOOTCAMP.short, url: '/bootcamp' }, { name: HOSTS.name, url: '/bootcamp/host' }])} />
 
       <PopPageHero
         eyebrow={<span>{HOSTS.name} · {HOSTS.ticketPct}% of every ticket</span>}
         title={<>Run it for your audience. Keep <em>every ticket.</em></>}
         titleId="host-heading"
-        art={{ src: '/art/bootcamp/rooms', alt: 'Cut-paper diorama: four paper rooms on a quay, one per trade. A builder with a house frame under a mustard awning, a clinic chair under a coral awning, a service van under a Tiffany blue awning, and an agency easel under a lagoon green awning.', caption: 'Your name on the door.' }}
+        art={{ src: '/art/bootcamp/host', alt: '', caption: 'Your name on the door.' }}
         sticker="Hosts"
         issue={{ no: String(HOSTS.foundingHosts), lines: ['founding hosts', 'all 2027 launches'] }}
       >
@@ -65,9 +65,9 @@ export default function HostPage() {
             <h2 className={h2Cls}>Ready the day <em>you are approved.</em></h2>
             <div className="mt-8 grid sm:grid-cols-2 gap-4">
               {GETS.map((g) => (
-                <div key={g.title} className="rounded-2xl border-2 border-[#0b3b44] bg-white p-5 shadow-[5px_5px_0_0_#0b3b44]">
+                <div key={g.title} className="rounded-[4px] border-2 border-[#141210] bg-white p-5">
                   <h3 className="font-display text-lg font-black">{g.title}</h3>
-                  <p className="font-body text-[14.5px] text-[#0b3b44]/75 leading-relaxed mt-2">{g.body}</p>
+                  <p className="font-body text-[14.5px] text-[#141210]/75 leading-relaxed mt-2">{g.body}</p>
                 </div>
               ))}
             </div>
@@ -76,20 +76,20 @@ export default function HostPage() {
       </section>
 
       {/* THE MATH */}
-      <section id="math" className="py-16 md:py-20 bg-[#0b3b44] text-[#fbf5ea] border-y-2 border-[#0b3b44] scroll-mt-24" aria-labelledby="math-heading">
+      <section id="math" className="py-16 md:py-20 bg-[#141210] text-[#fcfaf3] border-y-2 border-[#141210] scroll-mt-24" aria-labelledby="math-heading">
         <div className="max-w-5xl mx-auto px-5">
           <Kicker dark>The math, plainly</Kicker>
           <h2 id="math-heading" className="font-display text-3xl md:text-5xl font-black tracking-tight leading-[1.05]">What a room <em>pays its host.</em></h2>
           <div className="grid md:grid-cols-3 gap-5 mt-10">
             {math.map((m) => (
-              <div key={m.line} className="rounded-2xl border-2 border-[#81d8d0] bg-[#0e4b56] p-6">
-                <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[#81d8d0] font-bold">{m.line}</p>
+              <div key={m.line} className="rounded-[4px] border-2 border-[#e8ecd0] bg-[#0f4c47] p-6">
+                <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[#e8ecd0] font-bold">{m.line}</p>
                 <p className="font-display text-4xl sm:text-5xl font-black tracking-tight text-[#f5b700] mt-3 leading-none">{m.n}</p>
-                <p className="font-body text-[14.5px] text-[#fbf5ea]/80 leading-relaxed mt-3">{m.note}</p>
+                <p className="font-body text-[14.5px] text-[#fcfaf3]/80 leading-relaxed mt-3">{m.note}</p>
               </div>
             ))}
           </div>
-          <p className="font-body text-sm text-[#fbf5ea]/60 mt-8 max-w-2xl">Paid within ten days after Day 3, to the account you name. Stripe handles the tickets, so the count is the count.</p>
+          <p className="font-body text-sm text-[#fcfaf3]/60 mt-8 max-w-2xl">Paid within ten days after Day 3, to the account you name. Stripe handles the tickets, so the count is the count.</p>
         </div>
       </section>
 
@@ -100,8 +100,8 @@ export default function HostPage() {
             <Kicker>Apply</Kicker>
             <h2 id="apply-heading" className={h2SmCls}>Tell us about <em>your room.</em></h2>
             <p className={leadCls}>Sarah reads every application herself. If the fit is right, your link, dashboard and swipe copy arrive in the approval email, the same day.</p>
-            <p className="font-body text-sm text-[#0b3b44]/60 mt-6">Not sure your audience fits? Apply anyway and say so in the last field. The four rooms are the start, not the limit.</p>
-            <Link href="/bootcamp" className="mt-6 inline-flex font-sans text-xs font-extrabold uppercase tracking-[0.16em] text-[#0a7c78] underline underline-offset-4">What your people will see</Link>
+            <p className="font-body text-sm text-[#141210]/60 mt-6">Not sure your audience fits? Apply anyway and say so in the last field. The four rooms are the start, not the limit.</p>
+            <Link href="/bootcamp" className="mt-6 inline-flex font-sans text-xs font-extrabold uppercase tracking-[0.16em] text-[#0f4c47] underline underline-offset-4">What your people will see</Link>
           </div>
           <HostForm />
         </div>

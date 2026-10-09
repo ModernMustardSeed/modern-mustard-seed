@@ -14,10 +14,10 @@ export default function Deliverables({ items, released, opensOn }: { items: Deli
   return (
     <ul className="grid gap-5 md:grid-cols-3">
       {items.map((d) => (
-        <li key={d.slug} className="flex flex-col rounded-2xl border-2 border-[#0b3b44] bg-white p-6 shadow-[6px_6px_0_0_#0b3b44]">
-          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.28em] text-[#0a7c78]">{d.minTier === 'vip' ? 'VIP and up' : 'Platinum and cohort'}</p>
-          <h3 className="mt-2 font-display text-2xl font-black leading-tight text-[#0b3b44]">{d.name}</h3>
-          <p className="mt-3 flex-1 font-body text-[15px] leading-relaxed text-[#0b3b44]/75">{d.blurb}</p>
+        <li key={d.slug} className="flex flex-col rounded-[4px] border-2 border-[#141210] bg-white p-6">
+          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.28em] text-[#0f4c47]">{d.minTier === 'vip' ? 'VIP and up' : 'Platinum and cohort'}</p>
+          <h3 className="mt-2 font-display text-2xl font-black leading-tight text-[#141210]">{d.name}</h3>
+          <p className="mt-3 flex-1 font-body text-[15px] leading-relaxed text-[#141210]/75">{d.blurb}</p>
           {released ? (
             <div className="mt-5 flex flex-col gap-2.5">
               {d.files.map((f, i) => (
@@ -28,7 +28,7 @@ export default function Deliverables({ items, released, opensOn }: { items: Deli
               ))}
             </div>
           ) : (
-            <p className="mt-5 rounded-lg border-2 border-dashed border-[#0b3b44]/40 bg-[#fbf5ea] px-4 py-3 font-mono text-[11px] font-bold uppercase tracking-[0.16em] text-[#0b3b44]">
+            <p className="mt-5 rounded-lg border-2 border-dashed border-[#141210]/40 bg-[#fcfaf3] px-4 py-3 font-mono text-[11px] font-bold uppercase tracking-[0.16em] text-[#141210]">
               Opens here {opensOn}
             </p>
           )}

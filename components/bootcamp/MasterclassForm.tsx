@@ -131,7 +131,7 @@ export default function MasterclassForm({ via }: { via: string }) {
         type="submit"
         disabled={sending}
         aria-busy={sending}
-        className="w-full rounded-full border-2 border-[#0b3b44] bg-[#0b3b44] px-8 py-4 font-sans text-[11px] font-extrabold uppercase tracking-[0.22em] text-[#fbf5ea] shadow-[4px_4px_0_0_#f5b700] transition-all hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
+        className="w-full rounded-full border-2 border-[#141210] bg-[#141210] px-8 py-4 font-sans text-[11px] font-extrabold uppercase tracking-[0.22em] text-[#fcfaf3] shadow-[4px_4px_0_0_#f5b700] transition-all hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
       >
         {sending ? 'Saving your seat…' : 'Save my free seat'}
       </button>

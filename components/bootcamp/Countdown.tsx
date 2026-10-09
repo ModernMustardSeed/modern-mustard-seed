@@ -33,10 +33,10 @@ const PAD = (n: number) => String(n).padStart(2, '0');
 function Cell({ value, label, big = false }: { value: string; label: string; big?: boolean }) {
   return (
     <div className="flex flex-col items-center">
-      <div className={`${big ? 'bg-[#f5b700]' : 'bg-white'} border-2 border-[#0b3b44] rounded-xl shadow-[4px_4px_0_0_#0b3b44] px-2.5 sm:px-5 py-3 sm:py-4 min-w-[64px] sm:min-w-[92px]`}>
-        <span className="block font-display font-black tabular-nums leading-none text-center text-[#0b3b44] text-3xl sm:text-5xl md:text-6xl">{value}</span>
+      <div className={`${big ? 'bg-[#f5b700]' : 'bg-white'} border-2 border-[#141210] rounded-[4px] px-2.5 sm:px-5 py-3 sm:py-4 min-w-[64px] sm:min-w-[92px]`}>
+        <span className="block font-display font-black tabular-nums leading-none text-center text-[#141210] text-3xl sm:text-5xl md:text-6xl">{value}</span>
       </div>
-      <span className="font-mono text-[10px] sm:text-[11px] uppercase tracking-[0.25em] font-bold text-[#0b3b44]/70 mt-2.5">{label}</span>
+      <span className="font-mono text-[10px] sm:text-[11px] uppercase tracking-[0.25em] font-bold text-[#141210]/70 mt-2.5">{label}</span>
     </div>
   );
 }
@@ -67,11 +67,11 @@ export default function Countdown({ serverNow }: { serverNow: number }) {
   const counting = target.key === 'masterclass' || target.key === 'day1';
 
   return (
-    <section id="countdown" className="relative border-y-2 border-[#0b3b44] bg-[#ffc933] halftone-bg overflow-hidden scroll-mt-24" aria-labelledby="countdown-heading">
+    <section id="countdown" className="relative border-y-2 border-[#141210] bg-[#ffc933] halftone-bg overflow-hidden scroll-mt-24" aria-labelledby="countdown-heading">
       <div className="relative max-w-4xl mx-auto px-5 py-12 md:py-16 text-center">
-        <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#0b3b44] font-bold">[ {BOOTCAMP.tzLabel} ]</p>
-        <h2 id="countdown-heading" className="font-display text-3xl md:text-5xl font-black tracking-tight mt-3 text-[#0b3b44]">{heading}</h2>
-        <p className="font-body text-base text-[#0b3b44]/80 max-w-xl mx-auto mt-3">{line}</p>
+        <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#141210] font-bold">[ {BOOTCAMP.tzLabel} ]</p>
+        <h2 id="countdown-heading" className="font-display text-3xl md:text-5xl font-black tracking-tight mt-3 text-[#141210]">{heading}</h2>
+        <p className="font-body text-base text-[#141210]/80 max-w-xl mx-auto mt-3">{line}</p>
         <p className="sr-only">{counting ? `${t.days} days, ${t.hours} hours, ${t.minutes} minutes.` : heading}</p>
         {counting && (
           <div className="flex justify-center gap-2 sm:gap-4 mt-8" aria-hidden="true">
@@ -84,11 +84,11 @@ export default function Countdown({ serverNow }: { serverNow: number }) {
         <div className="mt-9 flex flex-col sm:flex-row justify-center gap-3">
           {target.key === 'masterclass' ? (
             <>
-              <Link href="/bootcamp/masterclass" className="inline-flex items-center justify-center rounded-full bg-[#0b3b44] border-2 border-[#0b3b44] px-7 py-3.5 font-sans font-extrabold text-xs uppercase tracking-[0.18em] text-[#fbf5ea] shadow-[4px_4px_0_0_#fbf5ea]">Save my free seat</Link>
-              <a href="#tiers" className="inline-flex items-center justify-center rounded-full bg-white border-2 border-[#0b3b44] px-7 py-3.5 font-sans font-extrabold text-xs uppercase tracking-[0.18em] text-[#0b3b44]">Skip ahead, take a seat</a>
+              <Link href="/bootcamp/masterclass" className="inline-flex items-center justify-center rounded-full bg-[#141210] border-2 border-[#141210] px-7 py-3.5 font-sans font-extrabold text-xs uppercase tracking-[0.18em] text-[#fcfaf3] shadow-[4px_4px_0_0_#fcfaf3]">Save my free seat</Link>
+              <a href="#tiers" className="inline-flex items-center justify-center rounded-full bg-white border-2 border-[#141210] px-7 py-3.5 font-sans font-extrabold text-xs uppercase tracking-[0.18em] text-[#141210]">Skip ahead, take a seat</a>
             </>
           ) : (
-            <a href="#tiers" className="inline-flex items-center justify-center rounded-full bg-[#0b3b44] border-2 border-[#0b3b44] px-7 py-3.5 font-sans font-extrabold text-xs uppercase tracking-[0.18em] text-[#fbf5ea] shadow-[4px_4px_0_0_#fbf5ea]">
+            <a href="#tiers" className="inline-flex items-center justify-center rounded-full bg-[#141210] border-2 border-[#141210] px-7 py-3.5 font-sans font-extrabold text-xs uppercase tracking-[0.18em] text-[#fcfaf3] shadow-[4px_4px_0_0_#fcfaf3]">
               {target.key === 'day1' ? 'Take a seat' : 'See the seats'}
             </a>
           )}
