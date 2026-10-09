@@ -12,11 +12,13 @@ export const metadata = buildMetadata({
   path: '/contact',
 });
 
-type SearchParams = Promise<{ package?: string }>;
+type SearchParams = Promise<{ package?: string; message?: string }>;
 
 export default async function ContactPage({ searchParams }: { searchParams: SearchParams }) {
   const params = await searchParams;
   const pkg = params.package;
+  // The office front desk (office.modernmustardseed.com) hands a visitor's job over as ?message=.
+  const message = typeof params.message === 'string' ? params.message.trim().slice(0, 500) || undefined : undefined;
 
   return (
     <div className="min-h-screen bg-[#fbf5ea] text-[#0b3b44]">
@@ -79,7 +81,7 @@ export default async function ContactPage({ searchParams }: { searchParams: Sear
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 halftone-bg opacity-40" />
         <div className="relative">
           <Suspense fallback={null}>
-            <ContactForm defaultPackage={pkg} />
+            <ContactForm defaultPackage={pkg} defaultMessage={message} />
           </Suspense>
         </div>
       </section>
