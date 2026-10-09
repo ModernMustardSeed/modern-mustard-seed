@@ -42,7 +42,8 @@ export function StorybookStage() {
       import('./storybookScene')
         .then(({ mountGarden }) => {
           if (cancelled) return;
-          garden.current = mountGarden(el, v, () => setLive(true));
+          const variant = new URLSearchParams(window.location.search).get('hero') === 'wreath' ? 'wreath' : 'quiet';
+          garden.current = mountGarden(el, v, () => setLive(true), variant);
         })
         .catch(() => {});
     };
