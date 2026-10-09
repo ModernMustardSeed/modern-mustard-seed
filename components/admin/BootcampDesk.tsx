@@ -10,24 +10,26 @@ import HostsTab from '@/components/admin/bootcamp/HostsTab';
 import RegistrationsTab from '@/components/admin/bootcamp/RegistrationsTab';
 import KitTab from '@/components/admin/bootcamp/KitTab';
 import PlanTab from '@/components/admin/bootcamp/PlanTab';
+import OfferTab from '@/components/admin/bootcamp/OfferTab';
 import StageTab from '@/components/admin/bootcamp/StageTab';
 import { api, type HostRow, type StatsPayload } from '@/components/admin/bootcamp/shared';
 
 export type { HostRow } from '@/components/admin/bootcamp/shared';
 
 /**
- * THE BOOTCAMP DESK. Seven tabs: the numbers, the stage (live links, the
+ * THE BOOTCAMP DESK. Eight tabs: the numbers, the offer as sold, the stage (live links, the
  * offer switch, the question queue, replays and worksheets), the host
  * outreach engine and its switch, host approvals, registrations, the
- * marketing kit and The Plan.
+ * marketing kit (the commercial first, then every piece of copy) and The Plan.
  * Hosts arrive as props from the server page (their links are signed there);
  * everything else loads from /api/admin/bootcamp/*.
  */
 
-type TabKey = 'desk' | 'stage' | 'outreach' | 'hosts' | 'registrations' | 'kit' | 'plan';
+type TabKey = 'desk' | 'offer' | 'stage' | 'outreach' | 'hosts' | 'registrations' | 'kit' | 'plan';
 
 const TABS: { key: TabKey; label: string }[] = [
   { key: 'desk', label: 'Desk' },
+  { key: 'offer', label: 'The Offer' },
   { key: 'stage', label: 'Stage' },
   { key: 'outreach', label: 'Outreach' },
   { key: 'hosts', label: 'Hosts' },
@@ -93,7 +95,7 @@ export default function BootcampDesk({ hosts, hostsError }: { hosts: HostRow[]; 
             <span className="text-[10px] uppercase tracking-[0.4em] text-[#E0301E] font-mono font-bold block mb-2">{BOOTCAMP.launch.replace('-', ' ')}</span>
             <h1 className="font-display text-3xl sm:text-4xl font-semibold text-[#161616]">{BOOTCAMP.name}</h1>
             <p className="font-body text-sm text-[#3A3733] mt-2 max-w-2xl">
-              Seats, hosts, the outreach engine, the registrations, every piece of launch copy, and the plan it all climbs. Prices and dates live in <code className="font-mono text-xs">data/bootcamp.ts</code>.
+              The offer as sold, the commercial, seats, hosts, the outreach engine, the registrations, every piece of launch copy, and the plan it all climbs. Prices and dates live in <code className="font-mono text-xs">data/bootcamp.ts</code>.
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -132,6 +134,7 @@ export default function BootcampDesk({ hosts, hostsError }: { hosts: HostRow[]; 
         </nav>
 
         {tab === 'desk' && <DeskTab stats={stats} error={statsError} loading={statsLoading} />}
+        {tab === 'offer' && <OfferTab />}
         {tab === 'stage' && <StageTab />}
         {tab === 'outreach' && <OutreachTab onChanged={() => void loadStats()} />}
         {tab === 'hosts' && <HostsTab hosts={hosts} error={hostsError} onChanged={refresh} />}

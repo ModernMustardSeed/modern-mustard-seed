@@ -1,11 +1,17 @@
 'use client';
 
 import { EMAIL_SUBJECTS, HOST_SWIPE, LINKEDIN_POSTS, MASTERCLASS_SCRIPT, META_HEADLINES, META_PRIMARY, PRESS_BLURB, TRADE_SECRETS_POSTS, type Copy } from '@/data/bootcamp-marketing';
+import { MARKETING_VIDEOS } from '@/data/marketing-videos';
+import { useState } from 'react';
 import { btn, card, muted, useCopy } from './shared';
 
+/** The bootcamp commercial, declared once in data/marketing-videos.ts (it shows on /admin/videos too). */
+const FILM = MARKETING_VIDEOS.find((v) => v.id === 'come-take-a-seat');
+
 /**
- * Every piece of launch copy, each in a card with the body ready to copy.
- * Words live in data/bootcamp-marketing.ts; this tab only shows them.
+ * The commercial first, then every piece of launch copy, each in a card with
+ * the body ready to copy. Words live in data/bootcamp-marketing.ts and the
+ * film in data/marketing-videos.ts; this tab only shows them.
  */
 
 function Section({ title, note, children }: { title: string; note?: string; children: React.ReactNode }) {
@@ -35,6 +41,63 @@ function CopyCard({ id, title, body, note, labelFor, copy }: { id: string; title
   );
 }
 
+function Film() {
+  const [cut, setCut] = useState(0);
+  if (!FILM) return null;
+  const f = FILM.formats[cut];
+  const tall = f.height > f.width;
+  return (
+    <Section title={`The commercial: ${FILM.title}`} note={`${Math.round(FILM.runtime)} seconds · ${FILM.formats.map((c) => c.label).join(' and ')}`}>
+      <div className={`${card} p-4 grid lg:grid-cols-[minmax(0,1fr)_320px] gap-5`}>
+        <div className={`bg-[#161616] rounded-lg overflow-hidden flex justify-center ${tall ? 'py-3' : ''}`}>
+          <video
+            key={f.file}
+            src={f.file}
+            poster={FILM.poster}
+            controls
+            playsInline
+            preload="metadata"
+            className={tall ? 'max-h-[70vh] w-auto aspect-[9/16]' : 'w-full aspect-video'}
+          />
+        </div>
+        <div className="flex flex-col gap-3">
+          <div className="flex flex-wrap gap-1.5" role="tablist" aria-label="Cut">
+            {FILM.formats.map((c, i) => (
+              <button
+                key={c.file}
+                type="button"
+                role="tab"
+                aria-selected={i === cut}
+                onClick={() => setCut(i)}
+                className={`${btn} ${i === cut ? '!bg-[#F5B700]' : ''}`}
+              >
+                {c.label}
+              </button>
+            ))}
+          </div>
+          <p className="font-body text-sm text-[#161616]">{FILM.summary}</p>
+          <ul className="space-y-1.5">
+            {FILM.formats.map((c) => (
+              <li key={c.file}>
+                <a href={c.file} download className="font-mono text-xs text-[#161616] underline underline-offset-2">
+                  Download {c.label} ({c.width}x{c.height})
+                </a>
+              </li>
+            ))}
+            {FILM.watchUrl && (
+              <li>
+                <a href={FILM.watchUrl} target="_blank" rel="noopener noreferrer" className="font-mono text-xs text-[#161616] underline underline-offset-2">
+                  Watch page with the full-quality masters
+                </a>
+              </li>
+            )}
+          </ul>
+        </div>
+      </div>
+    </Section>
+  );
+}
+
 export default function KitTab() {
   const { copy, labelFor } = useCopy();
   const grid = 'grid md:grid-cols-2 gap-3';
@@ -43,6 +106,8 @@ export default function KitTab() {
 
   return (
     <div className="space-y-8">
+      <Film />
+
       <Section title="Meta primary texts" note={`${META_PRIMARY.length} variants for the masterclass ad set`}>
         <div className={grid}>{cards(META_PRIMARY)}</div>
       </Section>

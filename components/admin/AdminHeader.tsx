@@ -34,6 +34,9 @@ const PINNED: Item[] = [
   // Pinned rather than tucked in a dropdown: the 50 client sprint is the number
   // the studio is currently steering by, so it gets a chip.
   { key: 'acquisition', label: 'Acquisition', href: '/admin/acquisition' },
+  // The One-Person Company Bootcamp: the offer, the film, hosts and outreach
+  // on one desk. Pinned while the launch is the thing being sold.
+  { key: 'bootcamp', label: 'Bootcamp', href: '/admin/bootcamp' },
   { key: 'hundredfold', label: 'Hundredfold', href: '/admin/hundredfold' },
   { key: 'outbound', label: 'Outbound', href: '/admin/outbound' },
   { key: 'factories', label: 'Factories', href: '/admin/factories' },
@@ -86,7 +89,6 @@ const GROUPS: { name: string; items: Item[] }[] = [
     items: [
       { key: 'my-content', label: 'My Content', href: '/admin/my-content' },
       { key: 'ads', label: 'Ads Playbook', href: '/admin/ads' },
-      { key: 'bootcamp', label: 'Bootcamp', href: '/admin/bootcamp' },
       { key: 'madebyhand', label: 'Made by Hand Film', href: '/admin/ads?campaign=madebyhand' },
       { key: 'framesroar', label: 'Frames That Roar Film', href: '/admin/ads?campaign=framesroar' },
       { key: 'huckwild', label: 'HUCKWILD Launch Film', href: '/admin/ads?campaign=huckwild' },
