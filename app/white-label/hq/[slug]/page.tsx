@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { agencyFromKey } from '@/lib/white-label/portal';
 import { listClients } from '@/lib/white-label/store';
 import { agencyLinks } from '@/lib/white-label/mail';
+import { deskUrl } from '@/lib/white-label/desk';
 import { WL_GROUPS, WL_LINES, WL_PROGRAM } from '@/data/white-label';
 import { wlSans } from '@/components/white-label/font';
 import AgencyPortal from '@/components/white-label/AgencyPortal';
@@ -59,6 +60,7 @@ export default async function AgencyPortalPage({ params, searchParams }: { param
         agency_approved_at: c.agency_approved_at,
         created_at: c.created_at,
         live_at: c.live_at,
+        desk: c.vapi_assistant_id ? deskUrl(agency.slug, c.id) : null,
       }))}
       lines={WL_LINES.map((l) => ({ slug: l.slug, name: l.name, group: l.group, pitch: l.pitch, wholesale: l.wholesale, retail: l.retail, internal: l.internal }))}
       groups={WL_GROUPS.map((g) => ({ key: g.key, title: g.title }))}

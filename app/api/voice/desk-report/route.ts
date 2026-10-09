@@ -5,6 +5,8 @@ import { resendClient } from '@/lib/send-email';
 import { sendLoud } from '@/lib/mustard-send';
 import { recordEndOfCall } from '@/lib/voice-calls';
 import { buildDeskReport, deskMetaFrom } from '@/lib/desk-report';
+import { getAgency, getClientByAssistant } from '@/lib/white-label/store';
+import { deskUrl } from '@/lib/white-label/desk';
 
 export const runtime = 'nodejs';
 export const maxDuration = 30;
@@ -51,12 +53,23 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: true, sent: false });
   }
 
+  // A white label client's agent links its own front desk, which plays the
+  // recording, never our admin. Once that client is live, the office gets the
+  // intake too; before then (demo and review) it comes to us only.
+  const call = (message.call ?? {}) as Record<string, unknown>;
+  const assistantId = typeof call.assistantId === 'string' ? call.assistantId : null;
+  const callId = typeof call.id === 'string' ? call.id : undefined;
+  const wl = assistantId ? await getClientByAssistant(assistantId).catch(() => null) : null;
+  const agency = wl ? await getAgency(wl.agency_id).catch(() => null) : null;
+  const desk = wl && agency ? deskUrl(agency.slug, wl.id, callId) : null;
+
   const report = buildDeskReport(message, meta, {
-    listenUrl: loggedId ? `https://modernmustardseed.com/admin/calls?call=${loggedId}` : null,
+    listenUrl: desk ?? (loggedId ? `https://modernmustardseed.com/admin/calls?call=${loggedId}` : null),
   });
   if (!report.worthSending) return NextResponse.json({ ok: true, sent: false });
 
-  const to = Array.from(new Set([...OWNER_NOTIFY_TO, ...(meta.notifyTo ?? [])]));
+  const office = wl?.status === 'live' && wl.owner_email ? [wl.owner_email] : [];
+  const to = Array.from(new Set([...OWNER_NOTIFY_TO, ...(meta.notifyTo ?? []), ...office]));
   const sent = await sendLoud(resendClient(), 'desk-report', {
     from: `${meta.business} Front Desk <sarah@modernmustardseed.com>`,
     to,

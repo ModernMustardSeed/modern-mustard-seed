@@ -15,6 +15,8 @@ type Client = {
   agency_approved_at: string | null;
   created_at: string;
   live_at: string | null;
+  /** The client's own front desk link, once a receptionist answers for them. */
+  desk: string | null;
 };
 
 const STAGES = [
@@ -168,6 +170,14 @@ export default function AgencyPortal({
                       <p className="font-bold">{c.business}</p>
                       <p className="text-xs text-neutral-500">{c.lines.map((s) => byLine.get(s)?.name ?? s).join(' · ')}</p>
                     </div>
+                    {c.desk && (
+                      <p className="mt-1 text-sm">
+                        <a href={c.desk} target="_blank" rel="noopener noreferrer" className="font-semibold underline decoration-1 underline-offset-4" style={{ color: agency.color }}>
+                          Open their front desk
+                        </a>
+                        <span className="text-neutral-500">: every call, in your brand. Send this link to the client.</span>
+                      </p>
+                    )}
                     {c.status === 'paused' || c.status === 'cancelled' ? (
                       <p className="mt-2 text-sm text-neutral-500">{c.status === 'paused' ? 'Paused' : 'Cancelled'}</p>
                     ) : (
