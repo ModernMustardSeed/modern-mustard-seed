@@ -54,7 +54,7 @@ export default function AgencyPortal({
   groups: { key: string; title: string }[];
   foundingMonths: number;
   pricesHeld?: boolean;
-  /** The agency's own demo URL (https://ai.agency.com/receptionist), once its host is live. */
+  /** The agency's own demo URL (https://agents.agency.com/receptionist), once its host is live. */
   demoAt?: string | null;
 }) {
   const router = useRouter();

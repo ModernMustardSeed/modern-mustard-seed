@@ -35,7 +35,7 @@ export type WlHost = {
   live: boolean;
 };
 
-export const WL_HOSTS: WlHost[] = [{ slug: 'jcreative', host: 'ai.jcreativemt.com', agency: 'JCreative', color: '1C0950', live: false }];
+export const WL_HOSTS: WlHost[] = [{ slug: 'jcreative', host: 'agents.jcreativemt.com', agency: 'JCreative', color: '1C0950', live: false }];
 
 /** The agency a request's Host header belongs to, if any. */
 export function wlHostFor(hostHeader: string | null | undefined): WlHost | null {
