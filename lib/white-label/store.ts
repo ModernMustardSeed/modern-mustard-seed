@@ -51,6 +51,12 @@ export type WlClient = {
   notes: string | null;
   agency_approved_at: string | null;
   live_at: string | null;
+  /** The Vapi assistant that answers for this client (migration 158). */
+  vapi_assistant_id: string | null;
+  /** The receptionist's name, as callers hear it. */
+  agent_name: string | null;
+  /** The office's own marks: { "<vapi call id>": "<iso time handled>" }. */
+  desk_handled: Record<string, string>;
   created_at: string;
   updated_at: string;
 };
@@ -157,4 +163,9 @@ export async function updateClient(id: string, patch: Partial<WlClient>): Promis
     .single();
   if (error) throw new Error(error.message);
   return data as WlClient;
+}
+
+export async function getClientByAssistant(assistantId: string): Promise<WlClient | null> {
+  const { data } = await db().from('white_label_clients').select('*').eq('vapi_assistant_id', assistantId).maybeSingle();
+  return (data as WlClient) ?? null;
 }

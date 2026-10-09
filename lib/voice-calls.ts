@@ -140,9 +140,16 @@ export function shapeCall(c: Json): Shaped {
   const phone = (c.phoneNumber ?? {}) as Json;
   const assistant = (c.assistant ?? {}) as Json;
   const overrides = (c.assistantOverrides ?? {}) as Json;
+  // The structured intake an agent's analysis pulled out of the call rides in
+  // metadata, so a client desk can show it after Vapi has aged the call out.
+  const intake = analysis.structuredData && typeof analysis.structuredData === 'object' ? (analysis.structuredData as Json) : null;
   const metadata = {
     ...((c.metadata as Json | undefined) ?? {}),
     ...((overrides.metadata as Json | undefined) ?? {}),
+    ...(intake ? { intake } : {}),
+    // The name a call was placed under, e.g. "bench:custody" from the latency
+    // bench, so a client desk can leave our own test calls off.
+    ...(typeof c.name === 'string' && c.name ? { callName: c.name } : {}),
   } as Json;
   const messages = artifact.messages ?? c.messages;
   const started = typeof c.startedAt === 'string' ? c.startedAt : typeof c.createdAt === 'string' ? c.createdAt : null;
@@ -318,6 +325,51 @@ export async function syncVoiceCalls(opts: { full?: boolean } = {}): Promise<Syn
     written += slice.length;
   }
   return { ok: true, pulled: all.length, written };
+}
+
+/**
+ * One assistant's calls, fresh from Vapi, written to the log. A client desk
+ * runs this on every open so the office never reads a stale list, without
+ * paying for a sync of the whole org. Best effort: the desk still renders
+ * from the log when Vapi is slow.
+ */
+export async function syncAssistantCalls(assistantId: string): Promise<SyncResult> {
+  const sb = getSupabase();
+  if (!sb) return { ok: false, pulled: 0, written: 0, reason: 'no-supabase' };
+  if (!apiKey()) return { ok: false, pulled: 0, written: 0, reason: 'no-vapi-key' };
+  // Incremental and small. Every call Vapi lists carries the agent's whole
+  // prompt several times over, so a hundred of them is tens of megabytes, and
+  // inside Next that body was cut off mid-stream ("other side closed") and the
+  // desk silently showed a stale list. Only what is new since the last logged
+  // call, with the same two hour overlap the full sync uses for late summaries.
+  const { data: last } = await sb
+    .from('voice_calls')
+    .select('started_at')
+    .eq('assistant_id', assistantId)
+    .order('started_at', { ascending: false })
+    .limit(1);
+  const latest = (last?.[0] as { started_at?: string } | undefined)?.started_at;
+  const qs = new URLSearchParams({ assistantId, limit: '25' });
+  if (latest) qs.set('createdAtGt', new Date(Date.parse(latest) - RESYNC_WINDOW_MS).toISOString());
+  const batch = await vapiGet<Json[]>(`/call?${qs.toString()}`);
+  if (!batch) return { ok: false, pulled: 0, written: 0, reason: 'vapi-failed' };
+  const { data: known } = await sb.from('voice_agents').select('assistant_id,name,client_email,business,kind,hidden,last_seen_at');
+  const agents: AgentMap = new Map();
+  for (const a of (known ?? []) as VoiceAgentRow[]) agents.set(a.assistant_id, a);
+  const now = new Date().toISOString();
+  const rows = batch
+    .filter((c) => typeof c.id === 'string')
+    .map((c) => {
+      const shaped = shapeCall(c);
+      return { ...shaped, ...attribute(shaped, agents), synced_at: now };
+    });
+  if (!rows.length) return { ok: true, pulled: 0, written: 0 };
+  const { error } = await sb.from('voice_calls').upsert(rows, { onConflict: 'vapi_call_id' });
+  if (error) {
+    console.error('voice_calls assistant sync failed', error.message);
+    return { ok: false, pulled: batch.length, written: 0, reason: 'error' };
+  }
+  return { ok: true, pulled: batch.length, written: rows.length };
 }
 
 /**

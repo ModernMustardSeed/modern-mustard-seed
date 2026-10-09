@@ -3,6 +3,7 @@
  * Config as code for every Vapi assistant.
  *
  *   node scripts/vapi-sync.mjs --pull            snapshot live -> vapi/assistants/*.json
+ *   node scripts/vapi-sync.mjs --pull <id>       snapshot one assistant, touch no other file
  *   node scripts/vapi-sync.mjs --diff            what differs, repo vs live (exit 1 on drift)
  *   node scripts/vapi-sync.mjs --push <slug>     apply one config to Vapi
  *   node scripts/vapi-sync.mjs --push --all      apply every config
@@ -194,7 +195,13 @@ function readConfigs() {
 async function pull() {
   mkdirSync(CONFIG_DIR, { recursive: true });
   const live = await vapi('/assistant?limit=1000');
-  const real = live.filter(isReal);
+  // One assistant by id: a generator script snapshots the agent it just
+  // pushed without rewriting two dozen other agents' files that another
+  // session may be in the middle of changing.
+  const only = args[args.indexOf('--pull') + 1];
+  const one = only && !only.startsWith('--') ? only : null;
+  const real = live.filter(isReal).filter((a) => !one || a.id === one);
+  if (one && !real.length) throw new Error(`No live assistant with id ${one}.`);
 
   for (const a of real) {
     const body = { id: a.id, ...sortKeys(managedOnly(a)) };
@@ -217,7 +224,7 @@ async function pull() {
   }
 
   console.log(`\nPulled ${real.length} assistant(s) into vapi/assistants/`);
-  const skipped = live.length - real.length;
+  const skipped = one ? 0 : live.length - real.length;
   if (skipped) console.log(`Skipped ${skipped} empty probe assistant(s) with no prompt and no tools.`);
   console.log(`\nReview with \`git diff\`, then commit. Nothing was written to Vapi.\n`);
 }
@@ -319,6 +326,7 @@ async function main() {
 Config as code for Vapi assistants.
 
   --pull          snapshot live assistants into vapi/assistants/
+  --pull <id>     snapshot just that one
   --diff          show drift between repo and live (exit 1 if any)
   --push <slug>   apply one config
   --push --all    apply every config

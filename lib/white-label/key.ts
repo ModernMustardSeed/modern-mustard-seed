@@ -39,6 +39,25 @@ export function wlKeyValid(agency: string, key: string | null | undefined): bool
   return a.length === b.length && timingSafeEqual(a, b);
 }
 
+/**
+ * A key for one client's desk, separate from the agency's: the office gets a
+ * link that opens its own calls and nothing of the agency's, and the agency's
+ * portal key cannot be cut down into it.
+ */
+export function wlClientKey(clientId: string): string | null {
+  const s = secret();
+  if (!s || !clientId) return null;
+  return createHmac('sha256', s).update(`white-label:client:v1:${clientId}`).digest('base64url').slice(0, 22);
+}
+
+export function wlClientKeyValid(clientId: string, key: string | null | undefined): boolean {
+  const want = wlClientKey(clientId);
+  if (!want || !key) return false;
+  const a = Buffer.from(want);
+  const b = Buffer.from(key.trim());
+  return a.length === b.length && timingSafeEqual(a, b);
+}
+
 /** The two links Sarah takes into a meeting. */
 export function wlLinks(base: string, p: { agency: string; color: string; city: string; sample: string; site?: string }) {
   const key = wlKey(p.agency);
