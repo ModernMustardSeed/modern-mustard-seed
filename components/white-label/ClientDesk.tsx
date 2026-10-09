@@ -268,8 +268,8 @@ export default function ClientDesk({
           )}
         </div>
 
-        <p className="mt-8 text-center text-[12px] text-neutral-400">
-          {fresh ? 'Up to date' : 'Showing saved calls'} as of {refreshedAt.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}. Refreshes itself every minute.
+        <p className="mt-8 text-center text-[12px] text-neutral-400" suppressHydrationWarning>
+          {fresh ? 'Up to date' : 'Showing saved calls'} as of {refreshedAt.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/Denver' })}. Refreshes itself every minute.
         </p>
       </main>
 
@@ -360,7 +360,7 @@ function CallCard({
             )}
             {handled && <span className="rounded-full bg-[#ecfdf3] px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-[#067647]">Handled</span>}
           </div>
-          <p className="mt-2 text-[13px] text-neutral-500">
+          <p className="mt-2 text-[13px] text-neutral-500" suppressHydrationWarning>
             {when(c.startedAt)}
             {c.seconds ? ` · ${length(c.seconds)}` : ''}
             {c.web ? ' · web call' : c.callerNumber ? ` · from ${phone(c.callerNumber)}` : ''}

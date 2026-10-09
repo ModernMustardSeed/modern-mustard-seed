@@ -45,7 +45,7 @@ export default function AgencyPortal({
   foundingMonths,
   pricesHeld = false,
 }: {
-  agency: { name: string; slug: string; contact: string | null; color: string; founding: boolean; status: string };
+  agency: { name: string; slug: string; contact: string | null; color: string; founding: boolean; status: string; logo?: string | null };
   portalKey: string;
   links: { demo: string | null; sheet: string | null };
   clients: Client[];
@@ -187,12 +187,19 @@ export default function AgencyPortal({
         <div aria-hidden="true" className="pointer-events-none absolute -right-48 -top-48 h-[560px] w-[560px] rounded-full opacity-[0.18] blur-3xl" style={{ background: ink }} />
         <div className="relative mx-auto max-w-6xl px-5 sm:px-8">
           <div className="flex items-center justify-between border-b py-5" style={{ borderColor: rule }}>
-            <div className="flex items-center gap-3">
-              <span className="grid h-9 w-9 place-items-center rounded-full border text-[12px] font-bold tracking-wide" style={{ borderColor: rule }}>
-                {initials(agency.name)}
+            {agency.logo ? (
+              <span className="inline-flex items-center rounded-full bg-white px-4 py-1.5 shadow-sm">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={agency.logo} alt={agency.name} className="h-6 w-auto max-w-[140px] object-contain sm:h-7" />
               </span>
-              <span className="text-[14px] font-semibold tracking-wide">{agency.name}</span>
-            </div>
+            ) : (
+              <div className="flex items-center gap-3">
+                <span className="grid h-9 w-9 place-items-center rounded-full border text-[12px] font-bold tracking-wide" style={{ borderColor: rule }}>
+                  {initials(agency.name)}
+                </span>
+                <span className="text-[14px] font-semibold tracking-wide">{agency.name}</span>
+              </div>
+            )}
             <span className="text-[11px] font-semibold uppercase tracking-[0.28em] opacity-70">Agency portal</span>
           </div>
           <div className="flex flex-col gap-8 pb-28 pt-14 md:flex-row md:items-end md:justify-between md:pb-32 md:pt-20">

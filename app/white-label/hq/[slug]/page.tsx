@@ -50,7 +50,7 @@ export default async function AgencyPortalPage({ params, searchParams }: { param
   return (
     <div className={`${wlSans.className} ${wlSerif.variable}`}>
     <AgencyPortal
-      agency={{ name: agency.name, slug: agency.slug, contact: agency.contact_name, color: agency.color || '#0b3b44', founding: agency.founding, status: agency.status }}
+      agency={{ name: agency.name, slug: agency.slug, contact: agency.contact_name, color: agency.color || '#0b3b44', founding: agency.founding, status: agency.status, logo: agency.logo_url }}
       portalKey={key as string}
       links={{ demo: links.demo, sheet: held ? null : links.sheet }}
       clients={clients.map((c) => ({
