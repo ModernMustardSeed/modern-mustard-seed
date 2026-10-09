@@ -9,6 +9,7 @@ type Agency = { name: string; color: string; logo: string | null; website: strin
 type Client = { id: string; business: string; agent: string; line: string | null };
 type Filter = 'attention' | 'all' | 'handled';
 type VoiceChoice = { key: string; feel: string; line: string; sample: string };
+type Booked = { startsAt: string; label: string; name: string; phone: string | null; matter: string | null; callId: string | null };
 
 const DAY = 86_400_000;
 /** Instrument Serif, set by the page wrapper (components/white-label/font.ts). */
@@ -54,6 +55,7 @@ export default function ClientDesk({
   voice,
   voices = [],
   voiceNow = null,
+  bookings = [],
 }: {
   agency: Agency;
   client: Client;
@@ -64,6 +66,7 @@ export default function ClientDesk({
   voice: { publicKey: string; assistantId: string } | null;
   voices?: VoiceChoice[];
   voiceNow?: string | null;
+  bookings?: Booked[];
 }) {
   const router = useRouter();
   const [calls, setCalls] = useState(initial);
@@ -204,6 +207,8 @@ export default function ClientDesk({
             </div>
           ))}
         </section>
+
+        {bookings.length > 0 && <Bookings bookings={bookings} agent={client.agent} brand={brand} onOpen={(id) => { setFilter('all'); setOpen(id); window.setTimeout(() => document.getElementById(`call-${id}`)?.scrollIntoView({ block: 'start', behavior: 'smooth' }), 50); }} />}
 
         {voices.length > 0 && (
           <VoicePicker voices={voices} initial={voiceNow} agent={client.agent} brand={brand} onBrand={onBrand} clientId={client.id} deskKey={deskKey} />
@@ -681,6 +686,46 @@ function VoicePicker({
         })}
       </div>
       {note && <p className="mt-4 text-[14px] text-neutral-700" role="status">{note}</p>}
+    </section>
+  );
+}
+
+/** Consultations the receptionist booked, soonest first. */
+function Bookings({ bookings, agent, brand, onOpen }: { bookings: Booked[]; agent: string; brand: string; onOpen: (callId: string) => void }) {
+  return (
+    <section className="mt-14">
+      <div className="flex flex-col gap-1 border-b border-black/[0.08] pb-4 sm:flex-row sm:items-end sm:justify-between">
+        <h2 className={`${SERIF} text-[34px] leading-none sm:text-[40px]`}>Consultations {agent} booked</h2>
+        <p className="text-[13px] text-neutral-500">Straight onto the calendar, while the caller was on the line.</p>
+      </div>
+      <ul className="mt-5 overflow-hidden rounded-[22px] bg-white ring-1 ring-black/[0.06]">
+        {bookings.map((b, i) => {
+          const at = new Date(b.startsAt);
+          return (
+            <li key={b.startsAt} className={`flex flex-col gap-3 px-5 py-4 sm:flex-row sm:items-center sm:gap-6 sm:px-7 ${i > 0 ? 'border-t border-black/[0.06]' : ''}`}>
+              <div className="flex w-[150px] shrink-0 items-baseline gap-2">
+                <span className={`${SERIF} text-[30px] leading-none`} style={{ color: brand }}>
+                  {at.toLocaleDateString('en-US', { timeZone: 'America/Denver', month: 'short', day: 'numeric' })}
+                </span>
+                <span className="text-[13px] font-semibold text-neutral-500">
+                  {at.toLocaleTimeString('en-US', { timeZone: 'America/Denver', hour: 'numeric', minute: '2-digit' })}
+                </span>
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-[16px] font-semibold text-neutral-900">{b.name}</p>
+                <p className="text-[13px] text-neutral-500">
+                  {[at.toLocaleDateString('en-US', { timeZone: 'America/Denver', weekday: 'long' }), b.matter, b.phone ? phone(b.phone) : null].filter(Boolean).join(' · ')}
+                </p>
+              </div>
+              {b.callId && (
+                <button onClick={() => onOpen(b.callId!)} className="self-start text-sm font-semibold text-neutral-500 underline decoration-black/20 underline-offset-4 hover:text-neutral-900 sm:self-center">
+                  The call
+                </button>
+              )}
+            </li>
+          );
+        })}
+      </ul>
     </section>
   );
 }
