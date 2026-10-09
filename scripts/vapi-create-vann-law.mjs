@@ -99,6 +99,7 @@ You do NOT book appointments, look up case status, quote fees, or give legal adv
 # THE FLOW
 1. Find out what it is about in their own words. If they start telling a long story, let them get the gist out, then gently take the wheel: "Okay. Let me grab a few things so Jordan can call you back ready to help."
 2. Get their name, and the best number to reach them. Read the number back as words in three groups, exactly like this: "four, zero, six. two, five, zero. six, zero, seven, six. Did I get that right?" Never read a phone number as a string of digits. A number here is TEN digits. If you heard fewer or more, do not read it back: say "I think I missed a digit, can you give me that number one more time?" Read it back ONCE. When they say it is right, it is settled for the rest of the call: never read it again, even at goodbye. Ask if a voicemail is okay there, unless they already said, because on criminal and family matters it often is not.
+2b. Then, unless the call is urgent or upsetting, ask once: "Is there an email Jordan can use too?" It is fine if they would rather not. Read an email back ONCE, as words first: "rachel dot dunn at gmail dot com. Did I get that right?" Any part that is not a plain word or a common name, spell it anchored, the way the spelling rules below say: "k as in kite, n as in nancy, o as in ocean". Say every dot as "dot", the at sign as "at", and a dash or underscore by name. When they spell any part, the spelling is the truth: read back their letters, never the word you thought you heard. If they correct you, read back only the corrected part, then ask once more. When they say it is right, it is settled: never read it again.
 3. Ask the few questions that fit the matter (below). One question per turn, with no more than two short sentences around it. Never ask for something they already told you. Four or five questions in the whole call is plenty. Something important, like the "don't tell me the details" line, gets its own short turn, never stacked on top of a question.
 4. Ask who is on the other side when there is one: the other driver, the other family member, the person the estate dispute is with. Say why in plain words: "We check that before Jordan talks to anyone, just to make sure there's no conflict." Get the full name, spelled if it is unusual.
 5. Ask how they heard about us, but only if the call has been calm and easy. Skip it on anything urgent or upsetting.
@@ -146,28 +147,29 @@ SALES, VENDORS, SURVEYS. Polite and brief. Name, company, number, a one line mes
 THE CALLER DECIDES WHEN THE CALL IS OVER. The moment they say bye, thanks, or that they have to go, call endCall and say nothing yourself: it speaks the goodbye. Never "one more thing", never "I just need another minute", never hold them to confirm a readback. A name and a number is enough for Jordan to call them back, and if you do not have a number, the caller ID comes with the message. When you are the one finishing, the last thing you say yourself is the urgent line if it applies ("I'm marking this urgent so it goes straight to Jordan."), then endCall.`;
 
 /* ── the voice ─────────────────────────────────────────────────────────────
- * Rime "lintel" on coda, Rime's newest model. Rime records its voices from real
- * Americans rather than voice actors, so they carry the plain rhythm of
- * somebody who answers a phone for a living instead of an announcer read.
- * Lintel is a young American woman, polished and lively, with no regional
- * accent.
+ * ElevenLabs "Matilda" (XrExE9yKIg1WjnnlVkGX, a warm, professional American
+ * woman) on eleven_flash_v2_5, from 2026-10-09. Sarah found both Rime voices
+ * (eyre, then lintel) not good enough for a law office.
  *
- * She replaced "eyre" on 2026-10-09. Sarah's call: eyre's cadence was right but
- * the voice read too country and too low energy for a law office. Runners-up
- * from the same catalog, both polished and lively: clementine, ibis. Audition
- * with VANN_VOICE_ID=clementine and --update.
+ * Flash, not multilingual_v2, measured that day on copies of this agent: Flash
+ * put first audio out in about 420 ms, the same as Rime; multilingual_v2 took
+ * about 820 ms and every turn felt slow (2.1 to 2.6 s caller-heard). Turbo is
+ * out for good: it inserts words, digits included (elevenlabs-turbo-stutter).
+ * Flash read back a ten digit number and an email clean on every bench call.
  *
- * Not ElevenLabs. Vapi's ElevenLabs credential fails every call on the org as
- * of 2026-10-08 (pipeline-error-eleven-labs-voice-failed, even on the voice that
- * used to carry Mr. Mustard), and Rime runs on Vapi with no key of ours. */
-const VOICE_ID = process.env.VANN_VOICE_ID || 'lintel';
+ * Runner-up: "Jessica" (cgSgspJ2msm6clMCkdW9), brighter and younger. Audition
+ * with VANN_VOICE_ID=cgSgspJ2msm6clMCkdW9 and --update. */
+const VOICE_ID = process.env.VANN_VOICE_ID || 'XrExE9yKIg1WjnnlVkGX';
 
 const PHONE_SPOKEN = 'four, zero, six. eight, two, six. six, five, two, nine.';
 
 const voice = {
-  provider: 'rime-ai',
+  provider: '11labs',
   voiceId: VOICE_ID,
-  model: 'coda',
+  model: 'eleven_flash_v2_5',
+  stability: 0.5,
+  similarityBoost: 0.75,
+  useSpeakerBoost: true,
   // If Rime ever fails mid-call, the caller hears a plain Vapi voice instead
   // of silence. A law office line that goes quiet is a line that lost a client.
   fallbackPlan: { voices: [{ provider: 'vapi', voiceId: 'Savannah' }] },
@@ -203,7 +205,7 @@ const INTAKE_SCHEMA = {
   properties: {
     caller_name: { type: 'string', description: "The caller's full name as they gave it" },
     callback_number: { type: 'string', description: 'Best number to call back, ten digits, as confirmed on the call' },
-    email: { type: 'string', description: 'Email address, only if the caller gave one' },
+    email: { type: 'string', description: 'Email address exactly as the caller confirmed it, lowercase, no spaces (rachel.dunn@gmail.com). Empty if they gave none' },
     best_time_to_call: { type: 'string', description: 'When they said to call, and whether a voicemail is okay' },
     caller_type: { type: 'string', description: 'Prospective client, existing client, family member calling for someone, another attorney, court, insurance adjuster, vendor, or other' },
     existing_client: { type: 'boolean', description: 'True only if they said they are already a client of the firm' },
