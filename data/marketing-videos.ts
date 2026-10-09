@@ -66,6 +66,22 @@ export type MarketingVideo = {
 
 export const MARKETING_VIDEOS: MarketingVideo[] = [
   {
+    id: 'come-take-a-seat',
+    title: 'Come Take a Seat',
+    runtime: 96.4,
+    formats: [
+      { file: '/video/commercials/bootcamp/come-take-a-seat-16x9.mp4', label: '16:9', width: 1920, height: 1080 },
+      { file: '/video/commercials/bootcamp/come-take-a-seat-9x16.mp4', label: 'Reel 9:16', width: 1080, height: 1920 },
+    ],
+    poster: '/video/commercials/bootcamp/come-take-a-seat-poster.jpg',
+    summary:
+      'The One-Person Company Bootcamp jingle. Sarah, Mr. Mustard and the seed crew run a whole studio from one desk while a roofer in plaid flannel pulls up a chair. No price in it, so it runs cold. The 16:9 end card sends people to the free masterclass, Tuesday, January 26, 1 PM Mountain, at /bootcamp/masterclass; the Reel ends on /bootcamp.',
+    runsAt: ['components/admin/bootcamp/KitTab.tsx → /admin/bootcamp#kit'],
+    watchUrl: 'https://claude.ai/artifact/WNZjy9tiQiT1dh4pqyAVxD',
+    source: 'marketing/bootcamp-film-2026-10-09',
+    series: COMMERCIALS_SERIES,
+  },
+  {
     id: 'does-it-work-for-you',
     title: 'Does It Work for You?',
     runtime: 98.5,
