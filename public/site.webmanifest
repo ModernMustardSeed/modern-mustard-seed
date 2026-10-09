@@ -1,16 +1,26 @@
 {
   "name": "Modern Mustard Seed",
   "short_name": "MMS",
-  "description": "Custom websites, voice agents, and AI command centers for founders, operators, and small business owners. Live in about a week.",
+  "description": "Websites, AI voice agents and custom software for businesses across the United States, built and managed end to end.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#FBF6EA",
+  "background_color": "#FCFAF3",
   "theme_color": "#F5B700",
   "icons": [
     {
       "src": "/favicon.svg",
       "sizes": "any",
       "type": "image/svg+xml"
+    },
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
     }
   ]
 }
