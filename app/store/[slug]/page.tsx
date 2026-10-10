@@ -165,7 +165,7 @@ export default async function StoreItemPage({
           <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-8 items-center">
             <div>
               <p className="font-display text-3xl md:text-4xl font-black text-[#0b3b44] tracking-tight mb-3">
-                Ask Sarah for it.
+                Yours to keep, sent by Sarah.
               </p>
               <p className="text-[#0b3b44]/75 text-sm font-body font-medium leading-relaxed">
                 {isProductItem ? (

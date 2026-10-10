@@ -38,7 +38,7 @@ export default function TierCards({ open, email, host }: { open: boolean; email?
                 Front row: first {t.frontRowSeats} seats
               </p>
             )}
-            <CheckoutButton tier={t.slug} label={`Ask Sarah for ${t.name}`} open={open} className={dark ? btn.onDark : btn.dark} email={email} host={host} />
+            <CheckoutButton tier={t.slug} label="Ask Sarah for this seat" open={open} className={dark ? btn.onDark : btn.dark} email={email} host={host} />
             <p className={`mt-3 text-center font-body text-xs ${dark ? 'text-[#fcfaf3]/55' : 'text-[#141210]/55'}`}>
               Replays for {t.replayDays === 182 ? 'six months' : `${t.replayDays} days`}. Sarah answers inside one business day.
             </p>
