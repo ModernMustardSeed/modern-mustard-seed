@@ -107,6 +107,11 @@ jobs:
           test -x "$HOME/.local/bin/claude" || { echo "::error::Claude Code did not install after three attempts"; exit 1; }
           "$HOME/.local/bin/claude" --version
 
+      # The verdict check below only trusts a verdict written after this moment, so a
+      # GO left in the sticky comment by an earlier push can never pass a new commit.
+      - name: Mark gate start
+        run: echo "GATE_STARTED=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_ENV"
+
       - uses: anthropics/claude-code-action@v1
         with:
           path_to_claude_code_executable: /home/runner/.local/bin/claude
@@ -129,13 +134,23 @@ jobs:
             You are the pre-deploy ship gate for Modern Mustard Seed, running in CI on a pull request.
             This is the CI translation of ~/.claude/workflows/ship-gate.js. Hold the same bar.
 
-            STEP 1 — RECON
+            HOW TO RUN SUBAGENTS (this run is headless: it ends the moment you end your turn)
+            - Every Task call runs in the FOREGROUND. Never set run_in_background. A background
+              subagent is abandoned when your turn ends and its findings are lost.
+            - For parallel work, put all of a step's Task calls in ONE message. They run at the
+              same time and you get every result back before you continue.
+            - Tell every subagent: run each command in the foreground with the Bash tool, never in
+              the background, and pass a Bash timeout of 600000 for `pnpm build`.
+            - You are not finished until the verdict in STEP 4 is posted. Do not end your turn
+              while any subagent result is outstanding.
+
+            STEP 1: RECON
             Run `git diff --stat origin/${{ github.base_ref }}...HEAD` then `git diff origin/${{ github.base_ref }}...HEAD`.
             Establish: which files changed, which user-facing flows they touch, and which env vars the
             changed code reads. Read the repo CLAUDE.md first, it carries binding conventions
             (nav completeness, modal top-clipping, deploy hygiene, no em dashes).
 
-            STEP 2 — SWEEP
+            STEP 2: SWEEP
             Spawn one subagent per dimension via the Task tool and run them in parallel:
 
               build    Actually RUN `pnpm build`. Any failure, or any NEW warning attributable to
@@ -158,12 +173,12 @@ jobs:
             something you assumed. An empty findings list is a valid and good answer. Do not
             manufacture findings to look thorough.
 
-            STEP 3 — VERIFY
+            STEP 3: VERIFY
             For every blocker candidate, spawn 3 independent subagents that each genuinely TRY TO
             REFUTE it by reading the actual code. A blocker survives only if at least 2 of the 3
             fail to refute it. Discard the rest silently. Warnings skip this step.
 
-            STEP 4 — VERDICT
+            STEP 4: VERDICT
             Post exactly one PR comment:
               - First line, verbatim, one of: `## SHIP GATE: GO` or `## SHIP GATE: NO-GO`
               - Then one plain sentence saying why.
@@ -172,3 +187,36 @@ jobs:
               - If GO: what was actually checked, then any warnings worth fixing after shipping.
             No hedging. No em dashes. Write it the way you would brief a founder who is about to
             press deploy.
+
+      # The gate is code from here on, not trust. On 2026-10-10, 8 of the last 10 merged PRs
+      # had a green gate and no verdict: the agent launched its sweeps as background
+      # subagents, the headless run ended in seconds, and the action still reported success.
+      # This step reads the verdict the agent actually wrote. No fresh verdict is a red
+      # COULD NOT RUN; NO-GO is red; only a fresh GO is green.
+      - name: Verdict check
+        if: always()
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          bodies=$(gh api --paginate "repos/$REPO/issues/$PR/comments" \
+            --jq ".[] | select((.user.login == \"github-actions[bot]\" or .user.login == \"claude[bot]\") and .updated_at >= \"$GATE_STARTED\") | .body")
+          verdict=$(printf '%s\n' "$bodies" | grep -oE '^## SHIP GATE: (GO|NO-GO)' | tail -n 1 | sed 's/^## SHIP GATE: //')
+          case "$verdict" in
+            GO)
+              echo "Verdict: GO"
+              ;;
+            NO-GO)
+              echo "::error::SHIP GATE: NO-GO. The blockers are in the gate comment on this PR."
+              exit 1
+              ;;
+            *)
+              gh pr comment "$PR" --repo "$REPO" --body "## SHIP GATE: COULD NOT RUN
+          The gate agent ended without posting a GO or NO-GO verdict, so this commit was not reviewed. The gate is broken, not necessarily the branch. Run: $RUN_URL"
+              echo "::error::SHIP GATE: COULD NOT RUN. No verdict was posted after $GATE_STARTED."
+              exit 1
+              ;;
+          esac
