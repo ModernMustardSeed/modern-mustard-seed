@@ -46,7 +46,7 @@ const STEPS = [
 ];
 
 const STATS = [
-  { n: '$0', label: 'License fee' },
+  { n: 'No', label: 'License fee' },
   { n: '0', label: 'Minimums' },
   { n: '7 days', label: 'Receptionist, sold to live' },
   { n: '1', label: 'Invoice a month' },

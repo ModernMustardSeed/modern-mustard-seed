@@ -13,7 +13,6 @@ import {
   fmtMountain,
   fmtMountainTime,
   tradeRooms,
-  usd,
 } from '@/data/bootcamp';
 import PopPageHero, { pop } from '@/components/pop/PopPageHero';
 import TierCards from '@/components/bootcamp/TierCards';
@@ -25,7 +24,8 @@ import TheOffice from '@/components/bootcamp/office/TheOffice';
 import { Check, Kicker, btn, h2Cls, h2SmCls, leadCls } from '@/components/bootcamp/ui';
 
 /**
- * THE OFFER PAGE. Every word, price and date comes from data/bootcamp.ts.
+ * THE OFFER PAGE. Every word and date comes from data/bootcamp.ts. No price is
+ * shown (conversation first, 2026-10-10): seats are settled with Sarah.
  * Revalidates every hour so the countdown's first paint and the enrollment gate
  * are never more than an hour behind the clock.
  */
@@ -42,8 +42,6 @@ const ART_ALT =
 
 const ROOMS_ALT =
   'Four open doorways in a row, each into a different trade room: a builder’s shop, a clinic chair, a utility room and a planning office, with a mustard seed agent waiting at each door.';
-
-const ga = bootcampTiers[0];
 
 const DIRECTOR = [
   {
@@ -82,12 +80,11 @@ export default function BootcampPage() {
     organizer: { '@id': ORG_ID },
     performer: { '@id': PERSON_ID },
     inLanguage: 'en-US',
+    // No price in structured data either: seats are settled with Sarah directly.
     offers: bootcampTiers.map((t) => ({
       '@type': 'Offer',
       name: `${t.name}: ${BOOTCAMP.short}`,
       description: t.pitch,
-      price: (t.priceCents / 100).toFixed(2),
-      priceCurrency: 'USD',
       url: `${SITE.url}/bootcamp#tiers`,
       availability: open ? 'https://schema.org/InStock' : 'https://schema.org/SoldOut',
       validThrough: BOOTCAMP.dates.close,
@@ -106,11 +103,11 @@ export default function BootcampPage() {
         art={{ src: '/art/bootcamp/hero', alt: ART_ALT, }}
         sticker="Live"
         issue={{ no: '3', lines: ['live sessions', 'Feb 2 to 9'] }}
-        marquee={['Three live sessions', 'February 2, 4 and 9', 'Two agents you keep', 'Four trade rooms', `${usd(ga.priceCents)} a seat`, 'Taught live by Sarah Scarano']}
+        marquee={['Three live sessions', 'February 2, 4 and 9', 'Two agents you keep', 'Four trade rooms', 'Three seats to choose from', 'Taught live by Sarah Scarano']}
       >
         <p>{BOOTCAMP.promise}</p>
         <div className={pop.actions}>
-          <a href="#tiers" className={pop.cta}>Take a seat, <span>{usd(ga.priceCents)}</span></a>
+          <a href="#tiers" className={pop.cta}>Choose your seat</a>
           <Link href="/bootcamp/masterclass" className={pop.ctaAlt}>Free masterclass, <span>Jan 26</span></Link>
         </div>
         <p className={pop.note}>
@@ -221,14 +218,14 @@ export default function BootcampPage() {
       <section id="tiers" className="py-16 md:py-24 bg-[#fcfaf3] border-t-2 border-[#141210] scroll-mt-24" aria-labelledby="tiers-heading">
         <div className="max-w-6xl mx-auto px-5">
           <Kicker>Take a seat</Kicker>
-          <h2 id="tiers-heading" className={h2Cls}>Three seats. <em>One price each.</em></h2>
+          <h2 id="tiers-heading" className={h2Cls}>Three seats. <em>Pick yours with Sarah.</em></h2>
           <p className={leadCls}>
-            Every seat is a set package. Enrollment closes {fmtMountain(BOOTCAMP.dates.close, { month: 'long', day: 'numeric' })} at 11:59 PM {BOOTCAMP.tzLabel}, the night of Day 1.
+            Every seat is a set package. Tell Sarah which one you want and a little about your business, and she will hold it and send you the details. Enrollment closes {fmtMountain(BOOTCAMP.dates.close, { month: 'long', day: 'numeric' })} at 11:59 PM {BOOTCAMP.tzLabel}, the night of Day 1.
             {!open && ' Enrollment for this run is closed; the masterclass replay and the next run go to the list first.'}
           </p>
           <TierCards open={open} />
           <p className="font-body text-sm text-[#141210]/60 mt-8 max-w-2xl">
-            Promotion codes work at checkout. Every seat includes the first month of SeedSide; after that it is month to month, cancel any time.
+            Every seat includes the first month of SeedSide; after that it is month to month, cancel any time.
           </p>
         </div>
       </section>
@@ -281,7 +278,7 @@ export default function BootcampPage() {
             <div className="mt-7 flex flex-col sm:flex-row gap-3">
               <Link href="/bootcamp/operator" className={btn.dark}>See the program</Link>
               <span className="inline-flex items-center font-mono text-[11px] uppercase tracking-[0.2em] text-[#141210]/60 font-bold">
-                {usd(OPERATOR.priceCents)} · {OPERATOR.seats} seats · starts {OPERATOR.starts}
+                {OPERATOR.seats} seats · starts {OPERATOR.starts}
               </span>
             </div>
           </div>
@@ -306,9 +303,9 @@ export default function BootcampPage() {
         <div className="max-w-4xl mx-auto px-5 py-16 md:py-24 text-center">
           <Kicker dark className="justify-center">{day1.dateLabel} · {BOOTCAMP.sessionTime}</Kicker>
           <h2 id="close-heading" className="font-display text-3xl md:text-5xl font-black tracking-tight leading-[1.05]">One desk. <em>A whole crew.</em></h2>
-          <p className="font-body text-[#fcfaf3]/80 leading-relaxed mt-5 max-w-xl mx-auto">Two working agents for the business you already run, built with you in the room, for {usd(ga.priceCents)}. Or come to the free masterclass first and decide after.</p>
+          <p className="font-body text-[#fcfaf3]/80 leading-relaxed mt-5 max-w-xl mx-auto">Two working agents for the business you already run, built with you in the room. Or come to the free masterclass first and decide after.</p>
           <div className="mt-9 flex flex-col sm:flex-row justify-center gap-3">
-            <a href="#tiers" className={btn.onDark}>Take a seat, {usd(ga.priceCents)}</a>
+            <a href="#tiers" className={btn.onDark}>Choose your seat</a>
             <Link href="/bootcamp/masterclass" className={btn.white}>Free masterclass, Jan 26</Link>
           </div>
           <p className="font-body text-xs text-[#fcfaf3]/50 mt-10">Claude is a product of Anthropic. Modern Mustard Seed is an independent studio and is not affiliated with or endorsed by Anthropic.</p>

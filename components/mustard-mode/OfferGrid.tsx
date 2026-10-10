@@ -1,44 +1,20 @@
 'use client';
 
 /**
- * The arcade-level offer grid + FAQ. Levels 1-3 check out through
- * /api/mustard-mode/checkout; Level 0 scrolls back up to the free-play hero.
+ * The arcade-level offer grid + FAQ. Conversation first since 2026-10-10: a
+ * level is no longer bought on the page. Each card opens a note to Sarah with
+ * the level named; Level 0 scrolls back up to the free-play hero.
  */
 
-import { useState } from 'react';
+import Link from 'next/link';
 import { track } from '@vercel/analytics';
 import { mustardLevels, mustardFaq, MUSTARD } from '@/data/mustard-mode/offer';
+import { talkFirstHref } from '@/lib/talk-first';
 import Reveal from './Reveal';
 
 export default function OfferGrid() {
-  const [busy, setBusy] = useState<string | null>(null);
-  const [err, setErr] = useState<string | null>(null);
   const paid = mustardLevels.filter((l) => l.level > 0);
   const free = mustardLevels.find((l) => l.level === 0)!;
-
-  const checkout = async (slug: string) => {
-    setBusy(slug);
-    setErr(null);
-    track('mustard_checkout_click', { slug });
-    try {
-      const ref = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('ref') : null;
-      const res = await fetch('/api/mustard-mode/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ slug, ...(ref ? { ref } : {}) }),
-      });
-      const data = (await res.json()) as { url?: string; message?: string };
-      if (res.ok && data.url) {
-        window.location.href = data.url;
-        return;
-      }
-      setErr(data.message || 'Checkout is warming up. Try again in a minute or email sarah@modernmustardseed.com.');
-    } catch {
-      setErr('Checkout is warming up. Try again in a minute or email sarah@modernmustardseed.com.');
-    } finally {
-      setBusy(null);
-    }
-  };
 
   return (
     <section id="levels" className="bg-[#fbf5ea] py-20 md:py-28 scroll-mt-16">
@@ -72,11 +48,7 @@ export default function OfferGrid() {
                   </span>
                 )}
                 <span className={`font-mono font-bold text-[11px] tracking-[0.14em] ${hot ? 'text-[#ffc933]' : 'text-[#0a7c78]'}`}>{l.chip}</span>
-                <h3 className="font-display font-extrabold text-2xl mt-2">{l.name}</h3>
-                <div className="font-mono font-bold text-4xl mt-2">
-                  <span className={hot ? 'text-[#f5b700]' : ''}>${l.priceUsd}</span>
-                  {l.cadence === 'monthly' && <span className="text-base opacity-70">/mo</span>}
-                </div>
+                <h3 className={`font-display font-extrabold text-4xl mt-2 ${hot ? 'text-[#f5b700]' : ''}`}>{l.name}</h3>
                 <p className={`font-sans text-sm mt-2 ${hot ? 'text-white/70' : 'text-[#0b3b44]/70'}`}>{l.pitch}</p>
                 <ul className="mt-5 space-y-2 flex-1">
                   {l.includes.map((inc) => (
@@ -86,24 +58,22 @@ export default function OfferGrid() {
                     </li>
                   ))}
                 </ul>
-                <button
-                  onClick={() => void checkout(l.slug)}
-                  disabled={busy !== null}
-                  className={`mt-7 font-sans font-bold border-2 border-[#0b3b44] px-6 py-3 transition-all disabled:opacity-50 ${
+                <Link
+                  href={talkFirstHref(`MUSTARD MODE, ${l.name}`)}
+                  onClick={() => track('mustard_talk_click', { slug: l.slug })}
+                  className={`mt-7 text-center font-sans font-bold border-2 border-[#0b3b44] px-6 py-3 transition-all ${
                     hot
                       ? 'bg-[#f5b700] text-[#0b3b44] shadow-[4px_4px_0_0_#ffc933] hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#ffc933]'
                       : 'bg-[#fbf5ea] text-[#0b3b44] shadow-[4px_4px_0_0_#0b3b44] hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#0b3b44]'
                   }`}
                 >
-                  {busy === l.slug ? 'Opening checkout…' : l.cta}
-                </button>
+                  {l.cta}
+                </Link>
               </div>
               </Reveal>
             );
           })}
         </div>
-
-        {err && <p className="font-mono text-[12px] text-[#0a7c78] mt-4">{err}</p>}
 
         {/* Level 0 bar */}
         <div className="mt-8 border-2 border-[#0b3b44] bg-white shadow-[5px_5px_0_0_#0b3b44] px-5 py-4 flex flex-col md:flex-row md:items-center gap-3 md:justify-between">
@@ -126,7 +96,7 @@ export default function OfferGrid() {
             <p className="font-sans text-sm text-[#0b3b44]/80 mt-2 leading-relaxed">{MUSTARD.guarantee}</p>
           </div>
           <div className="border-2 border-[#0b3b44] bg-[#FFFDF6] p-6">
-            <p className="font-mono font-bold text-[11px] tracking-wider text-[#0a7c78] uppercase">Price check</p>
+            <p className="font-mono font-bold text-[11px] tracking-wider text-[#0a7c78] uppercase">Which level fits</p>
             <p className="font-sans text-sm text-[#0b3b44]/80 mt-2 leading-relaxed">{MUSTARD.priceFraming}</p>
           </div>
         </div>

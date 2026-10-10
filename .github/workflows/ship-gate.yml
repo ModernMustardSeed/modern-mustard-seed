@@ -91,6 +91,9 @@ jobs:
       - name: Every named import a worker makes resolves
         run: node scripts/check-worker-imports.mjs
 
+      - name: No price and no self-serve checkout on the public site
+        run: node scripts/check-no-prices.mjs
+
       # A Command Center route renamed in one commit, with a fetch left
       # pointing at the old path, type checks and builds and deploys and then
       # answers 404 to one button nobody presses until a client does.

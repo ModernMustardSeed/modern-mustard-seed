@@ -1,14 +1,16 @@
-'use client';
+import Link from 'next/link';
+import { talkFirstHref } from '@/lib/talk-first';
 
-import { useState } from 'react';
-
-/** Kicks off Stripe checkout for a program or the bundle. Reads ?ref for
- *  affiliate attribution if present (the affiliate engine consumes it later). */
+/** Conversation first since 2026-10-10: a program is no longer bought on the
+ *  page. The button opens a note to Sarah with the program named. A partner's
+ *  ?ref still rides the mms_ref cookie set elsewhere, so attribution holds when
+ *  the sale closes privately. */
 export default function BuyButton({
   slug,
-  label = 'Get it now',
+  label = 'Talk to Sarah about it',
   className,
   tone = 'cream',
+  name,
 }: {
   slug: string;
   label?: string;
@@ -17,45 +19,16 @@ export default function BuyButton({
    *  `ink` on an ink band (cream border and shadow), `onMustard` on a mustard
    *  band (ink pill so it does not vanish into the ground). */
   tone?: 'cream' | 'ink' | 'onMustard';
+  /** The program's display name for the note; falls back to the slug. */
+  name?: string;
 }) {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-
-  const go = async () => {
-    setLoading(true);
-    setError('');
-    try {
-      let ref: string | undefined;
-      if (typeof document !== 'undefined') {
-        const m = document.cookie.match(/(?:^|;\s*)mms_ref=([^;]+)/);
-        if (m) ref = decodeURIComponent(m[1]);
-      }
-      const res = await fetch('/api/programs/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ slug, ref }),
-      });
-      const data = await res.json();
-      if (res.ok && data.url) {
-        window.location.href = data.url;
-      } else {
-        setError(data.message || 'Checkout is not available yet. Please try again shortly.');
-        setLoading(false);
-      }
-    } catch {
-      setError('Network error. Please try again.');
-      setLoading(false);
-    }
-  };
-
   return (
     <div className="flex flex-col items-center gap-2">
-      <button
-        onClick={go}
-        disabled={loading}
+      <Link
+        href={talkFirstHref(name ?? slug)}
         className={
           className ||
-          `px-9 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold rounded-full border-2 hover:-translate-y-0.5 transition-all disabled:opacity-50 ${
+          `inline-flex items-center justify-center px-9 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold rounded-full border-2 hover:-translate-y-0.5 transition-all ${
             tone === 'ink'
               ? 'text-[#0b3b44] bg-[#f5b700] border-[#fbf5ea] shadow-[4px_4px_0_0_#fbf5ea]'
               : tone === 'onMustard'
@@ -64,9 +37,8 @@ export default function BuyButton({
           }`
         }
       >
-        {loading ? 'Opening checkout...' : label}
-      </button>
-      {error && <p className={`text-xs font-body font-semibold max-w-xs text-center ${tone === 'ink' ? 'text-[#f5b700]' : 'text-[#b3261e]'}`}>{error}</p>}
+        {label}
+      </Link>
     </div>
   );
 }

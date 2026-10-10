@@ -72,23 +72,23 @@ export const INCLUDED_ASSETS = [
   },
   {
     title: 'Idea to Spec',
-    detail: 'The full $497 program and Spec Studio, used in weeks one and two.',
+    detail: 'The full program and Spec Studio, used in weeks one and two.',
   },
   {
     title: 'Mustard Launch Kit',
-    detail: 'The $197 launch package for positioning, pricing, copy, and the 30/60/90 plan.',
+    detail: 'The launch package for positioning, pricing, copy, and the 30/60/90 plan.',
   },
   {
     title: 'Mustard Mode Player',
-    detail: 'The $197 coach-led build system for the technical and creative reps.',
+    detail: 'The coach-led build system for the technical and creative reps.',
   },
   {
     title: 'The Foundations Bundle',
-    detail: 'The $97 Agentic Business Blueprint, Agentic Native, and Sales Machine playbooks that support the core missions.',
+    detail: 'The Agentic Business Blueprint, Agentic Native, and Sales Machine playbooks that support the core missions.',
   },
   {
     title: 'The Brand Studio Playbook',
-    detail: 'The $67 voice, visual system, and content-production playbook.',
+    detail: 'The voice, visual system, and content-production playbook.',
   },
   {
     title: 'Two personal engine reviews',

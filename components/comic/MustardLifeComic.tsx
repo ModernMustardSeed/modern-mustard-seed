@@ -24,10 +24,9 @@ import { broadcastTiers, broadcastEntry } from '@/data/ads';
 import { pressTiers } from '@/data/press';
 import { launchTiers } from '@/data/mustard-launch';
 import { geoTiers } from '@/data/geo';
-import { PRICE_TIERS, BUILD_FEE_USD } from '@/data/switchboard';
+import { PRICE_TIERS } from '@/data/switchboard';
 import { hatcheryTiers } from '@/data/hatchery';
 import { mustardLevels } from '@/data/mustard-mode/offer';
-import { products } from '@/data/products';
 
 const GOLD = '#f5b700';
 
@@ -59,10 +58,8 @@ const P = {
   spotlight: hatcheryTiers.find((t) => t.name === 'Spotlight')!,
   player: mustardLevels.find((l) => l.name === 'Player')!,
   builder: mustardLevels.find((l) => l.name === 'Builder')!,
-  storeFrom: Math.min(...products.filter((p) => !p.comingSoon).map((p) => p.priceUsd)),
   switchTop: PRICE_TIERS[0],
   switchBest: PRICE_TIERS[PRICE_TIERS.length - 1],
-  buildFee: BUILD_FEE_USD,
 };
 
 /* ------------------------------------------------------------------ */
@@ -271,7 +268,7 @@ export default function MustardLifeComic() {
             {[
               { t: 'EXCLUSIVE: They Put Agents on the Phones and Sailed Away', p: 'p. 04', r: -1.5 },
               { t: 'At Home on the Water with Mr. and Mrs. Mustard', p: 'p. 02', r: 1 },
-              { t: 'Inside: Every Price We Charge, Printed in Ink', p: 'p. 03', r: -0.75 },
+              { t: 'Inside: Everything We Build, Printed in Ink', p: 'p. 03', r: -0.75 },
             ].map((l, i) => (
               <div
                 key={l.t}
@@ -334,7 +331,7 @@ export default function MustardLifeComic() {
                     { p: '10', label: 'Pictures and Broadcast', note: 'commercials and managed ads, quoted for you', href: '#pictures' },
                     { p: '12', label: 'Launch and the GEO Desk', note: 'launch and GEO services, quoted for you', href: '#launch' },
                     { p: '14', label: 'The Switchboard', note: 'franchise rollouts, quoted for your locations', href: '#switchboard' },
-                    { p: '16', label: 'Night School and the Store', note: `courses from $${P.storeFrom}`, href: '#night-school' },
+                    { p: '16', label: 'Night School and the Store', note: 'playbooks and courses', href: '#night-school' },
                     { p: '18', label: 'The Custom Shop', note: 'sites, stores, apps, whole systems', href: '#builds' },
                     { p: '20', label: 'The Free Classifieds', note: 'everything on this page costs nothing', href: '#classifieds' },
                     { p: '22', label: 'Find Your Horizon', note: 'the partner program', href: '#partners' },
@@ -611,7 +608,7 @@ export default function MustardLifeComic() {
               <PriceTag
                 name="The Switchboard"
                 price="Request a quote"
-                note={`Volume pricing by location count, plus a one-time $${P.buildFee.toLocaleString('en-US')} build. Call the demo line on the page first.`}
+                note="Priced by location count, plus a one-time build. Call the demo line on the page first."
                 featured
                 delay={240}
               />
@@ -654,11 +651,11 @@ export default function MustardLifeComic() {
               <p className="mlc-pop font-body text-[14px] leading-relaxed text-[#3a3733]" style={{ transitionDelay: '100ms' }}>
                 Mustard Mode teaches you Claude and Claude Code with a live coach, four tracks, and 28 missions.
                 The first session is free. The Store carries the studio&rsquo;s production-tested playbooks and
-                courses, from {`$${P.storeFrom}`}.
+                courses.
               </p>
               <div className="grid grid-cols-2 gap-3">
-                <PriceTag name={P.player.name} price={`$${P.player.priceUsd}`} />
-                <PriceTag name={P.builder.name} price={`$${P.builder.priceUsd}`} delay={80} />
+                <PriceTag name={P.player.name} price="Ask Sarah" />
+                <PriceTag name={P.builder.name} price="Ask Sarah" delay={80} />
               </div>
               <div className="mlc-pop flex flex-wrap gap-3" style={{ transitionDelay: '260ms' }}>
                 <Cta href="/mustard-mode">Free First Session</Cta>

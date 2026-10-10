@@ -1,24 +1,25 @@
 import Link from 'next/link';
 import { buildMetadata, SITE } from '@/lib/seo';
 import { JsonLd, ORG_ID, PERSON_ID, breadcrumbJsonLd, faqJsonLd } from '@/lib/jsonld';
-import { BOOTCAMP, DONE_FOR_YOU_SEATS, OPERATOR, bootcampFaq, enrollmentOpen, operatorWeeks, usd } from '@/data/bootcamp';
+import { BOOTCAMP, DONE_FOR_YOU_SEATS, OPERATOR, bootcampFaq, enrollmentOpen, operatorWeeks } from '@/data/bootcamp';
 import PopPageHero, { pop } from '@/components/pop/PopPageHero';
 import CheckoutButton from '@/components/bootcamp/CheckoutButton';
 import FaqList from '@/components/bootcamp/FaqList';
 import { Check, Kicker, btn, h2Cls, h2SmCls, leadCls } from '@/components/bootcamp/ui';
 
-/** THE OPERATOR PROGRAM. Eight weeks, one price, from data/bootcamp.ts. */
+/** THE OPERATOR PROGRAM. Eight weeks, from data/bootcamp.ts. No price on the
+ *  page (conversation first, 2026-10-10): the seat is settled with Sarah. */
 export const revalidate = 3600;
 
 export const metadata = buildMetadata({
   title: `${OPERATOR.name}: Eight Weeks to Your Own Agentic Office`,
-  description: `${OPERATOR.pitch} ${usd(OPERATOR.priceCents)}, cohort of ${OPERATOR.seats}, starts ${OPERATOR.starts}.`,
+  description: `${OPERATOR.pitch} Cohort of ${OPERATOR.seats}, starts ${OPERATOR.starts}.`,
   path: '/bootcamp/operator',
 });
 
 const OPERATOR_FAQ = [
   { q: 'Who is the Operator Program for?', a: 'Owners who finished the bootcamp, or who already run a working business, and want to run it on a crew they built themselves. You do not need to code. You need to know your business and show up Tuesdays and Thursdays for eight weeks.' },
-  { q: 'What does it cost, and is there anything else?', a: `${usd(OPERATOR.priceCents)}, one set package, ${OPERATOR.seats} seats. Your SeedSide office is included for the length of the program. Your Claude subscription is billed by Anthropic, in your name. Nothing is added later and nothing is negotiated.` },
+  { q: 'What does it cost, and is there anything else?', a: `One set package, ${OPERATOR.seats} seats, and Sarah sends you the details directly when you ask for a seat. Your SeedSide office is included for the length of the program. Your Claude subscription is billed by Anthropic, in your name. Nothing is added later and nothing is negotiated.` },
   { q: 'When does it run?', a: `Starts ${OPERATOR.starts}. Eight weekly live sessions with Sarah on Tuesdays, 1:00 to 2:30 PM Mountain, plus a Thursday build lab every week. Replays go up the same evening.` },
   { q: 'What if I would rather have it built for me?', a: `That is the third door: Claude Operator and Agentic Native. We build the crew, hand you every key and teach you to run it. ${DONE_FOR_YOU_SEATS} seats this launch, scoped and quoted in the conversation.` },
   bootcampFaq.find((f) => f.q === 'Are you affiliated with Anthropic?')!,
@@ -52,8 +53,6 @@ export default function OperatorPage() {
     },
     offers: {
       '@type': 'Offer',
-      price: (OPERATOR.priceCents / 100).toFixed(2),
-      priceCurrency: 'USD',
       url: `${SITE.url}/bootcamp/operator`,
       availability: open ? 'https://schema.org/InStock' : 'https://schema.org/SoldOut',
       category: 'Paid',
@@ -75,7 +74,7 @@ export default function OperatorPage() {
       >
         <p>{OPERATOR.pitch}</p>
         <div className={pop.actions}>
-          <a href="#enroll" className={pop.cta}>{OPERATOR.cta}, <span>{usd(OPERATOR.priceCents)}</span></a>
+          <a href="#enroll" className={pop.cta}>{OPERATOR.cta}</a>
           <a href="#ladder" className={pop.ctaAlt}>The eight weeks</a>
         </div>
         <p className={pop.note}>Starts {OPERATOR.starts}. Tuesdays 1:00 to 2:30 PM Mountain, plus a Thursday build lab. {OPERATOR.seats} seats.</p>
@@ -122,17 +121,13 @@ export default function OperatorPage() {
           </div>
           <article aria-labelledby="op-card-heading" className="rounded-[4px] border-2 border-[#141210] bg-[#141210] text-[#fcfaf3] p-6 sm:p-8 shadow-[8px_8px_0_0_#f5b700] lg:sticky lg:top-28">
             <p className="font-mono text-[10px] uppercase tracking-[0.22em] font-bold text-[#e8ecd0]">{OPERATOR.chip}</p>
-            <h3 id="op-card-heading" className="font-display text-2xl font-black mt-3">{OPERATOR.name}</h3>
-            <p className="mt-3 flex items-baseline gap-2">
-              <span className="font-display text-5xl sm:text-6xl font-black tracking-tight leading-none text-[#f5b700]">{usd(OPERATOR.priceCents)}</span>
-              <span className="font-mono text-[10px] uppercase tracking-[0.2em] font-bold text-[#fcfaf3]/60">one seat</span>
-            </p>
+            <h3 id="op-card-heading" className="font-display text-4xl sm:text-5xl font-black tracking-tight leading-none mt-3 text-[#f5b700]">{OPERATOR.name}</h3>
             <dl className="mt-5 grid grid-cols-2 gap-3 font-body text-sm">
               <div className="rounded-[4px] bg-[#0f4c47] p-3"><dt className="text-[#fcfaf3]/60 text-xs">Seats</dt><dd className="font-display font-black text-xl mt-0.5">{OPERATOR.seats}</dd></div>
               <div className="rounded-[4px] bg-[#0f4c47] p-3"><dt className="text-[#fcfaf3]/60 text-xs">Starts</dt><dd className="font-display font-black text-base mt-1 leading-tight">{OPERATOR.starts.replace(', 2027', '')}</dd></div>
             </dl>
-            <CheckoutButton tier="operator" label={OPERATOR.cta} open={open} className={btn.onDark} closedLabel="This cohort has started" />
-            <p className="mt-3 text-center font-body text-xs text-[#fcfaf3]/55">A set package. Card or bank, through Stripe. Promotion codes work at checkout.</p>
+            <CheckoutButton tier="operator" label="Ask Sarah for a seat" open={open} className={btn.onDark} closedLabel="This cohort has started" />
+            <p className="mt-3 text-center font-body text-xs text-[#fcfaf3]/55">A set package. Sarah answers inside one business day.</p>
           </article>
         </div>
       </section>

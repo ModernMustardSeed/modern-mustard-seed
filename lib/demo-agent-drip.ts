@@ -29,7 +29,6 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import { sendViaResend } from '@/lib/send-email';
 import { clientEmail, escape } from '@/lib/email';
 import { SITE } from '@/lib/seo';
-import { demoAgentTiers, demoAgentUsd } from '@/data/demo-agent';
 import { possessive } from '@/lib/business-name';
 import { OUTREACH_FROM } from '@/lib/outreach-domain';
 
@@ -103,8 +102,6 @@ export function demoAgentDripEmail(
   const biz = escape(bizOf(lead));
   const runId = runIdFromNotes(lead.notes);
   const demoUrl = runId ? `${SITE.url}/voice-agents/build/demo/${runId}` : `${SITE.url}/voice-agents/build`;
-  const monthly = demoAgentUsd(demoAgentTiers[0].monthlyCents);
-  const setup = demoAgentUsd(demoAgentTiers[0].setupCents);
 
   const cta = { label: 'Hear your Voice Agent again', url: demoUrl };
   const secondary = { label: 'Book 10 minutes with Sarah', url: `${SITE.url}/book` };
@@ -136,11 +133,11 @@ export function demoAgentDripEmail(
       subject: 'The call you did not answer this week',
       snippet: 'Voice Agent drip 2 of 3: the cost of the missed call.',
       html: clientEmail({
-        preheader: 'What a missed call actually costs, and what the Voice Agent costs.',
+        preheader: 'What a missed call actually costs, and how keeping the Voice Agent works.',
         greeting: hi,
         body:
           `<p>The caller who gets voicemail usually does not leave one. They dial the next name on the list, and you never find out that the phone rang at all. That is the part that stings: the loss is invisible.</p>` +
-          `<p>The Voice Agent you trained for ${biz} answers every one of those, day or night, books the work, and texts you the details. Keeping it is $${setup} to set up plus $${monthly} a month, with a hard minute cap so there is never a surprise bill. Month to month, live within about a week, cancel anytime.</p>` +
+          `<p>The Voice Agent you trained for ${biz} answers every one of those, day or night, books the work, and texts you the details. Keeping it is one set package, month to month, with a hard minute cap so there is never a surprise bill. Book ten minutes with me and I will give you the number for your call volume. Live within about a week, cancel anytime.</p>` +
           `<p>No trial, because the demo already was the trial.</p>`,
         cta,
         secondary,

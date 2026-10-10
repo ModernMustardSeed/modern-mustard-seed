@@ -338,11 +338,12 @@ export function aboutPageJsonLd() {
   };
 }
 
+/** No offers block and no price: nothing on the public site publishes a price
+ *  (conversation first, 2026-10-10), structured data included. */
 export function productJsonLd(args: {
   slug: string;
   name: string;
   description: string;
-  priceUsd: number;
   category: string;
   pages: number;
   image?: string;
@@ -361,20 +362,11 @@ export function productJsonLd(args: {
     category: args.category,
     image: args.image ?? `${SITE.url}/opengraph-image`,
     url,
-    offers: {
-      '@type': 'Offer',
-      price: args.priceUsd.toFixed(2),
-      priceCurrency: 'USD',
-      availability: 'https://schema.org/InStock',
-      itemCondition: 'https://schema.org/NewCondition',
-      url,
-      seller: { '@id': ORG_ID },
-    },
     isRelatedTo: { '@id': WEBSITE_ID },
     additionalProperty: [
       { '@type': 'PropertyValue', name: 'Format', value: 'PDF' },
       { '@type': 'PropertyValue', name: 'Pages', value: String(args.pages) },
-      { '@type': 'PropertyValue', name: 'Delivery', value: 'Instant download after purchase' },
+      { '@type': 'PropertyValue', name: 'Delivery', value: 'PDF download, set up personally by Sarah' },
     ],
   };
 }

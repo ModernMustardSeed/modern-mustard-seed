@@ -1,19 +1,23 @@
-'use client';
+import Link from 'next/link';
+import { talkFirstHref } from '@/lib/talk-first';
 
-import { useState } from 'react';
-
+/**
+ * Conversation first since 2026-10-10: playbooks and courses are no longer
+ * bought on the page. The button opens a note to Sarah with the title named.
+ * `configured` is kept for callers; a title that is not released yet still
+ * says so.
+ */
 export default function StoreBuyButton({
   slug,
   configured,
-  label = 'Get the Playbook →',
+  label = 'Ask Sarah about this playbook →',
+  title,
 }: {
   slug: string;
   configured: boolean;
   label?: string;
+  title?: string;
 }) {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
   if (!configured) {
     return (
       <div className="md:text-right">
@@ -27,50 +31,14 @@ export default function StoreBuyButton({
     );
   }
 
-  async function onClick() {
-    setLoading(true);
-    setError(null);
-    try {
-      const res = await fetch('/api/store/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ slug }),
-      });
-      if (!res.ok) {
-        const data = (await res.json().catch(() => ({}))) as { error?: string; message?: string };
-        setError(data.message || data.error || 'Checkout failed.');
-        setLoading(false);
-        return;
-      }
-      const data = (await res.json()) as { url?: string };
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        setError('Checkout URL missing.');
-        setLoading(false);
-      }
-    } catch {
-      setError('Network error.');
-      setLoading(false);
-    }
-  }
-
   return (
     <div className="md:text-right">
-      <button
-        onClick={onClick}
-        disabled={loading}
-        className={`inline-flex items-center gap-2 px-9 py-4 rounded-full text-[12px] uppercase tracking-[0.22em] font-sans font-extrabold text-white bg-[#0b3b44] border-2 border-[#0b3b44] shadow-[4px_4px_0_0_rgba(11,59,68,0.3)] hover:-translate-y-0.5 transition-all ${
-          loading ? 'opacity-60 cursor-wait' : ''
-        }`}
+      <Link
+        href={talkFirstHref(title ?? slug)}
+        className="inline-flex items-center gap-2 px-9 py-4 rounded-full text-[12px] uppercase tracking-[0.22em] font-sans font-extrabold text-white bg-[#0b3b44] border-2 border-[#0b3b44] shadow-[4px_4px_0_0_rgba(11,59,68,0.3)] hover:-translate-y-0.5 transition-all"
       >
-        {loading ? 'Opening checkout…' : label}
-      </button>
-      {error && (
-        <p className="text-[#0b3b44] text-[11px] font-mono font-bold uppercase tracking-[0.18em] mt-3 md:text-right">
-          {error}
-        </p>
-      )}
+        {label}
+      </Link>
     </div>
   );
 }

@@ -1,12 +1,13 @@
 import Link from 'next/link';
 import { buildMetadata } from '@/lib/seo';
 import { JsonLd, breadcrumbJsonLd } from '@/lib/jsonld';
-import { BOOTCAMP, HOSTS, OPERATOR, bootcampTiers, usd } from '@/data/bootcamp';
+import { BOOTCAMP, HOSTS } from '@/data/bootcamp';
 import PopPageHero, { pop } from '@/components/pop/PopPageHero';
 import HostForm from '@/components/bootcamp/HostForm';
 import { Check, Kicker, h2Cls, h2SmCls, leadCls } from '@/components/bootcamp/ui';
 
-/** HOST A ROOM. The terms, the math, the application. No names, no logos: the first hosts are not signed yet. */
+/** HOST A ROOM. The terms, the math, the application. No names, no logos: the first hosts are not signed yet.
+ *  The math is in shares, not dollars: no price on the site (conversation first, 2026-10-10). */
 
 export const metadata = buildMetadata({
   title: `${HOSTS.name}: Run the Bootcamp for Your Audience and Keep Every Ticket`,
@@ -22,12 +23,10 @@ const GETS = [
 ];
 
 export default function HostPage() {
-  const [ga, vip] = bootcampTiers;
-  const operatorShare = Math.round((OPERATOR.priceCents * HOSTS.programPct) / 100);
   const math = [
-    { line: `10 tickets at ${usd(ga.priceCents)}`, n: usd(ga.priceCents * 10), note: 'All of it is yours.' },
-    { line: `100 VIP seats at ${usd(vip.priceCents)}`, n: usd(vip.priceCents * 100), note: 'All of it is yours, and you host your own room on Day 2.' },
-    { line: `Every Operator seat, ${usd(OPERATOR.priceCents)}`, n: usd(operatorShare), note: `${HOSTS.programPct}% of each seat your people take, for the whole cohort.` },
+    { line: '10 tickets through your link', n: `${HOSTS.ticketPct}%`, note: 'Of every one of them is yours, at every seat level.' },
+    { line: `${HOSTS.roomThreshold} seats or more`, n: `${HOSTS.ticketPct}%`, note: 'Still all yours, and you host your own room on Day 2.' },
+    { line: 'Every Operator seat', n: `${HOSTS.programPct}%`, note: 'Of each seat your people take, for the whole cohort.' },
   ];
 
   return (
@@ -89,7 +88,7 @@ export default function HostPage() {
               </div>
             ))}
           </div>
-          <p className="font-body text-sm text-[#fcfaf3]/60 mt-8 max-w-2xl">Paid within ten days after Day 3, to the account you name. Stripe handles the tickets, so the count is the count.</p>
+          <p className="font-body text-sm text-[#fcfaf3]/60 mt-8 max-w-2xl">Paid within ten days after Day 3, to the account you name. Sarah credits every seat that came through your link.</p>
         </div>
       </section>
 

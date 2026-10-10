@@ -38,7 +38,7 @@ export const MUSTARD = {
   guarantee:
     'Play the method for 14 days. If you do the missions and MUSTARD MODE does not change how much you ship, email Sarah for a full refund. No questions, handled by hand.',
   priceFraming:
-    'Set it against one month of a developer, one bootcamp deposit, or one more year of not building. The whole method is less than a nice dinner out per track, once.',
+    'Tell Sarah what you want to build and where you are with Claude today. She will tell you which level fits and what it costs, and if a free credit is all you need, she will say that too.',
 } as const;
 
 export const mustardLevels: MustardLevel[] = [
@@ -72,7 +72,7 @@ export const mustardLevels: MustardLevel[] = [
       'Progress HUD: XP, streaks, milestones',
       'Lifetime access and free updates',
     ],
-    cta: 'Start as Player',
+    cta: 'Ask about Player',
   },
   {
     level: 2,
@@ -90,7 +90,7 @@ export const mustardLevels: MustardLevel[] = [
       'Ship-off: submit your boss-mission build for a personal review from the studio',
       'Founding cohort badge on your HUD',
     ],
-    cta: 'Start as Builder',
+    cta: 'Ask about Builder',
     featured: true,
   },
   // The Founders' Cabinet ($97/mo subscription, level 3) was retired 2026-08-01
@@ -114,15 +114,15 @@ export const mustardFaq: { q: string; a: string }[] = [
   },
   {
     q: 'How is this different from The Terminal?',
-    a: 'The Terminal is our self-study engineering program (a deep playbook plus ops dashboard, $497). MUSTARD MODE is the coach-led experience: a live agentic coach, four tracks beyond just code, missions, XP, and a prompt library. Many people run both. If you want a coach on your shoulder, start here.',
+    a: 'The Terminal is our self-study engineering program (a deep playbook plus ops dashboard). MUSTARD MODE is the coach-led experience: a live agentic coach, four tracks beyond just code, missions, XP, and a prompt library. Many people run both. If you want a coach on your shoulder, start here.',
   },
   {
     q: 'How long does it take?',
     a: 'Each mission is 15 to 60 minutes. Most players finish their first track inside two weeks and ship their boss mission (a real, live artifact) by week three.',
   },
   {
-    q: 'What exactly happens after I buy?',
-    a: 'Checkout takes a minute. You get an access link by email, your HQ opens instantly, and if you played your free credit, your run is already loaded. Mission one starts immediately.',
+    q: 'How do I start?',
+    a: 'Pick a level and send Sarah a note. She answers inside one business day, sets you up, and emails your access link. Your HQ opens on the first click, and if you played your free credit, your run is already loaded. Mission one starts immediately.',
   },
   {
     q: 'Refunds?',

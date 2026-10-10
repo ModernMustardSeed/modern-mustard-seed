@@ -92,7 +92,7 @@ export default function SeedToSystemPage() {
             </span>
             <span className="inline-flex items-center gap-2 font-body text-xs md:text-sm">
               <CircleDollarSign className="h-4 w-4 shrink-0 text-[#f5b700]" aria-hidden="true" />
-              ${SEED_TO_SYSTEM.foundingPrice}
+              One set package
             </span>
             <span className="inline-flex items-center gap-2 font-body text-xs md:text-sm">
               <ShieldCheck className="h-4 w-4 shrink-0 text-[#f5b700]" aria-hidden="true" />
@@ -202,7 +202,7 @@ export default function SeedToSystemPage() {
             ))}
           </div>
           <p className="mt-6 font-body text-sm text-white/60">
-            The included digital programs currently sell for $1,055 before live coaching and reviews.
+            The included digital programs come with every seat, along with the live coaching and reviews.
           </p>
         </div>
       </section>
@@ -246,12 +246,11 @@ export default function SeedToSystemPage() {
                 Founding cohort
               </p>
               <h2 className="mt-4 font-display text-5xl font-black leading-tight md:text-7xl">
-                ${SEED_TO_SYSTEM.foundingPrice}
+                {SEED_TO_SYSTEM.seats} founding seats.
               </h2>
-              <p className="mt-2 font-display text-xl font-bold">or {SEED_TO_SYSTEM.paymentPlan}</p>
               <p className="mt-6 max-w-xl font-body text-lg leading-relaxed text-[#5C554A]">
-                The public price becomes ${SEED_TO_SYSTEM.futurePrice.toLocaleString()} after the founding room.
-                Founders receive the lower price because their work and feedback help sharpen the final lab.
+                Founders get the founding terms because their work and feedback help sharpen the final lab. Ask
+                Sarah for a seat and she sends you the details directly, a payment plan included.
               </p>
               <div className="mt-8 border-l-4 border-[#167D56] pl-5">
                 <div className="flex items-center gap-2">
@@ -267,15 +266,9 @@ export default function SeedToSystemPage() {
               </p>
               <h3 className="mt-3 font-display text-3xl font-black">Build the business while the room is small.</h3>
               <p className="mt-4 font-body text-sm leading-relaxed text-[#5C554A]">
-                Secure pay-in-full enrollment through Stripe. Sarah will follow with the intake, live calendar, and first mission.
+                Ask Sarah for a seat. She answers inside one business day with the details, then the intake, live calendar, and first mission.
               </p>
               <EnrollButton />
-              <a
-                href="mailto:sarah@modernmustardseed.com?subject=SEED%20TO%20SYSTEM%203-pay%20plan"
-                className="mt-4 block text-center font-body text-xs font-bold text-[#163B68] underline underline-offset-4"
-              >
-                Need the 3-pay plan? Ask Sarah.
-              </a>
               <p className="mt-4 text-center font-body text-[11px] text-[#5C554A]">
                 Six live weeks. {SEED_TO_SYSTEM.seats} seats. Bring the idea.
               </p>

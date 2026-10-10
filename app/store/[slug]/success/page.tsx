@@ -47,7 +47,7 @@ export default async function StoreSuccessPage({
               Want us to ship it for you instead?
             </span>
             <h2 className="font-display text-2xl md:text-3xl font-black text-[#0b3b44] tracking-tight mb-4">
-              Your ${item.priceUsd} credits toward any engagement
+              What you spent here credits toward any engagement
             </h2>
             <p className="text-[#0b3b44]/85 text-base font-body leading-relaxed mb-6 max-w-xl mx-auto">
               If you read the playbook and decide you would rather have us build the system, every dollar you spent here comes off any Seed Site or Full-Service Build. Mention it on the discovery call.

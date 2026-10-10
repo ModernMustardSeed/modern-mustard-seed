@@ -12,6 +12,7 @@ import { track } from '@vercel/analytics';
 import { tracks, totalXp, type Mission, type Track } from '@/data/mustard-mode/curriculum';
 import { promptCards, promptCategories, type PromptCard } from '@/data/mustard-mode/prompts';
 import { blueprints, type Blueprint } from '@/data/mustard-mode/templates';
+import { talkFirstHref } from '@/lib/talk-first';
 
 type Tier = 'player' | 'builder' | 'cabinet';
 type Tab = 'hud' | 'coach' | 'tracks' | 'prompts' | 'vault';
@@ -739,24 +740,7 @@ function PromptsTab() {
 // ── Vault ──────────────────────────────────────────────────────────────
 function VaultTab({ tier }: { tier: Tier }) {
   const [open, setOpen] = useState<Blueprint | null>(null);
-  const [busy, setBusy] = useState(false);
   const locked = tier === 'player';
-
-  const upgrade = async () => {
-    setBusy(true);
-    track('mustard_vault_upgrade_click');
-    try {
-      const res = await fetch('/api/mustard-mode/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ slug: 'mustard-mode-builder' }),
-      });
-      const data = (await res.json()) as { url?: string };
-      if (data.url) window.location.href = data.url;
-    } finally {
-      setBusy(false);
-    }
-  };
 
   if (locked) {
     return (
@@ -769,15 +753,15 @@ function VaultTab({ tier }: { tier: Tier }) {
             template, the debug protocol, and five more), plus a personal studio review of your boss
             mission. Builder is a one-time upgrade and everything you have here carries over.
           </p>
-          <button
-            onClick={() => void upgrade()}
-            disabled={busy}
-            className="mt-6 font-sans font-bold bg-[#f5b700] text-[#0b3b44] border-2 border-[#0b3b44] px-6 py-3 hover:translate-y-[1px] transition-transform disabled:opacity-50"
+          <a
+            href={talkFirstHref('MUSTARD MODE, Builder upgrade')}
+            onClick={() => track('mustard_vault_upgrade_click')}
+            className="inline-block mt-6 font-sans font-bold bg-[#f5b700] text-[#0b3b44] border-2 border-[#0b3b44] px-6 py-3 hover:translate-y-[1px] transition-transform"
           >
-            {busy ? 'Opening checkout…' : 'Unlock the vault'}
-          </button>
+            Ask Sarah to unlock the vault
+          </a>
           <p className="font-mono text-[10px] text-white/40 mt-3">
-            ALREADY A PLAYER? EMAIL SARAH FIRST FOR YOUR $197 CREDIT CODE, THEN CHECK OUT. PROMO CODES WORK AT CHECKOUT.
+            YOU ARE ALREADY A PLAYER, SO WHAT YOU PAID COUNTS TOWARD BUILDER. SARAH SETS IT UP BY HAND.
           </p>
         </div>
       </div>

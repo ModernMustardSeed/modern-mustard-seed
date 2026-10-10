@@ -1,10 +1,11 @@
-import { bootcampTiers, usd } from '@/data/bootcamp';
+import { bootcampTiers } from '@/data/bootcamp';
 import CheckoutButton from './CheckoutButton';
 import { Check, btn } from './ui';
 
 /**
- * The three seats. VIP is the featured card and goes dark. Every number comes
- * from data/bootcamp.ts; the button carries only the slug.
+ * The three seats. VIP is the featured card and goes dark. No price on the card
+ * (conversation first, 2026-10-10): the button opens a note to Sarah with the
+ * seat named, and the seat is settled with her.
  */
 export default function TierCards({ open, email, host }: { open: boolean; email?: string; host?: string | null }) {
   return (
@@ -25,11 +26,7 @@ export default function TierCards({ open, email, host }: { open: boolean; email?
               </span>
             )}
             <p className={`font-mono text-[10px] uppercase tracking-[0.22em] font-bold ${dark ? 'text-[#e8ecd0]' : 'text-[#0f4c47]'}`}>{t.chip}</p>
-            <h3 id={`tier-${t.slug}`} className="font-display text-2xl font-black mt-3">{t.name}</h3>
-            <p className="mt-3 flex items-baseline gap-2">
-              <span className={`font-display text-5xl sm:text-6xl font-black tracking-tight leading-none ${dark ? 'text-[#f5b700]' : 'text-[#141210]'}`}>{usd(t.priceCents)}</span>
-              <span className={`font-mono text-[10px] uppercase tracking-[0.2em] font-bold ${dark ? 'text-[#fcfaf3]/60' : 'text-[#141210]/55'}`}>one seat</span>
-            </p>
+            <h3 id={`tier-${t.slug}`} className={`font-display text-4xl sm:text-5xl font-black tracking-tight leading-none mt-3 ${dark ? 'text-[#f5b700]' : 'text-[#141210]'}`}>{t.name}</h3>
             <p className={`font-body text-[15px] leading-relaxed mt-3 ${dark ? 'text-[#fcfaf3]/85' : 'text-[#141210]/75'}`}>{t.pitch}</p>
             <ul className="mt-5 space-y-2.5 flex-1">
               {t.includes.map((line) => (
@@ -41,9 +38,9 @@ export default function TierCards({ open, email, host }: { open: boolean; email?
                 Front row: first {t.frontRowSeats} seats
               </p>
             )}
-            <CheckoutButton tier={t.slug} label={`${t.cta} · ${usd(t.priceCents)}`} open={open} className={dark ? btn.onDark : btn.dark} email={email} host={host} />
+            <CheckoutButton tier={t.slug} label="Ask Sarah for this seat" open={open} className={dark ? btn.onDark : btn.dark} email={email} host={host} />
             <p className={`mt-3 text-center font-body text-xs ${dark ? 'text-[#fcfaf3]/55' : 'text-[#141210]/55'}`}>
-              Replays for {t.replayDays === 182 ? 'six months' : `${t.replayDays} days`}. Card or bank, through Stripe.
+              Replays for {t.replayDays === 182 ? 'six months' : `${t.replayDays} days`}. Sarah answers inside one business day.
             </p>
           </article>
         );
