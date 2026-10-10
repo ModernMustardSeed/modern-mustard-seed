@@ -20,8 +20,13 @@ const base = (args.find((a) => a.startsWith('http')) ?? 'https://modernmustardse
 const ci = args.indexOf('--concurrency');
 const concurrency = ci >= 0 ? Number(args[ci + 1]) : 8;
 
+// A protected Vercel preview needs the bypass secret: set VERCEL_BYPASS in the env
+// (memory preview-shot-bypass.md shows how to read it). Never pass it as an argument.
+const bypass = process.env.VERCEL_BYPASS;
+
 async function get(url) {
-  const res = await fetch(url, { headers: { 'user-agent': 'mms-price-crawl/1.0' }, redirect: 'follow' });
+  const headers = { 'user-agent': 'mms-price-crawl/1.0', ...(bypass ? { 'x-vercel-protection-bypass': bypass } : {}) };
+  const res = await fetch(url, { headers, redirect: 'follow' });
   return { status: res.status, body: await res.text(), finalUrl: res.url };
 }
 

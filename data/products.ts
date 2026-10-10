@@ -91,7 +91,7 @@ export const products: Product[] = [
     pitch:
       'The complete operating system for building, buying, and running service businesses that use agentic systems as infrastructure, not accessory.',
     whatsInside:
-      'Three tracks in one playbook. BUILD an agentic service business from scratch, BUY an existing business and automate it for 2-3x margin improvement, or RUN your current business with agentic systems handling 60 to 80 percent of the repetitive work. Includes the Agentic Native Business Model Canvas, a 7-dimension Acquisition Scorecard, a due diligence checklist built for automation readiness, a 90-day transformation plan, and the daily operating rhythm that runs a $500K business on 25 to 45 minutes of human time per day. Built from 40+ shipped production agentic systems.',
+      'Three tracks in one playbook. BUILD an agentic service business from scratch, BUY an existing business and automate it for 2-3x margin improvement, or RUN your current business with agentic systems handling 60 to 80 percent of the repetitive work. Includes the Agentic Native Business Model Canvas, a 7-dimension Acquisition Scorecard, a due diligence checklist built for automation readiness, a 90-day transformation plan, and the daily operating rhythm that runs a half-million-a-year business on 25 to 45 minutes of human time per day. Built from 40+ shipped production agentic systems.',
     toc: [
       'What Agentic Native Actually Means. And why most businesses get it wrong',
       'The Economics of Agentic Labor. Margins, pricing, and the math that changes everything',
@@ -214,7 +214,7 @@ export const products: Product[] = [
     pitch:
       'Build a complete brand system using agentic tools as your creative director. Voice, visual identity, brand vault, and content production.',
     whatsInside:
-      'What used to cost $15,000 to $50,000 from a branding agency now costs a weekend and this playbook. Build a complete brand system. Voice document that makes the model write in your exact tone, 5-color system with typography pairing, the Brand Vault master document, and a content production system that generates a month of on-brand content in one afternoon. Built from the same system used to create Cross + Covenant and Modern Mustard Seed.',
+      'What used to take a branding agency engagement now takes a weekend and this playbook. Build a complete brand system. Voice document that makes the model write in your exact tone, 5-color system with typography pairing, the Brand Vault master document, and a content production system that generates a month of on-brand content in one afternoon. Built from the same system used to create Cross + Covenant and Modern Mustard Seed.',
     toc: [
       'What a Brand System Actually Is. And why most businesses do not have one',
       'Building Your Brand Voice. The document that makes the model sound like you',
@@ -270,7 +270,7 @@ export const products: Product[] = [
     name: 'The Voice Concierge Business Playbook',
     category: 'Build with Claude',
     pitch:
-      'Build and sell 24/7 voice agents to local businesses and franchises as a $500 to $2,500 a month recurring service. The exact system, tech, pricing, and sales scripts we use to ship these.',
+      'Build and sell 24/7 voice agents to local businesses and franchises as a monthly recurring service. The exact system, tech, packaging, and sales scripts we use to ship these.',
     whatsInside:
       'The complete business-in-a-box for the biggest unclaimed opportunity in local services: every plumber, painter, restaurant, and clinic is losing money to missed calls, and almost none of them have a voice agent yet. This is the system we use at Modern Mustard Seed to build and sell branded 24/7 voice concierges (the same approach behind our restaurant, home-services, and painting demos). You get the missed-call economics that make the sale obvious, the white-space map of who to target first, the full build runbook (one skeleton, every vertical), the Vapi setup appendix with the exact API calls and gotchas, a pricing and packaging model, the demo-is-the-pitch sales motion, objection handling, and a complete swipe file. It ships with an interactive HTML companion app: an ROI and pricing calculator that sizes any prospect in seconds, a build checklist that saves your progress, a vertical-remap worksheet, and every outreach template with one-tap copy. Built for operators who want a recurring-revenue agentic business, not another course.',
     toc: [

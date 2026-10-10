@@ -48,3 +48,25 @@ jobs:
             echo "::error::A site smoke check failed. Sarah has been emailed."
             exit 1
           fi
+
+  # No prices on the site (Sarah, 2026-10-10). Vercel builds with a bare `next build`,
+  # so the build-time price checks do not run there. This reads what actually
+  # rendered: every sitemap URL and every static route on production, through the
+  # same detector as scripts/check-no-prices.mjs. Production deploys only.
+  prices:
+    if: github.event_name == 'deployment_status' && github.event.deployment_status.state == 'success' && github.event.deployment.environment == 'Production'
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            app
+            lib/price-scan.mjs
+            scripts/price-crawl.mjs
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: No price on any public page
+        run: node scripts/price-crawl.mjs --app-routes
