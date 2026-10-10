@@ -135,7 +135,8 @@ jobs:
             This is the CI translation of ~/.claude/workflows/ship-gate.js. Hold the same bar.
 
             HOW TO RUN SUBAGENTS (this run is headless: it ends the moment you end your turn)
-            - Every Task call runs in the FOREGROUND. Never set run_in_background. A background
+            - Every Task call runs in the FOREGROUND: always pass run_in_background: false
+              explicitly, because leaving it out can default to the background. A background
               subagent is abandoned when your turn ends and its findings are lost.
             - For parallel work, put all of a step's Task calls in ONE message. They run at the
               same time and you get every result back before you continue.
@@ -202,6 +203,10 @@ jobs:
           REPO: ${{ github.repository }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
+          if [ -z "$GATE_STARTED" ]; then
+            echo "::error::The gate never started: an earlier step failed, so no review ran on this commit."
+            exit 1
+          fi
           bodies=$(gh api --paginate "repos/$REPO/issues/$PR/comments" \
             --jq ".[] | select((.user.login == \"github-actions[bot]\" or .user.login == \"claude[bot]\") and .updated_at >= \"$GATE_STARTED\") | .body")
           verdict=$(printf '%s\n' "$bodies" | grep -oE '^## SHIP GATE: (GO|NO-GO)' | tail -n 1 | sed 's/^## SHIP GATE: //')
