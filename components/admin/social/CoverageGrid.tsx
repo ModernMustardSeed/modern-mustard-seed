@@ -132,7 +132,7 @@ function CellView({ cell, dim, onOpen }: { cell: Cell; dim: boolean; onOpen: (ce
   const label = `${SHORT_LABEL[cell.platform]}, ${d.weekday} ${d.month} ${d.day}: ${m.label}${
     cell.posts.length > 1 ? `, ${cell.posts.length} posts` : ''
   }${lead?.title ? `. ${lead.title}` : ''}`;
-  const base = `relative mx-auto flex h-[60px] w-full min-w-[56px] max-w-[84px] items-center justify-center overflow-hidden rounded-[3px] border-2 transition-opacity ${
+  const base = `relative mx-auto flex h-[64px] w-full min-w-[56px] max-w-[84px] items-center justify-center overflow-hidden rounded-[3px] border-[3px] transition-opacity ${
     dim ? 'opacity-25' : ''
   }`;
   const style = { background: m.bg, borderColor: m.ring };
@@ -157,13 +157,19 @@ function CellView({ cell, dim, onOpen }: { cell: Cell; dim: boolean; onOpen: (ce
       style={style}
     >
       {lead.cover_url ? (
-        <Cover src={lead.cover_url} width={84} height={60} className="h-full w-full" />
+        <Cover src={lead.cover_url} width={84} height={64} className="h-full w-full" />
       ) : (
         <span aria-hidden="true" className="px-1 text-center text-[10px] font-bold leading-tight" style={{ color: m.fg }}>
           {lead.kind ?? 'Post'}
         </span>
       )}
-      <span aria-hidden="true" className="absolute inset-x-0 bottom-0 h-1.5" style={{ background: m.ring }} />
+      <span
+        aria-hidden="true"
+        className="absolute inset-x-0 bottom-0 py-px text-center font-mono text-[8px] font-bold uppercase leading-[11px] tracking-[0.1em]"
+        style={{ background: m.ring, color: cell.state === 'amber' ? '#141210' : '#ffffff' }}
+      >
+        {cell.state === 'green' ? 'Queued' : cell.state === 'amber' ? 'Planned' : 'Missed'}
+      </span>
       {cell.posts.length > 1 && (
         <span
           aria-hidden="true"
