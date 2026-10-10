@@ -271,3 +271,166 @@ export function idsToPrune(tableIds: Iterable<string>, fileIds: Iterable<string>
   if (keep.size === 0) return [];
   return [...new Set(tableIds)].filter((id) => !keep.has(id)).sort();
 }
+
+/* ------------------------------------------------------------------------ */
+/* COVERAGE: is every required platform covered every day?                  */
+/* ------------------------------------------------------------------------ */
+
+/**
+ * The seven platforms Sarah requires every single day (2026-10-10), in the
+ * order the grid reads them. LinkedIn counts the MMS company page.
+ */
+export const REQUIRED_PLATFORMS = ['youtube', 'tiktok', 'instagram', 'facebook', 'x', 'linkedin-mms', 'pinterest'] as const satisfies readonly Platform[];
+/** Shown on the grid as bonus columns, never counted toward the daily target. */
+export const BONUS_PLATFORMS = ['linkedin-sarah', 'instagram-sarah'] as const satisfies readonly Platform[];
+export const COVERAGE_PLATFORMS: readonly Platform[] = [...REQUIRED_PLATFORMS, ...BONUS_PLATFORMS];
+
+export function isRequired(p: Platform): boolean {
+  return (REQUIRED_PLATFORMS as readonly Platform[]).includes(p);
+}
+
+/**
+ * green: queued on the platform itself (scheduled there, or already posted).
+ * amber: the content exists but nobody has queued it on the platform yet.
+ * red:   nothing is going out (no row, or only a missed or failed row).
+ */
+export type CellState = 'green' | 'amber' | 'red';
+
+export const CELL_META: Record<CellState, { label: string; bg: string; fg: string; ring: string }> = {
+  green: { label: 'Queued on the platform', bg: '#cfe8d6', fg: '#0b3d2a', ring: '#1d7a46' },
+  amber: { label: 'Planned, not queued', bg: '#fde7a6', fg: '#4a3300', ring: '#c98a00' },
+  red: { label: 'Empty', bg: '#fbd3cd', fg: '#6b1209', ring: '#b42318' },
+};
+
+const STATE_RANK: Record<CellState, number> = { green: 2, amber: 1, red: 0 };
+
+/** The state one row earns on its own. */
+export function rowState(r: Pick<SocialPost, 'status'>): CellState {
+  if (r.status === 'scheduled' || r.status === 'posted') return 'green';
+  if (r.status === 'planned') return 'amber';
+  return 'red';
+}
+
+/** A cell is as good as its best row. No rows is red. */
+export function cellState(posts: Pick<SocialPost, 'status'>[]): CellState {
+  let best: CellState = 'red';
+  for (const p of posts) {
+    const s = rowState(p);
+    if (STATE_RANK[s] > STATE_RANK[best]) best = s;
+  }
+  return best;
+}
+
+export type Cell = { date: string; platform: Platform; state: CellState; posts: SocialPost[] };
+export type CoverageDay = { date: string; cells: Record<string, Cell> };
+
+/** Every date from start, n days long. */
+export function dateRange(start: string, n: number): string[] {
+  return Array.from({ length: Math.max(0, n) }, (_, i) => addDays(start, i));
+}
+
+/**
+ * One row per day, one cell per platform. Rows with no date are left out
+ * (they live in the backlog). Each cell's posts sort best state first, then
+ * by time, so the thumbnail and the click open the post that counts.
+ */
+export function buildCoverage(
+  rows: SocialPost[],
+  dates: string[],
+  platforms: readonly Platform[] = COVERAGE_PLATFORMS,
+): CoverageDay[] {
+  const wanted = new Set(dates);
+  const plats = new Set<string>(platforms);
+  const bucket = new Map<string, SocialPost[]>();
+  for (const r of rows) {
+    if (!r.date || !wanted.has(r.date) || !plats.has(r.platform)) continue;
+    const k = `${r.date}|${r.platform}`;
+    const list = bucket.get(k);
+    if (list) list.push(r);
+    else bucket.set(k, [r]);
+  }
+  return dates.map((date) => {
+    const cells: Record<string, Cell> = {};
+    for (const platform of platforms) {
+      const posts = (bucket.get(`${date}|${platform}`) ?? []).slice().sort(
+        (a, b) => STATE_RANK[rowState(b)] - STATE_RANK[rowState(a)] || byTime(a, b),
+      );
+      cells[platform] = { date, platform, state: cellState(posts), posts };
+    }
+    return { date, cells };
+  });
+}
+
+export type Health = { green: number; amber: number; red: number };
+
+/** How many days a platform is green, amber and red across the given days. */
+export function platformHealth(days: CoverageDay[], platform: Platform): Health {
+  const h: Health = { green: 0, amber: 0, red: 0 };
+  for (const d of days) {
+    const c = d.cells[platform];
+    h[c ? c.state : 'red'] += 1;
+  }
+  return h;
+}
+
+export type CoverageSummary = { days: number; target: number; queued: number; planned: number; empty: number };
+
+/**
+ * The line of truth: of the required slots (seven platforms times the days
+ * from today), how many are queued on the platform, planned, and empty. A
+ * slot counts once however many posts it holds.
+ */
+export function coverageSummary(rows: SocialPost[], today: string, days = 30): CoverageSummary {
+  const grid = buildCoverage(rows, dateRange(today, days), REQUIRED_PLATFORMS);
+  const s: CoverageSummary = { days, target: days * REQUIRED_PLATFORMS.length, queued: 0, planned: 0, empty: 0 };
+  for (const d of grid) {
+    for (const p of REQUIRED_PLATFORMS) {
+      const st = d.cells[p].state;
+      if (st === 'green') s.queued += 1;
+      else if (st === 'amber') s.planned += 1;
+      else s.empty += 1;
+    }
+  }
+  return s;
+}
+
+/** Required platforms with nothing going out on a date: the red slots. */
+export function missingOn(rows: SocialPost[], date: string): Platform[] {
+  const [day] = buildCoverage(rows, [date], REQUIRED_PLATFORMS);
+  return REQUIRED_PLATFORMS.filter((p) => day.cells[p].state === 'red');
+}
+
+/** The Needs action quick filter: an amber or red required slot within the next seven days. */
+export function needsAction(cell: Pick<Cell, 'date' | 'platform' | 'state'>, today: string): boolean {
+  return (
+    cell.state !== 'green' && isRequired(cell.platform) && cell.date >= today && cell.date <= addDays(today, 6)
+  );
+}
+
+/** The Backlog view: missed (unscheduled), undated, or failed rows. */
+export function inBacklogView(r: SocialPost): boolean {
+  return inBacklog(r) || r.status === 'failed';
+}
+
+/**
+ * One card per piece of content on a day: rows that share a series and a
+ * title are the same post cut for each platform. Each group keeps its rows
+ * in platform order and takes the earliest time.
+ */
+export type PostGroup = { key: string; series: string | null; title: string | null; time: string | null; posts: SocialPost[] };
+
+export function groupDay(posts: SocialPost[]): PostGroup[] {
+  const groups = new Map<string, PostGroup>();
+  for (const p of posts) {
+    const key = `${p.series ?? ''}\u0000${p.title ?? p.id}`;
+    const g = groups.get(key);
+    if (g) g.posts.push(p);
+    else groups.set(key, { key, series: p.series, title: p.title, time: null, posts: [p] });
+  }
+  const out = [...groups.values()];
+  for (const g of out) {
+    g.posts.sort((a, b) => PLATFORMS.indexOf(a.platform) - PLATFORMS.indexOf(b.platform) || byTime(a, b));
+    g.time = g.posts.reduce<string | null>((t, p) => (timeKey(p.time_mt) < timeKey(t) ? p.time_mt : t), null);
+  }
+  return out.sort((a, b) => timeKey(a.time) - timeKey(b.time) || a.key.localeCompare(b.key));
+}
