@@ -18,7 +18,7 @@ import { openWelcomeTour } from '@/components/admin/WelcomeTour';
  * the mustard chip, and the Inbox unread dot bubbles up to its group.
  */
 
-type Tab = 'overview' | 'office' |'hq' | 'portfolio' | 'gleaner' | 'pipeline' | 'tracker' | 'outbound' | 'acquisition' | 'factories' | 'partners' | 'partner-desk' | 'white-label' | 'team' | 'outreach' | 'campaigns' | 'texting' | 'ads' | 'my-content' | 'facebook' | 'social' | 'posters' | 'videos' | 'artifacts' | 'audit' | 'roadmaps' | 'hundredfold' | 'call' | 'script' | 'callers' | 'calls' | 'training' | 'clients' | 'front-office' | 'posting' | 'proposals' | 'projects' | 'builds' | 'build-log' | 'delivery' | 'templates' | 'intakes' | 'approvals' | 'reviews' | 'calendar' | 'onboarding' | 'manual' | 'inbox' | 'opps' | 'desks' | 'call-prep' | 'call-lists' | 'bootcamp' | 'website';
+type Tab = 'overview' | 'office' |'hq' | 'portfolio' | 'gleaner' | 'pipeline' | 'tracker' | 'outbound' | 'acquisition' | 'factories' | 'partners' | 'partner-desk' | 'white-label' | 'team' | 'outreach' | 'campaigns' | 'texting' | 'ads' | 'my-content' | 'facebook' | 'social' | 'posters' | 'videos' | 'artifacts' | 'audit' | 'roadmaps' | 'hundredfold' | 'call' | 'script' | 'callers' | 'calls' | 'training' | 'clients' | 'front-office' | 'posting' | 'proposals' | 'projects' | 'builds' | 'build-log' | 'delivery' | 'templates' | 'intakes' | 'approvals' | 'reviews' | 'calendar' | 'onboarding' | 'manual' | 'inbox' | 'opps' | 'desks' | 'call-prep' | 'call-lists' | 'bootcamp' | 'website' | 'social-calendar';
 
 // `external: true` marks a public-facing offer page that opens in a new tab, so
 // clicking it from the admin never loses the team member's place. These items
@@ -37,6 +37,9 @@ const PINNED: Item[] = [
   // The One-Person Company Bootcamp: the offer, the film, hosts and outreach
   // on one desk. Pinned while the launch is the thing being sold.
   { key: 'bootcamp', label: 'Bootcamp', href: '/admin/bootcamp' },
+  // The social calendar: every post, the day it goes out and where. Pinned
+  // because it is the screen Sarah checks every morning.
+  { key: 'social-calendar', label: 'Social', href: '/admin/social' },
   { key: 'hundredfold', label: 'Hundredfold', href: '/admin/hundredfold' },
   { key: 'outbound', label: 'Outbound', href: '/admin/outbound' },
   { key: 'factories', label: 'Factories', href: '/admin/factories' },
