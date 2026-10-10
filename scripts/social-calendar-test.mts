@@ -12,6 +12,9 @@
  *  3. The counts strip: today, today plus six, and the backlog.
  *  4. The PATCH validator moves status and ref only.
  *  5. An import never walks a posted row back to planned.
+ *  6. Coverage: a cell's color from its rows, red for a missing day, the
+ *     seven by thirty target, platform health, Needs action, the backlog
+ *     view, and the agenda folding one post's platform cuts into one card.
  *
  * Runs on Node's own runner (no bundler: native addons are blocked here).
  */
@@ -21,6 +24,17 @@ import assert from 'node:assert/strict';
 import {
   addDays,
   applyFilters,
+  buildCoverage,
+  cellState,
+  coverageSummary,
+  dateRange,
+  groupDay,
+  inBacklogView,
+  missingOn,
+  needsAction,
+  platformHealth,
+  REQUIRED_PLATFORMS,
+  rowState,
   buildAgenda,
   idsToPrune,
   isRowId,
@@ -153,4 +167,112 @@ test('rows gone from the file are pruned, an empty file prunes nothing', () => {
   assert.deepEqual(idsToPrune(['a', 'b', 'c'], ['a', 'c', 'd']), ['b']);
   assert.deepEqual(idsToPrune(['a', 'b'], ['a', 'b']), []);
   assert.deepEqual(idsToPrune(['a', 'b'], []), []);
+});
+
+test('a row earns green when queued, amber when planned, red when missed or failed', () => {
+  assert.equal(rowState({ status: 'scheduled' }), 'green');
+  assert.equal(rowState({ status: 'posted' }), 'green');
+  assert.equal(rowState({ status: 'planned' }), 'amber');
+  assert.equal(rowState({ status: 'unscheduled' }), 'red');
+  assert.equal(rowState({ status: 'failed' }), 'red');
+});
+
+test('a cell is as good as its best row, and no rows is red', () => {
+  assert.equal(cellState([]), 'red');
+  assert.equal(cellState([{ status: 'failed' }, { status: 'planned' }]), 'amber');
+  assert.equal(cellState([{ status: 'planned' }, { status: 'scheduled' }]), 'green');
+  assert.equal(cellState([{ status: 'unscheduled' }]), 'red');
+});
+
+test('coverage grid: one cell per day per platform, missing days are red, best post first', () => {
+  const rows = [
+    row({ id: 'a', date: '2026-10-11', platform: 'tiktok', status: 'planned', time_mt: '09:00' }),
+    row({ id: 'b', date: '2026-10-11', platform: 'tiktok', status: 'scheduled', time_mt: '17:30' }),
+    row({ id: 'c', date: '2026-10-12', platform: 'youtube', status: 'failed' }),
+    row({ id: 'd', date: null, platform: 'youtube', status: 'planned' }),
+    row({ id: 'e', date: '2026-11-30', platform: 'youtube', status: 'scheduled' }),
+  ];
+  const grid = buildCoverage(rows, dateRange('2026-10-11', 3));
+  assert.deepEqual(grid.map((d) => d.date), ['2026-10-11', '2026-10-12', '2026-10-13']);
+  const tt = grid[0].cells.tiktok;
+  assert.equal(tt.state, 'green');
+  assert.deepEqual(tt.posts.map((p) => p.id), ['b', 'a']);
+  assert.equal(grid[0].cells.youtube.state, 'red');
+  assert.equal(grid[1].cells.youtube.state, 'red');
+  assert.equal(grid[1].cells.youtube.posts.length, 1);
+  assert.equal(grid[2].cells.tiktok.posts.length, 0);
+  assert.equal(grid[2].cells.tiktok.state, 'red');
+  assert.ok('linkedin-sarah' in grid[0].cells && 'instagram-sarah' in grid[0].cells);
+  assert.ok(!('x-sarah' in grid[0].cells));
+});
+
+test('the line of truth: seven platforms times thirty days is 210 slots', () => {
+  assert.equal(REQUIRED_PLATFORMS.length, 7);
+  const empty = coverageSummary([], '2026-10-10');
+  assert.deepEqual(empty, { days: 30, target: 210, queued: 0, planned: 0, empty: 210 });
+
+  const rows = [
+    // Two posts in one slot count once.
+    row({ id: 'f1', date: '2026-10-10', platform: 'facebook', status: 'scheduled' }),
+    row({ id: 'f2', date: '2026-10-10', platform: 'facebook', status: 'scheduled' }),
+    row({ id: 'p1', date: '2026-10-11', platform: 'pinterest', status: 'planned' }),
+    // Bonus columns never count toward the target.
+    row({ id: 'ls', date: '2026-10-10', platform: 'linkedin-sarah', status: 'scheduled' }),
+    // linkedin-mms is the required LinkedIn.
+    row({ id: 'lm', date: '2026-10-12', platform: 'linkedin-mms', status: 'posted' }),
+    // Outside the window: yesterday, and day 31.
+    row({ id: 'old', date: '2026-10-09', platform: 'x', status: 'scheduled' }),
+    row({ id: 'far', date: '2026-11-09', platform: 'x', status: 'scheduled' }),
+  ];
+  const s = coverageSummary(rows, '2026-10-10');
+  assert.equal(s.target, 210);
+  assert.equal(s.queued, 2);
+  assert.equal(s.planned, 1);
+  assert.equal(s.empty, 207);
+  assert.equal(s.queued + s.planned + s.empty, s.target);
+});
+
+test('platform health counts days by state, and missingOn names the red slots', () => {
+  const rows = [
+    row({ id: 'y1', date: '2026-10-10', platform: 'youtube', status: 'scheduled' }),
+    row({ id: 'y2', date: '2026-10-11', platform: 'youtube', status: 'planned' }),
+  ];
+  const grid = buildCoverage(rows, dateRange('2026-10-10', 14));
+  assert.deepEqual(platformHealth(grid, 'youtube'), { green: 1, amber: 1, red: 12 });
+  assert.deepEqual(platformHealth(grid, 'tiktok'), { green: 0, amber: 0, red: 14 });
+  const missing = missingOn(rows, '2026-10-10');
+  assert.ok(!missing.includes('youtube'));
+  assert.equal(missing.length, 6);
+});
+
+test('needs action is an amber or red required slot in the next seven days', () => {
+  const today = '2026-10-10';
+  assert.equal(needsAction({ date: today, platform: 'x', state: 'red' }, today), true);
+  assert.equal(needsAction({ date: '2026-10-16', platform: 'x', state: 'amber' }, today), true);
+  assert.equal(needsAction({ date: '2026-10-17', platform: 'x', state: 'red' }, today), false);
+  assert.equal(needsAction({ date: today, platform: 'x', state: 'green' }, today), false);
+  assert.equal(needsAction({ date: today, platform: 'linkedin-sarah', state: 'red' }, today), false);
+  assert.equal(needsAction({ date: '2026-10-09', platform: 'x', state: 'red' }, today), false);
+});
+
+test('backlog view holds missed, undated and failed rows', () => {
+  assert.equal(inBacklogView(row({ id: 'u', date: '2026-10-10', status: 'unscheduled' })), true);
+  assert.equal(inBacklogView(row({ id: 'n', date: null, status: 'planned' })), true);
+  assert.equal(inBacklogView(row({ id: 'f', date: '2026-10-10', status: 'failed' })), true);
+  assert.equal(inBacklogView(row({ id: 's', date: '2026-10-10', status: 'scheduled' })), false);
+});
+
+test('the agenda folds one post cut for each platform into one card', () => {
+  const posts = [
+    row({ id: 'oh-x', series: 'Office Hours', title: 'One genius', platform: 'x', time_mt: '10:30' }),
+    row({ id: 'oh-fb', series: 'Office Hours', title: 'One genius', platform: 'facebook', time_mt: '10:30', status: 'scheduled' }),
+    row({ id: 'li', series: 'LinkedIn series', title: 'Fully worked', platform: 'linkedin-mms', time_mt: '09:00' }),
+    row({ id: 'oh-tt', series: 'Office Hours', title: 'One genius', platform: 'tiktok', time_mt: '10:15' }),
+  ];
+  const groups = groupDay(posts);
+  assert.equal(groups.length, 2);
+  assert.equal(groups[0].title, 'Fully worked');
+  assert.equal(groups[1].title, 'One genius');
+  assert.equal(groups[1].time, '10:15');
+  assert.deepEqual(groups[1].posts.map((p) => p.platform), ['facebook', 'tiktok', 'x']);
 });

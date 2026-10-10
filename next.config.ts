@@ -231,7 +231,12 @@ const config: NextConfig = {
     minimumCacheTTL: 60 * 60 * 24 * 30,
     // The portfolio page at /sarahscarano renders the project images the gallery
     // already serves, so the two never drift.
-    remotePatterns: [{ protocol: 'https', hostname: 'sarahscarano.com', pathname: '/images/web/**' }],
+    remotePatterns: [
+      { protocol: 'https', hostname: 'sarahscarano.com', pathname: '/images/web/**' },
+      // Social post covers on /admin/social, shrunk to thumbnails so the
+      // coverage grid never pulls full-size reel covers.
+      { protocol: 'https', hostname: '*.supabase.co', pathname: '/storage/v1/object/public/social-covers/**' },
+    ],
   },
   async headers() {
     return [{ source: '/:path*', headers: SECURITY_HEADERS }];
