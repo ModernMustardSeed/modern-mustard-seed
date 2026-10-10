@@ -3,9 +3,9 @@ import { buildMetadata, SITE } from '@/lib/seo';
 import { partnerMath } from '@/lib/partner-desk/letters';
 import PartnerFilm from '@/components/partners/PartnerFilm';
 
+// Shares, never dollars: no price on the public site (conversation first,
+// 2026-10-10). Approved reps see every amount in their portal.
 const m = partnerMath();
-const $ = m.dollars;
-const tw = m.talkingWebsite;
 
 /** Posted and review dates for the Google for Jobs listing. Move both when the role is re-posted. */
 const DATE_POSTED = '2026-09-30';
@@ -13,21 +13,21 @@ const VALID_THROUGH = '2027-03-31';
 
 export const metadata = buildMetadata({
   title: 'Independent Sales Rep, Commission Only, Remote. AI websites and voice agents for local businesses',
-  description: `Commission-only independent sales rep role with Modern Mustard Seed, remote, anywhere in the US. Bring us local businesses, we build each one a free demo before they pay, and you earn ${m.pct}% of every invoice for ${m.months} months: ${$(tw.firstCheck)} the month a Talking Website signs, ${$(tw.year)} over the year. No quota, no cap, no cost to join.`,
+  description: `Commission-only independent sales rep role with Modern Mustard Seed, remote, anywhere in the US. Bring us local businesses, we build each one a free demo before they pay, and you earn ${m.pct}% of every invoice for ${m.months} months, starting with the first one. No quota, no cap, no cost to join.`,
   path: '/partners/sales-rep',
 });
 
 const EARN = [
-  { big: $(tw.firstCheck), label: 'The month they sign', d: `The first invoice carries the ${$(tw.setup)} setup fee plus month one, and your ${m.pct}% is taken on all of it.` },
-  { big: $(tw.perMonth), label: `Every month after, for ${m.months - 1} more`, d: `${m.pct}% of the ${$(tw.monthly)} monthly invoice, for as long as they stay inside your ${m.months}-month window.` },
-  { big: $(tw.year), label: 'Year one, per business', d: `Ten kept Talking Websites is ${$(m.tenTalkingWebsites.perMonth)} a month to you, on top of each first check.` },
+  { big: `${m.pct}%`, label: 'The month they sign', d: `The first invoice carries the setup plus month one, so it is the biggest check of the year, and your ${m.pct}% is taken on all of it.` },
+  { big: `${m.pct}%`, label: `Every month after, for ${m.months - 1} more`, d: `Of every monthly invoice, for as long as they stay inside your ${m.months}-month window.` },
+  { big: `${m.months}`, label: 'Paid invoices per business', d: 'Every business you send stacks on the last. Ten kept businesses is ten checks a month, on top of each first check.' },
 ];
 
 const JOB = [
   { t: 'Find owners who miss calls', d: 'Contractors, salons, restaurants, clinics, cleaners, landscapers. Anyone whose phone rings while their hands are full. You likely know twenty already.' },
   { t: 'Get us the name', d: 'A business name and a town, through your link or your portal. That starts the build. You never write a proposal or quote a price.' },
   { t: 'We build their demo, free', d: 'Their own website and a voice agent that answers as their business, built to their trade before anyone pays a cent. The demo does the selling.' },
-  { t: 'They keep it, you get paid', d: `The checkout carries your code, the ledger in your portal shows every dollar, and ${m.pct}% of every invoice comes to you for ${m.months} months.` },
+  { t: 'They keep it, you get paid', d: `The checkout carries your code, the ledger in your portal shows every payment, and ${m.pct}% of every invoice comes to you for ${m.months} months.` },
 ];
 
 const FIT = [
@@ -57,9 +57,9 @@ const jsonLd = {
   '@type': 'JobPosting',
   title: 'Independent Sales Rep, AI Websites and Voice Agents (Commission Only, Remote)',
   description: [
-    `<p>Modern Mustard Seed builds websites that answer their own phone: a site and an AI voice receptionist for local businesses, ${$(tw.setup)} to launch and ${$(tw.monthly)} a month.</p>`,
+    '<p>Modern Mustard Seed builds websites that answer their own phone: a site and an AI voice receptionist for local businesses, managed for them end to end at a set package price.</p>',
     '<p>You bring us local businesses. We build each one a free demo of their own site and voice agent before they pay anything, so you walk in with the product already made.</p>',
-    `<p><strong>Compensation:</strong> commission only, independent contractor (1099). ${m.pct}% of every invoice for ${m.months} months per business: ${$(tw.firstCheck)} the month a Talking Website signs, then ${$(tw.perMonth)} a month, ${$(tw.year)} in year one. ${m.buildPct}% to ${m.producerPct}% on custom builds. No quota, no cap, no cost to join.</p>`,
+    `<p><strong>Compensation:</strong> commission only, independent contractor (1099). ${m.pct}% of every invoice for ${m.months} months per business, the first invoice included. ${m.buildPct}% to ${m.producerPct}% on custom builds. No quota, no cap, no cost to join.</p>`,
     '<p><strong>Who does well:</strong> people who already talk to small-business owners, including marketers, bookkeepers, insurance agents, print and sign shops, chamber and BNI members, and web designers who do not offer AI.</p>',
     '<p><strong>You get:</strong> a partner portal, your own tracking link, a printed card kit, a field guide for your territory and a free demo build for every prospect.</p>',
   ].join(''),
@@ -92,14 +92,14 @@ export default function SalesRepPage() {
             Walk in with the product<br className="hidden sm:block" /> already built.
           </h1>
           <p className="mt-7 text-[#3A3733] text-lg font-body font-light max-w-2xl mx-auto leading-relaxed">
-            We build websites that answer their own phone for local businesses. You bring us the business, we build them a free demo before they pay a cent, and you earn {m.pct}% of every invoice for {m.months} months: {$(tw.firstCheck)} the month a Talking Website signs, {$(tw.year)} over the year.
+            We build websites that answer their own phone for local businesses. You bring us the business, we build them a free demo before they pay a cent, and you earn {m.pct}% of every invoice for {m.months} months, starting with the first one.
           </p>
           <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link href="/partners#apply" className="inline-block px-9 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-[#0b3b44] bg-[#f5b700] border-2 border-[#0b3b44] rounded-full shadow-[4px_4px_0_0_#0b3b44] hover:shadow-[6px_6px_0_0_#0b3b44] hover:-translate-y-0.5 transition-all">
               Apply to rep for us
             </Link>
             <a href="#earn" className="text-[12px] uppercase tracking-[0.18em] font-mono font-bold text-[#0b3b44]/70 hover:text-[#0b3b44] transition-colors underline underline-offset-4 decoration-[#f5b700] decoration-2">
-              See what one client pays you
+              See how one client pays you
             </a>
           </div>
         </div>
@@ -126,7 +126,7 @@ export default function SalesRepPage() {
           ))}
         </div>
         <p className="text-center text-[#3A3733] font-body text-sm mt-6">
-          A {m.voice.name} on its own pays {$(m.voice.firstCheck)} the month it signs and {$(m.voice.perMonth)} a month after, {$(m.voice.year)} over the year.
+          A {m.voice.name} on its own pays the same way: {m.pct}% of every invoice for {m.months} months. Your portal shows every amount, pending and paid.
         </p>
       </section>
 

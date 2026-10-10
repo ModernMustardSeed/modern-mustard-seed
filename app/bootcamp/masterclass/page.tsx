@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { cookies } from 'next/headers';
 import { buildMetadata, SITE } from '@/lib/seo';
 import { JsonLd, ORG_ID, PERSON_ID, breadcrumbJsonLd } from '@/lib/jsonld';
-import { BOOTCAMP, bootcampDays, bootcampTiers, fmtMountain, fmtMountainTime, usd } from '@/data/bootcamp';
+import { BOOTCAMP, bootcampDays, fmtMountain, fmtMountainTime } from '@/data/bootcamp';
 import PopPageHero, { pop } from '@/components/pop/PopPageHero';
 import MasterclassForm from '@/components/bootcamp/MasterclassForm';
 import { Check, Kicker, h2Cls, leadCls } from '@/components/bootcamp/ui';
@@ -43,7 +43,6 @@ export default async function MasterclassPage({ searchParams }: { searchParams: 
   const via = SLUG_OK.test(viaParam) ? viaParam : SLUG_OK.test(viaCookie) ? viaCookie : '';
 
   const day1 = bootcampDays[0];
-  const ga = bootcampTiers[0];
   const endIso = new Date(new Date(BOOTCAMP.dates.masterclass).getTime() + 60 * 60 * 1000).toISOString();
 
   const now = roomNow();
@@ -92,7 +91,7 @@ export default async function MasterclassPage({ searchParams }: { searchParams: 
         <p>Watch one builder run an AI product studio on a crew of Claude agents: the phone agent answering live, the org chart, the laws, the memory and the morning briefing. Free, live, with questions at the end.</p>
         <div className={pop.actions}>
           <a href="#register" className={pop.cta}>Save my free seat</a>
-          <Link href="/bootcamp" className={pop.ctaAlt}>The full bootcamp, <span>{usd(ga.priceCents)}</span></Link>
+          <Link href="/bootcamp" className={pop.ctaAlt}>See the full bootcamp</Link>
         </div>
         <p className={pop.note}>{WHEN}. 60 minutes. Replay to everyone registered the same evening.</p>
       </PopPageHero>
@@ -164,7 +163,7 @@ export default async function MasterclassPage({ searchParams }: { searchParams: 
         <div className="max-w-4xl mx-auto px-5 py-14 md:py-16 text-center">
           <Kicker dark className="justify-center">Then, if you want the rest</Kicker>
           <h2 id="after-heading" className="font-display text-3xl md:text-4xl font-black tracking-tight leading-[1.06]">Three live sessions. Two agents <em>you keep.</em></h2>
-          <p className="font-body text-[#fcfaf3]/80 leading-relaxed mt-4 max-w-xl mx-auto">{BOOTCAMP.promise} {day1.dateLabel} to {bootcampDays[2].dateLabel}, from {usd(ga.priceCents)}.</p>
+          <p className="font-body text-[#fcfaf3]/80 leading-relaxed mt-4 max-w-xl mx-auto">{BOOTCAMP.promise} {day1.dateLabel} to {bootcampDays[2].dateLabel}.</p>
           <Link href="/bootcamp#tiers" className="mt-8 inline-flex items-center justify-center rounded-full border-2 border-[#141210] bg-[#f5b700] px-7 py-3.5 font-sans text-xs font-extrabold uppercase tracking-[0.18em] text-[#141210]">See the three seats</Link>
         </div>
       </section>

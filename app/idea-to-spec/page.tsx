@@ -27,7 +27,7 @@ export default function IdeaToSpecPage() {
       >
         <p>{program.promise}</p>
         <div className={pop.actions}>
-          <BuyButton slug={program.slug} label={`Get ${program.name} . $${program.priceUsd}`} className={pop.cta} />
+          <BuyButton slug={program.slug} name={program.name} label={`Ask Sarah about ${program.name}`} className={pop.cta} />
         </div>
         <p className={s.fine}>One time . Lifetime access . 14 day guarantee</p>
       </PopPageHero>

@@ -322,8 +322,8 @@ export const HOSTS = {
   pitch:
     'Run the bootcamp for your own audience, under your name. You keep every dollar of every ticket you sell and twenty percent of every Operator Program seat that follows. Bring a hundred people and you get your own trade room on Day 2.',
   terms: [
-    'You keep 100% of every ticket sold through your link: $97, $297 or $497, every one',
-    'You earn 20% of every Operator Program seat your people take, $999 a seat',
+    'You keep 100% of every ticket sold through your link, at every seat level',
+    'You earn 20% of every Operator Program seat your people take',
     'Bring 100 or more and you host your own room on Day 2, with your name on the door',
     'The first 25 hosts are founding hosts: the same terms on all four 2027 launches',
     'Swipe copy, graphics, your tracking link and a live dashboard, ready the day you are approved',
@@ -364,7 +364,7 @@ export const bootcampFaq = [
   },
   {
     q: 'What does it cost?',
-    a: 'General Admission is $97, VIP is $297 and Platinum is $497. The Operator Program, the eight-week cohort after the bootcamp, is $4,997. Every price is a set package. Nothing is added later and nothing is negotiated.',
+    a: 'Each seat, General Admission, VIP and Platinum, is a set package, and so is the Operator Program after it. Tell Sarah which seat you are looking at and she sends you the details directly. Nothing is added later and nothing is negotiated.',
   },
   {
     q: 'What is the guarantee?',

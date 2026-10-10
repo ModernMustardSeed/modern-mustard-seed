@@ -15,7 +15,7 @@ import {
   type OfficeAgent,
   type Routed,
 } from '@/data/bootcamp-office';
-import { bootcampDays, bootcampTiers, usd } from '@/data/bootcamp';
+import { bootcampDays } from '@/data/bootcamp';
 import { btn } from '@/components/bootcamp/ui';
 import s from './TheOffice.module.css';
 
@@ -97,7 +97,6 @@ export default function TheOffice({ cta = 'bootcamp' }: Props) {
   const order = useMemo(() => new Map(routed.agents.map((a, i) => [a.id, i])), [routed]);
   const hotRooms = useMemo(() => new Set(routed.agents.map((a) => deptOf(a.id)?.key)), [routed]);
   const day3 = DAY3_AGENTS[routed.day3];
-  const ga = bootcampTiers[0];
 
   function dispatch(text: string) {
     const clean = text.trim().slice(0, 140);
@@ -315,7 +314,7 @@ export default function TheOffice({ cta = 'bootcamp' }: Props) {
                 ) : (
                   <>
                     <Link href="/bootcamp/masterclass" className={btn.dark}>Watch them work, free</Link>
-                    <a href="#tiers" className={btn.white}>Take a seat, {usd(ga.priceCents)}</a>
+                    <a href="#tiers" className={btn.white}>Choose your seat</a>
                   </>
                 )}
               </div>

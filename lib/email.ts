@@ -1154,8 +1154,8 @@ export function sequenceDay5Email(firstName: string): string {
     ${headline(`${firstName}, here is what I would actually build.`)}
     ${paragraph(`<p style="margin:0 0 16px">Most small business owners are running 8 to 12 separate tools (CRM, email, social scheduler, booking, payments, analytics, helpdesk, project tracker). Each one costs $30 to $80 a month. None of them talk to each other cleanly. Every Monday morning the owner opens eight tabs and tries to remember what closed last week.</p>
     <p style="margin:0 0 16px">A Full-Service Business Build replaces that whole stack with one custom system. Your site captures the lead. The agentic SDR qualifies it. The booking engine holds the call. The back office shows you what closed, what stalled, and what to work on this week. The AI agents draft your follow-ups in your voice. It all lives on one screen, and you own every piece of it.</p>
-    <p style="margin:0">Most builds run $8,500 to $22,000 and take two to four weeks. If you want smaller scope (just the site, no agentic engine) that is the Seed Site, $2,500 to $5,000 in about two weeks.</p>`)}
-    ${valueCallout('The math that makes this obvious', `12 SaaS subscriptions at $50 a month over 24 months is <strong>$14,400</strong>, and you still own none of it. A Full-Service Business Build at $14,000 lands at the same two-year cost. The difference: at month 25 you keep going on about $30 a month in hosting. Forever.`)}
+    <p style="margin:0">Most builds take two to four weeks. If you want smaller scope (just the site, no agentic engine) that is the Seed Site, in about two weeks. Each one is a set package, and I quote yours on the call once I know the scope.</p>`)}
+    ${valueCallout('The math that makes this obvious', `12 SaaS subscriptions at $50 a month over 24 months is <strong>$14,400</strong>, and you still own none of it. A system you own stops charging you rent the day it ships. After that it runs on a small hosting bill, and every piece of it is yours.`)}
     ${paragraph(`<p style="margin:0">If any of this fits the shape of your business, the next step is a 30-minute discovery call. I will scope your specific situation and tell you honestly whether we are the right partner.</p>`)}
     ${ctaBlock({ label: 'Book a discovery call', url: BOOKING_URL }, { label: 'See the work', url: WORK_URL })}
     ${signature('Sarah')}
@@ -1217,7 +1217,7 @@ export function auditFollowupEmail({ firstName, url, score, grade, headline: lin
     preheader = `Your audit: ${score}, grade ${grade}. The good news: Seed Site fixes it in 14 days.`;
     offerBlock = auditOffer(
       'Seed Site',
-      '$2,500 to $5,000 · 14 days',
+      '14 days · a set package',
       'A beautiful, fast, brand-aligned site that fixes the foundation issues your audit just flagged. Loads in under two seconds. SEO built in. Full handoff, you own all of it.',
       `${ENGAGEMENTS_URL}#seed-site`
     );
@@ -1225,7 +1225,7 @@ export function auditFollowupEmail({ firstName, url, score, grade, headline: lin
     preheader = `Your audit: ${score}, grade ${grade}. You are past the basics. Ready for the engine?`;
     offerBlock = auditOffer(
       'Full-Service Business Build',
-      '$8,500 to $22,000 · 2 to 4 weeks',
+      '2 to 4 weeks · a set package',
       'Your foundation is solid. What you need now is the engine: bespoke booking with an embedded CRM, an agentic SDR catching every lead, funnels live on day one, a back office that surfaces what matters, and AI agents on both sides of the wall.',
       `${ENGAGEMENTS_URL}#online-presence`
     );
@@ -1233,7 +1233,7 @@ export function auditFollowupEmail({ firstName, url, score, grade, headline: lin
     preheader = `Your audit: ${score}, grade ${grade}. You do not need a rebuild. You need a strategist.`;
     offerBlock = auditOffer(
       'Fractional AI Partner',
-      'From $1,500/month · 3-month minimum',
+      'Monthly · 3-month minimum',
       'Your site is excellent. There is nothing to rebuild. What you need is a partner who keeps extending it, plugs in new agentic capabilities as they ship, and watches your numbers with you. That is exactly what this retainer is.',
       `${ENGAGEMENTS_URL}#fractional`
     );

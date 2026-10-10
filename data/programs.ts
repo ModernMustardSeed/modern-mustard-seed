@@ -54,7 +54,7 @@ export const programs: Program[] = [
     toolBlurb: 'A live, on-site tool with a Spec Builder, a 14-day validation sprint tracker, a prompt library, and an idea pipeline. It saves your progress in the browser and stays current as it grows.',
     accent: '#F5B700',
     metaTitle: 'Idea to Spec. Turn Any Idea Into a Production-Ready Spec',
-    metaDescription: 'A $497 program that teaches you to turn any idea into a validated, production-ready spec. The 38-page playbook plus the live Spec Studio. From Modern Mustard Seed.',
+    metaDescription: 'A program that teaches you to turn any idea into a validated, production-ready spec. The 38-page playbook plus the live Spec Studio. From Modern Mustard Seed.',
     whoFor: [
       { title: 'The founder with too many ideas', detail: 'You have a notebook full of them. This is how you find the one worth building and prove it before you spend a dollar.' },
       { title: 'The operator who keeps getting burned by builds', detail: 'Vague briefs make expensive mistakes. A real spec is the cheapest insurance you will ever buy.' },
@@ -97,7 +97,7 @@ export const programs: Program[] = [
     toolBlurb: 'A live, on-site dashboard with a curriculum tracker, a setup checklist, a prompt library, and a project tracker. It saves your progress in the browser and stays current as it grows.',
     accent: '#E0301E',
     metaTitle: 'The Terminal. Become a Fullstack Engineer with Claude Code',
-    metaDescription: 'A $497 program that teaches you to become a fullstack, zero-to-one builder using Claude Code, the command line, and MCP. The 47-page playbook plus the live Ops Center.',
+    metaDescription: 'A program that teaches you to become a fullstack, zero-to-one builder using Claude Code, the command line, and MCP. The 47-page playbook plus the live Ops Center.',
     whoFor: [
       { title: 'The non-technical founder', detail: 'You have ideas and taste. This gives you the hands to build them yourself, no dev queue required.' },
       { title: 'The operator tired of waiting', detail: 'Stop waiting on a developer for every small thing. Ship it yourself, today, from your terminal.' },
@@ -142,7 +142,7 @@ export type ProgramBundle = {
 export const programBundle: ProgramBundle = {
   slug: 'zero-to-one',
   name: 'The Zero to One Bundle',
-  pitch: 'Spec it with Idea to Spec, build it with The Terminal. The front half and the back half of taking something from nothing to shipped, together at one price. $797 for both, a $197 saving.',
+  pitch: 'Spec it with Idea to Spec, build it with The Terminal. The front half and the back half of taking something from nothing to shipped, together as one set package.',
   priceUsd: 797,
   savings: 197,
   stripePriceEnv: 'STRIPE_PRICE_ZERO_TO_ONE',

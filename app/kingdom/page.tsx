@@ -58,7 +58,7 @@ const FAQ = [
   },
   {
     q: 'Do we have to buy inventory for a merch collection?',
-    a: 'No. Collections are made to order through Cross + Covenant, so there is no inventory, no setup fee and no minimum. Two numbers do two different jobs. When supporters buy from your collection, your organization earns 40% of the profit on every piece: the profit is what is left after the garment cost and the 10% of profit that goes to our Charity of the Month, which works out to $8.77 on a $40 tee. When you buy for your own event or team, 12 or more of one design to one address, you pay 30% off retail, so a $40 tee is $28.',
+    a: 'No. Collections are made to order through Cross + Covenant, so there is no inventory, no setup fee and no minimum. Two numbers do two different jobs. When supporters buy from your collection, your organization earns 40% of the profit on every piece: the profit is what is left after the garment cost and the 10% of profit that goes to our Charity of the Month. When you buy for your own event or team, 12 or more of one design to one address, you pay 30% off retail. Sarah walks you through the numbers for your collection before anything is printed.',
   },
   {
     q: 'How do Modern Mustard Seed and Cross + Covenant work together?',

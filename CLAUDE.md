@@ -46,7 +46,7 @@ master
 - If the site 404s with `X-Vercel-Error: DEPLOYMENT_NOT_FOUND`: diagnose with `curl -sI https://modernmustardseed.com` → `vercel ls` → `vercel domains inspect modernmustardseed.com` → `vercel alias ls | grep mustardseed`. Only re-attach (`vercel domains add modernmustardseed.com`) if the inspect table shows NO project AND no build is in flight.
 
 ## Conventions
-- Public prices are only published for playbooks and courses. All services, custom builds and managed systems use quote requests, including metadata, JSON-LD, calculators and demos. Quote the scope and price in the conversation before work starts.
+- **No prices on the public site, and no self-serve checkout (Sarah, 2026-10-10).** Not for services, playbooks, courses or programs: no dollar amount, no "from $", no price in metadata or JSON-LD. Every buy, enroll or start button opens a conversation with Sarah through `talkFirstHref()` in `lib/talk-first.ts`; the price goes out privately in a proposal or a pay link (`/pay/<slug>`, the proposal pay route, the client portal). Retired public checkout routes answer 410 via `lib/talk-first-server.ts`. `pnpm prices:check` runs in the build (source before `next build`, prerendered output after), and `pnpm prices:crawl` reads production. Someone else's number (a competitor's published plan, a lost-revenue calculator, a demo business's menu) is allowed only by an entry with its reason in `scripts/check-no-prices.mjs` and `lib/price-scan.mjs`.
 - No em dashes in user-facing prose (Sarah's rule).
 - Internal links use `next/link`. Outbound links open in new tab with `rel="noopener noreferrer"`.
 - MDX content lives in `content/{blog,work,playbooks}`. Frontmatter is parsed by `lib/content.ts`.

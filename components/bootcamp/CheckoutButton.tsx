@@ -1,15 +1,20 @@
-'use client';
-
-import { useState } from 'react';
+import Link from 'next/link';
 import type { BootcampPaidSlug } from '@/data/bootcamp';
-import { ErrorNote, SUPPORT_EMAIL } from './ui';
+import { talkFirstHref } from '@/lib/talk-first';
+
+const TIER_NAME: Record<BootcampPaidSlug, string> = {
+  ga: 'Bootcamp, General Admission',
+  vip: 'Bootcamp, VIP',
+  platinum: 'Bootcamp, Platinum',
+  operator: 'Operator Program',
+};
 
 /**
- * One button, one tier. POSTs /api/bootcamp/checkout and follows the Stripe
- * URL it returns. The server decides the price; this never carries a number.
- * When enrollment is closed the button says so and does nothing. From the room
- * it also carries the buyer's email (Stripe opens prefilled) and the host who
- * brought their masterclass seat, so that host is credited for the ticket.
+ * One button, one tier. Conversation first since 2026-10-10: the seat is no
+ * longer bought on the page. The button opens a note to Sarah with the tier
+ * already named, and the seat and its price are settled with her directly.
+ * When enrollment is closed the button says so and does nothing.
+ * `email` and `host` are kept for the room, which still passes them.
  */
 export default function CheckoutButton({
   tier,
@@ -17,8 +22,6 @@ export default function CheckoutButton({
   open,
   className,
   closedLabel = 'Enrollment closed',
-  email,
-  host,
 }: {
   tier: BootcampPaidSlug;
   label: string;
@@ -28,45 +31,20 @@ export default function CheckoutButton({
   email?: string;
   host?: string | null;
 }) {
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState('');
-
-  async function go() {
-    if (!open || busy) return;
-    setBusy(true);
-    setError('');
-    try {
-      const res = await fetch('/api/bootcamp/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tier, ...(email ? { email } : {}), ...(host ? { host } : {}) }),
-      });
-      const data = (await res.json().catch(() => ({}))) as { url?: string; error?: string };
-      if (!res.ok || !data.url) {
-        setError(data.error || 'Checkout did not open. Try once more, or email ' + SUPPORT_EMAIL + ' and we will send you a direct link.');
-        setBusy(false);
-        return;
-      }
-      window.location.assign(data.url);
-    } catch {
-      setError('We could not reach checkout. Check your connection and try again, or email ' + SUPPORT_EMAIL + '.');
-      setBusy(false);
-    }
+  if (!open) {
+    return (
+      <div className="mt-7">
+        <button type="button" disabled aria-disabled className={`${className} w-full`}>
+          {closedLabel}
+        </button>
+      </div>
+    );
   }
-
   return (
     <div className="mt-7">
-      <button
-        type="button"
-        onClick={go}
-        disabled={!open || busy}
-        aria-busy={busy}
-        aria-disabled={!open || busy}
-        className={`${className} w-full`}
-      >
-        {!open ? closedLabel : busy ? 'Opening checkout…' : label}
-      </button>
-      {error && <div className="mt-3"><ErrorNote>{error}</ErrorNote></div>}
+      <Link href={talkFirstHref(TIER_NAME[tier])} className={`${className} w-full inline-flex items-center justify-center`}>
+        {label}
+      </Link>
     </div>
   );
 }

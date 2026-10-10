@@ -2,7 +2,6 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { getClientSession } from '@/lib/client-auth';
 import { hasEntitlement, PROGRAM_ASSETS, type ProgramSlug } from '@/lib/entitlements';
-import { getProgramBySlug } from '@/data/programs';
 
 /**
  * The gated HQ for a program. Server-checks the buyer's session and entitlement,
@@ -15,7 +14,6 @@ export default async function ProgramHQ({ slug }: { slug: ProgramSlug }) {
 
   const entitled = await hasEntitlement(session.email, slug);
   const assets = PROGRAM_ASSETS[slug];
-  const program = getProgramBySlug(slug)!;
 
   if (!entitled) {
     return (
@@ -26,7 +24,7 @@ export default async function ProgramHQ({ slug }: { slug: ProgramSlug }) {
             You are signed in as {session.email}, but this account does not have access to {assets.programName} yet.
           </p>
           <Link href={`/${slug}`} className="inline-block px-7 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-cream-50 bg-brass rounded-full">
-            Get {assets.programName} . ${program.priceUsd}
+            Ask Sarah about {assets.programName}
           </Link>
         </div>
       </div>

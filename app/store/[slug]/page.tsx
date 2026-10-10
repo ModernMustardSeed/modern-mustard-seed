@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import { buildMetadata, SITE } from '@/lib/seo';
+import { buildMetadata } from '@/lib/seo';
 import {
   JsonLd,
   breadcrumbJsonLd,
@@ -47,10 +47,10 @@ export async function generateMetadata({
   });
 }
 
-const PRODUCT_FAQS = (productName: string, priceUsd: number) => [
+const PRODUCT_FAQS = (productName: string) => [
   {
-    q: 'How is the playbook delivered?',
-    a: `Instant PDF download after purchase. You will get a checkout-success page with the download link and a copy of the link in your email. Lifetime access. No DRM. Read it on any device.`,
+    q: 'How do I get the playbook?',
+    a: `Ask Sarah for it with the button on this page. She answers inside one business day and sends your download link by email. Lifetime access. No DRM. Read it on any device.`,
   },
   {
     q: 'Who wrote this playbook?',
@@ -66,7 +66,7 @@ const PRODUCT_FAQS = (productName: string, priceUsd: number) => [
   },
   {
     q: 'Can the playbook credit be applied to a Modern Mustard Seed build?',
-    a: `Yes. The $${priceUsd} you spend on this playbook is credited toward any Seed Site or Full-Service Business Build. Mention it on your discovery call.`,
+    a: `Yes. What you spend on this playbook is credited toward any Seed Site or Full-Service Business Build. Mention it on your discovery call.`,
   },
 ];
 
@@ -87,15 +87,12 @@ export default async function StoreItemPage({
 
   const isProductItem = isProduct(item);
   const accentColor = isProductItem ? item.accentColor : '#C8964E';
-  const url = `${SITE.url}/store/${slug}`;
 
   const bundleProducts = !isProductItem
     ? (item.productSlugs.map((s) => getProductBySlug(s)).filter(Boolean) as NonNullable<ReturnType<typeof getProductBySlug>>[])
     : [];
 
-  const faqs = isProductItem
-    ? PRODUCT_FAQS(item.name, item.priceUsd)
-    : PRODUCT_FAQS(item.name, item.priceUsd);
+  const faqs = PRODUCT_FAQS(item.name);
 
   const jsonLd: object[] = [
     breadcrumbJsonLd([
@@ -107,7 +104,6 @@ export default async function StoreItemPage({
       slug,
       name: item.name,
       description: isProductItem ? item.whatsInside : item.pitch,
-      priceUsd: item.priceUsd,
       category: isProductItem ? item.category : 'Bundle',
       pages: isProductItem
         ? item.pages
@@ -147,7 +143,7 @@ export default async function StoreItemPage({
             <Link href="/store" className={pop.back}>
               ← Back to store
             </Link>
-            <span className={pop.pill}>{isProductItem ? item.category : 'Bundle · Save $' + item.savings}</span>
+            <span className={pop.pill}>{isProductItem ? item.category : 'Bundle'}</span>
           </>
         }
         title={item.name}
@@ -168,31 +164,23 @@ export default async function StoreItemPage({
         <section className="pop-card-yellow p-8 md:p-10 mb-16">
           <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-8 items-center">
             <div>
-              <div className="flex items-baseline gap-4 mb-3">
-                <span className="font-display text-5xl md:text-6xl font-black text-[#0b3b44] tracking-tight">
-                  ${item.priceUsd}
-                </span>
-                {!isProductItem && (
-                  <span className="text-[#0b3b44]/55 text-base font-mono line-through">
-                    ${item.individualTotal}
-                  </span>
-                )}
-              </div>
+              <p className="font-display text-3xl md:text-4xl font-black text-[#0b3b44] tracking-tight mb-3">
+                Ask Sarah for it.
+              </p>
               <p className="text-[#0b3b44]/75 text-sm font-body font-medium leading-relaxed">
                 {isProductItem ? (
                   <>
-                    {item.pages} pages · PDF · Instant download · Lifetime access · Free updates
+                    {item.pages} pages · PDF · Lifetime access · Free updates
                   </>
                 ) : (
                   <>
                     {bundleProducts.length} playbooks ·{' '}
-                    {bundleProducts.reduce((sum, p) => sum + p.pages, 0)} pages · PDF · Instant
-                    download · Lifetime access
+                    {bundleProducts.reduce((sum, p) => sum + p.pages, 0)} pages · PDF · Lifetime access
                   </>
                 )}
               </p>
             </div>
-            <StoreBuyButton slug={slug} configured={configured} />
+            <StoreBuyButton slug={slug} configured={configured} title={item.name} label="Ask Sarah for it →" />
 
           </div>
         </section>
@@ -234,7 +222,6 @@ export default async function StoreItemPage({
                     <span className="text-[#0b3b44]/45 text-xs font-mono uppercase tracking-[0.22em]">
                       {p.pages} pages
                     </span>
-                    <span className="text-[#0b3b44] text-sm font-mono font-bold">${p.priceUsd}</span>
                   </div>
                 </Link>
               ))}
@@ -347,10 +334,10 @@ export default async function StoreItemPage({
               Want us to build it for you instead?
             </span>
             <h2 className="font-display text-2xl md:text-4xl font-black text-[#0b3b44] tracking-tight mb-4">
-              Your ${item.priceUsd} credits toward any engagement
+              What you spend here credits toward any engagement
             </h2>
             <p className="text-[#0b3b44]/80 text-base font-body font-medium leading-relaxed mb-7 max-w-2xl">
-              Read the playbook, run the worksheets, decide what you want to ship. Then if you would rather have us build the system for you, every dollar you spent here comes off the engagement. Mention it on your discovery call.
+              Read the playbook, run the worksheets, decide what you want to ship. Then if you would rather have us build the system for you, what you spent here comes off the engagement. Mention it on your discovery call.
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
               <Link

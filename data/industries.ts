@@ -334,11 +334,11 @@ export const industries: Industry[] = [
       },
       {
         q: 'How is this different from a traditional answering service?',
-        a: 'A traditional answering service costs $1 to $2 per minute, hands you a written message hours later, and never books an appointment. A custom voice agent costs a fixed monthly platform fee under $300, books appointments in real time, qualifies leads against your criteria, and gives you a searchable transcript of every call. The numbers are not close. The only thing answering services do better is handle ambiguous edge cases, and voice agents are closing that gap every quarter.',
+        a: 'A traditional answering service costs $1 to $2 per minute, hands you a written message hours later, and never books an appointment. A custom voice agent runs on a set monthly package, books appointments in real time, qualifies leads against your criteria, and gives you a searchable transcript of every call. The numbers are not close. The only thing answering services do better is handle ambiguous edge cases, and voice agents are closing that gap every quarter.',
       },
       {
         q: 'What does it cost to run monthly after the build?',
-        a: 'Monthly operating cost for a production voice agent typically runs $150 to $400 depending on call volume. That covers the Vapi platform fees, the Anthropic API for reasoning, your phone number, and the CRM connections. There is no additional agency retainer unless you specifically want one. A $40,000-a-year human receptionist costs $3,300 a month. The voice agent costs less than ten percent of that and works 24/7.',
+        a: 'A voice agent runs on one set monthly package that covers the platform, the reasoning, your phone number, and the CRM connections, so there is no separate agency retainer. We quote it for your call volume in the first conversation. A $40,000-a-year human receptionist costs about $3,300 a month in wages alone; the voice agent costs a small fraction of that and works 24/7.',
       },
       {
         q: 'Can the agent take payment or send a quote?',

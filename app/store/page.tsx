@@ -10,7 +10,7 @@ import PopPageHero, { pop } from '@/components/pop/PopPageHero';
 export const metadata: Metadata = buildMetadata({
   title: 'The Store. Playbooks and courses for builders and operators',
   description:
-    'Production-tested playbooks and courses from Modern Mustard Seed. Agentic systems strategy, Claude Code, Shopify builds, brand systems, agentic sales, and GEO. From $47. Instant delivery, growing library.',
+    'Production-tested playbooks and courses from Modern Mustard Seed. Agentic systems strategy, Claude Code, Shopify builds, brand systems, agentic sales, and GEO. Ask Sarah which one fits. A growing library.',
   path: '/store',
 });
 
@@ -64,7 +64,7 @@ export default function StorePage() {
           mascot={{ bubble: 'Take one home!' }}
         >
           <p className="font-display">
-            Playbooks and courses. From $47
+            Playbooks and courses. Ask Sarah which fits.
           </p>
           <p>
             Production-tested workbooks and courses built from 40+ shipped agentic products. Agentic systems strategy. Claude Code. Shopify builds. Brand systems. Agentic sales. GEO and agentic commerce. A growing library, with new drops added as we ship.
@@ -100,7 +100,7 @@ export default function StorePage() {
                 Mustard Life: the whole catalog, as a comic.
               </span>
               <span className="block text-[#3a3733] font-body text-sm mt-1 leading-snug">
-                The family yachts while the agentic staff work. Every product, every price, printed in ink.
+                The family yachts while the agentic staff work. Every product, printed in ink.
               </span>
             </span>
             <span aria-hidden className="ml-auto hidden md:inline-flex items-center gap-2 px-5 py-2.5 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-[#0b3b44] bg-[#f5b700] border-2 border-[#0b3b44] group-hover:gap-3 transition-all flex-shrink-0">
@@ -157,7 +157,7 @@ export default function StorePage() {
             <div className="relative grid grid-cols-1 md:grid-cols-[1fr_auto] gap-6 items-center">
               <div>
                 <span className="text-[10px] uppercase tracking-[0.3em] text-[#ffc933] font-mono font-bold">
-                  [ MUSTARD MODE: ON ] · New · From $197
+                  [ MUSTARD MODE: ON ] · New · Free first session
                 </span>
                 <h2 className="font-display italic text-3xl md:text-5xl font-black text-white tracking-tight leading-[1.02] mt-3">
                   One seed. 100x the output.
@@ -175,11 +175,11 @@ export default function StorePage() {
           </Link>
         </section>
 
-        {/* Flagship programs: the two $497 front doors */}
+        {/* Flagship programs: the two front doors */}
         <section className="max-w-5xl mx-auto px-6 md:px-8 mb-16">
           <div className="text-center mb-8">
             <span className="text-[10px] uppercase tracking-[0.4em] text-[#0a7c78] font-mono font-bold block mb-3">The flagship programs</span>
-            <p className="text-[#3a3733] font-body">Spec it, then build it. Two front doors at $497, or get both in the Zero to One Bundle.</p>
+            <p className="text-[#3a3733] font-body">Spec it, then build it. Two front doors, or both together in the Zero to One Bundle.</p>
           </div>
           <div className="grid md:grid-cols-2 gap-5">
             {['idea-to-spec', 'the-terminal'].map((slug) => {
@@ -191,7 +191,7 @@ export default function StorePage() {
                   className="block rounded-2xl border-2 border-[#0b3b44] bg-white p-7 transition-transform hover:-translate-y-1 group"
                   style={{ boxShadow: `inset 6px 0 0 0 ${p.accent}, 5px 5px 0 0 #0b3b44` }}
                 >
-                  <span className="text-[10px] uppercase tracking-[0.3em] text-[#0a7c78] font-mono font-bold">{p.name} . ${p.priceUsd}</span>
+                  <span className="text-[10px] uppercase tracking-[0.3em] text-[#0a7c78] font-mono font-bold">{p.name}</span>
                   <h3 className="font-display text-2xl font-black text-[#0b3b44] mt-3 leading-tight">{p.tagline}</h3>
                   <p className="text-[#3a3733] font-body text-sm mt-3 leading-relaxed">{p.promise}</p>
                   <span className="inline-flex items-center gap-2 mt-5 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0b3b44] group-hover:gap-3 transition-all">
@@ -212,7 +212,7 @@ export default function StorePage() {
               <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-8 items-center">
                 <div>
                   <span className="text-[9px] uppercase tracking-[0.45em] text-[#0b3b44] font-mono font-bold mb-4 block">
-                    The Complete Library. Save $115
+                    The Complete Library
                   </span>
                   <h2 className="font-display text-3xl md:text-5xl font-black text-[#0b3b44] tracking-tight leading-[1.05] mb-4">
                     {featured.name}
@@ -221,12 +221,12 @@ export default function StorePage() {
                     {featured.pitch}
                   </p>
                   <p className="text-[#0b3b44]/55 text-xs font-mono uppercase tracking-[0.25em]">
-                    Every playbook · 240+ pages · ${featured.priceUsd}
+                    Every playbook · 240+ pages
                   </p>
                 </div>
                 <div className="md:text-right">
                   <span className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-white bg-[#0b3b44] border-2 border-[#0b3b44] transition-all">
-                    Get the Library →
+                    See the Library →
                   </span>
                 </div>
               </div>
@@ -272,8 +272,8 @@ export default function StorePage() {
                       {p.pitch}
                     </p>
                     <div className="flex items-baseline justify-between relative">
-                      <span className="font-display text-2xl text-[#0b3b44] font-black tracking-tight">
-                        ${p.priceUsd}
+                      <span className="text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0b3b44] group-hover:underline underline-offset-4">
+                        See inside →
                       </span>
                       <span className="text-[10px] uppercase tracking-[0.25em] text-[#0b3b44]/45 font-mono">
                         {p.pages} pages
@@ -292,7 +292,7 @@ export default function StorePage() {
               Bundles
             </h2>
             <p className="text-[#3a3733] text-sm md:text-base font-body leading-relaxed max-w-2xl">
-              Buy by topic and save. Same playbooks, lower per-page price.
+              The playbooks grouped by topic, so you get the whole picture at once.
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
@@ -306,7 +306,7 @@ export default function StorePage() {
                 >
                   <div className="flex items-center justify-between mb-4">
                     <span className="text-[9px] uppercase tracking-[0.3em] text-[#0a7c78] font-mono font-bold">
-                      Bundle · Save ${b.savings}
+                      Bundle
                     </span>
                     {soon && (
                       <span className="text-[8px] uppercase tracking-[0.3em] text-[#0b3b44]/55 font-mono font-bold px-2 py-1 rounded-full border-2 border-[#0b3b44]/20 bg-[#fbf5ea]">
@@ -320,14 +320,9 @@ export default function StorePage() {
                   <p className="text-[#3a3733] text-sm font-body leading-relaxed mb-5 flex-1">
                     {b.pitch}
                   </p>
-                  <div className="flex items-baseline justify-between">
-                    <span className="font-display text-2xl text-[#0b3b44] font-black tracking-tight">
-                      ${b.priceUsd}
-                    </span>
-                    <span className="text-[10px] uppercase tracking-[0.25em] text-[#0b3b44]/45 font-mono line-through">
-                      ${b.individualTotal}
-                    </span>
-                  </div>
+                  <span className="text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0b3b44] group-hover:underline underline-offset-4">
+                    See the bundle →
+                  </span>
                 </Link>
               );
             })}

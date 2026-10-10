@@ -33,8 +33,6 @@ export default function MustardModePage() {
           .map((l) => ({
             '@type': 'Offer',
             name: `MUSTARD MODE ${l.name}`,
-            price: l.priceUsd,
-            priceCurrency: 'USD',
             url: `${SITE.url}/mustard-mode#levels`,
             availability: 'https://schema.org/InStock',
           })),

@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { buildMetadata, SITE } from '@/lib/seo';
-import { BOOTCAMP, OPERATOR, bootcampDays, bootcampTiers, fmtMountain, fmtMountainTime, getBootcampTier, usd } from '@/data/bootcamp';
+import { BOOTCAMP, OPERATOR, bootcampDays, fmtMountain, fmtMountainTime, getBootcampTier, usd } from '@/data/bootcamp';
 import { Kicker, btn } from '@/components/bootcamp/ui';
 
 /**
@@ -64,7 +64,6 @@ export default async function WelcomePage({ searchParams }: { searchParams: Prom
   const sp = await searchParams;
   const masterclass = sp.masterclass === '1';
   const sessionId = typeof sp.session_id === 'string' ? sp.session_id.trim() : '';
-  const ga = bootcampTiers[0];
 
   if (masterclass) {
     return (
@@ -74,7 +73,7 @@ export default async function WelcomePage({ searchParams }: { searchParams: Prom
         <Step n="3" title="Bring one idea" body="The thing you would hand to an agent tomorrow if you could. We take a few from the room at the end and show how the brief would read." />
         <div className="rounded-[4px] border-2 border-[#141210] bg-[#141210] text-[#fcfaf3] p-6 sm:p-8 shadow-[6px_6px_0_0_#f5b700] mt-8">
           <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[#e8ecd0] font-bold">If you already know you want the rest</p>
-          <h2 className="font-display text-2xl font-black mt-2 leading-tight">The bootcamp, from {usd(ga.priceCents)}.</h2>
+          <h2 className="font-display text-2xl font-black mt-2 leading-tight">The bootcamp: three live sessions.</h2>
           <p className="font-body text-[15px] text-[#fcfaf3]/80 leading-relaxed mt-2">{BOOTCAMP.promise} {bootcampDays[0].dateLabel} to {bootcampDays[2].dateLabel}. Day 1 is guaranteed.</p>
           <Link href="/bootcamp#tiers" className={`${btn.onDark} mt-5`}>See the three seats</Link>
         </div>

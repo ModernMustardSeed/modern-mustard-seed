@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { bootcampTiers, usd } from '@/data/bootcamp';
+import { bootcampTiers } from '@/data/bootcamp';
 import type { Player as PlayerSpec } from '@/lib/bootcamp/sessions';
 import CheckoutButton from '@/components/bootcamp/CheckoutButton';
 import Player from './Player';
@@ -151,7 +151,7 @@ function OfferPanel({ open, email, host }: { open: boolean; email: string; host:
           <div key={t.slug}>
             <CheckoutButton
               tier={t.slug}
-              label={`${t.name} · ${usd(t.priceCents)}`}
+              label={`Ask Sarah for ${t.name}`}
               open={open}
               email={email}
               host={host}

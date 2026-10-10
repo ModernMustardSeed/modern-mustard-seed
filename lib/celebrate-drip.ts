@@ -39,9 +39,7 @@ import { SITE } from '@/lib/seo';
 import { mailable } from '@/lib/hundredfold-drip';
 import {
   CELEBRATE_LAUNCH,
-  celebrateGiftFloorCents,
   celebrateTiers,
-  celebrateUsd,
   daysToLaunch,
   type CelebrateAudience,
 } from '@/data/celebrate';
@@ -306,7 +304,7 @@ export function celebrateDripEmail(entry: CelebrateEntry, step: number, now: num
             'Fresh joy cannot be warehoused. That single constraint is the reason the whole system is built the way it is.'
           ) +
           `<p>It costs us more to run and it is slower to scale, because every new city needs real bakers who will answer the phone. That is also why the waitlist matters: every city with enough signups gets a vendor route, and yours moves up the list every time somebody near you joins.</p>` +
-          `<p>Gifts run at local-shop prices, from $${celebrateUsd(celebrateGiftFloorCents)}, inside the cap you set. Every dollar of it lands in a register on your own street.</p>`,
+          `<p>Gifts run at local-shop prices, inside the cap you set. Every dollar of it lands in a register on your own street.</p>`,
         cta: seeIt,
         secondary: buildIt,
         signature: 'Sarah',
@@ -319,15 +317,15 @@ export function celebrateDripEmail(entry: CelebrateEntry, step: number, now: num
       subject: `Founding rate, held until ${CELEBRATE_LAUNCH.short}`,
       snippet: 'Team touch 3: the price, and the pilot that runs before launch.',
       html: clientEmail({
-        preheader: `${TEAM.name} is $${celebrateUsd(TEAM.monthlyCents)} a month. Waitlist keeps that number.`,
-        eyebrow: 'PRICING',
+        preheader: `${TEAM.name} and ${COMPANY.name}: the founding rate is held for this list.`,
+        eyebrow: 'THE FOUNDING RATE',
         greeting: hi,
         body:
-          `<p>${escape(left.charAt(0).toUpperCase() + left.slice(1))} out. Time to put the number in front of you, because a waitlist that never states a price is wasting your time.</p>` +
-          `<p><strong>${escape(TEAM.name)}, $${celebrateUsd(TEAM.monthlyCents)} a month.</strong> Up to ${TEAM.recipientCap} people on your route. Birthdays, work anniversaries, and the holidays you pick. Approve every send or run full autopilot. Delivery photo on every dispatch.</p>` +
-          `<p><strong>${escape(COMPANY.name)}, $${celebrateUsd(COMPANY.monthlyCents)} a month.</strong> Up to ${COMPANY.recipientCap} people, your clients included, plus concierge onboarding where we load the whole list for you.</p>` +
-          `<p>Gifts are billed at local-shop prices on top, from $${celebrateUsd(celebrateGiftFloorCents)}, always inside the budget you cap. When a cap is reached we pause and ask. There is no such thing as a surprise bill here, and there is no setup fee on the founding route.</p>` +
-          `<p>Two things worth knowing while the clock runs. The founding rate is held for everyone on this list, so the number above is the number you pay. And corporate pilots run now, before the public doors open: we load your full list, run your next 60 days of celebrations end to end, and send you the delivery photos and the reactions. If your team does not feel it, you walk away.</p>` +
+          `<p>${escape(left.charAt(0).toUpperCase() + left.slice(1))} out. Here is what the two plans hold, and the number for yours is one reply away.</p>` +
+          `<p><strong>${escape(TEAM.name)}.</strong> Up to ${TEAM.recipientCap} people on your route. Birthdays, work anniversaries, and the holidays you pick. Approve every send or run full autopilot. Delivery photo on every dispatch.</p>` +
+          `<p><strong>${escape(COMPANY.name)}.</strong> Up to ${COMPANY.recipientCap} people, your clients included, plus concierge onboarding where we load the whole list for you.</p>` +
+          `<p>Each plan is a set monthly package. Gifts are billed at local-shop prices on top, always inside the budget you cap. When a cap is reached we pause and ask. There is no such thing as a surprise bill here, and there is no setup fee on the founding route. Reply to this email and I will send you the number for your team.</p>` +
+          `<p>Two things worth knowing while the clock runs. The founding rate is held for everyone on this list, so the number I send you is the number you pay. And corporate pilots run now, before the public doors open: we load your full list, run your next 60 days of celebrations end to end, and send you the delivery photos and the reactions. If your team does not feel it, you walk away.</p>` +
           paradeLine +
           `<p>Pilots are limited to the founding route while the vendor network grows. If you are on it, this is the cheapest possible way to find out whether this works on your people.</p>`,
         cta: pilot,

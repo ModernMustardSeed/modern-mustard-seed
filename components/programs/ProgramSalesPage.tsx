@@ -6,8 +6,8 @@ import BuyButton from './BuyButton';
 
 /**
  * The flagship sales page, rendered for both The Terminal and Idea to Spec.
- * Pop-art brand aesthetic (cream ground, ink bands, hard shadows), mobile-first, with Product + Offer + FAQ JSON-LD so the
- * program is indexable for AI shopping and search.
+ * Pop-art brand aesthetic (cream ground, ink bands, hard shadows), mobile-first, with Product + FAQ JSON-LD so the
+ * program is indexable for AI search. No price anywhere, structured data included (conversation first, 2026-10-10).
  */
 export default function ProgramSalesPage({ program }: { program: Program }) {
   const url = `${SITE.url}/${program.slug}`;
@@ -22,14 +22,7 @@ export default function ProgramSalesPage({ program }: { program: Program }) {
         description: program.promise,
         brand: { '@type': 'Brand', name: SITE.name },
         category: 'Online course',
-        offers: {
-          '@type': 'Offer',
-          price: program.priceUsd,
-          priceCurrency: 'USD',
-          availability: 'https://schema.org/InStock',
-          url,
-          seller: { '@type': 'Organization', name: SITE.name },
-        },
+        url,
       },
       {
         '@type': 'FAQPage',
@@ -63,8 +56,8 @@ export default function ProgramSalesPage({ program }: { program: Program }) {
             {program.promise}
           </p>
           <div className="mt-10 flex flex-col items-center gap-3">
-            <BuyButton slug={program.slug} label={`Get ${program.name} . $${program.priceUsd}`} tone="ink" />
-            <span className="text-[#fbf5ea]/60 font-mono text-[11px] tracking-wider">One time . Lifetime access . 14 day guarantee</span>
+            <BuyButton slug={program.slug} name={program.name} label={`Ask Sarah about ${program.name}`} tone="ink" />
+            <span className="text-[#fbf5ea]/60 font-mono text-[11px] tracking-wider">Lifetime access . 14 day guarantee . Sarah answers inside one business day</span>
           </div>
         </div>
       </section>
@@ -130,7 +123,7 @@ export default function ProgramSalesPage({ program }: { program: Program }) {
               <Link href={program.companion.href} className="px-7 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#0b3b44] bg-white rounded-full border-2 border-[#0b3b44] shadow-[4px_4px_0_0_#0b3b44] hover:-translate-y-0.5 transition-all">
                 {program.companion.label}
               </Link>
-              <BuyButton slug={programBundle.slug} label="Get both . The Zero to One Bundle" className="px-7 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#fbf5ea] bg-[#0b3b44] rounded-full border-2 border-[#0b3b44] shadow-[4px_4px_0_0_#f5b700] hover:-translate-y-0.5 transition-all disabled:opacity-50" />
+              <BuyButton slug={programBundle.slug} name="The Zero to One Bundle" label="Ask about both . The Zero to One Bundle" className="px-7 py-3 text-[11px] uppercase tracking-[0.2em] font-sans font-extrabold text-[#fbf5ea] bg-[#0b3b44] rounded-full border-2 border-[#0b3b44] shadow-[4px_4px_0_0_#f5b700] hover:-translate-y-0.5 transition-all disabled:opacity-50" />
             </div>
           </div>
         </Section>
@@ -154,8 +147,8 @@ export default function ProgramSalesPage({ program }: { program: Program }) {
         <div className="relative max-w-3xl mx-auto">
           <h2 className="font-display text-3xl md:text-5xl font-black tracking-tight text-[#0b3b44] mb-8">{program.tagline}</h2>
           <div className="flex flex-col items-center gap-3">
-            <BuyButton slug={program.slug} label={`Get ${program.name} . $${program.priceUsd}`} tone="onMustard" />
-            <span className="text-[#0b3b44]/75 font-mono text-[11px] tracking-wider">One time . Lifetime access . 14 day guarantee</span>
+            <BuyButton slug={program.slug} name={program.name} label={`Ask Sarah about ${program.name}`} tone="onMustard" />
+            <span className="text-[#0b3b44]/75 font-mono text-[11px] tracking-wider">Lifetime access . 14 day guarantee . Sarah answers inside one business day</span>
           </div>
         </div>
       </section>

@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { buildMetadata, SITE } from '@/lib/seo';
 import { getSupabase } from '@/lib/supabase';
-import { BOOTCAMP, OPERATOR, tradeRooms, bootcampTiers, deliverablesFor, deliverablesReleased, enrollmentOpen, fmtMountain, fmtMountainTime, getBootcampTier, usd } from '@/data/bootcamp';
+import { BOOTCAMP, OPERATOR, tradeRooms, deliverablesFor, deliverablesReleased, enrollmentOpen, fmtMountain, fmtMountainTime, getBootcampTier } from '@/data/bootcamp';
 import { deliverableHref, fmtBytes, readManifest } from '@/lib/bootcamp/deliverables';
 import { WORKSHEET_MINUTES, WORKSHEET_NAME } from '@/data/bootcamp-worksheet';
 import { roomRegistration } from '@/lib/bootcamp/room-auth';
@@ -280,7 +280,7 @@ export default async function RoomPage({ searchParams }: { searchParams: Promise
             <Kicker>If you want the rest</Kicker>
             <h2 id="seat-heading" className={h2SmCls}>Three live sessions. Two agents <em>you keep.</em></h2>
             <p className={leadCls}>
-              {BOOTCAMP.promise} From {usd(bootcampTiers[0].priceCents)}. {BOOTCAMP.guarantee} Enrollment closes {whenLine(BOOTCAMP.dates.close)}.
+              {BOOTCAMP.promise} {BOOTCAMP.guarantee} Enrollment closes {whenLine(BOOTCAMP.dates.close)}.
             </p>
             <TierCards open={open} email={reg.email} host={reg.host_slug} />
           </div>

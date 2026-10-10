@@ -129,19 +129,14 @@ async function run() {
   });
   check('signup honeypot swallows bots silently', honeypot.status === 200 && !honeypot.json?.returning, `HTTP ${honeypot.status}`);
 
-  const badHub = await http('/api/demo-order/checkout', {
+  // Conversation first since 2026-10-10: the public demo checkout is retired and
+  // answers 410 with the way to talk to Sarah, never a Stripe session.
+  const retired = await http('/api/demo-order/checkout', {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({ hubId: '00000000-0000-0000-0000-000000000000', products: ['site'] }),
   });
-  check('checkout refuses an unknown hub', badHub.status === 404, `HTTP ${badHub.status}`);
-
-  const noProducts = await http('/api/demo-order/checkout', {
-    method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ hubId: '11111111-1111-1111-1111-111111111111', products: [] }),
-  });
-  check('checkout refuses an empty cart', noProducts.status === 400, `HTTP ${noProducts.status}`);
+  check('public checkout is retired (410, no Stripe session)', retired.status === 410 && !/checkout\.stripe\.com/.test(JSON.stringify(retired.json ?? {})), `HTTP ${retired.status}`);
 
   const unpaidIntake = await http('/api/demo-order/intake', {
     method: 'POST',

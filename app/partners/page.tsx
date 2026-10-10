@@ -1,17 +1,17 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import PartnersApply from '@/components/partners/PartnersApply';
-import PartnerEarningsCalculator from '@/components/partners/PartnerEarningsCalculator';
 import PartnerFilm from '@/components/partners/PartnerFilm';
 import { buildMetadata } from '@/lib/seo';
 import { partnerMath } from '@/lib/partner-desk/letters';
 
+// Shares, never dollars: no price on the public site (conversation first,
+// 2026-10-10). Approved partners see the amounts in their dashboard.
 const m = partnerMath();
-const $ = m.dollars;
 
 export const metadata = buildMetadata({
   title: `Partner Program. Earn ${m.pct}% of every monthly invoice, for a year, on every business you refer`,
-  description: `The Modern Mustard Seed partner, ambassador and referral program. Send us a business, we build them a free demo, and if they keep it you earn ${m.pct}% of every monthly invoice for ${m.months} months: ${$(m.talkingWebsite.year)} per Talking Website. Plus ${m.buildPct}% to ${m.producerPct}% on custom builds and ${m.productPct}% on every playbook. Free access, your own link, a field guide. Apply today.`,
+  description: `The Modern Mustard Seed partner, ambassador and referral program. Send us a business, we build them a free demo, and if they keep it you earn ${m.pct}% of every invoice, the first one included, for ${m.months} months. Plus ${m.buildPct}% to ${m.producerPct}% on custom builds and ${m.productPct}% on every playbook. Free access, your own link, a field guide. Apply today.`,
   path: '/partners',
 });
 
@@ -21,7 +21,7 @@ const LADDER = [
     rate: `${m.pct}%`,
     accent: '#f5b700',
     label: `Every month, for ${m.months} months`,
-    detail: `Send a business. If they keep ${m.talkingWebsite.name} you earn ${$(m.talkingWebsite.firstCheck)} the month they sign, because the first invoice carries the setup fee, then ${$(m.talkingWebsite.perMonth)} a month: ${$(m.talkingWebsite.year)} over the year, per business. A ${m.voice.name} alone pays ${$(m.voice.perMonth)} a month. Ten kept Talking Websites is ${$(m.tenTalkingWebsites.perMonth)} a month to you.`,
+    detail: `Send a business. If they keep ${m.talkingWebsite.name} or a ${m.voice.name}, you earn ${m.pct}% of every invoice for ${m.months} months, starting with the first one, which is the biggest check of the year. Every business you send stacks on the last: ten kept businesses is ten checks a month.`,
     tag: 'The part that compounds',
   },
   {
@@ -82,14 +82,14 @@ export default function PartnersPage() {
             Send us a business.<br className="hidden sm:block" /> Get paid for a year.
           </h1>
           <p className="mt-7 text-[#3A3733] text-lg font-body font-light max-w-2xl mx-auto leading-relaxed">
-            You introduce. We build them a free demo: their own site and a voice agent built to their trade. If they keep it, you earn {m.pct}% of every monthly invoice for {m.months} months. That is {$(m.talkingWebsite.firstCheck)} the month they sign and {$(m.talkingWebsite.year)} over the year, per Talking Website. No selling, no quota, no cap.
+            You introduce. We build them a free demo: their own site and a voice agent built to their trade. If they keep it, you earn {m.pct}% of every invoice for {m.months} months, starting with the first one, which is the biggest. No selling, no quota, no cap.
           </p>
           <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-4">
             <a href="#apply" className="inline-block px-9 py-4 text-[11px] uppercase tracking-[0.22em] font-sans font-extrabold text-[#0b3b44] bg-[#f5b700] border-2 border-[#0b3b44] rounded-full shadow-[4px_4px_0_0_#0b3b44] hover:shadow-[6px_6px_0_0_#0b3b44] hover:-translate-y-0.5 transition-all">
               Apply to partner
             </a>
             <a href="#math" className="text-[12px] uppercase tracking-[0.18em] font-mono font-bold text-[#0b3b44]/70 hover:text-[#0b3b44] transition-colors underline underline-offset-4 decoration-[#f5b700] decoration-2">
-              Run your numbers
+              How the shares work
             </a>
           </div>
           <p className="mt-6 text-sm font-body text-[#3A3733]">
@@ -159,18 +159,28 @@ export default function PartnersPage() {
         </div>
       </section>
 
-      {/* Signature moment: earnings calculator */}
+      {/* The shares, plainly: percentages only, never a price */}
       <section id="math" className="max-w-5xl mx-auto px-6 pb-16 scroll-mt-24">
-        <PartnerEarningsCalculator
-          pct={m.pct}
-          months={m.months}
-          talkingWebsiteCents={m.talkingWebsite.perMonth}
-          voiceCents={m.voice.perMonth}
-          talkingWebsiteYearCents={m.talkingWebsite.year}
-          voiceYearCents={m.voice.year}
-          buildPct={m.buildPct}
-          productPct={m.productPct}
-        />
+        <div className="bg-[#0b3b44] text-[#fbf5ea] border-2 border-[#0b3b44] rounded-3xl shadow-[6px_6px_0_0_#f5b700] p-8 md:p-12">
+          <span className="text-[10px] uppercase tracking-[0.4em] text-[#f5b700] font-mono font-bold block mb-3">The shares, plainly</span>
+          <h2 className="font-display text-3xl md:text-4xl font-semibold mb-8">One structure for everyone, written down.</h2>
+          <dl className="grid sm:grid-cols-3 gap-5">
+            {[
+              { n: `${m.pct}%`, t: `Of every invoice for ${m.months} months`, d: 'On every business you send that keeps its site or voice agent. The first invoice counts, and it is the biggest.' },
+              { n: `${m.buildPct} to ${m.producerPct}%`, t: 'Of every custom build', d: 'A store, an app, an agentic system. Producer rates once you are closing them regularly.' },
+              { n: `${m.productPct}%`, t: 'Of every playbook sale', d: 'Paid the moment they buy. Every playbook is yours free, so you only recommend what you have used.' },
+            ].map((s) => (
+              <div key={s.t} className="rounded-2xl border-2 border-[#fbf5ea]/30 p-6">
+                <dt className="font-display text-5xl font-bold text-[#f5b700] leading-none">{s.n}</dt>
+                <dd className="mt-3">
+                  <span className="block font-mono text-[11px] uppercase tracking-[0.2em] font-bold text-[#fbf5ea]/80">{s.t}</span>
+                  <span className="block font-body text-sm leading-relaxed text-[#fbf5ea]/75 mt-2">{s.d}</span>
+                </dd>
+              </div>
+            ))}
+          </dl>
+          <p className="font-body text-sm text-[#fbf5ea]/65 mt-8">Approved partners see every amount, pending and paid, in their own dashboard.</p>
+        </div>
       </section>
 
       {/* What you get day one */}
