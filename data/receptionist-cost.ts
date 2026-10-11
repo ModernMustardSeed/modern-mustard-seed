@@ -16,8 +16,10 @@ import { OUR_PRICE } from './compare-pages';
 
 export const CHECKED = '2026-10-05';
 export const PUBLISHED = '2026-10-05';
+/** Goodcall and both Smith.ai rows were re-read on this date; every other row is as of CHECKED. */
+export const RECHECKED = '2026-10-10';
 
-export type VendorKind = 'AI receptionist' | 'AI or human, same price' | 'Live human receptionists' | 'Built for you';
+export type VendorKind = 'AI receptionist' | 'Live human receptionists' | 'Built for you';
 
 export type CostVendor = {
   name: string;
@@ -30,6 +32,8 @@ export type CostVendor = {
   meter: string;
   notes: string[];
   source: { label: string; url: string };
+  /** ISO date this row was read, when it differs from CHECKED. */
+  checked?: string;
   isUs?: boolean;
 };
 
@@ -71,10 +75,11 @@ export const vendors: CostVendor[] = [
     name: 'Goodcall',
     kind: 'AI receptionist',
     from: '$79 a month',
-    plans: 'Starter $79, Growth $129, Scale $249 a month per agent. Billed annually: $66, $108 and $208. Enterprise by quote.',
-    meter: 'Unique customers: 100, 250 or 500 a month, then $0.50 per extra customer. Goodcall states it does not charge for calls, call minutes or tokens.',
-    notes: ['Logic flows for custom call handling: 1 on Starter, 3 on Growth, 25 on Scale.'],
+    plans: 'Starter $79 (100 unique customers), Growth $129 (500), Scale $299 (2,000) a month. Enterprise by quote above 2,000 customers. No annual price is listed.',
+    meter: 'Unique customers. Extra customers cost 79 cents on Starter, 26 cents on Growth and 15 cents on Scale. Goodcall states it does not meter minutes, calls or tokens.',
+    notes: ['Workers for custom call handling: 5 on Starter, 10 on Growth, 20 on Scale.', 'Call history: 30 days on Starter, 90 on Growth, unlimited on Scale.'],
     source: { label: 'Goodcall pricing', url: 'https://www.goodcall.com/pricing' },
+    checked: RECHECKED,
   },
   {
     name: 'My AI Front Desk',
@@ -86,13 +91,24 @@ export const vendors: CostVendor[] = [
     source: { label: 'My AI Front Desk pricing', url: 'https://www.myaifrontdesk.com/pricing' },
   },
   {
-    name: 'Smith.ai',
-    kind: 'AI or human, same price',
+    name: 'Smith.ai AI-first',
+    kind: 'AI receptionist',
+    from: '$0 a month (25 calls)',
+    plans: 'Free $0 (25 calls), Pro from $150 (75 calls), Enterprise from $500 (300 calls) a month. Pro and Enterprise offer larger call bundles at a lower per-call rate. Month to month.',
+    meter: 'Calls. Extra calls $3.00 each on Free, $2.50 on Pro at 75 calls, $2.17 on Enterprise at 300 calls.',
+    notes: ['AI scheduling (Calendly and more) is listed from the Free plan up.', 'Complex calls can be transferred to a live receptionist, per its FAQ.'],
+    source: { label: 'Smith.ai AI receptionist pricing', url: 'https://smith.ai/pricing/ai-receptionist' },
+    checked: RECHECKED,
+  },
+  {
+    name: 'Smith.ai human-first',
+    kind: 'Live human receptionists',
     from: '$300 a month',
-    plans: 'Starter $300 (30 calls), Basic $810 (90 calls), Pro $2,100 (300 calls) a month. Enterprise custom. The same prices apply to its AI-first and human-first options.',
+    plans: 'Starter $300 (30 calls), Basic $810 (90 calls), Pro $2,100 (300 calls) a month. Enterprise custom. 10% off a 12-month subscription.',
     meter: 'Calls. Overage $11.50 a call on Starter, $10.50 on Basic, $8.50 on Pro.',
-    notes: ['Add-ons per call: appointment booking $1.50, a dedicated Spanish line $1.00.'],
+    notes: ['Live-staffed 24/7.', 'Add-ons per call: appointment booking $1.50, a dedicated Spanish line $1.00.'],
     source: { label: 'Smith.ai pricing', url: 'https://smith.ai/pricing' },
+    checked: RECHECKED,
   },
   {
     name: 'Ruby',
@@ -136,11 +152,11 @@ export const blsMonthly = Math.round(BLS_RECEPTIONIST.annual / 12);
 export const costFaqs: { q: string; a: string }[] = [
   {
     q: 'How much does an AI receptionist cost?',
-    a: 'Self-serve AI receptionists run from about $25 to $350 a month on published plans: Upfirst from $24.95, Dialzara from $29, Rosie from $49, Goodcall from $79 and My AI Front Desk from $99, per their pricing pages checked October 5, 2026. Services with humans behind them start higher: Ruby from $250 and Smith.ai from $300 a month. Built-for-you receptionists such as Modern Mustard Seed are quoted as a set package price.',
+    a: 'Self-serve AI receptionists run from about $25 to $350 a month on published plans: Upfirst from $24.95, Dialzara from $29, Rosie from $49, Goodcall from $79 and My AI Front Desk from $99, per their pricing pages checked October 5, 2026. Smith.ai\'s AI-first plans start with a free plan for 25 calls, then Pro from $150 and Enterprise from $500 a month, checked October 10, 2026. Services with humans answering start higher: Ruby from $250 and Smith.ai\'s human-first plans from $300 a month. Built-for-you receptionists such as Modern Mustard Seed are quoted as a set package price.',
   },
   {
     q: 'Is there an AI receptionist under $100 a month?',
-    a: 'Yes. Published plans under $100 a month include Upfirst Starter at $24.95 (30 calls) and Premium at $59.95 (90 calls), Dialzara Business Lite at $29 (60 minutes), Rosie Professional at $49 (250 minutes), Goodcall Starter at $79 per agent, and My AI Front Desk at $79 a month billed annually. Check what the meter counts: calls, minutes or unique customers.',
+    a: 'Yes. Published plans under $100 a month include Upfirst Starter at $24.95 (30 calls) and Premium at $59.95 (90 calls), Dialzara Business Lite at $29 (60 minutes), Rosie Professional at $49 (250 minutes), Goodcall Starter at $79 (100 unique customers), Smith.ai\'s free AI-first plan (25 calls), both checked October 10, 2026, and My AI Front Desk at $79 a month billed annually. Check what the meter counts: calls, minutes or unique customers.',
   },
   {
     q: 'What is the cheapest AI receptionist?',
@@ -152,7 +168,7 @@ export const costFaqs: { q: string; a: string }[] = [
   },
   {
     q: 'How much does a virtual receptionist cost compared with AI?',
-    a: 'Live virtual receptionist services charge for human time: Ruby runs $250 a month for 50 minutes up to $1,725 for 500 minutes, and Smith.ai $300 a month for 30 calls up to $2,100 for 300 calls. AI receptionists on published plans run about $25 to $350 a month for far more minutes or calls. Pay for humans when callers need one; use AI when volume, after-hours coverage and booking matter more.',
+    a: 'Live virtual receptionist services charge for human time: Ruby runs $250 a month for 50 minutes up to $1,725 for 500 minutes, and Smith.ai\'s human-first plans $300 a month for 30 calls up to $2,100 for 300 calls. AI receptionists on published plans run about $25 to $350 a month for far more minutes or calls. Pay for humans when callers need one; use AI when volume, after-hours coverage and booking matter more.',
   },
   {
     q: 'How much does an AI receptionist cost for a dental office?',
@@ -164,11 +180,11 @@ export const costFaqs: { q: string; a: string }[] = [
   },
   {
     q: 'Can I customize an AI receptionist script?',
-    a: 'Yes, and plans differ in how much. Rosie allows 2 message-taking scenarios on Professional, 5 on Scale and unlimited on Growth. Goodcall allows 1 logic flow on Starter, 3 on Growth and 25 on Scale. A built-for-you receptionist is scripted around your services, service area, prices and booking rules from the start.',
+    a: 'Yes, and plans differ in how much. Rosie allows 2 message-taking scenarios on Professional, 5 on Scale and unlimited on Growth. Goodcall allows 5 workers on Starter, 10 on Growth and 20 on Scale, checked October 10, 2026. A built-for-you receptionist is scripted around your services, service area, prices and booking rules from the start.',
   },
   {
     q: 'Does AI receptionist pricing include Spanish?',
-    a: 'It varies. Rosie answers in English and Spanish on every plan, Upfirst lists 35+ languages, Ruby lists 24/7 Spanish and bilingual handling on every plan, and Smith.ai charges $1.00 a call for a dedicated Spanish line.',
+    a: 'It varies. Rosie answers in English and Spanish on every plan, Upfirst lists 35+ languages, Ruby lists 24/7 Spanish and bilingual handling on every plan, and Smith.ai charges $1.00 a call for a dedicated Spanish line on its human-first plans.',
   },
   {
     q: 'How much does Modern Mustard Seed charge for an AI receptionist?',
