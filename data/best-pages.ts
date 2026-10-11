@@ -86,34 +86,34 @@ const SMITH: BestPick = {
   name: 'Smith.ai',
   bestFor: 'Best for AI answering with trained human agents behind it',
   url: 'https://smith.ai/pricing',
-  what: 'A receptionist service offering AI-first and human-first plans, with live-staffed 24/7 answering, lead screening and intake.',
+  what: 'A receptionist service with two plan families: AI-first plans, where AI answers and complex calls can go to a live receptionist, and human-first plans, live-staffed 24/7 with lead screening and intake.',
   strengths: [
-    'Choice of AI-first or human-first handling.',
-    'Does not charge for spam calls, per its pricing page.',
-    '30-day money-back guarantee.',
+    'AI-first plans start free for 25 calls and list AI scheduling on every plan.',
+    'Human-first plans do not charge for spam calls, per its pricing page.',
+    'Human-first plans carry a 30-day money-back guarantee.',
   ],
   watchFor: [
-    'Billed per call, with overage from $8.50 to $11.50 a call.',
-    'Appointment booking is a $1.50 per-call add-on.',
+    'Billed per call: AI-first extra calls run $2.10 to $3.00, human-first overage $8.50 to $11.50.',
+    'On human-first plans, appointment booking is a $1.50 per-call add-on.',
   ],
-  price: 'Starter $300 a month (30 calls), Basic $810 (90 calls), Pro $2,100 (300 calls), Enterprise custom.',
+  price: 'AI-first: Free $0 (25 calls), Pro from $150 (75 calls), Enterprise from $500 (300 calls) a month. Human-first: Starter $300 (30 calls), Basic $810 (90 calls), Pro $2,100 (300 calls), Enterprise custom. Checked October 10, 2026.',
 };
 
 const GOODCALL: BestPick = {
   name: 'Goodcall',
   bestFor: 'Best for a low-cost AI agent you set up yourself',
   url: 'https://www.goodcall.com/pricing',
-  what: 'A self-serve AI phone agent priced per agent, with unlimited minutes on every plan and limits set by unique customers a month.',
+  what: 'A self-serve AI phone agent priced by unique customers a month, with no metering of minutes, calls or tokens.',
   strengths: [
-    'Unlimited minutes on all plans.',
-    'Free trial on every plan.',
-    'Annual billing takes 15% off.',
+    'No per-minute charges on any plan.',
+    'Start free with a demo agent; you pay when you connect a number.',
+    'Call history from 30 days on Starter to unlimited on Scale.',
   ],
   watchFor: [
-    'Plans cap unique customers a month (100 on Starter), with $0.50 per extra customer.',
-    'You configure the logic flows yourself.',
+    'Plans cap unique customers a month (100 on Starter), then 79 cents per extra customer.',
+    'You build and configure the agent yourself.',
   ],
-  price: 'Starter $79 a month per agent, Growth $129, Scale $249; $66, $108 and $208 billed annually.',
+  price: 'Starter $79 a month (100 unique customers), Growth $129 (500), Scale $299 (2,000). Enterprise volume pricing. No annual price listed. Checked October 10, 2026.',
 };
 
 const ROSIE: BestPick = {
@@ -163,9 +163,9 @@ export const bestPages: BestPage[] = [
     eyebrow: 'Buyer\'s guide',
     h1: 'The best AI receptionists for contractors in 2026',
     answer:
-      'For a contractor who wants an AI receptionist built and owned outright, Modern Mustard Seed. For a larger shop on ServiceTitan, Avoca. For a low-cost agent you set up yourself, Goodcall from $79 a month or Rosie from $49. For a human on every call, Ruby from $250 a month, or Smith.ai from $300 a month for AI answering with people behind it. Prices are from each company\'s pricing page, checked October 5, 2026.',
+      'For a contractor who wants an AI receptionist built and owned outright, Modern Mustard Seed. For a larger shop on ServiceTitan, Avoca. For a low-cost agent you set up yourself, Goodcall from $79 a month or Rosie from $49. For a human on every call, Ruby from $250 a month, or Smith.ai, whose AI-first plans start free for 25 calls and whose human-first plans start at $300 a month. Prices are from each company\'s pricing page, checked October 5, 2026, with Goodcall and Smith.ai re-checked October 10, 2026.',
     method: [
-      'We read each company\'s own pricing and product pages on October 5, 2026, and only list what they publish.',
+      'We read each company\'s own pricing and product pages on October 5, 2026, re-read Goodcall and Smith.ai on October 10, 2026, and only list what they publish.',
       'We sorted by who each option fits, not by a single ranking, because a one-truck roofer and a forty-tech HVAC company need different things.',
       'We judged on what a contractor actually needs: answering every call during a rush, after-hours coverage, booking the job, and what happens to the bill when volume spikes.',
       'Modern Mustard Seed wrote this page and builds AI receptionists. We are on the list, and we gave every option the same space.',
@@ -173,8 +173,8 @@ export const bestPages: BestPage[] = [
     picks: [MMS_RECEPTIONIST, AVOCA, GOODCALL, ROSIE, SMITH, RUBY],
     faqs: [
       { q: 'What is the best AI receptionist for a small contractor?', a: 'It depends on who will set it up. If you want it built for you and owned, a studio like Modern Mustard Seed. If you want to configure it yourself on a budget, Goodcall or Rosie. If you need a human on every call, Ruby.' },
-      { q: 'How much does an AI receptionist cost for a contractor?', a: 'Self-serve AI agents start around $49 to $79 a month (Rosie, Goodcall). Live and hybrid services start at $250 to $300 a month (Ruby, Smith.ai). Built-for-you receptionists are quoted as a set package price.' },
-      { q: 'Can an AI receptionist book jobs into my calendar?', a: 'Yes, most can. Check whether booking is included or an add-on: Smith.ai lists appointment booking at $1.50 a call.' },
+      { q: 'How much does an AI receptionist cost for a contractor?', a: 'Self-serve AI agents start around $49 to $79 a month (Rosie, Goodcall), and Smith.ai has a free AI-first plan for 25 calls. Live services start at $250 to $300 a month (Ruby, Smith.ai human-first). Built-for-you receptionists are quoted as a set package price.' },
+      { q: 'Can an AI receptionist book jobs into my calendar?', a: 'Yes, most can. Check whether booking is included or an add-on: Smith.ai lists appointment booking at $1.50 a call on its human-first plans and AI scheduling on its AI-first plans.' },
       { q: 'Where can I hear an AI receptionist before I buy?', a: 'Call (406) 312-1223 to hear Mr. Mustard, the Modern Mustard Seed voice agent, any time.' },
     ],
     checked: CHECKED,
@@ -213,7 +213,7 @@ export const bestPages: BestPage[] = [
     faqs: [
       { q: 'How do contractors stop missing calls?', a: 'Put something on the line that answers when you cannot: a live answering service, a self-serve AI agent, or an AI receptionist built for your business. Voicemail alone only works when callers will wait.' },
       { q: 'Is an AI receptionist better than an answering service?', a: 'For high volume and after-hours calls, AI usually costs less per call and answers every call at once. For sensitive calls that need a human, a live service wins. See the full comparison at modernmustardseed.com/compare/ai-receptionist-vs-answering-service.' },
-      { q: 'Can I try before I commit?', a: 'Rosie offers a 7-day free trial and Goodcall a free trial on every plan. You can hear the Modern Mustard Seed voice agent at (406) 312-1223.' },
+      { q: 'Can I try before I commit?', a: 'Rosie offers a 7-day free trial, and Goodcall lets you start free with a demo agent and pay when you connect a number. You can hear the Modern Mustard Seed voice agent at (406) 312-1223.' },
     ],
     checked: CHECKED,
     published: CHECKED,

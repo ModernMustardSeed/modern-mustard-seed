@@ -6,7 +6,7 @@ import ReceptionistPaybackCalculator from '@/components/ReceptionistPaybackCalcu
 import HearItAnswers from '@/components/conversion/HearItAnswers';
 import BookCallLink from '@/components/conversion/BookCallLink';
 import { formatChecked } from '@/lib/checked-date';
-import { BLS_RECEPTIONIST, CHECKED, PUBLISHED, blsMonthly, costFaqs, vendors } from '@/data/receptionist-cost';
+import { BLS_RECEPTIONIST, CHECKED, PUBLISHED, RECHECKED, blsMonthly, costFaqs, vendors } from '@/data/receptionist-cost';
 
 const PATH = '/ai-receptionist-cost';
 const TITLE = 'AI Receptionist Cost in 2026: Real Prices Compared';
@@ -20,7 +20,7 @@ export const metadata = buildMetadata({
   article: { published: PUBLISHED, modified: CHECKED },
 });
 
-const ANSWER = `An AI receptionist costs about $25 to $350 a month on published self-serve plans: Upfirst from $24.95, Dialzara from $29, Rosie from $49, Goodcall from $79 and My AI Front Desk from $99, per their pricing pages checked ${formatChecked(CHECKED)}. Services with humans behind them cost more: Ruby from $250 and Smith.ai from $300 a month. A full-time receptionist costs about $${blsMonthly.toLocaleString('en-US')} a month in wages alone at the US median. Built-for-you receptionists are quoted as a set package price.`;
+const ANSWER = `An AI receptionist costs about $25 to $350 a month on published self-serve plans: Upfirst from $24.95, Dialzara from $29, Rosie from $49, Goodcall from $79 and My AI Front Desk from $99, per their pricing pages checked ${formatChecked(CHECKED)}. Smith.ai's AI-first plans start with a free plan for 25 calls, then Pro from $150 and Enterprise from $500 a month, checked ${formatChecked(RECHECKED)}. Services with humans answering cost more: Ruby from $250 and Smith.ai's human-first plans from $300 a month. A full-time receptionist costs about $${blsMonthly.toLocaleString('en-US')} a month in wages alone at the US median. Built-for-you receptionists are quoted as a set package price.`;
 
 const ART_ALT = 'Painting: Mr. Mustard strolls a sunny seaside promenade of little shops with Tiffany-blue and coral awnings, the family with gelato and the sea at the end of the street';
 
@@ -29,18 +29,19 @@ const under100 = [
   { name: 'Dialzara Business Lite', price: '$29 a month', what: '60 minutes, then $0.48 a minute', url: 'https://www.dialzara.com/pricing' },
   { name: 'Rosie Professional', price: '$49 a month', what: '250 minutes, English and Spanish', url: 'https://heyrosie.com/pricing' },
   { name: 'Upfirst Premium', price: '$59.95 a month', what: '90 calls, then $1 a call', url: 'https://www.upfirst.ai/pricing' },
-  { name: 'Goodcall Starter', price: '$79 a month per agent', what: '100 unique customers, then $0.50 each', url: 'https://www.goodcall.com/pricing' },
+  { name: 'Smith.ai AI-first Free', price: '$0 a month', what: '25 calls, then $3.00 a call', url: 'https://smith.ai/pricing/ai-receptionist' },
+  { name: 'Goodcall Starter', price: '$79 a month', what: '100 unique customers, then 79 cents each', url: 'https://www.goodcall.com/pricing' },
   { name: 'My AI Front Desk', price: '$79 a month billed annually', what: '200 voice minutes ($99 billed monthly)', url: 'https://www.myaifrontdesk.com/pricing' },
 ];
 
 const drivers = [
   {
     h: 'What the meter counts',
-    p: 'Plans charge by minutes (Dialzara, Rosie, Ruby), by calls (Upfirst, Smith.ai) or by unique customers (Goodcall, which states it does not charge for calls or minutes). Long calls favor a per-call plan; many short calls favor a per-minute plan; repeat callers favor a per-customer plan.',
+    p: 'Plans charge by minutes (Dialzara, Rosie, Ruby), by calls (Upfirst, Smith.ai) or by unique customers (Goodcall, which states it does not meter minutes, calls or tokens). Long calls favor a per-call plan; many short calls favor a per-minute plan; repeat callers favor a per-customer plan.',
   },
   {
     h: 'Booking into your calendar',
-    p: 'Booking is the feature that turns a call into a job. Some plans include it; others gate or charge for it. Rosie lists calendar booking on Scale and Growth, and Smith.ai charges $1.50 a call to book an appointment.',
+    p: 'Booking is the feature that turns a call into a job. Some plans include it; others gate or charge for it. Rosie lists calendar booking on Scale and Growth. Smith.ai lists AI scheduling on every AI-first plan, and charges $1.50 a call to book an appointment on its human-first plans.',
   },
   {
     h: 'After-hours coverage',
@@ -48,11 +49,11 @@ const drivers = [
   },
   {
     h: 'Spanish and other languages',
-    p: 'Rosie answers in English and Spanish on every plan, Upfirst lists 35+ languages, Ruby lists 24/7 Spanish and bilingual handling, and Smith.ai charges $1.00 a call for a dedicated Spanish line.',
+    p: 'Rosie answers in English and Spanish on every plan, Upfirst lists 35+ languages, Ruby lists 24/7 Spanish and bilingual handling, and Smith.ai charges $1.00 a call for a dedicated Spanish line on its human-first plans.',
   },
   {
     h: 'Script customization',
-    p: 'How far the agent can be shaped to your business is often a plan limit: Rosie allows 2, 5 or unlimited message-taking scenarios by plan, and Goodcall allows 1, 3 or 25 logic flows. A built-for-you receptionist is scripted around your services, prices and booking rules from the start.',
+    p: 'How far the agent can be shaped to your business is often a plan limit: Rosie allows 2, 5 or unlimited message-taking scenarios by plan, and Goodcall allows 5, 10 or 20 workers. A built-for-you receptionist is scripted around your services, prices and booking rules from the start.',
   },
 ];
 
@@ -132,6 +133,7 @@ export default function AiReceptionistCostPage() {
                         {v.name}
                       </a>
                       <span className="block mt-1 text-[10px] uppercase tracking-[0.2em] font-mono text-[#0a7c78]">{v.isUs ? 'This is us' : v.kind}</span>
+                      {v.checked && <span className="block mt-1 text-[10px] font-mono text-[#3a3733]/80">Checked {formatChecked(v.checked)}</span>}
                     </th>
                     <td className="p-4 align-top font-semibold text-[#0b3b44]">{v.from}</td>
                     <td className="p-4 align-top text-[#3a3733] leading-6">
@@ -159,6 +161,7 @@ export default function AiReceptionistCostPage() {
                   </a>
                 </h3>
                 <p className="text-sm font-semibold text-[#0b3b44] mt-1 mb-3">From {v.from}</p>
+                {v.checked && <p className="text-xs font-mono text-[#3a3733]/80 -mt-2 mb-3">Checked {formatChecked(v.checked)}</p>}
                 <p className="text-sm text-[#3a3733] leading-6 mb-2">{v.plans}</p>
                 <p className="text-sm text-[#3a3733] leading-6"><span className="font-semibold">Metered by:</span> {v.meter}</p>
                 {v.notes.length > 0 && (
@@ -194,7 +197,7 @@ export default function AiReceptionistCostPage() {
               <p className="text-[10px] uppercase tracking-[0.3em] font-mono font-bold text-[#0a7c78] mb-2">Virtual receptionist service</p>
               <p className="font-display text-3xl font-black text-[#0b3b44]">$250 to $2,100/mo</p>
               <p className="mt-3 text-sm text-[#3a3733] font-body leading-7">
-                Ruby charges for live minutes ($250 for 50 up to $1,725 for 500). Smith.ai charges by the call ($300 for 30 up to $2,100 for 300) with booking at $1.50 a call. You get people, metered.
+                Ruby charges for live minutes ($250 for 50 up to $1,725 for 500). Smith.ai's human-first plans charge by the call ($300 for 30 up to $2,100 for 300) with booking at $1.50 a call. You get people, metered.
               </p>
             </div>
             <div className="pop-card-yellow p-7">

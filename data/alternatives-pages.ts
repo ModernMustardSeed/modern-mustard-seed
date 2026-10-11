@@ -49,9 +49,12 @@ export type AlternativesPage = {
 };
 
 const CHECKED = '2026-10-05';
+/** Goodcall and Smith.ai facts below were re-read on this date. */
+const RECHECKED_TEXT = 'October 10, 2026';
 
 const SRC = {
   smith: 'https://smith.ai/pricing',
+  smithAi: 'https://smith.ai/pricing/ai-receptionist',
   ruby: 'https://www.ruby.com/pricing/',
   goodcall: 'https://www.goodcall.com/pricing',
   rosie: 'https://heyrosie.com/pricing',
@@ -93,19 +96,19 @@ const SMITH: AltPick = {
   name: 'Smith.ai',
   bestFor: 'Best for AI answering with trained humans behind it',
   url: SRC.smith,
-  what: 'A receptionist service with AI-first and human-first plans, 24/7 live staffing, lead qualification and intake on every plan.',
+  what: 'A receptionist service with two plan families: AI-first plans, where AI answers and complex calls can go to a live receptionist, and human-first plans, live-staffed 24/7 with lead qualification and intake.',
   strengths: [
-    'Choice of AI-first or human-first handling.',
-    'Month-to-month, with a 30-day money-back guarantee for new clients.',
-    '10% off a 12-month subscription.',
+    'AI-first plans start free for 25 calls and list AI scheduling on every plan.',
+    'Month-to-month on both plan families.',
+    'Human-first plans carry a 30-day money-back guarantee for new clients and 10% off a 12-month subscription.',
   ],
   watchFor: [
-    'Billed per call, with overage of $8.50 to $11.50 a call.',
-    'Appointment booking is a $1.50 per-call add-on.',
+    'Billed per call: AI-first extra calls run $2.10 to $3.00, human-first overage $8.50 to $11.50.',
+    'On human-first plans, appointment booking is a $1.50 per-call add-on.',
   ],
-  price: 'Starter $300 a month (30 calls), Basic $810 (90 calls), Pro $2,100 (300 calls), Enterprise custom.',
+  price: `AI-first: Free $0 (25 calls), Pro from $150 (75 calls), Enterprise from $500 (300 calls) a month. Human-first: Starter $300 (30 calls), Basic $810 (90 calls), Pro $2,100 (300 calls), Enterprise custom. Checked ${RECHECKED_TEXT}.`,
   billedBy: 'Per call',
-  startsAt: '$300 a month for 30 calls',
+  startsAt: 'AI-first free for 25 calls; human-first $300 a month for 30 calls',
 };
 
 const RUBY: AltPick = {
@@ -129,21 +132,21 @@ const RUBY: AltPick = {
 
 const GOODCALL: AltPick = {
   name: 'Goodcall',
-  bestFor: 'Best for unlimited minutes on a self-serve AI agent',
+  bestFor: 'Best for a self-serve AI agent with no per-minute charges',
   url: SRC.goodcall,
-  what: 'A self-serve AI phone agent priced per agent, with unlimited minutes on every plan and limits set by unique customers a month.',
+  what: 'A self-serve AI phone agent priced by unique customers a month, with no metering of minutes, calls or tokens.',
   strengths: [
-    'No fees for calls, minutes or tokens, per its pricing page.',
-    'Annual billing takes 15% off.',
-    'Native Zapier integration.',
+    'No charge for minutes, calls or tokens, per its pricing page.',
+    'Start free with a demo agent; you pay when you connect a number.',
+    'Lists a Zapier integration.',
   ],
   watchFor: [
-    'Caps unique customers a month (100 on Starter), then $0.50 per customer.',
-    'Starter allows 1 logic flow and 7 days of call history.',
+    'Caps unique customers a month (100 on Starter), then 79 cents per extra customer.',
+    'Starter allows 5 workers and 30 days of call history.',
   ],
-  price: 'Starter $79 a month per agent, Growth $129, Scale $249; $66, $108 and $208 billed annually. Enterprise custom.',
-  billedBy: 'Per agent, per unique customer',
-  startsAt: '$79 a month per agent',
+  price: `Starter $79 a month (100 unique customers), Growth $129 (500), Scale $299 (2,000). Enterprise volume pricing. No annual price listed. Checked ${RECHECKED_TEXT}.`,
+  billedBy: 'Per unique customer',
+  startsAt: '$79 a month for 100 customers',
 };
 
 const ROSIE: AltPick = {
@@ -394,26 +397,27 @@ export const alternativesPages: AlternativesPage[] = [
     eyebrow: 'Smith.ai alternatives',
     h1: 'Smith.ai alternatives for small businesses',
     answer:
-      'Smith.ai bills per call: $300 a month for 30 calls on Starter, with overage of $8.50 to $11.50 a call and appointment booking as a $1.50 per-call add-on, per smith.ai/pricing on October 5, 2026. The strongest alternatives depend on why you are looking: Upfirst for the lowest published per-call price, Goodcall for unlimited minutes, Ruby for a live human on every call, Rosie for English and Spanish at $49 a month, and Modern Mustard Seed for a custom AI receptionist built for you and owned outright. Stay with Smith.ai if you want trained humans available behind the AI.',
+      'Smith.ai bills per call on two plan families, per smith.ai on October 10, 2026. Human-first plans start at $300 a month for 30 calls, with overage of $8.50 to $11.50 a call and appointment booking as a $1.50 per-call add-on. AI-first plans start with a free plan for 25 calls, then Pro from $150 a month for 75 calls and Enterprise from $500 for 300. The strongest alternatives depend on why you are looking: Upfirst for the lowest published per-call price, Goodcall for no per-minute charges, Ruby for a live human on every call, Rosie for English and Spanish at $49 a month, and Modern Mustard Seed for a custom AI receptionist built for you and owned outright. Stay with Smith.ai if you want trained humans available behind the AI.',
     whySwitch: [
-      'Billing is per call. The $300 Starter plan includes 30 calls; past that it is $11.50 a call.',
-      'Appointment booking costs $1.50 a call on top of the plan, and a dedicated Spanish line $1.00 a call.',
-      'Free transfer destinations are limited by plan: 1 on Starter, 2 on Basic, 10 on Pro.',
+      'Billing is per call. The $300 human-first Starter plan includes 30 calls; past that it is $11.50 a call. AI-first extra calls run $2.10 to $3.00.',
+      'On human-first plans, appointment booking costs $1.50 a call on top of the plan, and a dedicated Spanish line $1.00 a call.',
+      'Free transfer destinations on human-first plans are limited by plan: 1 on Starter, 2 on Basic, 10 on Pro.',
     ],
     stayWith: [
       'You want trained human agents available, not only AI: Smith.ai offers AI-first and human-first plans.',
-      'You want 24/7 live staffing, lead qualification and intake included on every plan.',
-      'You value a month-to-month service with a 30-day money-back guarantee for new clients.',
+      'You want 24/7 live staffing, lead qualification and intake included on every human-first plan.',
+      'You value a month-to-month service; human-first plans add a 30-day money-back guarantee for new clients.',
     ],
     picks: [UPFIRST, GOODCALL, MMS_RECEPTIONIST, RUBY, ROSIE],
     faqs: [
-      { q: 'What is the cheapest alternative to Smith.ai?', a: 'By published price on October 5, 2026: Upfirst starts at $24.95 a month for 30 calls, and Rosie at $49 a month for 250 minutes. Smith.ai starts at $300 a month for 30 calls.' },
-      { q: 'Does Smith.ai charge per call or per minute?', a: 'Per call. Starter is $300 a month for 30 calls, Basic $810 for 90, Pro $2,100 for 300, with overage of $11.50, $10.50 and $8.50 a call.' },
+      { q: 'What is the cheapest alternative to Smith.ai?', a: 'By published price on October 5, 2026: Upfirst starts at $24.95 a month for 30 calls, and Rosie at $49 a month for 250 minutes. Smith.ai itself offers a free AI-first plan for 25 calls, and its human-first plans start at $300 a month for 30 calls, checked October 10, 2026.' },
+      { q: 'Does Smith.ai charge per call or per minute?', a: 'Per call, on both plan families. Human-first: Starter $300 a month for 30 calls, Basic $810 for 90, Pro $2,100 for 300, with overage of $11.50, $10.50 and $8.50 a call. AI-first: Free for 25 calls, Pro from $150 for 75, Enterprise from $500 for 300, with extra calls from $2.10 to $3.00. Checked October 10, 2026.' },
       { q: 'Is there a Smith.ai alternative with live humans?', a: 'Yes. Ruby is a live virtual receptionist service with 24/7 coverage, priced by minutes from $250 a month for 50 minutes.' },
-      { q: 'Can an AI receptionist book appointments without a per-call fee?', a: 'Yes. Several alternatives include booking in the plan; Rosie includes calendar booking from its $149 Scale plan, and a custom receptionist from Modern Mustard Seed books into your calendar as part of the build.' },
+      { q: 'Can an AI receptionist book appointments without a per-call fee?', a: 'Yes. Several alternatives include booking in the plan; Rosie includes calendar booking from its $149 Scale plan, Smith.ai lists AI scheduling on its AI-first plans, and a custom receptionist from Modern Mustard Seed books into your calendar as part of the build.' },
     ],
     sources: [
       { label: 'Smith.ai pricing', url: SRC.smith },
+      { label: 'Smith.ai AI receptionist pricing', url: SRC.smithAi },
       { label: 'Upfirst pricing', url: SRC.upfirst },
       { label: 'Goodcall pricing', url: SRC.goodcall },
       { label: 'Ruby pricing', url: SRC.ruby },
@@ -450,12 +454,13 @@ export const alternativesPages: AlternativesPage[] = [
     picks: [SMITH, DIALZARA, MMS_RECEPTIONIST, GOODCALL, ROSIE],
     faqs: [
       { q: 'How much does Ruby cost?', a: 'Per ruby.com/pricing on October 5, 2026: Starter $250 a month for 50 minutes, Standard $395 for 100, Popular $720 for 200, Premium $1,725 for 500.' },
-      { q: 'What is a cheaper alternative to Ruby?', a: 'AI answering services publish far lower entry prices: Dialzara from $29 a month for 60 minutes, Rosie from $49 for 250 minutes, Goodcall from $79 a month per agent with unlimited minutes.' },
-      { q: 'Is there an alternative to Ruby that still uses humans?', a: 'Yes. Smith.ai offers human-first plans alongside its AI-first plans, billed per call from $300 a month for 30 calls.' },
+      { q: 'What is a cheaper alternative to Ruby?', a: 'AI answering services publish far lower entry prices: Dialzara from $29 a month for 60 minutes, Rosie from $49 for 250 minutes, Goodcall from $79 a month for 100 unique customers with no per-minute charges, and Smith.ai has a free AI-first plan for 25 calls (Goodcall and Smith.ai checked October 10, 2026).' },
+      { q: 'Is there an alternative to Ruby that still uses humans?', a: 'Yes. Smith.ai offers human-first plans alongside its AI-first plans, billed per call from $300 a month for 30 calls, checked October 10, 2026.' },
     ],
     sources: [
       { label: 'Ruby pricing', url: SRC.ruby },
       { label: 'Smith.ai pricing', url: SRC.smith },
+      { label: 'Smith.ai AI receptionist pricing', url: SRC.smithAi },
       { label: 'Dialzara pricing', url: SRC.dialzara },
       { label: 'Goodcall pricing', url: SRC.goodcall },
       { label: 'Rosie pricing', url: SRC.rosie },
@@ -477,21 +482,21 @@ export const alternativesPages: AlternativesPage[] = [
     eyebrow: 'Goodcall alternatives',
     h1: 'Goodcall alternatives',
     answer:
-      'Goodcall prices its AI phone agent per agent with unlimited minutes: $79 a month on Starter, capped at 100 unique customers a month and $0.50 per customer after that, per goodcall.com/pricing on October 5, 2026. People look elsewhere when the customer caps, the single logic flow on Starter or the do-it-yourself setup stop fitting. Alternatives: Rosie and Upfirst for lower entry prices, My AI Front Desk for voice, chat and text in one plan, Smith.ai for humans behind the AI, and Modern Mustard Seed for a receptionist built for you and owned outright. Stay with Goodcall if unlimited minutes matter most.',
+      'Goodcall prices its AI phone agent by unique customers a month, with no per-minute charges: $79 a month on Starter for 100 unique customers, $129 on Growth for 500 and $299 on Scale for 2,000, then 79, 26 or 15 cents per extra customer, per goodcall.com/pricing on October 10, 2026. People look elsewhere when the customer caps or the do-it-yourself setup stop fitting. Alternatives: Rosie and Upfirst for lower entry prices, My AI Front Desk for voice, chat and text in one plan, Smith.ai for humans behind the AI, and Modern Mustard Seed for a receptionist built for you and owned outright. Stay with Goodcall if no per-minute charges matter most.',
     whySwitch: [
-      'Plans cap unique customers a month: 100 on Starter, 250 on Growth, 500 on Scale, then $0.50 per customer.',
-      'Starter includes 1 logic flow and 7 days of call history.',
-      'Pricing is per agent, and you build the logic flows yourself.',
+      'Plans cap unique customers a month: 100 on Starter, 500 on Growth, 2,000 on Scale, then 79, 26 or 15 cents per extra customer.',
+      'Starter includes 5 workers and 30 days of call history.',
+      'You build and configure the agent yourself.',
     ],
     stayWith: [
-      'You want unlimited minutes: Goodcall charges no fees for calls, minutes or tokens.',
-      'You are comfortable configuring the agent yourself and want a free trial first.',
-      'You use Zapier; Goodcall integrates with it natively.',
+      'You want no per-minute charges: Goodcall does not meter minutes, calls or tokens.',
+      'You are comfortable configuring the agent yourself and want to try a free demo agent first.',
+      'You use Zapier; Goodcall lists a Zapier integration.',
     ],
     picks: [ROSIE, UPFIRST, FRONTDESK, MMS_RECEPTIONIST, SMITH],
     faqs: [
-      { q: 'How much does Goodcall cost?', a: 'Per goodcall.com/pricing on October 5, 2026: Starter $79 a month per agent, Growth $129, Scale $249, or $66, $108 and $208 billed annually, plus $0.50 per unique customer past each plan\'s limit.' },
-      { q: 'Does Goodcall charge per minute?', a: 'No. Goodcall states it does not charge for calls, minutes or tokens. Plans are limited by unique customers a month instead.' },
+      { q: 'How much does Goodcall cost?', a: 'Per goodcall.com/pricing on October 10, 2026: Starter $79 a month for 100 unique customers, Growth $129 for 500, Scale $299 for 2,000, then 79, 26 and 15 cents per extra customer. Enterprise is volume pricing. No annual price is listed.' },
+      { q: 'Does Goodcall charge per minute?', a: 'No. Goodcall states it does not meter minutes, calls or tokens, per its pricing page on October 10, 2026. Plans are limited by unique customers a month instead.' },
       { q: 'What is the cheapest Goodcall alternative?', a: 'By published entry price: Upfirst from $24.95 a month for 30 calls and Rosie from $49 a month for 250 minutes.' },
     ],
     sources: [
@@ -500,6 +505,7 @@ export const alternativesPages: AlternativesPage[] = [
       { label: 'Upfirst pricing', url: SRC.upfirst },
       { label: 'My AI Front Desk pricing', url: SRC.frontdesk },
       { label: 'Smith.ai pricing', url: SRC.smith },
+      { label: 'Smith.ai AI receptionist pricing', url: SRC.smithAi },
     ],
     related: [
       { href: '/best/ai-receptionists-for-contractors', label: 'Best AI receptionists for contractors' },
